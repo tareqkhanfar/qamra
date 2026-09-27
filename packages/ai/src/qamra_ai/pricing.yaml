@@ -1,0 +1,20 @@
+# USD prices used by the cost ledger. Checked 2026-09-28 against provider pricing pages.
+# Update here when prices change; code never hardcodes prices.
+anthropic:  # per 1M tokens
+  claude-opus-5: {input: 5.00, output: 25.00, cache_read: 0.50, cache_write: 6.25}
+  claude-opus-5-5: {input: 4.00, output: 20.00, cache_read: 0.20, cache_write: 5.00}
+  claude-sonnet-5: {input: 2.00, output: 10.00, cache_read: 0.20, cache_write: 2.50}
+  claude-opus-4-8: {input: 5.00, output: 25.00, cache_read: 0.50, cache_write: 6.25}
+  claude-haiku-4-5: {input: 1.00, output: 5.00, cache_read: 0.10, cache_write: 1.25}
+gemini:  # per output image by size, plus per input image
+  gemini-3.1-flash-image: {output: {1K: 0.067, 2K: 0.101, 4K: 0.151}, input_image: 0.0011}
+  gemini-3-pro-image: {output: {1K: 0.134, 2K: 0.134, 4K: 0.24}, input_image: 0.0011}
+  gemini-3.1-flash-lite-image: {output: {1K: 0.0336, 2K: 0.0336, 4K: 0.0336}, input_image: 0.0011}
+openai:  # per 1M tokens (image models are token-billed)
+  gpt-image-2.5-sunburst: {text_input: 5.00, image_input: 8.00, output: 30.00}
+  gpt-image-2.5-flare: {text_input: 5.00, image_input: 8.00, output: 30.00}
+  gpt-image-2: {text_input: 5.00, image_input: 8.00, output: 30.00}
+fal:  # per megapixel (input + output), first MP priced separately
+  fal-ai/flux-2-pro/edit: {first_mp: 0.03, extra_mp: 0.015}
+  fal-ai/flux-2-flex/edit: {first_mp: 0.06, extra_mp: 0.06}
+  fal-ai/flux-2/edit: {first_mp: 0.012, extra_mp: 0.012}

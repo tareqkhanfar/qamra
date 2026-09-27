@@ -1,0 +1,19 @@
+{% if is_cover %}Illustrate the FRONT COVER of a children's picture book.{% else %}Illustrate page {{ index }} of {{ total }} of a children's picture book.{% endif %}
+
+Scene: {{ scene }}
+{% if companion %}
+The hero's companion "{{ companion.name }}" is in the scene: {{ companion_action or 'stays close to the hero' }}.
+{% endif %}
+
+Characters must match the references exactly:
+- THE HERO is the child in the character reference sheet (reference 1): same face, skin tone, hair color and style, eye shape, age and proportions. {{ 'He is a boy' if gender == 'm' else 'She is a girl' }}, about {{ age }} years old. Keep the reference outfit unless the scene clearly calls for other clothes (e.g. pajamas at night).
+{% if companion and companion.has_ref %}- THE COMPANION "{{ companion.name }}" is the creature in reference 2: same silhouette, colors, number of eyes/limbs and quirks. {{ companion.description_en }}
+{% elif companion %}- THE COMPANION "{{ companion.name }}" looks like this: {{ companion.description_en }}
+{% endif %}
+- Draw the hero once only. {% if companion %}Draw the companion once only.{% endif %} Any other people are clearly different from the hero.
+
+Composition: square picture-book page. {% if is_cover %}Keep the top third calm and simple (sky or plain wall) so the book title can be placed there; the hero is large and central in the lower two thirds.{% else %}Keep the top quarter calm and uncluttered (sky, wall or soft background) because the story text is placed there; main action in the middle and lower part.{% endif %} Keep faces and important details away from the outer 6% of the image (it is trimmed when printed).
+
+Art style: {{ style_guide }}
+
+Wholesome, warm and safe for ages 3–7. Original designs only — no existing cartoon, film or game characters, no brand logos. No text, letters, numbers, signs with writing, or watermarks anywhere in the image.

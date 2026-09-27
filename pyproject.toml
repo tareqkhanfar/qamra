@@ -1,0 +1,51 @@
+[project]
+name = "qamra"
+version = "0.0.1"
+description = "Qamra — personalized Arabic storybooks (monorepo root)"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "qamra-ai",
+    "qamra-pdf",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "pytest-asyncio>=0.24",
+    "ruff>=0.6",
+    "mypy>=1.11",
+    "types-PyYAML",
+    "pypdf>=5",
+    "fonttools>=4.66.0",
+]
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = ["packages/ai", "packages/pdf"]
+
+[tool.uv.sources]
+qamra-ai = { workspace = true }
+qamra-pdf = { workspace = true }
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+ignore = ["RUF001", "RUF002", "RUF003"]  # Arabic text contains "ambiguous" unicode by design
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+ignore_missing_imports = true
+files = ["packages/ai/src", "packages/pdf/src", "scripts"]
+mypy_path = ["packages/ai/src", "packages/pdf/src"]
+explicit_package_bases = true
+
+[tool.pytest.ini_options]
+testpaths = ["packages/ai/tests", "packages/pdf/tests"]
+pythonpath = ["packages/ai/tests"]
+asyncio_mode = "auto"

@@ -1,0 +1,14 @@
+Child:
+- name: {{ child.name }}
+- gender: {{ 'boy' if child.gender == 'm' else 'girl' }}
+- age: {{ child.age }}
+- interests: {{ child.interests | join(', ') if child.interests else 'none given' }}
+{% if companion %}
+Companion: {{ companion.name }} ({{ companion.type_label }}){% if companion.traits %} — {{ companion.traits }}{% endif %}
+
+{% endif %}
+Theme: {{ theme_title }}
+Base story (already rendered for this child's gender; adapt and polish it, keep the beats):
+<pages_json>
+{{ pages_json }}
+</pages_json>

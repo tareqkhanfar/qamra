@@ -1,0 +1,54 @@
+{% import "_macros.html.j2" as m %}
+<!doctype html>
+<html lang="{{ spec.lang }}" dir="{{ spec.dir }}">
+<head><meta charset="utf-8"><title>{{ spec.title }}</title>
+<style>
+{% include "_base.css.j2" %}
+.title-page { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 9mm; padding: var(--safe);
+  background: radial-gradient(circle at 50% 30%, var(--moon-glow) 0, var(--paper) 55%); }
+.title-page h1 { font-size: 34pt; line-height: 1.5; font-weight: 800; color: var(--night-900); }
+.title-page .label { font: 600 11pt "IBM Plex Sans Arabic", sans-serif; letter-spacing: .5mm; color: var(--moon-deep); }
+.title-page .dedication { font-size: 19pt; line-height: 2; color: var(--ink); max-width: 150mm; }
+.title-page .made-by { position: absolute; bottom: var(--safe); inset-inline: 0; font: 500 10pt "IBM Plex Sans Arabic", sans-serif; color: var(--ink-muted); }
+.keepsake { padding: var(--safe); display: flex; flex-direction: column; align-items: center; text-align: center;
+  background: var(--paper) radial-gradient(rgba(28,33,64,.035) 1px, transparent 1px); background-size: 7px 7px; }
+.keepsake h2 { font-size: 30pt; font-weight: 800; color: var(--night-900); margin-top: 4mm; }
+.keepsake .pair { display: flex; gap: 10mm; margin-top: 12mm; align-items: flex-start; justify-content: center; }
+.keepsake figure { width: 78mm; }
+.keepsake .frame { width: 78mm; height: 78mm; background: var(--paper-raised); border: 2.2mm solid #9A620A; border-radius: 3mm; padding: 3mm; box-shadow: 0 2mm 5mm rgba(22,32,74,.18); display: flex; align-items: center; justify-content: center; }
+.keepsake .frame img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.keepsake figcaption { margin-top: 4mm; font-size: 15pt; font-weight: 700; color: var(--night-900); }
+.keepsake .note { margin-top: 12mm; font-size: 16pt; line-height: 2; color: var(--ink); }
+.keepsake .date { margin-top: 3mm; font: 600 12pt "IBM Plex Sans Arabic", sans-serif; color: var(--moon-deep); }
+.keepsake .arrow { align-self: center; margin-top: -8mm; font-size: 26pt; color: var(--moon); }
+</style></head>
+<body>
+<section class="page title-page" data-kind="title">
+  {{ m.moon_mark('30mm') }}
+  <h1 class="display">{{ spec.title }}</h1>
+  <div class="label">{{ s.dedication_label }}</div>
+  <p class="dedication">{{ spec.dedication }}</p>
+  <div class="made-by">{{ s.made_by.format(brand=spec.brand.name_ar if spec.lang == 'ar' else spec.brand.name_en) }} · {{ spec.brand.domain }}</div>
+</section>
+{% for p in spec.pages %}
+<section class="page" data-kind="story" data-index="{{ p.index }}">
+  <img class="bleed-img" src="{{ p.image.as_uri() }}" alt="">
+  <div class="textbox">{{ p.text }}</div>
+  <div class="folio">{{ p.index }}</div>
+  {{ m.watermark(spec, s) }}
+</section>
+{% endfor %}
+{% if spec.keepsake %}{% set k = spec.keepsake %}
+<section class="page keepsake" data-kind="keepsake">
+  {{ m.moon_mark('20mm') }}
+  <h2 class="display">{{ s.keepsake_title }}</h2>
+  <div class="pair">
+    <figure><div class="frame"><img src="{{ k.drawing.as_uri() }}" alt=""></div><figcaption>{{ s.drawing_label.format(name=k.child_name) }}</figcaption></figure>
+    <div class="arrow">{{ '←' if spec.dir == 'rtl' else '→' }}</div>
+    <figure><div class="frame"><img src="{{ k.companion.as_uri() }}" alt=""></div><figcaption>{{ s.companion_label.format(companion=k.companion_name) }}</figcaption></figure>
+  </div>
+  <p class="note">{{ (s.keepsake_note_f if spec.extra.get('gender') == 'f' else s.keepsake_note).format(name=k.child_name) }}</p>
+  <div class="date">{{ k.date_text }}</div>
+</section>
+{% endif %}
+</body></html>

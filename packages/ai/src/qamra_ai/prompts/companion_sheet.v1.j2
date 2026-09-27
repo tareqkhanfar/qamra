@@ -1,0 +1,16 @@
+Turn the child's drawing in the reference image into a picture-book companion character named "{{ name }}" ({{ type_label }}).
+
+Fidelity to the drawing is the top priority — this must be recognizably THEIR drawing, not a generic mascot:
+- keep the exact silhouette and proportions, even when they are unusual
+- keep every body part and its count: {{ key_features | join('; ') }}
+- keep the drawing's colors on the same parts
+- keep the quirks and "mistakes" (asymmetry, wobbly shapes, odd limbs) — they are the charm
+- you may add only: soft volume and shading, clean confident outlines, and a friendly expressive face in the drawing's own style
+{% if description %}Description of the drawing: {{ description }}{% endif %}
+{% if traits %}Personality: {{ traits }}.{% endif %}
+
+Layout: a character sheet with the companion shown twice side by side on a plain warm cream background: front view, and a happy action pose. Same scale, same design in both.
+
+Art style: {{ style_guide }}
+
+No text, letters, numbers or watermarks. Do not include the paper, pencils or hands from the photo.

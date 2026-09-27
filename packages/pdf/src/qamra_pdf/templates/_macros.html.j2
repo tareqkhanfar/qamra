@@ -1,0 +1,6 @@
+{% macro moon_mark(size='26mm', color='#F2B33D', ink='#16204A') -%}
+<svg class="moon-mark" style="width:{{ size }};height:{{ size }}" viewBox="0 0 48 48" aria-hidden="true"><path d="M21.32 5.01 A17 17 0 1 0 38.12 27.41 A14 14 0 0 1 21.32 5.01 Z" fill="{{ color }}"/><path d="M34 8 C34.6 11.2 35.8 12.4 39 13 C35.8 13.6 34.6 14.8 34 18 C33.4 14.8 32.2 13.6 29 13 C32.2 12.4 33.4 11.2 34 8 Z" fill="{{ ink }}"/><path d="M6 44 Q15 39.5 24 43.5 Q33 39.5 42 44" fill="none" stroke="{{ ink }}" stroke-width="3" stroke-linecap="round"/></svg>
+{%- endmacro %}
+{% macro watermark(spec, s) -%}
+{% if spec.watermark %}<div class="watermark"><span>{{ s.watermark.format(brand=spec.brand.name_ar if spec.lang == 'ar' else spec.brand.name_en) }}</span></div>{% endif %}
+{%- endmacro %}

@@ -1,0 +1,137 @@
+slug: first-day
+version: 1
+title_ar: "{name} في أوّل يوم بالروضة"
+title_en: "{name}'s First Day at Kindergarten"
+age_range: [3, 7]
+is_b2b: false
+active: true
+occasion: first_day_school
+values_ar: [الشجاعة, الصداقة, الفضول]
+
+companion_slot: true
+default_companion:
+  name_ar: قَمّور
+  name_en: Qamour
+  description_en: >-
+    a tiny round glowing moon creature, soft pale-gold body shaped like a plump crescent,
+    two small dot eyes, rosy cheeks, stubby little arms, floats a few centimeters above the ground
+  image: default-companion.png
+
+# Template syntax: {name}, {companion}; gender variants {masculine/feminine}.
+# Scenes are English for the image model; "space at top for text" is added by the page prompt.
+cover:
+  scene: >-
+    The hero stands smiling at the open gate of a small, colorful kindergarten at golden morning
+    light, holding the straps of a new school backpack. A crescent moon is still faintly visible
+    in the pale sky.
+  companion_action: floats beside the hero's shoulder, waving happily
+
+pages:
+  - index: 1
+    layout: illustration-textbox
+    beat: wake-up excitement
+    scene: >-
+      A cozy bedroom at sunrise. The hero sits up in bed, stretching and smiling, a new school
+      backpack waiting on a chair, warm light through the window.
+    companion_action: peeks out from under the pillow, yawning
+    text_ar: "في صباحٍ مُشرق، {اسْتَيْقَظَ/اسْتَيْقَظَتْ} {name} باكرًا وقلبُه يرقص فرحًا. اليوم أوّل يوم في الروضة!"
+    text_en: "One bright morning, {name} woke up early, heart dancing. Today was the first day of kindergarten!"
+  - index: 2
+    layout: illustration-textbox
+    beat: getting ready
+    scene: >-
+      The hero stands in front of a mirror wearing new neat clothes, zipping up the school
+      backpack with a proud smile.
+    companion_action: hides inside the open backpack, only its eyes showing
+    text_ar: "{لَبِسَ/لَبِسَتْ} {name} {ملابسَه/ملابسَها} الجديدة، و{حَمَلَ/حَمَلَتْ} {حقيبتَه/حقيبتَها}. ومن داخل الحقيبة همس {companion}: «وأنا قادمٌ معك!»"
+    text_en: "{name} put on new clothes and picked up the backpack. From inside, {companion} whispered: \"I'm coming too!\""
+  - index: 3
+    layout: illustration-textbox
+    beat: the walk
+    scene: >-
+      A sunny neighborhood street with olive trees and stone houses. The hero walks holding a
+      parent's hand (parent shown only from the waist down), skipping happily.
+    companion_action: rides on the hero's shoulder, pointing ahead
+    text_ar: "في الطريق، {أمسكَ/أمسكَتْ} {name} بيد ماما، {وعدَّ/وعدَّتْ} الأشجار واحدةً واحدة: واحدة، اثنتان، ثلاث!"
+    text_en: "On the way, {name} held Mama's hand and counted the trees one by one: one, two, three!"
+  - index: 4
+    layout: illustration-textbox
+    beat: a little fear
+    scene: >-
+      The big colorful front door of the kindergarten. The hero stands before it looking a little
+      shy and unsure, holding the backpack straps tightly.
+    companion_action: floats in front of the hero's face, giving an encouraging thumbs up
+    text_ar: "عند باب الروضة {شَعَرَ/شَعَرَتْ} {name} بقليلٍ من الخوف. فقال {companion}: «{لا تخَفْ/لا تخافي}، أنا {معكَ/معكِ} دائمًا!»"
+    text_en: "At the kindergarten door, {name} felt a little scared. {companion} said: \"Don't worry, I'm always with you!\""
+  - index: 5
+    layout: illustration-textbox
+    beat: warm welcome
+    scene: >-
+      A kind smiling teacher kneels down to greet the hero in a bright hallway decorated with
+      children's paintings. The hero smiles back shyly.
+    companion_action: waves at the teacher from behind the hero
+    text_ar: "استقبلت المعلّمة {name} بابتسامةٍ كبيرة وقالت: «أهلًا {بكَ/بكِ} يا {name}، كنّا {ننتظرُك/ننتظرُكِ}!»"
+    text_en: "The teacher greeted {name} with a big smile: \"Welcome, {name}! We were waiting for you!\""
+  - index: 6
+    layout: illustration-textbox
+    beat: discovering the classroom
+    scene: >-
+      A cheerful kindergarten classroom full of color: shelves of picture books, crayons, building
+      blocks and a small plant corner. The hero looks around with wide amazed eyes.
+    companion_action: bounces excitedly on a pile of colorful cushions
+    text_ar: "كان الصفّ مليئًا بالألوان والكتب والمكعّبات. {فتحَ/فتحَتْ} {name} {عينيه/عينيها} على وسعهما {وقالَ/وقالَتْ}: «يا لَلروعة!»"
+    text_en: "The classroom was full of colors, books and blocks. {name}'s eyes opened wide: \"Wow!\""
+  - index: 7
+    layout: illustration-textbox
+    beat: new friends
+    scene: >-
+      The hero sits on a soft rug building a tall tower of wooden blocks together with two other
+      smiling children of different looks.
+    companion_action: carefully balances the last block on top of the tower
+    text_ar: "{جلسَ/جلسَتْ} {name} مع أطفالٍ آخرين، وبنوا معًا برجًا عاليًا من المكعّبات. صار لـ{name} أصدقاءُ جدد!"
+    text_en: "{name} sat with other children and together they built a tall tower of blocks. {name} had new friends!"
+  - index: 8
+    layout: illustration-textbox
+    beat: playtime
+    scene: >-
+      A sunny kindergarten playground with a small slide and swings. The hero runs happily across
+      the grass, arms wide open.
+    companion_action: chases a yellow butterfly beside the hero
+    text_ar: "في وقت اللعب، {ركضَ/ركضَتْ} {name} في الساحة كالريح، و{ضحكَ/ضحكَتْ} حتى احمرّت {وجنتاه/وجنتاها}."
+    text_en: "At playtime, {name} ran across the playground like the wind, laughing until both cheeks turned pink."
+  - index: 9
+    layout: illustration-textbox
+    beat: sharing
+    scene: >-
+      Children sitting around a small low table at snack time. The hero opens a lunchbox and offers
+      a piece of fruit to the child sitting next to them.
+    companion_action: sits on the table holding a tiny grape with both arms
+    text_ar: "في وقت الطعام، {فتحَ/فتحَتْ} {name} علبة الطعام، {وشاركَ/وشاركَتْ} {صديقَه/صديقتَها} حبّة تفّاح. المشاركة تجعل الطعام أطيب!"
+    text_en: "At snack time, {name} opened the lunchbox and shared an apple slice with a friend. Sharing makes food taste better!"
+  - index: 10
+    layout: illustration-textbox
+    beat: story circle
+    scene: >-
+      Children sitting in a circle on a rug listening to the teacher read a picture book with a
+      big moon on its cover. The hero listens with chin in hands, dreamy and happy.
+    companion_action: sits in the hero's lap, listening with the same dreamy face
+    text_ar: "ثمّ جلس الجميع في دائرة، وقرأت المعلّمة حكايةً عن القمر. {أحبَّ/أحبَّتْ} {name} الحكاية كثيرًا."
+    text_en: "Then everyone sat in a circle, and the teacher read a story about the moon. {name} loved it."
+  - index: 11
+    layout: illustration-textbox
+    beat: going home proud
+    scene: >-
+      Afternoon at the kindergarten gate. The hero runs toward a waiting parent with open arms,
+      holding up a painting made that day.
+    companion_action: flies ahead like a little golden balloon
+    text_ar: "عندما رنّ الجرس، {ركضَ/ركضَتْ} {name} إلى ماما {وقالَ/وقالَتْ}: «كان يومًا رائعًا! هل أعود غدًا؟»"
+    text_en: "When the bell rang, {name} ran to Mama and said: \"It was a wonderful day! Can I come back tomorrow?\""
+  - index: 12
+    layout: illustration-textbox
+    beat: moonlit goodnight
+    scene: >-
+      Night in the hero's bedroom, lit by a big gentle moon through the window. The hero is tucked
+      in bed, eyes half closed, smiling. The backpack rests ready by the door.
+    companion_action: curls up on the pillow next to the hero, glowing softly like a night light
+    text_ar: "وفي الليل، تحت ضوء القمر، {همسَ/همسَتْ} {name} لـ{companion}: «غدًا نعود إلى الروضة معًا.» ثمّ {نامَ/نامَتْ} {مبتسمًا/مبتسمةً}."
+    text_en: "That night, under the moonlight, {name} whispered to {companion}: \"Tomorrow we go back together.\" And fell asleep smiling."

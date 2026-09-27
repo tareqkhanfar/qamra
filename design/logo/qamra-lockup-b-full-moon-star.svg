@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 96" width="300" height="96">
+<!-- Convert text to outlines before production. Font: Baloo Bhaijaan 2 ExtraBold -->
+<g transform="translate(222 14) scale(1.4)"><path d="M24 4 a20 20 0 1 0 0.001 0 Z M29 14 C29.8 18.2 31.3 19.7 35.5 20.5 C31.3 21.3 29.8 22.8 29 27 C28.2 22.8 26.7 21.3 22.5 20.5 C26.7 19.7 28.2 18.2 29 14 Z" fill="#F2B33D" fill-rule="evenodd"/><path d="M16 25 a3 3 0 1 0 0.001 0 Z M22 33 a1.8 1.8 0 1 0 0.001 0 Z" fill="#DB9A1F"/></g>
+<text x="210" y="62" text-anchor="end" direction="rtl" font-family="'Baloo Bhaijaan 2', sans-serif" font-weight="800" font-size="60" fill="#16204A">قمرة</text>
+<text x="210" y="88" text-anchor="end" font-family="'Baloo Bhaijaan 2', sans-serif" font-weight="700" font-size="16" letter-spacing="4" fill="#9A620A">QAMRA</text>
+</svg>
