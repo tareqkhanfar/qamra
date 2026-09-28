@@ -74,7 +74,7 @@ export function CheckoutForm() {
     setForm({ ...form, [key]: e.target.value });
 
   return (
-    <form onSubmit={submit} className="grid gap-6 lg:grid-cols-[1fr_360px] lg:items-start">
+    <form onSubmit={submit} className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
       <div className="flex flex-col gap-5">
         <section className="flex flex-col gap-4 rounded-lg border border-line bg-paper-raised p-4">
           <h2 className="text-[20px] text-night-900">{t("where")}</h2>

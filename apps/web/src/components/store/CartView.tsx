@@ -83,7 +83,7 @@ export function CartView() {
   };
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_360px] lg:items-start">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
       <div className="flex flex-col gap-4">
         {error && <Alert>{error}</Alert>}
         {cart.unavailable.length > 0 && <Alert tone="info">{t("unavailable")}</Alert>}
@@ -127,7 +127,7 @@ export function CartView() {
                       ⌄
                     </span>
                   </summary>
-                  <fieldset className="flex flex-col gap-1">
+                  <fieldset className="flex min-w-0 flex-col gap-1">
                     <legend className="sr-only">{t("addOns")}</legend>
                     {extras.map((a) => (
                       <label key={a.slug} className="flex min-h-11 cursor-pointer items-center gap-3">
@@ -181,7 +181,7 @@ export function CartView() {
             value={code}
             onChange={(e) => setCode(e.target.value)}
             placeholder={t("couponLabel")}
-            className="min-h-11 grow rounded-md border border-line bg-paper-raised px-3 uppercase"
+            className="min-h-11 min-w-0 grow rounded-md border border-line bg-paper-raised px-3 uppercase"
             autoComplete="off"
           />
           <button type="submit" disabled={busy} className={buttonClasses("secondary", "sm")}>
