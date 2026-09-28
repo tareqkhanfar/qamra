@@ -9,6 +9,7 @@ dependencies = [
     "qamra-core",
     "qamra-api",
     "qamra-worker",
+    "qamra-workbook",
 ]
 
 [dependency-groups]
@@ -28,7 +29,7 @@ dev = [
 package = false
 
 [tool.uv.workspace]
-members = ["packages/ai", "packages/pdf", "packages/core", "apps/api", "apps/worker"]
+members = ["packages/ai", "packages/pdf", "packages/core", "packages/workbook", "apps/api", "apps/worker"]
 
 [tool.uv.sources]
 qamra-ai = { workspace = true }
@@ -36,6 +37,7 @@ qamra-pdf = { workspace = true }
 qamra-core = { workspace = true }
 qamra-api = { workspace = true }
 qamra-worker = { workspace = true }
+qamra-workbook = { workspace = true }
 
 [tool.ruff]
 line-length = 110
@@ -56,12 +58,12 @@ known-first-party = ["qamra_ai", "qamra_pdf", "qamra_core", "qamra_api", "qamra_
 python_version = "3.12"
 strict = true
 ignore_missing_imports = true
-files = ["packages/ai/src", "packages/pdf/src", "packages/core/src", "apps/api/src", "apps/worker/src", "scripts"]
-mypy_path = ["packages/ai/src", "packages/pdf/src", "packages/core/src", "apps/api/src", "apps/worker/src"]
+files = ["packages/ai/src", "packages/pdf/src", "packages/core/src", "packages/workbook/src", "apps/api/src", "apps/worker/src", "scripts"]
+mypy_path = ["packages/ai/src", "packages/pdf/src", "packages/core/src", "packages/workbook/src", "apps/api/src", "apps/worker/src"]
 explicit_package_bases = true
 
 [tool.pytest.ini_options]
-testpaths = ["packages/ai/tests", "packages/pdf/tests", "packages/core/tests", "apps/api/tests", "apps/worker/tests"]
+testpaths = ["packages/ai/tests", "packages/pdf/tests", "packages/core/tests", "packages/workbook/tests", "apps/api/tests", "apps/worker/tests"]
 pythonpath = ["packages/ai/tests", "apps/api/tests"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "session"

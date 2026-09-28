@@ -1,5 +1,25 @@
 # Changelog
 
+## Addendum 4, step 1: the store's data model (2026-09-28)
+
+- **Catalog:**
+  - products, variants and prices (ILS and JOD) for Classic, Magic (with a custom-story product), coloring books, class books, «دوسية التأسيس» (KG1/KG2 × volumes × color/B&W × printed/digital) and «رحلتي الأولى للتعلّم» (stages × printed/digital);
+  - unit costs for print, packaging, handling and AI.
+- **Art styles as data:** watercolor, bright 2D cartoon, 3D film look, semi-realistic painted and coloring line art, each with its own guide file and QA thresholds.
+- **Add-ons** with prices, costs, the lines that offer them, the lines that include them for free, requirements, exclusions, limits and daily capacity. All from Addenda 4, 5 and 6.
+- **Pricing rules:** bundles, coupons (with redemptions), seasonal sales, B2B price lists with volume tiers, and shipping zones with free thresholds and COD fees.
+- **Pricing engine** (`qamra_core/pricing.py`): one fixed order of steps, tested rule by rule.
+- **Orders:**
+  - the Addendum 4 statuses;
+  - price, name and cost snapshots on order items;
+  - an order event log;
+  - Arabic invoices numbered per year (tables ready);
+  - server-side guest carts.
+- **Staff roles** (owner, admin, editor, reviewer, production, support), with a permission on every admin route. Existing admins are owners. `qamra create-user --staff-roles`.
+- `qamra seed-store`: an insert-only seed from `content/store/catalog.yaml`, run on every deploy.
+- New admin settings: USD→ILS and JOD→ILS rates, the margin floor (35%), the courier's COD cost, and the Classic AI budget (2 ₪).
+- «دوسية التأسيس» and «رحلتي الأولى للتعلّم» plan tooling: YAML schemas, rule checkers and generated readable plans (`packages/workbook`).
+
 ## Addendum 3: premium books at ≤ $2.50 (2026-09-28)
 
 - **Providers:**

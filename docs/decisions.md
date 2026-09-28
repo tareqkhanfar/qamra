@@ -2,6 +2,32 @@
 
 Newest first. Each entry: date — decision — why.
 
+## 2026-09-28 — Addenda 4–6: the store, and the workbook engine
+
+Full reasoning is in `docs/plans/addendum-04.md` §2.
+
+**Store data model (Addendum 4, step 1)**
+- **One generic catalog.** A product has a line: `classic`, `magic`, `coloring`, `workbook` (Addendum 5) or `journey` (Addendum 6). Variants are option combinations (format, size, level, volume, interior, stage) with prices per currency and unit costs. The two workbook products fit without schema changes.
+- **Styles are data.** They live in an `art_styles` table seeded from `qamra_ai/prompts/style/<slug>.md`. The five new styles never name a studio or artist, and a test checks that. The old crayon and paper-cut styles are kept but inactive.
+- **The seed is insert-only.** `qamra seed-store` runs on every deploy and adds only missing rows, so prices, costs and prompts edited in the admin are never overwritten. Starting data is in `content/store/catalog.yaml`. Its costs are marked placeholders until the printer quotes arrive, and its JOD prices are suggestions at 1 JD ≈ 5.2 ₪.
+- **Pricing runs in one fixed order:** price-list tier or retail price + style modifier → add-ons → sale → best single bundle → coupon → shipping and COD fee. It is pure code with a test per rule (`qamra_core/pricing.py`).
+  - B2B tiers use the order's total quantity of each variant.
+  - Sales never apply to price-list prices.
+  - A fixed coupon is spread over the items to the cent.
+- **Staff roles** (`user_staff_roles`: owner, admin, editor, reviewer, production, support). A user can have several.
+  - A role grants a permission name and everything under it (`orders` covers `orders.view`). The map is in `qamra_core/permissions.py`, and every admin route declares its permission.
+  - Existing admins became owners in the migration. `qamra create-user --role admin` grants `owner` unless `--staff-roles` says otherwise.
+- **Order statuses follow Addendum 4:** pending became new and in_production became printing. Order items now snapshot the variant, names, options, add-ons and unit costs, so later catalog edits never change a past order.
+
+**Workbook engine (Addenda 5 and 6)**
+- **One engine package** (`packages/workbook`, `qamra_workbook`) serves both workbook products, as Addendum 6 requires.
+- **Plans are data with automated rules.**
+  - «دوسية التأسيس»: `content/workbook/curriculum/{level}.yaml`, checked by `python -m qamra_workbook.plan check`.
+  - «رحلتي الأولى للتعلّم»: `content/journey/plan.yaml`, checked by `python -m qamra_workbook.journey check`.
+  - The readable plans in `docs/` are generated from the YAML, so what the educator reviews is exactly what the engine will build.
+- The checkers encode the addenda's rules: page counts, interleaving or journey order, reviews and assessments, the per-letter steps, quantity before numerals, the writing progression, memory pages on the two sides of one sheet, and instructions of 7 words or fewer.
+- The drafts were written by parallel agents, and both addenda stop for Tareq's approval before pages are designed.
+
 ## 2026-09-28 — Addendum 3: premium books at ≤ $2.50
 
 Verified prices and parameters are listed in `docs/plans/addendum-03.md` §1, with sources.

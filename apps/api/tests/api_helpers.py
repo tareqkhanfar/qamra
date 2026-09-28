@@ -15,9 +15,14 @@ async def register(
 
 
 async def make_admin(
-    client: AsyncClient, adb, email: str = "admin@example.com", password: str = "moonlight-2026"
-) -> str:  # type: ignore[no-untyped-def]
-    """Admin with 2FA on, signed in through password + TOTP. Returns the TOTP secret."""
+    client: AsyncClient,
+    adb,  # type: ignore[no-untyped-def]
+    email: str = "admin@example.com",
+    password: str = "moonlight-2026",
+    roles: tuple[str, ...] = ("owner",),
+) -> str:
+    """Staff member with 2FA on and the given staff roles, signed in through password + TOTP.
+    Returns the TOTP secret."""
     import uuid
     from datetime import UTC, datetime
 
@@ -25,6 +30,7 @@ async def make_admin(
 
     from qamra_core.crypto import DEV_KEY, _cipher, encrypt
     from qamra_core.db.models import User, UserRole
+    from qamra_core.db.store import StaffRole, UserStaffRole
 
     me = await register(client, email=email, password=password)
     user = await adb.get(User, uuid.UUID(me["id"]))
@@ -33,6 +39,8 @@ async def make_admin(
     user.role = UserRole.admin
     user.totp_secret_ciphertext = encrypt(_cipher(DEV_KEY), secret)
     user.totp_enabled_at = datetime.now(UTC)
+    for role in roles:
+        adb.add(UserStaffRole(user_id=user.id, role=StaffRole(role), granted_at=datetime.now(UTC)))
     await adb.commit()
     await client.post("/api/auth/logout")
     r = await client.post("/api/auth/login", json={"email": email, "password": password})

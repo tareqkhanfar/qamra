@@ -1,5 +1,6 @@
 import time
 import uuid
+from datetime import UTC, datetime
 
 import pyotp
 from api_helpers import make_admin, register
@@ -12,6 +13,7 @@ from qamra_api.deps import ip_allowed
 from qamra_api.security import create_access_token
 from qamra_api.settings import DEV_JWT_SECRET
 from qamra_core.db.models import AppSetting, AuditLog, User, UserRole
+from qamra_core.db.store import StaffRole, UserStaffRole
 
 PASSWORD = "moonlight-2026"
 
@@ -94,6 +96,7 @@ async def test_admin_area_requires_2fa(client: AsyncClient, adb: AsyncSession) -
     user = await adb.get(User, uuid.UUID(me["id"]))
     assert user is not None
     user.role = UserRole.admin
+    adb.add(UserStaffRole(user_id=user.id, role=StaffRole.owner, granted_at=datetime.now(UTC)))
     await adb.commit()
     r = await client.get("/api/admin/settings")
     assert r.status_code == 403 and r.json()["error"]["code"] == "mfa_setup_required"

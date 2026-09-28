@@ -2,16 +2,16 @@
 
 «حكاية طفلك… تحت ضوء القمر»: personalized Arabic storybooks where the child is the hero and the child's own drawing becomes their companion.
 
-Specs: [CLAUDE.md](CLAUDE.md) + [docs/ADDENDUM-01.md](docs/ADDENDUM-01.md) + [docs/ADDENDUM-03.md](docs/ADDENDUM-03.md). Decisions: [docs/decisions.md](docs/decisions.md). Plans: [docs/plans/](docs/plans/). Changes: [docs/CHANGELOG.md](docs/CHANGELOG.md).
+Specs: [CLAUDE.md](CLAUDE.md) + addenda [01](docs/ADDENDUM-01.md), [03](docs/ADDENDUM-03.md), [04](docs/ADDENDUM-04.md) (store), [05](docs/ADDENDUM-05.md) (foundation workbook), [06](docs/ADDENDUM-06.md) (learning journey). Decisions: [docs/decisions.md](docs/decisions.md). Plans: [docs/plans/](docs/plans/). Changes: [docs/CHANGELOG.md](docs/CHANGELOG.md).
 
-**Status: Phase 1 + Addendum 3 (premium books at ≤ $2.50).**
+**Status: Phase 1 + Addendum 3 (premium books at ≤ $2.50). Addendum 4 in progress (step 1: the store's data model is done). Addenda 5 and 6 are at their plan-approval gates.**
 - The public site, sign-up and sign-in work in Arabic and English.
 - The full book pipeline runs on the server:
   - story (Sonnet 5), then page art (fal Nano Banana 2 with a FLUX.2 fallback);
   - Haiku QA with automatic redraws, a per-book budget cap and print upscaling;
   - premium RTL print PDFs with preflight.
 - Admins with two-step verification review books in the approval queue, redraw pages, edit text, approve for print, and follow cost on a dashboard.
-- The parent create flow (Phase 2) is next.
+- The store's data model is in place: catalog for every product line, art styles, add-ons, pricing rules, carts, order history and staff roles. The storefront and create flow come next (Addendum 4, step 2).
 
 ## Run the stack
 
@@ -44,6 +44,9 @@ Useful commands:
 ```bash
 make admin email=you@example.com name="Tareq"   # create an admin (prompts for the password)
 make seed-themes                                 # load content/themes/*/theme.yaml into the DB
+docker compose run --rm migrate qamra seed-store  # insert the starting catalog (insert-only; runs on deploy)
+uv run python -m qamra_workbook.plan check kg2    # check a «دوسية التأسيس» curriculum plan
+uv run python -m qamra_workbook.journey check     # check the «رحلتي الأولى للتعلّم» plan
 make logs
 ```
 
@@ -84,7 +87,8 @@ apps/web        Next.js frontend (src/app/[locale], messages/ar.json + en.json)
 packages/core   qamra_core: settings, SQLAlchemy models, Alembic migrations, S3 storage, test fixtures
 packages/ai     qamra_ai: providers (fal/Gemini/OpenAI/Claude + sketch), house style, prompts, pipeline, pricing
 packages/pdf    qamra_pdf: print templates, Playwright renderer, panel checks, preflight, OFL fonts
-content/        themes/<slug>/theme.yaml, styles/styles.yaml
+packages/workbook qamra_workbook: the workbook engine (curriculum and journey plans, their rule checkers)
+content/        themes/<slug>/theme.yaml, store/catalog.yaml, workbook/curriculum/, journey/
 infra/          Dockerfiles, postgres init
 design/         Claude Design handoff (read-only)
 ```

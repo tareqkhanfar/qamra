@@ -7,6 +7,7 @@ from typing import Annotated
 
 from fastapi import Depends, Request
 from redis.asyncio import Redis
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from qamra_api import runtime_settings
@@ -14,6 +15,8 @@ from qamra_api.errors import ApiError
 from qamra_api.security import AccessClaims, TokenExpired, TokenInvalid, decode_access_token
 from qamra_api.settings import ApiSettings
 from qamra_core.db.models import User, UserRole
+from qamra_core.db.store import UserStaffRole
+from qamra_core.permissions import allowed
 from qamra_core.storage import ObjectStorage
 
 ACCESS_COOKIE = "qamra_at"
@@ -83,6 +86,22 @@ async def current_auth(request: Request, session: SessionDep, settings: Settings
 CurrentAuth = Annotated[Auth, Depends(current_auth)]
 
 
+async def optional_user(request: Request, session: SessionDep, settings: SettingsDep) -> User | None:
+    """The signed-in user, or None for guests: the store works without an account (Addendum 4 §5)."""
+    token = request.cookies.get(ACCESS_COOKIE)
+    if not token:
+        return None
+    try:
+        claims = decode_access_token(token, settings.jwt_secret.get_secret_value())
+    except (TokenExpired, TokenInvalid):
+        return None
+    user = await session.get(User, claims.user_id)
+    return user if user is not None and user.is_active else None
+
+
+OptionalUser = Annotated[User | None, Depends(optional_user)]
+
+
 async def current_user(auth: CurrentAuth) -> User:
     return auth.user
 
@@ -129,3 +148,17 @@ async def require_admin(
 
 
 AdminUser = Annotated[User, Depends(require_admin)]
+
+
+def require_permission(permission: str) -> Callable[..., Awaitable[User]]:
+    """A 2FA-verified staff member whose roles grant `permission` (qamra_core.permissions)."""
+
+    async def _check(user: AdminUser, session: SessionDep) -> User:
+        roles = (
+            await session.execute(select(UserStaffRole.role).where(UserStaffRole.user_id == user.id))
+        ).scalars()
+        if not allowed(roles, permission):
+            raise ApiError("forbidden", 403)
+        return user
+
+    return _check

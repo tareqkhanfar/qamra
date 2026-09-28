@@ -132,12 +132,17 @@ class PaymentStatus(enum.StrEnum):
 
 
 class OrderStatus(enum.StrEnum):
-    pending = "pending"
+    """Addendum 4 §5: new → confirmed → generating → review → printing → shipped → delivered."""
+
+    new = "new"
     confirmed = "confirmed"
-    in_production = "in_production"
+    generating = "generating"
+    review = "review"
+    printing = "printing"
     shipped = "shipped"
     delivered = "delivered"
     cancelled = "cancelled"
+    reprint = "reprint"
 
 
 class PrintBatchStatus(enum.StrEnum):
@@ -413,7 +418,7 @@ class Order(IdMixin, TimestampMixin, Base):
         ForeignKey("organizations.id", ondelete="SET NULL"), index=True
     )
     status: Mapped[OrderStatus] = mapped_column(
-        str_enum(OrderStatus, "order_status"), default=OrderStatus.pending
+        str_enum(OrderStatus, "order_status"), default=OrderStatus.new
     )
     payment_method: Mapped[PaymentMethod] = mapped_column(str_enum(PaymentMethod, "payment_method"))
     payment_status: Mapped[PaymentStatus] = mapped_column(
@@ -425,6 +430,13 @@ class Order(IdMixin, TimestampMixin, Base):
     discount: Mapped[Decimal] = mapped_column(Numeric(10, 2), default=Decimal("0"))
     total: Mapped[Decimal] = mapped_column(Numeric(10, 2))
     shipping: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)  # name, phone, city, address
+    phone: Mapped[str | None] = mapped_column(String(32), index=True)  # guests track orders by code + phone
+    source: Mapped[str] = mapped_column(String(16), default="web")  # web | portal | admin
+    zone_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("shipping_zones.id", ondelete="SET NULL"))
+    price_list_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("price_lists.id", ondelete="SET NULL"))
+    coupon_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("coupons.id", ondelete="SET NULL"))
+    pricing: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)  # the pricing engine's breakdown
+    cost_ils: Mapped[Decimal] = mapped_column(Numeric(10, 2), default=Decimal("0"))  # unit costs at ordering
     print_batch_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("print_batches.id", ondelete="SET NULL"), index=True
     )
@@ -436,10 +448,23 @@ class OrderItem(IdMixin, Base):
 
     order_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("orders.id", ondelete="CASCADE"), index=True)
     book_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("books.id", ondelete="SET NULL"))
-    product: Mapped[Product] = mapped_column(str_enum(Product, "product"))
-    addons: Mapped[list[str]] = mapped_column(JSONB, default=list)  # drawing_companion, family_voice
+    product: Mapped[Product | None] = mapped_column(str_enum(Product, "product"))  # before the catalog
+    # snapshots at ordering time, so later catalog edits never change a past order
+    variant_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("product_variants.id", ondelete="SET NULL"), index=True
+    )
+    sku: Mapped[str | None] = mapped_column(String(64))
+    line: Mapped[str | None] = mapped_column(String(16))
+    title: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)  # names and options
+    style_slug: Mapped[str | None] = mapped_column(String(40))
+    theme_slug: Mapped[str | None] = mapped_column(String(64))
+    child_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("children.id", ondelete="SET NULL"))
+    personalization: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    addons: Mapped[list[Any]] = mapped_column(JSONB, default=list)  # [{slug, qty, unit_price, unit_cost_ils}]
     quantity: Mapped[int] = mapped_column(SmallInteger, default=1)
     unit_price: Mapped[Decimal] = mapped_column(Numeric(10, 2))
+    discount: Mapped[Decimal] = mapped_column(Numeric(10, 2), default=Decimal("0"))
+    costs: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)  # print, packaging, AI estimate…
 
 
 # ---- admin-managed settings ------------------------------------------------------------------

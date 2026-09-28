@@ -106,7 +106,7 @@ services:
     <<: *app
     build: { context: ., dockerfile: infra/docker/python.Dockerfile, target: api }
     image: qamra-api:dev
-    command: ["sh", "-c", "qamra-migrate && qamra seed-themes"]
+    command: ["sh", "-c", "qamra-migrate && qamra seed-themes && qamra seed-store"]
     restart: "no"
     depends_on:
       postgres: { condition: service_healthy }

@@ -1,3 +1,5 @@
+Read docs/ADDENDUM-06.md — it overrides earlier prompts where they conflict.
+Read docs/ADDENDUM-05.md — it overrides earlier prompts where they conflict.
 Read docs/ADDENDUM-04.md — it overrides earlier prompts where they conflict.
 Read docs/ADDENDUM-03.md — it overrides earlier prompts where they conflict.
 Read docs/ADDENDUM-01.md — it overrides the main prompt where they conflict.

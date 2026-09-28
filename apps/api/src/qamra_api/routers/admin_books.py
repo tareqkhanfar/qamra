@@ -22,7 +22,7 @@ from qamra_ai.cost import fal_cost, fal_unknown_price
 from qamra_ai.pipeline.photo_check import check_photo
 from qamra_ai.pipeline.theme import Theme
 from qamra_api import runtime_settings
-from qamra_api.deps import AdminUser, SessionDep, SettingsDep, StorageDep, require_admin
+from qamra_api.deps import AdminUser, SessionDep, SettingsDep, StorageDep, require_admin, require_permission
 from qamra_api.errors import ApiError
 from qamra_core.db.models import (
     AuditLog,
@@ -95,7 +95,7 @@ class SampleOut(BaseModel):
     book_id: uuid.UUID
 
 
-@router.post("/samples", status_code=201)
+@router.post("/samples", status_code=201, dependencies=[Depends(require_permission("books.review"))])
 async def create_sample(
     request: Request,
     admin: AdminUser,
@@ -254,7 +254,7 @@ def _likeness(summary: dict[str, Any]) -> float | None:
     return float(value) if value is not None else None
 
 
-@router.get("/books")
+@router.get("/books", dependencies=[Depends(require_permission("books.view"))])
 async def list_books(
     db: SessionDep,
     view: Literal["review", "flagged", "generating", "approved", "all"] = "review",
@@ -346,7 +346,7 @@ async def _book(db: AsyncSession, book_id: uuid.UUID) -> Book:
     return book
 
 
-@router.get("/books/{book_id}")
+@router.get("/books/{book_id}", dependencies=[Depends(require_permission("books.view"))])
 async def book_detail(book_id: uuid.UUID, db: SessionDep) -> BookDetail:
     book = await _book(db, book_id)
     child = await db.get(Child, book.child_id)
@@ -444,7 +444,7 @@ def _stream(
     return Response(data, media_type=media_type, headers=headers)
 
 
-@router.get("/books/{book_id}/pages/{beat}/image")
+@router.get("/books/{book_id}/pages/{beat}/image", dependencies=[Depends(require_permission("books.view"))])
 async def page_image(
     book_id: uuid.UUID,
     beat: int,
@@ -465,14 +465,14 @@ async def page_image(
     return _stream(storage, stored, "image/jpeg" if v == "print" else "image/png")
 
 
-@router.get("/books/{book_id}/character")
+@router.get("/books/{book_id}/character", dependencies=[Depends(require_permission("books.view"))])
 async def character_sheet(book_id: uuid.UUID, db: SessionDep, storage: StorageDep) -> Response:
     book = await _book(db, book_id)
     character = await db.get(Character, book.character_id) if book.character_id else None
     return _stream(storage, character.sheet_image_key if character else None, "image/png")
 
 
-@router.get("/books/{book_id}/files/{name}")
+@router.get("/books/{book_id}/files/{name}", dependencies=[Depends(require_permission("books.view"))])
 async def book_file(
     book_id: uuid.UUID,
     name: Literal["interior.pdf", "cover.pdf", "proof.pdf"],
@@ -504,7 +504,9 @@ def _redraw_estimate(values: dict[str, Any], n: int) -> float:
     return round(per_page * n, 4)
 
 
-@router.post("/books/{book_id}/redraw", status_code=202)
+@router.post(
+    "/books/{book_id}/redraw", status_code=202, dependencies=[Depends(require_permission("books.review"))]
+)
 async def redraw(
     book_id: uuid.UUID,
     body: RedrawIn,
@@ -545,7 +547,7 @@ class TextIn(BaseModel):
     text: str = Field(min_length=1, max_length=600)
 
 
-@router.patch("/books/{book_id}/pages/{beat}")
+@router.patch("/books/{book_id}/pages/{beat}", dependencies=[Depends(require_permission("books.review"))])
 async def edit_text(
     book_id: uuid.UUID, beat: int, body: TextIn, admin: AdminUser, db: SessionDep, queue: QueueDep
 ) -> dict[str, Any]:
@@ -577,7 +579,7 @@ class BudgetIn(BaseModel):
     budget_usd: Decimal = Field(gt=0, le=20, decimal_places=2)
 
 
-@router.post("/books/{book_id}/budget")
+@router.post("/books/{book_id}/budget", dependencies=[Depends(require_permission("books.review"))])
 async def set_budget(
     book_id: uuid.UUID, body: BudgetIn, admin: AdminUser, db: SessionDep
 ) -> dict[str, float]:
@@ -605,7 +607,9 @@ class GenerateIn(BaseModel):
     mode: Literal["preview", "final"] = "final"
 
 
-@router.post("/books/{book_id}/generate", status_code=202)
+@router.post(
+    "/books/{book_id}/generate", status_code=202, dependencies=[Depends(require_permission("books.review"))]
+)
 async def generate(
     book_id: uuid.UUID, body: GenerateIn, admin: AdminUser, db: SessionDep, queue: QueueDep
 ) -> dict[str, str]:
@@ -630,7 +634,7 @@ async def generate(
     return {"status": "queued"}
 
 
-@router.post("/books/{book_id}/approve")
+@router.post("/books/{book_id}/approve", dependencies=[Depends(require_permission("books.review"))])
 async def approve(book_id: uuid.UUID, admin: AdminUser, db: SessionDep) -> dict[str, Any]:
     """The last gate (Addendum 3 §5): only a reviewed book with print files that pass preflight."""
     book = await _book(db, book_id)
@@ -664,7 +668,7 @@ async def approve(book_id: uuid.UUID, admin: AdminUser, db: SessionDep) -> dict[
 # ---- cost dashboard ---------------------------------------------------------------------------------
 
 
-@router.get("/metrics")
+@router.get("/metrics", dependencies=[Depends(require_permission("reports"))])
 async def metrics(db: SessionDep, days: int = 30) -> dict[str, Any]:
     """Average cost per book and per page, regeneration and fallback rates per theme (Addendum 3 §2.6)."""
     since = datetime.now(UTC) - timedelta(days=max(1, min(days, 365)))

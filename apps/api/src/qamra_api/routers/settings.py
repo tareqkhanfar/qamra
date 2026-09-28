@@ -6,14 +6,16 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
 from qamra_api import runtime_settings
-from qamra_api.deps import AdminUser, SessionDep, SettingsDep, require_admin
+from qamra_api.deps import AdminUser, SessionDep, SettingsDep, require_permission
 from qamra_api.errors import ApiError
 from qamra_core import settings_store
 from qamra_core.app_settings import GROUPS, REGISTRY, Kind, SettingError, mask
 from qamra_core.crypto import cipher_for
 
 public_router = APIRouter(prefix="/api/settings", tags=["settings"])
-admin_router = APIRouter(prefix="/api/admin/settings", tags=["admin"], dependencies=[Depends(require_admin)])
+admin_router = APIRouter(
+    prefix="/api/admin/settings", tags=["admin"], dependencies=[Depends(require_permission("settings"))]
+)
 Lang = Literal["ar", "en"]
 
 

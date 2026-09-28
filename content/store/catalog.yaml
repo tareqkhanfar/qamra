@@ -1,0 +1,176 @@
+# The store's starting catalog (Addendum 4 §4 and §7, Addendum 5 §6, Addendum 6 §8).
+#
+# `qamra seed-store` inserts rows that don't exist yet and never overwrites existing ones, so prices and
+# costs edited in the admin stay as they are.
+#
+# - ILS prices come from the addenda.
+# - JOD prices are suggestions at the pegged rate (1 JD ≈ 5.2 ₪, rounded to 0.5) until they are set in the admin.
+# - COSTS ARE PLACEHOLDERS (marked "placeholder") until the printer, packaging and courier quotes arrive.
+#   They exist so margins are computed from day one; replace them in the admin.
+# - AI costs are USD estimates from docs/plans/addendum-04.md §3. Real costs come from generation_costs.
+
+settings_note: prices and costs here are only the starting point; the admin is the source of truth
+
+products:
+  # ---- «قمرة كلاسيك»: template books, only the hero is adapted ---------------------------------------------
+  - slug: classic-book
+    line: classic
+    name_ar: قمرة كلاسيك
+    name_en: Qamra Classic
+    description_ar: حكاية جاهزة برسوم جميلة، نرسم فيها طفلك بطلاً في كل صفحة يظهر فيها.
+    description_en: A ready-illustrated story where your child is drawn in as the hero.
+    option_names: [format, size]
+    features: {pages: 24, preview: true}
+    variants:
+      - {sku: classic-digital, options: {format: digital, size: "21x21"}, price: {ILS: 19, JOD: 4}, cost: {ai_usd: 0.35}}
+      - {sku: classic-soft-21, options: {format: softcover, size: "21x21"}, price: {ILS: 69, JOD: 13}, cost: {print: 14, packaging: 3, ai_usd: 0.35}}  # placeholder
+      - {sku: classic-hard-21, options: {format: hardcover, size: "21x21"}, price: {ILS: 99, JOD: 19}, cost: {print: 26, packaging: 3, ai_usd: 0.35}}  # placeholder
+
+  # ---- «قمرة سحري»: every page drawn for the child -------------------------------------------------------
+  - slug: magic-book
+    line: magic
+    name_ar: قمرة سحري
+    name_en: Qamra Magic
+    description_ar: كتاب فريد تُرسم كل صفحة فيه لطفلك، مع صاحبه المرسوم من رسمته.
+    description_en: A one-of-a-kind book, every page drawn for your child, drawing companion included.
+    option_names: [format, size]
+    features: {pages: 24, preview: true, included_addons: [drawing-companion, dedication-page]}
+    variants:
+      - {sku: magic-hard-21, options: {format: hardcover, size: "21x21"}, price: {ILS: 139, JOD: 27}, cost: {print: 26, packaging: 3, ai_usd: 2.20}}  # placeholder
+  - slug: magic-custom-story
+    line: magic
+    name_ar: قمرة سحري بحكاية خاصة
+    name_en: Qamra Magic with a custom story
+    description_ar: اكتبوا لنا فكرتكم، ونكتب ونرسم حكاية لطفلكم وحده.
+    description_en: Tell us your idea; we write and draw a story only your child has.
+    option_names: [format, size]
+    features: {pages: 24, preview: true, custom_story: true, included_addons: [drawing-companion, dedication-page]}
+    variants:
+      - {sku: magic-custom-hard-21, options: {format: hardcover, size: "21x21"}, price: {ILS: 169, JOD: 32}, cost: {print: 26, packaging: 3, ai_usd: 2.40}}  # placeholder
+
+  # ---- coloring books -----------------------------------------------------------------------------------
+  - slug: coloring-book
+    line: coloring
+    name_ar: كتاب تلوين باسم طفلك
+    name_en: Personalized coloring book
+    description_ar: حكاية طفلك بالخطوط فقط ليلوّنها بنفسه.
+    description_en: Your child's story in line art, to color in.
+    option_names: [format, size]
+    features: {pages: 24, style: coloring}
+    variants:
+      - {sku: coloring-soft-21, options: {format: softcover, size: "21x21"}, price: {ILS: 39, JOD: 7.5}, cost: {print: 7, packaging: 2, ai_usd: 0.35}}  # placeholder
+
+  # ---- class books (B2B, priced from price lists) ---------------------------------------------------------
+  - slug: classic-class-book
+    line: classic
+    audience: b2b
+    min_qty: 20
+    name_ar: كتاب الصف — كلاسيك
+    name_en: Classic class book
+    description_ar: كتاب لكل طفل في الصف، بغلافه وصورته، بأسعار الروضات.
+    description_en: One book per child, with their own cover and portrait page, at kindergarten prices.
+    option_names: [format, size]
+    variants:
+      - {sku: class-classic-soft-21, options: {format: softcover, size: "21x21"}, price: {ILS: 35, JOD: 7}, cost: {print: 14, packaging: 2, ai_usd: 0.35}}  # placeholder
+  - slug: magic-class-book
+    line: magic
+    audience: b2b
+    min_qty: 20
+    name_ar: كتاب الصف — سحري
+    name_en: Magic class book
+    description_ar: لكل طفل كتاب مرسوم له بالكامل، بأسعار الروضات.
+    description_en: A fully drawn book for every child, at kindergarten prices.
+    option_names: [format, size]
+    variants:
+      - {sku: class-magic-hard-21, options: {format: hardcover, size: "21x21"}, price: {ILS: 50, JOD: 10}, cost: {print: 26, packaging: 2, ai_usd: 2.00}}  # placeholder
+
+  # ---- «دوسية التأسيس» (Addendum 5) ---------------------------------------------------------------------
+  - slug: foundation-workbook
+    line: workbook
+    name_ar: دوسية التأسيس
+    name_en: Foundation workbook
+    description_ar: منهج متكامل للروضة في ثلاثة أجزاء، باسم طفلك وشخصيته.
+    description_en: A complete kindergarten curriculum in three volumes, with your child's name and character.
+    option_names: [level, volume, interior, format]
+    features: {size: A4, binding: spiral}
+    variant_matrix:
+      levels: [kg1, kg2]
+      rows:
+        - {volume: "1", interior: color, format: digital, price: {ILS: 29, JOD: 5.5}, cost: {ai_usd: 0.03}}
+        - {volume: "2", interior: color, format: digital, price: {ILS: 29, JOD: 5.5}, cost: {ai_usd: 0.03}}
+        - {volume: "3", interior: color, format: digital, price: {ILS: 29, JOD: 5.5}, cost: {ai_usd: 0.03}}
+        - {volume: "1", interior: bw, format: spiral, price: {ILS: 49, JOD: 9.5}, cost: {print: 13, packaging: 2, ai_usd: 0.03}}  # placeholder
+        - {volume: "2", interior: bw, format: spiral, price: {ILS: 49, JOD: 9.5}, cost: {print: 13, packaging: 2, ai_usd: 0.03}}  # placeholder
+        - {volume: "3", interior: bw, format: spiral, price: {ILS: 49, JOD: 9.5}, cost: {print: 13, packaging: 2, ai_usd: 0.03}}  # placeholder
+        - {volume: "1", interior: color, format: spiral, price: {ILS: 69, JOD: 13}, cost: {print: 24, packaging: 2, ai_usd: 0.03}}  # placeholder
+        - {volume: "2", interior: color, format: spiral, price: {ILS: 69, JOD: 13}, cost: {print: 24, packaging: 2, ai_usd: 0.03}}  # placeholder
+        - {volume: "3", interior: color, format: spiral, price: {ILS: 69, JOD: 13}, cost: {print: 24, packaging: 2, ai_usd: 0.03}}  # placeholder
+        - {volume: set, interior: color, format: spiral, price: {ILS: 179, JOD: 34}, cost: {print: 72, packaging: 4, ai_usd: 0.03}}  # placeholder
+
+  # ---- «رحلتي الأولى للتعلّم» (Addendum 6): full color only ---------------------------------------------
+  - slug: learning-journey
+    line: journey
+    name_ar: رحلتي الأولى للتعلّم
+    name_en: My First Learning Journey
+    description_ar: كتاب مغامرة يتعلّم فيه طفلك وهو يلعب، من التفكير حتى القراءة.
+    description_en: An adventure book of missions, from thinking to reading, for ages 3–6.
+    option_names: [stage, format]
+    features: {size: A4, binding: spiral, interior: color, audio: included}
+    variants:
+      - {sku: journey-s1-digital, options: {stage: "1", format: digital}, price: {ILS: 29, JOD: 5.5}, cost: {ai_usd: 0.03}}
+      - {sku: journey-s2-digital, options: {stage: "2", format: digital}, price: {ILS: 29, JOD: 5.5}, cost: {ai_usd: 0.03}}
+      - {sku: journey-s3-digital, options: {stage: "3", format: digital}, price: {ILS: 29, JOD: 5.5}, cost: {ai_usd: 0.03}}
+      - {sku: journey-s1-spiral, options: {stage: "1", format: spiral}, price: {ILS: 69, JOD: 13}, cost: {print: 24, packaging: 2, ai_usd: 0.03}}  # placeholder
+      - {sku: journey-s2-spiral, options: {stage: "2", format: spiral}, price: {ILS: 69, JOD: 13}, cost: {print: 24, packaging: 2, ai_usd: 0.03}}  # placeholder
+      - {sku: journey-s3-spiral, options: {stage: "3", format: spiral}, price: {ILS: 69, JOD: 13}, cost: {print: 24, packaging: 2, ai_usd: 0.03}}  # placeholder
+      - {sku: journey-set-spiral, options: {stage: set, format: spiral}, price: {ILS: 179, JOD: 34}, cost: {print: 72, packaging: 4, ai_usd: 0.03}}  # placeholder
+
+addons:
+  # Addendum 4 §4
+  - {slug: hardcover-upgrade, name_ar: ترقية إلى غلاف مقوّى, name_en: Hardcover upgrade, price: {ILS: 30, JOD: 6}, cost_ils: 12, lines: [classic], requires: {format: [softcover]}, step: format}  # placeholder cost
+  - {slug: gift-box, name_ar: علبة هدية فاخرة مع بطاقة, name_en: Premium gift box + card, price: {ILS: 15, JOD: 3}, cost_ils: 6, lines: [classic, magic, coloring, workbook, journey], requires: {format: [softcover, hardcover, spiral]}, step: checkout}  # placeholder cost
+  - {slug: dedication-page, name_ar: صفحة إهداء خاصة, name_en: Custom dedication page, price: {ILS: 5, JOD: 1}, cost_ils: 0, lines: [classic, magic], included_lines: [magic], step: story}
+  - {slug: drawing-companion, name_ar: صاحبي من رسمتي, name_en: Drawing companion, price: {ILS: 20, JOD: 4}, cost_ai_usd: 0.25, lines: [classic, magic], included_lines: [magic], step: character}
+  - {slug: extra-character, name_ar: شخصية إضافية (أخ أو صديق), name_en: Extra character (sibling or friend), price: {ILS: 20, JOD: 4}, cost_ai_usd: 0.20, lines: [classic, magic], max_qty: 3, step: character}
+  - {slug: family-voice, name_ar: أصوات العائلة (رمز QR), name_en: Family voice QR, price: {ILS: 15, JOD: 3}, cost_ils: 0, lines: [classic, magic], step: format}
+  - {slug: extra-copy, name_ar: نسخة إضافية من الكتاب نفسه, name_en: Extra copy of the same book, pricing: percent_of_item, percent: 50, cost_ils: 17, lines: [classic, magic, coloring], requires: {format: [softcover, hardcover]}, max_qty: 5, step: checkout}  # placeholder cost
+  - {slug: coloring-version, name_ar: نسخة تلوين من الحكاية نفسها, name_en: Coloring version of the story, price: {ILS: 25, JOD: 5}, cost_ils: 9, cost_ai_usd: 0.35, lines: [classic, magic], step: format}  # placeholder cost
+  - {slug: cover-poster, name_ar: بوستر الغلاف A3, name_en: Cover poster A3, price: {ILS: 25, JOD: 5}, cost_ils: 7, lines: [classic, magic], step: checkout}  # placeholder cost
+  - {slug: express, name_ar: إنتاج سريع خلال 48 ساعة, name_en: Express production (48h), price: {ILS: 20, JOD: 4}, cost_ils: 5, lines: [classic, magic, coloring, workbook, journey], requires: {format: [softcover, hardcover, spiral]}, daily_capacity: 10, step: checkout}  # placeholder cost
+  - {slug: digital-copy, name_ar: نسخة رقمية مجانية مع المطبوع, name_en: Free digital copy with a printed order, price: {ILS: 0, JOD: 0}, lines: [classic, magic, coloring], requires: {format: [softcover, hardcover]}, step: checkout}
+  # Addendum 5 §6 and Addendum 6 §8
+  - {slug: wipe-sleeve, name_ar: غلاف شفاف يُمسح مع قلم, name_en: Wipe-clean sleeve + dry-erase pen, price: {ILS: 15, JOD: 3}, cost_ils: 6, lines: [workbook, journey], requires: {format: [spiral]}, step: checkout}  # placeholder cost
+  - {slug: sticker-sheet, name_ar: لوحة ملصقات مكافآت, name_en: Reward sticker sheet, price: {ILS: 8, JOD: 1.5}, cost_ils: 2, lines: [workbook, journey], step: checkout}  # placeholder cost
+  - {slug: crayon-kit, name_ar: طقم أقلام وألوان, name_en: Pencil and crayon kit, price: {ILS: 15, JOD: 3}, cost_ils: 7, lines: [workbook, journey], step: checkout}  # placeholder cost
+  - {slug: audio-qr, name_ar: رموز QR لنطق الحروف, name_en: Audio QR codes for letter pronunciation, price: {ILS: 10, JOD: 2}, cost_ils: 0, lines: [workbook], step: format}
+  - {slug: parent-guide, name_ar: دليل المعلّم وولي الأمر (PDF), name_en: Teacher and parent guide PDF, price: {ILS: 0, JOD: 0}, lines: [workbook], step: checkout}
+  - {slug: printed-answer-key, name_ar: مفتاح الإجابات مطبوعاً, name_en: Printed answer key, price: {ILS: 10, JOD: 2}, cost_ils: 3, lines: [journey], requires: {format: [spiral]}, step: checkout}  # suggested price; placeholder cost
+
+bundles:
+  - {slug: two-books, name_ar: كتابان أو أكثر −15%, name_en: 2+ books −15%, kind: min_items, min_items: 2, discount_pct: 15, lines: [classic, magic]}
+  - {slug: siblings, name_ar: باقة الإخوة −20%, name_en: Sibling bundle −20%, kind: siblings, min_items: 2, discount_pct: 20, lines: [classic, magic, workbook, journey]}  # suggested discount
+
+coupons:
+  - {code: WELCOME10, kind: percent, value: 10, first_order_only: true, active: false}  # an example; switched off
+
+shipping_zones:
+  - {slug: west-bank, name_ar: مدن الضفة الغربية, name_en: West Bank cities, country: PS, currency: ILS, fee: 20, free_over: 200, cost_ils: 15, eta: [2, 4], cities: [رام الله, البيرة, نابلس, الخليل, بيت لحم, جنين, طولكرم, قلقيلية, أريحا, سلفيت, طوباس]}  # placeholder cost
+  - {slug: jerusalem, name_ar: القدس, name_en: Jerusalem, country: PS, currency: ILS, fee: 30, free_over: 250, cost_ils: 22, eta: [2, 5], cities: [القدس]}  # placeholder cost
+  - {slug: amman, name_ar: عمّان, name_en: Amman, country: JO, currency: JOD, fee: 3, free_over: 40, cost_ils: 12, eta: [3, 6], cities: [عمّان]}  # placeholder cost
+  - {slug: jordan-other, name_ar: باقي محافظات الأردن, name_en: Other Jordanian governorates, country: JO, currency: JOD, fee: 4, free_over: 50, cost_ils: 14, eta: [3, 7], cities: [إربد, الزرقاء, العقبة, السلط, مادبا, جرش, الكرك, المفرق]}  # placeholder cost
+
+price_lists:
+  - name: قائمة الروضات الافتراضية
+    currency: ILS
+    items:
+      - {sku: class-classic-soft-21, tiers: [{min_qty: 20, unit_price: 35}]}
+      - {sku: class-magic-hard-21, tiers: [{min_qty: 20, unit_price: 50}]}
+      - {sku: wb-kg1-v1-color-spiral, tiers: [{min_qty: 20, unit_price: 45}, {min_qty: 50, unit_price: 40}, {min_qty: 100, unit_price: 35}]}
+      - {sku: wb-kg1-v2-color-spiral, tiers: [{min_qty: 20, unit_price: 45}, {min_qty: 50, unit_price: 40}, {min_qty: 100, unit_price: 35}]}
+      - {sku: wb-kg1-v3-color-spiral, tiers: [{min_qty: 20, unit_price: 45}, {min_qty: 50, unit_price: 40}, {min_qty: 100, unit_price: 35}]}
+      - {sku: wb-kg2-v1-color-spiral, tiers: [{min_qty: 20, unit_price: 45}, {min_qty: 50, unit_price: 40}, {min_qty: 100, unit_price: 35}]}
+      - {sku: wb-kg2-v2-color-spiral, tiers: [{min_qty: 20, unit_price: 45}, {min_qty: 50, unit_price: 40}, {min_qty: 100, unit_price: 35}]}
+      - {sku: wb-kg2-v3-color-spiral, tiers: [{min_qty: 20, unit_price: 45}, {min_qty: 50, unit_price: 40}, {min_qty: 100, unit_price: 35}]}
+      - {sku: journey-s1-spiral, tiers: [{min_qty: 20, unit_price: 45}]}
+      - {sku: journey-s2-spiral, tiers: [{min_qty: 20, unit_price: 45}]}
+      - {sku: journey-s3-spiral, tiers: [{min_qty: 20, unit_price: 45}]}

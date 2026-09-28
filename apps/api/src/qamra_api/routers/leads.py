@@ -1,6 +1,5 @@
 """Kindergarten demo requests (public form)."""
 
-import re
 from datetime import date
 from typing import Annotated
 
@@ -11,10 +10,10 @@ from qamra_api import ratelimit
 from qamra_api.auth.router import client_ip
 from qamra_api.deps import RedisDep, SessionDep, SettingsDep
 from qamra_api.errors import ApiError
+from qamra_api.validation import PHONE
 from qamra_core.db.models import AuditLog, Lead, Locale
 
 router = APIRouter(prefix="/api/leads", tags=["leads"])
-_PHONE = re.compile(r"^\+?[0-9 ()-]{7,20}$")
 Text = Annotated[str, Field(min_length=1, max_length=200)]
 
 
@@ -33,7 +32,7 @@ class LeadIn(BaseModel):
     @classmethod
     def _phone(cls, v: str) -> str:
         v = v.strip()
-        if not _PHONE.match(v):
+        if not PHONE.match(v):
             raise ValueError("invalid phone")
         return v
 
