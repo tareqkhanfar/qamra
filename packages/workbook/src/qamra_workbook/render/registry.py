@@ -20,7 +20,7 @@ from markupsafe import Markup
 from qamra_workbook.pictures import PictureStore, Style
 from qamra_workbook.puzzles.base import rng
 from qamra_workbook.render.sections import SectionStyle, section_style
-from qamra_workbook.render.spec import BookSpec, PageSpec
+from qamra_workbook.render.spec import BookSpec, Numerals, PageSpec
 
 # mission: title + instruction + work area; full: the page lays itself out; sheet: an insert printed on its
 # own paper (sticker sheet, card stock), without section tab or page number
@@ -60,7 +60,17 @@ class PageContext:
         return self.assets.pictures.markup(picture_id, style, css_class)
 
     def text(self, value: str) -> str:
-        return self.book.personalize(value, self.page)
+        """A text as printed on this page: personalized, with its numbers in the page's numerals."""
+        return self.num(self.book.personalize(value, self.page))
+
+    @property
+    def numerals(self) -> Numerals:
+        """This page's numerals: the book's choice, or Latin (123) on an English page."""
+        return self.book.numerals_for(self.page.lang)
+
+    def num(self, value: int | str) -> str:
+        """A number on this page, in its numerals (`BookSpec.num`)."""
+        return self.book.num(value, self.page.lang)
 
 
 Builder = Callable[[PageContext], Built]

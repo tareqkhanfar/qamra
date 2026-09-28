@@ -2,20 +2,25 @@
 (Addendum 6 §3.7) or the samples of «مغامراتي مع عائلتي» (Addendum 7 §3.5), with its inserts.
 
     uv run python -m qamra_workbook.render.samples [--product journey|family] [--spec FILE] [--out DIR]
-                                                   [--only TYPE,TYPE]
+                                                   [--only TYPE,TYPE] [--numerals hindi|latin]
 
 Writes samples.pdf (print-ready), answer-key.pdf when a page has answers, inserts.pdf for the family book's
 sticker sheet and card stock, png/NN-<type>.png previews, contact-sheet.png and preflight.json, then prints
-the preflight result.
+the preflight result. The spec's `numerals` (hindi by default, or latin: the parent's option) sets the book's
+numerals; `--numerals` overrides it. The sections in the spec's `latin_preview` are also rendered with Latin
+numerals into png-latin/NN-<type>.png, so the reviewer sees the parent's option.
 """
 
 from __future__ import annotations
 
 import argparse
 import asyncio
+import dataclasses
 import datetime as dt
 import json
 import sys
+import tempfile
+from collections.abc import Sequence
 from pathlib import Path
 from typing import Any, Literal
 
@@ -25,7 +30,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from qamra_pdf import preflight
 from qamra_workbook.family import MAX_CHILD_WORDS
 from qamra_workbook.family import Page as FamilyPage
-from qamra_workbook.journey import MAX_INSTRUCTION_WORDS, JourneyPage
+from qamra_workbook.journey import MAX_INSTRUCTION_WORDS, RETIRED_WORDS, JourneyPage, retired_words
 from qamra_workbook.pictures import LibraryStore
 from qamra_workbook.render.character import aspect, front_view, pose
 from qamra_workbook.render.engine import (
@@ -45,6 +50,7 @@ from qamra_workbook.render.spec import (
     Family,
     Figure,
     Member,
+    Numerals,
     PageSpec,
     Where,
     family_page_id,
@@ -80,6 +86,8 @@ class Samples(BaseModel):
     title_ar: str
     child: SampleChild
     date: dt.date | None = None
+    numerals: Numerals = "hindi"  # ١٢٣ on Arabic and math pages, or latin (123); English pages always 123
+    latin_preview: list[str] = Field(default_factory=list)  # sections also rendered with Latin numerals
     samples: list[Sample]
 
 
@@ -153,6 +161,7 @@ class FamilySamples(BaseModel):
     child: SampleChild
     family: SampleFamily
     date: dt.date | None = None
+    numerals: Numerals = "hindi"
     samples: list[FamilySample]
     inserts: list[FamilySample] = Field(default_factory=list)
 
@@ -183,6 +192,9 @@ def book_problems(book: BookSpec) -> list[str]:
                 out.append(f"{p.id}: instruction has {words} words (max {limit}): {text}")
         if not p.title.strip() or not p.instruction.strip():
             out.append(f"{p.id}: every page needs a title and an instruction")
+        if book.product == "journey":
+            for word in retired_words([p.title, p.instruction, p.instruction_en, p.skill, dict(p.params)]):
+                out.append(f"{p.id}: «{word}» was replaced by «{RETIRED_WORDS[word]}» (decision 2026-09-28)")
     return out
 
 
@@ -196,7 +208,7 @@ def book_from(samples: Samples | FamilySamples, only: set[str] | None = None) ->
         pages = tuple(
             spec for s in samples.samples if only is None or s.page.type in only for spec in s.specs()
         )
-        return _family_book(samples, pages)
+        return family_book(samples, pages)
     pages = tuple(
         from_journey(s.page, s.stage) for s in samples.samples if only is None or s.page.type in only
     )
@@ -206,6 +218,7 @@ def book_from(samples: Samples | FamilySamples, only: set[str] | None = None) ->
         child=_child(samples.child),
         pages=pages,
         date=samples.date or dt.date.today(),
+        numerals=samples.numerals,
     )
 
 
@@ -214,18 +227,20 @@ def inserts_from(samples: Samples | FamilySamples, only: set[str] | None = None)
     if not isinstance(samples, FamilySamples):
         return None
     pages = tuple(spec for s in samples.inserts if only is None or s.page.type in only for spec in s.specs())
-    return _family_book(samples, pages) if pages else None
+    return family_book(samples, pages) if pages else None
 
 
-def _family_book(samples: FamilySamples, pages: tuple[PageSpec, ...]) -> BookSpec:
+def family_book(samples: FamilySamples, pages: tuple[PageSpec, ...], size: str | None = None) -> BookSpec:
+    """A family book of `pages` for the sample child and family, at the product's default size or `size`."""
     return BookSpec(
         product="family",
         title_ar=samples.title_ar,
         child=_child(samples.child),
         pages=pages,
         date=samples.date or dt.date.today(),
-        geometry=product_geometry("family"),
+        geometry=product_geometry("family", size),
         family=samples.family.spec(),
+        numerals=samples.numerals,
     )
 
 
@@ -252,7 +267,23 @@ def _label(i: int, p: RenderedPage) -> str:
     return f"{i:02d} · {where} · {p.spec.type}"
 
 
-async def render_samples(book: BookSpec, out: Path, inserts: BookSpec | None = None) -> dict[str, Any]:
+async def latin_previews(book: BookSpec, assets: Assets, out: Path, sections: Sequence[str]) -> list[Path]:
+    """The sample pages of `sections` again, with Latin numerals (the parent's option), as out/NN-<type>.png
+    (NN is the page's place among the samples, as in png/)."""
+    picked = [(i, p) for i, p in enumerate(book.pages, start=1) if p.section in sections]
+    if not picked:
+        return []
+    latin = dataclasses.replace(book, numerals="latin", pages=tuple(p for _, p in picked))
+    pages = build_pages(latin, assets)
+    with tempfile.TemporaryDirectory() as tmp:
+        html = book_html(latin, pages, assets)
+        pdf = await print_pdf(html, Path(tmp) / "latin.html", Path(tmp) / "latin.pdf", latin.geometry)
+        return previews(pdf, out, [f"{i:02d}-{p.type}" for i, p in picked], latin.geometry)
+
+
+async def render_samples(
+    book: BookSpec, out: Path, inserts: BookSpec | None = None, latin_preview: Sequence[str] = ()
+) -> dict[str, Any]:
     out.mkdir(parents=True, exist_ok=True)
     assets = assets_for(book, out)
     pages = build_pages(book, assets)
@@ -277,6 +308,7 @@ async def render_samples(book: BookSpec, out: Path, inserts: BookSpec | None = N
         pngs += previews(inserts_pdf, out / "png", insert_names, inserts.geometry)
     labels = [_label(i, p) for i, p in enumerate([*pages, *extra], start=1)]
     sheet = contact_sheet(pngs, out / "contact-sheet.png", labels, rtl=book.product == "family")
+    latin = await latin_previews(book, assets, out / "png-latin", latin_preview) if latin_preview else []
     reports = {
         pdf.name: preflight(
             pdf, width_mm=g.page_w, height_mm=g.page_h, bleed_mm=g.bleed, safe_mm=g.safe
@@ -289,6 +321,7 @@ async def render_samples(book: BookSpec, out: Path, inserts: BookSpec | None = N
         "answer_key_pdf": str(key_pdf) if key_pdf else None,
         "inserts_pdf": str(inserts_pdf) if inserts_pdf else None,
         "previews": [str(p) for p in pngs],
+        "latin_previews": [str(p) for p in latin],
         "contact_sheet": str(sheet),
         "preflight": reports,
     }
@@ -304,16 +337,21 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--spec", type=Path, help="default: the product's samples.yaml")
     parser.add_argument("--out", type=Path, help="default: out/samples/<product>")
     parser.add_argument("--only", help="comma-separated page types (for quick iterations)")
+    parser.add_argument("--numerals", choices=["hindi", "latin"], help="default: the spec's numerals (hindi)")
     args = parser.parse_args(sys.argv[1:] if argv is None else argv)
     only = set(args.only.split(",")) if args.only else None
     samples = load(args.spec or SPECS[args.product])
     book, inserts = book_from(samples, only), inserts_from(samples, only)
+    if args.numerals:
+        book = dataclasses.replace(book, numerals=args.numerals)
+        inserts = dataclasses.replace(inserts, numerals=args.numerals) if inserts else None
     problems = book_problems(book) + (book_problems(inserts) if inserts else [])
     if problems:
         for line in problems:
             print("✗", line)
         return 1
-    result = asyncio.run(render_samples(book, args.out or OUTS[args.product], inserts))
+    preview = samples.latin_preview if isinstance(samples, Samples) else []
+    result = asyncio.run(render_samples(book, args.out or OUTS[args.product], inserts, preview))
     passed = True
     for name, report in result["preflight"].items():
         print(f"preflight {name}:")
@@ -327,6 +365,7 @@ def main(argv: list[str] | None = None) -> int:
         result["answer_key_pdf"],
         result["inserts_pdf"],
         result["contact_sheet"],
+        *result["latin_previews"],
     ]
     print("wrote", *(w for w in written if w))
     return 0 if passed else 1

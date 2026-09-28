@@ -5,6 +5,7 @@ one imported below) and add `render/templates/pages/<name>.html.j2` for its work
 """
 
 from qamra_workbook.render.pages import (
+    adventures,
     family,
     inserts,
     journey,
@@ -15,4 +16,14 @@ from qamra_workbook.render.pages import (
     thinking,
 )
 
-__all__ = ["family", "inserts", "journey", "letters", "listening", "motor", "numbers", "thinking"]
+__all__ = [
+    "adventures",
+    "family",
+    "inserts",
+    "journey",
+    "letters",
+    "listening",
+    "motor",
+    "numbers",
+    "thinking",
+]

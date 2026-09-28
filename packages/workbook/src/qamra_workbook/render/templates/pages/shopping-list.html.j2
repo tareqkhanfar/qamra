@@ -38,4 +38,5 @@
       {% endfor %}
     </div>
   </div>
+  {% if d.safety %}<div class="safe-note">{{ icon('shield') }}<span data-fit="8.5">{{ d.safety }}</span></div>{% endif %}
 </div>

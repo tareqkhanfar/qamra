@@ -13,7 +13,7 @@
   <div class="safe">
     <header class="key-head">
       <div class="key-title">{{ mascot('mascot') }}<div><h1>مفتاح الإجابات</h1><p>{{ book.title_ar }} · للأهل والمعلمين</p></div></div>
-      <div class="key-sheet-no">{{ arabic_digits(loop.index) }} / {{ arabic_digits(loop.length) }}</div>
+      <div class="key-sheet-no">{{ book.num(loop.index) }} / {{ book.num(loop.length) }}</div>
     </header>
     <div class="key-grid">
     {% for p in sheet %}
@@ -22,7 +22,7 @@
         <div class="key-text">
           <div class="key-page"><span class="key-folio" style="background: {{ p.style.tint }}; color: {{ p.style.deep }}">{{ p.folio }}</span>
             <span class="key-name">{{ p.title }}</span></div>
-          <div class="key-meta">{% if p.spec.stage %}المحطة {{ arabic_digits(p.spec.stage) }} · {% endif %}{{ p.section_name or p.style.name_ar }}</div>
+          <div class="key-meta">{% if p.spec.stage %}المحطة {{ book.num(p.spec.stage) }} · {% endif %}{{ p.section_name or p.style.name_ar }}</div>
           <ul>{% for line in p.built.answer %}<li>{{ line }}</li>{% endfor %}</ul>
         </div>
       </article>

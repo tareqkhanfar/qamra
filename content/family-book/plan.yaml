@@ -156,6 +156,7 @@ activities:
         title: أجمل دائرة وجدتها
         instruction: "{ارسم/ارسمي} أجمل شيء دائري {وجدته/وجدتِه}"
         parent: ["اطلبوا من {child} أن {يحكي/تحكي} لكم لماذا {اختاره/اختارته}."]
+        params: {frame: circle, caption: "اسم الشيء الدائري:"}
   - id: home-colors
     section: home
     title: كنز الألوان
@@ -177,6 +178,7 @@ activities:
         title: أيّ لون أكثر؟
         instruction: "{لوّن/لوّني} مربّعًا لكل شيء، ثم {قارن/قارني}"
         parent: ["اسألوا: أيّ عمود أطول؟ إذن أيّ لون أكثر؟"]
+        params: {mode: tally, colors: [red, yellow, blue], challenge_colors: [green], squares: 6}
   - id: home-shapes
     section: home
     title: أشكال في كل مكان
@@ -209,6 +211,7 @@ activities:
         parent:
           - "ضعوا الأشياء، وغطّوها بمنشفة، وأخفوا واحدًا."
           - "بدّلوا الأدوار: {دعوه/دعوها} {يخفي/تخفي} شيئًا وأنتم تخمّنون."
+        params: {frame: tray, spots: 3, challenge_spots: 3, caption: "ما اسمه؟"}
   - id: home-sounds
     section: home
     title: أصوات البيت
@@ -223,6 +226,13 @@ activities:
         title: أصوات البيت
         instruction: "{أغمض/أغمضي} عينيك، {استمع/استمعي}، ثم {ارسم/ارسمي} ما سمعت"
         parent: ["اجلسوا معًا بصمت دقيقة كاملة، ثم قارنوا ما سمعه كل واحد."]
+        params:
+          icon: ear
+          lead: "دقيقة صمت… ماذا نسمع؟"
+          hints: [clock, bird, door, cat]
+          chips: [قريب, بعيد]
+          name_label: "ماذا سمعت؟"
+          say: "شششش… نستمع!"
   - id: home-memory
     section: home
     title: ذكرى اليوم
@@ -255,7 +265,7 @@ activities:
     materials: [قلم رصاص, كيس تسوّق]
     minutes: 15
     levels: {simple: "3 أشياء بالرسم", challenge: "5 أشياء، يكتب أسماءها ويعدّ المجموع"}
-    safety: "في السوق يبقى {child} قريبًا من {adult} ويدًا بيد. اتفقوا قبل الخروج: إن ضاع، يقف مكانه ويطلب المساعدة من البائع."
+    safety: "في السوق {يبقى/تبقى} {child} {قريبًا/قريبة} من {adult} ويدًا بيد. اتفقوا قبل الخروج: إن {ضاع/ضاعت}، {يقف/تقف} {مكانه/مكانها} {ويطلب/وتطلب} المساعدة من البائع."
     pages:
       - type: shopping-list
         title: قائمة مشترياتي
@@ -314,6 +324,19 @@ activities:
         parent:
           - "استعملوا أشياء من المطبخ ونقود قمرة للّعب من ورقة القصّ."
           - "امدحوا الأدب: «جميل أنك {قلت/قلتِ} شكرًا!»"
+        params:  # the role-play lines are a draft for the educator's review
+          roles:
+            - name: البائع
+              picture: stall
+              icon: shop
+              lines: ["أهلًا وسهلًا! تفضّلوا.", "ماذا تحتاجون اليوم؟", "تفضّلوا، مع السلامة!"]
+              challenge: ["السعر ثلاث قمرات.", "عندي برتقال طازج أيضًا!"]
+            - name: المشتري
+              picture: shopping-bag
+              icon: bag
+              lines: ["السلام عليكم!", "أريد تفاحتين من فضلك.", "شكرًا جزيلًا!"]
+              challenge: ["بكم التفاح؟", "هل عندك موز؟"]
+          swap: "ثم نبدّل الأدوار!"
   - id: market-price-tags
     section: market
     title: بطاقات الأسعار

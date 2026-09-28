@@ -128,7 +128,7 @@ samples:
           - {icon: knife, text: السكين والنار للكبار فقط}
           - {icon: alert, text: "اسألوا عن الحساسية (الحليب)"}
 
-  - n: 54
+  - n: 64
     section: feelings
     skill: "المشاعر والتواصل · التعبير والتحدّث"
     activity: {where: home, together: true, minutes: 10, challenge: true}

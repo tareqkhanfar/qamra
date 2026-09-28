@@ -1,0 +1,18 @@
+<div class="talkpg">
+  {% if d.roles %}
+  <div class="roles">
+    {% for r in d.roles %}
+    <div class="role fcard">
+      <div class="role-head"><div class="role-pic">{{ r.pic }}</div><b>{{ r.name }}</b><span class="role-ico">{{ icon(r.icon) }}</span></div>
+      <div class="role-lines">
+        {% for line in r.lines %}<div class="say-line">{{ line }}</div>{% endfor %}
+        {% for line in r.challenge %}<div class="say-line lvl2">{{ stars(2) }}<span>{{ line }}</span></div>{% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% if d.swap %}<div class="swap">{{ icon('talk') }}<b>{{ d.swap }}</b>{{ icon('talk') }}</div>{% endif %}
+  {% else %}
+  <div class="talk-cards">{% for c in d.cards %}<div class="talk-card fcard"><span class="pill-num">{{ book.num(loop.index) }}</span><p>{{ c }}</p></div>{% endfor %}</div>
+  {% endif %}
+</div>

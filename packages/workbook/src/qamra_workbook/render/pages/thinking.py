@@ -21,7 +21,6 @@ from qamra_workbook.puzzles.coloring import SHAPE_AR, ShapeKind
 from qamra_workbook.puzzles.spot import Scene
 from qamra_workbook.render import draw
 from qamra_workbook.render.registry import Built, PageContext, page_type
-from qamra_workbook.render.spec import arabic_digits
 
 SHAPE_COLORS = {"circle": "#EE8A6E", "triangle": "#5E86D6", "square": "#7DB46C", "heart": "#E97A98"}
 
@@ -49,7 +48,7 @@ def odd_one_out(ctx: PageContext) -> Built:
         {"pics": [ctx.pic(i) for i in row.items], "odd": row.odd, "example": row.example, "n": k}
         for k, row in enumerate(rows)
     ]
-    answer = [f"الصف {arabic_digits(k)}: {row.answer}" for k, row in enumerate(rows) if not row.example]
+    answer = [f"الصف {ctx.num(k)}: {row.answer}" for k, row in enumerate(rows) if not row.example]
     return Built({"rows": data, "ring": ring}, answer, [p for row in rows for p in row.problems()])
 
 
@@ -89,7 +88,7 @@ def pattern_complete(ctx: PageContext) -> Built:
         for k, row in enumerate(rows)
     ]
     answer = [
-        f"الصف {arabic_digits(k)}: {' ثم '.join(_element_name(i) for i in row.answer)}"
+        f"الصف {ctx.num(k)}: {' ثم '.join(_element_name(i) for i in row.answer)}"
         for k, row in enumerate(rows)
         if not row.example
     ]
@@ -135,7 +134,7 @@ def smart_coloring(ctx: PageContext) -> Built:
         "target_ar": SHAPE_AR[target],
         "count": scene.count,
     }
-    answer = [f"عدد {SHAPE_AR[target]}: {arabic_digits(scene.count)}"]
+    answer = [f"عدد {SHAPE_AR[target]}: {ctx.num(scene.count)}"]
     return Built(data, answer, scene.problems())
 
 
@@ -201,5 +200,5 @@ def spot_difference(ctx: PageContext) -> Built:
         "b_solved": scene_svg(puzzle.b, [d.region for d in puzzle.differences]),
         "count": count,
     }
-    answer = [f"{arabic_digits(k)}. {d.text}" for k, d in enumerate(puzzle.differences, start=1)]
+    answer = [f"{ctx.num(k)}. {d.text}" for k, d in enumerate(puzzle.differences, start=1)]
     return Built(data, answer, puzzle.problems())

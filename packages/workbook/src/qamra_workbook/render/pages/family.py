@@ -28,7 +28,7 @@ from qamra_workbook.render.pages.motor import nested_picture
 from qamra_workbook.render.pages.thinking import shape_kind
 from qamra_workbook.render.registry import Built, PageContext, page_type
 from qamra_workbook.render.sections import section_style
-from qamra_workbook.render.spec import Family, Member, arabic_date, arabic_digits
+from qamra_workbook.render.spec import Family, Member
 
 
 @dataclass(frozen=True)
@@ -149,7 +149,7 @@ def passport(ctx: PageContext) -> Built:
         "name": ctx.book.child.name,
         "family": family.name if family else "",
         "city": family.city if family else "",
-        "date": arabic_date(ctx.book.date),
+        "date": ctx.book.date_ar(),
         "slots": [
             {"label": ctx.text(b.label), "svg": seal(b, filled=False), "color": b.color} for b in badges
         ],
@@ -159,11 +159,8 @@ def passport(ctx: PageContext) -> Built:
 
 # ---- an adventure's opening spread ---------------------------------------------------------------------
 
-SPREAD_W = 426.0  # two trims and the outer bleeds
-SPREAD_H = 286.0
 
-
-def _hill(y: float, amp: float, phase: float, color: str, w: float = SPREAD_W, h: float = SPREAD_H) -> str:
+def _hill(y: float, amp: float, phase: float, color: str, w: float, h: float) -> str:
     pts: list[tuple[str, float | tuple[float, ...]]] = [("M", (0, y))]
     step = w / 6
     for i in range(6):
@@ -175,15 +172,23 @@ def _hill(y: float, amp: float, phase: float, color: str, w: float = SPREAD_W, h
 
 
 # the picture behind the family on an adventure's opening spread
-SCENES = {"home": "house", "market": "shopping-bag", "chef": "kitchen", "nature": "tree", "day": "sun"}
+SCENES = {"home": "house", "market": "stall", "chef": "kitchen", "nature": "tree", "day": "sun"}
+
+
+def spread_size(ctx: PageContext) -> tuple[float, float]:
+    """The spread's drawing: two trims and the outer bleeds wide, one page (with bleed) tall."""
+    g = ctx.book.geometry
+    return 2 * g.trim_w + 2 * g.bleed, g.page_h
 
 
 def spread_art(ctx: PageContext) -> Markup:
-    """The landscape across both pages (426 × 286 mm with the outer bleeds; the gutter at x = 213): sky in the
-    section's tint, rolling hills, and a road from the right-hand page to the family's home on the left-hand
-    page. The right-hand page's upper half stays clear for the title and the story."""
+    """The landscape across both pages (the gutter at x = bleed + trim width): sky in the section's tint,
+    rolling hills, and a road from the right-hand page to the family's home on the left-hand page. The sky
+    things hang from the top and the land stands on the bottom, so the art fits any page height; the
+    right-hand page's upper half stays clear for the title and the story."""
     style = ctx.style
     g = ctx.book.geometry
+    w, h = spread_size(ctx)
     gutter = g.bleed + g.trim_w
     left_mid = g.bleed + g.trim_w / 2
     sky = f"sky-{ctx.page.id}"
@@ -191,57 +196,47 @@ def spread_art(ctx: PageContext) -> Markup:
         f'<defs><linearGradient id="{sky}" x1="0" y1="0" x2="0" y2="1">'
         f'<stop offset="0" stop-color="{style.tint}"/><stop offset="0.7" stop-color="#FFFDF7"/>'
         "</linearGradient></defs>",
-        draw.el("rect", x=0, y=0, width=SPREAD_W, height=SPREAD_H, fill=f"url(#{sky})"),
+        draw.el("rect", x=0, y=0, width=w, height=h, fill=f"url(#{sky})"),
         # the sun in the left-hand page's outer corner, clouds and birds where no text goes
         draw.el("circle", cx=26, cy=26, r=24, fill="#FFE7A3", opacity=0.55),
         nested_picture("sun", 8, 8, 36),
         nested_picture("cloud", 150, 64, 28),
         nested_picture("cloud", gutter + 176, 4, 26),
-        nested_picture("cloud", gutter + 8, 164, 22),
+        nested_picture("cloud", gutter + 8, h - 122, 22),
     ]
-    for x, y in ((52, 74), (63, 69), (gutter + 150, 176)):
-        body.append(
-            draw.path(
-                f"M{x - 4} {y} Q{x - 2} {y - 2.6} {x} {y} Q{x + 2} {y - 2.6} {x + 4} {y}",
-                stroke="#4A5078",
-                width=0.7,
-            )
-        )
+    for x, y in ((52, 74), (63, 69), (gutter + 150, h - 110)):
+        bird = f"M{x - 4} {y} Q{x - 2} {y - 2.6} {x} {y} Q{x + 2} {y - 2.6} {x + 4} {y}"
+        body.append(draw.path(bird, stroke="#4A5078", width=0.7))
     scene = str(ctx.page.params.get("scene", SCENES.get(style.id, "")))
     if scene:  # the adventure's place, behind the family
-        body.append(draw.el("ellipse", cx=left_mid, cy=150, rx=70, ry=62, fill="#FFFFFF", opacity=0.5))
-        body.append(nested_picture(scene, left_mid - 62, 84, 124))
-    body += [_hill(198, 9, 0, "#CFE8C0"), _hill(216, 8, 1, "#B9DDA6"), _hill(240, 6, 0, "#A6D293")]
+        body.append(draw.el("ellipse", cx=left_mid, cy=h - 136, rx=70, ry=62, fill="#FFFFFF", opacity=0.5))
+        body.append(nested_picture(scene, left_mid - 62, h - 202, 124))
+    body += [_hill(h - 88, 9, 0, "#CFE8C0", w, h), _hill(h - 70, 8, 1, "#B9DDA6", w, h)]
+    body.append(_hill(h - 46, 6, 0, "#A6D293", w, h))
     road = draw.d_path(
-        ("M", (SPREAD_W + 10, 284)),
-        ("C", (gutter + 150, 264, gutter + 100, 236, gutter + 24, 236)),
-        ("S", (gutter - 50, 232, gutter - 80, 226)),
+        ("M", (w + 10, h - 2)),
+        ("C", (gutter + 150, h - 22, gutter + 100, h - 50, gutter + 24, h - 50)),
+        ("S", (gutter - 50, h - 54, gutter - 80, h - 60)),
     )
     body += [
         draw.path(road, stroke="#F1DDB0", width=17),
         draw.path(road, stroke="#FBEFD2", width=14),
         draw.path(road, stroke="#FFFFFF", width=0.9, stroke_dasharray="3 3.6", opacity=0.9),
+        nested_picture("tree", gutter + 168, h - 118, 48),
     ]
-    body.append(nested_picture("tree", gutter + 168, 168, 48))
-    for x, y, color in (
-        (gutter + 40, 150, "#E4769D"),
-        (gutter + 52, 142, "#F2B33D"),
-        (gutter + 63, 152, "#2E9FD6"),
+    for x, y, color in ((gutter + 40, h - 136, "#E4769D"), (gutter + 52, h - 144, "#F2B33D")):
+        body += _balloon(x, y, color, gutter + 54, h - 100)
+    body += _balloon(gutter + 63, h - 134, "#2E9FD6", gutter + 54, h - 100)
+    body.append(nested_picture("butterfly", gutter + 142, h - 50, 14))
+    for x, dy in (
+        (gutter + 34, 34),
+        (gutter + 124, 22),
+        (gutter + 172, 46),
+        (22, 38),
+        (gutter - 24, 24),
+        (190, 30),
     ):
-        string = f"M{x + 7} {y + 15} Q{x + 4} {y + 24} {gutter + 54} {y + 38}"
-        body.append(draw.path(string, stroke="#8E93AB", width=0.35))
-        balloon = picture("balloon").inner("color", {"main": color})
-        body.append(draw.el("svg", balloon, x=x, y=y, width=16, height=16, viewBox="0 0 100 100"))
-    body.append(nested_picture("butterfly", gutter + 142, 236, 14))
-    for x, y in (
-        (gutter + 34, 252),
-        (gutter + 124, 264),
-        (gutter + 172, 240),
-        (22, 248),
-        (gutter - 24, 262),
-        (190, 256),
-    ):
-        body.append(nested_picture("flower", x, y, 12))
+        body.append(nested_picture("flower", x, h - dy, 12))
     for x, y, r in (
         (gutter + 22, 30, 3),
         (gutter + 196, 120, 2.4),
@@ -250,7 +245,14 @@ def spread_art(ctx: PageContext) -> Markup:
         (196, 30, 2),
     ):
         body.append(draw.el("path", d=draw.star_points(x, y, r, r * 0.45), fill="#F2B33D"))
-    return draw.svg(SPREAD_W, SPREAD_H, "".join(body), "spread-svg")
+    return draw.svg(w, h, "".join(body), "spread-svg")
+
+
+def _balloon(x: float, y: float, color: str, hand_x: float, hand_y: float) -> list[str]:
+    """A balloon on a string held at (hand_x, hand_y)."""
+    string = draw.path(f"M{x + 7} {y + 15} Q{x + 4} {y + 24} {hand_x} {hand_y}", stroke="#8E93AB", width=0.35)
+    balloon = picture("balloon").inner("color", {"main": color})
+    return [string, draw.el("svg", balloon, x=x, y=y, width=16, height=16, viewBox="0 0 100 100")]
 
 
 def family_group(
@@ -321,8 +323,9 @@ def section_opener(ctx: PageContext) -> Built:
     data = {
         "first": first,
         "art": spread_art(ctx),
+        "art_size": spread_size(ctx),
         "shift": -g.trim_w if first else 0.0,  # the right-hand page shows the landscape's right half
-        "adventure": arabic_digits(int(ctx.page.params.get("adventure", style.slot))),
+        "adventure": ctx.num(int(ctx.page.params.get("adventure", style.slot))),
         "hook": ctx.text(ctx.page.instruction),
         "inside": inside,
         "badge": seal(badge),
@@ -342,6 +345,10 @@ SHAPES_AR = {"circle": "دائرية", "square": "مربعة", "triangle": "مث
 @page_type("scavenger-hunt")
 def scavenger_hunt(ctx: PageContext) -> Built:
     params = ctx.page.params
+    if "colors" in params:  # a color hunt («كنز الألوان»)
+        from qamra_workbook.render.pages.adventures import color_hunt  # (adventures imports this module)
+
+        return color_hunt(ctx)
     shape = str(params.get("shape", "circle"))
     find = int(params.get("find", 3))
     extra = int(params.get("challenge", 2))
@@ -353,8 +360,8 @@ def scavenger_hunt(ctx: PageContext) -> Built:
     if shape not in SHAPES_AR:
         problems.append(f"no hunt for {shape!r} yet (have {sorted(SHAPES_AR)})")
     examples = [str(x) for x in params.get("examples", ["plate", "orange", "clock"])]
-    cards = [{"n": arabic_digits(i + 1), "level": 1} for i in range(find)]
-    cards += [{"n": arabic_digits(find + i + 1), "level": 2} for i in range(extra)]
+    cards = [{"n": ctx.num(i + 1), "level": 1} for i in range(find)]
+    cards += [{"n": ctx.num(find + i + 1), "level": 2} for i in range(extra)]
     target = Shape(shape_kind(shape if shape in SHAPES_AR else "circle"), 15, 15, 24, 24)
     shape_svg = draw.svg(
         30, 30, draw.shape(target, fill=ctx.style.tint, stroke=ctx.style.color, width=1.6), "hunt-shape"
@@ -365,7 +372,7 @@ def scavenger_hunt(ctx: PageContext) -> Built:
         "shape_ar": SHAPES_AR.get(shape, shape),
         "examples": [{"pic": ctx.pic(x), "word": strip_tashkeel(picture(x).word_ar)} for x in examples],
         "cards": cards,
-        "count": [arabic_digits(i + 1) for i in range(find + extra)],
+        "count": [ctx.num(i + 1) for i in range(find + extra)],
         "found_q": ctx.text("كم شيئًا {وجدت/وجدتِ}؟"),
     }
     return Built(data, None, problems)
@@ -400,6 +407,7 @@ def shopping_list(ctx: PageContext) -> Built:
         "character": uri(ctx.assets.character),
         "bag": ctx.pic("shopping-bag"),
         "choose": ctx.text(str(params.get("choose", "{اختر/اختاري} لكل شيء: صحي؟ نحتاجه؟"))),
+        "safety": ctx.text(str(params["safety"])) if params.get("safety") else "",  # outdoors (A7 §9)
     }
     return Built(data, None, problems)
 
@@ -521,9 +529,7 @@ def recipe_steps(ctx: PageContext) -> Built:
     }
     answer = [
         "الترتيب: "
-        + "، ".join(
-            f"{arabic_digits(n)} {ctx.text(str(steps[n - 1]['text']))}" for n in range(1, len(steps) + 1)
-        )
+        + "، ".join(f"{ctx.num(n)} {ctx.text(str(steps[n - 1]['text']))}" for n in range(1, len(steps) + 1))
     ]
     return Built(data, answer, problems)
 
@@ -658,7 +664,8 @@ def memory_page(ctx: PageContext) -> Built:
     data = {
         "members": [m.label for m in members],
         "quote_from": ctx.text(str(ctx.page.params.get("quote_from", "كلمة من {adult}"))),
-        "stars_q": ctx.text(str(ctx.page.params.get("stars", "كم نجمة {تعطي/تعطين} مغامرتنا؟"))),
+        "stars_q": ctx.text(str(ctx.page.params.get("stars_q", "كم نجمة {تعطي/تعطين} مغامرتنا؟"))),
+        "stars": int(ctx.page.params.get("stars", 5)),  # how many stars to color (the plan's `stars`)
         "draw_label": ctx.text("أو {ارسم/ارسمي} ما فعلناه"),
         "with_q": "مع مَن كانت المغامرة؟",
         "star": art.stars(1, "big-star", fill="#FFFFFF", edge="#E2A32A"),
@@ -712,7 +719,7 @@ def challenge_board(
                 "x": x,
                 "y": y,
                 "color": color,
-                "n": arabic_digits(k + 1),
+                "n": ctx.num(k + 1),
                 "text": ctx.text(str(day.get("text", ""))),
             }
         )
@@ -764,7 +771,7 @@ def certificate_family(ctx: PageContext) -> Built:
         "name": ctx.book.child.name,
         "family": family.name if family else "",
         "members": ("مع " + members_line(family.members)) if family else "",
-        "date": arabic_date(ctx.book.date),
+        "date": ctx.book.date_ar(),
         "character": uri(hero),
         "badges": [seal(b, css_class="cert-seal") for b in CORE_BADGES],
         "star": _star,

@@ -9,7 +9,7 @@
   </div>
   <div class="mem-stars fcard">
     <span class="label">{{ icon('star') }}{{ d.stars_q }}</span>
-    <div class="stars-row">{% for i in range(5) %}<span class="st">{{ d.star }}<small>{{ arabic_digits(loop.index) }}</small></span>{% endfor %}</div>
+    <div class="stars-row">{% for i in range(d.stars) %}<span class="st">{{ d.star }}<small>{{ p.num(loop.index) }}</small></span>{% endfor %}</div>
   </div>
   <div class="mem-with fcard">
     <span class="label">{{ icon('family') }}{{ d.with_q }}</span>

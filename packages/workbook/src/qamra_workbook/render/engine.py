@@ -28,9 +28,10 @@ from qamra_workbook.render.sections import PATTERNS, SectionStyle, section_style
 from qamra_workbook.render.spec import (
     BookSpec,
     Geometry,
+    Numerals,
     PageSpec,
     Side,
-    arabic_digits,
+    format_number,
     leftover_placeholders,
     minutes_ar,
 )
@@ -49,7 +50,6 @@ _env.globals.update(
     icon=art.icon,
     mascot=art.mascot,
     stars=art.stars,
-    arabic_digits=arabic_digits,
     minutes_ar=minutes_ar,
     patterns=PATTERNS,
     tab_top=tab_top,
@@ -73,6 +73,13 @@ class RenderedPage:
     qr: Markup | None
     parent: tuple[str, ...] = ()  # the «للأهل» box, personalized
     section_name: str = ""  # the section's name as printed for this child
+    numerals: Numerals = "hindi"  # the page's numerals: the book's choice, or Latin on an English page
+    skill: str = ""  # the skill line for grown-ups, as printed
+    instruction_en: str = ""  # an English page's instruction, as printed
+
+    def num(self, value: int | str) -> str:
+        """A number in the page's work area (templates: `p.num(n)`); `book.num` for the book's furniture."""
+        return format_number(value, self.numerals)
 
 
 MAX_PARENT_LINES = 3  # A7 §5
@@ -107,6 +114,9 @@ def build_pages(book: BookSpec, assets: Assets) -> list[RenderedPage]:
                 qr_svg(book.audio_url(spec)) if spec.audio else None,
                 parent,
                 ctx.text(ctx.style.name_ar),
+                ctx.numerals,
+                ctx.text(spec.skill),
+                ctx.text(spec.instruction_en),
             )
         )
     if failures:

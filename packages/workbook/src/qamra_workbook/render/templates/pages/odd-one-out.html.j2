@@ -1,7 +1,7 @@
 <div class="odd">
 {% for row in d.rows %}
   <div class="odd-row{% if row.example %} is-example{% endif %}{% if row.pics|length > 4 %} five{% endif %}">
-    <div class="row-mark">{% if row.example %}{{ ui.example_tag() }}{% else %}<span class="num">{{ arabic_digits(row.n) }}</span>{% endif %}</div>
+    <div class="row-mark">{% if row.example %}{{ ui.example_tag() }}{% else %}<span class="num">{{ p.num(row.n) }}</span>{% endif %}</div>
     <div class="odd-cells">
     {% for pic in row.pics %}
       <div class="odd-cell">{{ pic }}{% if loop.index0 == row.odd and (row.example or solved) %}{{ d.ring('example' if row.example else 'answer') }}{% endif %}</div>

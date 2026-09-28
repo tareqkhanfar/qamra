@@ -1,0 +1,35 @@
+<div class="countpg">
+{% if d.mode == 'tally' %}
+  <div class="tally-card fcard">
+    {% for c in d.columns %}
+    <div class="tally-col lvl{{ c.level }}" style="--pc: {{ c.paint }}">
+      <span class="col-level">{% if c.level == 2 %}{{ stars(2) }}{% endif %}</span>
+      <div class="tally-squares">{% for s in d.squares %}<span></span>{% endfor %}</div>
+      <svg class="paint" viewBox="0 0 40 24" aria-hidden="true"><path d="M6 12 C4 4 14 2 20 4 C28 1 38 5 35 12 C38 20 28 23 20 20 C12 23 3 20 6 12 Z" fill="{{ c.paint }}"/></svg>
+      <b>{{ c.name }}</b>
+      <span class="how-many"><small>كم؟</small><i></i></span>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="tally-q fcard">
+    <span class="label">{{ icon('star') }}{{ d.question }}</span>
+    <div class="tally-dots">{% for c in d.columns %}<span style="--pc: {{ c.paint }}"></span>{% endfor %}</div>
+  </div>
+{% else %}
+  {% for row in d.rows %}
+  <div class="cmp-row fcard lvl{{ row.level }}">
+    <span class="row-level">{{ stars(row.level) }}</span>
+    {% for b in row.baskets %}
+    <div class="cmp-basket">
+      <div class="crate">{{ b.art }}</div>
+      <div class="cmp-under">
+        <span class="cmp-count"><small>كم؟</small><i>{% if solved %}{{ book.num(b.count) }}{% endif %}</i></span>
+        <span class="cmp-star{{ ' on' if solved and loop.index0 == row.more }}">{{ stars(1, 'mark-star', '#FFFFFF', '#E2A32A') }}</span>
+      </div>
+    </div>
+    {% if loop.first %}<div class="cmp-mid"><span class="cmp-vs">أم</span>{% if row.level == 2 %}<span class="cmp-diff"><small>بكم يزيد؟</small><i>{% if solved %}{{ row.diff }}{% endif %}</i></span>{% endif %}</div>{% endif %}
+    {% endfor %}
+  </div>
+  {% endfor %}
+{% endif %}
+</div>

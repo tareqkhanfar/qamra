@@ -1,3 +1,23 @@
+{% if d.mode == 'colors' %}
+<div class="hunt colorhunt">
+  <div class="hunt-top fcard">
+    <div class="hunt-kid">{% if d.character %}<img src="{{ d.character }}" alt="">{% endif %}</div>
+    <div class="hunt-target">
+      <div class="label">{{ icon('star') }}{{ d.lead }}</div>
+      <div class="hunt-row">{% for c in d.columns %}<span class="swatch lvl{{ c.level }}" style="--pc: {{ c.paint }}"><i></i>{{ c.name }}</span>{% endfor %}</div>
+    </div>
+    <div class="hunt-basket">{{ d.basket }}</div>
+  </div>
+  <div class="color-cols">
+    {% for c in d.columns %}
+    <div class="color-col fcard lvl{{ c.level }}" style="--pc: {{ c.paint }}">
+      <div class="color-head"><span class="blob"></span><b>{{ c.name }}</b><span class="color-hint">{{ c.hint }}</span>{% if c.level == 2 %}<span class="find-level">{{ stars(2) }}</span>{% endif %}</div>
+      {% for n in d.boxes %}<div class="color-box"><span class="check-box"></span></div>{% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% else %}
 <div class="hunt">
   <div class="hunt-top fcard">
     <div class="hunt-kid">{% if d.character %}<img src="{{ d.character }}" alt="">{% endif %}<span class="hunt-mag">{{ icon('magnifier') }}</span></div>
@@ -25,3 +45,4 @@
     </div>
   </div>
 </div>
+{% endif %}

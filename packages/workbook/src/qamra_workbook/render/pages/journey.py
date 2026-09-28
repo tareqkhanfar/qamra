@@ -10,7 +10,6 @@ from markupsafe import Markup, escape
 from qamra_workbook.render import art, draw
 from qamra_workbook.render.pages.motor import character_image
 from qamra_workbook.render.registry import Built, PageContext, page_type
-from qamra_workbook.render.spec import arabic_date, arabic_digits
 
 # the journey map (Addendum 6 §2): think → observe → listen → hand → pen → trace → write → read → create
 STOPS: tuple[dict[str, str], ...] = (
@@ -75,7 +74,9 @@ def _road(points: list[tuple[float, float]]) -> str:
     return draw.d_path(*commands)
 
 
-def _stop(x: float, y: float, stop: dict[str, str], number: int) -> str:
+def _stop(x: float, y: float, stop: dict[str, str], label: str) -> str:
+    """A stop on the map: its icon, a star to colour, its name and its number (`label`, in the book's
+    numerals)."""
     glyph = art.glyph(stop["icon"], "#FFFFFF", 2.3)
     color = stop["color"]
     return "".join(
@@ -109,7 +110,7 @@ def _stop(x: float, y: float, stop: dict[str, str], number: int) -> str:
             draw.el("circle", cx=x - 9, cy=y - 9, r=3.2, fill=color, stroke="#FFFFFF", stroke_width=0.8),
             draw.el(
                 "text",
-                arabic_digits(number),
+                label,
                 x=x - 9,
                 y=y - 7.9,
                 text_anchor="middle",
@@ -151,7 +152,10 @@ def journey_map(ctx: PageContext) -> Built:
         draw.path(road, stroke=ROAD, width=12.4),
         draw.path(road, stroke="#FFFFFF", width=0.9, stroke_dasharray="2.6 3.4", opacity=0.9),
     ]
-    body += [_stop(x, y, s, k) for k, ((x, y), s) in enumerate(zip(positions, stops, strict=True), start=1)]
+    body += [
+        _stop(x, y, s, ctx.num(k))
+        for k, ((x, y), s) in enumerate(zip(positions, stops, strict=True), start=1)
+    ]
     fx, fy = 14.0, ROWS_Y[-1]  # the finish flag
     body.append(
         draw.path(draw.d_path(("M", (fx, fy + 2)), ("L", (fx, fy - 24))), stroke="#7E5236", width=1.6)
@@ -211,7 +215,7 @@ def certificate(ctx: PageContext) -> Built:
     data = {
         "line": ctx.text(str(ctx.page.params.get("line", "لقد {أنهيتَ/أنهيتِ} «رحلتي الأولى للتعلّم»"))),
         "name": ctx.book.child.name,
-        "date": arabic_date(ctx.book.date),
+        "date": ctx.book.date_ar(),
         "character": ctx.assets.character.resolve().as_uri() if ctx.assets.character else "",
         "badges": badges,
         "star": _star,

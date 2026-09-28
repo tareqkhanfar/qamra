@@ -1,0 +1,17 @@
+<div class="sortpg">
+  <div class="sort-items">
+    {% for it in d.things %}
+    <div class="sort-item fcard"><div class="sort-pic">{{ it.pic }}</div><small>{{ it.word }}</small><span class="sort-dot"></span></div>
+    {% endfor %}
+  </div>
+  <div class="sort-gap" aria-hidden="true">{{ icon('pencil', 'ico sort-pencil') }}</div>
+  <div class="sort-groups">
+    {% for g in d.groups %}
+    <div class="sort-group fcard" style="--gc: {{ g.color or p.style.color }}">
+      <span class="sort-dot"></span>
+      {% if g.color %}<div class="sort-basket">{{ d.basket }}<span class="basket-chip">{{ g.mark }}</span></div>{% else %}<div class="sort-mark">{{ g.mark }}</div>{% endif %}
+      <b>{{ g.label }}</b>
+    </div>
+    {% endfor %}
+  </div>
+</div>

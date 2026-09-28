@@ -1,0 +1,23 @@
+<div class="journal">
+  <div class="jr-top fcard">
+    <span class="jr-icon">{{ icon(d.icon) }}</span>
+    <b class="jr-lead">{{ d.lead }}</b>
+    {% if d.hints %}
+    <span class="jr-like">مثل:</span>
+    <div class="jr-hints">{% for h in d.hints %}<div class="jr-hint"><div class="jr-hint-pic">{{ h.pic }}</div><small>{{ h.word }}</small></div>{% endfor %}</div>
+    {% endif %}
+  </div>
+  <div class="jr-grid n{{ d.entries|length }}">
+    {% for e in d.entries %}
+    <div class="jr-entry fcard lvl{{ e.level }}">
+      <div class="jr-head"><span class="pill-num">{{ e.n }}</span><span class="jr-level">{{ stars(e.level) }}</span></div>
+      <div class="jr-draw">{{ icon('crayon', 'ico jr-hint-ico') }}</div>
+      <div class="jr-name"><small>{{ d.name_label }}</small><div class="write-line"></div></div>
+      {% if e.level == 2 and d.chips %}<div class="jr-chips">{% for c in d.chips %}<span>{{ c }}</span>{% endfor %}</div>{% endif %}
+    </div>
+    {% endfor %}
+    {% if d.entries|length % 3 and d.character %}
+    <div class="jr-filler"><span class="jr-say">{{ d.say }}</span><img src="{{ d.character }}" alt=""></div>
+    {% endif %}
+  </div>
+</div>

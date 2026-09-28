@@ -19,6 +19,7 @@ from qamra_workbook.pictures.icons import (
     PINK_DEEP,
     PURPLE,
     RED,
+    SKY,
     SKY_LIGHT,
     SLATE,
     TAN,
@@ -391,6 +392,149 @@ _H = [
         main="#F4F1EA",
         knob=SLATE,
         window="#5A6078",
+    ),
+]
+
+_H += [
+    _pic(
+        "stall",
+        "بَسْطَة",
+        "market stall",
+        "place",
+        (
+            body("pole", rect(14, 30, 5, 58, 2), rect(81, 30, 5, 58, 2)),
+            body("main", p("M8 32 L92 32 L88 18 C70 12 30 12 12 18 Z")),
+            body(
+                "stripe",
+                p("M26 32 L30 15 L40 14 L38 32 Z"),
+                p("M50 32 L50 13 L60 14 L62 32 Z"),
+                p("M74 32 L70 15 L79 17 L86 32 Z"),
+            ),
+            body(
+                "scallop",
+                p(
+                    "M8 32 Q13 40 18 32 Q23 40 29 32 Q34 40 40 32 Q45 40 50 32 Q55 40 61 32 "
+                    "Q66 40 71 32 Q76 40 82 32 Q87 40 92 32 Z"
+                ),
+            ),
+            body("crate", rect(10, 64, 80, 24, 3)),
+            line(p("M10 76 L90 76"), p("M36 64 L36 88"), p("M64 64 L64 88")),
+            body("apple", c(20, 60, 6), c(29, 61, 6)),
+            body("orange", c(45, 60, 6), c(55, 61, 6)),
+            body("banana", p("M68 62 C72 52 82 52 86 56 C80 57 74 60 70 66 Z")),
+            shine(e(18, 58, 1.6, 2.6, 25), e(43, 58, 1.6, 2.6, 25)),
+        ),
+        pole=BROWN,
+        main=RED,
+        stripe=WHITE,
+        scallop=RED,
+        crate=TAN,
+        apple=RED,
+        orange=ORANGE,
+        banana="#F7C84A",
+    ),
+    _pic(
+        "basket",
+        "سَلَّة",
+        "basket",
+        "home",
+        (
+            line(p("M24 52 C24 18 76 18 76 52")),
+            body("main", p("M12 50 L88 50 L80 86 C79 89 76 90 73 90 L27 90 C24 90 21 89 20 86 Z")),
+            body("rim", rect(9, 45, 82, 10, 5)),
+            line(
+                p("M22 62 L78 62"),
+                p("M25 74 L75 74"),
+                p("M38 55 L40 90"),
+                p("M50 55 L50 90"),
+                p("M62 55 L60 90"),
+            ),
+        ),
+        main=TAN,
+        rim=BROWN,
+    ),
+]
+
+_H += [
+    _pic(
+        "gift",
+        "هَدِيَّة",
+        "gift",
+        "toy",
+        (
+            body("main", rect(18, 38, 64, 50, 4)),
+            body("lid", rect(13, 28, 74, 14, 4)),
+            body("ribbon", rect(44, 28, 12, 60)),
+            body(
+                "ribbon",
+                p("M50 28 C40 12 24 14 28 24 C31 30 42 30 50 28 Z"),
+                p("M50 28 C60 12 76 14 72 24 C69 30 58 30 50 28 Z"),
+            ),
+            shine(rect(22, 45, 4, 36, 2)),
+        ),
+        main=BLUE,
+        lid="#7FA2E8",
+        ribbon=PINK_DEEP,
+    ),
+    _pic(
+        "window",
+        "شُبّاك",
+        "window",
+        "home",
+        (
+            body("frame", rect(16, 16, 68, 68, 5)),
+            body(
+                "glass",
+                rect(23, 23, 25, 25, 2),
+                rect(52, 23, 25, 25, 2),
+                rect(23, 52, 25, 25, 2),
+                rect(52, 52, 25, 25, 2),
+            ),
+            body("sill", rect(10, 82, 80, 7, 3)),
+            shine(p("M27 42 L40 27 L44 27 L27 46 Z"), p("M56 71 L69 56 L73 56 L56 75 Z")),
+        ),
+        frame=WHITE,
+        glass=SKY,
+        sill=BROWN,
+    ),
+    _pic(
+        "watermelon",
+        "بَطّيخ",
+        "watermelon",
+        "fruit",
+        (
+            body("rind", p("M10 30 L90 30 L50 92 Z")),
+            body("main", p("M18 36 L82 36 L50 84 Z")),
+            ink(
+                e(38, 46, 1.8, 2.8),
+                e(55, 48, 1.8, 2.8),
+                e(46, 60, 1.8, 2.8),
+                e(62, 40, 1.8, 2.8),
+                e(30, 40, 1.8, 2.8),
+            ),
+            shine(e(35, 42, 2, 5, -30)),
+        ),
+        rind=LEAF_DARK,
+        main="#F2676E",
+    ),
+    _pic(
+        "book",
+        "كِتاب",
+        "book",
+        "home",
+        (
+            body("pages", rect(26, 14, 54, 74, 3)),
+            body("main", rect(20, 10, 54, 76, 4)),
+            body("band", rect(20, 22, 54, 8)),
+            body(
+                "star",
+                p("M47 46 L50.5 53 L58 54 L52.5 59 L54 66.5 L47 63 L40 66.5 L41.5 59 L36 54 L43.5 53 Z"),
+            ),
+        ),
+        pages=CREAM,
+        main=PURPLE,
+        band="#C9B6EE",
+        star="#F7C84A",
     ),
 ]
 

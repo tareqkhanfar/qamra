@@ -1,5 +1,5 @@
 <div class="spread {{ 'first' if d.first else 'second' }}">
-  <div class="spread-art" style="left: calc({{ d.shift }}mm - var(--inset))">{{ d.art }}</div>
+  <div class="spread-art" style="left: calc({{ d.shift }}mm - var(--inset)); width: {{ d.art_size[0] }}mm; height: {{ d.art_size[1] }}mm">{{ d.art }}</div>
   {% if d.first %}
   <div class="op-text">
     <div class="op-adv">{{ icon(p.style.icon) }}<span>المغامرة {{ d.adventure }}</span></div>

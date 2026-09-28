@@ -5,6 +5,11 @@
 and instructions may use `{child}` for the name and `{masc/fem}` variants (the storybook theme convention),
 resolved for the child's gender. A family book also resolves `{adult}`, `{member}`, `{family_name}` and
 `{city}` from its `Family` (Addendum 7 §7).
+
+Numerals (decision 2026-09-28 §4): a book prints Hindi numerals (١٢٣) on its Arabic and math pages by default,
+or Latin numerals (123) when the parent asks (`BookSpec.numerals`); English pages always print 123. Every
+number a page prints goes through `BookSpec.num` (builders: `PageContext.num`, templates: `p.num`, or
+`book.num` for the book's Arabic furniture), which calls `format_number`.
 """
 
 from __future__ import annotations
@@ -23,12 +28,14 @@ Lang = Literal["ar", "en"]
 Gender = Literal["m", "f"]
 Side = Literal["left", "right"]
 Where = Literal["home", "outside"]
+Numerals = Literal["hindi", "latin"]  # ١٢٣ or 123
 # how a family member is drawn until the illustrated-family add-on replaces the figures (A7 §7)
 Figure = Literal["woman", "man", "grandma", "grandpa", "girl", "boy", "baby", "adult"]
 
 _VARIANT = re.compile(r"\{([^{}/]+)/([^{}/]+)\}")
 _PLACEHOLDER = re.compile(r"\{[a-z_]+\}")
-_DIGITS = str.maketrans("0123456789", "٠١٢٣٤٥٦٧٨٩")
+_HINDI = str.maketrans("0123456789", "٠١٢٣٤٥٦٧٨٩")
+_LATIN = str.maketrans("٠١٢٣٤٥٦٧٨٩", "0123456789")
 _TASHKEEL = re.compile(r"[ً-ٰٟ]")
 MONTHS_AR = (
     "كانون الثاني",
@@ -46,21 +53,25 @@ MONTHS_AR = (
 )
 
 
-def arabic_digits(value: int | str) -> str:
-    return str(value).translate(_DIGITS)
+def format_number(value: int | str, numerals: Numerals = "hindi") -> str:
+    """The one place digits are written: every digit of `value` (a number, or a text with numbers in it) as
+    Hindi numerals (١٢٣) or Latin numerals (123), whichever way it was written."""
+    return str(value).translate(_HINDI if numerals == "hindi" else _LATIN)
 
 
-def arabic_date(day: dt.date) -> str:
-    return f"{arabic_digits(day.day)} {MONTHS_AR[day.month - 1]} {arabic_digits(day.year)}"
+def arabic_date(day: dt.date, numerals: Numerals = "hindi") -> str:
+    return (
+        f"{format_number(day.day, numerals)} {MONTHS_AR[day.month - 1]} {format_number(day.year, numerals)}"
+    )
 
 
-def minutes_ar(n: int) -> str:
+def minutes_ar(n: int, numerals: Numerals = "hindi") -> str:
     """«١٠ دقائق», «١٥ دقيقة»: the counted noun agrees with the number."""
     if n == 1:
         return "دقيقة"
     if n == 2:
         return "دقيقتان"
-    return f"{arabic_digits(n)} {'دقائق' if 3 <= n <= 10 else 'دقيقة'}"
+    return f"{format_number(n, numerals)} {'دقائق' if 3 <= n <= 10 else 'دقيقة'}"
 
 
 def leftover_placeholders(text: str) -> list[str]:
@@ -100,8 +111,21 @@ PRODUCT_GEOMETRY: dict[str, Geometry] = {
 }
 
 
-def product_geometry(product: str) -> Geometry:
-    return PRODUCT_GEOMETRY.get(product, Geometry())
+# The sizes a product can print at, chosen by one setting: the family book follows the printer's wire-o and
+# cutting templates, 21 × 28 cm or A4, with the same templates (Tareq's decision 5, 28 Sep 2026).
+PRODUCT_SIZES: dict[str, dict[str, Geometry]] = {
+    "family": {"21x28": Geometry(trim_w=210.0, trim_h=280.0), "a4": Geometry(trim_w=210.0, trim_h=297.0)},
+}
+
+
+def product_geometry(product: str, size: str | None = None) -> Geometry:
+    """The product's print size: its default, or one of its `PRODUCT_SIZES` by name."""
+    if size is None:
+        return PRODUCT_GEOMETRY.get(product, Geometry())
+    sizes = PRODUCT_SIZES.get(product, {})
+    if size not in sizes:
+        raise ValueError(f"{product} prints at {sorted(sizes) or 'its default size'}, not {size!r}")
+    return sizes[size]
 
 
 @dataclass(frozen=True)
@@ -241,7 +265,8 @@ class BookSpec:
     pages: tuple[PageSpec, ...]
     date: dt.date
     binding: Side = "right"  # Arabic books open from the right: page 1 is a left-hand page
-    digits: Lang = "ar"  # page numbers: Arabic-Indic (٠١٢٣) or Western (0123), a parent's choice (A5 §5)
+    # Hindi numerals (١٢٣) by default; a parent may ask for Latin ones (123) (A5 §5, decision 2026-09-28 §4)
+    numerals: Numerals = "hindi"
     audio_base: str = "https://qamra.app/a/"
     geometry: Geometry = field(default_factory=Geometry)
     family: Family | None = None  # the family book's family (A7 §7)
@@ -252,8 +277,21 @@ class BookSpec:
         other: Side = "right" if first == "left" else "left"
         return first if number % 2 else other
 
+    def numerals_for(self, lang: Lang = "ar") -> Numerals:
+        """The numerals text in `lang` prints: English is always 123; Arabic (and math) follows the book."""
+        return "latin" if lang == "en" else self.numerals
+
+    def num(self, value: int | str, lang: Lang = "ar") -> str:
+        """A number as printed in text of language `lang` (the page's language for its content, Arabic for
+        the book's own furniture: page numbers, the section chip, the answer key)."""
+        return format_number(value, self.numerals_for(lang))
+
     def folio(self, number: int) -> str:
-        return arabic_digits(number) if self.digits == "ar" else str(number)
+        """The page number: one style for the whole book, English pages included."""
+        return self.num(number)
+
+    def date_ar(self) -> str:
+        return arabic_date(self.date, self.numerals)
 
     def audio_url(self, page: PageSpec) -> str:
         return f"{self.audio_base}{page.id}"
@@ -304,6 +342,20 @@ def family_page_id(number: int) -> str:
     return f"family-p{number}"
 
 
+# the icon an opening spread shows for an activity, by the type of its first page
+OPENER_ICONS = {
+    "scavenger-hunt": "magnifier",
+    "drawing": "crayon",
+    "counting": "abacus",
+    "sort-choose": "puzzle",
+    "observation-journal": "eye",
+    "conversation-cards": "talk",
+    "price-tags": "shop",
+    "shopping-list": "cart",
+    "recipe-steps": "chef",
+}
+
+
 def from_family(placed: Placed, plan: FamilyPlan) -> PageSpec:
     """A family plan page as an engine page: the activity's icons, skills and safety note come along, and an
     opening spread gets its adventure number and passport stamp from the section."""
@@ -314,6 +366,14 @@ def from_family(placed: Placed, plan: FamilyPlan) -> PageSpec:
         section = plan.sections[order.index(placed.section)]
         params.setdefault("badge", section.badge)
         params.setdefault("adventure", order.index(section.id) + 1)
+        if page.type == "section-opener":  # «في هذه المغامرة»: the adventure's first activities
+            ahead = [
+                a for a in plan.activities if a.section == section.id and a.pages[0].type != "memory-page"
+            ]
+            params.setdefault(
+                "inside",
+                [{"icon": OPENER_ICONS.get(a.pages[0].type, "star"), "text": a.title} for a in ahead[:3]],
+            )
     tags = None
     if activity is not None:
         tags = ActivityTags(

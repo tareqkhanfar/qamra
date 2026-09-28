@@ -88,8 +88,8 @@
 .fam .tab { z-index: 3; }
 .frame-full.type-section-opener .foot { position: relative; z-index: 2; }
 .spread { position: relative; flex: 1; }
-.spread-art { position: absolute; top: calc(-1 * var(--inset)); width: 426mm; height: 286mm; }
-.spread-art > svg { width: 426mm; height: 286mm; }
+.spread-art { position: absolute; top: calc(-1 * var(--inset)); }
+.spread-art > svg { width: 100%; height: 100%; }
 .op-text { position: relative; display: flex; flex-direction: column; align-items: center; gap: 5mm; padding-top: 10mm; }
 .op-adv { display: inline-flex; align-items: center; gap: 2mm; height: 10mm; padding-inline: 2mm 5mm; border-radius: 5mm;
           background: var(--c); color: #FFFFFF; font: 800 14pt/1 var(--title); box-shadow: 0 1mm 0 var(--deep); }
@@ -172,7 +172,7 @@
 .notepad-count { font: 700 10pt var(--body); color: var(--muted); margin-inline-end: 4mm; }
 .list-row { flex: 1; display: flex; align-items: center; gap: 2.5mm; border-bottom: 0.4mm solid #EFE5D2; min-height: 0; }
 .list-row:last-child { border-bottom: 0; }
-.list-draw { width: 19mm; height: 19mm; flex: none; border: 0.5mm dashed #D8CBB0; border-radius: 3.5mm; }
+.list-draw { width: 16mm; height: 16mm; flex: none; border: 0.5mm dashed #D8CBB0; border-radius: 3.5mm; }
 .list-write { flex: 1; }
 .list-count { display: grid; grid-template-columns: repeat(3, 4.8mm); gap: 1mm; flex: none; direction: rtl; }
 .list-count span { width: 4.8mm; height: 4.8mm; border-radius: 50%; border: 0.5mm solid var(--c); }
@@ -195,7 +195,7 @@
 .lg .ico, .cc .ico { width: 3.6mm; height: 3.6mm; }
 .products { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2.5mm; }
 .product { display: flex; flex-direction: column; align-items: center; gap: 0.6mm; background: #FFFCF6; border-radius: 4mm; padding: 1.5mm 1mm 2mm; }
-.product-pic { width: 18mm; height: 18mm; }
+.product-pic { width: 15mm; height: 15mm; }
 .product small { font: 700 9pt var(--naskh); color: var(--ink-2); white-space: nowrap; }
 .chips { display: flex; gap: 1mm; }
 .chips .cc { background: #FFFFFF; color: var(--cc); box-shadow: inset 0 0 0 0.45mm var(--cc); }
@@ -435,3 +435,184 @@
 .ptag-line { height: 4mm; border-bottom: 0.45mm dashed #CDBF9F; }
 .ptag b { font: 800 8.5pt var(--title); color: var(--deep); align-self: flex-end; }
 .cut-note .ico { width: 5mm; height: 5mm; }
+
+/* ---- drawing */
+.drawpg { flex: 1; display: flex; flex-direction: column; gap: 4mm; min-height: 0; }
+.draw-card { position: relative; flex: 1; min-height: 0; border-style: dashed; border-color: #E6D6B6; }
+.draw-circle { position: absolute; left: 50%; top: 50%; width: min(78%, 120mm); aspect-ratio: 1; transform: translate(-50%, -50%);
+               border-radius: 50%; border: 0.8mm dashed var(--c); background: var(--tint); opacity: 0.55; }
+.crayons { position: absolute; top: 3mm; inset-inline-start: 4mm; display: flex; gap: 0.5mm; }
+.crayons i { width: 7mm; height: 7mm; color: var(--cc); }
+.crayons .ico { width: 100%; height: 100%; }
+.draw-kid { position: absolute; bottom: 2mm; inset-inline-end: 3mm; height: 46mm; }
+.draw-caption { flex: none; display: flex; align-items: flex-end; gap: 2mm; }
+.draw-caption .label { white-space: nowrap; }
+.draw-caption .write-line { flex: 1; }
+.tray-card { flex: none; padding: 4mm; display: flex; justify-content: center; }
+.tray-art svg { width: 150mm; height: 78mm; }
+.missing { display: flex; flex-direction: column; padding: 3.5mm 4.5mm; }
+.missing-q { position: absolute; left: 50%; top: 55%; transform: translate(-50%, -50%); font: 800 90pt/1 var(--title);
+             color: var(--tint); }
+
+/* ---- counting: a tally chart per color, or two baskets to compare */
+.countpg { flex: 1; display: flex; flex-direction: column; gap: 4mm; min-height: 0; }
+.tally-card { flex: 1; min-height: 0; display: flex; justify-content: space-evenly; align-items: stretch; padding: 4mm 5mm 3mm; }
+.tally-col { display: flex; flex-direction: column; align-items: center; gap: 1.5mm; width: 34mm; }
+.tally-col.lvl2 { border: 0.5mm dashed #E8C77F; border-radius: 5mm; background: #FFFCF4; padding-top: 1mm; }
+.col-level { height: 5mm; }
+.col-level .stars { height: 4.6mm; width: auto; }
+.tally-squares { flex: 1; display: flex; flex-direction: column-reverse; justify-content: flex-start; gap: 1.6mm; }
+.tally-squares span { width: 18mm; height: 15.6mm; border: 0.6mm solid var(--pc); border-radius: 2.5mm; background: #FFFFFF; }
+.paint { width: 16mm; height: 9.6mm; }
+.tally-col b { font: 800 13pt/1.1 var(--title); color: var(--ink); }
+.how-many { display: flex; align-items: center; gap: 1.2mm; }
+.how-many small { font: 700 8.5pt var(--body); color: var(--muted); }
+.how-many i, .cmp-count i, .cmp-diff i { width: 10mm; height: 10mm; border: 0.6mm solid var(--c); border-radius: 2.5mm;
+          background: #FFFFFF; display: flex; align-items: center; justify-content: center; font: 800 13pt var(--title);
+          font-style: normal; color: var(--answer); }
+.tally-q { flex: none; display: flex; align-items: center; justify-content: space-between; padding: 3mm 5mm; }
+.tally-dots { display: flex; gap: 4mm; }
+.tally-dots span { width: 11mm; height: 11mm; border-radius: 50%; background: var(--pc); box-shadow: 0 0 0 0.9mm #FFFFFF, 0 0 0 1.3mm var(--line); }
+.cmp-row { position: relative; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: space-around; padding: 3mm 5mm; }
+.cmp-row.lvl2 { border-style: dashed; border-color: #E8C77F; background: #FFFCF4; }
+.row-level { position: absolute; top: 2.5mm; inset-inline-start: 4mm; }
+.row-level .stars { height: 4.6mm; width: auto; }
+.cmp-basket { display: flex; flex-direction: column; align-items: center; gap: 2mm; }
+.crate { width: 60mm; height: 34mm; border-radius: 4mm; background: #F7E6C8; border: 0.7mm solid #D9B27C;
+         display: flex; align-items: center; justify-content: center; box-shadow: inset 0 -2.2mm 0 #EDD3A6; }
+.crate svg { width: 54mm; height: 30mm; }
+.cmp-under { display: flex; align-items: center; gap: 4mm; }
+.cmp-count, .cmp-diff { display: flex; align-items: center; gap: 1.2mm; }
+.cmp-count small, .cmp-diff small { font: 700 9pt var(--body); color: var(--muted); }
+.cmp-star .mark-star { width: 10mm; height: 10mm; }
+.cmp-star.on path { fill: #F7C84A; }
+.cmp-vs { font: 800 16pt var(--title); color: var(--deep); background: var(--tint); border-radius: 50%; width: 13mm; height: 13mm;
+          display: flex; align-items: center; justify-content: center; padding-top: 1mm; }
+.cmp-mid { display: flex; flex-direction: column; align-items: center; gap: 3mm; }
+.cmp-diff { flex-direction: column; gap: 0.6mm; }
+
+/* ---- sorting: things on the right, their groups on the left, joined by the child's lines */
+.sortpg { flex: 1; display: flex; gap: 0; min-height: 0; }
+.sort-items { width: 62mm; flex: none; display: flex; flex-direction: column; justify-content: space-between; gap: 2.5mm; }
+.sort-item { position: relative; flex: 1; max-height: 30mm; min-height: 0; display: flex; align-items: center; gap: 3mm;
+             padding: 1.5mm 3mm; }
+.sort-pic { height: 100%; max-height: 24mm; aspect-ratio: 1; flex: none; }
+.sort-item small { font: 700 11pt var(--naskh); color: var(--ink); }
+.sort-dot { position: absolute; top: 50%; width: 5mm; height: 5mm; margin-top: -2.5mm; border-radius: 50%; background: var(--c);
+            box-shadow: 0 0 0 1mm #FFFFFF, 0 0 0 1.4mm var(--line); }
+.sort-item .sort-dot { inset-inline-end: -2.5mm; }
+.sort-group .sort-dot { inset-inline-start: -2.5mm; background: var(--gc); }
+.sort-gap { flex: 1; position: relative; }
+.sort-pencil { position: absolute; top: 50%; left: 50%; width: 9mm; height: 9mm; transform: translate(-50%, -50%); color: var(--line); }
+.sort-groups { width: 64mm; flex: none; display: flex; flex-direction: column; justify-content: space-between; gap: 4mm; }
+.sort-group { position: relative; flex: 1; max-height: 58mm; display: flex; flex-direction: column; align-items: center;
+              justify-content: center; gap: 1.5mm; border-color: var(--gc); border-width: 0.7mm; }
+.sort-mark svg { width: 32mm; height: 32mm; }
+.sort-group b { font: 800 15pt/1.2 var(--title); color: var(--ink); }
+.sort-basket { position: relative; width: 34mm; height: 34mm; }
+.basket-chip { position: absolute; top: 0; inset-inline-end: -1mm; width: 11mm; height: 11mm; border-radius: 50%; background: var(--gc);
+               color: #FFFFFF; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 0.8mm #FFFFFF; }
+.basket-chip .group-ico { width: 7mm; height: 7mm; }
+
+/* ---- the observation journal */
+.journal { flex: 1; display: flex; flex-direction: column; gap: 4mm; min-height: 0; }
+.jr-top { flex: none; display: flex; align-items: center; gap: 3.5mm; padding: 3mm 5mm; }
+.jr-icon { width: 17mm; height: 17mm; border-radius: 50%; background: var(--c); color: #FFFFFF; display: flex; align-items: center;
+           justify-content: center; flex: none; box-shadow: 0 0 0 1.2mm var(--tint); }
+.jr-icon .ico { width: 11mm; height: 11mm; }
+.jr-lead { font: 800 14pt/1.3 var(--title); color: var(--deep); }
+.jr-like { margin-inline-start: auto; font: 700 10.5pt var(--body); color: var(--muted); }
+.jr-hints { display: flex; gap: 2mm; }
+.jr-hint { display: flex; flex-direction: column; align-items: center; }
+.jr-hint-pic { width: 14mm; height: 14mm; }
+.jr-hint small { font: 600 8pt var(--naskh); color: var(--muted); }
+.jr-grid { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 1fr; gap: 4mm; }
+.jr-entry { display: flex; flex-direction: column; gap: 1.5mm; padding: 2.5mm 3mm 3mm; min-height: 0; }
+.jr-entry.lvl2 { border-style: dashed; border-color: #E8C77F; background: #FFFCF4; }
+.jr-head { display: flex; align-items: center; justify-content: space-between; }
+.jr-level .stars { height: 4.6mm; width: auto; }
+.jr-draw { position: relative; flex: 1; min-height: 0; border-radius: 4mm; background: #FFFFFF; border: 0.4mm dashed #EADFC8; }
+.jr-hint-ico { position: absolute; bottom: 1.5mm; inset-inline-end: 1.5mm; width: 5mm; height: 5mm; color: #D8CBB0; }
+.jr-name { display: flex; align-items: flex-end; gap: 1.5mm; }
+.jr-name small { font: 700 9pt var(--body); color: var(--muted); white-space: nowrap; padding-bottom: 1mm; }
+.jr-name .write-line { flex: 1; height: 7mm; }
+.jr-chips { display: flex; gap: 2mm; justify-content: center; }
+.jr-chips span { padding: 0.8mm 3.5mm; border-radius: 3mm; border: 0.5mm solid var(--c); font: 700 9pt var(--body); color: var(--deep);
+                 background: #FFFFFF; }
+.jr-filler { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; min-height: 0; }
+.jr-filler img { height: 78%; min-height: 0; }
+.jr-say { position: relative; margin-bottom: 2mm; padding: 1.6mm 4mm; border-radius: 4mm; background: #FFFFFF; border: 0.5mm solid var(--c);
+          font: 700 10.5pt var(--body); color: var(--deep); }
+
+/* ---- conversation and role cards */
+.talkpg { flex: 1; display: flex; flex-direction: column; gap: 4mm; min-height: 0; }
+.roles { flex: 1; display: flex; gap: 5mm; min-height: 0; }
+.role { flex: 1; display: flex; flex-direction: column; gap: 3mm; padding: 4mm; min-height: 0; }
+.role-head { display: flex; align-items: center; gap: 3mm; padding-bottom: 3mm; border-bottom: 0.5mm dashed var(--line); }
+.role-pic { width: 22mm; height: 22mm; flex: none; }
+.role-head b { font: 800 19pt/1.2 var(--title); color: var(--deep); }
+.role-ico { margin-inline-start: auto; width: 10mm; height: 10mm; border-radius: 50%; background: var(--c); color: #FFFFFF;
+            display: flex; align-items: center; justify-content: center; }
+.role-ico .ico { width: 6mm; height: 6mm; }
+.role-lines { flex: 1; display: flex; flex-direction: column; justify-content: space-evenly; gap: 3mm; }
+.say-line { position: relative; padding: 3mm 4.5mm; border-radius: 5mm; background: var(--tint); font: 700 13pt/1.45 var(--body);
+            color: var(--ink); }
+.say-line::after { content: ""; position: absolute; bottom: -1.6mm; inset-inline-start: 6mm; width: 4mm; height: 4mm; background: var(--tint);
+                   transform: rotate(45deg); }
+.say-line.lvl2 { background: #FFFCF4; border: 0.5mm dashed #E8C77F; display: flex; align-items: center; gap: 2mm; }
+.say-line.lvl2::after { display: none; }
+.say-line .stars { height: 4.2mm; width: auto; flex: none; }
+.swap { flex: none; align-self: center; display: inline-flex; align-items: center; gap: 2.5mm; padding: 2.5mm 7mm; border-radius: 7mm;
+        background: var(--c); color: #FFFFFF; font: 800 14pt var(--title); box-shadow: 0 1mm 0 var(--deep); }
+.swap .ico { width: 6mm; height: 6mm; }
+.talk-cards { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; }
+.talk-card { display: flex; flex-direction: column; gap: 2mm; padding: 5mm; }
+.talk-card p { font: 700 14pt/1.5 var(--body); color: var(--ink); }
+
+/* ---- price tags: color the Qamra money that makes each price */
+.pricepg { flex: 1; display: flex; flex-direction: column; gap: 3.5mm; min-height: 0; }
+.price-row { position: relative; flex: 1; min-height: 0; display: flex; align-items: center; gap: 3mm; padding: 3mm 5mm 3mm 4mm; }
+.price-row.lvl2 { border-style: dashed; border-color: #E8C77F; background: #FFFCF4; }
+.price-items { display: flex; align-items: center; gap: 2mm; flex: none; }
+.price-item { display: flex; flex-direction: column; align-items: center; gap: 1mm; }
+.price-pic { width: 22mm; height: 22mm; }
+.tag-price { position: relative; display: inline-flex; align-items: center; gap: 1.2mm; padding: 0.8mm 3mm 0.8mm 2.2mm;
+             border-radius: 2mm; background: #FFF4D6; border: 0.5mm solid #E2A32A; font: 800 11pt var(--title); color: #8A5A08;
+             white-space: nowrap; }
+.tag-price i { width: 2.4mm; height: 2.4mm; border-radius: 50%; border: 0.45mm solid #E2A32A; background: #FFFFFF; }
+.price-plus { font: 800 18pt var(--title); color: var(--deep); }
+.price-arrow { width: 8mm; height: 8mm; color: var(--line); flex: none; }
+.price-arrow .ico { width: 100%; height: 100%; }
+.purse { flex: 1; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1.5mm 2mm; }
+.piece.coin { width: 15mm; height: 15mm; }
+.piece.note { width: 22mm; height: 11mm; }
+.piece-num { font: 800 15px var(--title); }
+.price-total { display: flex; flex-direction: column; align-items: center; gap: 0.5mm; }
+.price-total i { width: 12mm; height: 12mm; border: 0.6mm solid #E2A32A; border-radius: 3mm; background: #FFFFFF; }
+.price-total small { font: 700 8.5pt var(--body); color: #8A5A08; }
+
+/* ---- the color hunt */
+.swatch { display: inline-flex; align-items: center; gap: 1.2mm; font: 700 11pt var(--body); color: var(--ink); }
+.swatch i { width: 7mm; height: 7mm; border-radius: 50%; background: var(--pc); }
+.swatch.lvl2 { opacity: 0.8; }
+.hunt-basket { width: 30mm; flex: none; }
+.color-cols { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 3.5mm; }
+.color-col { display: flex; flex-direction: column; gap: 2.5mm; padding: 2.5mm; border-top: 3mm solid var(--pc); min-height: 0; }
+.color-col.lvl2 { border-style: dashed; border-top-style: solid; border-color: #E8C77F; border-top-color: var(--pc); background: #FFFCF4; }
+.color-head { display: flex; align-items: center; gap: 1.5mm; }
+.color-head .blob { width: 6mm; height: 6mm; border-radius: 50%; background: var(--pc); }
+.color-head b { font: 800 13pt/1.1 var(--title); color: var(--ink); }
+.color-hint { width: 9mm; height: 9mm; margin-inline-start: auto; }
+.color-head .find-level { margin-inline-start: 0; }
+.color-box { position: relative; flex: 1; min-height: 0; border-radius: 4mm; border: 0.5mm dashed var(--pc); background: #FFFFFF; }
+.color-box .check-box { position: absolute; top: 2mm; inset-inline-start: 2mm; width: 5.5mm; height: 5.5mm; border-color: var(--pc); }
+
+/* a safety reminder for an outdoor activity (A7 §9) */
+.safe-note { flex: none; display: flex; align-items: center; gap: 2mm; padding: 2mm 3.5mm; border-radius: 4mm; background: #FFF3EF;
+             border: 0.5mm solid #F5B7AC; color: #7A2A20; }
+.safe-note .ico { width: 6mm; height: 6mm; color: #E4675A; flex: none; }
+.safe-note span { font: 700 9.5pt/1.4 var(--body); max-height: 9.5mm; overflow: hidden; }
+.tray-card { position: relative; }
+.tray-legend { position: absolute; top: 3mm; inset-inline-start: 4mm; display: flex; flex-direction: column; gap: 1mm; }
+.tray-legend span { display: inline-flex; align-items: center; gap: 1.2mm; font: 800 11pt var(--title); color: #8A5A08; }
+.tray-legend .stars { height: 4.4mm; width: auto; }

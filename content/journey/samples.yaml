@@ -1,4 +1,5 @@
-# «رحلتي الأولى للتعلّم» — the 12 sample pages for approval (Addendum 6 §3.7).
+# «رحلتي الأولى للتعلّم» — the 12 sample pages for approval (Addendum 6 §3.7), updated for Tareq's decisions of
+# 2026-09-28 (docs/workbook/decisions-2026-09-28.md) and sent as one PDF.
 #
 #   uv run python -m qamra_workbook.render.samples        # → out/samples/journey/
 #
@@ -6,8 +7,11 @@
 # instruction of at most 7 words, the skill for grown-ups, goals and difficulty. Titles and instructions
 # take `{child}` and `{masc/fem}` variants. Engine-only keys live in `params`: `seed` fixes a puzzle (the
 # same seed always gives the same page), `lang: en` and `instruction_en` make an English page.
-# Page numbers follow the sample pages chosen in content/journey/plan.yaml (stages 1–2); the stage-3 pages
-# (spot the difference, certificate) are placeholders until stage 3 is planned.
+# Page numbers are the pages chosen in content/journey/plan.yaml (`samples:`), in the same order.
+#
+# `numerals`: hindi (١٢٣, the default) or latin (123, the parent's option) on Arabic and math pages; English
+# pages always print 123. Write numbers in texts as 1, 2, 3: the engine prints them in the page's numerals.
+# `latin_preview`: these sections are also rendered with latin numerals, into png-latin/.
 
 product: journey
 title_ar: رحلتي الأولى للتعلّم
@@ -16,6 +20,8 @@ child:
   gender: f
   character_sheet: content/workbook/samples/sample-character.png  # AI-drawn sample, not a real child
 date: 2026-09-28
+numerals: hindi
+latin_preview: [math]
 
 samples:
   - stage: 1
@@ -25,7 +31,7 @@ samples:
       type: journey-map
       title: "خريطة رحلة {child}"
       instruction: "{لوّن/لوّني} نجمة كل محطة {تنهيها/تنهينها}"
-      skill: "يتعرّف محطات رحلته ويتابع تقدّمه بنفسه"
+      skill: "يتعرّف محطات رحلته التسع ويتابع تقدّمه بنفسه"
       goals: [independence]
       difficulty: 1
       params:
@@ -46,19 +52,19 @@ samples:
 
   - stage: 1
     page:
-      n: 25
+      n: 22
       section: eye-hand
       type: maze
       title: "{ساعد/ساعدي} {child} للوصول إلى الحديقة"
       instruction: "{ارسم/ارسمي} الطريق بالقلم"
       skill: "التآزر البصري الحركي: يتبع طريقًا دون لمس الجدران"
       goals: [visual_motor, pen_control, attention]
-      difficulty: 1
+      difficulty: 2
       params: {seed: 19, cols: 5, rows: 5, goal: garden}
 
   - stage: 1
     page:
-      n: 40
+      n: 37
       section: hand
       type: themed-pen-drill
       title: "{ارسم/ارسمي} المطر"
@@ -71,7 +77,7 @@ samples:
 
   - stage: 1
     page:
-      n: 78
+      n: 70
       section: patterns
       type: pattern-complete
       title: "{أكمل/أكملي} النمط"
@@ -84,33 +90,33 @@ samples:
 
   - stage: 1
     page:
-      n: 85
+      n: 77
       section: smart-coloring
       type: smart-coloring
       title: "{لوّن/لوّني} كل الدوائر"
       instruction: "{لوّن/لوّني} الدوائر فقط مثل النموذج"
       skill: "التلوين الذكي: يلوّن حسب قاعدة ويميّز الدائرة"
       goals: [visual_discrimination, classification, fine_motor]
-      difficulty: 2
+      difficulty: 1
       example: true
       params: {seed: 52, target: circle, color: "#EE8A6E"}
 
   - stage: 1
     page:
-      n: 95
+      n: 104
       section: math
       type: quantity-first
       title: "كم تفاحة؟"
-      instruction: "{ضع/ضعي} دائرة حول البطاقة المساوية"
-      skill: "الكمية قبل الرقم: يطابق مجموعة (١–٣) بالكمية نفسها"
-      goals: [numbers, logic]
-      difficulty: 1
+      instruction: "{عُدّ/عُدّي} {وضع/وضعي} دائرة حول الرقم"
+      skill: "بعد العدّ: يتعرّف على الأرقام 1–5 بالنظر ويطابقها بالكمية، دون كتابتها"
+      goals: [numbers, attention, visual_discrimination]
+      difficulty: 2
       example: true
-      params: {seed: 71, picture: apple, counts: [1, 2, 3], options: [1, 2, 3]}
+      params: {seed: 71, picture: apple, answer_with: numerals, example: 3, counts: [2, 5, 4], options: [1, 2, 3, 4, 5], cards: 3}
 
   - stage: 1
     page:
-      n: 31
+      n: 28
       section: listening
       type: listen-and-choose
       title: "{اسمع/اسمعي} {واختر/واختاري}"
@@ -123,25 +129,25 @@ samples:
 
   - stage: 2
     page:
-      n: 24
+      n: 32
       section: arabic
       type: finger-trace
       title: "حرف الباء"
       instruction: "{مرّر/مرّري} إصبعك على الحرف"
-      skill: "يتتبّع شكل الباء بإصبعه في اتجاه الكتابة"
-      goals: [arabic, writing_readiness]
+      skill: "حرف جديد واحد: يرى الباء ويسمعها ويتتبعها بإصبعه في اتجاه الكتابة"
+      goals: [arabic, writing_readiness, visual_motor]
       difficulty: 2
       audio: true
       params: {letter: ب, form: isolated, word: duck}
 
   - stage: 2
     page:
-      n: 79
+      n: 80
       section: english
       type: en-letter
       title: "A a"
       instruction: "{تتبّع/تتبّعي} الحرف بالقلم"
-      skill: "يتعرّف الحرف A ويكتبه كبيرًا وصغيرًا"
+      skill: "Recognises A a, hears it and traces it, capital and small"
       goals: [english, pen_control]
       difficulty: 2
       audio: true
@@ -149,14 +155,14 @@ samples:
 
   - stage: 3
     page:
-      n: 109
+      n: 113
       section: games
       type: spot-difference
       title: "{أوجد/أوجدي} الفروق الخمسة"
       instruction: "{ضع/ضعي} دائرة حول كل فرق"
-      skill: "الانتباه والملاحظة: يقارن صورتين ويجد خمسة فروق"
+      skill: "الانتباه والملاحظة: يقارن صورتين ويجد 5 فروق"
       goals: [attention, observation, visual_discrimination]
-      difficulty: 3
+      difficulty: 4
       params: {seed: 97, count: 5}
 
   - stage: 3

@@ -9,7 +9,7 @@
           <b>{{ i.name }}</b>
           <div class="spoons">{% for k in range(i.count) %}{{ icon('spoon') }}{% endfor %}</div>
         </div>
-        <div class="ing-box"><small>كم؟</small><span class="box">{% if solved %}{{ arabic_digits(i.count) }}{% endif %}</span></div>
+        <div class="ing-box"><small>كم؟</small><span class="box">{% if solved %}{{ p.num(i.count) }}{% endif %}</span></div>
       </div>
       {% endfor %}
     </div>
@@ -18,7 +18,7 @@
   <div class="steps">
     {% for c in d.cards %}
     <div class="step fcard">
-      <span class="step-num">{% if solved %}{{ arabic_digits(c.n) }}{% endif %}</span>
+      <span class="step-num">{% if solved %}{{ p.num(c.n) }}{% endif %}</span>
       <div class="step-pic">{{ c.pic }}</div>
       <div class="step-text">{{ c.text }}</div>
     </div>

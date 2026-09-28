@@ -1,0 +1,13 @@
+<div class="drawpg frame-{{ d.frame }}">
+  {% if d.frame == 'tray' %}
+  <div class="tray-card fcard"><div class="tray-art">{{ d.tray }}</div>{% if d.legend %}<div class="tray-legend">{% for level, n in d.legend %}<span>{{ stars(level) }}{{ n }}</span>{% endfor %}</div>{% endif %}</div>
+  <div class="draw-card missing fcard"><span class="label">{{ icon('magnifier') }}{{ d.missing }}</span><span class="missing-q" aria-hidden="true">؟</span></div>
+  {% else %}
+  <div class="draw-card fcard">
+    {% if d.frame == 'circle' %}<div class="draw-circle" aria-hidden="true"></div>{% endif %}
+    <span class="crayons" aria-hidden="true">{% for c in ['#E4675A', '#F2B33D', '#2FA36B', '#2E9FD6'] %}<i style="--cc: {{ c }}">{{ icon('crayon') }}</i>{% endfor %}</span>
+    {% if d.character %}<img class="draw-kid" src="{{ d.character }}" alt="">{% endif %}
+  </div>
+  {% endif %}
+  <div class="draw-caption"><span class="label">{{ icon('pencil') }}{{ d.caption }}</span><div class="write-line"></div></div>
+</div>

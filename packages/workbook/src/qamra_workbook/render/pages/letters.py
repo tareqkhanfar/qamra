@@ -7,7 +7,7 @@ model the child sees and the path they trace are the same drawing.
 from __future__ import annotations
 
 import math
-from typing import Literal
+from collections.abc import Callable
 
 from markupsafe import Markup, escape
 
@@ -16,12 +16,11 @@ from qamra_workbook.pictures import get as picture
 from qamra_workbook.pictures.model import strip_tashkeel
 from qamra_workbook.render import draw
 from qamra_workbook.render.registry import Built, PageContext, page_type
-from qamra_workbook.render.spec import arabic_digits
 from qamra_workbook.strokes import Letter, letter
 
 ARROW_AT = (0.16, 0.37, 0.58, 0.78, 0.94)
 HARAKAT = ("\u064b", "\u0652")  # tanwin … sukun: they stay with the letter they sit on
-Digits = Literal["ar", "en"]
+Number = Callable[[int], str]  # writes a start dot's number in the page's numerals (PageContext.num)
 
 
 def start_points(strokes: tuple[Stroke, ...] | list[Stroke], radius: float) -> list[tuple[float, float]]:
@@ -43,7 +42,7 @@ def solid_letter(
     edge: str,
     width: float,
     arrows: tuple[float, ...] = ARROW_AT,
-    digits: Digits = "ar",
+    number: Number,
 ) -> str:
     """A thick letter body (in the letter's own units) with white direction arrows and numbered start dots."""
     out = []
@@ -61,11 +60,9 @@ def solid_letter(
                 point, angle = s.at(f)
                 out.append(draw.chevron(point, angle, width * 0.42, "#FFFFFF", width * 0.12))
     for k, point in enumerate(start_points(shape.strokes, width * 0.42), start=1):
-        label = arabic_digits(k) if digits == "ar" else str(k)
-        out.append(draw.start_dot(point, width * 0.42, label))
+        out.append(draw.start_dot(point, width * 0.42, number(k)))
     for k, (x, y) in enumerate(shape.dots, start=len(shape.strokes) + 1):
-        label = arabic_digits(k) if digits == "ar" else str(k)
-        out.append(draw.start_dot((x + width * 0.95, y), width * 0.3, label))
+        out.append(draw.start_dot((x + width * 0.95, y), width * 0.3, number(k)))
     return "".join(out)
 
 
@@ -99,7 +96,7 @@ def finger_trace(ctx: PageContext) -> Built:
     if strip_tashkeel(pic.word_ar)[:1] != shape.char:
         problems.append(f"{pic.word_ar} does not start with {shape.char}")
     vx, vy, vw, vh = letter_view(shape, 22)
-    body = solid_letter(shape, fill="#F7C84A", edge=ctx.style.deep, width=22)
+    body = solid_letter(shape, fill="#F7C84A", edge=ctx.style.deep, width=22, number=ctx.num)
     view = " ".join(draw.n(v) for v in (vx, vy, vw, vh))
     svg = Markup(  # nosec B704 (numbers and stroke data)
         f'<svg class="finger" viewBox="{view}" aria-hidden="true">{body}</svg>'
@@ -113,7 +110,7 @@ def finger_trace(ctx: PageContext) -> Built:
     return Built(data, None, problems)
 
 
-def dotted_letter(shape: Letter, *, scale: float, x: float, y: float, first: bool) -> str:
+def dotted_letter(shape: Letter, *, scale: float, x: float, y: float, first: bool, number: Number) -> str:
     """A letter in bold tracing dots at (x, y) (its design box's top-left), in mm."""
     moved = [s.scaled(scale, x, y) for s in shape.strokes]
     radius = 1.9 if first else 1.5
@@ -123,11 +120,13 @@ def dotted_letter(shape: Letter, *, scale: float, x: float, y: float, first: boo
             point, angle = s.at(min(0.55, 8.5 / max(s.length, 1)))
             out.append(draw.arrow(point, angle, 2.6))
     for k, point in enumerate(start_points(moved, radius), start=1):
-        out.append(draw.start_dot(point, radius, str(k) if first else "", font_size=2.6))
+        out.append(draw.start_dot(point, radius, number(k) if first else "", font_size=2.6))
     return "".join(out)
 
 
-def tracing_row(shape: Letter, *, width: float, cap: float, count: int | None = None) -> Markup:
+def tracing_row(
+    shape: Letter, *, width: float, cap: float, count: int | None = None, number: Number
+) -> Markup:
     """One writing row: guide lines, then `count` dotted letters (as many as fit when None); the first has
     numbered start dots and arrows, and the rest of the row is left for writing alone."""
     scale = cap / (shape.guides.base - shape.guides.top)
@@ -151,7 +150,11 @@ def tracing_row(shape: Letter, *, width: float, cap: float, count: int | None = 
     fits = int((width - 16 - glyph) // step) + 1
     for i in range(fits if count is None else min(count, fits)):
         x = 10 + i * step - x0 * scale
-        body.append(dotted_letter(shape, scale=scale, x=x, y=top - shape.guides.top * scale, first=i == 0))
+        body.append(
+            dotted_letter(
+                shape, scale=scale, x=x, y=top - shape.guides.top * scale, first=i == 0, number=number
+            )
+        )
     return draw.svg(width, height, "".join(body), "trace-row")
 
 
@@ -169,11 +172,11 @@ def en_letter(ctx: PageContext) -> Built:
         problems.append("English pages are LTR and carry the instruction in English too")
     model = (
         solid_letter(
-            capital, fill=ctx.style.color, edge=ctx.style.deep, width=12.5, arrows=(0.55,), digits="en"
+            capital, fill=ctx.style.color, edge=ctx.style.deep, width=12.5, arrows=(0.55,), number=ctx.num
         )
         + f'<g transform="translate({draw.n(capital.width + 6)} 0)">'
         + solid_letter(
-            small, fill=ctx.style.color, edge=ctx.style.deep, width=12.5, arrows=(0.4,), digits="en"
+            small, fill=ctx.style.color, edge=ctx.style.deep, width=12.5, arrows=(0.4,), number=ctx.num
         )
         + "</g>"
     )
@@ -188,9 +191,9 @@ def en_letter(ctx: PageContext) -> Built:
         ),
         "word_ar": pic.word_ar,
         "rows": [
-            tracing_row(capital, width=176, cap=33),
-            tracing_row(small, width=176, cap=33),
-            tracing_row(capital, width=176, cap=33, count=2),  # then on their own
+            tracing_row(capital, width=176, cap=33, number=ctx.num),
+            tracing_row(small, width=176, cap=33, number=ctx.num),
+            tracing_row(capital, width=176, cap=33, count=2, number=ctx.num),  # then on their own
         ],
     }
     return Built(data, None, problems)

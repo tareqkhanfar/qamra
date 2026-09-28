@@ -11,13 +11,13 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from markupsafe import Markup
+from markupsafe import Markup, escape
 
 from qamra_workbook.pictures.model import scallop_d
 from qamra_workbook.render import art, draw
 from qamra_workbook.render.pages.family import CORE_BADGES, seal, section_badges
 from qamra_workbook.render.registry import Built, PageContext, page_type
-from qamra_workbook.render.spec import arabic_digits
+from qamra_workbook.render.spec import Numerals, format_number
 
 CUT = "#EC008C"  # the printer's cut-contour color (a kiss-cut line, not printed ink)
 FOR_PLAY = "للعب فقط"
@@ -81,8 +81,9 @@ def cut_ring(r: float = 18.8) -> Markup:
     return Markup(f'<svg class="cut" viewBox="0 0 40 40" aria-hidden="true">{body}</svg>')  # nosec B704
 
 
-def day_star(day: int) -> Markup:
-    """A star sticker for one day of the family challenge, with its kiss-cut line."""
+def day_star(label: str) -> Markup:
+    """A star sticker for one day of the family challenge (`label`: the day, in the book's numerals), with
+    its kiss-cut line."""
     d = draw.star_points(20, 21, 17, 8.6)
     body = (
         draw.el(
@@ -97,7 +98,7 @@ def day_star(day: int) -> Markup:
         + draw.el("circle", cx=20, cy=22, r=6.2, fill="#FFFFFF")
     )
     svg = f'<svg class="day-art" viewBox="0 0 40 40" aria-hidden="true">{body}</svg>'
-    return Markup(f"{svg}<b>{arabic_digits(day)}</b>")  # nosec B704
+    return Markup(f"{svg}<b>{escape(label)}</b>")  # nosec B704
 
 
 MAX_STAMPS = 18  # three rows of six at the passport slot's size
@@ -123,7 +124,7 @@ def badge_sticker_sheet(ctx: PageContext) -> Built:
             {"svg": reward_sticker(k, c), "word": ctx.text(w), "kind": k, "ink": ink}
             for k, w, c, ink in REWARDS
         ],
-        "days": [day_star(i + 1) for i in range(CHALLENGE_DAYS)],
+        "days": [day_star(ctx.num(i + 1)) for i in range(CHALLENGE_DAYS)],
         "routine": [{"icon": i, "label": t, "color": c} for i, t, c in ROUTINE],
         "cut": cut_ring(),
         "owner": ctx.book.child.name,
@@ -143,13 +144,13 @@ NOTE_COLORS = {  # pastel, nothing like a real banknote
 }
 
 
-def qamra_count(n: int) -> str:
+def qamra_count(n: int, numerals: Numerals = "hindi") -> str:
     """«قمرة واحدة», «قمرتان», «٥ قمرات», «٢٠ قمرة»: the play currency's name agrees with the number."""
     if n == 1:
         return "قمرة واحدة"
     if n == 2:
         return "قمرتان"
-    return f"{arabic_digits(n)} {'قمرات' if 3 <= n <= 10 else 'قمرة'}"
+    return f"{format_number(n, numerals)} {'قمرات' if 3 <= n <= 10 else 'قمرة'}"
 
 
 def note_art(color: str, deep: str) -> Markup:
@@ -216,13 +217,13 @@ def play_money(ctx: PageContext) -> Built:
         notes.append(
             {
                 "art": note_art(color, deep),
-                "value": arabic_digits(v),
-                "words": qamra_count(v),
+                "value": ctx.num(v),
+                "words": qamra_count(v, ctx.numerals),
                 "deep": deep,
                 "play": FOR_PLAY,
             }
         )
-    coins = [{"art": coin_art(v), "value": arabic_digits(v), "play": FOR_PLAY} for v in coins_in]
+    coins = [{"art": coin_art(v), "value": ctx.num(v), "play": FOR_PLAY} for v in coins_in]
     printed = " ".join(
         [*(n["words"] for n in notes), ctx.text(ctx.page.title), ctx.text(ctx.page.instruction)]
     )

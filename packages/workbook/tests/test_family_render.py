@@ -242,27 +242,23 @@ def test_section_names_are_personalized() -> None:
     assert "أنا مسؤولة" in html and "{أنا مسؤول/" not in html
 
 
+FAMILY_ORDER = ["home", "market", "chef", "nature", "day", "responsible", "feelings", "talk", "jobs", "shop"]
+FAMILY_ORDER += ["games", "act"]
+
+
 def test_the_family_book_has_its_own_section_styles() -> None:
     assert section_style("games").name_ar == "ألعاب التفكير"  # the journey's, as before
     games = section_style("games", "family")
     assert games.name_ar == "ليلة الألعاب العائلية" and games.slots == 14
-    sections = [
-        "front",
-        "home",
-        "market",
-        "chef",
-        "day",
-        "talk",
-        "feelings",
-        "responsible",
-        "nature",
-        "jobs",
-        "shop",
-    ]
-    styles = [section_style(s, "family") for s in [*sections, "games", "act", "back"]]
+    styles = [section_style(s, "family") for s in ["front", *FAMILY_ORDER, "back"]]
+    assert [s.slot for s in styles] == list(range(14))  # the tabs step down in the book's order
     assert len({s.color for s in styles}) == len(styles) and len({s.pattern for s in styles}) == len(styles)
     tops = [tab_top(s, 280, 3) for s in styles]
     assert tops == sorted(tops) and tops[-1] + 26 <= 3 + 280 - 18 + 0.01  # a thumb index inside the trim
+    if PLAN.exists():
+        from qamra_workbook.family import load as load_plan
+
+        assert [s.id for s in load_plan(PLAN).sections] == FAMILY_ORDER
 
 
 def test_the_opening_spread_shares_one_landscape() -> None:
@@ -318,7 +314,7 @@ def test_the_family_samples_are_valid_and_match_the_plan() -> None:
     assert isinstance(samples, FamilySamples)
     b, inserts = book_from(samples), inserts_from(samples)
     assert inserts is not None
-    assert [p.number for p in b.pages] == [3, 6, 7, 8, 15, 18, 30, 54, 110, 112]
+    assert [p.number for p in b.pages] == [3, 6, 7, 8, 15, 18, 30, 64, 110, 112]
     assert [p.type for p in inserts.pages] == ["badge-sticker-sheet", "play-money"]
     assert b.geometry.page_w == 216 and b.geometry.page_h == 286
     assert book_problems(b) == [] and book_problems(inserts) == []
