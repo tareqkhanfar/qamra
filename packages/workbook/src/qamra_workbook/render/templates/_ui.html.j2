@@ -1,0 +1,68 @@
+{# The page frame: section tab, header wash, mission header, footer. #}
+
+{% macro tab(p, g) -%}
+{% set top = tab_top(p.style, g.trim_h, g.bleed) %}
+{% set uid = p.spec.id %}
+{% if p.side == 'left' %}
+  {% set shape = 'M0 0 L10.5 0 A4 4 0 0 1 14.5 4 L14.5 22 A4 4 0 0 1 10.5 26 L0 26 Z' %}{% set cx = g.bleed + 5.75 %}
+{% else %}
+  {% set shape = 'M14.5 0 L4 0 A4 4 0 0 0 0 4 L0 22 A4 4 0 0 0 4 26 L14.5 26 Z' %}{% set cx = 14.5 - g.bleed - 5.75 %}
+{% endif %}
+<div class="tab {{ p.side }}" style="top: {{ top }}mm">
+  <svg viewBox="0 0 14.5 26" aria-hidden="true">
+    <defs>
+      <pattern id="tp-{{ uid }}" width="6" height="6" patternUnits="userSpaceOnUse">{{ patterns[p.style.pattern]|safe }}</pattern>
+      <clipPath id="tc-{{ uid }}"><path d="{{ shape }}"/></clipPath>
+    </defs>
+    <path d="{{ shape }}" fill="{{ p.style.color }}"/>
+    <rect x="0" y="0" width="14.5" height="26" fill="url(#tp-{{ uid }})" clip-path="url(#tc-{{ uid }})" opacity="0.55"/>
+    <circle cx="{{ cx }}" cy="13" r="4.5" fill="#FFFFFF"/>
+    <svg x="{{ cx - 3.2 }}" y="9.8" width="6.4" height="6.4" viewBox="0 0 24 24">{{ icon(p.style.icon, 'ico', 2.4) }}</svg>
+  </svg>
+</div>
+{%- endmacro %}
+
+{% macro wash(p, g) -%}
+<div class="wash" aria-hidden="true">
+  <svg viewBox="0 0 {{ g.page_w }} 86" preserveAspectRatio="none">
+    <path d="M0 0 L{{ g.page_w }} 0 L{{ g.page_w }} 58 C{{ g.page_w * 0.78 }} 74 {{ g.page_w * 0.62 }} 50 {{ g.page_w * 0.44 }} 62 C{{ g.page_w * 0.27 }} 73 {{ g.page_w * 0.12 }} 56 0 66 Z" fill="{{ p.style.tint }}" opacity="0.75"/>
+    <circle cx="{{ g.page_w * 0.9 }}" cy="14" r="1.6" fill="{{ p.style.color }}" opacity="0.35"/>
+    <circle cx="{{ g.page_w * 0.1 }}" cy="22" r="1.2" fill="{{ p.style.color }}" opacity="0.35"/>
+    <circle cx="{{ g.page_w * 0.8 }}" cy="40" r="1" fill="{{ p.style.color }}" opacity="0.3"/>
+  </svg>
+</div>
+{%- endmacro %}
+
+{% macro chip(p) -%}
+<div class="chip" dir="rtl">{{ icon(p.style.icon) }}<span>{{ p.style.name_ar }}</span>{% if p.spec.stage %}<span class="sep"></span><span>المحطة {{ arabic_digits(p.spec.stage) }}</span>{% endif %}</div>
+{%- endmacro %}
+
+{% macro header(p) -%}
+<header class="head">
+  {{ chip(p) }}
+  <h1 class="title">{{ p.title }}</h1>
+  <div class="say">
+    {{ mascot('mascot', p.spec.dir == 'rtl') }}
+    <div class="bubble">{% if p.spec.instruction_en %}{{ p.spec.instruction_en }}<span class="second" dir="rtl" lang="ar">{{ p.instruction }}</span>{% else %}{{ p.instruction }}{% endif %}</div>
+  </div>
+</header>
+{%- endmacro %}
+
+{% macro footer(p) -%}
+<footer class="foot" dir="rtl">
+  {% if p.spec.skill %}<div class="skill" lang="ar">{{ icon('target') }}<span>{{ p.spec.skill }}</span></div>{% endif %}
+  <div class="folio">{{ p.folio }}</div>
+  <div class="brand" lang="ar">{{ mascot('mascot') }}<span>قمرة</span></div>
+</footer>
+{%- endmacro %}
+
+{% macro example_tag(label='مثال') -%}
+<span class="example-tag">{{ icon('star') }}{{ label }}</span>
+{%- endmacro %}
+
+{% macro qr_card(p, title='امسح واسمع', note='') -%}
+<div class="qr-card">
+  <div class="qr">{{ p.qr }}</div>
+  <div class="label">{{ icon('speaker') }}<span>{{ title }}</span>{% if note %}<small>{{ note }}</small>{% endif %}</div>
+</div>
+{%- endmacro %}

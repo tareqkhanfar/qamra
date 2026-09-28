@@ -1,0 +1,173 @@
+# «رحلتي الأولى للتعلّم» — the 12 sample pages for approval (Addendum 6 §3.7).
+#
+#   uv run python -m qamra_workbook.render.samples        # → out/samples/journey/
+#
+# `page` uses the journey plan's page schema (qamra_workbook.journey.JourneyPage): a big title, an
+# instruction of at most 7 words, the skill for grown-ups, goals and difficulty. Titles and instructions
+# take `{child}` and `{masc/fem}` variants. Engine-only keys live in `params`: `seed` fixes a puzzle (the
+# same seed always gives the same page), `lang: en` and `instruction_en` make an English page.
+# Page numbers follow the sample pages chosen in content/journey/plan.yaml (stages 1–2); the stage-3 pages
+# (spot the difference, certificate) are placeholders until stage 3 is planned.
+
+product: journey
+title_ar: رحلتي الأولى للتعلّم
+child:
+  name: ليان
+  gender: f
+  character_sheet: content/workbook/samples/sample-character.png  # AI-drawn sample, not a real child
+date: 2026-09-28
+
+samples:
+  - stage: 1
+    page:
+      n: 2
+      section: intro
+      type: journey-map
+      title: "خريطة رحلة {child}"
+      instruction: "{لوّن/لوّني} نجمة كل محطة {تنهيها/تنهينها}"
+      skill: "يتعرّف محطات رحلته ويتابع تقدّمه بنفسه"
+      goals: [independence]
+      difficulty: 1
+      params:
+        stops: [أفكر, ألاحظ, أسمع, أحرّك يدي, أمسك القلم, أتتبع, أكتب, أقرأ, أحل وأبدع]
+
+  - stage: 1
+    page:
+      n: 4
+      section: think
+      type: odd-one-out
+      title: "مَنِ المختلف؟"
+      instruction: "{ضع/ضعي} دائرة حول المختلف"
+      skill: "التمييز البصري: يجد الصورة المختلفة بين أربع"
+      goals: [observation, visual_discrimination]
+      difficulty: 1
+      example: true
+      params: {seed: 6, rules: [same, same, same, category], sizes: [4, 4, 4, 5]}
+
+  - stage: 1
+    page:
+      n: 25
+      section: eye-hand
+      type: maze
+      title: "{ساعد/ساعدي} {child} للوصول إلى الحديقة"
+      instruction: "{ارسم/ارسمي} الطريق بالقلم"
+      skill: "التآزر البصري الحركي: يتبع طريقًا دون لمس الجدران"
+      goals: [visual_motor, pen_control, attention]
+      difficulty: 1
+      params: {seed: 19, cols: 5, rows: 5, goal: garden}
+
+  - stage: 1
+    page:
+      n: 40
+      section: hand
+      type: themed-pen-drill
+      title: "{ارسم/ارسمي} المطر"
+      instruction: "{تتبّع/تتبّعي} خطوط المطر من الغيمة"
+      skill: "ما قبل الكتابة: خطوط عمودية من الأعلى إلى الأسفل"
+      goals: [pen_control, fine_motor, writing_readiness]
+      difficulty: 1
+      example: true
+      params: {theme: rain, clouds: 3, lines: 3}
+
+  - stage: 1
+    page:
+      n: 78
+      section: patterns
+      type: pattern-complete
+      title: "{أكمل/أكملي} النمط"
+      instruction: "ماذا يأتي بعد ذلك؟ {ارسمه/ارسميه}"
+      skill: "الأنماط: يكمل نمطًا من عنصرين"
+      goals: [logic, sequencing]
+      difficulty: 1
+      example: true
+      params: {seed: 43, units: [AB, AB, AB, ABB], shown: [4, 4, 5, 6]}
+
+  - stage: 1
+    page:
+      n: 85
+      section: smart-coloring
+      type: smart-coloring
+      title: "{لوّن/لوّني} كل الدوائر"
+      instruction: "{لوّن/لوّني} الدوائر فقط مثل النموذج"
+      skill: "التلوين الذكي: يلوّن حسب قاعدة ويميّز الدائرة"
+      goals: [visual_discrimination, classification, fine_motor]
+      difficulty: 2
+      example: true
+      params: {seed: 52, target: circle, color: "#EE8A6E"}
+
+  - stage: 1
+    page:
+      n: 95
+      section: math
+      type: quantity-first
+      title: "كم تفاحة؟"
+      instruction: "{ضع/ضعي} دائرة حول البطاقة المساوية"
+      skill: "الكمية قبل الرقم: يطابق مجموعة (١–٣) بالكمية نفسها"
+      goals: [numbers, logic]
+      difficulty: 1
+      example: true
+      params: {seed: 71, picture: apple, counts: [1, 2, 3], options: [1, 2, 3]}
+
+  - stage: 1
+    page:
+      n: 31
+      section: listening
+      type: listen-and-choose
+      title: "{اسمع/اسمعي} {واختر/واختاري}"
+      instruction: "{ضع/ضعي} دائرة حول الحيوان الذي {تسمعه/تسمعينه}"
+      skill: "التمييز السمعي: يعرف الحيوان من صوته"
+      goals: [auditory_discrimination, attention]
+      difficulty: 1
+      audio: true
+      params: {choices: [cow, cat, sheep, duck], answer: cat, sound: "مياو"}
+
+  - stage: 2
+    page:
+      n: 24
+      section: arabic
+      type: finger-trace
+      title: "حرف الباء"
+      instruction: "{مرّر/مرّري} إصبعك على الحرف"
+      skill: "يتتبّع شكل الباء بإصبعه في اتجاه الكتابة"
+      goals: [arabic, writing_readiness]
+      difficulty: 2
+      audio: true
+      params: {letter: ب, form: isolated, word: duck}
+
+  - stage: 2
+    page:
+      n: 79
+      section: english
+      type: en-letter
+      title: "A a"
+      instruction: "{تتبّع/تتبّعي} الحرف بالقلم"
+      skill: "يتعرّف الحرف A ويكتبه كبيرًا وصغيرًا"
+      goals: [english, pen_control]
+      difficulty: 2
+      audio: true
+      params: {letter: A, word: apple, lang: en, instruction_en: "Trace the letters."}
+
+  - stage: 3
+    page:
+      n: 97
+      section: games
+      type: spot-difference
+      title: "{أوجد/أوجدي} الفروق الخمسة"
+      instruction: "{ضع/ضعي} دائرة حول كل فرق"
+      skill: "الانتباه والملاحظة: يقارن صورتين ويجد خمسة فروق"
+      goals: [attention, observation, visual_discrimination]
+      difficulty: 3
+      params: {seed: 97, count: 5}
+
+  - stage: 3
+    page:
+      n: 112
+      section: finale
+      type: certificate
+      title: "{أحسنتَ يا بطل/أحسنتِ يا بطلة}!"
+      instruction: "{لوّن/لوّني} النجوم {واحتفل/واحتفلي}"
+      skill: "شهادة إتمام الرحلة"
+      goals: [independence]
+      difficulty: 1
+      params:
+        line: "لقد {أنهيتَ/أنهيتِ} «رحلتي الأولى للتعلّم»"

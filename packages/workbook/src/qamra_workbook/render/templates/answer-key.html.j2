@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head><meta charset="utf-8"><title>مفتاح الإجابات — {{ book.title_ar }}</title>
+<style>
+{% include "_base.css.j2" %}
+{% include "_pages.css.j2" %}
+{% include "_answer-key.css.j2" %}
+</style></head>
+<body>
+{% for sheet in sheets %}
+<section class="page key-sheet" dir="rtl" style="--c: #E2A32A; --tint: #FCEFD2; --deep: #8A5A08;">
+  <div class="safe">
+    <header class="key-head">
+      <div class="key-title">{{ mascot('mascot') }}<div><h1>مفتاح الإجابات</h1><p>{{ book.title_ar }} · للأهل والمعلمين</p></div></div>
+      <div class="key-sheet-no">{{ arabic_digits(loop.index) }} / {{ arabic_digits(loop.length) }}</div>
+    </header>
+    <div class="key-grid">
+    {% for p in sheet %}
+      <article class="key-card">
+        <div class="mini-frame"><div class="mini">{% with pages=[p] %}{% include "_page.html.j2" %}{% endwith %}</div></div>
+        <div class="key-text">
+          <div class="key-page"><span class="key-folio" style="background: {{ p.style.tint }}; color: {{ p.style.deep }}">{{ p.folio }}</span>
+            <span class="key-name">{{ p.title }}</span></div>
+          <div class="key-meta">المحطة {{ arabic_digits(p.spec.stage) }} · {{ p.style.name_ar }}</div>
+          <ul>{% for line in p.built.answer %}<li>{{ line }}</li>{% endfor %}</ul>
+        </div>
+      </article>
+    {% endfor %}
+    </div>
+  </div>
+</section>
+{% endfor %}
+</body></html>

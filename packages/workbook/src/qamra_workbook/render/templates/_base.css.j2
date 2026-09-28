@@ -1,0 +1,89 @@
+/* Static font instances from qamra_pdf (SIL OFL). Baloo Bhaijaan 2 for titles, IBM Plex Sans Arabic for
+   instructions and labels, Noto Naskh Arabic for vowelized words. Chromium embeds them as TrueType. */
+@font-face { font-family: "Baloo Bhaijaan 2"; src: url("{{ fonts }}/BalooBhaijaan2-Medium.ttf") format("truetype"); font-weight: 400 600; }
+@font-face { font-family: "Baloo Bhaijaan 2"; src: url("{{ fonts }}/BalooBhaijaan2-ExtraBold.ttf") format("truetype"); font-weight: 700 900; }
+@font-face { font-family: "Noto Naskh Arabic"; src: url("{{ fonts }}/NotoNaskhArabic-Regular.ttf") format("truetype"); font-weight: 400 600; }
+@font-face { font-family: "Noto Naskh Arabic"; src: url("{{ fonts }}/NotoNaskhArabic-Bold.ttf") format("truetype"); font-weight: 700 900; }
+@font-face { font-family: "IBM Plex Sans Arabic"; src: url("{{ fonts }}/IBMPlexSansArabic-Regular.ttf") format("truetype"); font-weight: 400 500; }
+@font-face { font-family: "IBM Plex Sans Arabic"; src: url("{{ fonts }}/IBMPlexSansArabic-SemiBold.ttf") format("truetype"); font-weight: 600 900; }
+
+@page { size: {{ g.page_w }}mm {{ g.page_h }}mm; margin: 0; }
+
+/* design/tokens.json (print-safe subset) */
+:root {
+  --ink: #1C2140; --ink-2: #3D4262; --muted: #676B83; --line: #E4D6BC; --line-soft: #EFE5D2;
+  --paper: #FFFDF9; --card: #FFFFFF; --sunk: #F7F0E3;
+  --night: #16204A; --moon: #F2B33D; --moon-deep: #9A620A; --moon-glow: #FCEFD2;
+  --go: #2FA36B; --coral: #E27D63; --answer: #E0483A;
+  --inset: {{ g.inset }}mm; --bleed: {{ g.bleed }}mm;
+  --title: "Baloo Bhaijaan 2", "IBM Plex Sans Arabic", sans-serif;
+  --body: "IBM Plex Sans Arabic", "Noto Naskh Arabic", sans-serif;
+  --naskh: "Noto Naskh Arabic", "IBM Plex Sans Arabic", serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--paper); color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { font-family: var(--body); }
+svg { display: block; overflow: visible; }
+.dot-label { font-family: var(--title); font-weight: 800; fill: #FFFFFF; }
+
+.page { position: relative; width: {{ g.page_w }}mm; height: {{ g.page_h }}mm; overflow: hidden;
+        break-after: page; page-break-after: always; background: var(--paper); }
+.page:last-child { break-after: auto; page-break-after: auto; }
+.safe { position: absolute; inset: var(--inset); display: flex; flex-direction: column; }
+.work { position: relative; flex: 1; display: flex; flex-direction: column; min-height: 0; }
+
+/* soft section-colored wash behind the header (never behind a work area) */
+.wash { position: absolute; top: 0; inset-inline: 0; height: 86mm; pointer-events: none; }
+.wash svg { width: 100%; height: 100%; }
+
+/* section tab on the outer edge: color + pattern + icon, bleeding off the page */
+.tab { position: absolute; width: 14.5mm; height: 26mm; }
+.tab.left { left: 0; } .tab.right { right: 0; }
+.tab svg { width: 14.5mm; height: 26mm; }
+.tab .ico { color: var(--c); }
+
+/* header: section chip, big title, the moon guide with the instruction */
+.head { display: flex; flex-direction: column; align-items: center; gap: 2.2mm; margin-bottom: 5mm; position: relative; }
+.chip { align-self: flex-start; display: inline-flex; align-items: center; gap: 1.6mm; height: 7.4mm; padding: 0 3mm 0 2.4mm;
+        border-radius: 3.7mm; background: var(--card); color: var(--deep); font: 600 9.5pt var(--body);
+        box-shadow: 0 0 0 0.35mm var(--tint); }
+.chip .ico { width: 4.6mm; height: 4.6mm; color: var(--c); }
+.chip .sep { width: 1.1mm; height: 1.1mm; border-radius: 50%; background: var(--c); opacity: .6; }
+.title { font: 800 31pt/1.15 var(--title); color: var(--night); text-align: center; letter-spacing: 0; margin-top: 0.5mm; }
+.title .accent { color: var(--c); }
+.swash { width: 34mm; height: 3.2mm; margin-top: -1.2mm; color: var(--c); }
+.say { display: flex; align-items: center; gap: 0; margin-top: 1mm; }
+.mascot { width: 19mm; height: 19mm; flex: none; position: relative; z-index: 2; }
+.bubble { position: relative; background: var(--card); border: 0.6mm solid var(--c); border-radius: 6mm;
+          padding: 2.2mm 6mm 2.6mm; font: 600 15.5pt/1.5 var(--body); color: var(--ink); margin-inline-start: 1.2mm;
+          box-shadow: 0 0.9mm 0 var(--tint); }
+.bubble::before { content: ""; position: absolute; top: 50%; width: 3.4mm; height: 3.4mm; background: var(--card);
+                  border: 0.6mm solid var(--c); transform: translateY(-50%) rotate(45deg); }
+[dir="rtl"] .bubble::before { right: -2.05mm; border-bottom: 0; border-left: 0; }
+[dir="ltr"] .bubble::before { left: -2.05mm; border-top: 0; border-right: 0; }
+.bubble .second { display: block; font: 600 11.5pt/1.5 var(--body); color: var(--muted); }
+
+/* footer: the skill for grown-ups, and the page number */
+.foot { position: relative; height: 9mm; margin-top: 4mm; display: flex; align-items: center; padding-inline: 1.2mm; }
+.skill { display: flex; align-items: center; gap: 1.5mm; font: 500 8.5pt var(--body); color: var(--muted); max-width: 70mm; }
+.skill .ico { width: 3.8mm; height: 3.8mm; color: var(--c); flex: none; }
+.folio { position: absolute; left: 50%; transform: translateX(-50%); min-width: 10mm; height: 10mm; padding: 0 2mm;
+         border-radius: 5mm; background: var(--tint); color: var(--deep); display: flex; align-items: center;
+         justify-content: center; font: 800 13pt var(--title); }
+.brand { margin-inline-start: auto; display: flex; align-items: center; gap: 1.2mm; font: 800 9pt var(--title); color: var(--muted); }
+.brand .mascot { width: 5.5mm; height: 5.5mm; }
+
+/* shared pieces */
+.card { background: var(--card); border: 0.5mm solid var(--line); border-radius: 6mm; }
+.pic { width: 100%; height: 100%; }
+.example-tag { display: inline-flex; align-items: center; gap: 1.2mm; height: 6.4mm; padding: 0 2.6mm; border-radius: 3.2mm;
+               background: var(--moon-glow); color: var(--moon-deep); font: 700 9.5pt var(--body); }
+.example-tag .ico { width: 4mm; height: 4mm; }
+.qr-card { display: flex; align-items: center; gap: 3mm; padding: 3mm 3.5mm; border-radius: 5mm; background: var(--card);
+           border: 0.5mm solid var(--line); }
+.qr-card .qr { width: 24mm; height: 24mm; flex: none; }
+.qr-card .qr svg { width: 100%; height: 100%; }
+.qr-card .label { display: flex; flex-direction: column; gap: 1mm; font: 700 12pt var(--body); color: var(--ink); }
+.qr-card .label .ico { width: 7mm; height: 7mm; color: var(--c); }
+.qr-card .label small { font: 500 8.5pt/1.45 var(--body); color: var(--muted); }
+.answer-ring { fill: none; stroke: var(--answer); stroke-width: 1.1; stroke-linecap: round; }

@@ -1,0 +1,12 @@
+{% import "_ui.html.j2" as ui with context %}
+{% set d = p.built.data %}
+<section class="page type-{{ p.spec.type }} side-{{ p.side }} frame-{{ p.kind.frame }}" dir="{{ p.spec.dir }}" lang="{{ p.spec.lang }}"
+         data-page="{{ p.spec.id }}" style="--c: {{ p.style.color }}; --tint: {{ p.style.tint }}; --deep: {{ p.style.deep }};">
+  {% if p.kind.frame == 'mission' %}{{ ui.wash(p, g) }}{% endif %}
+  {{ ui.tab(p, g) }}
+  <div class="safe">
+    {% if p.kind.frame == 'mission' %}{{ ui.header(p) }}{% endif %}
+    <main class="work">{% include p.kind.template %}</main>
+    {{ ui.footer(p) }}
+  </div>
+</section>

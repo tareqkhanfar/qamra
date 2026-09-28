@@ -1,0 +1,35 @@
+<div class="cert">
+  <svg class="cert-border" viewBox="0 0 186 262" preserveAspectRatio="none" aria-hidden="true">
+    <rect x="1.5" y="1.5" width="183" height="259" rx="10" fill="#FFFFFF" stroke="#E2A32A" stroke-width="2.2"/>
+    <rect x="6" y="6" width="174" height="250" rx="7" fill="none" stroke="#F2C96B" stroke-width="0.7" stroke-dasharray="1.6 1.8"/>
+  </svg>
+  <svg class="cert-stars" viewBox="0 0 186 262" aria-hidden="true">
+    {% for x, y, r in [(16,18,6),(170,20,5),(12,120,4.5),(174,112,5.5),(16,236,5.5),(170,240,6),(28,52,3.6),(158,54,3.8),(150,250,3.6),(176,176,4),(10,180,4),(36,250,3.4)] %}
+    <path d="{{ d.star(x, y, r) }}" fill="#FFFFFF" stroke="#E2A32A" stroke-width="0.8" stroke-linejoin="round"/>
+    {% endfor %}
+  </svg>
+  <div class="cert-body">
+    <div class="cert-ribbon">
+      <svg viewBox="0 0 120 22" preserveAspectRatio="none" aria-hidden="true"><path d="M0 4 L10 4 L10 18 L0 18 L5 11 Z M120 4 L110 4 L110 18 L120 18 L115 11 Z" fill="#C98A1B"/><path d="M8 1 L112 1 L112 17 L8 17 Z" fill="#E2A32A"/></svg>
+      <span>شهادة إنجاز</span>
+    </div>
+    <div class="cert-heading">{{ icon('cap', 'ico cap') }}<h1>{{ p.title }}</h1></div>
+    <p class="cert-line">{{ d.line }}</p>
+    <div class="cert-hero">
+      <svg class="cert-burst" viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r="48" fill="#FCEFD2"/>
+        {% for i in range(16) %}<path d="M50 50 L{{ d.ray(i, 0) }} L{{ d.ray(i, 1) }} Z" fill="#F8E0A6" opacity="0.7"/>{% endfor %}
+        <circle cx="50" cy="50" r="30" fill="#FFF6E0"/>
+      </svg>
+      {% if d.character %}<img class="cert-child" src="{{ d.character }}" alt="">{% endif %}
+      <div class="cert-medal">{{ d.medal }}</div>
+    </div>
+    <div class="cert-name"><span>{{ d.name }}</span></div>
+    <div class="cert-stops">{% for b in d.badges %}{{ b }}{% endfor %}<span class="cert-done">{{ icon('check') }}</span></div>
+    <div class="cert-sign">
+      <div><span class="cert-label">التاريخ</span><span class="cert-value">{{ d.date }}</span></div>
+      <div><span class="cert-label">توقيع الأهل أو المعلّمة</span><span class="cert-value cert-blank"></span></div>
+    </div>
+    <div class="say cert-say">{{ mascot('mascot', true) }}<div class="bubble">{{ p.instruction }}</div></div>
+  </div>
+</div>

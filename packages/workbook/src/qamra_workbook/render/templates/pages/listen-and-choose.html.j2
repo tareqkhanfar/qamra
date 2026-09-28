@@ -1,0 +1,8 @@
+<div class="listen">
+  {{ ui.qr_card(p, 'امسح الرمز واسمع', 'للأهل: امسحوا الرمز بالهاتف ليسمع الطفل الصوت، أو قلّدوا صوت أحد الحيوانات.') }}
+  <div class="listen-grid n{{ d.cards|length }}">
+  {% for card in d.cards %}
+    <div class="listen-card">{{ card.pic }}{% if card.hit and solved %}{{ d.ring('answer') }}{% endif %}</div>
+  {% endfor %}
+  </div>
+</div>

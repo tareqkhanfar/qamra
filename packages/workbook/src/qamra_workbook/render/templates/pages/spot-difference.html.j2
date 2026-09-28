@@ -1,0 +1,8 @@
+<div class="spot">
+  <div class="spot-scene">{{ d.a }}</div>
+  <div class="spot-scene">{{ d.b_solved if solved else d.b }}</div>
+  <div class="tally">
+    <span class="tally-label">{{ icon('check') }}كم فرقًا {{ 'وجدتِ' if book.child.gender == 'f' else 'وجدتَ' }}؟</span>
+    {% for i in range(d.count) %}<span class="tally-dot">{% if solved %}{{ icon('check') }}{% endif %}</span>{% endfor %}
+  </div>
+</div>

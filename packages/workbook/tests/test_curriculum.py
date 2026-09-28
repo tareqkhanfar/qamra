@@ -3,11 +3,13 @@ from typing import Any
 
 import pytest
 from qamra_workbook.curriculum import (
+    Curriculum,
     Page,
     Unit,
     Volume,
     check_interleaving,
     check_numbering,
+    check_numbers,
     check_one_sided,
     check_reviews,
     load,
@@ -90,3 +92,19 @@ def test_units_end_with_a_review_and_subjects_with_an_assessment() -> None:
 @pytest.mark.parametrize("path", sorted(CURRICULUM.glob("*.yaml")), ids=lambda p: p.stem)
 def test_curriculum_plans_keep_every_rule(path: Path) -> None:
     assert problems(load(path)) == []
+
+
+def test_a_number_intro_without_a_number_is_reported_not_crashed() -> None:
+    v = volume([page(1, "math", "number-intro", "m")], [Unit(id="m", subject="math", title_ar="أعداد")])
+    plan = Curriculum(
+        level="kg2",
+        age="5–6",
+        title_ar="x",
+        title_en="x",
+        letter_order=[],
+        progression_notes="",
+        interleaving_notes="",
+        alignment_notes="",
+        volumes=[v],
+    )
+    assert "V1 p1: number-intro needs params.number" in check_numbers(plan)

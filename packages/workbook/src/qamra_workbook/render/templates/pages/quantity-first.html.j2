@@ -1,0 +1,14 @@
+<div class="qty">
+{% for row in d.rows %}
+  <div class="qty-row{% if row.example %} is-example{% endif %}">
+    <div class="row-mark">{% if row.example %}{{ ui.example_tag() }}{% else %}<span class="num mark">{{ icon(row.mark) }}</span>{% endif %}</div>
+    <div class="qty-group">{{ row.group }}</div>
+    <div class="qty-arrow"><svg viewBox="0 0 24 12"><path d="M22 6 L4 6 M9 1.5 L3.5 6 L9 10.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="qty-cards">
+    {% for card in row.cards %}
+      <div class="qty-card">{{ card }}{% if loop.index0 == row.answer and (row.example or solved) %}{{ d.ring('example' if row.example else 'answer') }}{% endif %}</div>
+    {% endfor %}
+    </div>
+  </div>
+{% endfor %}
+</div>

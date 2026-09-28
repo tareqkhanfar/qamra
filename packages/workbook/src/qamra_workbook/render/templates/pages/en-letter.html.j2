@@ -1,0 +1,14 @@
+<div class="en-page">
+  <div class="en-top">
+    <div class="en-model-card">{{ d.model }}</div>
+    <div class="en-word-card">
+      <div class="word-pic">{{ d.pic }}</div>
+      <div class="en-word">{{ d.word }}</div>
+      <div class="en-word-ar" dir="rtl" lang="ar">{{ d.word_ar }}</div>
+    </div>
+    <div class="en-qr">{{ p.qr }}<span>{{ icon('speaker') }}Scan &amp; listen</span></div>
+  </div>
+  <div class="en-rows">
+    {% for row in d.rows %}<div class="en-row">{{ row }}</div>{% endfor %}
+  </div>
+</div>

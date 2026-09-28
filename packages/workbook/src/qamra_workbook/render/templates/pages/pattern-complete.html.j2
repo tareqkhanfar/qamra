@@ -1,0 +1,16 @@
+<div class="pattern">
+{% for row in d.rows %}
+  <div class="pat-row{% if row.example %} is-example{% endif %}">
+    <div class="row-mark">{% if row.example %}{{ ui.example_tag() }}{% else %}<span class="num">{{ arabic_digits(row.n) }}</span>{% endif %}</div>
+    <div class="pat-items" style="--slots: {{ row.slots }}">
+      {% for item in row.shown %}<div class="pat-cell">{{ item }}</div>{% endfor %}
+      {% for item in row.answers %}
+      <div class="pat-cell blank">
+        {% if row.example or solved %}<div class="pat-answer{% if not row.example %} key{% endif %}">{{ item }}</div>
+        {% else %}<span class="pat-hint">{{ icon('pencil') }}{{ icon('sticker') }}</span>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endfor %}
+</div>

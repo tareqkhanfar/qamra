@@ -1,0 +1,8 @@
+<div class="coloring">
+  <div class="model-card">
+    <span class="model-label">{{ icon('crayon') }}النموذج</span>
+    <div class="model-shapes">{{ d.model }}</div>
+    <span class="model-note">{{ d.target_ar }} فقط</span>
+  </div>
+  <div class="scene-card">{{ d.scene_solved if solved else d.scene }}</div>
+</div>

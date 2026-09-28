@@ -337,7 +337,11 @@ def check_english(c: Curriculum) -> list[str]:
 def check_numbers(c: Curriculum) -> list[str]:
     out = []
     for v in c.volumes:
-        intros = tuple(int(p.params.get("number", -1)) for p in v.pages if p.type == "number-intro")
+        missing = [p.n for p in v.pages if p.type == "number-intro" and not _numbers(p.params)]
+        out += [f"V{v.volume} p{n}: number-intro needs params.number" for n in missing]
+        intros = tuple(
+            min(_numbers(p.params)) for p in v.pages if p.type == "number-intro" and _numbers(p.params)
+        )
         want = NUMBERS_BY_VOLUME.get(v.volume, ())
         if want and intros[: len(want)] != want:
             out.append(
