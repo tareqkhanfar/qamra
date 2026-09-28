@@ -1,14 +1,15 @@
 """Check and render a curriculum plan (run from the repository root).
 
 python -m qamra_workbook.plan check kg2    # rule problems (exit 1 when any) and page counts
-python -m qamra_workbook.plan render kg2   # also writes docs/workbook/plan-kg2.md
+python -m qamra_workbook.plan render kg2   # also writes docs/workbook/plan-kg2.md and, in Arabic for the
+                                           # educator, docs/workbook/educator-kg2.md
 """
 
 import sys
 from collections import Counter
 from pathlib import Path
 
-from qamra_workbook.curriculum import load, problems, render_markdown
+from qamra_workbook.curriculum import load, problems, render_educator, render_markdown
 
 CURRICULUM_DIR = Path("content/workbook/curriculum")
 DOCS_DIR = Path("docs/workbook")
@@ -31,9 +32,12 @@ def main(argv: list[str] | None = None) -> int:
     print(f"{len(found)} problem(s)")
     if command == "render":
         DOCS_DIR.mkdir(parents=True, exist_ok=True)
-        out = DOCS_DIR / f"plan-{level}.md"
-        out.write_text(render_markdown(plan, str(source)), encoding="utf-8")
-        print("wrote", out)
+        for out, text in (
+            (DOCS_DIR / f"plan-{level}.md", render_markdown(plan, str(source))),
+            (DOCS_DIR / f"educator-{level}.md", render_educator(plan, str(source))),
+        ):
+            out.write_text(text, encoding="utf-8")
+            print("wrote", out)
     return 1 if found else 0
 
 
