@@ -1,5 +1,15 @@
 # Changelog
 
+## Addendum 4, step 6: the self-hosted GPU option, prepared and off (2026-09-28)
+
+- **`ComfyImageProvider`:** talks to our own ComfyUI server over HTTP (upload the references, queue the workflow, fetch the image, forget the job).
+  - It is for Qamra Classic edits only, chosen in the admin, and falls back to fal automatically when the server is down.
+  - It runs only a workflow whose model license is approved in `docs/licenses.md`. None is yet.
+- **Admin:**
+  - new settings group «خادم الرسم الخاص (GPU)»;
+  - a cost-dashboard card with the server's health (GPUs, free memory) and the Classic image spend on the API vs the GPU's monthly cost, with a recommendation.
+- **Docs:** `docs/licenses.md` (every model, font and self-hosted program with its license) and `docs/runbooks/self-hosted-gpu.md` (server, privacy, deployment, health, fallback, rollback).
+
 ## Addendum 7: the proposal approved; printer prices in the admin (2026-09-28)
 
 - The plan follows Tareq's answers: the new adventure order, the market-to-kitchen link, and the play-money levels.

@@ -123,7 +123,7 @@ Spec: `docs/ADDENDUM-04.md`. The store also carries the workbook line from `docs
   - price simulator;
   - reports: sales by product, theme, style and add-on; average order value; attach rate; preview → purchase per line; AI cost trend; B2B vs B2C;
   - CSV and Excel export.
-- [ ] **Step 6 — Self-hosted provider (inactive)**
+- [x] **Step 6 — Self-hosted provider (inactive)** — built 2026-09-28; no workflow approved yet (klein 4B awaits approval)
   - `SelfHostedProvider` for ComfyUI over HTTP (Classic edits only), selectable in admin, falling back to fal;
   - health check;
   - API-versus-GPU cost comparison in admin;

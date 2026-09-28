@@ -1068,5 +1068,25 @@
     "total": "Order total",
     "margin": "Margin",
     "basis": "Our cost = printer + {other} (packaging and the character drawing). One copy sells at retail, {retail}."
+  },
+  "selfHosted": {
+    "title": "Self-hosted GPU",
+    "self": "our own server",
+    "now": "Qamra Classic edits are drawn by: {provider}.",
+    "unapproved": "The workflow «{workflow}» isn't approved in docs/licenses.md, so fal draws instead.",
+    "status": {
+      "off": "Not set up",
+      "up": "Up",
+      "down": "Not responding"
+    },
+    "spend": "Classic image spend on the API (last 30 days)",
+    "images": "{n} images",
+    "gpu": "GPU server per month",
+    "advice": "Recommendation",
+    "recommendation": {
+      "no_data": "Not enough data yet. Enter the server cost in the settings and wait for Classic orders.",
+      "stay_on_api": "Stay on the API: its monthly spend is below the server's cost.",
+      "consider_gpu": "The API spend is above the server's cost: the GPU is worth a trial (once the model's license is approved)."
+    }
   }
 }

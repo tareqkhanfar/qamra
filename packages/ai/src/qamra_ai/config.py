@@ -10,7 +10,7 @@ from typing import Literal
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-ImageProviderName = Literal["fal", "gemini", "openai", "fake", "sketch"]
+ImageProviderName = Literal["fal", "gemini", "openai", "self_hosted", "fake", "sketch"]
 TextProviderName = Literal["anthropic", "fake"]
 ResolutionName = Literal["0.5K", "1K", "2K", "4K"]
 FinalMode = Literal["1k_upscale", "2k_upscale"]
@@ -50,6 +50,12 @@ class Settings(BaseSettings):
     gemini_image_size: Literal["1K", "2K", "4K"] = "2K"
     openai_image_model: str = "gpt-image-2.5-sunburst"
     openai_image_quality: Literal["low", "medium", "high", "xhigh", "max", "auto"] = "high"
+
+    # Self-hosted GPU (Addendum 4 §8): our ComfyUI server, for Classic template edits only; off by default
+    classic_image_provider: Literal["fal", "self_hosted"] = "fal"
+    self_hosted_url: str = ""
+    self_hosted_token: SecretStr | None = None
+    self_hosted_workflow: str = ""  # a file in qamra_ai/image/comfy_workflows/, approved in docs/licenses.md
 
     # Resolution tiers (Addendum 3 §2.1)
     preview_resolution: ResolutionName = "0.5K"

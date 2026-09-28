@@ -27,6 +27,12 @@ def _single(settings: Settings, name: ImageProviderName) -> ImageProvider:
         return OpenAIImageProvider(
             _secret(settings.openai_api_key), settings.openai_image_model, settings.openai_image_quality
         )
+    if name == "self_hosted":
+        from qamra_ai.image.comfy import ComfyImageProvider
+
+        return ComfyImageProvider(
+            settings.self_hosted_url, _secret(settings.self_hosted_token), settings.self_hosted_workflow
+        )
     if name == "sketch":
         from qamra_ai.image.sketch import SketchImageProvider
 
