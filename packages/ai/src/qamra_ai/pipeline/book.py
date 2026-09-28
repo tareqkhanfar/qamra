@@ -62,8 +62,7 @@ def default_companion(theme: Theme, lang: Lang) -> CompanionSpec | None:
 async def generate_book(rt: Runtime, req: BookRequest) -> BookArtifacts:
     use_drawing = req.theme.companion_slot and req.cleaned_drawing is not None and req.companion
     character_task = generate_character_sheet(rt, req.child, req.photos, req.style)
-    if use_drawing:
-        assert req.cleaned_drawing is not None and req.companion is not None
+    if use_drawing and req.cleaned_drawing is not None and req.companion is not None:
         character_sheet, options = await asyncio.gather(
             character_task,
             generate_companion_options(rt, req.cleaned_drawing, req.companion, req.style),

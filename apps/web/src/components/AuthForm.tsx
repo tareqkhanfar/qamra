@@ -9,9 +9,7 @@ import { TextField } from "@/components/ui/TextField";
 import { Link, useRouter } from "@/i18n/navigation";
 import { api, errorText, safeNext, type User } from "@/lib/api";
 
-const GOOGLE_ENABLED = process.env.NEXT_PUBLIC_GOOGLE_LOGIN === "1";
-
-export function AuthForm({ mode }: { mode: "login" | "register" }) {
+export function AuthForm({ mode, googleEnabled = false }: { mode: "login" | "register"; googleEnabled?: boolean }) {
   const t = useTranslations("auth");
   const te = useTranslations("errors");
   const locale = useLocale();
@@ -96,7 +94,7 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
         {mode === "register" ? t("submitRegister") : t("submitLogin")}
       </Button>
 
-      {GOOGLE_ENABLED && (
+      {googleEnabled && (
         <>
           <div className="flex items-center gap-3 text-caption text-ink-faint">
             <span className="h-px flex-1 bg-line" />

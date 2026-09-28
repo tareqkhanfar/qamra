@@ -110,8 +110,10 @@ export function ThemesGrid({
       </div>
       {shown.length ? (
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-7">
-          {shown.map((t) => (
-            <ThemeCardView key={t.slug} theme={t} variant="catalog" price={price} />
+          {shown.map((t, i) => (
+            <div key={t.slug} data-reveal style={{ "--d": `${(i % 3) * 90}ms` } as React.CSSProperties}>
+              <ThemeCardView theme={t} variant="catalog" price={price} />
+            </div>
           ))}
         </div>
       ) : (

@@ -4,7 +4,6 @@ import uuid
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 
-from qamra_core.db.models import AuditLog, Locale, RefreshToken, User, UserRole
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -14,10 +13,12 @@ from qamra_api.security import (
     create_access_token,
     hash_password,
     hash_refresh_token,
+    is_common_password,
     new_refresh_token,
     verify_password,
 )
 from qamra_api.settings import ApiSettings
+from qamra_core.db.models import AuditLog, Locale, RefreshToken, User, UserRole
 
 
 @dataclass(frozen=True)
@@ -50,6 +51,13 @@ def audit(
     )
 
 
+def check_password_strength(password: str, email: str = "") -> None:
+    if len(password) < MIN_PASSWORD_LENGTH:
+        raise ApiError("weak_password", 422)
+    if is_common_password(password) or (email and password.lower() == email.lower().split("@")[0]):
+        raise ApiError("common_password", 422)
+
+
 async def register(
     db: AsyncSession,
     *,
@@ -59,8 +67,7 @@ async def register(
     locale: Locale,
     role: UserRole = UserRole.parent,
 ) -> User:
-    if len(password) < MIN_PASSWORD_LENGTH:
-        raise ApiError("weak_password", 422)
+    check_password_strength(password, email)
     if await find_user_by_email(db, email) is not None:
         raise ApiError("email_taken", 409)
     user = User(
@@ -74,6 +81,20 @@ async def register(
     await db.flush()
     audit(db, "user.registered", user.id, method="password")
     return user
+
+
+async def change_password(db: AsyncSession, user: User, current: str, new: str) -> None:
+    if user.password_hash is None or not verify_password(current, user.password_hash):
+        raise ApiError("wrong_password", 403)
+    check_password_strength(new, user.email)
+    user.password_hash = hash_password(new)
+    await db.execute(
+        update(RefreshToken)
+        .where(RefreshToken.user_id == user.id, RefreshToken.revoked_at.is_(None))
+        .values(revoked_at=datetime.now(UTC), revoked_reason="password_change")
+    )
+    audit(db, "user.password_changed", user.id)
+    await db.flush()
 
 
 async def authenticate(db: AsyncSession, email: str, password: str) -> User:

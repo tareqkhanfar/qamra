@@ -1,6 +1,7 @@
 import uuid
 
 import pytest
+
 from qamra_api.security import (
     TokenInvalid,
     create_access_token,
@@ -40,5 +41,13 @@ def test_prod_requires_real_secret_and_secure_cookies() -> None:
         ApiSettings(_env_file=None, env="prod", cookie_secure=True)  # type: ignore[call-arg]
     with pytest.raises(ValueError):
         ApiSettings(_env_file=None, env="prod", jwt_secret="y" * 40, cookie_secure=False)  # type: ignore[call-arg]
-    ok = ApiSettings(_env_file=None, env="prod", jwt_secret="y" * 40, cookie_secure=True)  # type: ignore[call-arg]
+    with pytest.raises(ValueError):  # secrets in the DB need their own key in prod
+        ApiSettings(_env_file=None, env="prod", jwt_secret="y" * 40, cookie_secure=True)  # type: ignore[call-arg]
+    ok = ApiSettings(
+        _env_file=None,
+        env="prod",
+        jwt_secret="y" * 40,
+        cookie_secure=True,  # type: ignore[call-arg]
+        settings_encryption_keys="k1",
+    )
     assert ok.env == "prod"

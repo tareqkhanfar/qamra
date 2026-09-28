@@ -5,12 +5,13 @@ from typing import Any, Literal
 
 from fastapi import APIRouter
 from pydantic import BaseModel
-from qamra_ai.pipeline.theme import CatalogArt, Theme, render_template
-from qamra_core.db.models import Theme as ThemeRow
 from sqlalchemy import select
 
+from qamra_ai.pipeline.theme import CatalogArt, Theme, render_template
+from qamra_api import runtime_settings
 from qamra_api.deps import SessionDep, SettingsDep
 from qamra_api.errors import ApiError
+from qamra_core.db.models import Theme as ThemeRow
 
 router = APIRouter(prefix="/api", tags=["catalog"])
 Lang = Literal["ar", "en"]
@@ -75,7 +76,8 @@ def _card(theme: Theme, lang: Lang) -> ThemeCard:
 def _peek(theme: Theme, lang: Lang) -> list[PeekItem]:
     """Design: illustration · text · illustration · illustration (text from the real story)."""
     c = theme.catalog
-    assert c is not None
+    if c is None:
+        return []
     arts: list[CatalogArt] = c.peek or [c.art]
     items = [PeekItem(kind="art", art=arts[0].model_dump())]
     if theme.pages and c.sample_child:
@@ -163,14 +165,21 @@ async def get_theme(slug: str, db: SessionDep, lang: Lang = "ar") -> ThemeDetail
 
 class Price(BaseModel):
     product: Literal["digital", "softcover", "hardcover"]
-    amount: Decimal | None  # None = not decided yet ("coming soon")
-    currency: Literal["ILS"] = "ILS"
+    amount: Decimal | None  # None = not set
+    currency: Literal["ILS", "JOD"] = "ILS"
 
 
 @router.get("/pricing")
-async def pricing(settings: SettingsDep) -> list[Price]:
+async def pricing(
+    db: SessionDep, settings: SettingsDep, currency: Literal["ILS", "JOD"] = "ILS"
+) -> list[Price]:
+    values = (await runtime_settings.current(db, settings)).values
+    suffix = currency.lower()
     return [
-        Price(product="digital", amount=settings.price_digital_ils),
-        Price(product="softcover", amount=settings.price_softcover_ils),
-        Price(product="hardcover", amount=settings.price_hardcover_ils),
+        Price(
+            product=p,
+            amount=Decimal(v) if (v := values.get(f"price_{p}_{suffix}")) not in (None, "") else None,
+            currency=currency,
+        )
+        for p in ("digital", "softcover", "hardcover")
     ]

@@ -399,6 +399,23 @@ class OrderItem(IdMixin, Base):
     unit_price: Mapped[Decimal] = mapped_column(Numeric(10, 2))
 
 
+# ---- admin-managed settings ------------------------------------------------------------------
+
+
+class AppSetting(Base):
+    """One admin-managed setting (registry: qamra_core.app_settings). Secrets live in `secret_ciphertext`."""
+
+    __tablename__ = "app_settings"
+
+    key: Mapped[str] = mapped_column(String(64), primary_key=True)
+    value: Mapped[Any | None] = mapped_column(JSONB)
+    secret_ciphertext: Mapped[str | None] = mapped_column(Text)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    )
+    updated_by_user_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"))
+
+
 # ---- leads -------------------------------------------------------------------------------------
 
 

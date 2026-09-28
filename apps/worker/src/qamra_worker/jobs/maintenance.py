@@ -5,12 +5,12 @@ from dataclasses import asdict, dataclass
 from datetime import UTC, datetime, timedelta
 
 import structlog
-from qamra_core.db.models import AuditLog, Book, BookStatus, ChildPhoto, Companion, PhotoStatus
-from qamra_core.settings import CoreSettings
-from qamra_core.storage import ObjectStorage
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from qamra_core.db.models import AuditLog, Book, BookStatus, ChildPhoto, Companion, PhotoStatus
+from qamra_core.settings import CoreSettings
+from qamra_core.storage import ObjectStorage
 from qamra_worker import context
 from qamra_worker.settings import get_settings
 
@@ -55,7 +55,8 @@ def cleanup_expired_media(
         .with_for_update(skip_locked=True)
     ).all()
     for comp in companions:
-        assert comp.drawing_key is not None
+        if comp.drawing_key is None:  # filtered by the query; defensive for concurrent edits
+            continue
         storage.delete(comp.drawing_key)
         comp.drawing_key = None
         _audit(db, "drawing.auto_deleted", "companion", comp.id)

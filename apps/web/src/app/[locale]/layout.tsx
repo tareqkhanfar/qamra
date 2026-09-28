@@ -1,10 +1,14 @@
 import type { Metadata, Viewport } from "next";
 import { Baloo_Bhaijaan_2, IBM_Plex_Sans_Arabic } from "next/font/google";
 import { locale as rootLocale } from "next/root-params";
+import { connection } from "next/server";
 import { NextIntlClientProvider } from "next-intl";
 import { getTranslations } from "next-intl/server";
+import { MusicPlayer } from "@/components/site/MusicPlayer";
+import { RevealObserver } from "@/components/site/RevealObserver";
 import { brandName } from "@/config/brand";
 import { routing } from "@/i18n/routing";
+import { getPublicSettings } from "@/lib/catalog";
 import "../globals.css";
 
 const baloo = Baloo_Bhaijaan_2({
@@ -35,11 +39,24 @@ export async function generateMetadata(): Promise<Metadata> {
 export const viewport: Viewport = { themeColor: "#FBF6EC", width: "device-width", initialScale: 1 };
 
 export default async function LocaleLayout({ children }: { children: React.ReactNode }) {
+  await connection(); // every page renders per request: needed for the CSP nonce and live admin settings
   const locale = await rootLocale();
+  const [site, tm] = await Promise.all([getPublicSettings(), getTranslations({ locale, namespace: "music" })]);
   return (
-    <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} className={`${baloo.variable} ${plex.variable}`}>
+    <html
+      lang={locale}
+      dir={locale === "ar" ? "rtl" : "ltr"}
+      className={`${baloo.variable} ${plex.variable}`}
+      data-motion={site?.animations_enabled === false ? "off" : undefined}
+    >
       <body className="min-h-dvh bg-paper antialiased">
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider>
+          {children}
+          <RevealObserver />
+          {site?.music_enabled && (
+            <MusicPlayer volume={site.music_volume} labels={{ play: tm("play"), pause: tm("pause") }} />
+          )}
+        </NextIntlClientProvider>
       </body>
     </html>
   );

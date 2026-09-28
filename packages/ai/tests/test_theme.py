@@ -1,6 +1,7 @@
 import re
 
 import pytest
+
 from qamra_ai.pipeline.theme import load_style, load_theme, render_template
 
 

@@ -1,5 +1,26 @@
 # Changelog
 
+## Admin settings, music, animations, security hardening (2026-09-28)
+
+- **Admin settings** (`/admin/settings`, admins only):
+  - Groups: prices (ILS + JOD, delivery), contact details, site switches (sign-up, music, animations, Google sign-in), AI keys, AI models, email/WhatsApp, and privacy retention (bounded by policy).
+  - Seeded with example values that are marked in the UI.
+  - Secrets are encrypted at rest (Fernet), masked, and every change is audited. Saves are validated all-or-nothing.
+  - Endpoints: `GET /api/settings/public`, `GET|PUT /api/admin/settings`. The website reads prices and contact details from settings live, with no rebuild needed.
+- **Background music:** an original lullaby rendered from code (`scripts/make_music.py`), played gaplessly via Web Audio. It starts on the visitor's first tap, can be muted (the choice is remembered), pauses in background tabs, and never plays in the admin area.
+- **Animations:**
+  - Twinkling star field and shooting stars in the hero; floating book and cards; flowing arrows; glowing main CTA.
+  - Staggered scroll reveals; page-turn transition in the sample pages; child bobbing on hovered cards.
+  - The admin can switch animations off, and they are always off for reduced-motion users.
+- **Security:**
+  - Nonce-based strict CSP on every page, plus security headers at the edge and on the API.
+  - Nginx rate/connection limits, timeouts, method allow-list and dotfile blocking.
+  - Container hardening: `no-new-privileges`, `cap_drop ALL`, memory limits; Redis password.
+  - Sign-up rate limit and common-password blocklist.
+  - Password change that signs out other sessions (with an account-page form).
+  - `bandit`, `pip-audit` and `npm audit` all clean. See `docs/security.md`.
+- 141 Python tests.
+
 ## Design import + public site (2026-09-28)
 
 - Full design canvas imported into `design/canvas/` (77 artboards) and rendered for reference.

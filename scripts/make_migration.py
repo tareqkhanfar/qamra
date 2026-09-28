@@ -12,6 +12,7 @@ from pathlib import Path
 
 from alembic import command
 from alembic.script import ScriptDirectory
+
 from qamra_core.migrations import alembic_config
 
 FK_INLINE = re.compile(

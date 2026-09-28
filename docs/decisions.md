@@ -2,6 +2,18 @@
 
 Newest first. Each entry: date — decision — why.
 
+## 2026-09-28 — Admin settings, music, security
+
+- **All operator-facing configuration lives in the admin** (Tareq's requirement): prices, contact details, AI keys and models, notifications, site switches and privacy retention. Infrastructure secrets (DB URL, JWT secret, `SETTINGS_ENCRYPTION_KEYS`) stay in the environment; they can't safely be edited from inside the system they protect. The registry is in `qamra_core/app_settings.py`.
+- **Example values ship as defaults** and carry an "example" badge until an admin saves a real value:
+  - Prices: 49/89/119 ₪ and 9/16/22 JD.
+  - Phones: +970590000000 and …001.
+  - Emails: `@example.com`, a reserved domain, so nobody's real inbox is used.
+  - AI keys: empty, since there's no such thing as an example key.
+- **Music is generated, not licensed:** an original composition rendered by `scripts/make_music.py`, so there are no rights issues. Playback starts on the first user gesture because every browser blocks audible autoplay. Muting is remembered per browser.
+- **CSP nonces require per-request rendering of every page** (`connection()` in the root layout). Pages are light, and the settings/pricing reads hit the API's 10-second cache.
+- **Admin 2FA and HTTPS are the top remaining security items.** See `docs/security.md`.
+
 ## 2026-09-28 — Design import + public site
 
 - **The full design canvas is in `design/canvas/`**: 77 `.dc.html` artboards and `canvas.json`, taken from the Claude Design artifact Tareq shared. Screens are implemented from these files. The design's illustration parts (`Kid`, `Scene`, `Drawing`, `Companion`, `Moon`) are ported 1:1 to React SVG components (`apps/web/src/components/art`) and stand in for art until real generated characters exist.

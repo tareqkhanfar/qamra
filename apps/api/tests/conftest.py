@@ -4,11 +4,12 @@ import pytest
 from fakeredis import FakeAsyncRedis
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from qamra_api.app import create_app
 from qamra_api.deps import get_session
 from qamra_api.settings import ApiSettings
 from qamra_core.storage import ObjectStorage
-from sqlalchemy.ext.asyncio import AsyncSession
 
 
 @pytest.fixture
@@ -21,6 +22,7 @@ def settings() -> ApiSettings:
         web_base_url="http://testserver",
         login_max_attempts=5,
         login_ip_max_attempts=20,
+        settings_cache_seconds=0,
     )
 
 

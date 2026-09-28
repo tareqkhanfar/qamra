@@ -30,6 +30,7 @@ type Props = KidLook & {
   companion?: "" | CompanionVariant;
   compPose?: "front" | "wave";
   className?: string;
+  kidClassName?: string;
   style?: CSSProperties;
 };
 
@@ -57,6 +58,7 @@ export function Scene({
   compPose = "wave",
   outfit = "#E9826B",
   className = "",
+  kidClassName = "",
   style,
   ...kid
 }: Props) {
@@ -198,7 +200,7 @@ export function Scene({
             <Companion variant={companion} pose={compPose} />
           </div>
         )}
-        <div style={{ width: `${kidPct}%` }}>
+        <div style={{ width: `${kidPct}%` }} className={kidClassName}>
           <Kid outfit={outfit} {...kid} />
         </div>
       </div>

@@ -1,12 +1,12 @@
 """API settings: core infrastructure + auth, cookies, observability."""
 
-from decimal import Decimal
 from functools import lru_cache
 
 from pydantic import SecretStr, model_validator
+
 from qamra_core.settings import CoreSettings
 
-DEV_JWT_SECRET = "dev-only-insecure-jwt-secret-change-me-0123456789"
+DEV_JWT_SECRET = "dev-only-insecure-jwt-secret-change-me-0123456789"  # nosec B105  (prod refuses it)
 
 
 class ApiSettings(CoreSettings):
@@ -17,19 +17,14 @@ class ApiSettings(CoreSettings):
     cookie_domain: str | None = None
     web_base_url: str = "http://localhost:3000"
 
-    google_client_id: str | None = None
-    google_client_secret: SecretStr | None = None
-
     login_max_attempts: int = 10  # per email + IP, per window
     login_ip_max_attempts: int = 50  # per IP, per window (credential spraying)
     login_window_seconds: int = 900
 
-    # Prices (ILS). Unset → the site says "coming soon" instead of showing a made-up number.
-    price_digital_ils: Decimal | None = None
-    price_softcover_ils: Decimal | None = None
-    price_hardcover_ils: Decimal | None = None
+    settings_cache_seconds: int = 10  # admin-managed settings (prices, keys…) cache per API process
 
     leads_per_ip_per_hour: int = 5
+    register_ip_max_per_hour: int = 10
 
     sentry_dsn: SecretStr | None = None
     log_level: str = "INFO"
@@ -44,10 +39,6 @@ class ApiSettings(CoreSettings):
             if not self.cookie_secure:
                 raise ValueError("COOKIE_SECURE must be true in prod")
         return self
-
-    @property
-    def google_enabled(self) -> bool:
-        return bool(self.google_client_id and self.google_client_secret)
 
 
 @lru_cache

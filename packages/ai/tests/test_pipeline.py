@@ -1,6 +1,8 @@
 import asyncio
 
 import pytest
+from tests_helpers import png
+
 from qamra_ai.cost import CostEntry
 from qamra_ai.errors import ContentBlocked, InvalidOutput
 from qamra_ai.image.base import GeneratedImage, ImageRequest
@@ -19,7 +21,6 @@ from qamra_ai.pipeline.models import (
 from qamra_ai.pipeline.pages import Cast, generate_page, generate_pages, page_request
 from qamra_ai.pipeline.runtime import Runtime
 from qamra_ai.pipeline.story import validate_story, write_story
-from tests_helpers import png
 
 
 def _sheet(tag: str) -> GeneratedImage:

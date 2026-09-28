@@ -1,9 +1,10 @@
 from api_helpers import register
 from fastapi import Depends, FastAPI
 from httpx import AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from qamra_api.deps import require_role
 from qamra_core.db.models import User, UserRole
-from sqlalchemy.ext.asyncio import AsyncSession
 
 
 async def test_role_guard(app: FastAPI, client: AsyncClient, adb: AsyncSession) -> None:
@@ -37,3 +38,13 @@ async def test_unknown_route_is_friendly(client: AsyncClient) -> None:
 async def test_request_id_header(client: AsyncClient) -> None:
     r = await client.get("/api/health/live", headers={"X-Request-ID": "abc123"})
     assert r.headers["x-request-id"] == "abc123"
+
+
+async def test_security_headers_on_every_response(client: AsyncClient) -> None:
+    r = await client.get("/api/health/live")
+    h = r.headers
+    assert h["x-content-type-options"] == "nosniff" and h["x-frame-options"] == "DENY"
+    assert h["content-security-policy"].startswith("default-src 'none'")
+    assert h["cross-origin-resource-policy"] == "same-origin" and "server" not in h
+    me = await client.get("/api/auth/me")  # 401, but still personal-data route
+    assert me.headers["cache-control"] == "no-store"

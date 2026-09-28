@@ -28,7 +28,7 @@ USER qamra
 EXPOSE 8000
 HEALTHCHECK --interval=10s --timeout=3s --retries=6 \
   CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health/live', timeout=2)"
-CMD ["uvicorn", "qamra_api.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers", "--forwarded-allow-ips", "*"]
+CMD ["uvicorn", "qamra_api.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers", "--forwarded-allow-ips", "*", "--no-server-header"]
 
 FROM base AS worker
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright

@@ -6,12 +6,12 @@ from typing import Annotated
 
 from fastapi import APIRouter, Request
 from pydantic import BaseModel, Field, field_validator
-from qamra_core.db.models import AuditLog, Lead, Locale
 
 from qamra_api import ratelimit
 from qamra_api.auth.router import client_ip
 from qamra_api.deps import RedisDep, SessionDep, SettingsDep
 from qamra_api.errors import ApiError
+from qamra_core.db.models import AuditLog, Lead, Locale
 
 router = APIRouter(prefix="/api/leads", tags=["leads"])
 _PHONE = re.compile(r"^\+?[0-9 ()-]{7,20}$")

@@ -7,6 +7,9 @@ import { LeadForm } from "@/components/site/LeadForm";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { brandName } from "@/config/brand";
 import { Link } from "@/i18n/navigation";
+import { getPublicSettings, whatsappLink } from "@/lib/catalog";
+
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("kg");
@@ -23,13 +26,18 @@ const WHO_STYLE = {
 
 export default async function KindergartensPage() {
   const locale = await getLocale();
-  const [t, tn, te] = await Promise.all([getTranslations("kg"), getTranslations("nav"), getTranslations("errors")]);
+  const [t, tn, te, site] = await Promise.all([
+    getTranslations("kg"),
+    getTranslations("nav"),
+    getTranslations("errors"),
+    getPublicSettings(),
+  ]);
   const brand = brandName(locale);
   const flow = t.raw("flow") as Step[];
   const inside = t.raw("inside") as string[];
   const trust = t.raw("trust") as { title: string; body: string }[];
-  const salesWhatsapp = process.env.NEXT_PUBLIC_SALES_WHATSAPP;
-  const salesEmail = process.env.NEXT_PUBLIC_SALES_EMAIL;
+  const salesWhatsapp = site?.sales_whatsapp;
+  const salesEmail = site?.sales_email;
   const wrap = "mx-auto w-full max-w-[1440px] px-4 md:px-10 xl:px-24";
 
   return (
@@ -90,7 +98,7 @@ export default async function KindergartensPage() {
             </div>
           </div>
           <div className="relative mx-auto h-[380px] w-full max-w-[520px] md:h-[520px]">
-            <div className="absolute top-5 right-5 w-[48%] rotate-[4deg] overflow-hidden rounded-lg shadow-book">
+            <div className="absolute top-5 right-5 w-[48%] rotate-[4deg] animate-float overflow-hidden rounded-lg shadow-book [animation-delay:0.6s]">
               <Scene
                 theme="grad"
                 ratio={280 / 340}
@@ -102,10 +110,10 @@ export default async function KindergartensPage() {
                 kidScale={0.8}
               />
             </div>
-            <div className="absolute top-[120px] left-[28%] z-10 w-[48%] overflow-hidden rounded-lg shadow-book">
+            <div className="absolute top-[120px] left-[28%] z-10 w-[48%] animate-float-slow overflow-hidden rounded-lg shadow-book">
               <Scene theme="grad" ratio={280 / 340} cap hijab hijabColor="#E9826B" outfit="#A99BD6" kidScale={0.8} />
             </div>
-            <div className="absolute top-10 left-0 w-[40%] -rotate-[5deg] overflow-hidden rounded-lg shadow-book">
+            <div className="absolute top-10 left-0 w-[40%] -rotate-[5deg] animate-float overflow-hidden rounded-lg shadow-book [animation-delay:1.5s]">
               <Scene
                 theme="grad"
                 ratio={220 / 270}
@@ -128,7 +136,12 @@ export default async function KindergartensPage() {
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5 lg:gap-5">
               {flow.map((f, i) => (
-                <div key={f.title} className="flex flex-col gap-2.5 rounded-lg bg-night-800 p-6">
+                <div
+                  key={f.title}
+                  data-reveal
+                  style={{ "--d": `${i * 110}ms` } as React.CSSProperties}
+                  className="flex flex-col gap-2.5 rounded-lg bg-night-800 p-6"
+                >
                   <span className="flex size-11 items-center justify-center rounded-[14px] bg-amber-500 font-display text-[22px] font-extrabold text-night-950">
                     {i + 1}
                   </span>
@@ -210,7 +223,7 @@ export default async function KindergartensPage() {
               <div className="mt-2 flex flex-col gap-2 text-body">
                 {salesWhatsapp && (
                   <a
-                    href={`https://wa.me/${salesWhatsapp.replace(/\D/g, "")}`}
+                    href={whatsappLink(salesWhatsapp)}
                     rel="noopener"
                     dir="ltr"
                     className="self-start font-semibold text-night-800 rtl:self-end"

@@ -7,13 +7,12 @@ import httpx
 import jwt
 from fastapi import APIRouter, Request, Response
 from fastapi.responses import RedirectResponse
-from qamra_core.db.models import Locale, User, UserRole
 from sqlalchemy import select
 
-from qamra_api import ratelimit
+from qamra_api import ratelimit, runtime_settings
 from qamra_api.auth import google
 from qamra_api.auth import service as auth
-from qamra_api.auth.schemas import LoginIn, RegisterIn, UserOut
+from qamra_api.auth.schemas import LoginIn, PasswordChangeIn, RegisterIn, UserOut
 from qamra_api.deps import (
     ACCESS_COOKIE,
     OAUTH_COOKIE,
@@ -26,6 +25,7 @@ from qamra_api.deps import (
 from qamra_api.errors import ApiError
 from qamra_api.security import TokenInvalid, read_state, sign_state
 from qamra_api.settings import ApiSettings
+from qamra_core.db.models import Locale, User, UserRole
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 REFRESH_PATH = "/api/auth"
@@ -80,8 +80,21 @@ def client_ip(request: Request) -> str:
 
 @router.post("/register", status_code=201)
 async def register(
-    body: RegisterIn, request: Request, response: Response, db: SessionDep, settings: SettingsDep
+    redis: RedisDep,
+    body: RegisterIn,
+    request: Request,
+    response: Response,
+    db: SessionDep,
+    settings: SettingsDep,
 ) -> UserOut:
+    if not (await runtime_settings.current(db, settings)).values.get("registration_open", True):
+        raise ApiError("registration_closed", 403)
+    # account-creation spam: 10 per IP per hour
+    if (
+        await ratelimit.hit(redis, f"rl:register:{client_ip(request)}", 3600)
+        > settings.register_ip_max_per_hour
+    ):
+        raise ApiError("too_many_attempts", 429)
     user = await auth.register(
         db, email=body.email, password=body.password, full_name=body.full_name, locale=body.locale
     )
@@ -139,6 +152,29 @@ async def me(user: CurrentUser) -> UserOut:
     return UserOut.of(user)
 
 
+@router.post("/password")
+async def change_password(
+    body: PasswordChangeIn,
+    request: Request,
+    response: Response,
+    user: CurrentUser,
+    db: SessionDep,
+    redis: RedisDep,
+    settings: SettingsDep,
+) -> UserOut:
+    """Change password; signs out every other session (all refresh tokens revoked, new one issued)."""
+    key = f"rl:password:{user.id}"
+    if await ratelimit.hit(redis, key, settings.login_window_seconds) > settings.login_max_attempts:
+        raise ApiError("too_many_attempts", 429)
+    await auth.change_password(db, user, body.current_password, body.new_password)
+    await ratelimit.reset(redis, key)
+    session = await auth.start_session(
+        db, user, settings, request.headers.get("user-agent"), "password_change"
+    )
+    set_session_cookies(response, session, settings)
+    return UserOut.of(user)
+
+
 # ---- Google ------------------------------------------------------------------------------------
 
 
@@ -153,17 +189,25 @@ def _redirect_uri(settings: ApiSettings) -> str:
     return f"{settings.web_base_url.rstrip('/')}{GOOGLE_PATH}/callback"
 
 
+async def _google_config(db: SessionDep, settings: ApiSettings) -> tuple[str, str] | None:
+    """(client_id, client_secret) when Google sign-in is enabled and configured in the admin."""
+    values = (await runtime_settings.current(db, settings)).values
+    cid, secret = values.get("google_client_id") or "", values.get("google_client_secret") or ""
+    return (cid, secret) if values.get("google_login_enabled") and cid and secret else None
+
+
 @router.get("/google/start")
-async def google_start(settings: SettingsDep, next: str | None = None) -> RedirectResponse:
-    if not settings.google_enabled:
+async def google_start(db: SessionDep, settings: SettingsDep, next: str | None = None) -> RedirectResponse:
+    cfg = await _google_config(db, settings)
+    if cfg is None:
         raise ApiError("google_disabled", 404)
-    assert settings.google_client_id is not None
+    client_id, _ = cfg
     state, nonce = secrets.token_urlsafe(24), secrets.token_urlsafe(24)
     blob = sign_state(
         {"state": state, "nonce": nonce, "next": _safe_next(next)}, settings.jwt_secret.get_secret_value()
     )
     response = RedirectResponse(
-        google.authorize_url(settings.google_client_id, _redirect_uri(settings), state, nonce),
+        google.authorize_url(client_id, _redirect_uri(settings), state, nonce),
         status_code=302,
     )
     response.set_cookie(
@@ -186,20 +230,16 @@ async def google_callback(
     web = settings.web_base_url.rstrip("/")
     failed = RedirectResponse(f"{web}/ar/login?error=google_failed", status_code=302)
     failed.delete_cookie(OAUTH_COOKIE, path=GOOGLE_PATH, domain=settings.cookie_domain)
-    if not settings.google_enabled or not code or not state:
+    cfg = await _google_config(db, settings)
+    if cfg is None or not code or not state:
         return failed
+    client_id, client_secret = cfg
     try:
         saved = read_state(request.cookies.get(OAUTH_COOKIE, ""), settings.jwt_secret.get_secret_value())
         if not secrets.compare_digest(saved.get("state", ""), state):
             return failed
-        assert settings.google_client_id and settings.google_client_secret
-        id_token = await google.exchange_code(
-            code,
-            settings.google_client_id,
-            settings.google_client_secret.get_secret_value(),
-            _redirect_uri(settings),
-        )
-        identity = google.verify_id_token(id_token, settings.google_client_id, saved["nonce"])
+        id_token = await google.exchange_code(code, client_id, client_secret, _redirect_uri(settings))
+        identity = google.verify_id_token(id_token, client_id, saved["nonce"])
     except (TokenInvalid, ValueError, KeyError, httpx.HTTPError, jwt.PyJWTError):
         return failed
     if not identity.email_verified or not identity.email:

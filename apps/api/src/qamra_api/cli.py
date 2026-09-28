@@ -4,12 +4,11 @@ import argparse
 import asyncio
 import getpass
 
-from qamra_core.db.models import Locale, UserRole
-from qamra_core.db.session import make_async_engine, make_async_sessionmaker
-
 from qamra_api.auth import service as auth
 from qamra_api.seed import upsert_themes
 from qamra_api.settings import get_settings
+from qamra_core.db.models import Locale, UserRole
+from qamra_core.db.session import make_async_engine, make_async_sessionmaker
 
 
 async def create_user(email: str, name: str, role: UserRole, password: str) -> None:

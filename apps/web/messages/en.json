@@ -388,5 +388,50 @@
     "body": "We're building the steps now: your child's details, consent, photo, drawing, style, character, story, preview and order. It opens here very soon.",
     "browse": "Browse story worlds",
     "chosen": "Your chosen world: {name}"
+  },
+  "admin": {
+    "badge": "Admin",
+    "title": "System settings",
+    "lead": "Every site setting in one place. Changes reach the site within seconds.",
+    "nav": {
+      "settings": "Settings",
+      "queue": "Approval queue",
+      "orders": "Orders & printing",
+      "themes": "Theme editor",
+      "metrics": "Cost & conversion"
+    },
+    "soon": "Soon",
+    "save": "Save",
+    "saving": "Saving…",
+    "saved": "Saved.",
+    "reset": "Restore default",
+    "example": "Example value",
+    "configured": "Set",
+    "notSet": "Not set",
+    "secretPlaceholder": "Paste a new key to replace it",
+    "secretSaved": "Saved and encrypted: {mask}",
+    "clearSecret": "Remove key",
+    "clearConfirm": "This key will be deleted permanently. Are you sure?",
+    "publicHint": "Visible to visitors",
+    "forbiddenTitle": "Admins only",
+    "forbiddenBody": "Sign in with an admin account to manage settings.",
+    "unsaved": "Unsaved changes",
+    "on": "On",
+    "off": "Off",
+    "backToSite": "Back to the site",
+    "adminLink": "Admin panel"
+  },
+  "music": {
+    "play": "Play music",
+    "pause": "Pause music"
+  },
+  "password": {
+    "title": "Change password",
+    "current": "Current password",
+    "new": "New password",
+    "hint": "At least 8 characters, not a common password",
+    "save": "Change password",
+    "saving": "One moment…",
+    "done": "Password changed, and other devices were signed out."
   }
 }

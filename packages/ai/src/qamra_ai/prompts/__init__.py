@@ -14,7 +14,8 @@ _env = Environment(
     trim_blocks=False,  # True glues the next line onto inline {% endif %}
     lstrip_blocks=True,
     keep_trailing_newline=False,
-    autoescape=False,
+    # Prompts are plain text for the model, never rendered as HTML: HTML-escaping would corrupt them.
+    autoescape=False,  # nosec B701
 )
 
 _BLANKS = re.compile(r"\n\s*\n(\s*\n)+")

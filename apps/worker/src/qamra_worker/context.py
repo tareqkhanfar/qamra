@@ -5,11 +5,11 @@ import os
 from functools import cache
 
 import sentry_sdk
+from sqlalchemy.orm import Session, sessionmaker
+
 from qamra_core.db.session import make_sync_engine, make_sync_sessionmaker
 from qamra_core.observability import configure_logging
 from qamra_core.storage import ObjectStorage
-from sqlalchemy.orm import Session, sessionmaker
-
 from qamra_worker.settings import get_settings
 
 

@@ -1,7 +1,8 @@
 import cv2
 import numpy as np
-from qamra_ai.pipeline.photo_check import check_photo
 from tests_helpers import encode
+
+from qamra_ai.pipeline.photo_check import check_photo
 
 # The fixture is 512 px (the minimum). Upscale so resizing tests stay above MIN_SIDE_PX.
 

@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pytest
+
 from qamra_ai.config import Settings
 from qamra_ai.image.fake import FakeImageProvider
 from qamra_ai.pipeline.fakes import default_fake_text_provider

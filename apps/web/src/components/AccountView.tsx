@@ -3,6 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 import { Scene } from "@/components/art/Scene";
+import { ChangePassword } from "@/components/ChangePassword";
 import { Alert } from "@/components/ui/Alert";
 import { Button, buttonClasses } from "@/components/ui/Button";
 import { brandName } from "@/config/brand";
@@ -49,6 +50,7 @@ export function AccountView() {
   const t = useTranslations("account");
   const tn = useTranslations("nav");
   const te = useTranslations("errors");
+  const ta = useTranslations("admin");
   const locale = useLocale();
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
@@ -124,9 +126,16 @@ export function AccountView() {
           <span className="text-small text-ink-muted">{hour < 12 ? t("greetingMorning") : t("greetingEvening")}</span>
           <h1 className="text-[26px] text-night-900 md:text-h1">{user.full_name}</h1>
         </div>
-        <Button variant="ghost" size="sm" onClick={logout} loading={leaving}>
-          {tn("logout")}
-        </Button>
+        <div className="flex items-center gap-1">
+          {user.role === "admin" && (
+            <Link href="/admin/settings" className={buttonClasses("solid", "sm")}>
+              {ta("adminLink")}
+            </Link>
+          )}
+          <Button variant="ghost" size="sm" onClick={logout} loading={leaving}>
+            {tn("logout")}
+          </Button>
+        </div>
       </header>
 
       <section aria-label={t("children")} className="flex flex-col gap-2.5 pt-2 pb-4">
@@ -253,6 +262,7 @@ export function AccountView() {
             <dd className="mt-1 font-semibold">{t(`roles.${user.role}`, { brand: brandName(locale) })}</dd>
           </div>
         </dl>
+        {user.has_password && <ChangePassword />}
       </div>
 
       <nav

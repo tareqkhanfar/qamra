@@ -3,6 +3,7 @@ from pathlib import Path
 import pytest
 from PIL import Image
 from pypdf import PdfReader
+
 from qamra_pdf import BookSpec, Brand, KeepsakeSpec, PageSpec, render_book, render_html
 
 VOWELIZED = "فِي صَبَاحٍ مُشْرِقٍ، اسْتَيْقَظَتْ سَلْمَى بَاكِرًا وَقَلْبُهَا يَرْقُصُ فَرَحًا."

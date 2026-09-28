@@ -50,10 +50,11 @@ export function SampleCarousel({
           </svg>
         </button>
         <div
+          key={s.index}
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
           aria-live="polite"
-          className="flex w-full max-w-[880px] flex-col overflow-hidden rounded-sm shadow-book md:flex-row"
+          className="flex w-full max-w-[880px] animate-page-in flex-col overflow-hidden rounded-sm shadow-book md:flex-row"
         >
           <div className="order-2 flex flex-col justify-center gap-5 bg-paper-raised p-6 md:order-1 md:aspect-square md:w-1/2 md:bg-[linear-gradient(to_left,rgba(22,32,74,0.08),transparent_32px)] md:p-14 ltr:md:bg-[linear-gradient(to_right,rgba(22,32,74,0.08),transparent_32px)]">
             <p className="font-display text-[19px] leading-[1.8] font-semibold text-ink md:text-[26px]">{s.text}</p>

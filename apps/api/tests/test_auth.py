@@ -5,12 +5,13 @@ import jwt
 import pytest
 from api_helpers import register
 from httpx import AsyncClient
+from sqlalchemy import select, update
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from qamra_api.deps import ACCESS_COOKIE, REFRESH_COOKIE
 from qamra_api.security import JWT_ALG
 from qamra_api.settings import ApiSettings
 from qamra_core.db.models import AuditLog, RefreshToken, User
-from sqlalchemy import select, update
-from sqlalchemy.ext.asyncio import AsyncSession
 
 
 async def test_register_sets_cookies_and_me(client: AsyncClient) -> None:
@@ -196,3 +197,49 @@ async def test_disabled_account(client: AsyncClient, adb: AsyncSession) -> None:
         "/api/auth/login", json={"email": "salma.mom@example.com", "password": "moonlight-2026"}
     )
     assert r.status_code == 403
+
+
+async def test_common_passwords_refused(client: AsyncClient) -> None:
+    for pw in ("password123", "12345678", "aaaaaaaa", "qamra123"):
+        r = await client.post(
+            "/api/auth/register", json={"email": "c@example.com", "password": pw, "full_name": "C"}
+        )
+        assert r.status_code == 422 and r.json()["error"]["code"] in {"common_password", "weak_password"}, pw
+
+
+async def test_register_rate_limited(client: AsyncClient, settings: ApiSettings) -> None:
+    settings.register_ip_max_per_hour = 2
+    codes = [
+        (
+            await client.post(
+                "/api/auth/register",
+                json={"email": f"r{i}@example.com", "password": "moonlight-2026", "full_name": "R"},
+            )
+        ).status_code
+        for i in range(3)
+    ]
+    assert codes == [201, 201, 429]
+
+
+async def test_change_password_signs_out_other_sessions(client: AsyncClient) -> None:
+    await register(client)
+    other_session = client.cookies.get(REFRESH_COOKIE, path="/api/auth")
+    wrong = await client.post(
+        "/api/auth/password",
+        json={"current_password": "nope-nope-nope", "new_password": "new-moonlight-2027"},
+    )
+    assert wrong.status_code == 403 and wrong.json()["error"]["code"] == "wrong_password"
+    r = await client.post(
+        "/api/auth/password",
+        json={"current_password": "moonlight-2026", "new_password": "new-moonlight-2027"},
+    )
+    assert r.status_code == 200
+    assert (await client.get("/api/auth/me")).status_code == 200  # this session got fresh cookies
+    client.cookies.delete(REFRESH_COOKIE)
+    client.cookies.set(REFRESH_COOKIE, other_session, path="/api/auth")
+    assert (await client.post("/api/auth/refresh")).status_code == 401  # the old session is gone
+    await client.post("/api/auth/logout")
+    ok = await client.post(
+        "/api/auth/login", json={"email": "salma.mom@example.com", "password": "new-moonlight-2027"}
+    )
+    assert ok.status_code == 200

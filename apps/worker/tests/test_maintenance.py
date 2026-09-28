@@ -1,5 +1,8 @@
 from datetime import UTC, datetime, timedelta
 
+from sqlalchemy import select, update
+from sqlalchemy.orm import Session
+
 from qamra_core.db.models import (
     AuditLog,
     Book,
@@ -17,8 +20,6 @@ from qamra_core.db.models import (
 from qamra_core.settings import CoreSettings
 from qamra_core.storage import ObjectStorage
 from qamra_worker.jobs.maintenance import cleanup_expired_media, ping
-from sqlalchemy import select, update
-from sqlalchemy.orm import Session
 
 NOW = datetime(2026, 10, 1, 12, 0, tzinfo=UTC)
 SETTINGS = CoreSettings(_env_file=None)  # type: ignore[call-arg]

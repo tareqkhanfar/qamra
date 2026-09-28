@@ -1,5 +1,6 @@
 import pytest
 from jinja2 import UndefinedError
+
 from qamra_ai import prompts
 
 

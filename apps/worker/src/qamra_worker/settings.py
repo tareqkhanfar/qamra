@@ -1,6 +1,7 @@
 from functools import lru_cache
 
 from pydantic import SecretStr
+
 from qamra_core.settings import CoreSettings
 
 

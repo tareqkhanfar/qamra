@@ -2,6 +2,9 @@ from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 
 from alembic import command
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
+
 from qamra_core.db.models import (
     Book,
     BookPage,
@@ -26,8 +29,6 @@ from qamra_core.db.models import (
     User,
 )
 from qamra_core.migrations import alembic_config
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
 
 
 def test_models_match_migrations(migrated: str) -> None:

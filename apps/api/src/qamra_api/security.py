@@ -15,6 +15,71 @@ JWT_ALG = "HS256"
 MIN_PASSWORD_LENGTH = 8
 
 
+# The most common passwords seen in breach corpora (plus local favourites). Anything here is refused.
+_COMMON = frozenset(
+    [
+        "123456",
+        "1234567",
+        "12345678",
+        "123456789",
+        "1234567890",
+        "0123456789",
+        "password",
+        "password1",
+        "password123",
+        "qwerty",
+        "qwerty123",
+        "qwertyuiop",
+        "abc123",
+        "abcd1234",
+        "111111",
+        "11111111",
+        "000000",
+        "00000000",
+        "123123",
+        "123123123",
+        "12341234",
+        "1q2w3e4r",
+        "1q2w3e4r5t",
+        "iloveyou",
+        "welcome",
+        "admin",
+        "admin123",
+        "letmein",
+        "monkey",
+        "dragon",
+        "sunshine",
+        "princess",
+        "football",
+        "baseball",
+        "superman",
+        "trustno1",
+        "passw0rd",
+        "p@ssw0rd",
+        "p@ssword",
+        "987654321",
+        "99999999",
+        "88888888",
+        "12344321",
+        "147258369",
+        "159753",
+        "7777777",
+        "palestine",
+        "palestine1",
+        "jordan123",
+        "qamra",
+        "qamra123",
+        "moon1234",
+        "moonlight",
+    ]
+)
+
+
+def is_common_password(password: str) -> bool:
+    p = password.lower()
+    return p in _COMMON or len(set(p)) <= 2
+
+
 def hash_password(password: str) -> str:
     return _hasher.hash(password)
 

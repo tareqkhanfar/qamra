@@ -3,6 +3,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 import pytest
+
 from qamra_ai.pipeline.drawing import clean_drawing
 
 

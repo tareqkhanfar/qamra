@@ -3,18 +3,30 @@ from urllib.parse import parse_qs, urlparse
 import pytest
 from api_helpers import register
 from httpx import AsyncClient
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from qamra_api.auth import google
 from qamra_api.deps import ACCESS_COOKIE, OAUTH_COOKIE
 from qamra_api.settings import ApiSettings
 from qamra_core.db.models import User
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 
 
 @pytest.fixture
-def google_on(settings: ApiSettings) -> ApiSettings:
-    settings.google_client_id = "client-123.apps.googleusercontent.com"
-    settings.google_client_secret = __import__("pydantic").SecretStr("s3cret")
+async def google_on(settings: ApiSettings, adb: AsyncSession) -> ApiSettings:
+    from qamra_core import settings_store
+    from qamra_core.crypto import cipher_for
+
+    await settings_store.save(
+        adb,
+        cipher_for(settings),
+        {
+            "google_login_enabled": True,
+            "google_client_id": "client-123.apps.googleusercontent.com",
+            "google_client_secret": "s3cret-value-123",
+        },
+        None,
+    )
     return settings
 
 

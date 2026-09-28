@@ -34,6 +34,7 @@ export function ThemeCardView({
           {...fromArt(theme.art)}
           ratio={variant === "catalog" ? 400 / 260 : 300 / 240}
           kidScale={theme.art.kid_scale ?? 0.72}
+          kidClassName="group-hover:animate-float"
         />
         {variant === "catalog" && tag && (
           <span

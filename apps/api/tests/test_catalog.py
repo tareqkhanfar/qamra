@@ -1,9 +1,10 @@
 from decimal import Decimal
 
 from httpx import AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from qamra_api.seed import upsert_themes
 from qamra_api.settings import ApiSettings
-from sqlalchemy.ext.asyncio import AsyncSession
 
 
 async def test_theme_list_sorted_with_status(client: AsyncClient, adb: AsyncSession) -> None:
@@ -49,10 +50,21 @@ async def test_seed_is_idempotent(adb: AsyncSession) -> None:
     assert all(s.startswith("+") for s in first) and all(s.startswith("~") for s in again)
 
 
-async def test_pricing_unset_then_set(client: AsyncClient, settings: ApiSettings) -> None:
+async def test_pricing_examples_then_admin_values(
+    client: AsyncClient, adb: AsyncSession, settings: ApiSettings
+) -> None:
+    from qamra_core import settings_store
+    from qamra_core.crypto import cipher_for
+
     prices = (await client.get("/api/pricing")).json()
     assert [p["product"] for p in prices] == ["digital", "softcover", "hardcover"]
-    assert all(p["amount"] is None for p in prices)
-    settings.price_hardcover_ils = Decimal("120")
+    assert [Decimal(p["amount"]) for p in prices] == [
+        Decimal("49"),
+        Decimal("89"),
+        Decimal("119"),
+    ]  # examples
+    await settings_store.save(adb, cipher_for(settings), {"price_hardcover_ils": "125.50"}, None)
     hard = (await client.get("/api/pricing")).json()[2]
-    assert Decimal(hard["amount"]) == Decimal("120") and hard["currency"] == "ILS"
+    assert Decimal(hard["amount"]) == Decimal("125.5") and hard["currency"] == "ILS"
+    jod = (await client.get("/api/pricing", params={"currency": "JOD"})).json()
+    assert jod[0]["currency"] == "JOD" and Decimal(jod[0]["amount"]) == Decimal("9")

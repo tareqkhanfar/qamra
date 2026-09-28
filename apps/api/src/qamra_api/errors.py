@@ -45,6 +45,19 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "لم يكتمل تسجيل الدخول عبر Google. حاولوا مرة أخرى.",
         "Google sign-in didn't complete. Please try again.",
     ),
+    "registration_closed": (
+        "التسجيل مغلق مؤقتاً. حاولوا لاحقاً.",
+        "Sign-up is temporarily closed. Please try again later.",
+    ),
+    "invalid_setting": (
+        "قيمة غير صالحة في أحد الحقول. راجعوها وحاولوا مرة أخرى.",
+        "One of the values is invalid. Please check it and try again.",
+    ),
+    "wrong_password": ("كلمة المرور الحالية غير صحيحة.", "The current password is incorrect."),
+    "common_password": (
+        "كلمة المرور هذه شائعة جداً وسهلة التخمين. اختاروا غيرها.",
+        "This password is too common and easy to guess. Please choose another.",
+    ),
     "service_unavailable": (
         "الخدمة غير متاحة مؤقتًا. حاولوا بعد قليل.",
         "The service is temporarily unavailable. Try again shortly.",

@@ -9,7 +9,7 @@ import { StickyCta } from "@/components/site/StickyCta";
 import { ThemeCardView } from "@/components/site/ThemeCardView";
 import { brandName } from "@/config/brand";
 import { Link } from "@/i18n/navigation";
-import { formatAmount, getPricing, getTheme, getThemes } from "@/lib/catalog";
+import { formatAmount, getPricing, getPublicSettings, getTheme, getThemes, whatsappLink } from "@/lib/catalog";
 
 type Plan = { desc: string; feats: string[] };
 type Card = { title: string; body: string };
@@ -36,12 +36,13 @@ function Eyebrow({ children, dark }: { children: React.ReactNode; dark?: boolean
 
 export default async function LandingPage() {
   const locale = await getLocale();
-  const [t, tc, themes, sample, prices] = await Promise.all([
+  const [t, tc, themes, sample, prices, site] = await Promise.all([
     getTranslations("landing"),
     getTranslations("common"),
     getThemes(locale),
     getTheme("first-day", locale),
     getPricing(),
+    getPublicSettings(),
   ]);
   const brand = brandName(locale);
   const how = t.raw("how") as Card[];
@@ -49,7 +50,7 @@ export default async function LandingPage() {
   const faq = t.raw("faq") as { q: string; a: string }[];
   const plans = t.raw("plans") as Record<"digital" | "hardcover" | "softcover", Plan>;
   const priceOf = (p: string) => prices?.find((x) => x.product === p)?.amount ?? null;
-  const whatsapp = process.env.NEXT_PUBLIC_SUPPORT_WHATSAPP;
+  const whatsapp = site?.support_whatsapp;
   const section = "mx-auto w-full max-w-[1440px] px-4 md:px-10 xl:px-24";
 
   return (
@@ -63,20 +64,63 @@ export default async function LandingPage() {
           aria-hidden="true"
         >
           <g fill="#F2B33D">
-            <path
-              d="M160 180 C162 194 166 198 180 200 C166 202 162 206 160 220 C158 206 154 202 140 200 C154 198 158 194 160 180 Z"
-              className="animate-twinkle"
-            />
-            <path d="M700 130 C701 137 703 139 710 140 C703 141 701 143 700 150 C699 143 697 141 690 140 C697 139 699 137 700 130 Z" />
-            <circle cx="420" cy="120" r="3" />
-            <circle cx="560" cy="640" r="2.5" />
-            <circle cx="1320" cy="160" r="3" />
-            <circle cx="1000" cy="720" r="2.5" />
-            <circle cx="80" cy="560" r="3" />
-            <circle cx="880" cy="200" r="2" />
+            {[
+              {
+                d: "M160 180 C162 194 166 198 180 200 C166 202 162 206 160 220 C158 206 154 202 140 200 C154 198 158 194 160 180 Z",
+                delay: 0,
+              },
+              {
+                d: "M700 130 C701 137 703 139 710 140 C703 141 701 143 700 150 C699 143 697 141 690 140 C697 139 699 137 700 130 Z",
+                delay: 1.1,
+              },
+              {
+                d: "M1210 300 C1211 307 1213 309 1220 310 C1213 311 1211 313 1210 320 C1209 313 1207 311 1200 310 C1207 309 1209 307 1210 300 Z",
+                delay: 0.6,
+              },
+              {
+                d: "M330 470 C331 476 333 478 339 479 C333 480 331 482 330 488 C329 482 327 480 321 479 C327 478 329 476 330 470 Z",
+                delay: 1.7,
+              },
+            ].map((star) => (
+              <path
+                key={star.d}
+                d={star.d}
+                className="[transform-origin:center] animate-twinkle [transform-box:fill-box]"
+                style={{ animationDelay: `${star.delay}s` }}
+              />
+            ))}
+            {[
+              [420, 120, 3, 0.3],
+              [560, 640, 2.5, 1.4],
+              [1320, 160, 3, 0.9],
+              [1000, 720, 2.5, 2.1],
+              [80, 560, 3, 0.5],
+              [880, 200, 2, 1.8],
+              [1100, 90, 2, 2.6],
+              [260, 330, 2, 1.2],
+              [1380, 420, 2.5, 0.2],
+              [640, 300, 1.8, 2.3],
+            ].map(([cx, cy, r, delay]) => (
+              <circle
+                key={`${cx}-${cy}`}
+                cx={cx}
+                cy={cy}
+                r={r}
+                className="[transform-origin:center] animate-twinkle [transform-box:fill-box]"
+                style={{ animationDelay: `${delay}s` }}
+              />
+            ))}
           </g>
           <path d="M0 760 C300 700 600 740 900 760 S1300 730 1440 750 L1440 820 L0 820 Z" fill="#22306A" />
         </svg>
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute top-[14%] right-[18%] h-[2px] w-28 -rotate-[28deg] animate-shoot rounded-full bg-gradient-to-l from-transparent via-amber-100 to-transparent"
+        />
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute top-[38%] left-[8%] h-[2px] w-20 -rotate-[28deg] animate-shoot rounded-full bg-gradient-to-l from-transparent via-amber-300 to-transparent [animation-delay:7.5s]"
+        />
         <SiteNav variant="dark" />
         <div
           className={`${section} relative grid items-center gap-10 pt-4 pb-12 md:pt-12 md:pb-24 lg:grid-cols-[1fr_1.1fr] lg:gap-12`}
@@ -94,7 +138,7 @@ export default async function LandingPage() {
             <div className="hidden items-center gap-4 md:flex">
               <Link
                 href="/create"
-                className="flex min-h-[60px] items-center gap-2.5 rounded-full bg-amber-500 px-8 text-[19px] font-bold text-night-950 shadow-[0_8px_28px_rgba(242,179,61,0.35)]"
+                className="flex min-h-[60px] animate-glow items-center gap-2.5 rounded-full bg-amber-500 px-8 text-[19px] font-bold text-night-950 transition hover:-translate-y-0.5"
               >
                 {t("cta")}
                 <svg
@@ -127,14 +171,14 @@ export default async function LandingPage() {
           {/* photo + drawing → book */}
           <div className="flex flex-col items-center gap-3 lg:flex-row lg:justify-center lg:gap-3.5">
             <div className="flex items-center gap-5 lg:flex-col lg:gap-[18px]">
-              <figure className="flex rotate-[4deg] flex-col items-center gap-2">
+              <figure className="flex rotate-[4deg] animate-float flex-col items-center gap-2 [animation-delay:0.4s]">
                 <div className="w-[108px] rounded-[6px] bg-paper-raised px-2 pt-2 pb-6 shadow-[0_8px_24px_rgba(0,0,0,0.3)] lg:w-[146px]">
                   <Kid look="photo" hijab hijabColor="#E9826B" className="block h-auto w-full rounded-[8px]" />
                 </div>
                 <figcaption className="text-small text-ink-dark-muted">{t("heroPhoto")}</figcaption>
               </figure>
               <span className="font-display text-[28px] font-extrabold text-amber-500 lg:hidden">+</span>
-              <figure className="flex -rotate-[5deg] flex-col items-center gap-2">
+              <figure className="flex -rotate-[5deg] animate-float flex-col items-center gap-2 [animation-delay:1.3s]">
                 <div className="relative w-[104px] shadow-[0_8px_24px_rgba(0,0,0,0.3)] lg:w-[140px]">
                   <Drawing variant="blob" />
                   <span
@@ -169,6 +213,7 @@ export default async function LandingPage() {
                 stroke="#F2B33D"
                 strokeWidth="3"
                 strokeDasharray="3 9"
+                className="animate-dash"
                 strokeLinecap="round"
               />
               <path
@@ -176,6 +221,7 @@ export default async function LandingPage() {
                 stroke="#F2B33D"
                 strokeWidth="3"
                 strokeDasharray="3 9"
+                className="animate-dash"
                 strokeLinecap="round"
               />
               <path
@@ -186,7 +232,7 @@ export default async function LandingPage() {
                 strokeLinejoin="round"
               />
             </svg>
-            <figure className="flex -rotate-2 flex-col items-center gap-2.5">
+            <figure className="flex -rotate-2 animate-float-slow flex-col items-center gap-2.5">
               <div className="relative w-[300px] overflow-hidden rounded-s-[18px] rounded-e-[6px] border-s-[12px] border-night-950 shadow-[0_16px_40px_rgba(0,0,0,0.4)] lg:w-[360px]">
                 <Scene
                   theme="night"
@@ -236,6 +282,8 @@ export default async function LandingPage() {
           {how.map((s, i) => (
             <div
               key={s.title}
+              data-reveal
+              style={{ "--d": `${i * 120}ms` } as React.CSSProperties}
               className="flex gap-3.5 rounded-lg border border-line bg-paper-raised p-5 md:flex-col md:rounded-xl md:p-8"
             >
               <div className="flex items-center gap-3.5">
@@ -271,8 +319,13 @@ export default async function LandingPage() {
             </Link>
           </div>
           <div className="flex snap-x gap-3 overflow-x-auto px-4 pb-2 md:grid md:grid-cols-4 md:gap-6 md:overflow-visible md:px-0">
-            {themes.slice(0, 4).map((th) => (
-              <div key={th.slug} className="w-[260px] shrink-0 snap-start md:w-auto">
+            {themes.slice(0, 4).map((th, i) => (
+              <div
+                key={th.slug}
+                data-reveal
+                style={{ "--d": `${i * 90}ms` } as React.CSSProperties}
+                className="w-[260px] shrink-0 snap-start md:w-auto"
+              >
                 <ThemeCardView theme={th} variant="strip" />
               </div>
             ))}
@@ -330,9 +383,11 @@ export default async function LandingPage() {
           <p className="text-body-l text-ink-muted">{t("privacyLead", { brand })}</p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 md:gap-5">
-          {privacy.map((p) => (
+          {privacy.map((p, i) => (
             <div
               key={p.title}
+              data-reveal
+              style={{ "--d": `${i * 100}ms` } as React.CSSProperties}
               className="flex flex-col gap-2 border-b border-dashed border-line py-3 sm:rounded-lg sm:border sm:border-solid sm:bg-paper-raised sm:p-6"
             >
               <h3 className="text-[18px] text-night-900 md:text-[20px]">{p.title}</h3>
@@ -355,12 +410,14 @@ export default async function LandingPage() {
           <p className="text-[15px] text-ink-muted md:text-[17px]">{t("pricingLead")}</p>
         </div>
         <div className="grid w-full items-stretch gap-4 md:grid-cols-3 md:gap-6">
-          {(["digital", "hardcover", "softcover"] as const).map((key) => {
+          {(["digital", "hardcover", "softcover"] as const).map((key, i) => {
             const featured = key === "hardcover";
             const amount = priceOf(key);
             return (
               <div
                 key={key}
+                data-reveal
+                style={{ "--d": `${i * 120}ms` } as React.CSSProperties}
                 className={`flex flex-col gap-4 rounded-xl p-6 md:rounded-2xl md:p-8 ${featured ? "order-first bg-night-900 text-paper shadow-[0_16px_40px_rgba(22,32,74,0.25)] md:order-none" : "border border-line bg-paper-raised text-ink"}`}
               >
                 {featured && (
@@ -463,11 +520,7 @@ export default async function LandingPage() {
           <h2 className="text-[30px] text-night-900 md:text-[44px]">{t("faqTitle")}</h2>
           <p className="text-body text-ink-muted">{t("faqLead")}</p>
           {whatsapp && (
-            <a
-              href={`https://wa.me/${whatsapp.replace(/\D/g, "")}`}
-              className="font-bold text-amber-700"
-              rel="noopener"
-            >
+            <a href={whatsappLink(whatsapp)} className="font-bold text-amber-700" rel="noopener">
               {t("faqWhatsapp")}
             </a>
           )}
@@ -476,6 +529,8 @@ export default async function LandingPage() {
           {faq.map((f, i) => (
             <details
               key={f.q}
+              data-reveal
+              style={{ "--d": `${i * 70}ms` } as React.CSSProperties}
               open={i === 0}
               className="group rounded-lg border border-line bg-paper-raised px-4 md:px-6"
             >

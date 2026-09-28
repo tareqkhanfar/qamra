@@ -3,10 +3,11 @@
 from pathlib import Path
 
 import yaml
-from qamra_ai.pipeline.theme import CONTENT_DIR, load_theme
-from qamra_core.db.models import Theme
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from qamra_ai.pipeline.theme import CONTENT_DIR, load_theme
+from qamra_core.db.models import Theme
 
 
 async def upsert_themes(db: AsyncSession, content_dir: Path = CONTENT_DIR) -> list[str]:
