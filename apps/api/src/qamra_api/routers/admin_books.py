@@ -14,7 +14,6 @@ from fastapi import APIRouter, Depends, File, Form, Request, UploadFile
 from fastapi.responses import Response
 from PIL import Image, ImageOps, UnidentifiedImageError
 from pydantic import BaseModel, Field
-from rq import Queue, Retry
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -24,6 +23,7 @@ from qamra_ai.pipeline.theme import Theme
 from qamra_api import runtime_settings
 from qamra_api.deps import AdminUser, SessionDep, SettingsDep, StorageDep, require_admin, require_permission
 from qamra_api.errors import ApiError
+from qamra_api.jobs import QueueDep, enqueue
 from qamra_core.db.models import (
     AuditLog,
     Book,
@@ -49,19 +49,8 @@ router = APIRouter(prefix="/api/admin", tags=["admin"], dependencies=[Depends(re
 MAX_UPLOAD = 10 * 1024 * 1024
 PHOTO_MAX_SIDE = 2048
 SAMPLE_CONSENT_VERSION = "sample-2026-09"
-JOB_TIMEOUT = 3600
 FINAL_STATUSES = (BookStatus.in_review, BookStatus.approved, BookStatus.ordered, BookStatus.printed)
-
-
-def get_queue(request: Request) -> Queue:
-    return Queue("generation", connection=request.app.state.rq_redis)
-
-
-QueueDep = Annotated[Queue, Depends(get_queue)]
-
-
-def _enqueue(queue: Queue, func_path: str, *args: object) -> None:
-    queue.enqueue(func_path, *args, job_timeout=JOB_TIMEOUT, retry=Retry(max=2, interval=[60, 300]))
+_enqueue = enqueue
 
 
 # ---- samples (acceptance runs before the parent flow exists) ----------------------------------------

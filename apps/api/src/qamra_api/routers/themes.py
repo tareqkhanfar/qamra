@@ -9,9 +9,10 @@ from sqlalchemy import select
 
 from qamra_ai.pipeline.layout import plan_book
 from qamra_ai.pipeline.theme import CatalogArt, Theme, render_template
-from qamra_api import runtime_settings
-from qamra_api.deps import SessionDep, SettingsDep
+from qamra_api.deps import SessionDep
 from qamra_api.errors import ApiError
+from qamra_api.store.catalog import load_catalog
+from qamra_core.db.models import Currency
 from qamra_core.db.models import Theme as ThemeRow
 
 router = APIRouter(prefix="/api", tags=["catalog"])
@@ -178,16 +179,15 @@ class Price(BaseModel):
 
 
 @router.get("/pricing")
-async def pricing(
-    db: SessionDep, settings: SettingsDep, currency: Literal["ILS", "JOD"] = "ILS"
-) -> list[Price]:
-    values = (await runtime_settings.current(db, settings)).values
-    suffix = currency.lower()
+async def pricing(db: SessionDep, currency: Literal["ILS", "JOD"] = "ILS") -> list[Price]:
+    """The Classic book's formats from the store catalog; the full catalog is /api/store/catalog."""
+    catalog = await load_catalog(db)
+    formats = {
+        v.options.get("format"): catalog.price(v, Currency(currency))
+        for v in catalog.variants.values()
+        if catalog.product_of(v).slug == "classic-book"
+    }
     return [
-        Price(
-            product=p,
-            amount=Decimal(v) if (v := values.get(f"price_{p}_{suffix}")) not in (None, "") else None,
-            currency=currency,
-        )
+        Price(product=p, amount=formats.get(p), currency=currency)
         for p in ("digital", "softcover", "hardcover")
     ]

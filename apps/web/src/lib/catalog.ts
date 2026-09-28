@@ -43,6 +43,10 @@ export const getTheme = (slug: string, lang: string) =>
   get<ThemeDetail>(`/api/themes/${encodeURIComponent(slug)}?lang=${lang}`);
 export const getPricing = () => get<Price[]>("/api/pricing", 0);
 
+/** The store catalog (Addendum 4): products, variants and prices, styles, add-ons, delivery zones. */
+export const getStoreCatalog = (currency: "ILS" | "JOD" = "ILS") =>
+  get<import("@/lib/store").Catalog>(`/api/store/catalog?currency=${currency}`, 0);
+
 /** Admin-managed public settings (prices, contact details, site switches). */
 export type PublicSettings = {
   price_digital_ils: string;

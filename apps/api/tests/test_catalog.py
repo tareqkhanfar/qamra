@@ -4,7 +4,6 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from qamra_api.seed import upsert_themes
-from qamra_api.settings import ApiSettings
 
 
 async def test_theme_list_sorted_with_status(client: AsyncClient, adb: AsyncSession) -> None:
@@ -50,21 +49,23 @@ async def test_seed_is_idempotent(adb: AsyncSession) -> None:
     assert all(s.startswith("+") for s in first) and all(s.startswith("~") for s in again)
 
 
-async def test_pricing_examples_then_admin_values(
-    client: AsyncClient, adb: AsyncSession, settings: ApiSettings
-) -> None:
-    from qamra_core import settings_store
-    from qamra_core.crypto import cipher_for
+async def test_pricing_comes_from_the_catalog(client: AsyncClient, adb: AsyncSession) -> None:
+    from sqlalchemy import select
 
+    from qamra_api.seed_store import seed_store
+    from qamra_core.db.models import Currency
+    from qamra_core.db.store import Variant, VariantPrice
+
+    await seed_store(adb)
     prices = (await client.get("/api/pricing")).json()
     assert [p["product"] for p in prices] == ["digital", "softcover", "hardcover"]
-    assert [Decimal(p["amount"]) for p in prices] == [
-        Decimal("49"),
-        Decimal("89"),
-        Decimal("119"),
-    ]  # examples
-    await settings_store.save(adb, cipher_for(settings), {"price_hardcover_ils": "125.50"}, None)
-    hard = (await client.get("/api/pricing")).json()[2]
-    assert Decimal(hard["amount"]) == Decimal("125.5") and hard["currency"] == "ILS"
+    assert [Decimal(p["amount"]) for p in prices] == [Decimal("19"), Decimal("69"), Decimal("99")]
+    hard = (await adb.execute(select(Variant).where(Variant.sku == "classic-hard-21"))).scalar_one()
+    row = await adb.get(VariantPrice, (hard.id, Currency.ILS))
+    assert row is not None
+    row.amount = Decimal("125.50")  # an admin edit shows up at once
+    await adb.commit()
+    hard_price = (await client.get("/api/pricing")).json()[2]
+    assert Decimal(hard_price["amount"]) == Decimal("125.5") and hard_price["currency"] == "ILS"
     jod = (await client.get("/api/pricing", params={"currency": "JOD"})).json()
-    assert jod[0]["currency"] == "JOD" and Decimal(jod[0]["amount"]) == Decimal("9")
+    assert jod[0]["currency"] == "JOD" and Decimal(jod[0]["amount"]) == Decimal("4")

@@ -4,6 +4,7 @@ Insert-only: rows that already exist are left alone, so prices, costs and prompt
 never overwritten by a deploy. New rows added to the files (a new variant, add-on or style) are inserted.
 """
 
+import uuid
 from datetime import UTC, datetime
 from decimal import Decimal
 from pathlib import Path
@@ -59,14 +60,17 @@ def expand_variants(product: dict[str, Any]) -> list[dict[str, Any]]:
     return out
 
 
-async def _exists(db: AsyncSession, column: Any, value: Any) -> Any:
-    return (await db.execute(select(column.class_).where(column == value))).scalar_one_or_none()
+async def _existing(db: AsyncSession, column: Any) -> dict[Any, Any]:
+    """Rows of a table by their natural key, in one query (the test database sits across a tunnel)."""
+    rows: list[Any] = list((await db.execute(select(column.class_))).scalars())
+    return {getattr(row, column.key): row for row in rows}
 
 
 async def _styles(db: AsyncSession) -> list[str]:
     added = []
+    have = await _existing(db, ArtStyle.slug)
     for sort, g in enumerate(style_guides()):
-        if await _exists(db, ArtStyle.slug, g.slug):
+        if g.slug in have:
             continue
         db.add(
             ArtStyle(
@@ -86,7 +90,7 @@ async def _styles(db: AsyncSession) -> list[str]:
     legacy = yaml.safe_load(LEGACY_STYLES.read_text(encoding="utf-8")) if LEGACY_STYLES.exists() else {}
     for slug in ("crayon", "papercut"):
         entry = legacy.get(slug)
-        if entry and not await _exists(db, ArtStyle.slug, slug):
+        if entry and slug not in have:
             db.add(
                 ArtStyle(
                     slug=slug,
@@ -104,10 +108,12 @@ async def _styles(db: AsyncSession) -> list[str]:
 
 async def _products(db: AsyncSession, products: list[dict[str, Any]]) -> list[str]:
     added = []
+    have, variants = await _existing(db, CatalogProduct.slug), await _existing(db, Variant.sku)
     for sort, p in enumerate(products):
-        product = await _exists(db, CatalogProduct.slug, p["slug"])
+        product = have.get(p["slug"])
         if product is None:
             product = CatalogProduct(
+                id=uuid.uuid4(),
                 slug=p["slug"],
                 line=ProductLine(p["line"]),
                 audience=Audience(p.get("audience", "b2c")),
@@ -121,13 +127,13 @@ async def _products(db: AsyncSession, products: list[dict[str, Any]]) -> list[st
                 sort=sort,
             )
             db.add(product)
-            await db.flush()
             added.append(f"+product:{p['slug']}")
         for vsort, v in enumerate(expand_variants(p)):
-            if await _exists(db, Variant.sku, v["sku"]):
+            if v["sku"] in variants:
                 continue
             cost = v.get("cost", {})
             variant = Variant(
+                id=uuid.uuid4(),
                 product_id=product.id,
                 sku=v["sku"],
                 options={k: str(x) for k, x in v["options"].items()},
@@ -138,7 +144,7 @@ async def _products(db: AsyncSession, products: list[dict[str, Any]]) -> list[st
                 sort=vsort,
             )
             db.add(variant)
-            await db.flush()
+            variants[v["sku"]] = variant
             for currency, amount in v["price"].items():
                 db.add(VariantPrice(variant_id=variant.id, currency=Currency(currency), amount=money(amount)))
             added.append(f"+variant:{v['sku']}")
@@ -147,10 +153,12 @@ async def _products(db: AsyncSession, products: list[dict[str, Any]]) -> list[st
 
 async def _addons(db: AsyncSession, addons: list[dict[str, Any]]) -> list[str]:
     added = []
+    have = await _existing(db, AddOn.slug)
     for sort, a in enumerate(addons):
-        if await _exists(db, AddOn.slug, a["slug"]):
+        if a["slug"] in have:
             continue
         addon = AddOn(
+            id=uuid.uuid4(),
             slug=a["slug"],
             name_ar=a["name_ar"],
             name_en=a["name_en"],
@@ -168,7 +176,6 @@ async def _addons(db: AsyncSession, addons: list[dict[str, Any]]) -> list[str]:
             sort=sort,
         )
         db.add(addon)
-        await db.flush()
         for currency, amount in a.get("price", {}).items():
             db.add(AddOnPrice(addon_id=addon.id, currency=Currency(currency), amount=money(amount)))
         added.append(f"+addon:{a['slug']}")
@@ -177,8 +184,10 @@ async def _addons(db: AsyncSession, addons: list[dict[str, Any]]) -> list[str]:
 
 async def _rules(db: AsyncSession, data: dict[str, Any]) -> list[str]:
     added = []
+    bundles, coupons = await _existing(db, Bundle.slug), await _existing(db, Coupon.code)
+    zones, variants = await _existing(db, ShippingZone.slug), await _existing(db, Variant.sku)
     for b in data.get("bundles", []):
-        if not await _exists(db, Bundle.slug, b["slug"]):
+        if b["slug"] not in bundles:
             db.add(
                 Bundle(
                     slug=b["slug"],
@@ -193,7 +202,7 @@ async def _rules(db: AsyncSession, data: dict[str, Any]) -> list[str]:
             added.append(f"+bundle:{b['slug']}")
     for c in data.get("coupons", []):
         code = c["code"].upper()
-        if not await _exists(db, Coupon.code, code):
+        if code not in coupons:
             db.add(
                 Coupon(
                     code=code,
@@ -206,7 +215,7 @@ async def _rules(db: AsyncSession, data: dict[str, Any]) -> list[str]:
             )
             added.append(f"+coupon:{code}")
     for sort, z in enumerate(data.get("shipping_zones", [])):
-        if not await _exists(db, ShippingZone.slug, z["slug"]):
+        if z["slug"] not in zones:
             eta = z.get("eta", [2, 5])
             db.add(
                 ShippingZone(
@@ -235,12 +244,11 @@ async def _rules(db: AsyncSession, data: dict[str, Any]) -> list[str]:
         if exists:
             continue
         price_list = PriceList(
-            name=pl["name"], currency=Currency(pl["currency"]), valid_from=datetime.now(UTC)
+            id=uuid.uuid4(), name=pl["name"], currency=Currency(pl["currency"]), valid_from=datetime.now(UTC)
         )
         db.add(price_list)
-        await db.flush()
         for item in pl["items"]:
-            variant = await _exists(db, Variant.sku, item["sku"])
+            variant = variants.get(item["sku"])
             if variant is None:
                 raise ValueError(f"price list {pl['name']!r}: unknown sku {item['sku']}")
             tiers = [

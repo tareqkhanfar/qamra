@@ -1,5 +1,25 @@
 # Changelog
 
+## Addendum 4, step 2 (part 1): storefront, checkout and orders (2026-09-28)
+
+- **Store API:**
+  - the catalog in ₪ or JD;
+  - a cart for guests and parents with a live quote (add-ons, sale, bundle, coupon, delivery, COD fee);
+  - checkout with cash on delivery;
+  - order tracking by code and phone.
+- **Storefront pages (mobile-first):**
+  - Classic vs Magic side by side on every story page, with live prices;
+  - cart (extras folded under «أضيفوا لمسة مميّزة», coupon field, full summary);
+  - checkout (design Create10);
+  - order placed, and order tracking with a status timeline;
+  - a cart link in the header.
+- **Order admin** (`/admin/orders`):
+  - status tabs and search;
+  - an order's books, extras, price, our cost and margin against the floor;
+  - allowed status moves, internal notes, ready-to-send WhatsApp messages, partial reprints, and a full history with names.
+- **Arabic invoices:** numbered per year, issued at confirmation, rendered by the worker. Books and extras are listed at list price, with the discount in the totals.
+- Friendly Arabic and English messages for every new error.
+
 ## Addendum 4, step 1: the store's data model (2026-09-28)
 
 - **Catalog:**

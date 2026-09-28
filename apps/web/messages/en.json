@@ -24,7 +24,8 @@
     "openMenu": "Menu",
     "closeMenu": "Close menu",
     "books": "My books",
-    "newBook": "New book"
+    "newBook": "New book",
+    "cart": "Cart"
   },
   "home": {
     "eyebrow": "Moonlit evenings",
@@ -667,5 +668,180 @@
     ],
     "links": "Terms we rely on",
     "updated": "Last updated: September 28, 2026"
+  },
+  "store": {
+    "lines": {
+      "classic": "Qamra Classic",
+      "magic": "Qamra Magic",
+      "coloring": "Coloring book",
+      "workbook": "Foundation workbook",
+      "journey": "My First Learning Journey"
+    },
+    "formats": {
+      "digital": "Digital copy",
+      "softcover": "Softcover",
+      "hardcover": "Hardcover",
+      "spiral": "Printed, spiral-bound"
+    },
+    "compare": {
+      "title": "Choose your book",
+      "from": "From",
+      "best": "Most special",
+      "note": "You choose the format after previewing the book. The preview is free.",
+      "classic": {
+        "tagline": "Beautiful ready-made illustrations, with your child drawn in as the hero",
+        "points": [
+          "Carefully reviewed story art",
+          "Your child's likeness on every page they appear",
+          "Faster and more affordable"
+        ]
+      },
+      "magic": {
+        "tagline": "Every page drawn for your child alone",
+        "points": ["One-of-a-kind illustrations", "Drawing companion included", "Several art styles"]
+      }
+    },
+    "cart": {
+      "title": "My cart",
+      "empty": "Your cart is empty",
+      "emptyBody": "Pick a story world and start your child's book.",
+      "browse": "Browse story worlds",
+      "bookFor": "{name}'s book",
+      "remove": "Remove",
+      "addOns": "Extras",
+      "included": "Included",
+      "free": "Free",
+      "couponLabel": "Discount code",
+      "apply": "Apply",
+      "removeCoupon": "Remove",
+      "couponProblems": {
+        "unknown": "That code isn't valid.",
+        "expired": "That code has expired.",
+        "used_up": "That code has been used up.",
+        "currency": "That code doesn't work in this currency.",
+        "first_order_only": "That code is for a first order only.",
+        "already_used": "You've already used this code.",
+        "min_subtotal": "That code needs a larger order.",
+        "no_matching_items": "That code doesn't cover what's in your cart."
+      },
+      "subtotal": "Subtotal",
+      "sale": "Seasonal discount",
+      "bundle": "Bundle discount",
+      "bundles": {
+        "two-books": "2+ books",
+        "siblings": "Sibling bundle"
+      },
+      "coupon": "{code} discount",
+      "shipping": "Delivery",
+      "shippingLater": "Calculated at the next step",
+      "freeShipping": "Free",
+      "codFee": "Cash-on-delivery fee",
+      "total": "Total",
+      "checkout": "Continue to checkout",
+      "unavailable": "Some items are no longer available and aren't counted in the total.",
+      "summary": "Order summary",
+      "discounts": "Discounts",
+      "extras": "Add a special touch",
+      "saved": "You save {amount}",
+      "percentOff": "{n}% off"
+    },
+    "checkout": {
+      "title": "Checkout",
+      "where": "Where should we deliver the book?",
+      "name": "Recipient name",
+      "phone": "Mobile number",
+      "phoneHint": "The courier will call before arriving",
+      "country": "Country",
+      "PS": "Palestine",
+      "JO": "Jordan",
+      "zone": "Area",
+      "city": "City",
+      "chooseCity": "Choose your city",
+      "address": "Neighborhood, street and nearest landmark",
+      "notes": "Notes for the courier (optional)",
+      "payment": "Payment",
+      "cod": "Cash on delivery",
+      "codBody": "Pay the courier in cash when the book arrives",
+      "card": "Card payment — coming soon",
+      "eta": "Arrives in {min}–{max} working days",
+      "terms": "I accept the order terms and the privacy policy",
+      "confirm": "Place order · {total}",
+      "back": "Back to cart"
+    },
+    "placed": {
+      "title": "Your order is on its way!",
+      "code": "Order number: {code}",
+      "next": "We'll call you to confirm the order, then start drawing and printing.",
+      "track": "Track the order",
+      "home": "Back to home"
+    },
+    "track": {
+      "title": "Track your order",
+      "intro": "Enter the order number and the mobile number you ordered with.",
+      "code": "Order number",
+      "phone": "Mobile number",
+      "find": "Show order status",
+      "notFound": "We couldn't find an order with that number and phone.",
+      "placedAt": "Ordered on",
+      "total": "Total",
+      "items": "In this order",
+      "statuses": {
+        "new": "Order received",
+        "confirmed": "Order confirmed",
+        "generating": "Drawing the book",
+        "review": "Quality review",
+        "printing": "Printing",
+        "shipped": "On its way to you",
+        "delivered": "Delivered",
+        "cancelled": "Cancelled",
+        "reprint": "Reprinting"
+      },
+      "help": "Message us on WhatsApp"
+    }
+  },
+  "orders": {
+    "title": "Orders & printing",
+    "search": "Search by order number, name or phone",
+    "all": "All",
+    "empty": "No orders yet.",
+    "statuses": {
+      "new": "New",
+      "confirmed": "Confirmed",
+      "generating": "Drawing",
+      "review": "Quality review",
+      "printing": "Printing",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled",
+      "reprint": "Reprint"
+    },
+    "moveTo": "Move to: {status}",
+    "customer": "Customer",
+    "items": "Books",
+    "pricing": "Price and cost",
+    "subtotal": "Subtotal",
+    "discount": "Discounts",
+    "delivery": "Delivery",
+    "total": "Total",
+    "cost": "Our cost",
+    "margin": "Margin",
+    "marginNote": "Using the costs recorded at ordering; the real AI cost shows after generation.",
+    "history": "History",
+    "note": "Internal note",
+    "addNote": "Add note",
+    "message": "WhatsApp message: {status}",
+    "invoice": "Invoice {number}",
+    "invoicePending": "Invoice {number} is being made…",
+    "reprintItems": "Choose what to reprint",
+    "reason": "Reason (optional)",
+    "close": "Close",
+    "events": {
+      "status": "Status changed",
+      "note": "Note",
+      "message": "Message sent",
+      "reprint": "Reprint",
+      "payment": "Payment"
+    },
+    "by": "by {name}"
   }
 }

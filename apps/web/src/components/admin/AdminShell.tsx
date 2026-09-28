@@ -4,7 +4,7 @@ import { brandName } from "@/config/brand";
 import { Link } from "@/i18n/navigation";
 import { AdminGate } from "./AdminGate";
 
-type Section = "queue" | "samples" | "metrics" | "settings";
+type Section = "queue" | "samples" | "orders" | "metrics" | "settings";
 
 /** Admin chrome (design: admin artboards): night sidebar with brand + «إدارة» badge; content on paper. */
 export async function AdminShell({ active, children }: { active: Section; children: ReactNode }) {
@@ -12,7 +12,7 @@ export async function AdminShell({ active, children }: { active: Section; childr
   const items = [
     { id: "queue", href: "/admin/queue", ready: true },
     { id: "samples", href: "/admin/samples", ready: true },
-    { id: "orders", ready: false },
+    { id: "orders", href: "/admin/orders", ready: true },
     { id: "themes", ready: false },
     { id: "metrics", href: "/admin/metrics", ready: true },
     { id: "settings", href: "/admin/settings", ready: true },

@@ -105,6 +105,42 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "الخدمة غير متاحة مؤقتًا. حاولوا بعد قليل.",
         "The service is temporarily unavailable. Try again shortly.",
     ),
+    # ---- the store (Addendum 4)
+    "cart_empty": ("السلة فارغة. اختاروا كتابًا أولًا.", "Your cart is empty. Choose a book first."),
+    "unknown_product": ("هذا المنتج غير متوفر الآن.", "This product isn't available right now."),
+    "invalid_style": (
+        "أسلوب الرسم هذا غير متاح لهذا الكتاب.",
+        "This art style isn't available for this book.",
+    ),
+    "invalid_addons": (
+        "لا يمكن إضافة هذه الإضافة لهذا الكتاب.",
+        "This add-on can't go with this book.",
+    ),
+    "unknown_zone": ("اختاروا منطقة التوصيل من القائمة.", "Choose a delivery area from the list."),
+    "unknown_city": ("اختاروا المدينة من القائمة.", "Choose your city from the list."),
+    "items_unavailable": (
+        "بعض ما في السلة لم يعد متوفرًا. راجعوا السلة من فضلكم.",
+        "Some items in your cart are no longer available. Please review your cart.",
+    ),
+    "below_minimum": (
+        "هذا المنتج يُطلب بكمية أكبر (طلبات الروضات من 20 نسخة).",
+        "This product has a minimum quantity (kindergarten orders start at 20).",
+    ),
+    "express_full": (
+        "اكتمل الإنتاج السريع لليوم. أزيلوه أو حاولوا غدًا.",
+        "Express production is full for today. Remove it or try tomorrow.",
+    ),
+    "coupon_invalid": (
+        "رمز الخصم غير صالح لهذا الطلب.",
+        "This discount code isn't valid for this order.",
+    ),
+    "terms_required": ("وافقوا على شروط الطلب للمتابعة.", "Please accept the order terms to continue."),
+    "try_again": ("لم يكتمل الطلب. حاولوا مرة أخرى.", "The order didn't go through. Please try again."),
+    "invalid_transition": (
+        "لا يمكن نقل الطلب إلى هذه الحالة من حالته الحالية.",
+        "The order can't move to that status from where it is.",
+    ),
+    "reprint_needs_items": ("اختاروا ما يُعاد طبعه من الطلب.", "Choose which items to reprint."),
     "internal_error": (
         "حدث خطأ غير متوقع. حاولوا مرة أخرى بعد قليل.",
         "Something went wrong. Please try again in a moment.",

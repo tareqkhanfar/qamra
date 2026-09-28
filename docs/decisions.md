@@ -19,6 +19,19 @@ Full reasoning is in `docs/plans/addendum-04.md` §2.
   - Existing admins became owners in the migration. `qamra create-user --role admin` grants `owner` unless `--staff-roles` says otherwise.
 - **Order statuses follow Addendum 4:** pending became new and in_production became printing. Order items now snapshot the variant, names, options, add-ons and unit costs, so later catalog edits never change a past order.
 
+**Storefront and orders (Addendum 4, step 2)**
+- **Guest carts live on the server.** An httpOnly cookie holds a random token and the database stores only its hash. Signing in adopts the guest cart. The cart's currency follows the delivery zone: Palestine pays in ₪, Jordan in JD.
+- **Checkout re-checks everything and freezes it on the order:** prices, add-on names and unit prices, and unit costs. So later catalog edits never change a past order, and invoices list exactly what was sold.
+  - The express add-on has a daily capacity.
+  - Coupons check dates, uses, first order (by phone or account) and uses per customer.
+  - Checkout, coupon attempts and tracking are rate-limited per IP.
+- **Tracking needs the order code and the phone number.** A wrong code and a wrong phone get the same 404, so codes can't be enumerated. The phone is kept in the tab's sessionStorage only, never in the URL.
+- **Order statuses change only along the allowed moves.** Cancelling is possible until printing, and a reprint needs the items it covers. Every change, note and customer message is an order event with the staff member's name.
+- **Invoices** are numbered per year with no gaps (a row-locked counter) and issued when an order is confirmed. The worker renders them, because only its image has Chromium. They sit in private storage, and admins open them through the API.
+- **Customer messages are ready-to-send WhatsApp links for now.** Staff tap once and WhatsApp opens with the message filled in, and the send is logged on the order. The templates are content (`content/store/messages.yaml`). An automatic sender (Twilio or the WhatsApp Business API) is a paid service and waits for Tareq's approval.
+- **Personalized books need a signed-in parent at the consent step.** A consent row belongs to a guardian account (the privacy rules: consent records and "delete my child's data"). Browsing, the cart and checkout still work as a guest. Phone-number sign-in would remove the friction, but it needs a paid SMS or WhatsApp provider.
+- **`/api/pricing` now reads the catalog.** The settings-based prices are no longer used by the site.
+
 **Workbook engine (Addenda 5 and 6)**
 - **One engine package** (`packages/workbook`, `qamra_workbook`) serves both workbook products, as Addendum 6 requires.
 - **Plans are data with automated rules.**

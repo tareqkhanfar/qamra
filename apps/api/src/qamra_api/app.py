@@ -13,6 +13,7 @@ from qamra_api.deps import require_client_header
 from qamra_api.errors import install_error_handlers
 from qamra_api.logging import RequestLogMiddleware
 from qamra_api.routers.admin_books import router as admin_books_router
+from qamra_api.routers.admin_orders import router as admin_orders_router
 from qamra_api.routers.family import router as family_router
 from qamra_api.routers.health import router as health_router
 from qamra_api.routers.leads import router as leads_router
@@ -21,6 +22,7 @@ from qamra_api.routers.settings import public_router as settings_public_router
 from qamra_api.routers.themes import router as themes_router
 from qamra_api.security_headers import SecurityHeadersMiddleware
 from qamra_api.settings import ApiSettings, get_settings
+from qamra_api.store.router import router as store_router
 from qamra_core.db.session import make_async_engine, make_async_sessionmaker
 from qamra_core.observability import configure_logging
 from qamra_core.storage import ObjectStorage
@@ -81,4 +83,6 @@ def create_app(settings: ApiSettings | None = None, *, manage_resources: bool = 
     app.include_router(settings_public_router)
     app.include_router(settings_admin_router)
     app.include_router(admin_books_router)
+    app.include_router(store_router)
+    app.include_router(admin_orders_router)
     return app

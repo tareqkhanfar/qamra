@@ -4,7 +4,8 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { Scene, fromArt } from "@/components/art/Scene";
 import { PageShell } from "@/components/site/PageShell";
 import { Link } from "@/i18n/navigation";
-import { formatAmount, getPricing, getTheme, lowestPrice } from "@/lib/catalog";
+import { LineCompare } from "@/components/store/LineCompare";
+import { getPricing, getStoreCatalog, getTheme, lowestPrice } from "@/lib/catalog";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -17,11 +18,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ThemeDetailPage({ params }: Props) {
   const { slug } = await params;
   const locale = await getLocale();
-  const [t, tc, theme, prices] = await Promise.all([
+  const [t, tc, theme, prices, catalog] = await Promise.all([
     getTranslations("themeDetail"),
     getTranslations("common"),
     getTheme(slug, locale),
     getPricing(),
+    getStoreCatalog(),
   ]);
   if (!theme) notFound();
   const soon = theme.status === "coming_soon";
@@ -132,22 +134,7 @@ export default async function ThemeDetailPage({ params }: Props) {
                 )}
               </div>
 
-              <h2 className="text-[20px] text-night-900">{t("formats")}</h2>
-              <div className="flex flex-col gap-2">
-                {(["hardcover", "softcover", "digital"] as const).map((key, i) => {
-                  const amount = prices?.find((p) => p.product === key)?.amount ?? null;
-                  return (
-                    <div
-                      key={key}
-                      className={`flex min-h-14 items-center justify-between rounded-md px-4 ${i === 0 ? "bg-night-900 text-paper" : "border border-line bg-paper-raised"}`}
-                    >
-                      <span className="font-semibold">{tc(`products.${key}`)}</span>
-                      <strong>{amount ? `${formatAmount(amount)} ₪` : tc("priceTbd")}</strong>
-                    </div>
-                  );
-                })}
-              </div>
-              <p className="text-small text-ink-muted">{t("formatsNote")}</p>
+              <LineCompare catalog={catalog} theme={theme.slug} />
             </>
           )}
 

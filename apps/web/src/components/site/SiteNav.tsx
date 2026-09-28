@@ -11,6 +11,7 @@ type Variant = "dark" | "light";
 export async function SiteNav({ variant = "light" }: { variant?: Variant }) {
   const [t, locale, jar] = await Promise.all([getTranslations("nav"), getLocale(), cookies()]);
   const signedIn = jar.has("qamra_at");
+  const hasCart = jar.has("qamra_cart");
   const dark = variant === "dark";
   const links = [
     { href: "/#how", label: t("how") },
@@ -45,6 +46,27 @@ export async function SiteNav({ variant = "light" }: { variant?: Variant }) {
         </div>
         <div className="ms-auto flex items-center gap-2 lg:ms-0">
           <LocaleSwitcher label={t("switchLocale")} tone={dark ? "dark" : "light"} />
+          {hasCart && (
+            <Link
+              href="/cart"
+              aria-label={t("cart")}
+              className={`flex size-11 items-center justify-center rounded-full ${dark ? "text-paper hover:text-amber-300" : "text-night-900 hover:text-amber-700"}`}
+            >
+              <svg
+                className="size-6"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M5 8h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8z" />
+                <path d="M9 8V6.5a3 3 0 0 1 6 0V8" />
+              </svg>
+            </Link>
+          )}
           <Link
             href={signedIn ? "/account" : "/login"}
             className={`hidden min-h-11 items-center px-2 font-semibold sm:flex ${dark ? "text-paper hover:text-amber-300" : "text-night-900 hover:text-amber-700"}`}

@@ -1,0 +1,23 @@
+# Customer messages per order status (Addendum 4 §5), filled with {name}, {code}, {total}, {track_url}.
+# Staff send them from the order page: WhatsApp opens with the message ready (no paid provider needed yet).
+confirmed:
+  ar: "مرحبًا {name} 🌙 تأكّد طلبكم {code} من قمرة، وبدأنا العمل على الكتاب. تتبّعوا الطلب هنا: {track_url}"
+  en: "Hello {name} 🌙 Your Qamra order {code} is confirmed and we've started on the book. Track it here: {track_url}"
+generating:
+  ar: "نرسم الآن كتاب طلبكم {code} ✨ سنخبركم عندما يصبح جاهزًا للطباعة."
+  en: "We're drawing the book for order {code} ✨ We'll let you know when it's ready to print."
+printing:
+  ar: "كتاب طلبكم {code} في المطبعة الآن 📖"
+  en: "The book for order {code} is being printed 📖"
+shipped:
+  ar: "طلبكم {code} في الطريق إليكم 🚚 سيتصل بكم المندوب قبل الوصول. المبلغ عند الاستلام: {total}"
+  en: "Order {code} is on its way 🚚 The courier will call before arriving. Amount due on delivery: {total}"
+delivered:
+  ar: "وصل كتابكم 🎉 نتمنى أن يسعد به طفلكم! شاركونا صورة إن أحببتم."
+  en: "Your book has arrived 🎉 We hope your child loves it! Share a photo with us if you like."
+cancelled:
+  ar: "أُلغي طلبكم {code}. إن كان هذا خطأ، راسلونا وسنساعدكم."
+  en: "Order {code} was cancelled. If that's a mistake, message us and we'll help."
+reprint:
+  ar: "نعيد طباعة جزء من طلبكم {code} لضمان أفضل جودة، وسنخبركم بموعد الوصول الجديد."
+  en: "We're reprinting part of order {code} to make sure it's perfect, and will let you know the new delivery date."
