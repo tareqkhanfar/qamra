@@ -136,8 +136,9 @@ products:
     option_names: [format]
     features: {size: "21x28", binding: wire-o, inserts: [stickers, card-stock]}
     variants:
-      # print_cost_tiers: PLACEHOLDERS until the printer's quote (the book + sticker sheet + card stock, per copy)
-      - {sku: family-wireo, options: {format: spiral}, price: {ILS: 89, JOD: 17}, cost: {print: 42, packaging: 3, ai_usd: 0.05}, print_cost_tiers: [{min_qty: 1, unit_ils: 42}, {min_qty: 10, unit_ils: 36}, {min_qty: 50, unit_ils: 30}, {min_qty: 100, unit_ils: 26}, {min_qty: 500, unit_ils: 19}]}
+      # print_cost_tiers: estimates (⚠) until staff save the printer's quote in the admin; 10+ copies can't be
+      # ordered before that (Tareq, 2026-09-28). Per copy: the book + sticker sheet + card stock.
+      - {sku: family-wireo, options: {format: spiral}, price: {ILS: 89, JOD: 17}, cost: {print: 42, packaging: 3, ai_usd: 0.05}, print_cost_tiers: [{min_qty: 1, unit_ils: 42, estimated: true}, {min_qty: 10, unit_ils: 36, estimated: true}, {min_qty: 50, unit_ils: 30, estimated: true}, {min_qty: 100, unit_ils: 26, estimated: true}, {min_qty: 500, unit_ils: 19, estimated: true}]}
       - {sku: family-digital, options: {format: digital}, price: {ILS: 35, JOD: 7}, cost: {ai_usd: 0.05}}
 
 addons:

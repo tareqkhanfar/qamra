@@ -3,7 +3,7 @@
 #   uv run python -m qamra_workbook.family check      # must report 0 problems
 #   uv run python scripts/family_proposal.py --pdf    # docs/family-book/proposal.md + out/family-book/proposal.pdf
 #
-# 112 pages: front p1–5, twelve adventures (each an opening spread, its activities and «ذكرى اليوم»), back
+# 112 pages (Tareq's order, 2026-09-28): front p1–5, twelve adventures (each an opening spread, its activities and «ذكرى اليوم»), back
 # p110–112. {child}, {adult}, {member}, {family_name}, {city}; {masc/fem} pairs follow the child's gender.
 
 title_ar: مغامراتي مع عائلتي
@@ -82,33 +82,33 @@ sections:
   - id: chef
     title_ar: "{الشيف الصغير/الشيف الصغيرة}"
     icon: 👩‍🍳
-    hook: "المطبخ اليوم مطبخ {child}! نغسل أيدينا، ونلبس المريلة، ونحضّر مع {adult} أطباقًا لذيذة وآمنة."
+    hook: "ما اشتريناه من السوق نطبخه معًا! المطبخ اليوم مطبخ {child}: نغسل أيدينا، ونلبس المريلة، ونحضّر مع {adult} أطباقًا لذيذة وآمنة."
     badge: "{طبّاخ صغير/طبّاخة صغيرة}"
-  - id: day
-    title_ar: يومي الجميل
-    icon: ☀️
-    hook: "الشمس تشرق، والقمر ينام… ثم يعود! ماذا نفعل في الصباح؟ وماذا نفعل قبل النوم؟ هيّا نرتّب يوم {child}."
-    badge: "{صديق/صديقة} الوقت"
-  - id: talk
-    title_ar: احكي لي
-    icon: 🗣️
-    hook: "في كل بيت حكايات كثيرة. اليوم {child} {يحكي/تحكي} والعائلة تسمع، ثم نتبادل الأدوار!"
-    badge: "{حكّاء صغير/حكّاءة صغيرة}"
-  - id: feelings
-    title_ar: مشاعري
-    icon: 💛
-    hook: "نفرح ونغضب ونخاف ونشتاق… كل المشاعر تزورنا. اليوم نتعرّف عليها، ونعرف ماذا نفعل عندما تكبر."
-    badge: قلب شجاع
-  - id: responsible
-    title_ar: "{أنا مسؤول/أنا مسؤولة}"
-    icon: ✅
-    hook: "في بيت عائلة {family_name} لكل واحد مهمّة صغيرة. ما مهمّة {child}؟ هيّا نساعد ونجمع النجوم!"
-    badge: "{طفل مسؤول/طفلة مسؤولة}"
   - id: nature
     title_ar: "{مستكشف/مستكشفة} الطبيعة"
     icon: 🌿
     hook: "خلف الباب عالم كبير: أوراق وحجارة وطيور وأصوات. نحمل الكتاب ونخرج مع {adult}… بعيون {محقّق/محقّقة}!"
     badge: "{صديق/صديقة} الطبيعة"
+  - id: day
+    title_ar: يومي الجميل
+    icon: ☀️
+    hook: "الشمس تشرق، والقمر ينام… ثم يعود! ماذا نفعل في الصباح؟ وماذا نفعل قبل النوم؟ هيّا نرتّب يوم {child}."
+    badge: "{صديق/صديقة} الوقت"
+  - id: responsible
+    title_ar: "{أنا مسؤول/أنا مسؤولة}"
+    icon: ✅
+    hook: "في بيت عائلة {family_name} لكل واحد مهمّة صغيرة. ما مهمّة {child}؟ هيّا نساعد ونجمع النجوم!"
+    badge: "{طفل مسؤول/طفلة مسؤولة}"
+  - id: feelings
+    title_ar: مشاعري
+    icon: 💛
+    hook: "نفرح ونغضب ونخاف ونشتاق… كل المشاعر تزورنا. اليوم نتعرّف عليها، ونعرف ماذا نفعل عندما تكبر."
+    badge: قلب شجاع
+  - id: talk
+    title_ar: احكي لي
+    icon: 🗣️
+    hook: "في كل بيت حكايات كثيرة. اليوم {child} {يحكي/تحكي} والعائلة تسمع، ثم نتبادل الأدوار!"
+    badge: "{حكّاء صغير/حكّاءة صغيرة}"
   - id: jobs
     title_ar: مهن عائلتي
     icon: 👷‍♀️
@@ -241,6 +241,7 @@ activities:
         parent: ["اكتبوا ما قاله {child}، وأضيفوا كلمة من {adult}."]
         params: {stars: 5}
 
+
   # ---- 🛒 مغامرة السوق (p16–23) ---------------------------------------------------------------------------
   - id: market-list
     section: market
@@ -321,12 +322,13 @@ activities:
     child_part: يقرأ السعر على كل بطاقة ويلوّن العدد نفسه من قطع النقود
     materials: [ألوان خشبية]
     minutes: 10
-    levels: {simple: "أسعار حتى 5", challenge: "يجمع سعرين معًا"}
+    levels: {simple: "أسعار حتى 5 بفئات 1 و2 و5", challenge: "يجمع سعرين معًا بكل الفئات"}
     pages:
       - type: price-tags
         title: بكم هذا؟
         instruction: "{لوّن/لوّني} قطعًا من النقود بقدر السعر"
         parent: ["عدّوا القطع معًا بصوت عالٍ، وأشيروا إلى كل قطعة."]
+        params: {denominations: {simple: [1, 2, 5], challenge: [1, 2, 5, 10, 20]}}
   - id: market-memory
     section: market
     title: ذكرى اليوم
@@ -344,6 +346,7 @@ activities:
         instruction: "{ارسم/ارسمي} أجمل ما رأيت في السوق"
         parent: ["اكتبوا أطرف ما قاله {child} في السوق."]
         params: {stars: 5}
+
 
   # ---- 👩‍🍳 الشيف الصغير (p24–33) --------------------------------------------------------------------------
   - id: chef-zaatar
@@ -483,437 +486,8 @@ activities:
         parent: ["اكتبوا رأي كل واحد في العائلة بالطبق."]
         params: {stars: 5}
 
-  # ---- ☀️ يومي الجميل (p34–41) ----------------------------------------------------------------------------
-  - id: day-morning-evening
-    section: day
-    title: صباح أم مساء؟
-    goal: التمييز بين أوقات اليوم
-    skills: [thinking, observation]
-    child_part: يصل كل صورة بالشمس أو بالقمر
-    materials: [قلم رصاص]
-    minutes: 5
-    levels: {simple: "صباح ومساء", challenge: "صباح وظهر ومساء"}
-    pages:
-      - type: sort-choose
-        title: صباح أم مساء؟
-        instruction: "{صِل/صِلي} كل صورة بالشمس أو بالقمر"
-        params: {groups: [morning, evening]}
-  - id: day-order
-    section: day
-    title: يومي بالترتيب
-    goal: ترتيب الأحداث وفهم قبل وبعد
-    skills: [thinking, memory]
-    child_part: يرتّب بطاقات يومه من الاستيقاظ حتى النوم، ويقول ماذا يأتي قبل وبعد
-    parent_part: يسأل عن كل بطاقة ماذا يحدث قبلها وماذا يحدث بعدها
-    together: true
-    materials: [قلم رصاص]
-    minutes: 10
-    levels: {simple: "4 بطاقات", challenge: "6 بطاقات، ويحكي يومه كاملًا"}
-    pages:
-      - type: sequence-cards
-        title: يومي بالترتيب
-        instruction: "{رقّم/رقّمي} الصور من الصباح إلى المساء"
-        parent: ["اسألوا: ماذا نفعل قبل الفطور؟ وماذا نفعل بعد النوم؟"]
-  - id: day-before-after
-    section: day
-    title: قبل وبعد
-    goal: التفكير في السبب والنتيجة والتعبير عنهما
-    skills: [thinking, speaking]
-    child_part: ينظر إلى صورة ويحكي ماذا حدث قبلها وماذا سيحدث بعدها
-    parent_part: يستمع ويسأل أسئلة مفتوحة (كيف؟ لماذا؟)
-    together: true
-    materials: []
-    minutes: 10
-    levels: {simple: "ماذا بعد؟", challenge: "قبل وبعد، مع سبب"}
-    pages:
-      - type: picture-talk
-        title: قبل وبعد
-        instruction: "{احكِ/احكي}: ماذا حدث قبل؟ وماذا بعد؟"
-        parent: ["اسألوا «كيف عرفت؟» بدل تصحيح الإجابة."]
-  - id: day-routine
-    section: day
-    title: جدول روتيني
-    goal: بناء روتين يومي يساعد على الاستقلال
-    skills: [responsibility, life_skills, cooperation]
-    child_part: يلصق رموز الروتين في جدول الصباح والمساء، ويضع علامة كل يوم ينجزه
-    parent_part: يتفق مع الطفل على الروتين، ويعلّق الجدول في مكان يراه
-    together: true
-    materials: [ورقة الملصقات]
-    minutes: 15
-    levels: {simple: "3 خطوات صباحًا و3 مساءً", challenge: "5 خطوات، ويتابع الجدول أسبوعًا"}
-    pages:
-      - type: routine-builder
-        title: جدول روتيني
-        instruction: "{الصق/الصقي} رموز صباحك ومسائك بالترتيب"
-        parent:
-          - "اتفقوا معًا على الروتين، ولا تزيدوا عن خمس خطوات."
-          - "علّقوا الجدول قرب السرير، وامدحوا كل يوم ينجزه {child}."
-  - id: day-best-moment
-    section: day
-    title: أحلى لحظة في يومي
-    goal: التعبير عن المشاعر الإيجابية بالرسم
-    skills: [creativity, emotions]
-    child_part: يرسم أحلى لحظة في يومه ويحكي عنها
-    materials: [ألوان خشبية]
-    minutes: 10
-    levels: {simple: "يرسم اللحظة", challenge: "يرسم ويكتب كلمة عنها"}
-    pages:
-      - type: drawing
-        title: أحلى لحظة في يومي
-        instruction: "{ارسم/ارسمي} أحلى لحظة في يومك"
-        parent: ["اسألوا قبل النوم: ما أحلى لحظة اليوم؟ وشاركوا لحظتكم أيضًا."]
-  - id: day-memory
-    section: day
-    title: ذكرى اليوم
-    goal: تذكّر المغامرة والتعبير عنها
-    skills: [memory, speaking]
-    child_part: يرسم يومه أو يلصق صورة، ويلوّن النجوم
-    parent_part: يكتب ما قاله الطفل عن يومه
-    together: true
-    materials: [صورة مطبوعة أو ألوان, لاصق]
-    minutes: 10
-    levels: {simple: "يرسم ويلوّن النجوم", challenge: "يكتب كلمة عن يومه"}
-    pages:
-      - type: memory-page
-        title: "ذكرى اليوم: يومي"
-        instruction: "{ارسم/ارسمي} يومك الجميل {والصق/والصقي} صورة"
-        parent: ["اكتبوا كلمة {child} عن يومه، وكلمة من {adult}."]
-        params: {stars: 5}
 
-  # ---- 🗣️ احكي لي (p42–49) --------------------------------------------------------------------------------
-  - id: talk-today
-    section: talk
-    title: شو أحلى إشي صار معك اليوم؟
-    goal: تنمية التعبير والحوار اليومي
-    skills: [speaking, emotions, cooperation]
-    child_part: يسحب بطاقة سؤال ويجيب بجملة أو أكثر
-    parent_part: يسأل ويستمع دون مقاطعة، ثم يجيب هو عن السؤال نفسه
-    together: true
-    materials: []
-    minutes: 10
-    levels: {simple: "يجيب بكلمة أو جملة", challenge: "يجيب بثلاث جمل ويسأل سؤالًا"}
-    pages:
-      - type: conversation-cards
-        title: شو أحلى إشي صار معك اليوم؟
-        instruction: "{اختر/اختاري} سؤالًا {وأجب/وأجيبي} عنه"
-        parent:
-          - "استمعوا حتى النهاية، ثم أجيبوا أنتم عن السؤال نفسه."
-          - "لإطالة الحديث اسألوا: وبعدين؟ كيف شعرت؟"
-  - id: talk-describe
-    section: talk
-    title: صِف الصورة
-    goal: توسيع المفردات والوصف الدقيق
-    skills: [speaking, observation]
-    child_part: يصف ما يراه في الصورة (من؟ أين؟ ماذا يفعلون؟ ما الألوان؟)
-    parent_part: يضيف كلمة جديدة لكل وصف ويكرّرها في جملة
-    together: true
-    materials: []
-    minutes: 5
-    levels: {simple: "3 أشياء في الصورة", challenge: "يصف الصورة بخمس جمل"}
-    pages:
-      - type: picture-talk
-        title: صِف الصورة
-        instruction: "{احكِ/احكي} ماذا ترى في الصورة"
-        parent: ["أضيفوا كلمة جديدة: «نعم، هذا قارب صيّاد، والصيّاد يصطاد السمك»."]
-  - id: talk-three-pictures
-    section: talk
-    title: حكاية من 3 صور
-    goal: ترتيب الأفكار وسرد قصة
-    skills: [speaking, thinking, creativity]
-    child_part: يرتّب ثلاث صور ويحكي منها قصة لها بداية ووسط ونهاية
-    parent_part: يكتب القصة كما يحكيها الطفل ويقرؤها له
-    together: true
-    materials: [قلم رصاص]
-    minutes: 10
-    levels: {simple: "يرتّب الصور ويحكي", challenge: "يغيّر النهاية ويحكي قصة جديدة"}
-    pages:
-      - type: sequence-cards
-        title: حكاية من 3 صور
-        instruction: "{رتّب/رتّبي} الصور {واحكِ/واحكي} الحكاية"
-        parent: ["اكتبوا القصة بكلمات {child}، واقرؤوها له بصوت عالٍ."]
-  - id: talk-new-words
-    section: talk
-    title: كلماتي الجديدة
-    goal: تثبيت المفردات الجديدة
-    skills: [speaking, memory, creativity]
-    child_part: يرسم كلمة جديدة تعلّمها هذا الأسبوع ويستعملها في جملة
-    materials: [ألوان خشبية]
-    minutes: 5
-    levels: {simple: "كلمة واحدة", challenge: "3 كلمات في جملة واحدة"}
-    pages:
-      - type: drawing
-        title: كلماتي الجديدة
-        instruction: "{ارسم/ارسمي} كلمة جديدة {تعلّمتها/تعلّمتِها} هذا الأسبوع"
-        parent: ["استعملوا الكلمة الجديدة في حديثكم مرّات خلال الأسبوع."]
-  - id: talk-old-days
-    section: talk
-    title: حكايات زمان
-    goal: الحوار بين الأجيال والاستماع
-    skills: [speaking, cooperation, memory]
-    child_part: يسأل {member} عن أيام الطفولة بأسئلة البطاقات، ثم يحكي ما سمعه للعائلة
-    parent_part: يساعد الطفل في الاتصال أو الزيارة، ويشجّعه على السؤال
-    together: true
-    materials: []
-    minutes: 15
-    levels: {simple: "سؤالان", challenge: "4 أسئلة ويعيد الحكاية لغيره"}
-    pages:
-      - type: conversation-cards
-        title: حكايات زمان
-        instruction: "{اسأل/اسألي} {member}: كيف كانت طفولتك؟"
-        parent:
-          - "ساعدوا {child} في الاتصال أو الزيارة، واختاروا معًا سؤالين."
-          - "بعدها اسألوا {child}: ماذا {عرفت/عرفتِ} عن زمان؟"
-  - id: talk-memory
-    section: talk
-    title: ذكرى اليوم
-    goal: تذكّر المغامرة والتعبير عنها
-    skills: [memory, speaking]
-    child_part: يرسم من حكى معه أو يلصق صورة، ويلوّن النجوم
-    parent_part: يكتب أجمل جملة قالها الطفل
-    together: true
-    materials: [صورة مطبوعة أو ألوان, لاصق]
-    minutes: 10
-    levels: {simple: "يرسم ويلوّن النجوم", challenge: "يكتب كلمة جديدة تعلّمها"}
-    pages:
-      - type: memory-page
-        title: "ذكرى اليوم: حكاياتنا"
-        instruction: "{ارسم/ارسمي} من {حكيت/حكيتِ} معه اليوم"
-        parent: ["اكتبوا أجمل جملة قالها {child} هذا الأسبوع."]
-        params: {stars: 5}
-
-  # ---- 💛 مشاعري (p50–59) ---------------------------------------------------------------------------------
-  - id: feelings-faces
-    section: feelings
-    title: وجوه المشاعر
-    goal: التعرّف على المشاعر من تعابير الوجه وتسميتها
-    skills: [emotions, observation]
-    child_part: يسمّي الشعور في كل وجه ويقلّده بوجهه أمام المرآة
-    parent_part: يقلّد الوجوه مع الطفل ويسمّي كل شعور بهدوء
-    together: true
-    materials: [مرآة]
-    minutes: 5
-    levels: {simple: "فرح، حزن، غضب", challenge: "6 مشاعر، منها الخوف والاشتياق والفخر"}
-    pages:
-      - type: feelings-faces
-        title: وجوه المشاعر
-        instruction: "{سمِّ/سمّي} كل شعور {وقلّده/وقلّديه} أمام المرآة"
-        parent: ["قلّدوا الوجوه معًا أمام المرآة، وسمّوا كل شعور باسمه."]
-  - id: feelings-match
-    section: feelings
-    title: أيّ شعور يناسب؟
-    goal: ربط المواقف بالمشاعر
-    skills: [emotions, thinking]
-    child_part: يصل كل موقف بالوجه الذي يعبّر عن الشعور المناسب
-    materials: [قلم رصاص]
-    minutes: 5
-    levels: {simple: "3 مواقف", challenge: "5 مواقف، ويقول لماذا"}
-    pages:
-      - type: situation-feeling-match
-        title: أيّ شعور يناسب؟
-        instruction: "{صِل/صِلي} كل موقف بالوجه المناسب"
-        parent: ["قد يشعر كل واحد بشيء مختلف في الموقف نفسه، وهذا طبيعي."]
-  - id: feelings-thermometer
-    section: feelings
-    title: ميزان مشاعري
-    goal: تقدير حجم الشعور والتعبير عنه
-    skills: [emotions, speaking]
-    child_part: يلوّن الميزان بقدر شعوره الآن ويسمّي الشعور
-    parent_part: يسمّي الشعور مع الطفل دون لوم، ويجرّبان معًا نفَسًا بطيئًا
-    together: true
-    materials: [ألوان خشبية]
-    minutes: 10
-    levels: {simple: "صغير أو كبير", challenge: "5 درجات، ويقول ماذا يساعده"}
-    pages:
-      - type: feelings-thermometer
-        title: ميزان مشاعري
-        instruction: "{لوّن/لوّني} الميزان بقدر شعورك الآن"
-        parent:
-          - "كل المشاعر مقبولة: سمّوا الشعور مع {child} دون لوم أو استعجال."
-          - "اسألوا: ماذا يساعدك عندما يكبر شعورك؟"
-          - "جرّبوا معًا نفَسًا بطيئًا، كأننا ننفخ بالونًا."
-  - id: feelings-i-can
-    section: feelings
-    title: عندما أشعر… أستطيع…
-    goal: إيجاد طرق مناسبة للتعامل مع المشاعر
-    skills: [emotions, problem_solving]
-    child_part: يكمل الجملة لكل شعور باختيار أو رسم ما يستطيع فعله
-    parent_part: يقترح أفكارًا لطيفة إذا احتاج الطفل، دون أن يفرضها
-    together: true
-    materials: [ألوان خشبية]
-    minutes: 10
-    levels: {simple: "شعوران", challenge: "4 مشاعر، ولكل شعور فكرتان"}
-    pages:
-      - type: story-finish
-        title: عندما أغضب أستطيع…
-        instruction: "{أكمل/أكملي} الجملة بالرسم أو بالكلمات"
-        parent: ["أفكار لطيفة: أعدّ إلى خمسة، أشرب ماء، أطلب حضنًا، أرسم غضبي."]
-  - id: feelings-talk
-    section: feelings
-    title: نتكلّم عن موقف
-    goal: التواصل والحديث عن موقف حقيقي
-    skills: [emotions, speaking, cooperation]
-    child_part: يختار بطاقة موقف ويحكي ماذا شعر وماذا فعل
-    parent_part: يستمع ويعكس الشعور بكلماته («يبدو أنك حزنت»)، ويحكي موقفًا حدث معه
-    together: true
-    materials: []
-    minutes: 10
-    levels: {simple: "يسمّي الشعور", challenge: "يحكي الموقف ويقترح ماذا يفعل في المرة القادمة"}
-    pages:
-      - type: conversation-cards
-        title: نتكلّم عن موقف
-        instruction: "{اختر/اختاري} بطاقة {واحكِ/واحكي} ماذا {شعرت/شعرتِ}"
-        parent:
-          - "استمعوا دون تصحيح، وردّدوا الشعور: «يبدو أنك حزنت»."
-          - "احكوا موقفًا حدث معكم أيضًا. هذا حديث، لا اختبار."
-  - id: feelings-calm
-    section: feelings
-    title: زاوية الهدوء
-    goal: بناء مكان وأدوات للهدوء
-    skills: [emotions, creativity]
-    child_part: يرسم ركنه الهادئ في البيت وما يضع فيه (وسادة، كتاب، لعبة)
-    parent_part: يساعد الطفل على تجهيز الركن فعلًا في البيت
-    together: true
-    materials: [ألوان خشبية, وسادة]
-    minutes: 15
-    levels: {simple: "يرسم الركن", challenge: "يرسم ويختار 3 أشياء تساعده على الهدوء"}
-    pages:
-      - type: drawing
-        title: زاوية الهدوء
-        instruction: "{ارسم/ارسمي} ركنك الهادئ في البيت"
-        parent: ["جهّزوا الركن معًا فعلًا، واتفقوا أنه مكان للراحة لا للعقاب."]
-  - id: feelings-kind
-    section: feelings
-    title: كلمات لطيفة
-    goal: التعاطف واختيار كلمات تواسي وتفرح
-    skills: [emotions, speaking]
-    child_part: ينظر إلى الصورة ويقول ماذا يقول لصديق حزين أو لأخ فرحان
-    materials: []
-    minutes: 5
-    levels: {simple: "كلمة لطيفة", challenge: "كلمة لطيفة وفعل لطيف"}
-    pages:
-      - type: picture-talk
-        title: كلمات لطيفة
-        instruction: "ماذا {تقول/تقولين} لصديق حزين؟"
-        parent: ["امدحوا كل كلمة لطيفة يقولها {child} في البيت هذا الأسبوع."]
-  - id: feelings-memory
-    section: feelings
-    title: ذكرى اليوم
-    goal: تذكّر المغامرة والتعبير عنها
-    skills: [memory, emotions]
-    child_part: يرسم وجهه اليوم ويلوّن النجوم
-    parent_part: يكتب كلمة حب وتشجيع للطفل
-    together: true
-    materials: [صورة مطبوعة أو ألوان, لاصق]
-    minutes: 10
-    levels: {simple: "يرسم وجهه", challenge: "يكتب اسم شعوره"}
-    pages:
-      - type: memory-page
-        title: "ذكرى اليوم: قلبي"
-        instruction: "{ارسم/ارسمي} وجهك اليوم {ولوّن/ولوّني} النجوم"
-        parent: ["اكتبوا كلمة حب وتشجيع لـ{child}."]
-        params: {stars: 5}
-
-  # ---- ✅ أنا مسؤول (p60–67) ------------------------------------------------------------------------------
-  - id: resp-toys
-    section: responsible
-    title: كل لعبة في بيتها
-    goal: الترتيب والتصنيف
-    skills: [responsibility, thinking]
-    child_part: يصنّف ألعابه في صناديق (مكعّبات، دمى، سيارات) ثم يرتّبها في الواقع
-    parent_part: يجهّز الصناديق ويلصق عليها صورًا، ويرتّب مع الطفل أول مرة
-    together: true
-    materials: [صناديق أو سلال]
-    minutes: 10
-    levels: {simple: "صندوقان", challenge: "3 صناديق، ويرتّب وحده"}
-    pages:
-      - type: sort-choose
-        title: كل لعبة في بيتها
-        instruction: "{صِل/صِلي} كل لعبة بصندوقها"
-        parent: ["رتّبوا معًا أول مرة، ثم {دعوه/دعوها} {يرتّب/ترتّب} وحده وامدحوا."]
-        params: {groups: [blocks, dolls, cars]}
-  - id: resp-table
-    section: responsible
-    title: نجهّز السفرة
-    goal: العدّ والتطابق واحد لواحد في مهمّة حقيقية
-    skills: [counting, life_skills, cooperation]
-    child_part: يعدّ أفراد العائلة ويضع لكل واحد صحنًا وملعقة وكأسًا
-    parent_part: يعطي الطفل الأدوات غير القابلة للكسر، ويشكره أمام العائلة
-    together: true
-    materials: [صحون بلاستيك, ملاعق, كؤوس]
-    minutes: 10
-    levels: {simple: "صحن لكل واحد", challenge: "صحن وملعقة وكأس، ويكتب العدد"}
-    pages:
-      - type: counting
-        title: نجهّز السفرة
-        instruction: "{عدّ/عدّي} عائلتك {وارسم/وارسمي} صحنًا لكل واحد"
-        parent: ["أعطوه أدوات لا تنكسر، واشكروه أمام العائلة على المائدة."]
-  - id: resp-plant
-    section: responsible
-    title: أسقي نبتتي
-    goal: رعاية كائن حي والملاحظة على مدى أيام
-    skills: [responsibility, observation]
-    child_part: يسقي نبتة كل يومين ويرسم كيف تتغيّر خلال أسبوع
-    parent_part: يساعد في زراعة بذرة أو اختيار نبتة، ويذكّر بموعد السقاية
-    together: true
-    materials: [بذور عدس أو فاصولياء, قطن, كأس]
-    minutes: 10
-    levels: {simple: "يسقي ويلوّن اليوم", challenge: "يرسم النبتة 4 مرات ويقيس طولها"}
-    pages:
-      - type: observation-journal
-        title: أسقي نبتتي
-        instruction: "{اسقِ/اسقي} نبتتك {وارسمها/وارسميها} كل يومين"
-        parent: ["ازرعوا بذور عدس على قطن مبلول: تنبت في يومين أو ثلاثة."]
-  - id: resp-chart
-    section: responsible
-    title: جدول إنجازاتي
-    goal: الالتزام بمهام صغيرة أسبوعيًا
-    skills: [responsibility, life_skills]
-    child_part: يختار 3 مهام ويلصق نجمة كل يوم ينجز فيه المهمة
-    parent_part: يتفق على مهام بسيطة، ويمدح الجهد لا الكمال
-    together: true
-    materials: [ورقة الملصقات]
-    minutes: 5
-    levels: {simple: "مهمّتان", challenge: "3 مهام لمدة أسبوع كامل"}
-    pages:
-      - type: chore-chart
-        title: جدول إنجازاتي
-        instruction: "{الصق/الصقي} نجمة كل يوم {تنجز/تنجزين} مهمّتك"
-        parent:
-          - "اختاروا معًا مهامَّ صغيرة: ترتيب الألعاب، سقاية النبتة، ترتيب الحذاء."
-          - "امدحوا المحاولة: «{حاولت/حاولتِ}، وهذا رائع!»"
-  - id: resp-helper
-    section: responsible
-    title: مساعد العائلة
-    goal: الشعور بالمساهمة والانتماء
-    skills: [cooperation, responsibility, creativity]
-    child_part: يرسم نفسه وهو يساعد أحد أفراد العائلة في مهمة
-    materials: [ألوان خشبية]
-    minutes: 10
-    levels: {simple: "يرسم المساعدة", challenge: "يرسم ويكتب اسم المهمة"}
-    pages:
-      - type: drawing
-        title: "{مساعد/مساعدة} العائلة"
-        instruction: "{ارسم/ارسمي} نفسك {تساعد/تساعدين} {member}"
-        parent: ["اشكروا {child} على مساعدة حقيقية قدّمها هذا الأسبوع."]
-  - id: resp-memory
-    section: responsible
-    title: ذكرى اليوم
-    goal: تذكّر المغامرة والتعبير عنها
-    skills: [memory, responsibility]
-    child_part: يلصق صورة وهو ينجز مهمته أو يرسمها، ويلوّن النجوم
-    parent_part: يكتب ما يفخر به في الطفل هذا الأسبوع
-    together: true
-    materials: [صورة مطبوعة أو ألوان, لاصق]
-    minutes: 10
-    levels: {simple: "يرسم ويلوّن النجوم", challenge: "يكتب اسم مهمّته"}
-    pages:
-      - type: memory-page
-        title: "ذكرى اليوم: {أنا مسؤول/أنا مسؤولة}"
-        instruction: "{الصق/الصقي} صورتك وأنت {تساعد/تساعدين}"
-        parent: ["اكتبوا شيئًا تفخرون به في {child} هذا الأسبوع."]
-        params: {stars: 5}
-
-  # ---- 🌿 مستكشف الطبيعة (p68–77) -------------------------------------------------------------------------
+  # ---- 🌿 مستكشف الطبيعة (p34–43) -------------------------------------------------------------------------
   - id: nature-hunt
     section: nature
     title: صيد الطبيعة
@@ -1050,6 +624,441 @@ activities:
         parent: ["اكتبوا أين ذهبتم في {city}، وأجمل ما وجدتموه."]
         params: {stars: 5}
 
+
+  # ---- ☀️ يومي الجميل (p44–51) ----------------------------------------------------------------------------
+  - id: day-morning-evening
+    section: day
+    title: صباح أم مساء؟
+    goal: التمييز بين أوقات اليوم
+    skills: [thinking, observation]
+    child_part: يصل كل صورة بالشمس أو بالقمر
+    materials: [قلم رصاص]
+    minutes: 5
+    levels: {simple: "صباح ومساء", challenge: "صباح وظهر ومساء"}
+    pages:
+      - type: sort-choose
+        title: صباح أم مساء؟
+        instruction: "{صِل/صِلي} كل صورة بالشمس أو بالقمر"
+        params: {groups: [morning, evening]}
+  - id: day-order
+    section: day
+    title: يومي بالترتيب
+    goal: ترتيب الأحداث وفهم قبل وبعد
+    skills: [thinking, memory]
+    child_part: يرتّب بطاقات يومه من الاستيقاظ حتى النوم، ويقول ماذا يأتي قبل وبعد
+    parent_part: يسأل عن كل بطاقة ماذا يحدث قبلها وماذا يحدث بعدها
+    together: true
+    materials: [قلم رصاص]
+    minutes: 10
+    levels: {simple: "4 بطاقات", challenge: "6 بطاقات، ويحكي يومه كاملًا"}
+    pages:
+      - type: sequence-cards
+        title: يومي بالترتيب
+        instruction: "{رقّم/رقّمي} الصور من الصباح إلى المساء"
+        parent: ["اسألوا: ماذا نفعل قبل الفطور؟ وماذا نفعل بعد النوم؟"]
+  - id: day-before-after
+    section: day
+    title: قبل وبعد
+    goal: التفكير في السبب والنتيجة والتعبير عنهما
+    skills: [thinking, speaking]
+    child_part: ينظر إلى صورة ويحكي ماذا حدث قبلها وماذا سيحدث بعدها
+    parent_part: يستمع ويسأل أسئلة مفتوحة (كيف؟ لماذا؟)
+    together: true
+    materials: []
+    minutes: 10
+    levels: {simple: "ماذا بعد؟", challenge: "قبل وبعد، مع سبب"}
+    pages:
+      - type: picture-talk
+        title: قبل وبعد
+        instruction: "{احكِ/احكي}: ماذا حدث قبل؟ وماذا بعد؟"
+        parent: ["اسألوا «كيف عرفت؟» بدل تصحيح الإجابة."]
+  - id: day-routine
+    section: day
+    title: جدول روتيني
+    goal: بناء روتين يومي يساعد على الاستقلال
+    skills: [responsibility, life_skills, cooperation]
+    child_part: يلصق رموز الروتين في جدول الصباح والمساء، ويضع علامة كل يوم ينجزه
+    parent_part: يتفق مع الطفل على الروتين، ويعلّق الجدول في مكان يراه
+    together: true
+    materials: [ورقة الملصقات]
+    minutes: 15
+    levels: {simple: "3 خطوات صباحًا و3 مساءً", challenge: "5 خطوات، ويتابع الجدول أسبوعًا"}
+    pages:
+      - type: routine-builder
+        title: جدول روتيني
+        instruction: "{الصق/الصقي} رموز صباحك ومسائك بالترتيب"
+        parent:
+          - "اتفقوا معًا على الروتين، ولا تزيدوا عن خمس خطوات."
+          - "علّقوا الجدول قرب السرير، وامدحوا كل يوم ينجزه {child}."
+  - id: day-best-moment
+    section: day
+    title: أحلى لحظة في يومي
+    goal: التعبير عن المشاعر الإيجابية بالرسم
+    skills: [creativity, emotions]
+    child_part: يرسم أحلى لحظة في يومه ويحكي عنها
+    materials: [ألوان خشبية]
+    minutes: 10
+    levels: {simple: "يرسم اللحظة", challenge: "يرسم ويكتب كلمة عنها"}
+    pages:
+      - type: drawing
+        title: أحلى لحظة في يومي
+        instruction: "{ارسم/ارسمي} أحلى لحظة في يومك"
+        parent: ["اسألوا قبل النوم: ما أحلى لحظة اليوم؟ وشاركوا لحظتكم أيضًا."]
+  - id: day-memory
+    section: day
+    title: ذكرى اليوم
+    goal: تذكّر المغامرة والتعبير عنها
+    skills: [memory, speaking]
+    child_part: يرسم يومه أو يلصق صورة، ويلوّن النجوم
+    parent_part: يكتب ما قاله الطفل عن يومه
+    together: true
+    materials: [صورة مطبوعة أو ألوان, لاصق]
+    minutes: 10
+    levels: {simple: "يرسم ويلوّن النجوم", challenge: "يكتب كلمة عن يومه"}
+    pages:
+      - type: memory-page
+        title: "ذكرى اليوم: يومي"
+        instruction: "{ارسم/ارسمي} يومك الجميل {والصق/والصقي} صورة"
+        parent: ["اكتبوا كلمة {child} عن يومه، وكلمة من {adult}."]
+        params: {stars: 5}
+
+
+  # ---- ✅ أنا مسؤول (p52–59) ------------------------------------------------------------------------------
+  - id: resp-toys
+    section: responsible
+    title: كل لعبة في بيتها
+    goal: الترتيب والتصنيف
+    skills: [responsibility, thinking]
+    child_part: يصنّف ألعابه في صناديق (مكعّبات، دمى، سيارات) ثم يرتّبها في الواقع
+    parent_part: يجهّز الصناديق ويلصق عليها صورًا، ويرتّب مع الطفل أول مرة
+    together: true
+    materials: [صناديق أو سلال]
+    minutes: 10
+    levels: {simple: "صندوقان", challenge: "3 صناديق، ويرتّب وحده"}
+    pages:
+      - type: sort-choose
+        title: كل لعبة في بيتها
+        instruction: "{صِل/صِلي} كل لعبة بصندوقها"
+        parent: ["رتّبوا معًا أول مرة، ثم {دعوه/دعوها} {يرتّب/ترتّب} وحده وامدحوا."]
+        params: {groups: [blocks, dolls, cars]}
+  - id: resp-table
+    section: responsible
+    title: نجهّز السفرة
+    goal: العدّ والتطابق واحد لواحد في مهمّة حقيقية
+    skills: [counting, life_skills, cooperation]
+    child_part: يعدّ أفراد العائلة ويضع لكل واحد صحنًا وملعقة وكأسًا
+    parent_part: يعطي الطفل الأدوات غير القابلة للكسر، ويشكره أمام العائلة
+    together: true
+    materials: [صحون بلاستيك, ملاعق, كؤوس]
+    minutes: 10
+    levels: {simple: "صحن لكل واحد", challenge: "صحن وملعقة وكأس، ويكتب العدد"}
+    pages:
+      - type: counting
+        title: نجهّز السفرة
+        instruction: "{عدّ/عدّي} عائلتك {وارسم/وارسمي} صحنًا لكل واحد"
+        parent: ["أعطوه أدوات لا تنكسر، واشكروه أمام العائلة على المائدة."]
+  - id: resp-plant
+    section: responsible
+    title: أسقي نبتتي
+    goal: رعاية كائن حي والملاحظة على مدى أيام
+    skills: [responsibility, observation]
+    child_part: يسقي نبتة كل يومين ويرسم كيف تتغيّر خلال أسبوع
+    parent_part: يساعد في زراعة بذرة أو اختيار نبتة، ويذكّر بموعد السقاية
+    together: true
+    materials: [بذور عدس أو فاصولياء, قطن, كأس]
+    minutes: 10
+    levels: {simple: "يسقي ويلوّن اليوم", challenge: "يرسم النبتة 4 مرات ويقيس طولها"}
+    pages:
+      - type: observation-journal
+        title: أسقي نبتتي
+        instruction: "{اسقِ/اسقي} نبتتك {وارسمها/وارسميها} كل يومين"
+        parent: ["ازرعوا بذور عدس على قطن مبلول: تنبت في يومين أو ثلاثة."]
+  - id: resp-chart
+    section: responsible
+    title: جدول إنجازاتي
+    goal: الالتزام بمهام صغيرة أسبوعيًا
+    skills: [responsibility, life_skills]
+    child_part: يختار 3 مهام ويلصق نجمة كل يوم ينجز فيه المهمة
+    parent_part: يتفق على مهام بسيطة، ويمدح الجهد لا الكمال
+    together: true
+    materials: [ورقة الملصقات]
+    minutes: 5
+    levels: {simple: "مهمّتان", challenge: "3 مهام لمدة أسبوع كامل"}
+    pages:
+      - type: chore-chart
+        title: جدول إنجازاتي
+        instruction: "{الصق/الصقي} نجمة كل يوم {تنجز/تنجزين} مهمّتك"
+        parent:
+          - "اختاروا معًا مهامَّ صغيرة: ترتيب الألعاب، سقاية النبتة، ترتيب الحذاء."
+          - "امدحوا المحاولة: «{حاولت/حاولتِ}، وهذا رائع!»"
+  - id: resp-helper
+    section: responsible
+    title: مساعد العائلة
+    goal: الشعور بالمساهمة والانتماء
+    skills: [cooperation, responsibility, creativity]
+    child_part: يرسم نفسه وهو يساعد أحد أفراد العائلة في مهمة
+    materials: [ألوان خشبية]
+    minutes: 10
+    levels: {simple: "يرسم المساعدة", challenge: "يرسم ويكتب اسم المهمة"}
+    pages:
+      - type: drawing
+        title: "{مساعد/مساعدة} العائلة"
+        instruction: "{ارسم/ارسمي} نفسك {تساعد/تساعدين} {member}"
+        parent: ["اشكروا {child} على مساعدة حقيقية قدّمها هذا الأسبوع."]
+  - id: resp-memory
+    section: responsible
+    title: ذكرى اليوم
+    goal: تذكّر المغامرة والتعبير عنها
+    skills: [memory, responsibility]
+    child_part: يلصق صورة وهو ينجز مهمته أو يرسمها، ويلوّن النجوم
+    parent_part: يكتب ما يفخر به في الطفل هذا الأسبوع
+    together: true
+    materials: [صورة مطبوعة أو ألوان, لاصق]
+    minutes: 10
+    levels: {simple: "يرسم ويلوّن النجوم", challenge: "يكتب اسم مهمّته"}
+    pages:
+      - type: memory-page
+        title: "ذكرى اليوم: {أنا مسؤول/أنا مسؤولة}"
+        instruction: "{الصق/الصقي} صورتك وأنت {تساعد/تساعدين}"
+        parent: ["اكتبوا شيئًا تفخرون به في {child} هذا الأسبوع."]
+        params: {stars: 5}
+
+
+  # ---- 💛 مشاعري (p60–69) ---------------------------------------------------------------------------------
+  - id: feelings-faces
+    section: feelings
+    title: وجوه المشاعر
+    goal: التعرّف على المشاعر من تعابير الوجه وتسميتها
+    skills: [emotions, observation]
+    child_part: يسمّي الشعور في كل وجه ويقلّده بوجهه أمام المرآة
+    parent_part: يقلّد الوجوه مع الطفل ويسمّي كل شعور بهدوء
+    together: true
+    materials: [مرآة]
+    minutes: 5
+    levels: {simple: "فرح، حزن، غضب", challenge: "6 مشاعر، منها الخوف والاشتياق والفخر"}
+    pages:
+      - type: feelings-faces
+        title: وجوه المشاعر
+        instruction: "{سمِّ/سمّي} كل شعور {وقلّده/وقلّديه} أمام المرآة"
+        parent: ["قلّدوا الوجوه معًا أمام المرآة، وسمّوا كل شعور باسمه."]
+  - id: feelings-match
+    section: feelings
+    title: أيّ شعور يناسب؟
+    goal: ربط المواقف بالمشاعر
+    skills: [emotions, thinking]
+    child_part: يصل كل موقف بالوجه الذي يعبّر عن الشعور المناسب
+    materials: [قلم رصاص]
+    minutes: 5
+    levels: {simple: "3 مواقف", challenge: "5 مواقف، ويقول لماذا"}
+    pages:
+      - type: situation-feeling-match
+        title: أيّ شعور يناسب؟
+        instruction: "{صِل/صِلي} كل موقف بالوجه المناسب"
+        parent: ["قد يشعر كل واحد بشيء مختلف في الموقف نفسه، وهذا طبيعي."]
+  - id: feelings-thermometer
+    section: feelings
+    title: ميزان مشاعري
+    goal: تقدير حجم الشعور والتعبير عنه
+    skills: [emotions, speaking]
+    child_part: يلوّن الميزان بقدر شعوره الآن ويسمّي الشعور
+    parent_part: يسمّي الشعور مع الطفل دون لوم، ويجرّبان معًا نفَسًا بطيئًا
+    together: true
+    materials: [ألوان خشبية]
+    minutes: 10
+    levels: {simple: "صغير أو كبير", challenge: "5 درجات، ويقول ماذا يساعده"}
+    pages:
+      - type: feelings-thermometer
+        title: ميزان مشاعري
+        instruction: "{لوّن/لوّني} الميزان بقدر شعورك الآن"
+        parent:
+          - "كل المشاعر مقبولة: سمّوا الشعور مع {child} دون لوم أو استعجال."
+          - "اسألوا: ماذا يساعدك عندما يكبر شعورك؟"
+          - "جرّبوا معًا نفَسًا بطيئًا، كأننا ننفخ بالونًا."
+  - id: feelings-i-can
+    section: feelings
+    title: عندما أشعر… أستطيع…
+    goal: إيجاد طرق مناسبة للتعامل مع المشاعر
+    skills: [emotions, problem_solving]
+    child_part: يكمل الجملة لكل شعور باختيار أو رسم ما يستطيع فعله
+    parent_part: يقترح أفكارًا لطيفة إذا احتاج الطفل، دون أن يفرضها
+    together: true
+    materials: [ألوان خشبية]
+    minutes: 10
+    levels: {simple: "شعوران", challenge: "4 مشاعر، ولكل شعور فكرتان"}
+    pages:
+      - type: story-finish
+        title: عندما أغضب أستطيع…
+        instruction: "{أكمل/أكملي} الجملة بالرسم أو بالكلمات"
+        parent: ["أفكار لطيفة: أعدّ إلى خمسة، أشرب ماء، أطلب حضنًا، أرسم غضبي."]
+  - id: feelings-talk
+    section: feelings
+    title: نتكلّم عن موقف
+    goal: التواصل والحديث عن موقف حقيقي
+    skills: [emotions, speaking, cooperation]
+    child_part: يختار بطاقة موقف ويحكي ماذا شعر وماذا فعل
+    parent_part: يستمع ويعكس الشعور بكلماته («يبدو أنك حزنت»)، ويحكي موقفًا حدث معه
+    together: true
+    materials: []
+    minutes: 10
+    levels: {simple: "يسمّي الشعور", challenge: "يحكي الموقف ويقترح ماذا يفعل في المرة القادمة"}
+    pages:
+      - type: conversation-cards
+        title: نتكلّم عن موقف
+        instruction: "{اختر/اختاري} بطاقة {واحكِ/واحكي} ماذا {شعرت/شعرتِ}"
+        parent:
+          - "استمعوا دون تصحيح، وردّدوا الشعور: «يبدو أنك حزنت»."
+          - "احكوا موقفًا حدث معكم أيضًا. هذا حديث، لا اختبار."
+  - id: feelings-calm
+    section: feelings
+    title: زاوية الهدوء
+    goal: بناء مكان وأدوات للهدوء
+    skills: [emotions, creativity]
+    child_part: يرسم ركنه الهادئ في البيت وما يضع فيه (وسادة، كتاب، لعبة)
+    parent_part: يساعد الطفل على تجهيز الركن فعلًا في البيت
+    together: true
+    materials: [ألوان خشبية, وسادة]
+    minutes: 15
+    levels: {simple: "يرسم الركن", challenge: "يرسم ويختار 3 أشياء تساعده على الهدوء"}
+    pages:
+      - type: drawing
+        title: زاوية الهدوء
+        instruction: "{ارسم/ارسمي} ركنك الهادئ في البيت"
+        parent: ["جهّزوا الركن معًا فعلًا، واتفقوا أنه مكان للراحة لا للعقاب."]
+  - id: feelings-kind
+    section: feelings
+    title: كلمات لطيفة
+    goal: التعاطف واختيار كلمات تواسي وتفرح
+    skills: [emotions, speaking]
+    child_part: ينظر إلى الصورة ويقول ماذا يقول لصديق حزين أو لأخ فرحان
+    materials: []
+    minutes: 5
+    levels: {simple: "كلمة لطيفة", challenge: "كلمة لطيفة وفعل لطيف"}
+    pages:
+      - type: picture-talk
+        title: كلمات لطيفة
+        instruction: "ماذا {تقول/تقولين} لصديق حزين؟"
+        parent: ["امدحوا كل كلمة لطيفة يقولها {child} في البيت هذا الأسبوع."]
+  - id: feelings-memory
+    section: feelings
+    title: ذكرى اليوم
+    goal: تذكّر المغامرة والتعبير عنها
+    skills: [memory, emotions]
+    child_part: يرسم وجهه اليوم ويلوّن النجوم
+    parent_part: يكتب كلمة حب وتشجيع للطفل
+    together: true
+    materials: [صورة مطبوعة أو ألوان, لاصق]
+    minutes: 10
+    levels: {simple: "يرسم وجهه", challenge: "يكتب اسم شعوره"}
+    pages:
+      - type: memory-page
+        title: "ذكرى اليوم: قلبي"
+        instruction: "{ارسم/ارسمي} وجهك اليوم {ولوّن/ولوّني} النجوم"
+        parent: ["اكتبوا كلمة حب وتشجيع لـ{child}."]
+        params: {stars: 5}
+
+
+  # ---- 🗣️ احكي لي (p70–77) --------------------------------------------------------------------------------
+  - id: talk-today
+    section: talk
+    title: شو أحلى إشي صار معك اليوم؟
+    goal: تنمية التعبير والحوار اليومي
+    skills: [speaking, emotions, cooperation]
+    child_part: يسحب بطاقة سؤال ويجيب بجملة أو أكثر
+    parent_part: يسأل ويستمع دون مقاطعة، ثم يجيب هو عن السؤال نفسه
+    together: true
+    materials: []
+    minutes: 10
+    levels: {simple: "يجيب بكلمة أو جملة", challenge: "يجيب بثلاث جمل ويسأل سؤالًا"}
+    pages:
+      - type: conversation-cards
+        title: شو أحلى إشي صار معك اليوم؟
+        instruction: "{اختر/اختاري} سؤالًا {وأجب/وأجيبي} عنه"
+        parent:
+          - "استمعوا حتى النهاية، ثم أجيبوا أنتم عن السؤال نفسه."
+          - "لإطالة الحديث اسألوا: وبعدين؟ كيف شعرت؟"
+  - id: talk-describe
+    section: talk
+    title: صِف الصورة
+    goal: توسيع المفردات والوصف الدقيق
+    skills: [speaking, observation]
+    child_part: يصف ما يراه في الصورة (من؟ أين؟ ماذا يفعلون؟ ما الألوان؟)
+    parent_part: يضيف كلمة جديدة لكل وصف ويكرّرها في جملة
+    together: true
+    materials: []
+    minutes: 5
+    levels: {simple: "3 أشياء في الصورة", challenge: "يصف الصورة بخمس جمل"}
+    pages:
+      - type: picture-talk
+        title: صِف الصورة
+        instruction: "{احكِ/احكي} ماذا ترى في الصورة"
+        parent: ["أضيفوا كلمة جديدة: «نعم، هذا قارب صيّاد، والصيّاد يصطاد السمك»."]
+  - id: talk-three-pictures
+    section: talk
+    title: حكاية من 3 صور
+    goal: ترتيب الأفكار وسرد قصة
+    skills: [speaking, thinking, creativity]
+    child_part: يرتّب ثلاث صور ويحكي منها قصة لها بداية ووسط ونهاية
+    parent_part: يكتب القصة كما يحكيها الطفل ويقرؤها له
+    together: true
+    materials: [قلم رصاص]
+    minutes: 10
+    levels: {simple: "يرتّب الصور ويحكي", challenge: "يغيّر النهاية ويحكي قصة جديدة"}
+    pages:
+      - type: sequence-cards
+        title: حكاية من 3 صور
+        instruction: "{رتّب/رتّبي} الصور {واحكِ/واحكي} الحكاية"
+        parent: ["اكتبوا القصة بكلمات {child}، واقرؤوها له بصوت عالٍ."]
+  - id: talk-new-words
+    section: talk
+    title: كلماتي الجديدة
+    goal: تثبيت المفردات الجديدة
+    skills: [speaking, memory, creativity]
+    child_part: يرسم كلمة جديدة تعلّمها هذا الأسبوع ويستعملها في جملة
+    materials: [ألوان خشبية]
+    minutes: 5
+    levels: {simple: "كلمة واحدة", challenge: "3 كلمات في جملة واحدة"}
+    pages:
+      - type: drawing
+        title: كلماتي الجديدة
+        instruction: "{ارسم/ارسمي} كلمة جديدة {تعلّمتها/تعلّمتِها} هذا الأسبوع"
+        parent: ["استعملوا الكلمة الجديدة في حديثكم مرّات خلال الأسبوع."]
+  - id: talk-old-days
+    section: talk
+    title: حكايات زمان
+    goal: الحوار بين الأجيال والاستماع
+    skills: [speaking, cooperation, memory]
+    child_part: يسأل {member} عن أيام الطفولة بأسئلة البطاقات، ثم يحكي ما سمعه للعائلة
+    parent_part: يساعد الطفل في الاتصال أو الزيارة، ويشجّعه على السؤال
+    together: true
+    materials: []
+    minutes: 15
+    levels: {simple: "سؤالان", challenge: "4 أسئلة ويعيد الحكاية لغيره"}
+    pages:
+      - type: conversation-cards
+        title: حكايات زمان
+        instruction: "{اسأل/اسألي} {member}: كيف كانت طفولتك؟"
+        parent:
+          - "ساعدوا {child} في الاتصال أو الزيارة، واختاروا معًا سؤالين."
+          - "بعدها اسألوا {child}: ماذا {عرفت/عرفتِ} عن زمان؟"
+  - id: talk-memory
+    section: talk
+    title: ذكرى اليوم
+    goal: تذكّر المغامرة والتعبير عنها
+    skills: [memory, speaking]
+    child_part: يرسم من حكى معه أو يلصق صورة، ويلوّن النجوم
+    parent_part: يكتب أجمل جملة قالها الطفل
+    together: true
+    materials: [صورة مطبوعة أو ألوان, لاصق]
+    minutes: 10
+    levels: {simple: "يرسم ويلوّن النجوم", challenge: "يكتب كلمة جديدة تعلّمها"}
+    pages:
+      - type: memory-page
+        title: "ذكرى اليوم: حكاياتنا"
+        instruction: "{ارسم/ارسمي} من {حكيت/حكيتِ} معه اليوم"
+        parent: ["اكتبوا أجمل جملة قالها {child} هذا الأسبوع."]
+        params: {stars: 5}
+
+
   # ---- 👷‍♀️ مهن عائلتي (p78–85) --------------------------------------------------------------------------
   - id: jobs-tools
     section: jobs
@@ -1149,6 +1158,7 @@ activities:
         parent: ["اكتبوا أطرف سؤال سأله {child}."]
         params: {stars: 5}
 
+
   # ---- 🏪 متجري الصغير (p86–93) ---------------------------------------------------------------------------
   - id: shop-money
     section: shop
@@ -1160,12 +1170,13 @@ activities:
     together: true
     materials: [مقصّ أطفال, ورقة القصّ]
     minutes: 15
-    levels: {simple: "قطع من فئة 1", challenge: "يجمع قطعًا من 1 و2 و5"}
+    levels: {simple: "فئات 1 و2 و5", challenge: "كل الفئات: 1 و2 و5 و10 و20"}
     pages:
       - type: counting
         title: كم معي؟
         instruction: "{عدّ/عدّي} النقود {ولوّن/ولوّني} المجموع"
         parent: ["قصّوا النقود معًا بمقصّ الأطفال، وقولوا: هذه نقود للّعب فقط."]
+        params: {denominations: {simple: [1, 2, 5], challenge: [1, 2, 5, 10, 20]}}
   - id: shop-open
     section: shop
     title: نفتح المتجر
@@ -1176,7 +1187,7 @@ activities:
     together: true
     materials: [أشياء من البيت, بطاقات الأسعار]
     minutes: 15
-    levels: {simple: "أسعار من 1 إلى 5", challenge: "أسعار حتى 10، ويرتّبها من الأرخص للأغلى"}
+    levels: {simple: "أسعار من 1 إلى 5", challenge: "أسعار حتى 20، ويرتّبها من الأرخص للأغلى"}
     pages:
       - type: price-tags
         title: نفتح المتجر
@@ -1192,7 +1203,7 @@ activities:
     together: true
     materials: [نقود قمرة للّعب, أشياء المتجر]
     minutes: 15
-    levels: {simple: "يبيع شيئًا واحدًا", challenge: "يبيع شيئين ويجمع سعرهما"}
+    levels: {simple: "يبيع شيئًا واحدًا ويعدّ فئات 1 و2 و5", challenge: "يبيع شيئين ويجمع سعرهما بكل الفئات"}
     pages:
       - type: conversation-cards
         title: أول زبون
@@ -1202,34 +1213,35 @@ activities:
           - "امدحوا الأدب والعدّ الصحيح."
   - id: shop-budget
     section: shop
-    title: معي 10، ماذا أشتري؟
+    title: ماذا أشتري بنقودي؟
     goal: الاختيار ضمن ميزانية وحلّ المشكلات
     skills: [counting, problem_solving, thinking]
-    child_part: يختار من المنتجات ما يستطيع شراءه بعشرة من نقود قمرة
+    child_part: يختار من المنتجات ما يستطيع شراءه بالنقود التي معه
     parent_part: يسأل الطفل عن أكثر من اختيار ممكن، ويقبل أي حل صحيح
     together: true
     materials: [قلم رصاص, نقود قمرة للّعب]
     minutes: 10
-    levels: {simple: "معي 5", challenge: "معي 10، وأجد طريقتين"}
+    levels: {simple: "معي 5 (فئات 1 و2 و5)", challenge: "معي 20 بكل الفئات، وأجد طريقتين"}
     pages:
       - type: sort-choose
-        title: معي 10، ماذا أشتري؟
-        instruction: "{اختر/اختاري} ما {تشتريه/تشترينه} بعشرة من نقود قمرة"
+        title: ماذا أشتري بنقودي؟
+        instruction: "{اختر/اختاري} ما {تشتريه/تشترينه} بالنقود التي معك"
         parent: ["اسألوا: هل هناك طريقة أخرى؟ كل حل صحيح يستحق نجمة."]
   - id: shop-change
     section: shop
     title: الباقي
-    goal: الطرح البسيط بالنقود (مستوى التحدّي)
+    goal: "الطرح البسيط بالنقود: تمارين «الباقي» في مستوى التحدّي"
     skills: [counting, problem_solving]
     child_part: يدفع ورقة من فئة أكبر ويعدّ الباقي بالقطع
     materials: [نقود قمرة للّعب]
     minutes: 10
-    levels: {simple: "يعدّ ما دفع", challenge: "يحسب الباقي حتى 10"}
+    levels: {simple: "يعدّ ما دفع بفئات 1 و2 و5", challenge: "يحسب الباقي من 10 أو 20"}
     pages:
       - type: counting
         title: كم الباقي؟
         instruction: "{احسب/احسبي} الباقي بالقطع {ولوّنه/ولوّنيه}"
         parent: ["عدّوا للأمام من السعر حتى المبلغ المدفوع: هكذا نجد الباقي."]
+        params: {denominations: {simple: [1, 2, 5], challenge: [1, 2, 5, 10, 20]}}
   - id: shop-memory
     section: shop
     title: ذكرى اليوم
@@ -1247,6 +1259,7 @@ activities:
         instruction: "{الصق/الصقي} صورة متجرك أو {ارسمه/ارسميه}"
         parent: ["اكتبوا ماذا باع {child} ومن كان أطرف زبون."]
         params: {stars: 5}
+
 
   # ---- 🎲 ليلة الألعاب العائلية (p94–101) -----------------------------------------------------------------
   - id: games-memory
@@ -1349,6 +1362,7 @@ activities:
         instruction: "{الصق/الصقي} صورة ليلة الألعاب أو {ارسمها/ارسميها}"
         parent: ["اكتبوا أكثر لحظة ضحكت فيها العائلة الليلة."]
         params: {stars: 5}
+
 
   # ---- 🎭 نمثّل ونحكي (p102–109) --------------------------------------------------------------------------
   - id: act-finish
@@ -1507,7 +1521,7 @@ samples:
   - {n: 15}
   - {n: 18}
   - {n: 30}
-  - {n: 54}
+  - {n: 64}
   - {n: 110}
   - {n: 112}
   - {n: 0, insert: ورقة الملصقات}

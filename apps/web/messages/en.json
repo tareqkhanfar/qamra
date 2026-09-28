@@ -599,7 +599,8 @@
       "orders": "Orders & printing",
       "themes": "Theme editor",
       "metrics": "Cost & conversion",
-      "samples": "Sample books"
+      "samples": "Sample books",
+      "printCosts": "Printer prices"
     },
     "soon": "Soon",
     "save": "Save",
@@ -1042,5 +1043,30 @@
       "payment": "Payment"
     },
     "by": "by {name}"
+  },
+  "printCosts": {
+    "title": "Printer prices",
+    "intro": "The printer's price per copy by run length. Bulk prices come from it: the cost per copy plus the bulk margin, rounded up to a whole shekel, never above retail and never under the margin floor. For the family book, ask for quotes on 120 gsm and 140 gsm interior paper; we choose 140 if it costs less than 3 ₪ more per copy.",
+    "loading": "Loading prices…",
+    "empty": "No products are priced by the printer yet.",
+    "estimated": "These are estimates, not the printer's quote. Orders of {n}+ copies are on hold until you save the real prices.",
+    "confirmed": "The printer's prices are saved. Orders of {n}+ copies are priced from this table.",
+    "quote": "The printer's quote",
+    "fromCopies": "From copies",
+    "perCopy": "Per copy (₪)",
+    "remove": "Remove tier",
+    "add": "Add tier",
+    "save": "Save printer prices",
+    "saved": "Prices saved. The table is updated.",
+    "invalid": "Check the tiers: the first is for 1 copy, each quantity once, and a longer run never costs more per copy.",
+    "rules": "The first tier is for 1 copy. A longer run never costs more per copy.",
+    "table": "Price by quantity",
+    "copies": "Copies",
+    "printer": "Printer / copy",
+    "ourCost": "Our cost / copy",
+    "price": "Price / copy",
+    "total": "Order total",
+    "margin": "Margin",
+    "basis": "Our cost = printer + {other} (packaging and the character drawing). One copy sells at retail, {retail}."
   }
 }

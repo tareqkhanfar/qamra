@@ -83,6 +83,17 @@ def _audit(changed: list[str], actor: uuid.UUID | None) -> AuditLog:
 # ---- async (api) ---------------------------------------------------------------------------------
 
 
+async def plain(db: AsyncSession, *keys: str) -> dict[str, Any]:
+    """Non-secret settings, defaults filled in, read without the cipher (the storefront's pricing numbers)."""
+    if any(REGISTRY[k].kind == Kind.secret for k in keys):
+        raise SettingError(keys[0], "plain() reads non-secret settings only")
+    values = {k: REGISTRY[k].default for k in keys}
+    for row in (await db.execute(select(AppSetting).where(AppSetting.key.in_(keys)))).scalars():
+        if row.value is not None:
+            values[row.key] = row.value
+    return values
+
+
 async def load(db: AsyncSession, cipher: MultiFernet) -> Resolved:
     rows = list((await db.execute(select(AppSetting))).scalars().all())
     return _resolve(rows, cipher)

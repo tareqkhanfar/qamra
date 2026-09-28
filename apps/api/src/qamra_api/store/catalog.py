@@ -6,6 +6,7 @@ exclusions, limits) are checked here so the cart and the checkout apply exactly 
 """
 
 import uuid
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from decimal import Decimal
@@ -28,7 +29,15 @@ from qamra_core.db.store import (
     Variant,
     VariantPrice,
 )
-from qamra_core.pricing import AddOnLine, BundleRule, ItemInput, SaleRule, ZoneRule
+from qamra_core.pricing import (
+    AddOnLine,
+    BundleRule,
+    ItemInput,
+    QuantityPrice,
+    SaleRule,
+    ZoneRule,
+    quantity_prices,
+)
 
 PRINTED_FORMATS = ("softcover", "hardcover", "spiral")
 
@@ -71,16 +80,23 @@ def _live(starts: datetime | None, ends: datetime | None, now: datetime) -> bool
     return (starts is None or starts <= now) and (ends is None or now < ends)
 
 
-async def load_catalog(db: AsyncSession, *, include_b2b: bool = False) -> Catalog:
+async def load_catalog(
+    db: AsyncSession, *, include_b2b: bool = False, include_inactive: bool = False
+) -> Catalog:
+    """What the store sells now; `include_inactive` adds the products and variants staff are preparing."""
     now = datetime.now(UTC)
+    product_rows = (
+        select(CatalogProduct) if include_inactive else select(CatalogProduct).where(CatalogProduct.active)
+    )
+    variant_rows = select(Variant) if include_inactive else select(Variant).where(Variant.active)
     products = {
         p.id: p
-        for p in (await db.execute(select(CatalogProduct).where(CatalogProduct.active))).scalars()
+        for p in (await db.execute(product_rows)).scalars()
         if include_b2b or p.audience == Audience.b2c
     }
     variants = {
         v.sku: v
-        for v in (await db.execute(select(Variant).where(Variant.active).order_by(Variant.sort))).scalars()
+        for v in (await db.execute(variant_rows.order_by(Variant.sort))).scalars()
         if v.product_id in products
     }
     prices = {
@@ -144,6 +160,65 @@ def automatic_addons(catalog: Catalog, variant: Variant) -> list[str]:
         if free and fits and addon.pricing == AddOnPricing.fixed and addon.slug == "digital-copy":
             out.append(addon.slug)
     return out
+
+
+BULK_MIN_QTY = 10  # quantity prices start at 10 copies (Addendum 7 §8; Tareq, 2026-09-28)
+BULK_SETTINGS = ("usd_ils", "bulk_margin_pct", "margin_floor_pct")
+
+
+def print_tiers(variant: Variant) -> tuple[tuple[int, Decimal], ...]:
+    """The printer's price per copy by run length, as (minimum quantity, ILS), smallest run first."""
+    return tuple(
+        sorted((int(t["min_qty"]), Decimal(str(t["unit_ils"]))) for t in variant.print_cost_tiers or [])
+    )
+
+
+def tiers_estimated(variant: Variant) -> bool:
+    """The seed's estimates (shown with ⚠) until staff save the printer's real quote in the admin."""
+    return any(t.get("estimated") for t in variant.print_cost_tiers or [])
+
+
+def other_unit_cost(variant: Variant, usd_ils: Decimal) -> Decimal:
+    """What a copy costs us besides printing: packaging, handling and the AI drawing, in ILS."""
+    ai = (variant.cost_ai_usd * usd_ils).quantize(Decimal("0.01"))
+    return variant.cost_packaging_ils + variant.cost_handling_ils + ai
+
+
+def quantity_table(
+    catalog: Catalog, variant: Variant, values: dict[str, Any], quantities: Sequence[int]
+) -> list[QuantityPrice]:
+    """Price per copy by quantity from the printer's tiers and the margin settings (ILS)."""
+    retail = catalog.price(variant, Currency.ILS)
+    if retail is None or not variant.print_cost_tiers:
+        return []
+    return quantity_prices(
+        retail,
+        print_tiers(variant),
+        other_unit_cost(variant, Decimal(str(values["usd_ils"]))),
+        quantities,
+        bulk_margin_pct=Decimal(str(values["bulk_margin_pct"])),
+        floor_pct=Decimal(str(values["margin_floor_pct"])),
+    )
+
+
+def bulk_tiers(
+    catalog: Catalog, variant: Variant, currency: Currency, values: dict[str, Any]
+) -> tuple[tuple[int, Decimal], ...]:
+    """The selling price per copy from BULK_MIN_QTY copies up, once the printer's real prices are in.
+    Empty while they are estimates, and for JOD carts (bulk orders are quoted in ₪)."""
+    if currency != Currency.ILS or tiers_estimated(variant):
+        return ()
+    minima = sorted({BULK_MIN_QTY, *(q for q, _ in print_tiers(variant) if q > BULK_MIN_QTY)})
+    return tuple((r.qty, r.unit_price) for r in quantity_table(catalog, variant, values, minima))
+
+
+def bulk_blocked(variant: Variant, copies: int, currency: Currency) -> bool:
+    """10+ copies of a book priced by the printer's tiers wait for the real quote (and are sold in ₪)."""
+    return (
+        bool(variant.print_cost_tiers)
+        and copies >= BULK_MIN_QTY
+        and (tiers_estimated(variant) or currency != Currency.ILS)
+    )
 
 
 def item_input(

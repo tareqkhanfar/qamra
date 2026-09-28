@@ -1,5 +1,14 @@
 # Changelog
 
+## Addendum 7: the proposal approved; printer prices in the admin (2026-09-28)
+
+- The plan follows Tareq's answers: the new adventure order, the market-to-kitchen link, and the play-money levels.
+- **Admin → أسعار المطبعة:**
+  - enter the printer's price per copy by run length;
+  - see the price-by-quantity table live, with ⚠ while the numbers are estimates.
+- The store holds orders of 10+ copies of the family book until real printer prices are saved, then prices them from the tiers.
+- A printer quote request is ready to send (`docs/family-book/printer-quote-request.md`).
+
 ## Addendum 7: «مغامراتي مع عائلتي», the proposal package (2026-09-28)
 
 - **The plan** (`content/family-book/plan.yaml`), checked by `python -m qamra_workbook.family check`:

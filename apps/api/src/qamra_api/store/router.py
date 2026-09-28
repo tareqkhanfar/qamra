@@ -2,6 +2,7 @@
 
 import secrets
 import uuid
+from collections import Counter
 from datetime import UTC, datetime
 from decimal import Decimal
 from typing import Any, Literal
@@ -24,15 +25,20 @@ from qamra_api.store.cart import (
     same_phone,
 )
 from qamra_api.store.catalog import (
+    BULK_MIN_QTY,
+    BULK_SETTINGS,
     Catalog,
     addon_problems,
     automatic_addons,
+    bulk_blocked,
+    bulk_tiers,
     item_input,
     load_catalog,
     unit_costs,
     zone_rule,
 )
 from qamra_api.validation import PHONE
+from qamra_core import settings_store
 from qamra_core.db.models import AuditLog, Currency, Order, OrderItem, OrderStatus, PaymentMethod
 from qamra_core.db.store import Cart, CartItem, CartStatus, CouponRedemption, OrderEvent, Variant
 from qamra_core.pricing import ItemInput, Quote, quote
@@ -291,14 +297,22 @@ async def _priced(
 ) -> tuple[list[tuple[CartItem, Variant]], list[str], Quote, Any]:
     """The cart's items with their variants, the unavailable ones, the quote and the coupon row."""
     by_id = {v.id: v for v in c.variants.values()}
-    rows, missing, inputs = [], [], []
+    rows, missing = [], []
     for item in await cart_items(db, cart):
         variant = by_id.get(item.variant_id)
         if variant is None or c.price(variant, cart.currency) is None:
             missing.append(str(item.id))
             continue
         rows.append((item, variant))
-        inputs.append(_input(c, item, variant, cart.currency))
+    copies = Counter[uuid.UUID]()
+    for item, variant in rows:
+        copies[variant.id] += item.qty
+    bulk = [
+        v for v in {v.id: v for _, v in rows}.values() if copies[v.id] >= BULK_MIN_QTY and v.print_cost_tiers
+    ]
+    values = await settings_store.plain(db, *BULK_SETTINGS) if bulk else {}
+    tiers = {v.id: bulk_tiers(c, v, cart.currency, values) for v in bulk}
+    inputs = [_input(c, item, variant, cart.currency, tiers.get(variant.id, ())) for item, variant in rows]
     rule = coupon = problem = None
     if cart.coupon_code:
         rule, coupon, problem = await coupon_rule(
@@ -317,7 +331,13 @@ async def _priced(
     return rows, missing, q, coupon
 
 
-def _input(c: Catalog, item: CartItem, variant: Variant, currency: Currency) -> ItemInput:
+def _input(
+    c: Catalog,
+    item: CartItem,
+    variant: Variant,
+    currency: Currency,
+    tiers: tuple[tuple[int, Decimal], ...] = (),
+) -> ItemInput:
     addons = [*item.addons, *[{"slug": s, "qty": 1} for s in automatic_addons(c, variant)]]
     child = item.personalization.get("child_name")
     return item_input(
@@ -329,7 +349,19 @@ def _input(c: Catalog, item: CartItem, variant: Variant, currency: Currency) -> 
         style=item.style_slug,
         addons=addons,
         child_key=str(item.child_id or child or item.id),
+        tiers=tiers,  # from 10 copies, the printer's tiers (Addendum 7 §8)
     )
+
+
+async def check_copies(
+    db: SessionDep, cart: Cart, variant: Variant, copies: int, skip: uuid.UUID | None = None
+) -> None:
+    """10+ copies of a tiered book (the family book) wait for the printer's real prices (2026-09-28)."""
+    if not variant.print_cost_tiers:
+        return
+    others = sum(i.qty for i in await cart_items(db, cart) if i.variant_id == variant.id and i.id != skip)
+    if bulk_blocked(variant, others + copies, cart.currency):
+        raise ApiError("bulk_price_pending", 409, details={"min_qty": BULK_MIN_QTY})
 
 
 async def cart_out(db: SessionDep, cart: Cart | None) -> CartOut:
@@ -435,6 +467,7 @@ async def add_item(
     except (ValueError, TypeError) as e:
         raise ApiError("invalid_input", 422, details={"field": str(e)}) from e
     cart = await ensure_cart(db, request, response, user, settings)
+    await check_copies(db, cart, variant, body.qty)
     db.add(
         CartItem(
             cart_id=cart.id,
@@ -471,6 +504,8 @@ async def update_item(
     style = body.style if body.style is not None else item.style_slug
     addons = [a.model_dump() for a in body.addons] if body.addons is not None else item.addons
     check_item(c, variant, style, addons)
+    if body.qty is not None and variant is not None:
+        await check_copies(db, cart, variant, body.qty, skip=item.id)
     if body.personalization is not None:
         try:
             item.personalization = clean_personalization(body.personalization)
@@ -629,9 +664,13 @@ async def checkout(
     if missing:
         raise ApiError("items_unavailable", 409, details={"items": missing})
     per_product: dict[uuid.UUID, int] = {}
+    copies = Counter[uuid.UUID]()
     for item, variant in rows:
         check_item(c, variant, item.style_slug, item.addons)
         per_product[variant.product_id] = per_product.get(variant.product_id, 0) + item.qty
+        copies[variant.id] += item.qty
+    if any(bulk_blocked(v, copies[v.id], cart.currency) for _, v in rows):  # e.g. added before the zone
+        raise ApiError("bulk_price_pending", 409, details={"min_qty": BULK_MIN_QTY})
     short = [c.products[p].slug for p, n in per_product.items() if n < c.products[p].min_qty]
     if short:
         raise ApiError("below_minimum", 422, details={"products": short})

@@ -144,6 +144,7 @@ async def _products(db: AsyncSession, products: list[dict[str, Any]]) -> list[st
                 cost_ai_usd=Decimal(str(cost.get("ai_usd", 0))),
                 print_cost_tiers=[
                     {"min_qty": int(t["min_qty"]), "unit_ils": str(money(t["unit_ils"]))}
+                    | ({"estimated": True} if t.get("estimated") else {})
                     for t in v.get("print_cost_tiers", [])
                 ],
                 sort=vsort,

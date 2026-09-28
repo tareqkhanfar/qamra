@@ -4,6 +4,19 @@ Newest first. Each entry: date — decision — why.
 
 ## 2026-09-28 — Addendum 7: «مغامراتي مع عائلتي» (proposal only)
 
+**Approved by Tareq with changes** (verbatim in `docs/family-book/decisions-2026-09-28.md`):
+- The adventures now run home → market → chef → nature → day → responsibility → feelings → talk → jobs → shop → games → acting. The chef opener starts «ما اشتريناه من السوق نطبخه معًا!».
+- The book stays at 112 pages, with a full «ذكرى اليوم» page after every adventure. Titles, passport stamps and the certificate follow the child's gender.
+- **Size: A4 if the printer's wire-o and cutting templates are A4, otherwise 21×28 cm.** The engine switches between them with one setting.
+- **Paper:** we ask for quotes at 120 and 140 gsm interior and take 140 if it costs under 3 ₪ more per copy. `docs/family-book/printer-quote-request.md` is ready to send.
+- **Play money:** ⭐ uses 1, 2 and 5; ⭐⭐ uses all notes with change exercises. The digits follow the order's numeral setting (Hindi by default).
+- **Printer prices stay estimates, marked ⚠, until Tareq saves the quote in the admin** (`/admin/print-costs`).
+  - The seeded tiers carry `estimated: true`, and saving a quote clears it.
+  - Until then, 10 or more copies of the book can't be ordered: the cart and checkout answer «تواصلوا معنا لعرض سعر».
+  - After it, 10+ copies are priced from the tiers and the bulk margin, in ₪; bulk orders in JD are quoted by hand.
+  - Below 10 copies the book sells at retail.
+- The next deliverable is the first two adventures in full, as a PDF, before the rest of the book.
+
 - **The third activity book reuses the workbook engine.** `qamra_workbook.family` holds only the plan schema, its rules and the proposal text; pages, pictures, the PDF pipeline and the samples all come from the shared engine. The unit is the *activity* (a goal, the child's part, the family's part, materials, time, levels, safety), and each activity has one or more pages.
 - **The book is 112 pages** (the range is 96–128): 5 front pages, 12 adventures and 3 back pages.
   - Each adventure is a two-page opening spread, its activities, then «ذكرى اليوم». Every adventure has an even length, so each opening spread starts on an even page.
