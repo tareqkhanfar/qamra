@@ -10,7 +10,7 @@ export function Alert({ tone = "error", children }: { tone?: keyof typeof tones;
   return (
     <div
       role={tone === "error" ? "alert" : "status"}
-      className={`text-small rounded-sm border px-4 py-3 font-medium ${tones[tone]}`}
+      className={`rounded-sm border px-4 py-3 text-small font-medium ${tones[tone]}`}
     >
       {children}
     </div>

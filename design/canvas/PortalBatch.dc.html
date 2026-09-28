@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>بوابة الروضات — رسم ومراجعة الكتب</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#FBF6EC;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#1C2140}
+h1,h2,h3{font-family:'Baloo Bhaijaan 2','Tajawal',system-ui,sans-serif;margin:0;font-weight:700}
+p{margin:0}
+button,input{font-family:inherit}
+a{color:#16204A;text-decoration:none}
+</style>
+</helmet>
+<div dir="rtl" style="width: 1440px; height: 1100px; background: #FBF6EC; display: flex">
+  <aside style="width: 264px; flex-shrink: 0; background: #FFFDF8; border-left: 1px solid #E4D6BC; padding: 24px 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 24px">
+    <div style="display: flex; align-items: center; gap: 8px; padding: 0 8px"><svg width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path d="M21.32 5.01 A17 17 0 1 0 38.12 27.41 A14 14 0 0 1 21.32 5.01 Z" fill="#F2B33D"/><path d="M34 8 C34.6 11.2 35.8 12.4 39 13 C35.8 13.6 34.6 14.8 34 18 C33.4 14.8 32.2 13.6 29 13 C32.2 12.4 33.4 11.2 34 8 Z" fill="#16204A"/><path d="M6 44 Q15 39.5 24 43.5 Q33 39.5 42 44" fill="none" stroke="#16204A" stroke-width="3" stroke-linecap="round"/></svg><span style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-weight: 800; font-size: 22px; color: #16204A">قمرة</span><span style="padding: 2px 8px; border-radius: 999px; background: #16204A; color: #FBF6EC; font-size: 11px; font-weight: 700">روضات</span></div>
+    <div style="display: flex; gap: 10px; align-items: center; padding: 12px; border-radius: 16px; background: #F3EAD8"><span style="width: 40px; height: 40px; border-radius: 12px; background: #FFFDF8; border: 1.5px dashed #9A620A; flex-shrink: 0"></span><div style="display: flex; flex-direction: column"><strong style="font-size: 14px">[اسم الروضة]</strong><span style="font-size: 12px; color: #585C72">موسم التخرّج 2027</span></div></div>
+    <nav aria-label="بوابة الروضة" style="display: flex; flex-direction: column; gap: 4px">
+      <sc-for list="{{nav}}" as="n" hint-placeholder-count="6"><a href="{{n.href}}" style="{{n.style}}">{{n.label}}</a></sc-for>
+    </nav>
+  </aside>
+
+  <main style="flex-grow: 1; padding: 32px 40px; display: flex; flex-direction: column; gap: 20px">
+    <div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 14px; color: #585C72">صف الفراشات · يوم تخرّجي</span><h1 style="font-size: 30px; color: #16204A">رسم كتب الصف ومراجعتها</h1></div>
+
+    <section role="status" style="background: #16204A; color: #FBF6EC; border-radius: 24px; padding: 20px 24px; display: grid; grid-template-columns: auto 1fr auto; gap: 24px; align-items: center">
+      <div style="width: 56px; height: 56px; border-radius: 16px; background: #22306A; display: flex; align-items: center; justify-content: center"><svg width="28" height="28" viewBox="0 0 24 24" fill="#F2B33D" aria-hidden="true"><path d="M12 2 C13 8 16 11 22 12 C16 13 13 16 12 22 C11 16 8 13 2 12 C8 11 11 8 12 2 Z"/></svg></div>
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <div style="display: flex; justify-content: space-between"><strong style="font-size: 17px">نرسم 12 كتاباً — جاهز 7</strong><span style="font-size: 14px; color: #B9BEDA">قرابة 25 دقيقة للباقي</span></div>
+        <div style="height: 12px; border-radius: 999px; background: #0E1530; display: flex; overflow: hidden"><div style="width: 58%; background: #F2B33D"></div><div style="width: 25%; background: #5B6FC0"></div></div>
+        <div style="display: flex; gap: 20px; font-size: 13px; color: #B9BEDA"><span>جاهز 7</span><span>قيد الرسم 3</span><span>في الانتظار 2</span></div>
+      </div>
+      <span style="font-size: 13px; color: #B9BEDA; max-width: 200px; line-height: 1.6">سنرسل لك رسالة عند انتهاء الدفعة.</span>
+    </section>
+
+    <div style="display: flex; justify-content: space-between; align-items: center">
+      <div style="display: flex; gap: 12px; align-items: center"><label style="display: flex; gap: 8px; align-items: center; min-height: 44px; font-size: 14px; font-weight: 600"><input type="checkbox" style="width: 20px; height: 20px; accent-color: #16204A">تحديد الجاهزة</label><span style="font-size: 14px; color: #585C72">محدد 5</span></div>
+      <div style="display: flex; gap: 10px"><button style="min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid #16204A; background: transparent; color: #16204A; font-weight: 700; font-size: 14px">طلب إعادة رسم</button><button style="min-height: 44px; padding: 0 20px; border-radius: 999px; border: 0; background: #F2B33D; color: #0E1530; font-weight: 700; font-size: 14px">اعتماد المحدد (5)</button></div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px">
+      <sc-for list="{{books}}" as="b" hint-placeholder-count="12">
+        <article style="{{b.card}}">
+          <div style="position: relative; border-radius: 10px; overflow: hidden">
+            <div style="{{b.fx}}"><dc-import name="Scene" w="160" h="160" theme="grad" cap="{{true}}" hijab="{{b.hijab}}" hair-style="{{b.hair}}" skin="{{b.skin}}" outfit="{{b.outfit}}" kid-scale="0.72" hint-size="160px,160px"></dc-import></div>
+            <input type="checkbox" aria-label="{{b.aria}}" checked="{{b.sel}}" style="{{b.cb}}">
+            <div style="{{b.overlay}}">{{b.overlayText}}</div>
+          </div>
+          <strong style="font-size: 14px">{{b.name}}</strong>
+          <span style="{{b.chip}}">{{b.status}}</span>
+        </article>
+      </sc-for>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const items = [['لوحة التحكم', 'PortalDashboard.dc.html'], ['الصفوف والأهالي', 'PortalInvite.dc.html'], ['استيراد الأطفال', 'PortalImport.dc.html'], ['الثيم وصفحة الروضة', 'PortalClass.dc.html'], ['مراجعة الكتب', 'PortalBatch.dc.html'], ['الطلب والفاتورة', 'PortalOrder.dc.html']];
+    const nav = items.map(([label, href], i) => ({ label, href, style: 'min-height:44px;padding:0 14px;border-radius:12px;display:flex;align-items:center;font-size:15px;' + (i === 4 ? 'background:#16204A;color:#FBF6EC;font-weight:700' : 'color:#1C2140') }));
+    const chip = (bg, fg) => 'align-self:flex-start;padding:3px 8px;border-radius:999px;font-size:11px;font-weight:700;background:' + bg + ';color:' + fg;
+    const S = {
+      ready: ['جاهز للمراجعة', chip('#FCEFD2', '#9A620A')],
+      ok: ['معتمد', chip('#DDEFE3', '#2E7A52')],
+      draw: ['قيد الرسم', chip('#E4E8F7', '#16204A')],
+      wait: ['في الانتظار', chip('#F3EAD8', '#585C72')],
+      redo: ['طلب الأهل تعديل', chip('#F8DEDB', '#B3261E')]
+    };
+    const kids = [
+      ['يوسف', 'ok', false, 'curly', '#C98F63', '#5B6FC0'], ['جنى', 'ready', true, 'short', '#E8B98F', '#A99BD6'], ['ليان', 'ready', true, 'short', '#E8B98F', '#E9826B'],
+      ['آدم', 'ready', false, 'short', '#F3CFAE', '#7FA38A'], ['سلمى', 'ok', false, 'long', '#E8B98F', '#E9826B'], ['كرم', 'ready', false, 'curly', '#8D5A3B', '#5B6FC0'],
+      ['تالا', 'redo', false, 'long', '#F3CFAE', '#A99BD6'], ['عمر', 'ready', false, 'short', '#C98F63', '#7FA38A'], ['ريم', 'draw', true, 'short', '#E8B98F', '#F2B33D'],
+      ['زيد', 'draw', false, 'short', '#F3CFAE', '#5B6FC0'], ['مريم', 'draw', true, 'short', '#C98F63', '#7FA38A'], ['حمزة', 'wait', false, 'curly', '#8D5A3B', '#E9826B']
+    ];
+    const books = kids.map(([name, s, hijab, hair, skin, outfit]) => {
+      const pending = s === 'draw' || s === 'wait';
+      const sel = s === 'ready';
+      return {
+        name, hijab, hair, skin, outfit, status: S[s][0], chip: S[s][1], sel, aria: 'تحديد كتاب ' + name,
+        card: 'display:flex;flex-direction:column;gap:8px;padding:8px;border-radius:16px;background:#FFFDF8;border:' + (sel ? '2px solid #16204A' : '1px solid #E4D6BC'),
+        fx: pending ? 'filter:grayscale(0.8) blur(1.5px);opacity:0.6' : '',
+        cb: pending ? 'display:none' : 'position:absolute;top:8px;right:8px;width:22px;height:22px;accent-color:#16204A',
+        overlay: pending ? 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#16204A' : 'display:none',
+        overlayText: s === 'draw' ? 'نرسم…' : 'في الدور'
+      };
+    });
+    return { nav, books };
+  }
+}
+</script>
+</body>
+</html>

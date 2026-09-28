@@ -4,18 +4,12 @@ import argparse
 import asyncio
 import getpass
 
-import yaml
-from qamra_core.db.models import Locale, Theme, UserRole
+from qamra_core.db.models import Locale, UserRole
 from qamra_core.db.session import make_async_engine, make_async_sessionmaker
-from sqlalchemy import select
 
 from qamra_api.auth import service as auth
+from qamra_api.seed import upsert_themes
 from qamra_api.settings import get_settings
-
-try:
-    from qamra_ai.pipeline.theme import CONTENT_DIR, load_theme
-except ImportError:  # pragma: no cover
-    CONTENT_DIR = None  # type: ignore[assignment]
 
 
 async def create_user(email: str, name: str, role: UserRole, password: str) -> None:
@@ -33,35 +27,12 @@ async def create_user(email: str, name: str, role: UserRole, password: str) -> N
 
 
 async def seed_themes() -> None:
-    """Upsert every theme under content/themes into the database (definitions stay editable in admin)."""
+    """Upsert every theme under content/themes into the database."""
     settings = get_settings()
     engine = make_async_engine(settings.database_url, 1)
     try:
         async with make_async_sessionmaker(engine)() as db:
-            for path in sorted((CONTENT_DIR / "themes").glob("*/theme.yaml")):
-                theme = load_theme(path.parent.name)  # validates
-                raw = yaml.safe_load(path.read_text(encoding="utf-8"))
-                row = (await db.execute(select(Theme).where(Theme.slug == theme.slug))).scalar_one_or_none()
-                values = dict(
-                    version=theme.version,
-                    title_ar=theme.title_ar,
-                    title_en=theme.title_en,
-                    age_min=theme.age_range[0],
-                    age_max=theme.age_range[1],
-                    occasion=raw.get("occasion"),
-                    is_b2b=theme.is_b2b,
-                    active=theme.active,
-                    companion_slot=theme.companion_slot,
-                    definition=raw,
-                )
-                if row is None:
-                    db.add(Theme(slug=theme.slug, **values))
-                    print(f"+ theme {theme.slug}")
-                else:
-                    for k, v in values.items():
-                        setattr(row, k, v)
-                    print(f"~ theme {theme.slug}")
-            await db.commit()
+            print("themes:", " ".join(await upsert_themes(db)))
     finally:
         await engine.dispose()
 

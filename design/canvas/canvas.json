@@ -1,0 +1,1205 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "AdminMetrics.dc.html": {
+      "h": 1000,
+      "page": "admin",
+      "title": "admin-cost-conversion",
+      "w": 1440,
+      "x": 1520,
+      "y": 1120
+    },
+    "AdminOrders.dc.html": {
+      "h": 900,
+      "page": "admin",
+      "title": "admin-orders-print",
+      "w": 1440,
+      "x": 1520,
+      "y": 0
+    },
+    "AdminQueue.dc.html": {
+      "h": 1000,
+      "page": "admin",
+      "title": "admin-approval-queue",
+      "w": 1440,
+      "x": 0,
+      "y": 0
+    },
+    "AdminThemes.dc.html": {
+      "h": 1000,
+      "page": "admin",
+      "title": "admin-theme-editor",
+      "w": 1440,
+      "x": 0,
+      "y": 1120
+    },
+    "BookBack.dc.html": {
+      "guides": [
+        {
+          "color": "rgba(179,38,30,0.35)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "columns",
+          "margin": 11
+        },
+        {
+          "color": "rgba(179,38,30,0.35)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "rows",
+          "margin": 11
+        },
+        {
+          "color": "rgba(51,69,143,0.18)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "columns",
+          "margin": 49
+        },
+        {
+          "color": "rgba(51,69,143,0.18)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "rows",
+          "margin": 49
+        }
+      ],
+      "h": 816,
+      "page": "book",
+      "title": "book — back cover",
+      "w": 816,
+      "x": 5376,
+      "y": 0
+    },
+    "BookBorn.dc.html": {
+      "guides": [
+        {
+          "color": "rgba(179,38,30,0.35)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "columns",
+          "margin": 11
+        },
+        {
+          "color": "rgba(179,38,30,0.35)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "rows",
+          "margin": 11
+        },
+        {
+          "color": "rgba(51,69,143,0.18)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "columns",
+          "margin": 49
+        },
+        {
+          "color": "rgba(51,69,143,0.18)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "rows",
+          "margin": 49
+        }
+      ],
+      "h": 816,
+      "page": "companion",
+      "title": "book — last page «وهكذا وُلد صاحبي»",
+      "w": 816,
+      "x": 896,
+      "y": 1200
+    },
+    "BookClass.dc.html": {
+      "guides": [
+        {
+          "color": "rgba(179,38,30,0.35)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "columns",
+          "margin": 11
+        },
+        {
+          "color": "rgba(179,38,30,0.35)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "rows",
+          "margin": 11
+        },
+        {
+          "color": "rgba(51,69,143,0.18)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "columns",
+          "margin": 49
+        },
+        {
+          "color": "rgba(51,69,143,0.18)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "rows",
+          "margin": 49
+        }
+      ],
+      "h": 816,
+      "page": "book",
+      "title": "book — class page",
+      "w": 816,
+      "x": 4480,
+      "y": 0
+    },
+    "BookCompanion.dc.html": {
+      "guides": [
+        {
+          "color": "rgba(179,38,30,0.35)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "columns",
+          "margin": 11
+        },
+        {
+          "color": "rgba(179,38,30,0.35)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "rows",
+          "margin": 11
+        },
+        {
+          "color": "rgba(51,69,143,0.18)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "columns",
+          "margin": 49
+        },
+        {
+          "color": "rgba(51,69,143,0.18)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "rows",
+          "margin": 49
+        }
+      ],
+      "h": 816,
+      "page": "companion",
+      "title": "book — hero + companion page",
+      "w": 816,
+      "x": 0,
+      "y": 1200
+    },
+    "BookCover.dc.html": {
+      "guides": [
+        {
+          "color": "rgba(179,38,30,0.35)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "columns",
+          "margin": 11
+        },
+        {
+          "color": "rgba(179,38,30,0.35)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "rows",
+          "margin": 11
+        },
+        {
+          "color": "rgba(51,69,143,0.18)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "columns",
+          "margin": 49
+        },
+        {
+          "color": "rgba(51,69,143,0.18)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "rows",
+          "margin": 49
+        }
+      ],
+      "h": 816,
+      "page": "book",
+      "title": "book — cover",
+      "w": 816,
+      "x": 0,
+      "y": 0
+    },
+    "BookFull.dc.html": {
+      "guides": [
+        {
+          "color": "rgba(179,38,30,0.35)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "columns",
+          "margin": 11
+        },
+        {
+          "color": "rgba(179,38,30,0.35)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "rows",
+          "margin": 11
+        },
+        {
+          "color": "rgba(51,69,143,0.18)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "columns",
+          "margin": 49
+        },
+        {
+          "color": "rgba(51,69,143,0.18)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "rows",
+          "margin": 49
+        }
+      ],
+      "h": 816,
+      "page": "book",
+      "title": "book — full-bleed + text box",
+      "w": 816,
+      "x": 1792,
+      "y": 0
+    },
+    "BookGroup.dc.html": {
+      "guides": [
+        {
+          "color": "rgba(179,38,30,0.35)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "columns",
+          "margin": 11
+        },
+        {
+          "color": "rgba(179,38,30,0.35)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "rows",
+          "margin": 11
+        },
+        {
+          "color": "rgba(51,69,143,0.18)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "columns",
+          "margin": 49
+        },
+        {
+          "color": "rgba(51,69,143,0.18)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "rows",
+          "margin": 49
+        }
+      ],
+      "h": 816,
+      "page": "classbook",
+      "title": "book — class group page",
+      "w": 816,
+      "x": 0,
+      "y": 2360
+    },
+    "BookPortrait.dc.html": {
+      "guides": [
+        {
+          "color": "rgba(179,38,30,0.35)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "columns",
+          "margin": 11
+        },
+        {
+          "color": "rgba(179,38,30,0.35)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "rows",
+          "margin": 11
+        },
+        {
+          "color": "rgba(51,69,143,0.18)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "columns",
+          "margin": 49
+        },
+        {
+          "color": "rgba(51,69,143,0.18)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "rows",
+          "margin": 49
+        }
+      ],
+      "h": 816,
+      "page": "classbook",
+      "title": "book — per-child portrait page",
+      "w": 816,
+      "x": 896,
+      "y": 2360
+    },
+    "BookQR.dc.html": {
+      "h": 900,
+      "page": "voice",
+      "title": "print detail — QR on book page",
+      "w": 1400,
+      "x": 1880,
+      "y": 0
+    },
+    "BookSplit.dc.html": {
+      "guides": [
+        {
+          "color": "rgba(179,38,30,0.35)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "columns",
+          "margin": 11
+        },
+        {
+          "color": "rgba(179,38,30,0.35)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "rows",
+          "margin": 11
+        },
+        {
+          "color": "rgba(51,69,143,0.18)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "columns",
+          "margin": 49
+        },
+        {
+          "color": "rgba(51,69,143,0.18)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "rows",
+          "margin": 49
+        }
+      ],
+      "h": 816,
+      "page": "book",
+      "title": "book — split page",
+      "w": 816,
+      "x": 2688,
+      "y": 0
+    },
+    "BookTeacher.dc.html": {
+      "guides": [
+        {
+          "color": "rgba(179,38,30,0.35)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "columns",
+          "margin": 11
+        },
+        {
+          "color": "rgba(179,38,30,0.35)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "rows",
+          "margin": 11
+        },
+        {
+          "color": "rgba(51,69,143,0.18)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "columns",
+          "margin": 49
+        },
+        {
+          "color": "rgba(51,69,143,0.18)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "rows",
+          "margin": 49
+        }
+      ],
+      "h": 816,
+      "page": "classbook",
+      "title": "book — teacher message page",
+      "w": 816,
+      "x": 1792,
+      "y": 2360
+    },
+    "BookText.dc.html": {
+      "guides": [
+        {
+          "color": "rgba(179,38,30,0.35)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "columns",
+          "margin": 11
+        },
+        {
+          "color": "rgba(179,38,30,0.35)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "rows",
+          "margin": 11
+        },
+        {
+          "color": "rgba(51,69,143,0.18)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "columns",
+          "margin": 49
+        },
+        {
+          "color": "rgba(51,69,143,0.18)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "rows",
+          "margin": 49
+        }
+      ],
+      "h": 816,
+      "page": "book",
+      "title": "book — text + ornament",
+      "w": 816,
+      "x": 3584,
+      "y": 0
+    },
+    "BookTitle.dc.html": {
+      "guides": [
+        {
+          "color": "rgba(179,38,30,0.35)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "columns",
+          "margin": 11
+        },
+        {
+          "color": "rgba(179,38,30,0.35)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "rows",
+          "margin": 11
+        },
+        {
+          "color": "rgba(51,69,143,0.18)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "columns",
+          "margin": 49
+        },
+        {
+          "color": "rgba(51,69,143,0.18)",
+          "count": 1,
+          "gutter": 0,
+          "kind": "rows",
+          "margin": 49
+        }
+      ],
+      "h": 816,
+      "page": "book",
+      "title": "book — title page",
+      "w": 816,
+      "x": 896,
+      "y": 0
+    },
+    "ClassCovers.dc.html": {
+      "h": 1000,
+      "page": "classbook",
+      "title": "classbook-covers",
+      "w": 1440,
+      "x": 1520,
+      "y": 1120
+    },
+    "ClassPlanner.dc.html": {
+      "h": 1000,
+      "page": "classbook",
+      "title": "classbook-page-planner",
+      "w": 1440,
+      "x": 3040,
+      "y": 0
+    },
+    "ClassPrint.dc.html": {
+      "h": 1000,
+      "page": "classbook",
+      "title": "classbook-print-bundle",
+      "w": 1440,
+      "x": 3040,
+      "y": 1120
+    },
+    "ClassReady.dc.html": {
+      "h": 1000,
+      "page": "classbook",
+      "title": "classbook-readiness",
+      "w": 1440,
+      "x": 1520,
+      "y": 0
+    },
+    "ClassReview.dc.html": {
+      "h": 1000,
+      "page": "classbook",
+      "title": "classbook-review",
+      "w": 1440,
+      "x": 0,
+      "y": 1120
+    },
+    "ClassSetup.dc.html": {
+      "h": 1000,
+      "page": "classbook",
+      "title": "classbook-setup",
+      "w": 1440,
+      "x": 0,
+      "y": 0
+    },
+    "CompChoose.dc.html": {
+      "h": 1000,
+      "page": "companion",
+      "title": "create-step-4-companion-choose",
+      "w": 390,
+      "x": 2350,
+      "y": 0
+    },
+    "CompCrop.dc.html": {
+      "h": 900,
+      "page": "companion",
+      "title": "create-step-4-companion-crop",
+      "w": 390,
+      "x": 940,
+      "y": 0
+    },
+    "CompGen.dc.html": {
+      "h": 844,
+      "page": "companion",
+      "title": "create-step-4-companion-generating",
+      "w": 390,
+      "x": 1880,
+      "y": 0
+    },
+    "CompIntro.dc.html": {
+      "h": 960,
+      "page": "companion",
+      "title": "create-step-4-companion-intro",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    },
+    "CompName.dc.html": {
+      "h": 900,
+      "page": "companion",
+      "title": "create-step-4-companion-name",
+      "w": 390,
+      "x": 1410,
+      "y": 0
+    },
+    "CompUpload.dc.html": {
+      "h": 844,
+      "page": "companion",
+      "title": "create-step-4-companion-camera",
+      "w": 390,
+      "x": 470,
+      "y": 0
+    },
+    "Companion.dc.html": {
+      "h": 240,
+      "page": "foundations",
+      "title": "Part — companion character",
+      "w": 240,
+      "x": 3600,
+      "y": 600
+    },
+    "Components.dc.html": {
+      "h": 2400,
+      "page": "foundations",
+      "title": "Components",
+      "w": 1440,
+      "x": 1520,
+      "y": 1220
+    },
+    "Create1.dc.html": {
+      "h": 1000,
+      "page": "create",
+      "title": "create-step-1-child",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    },
+    "Create10.dc.html": {
+      "h": 1150,
+      "page": "create",
+      "title": "create-step-11-checkout",
+      "w": 390,
+      "x": 4230,
+      "y": 0
+    },
+    "Create11.dc.html": {
+      "h": 900,
+      "page": "create",
+      "title": "create-step-12-success",
+      "w": 390,
+      "x": 4700,
+      "y": 0
+    },
+    "Create2.dc.html": {
+      "h": 900,
+      "page": "create",
+      "title": "create-step-2-consent",
+      "w": 390,
+      "x": 470,
+      "y": 0
+    },
+    "Create3.dc.html": {
+      "h": 1100,
+      "page": "create",
+      "title": "create-step-3-photo",
+      "w": 390,
+      "x": 940,
+      "y": 0
+    },
+    "Create4.dc.html": {
+      "h": 1000,
+      "page": "create",
+      "title": "create-step-5-style",
+      "w": 390,
+      "x": 1410,
+      "y": 0
+    },
+    "Create5.dc.html": {
+      "h": 960,
+      "page": "create",
+      "title": "create-step-6-character",
+      "w": 390,
+      "x": 1880,
+      "y": 0
+    },
+    "Create6.dc.html": {
+      "h": 1000,
+      "page": "create",
+      "title": "create-step-7-theme",
+      "w": 390,
+      "x": 2350,
+      "y": 0
+    },
+    "Create7.dc.html": {
+      "h": 1100,
+      "page": "create",
+      "title": "create-step-8-review",
+      "w": 390,
+      "x": 2820,
+      "y": 0
+    },
+    "Create8.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "page": "create",
+      "title": "create-step-9-generating",
+      "w": 390,
+      "x": 3290,
+      "y": 0
+    },
+    "Create9.dc.html": {
+      "h": 1100,
+      "page": "create",
+      "title": "create-step-10-preview",
+      "w": 390,
+      "x": 3760,
+      "y": 0
+    },
+    "CreateDesktop.dc.html": {
+      "h": 900,
+      "page": "create",
+      "title": "create-step-3-photo — desktop",
+      "w": 1440,
+      "x": 0,
+      "y": 1480
+    },
+    "Drawing.dc.html": {
+      "h": 240,
+      "page": "foundations",
+      "title": "Part — child drawing (crayon)",
+      "w": 240,
+      "x": 3280,
+      "y": 600
+    },
+    "FlyerA5.dc.html": {
+      "h": 794,
+      "page": "marketing",
+      "title": "flyer A5 — class book for kindergartens",
+      "w": 559,
+      "x": 4000,
+      "y": 1200
+    },
+    "IGPost1.dc.html": {
+      "h": 1080,
+      "page": "marketing",
+      "title": "instagram post 1 — drawing → companion",
+      "w": 1080,
+      "x": 0,
+      "y": 0
+    },
+    "IGPost2.dc.html": {
+      "h": 1080,
+      "page": "marketing",
+      "title": "instagram post 2 — before / after",
+      "w": 1080,
+      "x": 1160,
+      "y": 0
+    },
+    "IGPost3.dc.html": {
+      "h": 1080,
+      "page": "marketing",
+      "title": "instagram post 3 — keepsake page",
+      "w": 1080,
+      "x": 2320,
+      "y": 0
+    },
+    "IGStory1.dc.html": {
+      "h": 1920,
+      "page": "marketing",
+      "title": "instagram story 1",
+      "w": 1080,
+      "x": 0,
+      "y": 1200
+    },
+    "IGStory2.dc.html": {
+      "h": 1920,
+      "page": "marketing",
+      "title": "instagram story 2",
+      "w": 1080,
+      "x": 1160,
+      "y": 1200
+    },
+    "InstaLoop.dc.html": {
+      "h": 1000,
+      "page": "marketing",
+      "title": "instagram loop — animation storyboard",
+      "w": 1600,
+      "x": 2320,
+      "y": 1200
+    },
+    "Kid.dc.html": {
+      "h": 280,
+      "page": "foundations",
+      "title": "Part — child figure",
+      "w": 240,
+      "x": 3040,
+      "y": 0
+    },
+    "Kindergartens.dc.html": {
+      "h": 2800,
+      "page": "public",
+      "title": "kindergartens — desktop",
+      "w": 1440,
+      "x": 3980,
+      "y": 0
+    },
+    "Landing.dc.html": {
+      "h": 6000,
+      "page": "public",
+      "title": "landing — desktop",
+      "w": 1440,
+      "x": 0,
+      "y": 0
+    },
+    "LandingMobile.dc.html": {
+      "h": 4900,
+      "page": "public",
+      "title": "landing — mobile",
+      "w": 390,
+      "x": 1520,
+      "y": 0
+    },
+    "Logo.dc.html": {
+      "h": 1100,
+      "page": "foundations",
+      "title": "Logo — 3 options (قمرة)",
+      "w": 1440,
+      "x": 1520,
+      "y": 0
+    },
+    "Main.dc.html": {
+      "h": 2560,
+      "page": "foundations",
+      "title": "Design system — tokens",
+      "w": 1440,
+      "x": 0,
+      "y": 0
+    },
+    "Moon.dc.html": {
+      "h": 160,
+      "page": "foundations",
+      "title": "Part — moon phase",
+      "w": 160,
+      "x": 3040,
+      "y": 600
+    },
+    "MyBooks.dc.html": {
+      "h": 1100,
+      "page": "account",
+      "title": "account-books — mobile",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    },
+    "MyCompanions.dc.html": {
+      "h": 1000,
+      "page": "companion",
+      "title": "account-companions — mobile",
+      "w": 390,
+      "x": 2820,
+      "y": 0
+    },
+    "PortalBatch.dc.html": {
+      "h": 1100,
+      "page": "portal",
+      "title": "portal-batch-review",
+      "w": 1440,
+      "x": 1520,
+      "y": 1120
+    },
+    "PortalClass.dc.html": {
+      "h": 1000,
+      "page": "portal",
+      "title": "portal-class-theme",
+      "w": 1440,
+      "x": 0,
+      "y": 1120
+    },
+    "PortalDashboard.dc.html": {
+      "h": 1000,
+      "page": "portal",
+      "title": "portal-dashboard",
+      "w": 1440,
+      "x": 0,
+      "y": 0
+    },
+    "PortalImport.dc.html": {
+      "h": 1000,
+      "page": "portal",
+      "title": "portal-import-children",
+      "w": 1440,
+      "x": 1520,
+      "y": 0
+    },
+    "PortalInvite.dc.html": {
+      "h": 1000,
+      "page": "portal",
+      "title": "portal-classroom-invite",
+      "w": 1440,
+      "x": 3040,
+      "y": 0
+    },
+    "PortalOrder.dc.html": {
+      "h": 1000,
+      "page": "portal",
+      "title": "portal-order-invoice",
+      "w": 1440,
+      "x": 3040,
+      "y": 1120
+    },
+    "Privacy.dc.html": {
+      "h": 1000,
+      "page": "account",
+      "title": "account-privacy — mobile",
+      "w": 390,
+      "x": 2460,
+      "y": 0
+    },
+    "Reader.dc.html": {
+      "h": 900,
+      "page": "account",
+      "title": "book-reader — desktop",
+      "w": 1440,
+      "x": 470,
+      "y": 0
+    },
+    "Scene.dc.html": {
+      "h": 480,
+      "page": "foundations",
+      "title": "Part — book scene",
+      "w": 480,
+      "x": 3360,
+      "y": 0
+    },
+    "States.dc.html": {
+      "h": 960,
+      "page": "states",
+      "title": "system states — mobile",
+      "w": 2640,
+      "x": 0,
+      "y": 0
+    },
+    "ThemeDetail.dc.html": {
+      "h": 1600,
+      "page": "public",
+      "title": "theme-detail — mobile",
+      "w": 390,
+      "x": 3510,
+      "y": 0
+    },
+    "Themes.dc.html": {
+      "h": 1600,
+      "page": "public",
+      "title": "themes — catalog (desktop)",
+      "w": 1440,
+      "x": 1990,
+      "y": 0
+    },
+    "Tracking.dc.html": {
+      "h": 1000,
+      "page": "account",
+      "title": "order-tracking — mobile",
+      "w": 390,
+      "x": 1990,
+      "y": 0
+    },
+    "VoiceElder.dc.html": {
+      "h": 844,
+      "page": "voice",
+      "title": "voice-elder-record (no login) — mobile",
+      "w": 390,
+      "x": 940,
+      "y": 0
+    },
+    "VoiceInvite.dc.html": {
+      "h": 900,
+      "page": "voice",
+      "title": "voice-invite-grandparent — mobile",
+      "w": 390,
+      "x": 470,
+      "y": 0
+    },
+    "VoiceListen.dc.html": {
+      "h": 844,
+      "page": "voice",
+      "title": "voice-listener (QR) — mobile",
+      "w": 390,
+      "x": 1410,
+      "y": 0
+    },
+    "VoiceRecord.dc.html": {
+      "h": 900,
+      "page": "voice",
+      "title": "voice-record — mobile",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-09-27T20:03:22Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "page": "foundations",
+    "view": "canvas"
+  },
+  "notes": {
+    "n_book": {
+      "fill": "blue",
+      "maxH": 300,
+      "page": "book",
+      "text": "Print spec: 21×21 cm trim + 3 mm bleed each side = 216×216 mm → 816×816 px artboards. Red guide = trim line (11 px in). Blue guide = safe area (10 mm inside trim, 49 px from edge) — all text and faces stay inside it. Export as PDF/X at 300 dpi; illustrations generated at ≥2550 px square.",
+      "w": 560,
+      "x": 0,
+      "y": -360
+    },
+    "n_class": {
+      "fill": "teal",
+      "maxH": 220,
+      "page": "classbook",
+      "text": "Class book = ONE shared story where every child appears N times, plus a personal cover per child. Readiness steps: invite → consent → photo → drawing (optional) → approved character. Planner warns when a child has fewer appearances than the target.",
+      "w": 640,
+      "x": 0,
+      "y": -300
+    },
+    "n_comp": {
+      "fill": "orange",
+      "maxH": 220,
+      "page": "companion",
+      "text": "Step 4 of 12 (optional, skippable). Camera-first; drawing is auto-cropped and paper/shadows removed on device before upload. Companion gets 3 regenerations. Approved companion is saved to the parent account and can join any future book. The keepsake last page is added automatically when a companion exists.",
+      "w": 640,
+      "x": 0,
+      "y": -300
+    },
+    "n_create_1": {
+      "fill": "orange",
+      "maxH": 160,
+      "page": "create",
+      "text": "Mobile rule: the primary action is a sticky bottom bar (min 56px tall, safe-area padding). Back is a ghost button beside it. The stepper at the top is tappable only for completed steps.",
+      "w": 420,
+      "x": 0,
+      "y": 1200
+    },
+    "n_create_3": {
+      "fill": "orange",
+      "maxH": 160,
+      "page": "create",
+      "text": "Photo quality check runs client-side first (face count, blur, brightness) → instant tips, then server-side face detection. Rejected photos never leave the device; show the Photo rejected state (States page).",
+      "w": 420,
+      "x": 940,
+      "y": 1200
+    },
+    "n_create_5": {
+      "fill": "orange",
+      "maxH": 160,
+      "page": "create",
+      "text": "Character sheet: 'Regenerate' is limited (e.g. 3 tries) — show remaining count. Approval locks the character for all pages, so every page looks like the same child.",
+      "w": 420,
+      "x": 1880,
+      "y": 1200
+    },
+    "n_create_8": {
+      "fill": "orange",
+      "maxH": 160,
+      "page": "create",
+      "text": "Generation screen: rotate a message every ~4s, progress is real (pages done / total). User can leave — we send SMS/WhatsApp/email when ready. Failure → Generation failed state.",
+      "w": 420,
+      "x": 3290,
+      "y": 1200
+    },
+    "n_portal": {
+      "fill": "teal",
+      "maxH": 200,
+      "page": "portal",
+      "text": "Invite status per child moves: invited → consented → photo uploaded → approved. Only approved children enter batch generation. Director can resend a reminder per row or to all pending.",
+      "w": 460,
+      "x": 3040,
+      "y": 2340
+    },
+    "n_voice": {
+      "fill": "purple",
+      "maxH": 220,
+      "page": "voice",
+      "text": "Family voice: each page can hold up to 3 voices. Grandparent link opens a no-login page (one page at a time, 24px+ text, 72px buttons). The printed QR opens the listener page for that exact page; it must render under 1s on 3G (static HTML + audio stream).",
+      "w": 640,
+      "x": 0,
+      "y": -300
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Logo.dc.html",
+    "Components.dc.html",
+    "Kid.dc.html",
+    "Scene.dc.html",
+    "Landing.dc.html",
+    "LandingMobile.dc.html",
+    "Themes.dc.html",
+    "ThemeDetail.dc.html",
+    "Kindergartens.dc.html",
+    "Create1.dc.html",
+    "Create2.dc.html",
+    "Create3.dc.html",
+    "Create4.dc.html",
+    "Create5.dc.html",
+    "Create6.dc.html",
+    "Create7.dc.html",
+    "Create8.dc.html",
+    "Create9.dc.html",
+    "Create10.dc.html",
+    "Create11.dc.html",
+    "CreateDesktop.dc.html",
+    "MyBooks.dc.html",
+    "Reader.dc.html",
+    "Tracking.dc.html",
+    "Privacy.dc.html",
+    "PortalDashboard.dc.html",
+    "PortalImport.dc.html",
+    "PortalInvite.dc.html",
+    "PortalClass.dc.html",
+    "PortalBatch.dc.html",
+    "PortalOrder.dc.html",
+    "AdminQueue.dc.html",
+    "AdminOrders.dc.html",
+    "AdminThemes.dc.html",
+    "AdminMetrics.dc.html",
+    "States.dc.html",
+    "BookCover.dc.html",
+    "BookTitle.dc.html",
+    "BookFull.dc.html",
+    "BookSplit.dc.html",
+    "BookText.dc.html",
+    "BookClass.dc.html",
+    "BookBack.dc.html",
+    "Moon.dc.html",
+    "Drawing.dc.html",
+    "Companion.dc.html",
+    "CompIntro.dc.html",
+    "CompUpload.dc.html",
+    "CompCrop.dc.html",
+    "CompName.dc.html",
+    "CompGen.dc.html",
+    "CompChoose.dc.html",
+    "MyCompanions.dc.html",
+    "BookCompanion.dc.html",
+    "BookBorn.dc.html",
+    "ClassSetup.dc.html",
+    "ClassReady.dc.html",
+    "ClassPlanner.dc.html",
+    "ClassReview.dc.html",
+    "ClassCovers.dc.html",
+    "ClassPrint.dc.html",
+    "BookGroup.dc.html",
+    "BookPortrait.dc.html",
+    "BookTeacher.dc.html",
+    "VoiceRecord.dc.html",
+    "VoiceInvite.dc.html",
+    "VoiceElder.dc.html",
+    "VoiceListen.dc.html",
+    "BookQR.dc.html",
+    "IGPost1.dc.html",
+    "IGPost2.dc.html",
+    "IGPost3.dc.html",
+    "IGStory1.dc.html",
+    "IGStory2.dc.html",
+    "InstaLoop.dc.html",
+    "FlyerA5.dc.html"
+  ],
+  "pages": [
+    {
+      "id": "foundations",
+      "name": "نظام التصميم"
+    },
+    {
+      "id": "public",
+      "name": "الصفحات العامة"
+    },
+    {
+      "id": "create",
+      "name": "رحلة إنشاء القصة"
+    },
+    {
+      "id": "account",
+      "name": "حساب ولي الأمر"
+    },
+    {
+      "id": "portal",
+      "name": "بوابة الروضات"
+    },
+    {
+      "id": "admin",
+      "name": "الإدارة"
+    },
+    {
+      "id": "states",
+      "name": "حالات النظام"
+    },
+    {
+      "id": "book",
+      "name": "صفحات الكتاب المطبوع"
+    },
+    {
+      "id": "companion",
+      "name": "رسمة طفلك صارت صاحبه"
+    },
+    {
+      "id": "classbook",
+      "name": "كتاب الصف"
+    },
+    {
+      "id": "voice",
+      "name": "صوت أهلي"
+    },
+    {
+      "id": "marketing",
+      "name": "التسويق"
+    }
+  ],
+  "title": "قمرة — Qamra"
+}

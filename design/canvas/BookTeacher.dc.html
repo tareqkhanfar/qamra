@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>كتاب الصف — كلمة المعلّمة</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#FFFDF8;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#1C2140}
+p{margin:0}
+</style>
+</helmet>
+<div dir="rtl" style="width: 816px; height: 816px; position: relative; overflow: hidden; background: #FFFDF8; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 96px 104px; box-sizing: border-box; gap: 28px; text-align: center">
+  <div style="display: flex; gap: 22px; align-items: flex-end; position: relative">
+    <sc-for list="{{phases}}" as="p" hint-placeholder-count="5"><dc-import name="Moon" size="{{p.s}}" p="{{p.p}}" lit="#F2B33D" dark="#F3EAD8" hint-size="40px,40px"></dc-import></sc-for>
+  </div>
+  <div style="width: 64px; height: 64px; border-radius: 999px; border: 2px dashed #9A620A; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #9A620A">الشعار</div>
+  <p style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-weight: 800; font-size: 40px; color: #16204A">إلى فراشاتي الصغار</p>
+  <p style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-weight: 600; font-size: 28px; line-height: 1.85">كنتم نور صفّنا طوال السنة. كل صباح كان يبدأ بضحكاتكم، وكل رسمة علّقناها على الجدار كانت حكاية. تذكّروا دائماً أن القمر يضيء لكم الطريق إلى الصف الأول.</p>
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 4px"><span style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-size: 30px; color: #9A620A; font-weight: 700">معلّمتكم رنا</span><span style="font-size: 18px; color: #585C72">[اسم الروضة] · صف الفراشات · 2027</span></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":816,"height":816}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const phases = [[0.15, 28], [0.35, 34], [1, 48], [0.65, 34], [0.85, 28]].map(([p, s]) => ({ p, s }));
+    return { phases };
+  }
+}
+</script>
+</body>
+</html>

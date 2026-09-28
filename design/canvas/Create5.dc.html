@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>الخطوة 5 — اعتماد الشخصية</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#FBF6EC;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#1C2140}
+h1,h2,h3{font-family:'Baloo Bhaijaan 2','Tajawal',system-ui,sans-serif;margin:0;font-weight:700;text-wrap:balance}
+p{margin:0;text-wrap:pretty}
+button,input{font-family:inherit}
+a{color:#16204A;text-decoration:none}
+</style>
+</helmet>
+<div dir="rtl" style="width: 390px; height: 960px; background: #FBF6EC; position: relative; overflow: hidden; display: flex; flex-direction: column">
+  <header style="padding: 4px 16px 14px; display: flex; flex-direction: column; gap: 10px; border-bottom: 1px solid #E4D6BC">
+    <div style="height: 52px; display: flex; align-items: center; justify-content: space-between">
+      <a href="Landing.dc.html" aria-label="إغلاق" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16204A" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></a>
+      <strong style="font-size: 16px">كتاب ليان</strong>
+      <span style="width: 44px"></span>
+    </div>
+    <div style="display: flex; justify-content: space-between; font-size: 13px"><strong style="color: #16204A">شخصية ليان</strong><span style="display: flex; align-items: center; gap: 6px; color: #585C72"><dc-import name="Moon" size="18" p="0.5" hint-size="18px,18px"></dc-import>الخطوة 6 من 12</span></div>
+    <div style="height: 6px; border-radius: 999px; background: #F3EAD8; display: flex"><div style="width: 50%; background: #16204A; border-radius: 999px"></div></div>
+  </header>
+
+  <main style="padding: 20px 16px 170px; display: flex; flex-direction: column; gap: 16px">
+    <div style="display: flex; gap: 12px; align-items: center">
+      <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 4px"><h1 style="font-size: 26px; color: #16204A">هل تشبه ليان؟</h1><p style="font-size: 15px; color: #585C72">هذه ليان في كل صفحات الكتاب.</p></div>
+      <div style="flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 4px"><div style="border-radius: 12px; overflow: hidden; border: 2px solid #FFFDF8; box-shadow: 0 1px 2px rgba(22,32,74,0.1)"><dc-import name="Kid" w="56" look="photo" hijab="{{true}}" hijab-color="#E9826B" outfit="#F2B33D" hint-size="56px,65px"></dc-import></div><span style="font-size: 11px; color: #585C72">صورتك</span></div>
+    </div>
+
+    <div style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 24px; padding: 16px; display: flex; flex-direction: column; gap: 12px; background-image: radial-gradient(rgba(28,33,64,0.04) 1px, transparent 1px); background-size: 6px 6px">
+      <div style="display: flex; justify-content: center; background: #FCEFD2; border-radius: 18px; padding-top: 16px"><dc-import name="Kid" w="200" hijab="{{true}}" hijab-color="#E9826B" outfit="#F2B33D" hint-size="200px,233px"></dc-import></div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+        <div style="background: #E4E8F7; border-radius: 16px; display: flex; justify-content: center; padding-top: 10px"><dc-import name="Kid" w="130" hijab="{{true}}" hijab-color="#E9826B" outfit="#F2B33D" pose="wave" hint-size="130px,152px"></dc-import></div>
+        <div style="background: #DDEFE3; border-radius: 16px; display: flex; justify-content: center; padding-top: 10px"><dc-import name="Kid" w="130" hijab="{{true}}" hijab-color="#E9826B" outfit="#F2B33D" pose="tilt" hint-size="130px,152px"></dc-import></div>
+      </div>
+      <div style="display: flex; justify-content: space-around; font-size: 12px; color: #585C72"><span>من الأمام</span><span>تلوّح</span><span>تبتسم</span></div>
+    </div>
+
+    <details style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 16px; padding: 2px 16px">
+      <summary style="min-height: 52px; display: flex; align-items: center; font-weight: 600; font-size: 15px">ما الذي لا يشبهها؟ (يساعدنا في إعادة الرسم)</summary>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; padding-bottom: 14px">
+        <button style="min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1.5px solid #E4D6BC; background: #FFFFFF; font-size: 14px">لون البشرة</button>
+        <button style="min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1.5px solid #E4D6BC; background: #FFFFFF; font-size: 14px">شكل الوجه</button>
+        <button style="min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1.5px solid #E4D6BC; background: #FFFFFF; font-size: 14px">الحجاب / الشعر</button>
+        <button style="min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1.5px solid #E4D6BC; background: #FFFFFF; font-size: 14px">العمر يبدو أكبر</button>
+      </div>
+    </details>
+  </main>
+
+  <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 12px 16px 24px; background: rgba(251,246,236,0.97); border-top: 1px solid #E4D6BC; display: flex; flex-direction: column; gap: 8px">
+    <a href="Create6.dc.html" style="min-height: 56px; border-radius: 999px; background: #F2B33D; color: #0E1530; font-weight: 700; font-size: 17px; display: flex; align-items: center; justify-content: center">نعم، تشبه ليان</a>
+    <button style="min-height: 52px; border-radius: 999px; border: 2px solid #16204A; background: transparent; color: #16204A; font-weight: 700; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg>أعد الرسم · بقي 2 من 3</button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":960}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

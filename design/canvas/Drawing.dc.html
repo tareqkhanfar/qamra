@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>رسمة الطفل بالألوان الخشبية — عنصر نائب</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="{{rootStyle}}">
+  <svg width="100%" height="100%" viewBox="0 0 200 200" role="img" aria-label="رسمة طفل بالألوان">
+    <defs>
+      <filter id="qm-crayon" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="4"></feTurbulence><feDisplacementMap in="SourceGraphic" scale="5"></feDisplacementMap></filter>
+      <pattern id="qm-h-purple" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="7" height="7" fill="#E7DDF7"></rect><rect width="3.5" height="7" fill="#9B6FD1"></rect></pattern>
+      <pattern id="qm-h-orange" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(-30)"><rect width="7" height="7" fill="#FFE3C4"></rect><rect width="3.5" height="7" fill="#F28C28"></rect></pattern>
+      <pattern id="qm-h-teal" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(20)"><rect width="7" height="7" fill="#D4F0EC"></rect><rect width="3.5" height="7" fill="#2FA597"></rect></pattern>
+    </defs>
+    <rect width="200" height="200" fill="{{paper}}"></rect>
+    <g filter="url(#qm-crayon)" stroke-linecap="round" stroke-linejoin="round">
+      <g stroke="#F5B400" stroke-width="4" fill="none"><circle cx="170" cy="28" r="12"></circle><path d="M170 8 V2 M188 28 H196 M183 13 L189 7 M152 13 L147 8"></path></g>
+      <g display="{{blobD}}">
+        <path d="M58 152 C36 122 46 70 100 64 C152 60 168 112 146 152 Z" fill="url(#qm-h-purple)" stroke="#6B3FA0" stroke-width="5"></path>
+        <path d="M84 66 L72 34 M116 64 L130 32" stroke="#6B3FA0" stroke-width="4.5" fill="none"></path>
+        <path d="M72 22 L75 31 L84 32 L77 38 L80 47 L72 41 L64 47 L67 38 L60 32 L69 31 Z" fill="#FFD23F" stroke="#E0A100" stroke-width="3"></path>
+        <path d="M130 20 L133 29 L142 30 L135 36 L138 45 L130 39 L122 45 L125 36 L118 30 L127 29 Z" fill="#FFD23F" stroke="#E0A100" stroke-width="3"></path>
+        <circle cx="100" cy="102" r="20" fill="#FFFFFF" stroke="#222" stroke-width="4.5"></circle><circle cx="104" cy="104" r="8" fill="#222"></circle>
+        <path d="M82 130 Q100 146 120 130" stroke="#C0265B" stroke-width="5" fill="none"></path>
+        <path d="M76 152 L70 180 M100 154 L100 182 M126 152 L134 180" stroke="#6B3FA0" stroke-width="5" fill="none"></path>
+      </g>
+      <g display="{{catD}}">
+        <path d="M60 60 L70 26 L92 52 Q100 50 108 52 L130 26 L140 60 C156 80 150 118 100 122 C50 118 44 80 60 60 Z" fill="url(#qm-h-orange)" stroke="#C45A00" stroke-width="5"></path>
+        <path d="M70 128 C60 150 66 176 100 178 C134 176 140 150 130 128 Z" fill="url(#qm-h-orange)" stroke="#C45A00" stroke-width="5"></path>
+        <path d="M134 160 C166 160 176 128 160 110" stroke="#C45A00" stroke-width="7" fill="none"></path>
+        <circle cx="84" cy="82" r="8" fill="#2E8B57" stroke="#222" stroke-width="3"></circle><circle cx="116" cy="82" r="8" fill="#2E8B57" stroke="#222" stroke-width="3"></circle>
+        <path d="M96 96 L104 96 L100 102 Z" fill="#E75480" stroke="#E75480" stroke-width="3"></path>
+        <path d="M60 96 H36 M60 104 L38 112 M140 96 H164 M140 104 L162 112" stroke="#222" stroke-width="3" fill="none"></path>
+      </g>
+      <g display="{{robotD}}">
+        <rect x="58" y="96" width="84" height="74" rx="6" fill="url(#qm-h-teal)" stroke="#1F6F66" stroke-width="5"></rect>
+        <rect x="66" y="42" width="68" height="52" rx="8" fill="url(#qm-h-teal)" stroke="#1F6F66" stroke-width="5"></rect>
+        <path d="M100 42 V22" stroke="#1F6F66" stroke-width="4.5"></path><path d="M96 10 A10 10 0 1 0 108 22 A8 8 0 0 1 96 10 Z" fill="#FFD23F" stroke="#E0A100" stroke-width="3"></path>
+        <rect x="78" y="56" width="14" height="14" fill="#FFFFFF" stroke="#222" stroke-width="4"></rect><rect x="108" y="56" width="14" height="14" fill="#FFFFFF" stroke="#222" stroke-width="4"></rect>
+        <path d="M84 82 H116" stroke="#222" stroke-width="4"></path>
+        <path d="M58 116 L36 100 M142 116 L164 132" stroke="#1F6F66" stroke-width="6" fill="none"></path>
+        <circle cx="86" cy="128" r="6" fill="#E75480"></circle><circle cx="114" cy="128" r="6" fill="#FFD23F"></circle>
+        <path d="M76 170 V188 M124 170 V188" stroke="#1F6F66" stroke-width="6"></path>
+      </g>
+    </g>
+  </svg>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"w":{"editor":"int","default":240,"min":40,"max":900},"variant":{"editor":"enum","default":"blob","options":["blob","cat","robot"]},"paper":{"editor":"color","default":"#FFFFFF","options":["#FFFFFF","#FBF6EC"]},"tilt":{"editor":"int","default":0,"min":-10,"max":10},"$preview":{"width":240,"height":240}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const w = Number(this.props.w ?? 240);
+    const v = this.props.variant ?? 'blob';
+    const show = (x) => (v === x ? 'inline' : 'none');
+    return {
+      rootStyle: 'width:' + w + 'px;height:' + w + 'px;overflow:hidden;flex-shrink:0;transform:rotate(' + (this.props.tilt ?? 0) + 'deg)',
+      paper: this.props.paper ?? '#FFFFFF',
+      blobD: show('blob'), catD: show('cat'), robotD: show('robot')
+    };
+  }
+}
+</script>
+</body>
+</html>

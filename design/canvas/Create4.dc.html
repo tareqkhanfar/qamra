@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>الخطوة 4 — أسلوب الرسم</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#FBF6EC;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#1C2140}
+h1,h2,h3{font-family:'Baloo Bhaijaan 2','Tajawal',system-ui,sans-serif;margin:0;font-weight:700;text-wrap:balance}
+p{margin:0;text-wrap:pretty}
+button,input{font-family:inherit}
+a{color:#16204A;text-decoration:none}
+</style>
+</helmet>
+<div dir="rtl" style="width: 390px; height: 1000px; background: #FBF6EC; position: relative; overflow: hidden; display: flex; flex-direction: column">
+  <header style="padding: 4px 16px 14px; display: flex; flex-direction: column; gap: 10px; border-bottom: 1px solid #E4D6BC">
+    <div style="height: 52px; display: flex; align-items: center; justify-content: space-between">
+      <a href="Landing.dc.html" aria-label="إغلاق" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16204A" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></a>
+      <strong style="font-size: 16px">كتاب ليان</strong>
+      <span style="width: 44px"></span>
+    </div>
+    <div style="display: flex; justify-content: space-between; font-size: 13px"><strong style="color: #16204A">أسلوب الرسم</strong><span style="display: flex; align-items: center; gap: 6px; color: #585C72"><dc-import name="Moon" size="18" p="0.42" hint-size="18px,18px"></dc-import>الخطوة 5 من 12</span></div>
+    <div style="height: 6px; border-radius: 999px; background: #F3EAD8; display: flex"><div style="width: 42%; background: #16204A; border-radius: 999px"></div></div>
+  </header>
+
+  <main style="padding: 20px 16px 120px; display: flex; flex-direction: column; gap: 16px">
+    <div style="display: flex; flex-direction: column; gap: 4px"><h1 style="font-size: 26px; color: #16204A">كيف تحب أن نرسم ليان؟</h1><p style="font-size: 15px; color: #585C72">كل الصفحات سترسم بالأسلوب نفسه.</p></div>
+
+    <sc-for list="{{styles}}" as="s" hint-placeholder-count="3">
+      <label style="{{s.card}}">
+        <input type="radio" name="style" checked="{{s.checked}}" style="position: absolute; opacity: 0; width: 1px; height: 1px">
+        <div style="{{s.art}}">
+          <div style="{{s.fx}}"><dc-import name="Kid" w="130" hijab="{{true}}" hijab-color="#E9826B" outfit="#F2B33D" pose="wave" hint-size="130px,152px"></dc-import></div>
+        </div>
+        <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 4px; padding: 4px 0">
+          <div style="display: flex; justify-content: space-between; align-items: center"><h2 style="font-size: 20px; color: #16204A">{{s.name}}</h2><span style="{{s.check}}">✓</span></div>
+          <p style="font-size: 14px; line-height: 1.6; color: #585C72">{{s.desc}}</p>
+          <span style="font-size: 12px; color: #9A620A; font-weight: 600; margin-top: auto">{{s.tag}}</span>
+        </div>
+      </label>
+    </sc-for>
+  </main>
+
+  <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 12px 16px 24px; background: rgba(251,246,236,0.97); border-top: 1px solid #E4D6BC; display: flex; gap: 8px">
+    <a href="CompChoose.dc.html" style="min-height: 56px; padding: 0 16px; color: #16204A; font-weight: 600; font-size: 16px; display: flex; align-items: center">رجوع</a>
+    <a href="Create5.dc.html" style="flex-grow: 1; min-height: 56px; border-radius: 999px; background: #16204A; color: #FBF6EC; font-weight: 700; font-size: 17px; display: flex; align-items: center; justify-content: center">ارسم شخصية ليان</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const card = (on) => 'position:relative;display:flex;gap:14px;padding:12px;border-radius:24px;background:#FFFDF8;cursor:pointer;border:' + (on ? '3px solid #F2B33D;box-shadow:0 8px 24px rgba(242,179,61,0.25)' : '1.5px solid #E4D6BC');
+    const check = (on) => on ? 'width:28px;height:28px;border-radius:999px;background:#F2B33D;color:#0E1530;font-weight:800;display:flex;align-items:center;justify-content:center' : 'width:28px;height:28px;border-radius:999px;border:2px solid #E4D6BC;color:transparent;display:flex;align-items:center;justify-content:center';
+    const art = (bg) => 'flex-shrink:0;width:140px;height:170px;border-radius:16px;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;' + bg;
+    const styles = [
+      { name: 'ألوان مائية', desc: 'ناعم ودافئ، كأنه مرسوم بالفرشاة على ورق خشن.', tag: 'الأكثر اختياراً', checked: true, card: card(true), check: check(true), art: art('background:radial-gradient(circle at 30% 30%, #CBC1EA 0, transparent 45%), radial-gradient(circle at 70% 60%, #FCEFD2 0, transparent 50%), #F3EAD8'), fx: 'filter:saturate(0.8) contrast(0.92);opacity:0.95' },
+      { name: 'صلصال ناعم', desc: 'أشكال مستديرة وظلال عميقة، كأنها مجسّمات صغيرة.', tag: 'مرح وملوّن', checked: false, card: card(false), check: check(false), art: art('background:#E4E8F7'), fx: 'filter:drop-shadow(0 8px 0 rgba(22,32,74,0.18)) saturate(1.2)' },
+      { name: 'قصاصات ورق', desc: 'طبقات ورق ملوّن مقصوص، بحواف واضحة وملمس ورقي.', tag: 'فني ومميز', checked: false, card: card(false), check: check(false), art: art('background:repeating-linear-gradient(135deg, #DDEFE3 0 10px, #CFE4D6 10px 20px)'), fx: 'filter:drop-shadow(4px 4px 0 #1C2140)' }
+    ];
+    return { styles };
+  }
+}
+</script>
+</body>
+</html>

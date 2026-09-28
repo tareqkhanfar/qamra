@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>تتبّع الطلب</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#FBF6EC;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#1C2140}
+h1,h2,h3{font-family:'Baloo Bhaijaan 2','Tajawal',system-ui,sans-serif;margin:0;font-weight:700}
+p{margin:0}
+button{font-family:inherit}
+a{color:#16204A;text-decoration:none}
+</style>
+</helmet>
+<div dir="rtl" style="width: 390px; height: 1000px; background: #FBF6EC; display: flex; flex-direction: column">
+  <header style="height: 60px; padding: 0 8px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #E4D6BC">
+    <a href="MyBooks.dc.html" aria-label="رجوع" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16204A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
+    <h1 style="font-size: 20px; color: #16204A">تتبّع الطلب</h1>
+  </header>
+
+  <main style="padding: 20px 16px; display: flex; flex-direction: column; gap: 20px">
+    <div style="display: flex; gap: 14px; align-items: center; background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 20px; padding: 14px">
+      <div style="border-radius: 4px 10px 10px 4px; overflow: hidden; border-right: 6px solid #0E1530; flex-shrink: 0"><dc-import name="Scene" w="80" h="80" theme="space" hijab="{{true}}" hijab-color="#E9826B" outfit="#F2B33D" kid-scale="0.6" hint-size="80px,80px"></dc-import></div>
+      <div style="display: flex; flex-direction: column; gap: 4px"><strong style="font-size: 16px">ليان ورحلة إلى القمر</strong><span style="font-size: 13px; color: #585C72">غلاف مقوّى · <span style="direction: ltr; display: inline-block">QM-[رقم]</span></span><span style="align-self: flex-start; padding: 4px 10px; border-radius: 999px; background: #F3EAD8; font-size: 12px; font-weight: 700">قيد الطباعة</span></div>
+    </div>
+
+    <div style="background: #16204A; color: #FBF6EC; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 4px"><span style="font-size: 13px; color: #B9BEDA">موعد الوصول المتوقّع</span><strong style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-size: 26px">[اليوم، التاريخ]</strong></div>
+
+    <ol aria-label="مراحل الطلب" style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+      <sc-for list="{{steps}}" as="s" hint-placeholder-count="5">
+        <li style="display: flex; gap: 14px">
+          <div style="display: flex; flex-direction: column; align-items: center"><span style="{{s.dot}}">{{s.icon}}</span><span style="{{s.line}}"></span></div>
+          <div style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 22px"><strong style="{{s.titleStyle}}">{{s.title}}</strong><span style="font-size: 13px; color: #585C72">{{s.meta}}</span></div>
+        </li>
+      </sc-for>
+    </ol>
+
+    <div style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 8px; font-size: 14px">
+      <strong style="font-size: 15px">العنوان</strong>
+      <span style="color: #585C72; line-height: 1.6">أم ليان · البيرة، [الحي والشارع]</span>
+      <strong style="font-size: 15px; margin-top: 6px">الدفع</strong>
+      <span style="color: #585C72">[المجموع] ₪ نقداً عند الاستلام</span>
+    </div>
+    <a href="#" style="min-height: 52px; border-radius: 999px; border: 2px solid #16204A; font-weight: 700; display: flex; align-items: center; justify-content: center">تواصل معنا على واتساب</a>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const data = [
+      ['تم الطلب', '[التاريخ والوقت]'], ['اعتمدنا الكتاب', 'راجعه فريقنا صفحة صفحة'], ['في المطبعة', 'يُطبع الآن'], ['مع المندوب', 'سيتصل بك قبل الوصول'], ['تم التوصيل', '']
+    ];
+    const cur = 2;
+    const steps = data.map(([title, meta], i) => {
+      const done = i < cur, now = i === cur;
+      return {
+        title, meta, icon: done ? '✓' : now ? '•' : '',
+        dot: 'width:28px;height:28px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;' + (done ? 'background:#16204A;color:#FBF6EC' : now ? 'background:#F2B33D;color:#0E1530;box-shadow:0 0 0 6px #FCEFD2' : 'background:#FFFDF8;border:2px solid #E4D6BC'),
+        line: i === data.length - 1 ? 'display:none' : 'width:2px;flex-grow:1;min-height:24px;background:' + (done ? '#16204A' : '#E4D6BC'),
+        titleStyle: 'font-size:16px;' + (done || now ? 'color:#16204A' : 'color:#585C72;font-weight:500')
+      };
+    });
+    return { steps };
+  }
+}
+</script>
+</body>
+</html>

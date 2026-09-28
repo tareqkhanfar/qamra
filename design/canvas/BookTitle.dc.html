@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>الكتاب — صفحة العنوان</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#FFFDF8;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#1C2140}
+p{margin:0}
+</style>
+</helmet>
+<div dir="rtl" style="width: 816px; height: 816px; position: relative; overflow: hidden; background-color: #FFFDF8; background-image: radial-gradient(rgba(28,33,64,0.035) 1px, transparent 1px); background-size: 7px 7px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; padding: 96px; box-sizing: border-box; text-align: center">
+  <svg width="360" height="60" viewBox="0 0 360 60" aria-hidden="true"><path d="M20 30 H150 M210 30 H340" stroke="#9A620A" stroke-width="1.5" stroke-dasharray="2 8" stroke-linecap="round"/><path d="M180 6 C182 22 186 26 202 30 C186 34 182 38 180 54 C178 38 174 34 158 30 C174 26 178 22 180 6 Z" fill="#F2B33D"/></svg>
+  <p style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-weight: 800; font-size: 72px; line-height: 1.15; color: #16204A">ليان<br><span style="font-size: 44px; color: #9A620A">ورحلة إلى القمر</span></p>
+  <p style="font-size: 22px; line-height: 1.8; color: #585C72">حكاية كُتبت ورُسمت خصيصاً لليان</p>
+  <div style="border-radius: 999px; overflow: hidden; width: 200px; height: 200px; background: #FCEFD2; display: flex; align-items: flex-end; justify-content: center"><dc-import name="Kid" w="180" hijab="{{true}}" hijab-color="#E9826B" outfit="#F2B33D" hint-size="180px,210px"></dc-import></div>
+  <p style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-size: 24px; line-height: 1.7; color: #1C2140; font-weight: 600">"[إهداء من العائلة — يكتبه الأهل عند الطلب]"</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":816,"height":816}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>حسابي — أصحابي</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#FBF6EC;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#1C2140}
+h1,h2,h3{font-family:'Baloo Bhaijaan 2','Tajawal',system-ui,sans-serif;margin:0;font-weight:700}
+p{margin:0}
+button{font-family:inherit}
+a{color:#16204A;text-decoration:none}
+</style>
+</helmet>
+<div dir="rtl" style="width: 390px; height: 1000px; background: #FBF6EC; position: relative; overflow: hidden; display: flex; flex-direction: column">
+  <header style="padding: 16px 16px 8px; display: flex; flex-direction: column; gap: 4px">
+    <h1 style="font-size: 26px; color: #16204A">أصحاب أطفالي</h1>
+    <p style="font-size: 14px; color: #585C72">كل صاحب يمكن أن يرافق طفله في أي كتاب جديد.</p>
+  </header>
+  <div role="tablist" style="display: flex; gap: 8px; padding: 8px 16px 16px">
+    <button role="tab" aria-selected="true" style="min-height: 44px; padding: 0 16px; border-radius: 999px; border: 0; background: #16204A; color: #FBF6EC; font-weight: 700; font-size: 14px">الكل (4)</button>
+    <button role="tab" aria-selected="false" style="min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid #E4D6BC; background: #FFFDF8; font-size: 14px">أصحاب ليان</button>
+    <button role="tab" aria-selected="false" style="min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid #E4D6BC; background: #FFFDF8; font-size: 14px">أصحاب كرم</button>
+  </div>
+
+  <main style="padding: 0 16px 110px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+    <sc-for list="{{comps}}" as="c" hint-placeholder-count="3">
+      <article style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 22px; padding: 10px; display: flex; flex-direction: column; gap: 8px">
+        <div style="{{c.stage}}">
+          <dc-import name="Companion" w="120" variant="{{c.v}}" pose="{{c.pose}}" hint-size="120px,120px"></dc-import>
+          <div style="position: absolute; bottom: 6px; left: 6px; border-radius: 6px; overflow: hidden; border: 2px solid #FFFFFF; box-shadow: 0 2px 6px rgba(22,32,74,0.2); transform: rotate(-6deg)"><dc-import name="Drawing" w="44" variant="{{c.v}}" hint-size="44px,44px"></dc-import></div>
+        </div>
+        <strong style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-size: 20px; color: #16204A">{{c.name}}</strong>
+        <span style="font-size: 12px; color: #585C72">{{c.meta}}</span>
+        <a href="Create1.dc.html" style="min-height: 44px; border-radius: 999px; border: 1.5px solid #16204A; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center">حكاية جديدة معه</a>
+      </article>
+    </sc-for>
+    <a href="CompIntro.dc.html" style="border: 2px dashed #9A620A; border-radius: 22px; min-height: 250px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: #9A620A; text-align: center; padding: 12px">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+      <strong style="font-size: 15px">صاحب جديد من رسمة</strong>
+    </a>
+  </main>
+
+  <nav aria-label="التنقل الرئيسي" style="position: absolute; bottom: 0; left: 0; right: 0; height: 80px; padding-bottom: 12px; box-sizing: border-box; background: #FFFDF8; border-top: 1px solid #E4D6BC; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr))">
+    <a href="MyBooks.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 12px; color: #585C72"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6c-2-1.5-5-2-8-1v13c3-1 6-.5 8 1 2-1.5 5-2 8-1V5c-3-1-6-.5-8 1z"/><path d="M12 6v13"/></svg>كتبي</a>
+    <a href="MyCompanions.dc.html" aria-current="page" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 12px; font-weight: 700; color: #16204A"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4c5 0 7 4 6.5 8.5C18 16 15.5 18 12 18s-6-2-6.5-5.5C5 8 7 4 12 4z"/><circle cx="12" cy="10.5" r="2"/><path d="M9 18l-1 3M12 18v3M15 18l1 3"/></svg>أصحابي</a>
+    <a href="Create1.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 12px; color: #585C72"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>كتاب جديد</a>
+    <a href="Privacy.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 12px; color: #585C72"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>حسابي</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const st = (bg) => 'position:relative;height:150px;border-radius:16px;display:flex;align-items:center;justify-content:center;background:' + bg;
+    const comps = [
+      { name: 'نونو', v: 'blob', pose: 'wave', meta: 'صاحب ليان · في كتابين', stage: st('#E4E8F7') },
+      { name: 'مشمش', v: 'cat', pose: 'front', meta: 'صاحب ليان · كتاب واحد', stage: st('#FCEFD2') },
+      { name: 'قمّور', v: 'robot', pose: 'wave', meta: 'صاحب كرم · جديد', stage: st('#DDEFE3') }
+    ];
+    return { comps };
+  }
+}
+</script>
+</body>
+</html>

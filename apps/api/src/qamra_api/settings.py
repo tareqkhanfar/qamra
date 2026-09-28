@@ -1,5 +1,6 @@
 """API settings: core infrastructure + auth, cookies, observability."""
 
+from decimal import Decimal
 from functools import lru_cache
 
 from pydantic import SecretStr, model_validator
@@ -22,6 +23,13 @@ class ApiSettings(CoreSettings):
     login_max_attempts: int = 10  # per email + IP, per window
     login_ip_max_attempts: int = 50  # per IP, per window (credential spraying)
     login_window_seconds: int = 900
+
+    # Prices (ILS). Unset → the site says "coming soon" instead of showing a made-up number.
+    price_digital_ils: Decimal | None = None
+    price_softcover_ils: Decimal | None = None
+    price_hardcover_ils: Decimal | None = None
+
+    leads_per_ip_per_hour: int = 5
 
     sentry_dsn: SecretStr | None = None
     log_level: str = "INFO"

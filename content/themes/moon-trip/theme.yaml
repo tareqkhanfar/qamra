@@ -1,0 +1,26 @@
+slug: moon-trip
+version: 1
+title_ar: "{name} في رحلة إلى القمر"
+title_en: "{name}'s Trip to the Moon"
+age_range: [4, 7]
+is_b2b: false
+active: true
+companion_slot: true
+
+# Catalog entry from the design canvas. The story itself is not written yet (coming soon).
+catalog:
+  status: coming_soon
+  name_ar: رحلة إلى القمر
+  name_en: A Trip to the Moon
+  tagline_ar: صاروخ من ورق يأخذ بطلنا إلى كوكب ينتظر صديقاً.
+  tagline_en: A paper rocket takes our hero to a planet waiting for a friend.
+  description_ar: >-
+    يصنع بطلنا صاروخاً من ورق الجرائد، فيطير به ليلاً إلى كوكب صغير وحيد. هناك يتعلّم أن الصداقة تبدأ بكلمة لطيفة.
+  description_en: >-
+    Our hero builds a rocket from newspaper and flies at night to a small, lonely planet, and learns that friendship starts with one kind word.
+  occasions: [adventure]
+  values_ar: [الشجاعة, الصداقة, الفضول العلمي]
+  values_en: [Courage, Friendship, Scientific curiosity]
+  rank: 40
+  planned_pages: 24
+  art: {scene: space, outfit: "#A99BD6", skin: "#E8B98F", hair_style: short, pose: wave}

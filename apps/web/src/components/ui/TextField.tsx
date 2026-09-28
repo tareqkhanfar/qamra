@@ -31,7 +31,7 @@ export function TextField({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-small text-ink font-semibold">
+      <label htmlFor={id} className="text-small font-semibold text-ink">
         {label}
       </label>
       <div className="relative">
@@ -43,7 +43,7 @@ export function TextField({
           aria-invalid={error || invalid ? true : undefined}
           aria-describedby={describedBy}
           className={[
-            "bg-paper-raised text-body text-ink min-h-[52px] w-full rounded-sm border px-4 transition outline-none",
+            "min-h-[52px] w-full rounded-sm border bg-paper-raised px-4 text-body text-ink transition outline-none",
             "placeholder:text-ink-faint focus:border-amber-500 focus:ring-4 focus:ring-amber-100",
             ltr ? "rtl:text-right" : "",
             isPassword ? "pe-14" : "",
@@ -57,7 +57,7 @@ export function TextField({
             onClick={() => setRevealed((v) => !v)}
             aria-label={revealed ? revealLabels.hide : revealLabels.show}
             aria-pressed={revealed}
-            className="text-ink-muted hover:text-ink absolute inset-y-0 end-1 my-auto inline-flex size-11 items-center justify-center rounded-full"
+            className="absolute inset-y-0 end-1 my-auto inline-flex size-11 items-center justify-center rounded-full text-ink-muted hover:text-ink"
           >
             <svg viewBox="0 0 24 24" className="size-5" aria-hidden="true">
               <path
@@ -73,7 +73,7 @@ export function TextField({
         )}
       </div>
       {hint && !error && (
-        <p id={`${id}-hint`} className="text-caption text-ink-muted font-medium">
+        <p id={`${id}-hint`} className="text-caption font-medium text-ink-muted">
           {hint}
         </p>
       )}

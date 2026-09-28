@@ -1,0 +1,26 @@
+slug: neighborhood-friends
+version: 1
+title_ar: "{name} وأصدقاء الحارة"
+title_en: "{name} and the Neighborhood Friends"
+age_range: [3, 5]
+is_b2b: false
+active: true
+companion_slot: true
+
+# Catalog entry from the design canvas. The story itself is not written yet (coming soon).
+catalog:
+  status: coming_soon
+  name_ar: أصدقاء الحارة
+  name_en: Neighborhood Friends
+  tagline_ar: قطّة وعصفور وسلحفاة يعلّمون بطلنا معنى المشاركة.
+  tagline_en: A cat, a bird and a tortoise teach our hero what sharing means.
+  description_ar: >-
+    في الحارة ثلاثة أصدقاء لا يتشابهون: قطّة سريعة، وعصفور ثرثار، وسلحفاة صبورة. معهم يكتشف بطلنا أن المشاركة تضاعف الفرح.
+  description_en: >-
+    Three very different friends live in the neighborhood: a quick cat, a chatty bird and a patient tortoise. With them our hero finds that sharing doubles the joy.
+  occasions: [values]
+  values_ar: [المشاركة, الصداقة, تقبّل الاختلاف]
+  values_en: [Sharing, Friendship, Accepting differences]
+  rank: 80
+  planned_pages: 16
+  art: {scene: garden, outfit: "#E9826B", skin: "#8D5A3B", hair_style: short, pose: wave}

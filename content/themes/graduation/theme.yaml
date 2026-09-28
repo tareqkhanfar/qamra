@@ -1,0 +1,152 @@
+slug: graduation
+version: 1
+title_ar: "يوم تخرّج {name}"
+title_en: "{name}'s Graduation Day"
+age_range: [5, 6]
+is_b2b: false
+active: true
+
+catalog:
+  status: available
+  name_ar: يوم تخرّجي
+  name_en: My Graduation Day
+  tagline_ar: ذكريات سنة الروضة وحلم الصف الأول.
+  tagline_en: Memories of the kindergarten year and the dream of first grade.
+  description_ar: >-
+    من ذكرى أوّل يوم في الروضة إلى لحظة رفع الشهادة: كتاب يحفظ حروف السنة وأصدقاءها ومعلّمتها،
+    ويختم بحلم الصف الأول. متوفّر أيضًا ككتاب صفّ كامل للروضات.
+  description_en: >-
+    From the memory of the first kindergarten day to the moment the certificate goes up high: a
+    book that keeps the year's letters, friends and teacher, and ends with the dream of first grade.
+    Also available as a whole-class book for kindergartens.
+  occasions: [graduation]
+  values_ar: [الاعتزاز بالنفس, الامتنان, الصداقة]
+  values_en: [Pride, Gratitude, Friendship]
+  tag: kindergarten
+  rank: 20
+  art: {scene: grad, outfit: "#7FA38A", hijab: true, cap: true, pose: wave}
+  peek:
+    - {scene: grad, outfit: "#7FA38A", hijab: true, cap: true, pose: front, kid_scale: 0.6}
+    - {scene: grad, outfit: "#7FA38A", hijab: true, cap: true, pose: wave, kid_scale: 0.55, companion: blob}
+    - {scene: night, outfit: "#7FA38A", hijab: true, pose: tilt, kid_scale: 0.55}
+  sample_child: {name_ar: ليان, name_en: Layan, gender: f}
+
+companion_slot: true
+default_companion:
+  name_ar: قَمّور
+  name_en: Qamour
+  description_en: >-
+    a tiny round glowing moon creature, soft pale-gold body shaped like a plump crescent,
+    two small dot eyes, rosy cheeks, stubby little arms, floats a few centimeters above the ground
+
+cover:
+  scene: >-
+    The hero in a graduation gown and cap stands proudly in front of a small festive stage decorated
+    with colorful bunting, holding a rolled certificate tied with a ribbon.
+  companion_action: waves from the edge of the stage
+
+pages:
+  - index: 1
+    layout: illustration-textbox
+    beat: graduation morning
+    scene: >-
+      A cozy bedroom in the morning. The hero is putting on a blue graduation gown in front of a mirror,
+      smiling proudly; a graduation cap waits on the bed.
+    companion_action: holds the graduation cap up with both arms
+    text_ar: "اليوم يومٌ مميّز! {استيقظَ/استيقظَتْ} {name} باكرًا {ولبسَ/ولبسَتْ} ثوب التخرّج الأزرق."
+    text_en: "Today is a special day! {name} woke up early and put on the blue graduation gown."
+  - index: 2
+    layout: illustration-textbox
+    beat: remembering the first day
+    scene: >-
+      The hero sits on the bed looking at an open photo album; the photo shows a much smaller version
+      of the hero at a kindergarten gate.
+    companion_action: peeks at the photo, amazed
+    text_ar: "{تذكّرَ/تذكّرَتْ} {name} أوّل يوم في الروضة، حين كان كل شيء جديدًا وكبيرًا."
+    text_en: "{name} remembered the first day at kindergarten, when everything was new and big."
+  - index: 3
+    layout: illustration-textbox
+    beat: learning
+    scene: >-
+      A bright kindergarten classroom. The hero sits at a low table and proudly holds up a colorful
+      drawing; building blocks and crayons are spread on the table.
+    companion_action: stacks two building blocks and balances on top
+    text_ar: "في الروضة {تعلّمَ/تعلّمَتْ} {name} الحروف كلّها، من الألف إلى الياء."
+    text_en: "At kindergarten, {name} learned all the letters, from Alif to Ya."
+  - index: 4
+    layout: illustration-textbox
+    beat: numbers and colors
+    scene: >-
+      The hero with paint on both hands mixes blue and yellow paint into green on a big sheet of paper,
+      delighted.
+    companion_action: has a drop of green paint on its nose and laughs
+    text_ar: "{وعدَّ/وعدَّتْ} النجوم، {وخلطَ/وخلطَتْ} الألوان: الأزرق والأصفر صارا أخضر!"
+    text_en: "{name} counted stars and mixed colors: blue and yellow turned green!"
+  - index: 5
+    layout: illustration-textbox
+    beat: friends
+    scene: >-
+      A sunny playground. The hero and three friends of different looks hold hands in a circle and laugh.
+    companion_action: dances in the middle of the circle
+    text_ar: "{ووجدَ/ووجدَتْ} {name} أصدقاء {يلعبُ/تلعبُ} معهم كل يوم، في الشمس وفي المطر."
+    text_en: "{name} found friends to play with every day, in sunshine and in rain."
+  - index: 6
+    layout: illustration-textbox
+    beat: the teacher
+    scene: >-
+      A kind teacher kneels and claps for the hero, who shows a finished wooden puzzle.
+    companion_action: claps too
+    text_ar: "وكانت المعلّمة دائمًا هناك: تشرح، وتبتسم، وتصفّق لكل محاولة."
+    text_en: "And the teacher was always there: explaining, smiling, and clapping for every try."
+  - index: 7
+    layout: illustration-textbox
+    beat: rehearsal
+    scene: >-
+      Children in graduation gowns stand in a row, singing with open mouths; the hero stands in the middle.
+    companion_action: conducts the song with a tiny stick
+    text_ar: "قبل الحفل، {وقفَ/وقفَتْ} {name} مع الصفّ {يتدرّبُ/تتدرّبُ} على نشيدٍ جميل."
+    text_en: "Before the ceremony, {name} stood with the class, practicing a beautiful song."
+  - index: 8
+    layout: illustration-textbox
+    beat: stage fright
+    scene: >-
+      Backstage next to a red curtain, the hero in gown and cap takes a deep breath; soft silhouettes of
+      an audience are visible beyond the curtain.
+    companion_action: sits on the hero's shoulder and whispers encouragement
+    text_ar: "على المسرح {شعرَ/شعرَتْ} {name} برجفةٍ صغيرة. همس {companion}: «{تنفّسْ/تنفّسي}… {أنتَ جاهزٌ/أنتِ جاهزةٌ}!»"
+    text_en: "On the stage, {name} felt a little shiver. {companion} whispered: \"Breathe... you're ready!\""
+  - index: 9
+    layout: illustration-textbox
+    beat: the certificate
+    scene: >-
+      On the stage under a warm spotlight, the hero in gown and cap raises a rolled certificate tied with
+      a ribbon high above their head.
+    companion_action: cheers with both arms up
+    text_ar: "نادت المعلّمة: «{name}!» {فمشى/فمشَتْ} {name} بثقة، {ورفعَ/ورفعَتْ} الشهادة عاليًا."
+    text_en: "The teacher called: \"{name}!\" {name} walked up proudly and held the certificate high."
+  - index: 10
+    layout: illustration-textbox
+    beat: caps in the air
+    scene: >-
+      Children throw their graduation caps into the air among confetti, laughing with joy.
+    companion_action: rides on a flying cap
+    text_ar: "ثمّ رمى الأطفال قبّعاتهم في الهواء، وضحك الجميع: هيييه!"
+    text_en: "Then the children threw their caps into the air, and everyone laughed: hooray!"
+  - index: 11
+    layout: illustration-textbox
+    beat: family pride
+    scene: >-
+      The hero in the graduation gown runs into the arms of two parents (shown simply, from the side),
+      all smiling.
+    companion_action: floats above them, glowing warmly
+    text_ar: "{ركضَ/ركضَتْ} {name} إلى ماما وبابا، {فضمّاه/فضمّاها} وقالا: «نحن فخوران {بكَ/بكِ}!»"
+    text_en: "{name} ran to Mama and Baba, who hugged them and said: \"We are so proud of you!\""
+  - index: 12
+    layout: illustration-textbox
+    beat: dreaming of first grade
+    scene: >-
+      Night in the hero's bedroom. The certificate is pinned on the wall; the hero in pajamas looks at a
+      big gentle moon through the window.
+    companion_action: curls up on the windowsill, glowing like a night light
+    text_ar: "وفي الليل، تحت ضوء القمر، {همسَ/همسَتْ} {name} لـ{companion}: «الصفّ الأول… {أنا قادمٌ/أنا قادمةٌ}!»"
+    text_en: "That night, under the moonlight, {name} whispered to {companion}: \"First grade... here I come!\""

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>الخطوة 9 — المعاينة واختيار الشكل</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#FBF6EC;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#1C2140}
+h1,h2,h3{font-family:'Baloo Bhaijaan 2','Tajawal',system-ui,sans-serif;margin:0;font-weight:700;text-wrap:balance}
+p{margin:0;text-wrap:pretty}
+button,input{font-family:inherit}
+a{color:#16204A;text-decoration:none}
+</style>
+</helmet>
+<div dir="rtl" style="width: 390px; height: 1100px; background: #FBF6EC; position: relative; overflow: hidden; display: flex; flex-direction: column">
+  <header style="padding: 4px 16px 14px; display: flex; flex-direction: column; gap: 10px; border-bottom: 1px solid #E4D6BC">
+    <div style="height: 52px; display: flex; align-items: center; justify-content: space-between">
+      <a href="MyBooks.dc.html" aria-label="إغلاق" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16204A" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></a>
+      <strong style="font-size: 16px">ليان ورحلة إلى القمر</strong>
+      <span style="width: 44px"></span>
+    </div>
+    <div style="display: flex; justify-content: space-between; font-size: 13px"><strong style="color: #16204A">المعاينة</strong><span style="display: flex; align-items: center; gap: 6px; color: #585C72"><dc-import name="Moon" size="18" p="0.83" hint-size="18px,18px"></dc-import>الخطوة 10 من 12</span></div>
+    <div style="height: 6px; border-radius: 999px; background: #F3EAD8; display: flex"><div style="width: 83%; background: #16204A; border-radius: 999px"></div></div>
+  </header>
+
+  <main style="padding: 20px 16px 130px; display: flex; flex-direction: column; gap: 18px">
+    <h1 style="font-size: 26px; color: #16204A">كتاب ليان جاهز!</h1>
+    <div style="background: #F3EAD8; border-radius: 24px; padding: 20px 0; display: flex; flex-direction: column; align-items: center; gap: 12px">
+      <div style="position: relative; border-radius: 6px 16px 16px 6px; overflow: hidden; border-right: 10px solid #0E1530; box-shadow: 0 12px 28px rgba(22,32,74,0.22)">
+        <dc-import name="Scene" w="260" h="260" theme="space" pose="wave" hijab="{{true}}" hijab-color="#E9826B" outfit="#F2B33D" kid-scale="0.55" hint-size="260px,260px"></dc-import>
+        <div style="position: absolute; top: 18px; left: 0; right: 0; text-align: center; font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-weight: 800; font-size: 24px; color: #FBF6EC; line-height: 1.25">ليان<br><span style="font-size: 16px; color: #F5C465">ورحلة إلى القمر</span></div>
+        <div aria-hidden="true" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none"><span style="transform: rotate(-30deg); font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-weight: 800; font-size: 30px; color: rgba(251,246,236,0.35); letter-spacing: 0.04em; white-space: nowrap">معاينة · قمرة</span></div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 16px">
+        <button aria-label="الصفحة السابقة" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid #E4D6BC; background: #FFFDF8; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16204A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button>
+        <span style="font-size: 14px; font-weight: 600">الغلاف · 1 من 6 صفحات معاينة</span>
+        <button aria-label="الصفحة التالية" style="width: 44px; height: 44px; border-radius: 999px; border: 0; background: #16204A; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FBF6EC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg></button>
+      </div>
+      <span style="font-size: 12px; color: #585C72">الكتاب الكامل بدون علامة مائية بعد الطلب</span>
+    </div>
+
+    <fieldset style="border: 0; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px">
+      <legend style="font-size: 18px; font-weight: 700; margin-bottom: 10px; font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; color: #16204A">اختر شكل الكتاب</legend>
+      <sc-for list="{{products}}" as="p" hint-placeholder-count="3">
+        <label style="{{p.card}}">
+          <input type="radio" name="product" style="width: 22px; height: 22px; accent-color: #16204A; flex-shrink: 0">
+          <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px"><div style="display: flex; gap: 8px; align-items: center"><strong style="font-size: 16px">{{p.name}}</strong><span style="{{p.tagStyle}}">{{p.tag}}</span></div><span style="font-size: 13px; color: #585C72">{{p.desc}}</span></div>
+          <strong style="font-size: 16px; white-space: nowrap">[السعر] ₪</strong>
+        </label>
+      </sc-for>
+    </fieldset>
+  </main>
+
+  <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 12px 16px 24px; background: rgba(251,246,236,0.97); border-top: 1px solid #E4D6BC; display: flex; gap: 12px; align-items: center">
+    <div style="display: flex; flex-direction: column"><span style="font-size: 12px; color: #585C72">المجموع</span><strong style="font-size: 17px">[السعر] ₪</strong></div>
+    <a href="Create10.dc.html" style="flex-grow: 1; min-height: 56px; border-radius: 999px; background: #F2B33D; color: #0E1530; font-weight: 700; font-size: 17px; display: flex; align-items: center; justify-content: center">متابعة للطلب</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1100}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const card = (on) => 'display:flex;gap:12px;align-items:center;min-height:72px;padding:12px 16px;border-radius:18px;background:' + (on ? '#E4E8F7' : '#FFFDF8') + ';border:' + (on ? '2px solid #16204A' : '1.5px solid #E4D6BC');
+    const tg = 'padding:2px 8px;border-radius:999px;background:#F2B33D;color:#0E1530;font-size:11px;font-weight:700';
+    const products = [
+      { name: 'غلاف مقوّى', desc: '21×21 سم · ورق سميك · يدوم سنوات', tag: 'الأكثر اختياراً', tagStyle: tg, card: card(true) },
+      { name: 'غلاف ورقي', desc: '21×21 سم · خفيف ومرن', tag: '', tagStyle: 'display:none', card: card(false) },
+      { name: 'نسخة رقمية فقط', desc: 'PDF + قارئ على الجوال', tag: '', tagStyle: 'display:none', card: card(false) }
+    ];
+    return { products };
+  }
+}
+</script>
+</body>
+</html>

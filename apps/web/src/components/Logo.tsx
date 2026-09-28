@@ -19,7 +19,7 @@ export function Logo({ locale }: { locale: string }) {
   return (
     <span className="inline-flex items-center gap-2">
       <MoonMark />
-      <span className="font-display text-h3 text-night-900 font-extrabold">{brandName(locale)}</span>
+      <span className="font-display text-h3 font-extrabold text-night-900">{brandName(locale)}</span>
     </span>
   );
 }

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>الخطوة 1 — عن الطفل</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#FBF6EC;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#1C2140}
+h1,h2,h3{font-family:'Baloo Bhaijaan 2','Tajawal',system-ui,sans-serif;margin:0;font-weight:700;text-wrap:balance}
+p{margin:0;text-wrap:pretty}
+button,input{font-family:inherit}
+a{color:#16204A;text-decoration:none}
+</style>
+</helmet>
+<div dir="rtl" style="width: 390px; height: 1000px; background: #FBF6EC; position: relative; overflow: hidden; display: flex; flex-direction: column">
+  <header style="padding: 4px 16px 14px; display: flex; flex-direction: column; gap: 10px; border-bottom: 1px solid #E4D6BC">
+    <div style="height: 52px; display: flex; align-items: center; justify-content: space-between">
+      <a href="Landing.dc.html" aria-label="إغلاق" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16204A" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></a>
+      <strong style="font-size: 16px">كتاب جديد</strong>
+      <span style="width: 44px"></span>
+    </div>
+    <div style="display: flex; justify-content: space-between; font-size: 13px"><strong style="color: #16204A">عن طفلك</strong><span style="display: flex; align-items: center; gap: 6px; color: #585C72"><dc-import name="Moon" size="18" p="0.08" hint-size="18px,18px"></dc-import>الخطوة 1 من 12</span></div>
+    <div style="height: 6px; border-radius: 999px; background: #F3EAD8; display: flex"><div style="width: 8%; background: #16204A; border-radius: 999px"></div></div>
+  </header>
+
+  <main style="padding: 24px 16px 120px; display: flex; flex-direction: column; gap: 24px">
+    <div style="display: flex; flex-direction: column; gap: 6px"><h1 style="font-size: 28px; color: #16204A">من بطل حكايتنا؟</h1><p style="font-size: 15px; color: #585C72; line-height: 1.7">نستخدم هذه المعلومات لكتابة القصة فقط.</p></div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <label for="kid-name" style="font-size: 15px; font-weight: 600">اسم الطفل</label>
+      <input id="kid-name" value="ليان" style="min-height: 56px; padding: 0 16px; border: 1.5px solid #16204A; border-radius: 14px; background: #FFFFFF; font-size: 18px; color: #1C2140">
+      <span style="font-size: 13px; color: #585C72">سيظهر في القصة هكذا: <strong style="color: #16204A">"ليان وحارس النجوم"</strong></span>
+    </div>
+
+    <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+      <legend style="font-size: 15px; font-weight: 600; margin-bottom: 8px">الطفل</legend>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+        <label style="min-height: 64px; border: 2px solid #16204A; border-radius: 16px; background: #E4E8F7; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 700; font-size: 17px; color: #16204A"><input type="radio" name="gender" checked style="width: 20px; height: 20px; accent-color: #16204A"> بنت</label>
+        <label style="min-height: 64px; border: 1.5px solid #E4D6BC; border-radius: 16px; background: #FFFDF8; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 17px"><input type="radio" name="gender" style="width: 20px; height: 20px; accent-color: #16204A"> ولد</label>
+      </div>
+    </fieldset>
+
+    <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+      <legend style="font-size: 15px; font-weight: 600; margin-bottom: 8px">العمر</legend>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap">
+        <sc-for list="{{ages}}" as="a" hint-placeholder-count="8">
+          <button aria-pressed="{{a.on}}" style="{{a.style}}">{{a.n}}</button>
+        </sc-for>
+      </div>
+    </fieldset>
+
+    <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+      <legend style="font-size: 15px; font-weight: 600; margin-bottom: 4px">ماذا تحب ليان؟ <span style="font-weight: 400; color: #585C72">(اختر حتى 3)</span></legend>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap">
+        <sc-for list="{{likes}}" as="l" hint-placeholder-count="10">
+          <button aria-pressed="{{l.on}}" style="{{l.style}}">{{l.label}}</button>
+        </sc-for>
+      </div>
+    </fieldset>
+
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <label for="kid-note" style="font-size: 15px; font-weight: 600">شيء مميز عنها؟ <span style="font-weight: 400; color: #585C72">(اختياري)</span></label>
+      <input id="kid-note" placeholder="مثال: عندها قطة اسمها لولو" style="min-height: 56px; padding: 0 16px; border: 1.5px solid #E4D6BC; border-radius: 14px; background: #FFFFFF; font-size: 16px">
+    </div>
+  </main>
+
+  <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 12px 16px 24px; background: rgba(251,246,236,0.97); border-top: 1px solid #E4D6BC; display: flex; gap: 12px">
+    <a href="Create2.dc.html" style="flex-grow: 1; min-height: 56px; border-radius: 999px; background: #16204A; color: #FBF6EC; font-weight: 700; font-size: 17px; display: flex; align-items: center; justify-content: center; gap: 8px">متابعة <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg></a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const on = 'min-height:48px;min-width:48px;padding:0 14px;border-radius:14px;border:2px solid #16204A;background:#16204A;color:#FBF6EC;font-weight:700;font-size:16px';
+    const off = 'min-height:48px;min-width:48px;padding:0 14px;border-radius:14px;border:1.5px solid #E4D6BC;background:#FFFDF8;color:#1C2140;font-size:16px';
+    const ages = [2, 3, 4, 5, 6, 7, 8, 9].map((n) => ({ n: String(n), on: n === 6 ? 'true' : 'false', style: n === 6 ? on : off }));
+    const cOn = 'min-height:44px;padding:0 16px;border-radius:999px;border:1.5px solid #16204A;background:#16204A;color:#FBF6EC;font-weight:600;font-size:15px';
+    const cOff = 'min-height:44px;padding:0 16px;border-radius:999px;border:1.5px solid #E4D6BC;background:#FFFDF8;color:#1C2140;font-size:15px';
+    const picked = ['الفضاء', 'الحيوانات', 'الرسم'];
+    const likes = ['الفضاء', 'الحيوانات', 'البحر', 'كرة القدم', 'الرسم', 'الطبخ', 'الديناصورات', 'الأميرات والفرسان', 'السيارات', 'الموسيقى'].map((label) => ({ label, on: picked.includes(label) ? 'true' : 'false', style: picked.includes(label) ? cOn : cOff }));
+    return { ages, likes };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>قمرة — المكونات</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;background:#FBF6EC;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#1C2140}
+h1,h2,h3,h4{font-family:'Baloo Bhaijaan 2','Tajawal',system-ui,sans-serif;margin:0;font-weight:700}
+p{margin:0}
+button,input,select,textarea{font-family:inherit}
+a{color:#9A620A}a:hover{color:#16204A}
+</style>
+</helmet>
+<div dir="rtl" style="width: 1440px; height: 2400px; box-sizing: border-box; padding: 64px 80px; background: #FBF6EC; display: flex; flex-direction: column; gap: 40px">
+  <h1 style="font-size: 48px; color: #16204A">المكوّنات</h1>
+
+  <!-- Row 1: Buttons + Inputs -->
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px">
+    <section style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 24px; padding: 32px; display: flex; flex-direction: column; gap: 20px">
+      <h2 style="font-size: 24px; color: #16204A">الأزرار</h2>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center">
+        <button style="min-height: 56px; padding: 0 28px; border: 0; border-radius: 999px; background: #F2B33D; color: #0E1530; font-size: 17px; font-weight: 700; display: flex; align-items: center; gap: 10px">اصنع قصة طفلك <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"></path><path d="M11 6l-6 6 6 6"></path></svg></button>
+        <button style="min-height: 56px; padding: 0 28px; border: 0; border-radius: 999px; background: #16204A; color: #FBF6EC; font-size: 17px; font-weight: 700">متابعة</button>
+        <button style="min-height: 56px; padding: 0 26px; border: 2px solid #16204A; border-radius: 999px; background: transparent; color: #16204A; font-size: 17px; font-weight: 700">شاهد مثالاً</button>
+        <button style="min-height: 56px; padding: 0 16px; border: 0; background: transparent; color: #16204A; font-size: 17px; font-weight: 600; text-decoration: underline; text-underline-offset: 6px">رجوع</button>
+        <button style="min-height: 56px; padding: 0 24px; border: 0; border-radius: 999px; background: #B3261E; color: #FFFFFF; font-size: 17px; font-weight: 700">احذف بيانات طفلي</button>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; font-size: 12px; color: #585C72; text-align: center">
+        <span>أساسي · Primary</span><span>داكن · Solid</span><span>ثانوي · Secondary</span><span>شبح · Ghost</span><span>حذف · Destructive</span>
+      </div>
+      <div style="height: 1px; background: #E4D6BC"></div>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center">
+        <button style="min-height: 56px; padding: 0 28px; border: 0; border-radius: 999px; background: #F2B33D; color: #0E1530; font-size: 17px; font-weight: 700; box-shadow: 0 8px 28px rgba(242,179,61,0.45)">عند المرور</button>
+        <button style="min-height: 56px; padding: 0 28px; border: 0; border-radius: 999px; background: #DB9A1F; color: #0E1530; font-size: 17px; font-weight: 700; transform: scale(0.98)">عند الضغط</button>
+        <button disabled="" style="min-height: 56px; padding: 0 28px; border: 0; border-radius: 999px; background: #F3EAD8; color: #585C72; font-size: 17px; font-weight: 700">معطّل</button>
+        <button style="min-height: 56px; padding: 0 28px; border: 0; border-radius: 999px; background: #F2B33D; color: #0E1530; font-size: 17px; font-weight: 700; display: flex; align-items: center; gap: 10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"></path></svg>جارٍ الحفظ…</button>
+        <button style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 999px; background: #16204A; color: #FBF6EC; font-size: 15px; font-weight: 700">صغير 44</button>
+        <button aria-label="إغلاق" style="width: 44px; height: 44px; border: 1px solid #E4D6BC; border-radius: 999px; background: #FFFDF8; color: #16204A; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+      </div>
+    </section>
+
+    <section style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 24px; padding: 32px; display: flex; flex-direction: column; gap: 18px">
+      <h2 style="font-size: 24px; color: #16204A">الحقول والاختيارات</h2>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <label for="c-name" style="font-size: 15px; font-weight: 600">اسم الطفل</label>
+          <input id="c-name" value="ليان" style="min-height: 52px; padding: 0 16px; border: 1.5px solid #16204A; border-radius: 14px; background: #FFFFFF; font-size: 16px; color: #1C2140; outline: 3px solid #FCEFD2">
+          <span style="font-size: 13px; color: #585C72">كما تحب أن يظهر في القصة</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <label for="c-phone" style="font-size: 15px; font-weight: 600">رقم الجوال</label>
+          <input id="c-phone" value="059 12" dir="ltr" style="min-height: 52px; padding: 0 16px; border: 1.5px solid #B3261E; border-radius: 14px; background: #FFFFFF; font-size: 16px; color: #1C2140; text-align: right">
+          <span style="font-size: 13px; color: #B3261E; font-weight: 500">الرقم ناقص — 10 أرقام تبدأ بـ 05</span>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <span style="font-size: 15px; font-weight: 600">ماذا يحب؟</span>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px">
+          <button aria-pressed="true" style="min-height: 44px; padding: 0 16px; border: 1.5px solid #16204A; border-radius: 999px; background: #16204A; color: #FBF6EC; font-size: 15px; font-weight: 600">الفضاء ✓</button>
+          <button aria-pressed="true" style="min-height: 44px; padding: 0 16px; border: 1.5px solid #16204A; border-radius: 999px; background: #16204A; color: #FBF6EC; font-size: 15px; font-weight: 600">الحيوانات ✓</button>
+          <button aria-pressed="false" style="min-height: 44px; padding: 0 16px; border: 1.5px solid #E4D6BC; border-radius: 999px; background: #FFFFFF; color: #1C2140; font-size: 15px">كرة القدم</button>
+          <button aria-pressed="false" style="min-height: 44px; padding: 0 16px; border: 1.5px solid #E4D6BC; border-radius: 999px; background: #FFFFFF; color: #1C2140; font-size: 15px">الرسم</button>
+          <button aria-pressed="false" style="min-height: 44px; padding: 0 16px; border: 1.5px dashed #9A620A; border-radius: 999px; background: transparent; color: #9A620A; font-size: 15px; font-weight: 600">+ أضف</button>
+        </div>
+      </div>
+      <div style="display: flex; gap: 24px; align-items: center">
+        <label style="display: flex; align-items: center; gap: 10px; min-height: 44px; font-size: 15px"><input type="checkbox" checked="" style="width: 22px; height: 22px; accent-color: #16204A"> أوافق على الشروط</label>
+        <label style="display: flex; align-items: center; gap: 10px; min-height: 44px; font-size: 15px"><input type="radio" name="g" checked="" style="width: 22px; height: 22px; accent-color: #16204A"> بنت</label>
+        <label style="display: flex; align-items: center; gap: 10px; min-height: 44px; font-size: 15px"><input type="radio" name="g" style="width: 22px; height: 22px; accent-color: #16204A"> ولد</label>
+      </div>
+    </section>
+  </div>
+
+  <!-- Row 2: Uploader + Stepper + Progress -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px">
+    <section style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 16px">
+      <h2 style="font-size: 24px; color: #16204A">رفع الصورة</h2>
+      <label style="border: 2px dashed #9A620A; border-radius: 20px; background: #FCEFD2; min-height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; padding: 16px">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#16204A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg>
+        <strong style="font-size: 16px; color: #16204A">التقط صورة أو اختر من المعرض</strong>
+        <span style="font-size: 13px; color: #585C72">JPG أو PNG · حتى 15MB</span>
+        <input type="file" accept="image/*" style="position: absolute; opacity: 0; width: 1px; height: 1px">
+      </label>
+      <div style="display: flex; gap: 12px; align-items: center; border: 1px solid #E4D6BC; border-radius: 16px; padding: 12px">
+        <dc-import name="Kid" w="64" look="photo" hijab="{{true}}" skin="#E8B98F" hint-size="64px,75px"></dc-import>
+        <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 4px; font-size: 13px">
+          <span style="color: #2E7A52; font-weight: 600">✓ الوجه واضح</span>
+          <span style="color: #2E7A52; font-weight: 600">✓ إضاءة جيدة</span>
+          <span style="color: #9A620A; font-weight: 600">! الصورة بعيدة قليلاً</span>
+        </div>
+      </div>
+    </section>
+
+    <section style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 20px">
+      <h2 style="font-size: 24px; color: #16204A">المراحل (Stepper)</h2>
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <div style="display: flex; justify-content: space-between; font-size: 13px"><strong style="color: #16204A">صورة الطفل</strong><span style="color: #585C72">الخطوة 3 من 11</span></div>
+        <div style="height: 8px; border-radius: 999px; background: #F3EAD8; overflow: hidden; display: flex"><div style="width: 27%; background: #16204A; border-radius: 999px"></div></div>
+        <span style="font-size: 12px; color: #585C72">جوال: شريط تقدم + اسم الخطوة</span>
+      </div>
+      <div style="display: flex; align-items: flex-start; gap: 0">
+        <sc-for list="{{steps}}" as="s" hint-placeholder-count="5">
+          <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative">
+            <div style="{{s.dot}}">{{s.n}}</div>
+            <span style="{{s.lbl}}">{{s.label}}</span>
+          </div>
+        </sc-for>
+      </div>
+      <span style="font-size: 12px; color: #585C72">سطح المكتب: يبدأ من اليمين. المكتمل قابل للنقر.</span>
+    </section>
+
+    <section style="background: #16204A; border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 16px; color: #FBF6EC">
+      <h2 style="font-size: 24px">شريط التقدّم الودود</h2>
+      <p style="font-size: 17px; line-height: 1.6; font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-weight: 600; color: #F5C465">نرسم الآن صفحة القمر…</p>
+      <div style="height: 14px; border-radius: 999px; background: #22306A; display: flex; overflow: hidden"><div style="width: 58%; background: #F2B33D; border-radius: 999px"></div></div>
+      <div style="display: flex; justify-content: space-between; font-size: 13px; color: #B9BEDA"><span>14 من 24 صفحة</span><span>قرابة 6 دقائق</span></div>
+      <div style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #B9BEDA; border-top: 1px solid #2B3872; padding-top: 12px">
+        <span>رسائل متناوبة:</span><span>"نختار ألوان السماء…"</span><span>"نعلّم ليان كيف تطير…"</span><span>"نرتّب الكلمات على الصفحات…"</span>
+      </div>
+    </section>
+  </div>
+
+  <!-- Row 3: Cards -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr 1.3fr; gap: 32px">
+    <article style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 24px; overflow: hidden; display: flex; flex-direction: column">
+      <dc-import name="Scene" w="400" h="220" theme="space" kid-scale="0.7" outfit="#A99BD6" hint-size="400px,220px"></dc-import>
+      <div style="padding: 20px; display: flex; flex-direction: column; gap: 8px">
+        <div style="display: flex; gap: 8px"><span style="padding: 4px 10px; border-radius: 999px; background: #E4E8F7; color: #16204A; font-size: 12px; font-weight: 600">4–7 سنوات</span><span style="padding: 4px 10px; border-radius: 999px; background: #FCEFD2; color: #9A620A; font-size: 12px; font-weight: 600">الأكثر طلباً</span></div>
+        <h3 style="font-size: 22px; color: #16204A">رحلة إلى القمر</h3>
+        <p style="font-size: 14px; color: #585C72; line-height: 1.6">صاروخ من ورق يأخذ بطلنا إلى كوكب ينتظر صديقاً.</p>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px"><strong style="font-size: 16px">يبدأ من [السعر] ₪</strong><a href="#" style="font-weight: 700; font-size: 15px">التفاصيل ←</a></div>
+      </div>
+      <span style="font-size: 12px; color: #585C72; padding: 0 20px 16px">بطاقة ثيم</span>
+    </article>
+
+    <article style="display: flex; flex-direction: column; gap: 12px">
+      <div style="background: #F3EAD8; border-radius: 24px; padding: 24px; display: flex; justify-content: center">
+        <div style="border-radius: 6px 16px 16px 6px; overflow: hidden; box-shadow: 0 8px 24px rgba(22,32,74,0.18); border-right: 8px solid #0E1530">
+          <dc-import name="Scene" w="220" h="220" theme="night" hijab="{{true}}" hint-size="220px,220px"></dc-import>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: flex-start">
+        <div style="display: flex; flex-direction: column; gap: 4px"><h3 style="font-size: 20px; color: #16204A">ليان وحارس النجوم</h3><span style="font-size: 13px; color: #585C72">24 صفحة · غلاف مقوّى</span></div>
+        <span style="padding: 6px 12px; border-radius: 999px; background: #DDEFE3; color: #2E7A52; font-size: 12px; font-weight: 700">جاهز</span>
+      </div>
+      <span style="font-size: 12px; color: #585C72">بطاقة كتاب</span>
+    </article>
+
+    <article style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; justify-content: space-between; align-items: center"><strong style="font-size: 16px">طلب #QM-[رقم]</strong><span style="padding: 6px 12px; border-radius: 999px; background: #E4E8F7; color: #16204A; font-size: 12px; font-weight: 700">قيد الطباعة</span></div>
+      <div style="display: flex; gap: 8px; align-items: center">
+        <sc-for list="{{track}}" as="t" hint-placeholder-count="4">
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 6px">
+            <div style="{{t.bar}}"></div>
+            <span style="{{t.lbl}}">{{t.label}}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 14px; color: #585C72; border-top: 1px dashed #E4D6BC; padding-top: 12px"><span>كتاب مقوّى × 1</span><span>الدفع عند الاستلام</span></div>
+      <span style="font-size: 12px; color: #585C72">بطاقة طلب</span>
+    </article>
+  </div>
+
+  <!-- Row 4: chips, tabs, toast, modal -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px">
+    <section style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 20px">
+      <h2 style="font-size: 24px; color: #16204A">الشارات والتبويبات والتنبيهات</h2>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px">
+        <sc-for list="{{chips}}" as="c" hint-placeholder-count="8">
+          <span style="{{c.style}}"><span style="{{c.dot}}"></span>{{c.label}}</span>
+        </sc-for>
+      </div>
+      <div role="tablist" style="display: flex; gap: 4px; border-bottom: 1px solid #E4D6BC">
+        <button role="tab" aria-selected="true" style="min-height: 48px; padding: 0 18px; border: 0; background: transparent; border-bottom: 3px solid #F2B33D; color: #16204A; font-weight: 700; font-size: 15px">كتبي</button>
+        <button role="tab" aria-selected="false" style="min-height: 48px; padding: 0 18px; border: 0; background: transparent; border-bottom: 3px solid transparent; color: #585C72; font-size: 15px">أطفالي</button>
+        <button role="tab" aria-selected="false" style="min-height: 48px; padding: 0 18px; border: 0; background: transparent; border-bottom: 3px solid transparent; color: #585C72; font-size: 15px">طلباتي</button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <div role="status" style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 16px; background: #16204A; color: #FBF6EC; box-shadow: 0 8px 24px rgba(22,32,74,0.18)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7FD1A1" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg><span style="flex-grow: 1; font-size: 15px">تم نسخ رابط الدعوة</span><button style="min-height: 44px; padding: 0 12px; border: 0; background: transparent; color: #F5C465; font-weight: 700">تراجع</button></div>
+        <div role="alert" style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 16px; background: #F8DEDB; color: #1C2140; border: 1px solid #E8B4AE"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B3261E" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v6M12 16.5v.5"></path></svg><span style="flex-grow: 1; font-size: 15px">لم نستطع حفظ الصفحة. جرّب مرة أخرى.</span><button style="min-height: 44px; padding: 0 12px; border: 0; background: transparent; color: #B3261E; font-weight: 700">إعادة</button></div>
+      </div>
+    </section>
+
+    <section style="background: rgba(14,21,48,0.55); border-radius: 24px; padding: 28px; display: flex; align-items: center; justify-content: center; position: relative">
+      <div role="dialog" aria-modal="true" aria-labelledby="m-t" style="width: 440px; background: #FFFDF8; border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 8px 24px rgba(22,32,74,0.2)">
+        <div style="width: 56px; height: 56px; border-radius: 16px; background: #FCEFD2; display: flex; align-items: center; justify-content: center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9A620A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7"></path><path d="M20 4v5h-5"></path></svg></div>
+        <h3 id="m-t" style="font-size: 24px; color: #16204A">إعادة رسم هذه الصفحة؟</h3>
+        <p style="font-size: 15px; line-height: 1.7; color: #585C72">سنرسم الصفحة 7 من جديد بنفس القصة. بقي لك 2 من 3 محاولات مجانية.</p>
+        <div style="display: flex; gap: 12px; justify-content: flex-start"><button style="min-height: 48px; padding: 0 24px; border: 0; border-radius: 999px; background: #16204A; color: #FBF6EC; font-weight: 700; font-size: 16px">أعد الرسم</button><button style="min-height: 48px; padding: 0 20px; border: 0; background: transparent; color: #16204A; font-weight: 600; font-size: 16px">إلغاء</button></div>
+      </div>
+      <span style="position: absolute; bottom: 16px; right: 24px; font-size: 12px; color: #FBF6EC">نافذة منبثقة · الخلفية night-950 بشفافية 55%</span>
+    </section>
+  </div><div style="display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 32px">
+    <section style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 16px">
+      <h2 style="font-size: 24px; color: #16204A">جدول</h2>
+      <table style="width: 100%; border-collapse: collapse; font-size: 14px">
+        <thead><tr style="background: #F3EAD8"><th style="text-align: right; padding: 12px; font-weight: 600">الطفل</th><th style="text-align: right; padding: 12px; font-weight: 600">ولي الأمر</th><th style="text-align: right; padding: 12px; font-weight: 600">الحالة</th><th style="text-align: left; padding: 12px; font-weight: 600">إجراء</th></tr></thead>
+        <tbody>
+          <tr style="border-bottom: 1px solid #E4D6BC"><td style="padding: 12px; font-weight: 600">يوسف</td><td style="padding: 12px; direction: ltr; text-align: right">0599 ••• 214</td><td style="padding: 12px"><span style="padding: 4px 10px; border-radius: 999px; background: #DDEFE3; color: #2E7A52; font-size: 12px; font-weight: 700">معتمد</span></td><td style="padding: 12px; text-align: left"><a href="#">عرض</a></td></tr>
+          <tr style="border-bottom: 1px solid #E4D6BC"><td style="padding: 12px; font-weight: 600">جنى</td><td style="padding: 12px; direction: ltr; text-align: right">0568 ••• 031</td><td style="padding: 12px"><span style="padding: 4px 10px; border-radius: 999px; background: #FCEFD2; color: #9A620A; font-size: 12px; font-weight: 700">مدعو</span></td><td style="padding: 12px; text-align: left"><a href="#">تذكير</a></td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 12px; align-items: center; text-align: center; justify-content: center">
+      <svg width="120" height="90" viewBox="0 0 120 90" aria-hidden="true"><path d="M60 30 C48 20 30 18 12 24 L12 76 C30 70 48 72 60 82 Z" fill="#F3EAD8" stroke="#16204A" stroke-width="2"></path><path d="M60 30 C72 20 90 18 108 24 L108 76 C90 70 72 72 60 82 Z" fill="#FFFDF8" stroke="#16204A" stroke-width="2"></path><path d="M84 6 C85 11 86 12 91 13 C86 14 85 15 84 20 C83 15 82 14 77 13 C82 12 83 11 84 6 Z" fill="#F2B33D"></path></svg>
+      <h3 style="font-size: 20px; color: #16204A">لا توجد كتب بعد</h3>
+      <p style="font-size: 14px; color: #585C72">أول حكاية لطفلك تبدأ بصورة واحدة.</p>
+      <button style="min-height: 48px; padding: 0 22px; border: 0; border-radius: 999px; background: #F2B33D; color: #0E1530; font-weight: 700; font-size: 15px">اصنع أول كتاب</button>
+      <span style="font-size: 12px; color: #585C72">حالة فارغة</span>
+    </section>
+    <section style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 12px">
+      <div style="height: 150px; border-radius: 16px; background: #F3EAD8"></div>
+      <div style="height: 18px; width: 70%; border-radius: 999px; background: #F3EAD8"></div>
+      <div style="height: 14px; width: 45%; border-radius: 999px; background: #F3EAD8"></div>
+      <div style="height: 44px; width: 40%; border-radius: 999px; background: #F3EAD8; margin-top: 8px"></div>
+      <span style="font-size: 12px; color: #585C72">هيكل تحميل · نبض بطيء 1.4s (يُلغى مع تقليل الحركة)</span>
+    </section>
+  </div>
+
+  <!-- Row 5: table, empty, skeleton -->
+  
+<p style="margin: 0"># Addendum 1 — Design for Qamra (قمرة): rename + new feature screens
+
+&gt; Give this to Claude in the SAME design conversation after the first design is done. Keep the existing design system; only rebrand and add what is listed here.
+
+---
+
+## 1. Rebrand to «قمرة» (Qamra)
+
+- Replace the name everywhere with **قمرة** / **Qamra**.
+- Meaning: «ليالي القمرة» — moonlit Palestinian/Levantine evenings when the family gathers and the grandmother tells stories.
+- Tagline: «حكاية طفلك… تحت ضوء القمر».
+- **Logo**: design 3 options for a wordmark «قمرة» with a moon mark (e.g., a crescent that is also the curve of an open book page, or a full moon with a small star). Must work in one color, at 24px (favicon) and on the book spine/back cover. Provide Latin lockup "Qamra".
+- Adjust the palette if needed so it clearly reads "moonlight": deep night blue primary, warm moon-gold accent, cream paper. Keep AA contrast.
+- Add a subtle recurring motif: moon phases (can be used as a progress indicator in the create flow — new moon → full moon as the book gets closer to done).
+
+## 2. New screens — «رسمة طفلك صارت صاحبه» (drawing becomes the companion)
+
+This is the brand's signature feature. It must feel magical and be front and center.
+
+1. **Landing page hero update**: show the transformation in 3 frames — child's photo, child's crayon drawing → both appear together as illustrated characters on a book page. Headline idea: «طفلك البطل… ورسمته صاحبه». Also add a short looping animation concept (describe frames) for Instagram.
+2. **Create flow – new step "ارسم صاحبك"** (after the photo step):
+   - Intro card explaining the idea with a before/after example; a clear "تخطّي" option.
+   - Upload drawing (camera-first on mobile) with tips: white paper, good light, whole drawing in frame.
+   - Cleaned drawing preview with crop handles.
+   - Name the companion + type chips (مخلوق، حيوان، روبوت، غير ذلك).
+   - Generating state (moon-phase progress).
+   - Choose between 2 generated companions / regenerate; show the original drawing next to each option.
+3. **Book page examples** with child + companion together, and the special **last page «وهكذا وُلد صاحبي»**: original drawing and final character side by side, child's name, date, framed like a keepsake.
+4. **My companions** section in the parent account (reusable companions as cute cards).
+
+## 3. New screens — «كتاب الصف» (class book, kindergarten portal, desktop-first)
+
+1. **Class book setup**: choose theme, number of appearances per child, upload school logo, teacher message.
+2. **Readiness board**: grid of children cards with status steps (دعوة، موافقة، صورة، رسمة، شخصية معتمدة), filters, "remind parents on WhatsApp" bulk action.
+3. **Page planner**: book pages as columns, child avatars as draggable chips into scene slots; coverage meter per child (e.g., "سلمى: 3 مرات"), warnings for children with too few appearances.
+4. **Review grid**: all generated pages with per-page flag/regenerate, per-child coverage check.
+5. **Personal cover preview**: carousel of each child's personalized cover.
+6. **Print bundle summary**: copies, price tiers, delivery to school, invoice.
+7. Book layouts: class group page (all characters together), per-child portrait page, teacher message page.
+
+## 4. New screens — «صوت أهلي» (family voice via QR)
+
+1. **Record screen (mobile)**: large page text, big record button, waveform, listen / re-record, voice label chips (ماما، بابا، ستّي، سيدي), page progress.
+2. **Invite a grandparent to record**: share link via WhatsApp, simple no-login recording page with very large text and buttons (designed for older users).
+3. **Listener page** (opened from the QR in the printed book): shows the page illustration, play button, voice switcher. Must load fast and look beautiful on any phone.
+4. **Print detail**: how the QR sits on the book page (small, bottom corner, inside safe area, with a tiny moon icon and «امسح واسمع»).
+
+## 5. Marketing assets
+
+- 3 Instagram post templates and 2 story templates showing the drawing → companion transformation.
+- A one-page flyer (A5) for kindergartens about the class book.
+
+## 6. Handoff
+
+Same as before: export new/changed screens as HTML + Tailwind (RTL), update `tokens.json` and the logo files (SVG), and list all new screens in the `README.md` under "Addendum 1".</p></div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2400}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const labels = ['الطفل', 'الموافقة', 'الصورة', 'الأسلوب', 'الشخصية'];
+    const steps = labels.map((label, i) => {
+      const done = i < 2, cur = i === 2;
+      const bg = done ? '#16204A' : cur ? '#F2B33D' : '#FFFDF8';
+      const fg = done ? '#FBF6EC' : '#0E1530';
+      return {
+        label, n: done ? '✓' : String(i + 1),
+        dot: 'width:36px;height:36px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;background:' + bg + ';color:' + fg + ';border:2px solid ' + (done || cur ? bg : '#E4D6BC'),
+        lbl: 'font-size:12px;' + (cur ? 'font-weight:700;color:#16204A' : 'color:#585C72')
+      };
+    });
+    const track = ['تم الطلب', 'الطباعة', 'الشحن', 'التوصيل'].map((label, i) => ({
+      label,
+      bar: 'height:6px;border-radius:999px;background:' + (i < 2 ? '#16204A' : '#F3EAD8'),
+      lbl: 'font-size:12px;' + (i === 1 ? 'font-weight:700;color:#16204A' : 'color:#585C72')
+    }));
+    const chip = (label, bg, fg, dot) => ({ label, style: 'display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;font-size:13px;font-weight:700;background:' + bg + ';color:' + fg, dot: 'width:8px;height:8px;border-radius:999px;background:' + dot });
+    const chips = [
+      chip('مدعو', '#FCEFD2', '#9A620A', '#DB9A1F'),
+      chip('وافق', '#E4E8F7', '#16204A', '#5B6FC0'),
+      chip('رُفعت الصورة', '#EEEAF8', '#5A4A9C', '#A99BD6'),
+      chip('معتمد', '#DDEFE3', '#2E7A52', '#2E7A52'),
+      chip('قيد الإنشاء', '#E4E8F7', '#16204A', '#16204A'),
+      chip('قيد الطباعة', '#F3EAD8', '#1C2140', '#9A620A'),
+      chip('تم التوصيل', '#DDEFE3', '#2E7A52', '#2E7A52'),
+      chip('فشل', '#F8DEDB', '#B3261E', '#B3261E')
+    ];
+    return { steps, track, chips };
+  }
+}
+</script>
+</body>
+</html>

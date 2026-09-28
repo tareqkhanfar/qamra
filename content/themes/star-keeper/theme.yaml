@@ -1,0 +1,26 @@
+slug: star-keeper
+version: 1
+title_ar: "{name} حارس النجوم"
+title_en: "{name} the Star Keeper"
+age_range: [3, 6]
+is_b2b: false
+active: true
+companion_slot: true
+
+# Catalog entry from the design canvas. The story itself is not written yet (coming soon).
+catalog:
+  status: coming_soon
+  name_ar: حارس النجوم
+  name_en: The Star Keeper
+  tagline_ar: قصة قبل النوم عن الشجاعة واللطف مع نجمة صغيرة.
+  tagline_en: A bedtime story about courage and kindness with a little star.
+  description_ar: >-
+    نجمة صغيرة تخاف من العتمة، وبطل يعدها بأن يبقى حارسها حتى الصباح. قصة هادئة تُقرأ قبل النوم.
+  description_en: >-
+    A little star is afraid of the dark, and our hero promises to keep watch until morning. A calm story for bedtime.
+  occasions: [bedtime]
+  values_ar: [اللطف, الشجاعة, الطمأنينة]
+  values_en: [Kindness, Courage, Calm]
+  rank: 70
+  planned_pages: 20
+  art: {scene: night, outfit: "#F2B33D", skin: "#E8B98F", hair_style: long, pose: tilt}

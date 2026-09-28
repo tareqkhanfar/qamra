@@ -98,10 +98,10 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
 
       {GOOGLE_ENABLED && (
         <>
-          <div className="text-caption text-ink-faint flex items-center gap-3">
-            <span className="bg-line h-px flex-1" />
+          <div className="flex items-center gap-3 text-caption text-ink-faint">
+            <span className="h-px flex-1 bg-line" />
             {t("or")}
-            <span className="bg-line h-px flex-1" />
+            <span className="h-px flex-1 bg-line" />
           </div>
           <a
             href={`/api/auth/google/start?next=${encodeURIComponent(`/${locale}${next}`)}`}
@@ -112,11 +112,11 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
         </>
       )}
 
-      <p className="text-small text-ink-muted text-center">
+      <p className="text-center text-small text-ink-muted">
         {mode === "login" ? t("noAccount") : t("haveAccount")}{" "}
         <Link
           href={mode === "login" ? "/register" : "/login"}
-          className="text-night-800 font-semibold underline underline-offset-4"
+          className="font-semibold text-night-800 underline underline-offset-4"
         >
           {mode === "login" ? t("submitRegister") : t("submitLogin")}
         </Link>

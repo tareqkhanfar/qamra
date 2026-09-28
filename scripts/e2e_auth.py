@@ -1,5 +1,6 @@
-"""Browser acceptance check for Phase 1 (phone viewport, Arabic first):
-register → account → logout → protected redirect → wrong password → login → silent refresh → English.
+"""Browser acceptance check (phone viewport, Arabic first):
+home → worlds → register → account → logout → protected redirect → wrong password → login → silent refresh
+→ English → kindergarten demo request.
 
   uv run scripts/e2e_auth.py --base-url http://localhost:3000 [--screenshots out/e2e]
 """
@@ -31,8 +32,11 @@ async def run(base: str, folder: Path | None) -> None:
         await expect(page.locator("html")).to_have_attribute("dir", "rtl")
         await shot(page, folder, "01-home")
 
-        await page.get_by_role("link", name="اصنع قصة طفلك").click()
-        await page.wait_for_url("**/ar/register")
+        await expect(page.get_by_role("heading", level=1)).to_contain_text("طفلك البطل")
+        await page.goto(base + "/ar/themes")
+        await expect(page.get_by_role("heading", level=1)).to_have_text("عوالم الحكايات")
+        await expect(page.get_by_role("link", name="أوّل يوم في الروضة").first).to_be_visible()
+        await page.goto(base + "/ar/register")
         await page.get_by_label("الاسم").fill("أم سلمى")
         await page.get_by_label("البريد الإلكتروني").fill(email)
         await page.get_by_label("كلمة المرور", exact=True).fill("short")
@@ -41,7 +45,8 @@ async def run(base: str, folder: Path | None) -> None:
         await page.get_by_label("كلمة المرور", exact=True).fill(password)
         await page.get_by_role("button", name="إنشاء الحساب").click()
         await page.wait_for_url("**/ar/account")
-        await expect(page.get_by_role("heading", level=1)).to_have_text("أهلًا أم سلمى")
+        await expect(page.get_by_role("heading", level=1)).to_have_text("أم سلمى")
+        await expect(page.get_by_text("لا توجد كتب بعد")).to_be_visible()
         await shot(page, folder, "02-account")
 
         await page.get_by_role("button", name="تسجيل الخروج").click()
@@ -61,13 +66,22 @@ async def run(base: str, folder: Path | None) -> None:
         # access cookie gone (expired) → the page refreshes the session silently
         await ctx.clear_cookies(name="qamra_at")
         await page.reload()
-        await expect(page.get_by_role("heading", level=1)).to_have_text("أهلًا أم سلمى")
+        await expect(page.get_by_role("heading", level=1)).to_have_text("أم سلمى")
 
-        await page.get_by_role("link", name="English").click()
+        await page.get_by_role("link", name="English").first.click()
         await page.wait_for_url("**/en/account")
         await expect(page.locator("html")).to_have_attribute("dir", "ltr")
-        await expect(page.get_by_role("heading", level=1)).to_have_text("Hello أم سلمى")
+        await expect(page.get_by_text("No books yet")).to_be_visible()
         await shot(page, folder, "04-account-en")
+
+        await page.goto(base + "/ar/kindergartens#demo")
+        await page.get_by_label("اسم الروضة أو المدرسة").fill("روضة الاختبار")
+        await page.get_by_label("اسمك").fill("أ. منى")
+        await page.get_by_label("رقم الجوال (واتساب)").fill("+970 59 000 0000")
+        await page.get_by_label("عدد الأطفال المتوقّع").fill("22")
+        await page.get_by_role("button", name="أرسل الطلب").click()
+        await expect(page.get_by_text("وصل طلبكم!")).to_be_visible()
+        await shot(page, folder, "05-kg-lead")
         await browser.close()
     print(f"✓ auth e2e passed against {base} ({email})")
 

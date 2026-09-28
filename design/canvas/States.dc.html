@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>حالات النظام</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#E9E1D0;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#1C2140}
+h1,h2,h3{font-family:'Baloo Bhaijaan 2','Tajawal',system-ui,sans-serif;margin:0;font-weight:700;text-wrap:balance}
+p{margin:0;text-wrap:pretty}
+button{font-family:inherit}
+a{color:#16204A;text-decoration:none}
+@keyframes hk-pulse{0%,100%{opacity:1}50%{opacity:.55}}
+.hk-sk{animation:hk-pulse 1.4s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){.hk-sk{animation:none}}
+</style>
+</helmet>
+<div dir="rtl" style="width: 2640px; height: 960px; background: #E9E1D0; display: flex; gap: 60px; padding-top: 24px; box-sizing: border-box">
+
+  <!-- 1 EMPTY -->
+  <div style="width: 390px; display: flex; flex-direction: column; gap: 12px">
+    <span style="font-size: 16px; font-weight: 700; color: #16204A">1 · فارغ — لا كتب بعد</span>
+    <div style="height: 844px; background: #FBF6EC; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: 24px; box-sizing: border-box; text-align: center">
+      <svg width="180" height="130" viewBox="0 0 120 90" aria-hidden="true"><path d="M60 30 C48 20 30 18 12 24 L12 76 C30 70 48 72 60 82 Z" fill="#F3EAD8" stroke="#16204A" stroke-width="2"/><path d="M60 30 C72 20 90 18 108 24 L108 76 C90 70 72 72 60 82 Z" fill="#FFFDF8" stroke="#16204A" stroke-width="2"/><path d="M84 4 C85 10 86 11 92 12 C86 13 85 14 84 20 C83 14 82 13 76 12 C82 11 83 10 84 4 Z" fill="#F2B33D"/><circle cx="30" cy="10" r="2" fill="#F2B33D"/></svg>
+      <h2 style="font-size: 26px; color: #16204A">مكتبة ليان تنتظر أول حكاية</h2>
+      <p style="font-size: 15px; line-height: 1.7; color: #585C72">صورة واحدة وبضع دقائق، ويصبح عندها كتاب هي بطلته.</p>
+      <a href="Create1.dc.html" style="min-height: 56px; padding: 0 32px; border-radius: 999px; background: #F2B33D; color: #0E1530; font-weight: 700; font-size: 17px; display: flex; align-items: center">اصنع أول كتاب</a>
+    </div>
+  </div>
+
+  <!-- 2 LOADING -->
+  <div style="width: 390px; display: flex; flex-direction: column; gap: 12px">
+    <span style="font-size: 16px; font-weight: 700; color: #16204A">2 · تحميل — هيكل الصفحة</span>
+    <div aria-busy="true" style="height: 844px; background: #FBF6EC; border-radius: 20px; overflow: hidden; padding: 20px 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px">
+      <div class="hk-sk" style="height: 28px; width: 50%; border-radius: 999px; background: #F3EAD8"></div>
+      <div style="display: flex; gap: 14px"><div class="hk-sk" style="width: 72px; height: 72px; border-radius: 999px; background: #F3EAD8"></div><div class="hk-sk" style="width: 72px; height: 72px; border-radius: 999px; background: #F3EAD8"></div><div class="hk-sk" style="width: 72px; height: 72px; border-radius: 999px; background: #F3EAD8"></div></div>
+      <div class="hk-sk" style="height: 44px; border-radius: 12px; background: #F3EAD8"></div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+        <div style="display: flex; flex-direction: column; gap: 8px"><div class="hk-sk" style="height: 150px; border-radius: 18px; background: #F3EAD8"></div><div class="hk-sk" style="height: 16px; width: 80%; border-radius: 999px; background: #F3EAD8"></div><div class="hk-sk" style="height: 20px; width: 45%; border-radius: 999px; background: #F3EAD8"></div></div>
+        <div style="display: flex; flex-direction: column; gap: 8px"><div class="hk-sk" style="height: 150px; border-radius: 18px; background: #F3EAD8"></div><div class="hk-sk" style="height: 16px; width: 70%; border-radius: 999px; background: #F3EAD8"></div><div class="hk-sk" style="height: 20px; width: 40%; border-radius: 999px; background: #F3EAD8"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 ERROR -->
+  <div style="width: 390px; display: flex; flex-direction: column; gap: 12px">
+    <span style="font-size: 16px; font-weight: 700; color: #16204A">3 · خطأ عام</span>
+    <div role="alert" style="height: 844px; background: #FBF6EC; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: 24px; box-sizing: border-box; text-align: center">
+      <div style="width: 96px; height: 96px; border-radius: 28px; background: #F8DEDB; display: flex; align-items: center; justify-content: center"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#B3261E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6c-2-1.5-5-2-8-1v13c3-1 6-.5 8 1 2-1.5 5-2 8-1V5c-3-1-6-.5-8 1z"/><path d="M9 10l6 5M15 10l-6 5"/></svg></div>
+      <h2 style="font-size: 26px; color: #16204A">تعثّرت الصفحة قليلاً</h2>
+      <p style="font-size: 15px; line-height: 1.7; color: #585C72">لم نستطع تحميل كتبك الآن. بياناتك بأمان — جرّب مرة أخرى بعد لحظات.</p>
+      <button style="min-height: 56px; padding: 0 32px; border: 0; border-radius: 999px; background: #16204A; color: #FBF6EC; font-weight: 700; font-size: 17px">حاول مرة أخرى</button>
+      <a href="#" style="min-height: 44px; display: flex; align-items: center; font-weight: 600; color: #9A620A">تواصل مع الدعم على واتساب</a>
+      <span style="font-size: 12px; color: #585C72; direction: ltr">ERR-[رمز]</span>
+    </div>
+  </div>
+
+  <!-- 4 PHOTO REJECTED -->
+  <div style="width: 390px; display: flex; flex-direction: column; gap: 12px">
+    <span style="font-size: 16px; font-weight: 700; color: #16204A">4 · رفض الصورة</span>
+    <div style="height: 844px; background: #FBF6EC; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; padding: 20px 16px; box-sizing: border-box; gap: 16px; position: relative">
+      <h2 style="font-size: 24px; color: #16204A">نحتاج صورة أوضح لليان</h2>
+      <div style="position: relative; height: 300px; border-radius: 20px; overflow: hidden; background: #D9D3C7; display: flex; align-items: flex-end; justify-content: center; border: 3px solid #B3261E">
+        <div style="filter: brightness(0.45) blur(2px)"><dc-import name="Kid" w="240" look="photo" hijab="{{true}}" hijab-color="#E9826B" hint-size="240px,280px"></dc-import></div>
+      </div>
+      <div role="alert" style="background: #F8DEDB; border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px">
+        <strong style="font-size: 15px; color: #B3261E">لم نتمكن من رؤية الوجه بوضوح</strong>
+        <span style="font-size: 14px; line-height: 1.6">الصورة مظلمة وغير واضحة. جرّب قرب نافذة في ضوء النهار، وامسك الجوال بثبات.</span>
+      </div>
+      <p style="font-size: 13px; color: #585C72; line-height: 1.6">لم تُحفظ هذه الصورة على خوادمنا.</p>
+      <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 12px 16px 24px; border-top: 1px solid #E4D6BC; display: flex; flex-direction: column; gap: 8px; background: #FBF6EC">
+        <button style="min-height: 56px; border: 0; border-radius: 999px; background: #16204A; color: #FBF6EC; font-weight: 700; font-size: 17px">التقط صورة جديدة</button>
+        <button style="min-height: 48px; border: 0; background: transparent; color: #16204A; font-weight: 600; font-size: 16px">اختر من المعرض</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 GENERATION FAILED -->
+  <div style="width: 390px; display: flex; flex-direction: column; gap: 12px">
+    <span style="font-size: 16px; font-weight: 700; color: #16204A">5 · فشل التوليد</span>
+    <div role="alert" style="height: 844px; background: #16204A; color: #FBF6EC; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: 24px; box-sizing: border-box; text-align: center">
+      <svg width="160" height="120" viewBox="0 0 220 170" aria-hidden="true"><path d="M110 58 C84 36 44 32 10 44 L10 144 C44 132 84 136 110 156 Z" fill="#FBF6EC"/><path d="M110 58 C136 36 176 32 210 44 L210 144 C176 132 136 136 110 156 Z" fill="#E4E8F7"/><path d="M150 70 L150 120 M130 95 L170 95" stroke="#C9BCA3" stroke-width="5" stroke-linecap="round" transform="rotate(45 150 95)"/><path d="M110 10 C112 20 115 23 125 25 C115 27 112 30 110 40 C108 30 105 27 95 25 C105 23 108 20 110 10 Z" fill="#5B6FC0"/></svg>
+      <h2 style="font-size: 26px">تعثّر رسم صفحتين</h2>
+      <p style="font-size: 15px; line-height: 1.7; color: #B9BEDA">رسمنا 22 صفحة من 24. سنعيد المحاولة تلقائياً خلال دقائق، ولن تُحسب عليك أي محاولة.</p>
+      <button style="min-height: 56px; padding: 0 32px; border: 0; border-radius: 999px; background: #F2B33D; color: #0E1530; font-weight: 700; font-size: 17px">أعد المحاولة الآن</button>
+      <a href="#" style="min-height: 44px; display: flex; align-items: center; font-weight: 600; color: #F5C465">أبلغنا إن تكرر الأمر</a>
+    </div>
+  </div>
+
+  <!-- 6 OFFLINE -->
+  <div style="width: 390px; display: flex; flex-direction: column; gap: 12px">
+    <span style="font-size: 16px; font-weight: 700; color: #16204A">6 · بلا اتصال</span>
+    <div style="height: 844px; background: #FBF6EC; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; position: relative">
+      <div role="status" style="background: #1C2140; color: #FBF6EC; padding: 12px 16px; display: flex; gap: 10px; align-items: center; font-size: 14px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F5C465" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 8.5a15 15 0 0 1 20 0M5 12a10 10 0 0 1 14 0M8.5 15.5a5 5 0 0 1 7 0"/><path d="M3 3l18 18"/></svg><span style="flex-grow: 1">لا يوجد اتصال بالإنترنت</span><button style="min-height: 36px; padding: 0 12px; border: 0; border-radius: 999px; background: #22306A; color: #F5C465; font-weight: 700; font-size: 13px">إعادة</button></div>
+      <div style="padding: 20px 16px; display: flex; flex-direction: column; gap: 14px; opacity: 0.55">
+        <h2 style="font-size: 24px; color: #16204A">من بطل حكايتنا؟</h2>
+        <div style="height: 56px; border-radius: 14px; border: 1.5px solid #E4D6BC; background: #FFFFFF; display: flex; align-items: center; padding: 0 16px; font-size: 17px">ليان</div>
+        <div style="height: 64px; border-radius: 16px; border: 1.5px solid #E4D6BC; background: #FFFDF8"></div>
+      </div>
+      <div style="margin: 0 16px; padding: 14px 16px; border-radius: 16px; background: #E4E8F7; font-size: 14px; line-height: 1.6">حفظنا ما كتبته على جهازك. نكمل تلقائياً عند عودة الاتصال.</div>
+      <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 12px 16px 24px; border-top: 1px solid #E4D6BC"><button disabled style="width: 100%; min-height: 56px; border: 0; border-radius: 999px; background: #F3EAD8; color: #585C72; font-weight: 700; font-size: 17px">متابعة — بانتظار الاتصال</button></div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":2640,"height":960}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

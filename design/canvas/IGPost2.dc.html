@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>منشور إنستغرام 2 — قبل وبعد</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#FBF6EC;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#1C2140}
+p{margin:0}
+</style>
+</helmet>
+<div dir="rtl" style="width: 1080px; height: 1080px; position: relative; overflow: hidden; display: grid; grid-template-columns: 1fr 1fr">
+  <div style="background-color: #FBF6EC; background-image: radial-gradient(rgba(28,33,64,0.05) 1.5px, transparent 1.5px); background-size: 12px 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 40px; padding: 60px; position: relative">
+    <span style="position: absolute; top: 60px; right: 60px; font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-weight: 800; font-size: 44px; color: #16204A">قبل</span>
+    <div style="background: #FFFFFF; padding: 14px 14px 44px; box-shadow: 0 16px 36px rgba(22,32,74,0.2); transform: rotate(4deg)"><dc-import name="Kid" w="250" look="photo" hair-style="curly" skin="#8D5A3B" hint-size="250px,292px"></dc-import></div>
+    <div style="box-shadow: 0 16px 36px rgba(22,32,74,0.2); transform: rotate(-5deg)"><dc-import name="Drawing" w="280" variant="robot" hint-size="280px,280px"></dc-import></div>
+  </div>
+  <div style="background: #16204A; position: relative; display: flex; align-items: flex-end">
+    <dc-import name="Scene" w="540" h="1080" theme="space" hair-style="curly" skin="#8D5A3B" outfit="#7FA38A" pose="wave" companion="robot" kid-scale="0.5" hint-size="540px,1080px"></dc-import>
+    <span style="position: absolute; top: 60px; left: 60px; font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-weight: 800; font-size: 44px; color: #F2B33D">بعد</span>
+    <p style="position: absolute; top: 150px; left: 50px; right: 50px; font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-weight: 800; font-size: 64px; line-height: 1.2; color: #FBF6EC; text-align: center">كرم وقمّور<br><span style="font-size: 36px; color: #F5C465">في رحلة إلى القمر</span></p>
+  </div>
+  <div style="position: absolute; bottom: 48px; right: 60px; display: flex; align-items: center; gap: 10px"><svg width="52" height="52" viewBox="0 0 48 48" aria-hidden="true"><path d="M21.32 5.01 A17 17 0 1 0 38.12 27.41 A14 14 0 0 1 21.32 5.01 Z" fill="#F2B33D"/><path d="M34 8 C34.6 11.2 35.8 12.4 39 13 C35.8 13.6 34.6 14.8 34 18 C33.4 14.8 32.2 13.6 29 13 C32.2 12.4 33.4 11.2 34 8 Z" fill="#16204A"/><path d="M6 44 Q15 39.5 24 43.5 Q33 39.5 42 44" fill="none" stroke="#16204A" stroke-width="3" stroke-linecap="round"/></svg><span style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-weight: 800; font-size: 40px; color: #16204A">قمرة</span></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1080,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

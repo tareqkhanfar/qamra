@@ -3,7 +3,6 @@ import { Baloo_Bhaijaan_2, IBM_Plex_Sans_Arabic } from "next/font/google";
 import { locale as rootLocale } from "next/root-params";
 import { NextIntlClientProvider } from "next-intl";
 import { getTranslations } from "next-intl/server";
-import { Header } from "@/components/Header";
 import { brandName } from "@/config/brand";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
@@ -39,11 +38,8 @@ export default async function LocaleLayout({ children }: { children: React.React
   const locale = await rootLocale();
   return (
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} className={`${baloo.variable} ${plex.variable}`}>
-      <body className="bg-dots min-h-dvh antialiased">
-        <NextIntlClientProvider>
-          <Header />
-          <main className="mx-auto w-full max-w-6xl px-4 pb-16">{children}</main>
-        </NextIntlClientProvider>
+      <body className="min-h-dvh bg-paper antialiased">
+        <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
     </html>
   );

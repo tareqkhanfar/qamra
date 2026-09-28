@@ -3,7 +3,9 @@
     "title": "{brand} — Your child's story, by moonlight",
     "description": "A printed storybook where your child is the hero on every page, and their own drawing is their companion."
   },
-  "brand": { "tagline": "Your child's story, by moonlight." },
+  "brand": {
+    "tagline": "Your child's story, by moonlight."
+  },
   "nav": {
     "home": "Home",
     "login": "Sign in",
@@ -11,7 +13,18 @@
     "account": "My account",
     "logout": "Sign out",
     "switchLocale": "العربية",
-    "menu": "Menu"
+    "menu": "Menu",
+    "how": "How it works",
+    "themes": "Story worlds",
+    "pricing": "Pricing",
+    "kindergartens": "For kindergartens",
+    "faq": "FAQ",
+    "start": "Start the story",
+    "signIn": "Sign in",
+    "openMenu": "Menu",
+    "closeMenu": "Close menu",
+    "books": "My books",
+    "newBook": "New book"
   },
   "home": {
     "eyebrow": "Moonlit evenings",
@@ -47,18 +60,333 @@
     "greeting": "Hello {name}",
     "email": "Email",
     "role": "Account type",
-    "roles": { "parent": "Parent", "school_admin": "Kindergarten admin", "admin": "{brand} team" },
+    "roles": {
+      "parent": "Parent",
+      "school_admin": "Kindergarten admin",
+      "admin": "{brand} team"
+    },
     "booksTitle": "My books",
     "empty": "No books yet",
     "emptyHint": "Your child's first story starts with one photo.",
     "start": "Make the first book",
     "soon": "Coming soon",
-    "loading": "Getting your page ready…"
+    "loading": "Getting your page ready…",
+    "greetingMorning": "Good morning",
+    "greetingEvening": "Good evening",
+    "children": "My children",
+    "manage": "Manage",
+    "newChild": "New child",
+    "booksOf": "{name}'s books ({count})",
+    "orders": "My orders",
+    "allBooks": "My books ({count})",
+    "ordersEmpty": "No orders yet.",
+    "status": {
+      "draft": "Draft",
+      "generating": "Drawing",
+      "preview": "Awaiting order",
+      "approved": "Approved",
+      "ordered": "Printing",
+      "printed": "Delivered",
+      "failed": "Couldn't draw"
+    },
+    "profile": "Profile"
   },
   "errors": {
     "network": "We couldn't connect. Check your internet and try again.",
     "unknown": "Something went wrong. Please try again in a moment.",
     "notFoundTitle": "We couldn't find this page",
     "backHome": "Back to home"
+  },
+  "common": {
+    "ages": "Ages {min}–{max}",
+    "pages": "{count} pages",
+    "priceFrom": "From ₪{price}",
+    "priceSoon": "Prices coming soon",
+    "priceTbd": "Soon",
+    "chooseWorld": "Choose this world",
+    "comingSoon": "Coming soon",
+    "back": "Back",
+    "share": "Share",
+    "occasions": {
+      "first_day": "First day",
+      "graduation": "Graduation",
+      "new_sibling": "New baby",
+      "adventure": "Adventure",
+      "bedtime": "Bedtime",
+      "birthday": "Birthday",
+      "values": "Values"
+    },
+    "tags": {
+      "popular": "Most requested",
+      "new": "New",
+      "kindergarten": "For kindergartens",
+      "coming_soon": "Coming soon"
+    },
+    "products": {
+      "digital": "Digital copy",
+      "softcover": "Softcover",
+      "hardcover": "Hardcover"
+    },
+    "privacyNote": "Your child's photo is deleted automatically once the character is approved."
+  },
+  "landing": {
+    "tagline": "Your child's story, by moonlight",
+    "title1": "Your child the hero…",
+    "title2": "their drawing the friend",
+    "lead": "One photo from your phone and one drawing in their own colors: we turn them into a hero and a friend in an illustrated book with your child's name, printed to keep for years.",
+    "cta": "Make your child's story",
+    "samplesCta": "See real pages",
+    "privacyLine": "We delete your child's photo automatically once the character is approved",
+    "heroPhoto": "1 · Their photo",
+    "heroDrawing": "2 · Their drawing",
+    "heroBook": "3 · Together in their book",
+    "heroBookTitle": "Layan and her friend Nono",
+    "heroBookSub": "Under the moonlight",
+    "howEyebrow": "Just three steps",
+    "howTitle": "How {brand} makes your child's book",
+    "how": [
+      {
+        "title": "Tell us about your child",
+        "body": "Name, age, and what they love: space? animals? football? We build the story around them."
+      },
+      {
+        "title": "A photo and a drawing",
+        "body": "A clear photo of their face, and one of their drawings if you like: it becomes their friend in the story. You approve both characters before we start."
+      },
+      {
+        "title": "Receive the book",
+        "body": "Review the pages, change any words, then we print and deliver. Cash on delivery."
+      }
+    ],
+    "themesEyebrow": "Story worlds",
+    "themesTitle": "Pick the adventure that fits your child",
+    "allThemes": "All worlds",
+    "samplesEyebrow": "Inside the book",
+    "samplesTitle": "Pages from {name}'s story",
+    "prevPage": "Previous page",
+    "nextPage": "Next page",
+    "swipeHint": "Swipe to turn the pages",
+    "pageOf": "Page {n}",
+    "privacyTitle": "Your child's photo is safe with us",
+    "privacyLead": "We know you're sharing what's most precious to you. So {brand} is built on one simple rule: we use the photo only to draw the book, then we delete it.",
+    "privacyLink": "Read the privacy policy",
+    "privacy": [
+      {
+        "title": "Automatic deletion",
+        "body": "The original photo is deleted from our servers within 24 hours of approving your child's character."
+      },
+      {
+        "title": "Parent consent",
+        "body": "We never start without your explicit consent. In kindergartens, every parent consents personally."
+      },
+      {
+        "title": "No training on your children's photos",
+        "body": "We never use your children's photos to train any AI model."
+      },
+      {
+        "title": "Delete everything in one tap",
+        "body": "From your account you can permanently delete a child, their books and their data at any time."
+      }
+    ],
+    "pricingEyebrow": "Pricing",
+    "pricingTitle": "Choose the format",
+    "pricingLead": "The preview is free. You only pay when you love the book, cash on delivery.",
+    "mostChosen": "Most chosen",
+    "startNow": "Start now",
+    "plans": {
+      "digital": {
+        "desc": "A PDF book and a reader on your phone.",
+        "feats": ["Every page of the story", "Read on any device", "Share with family", "Upgrade to print later"]
+      },
+      "hardcover": {
+        "desc": "The gift that lasts. Thick paper, glossy cover.",
+        "feats": [
+          "Everything in digital",
+          "Premium print, 21×21 cm",
+          "A dedication page from you",
+          "Delivery to every city"
+        ]
+      },
+      "softcover": {
+        "desc": "Light and lovely for every night's reading.",
+        "feats": ["Everything in digital", "Color print, 21×21 cm", "Flexible soft cover", "Delivery to every city"]
+      }
+    },
+    "kgEyebrow": "For kindergartens and schools",
+    "kgTitle": "A graduation book for every child in the class, and every child is the hero",
+    "kgLead": "You upload the class list; we send consent links to parents, collect the photos, and print the whole class's books with a page for your kindergarten.",
+    "kgCta": "Request a demo",
+    "kgHow": "How does a class order work?",
+    "faqTitle": "FAQ",
+    "faqLead": "Didn't find your answer? Message us and we'll reply.",
+    "faqWhatsapp": "Message us on WhatsApp",
+    "faq": [
+      {
+        "q": "Will the drawing really look like my child?",
+        "a": "Before drawing the story we show you a \"character card\": your child from the front and in two poses. We don't continue until you say it looks like your child."
+      },
+      {
+        "q": "How long does delivery take?",
+        "a": "We send you the expected delivery date when you confirm the order; it depends on the city. You can follow your order step by step from your account."
+      },
+      {
+        "q": "What if I don't like the pages?",
+        "a": "You review every page before printing and can redraw any page. The preview is free, and you don't pay until you love the book."
+      },
+      {
+        "q": "Can I edit the story text?",
+        "a": "Yes. In the review step you can edit each page's text, or restore it in one tap."
+      },
+      {
+        "q": "Do you ship to Jordan?",
+        "a": "We're starting in Palestine; Jordan is coming soon."
+      }
+    ],
+    "stickyNote": "Free preview"
+  },
+  "footer": {
+    "about": "Printed picture books starring our children. From Palestine and Jordan.",
+    "product": "Product",
+    "samples": "Samples",
+    "forKg": "Kindergartens",
+    "gradBooks": "Graduation books",
+    "trust": "Trust",
+    "privacy": "Privacy & data deletion",
+    "contact": "Contact us",
+    "rights": "© {year} {brand}"
+  },
+  "themes": {
+    "title": "Story worlds",
+    "lead": "Each world is a complete, carefully written story your child enters as the hero, with their own name and face.",
+    "age": "Age:",
+    "all": "All",
+    "occasion": "Occasion",
+    "sort": "Sort:",
+    "sortPopular": "Most requested",
+    "sortAge": "Youngest first",
+    "empty": "No worlds match these filters yet.",
+    "reset": "Show all",
+    "unavailable": "We couldn't load the worlds right now. Please try again shortly."
+  },
+  "themeDetail": {
+    "learns": "What your child learns",
+    "peek": "A peek inside",
+    "peekCount": "{n} of {total}",
+    "formats": "Formats and prices",
+    "formatsNote": "You choose the format after previewing the book. The preview is free.",
+    "make": "Make this story",
+    "from": "From",
+    "soonTitle": "This world is being written",
+    "soonBody": "We're writing and illustrating its story now. Meanwhile, try one of the available worlds.",
+    "browse": "Browse available worlds"
+  },
+  "kg": {
+    "badge": "Schools",
+    "navHow": "How it works",
+    "navBook": "What's inside",
+    "navTrust": "Privacy",
+    "portal": "Kindergarten login",
+    "requestShort": "Request a demo",
+    "eyebrow": "Graduation books · End-of-year celebrations",
+    "title": "A graduation gift every child, and their family, keeps forever",
+    "lead": "An illustrated book for every child in the class, with them as the hero, plus a page for your kindergarten, the class photo and a word from the teacher. You upload the list; we do the rest.",
+    "request": "Request a demo",
+    "seeClassPage": "See the class page",
+    "flowEyebrow": "Class orders",
+    "flowTitle": "Five steps, and most of them are on us",
+    "who": {
+      "school": "Kindergarten",
+      "us": "{brand}",
+      "parents": "Parents"
+    },
+    "flow": [
+      {
+        "title": "Upload the class list",
+        "body": "An Excel file with the children's names and parents' numbers.",
+        "who": "school"
+      },
+      {
+        "title": "We send consent links",
+        "body": "A WhatsApp message to every parent with a private link for their child.",
+        "who": "us"
+      },
+      {
+        "title": "Parents upload photos",
+        "body": "Each parent consents, uploads a photo and approves their child's character.",
+        "who": "parents"
+      },
+      {
+        "title": "Pick the theme and your page",
+        "body": "Your logo, the class photo and the teacher's message.",
+        "who": "school"
+      },
+      {
+        "title": "We print and deliver",
+        "body": "A class-wide review, then printing and delivery, wrapped with each child's name.",
+        "who": "us"
+      }
+    ],
+    "insideTitle": "What's inside the graduation book?",
+    "inside": [
+      "The \"My Graduation Day\" story, with the child as the hero, by name and face.",
+      "Your kindergarten page: logo, class photo, and the teacher's message.",
+      "A \"My class friends\" page with every child's name.",
+      "A dedication page from the parents (optional).",
+      "Premium hardcover, 21×21 cm."
+    ],
+    "mockLogo": "School logo",
+    "mockName": "Butterflies Kindergarten · Moon Class",
+    "mockPhoto": "Class group photo",
+    "mockNote": "\"You were the stars of our class this year… we love you!\"",
+    "trust": [
+      {
+        "title": "Every parent consents",
+        "body": "The kindergarten never uploads children's photos. Each parent consents and uploads their child's photo through a private link."
+      },
+      {
+        "title": "Automatic deletion",
+        "body": "Original photos are deleted automatically once the characters are approved. The kindergarten sees the illustrations only."
+      },
+      {
+        "title": "One official invoice",
+        "body": "One invoice per class or kindergarten, and books delivered wrapped with each child's name."
+      }
+    ],
+    "formTitle": "Let's prepare your class's graduation books",
+    "formLead": "Leave your details and we'll contact you within one working day to show you a printed sample and class prices.",
+    "whatsapp": "WhatsApp",
+    "email": "Email",
+    "fields": {
+      "org": "Kindergarten or school name",
+      "city": "City",
+      "person": "Your name",
+      "role": "Your role",
+      "rolePh": "e.g. Kindergarten director",
+      "phone": "Mobile (WhatsApp)",
+      "count": "Expected number of children",
+      "date": "Graduation date",
+      "notes": "Notes (optional)"
+    },
+    "cities": [
+      "Ramallah & Al-Bireh",
+      "Nablus",
+      "Hebron",
+      "Bethlehem",
+      "Jenin",
+      "Tulkarm",
+      "Jerusalem",
+      "Amman",
+      "Other"
+    ],
+    "submit": "Send request",
+    "sending": "Sending…",
+    "done": "Request received! We'll contact you within one working day.",
+    "doneAgain": "Send another request"
+  },
+  "create": {
+    "title": "The story builder is being prepared",
+    "body": "We're building the steps now: your child's details, consent, photo, drawing, style, character, story, preview and order. It opens here very soon.",
+    "browse": "Browse story worlds",
+    "chosen": "Your chosen world: {name}"
   }
 }

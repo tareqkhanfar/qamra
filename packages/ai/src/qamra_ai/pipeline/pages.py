@@ -140,6 +140,9 @@ async def generate_page(rt: Runtime, cast: Cast, scene: ThemeScene, index: int, 
 
 async def generate_pages(rt: Runtime, cast: Cast, theme: Theme) -> tuple[PageResult, list[PageResult]]:
     """Cover + every theme page, at most `image_concurrency` in flight."""
+    if theme.cover is None:
+        raise ValueError(f"theme {theme.slug} has no cover scene")
+    cover_scene = theme.cover
     sem = asyncio.Semaphore(rt.settings.image_concurrency)
     total = len(theme.pages)
 
@@ -147,5 +150,5 @@ async def generate_pages(rt: Runtime, cast: Cast, theme: Theme) -> tuple[PageRes
         async with sem:
             return await generate_page(rt, cast, scene, index, total)
 
-    results = await asyncio.gather(one(theme.cover, 0), *(one(p, p.index) for p in theme.pages))
+    results = await asyncio.gather(one(cover_scene, 0), *(one(p, p.index) for p in theme.pages))
     return results[0], list(results[1:])

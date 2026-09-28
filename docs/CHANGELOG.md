@@ -1,5 +1,28 @@
 # Changelog
 
+## Design import + public site (2026-09-28)
+
+- Full design canvas imported into `design/canvas/` (77 artboards) and rendered for reference.
+- Web, built from the design:
+  - illustration parts ported (`Kid`, `Scene`, `Drawing`, `Companion`, `MoonPhase`);
+  - new landing page (desktop + mobile): hero, 3 steps, story worlds, sample-page carousel, privacy, pricing, kindergarten band, FAQ, footer, mobile sticky CTA;
+  - story-worlds catalog with age/occasion filters and sort;
+  - story detail page (mobile design + desktop);
+  - Kindergartens page with a working demo-request form;
+  - account page per MyBooks (children, tabs, books, empty state, mobile tab bar);
+  - site header (dark/light) with mobile menu, and footer.
+- Content:
+  - two new MVP stories (graduation, new sibling), 12 pages each, gendered Arabic + English;
+  - catalog metadata for all worlds;
+  - five coming-soon worlds from the design.
+- API:
+  - `GET /api/themes`, `GET /api/themes/{slug}` (preview, real sample pages), `GET /api/pricing`;
+  - `POST /api/leads`;
+  - `GET /api/children`, `GET /api/books`;
+  - migration `add leads`;
+  - themes seeded on deploy.
+- Tests: 105 Python tests. The browser e2e now also covers the catalog and the kindergarten form.
+
 ## Phase 1 — foundations (2026-09-28)
 
 - **Monorepo:** uv workspace (`packages/core`, `packages/ai`, `packages/pdf`, `apps/api`, `apps/worker`) and the Next.js app in `apps/web`.

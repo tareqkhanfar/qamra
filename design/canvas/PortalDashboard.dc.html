@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>بوابة الروضات — لوحة التحكم</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#FBF6EC;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#1C2140}
+h1,h2,h3{font-family:'Baloo Bhaijaan 2','Tajawal',system-ui,sans-serif;margin:0;font-weight:700}
+p{margin:0}
+button,input{font-family:inherit}
+a{color:#16204A;text-decoration:none}
+</style>
+</helmet>
+<div dir="rtl" style="width: 1440px; height: 1000px; background: #FBF6EC; display: flex">
+  <aside style="width: 264px; flex-shrink: 0; background: #FFFDF8; border-left: 1px solid #E4D6BC; padding: 24px 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 24px">
+    <div style="display: flex; align-items: center; gap: 8px; padding: 0 8px"><svg width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path d="M21.32 5.01 A17 17 0 1 0 38.12 27.41 A14 14 0 0 1 21.32 5.01 Z" fill="#F2B33D"/><path d="M34 8 C34.6 11.2 35.8 12.4 39 13 C35.8 13.6 34.6 14.8 34 18 C33.4 14.8 32.2 13.6 29 13 C32.2 12.4 33.4 11.2 34 8 Z" fill="#16204A"/><path d="M6 44 Q15 39.5 24 43.5 Q33 39.5 42 44" fill="none" stroke="#16204A" stroke-width="3" stroke-linecap="round"/></svg><span style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-weight: 800; font-size: 22px; color: #16204A">قمرة</span><span style="padding: 2px 8px; border-radius: 999px; background: #16204A; color: #FBF6EC; font-size: 11px; font-weight: 700">روضات</span></div>
+    <div style="display: flex; gap: 10px; align-items: center; padding: 12px; border-radius: 16px; background: #F3EAD8"><span style="width: 40px; height: 40px; border-radius: 12px; background: #FFFDF8; border: 1.5px dashed #9A620A; flex-shrink: 0"></span><div style="display: flex; flex-direction: column"><strong style="font-size: 14px">[اسم الروضة]</strong><span style="font-size: 12px; color: #585C72">موسم التخرّج 2027</span></div></div>
+    <nav aria-label="بوابة الروضة" style="display: flex; flex-direction: column; gap: 4px">
+      <sc-for list="{{nav}}" as="n" hint-placeholder-count="6"><a href="{{n.href}}" style="{{n.style}}">{{n.label}}</a></sc-for>
+    </nav>
+    <div style="margin-top: auto; display: flex; gap: 10px; align-items: center; padding: 8px"><span style="width: 36px; height: 36px; border-radius: 999px; background: #CBC1EA; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #16204A">س</span><div style="display: flex; flex-direction: column"><strong style="font-size: 14px">أ. سناء</strong><span style="font-size: 12px; color: #585C72">مديرة الروضة</span></div></div>
+  </aside>
+
+  <main style="flex-grow: 1; padding: 32px 40px; display: flex; flex-direction: column; gap: 24px">
+    <div style="display: flex; justify-content: space-between; align-items: center">
+      <div style="display: flex; flex-direction: column; gap: 4px"><h1 style="font-size: 32px; color: #16204A">صباح الخير، أ. سناء</h1><p style="font-size: 15px; color: #585C72">بقي <strong style="color: #9A620A">[عدد] يوماً</strong> على آخر موعد لرفع الصور (قبل الحفل بأسبوعين للطباعة).</p></div>
+      <a href="PortalImport.dc.html" style="min-height: 48px; padding: 0 22px; border-radius: 999px; background: #16204A; color: #FBF6EC; font-weight: 700; display: flex; align-items: center; gap: 8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>صف جديد</a>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px">
+      <sc-for list="{{kpis}}" as="k" hint-placeholder-count="4">
+        <div style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 10px">
+          <span style="font-size: 14px; color: #585C72; font-weight: 600">{{k.label}}</span>
+          <div style="display: flex; align-items: baseline; gap: 6px"><strong style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-size: 36px; color: #16204A">{{k.value}}</strong><span style="font-size: 15px; color: #585C72">{{k.of}}</span></div>
+          <div style="height: 6px; border-radius: 999px; background: #F3EAD8; display: flex"><div style="{{k.bar}}"></div></div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px">
+      <section style="display: flex; flex-direction: column; gap: 14px">
+        <h2 style="font-size: 22px; color: #16204A">الصفوف</h2>
+        <sc-for list="{{classes}}" as="c" hint-placeholder-count="3">
+          <a href="PortalInvite.dc.html" style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 20px; padding: 20px; display: grid; grid-template-columns: 1.2fr 2fr auto; gap: 24px; align-items: center">
+            <div style="display: flex; flex-direction: column; gap: 4px"><strong style="font-size: 18px">{{c.name}}</strong><span style="font-size: 13px; color: #585C72">{{c.meta}}</span></div>
+            <div style="display: flex; flex-direction: column; gap: 6px">
+              <div style="display: flex; height: 10px; border-radius: 999px; overflow: hidden; background: #F3EAD8"><div style="{{c.b1}}"></div><div style="{{c.b2}}"></div><div style="{{c.b3}}"></div></div>
+              <div style="display: flex; gap: 14px; font-size: 12px; color: #585C72"><span>معتمد {{c.a}}</span><span>صورة مرفوعة {{c.p}}</span><span>وافق {{c.c}}</span><span>بانتظار {{c.w}}</span></div>
+            </div>
+            <span style="{{c.chip}}">{{c.status}}</span>
+          </a>
+        </sc-for>
+      </section>
+
+      <section style="background: #16204A; color: #FBF6EC; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 14px; align-self: start">
+        <h2 style="font-size: 20px">المطلوب منك الآن</h2>
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <a href="PortalInvite.dc.html" style="display: flex; justify-content: space-between; align-items: center; min-height: 56px; padding: 0 16px; border-radius: 14px; background: #22306A; color: #FBF6EC"><span style="font-size: 15px">ذكّر 12 ولي أمر لم يردّوا</span><span style="color: #F5C465">←</span></a>
+          <a href="PortalClass.dc.html" style="display: flex; justify-content: space-between; align-items: center; min-height: 56px; padding: 0 16px; border-radius: 14px; background: #22306A; color: #FBF6EC"><span style="font-size: 15px">أضف كلمة المعلّمة لصف العصافير</span><span style="color: #F5C465">←</span></a>
+          <a href="PortalBatch.dc.html" style="display: flex; justify-content: space-between; align-items: center; min-height: 56px; padding: 0 16px; border-radius: 14px; background: #22306A; color: #FBF6EC"><span style="font-size: 15px">راجع 18 كتاباً جاهزاً</span><span style="color: #F5C465">←</span></a>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const items = [['لوحة التحكم', 'PortalDashboard.dc.html'], ['الصفوف والأهالي', 'PortalInvite.dc.html'], ['استيراد الأطفال', 'PortalImport.dc.html'], ['الثيم وصفحة الروضة', 'PortalClass.dc.html'], ['مراجعة الكتب', 'PortalBatch.dc.html'], ['الطلب والفاتورة', 'PortalOrder.dc.html']];
+    const active = 0;
+    const nav = items.map(([label, href], i) => ({ label, href, style: 'min-height:44px;padding:0 14px;border-radius:12px;display:flex;align-items:center;font-size:15px;' + (i === active ? 'background:#16204A;color:#FBF6EC;font-weight:700' : 'color:#1C2140') }));
+    const k = (label, value, of, pct, color) => ({ label, value, of, bar: 'border-radius:999px;width:' + pct + '%;background:' + color });
+    const kpis = [k('الأطفال', '48', 'في 3 صفوف', 100, '#16204A'), k('وافق الأهل', '36', 'من 48', 75, '#5B6FC0'), k('شخصيات معتمدة', '29', 'من 48', 60, '#2E7A52'), k('كتب جاهزة للطباعة', '18', 'من 48', 37, '#F2B33D')];
+    const seg = (n, total, color) => 'width:' + Math.round(n / total * 100) + '%;background:' + color;
+    const chip = (bg, fg) => 'padding:6px 12px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap;background:' + bg + ';color:' + fg;
+    const classes = [
+      { name: 'صف الفراشات', meta: '18 طفلاً · أ. رنا', a: 12, p: 3, c: 1, w: 2, status: 'بانتظار الأهالي', chip: chip('#FCEFD2', '#9A620A') },
+      { name: 'صف العصافير', meta: '16 طفلاً · أ. هبة', a: 10, p: 2, c: 2, w: 2, status: 'بانتظار الأهالي', chip: chip('#FCEFD2', '#9A620A') },
+      { name: 'صف النجوم', meta: '14 طفلاً · أ. لمى', a: 7, p: 2, c: 1, w: 4, status: 'أُرسلت الدعوات', chip: chip('#E4E8F7', '#16204A') }
+    ].map((c) => {
+      const t = c.a + c.p + c.c + c.w;
+      return { ...c, b1: seg(c.a, t, '#2E7A52'), b2: seg(c.p, t, '#A99BD6'), b3: seg(c.c, t, '#5B6FC0') };
+    });
+    return { nav, kpis, classes };
+  }
+}
+</script>
+</body>
+</html>

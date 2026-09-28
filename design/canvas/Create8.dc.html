@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>الخطوة 8 — نرسم الكتاب</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#0E1530;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#FBF6EC}
+h1,h2,h3{font-family:'Baloo Bhaijaan 2','Tajawal',system-ui,sans-serif;margin:0;font-weight:700;text-wrap:balance}
+p{margin:0;text-wrap:pretty}
+button,input{font-family:inherit}
+a{color:#F5C465;text-decoration:none}
+@keyframes hk-twinkle{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.8)}}
+@keyframes hk-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.hk-tw{animation:hk-twinkle 2.4s ease-in-out infinite;transform-origin:center;transform-box:fill-box}
+.hk-fl{animation:hk-float 3.2s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){.hk-tw,.hk-fl{animation:none}}
+</style>
+</helmet>
+<div dir="rtl" style="width: 390px; height: 844px; background: #16204A; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding: 24px 16px 32px; box-sizing: border-box; gap: 24px">
+  <svg width="390" height="844" viewBox="0 0 390 844" style="position: absolute; inset: 0" aria-hidden="true">
+    <g fill="#F2B33D"><path class="hk-tw" d="M60 90 C62 102 65 105 76 107 C65 109 62 112 60 124 C58 112 55 109 44 107 C55 105 58 102 60 90 Z"/><path class="hk-tw" style="animation-delay: .8s" d="M320 170 C321 177 323 179 330 180 C323 181 321 183 320 190 C319 183 317 181 310 180 C317 179 319 177 320 170 Z"/><circle class="hk-tw" style="animation-delay: 1.2s" cx="200" cy="60" r="3"/><circle cx="350" cy="420" r="2.5"/><circle class="hk-tw" style="animation-delay: .4s" cx="30" cy="460" r="3"/><circle cx="280" cy="80" r="2"/></g>
+    <path d="M0 720 C120 690 260 700 390 720 L390 844 L0 844 Z" fill="#22306A"/>
+  </svg>
+
+  <div style="position: relative; width: 100%; display: flex; justify-content: flex-start"><a href="Landing.dc.html" style="min-height: 44px; display: flex; align-items: center; font-weight: 600; color: #E4E8F7">إلى الرئيسية</a></div>
+
+  <div class="hk-fl" style="position: relative; margin-top: 24px">
+    <svg width="220" height="170" viewBox="0 0 220 170" aria-hidden="true">
+      <ellipse cx="110" cy="160" rx="90" ry="8" fill="#0E1530" opacity="0.5"/>
+      <path d="M110 58 C84 36 44 32 10 44 L10 144 C44 132 84 136 110 156 Z" fill="#FBF6EC"/>
+      <path d="M110 58 C136 36 176 32 210 44 L210 144 C176 132 136 136 110 156 Z" fill="#E4E8F7"/>
+      <path d="M30 70 C50 64 74 66 94 76 M30 88 C50 82 74 84 94 94 M30 106 C50 100 70 102 86 110" stroke="#C9BCA3" stroke-width="4" stroke-linecap="round" fill="none"/>
+      <path d="M110 4 C113 22 118 27 136 30 C118 33 113 38 110 56 C107 38 102 33 84 30 C102 27 107 22 110 4 Z" fill="#F2B33D"/>
+    </svg>
+  </div>
+
+  <div role="status" aria-live="polite" style="position: relative; display: flex; flex-direction: column; gap: 10px; align-items: center; text-align: center">
+    <h1 style="font-size: 30px">نرسم كتاب ليان</h1>
+    <p style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-size: 20px; font-weight: 600; color: #F5C465; min-height: 34px">{{message}}</p>
+  </div>
+
+  <div style="position: relative; width: 100%; display: flex; flex-direction: column; gap: 10px">
+    <div role="progressbar" aria-valuemin="0" aria-valuemax="24" aria-valuenow="14" aria-label="تقدّم الرسم" style="height: 14px; border-radius: 999px; background: #0E1530; display: flex; overflow: hidden"><div style="width: 58%; background: #F2B33D; border-radius: 999px"></div></div>
+    <div style="display: flex; justify-content: space-between; font-size: 14px; color: #B9BEDA"><span>14 من 24 صفحة</span><span>قرابة 6 دقائق</span></div>
+  </div>
+
+  <div style="position: relative; width: 100%; margin-top: auto; background: #22306A; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+    <strong style="font-size: 16px">لا داعي للانتظار هنا</strong>
+    <p style="font-size: 14px; line-height: 1.7; color: #B9BEDA">سنرسل لك رسالة عندما يجهز الكتاب للمعاينة.</p>
+    <label style="display: flex; align-items: center; justify-content: space-between; min-height: 44px; font-size: 15px">أرسلوا لي على واتساب <input type="checkbox" checked style="width: 22px; height: 22px; accent-color: #F2B33D"></label>
+    <span style="font-size: 13px; color: #B9BEDA; direction: ltr; text-align: right">059• ••• 214</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  componentDidMount() {
+    this.timer = setInterval(() => this.setState({ i: ((this.state && this.state.i) || 0) + 1 }), 3500);
+  }
+  componentWillUnmount() { clearInterval(this.timer); }
+  renderVals() {
+    const msgs = ['نختار ألوان سماء الليل…', 'نعلّم ليان كيف تطير بالصاروخ…', 'نرسم الكوكب الصغير الوحيد…', 'نرتّب الكلمات على الصفحات…', 'نضيف بعض النجوم الذهبية…'];
+    const i = (this.state && this.state.i) || 0;
+    return { message: msgs[i % msgs.length] };
+  }
+}
+</script>
+</body>
+</html>

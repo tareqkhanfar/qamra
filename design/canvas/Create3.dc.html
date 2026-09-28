@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>الخطوة 3 — صورة الطفل</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#FBF6EC;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#1C2140}
+h1,h2,h3{font-family:'Baloo Bhaijaan 2','Tajawal',system-ui,sans-serif;margin:0;font-weight:700;text-wrap:balance}
+p{margin:0;text-wrap:pretty}
+button,input{font-family:inherit}
+a{color:#16204A;text-decoration:none}
+</style>
+</helmet>
+<div dir="rtl" style="width: 390px; height: 1100px; background: #FBF6EC; position: relative; overflow: hidden; display: flex; flex-direction: column">
+  <header style="padding: 4px 16px 14px; display: flex; flex-direction: column; gap: 10px; border-bottom: 1px solid #E4D6BC">
+    <div style="height: 52px; display: flex; align-items: center; justify-content: space-between">
+      <a href="Landing.dc.html" aria-label="إغلاق" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16204A" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></a>
+      <strong style="font-size: 16px">كتاب ليان</strong>
+      <span style="width: 44px"></span>
+    </div>
+    <div style="display: flex; justify-content: space-between; font-size: 13px"><strong style="color: #16204A">صورة ليان</strong><span style="display: flex; align-items: center; gap: 6px; color: #585C72"><dc-import name="Moon" size="18" p="0.25" hint-size="18px,18px"></dc-import>الخطوة 3 من 12</span></div>
+    <div style="height: 6px; border-radius: 999px; background: #F3EAD8; display: flex"><div style="width: 25%; background: #16204A; border-radius: 999px"></div></div>
+  </header>
+
+  <main style="padding: 20px 16px 120px; display: flex; flex-direction: column; gap: 18px">
+    <div style="display: flex; flex-direction: column; gap: 4px"><h1 style="font-size: 26px; color: #16204A">صورة واحدة واضحة تكفي</h1><p style="font-size: 15px; color: #585C72">وجه ليان من الأمام، في ضوء النهار.</p></div>
+
+    <div style="position: relative; border-radius: 24px; overflow: hidden; background: #D9D3C7; height: 340px; display: flex; align-items: flex-end; justify-content: center">
+      <dc-import name="Kid" w="290" look="photo" hijab="{{true}}" hijab-color="#E9826B" outfit="#F2B33D" hint-size="290px,338px"></dc-import>
+      <svg width="358" height="340" viewBox="0 0 358 340" style="position: absolute; inset: 0" aria-hidden="true"><ellipse cx="179" cy="140" rx="84" ry="104" fill="none" stroke="#FFFDF8" stroke-width="3" stroke-dasharray="10 8"/></svg>
+      <span style="position: absolute; top: 14px; right: 14px; padding: 6px 12px; border-radius: 999px; background: rgba(14,21,48,0.8); color: #FBF6EC; font-size: 13px; font-weight: 600">دليل الوجه</span>
+      <button style="position: absolute; top: 10px; left: 10px; min-height: 44px; padding: 0 14px; border: 0; border-radius: 999px; background: rgba(251,246,236,0.95); color: #16204A; font-weight: 600; font-size: 14px">تغيير الصورة</button>
+    </div>
+
+    <div role="status" style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px">
+      <strong style="font-size: 15px">فحص الصورة</strong>
+      <sc-for list="{{checks}}" as="c" hint-placeholder-count="4">
+        <div style="display: flex; align-items: center; gap: 10px; font-size: 14px">
+          <span style="{{c.dot}}">{{c.icon}}</span><span style="flex-grow: 1">{{c.label}}</span>
+        </div>
+      </sc-for>
+      <p style="font-size: 13px; color: #9A620A; line-height: 1.6; padding-top: 4px; border-top: 1px dashed #E4D6BC">نصيحة: اقترب قليلاً حتى يملأ الوجه الإطار — سيبدو الرسم أقرب لليان.</p>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <strong style="font-size: 15px">أمثلة</strong>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
+        <sc-for list="{{examples}}" as="e" hint-placeholder-count="4">
+          <figure style="margin: 0; display: flex; flex-direction: column; gap: 6px; align-items: center">
+            <div style="{{e.box}}"><div style="{{e.inner}}"><dc-import name="Kid" w="70" look="photo" hijab="{{e.hijab}}" hair-style="curly" skin="#C98F63" hint-size="70px,82px"></dc-import></div><span style="{{e.badge}}">{{e.mark}}</span></div>
+            <figcaption style="font-size: 12px; text-align: center; color: #585C72; line-height: 1.4">{{e.label}}</figcaption>
+          </figure>
+        </sc-for>
+      </div>
+    </div>
+  </main>
+
+  <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 12px 16px 24px; background: rgba(251,246,236,0.97); border-top: 1px solid #E4D6BC; display: flex; gap: 8px">
+    <a href="Create2.dc.html" style="min-height: 56px; padding: 0 16px; color: #16204A; font-weight: 600; font-size: 16px; display: flex; align-items: center">رجوع</a>
+    <a href="CompIntro.dc.html" style="flex-grow: 1; min-height: 56px; border-radius: 999px; background: #16204A; color: #FBF6EC; font-weight: 700; font-size: 17px; display: flex; align-items: center; justify-content: center">استخدم هذه الصورة</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1100}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const ok = 'width:24px;height:24px;border-radius:999px;background:#DDEFE3;color:#2E7A52;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center';
+    const warn = 'width:24px;height:24px;border-radius:999px;background:#FCEFD2;color:#9A620A;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center';
+    const checks = [
+      { icon: '✓', dot: ok, label: 'وجه واحد فقط في الصورة' },
+      { icon: '✓', dot: ok, label: 'العينان ظاهرتان، بلا نظارة شمسية' },
+      { icon: '✓', dot: ok, label: 'إضاءة جيدة ووضوح كافٍ' },
+      { icon: '!', dot: warn, label: 'الوجه صغير قليلاً في الإطار' }
+    ];
+    const box = (good) => 'position:relative;width:100%;aspect-ratio:1;border-radius:12px;overflow:hidden;background:#D9D3C7;display:flex;align-items:flex-end;justify-content:center;border:2px solid ' + (good ? '#2E7A52' : '#B3261E');
+    const badge = (good) => 'position:absolute;top:4px;right:4px;width:20px;height:20px;border-radius:999px;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#FFFFFF;background:' + (good ? '#2E7A52' : '#B3261E');
+    const examples = [
+      { label: 'واضحة', mark: '✓', hijab: false, box: box(true), badge: badge(true), inner: '' },
+      { label: 'مظلمة', mark: '✕', hijab: false, box: box(false), badge: badge(false), inner: 'filter:brightness(0.45)' },
+      { label: 'ضبابية', mark: '✕', hijab: false, box: box(false), badge: badge(false), inner: 'filter:blur(3px)' },
+      { label: 'بعيدة', mark: '✕', hijab: false, box: box(false), badge: badge(false), inner: 'transform:scale(0.45);transform-origin:bottom center' }
+    ];
+    return { checks, examples };
+  }
+}
+</script>
+</body>
+</html>

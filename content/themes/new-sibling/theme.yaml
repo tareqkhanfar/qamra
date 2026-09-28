@@ -1,0 +1,146 @@
+slug: new-sibling
+version: 1
+title_ar: "{name} وضيفنا الصغير"
+title_en: "{name} and Our Little Guest"
+age_range: [3, 6]
+is_b2b: false
+active: true
+
+# The baby is "the little guest" (الضيف الصغير) throughout: the book never needs its gender.
+catalog:
+  status: available
+  name_ar: ضيفنا الصغير
+  name_en: Our Little Guest
+  tagline_ar: حين يصل مولود جديد، يصير طفلك البطل الكبير.
+  tagline_en: When a new baby arrives, your child becomes the big hero.
+  description_ar: >-
+    خبرٌ سعيد في البيت، وانتظار، ثم ضيف صغير يغيّر كل شيء. قصة دافئة تطمئن طفلك أن مكانه في قلب
+    العائلة لا يتغيّر، وتعلّمه كيف يصير الأخ الكبير أو الأخت الكبيرة.
+  description_en: >-
+    Happy news at home, a long wait, then a little guest who changes everything. A warm story that
+    reassures your child their place in the family never changes, and shows them how to be the big one.
+  occasions: [new_sibling, values]
+  values_ar: [الحب, المسؤولية, المشاركة]
+  values_en: [Love, Responsibility, Sharing]
+  rank: 30
+  art: {scene: night, outfit: "#A99BD6", hair_style: long, skin: "#F3CFAE", pose: front}
+  peek:
+    - {scene: garden, outfit: "#A99BD6", hair_style: long, skin: "#F3CFAE", pose: wave, kid_scale: 0.6}
+    - {scene: night, outfit: "#A99BD6", hair_style: long, skin: "#F3CFAE", pose: tilt, kid_scale: 0.55, companion: blob}
+    - {scene: night, outfit: "#A99BD6", hair_style: long, skin: "#F3CFAE", pose: front, kid_scale: 0.5}
+  sample_child: {name_ar: سلمى, name_en: Salma, gender: f}
+
+companion_slot: true
+default_companion:
+  name_ar: قَمّور
+  name_en: Qamour
+  description_en: >-
+    a tiny round glowing moon creature, soft pale-gold body shaped like a plump crescent,
+    two small dot eyes, rosy cheeks, stubby little arms, floats a few centimeters above the ground
+
+cover:
+  scene: >-
+    The hero sits on a soft sofa carefully holding a swaddled newborn baby, a parent's hand gently
+    supporting; a crescent moon glows through the window behind them.
+  companion_action: peeks over the sofa, smiling at the baby
+
+pages:
+  - index: 1
+    layout: illustration-textbox
+    beat: happy news
+    scene: >-
+      A warm living room. The hero jumps for joy next to their mother, who sits smiling on the sofa.
+    companion_action: jumps along, arms in the air
+    text_ar: "في البيت خبرٌ سعيد: ماما تنتظر ضيفًا صغيرًا! {فرحَ/فرحَتْ} {name} {وقفزَ/وقفزَتْ} عاليًا."
+    text_en: "Happy news at home: Mama is waiting for a little guest! {name} jumped for joy."
+  - index: 2
+    layout: illustration-textbox
+    beat: getting ready
+    scene: >-
+      The hero and their father put together a small white crib; the hero places a soft teddy bear inside.
+    companion_action: tests the tiny pillow by lying on it
+    text_ar: "{ساعدَ/ساعدَتْ} {name} بابا في تجهيز سريرٍ صغير، {واختارَ/واختارَتْ} له دبدوبًا ناعمًا."
+    text_en: "{name} helped Baba get a little crib ready and chose a soft teddy bear for it."
+  - index: 3
+    layout: illustration-textbox
+    beat: waiting
+    scene: >-
+      At the breakfast table, the hero marks another circle on a paper calendar, chin in hand, waiting.
+    companion_action: counts the days on its fingers
+    text_ar: "وكل صباح {كانَ/كانَتْ} {name} {يسألُ/تسألُ}: «متى يصل ضيفنا الصغير؟»"
+    text_en: "Every morning {name} asked: \"When will our little guest arrive?\""
+  - index: 4
+    layout: illustration-textbox
+    beat: arrival
+    scene: >-
+      The hero looks into a bassinet at a sleeping newborn wrapped in a soft blanket, full of wonder.
+    companion_action: peeks over the edge of the bassinet
+    text_ar: "وأخيرًا وصل! صغيرٌ جدًّا، وأصابعه مثل حبّات الحمّص."
+    text_en: "At last the little guest arrived! So tiny, with fingers like chickpeas."
+  - index: 5
+    layout: illustration-textbox
+    beat: feeling left out
+    scene: >-
+      The hero sits alone on the stairs hugging their knees; in the background the family gathers around
+      the baby.
+    companion_action: sits beside the hero, leaning on them
+    text_ar: "لكنّ {name} {شعرَ/شعرَتْ} بشيءٍ غريب: الجميع مشغولٌ بالضيف الجديد."
+    text_en: "But {name} felt something strange: everyone was busy with the new guest."
+  - index: 6
+    layout: illustration-textbox
+    beat: comfort
+    scene: >-
+      Close-up of the hero listening, eyes wide; a soft glowing heart shape floats in the background.
+    companion_action: whispers into the hero's ear
+    text_ar: "همس {companion}: «قلب ماما كبيرٌ جدًّا، وفيه مكانٌ {لكَ/لكِ} لا يتغيّر.»"
+    text_en: "{companion} whispered: \"Mama's heart is very big, and your place in it never changes.\""
+  - index: 7
+    layout: illustration-textbox
+    beat: mama's hug
+    scene: >-
+      The mother hugs the hero tightly on the sofa; both smile with closed eyes.
+    companion_action: floats nearby, glowing warmly
+    text_ar: "ثمّ ضمّت ماما {name} وقالت: «{أنتَ بطلي الكبير/أنتِ بطلتي الكبيرة}!»"
+    text_en: "Then Mama hugged {name} and said: \"You are my big hero!\""
+  - index: 8
+    layout: illustration-textbox
+    beat: helping
+    scene: >-
+      The hero carries a small stack of diapers and sings to the baby, who lies in a bouncer.
+    companion_action: plays a tiny drum to the song
+    text_ar: "{صارَ/صارَتْ} {name} {يساعدُ/تساعدُ}: {يُحضرُ/تُحضرُ} الحفّاضات، {ويغنّي/وتغنّي} للضيف الصغير."
+    text_en: "{name} started helping: fetching diapers and singing to the little guest."
+  - index: 9
+    layout: illustration-textbox
+    beat: the first smile
+    scene: >-
+      The baby in the bouncer smiles up at the hero, whose face lights up with surprise and joy.
+    companion_action: gasps with delight, hands on its cheeks
+    text_ar: "وذات صباح، نظر الضيف الصغير إلى {name}… وابتسم!"
+    text_en: "One morning, the little guest looked at {name}... and smiled!"
+  - index: 10
+    layout: illustration-textbox
+    beat: clapping lesson
+    scene: >-
+      On a colorful play mat, the hero claps in front of the baby, who waves tiny hands.
+    companion_action: claps along
+    text_ar: "{علّمَ/علّمَتْ} {name} الضيف الصغير كيف يصفّق: تك، تك، تك!"
+    text_en: "{name} taught the little guest how to clap: clap, clap, clap!"
+  - index: 11
+    layout: illustration-textbox
+    beat: the family photo
+    scene: >-
+      A family photo pose on the sofa: the hero sits in the middle, holding the baby's tiny hand, parents
+      on each side.
+    companion_action: pops into the corner of the photo
+    text_ar: "وفي صورة العائلة الجديدة، {جلسَ/جلسَتْ} {name} في الوسط، {فخورًا/فخورةً} بالضيف الصغير."
+    text_en: "In the new family photo, {name} sat in the middle, proud of the little guest."
+  - index: 12
+    layout: illustration-textbox
+    beat: good night
+    scene: >-
+      A nursery at night. The hero gently tucks a blanket over the baby in the crib; moonlight falls
+      through the window.
+    companion_action: glows softly beside the crib like a night light
+    text_ar: "وفي الليل، تحت ضوء القمر، {همسَ/همسَتْ} {name}: «تصبح على خير يا ضيفنا الصغير… أنا هنا دائمًا.»"
+    text_en: "That night, under the moonlight, {name} whispered: \"Good night, little guest... I'm always here.\""

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>كتاب الصف — مراجعة الصفحات</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#FBF6EC;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#1C2140}
+h1,h2,h3{font-family:'Baloo Bhaijaan 2','Tajawal',system-ui,sans-serif;margin:0;font-weight:700}
+p{margin:0}
+button{font-family:inherit}
+a{color:#16204A;text-decoration:none}
+</style>
+</helmet>
+<div dir="rtl" style="width: 1440px; height: 1000px; background: #FBF6EC; display: flex">
+  <main style="flex-grow: 1; padding: 24px 32px; display: flex; flex-direction: column; gap: 16px">
+    <div style="display: flex; justify-content: space-between; align-items: center">
+      <div style="display: flex; flex-direction: column; gap: 2px"><a href="ClassPlanner.dc.html" style="font-size: 13px; color: #585C72">→ مخطط الصفحات</a><h1 style="font-size: 28px; color: #16204A">مراجعة صفحات كتاب الصف</h1></div>
+      <div style="display: flex; gap: 10px; align-items: center"><span style="font-size: 14px; color: #585C72">22 معتمدة · 2 بحاجة لنظرة</span><button style="min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid #16204A; background: transparent; color: #16204A; font-weight: 700; font-size: 14px">أعد رسم المُعلَّم (2)</button><a href="ClassCovers.dc.html" style="min-height: 44px; padding: 0 20px; border-radius: 999px; background: #F2B33D; color: #0E1530; font-weight: 700; font-size: 14px; display: flex; align-items: center">اعتماد كل الصفحات</a></div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px">
+      <sc-for list="{{pages}}" as="p" hint-placeholder-count="12">
+        <figure style="{{p.card}}">
+          <div style="position: relative; border-radius: 10px; overflow: hidden"><dc-import name="Scene" w="160" h="160" theme="{{p.theme}}" pose="{{p.pose}}" companion="{{p.comp}}" hijab="{{p.hijab}}" skin="{{p.skin}}" outfit="{{p.outfit}}" kid-scale="0.5" hint-size="160px,160px"></dc-import><span style="{{p.flagStyle}}">{{p.flag}}</span></div>
+          <figcaption style="display: flex; flex-direction: column; gap: 6px">
+            <div style="display: flex; justify-content: space-between; font-size: 12px"><strong>ص {{p.n}}</strong><span style="color: #585C72">{{p.who}}</span></div>
+            <div style="display: flex; gap: 6px"><button aria-label="{{p.flagAria}}" style="flex: 1; min-height: 36px; border-radius: 10px; border: 1px solid #E4D6BC; background: #FFFFFF; font-size: 12px">علّم</button><button aria-label="{{p.regenAria}}" style="flex: 1; min-height: 36px; border-radius: 10px; border: 1px solid #E4D6BC; background: #FFFFFF; font-size: 12px">أعد الرسم</button></div>
+          </figcaption>
+        </figure>
+      </sc-for>
+    </div>
+  </main>
+  <aside aria-label="فحص التغطية" style="width: 300px; flex-shrink: 0; background: #FFFDF8; border-right: 1px solid #E4D6BC; padding: 24px 18px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px">
+    <h2 style="font-size: 20px; color: #16204A">فحص ظهور كل طفل</h2>
+    <div style="display: flex; gap: 10px; align-items: center; padding: 12px; border-radius: 14px; background: #DDEFE3"><span style="width: 28px; height: 28px; border-radius: 999px; background: #2E7A52; color: #FFFFFF; font-weight: 700; display: flex; align-items: center; justify-content: center">✓</span><span style="font-size: 14px; line-height: 1.5">16 طفلاً ظهروا 3 مرات، وتعرّفنا على وجوههم في كل مرة</span></div>
+    <div style="display: flex; gap: 10px; align-items: center; padding: 12px; border-radius: 14px; background: #FCEFD2"><span style="width: 28px; height: 28px; border-radius: 999px; background: #DB9A1F; color: #0E1530; font-weight: 700; display: flex; align-items: center; justify-content: center">!</span><span style="font-size: 14px; line-height: 1.5">تالا: ظهرت مرتين فقط — الصفحة 5 لم يُتعرّف عليها</span></div>
+    <div style="display: flex; gap: 10px; align-items: center; padding: 12px; border-radius: 14px; background: #FCEFD2"><span style="width: 28px; height: 28px; border-radius: 999px; background: #DB9A1F; color: #0E1530; font-weight: 700; display: flex; align-items: center; justify-content: center">!</span><span style="font-size: 14px; line-height: 1.5">حمزة: صاحبه غائب عن الصفحة 11</span></div>
+    <div style="height: 1px; background: #E4D6BC; margin: 6px 0"></div>
+    <span style="font-size: 13px; color: #585C72; line-height: 1.6">عند الضغط على اسم طفل، تُضاء صفحاته فقط في الشبكة.</span>
+  </aside>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const th = ['grad', 'garden', 'night', 'sea', 'space', 'garden', 'grad', 'night', 'space', 'sea', 'garden', 'grad'];
+    const who = ['يوسف، جنى، ليان', 'آدم، سلمى', 'كرم، ريم، زيد', 'مريم، عمر', 'تالا، يوسف', 'حمزة، علي', 'جنى، ليان، آدم', 'لين، نور', 'سيف، هيا', 'بشير، ريم', 'حمزة، مريم', 'الصف كله'];
+    const comps = ['blob', '', 'cat', '', 'robot', '', 'blob', 'cat', '', 'robot', '', 'blob'];
+    const skins = ['#C98F63', '#F3CFAE', '#8D5A3B', '#E8B98F'];
+    const outfits = ['#5B6FC0', '#E9826B', '#7FA38A', '#A99BD6'];
+    const flags = { 4: 'لم يُتعرّف على تالا', 10: 'الصاحب غائب' };
+    const pages = th.map((theme, i) => {
+      const f = flags[i];
+      return {
+        theme, n: String(i + 1), who: who[i], comp: comps[i], pose: i % 2 ? 'wave' : 'front', hijab: i % 3 === 1, skin: skins[i % 4], outfit: outfits[i % 4],
+        flag: f || '', flagStyle: f ? 'position:absolute;bottom:6px;left:6px;right:6px;padding:4px 8px;border-radius:8px;background:#B3261E;color:#FFFFFF;font-size:11px;font-weight:700;text-align:center' : 'display:none',
+        flagAria: 'علّم الصفحة ' + (i + 1), regenAria: 'أعد رسم الصفحة ' + (i + 1),
+        card: 'margin:0;display:flex;flex-direction:column;gap:8px;padding:8px;border-radius:14px;background:#FFFDF8;border:' + (f ? '2px solid #B3261E' : '1px solid #E4D6BC')
+      };
+    });
+    return { pages };
+  }
+}
+</script>
+</body>
+</html>

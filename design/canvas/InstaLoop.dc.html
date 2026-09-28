@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>فيديو إنستغرام المتكرر — لوحة القصة</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#FBF6EC;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#1C2140}
+h1,h2,h3{font-family:'Baloo Bhaijaan 2','Tajawal',system-ui,sans-serif;margin:0;font-weight:700}
+p{margin:0}
+</style>
+</helmet>
+<div dir="rtl" style="width: 1600px; height: 1000px; background: #FBF6EC; padding: 56px 64px; box-sizing: border-box; display: flex; flex-direction: column; gap: 32px">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end">
+    <div style="display: flex; flex-direction: column; gap: 6px"><h1 style="font-size: 40px; color: #16204A">ريلز متكرر: الرسمة تستيقظ</h1><p style="font-size: 17px; color: #585C72">8 ثوانٍ · 1080×1920 (يُقصّ 1080×1350 للمنشور) · يعود أوله إلى آخره بلا قطع</p></div>
+    <div style="display: flex; gap: 10px; font-size: 14px"><span style="padding: 6px 12px; border-radius: 999px; background: #16204A; color: #FBF6EC">بلا كلام — موسيقى هادئة</span><span style="padding: 6px 12px; border-radius: 999px; background: #FCEFD2; color: #9A620A; font-weight: 600">نص أقل من 15% من الإطار</span></div>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; flex-grow: 1">
+    <sc-for list="{{frames}}" as="f" hint-placeholder-count="5">
+      <article style="display: flex; flex-direction: column; gap: 12px">
+        <div style="{{f.stage}}">
+          <div style="{{f.dWrap}}"><dc-import name="Drawing" w="170" variant="blob" hint-size="170px,170px"></dc-import></div>
+          <div style="{{f.cWrap}}"><dc-import name="Companion" w="170" variant="blob" pose="{{f.pose}}" hint-size="170px,170px"></dc-import></div>
+          <div style="{{f.sWrap}}"><dc-import name="Scene" w="220" h="260" theme="night" hijab="{{true}}" hijab-color="#E9826B" outfit="#F2B33D" pose="wave" companion="blob" kid-scale="0.55" hint-size="220px,260px"></dc-import></div>
+          <div style="{{f.mWrap}}"><dc-import name="Moon" size="{{f.moonSize}}" p="{{f.moonP}}" lit="#F2B33D" dark="#22306A" hint-size="80px,80px"></dc-import></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: baseline"><strong style="font-size: 18px; color: #16204A">{{f.title}}</strong><span style="font-size: 14px; color: #9A620A; font-weight: 700; direction: ltr">{{f.time}}</span></div>
+        <p style="font-size: 14px; line-height: 1.65; color: #585C72">{{f.desc}}</p>
+      </article>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1600,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const stage = (bg) => 'position:relative;height:460px;border-radius:24px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:' + bg;
+    const hide = 'display:none';
+    const abs = 'position:absolute;';
+    const frames = [
+      { title: '1 · الرسمة على الطاولة', time: '0.0–1.5s', desc: 'لقطة علوية لرسمة بالألوان الخشبية على ورقة، ضوء دافئ. يد صغيرة تسحب القلم وتخرج من الكادر.', stage: stage('#E9DCC4'), dWrap: 'transform:rotate(-4deg);box-shadow:0 10px 20px rgba(0,0,0,0.2)', cWrap: hide, sWrap: hide, mWrap: hide, pose: 'front', moonSize: 80, moonP: 0 },
+      { title: '2 · يطلع القمر', time: '1.5–3.0s', desc: 'الإضاءة تخفت إلى ليل، هلال يطلع من أعلى الإطار ويكتمل تدريجياً. بريق ذهبي يمسح الرسمة من اليمين لليسار.', stage: stage('#16204A'), dWrap: 'transform:rotate(-4deg);filter:brightness(0.8)', cWrap: hide, sWrap: hide, mWrap: abs + 'top:26px;left:26px', pose: 'front', moonSize: 80, moonP: 0.5 },
+      { title: '3 · الرسمة تستيقظ', time: '3.0–5.0s', desc: 'خطوط الشمع ترتجف ثم تنعّم، الألوان تبقى كما هي. نونو يرمش بعينه الواحدة ويلوّح. (تحوّل morph واحد، لا قطع)', stage: stage('#16204A'), dWrap: hide, cWrap: '', sWrap: hide, mWrap: abs + 'top:26px;left:26px', pose: 'wave', moonSize: 80, moonP: 0.85 },
+      { title: '4 · يقفز إلى الكتاب', time: '5.0–7.0s', desc: 'نونو يقفز إلى صفحة كتاب مفتوح ويقف بجانب ليان تحت البدر. الكاميرا تسحب للخلف قليلاً.', stage: stage('#0E1530'), dWrap: hide, cWrap: hide, sWrap: 'border-radius:8px;overflow:hidden;box-shadow:0 12px 28px rgba(0,0,0,0.4)', mWrap: hide, pose: 'wave', moonSize: 80, moonP: 1 },
+      { title: '5 · الكتاب يُغلق = الشعار', time: '7.0–8.0s', desc: 'الكتاب يُغلق، يتحوّل غلافه إلى هلال شعار قمرة، ثم يعود الإطار إلى طاولة النهار — فيتكرّر المقطع بسلاسة.', stage: stage('#16204A'), dWrap: hide, cWrap: hide, sWrap: hide, mWrap: '', pose: 'front', moonSize: 180, moonP: 0.3 }
+    ];
+    return { frames };
+  }
+}
+</script>
+</body>
+</html>

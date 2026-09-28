@@ -14,7 +14,10 @@ from qamra_api.auth.router import router as auth_router
 from qamra_api.deps import require_client_header
 from qamra_api.errors import install_error_handlers
 from qamra_api.logging import RequestLogMiddleware
+from qamra_api.routers.family import router as family_router
 from qamra_api.routers.health import router as health_router
+from qamra_api.routers.leads import router as leads_router
+from qamra_api.routers.themes import router as themes_router
 from qamra_api.settings import ApiSettings, get_settings
 
 
@@ -64,4 +67,7 @@ def create_app(settings: ApiSettings | None = None, *, manage_resources: bool = 
     app.add_middleware(RequestLogMiddleware)
     app.include_router(health_router)
     app.include_router(auth_router)
+    app.include_router(themes_router)
+    app.include_router(leads_router)
+    app.include_router(family_router)
     return app

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>الإدارة — محرر الثيمات</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#FBF6EC;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#1C2140}
+h1,h2,h3{font-family:'Baloo Bhaijaan 2','Tajawal',system-ui,sans-serif;margin:0;font-weight:700}
+p{margin:0}
+button,input,textarea,select{font-family:inherit}
+a{color:#16204A;text-decoration:none}
+</style>
+</helmet>
+<div dir="rtl" style="width: 1440px; height: 1000px; background: #FBF6EC; display: flex">
+  <aside style="width: 232px; flex-shrink: 0; background: #0E1530; color: #FBF6EC; padding: 24px 14px; box-sizing: border-box; display: flex; flex-direction: column; gap: 24px">
+    <div style="display: flex; align-items: center; gap: 8px; padding: 0 8px"><span style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-weight: 800; font-size: 22px">قمرة</span><span style="padding: 2px 8px; border-radius: 999px; background: #F2B33D; color: #0E1530; font-size: 11px; font-weight: 700">إدارة</span></div>
+    <nav aria-label="الإدارة" style="display: flex; flex-direction: column; gap: 4px">
+      <sc-for list="{{nav}}" as="n" hint-placeholder-count="4"><a href="{{n.href}}" style="{{n.style}}">{{n.label}}</a></sc-for>
+    </nav>
+  </aside>
+
+  <main style="flex-grow: 1; padding: 24px 32px; display: flex; flex-direction: column; gap: 16px">
+    <div style="display: flex; justify-content: space-between; align-items: center">
+      <div style="display: flex; align-items: center; gap: 12px"><h1 style="font-size: 26px; color: #16204A">رحلة إلى القمر</h1><span style="padding: 4px 10px; border-radius: 999px; background: #DDEFE3; color: #2E7A52; font-size: 12px; font-weight: 700">منشور · v3</span><span style="padding: 4px 10px; border-radius: 999px; background: #FCEFD2; color: #9A620A; font-size: 12px; font-weight: 700">تعديلات غير منشورة</span></div>
+      <div style="display: flex; gap: 10px"><button style="min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid #16204A; background: transparent; color: #16204A; font-weight: 700; font-size: 14px">توليد كتاب تجريبي</button><button style="min-height: 44px; padding: 0 20px; border-radius: 999px; border: 0; background: #16204A; color: #FBF6EC; font-weight: 700; font-size: 14px">نشر v4</button></div>
+    </div>
+
+    <div style="display: flex; gap: 20px; flex-grow: 1; min-height: 0">
+      <nav aria-label="صفحات الثيم" style="width: 150px; flex-shrink: 0; display: flex; flex-direction: column; gap: 6px; overflow: hidden">
+        <sc-for list="{{pages}}" as="p" hint-placeholder-count="8">
+          <a href="#" style="{{p.style}}"><span style="font-weight: 700; width: 22px">{{p.n}}</span><span style="font-size: 12px; flex-grow: 1">{{p.layout}}</span></a>
+        </sc-for>
+        <button style="min-height: 44px; border-radius: 12px; border: 1.5px dashed #9A620A; background: transparent; color: #9A620A; font-weight: 700; font-size: 13px">+ صفحة</button>
+      </nav>
+
+      <section aria-label="تحرير الصفحة 7" style="flex-grow: 1; background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+        <div style="display: flex; justify-content: space-between; align-items: center"><h2 style="font-size: 20px; color: #16204A">الصفحة 7 — الوصول إلى القمر</h2>
+          <label style="display: flex; gap: 8px; align-items: center; font-size: 14px">التخطيط<select style="min-height: 40px; padding: 0 10px; border: 1.5px solid #E4D6BC; border-radius: 10px; background: #FFFFFF; font-size: 14px"><option>رسم كامل + صندوق نص</option><option>نصف ونصف</option><option>نص وزخرفة</option></select></label>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="scene" style="font-size: 14px; font-weight: 600">وصف المشهد (للرسم)</label><textarea id="scene" rows="4" dir="ltr" style="padding: 12px 14px; border: 1.5px solid #E4D6BC; border-radius: 12px; background: #FFFFFF; font-size: 14px; line-height: 1.6; font-family: ui-monospace, Menlo, monospace; resize: none; text-align: left">{hero} stepping out of a paper rocket onto a small lonely lavender planet, night sky with golden stars, hero waving, warm lamp-like light, {style}, square composition, space at top for text</textarea></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="tmpl" style="font-size: 14px; font-weight: 600">قالب النص</label><textarea id="tmpl" rows="3" style="padding: 12px 14px; border: 1.5px solid #16204A; border-radius: 12px; background: #FFFFFF; font-size: 16px; line-height: 1.7; resize: none; font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif">{الاسم} {وصل/وصلت} إلى القمر، {فوجد/فوجدت} كوكباً صغيراً يجلس وحيداً. {قال/قالت} له: "مرحباً! هل تلعب معي؟"</textarea>
+          <div style="display: flex; gap: 6px; flex-wrap: wrap"><span style="font-size: 12px; color: #585C72; align-self: center">متغيرات:</span><button style="min-height: 32px; padding: 0 10px; border-radius: 999px; border: 1px solid #E4D6BC; background: #F3EAD8; font-size: 12px">{الاسم}</button><button style="min-height: 32px; padding: 0 10px; border-radius: 999px; border: 1px solid #E4D6BC; background: #F3EAD8; font-size: 12px">{مذكر/مؤنث}</button><button style="min-height: 32px; padding: 0 10px; border-radius: 999px; border: 1px solid #E4D6BC; background: #F3EAD8; font-size: 12px">{الاهتمام}</button><button style="min-height: 32px; padding: 0 10px; border-radius: 999px; border: 1px solid #E4D6BC; background: #F3EAD8; font-size: 12px">{الروضة}</button></div>
+        </div>
+        <div style="display: flex; gap: 16px; font-size: 13px; color: #585C72; border-top: 1px dashed #E4D6BC; padding-top: 12px"><span>الحد الأقصى: 180 حرفاً</span><span>مساحة النص: أعلى الصفحة</span><span>مسموح للأهل بالتعديل: نعم</span></div>
+      </section>
+
+      <section aria-label="معاينة" style="width: 340px; flex-shrink: 0; display: flex; flex-direction: column; gap: 12px">
+        <div style="display: flex; gap: 6px"><button aria-pressed="true" style="flex: 1; min-height: 40px; border-radius: 10px; border: 0; background: #16204A; color: #FBF6EC; font-weight: 700; font-size: 13px">ليان (بنت)</button><button aria-pressed="false" style="flex: 1; min-height: 40px; border-radius: 10px; border: 1.5px solid #E4D6BC; background: #FFFDF8; font-size: 13px">يوسف (ولد)</button></div>
+        <div style="position: relative; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 24px rgba(22,32,74,0.15)">
+          <dc-import name="Scene" w="340" h="340" theme="space" pose="wave" hijab="{{true}}" hijab-color="#E9826B" outfit="#F2B33D" kid-scale="0.5" hint-size="340px,340px"></dc-import>
+          <div style="position: absolute; top: 16px; left: 16px; right: 16px; background: rgba(255,253,248,0.94); border-radius: 12px; padding: 12px 14px; font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-size: 15px; line-height: 1.7; font-weight: 600">ليان وصلت إلى القمر، فوجدت كوكباً صغيراً يجلس وحيداً. قالت له: "مرحباً! هل تلعب معي؟"</div>
+        </div>
+        <span style="font-size: 12px; color: #585C72">معاينة بالرسم المخزّن للثيم — التوليد الحقيقي من "كتاب تجريبي".</span>
+      </section>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const items = [['طابور الاعتماد', 'AdminQueue.dc.html'], ['الطلبات والطباعة', 'AdminOrders.dc.html'], ['محرر الثيمات', 'AdminThemes.dc.html'], ['التكلفة والتحويل', 'AdminMetrics.dc.html']];
+    const nav = items.map(([label, href], i) => ({ label, href, style: 'min-height:44px;padding:0 12px;border-radius:12px;display:flex;align-items:center;font-size:15px;' + (i === 2 ? 'background:#22306A;color:#FBF6EC;font-weight:700' : 'color:#B9BEDA') }));
+    const lay = ['غلاف', 'عنوان', 'كامل', 'نصف', 'كامل', 'نص', 'كامل', 'نصف', 'كامل', 'نص', 'كامل', 'نصف', 'كامل'];
+    const pages = lay.map((layout, i) => ({ n: String(i), layout, style: 'min-height:40px;padding:0 10px;border-radius:10px;display:flex;align-items:center;gap:6px;font-size:13px;' + (i === 7 ? 'background:#16204A;color:#FBF6EC' : 'background:#FFFDF8;border:1px solid #E4D6BC') }));
+    return { nav, pages };
+  }
+}
+</script>
+</body>
+</html>

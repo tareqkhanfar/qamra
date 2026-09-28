@@ -1,0 +1,26 @@
+slug: dream-boat
+version: 1
+title_ar: "{name} وقارب الأحلام"
+title_en: "{name} and the Dream Boat"
+age_range: [4, 8]
+is_b2b: false
+active: true
+companion_slot: true
+
+# Catalog entry from the design canvas. The story itself is not written yet (coming soon).
+catalog:
+  status: coming_soon
+  name_ar: قارب الأحلام
+  name_en: The Dream Boat
+  tagline_ar: مغامرة بحرية وصديق من الأعماق يحتاج المساعدة.
+  tagline_en: A sea adventure and a friend from the deep who needs help.
+  description_ar: >-
+    قارب صغير يبحر في حلم ليلي، ونداء خافت من تحت الموج. بطلنا يتعلّم أن الشجاعة الحقيقية هي أن تساعد من يحتاجك.
+  description_en: >-
+    A little boat sails through a night dream, and a faint call rises from under the waves. Real courage is helping someone who needs you.
+  occasions: [adventure]
+  values_ar: [الشجاعة, التعاون, الرحمة]
+  values_en: [Courage, Teamwork, Kindness]
+  rank: 60
+  planned_pages: 24
+  art: {scene: sea, outfit: "#E9826B", skin: "#F3CFAE", hijab: true, hijab_color: "#A99BD6", pose: front}

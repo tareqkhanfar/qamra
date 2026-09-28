@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>بوابة الروضات — الثيم وصفحة الروضة</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#FBF6EC;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#1C2140}
+h1,h2,h3{font-family:'Baloo Bhaijaan 2','Tajawal',system-ui,sans-serif;margin:0;font-weight:700}
+p{margin:0}
+button,input,textarea{font-family:inherit}
+a{color:#16204A;text-decoration:none}
+</style>
+</helmet>
+<div dir="rtl" style="width: 1440px; height: 1000px; background: #FBF6EC; display: flex">
+  <aside style="width: 264px; flex-shrink: 0; background: #FFFDF8; border-left: 1px solid #E4D6BC; padding: 24px 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 24px">
+    <div style="display: flex; align-items: center; gap: 8px; padding: 0 8px"><svg width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path d="M21.32 5.01 A17 17 0 1 0 38.12 27.41 A14 14 0 0 1 21.32 5.01 Z" fill="#F2B33D"/><path d="M34 8 C34.6 11.2 35.8 12.4 39 13 C35.8 13.6 34.6 14.8 34 18 C33.4 14.8 32.2 13.6 29 13 C32.2 12.4 33.4 11.2 34 8 Z" fill="#16204A"/><path d="M6 44 Q15 39.5 24 43.5 Q33 39.5 42 44" fill="none" stroke="#16204A" stroke-width="3" stroke-linecap="round"/></svg><span style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-weight: 800; font-size: 22px; color: #16204A">قمرة</span><span style="padding: 2px 8px; border-radius: 999px; background: #16204A; color: #FBF6EC; font-size: 11px; font-weight: 700">روضات</span></div>
+    <div style="display: flex; gap: 10px; align-items: center; padding: 12px; border-radius: 16px; background: #F3EAD8"><span style="width: 40px; height: 40px; border-radius: 12px; background: #FFFDF8; border: 1.5px dashed #9A620A; flex-shrink: 0"></span><div style="display: flex; flex-direction: column"><strong style="font-size: 14px">[اسم الروضة]</strong><span style="font-size: 12px; color: #585C72">موسم التخرّج 2027</span></div></div>
+    <nav aria-label="بوابة الروضة" style="display: flex; flex-direction: column; gap: 4px">
+      <sc-for list="{{nav}}" as="n" hint-placeholder-count="6"><a href="{{n.href}}" style="{{n.style}}">{{n.label}}</a></sc-for>
+    </nav>
+  </aside>
+
+  <main style="flex-grow: 1; padding: 32px 40px; display: grid; grid-template-columns: 1.15fr 1fr; gap: 32px">
+    <div style="display: flex; flex-direction: column; gap: 20px">
+      <div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 14px; color: #585C72">الصفوف › صف الفراشات</span><h1 style="font-size: 30px; color: #16204A">حكاية الصف وصفحة الروضة</h1></div>
+
+      <section style="display: flex; flex-direction: column; gap: 10px">
+        <h2 style="font-size: 18px; color: #16204A">1. حكاية الصف</h2>
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+          <sc-for list="{{themes}}" as="t" hint-placeholder-count="3">
+            <label style="{{t.card}}">
+              <input type="radio" name="class-theme" style="position: absolute; opacity: 0; width: 1px; height: 1px">
+              <div style="border-radius: 12px; overflow: hidden"><dc-import name="Scene" w="180" h="120" theme="{{t.theme}}" cap="{{t.cap}}" hair-style="curly" skin="#C98F63" outfit="#7FA38A" kid-scale="0.85" hint-size="180px,120px"></dc-import></div>
+              <strong style="font-size: 15px">{{t.name}}</strong>
+              <span style="font-size: 12px; color: #585C72">{{t.meta}}</span>
+            </label>
+          </sc-for>
+        </div>
+      </section>
+
+      <section style="display: flex; flex-direction: column; gap: 12px">
+        <h2 style="font-size: 18px; color: #16204A">2. صفحة الروضة</h2>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+          <label style="border: 2px dashed #9A620A; border-radius: 16px; background: #FCEFD2; min-height: 96px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 14px"><strong style="color: #16204A">شعار الروضة</strong><span style="color: #585C72; font-size: 12px">PNG بخلفية شفافة</span><input type="file" style="position: absolute; opacity: 0; width: 1px; height: 1px"></label>
+          <div style="border: 1.5px solid #E4D6BC; border-radius: 16px; background: #FFFDF8; min-height: 96px; display: flex; align-items: center; gap: 12px; padding: 12px"><div style="width: 72px; height: 72px; border-radius: 10px; background: #E4E8F7; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #33458F; text-align: center">صورة الصف</div><div style="display: flex; flex-direction: column; gap: 4px"><strong style="font-size: 14px; direction: ltr; text-align: right">class-photo.jpg</strong><a href="#" style="font-size: 13px; color: #9A620A; font-weight: 600">استبدال</a></div></div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="t-msg" style="font-size: 14px; font-weight: 600">كلمة المعلّمة</label><textarea id="t-msg" rows="4" style="padding: 12px 14px; border: 1.5px solid #16204A; border-radius: 14px; background: #FFFFFF; font-size: 15px; line-height: 1.7; resize: none">أحبائي الفراشات، كنتم نور صفّنا طوال السنة. أنتم جاهزون للطيران إلى الصف الأول. سأشتاق لكم كثيراً. — أ. رنا</textarea><span style="font-size: 12px; color: #585C72; direction: ltr; text-align: left">112 / 220</span></div>
+        <label style="display: flex; gap: 10px; align-items: center; min-height: 44px; font-size: 14px"><input type="checkbox" checked style="width: 20px; height: 20px; accent-color: #16204A">أضف صفحة "أصدقائي في الصف" بأسماء كل الأطفال</label>
+      </section>
+
+      <div style="display: flex; gap: 12px; margin-top: auto"><a href="PortalBatch.dc.html" style="min-height: 52px; padding: 0 28px; border-radius: 999px; background: #16204A; color: #FBF6EC; font-weight: 700; display: flex; align-items: center">حفظ وبدء رسم كتب المعتمدين (12)</a><a href="#" style="min-height: 52px; padding: 0 16px; font-weight: 600; display: flex; align-items: center">حفظ كمسودة</a></div>
+    </div>
+
+    <aside aria-label="معاينة صفحة الروضة" style="background: #F3EAD8; border-radius: 28px; padding: 28px; display: flex; flex-direction: column; gap: 14px; align-items: center">
+      <span style="font-size: 13px; font-weight: 600; color: #585C72; align-self: flex-start">معاينة مباشرة · 21×21 سم</span>
+      <div style="width: 440px; height: 440px; background: #FFFDF8; border-radius: 6px; box-shadow: 0 16px 40px rgba(22,32,74,0.18); padding: 32px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 14px; position: relative; overflow: hidden">
+        <svg width="440" height="60" viewBox="0 0 440 60" style="position: absolute; top: 0; left: 0" aria-hidden="true"><path d="M0 10 Q220 60 440 10" fill="none" stroke="#9A620A" stroke-width="1.5"/><path d="M40 18 L56 20 L46 40 Z" fill="#E9826B"/><path d="M110 30 L128 32 L116 52 Z" fill="#7FA38A"/><path d="M200 36 L218 36 L208 56 Z" fill="#F2B33D"/><path d="M290 32 L308 30 L300 50 Z" fill="#A99BD6"/><path d="M370 22 L386 18 L382 38 Z" fill="#E9826B"/></svg>
+        <div style="margin-top: 36px; width: 52px; height: 52px; border-radius: 999px; border: 2px dashed #9A620A"></div>
+        <strong style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-size: 22px; color: #16204A">صف الفراشات · 2027</strong>
+        <div style="width: 100%; height: 150px; border-radius: 10px; background: #E4E8F7; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #33458F">صورة الصف</div>
+        <p style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-size: 14px; line-height: 1.7; text-align: center; color: #1C2140">أحبائي الفراشات، كنتم نور صفّنا طوال السنة. أنتم جاهزون للطيران إلى الصف الأول.</p>
+      </div>
+    </aside>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const items = [['لوحة التحكم', 'PortalDashboard.dc.html'], ['الصفوف والأهالي', 'PortalInvite.dc.html'], ['استيراد الأطفال', 'PortalImport.dc.html'], ['الثيم وصفحة الروضة', 'PortalClass.dc.html'], ['مراجعة الكتب', 'PortalBatch.dc.html'], ['الطلب والفاتورة', 'PortalOrder.dc.html']];
+    const nav = items.map(([label, href], i) => ({ label, href, style: 'min-height:44px;padding:0 14px;border-radius:12px;display:flex;align-items:center;font-size:15px;' + (i === 3 ? 'background:#16204A;color:#FBF6EC;font-weight:700' : 'color:#1C2140') }));
+    const card = (on) => 'position:relative;display:flex;flex-direction:column;gap:6px;padding:8px 8px 12px;border-radius:16px;background:#FFFDF8;border:' + (on ? '3px solid #F2B33D' : '1.5px solid #E4D6BC');
+    const themes = [
+      { theme: 'grad', cap: true, name: 'يوم تخرّجي', meta: '24 صفحة · مقترح', card: card(true) },
+      { theme: 'space', cap: false, name: 'رحلة إلى القمر', meta: '24 صفحة', card: card(false) },
+      { theme: 'garden', cap: false, name: 'موسم الزيتون', meta: '20 صفحة', card: card(false) }
+    ];
+    return { nav, themes };
+  }
+}
+</script>
+</body>
+</html>

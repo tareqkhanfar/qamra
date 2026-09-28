@@ -5,8 +5,29 @@ title_en: "{name}'s First Day at Kindergarten"
 age_range: [3, 7]
 is_b2b: false
 active: true
-occasion: first_day_school
-values_ar: [الشجاعة, الصداقة, الفضول]
+catalog:
+  status: available
+  name_ar: أوّل يوم في الروضة
+  name_en: First Day at Kindergarten
+  tagline_ar: خطوة كبيرة في يوم جديد، وصاحب صغير يقول "أنا معك".
+  tagline_en: A big step on a new day, with a little friend who says "I'm with you".
+  description_ar: >-
+    من صباح الحقيبة الجديدة إلى حكاية القمر في آخر النهار: يعيش طفلك يومه الأول في الروضة،
+    يتغلّب على خوفه الصغير، ويكسب أصدقاء جددًا، ويعود إلى البيت متحمّسًا للغد.
+  description_en: >-
+    From the new-backpack morning to the moon story at the end of the day, your child lives their
+    first kindergarten day, beats a little fear, makes new friends, and comes home excited for tomorrow.
+  occasions: [first_day, values]
+  values_ar: [الشجاعة, الصداقة, الفضول]
+  values_en: [Courage, Friendship, Curiosity]
+  tag: new
+  rank: 10
+  art: {scene: garden, outfit: "#E9826B", skin: "#C98F63", hair_style: curly, pose: wave}
+  peek:
+    - {scene: garden, outfit: "#E9826B", skin: "#C98F63", hair_style: curly, pose: front, kid_scale: 0.6}
+    - {scene: night, outfit: "#E9826B", skin: "#C98F63", hair_style: curly, pose: tilt, kid_scale: 0.6, companion: blob}
+    - {scene: garden, outfit: "#E9826B", skin: "#C98F63", hair_style: curly, pose: wave, kid_scale: 0.5}
+  sample_child: {name_ar: يوسف, name_en: Yousef, gender: m}
 
 companion_slot: true
 default_companion:

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>ستوري إنستغرام 2 — الرسمة تتحوّل</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#FBF6EC;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#1C2140}
+p{margin:0}
+</style>
+</helmet>
+<div dir="rtl" style="width: 1080px; height: 1920px; position: relative; overflow: hidden; background: #FBF6EC; display: flex; flex-direction: column">
+  <div style="height: 960px; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 36px; background-image: radial-gradient(rgba(28,33,64,0.05) 2px, transparent 2px); background-size: 16px 16px">
+    <span style="padding: 12px 28px; border-radius: 999px; background: #16204A; color: #FBF6EC; font-size: 38px; font-weight: 700">رسمة سلمى</span>
+    <div style="transform: rotate(4deg); box-shadow: 0 20px 44px rgba(22,32,74,0.25); position: relative"><dc-import name="Drawing" w="560" variant="cat" hint-size="560px,560px"></dc-import><span style="position: absolute; top: -18px; left: 210px; width: 140px; height: 38px; background: rgba(242,179,61,0.55); transform: rotate(-3deg)"></span></div>
+  </div>
+  <div style="height: 960px; position: relative; background: #16204A; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 30px">
+    <svg width="1080" height="80" viewBox="0 0 1080 80" style="position: absolute; top: -40px; left: 0" aria-hidden="true"><path d="M0 40 C180 0 360 80 540 40 S900 0 1080 40 L1080 80 L0 80 Z" fill="#16204A"/></svg>
+    <div style="width: 560px; height: 560px; border-radius: 999px; background: #22306A; display: flex; align-items: center; justify-content: center; position: relative"><dc-import name="Companion" w="500" variant="cat" pose="wave" hint-size="500px,500px"></dc-import></div>
+    <p style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-weight: 800; font-size: 80px; color: #FBF6EC; position: relative">…صار مشمش!</p>
+    <span style="font-size: 36px; color: #F5C465; position: relative">قمرة · حكاية طفلك تحت ضوء القمر</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1080,"height":1920}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

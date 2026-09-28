@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>بوابة الروضات — الطلب والفاتورة</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#FBF6EC;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#1C2140}
+h1,h2,h3{font-family:'Baloo Bhaijaan 2','Tajawal',system-ui,sans-serif;margin:0;font-weight:700}
+p{margin:0}
+button,input{font-family:inherit}
+a{color:#16204A;text-decoration:none}
+</style>
+</helmet>
+<div dir="rtl" style="width: 1440px; height: 1000px; background: #FBF6EC; display: flex">
+  <aside style="width: 264px; flex-shrink: 0; background: #FFFDF8; border-left: 1px solid #E4D6BC; padding: 24px 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 24px">
+    <div style="display: flex; align-items: center; gap: 8px; padding: 0 8px"><svg width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path d="M21.32 5.01 A17 17 0 1 0 38.12 27.41 A14 14 0 0 1 21.32 5.01 Z" fill="#F2B33D"/><path d="M34 8 C34.6 11.2 35.8 12.4 39 13 C35.8 13.6 34.6 14.8 34 18 C33.4 14.8 32.2 13.6 29 13 C32.2 12.4 33.4 11.2 34 8 Z" fill="#16204A"/><path d="M6 44 Q15 39.5 24 43.5 Q33 39.5 42 44" fill="none" stroke="#16204A" stroke-width="3" stroke-linecap="round"/></svg><span style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-weight: 800; font-size: 22px; color: #16204A">قمرة</span><span style="padding: 2px 8px; border-radius: 999px; background: #16204A; color: #FBF6EC; font-size: 11px; font-weight: 700">روضات</span></div>
+    <div style="display: flex; gap: 10px; align-items: center; padding: 12px; border-radius: 16px; background: #F3EAD8"><span style="width: 40px; height: 40px; border-radius: 12px; background: #FFFDF8; border: 1.5px dashed #9A620A; flex-shrink: 0"></span><div style="display: flex; flex-direction: column"><strong style="font-size: 14px">[اسم الروضة]</strong><span style="font-size: 12px; color: #585C72">موسم التخرّج 2027</span></div></div>
+    <nav aria-label="بوابة الروضة" style="display: flex; flex-direction: column; gap: 4px">
+      <sc-for list="{{nav}}" as="n" hint-placeholder-count="6"><a href="{{n.href}}" style="{{n.style}}">{{n.label}}</a></sc-for>
+    </nav>
+  </aside>
+
+  <main style="flex-grow: 1; padding: 32px 40px; display: grid; grid-template-columns: 1.4fr 1fr; gap: 32px; align-items: start">
+    <div style="display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end"><h1 style="font-size: 30px; color: #16204A">الطلب والفاتورة</h1><a href="#" style="min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid #E4D6BC; background: #FFFDF8; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/></svg>تحميل PDF</a></div>
+      <article aria-label="الفاتورة" style="background: #FFFFFF; border: 1px solid #E4D6BC; border-radius: 8px; padding: 40px; display: flex; flex-direction: column; gap: 24px; box-shadow: 0 8px 24px rgba(22,32,74,0.08)">
+        <header style="display: flex; justify-content: space-between; align-items: flex-start">
+          <div style="display: flex; flex-direction: column; gap: 4px"><span style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-weight: 800; font-size: 26px; color: #16204A">قمرة</span><span style="font-size: 12px; color: #585C72">[اسم الشركة المسجّلة] · [الرقم الضريبي]</span></div>
+          <div style="display: flex; flex-direction: column; gap: 4px; text-align: left"><strong style="font-size: 18px">فاتورة</strong><span style="font-size: 13px; color: #585C72; direction: ltr">INV-[رقم]</span><span style="font-size: 13px; color: #585C72">[التاريخ]</span></div>
+        </header>
+        <div style="display: flex; flex-direction: column; gap: 2px; font-size: 14px"><span style="color: #585C72">إلى</span><strong>[اسم الروضة]</strong><span>[العنوان] · [الرقم الضريبي إن وجد]</span></div>
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px">
+          <thead><tr style="border-bottom: 2px solid #16204A"><th style="text-align: right; padding: 10px 0; font-weight: 600">البند</th><th style="text-align: center; padding: 10px 0; font-weight: 600">الكمية</th><th style="text-align: left; padding: 10px 0; font-weight: 600">سعر الوحدة</th><th style="text-align: left; padding: 10px 0; font-weight: 600">المجموع</th></tr></thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid #E4D6BC"><td style="padding: 12px 0">كتاب "يوم تخرّجي" — غلاف مقوّى 21×21، صف الفراشات</td><td style="text-align: center">17</td><td style="text-align: left">[السعر]</td><td style="text-align: left">[المجموع]</td></tr>
+            <tr style="border-bottom: 1px solid #E4D6BC"><td style="padding: 12px 0">صفحة الروضة وصفحة أصدقاء الصف</td><td style="text-align: center">1</td><td style="text-align: left">مشمولة</td><td style="text-align: left">0</td></tr>
+            <tr style="border-bottom: 1px solid #E4D6BC"><td style="padding: 12px 0">تغليف باسم كل طفل وتوصيل للروضة</td><td style="text-align: center">1</td><td style="text-align: left">[السعر]</td><td style="text-align: left">[المجموع]</td></tr>
+          </tbody>
+        </table>
+        <div style="align-self: flex-start; width: 300px; display: flex; flex-direction: column; gap: 8px; font-size: 14px">
+          <div style="display: flex; justify-content: space-between"><span>المجموع الفرعي</span><span>[المبلغ] ₪</span></div>
+          <div style="display: flex; justify-content: space-between"><span>خصم الصف (أكثر من 15)</span><span>− [المبلغ] ₪</span></div>
+          <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 17px; border-top: 2px solid #16204A; padding-top: 8px"><span>المستحق</span><span>[المبلغ] ₪</span></div>
+        </div>
+      </article>
+    </div>
+
+    <aside style="display: flex; flex-direction: column; gap: 16px; padding-top: 60px">
+      <div style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+        <div style="display: flex; justify-content: space-between; align-items: center"><h2 style="font-size: 20px; color: #16204A">ملخص الطلب</h2><span style="padding: 4px 10px; border-radius: 999px; background: #FCEFD2; color: #9A620A; font-size: 12px; font-weight: 700">بانتظار التأكيد</span></div>
+        <div style="display: flex; flex-direction: column; gap: 10px; font-size: 15px">
+          <div style="display: flex; justify-content: space-between"><span style="color: #585C72">الكتب المعتمدة</span><strong>17 من 18</strong></div>
+          <div style="display: flex; justify-content: space-between"><span style="color: #585C72">لم يكتمل</span><strong>1 (تالا — رقم ناقص)</strong></div>
+          <div style="display: flex; justify-content: space-between"><span style="color: #585C72">التسليم المتوقّع</span><strong>[التاريخ]</strong></div>
+          <div style="display: flex; justify-content: space-between"><span style="color: #585C72">موعد الحفل</span><strong>[التاريخ]</strong></div>
+        </div>
+        <fieldset style="border: 0; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px">
+          <legend style="font-size: 14px; font-weight: 600; margin-bottom: 8px">طريقة الدفع</legend>
+          <label style="display: flex; gap: 10px; align-items: center; min-height: 48px; padding: 0 14px; border-radius: 14px; border: 2px solid #16204A; background: #E4E8F7; font-size: 15px"><input type="radio" name="pay" checked style="width: 20px; height: 20px; accent-color: #16204A">تحويل بنكي</label>
+          <label style="display: flex; gap: 10px; align-items: center; min-height: 48px; padding: 0 14px; border-radius: 14px; border: 1.5px solid #E4D6BC; font-size: 15px"><input type="radio" name="pay" style="width: 20px; height: 20px; accent-color: #16204A">نقداً عند التسليم</label>
+        </fieldset>
+        <button style="min-height: 56px; border: 0; border-radius: 999px; background: #F2B33D; color: #0E1530; font-weight: 700; font-size: 17px">أكّد الطلب وأرسله للطباعة</button>
+        <span style="font-size: 13px; color: #585C72; text-align: center; line-height: 1.6">يمكن إضافة كتاب تالا لاحقاً ضمن نفس الشحنة حتى [التاريخ].</span>
+      </div>
+    </aside>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const items = [['لوحة التحكم', 'PortalDashboard.dc.html'], ['الصفوف والأهالي', 'PortalInvite.dc.html'], ['استيراد الأطفال', 'PortalImport.dc.html'], ['الثيم وصفحة الروضة', 'PortalClass.dc.html'], ['مراجعة الكتب', 'PortalBatch.dc.html'], ['الطلب والفاتورة', 'PortalOrder.dc.html']];
+    const nav = items.map(([label, href], i) => ({ label, href, style: 'min-height:44px;padding:0 14px;border-radius:12px;display:flex;align-items:center;font-size:15px;' + (i === 5 ? 'background:#16204A;color:#FBF6EC;font-weight:700' : 'color:#1C2140') }));
+    return { nav };
+  }
+}
+</script>
+</body>
+</html>

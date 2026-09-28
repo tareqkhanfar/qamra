@@ -1,0 +1,26 @@
+slug: olive-season
+version: 1
+title_ar: "{name} في موسم الزيتون"
+title_en: "{name} and the Olive Season"
+age_range: [3, 6]
+is_b2b: false
+active: true
+companion_slot: true
+
+# Catalog entry from the design canvas. The story itself is not written yet (coming soon).
+catalog:
+  status: coming_soon
+  name_ar: موسم الزيتون
+  name_en: Olive Season
+  tagline_ar: يوم مع الجدّ بين أشجار الزيتون، وسرّ الحبّة الذهبية.
+  tagline_en: A day with Grandpa among the olive trees, and the secret of the golden olive.
+  description_ar: >-
+    في صباح موسم القطاف يحمل بطلنا سلّته الصغيرة ويمشي خلف جدّه بين الأشجار، فيكتشف أن لكل حبّة زيتون حكاية.
+  description_en: >-
+    On a harvest morning our hero carries a little basket behind Grandpa among the trees, and discovers every olive has a story.
+  occasions: [values]
+  values_ar: [حب الأرض, الصبر, احترام الكبار]
+  values_en: [Love of the land, Patience, Respect for elders]
+  rank: 50
+  planned_pages: 20
+  art: {scene: garden, outfit: "#5B6FC0", skin: "#C98F63", hair_style: curly, pose: front}

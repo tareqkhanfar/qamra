@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>الكتاب — نصف رسم ونصف نص</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#FFFDF8;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#1C2140}
+p{margin:0}
+</style>
+</helmet>
+<div dir="rtl" style="width: 816px; height: 816px; position: relative; overflow: hidden; background: #FFFDF8; display: flex; flex-direction: column">
+  <dc-import name="Scene" w="816" h="480" theme="night" pose="wave" hijab="{{true}}" hijab-color="#E9826B" outfit="#F2B33D" kid-scale="0.62" hint-size="816px,480px"></dc-import>
+  <svg width="816" height="40" viewBox="0 0 816 40" style="margin-top: -20px; position: relative" aria-hidden="true"><path d="M0 20 C140 0 260 40 408 20 S680 0 816 20 L816 40 L0 40 Z" fill="#FFFDF8"/></svg>
+  <div style="flex-grow: 1; padding: 8px 80px 64px; display: flex; flex-direction: column; justify-content: center; gap: 16px; text-align: center; background-color: #FFFDF8; background-image: radial-gradient(rgba(28,33,64,0.035) 1px, transparent 1px); background-size: 7px 7px">
+    <p style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-weight: 600; font-size: 30px; line-height: 1.75">لوّحت ليان للنجمة الصغيرة وقالت: "لا تخافي، سأبقى معك حتى يطلع الصباح."</p>
+    <span style="font-size: 18px; color: #585C72">12</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":816,"height":816}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>صوت أهلي — دعوة الجدّة للتسجيل</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#FBF6EC;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#1C2140}
+h1,h2,h3{font-family:'Baloo Bhaijaan 2','Tajawal',system-ui,sans-serif;margin:0;font-weight:700}
+p{margin:0}
+button,input{font-family:inherit}
+a{color:#16204A;text-decoration:none}
+</style>
+</helmet>
+<div dir="rtl" style="width: 390px; height: 900px; background: #FBF6EC; position: relative; overflow: hidden; display: flex; flex-direction: column">
+  <header style="height: 60px; padding: 0 8px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #E4D6BC">
+    <a href="VoiceRecord.dc.html" aria-label="رجوع" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16204A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
+    <h1 style="font-size: 20px; color: #16204A">ادعُ العائلة لتسجّل</h1>
+  </header>
+
+  <main style="padding: 20px 16px 24px; display: flex; flex-direction: column; gap: 18px">
+    <p style="font-size: 15px; line-height: 1.7; color: #585C72">ترسل رابطاً على واتساب. يفتحه الجدّ أو الجدّة ويسجّلان مباشرة — بلا حساب ولا كلمة سر.</p>
+
+    <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+      <legend style="font-size: 15px; font-weight: 600; margin-bottom: 8px">من تدعو؟</legend>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+        <sc-for list="{{who}}" as="w" hint-placeholder-count="4"><button aria-pressed="{{w.on}}" style="{{w.style}}">{{w.label}}</button></sc-for>
+      </div>
+    </fieldset>
+
+    <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+      <legend style="font-size: 15px; font-weight: 600; margin-bottom: 8px">أي صفحات؟</legend>
+      <label style="display: flex; gap: 10px; align-items: center; min-height: 52px; padding: 0 14px; border-radius: 14px; border: 2px solid #16204A; background: #E4E8F7; font-size: 15px"><input type="radio" name="pages" checked style="width: 20px; height: 20px; accent-color: #16204A">كل الكتاب (24 صفحة)</label>
+      <label style="display: flex; gap: 10px; align-items: center; min-height: 52px; padding: 0 14px; border-radius: 14px; border: 1.5px solid #E4D6BC; background: #FFFDF8; font-size: 15px"><input type="radio" name="pages" style="width: 20px; height: 20px; accent-color: #16204A">صفحات أختارها</label>
+    </fieldset>
+
+    <div style="background: #DCF1E4; border-radius: 16px 16px 4px 16px; padding: 14px 16px; font-size: 15px; line-height: 1.7">يا ستّي، ليان عندها كتاب جديد وصاحبها نونو فيه! سجّلي لها الحكاية بصوتك من هنا: qamra.app/v/…</div>
+
+    <button style="min-height: 56px; border: 0; border-radius: 999px; background: #2E7A52; color: #FFFFFF; font-weight: 700; font-size: 17px; display: flex; align-items: center; justify-content: center; gap: 8px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.6-5.2A8.5 8.5 0 1 1 21 12z"/></svg>أرسل على واتساب</button>
+    <button style="min-height: 48px; border-radius: 999px; border: 2px solid #16204A; background: transparent; color: #16204A; font-weight: 700; font-size: 15px">نسخ الرابط</button>
+
+    <section style="display: flex; flex-direction: column; gap: 8px">
+      <h2 style="font-size: 16px; color: #16204A">الدعوات المرسلة</h2>
+      <div style="display: flex; justify-content: space-between; align-items: center; min-height: 52px; padding: 0 14px; border-radius: 14px; background: #FFFDF8; border: 1px solid #E4D6BC"><strong style="font-size: 15px">ستّي أم أحمد</strong><span style="font-size: 13px; color: #2E7A52; font-weight: 700">سجّلت 6 من 24</span></div>
+      <div style="display: flex; justify-content: space-between; align-items: center; min-height: 52px; padding: 0 14px; border-radius: 14px; background: #FFFDF8; border: 1px solid #E4D6BC"><strong style="font-size: 15px">سيدي أبو سامي</strong><span style="font-size: 13px; color: #9A620A; font-weight: 700">لم يفتح الرابط بعد</span></div>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const st = (on) => 'min-height:56px;border-radius:16px;font-size:16px;' + (on ? 'border:2px solid #16204A;background:#E4E8F7;color:#16204A;font-weight:700' : 'border:1.5px solid #E4D6BC;background:#FFFDF8;color:#1C2140');
+    const who = [['ستّي', true], ['سيدي', false], ['خالة / عمّة', false], ['شخص آخر', false]].map(([label, on]) => ({ label, on: on ? 'true' : 'false', style: st(on) }));
+    return { who };
+  }
+}
+</script>
+</body>
+</html>

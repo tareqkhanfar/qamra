@@ -2,6 +2,23 @@
 
 Newest first. Each entry: date — decision — why.
 
+## 2026-09-28 — Design import + public site
+
+- **The full design canvas is in `design/canvas/`**: 77 `.dc.html` artboards and `canvas.json`, taken from the Claude Design artifact Tareq shared. Screens are implemented from these files. The design's illustration parts (`Kid`, `Scene`, `Drawing`, `Companion`, `Moon`) are ported 1:1 to React SVG components (`apps/web/src/components/art`) and stand in for art until real generated characters exist.
+- **No bracket placeholders ship** (design README rule):
+  - Prices come from `PRICE_*_ILS`; when unset, the site says "الأسعار قريباً" (prices coming soon).
+  - Testimonials stay hidden until there are real quotes.
+  - Contact numbers and emails and the company name come from `NEXT_PUBLIC_*` and are hidden when unset.
+  - The privacy card states the real rule: photos are deleted within 24 hours of character approval.
+  - FAQ answers only claim what the product actually does.
+- **Story worlds:**
+  - Available: the three MVP stories from the spec. «أوّل يوم في الروضة» (first day) and two new ones, «يوم تخرّجي» (graduation) and «ضيفنا الصغير» (new sibling), each with 12 pages and masculine/feminine variants. The new-sibling story calls the baby «الضيف الصغير» throughout, so the book never needs the baby's gender.
+  - Coming soon: the five other worlds in the design catalog (moon trip, olive season, dream boat, star keeper, neighborhood friends) are catalog-only entries. Their stories are not written yet.
+  - Each theme's `catalog` block in `theme.yaml` holds the name, tagline, description, occasions, values, tag, rank and illustration settings. Themes are seeded into the DB on every deploy (`migrate` runs `qamra seed-themes`).
+- **Landing samples are real product text**: "صفحات من حكاية يوسف" shows pages 1/4/8/12 of the first-day story, rendered for the sample child.
+- **Kindergarten demo requests** are stored in a `leads` table, rate-limited to 5 per IP per hour. An admin view comes in Phase 3.
+- **`/create` is a placeholder page** until the create flow (Phase 2) lands. Every "start" button already points to it.
+
 ## 2026-09-28 — Phase 1
 
 - **Job queue: RQ 2** (not Celery). It needs only Redis, has few moving parts and is easy to debug. RQ 2.12 has a built-in `rq cron` scheduler, which covers the periodic privacy cleanup without Celery beat. Jobs are plain functions: the api enqueues them and `apps/worker` runs them. Queues, in priority order: `generation`, `pdf`, `maintenance`, `default`.

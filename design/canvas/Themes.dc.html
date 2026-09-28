@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>قمرة — عوالم الحكايات</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#FBF6EC;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#1C2140}
+h1,h2,h3,h4{font-family:'Baloo Bhaijaan 2','Tajawal',system-ui,sans-serif;margin:0;font-weight:700;text-wrap:balance}
+p{margin:0;text-wrap:pretty}
+button,input,select{font-family:inherit}
+a{color:#16204A;text-decoration:none}a:hover{color:#9A620A}
+</style>
+</helmet>
+<div dir="rtl" style="width: 1440px; height: 1600px; background: #FBF6EC; display: flex; flex-direction: column">
+  <nav aria-label="الرئيسية" style="height: 88px; padding: 0 96px; display: flex; align-items: center; gap: 40px; border-bottom: 1px solid #E4D6BC; background: #FFFDF8">
+    <a href="Landing.dc.html" style="display: flex; align-items: center; gap: 10px"><svg width="38" height="38" viewBox="0 0 48 48" aria-hidden="true"><path d="M21.32 5.01 A17 17 0 1 0 38.12 27.41 A14 14 0 0 1 21.32 5.01 Z" fill="#F2B33D"/><path d="M34 8 C34.6 11.2 35.8 12.4 39 13 C35.8 13.6 34.6 14.8 34 18 C33.4 14.8 32.2 13.6 29 13 C32.2 12.4 33.4 11.2 34 8 Z" fill="#16204A"/><path d="M6 44 Q15 39.5 24 43.5 Q33 39.5 42 44" fill="none" stroke="#16204A" stroke-width="3" stroke-linecap="round"/></svg><span style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-weight: 800; font-size: 28px; color: #16204A">قمرة</span></a>
+    <div style="display: flex; gap: 28px; font-size: 16px; flex-grow: 1"><a href="Landing.dc.html#how">كيف تعمل</a><a href="Themes.dc.html" style="font-weight: 700; color: #9A620A" aria-current="page">العوالم</a><a href="Landing.dc.html#pricing">الأسعار</a><a href="Kindergartens.dc.html">للروضات والمدارس</a></div>
+    <a href="MyBooks.dc.html" style="font-weight: 600; min-height: 44px; display: flex; align-items: center">حسابي</a>
+    <a href="Create1.dc.html" style="min-height: 48px; padding: 0 22px; border-radius: 999px; background: #F2B33D; color: #0E1530; font-weight: 700; display: flex; align-items: center">ابدأ الحكاية</a>
+  </nav>
+
+  <header style="padding: 56px 96px 32px; display: flex; flex-direction: column; gap: 12px">
+    <h1 style="font-size: 52px; color: #16204A">عوالم الحكايات</h1>
+    <p style="font-size: 18px; color: #585C72; line-height: 1.7; max-width: 640px">كل عالم قصة كاملة مكتوبة بعناية ومرسومة يدوياً، يدخلها طفلك بطلاً باسمه وملامحه.</p>
+  </header>
+
+  <div style="padding: 0 96px 32px; display: flex; gap: 24px; align-items: center; flex-wrap: wrap">
+    <div role="group" aria-label="العمر" style="display: flex; gap: 8px; align-items: center">
+      <span style="font-size: 14px; font-weight: 600; color: #585C72">العمر:</span>
+      <button aria-pressed="true" style="min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid #16204A; background: #16204A; color: #FBF6EC; font-weight: 600; font-size: 15px">الكل</button>
+      <button aria-pressed="false" style="min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid #E4D6BC; background: #FFFDF8; color: #1C2140; font-size: 15px">2–3</button>
+      <button aria-pressed="false" style="min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid #E4D6BC; background: #FFFDF8; color: #1C2140; font-size: 15px">4–6</button>
+      <button aria-pressed="false" style="min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid #E4D6BC; background: #FFFDF8; color: #1C2140; font-size: 15px">7–9</button>
+    </div>
+    <div style="width: 1px; height: 32px; background: #E4D6BC"></div>
+    <div role="group" aria-label="المناسبة" style="display: flex; gap: 8px; align-items: center">
+      <button aria-pressed="false" style="min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid #E4D6BC; background: #FFFDF8; font-size: 15px">مغامرة</button>
+      <button aria-pressed="false" style="min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid #E4D6BC; background: #FFFDF8; font-size: 15px">قبل النوم</button>
+      <button aria-pressed="false" style="min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid #E4D6BC; background: #FFFDF8; font-size: 15px">عيد ميلاد</button>
+      <button aria-pressed="false" style="min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid #E4D6BC; background: #FFFDF8; font-size: 15px">تخرّج</button>
+      <button aria-pressed="false" style="min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid #E4D6BC; background: #FFFDF8; font-size: 15px">قيم وأخلاق</button>
+    </div>
+    <label style="margin-right: auto; display: flex; align-items: center; gap: 8px; font-size: 14px; color: #585C72">ترتيب:
+      <select style="min-height: 44px; padding: 0 12px; border-radius: 12px; border: 1.5px solid #E4D6BC; background: #FFFDF8; font-size: 15px; color: #1C2140"><option>الأكثر طلباً</option><option>الأحدث</option></select>
+    </label>
+  </div>
+
+  <div style="padding: 0 96px 96px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px">
+    <sc-for list="{{themes}}" as="t" hint-placeholder-count="6">
+      <a href="ThemeDetail.dc.html" style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 24px; overflow: hidden; display: flex; flex-direction: column; color: #1C2140">
+        <div style="position: relative">
+          <dc-import name="Scene" w="400" h="260" theme="{{t.theme}}" outfit="{{t.outfit}}" hijab="{{t.hijab}}" hair-style="{{t.hair}}" skin="{{t.skin}}" cap="{{t.cap}}" pose="{{t.pose}}" kid-scale="0.72" hint-size="400px,260px"></dc-import>
+          <span style="{{t.tagStyle}}">{{t.tag}}</span>
+        </div>
+        <div style="padding: 22px; display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; gap: 8px; font-size: 13px; font-weight: 600"><span style="padding: 4px 10px; border-radius: 999px; background: #E4E8F7; color: #16204A">{{t.age}}</span><span style="padding: 4px 10px; border-radius: 999px; background: #F3EAD8; color: #1C2140">{{t.pages}} صفحة</span></div>
+          <h3 style="font-size: 24px; color: #16204A">{{t.name}}</h3>
+          <p style="font-size: 15px; line-height: 1.65; color: #585C72">{{t.line}}</p>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px"><strong style="font-size: 16px">يبدأ من [السعر] ₪</strong><span style="font-weight: 700; color: #9A620A; font-size: 15px">اختر هذا العالم ←</span></div>
+        </div>
+      </a>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1600}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const tagOn = 'position:absolute;top:14px;right:14px;padding:6px 12px;border-radius:999px;background:#F2B33D;color:#0E1530;font-size:13px;font-weight:700';
+    const off = 'display:none';
+    const themes = [
+      { theme: 'space', name: 'رحلة إلى القمر', age: '4–7 سنوات', pages: 24, line: 'صاروخ من ورق يأخذ بطلنا إلى كوكب ينتظر صديقاً.', outfit: '#A99BD6', hijab: false, hair: 'short', skin: '#E8B98F', cap: false, pose: 'wave', tag: 'الأكثر طلباً', tagStyle: tagOn },
+      { theme: 'garden', name: 'موسم الزيتون', age: '3–6 سنوات', pages: 20, line: 'يوم مع الجدّ بين أشجار الزيتون، وسرّ الحبة الذهبية.', outfit: '#5B6FC0', hijab: false, hair: 'curly', skin: '#C98F63', cap: false, pose: 'front', tag: '', tagStyle: off },
+      { theme: 'sea', name: 'قارب الأحلام', age: '4–8 سنوات', pages: 24, line: 'مغامرة بحرية وصديق من الأعماق يحتاج المساعدة.', outfit: '#E9826B', hijab: true, hair: 'short', skin: '#F3CFAE', cap: false, pose: 'front', tag: '', tagStyle: off },
+      { theme: 'night', name: 'حارس النجوم', age: '3–6 سنوات', pages: 20, line: 'قصة قبل النوم عن الشجاعة واللطف مع نجمة صغيرة.', outfit: '#F2B33D', hijab: false, hair: 'long', skin: '#E8B98F', cap: false, pose: 'tilt', tag: '', tagStyle: off },
+      { theme: 'grad', name: 'يوم تخرّجي', age: '5–6 سنوات', pages: 24, line: 'ذكريات سنة الروضة وحلم الصف الأول. مع صفحة للصف.', outfit: '#7FA38A', hijab: true, hair: 'short', skin: '#E8B98F', cap: true, pose: 'wave', tag: 'للروضات', tagStyle: tagOn.replace('#F2B33D', '#16204A').replace('#0E1530', '#FBF6EC') },
+      { theme: 'garden', name: 'أصدقاء الحارة', age: '3–5 سنوات', pages: 16, line: 'قطّة وعصفور وسلحفاة يعلّمون بطلنا معنى المشاركة.', outfit: '#E9826B', hijab: false, hair: 'short', skin: '#8D5A3B', cap: false, pose: 'wave', tag: 'جديد', tagStyle: tagOn.replace('#F2B33D', '#DDEFE3').replace('#0E1530', '#2E7A52') }
+    ];
+    return { themes };
+  }
+}
+</script>
+</body>
+</html>

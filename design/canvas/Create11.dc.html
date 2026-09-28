@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>الخطوة 11 — تم الطلب</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#FBF6EC;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#1C2140}
+h1,h2,h3{font-family:'Baloo Bhaijaan 2','Tajawal',system-ui,sans-serif;margin:0;font-weight:700;text-wrap:balance}
+p{margin:0;text-wrap:pretty}
+button,input{font-family:inherit}
+a{color:#16204A;text-decoration:none}
+</style>
+</helmet>
+<div dir="rtl" style="width: 390px; height: 900px; background: #FBF6EC; position: relative; overflow: hidden; display: flex; flex-direction: column">
+  <section style="background: #16204A; color: #FBF6EC; padding: 56px 16px 40px; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; position: relative; overflow: hidden; border-radius: 0 0 32px 32px">
+    <svg width="390" height="300" viewBox="0 0 390 300" style="position: absolute; inset: 0" aria-hidden="true"><g fill="#F2B33D"><path d="M60 50 C62 62 65 65 76 67 C65 69 62 72 60 84 C58 72 55 69 44 67 C55 65 58 62 60 50 Z"/><path d="M330 90 C331 97 333 99 340 100 C333 101 331 103 330 110 C329 103 327 101 320 100 C327 99 329 97 330 90 Z"/><circle cx="300" cy="40" r="3"/><circle cx="40" cy="200" r="2.5"/><circle cx="350" cy="230" r="3"/></g></svg>
+    <div style="width: 80px; height: 80px; border-radius: 999px; background: #F2B33D; display: flex; align-items: center; justify-content: center; position: relative"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0E1530" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></div>
+    <h1 style="font-size: 32px; position: relative">كتاب ليان في الطريق!</h1>
+    <p style="font-size: 16px; line-height: 1.7; color: #E4E8F7; position: relative">أرسلنا تفاصيل الطلب إلى واتساب. سيصلك الكتاب خلال [عدد] أيام عمل.</p>
+    <span style="padding: 8px 14px; border-radius: 999px; background: #22306A; font-size: 14px; font-weight: 600; position: relative">رقم الطلب: <span style="direction: ltr; display: inline-block">QM-[رقم]</span></span>
+  </section>
+
+  <main style="padding: 24px 16px 32px; display: flex; flex-direction: column; gap: 20px">
+    <div style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+      <strong style="font-size: 16px">شارك الفرحة</strong>
+      <p style="font-size: 14px; line-height: 1.6; color: #585C72">أرسل النسخة الرقمية للجدّة والعائلة ليقرؤوها الآن.</p>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+        <button style="min-height: 52px; border: 0; border-radius: 999px; background: #2E7A52; color: #FFFFFF; font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 8px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.6-5.2A8.5 8.5 0 1 1 21 12z"/></svg>واتساب</button>
+        <button style="min-height: 52px; border: 2px solid #16204A; border-radius: 999px; background: transparent; color: #16204A; font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 8px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a1 1 0 0 1 1-1h9"/></svg>نسخ الرابط</button>
+      </div>
+    </div>
+
+    <a href="Reader.dc.html" style="display: flex; gap: 14px; align-items: center; padding: 14px; border-radius: 20px; background: #F3EAD8">
+      <div style="border-radius: 4px 10px 10px 4px; overflow: hidden; border-right: 5px solid #0E1530; flex-shrink: 0"><dc-import name="Scene" w="72" h="72" theme="space" hijab="{{true}}" hijab-color="#E9826B" outfit="#F2B33D" kid-scale="0.6" hint-size="72px,72px"></dc-import></div>
+      <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 16px">اقرأ الكتاب الآن</strong><span style="font-size: 13px; color: #585C72">النسخة الرقمية جاهزة في حسابك</span></div>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16204A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
+    </a>
+
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <a href="Tracking.dc.html" style="min-height: 52px; border-radius: 999px; background: #16204A; color: #FBF6EC; font-weight: 700; font-size: 16px; display: flex; align-items: center; justify-content: center">تتبّع الطلب</a>
+      <a href="Create1.dc.html" style="min-height: 52px; color: #16204A; font-weight: 600; font-size: 16px; display: flex; align-items: center; justify-content: center">اصنع كتاباً لطفل آخر</a>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

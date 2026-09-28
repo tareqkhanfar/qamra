@@ -91,7 +91,7 @@ services:
     <<: *app
     build: { context: ., dockerfile: infra/docker/python.Dockerfile, target: api }
     image: qamra-api:dev
-    command: ["qamra-migrate"]
+    command: ["sh", "-c", "qamra-migrate && qamra seed-themes"]
     restart: "no"
     depends_on:
       postgres: { condition: service_healthy }
@@ -130,6 +130,10 @@ services:
         NEXT_PUBLIC_BRAND_NAME_EN: ${BRAND_NAME_EN:-Qamra}
         NEXT_PUBLIC_BRAND_DOMAIN: ${BRAND_DOMAIN:-qamra.app}
         NEXT_PUBLIC_GOOGLE_LOGIN: ${NEXT_PUBLIC_GOOGLE_LOGIN:-0}
+        NEXT_PUBLIC_SUPPORT_WHATSAPP: ${NEXT_PUBLIC_SUPPORT_WHATSAPP:-}
+        NEXT_PUBLIC_SALES_WHATSAPP: ${NEXT_PUBLIC_SALES_WHATSAPP:-}
+        NEXT_PUBLIC_SALES_EMAIL: ${NEXT_PUBLIC_SALES_EMAIL:-}
+        NEXT_PUBLIC_COMPANY_NAME: ${NEXT_PUBLIC_COMPANY_NAME:-}
     image: qamra-web:dev
     environment:
       API_INTERNAL_URL: http://api:8000

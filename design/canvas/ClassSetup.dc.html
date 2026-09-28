@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>كتاب الصف — الإعداد</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#FBF6EC;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#1C2140}
+h1,h2,h3{font-family:'Baloo Bhaijaan 2','Tajawal',system-ui,sans-serif;margin:0;font-weight:700}
+p{margin:0}
+button,input,textarea{font-family:inherit}
+a{color:#16204A;text-decoration:none}
+</style>
+</helmet>
+<div dir="rtl" style="width: 1440px; height: 1000px; background: #FBF6EC; display: flex">
+  <aside style="width: 264px; flex-shrink: 0; background: #FFFDF8; border-left: 1px solid #E4D6BC; padding: 24px 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px">
+    <div style="display: flex; align-items: center; gap: 8px; padding: 0 8px"><svg width="34" height="34" viewBox="0 0 48 48" aria-hidden="true"><path d="M21.32 5.01 A17 17 0 1 0 38.12 27.41 A14 14 0 0 1 21.32 5.01 Z" fill="#F2B33D"/><path d="M34 8 C34.6 11.2 35.8 12.4 39 13 C35.8 13.6 34.6 14.8 34 18 C33.4 14.8 32.2 13.6 29 13 C32.2 12.4 33.4 11.2 34 8 Z" fill="#16204A"/><path d="M6 44 Q15 39.5 24 43.5 Q33 39.5 42 44" fill="none" stroke="#16204A" stroke-width="3" stroke-linecap="round"/></svg><span style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-weight: 800; font-size: 22px; color: #16204A">قمرة</span><span style="padding: 2px 8px; border-radius: 999px; background: #16204A; color: #FBF6EC; font-size: 11px; font-weight: 700">روضات</span></div>
+    <div style="display: flex; flex-direction: column; gap: 2px; padding: 12px; border-radius: 16px; background: #F3EAD8"><strong style="font-size: 14px">كتاب صف الفراشات</strong><span style="font-size: 12px; color: #585C72">18 طفلاً · تخرّج 2027</span></div>
+    <nav aria-label="كتاب الصف" style="display: flex; flex-direction: column; gap: 4px">
+      <sc-for list="{{nav}}" as="n" hint-placeholder-count="7"><a href="{{n.href}}" style="{{n.style}}"><span>{{n.label}}</span><span style="{{n.dot}}"></span></a></sc-for>
+    </nav>
+  </aside>
+
+  <main style="flex-grow: 1; padding: 32px 40px; display: grid; grid-template-columns: 1.5fr 1fr; gap: 32px">
+    <div style="display: flex; flex-direction: column; gap: 22px">
+      <div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 14px; color: #585C72">كتاب الصف · الخطوة 1 من 6</span><h1 style="font-size: 30px; color: #16204A">حكاية واحدة يظهر فيها كل أطفال الصف</h1></div>
+
+      <section style="display: flex; flex-direction: column; gap: 10px">
+        <h2 style="font-size: 18px; color: #16204A">1. الحكاية</h2>
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+          <sc-for list="{{themes}}" as="t" hint-placeholder-count="3">
+            <label style="{{t.card}}"><input type="radio" name="theme" style="position: absolute; opacity: 0; width: 1px; height: 1px"><div style="border-radius: 12px; overflow: hidden"><dc-import name="Scene" w="220" h="120" theme="{{t.theme}}" cap="{{t.cap}}" companion="{{t.comp}}" hair-style="curly" skin="#C98F63" outfit="#7FA38A" kid-scale="0.8" hint-size="220px,120px"></dc-import></div><strong style="font-size: 15px">{{t.name}}</strong><span style="font-size: 12px; color: #585C72">{{t.meta}}</span></label>
+          </sc-for>
+        </div>
+      </section>
+
+      <section style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
+        <div style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+          <h2 style="font-size: 18px; color: #16204A">2. كم مرة يظهر كل طفل؟</h2>
+          <div style="display: flex; align-items: center; gap: 12px">
+            <button aria-label="أقل" style="width: 48px; height: 48px; border-radius: 14px; border: 1.5px solid #E4D6BC; background: #FFFFFF; font-size: 22px; font-weight: 700">−</button>
+            <output style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-size: 40px; font-weight: 800; color: #16204A; min-width: 40px; text-align: center">3</output>
+            <button aria-label="أكثر" style="width: 48px; height: 48px; border-radius: 14px; border: 1.5px solid #E4D6BC; background: #FFFFFF; font-size: 22px; font-weight: 700">+</button>
+            <span style="font-size: 14px; color: #585C72">مرات لكل طفل</span>
+          </div>
+          <p style="font-size: 13px; color: #585C72; line-height: 1.6">18 طفلاً × 3 = 54 ظهوراً في 24 صفحة (2–3 أطفال في المشهد).</p>
+        </div>
+        <div style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+          <h2 style="font-size: 18px; color: #16204A">3. لمسات شخصية</h2>
+          <label style="display: flex; justify-content: space-between; align-items: center; min-height: 44px; font-size: 15px">غلاف شخصي لكل طفل<input type="checkbox" checked style="width: 22px; height: 22px; accent-color: #16204A"></label>
+          <label style="display: flex; justify-content: space-between; align-items: center; min-height: 44px; font-size: 15px">صفحة "بورتريه" لكل طفل<input type="checkbox" checked style="width: 22px; height: 22px; accent-color: #16204A"></label>
+          <label style="display: flex; justify-content: space-between; align-items: center; min-height: 44px; font-size: 15px">يرافق كل طفل صاحبه (رسمته)<input type="checkbox" checked style="width: 22px; height: 22px; accent-color: #16204A"></label>
+        </div>
+      </section>
+
+      <section style="display: grid; grid-template-columns: 180px 1fr; gap: 16px">
+        <label style="border: 2px dashed #9A620A; border-radius: 16px; background: #FCEFD2; min-height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 14px; text-align: center; padding: 8px"><strong style="color: #16204A">4. شعار الروضة</strong><span style="color: #585C72; font-size: 12px">PNG بخلفية شفافة</span><input type="file" style="position: absolute; opacity: 0; width: 1px; height: 1px"></label>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="msg" style="font-size: 14px; font-weight: 600">5. كلمة المعلّمة</label><textarea id="msg" rows="4" style="padding: 12px 14px; border: 1.5px solid #16204A; border-radius: 14px; background: #FFFFFF; font-size: 15px; line-height: 1.7; resize: none">أحبائي الفراشات، كنتم نور صفّنا طوال السنة. تذكّروا دائماً أن القمر يضيء لكم الطريق إلى الصف الأول. — أ. رنا</textarea></div>
+      </section>
+    </div>
+
+    <aside style="display: flex; flex-direction: column; gap: 16px">
+      <div style="background: #16204A; color: #FBF6EC; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+        <h2 style="font-size: 20px">ملخص الكتاب</h2>
+        <div style="display: flex; flex-direction: column; gap: 10px; font-size: 15px">
+          <div style="display: flex; justify-content: space-between"><span style="color: #B9BEDA">الحكاية</span><strong>يوم تخرّجي</strong></div>
+          <div style="display: flex; justify-content: space-between"><span style="color: #B9BEDA">الصفحات</span><strong>24 + 18 بورتريه</strong></div>
+          <div style="display: flex; justify-content: space-between"><span style="color: #B9BEDA">ظهور كل طفل</span><strong>3 مرات</strong></div>
+          <div style="display: flex; justify-content: space-between"><span style="color: #B9BEDA">الأغلفة</span><strong>18 غلافاً شخصياً</strong></div>
+          <div style="display: flex; justify-content: space-between"><span style="color: #B9BEDA">موعد الحفل</span><strong>[التاريخ]</strong></div>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center; padding: 12px; border-radius: 14px; background: #22306A"><dc-import name="Moon" size="36" p="0.17" hint-size="36px,36px"></dc-import><span style="font-size: 14px; line-height: 1.5">القمر يكتمل مع كل خطوة. الخطوة التالية: دعوة الأهالي.</span></div>
+      </div>
+      <a href="ClassReady.dc.html" style="min-height: 56px; border-radius: 999px; background: #F2B33D; color: #0E1530; font-weight: 700; font-size: 17px; display: flex; align-items: center; justify-content: center">حفظ وإرسال الدعوات للأهالي</a>
+      <a href="#" style="min-height: 48px; display: flex; align-items: center; justify-content: center; font-weight: 600">معاينة صفحة المعلّمة</a>
+    </aside>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const items = [['لوحة التحكم', 'PortalDashboard.dc.html', 2], ['إعداد كتاب الصف', 'ClassSetup.dc.html', 1], ['جاهزية الأطفال', 'ClassReady.dc.html', 0], ['مخطط الصفحات', 'ClassPlanner.dc.html', 0], ['مراجعة الصفحات', 'ClassReview.dc.html', 0], ['الأغلفة الشخصية', 'ClassCovers.dc.html', 0], ['الطباعة والفاتورة', 'ClassPrint.dc.html', 0]];
+    const active = 1;
+    const nav = items.map(([label, href], i) => ({ label, href, dot: 'display:none', style: 'min-height:44px;padding:0 14px;border-radius:12px;display:flex;align-items:center;justify-content:space-between;font-size:15px;' + (i === active ? 'background:#16204A;color:#FBF6EC;font-weight:700' : 'color:#1C2140') }));
+    const card = (on) => 'position:relative;display:flex;flex-direction:column;gap:6px;padding:8px 8px 12px;border-radius:16px;background:#FFFDF8;border:' + (on ? '3px solid #F2B33D' : '1.5px solid #E4D6BC');
+    const themes = [
+      { theme: 'grad', cap: true, comp: 'blob', name: 'يوم تخرّجي', meta: '24 صفحة · مقترح للتخرّج', card: card(true) },
+      { theme: 'night', cap: false, comp: 'cat', name: 'ليلة القمرة في الروضة', meta: '24 صفحة', card: card(false) },
+      { theme: 'garden', cap: false, comp: 'robot', name: 'رحلة الصف إلى البيّارة', meta: '20 صفحة', card: card(false) }
+    ];
+    return { nav, themes };
+  }
+}
+</script>
+</body>
+</html>

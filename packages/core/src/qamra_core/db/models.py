@@ -399,6 +399,34 @@ class OrderItem(IdMixin, Base):
     unit_price: Mapped[Decimal] = mapped_column(Numeric(10, 2))
 
 
+# ---- leads -------------------------------------------------------------------------------------
+
+
+class LeadStatus(enum.StrEnum):
+    new = "new"
+    contacted = "contacted"
+    won = "won"
+    lost = "lost"
+
+
+class Lead(IdMixin, CreatedAtMixin, Base):
+    """Kindergarten demo requests from the public site (Kindergartens page form)."""
+
+    __tablename__ = "leads"
+
+    kind: Mapped[str] = mapped_column(String(32), default="kindergarten_demo")
+    org_name: Mapped[str] = mapped_column(String(200))
+    city: Mapped[str | None] = mapped_column(String(100))
+    contact_name: Mapped[str] = mapped_column(String(120))
+    contact_role: Mapped[str | None] = mapped_column(String(120))
+    phone: Mapped[str] = mapped_column(String(32))
+    children_count: Mapped[int | None] = mapped_column(SmallInteger)
+    event_date: Mapped[date | None] = mapped_column(Date)
+    notes: Mapped[str | None] = mapped_column(Text)
+    locale: Mapped[Locale] = mapped_column(str_enum(Locale, "lead_locale"), default=Locale.ar)
+    status: Mapped[LeadStatus] = mapped_column(str_enum(LeadStatus, "lead_status"), default=LeadStatus.new)
+
+
 # ---- costs, audit ------------------------------------------------------------------------------
 
 

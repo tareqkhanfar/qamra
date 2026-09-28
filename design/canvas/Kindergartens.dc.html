@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>قمرة — للروضات والمدارس</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#FBF6EC;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#1C2140}
+h1,h2,h3,h4{font-family:'Baloo Bhaijaan 2','Tajawal',system-ui,sans-serif;margin:0;font-weight:700;text-wrap:balance}
+p{margin:0;text-wrap:pretty}
+button,input,select,textarea{font-family:inherit}
+a{color:#16204A;text-decoration:none}a:hover{color:#9A620A}
+</style>
+</helmet>
+<div dir="rtl" style="width: 1440px; height: 2800px; background: #FBF6EC; display: flex; flex-direction: column; overflow: hidden">
+  <nav aria-label="الرئيسية" style="height: 88px; padding: 0 96px; display: flex; align-items: center; gap: 40px; border-bottom: 1px solid #E4D6BC; background: #FFFDF8">
+    <a href="Landing.dc.html" style="display: flex; align-items: center; gap: 10px"><svg width="38" height="38" viewBox="0 0 48 48" aria-hidden="true"><path d="M21.32 5.01 A17 17 0 1 0 38.12 27.41 A14 14 0 0 1 21.32 5.01 Z" fill="#F2B33D"/><path d="M34 8 C34.6 11.2 35.8 12.4 39 13 C35.8 13.6 34.6 14.8 34 18 C33.4 14.8 32.2 13.6 29 13 C32.2 12.4 33.4 11.2 34 8 Z" fill="#16204A"/><path d="M6 44 Q15 39.5 24 43.5 Q33 39.5 42 44" fill="none" stroke="#16204A" stroke-width="3" stroke-linecap="round"/></svg><span style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-weight: 800; font-size: 28px; color: #16204A">قمرة</span><span style="padding: 4px 10px; border-radius: 999px; background: #16204A; color: #FBF6EC; font-size: 12px; font-weight: 700">للروضات</span></a>
+    <div style="display: flex; gap: 28px; font-size: 16px; flex-grow: 1"><a href="#flow">كيف يعمل</a><a href="#book">محتوى الكتاب</a><a href="#trust">الخصوصية</a></div>
+    <a href="PortalDashboard.dc.html" style="font-weight: 600; min-height: 44px; display: flex; align-items: center">دخول الروضات</a>
+    <a href="#demo" style="min-height: 48px; padding: 0 22px; border-radius: 999px; background: #F2B33D; color: #0E1530; font-weight: 700; display: flex; align-items: center">اطلب عرضاً</a>
+  </nav>
+
+  <section style="padding: 80px 96px; display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center">
+    <div style="display: flex; flex-direction: column; gap: 24px">
+      <span style="color: #9A620A; font-weight: 700; font-size: 16px">كتب التخرّج · حفلات نهاية العام</span>
+      <h1 style="font-size: 60px; line-height: 1.15; color: #16204A; font-weight: 800">هدية تخرّج يحتفظ بها كل طفل — وأهله — للأبد</h1>
+      <p style="font-size: 19px; line-height: 1.75; color: #585C72">كتاب مصوّر لكل طفل في الصف، هو بطله، مع صفحة خاصة بروضتكم وصورة الصف وكلمة المعلّمة. أنتم ترفعون القائمة، ونحن نتولى الباقي.</p>
+      <div style="display: flex; gap: 16px"><a href="#demo" style="min-height: 60px; padding: 0 32px; border-radius: 999px; background: #16204A; color: #FBF6EC; font-weight: 700; font-size: 18px; display: flex; align-items: center">اطلب عرضاً تجريبياً</a><a href="BookClass.dc.html" style="min-height: 60px; padding: 0 24px; border-radius: 999px; border: 2px solid #16204A; font-weight: 700; font-size: 18px; display: flex; align-items: center">شاهد صفحة الصف</a></div>
+    </div>
+    <div style="position: relative; height: 520px">
+      <div style="position: absolute; top: 20px; right: 20px; border-radius: 20px; overflow: hidden; transform: rotate(4deg); box-shadow: 0 16px 40px rgba(22,32,74,0.18)"><dc-import name="Scene" w="280" h="340" theme="grad" cap="{{true}}" hair-style="curly" skin="#8D5A3B" outfit="#7FA38A" pose="wave" kid-scale="0.8" hint-size="280px,340px"></dc-import></div>
+      <div style="position: absolute; top: 120px; left: 170px; border-radius: 20px; overflow: hidden; box-shadow: 0 16px 40px rgba(22,32,74,0.22); z-index: 1"><dc-import name="Scene" w="280" h="340" theme="grad" cap="{{true}}" hijab="{{true}}" hijab-color="#E9826B" outfit="#A99BD6" kid-scale="0.8" hint-size="280px,340px"></dc-import></div>
+      <div style="position: absolute; top: 40px; left: 0; border-radius: 20px; overflow: hidden; transform: rotate(-5deg); box-shadow: 0 16px 40px rgba(22,32,74,0.18)"><dc-import name="Scene" w="220" h="270" theme="grad" cap="{{true}}" hair-style="long" skin="#F3CFAE" outfit="#E9826B" kid-scale="0.8" hint-size="220px,270px"></dc-import></div>
+    </div>
+  </section>
+
+  <section id="flow" style="background: #16204A; color: #FBF6EC; padding: 80px 96px; display: flex; flex-direction: column; gap: 40px">
+    <div style="display: flex; flex-direction: column; gap: 10px"><span style="color: #F5C465; font-weight: 700">الطلب الجماعي</span><h2 style="font-size: 44px">خمس خطوات، ومعظمها علينا</h2></div>
+    <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px">
+      <sc-for list="{{flow}}" as="f" hint-placeholder-count="5">
+        <div style="background: #22306A; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+          <span style="width: 44px; height: 44px; border-radius: 14px; background: #F2B33D; color: #0E1530; font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-weight: 800; font-size: 22px; display: flex; align-items: center; justify-content: center">{{f.n}}</span>
+          <h3 style="font-size: 20px">{{f.title}}</h3>
+          <p style="font-size: 15px; line-height: 1.7; color: #B9BEDA">{{f.body}}</p>
+          <span style="{{f.whoStyle}}">{{f.who}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section id="book" style="padding: 80px 96px; display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center">
+    <div style="background: #F3EAD8; border-radius: 32px; padding: 40px; display: flex; justify-content: center">
+      <div style="width: 440px; height: 440px; background: #FFFDF8; border-radius: 8px; box-shadow: 0 16px 40px rgba(22,32,74,0.18); padding: 32px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; align-items: center">
+        <div style="width: 64px; height: 64px; border-radius: 999px; border: 2px dashed #9A620A; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #9A620A; text-align: center">شعار الروضة</div>
+        <strong style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-size: 24px; color: #16204A">[اسم الروضة] · صف الفراشات</strong>
+        <div style="width: 100%; height: 170px; border-radius: 12px; background: #E4E8F7; display: flex; align-items: center; justify-content: center; color: #33458F; font-size: 14px; font-weight: 600">صورة الصف الجماعية</div>
+        <p style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-size: 16px; line-height: 1.7; text-align: center; color: #585C72">"[كلمة المعلّمة لأطفال الصف]"</p>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 20px">
+      <h2 style="font-size: 44px; color: #16204A">ماذا يوجد في كتاب التخرّج؟</h2>
+      <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; font-size: 17px; line-height: 1.6">
+        <sc-for list="{{inside}}" as="i" hint-placeholder-count="5"><li style="display: flex; gap: 12px; align-items: flex-start"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#DB9A1F" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 3px" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>{{i}}</li></sc-for>
+      </ul>
+    </div>
+  </section>
+
+  <section id="trust" style="margin: 0 96px; padding: 40px; border-radius: 28px; background: #FFFDF8; border: 1px solid #E4D6BC; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px">
+    <div style="display: flex; flex-direction: column; gap: 8px"><h3 style="font-size: 22px; color: #16204A">موافقة كل ولي أمر</h3><p style="font-size: 15px; line-height: 1.7; color: #585C72">الروضة لا ترفع صور الأطفال. كل ولي أمر يوافق ويرفع صورة طفله بنفسه عبر رابط خاص.</p></div>
+    <div style="display: flex; flex-direction: column; gap: 8px"><h3 style="font-size: 22px; color: #16204A">حذف تلقائي</h3><p style="font-size: 15px; line-height: 1.7; color: #585C72">الصور تُحذف بعد الطباعة. الروضة ترى الرسومات فقط، لا الصور الأصلية.</p></div>
+    <div style="display: flex; flex-direction: column; gap: 8px"><h3 style="font-size: 22px; color: #16204A">فاتورة رسمية</h3><p style="font-size: 15px; line-height: 1.7; color: #585C72">فاتورة واحدة للصف أو الروضة، وتسليم الكتب مغلّفة باسم كل طفل.</p></div>
+  </section>
+
+  <section id="demo" style="padding: 80px 96px; display: grid; grid-template-columns: 1fr 1.2fr; gap: 64px">
+    <div style="display: flex; flex-direction: column; gap: 16px">
+      <h2 style="font-size: 44px; color: #16204A">لنجهّز كتب تخرّج صفكم</h2>
+      <p style="font-size: 18px; line-height: 1.75; color: #585C72">اترك بياناتك وسنتواصل معك خلال يوم عمل لنعرض عليك نموذجاً مطبوعاً وأسعار الصفوف.</p>
+      <div style="display: flex; flex-direction: column; gap: 8px; font-size: 16px; margin-top: 8px"><span>واتساب: [رقم المبيعات]</span><span>البريد: [بريد المبيعات]</span></div>
+    </div>
+    <form style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 28px; padding: 36px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px">
+      <div style="display: flex; flex-direction: column; gap: 6px"><label for="k-name" style="font-size: 15px; font-weight: 600">اسم الروضة أو المدرسة</label><input id="k-name" style="min-height: 52px; padding: 0 16px; border: 1.5px solid #E4D6BC; border-radius: 14px; background: #FFFFFF; font-size: 16px"></div>
+      <div style="display: flex; flex-direction: column; gap: 6px"><label for="k-city" style="font-size: 15px; font-weight: 600">المدينة</label><select id="k-city" style="min-height: 52px; padding: 0 12px; border: 1.5px solid #E4D6BC; border-radius: 14px; background: #FFFFFF; font-size: 16px"><option>رام الله والبيرة</option><option>نابلس</option><option>الخليل</option><option>عمّان</option><option>أخرى</option></select></div>
+      <div style="display: flex; flex-direction: column; gap: 6px"><label for="k-person" style="font-size: 15px; font-weight: 600">اسمك ودورك</label><input id="k-person" placeholder="مثال: مديرة الروضة" style="min-height: 52px; padding: 0 16px; border: 1.5px solid #E4D6BC; border-radius: 14px; background: #FFFFFF; font-size: 16px"></div>
+      <div style="display: flex; flex-direction: column; gap: 6px"><label for="k-phone" style="font-size: 15px; font-weight: 600">رقم الجوال (واتساب)</label><input id="k-phone" dir="ltr" style="min-height: 52px; padding: 0 16px; border: 1.5px solid #E4D6BC; border-radius: 14px; background: #FFFFFF; font-size: 16px; text-align: right"></div>
+      <div style="display: flex; flex-direction: column; gap: 6px"><label for="k-count" style="font-size: 15px; font-weight: 600">عدد الأطفال المتوقّع</label><input id="k-count" type="number" style="min-height: 52px; padding: 0 16px; border: 1.5px solid #E4D6BC; border-radius: 14px; background: #FFFFFF; font-size: 16px"></div>
+      <div style="display: flex; flex-direction: column; gap: 6px"><label for="k-date" style="font-size: 15px; font-weight: 600">موعد حفل التخرّج</label><input id="k-date" type="month" style="min-height: 52px; padding: 0 16px; border: 1.5px solid #E4D6BC; border-radius: 14px; background: #FFFFFF; font-size: 16px"></div>
+      <div style="grid-column: span 2; display: flex; flex-direction: column; gap: 6px"><label for="k-note" style="font-size: 15px; font-weight: 600">ملاحظات (اختياري)</label><textarea id="k-note" rows="3" style="padding: 14px 16px; border: 1.5px solid #E4D6BC; border-radius: 14px; background: #FFFFFF; font-size: 16px; resize: vertical"></textarea></div>
+      <button type="submit" style="grid-column: span 2; min-height: 56px; border: 0; border-radius: 999px; background: #F2B33D; color: #0E1530; font-weight: 700; font-size: 18px">أرسل الطلب</button>
+    </form>
+  </section>
+
+  <footer style="flex-grow: 1; background: #0E1530; color: #B9BEDA; padding: 40px 96px; display: flex; justify-content: space-between; font-size: 14px"><span style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-weight: 800; font-size: 26px; color: #FBF6EC">قمرة</span><span>© 2026 قمرة</span></footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const us = 'align-self:flex-start;margin-top:auto;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;background:#F2B33D;color:#0E1530';
+    const you = 'align-self:flex-start;margin-top:auto;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;background:#E4E8F7;color:#16204A';
+    const par = 'align-self:flex-start;margin-top:auto;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;background:#CBC1EA;color:#16204A';
+    const flow = [
+      { n: '1', title: 'ارفعوا قائمة الصف', body: 'ملف Excel بأسماء الأطفال وأرقام أولياء الأمور.', who: 'الروضة', whoStyle: you },
+      { n: '2', title: 'نرسل روابط الموافقة', body: 'رسالة واتساب لكل ولي أمر برابط خاص بطفله.', who: 'قمرة', whoStyle: us },
+      { n: '3', title: 'الأهل يرفعون الصور', body: 'كل ولي أمر يوافق ويرفع صورة ويعتمد شخصية طفله.', who: 'الأهالي', whoStyle: par },
+      { n: '4', title: 'تختارون الثيم وصفحة الروضة', body: 'الشعار، صورة الصف، وكلمة المعلّمة.', who: 'الروضة', whoStyle: you },
+      { n: '5', title: 'نطبع ونسلّم', body: 'مراجعة جماعية للكتب، ثم طباعة وتسليم مغلّف باسم كل طفل.', who: 'قمرة', whoStyle: us }
+    ];
+    const inside = [
+      'قصة "يوم تخرّجي" من 24 صفحة، والطفل بطلها باسمه وملامحه.',
+      'صفحة الروضة: الشعار، صورة الصف، وكلمة المعلّمة.',
+      'صفحة "أصدقائي في الصف" بأسماء كل الأطفال.',
+      'صفحة إهداء من الأهل (اختيارية).',
+      'غلاف مقوّى فاخر 21×21 سم.'
+    ];
+    return { flow, inside };
+  }
+}
+</script>
+</body>
+</html>
