@@ -6,7 +6,7 @@ import io
 from PIL import Image, ImageDraw
 
 from qamra_ai.cost import CostEntry
-from qamra_ai.image.base import GeneratedImage, ImageRequest, aspect_px
+from qamra_ai.image.base import TIER_PX, GeneratedImage, ImageRequest, aspect_px
 
 
 class FakeImageProvider:
@@ -36,5 +36,6 @@ class FakeImageProvider:
         draw.text((w // 16, int(h * 0.9)), f"{req.step}", fill="white")
         buf = io.BytesIO()
         img.save(buf, format="PNG")
-        cost = CostEntry(req.step, self.name, self.model, {"images": 1}, 0.0)
+        units = {"images": 1, "px": float(TIER_PX[req.resolution]), "refs": float(len(req.refs))}
+        cost = CostEntry(req.step, self.name, self.model, units, 0.0)
         return GeneratedImage(buf.getvalue(), "image/png", cost, {"provider": self.name})

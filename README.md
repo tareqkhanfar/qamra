@@ -2,9 +2,16 @@
 
 «حكاية طفلك… تحت ضوء القمر»: personalized Arabic storybooks where the child is the hero and the child's own drawing becomes their companion.
 
-Specs: [CLAUDE.md](CLAUDE.md) + [docs/ADDENDUM-01.md](docs/ADDENDUM-01.md). Decisions: [docs/decisions.md](docs/decisions.md). Plans: [docs/plans/](docs/plans/). Changes: [docs/CHANGELOG.md](docs/CHANGELOG.md).
+Specs: [CLAUDE.md](CLAUDE.md) + [docs/ADDENDUM-01.md](docs/ADDENDUM-01.md) + [docs/ADDENDUM-03.md](docs/ADDENDUM-03.md). Decisions: [docs/decisions.md](docs/decisions.md). Plans: [docs/plans/](docs/plans/). Changes: [docs/CHANGELOG.md](docs/CHANGELOG.md).
 
-**Status: Phase 1 (foundations) done.** You can sign up, sign in and sign out in Arabic or English, on top of the full data model, the API, the worker and the prototype pipeline from Phase 0.
+**Status: Phase 1 + Addendum 3 (premium books at ≤ $2.50).**
+- The public site, sign-up and sign-in work in Arabic and English.
+- The full book pipeline runs on the server:
+  - story (Sonnet 5), then page art (fal Nano Banana 2 with a FLUX.2 fallback);
+  - Haiku QA with automatic redraws, a per-book budget cap and print upscaling;
+  - premium RTL print PDFs with preflight.
+- Admins with two-step verification review books in the approval queue, redraw pages, edit text, approve for print, and follow cost on a dashboard.
+- The parent create flow (Phase 2) is next.
 
 ## Run the stack
 
@@ -15,7 +22,11 @@ cp .env.example .env        # defaults work locally; set real secrets anywhere e
 docker compose up --build   # → http://localhost:3000 (ar) · API docs http://localhost:3000/api/docs
 ```
 
-To open it to the network (e.g. a test server), set `QAMRA_BIND=0.0.0.0` and `QAMRA_WEB_PORT` in `.env`. Only the nginx `edge` is exposed; it sets the real client IP, which the login rate limits depend on. Without TLS, traffic (passwords included) is plain HTTP, so use test accounts only until HTTPS is set up (Phase 6: Cloudflare + Nginx).
+To open it to the network (e.g. a test server), set `QAMRA_BIND=0.0.0.0` and `QAMRA_WEB_PORT` in `.env`. Only the nginx `edge` is exposed; it sets the real client IP, which the login rate limits depend on. Without TLS, traffic (passwords included) is plain HTTP, so use test accounts only until HTTPS is on.
+
+**HTTPS (Addendum 3 §6):** point a domain's A record at the server, then run `sudo infra/scripts/setup-https.sh qamra.example.com you@example.com`. It adds a host-nginx site with Let's Encrypt in front of the edge and binds the edge to localhost. `infra/scripts/firewall.sh` prepares ufw (22/80/443 only); it is a dry run unless given `--apply`.
+
+**First admin sign-in:** the admin area asks for two-step verification setup (authenticator app + recovery codes). If an admin loses both, run `docker compose exec api qamra reset-2fa --email …` on the server.
 
 | service | what | published port |
 |---|---|---|
@@ -49,27 +60,30 @@ make migration m="add something"   # autogenerate + tidy a migration
 
 Tests use fake AI providers, fakeredis and moto (S3). Only Postgres is real: each run rebuilds `*_test` through the migrations, and each test is rolled back.
 
-## Prototype (Phase 0)
+## Sample books (Addendum 3)
+
+On the server: **Admin → Sample books** (consent checkbox, 1–3 photos, optional drawing). Tick "placeholder art" for a $0 run. The book appears in **Admin → Approval queue**. Costs and QA results of the first real books are in `docs/plans/addendum-03.md` §5.
+
+Locally:
 
 ```bash
-uv run scripts/prototype.py --photo kid.jpg --name "سلمى" --gender f --age 5 \
-  --theme first-day --style watercolor --lang ar --provider gemini \
-  --drawing drawing.jpg --companion-name "بوبو"
-make fake-run      # same, offline with fake providers ($0) → out/<run>/
-uv run scripts/companion_eval.py --drawings path/to/drawings/ --provider gemini
+make sample-book                 # offline, design-style placeholder art ($0) → out/<run>/
+uv run scripts/sample_book.py --photo kid.jpg --name "سلمى" --gender f --age 5 --hijab \
+  --theme first-day --provider fal --message "إلى سلمى…"   # real providers (keys in .env)
+uv run scripts/ab_resolution.py --photo kid.jpg --pages 3   # 1K+upscale vs 2K A/B (real providers)
 ```
 
-The prototype writes to `out/<run>/`: the character sheet, the companion, `story.json`, the pages, `interior.pdf` + `cover.pdf` (216 mm with bleed, fonts embedded), and `report.md` + `cost.json`.
+Each run writes `interior.pdf`, `cover.pdf` (RTL wrap with spine), `proof.pdf` (low-res web proof), `report.md` (preflight, QA per page, regeneration rate, cost and the projection on the paid stack), `story.json` and `cost.json`. `scripts/prototype.py` (Phase 0 command) runs the same pipeline.
 
 ## Layout
 
 ```
-apps/api        qamra_api: FastAPI app (auth, health), admin CLI (`qamra`)
-apps/worker     qamra_worker: RQ jobs (maintenance/privacy cleanup), cron config
+apps/api        qamra_api: FastAPI app (auth + 2FA, catalog, admin settings/queue/samples/metrics), CLI (`qamra`)
+apps/worker     qamra_worker: RQ jobs (book generation, redraws, re-render, privacy cleanup), cron config
 apps/web        Next.js frontend (src/app/[locale], messages/ar.json + en.json)
 packages/core   qamra_core: settings, SQLAlchemy models, Alembic migrations, S3 storage, test fixtures
-packages/ai     qamra_ai: provider adapters, versioned prompts, generation pipeline, pricing
-packages/pdf    qamra_pdf: print templates + Playwright renderer + OFL fonts
+packages/ai     qamra_ai: providers (fal/Gemini/OpenAI/Claude + sketch), house style, prompts, pipeline, pricing
+packages/pdf    qamra_pdf: print templates, Playwright renderer, panel checks, preflight, OFL fonts
 content/        themes/<slug>/theme.yaml, styles/styles.yaml
 infra/          Dockerfiles, postgres init
 design/         Claude Design handoff (read-only)

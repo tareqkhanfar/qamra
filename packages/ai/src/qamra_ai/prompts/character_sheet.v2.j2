@@ -1,0 +1,25 @@
+STYLE
+{{ style }}
+Painting medium: {{ medium }}
+
+TASK
+Create a picture-book CHARACTER REFERENCE SHEET of the child in the reference photo{{ 's' if n_photos > 1 else '' }}. It is reused for every page of every book, so it must be clear and exact.
+
+Layout: three full-body views of the same child side by side on a plain warm cream background, evenly spaced, same scale:
+1. front view, standing, gentle smile, arms relaxed
+2. three-quarter view, waving
+3. side view, walking
+
+LIKENESS (top priority)
+Keep exactly what the photo shows: face shape, skin tone, hair color, hair texture and hairstyle, eye shape and color, eyebrows, and distinctive features such as freckles, dimples or missing teeth.{% if glasses %} The child wears glasses: keep the same frame shape and color in all three views.{% endif %} The child is {{ age }} years old and must look {{ age }}, not older. {{ 'He is a boy.' if gender == 'm' else 'She is a girl.' }}
+
+CLOTHING
+A plain, modest reference outfit: a soft cream long-sleeved top, night-blue trousers and simple shoes; the same in all three views (each book dresses the child in its own outfit later).
+{% if hijab %}The parent chose a hijab: a simple soft sage-green hijab neatly covering the hair, with the face fully visible, the same in all three views.{% else %}No hijab or head covering.{% endif %}
+
+PEOPLE
+{{ people }}
+
+NEGATIVE
+{{ negative }}
+Do not copy the photo's background, lighting or clothing brand logos.

@@ -14,6 +14,8 @@ class Child(BaseModel):
     gender: Gender
     age: int = Field(ge=2, le=12)
     interests: list[str] = Field(default_factory=list)
+    hijab: bool = False  # chosen by the parent; never inferred from the photo
+    glasses: bool = False
 
 
 class CompanionSpec(BaseModel):
@@ -37,6 +39,9 @@ class StoryOut(BaseModel):
     title: str
     dedication: str
     pages: list[StoryPageOut]
+    parents_lesson: str = ""
+    parents_questions: list[str] = []
+    blurb: str = ""
 
 
 class SafetyVerdict(BaseModel):
@@ -52,11 +57,22 @@ class DrawingReview(BaseModel):
     reasons: list[str]
 
 
-class PageReview(BaseModel):
+class PageQA(BaseModel):
+    """Haiku vision check of one page (Addendum 3 §2.3). Scoring lives in `pipeline.qa`."""
+
+    # First on purpose: listing every child before the counts is what catches a duplicated hero
+    # (a look-alike pair hugging passed a plain "how many heroes?" question).
+    children: list[str]
+    likeness: int  # 0–10 vs the character sheet
+    hero_count: int
+    people_count_ok: bool
+    anatomy_ok: bool
+    text_in_image: bool
+    outfit_ok: bool
+    text_space_ok: bool
+    companion_ok: bool
+    style_ok: bool
     safe: bool
-    hero_recognizable: bool
-    companion_present: bool
-    has_text_artifacts: bool
     notes: str
 
 

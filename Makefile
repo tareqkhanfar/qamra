@@ -1,4 +1,4 @@
-.PHONY: install lint typecheck test web-check check up down logs e2e migration seed-themes admin fake-run
+.PHONY: install lint typecheck test web-check check up down logs e2e migration seed-themes admin fake-run sample-book
 
 # .env is optional; when present its variables (e.g. TEST_DATABASE_URL) are exported to every recipe
 ifneq (,$(wildcard .env))
@@ -50,8 +50,9 @@ seed-themes:
 admin:  # make admin email=you@example.com name="Tareq"
 	docker compose exec api qamra create-user --email $(email) --name "$(name)" --role admin
 
-# Offline end-to-end book with fake providers ($0)
-fake-run:
-	uv run scripts/prototype.py --photo packages/ai/tests/fixtures/face-astronaut-public-domain.png \
-		--name "سلمى" --gender f --age 5 --theme first-day --style watercolor --lang ar \
-		--provider fake --drawing packages/ai/tests/fixtures/drawings/drawing-2.jpg --companion-name "بوبو"
+# Offline sample book in the design's art style ($0): print PDFs + preflight + projected cost → out/<run>/
+sample-book:
+	uv run scripts/sample_book.py --name "سلمى" --gender f --age 5 --hijab --theme $(or $(theme),first-day) \
+		--provider sketch --drawing packages/ai/tests/fixtures/drawings/drawing-2.jpg --companion-name "بوبو"
+
+fake-run: sample-book

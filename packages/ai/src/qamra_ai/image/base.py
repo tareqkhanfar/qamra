@@ -1,18 +1,22 @@
-"""Image provider interface. Every model sits behind `ImageProvider`; switch via `IMAGE_PROVIDER`."""
+"""Image provider interface. Every model sits behind `ImageProvider`; switch via admin settings."""
 
 from dataclasses import dataclass, field
 from typing import Literal, Protocol
 
 from qamra_ai.cost import CostEntry
 
-Aspect = Literal["1:1", "3:2"]
+Aspect = Literal["1:1", "3:2", "16:9"]
+Resolution = Literal["0.5K", "1K", "2K", "4K"]
+
+# Long side in px per resolution tier (fal Nano Banana 2 tiers; used by providers that take pixels).
+TIER_PX: dict[Resolution, int] = {"0.5K": 512, "1K": 1024, "2K": 2048, "4K": 4096}
 
 
 @dataclass(frozen=True)
 class RefImage:
     data: bytes
     mime: str
-    label: str  # what the model should treat it as, e.g. "hero character sheet"
+    label: str  # what the model should treat it as, e.g. "THE HERO — character reference sheet"
 
 
 @dataclass(frozen=True)
@@ -21,6 +25,7 @@ class ImageRequest:
     prompt: str
     refs: list[RefImage] = field(default_factory=list)
     aspect: Aspect = "1:1"
+    resolution: Resolution = "1K"
     seed: int | None = None
 
 
@@ -50,8 +55,8 @@ def sniff_mime(data: bytes) -> str:
 
 
 def aspect_px(aspect: Aspect, long_side: int) -> tuple[int, int]:
-    """(width, height), both multiples of 16."""
+    """(width, height), both multiples of 16. Landscape for 3:2 and 16:9."""
     if aspect == "1:1":
         return long_side, long_side
-    short = round(long_side * 2 / 3 / 16) * 16
-    return long_side, short
+    ratio = 2 / 3 if aspect == "3:2" else 9 / 16
+    return long_side, round(long_side * ratio / 16) * 16

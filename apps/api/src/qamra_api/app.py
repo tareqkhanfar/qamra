@@ -5,12 +5,14 @@ from contextlib import asynccontextmanager
 
 import sentry_sdk
 from fastapi import Depends, FastAPI
+from redis import Redis as SyncRedis
 from redis.asyncio import Redis
 
 from qamra_api.auth.router import router as auth_router
 from qamra_api.deps import require_client_header
 from qamra_api.errors import install_error_handlers
 from qamra_api.logging import RequestLogMiddleware
+from qamra_api.routers.admin_books import router as admin_books_router
 from qamra_api.routers.family import router as family_router
 from qamra_api.routers.health import router as health_router
 from qamra_api.routers.leads import router as leads_router
@@ -49,11 +51,13 @@ def create_app(settings: ApiSettings | None = None, *, manage_resources: bool = 
         engine = make_async_engine(settings.database_url, settings.db_pool_size)
         app.state.sessionmaker = make_async_sessionmaker(engine)
         app.state.redis = Redis.from_url(settings.redis_url, decode_responses=True)
+        app.state.rq_redis = SyncRedis.from_url(settings.redis_url)  # RQ needs raw bytes, sync client
         app.state.storage = ObjectStorage.from_settings(settings)
         try:
             yield
         finally:
             await app.state.redis.aclose()
+            app.state.rq_redis.close()
             await engine.dispose()
 
     app = FastAPI(
@@ -76,4 +80,5 @@ def create_app(settings: ApiSettings | None = None, *, manage_resources: bool = 
     app.include_router(family_router)
     app.include_router(settings_public_router)
     app.include_router(settings_admin_router)
+    app.include_router(admin_books_router)
     return app

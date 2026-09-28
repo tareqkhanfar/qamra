@@ -1,0 +1,8 @@
+The LAST image is the page to inspect: {{ page_label }}.
+Brief:
+- Scene: {{ scene }}
+- Hero expected: {{ 'yes, exactly once' if expect_hero else 'no (a place without the hero)' }}
+- Other people: {{ others or 'none' }}
+- Companion: {% if companion %}«{{ companion.name }}» ({{ 'see its reference sheet' if companion.has_ref else companion.description }}){% else %}none{% endif %}
+- Hero's outfit: {{ outfit or 'not applicable' }}
+- Text area that must stay calm: {{ text_area_label }}

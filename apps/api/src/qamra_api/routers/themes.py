@@ -7,6 +7,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from sqlalchemy import select
 
+from qamra_ai.pipeline.layout import plan_book
 from qamra_ai.pipeline.theme import CatalogArt, Theme, render_template
 from qamra_api import runtime_settings
 from qamra_api.deps import SessionDep, SettingsDep
@@ -55,6 +56,13 @@ def _parse(row: ThemeRow) -> Theme:
     return Theme.model_validate(row.definition)
 
 
+def book_pages(theme: Theme) -> int:
+    """Interior pages of the printed book (title + story + parents page + fillers), as the design shows."""
+    if not theme.pages:
+        return 0
+    return plan_book(theme, "ar", companion_page=theme.companion_slot).page_count
+
+
 def _card(theme: Theme, lang: Lang) -> ThemeCard:
     c = theme.catalog
     if c is None:  # themes without catalog metadata are not listed
@@ -65,7 +73,7 @@ def _card(theme: Theme, lang: Lang) -> ThemeCard:
         tagline=c.tagline_ar if lang == "ar" else c.tagline_en,
         age_min=theme.age_range[0],
         age_max=theme.age_range[1],
-        pages=len(theme.pages) or (c.planned_pages or 0),
+        pages=book_pages(theme) or (c.planned_pages or 0),
         occasions=list(c.occasions),
         tag=c.tag,
         status=c.status,
@@ -96,7 +104,7 @@ def _peek(theme: Theme, lang: Lang) -> list[PeekItem]:
     return items
 
 
-SAMPLE_PAGES = (1, 4, 8, 12)
+SAMPLE_PAGES = (1, 6, 11, 17)
 
 
 def _sample_context(theme: Theme, lang: Lang) -> tuple[str, str] | None:

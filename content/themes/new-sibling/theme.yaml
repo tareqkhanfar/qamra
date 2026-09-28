@@ -1,5 +1,5 @@
 slug: new-sibling
-version: 1
+version: 2
 title_ar: "{name} وضيفنا الصغير"
 title_en: "{name} and Our Little Guest"
 age_range: [3, 6]
@@ -38,109 +38,302 @@ default_companion:
     a tiny round glowing moon creature, soft pale-gold body shaped like a plump crescent,
     two small dot eyes, rosy cheeks, stubby little arms, floats a few centimeters above the ground
 
+# Template syntax: {name}, {companion}; gender variants {masculine/feminine}. See first-day for layouts.
+# The baby is "the little guest" (الضيف الصغير) throughout: the book never needs its gender.
+locations:
+  living_room: >-
+    the family living room: a soft sofa with embroidered cushions, floor cushions along the wall, a low
+    round wooden table, a big arched window looking out on olive trees, patterned cement-tile floor
+  nursery: >-
+    a small nursery corner in the parents' room: a white wooden crib with a felt mobile of stars and
+    moons, a soft cream rug, a wooden rocking chair and a window with a crescent moon view
+  kitchen: >-
+    a warm family kitchen with blue-and-white patterned tiles, a wooden table, a window with a lemon
+    tree outside, and a long paper chain of colorful rings hanging along the wall
+  stairs: >-
+    the staircase at home: smooth limestone steps with a carved wooden railing and a small arched
+    window letting in soft light
+  entrance: >-
+    the family's front door: a carved wooden door in an arched limestone doorway, potted basil and
+    geraniums on the steps
+  garden: >-
+    the small home garden: a lemon tree, pots of basil and mint, a grapevine pergola, and a low stone
+    wall with olive trees beyond
+
+outfits:
+  day:
+    - key: lilac
+      en: >-
+        a lilac hoodie with a small gold star on the chest, light-grey trousers and soft house slippers
+      en_f: >-
+        a lilac long-sleeved dress with a small gold star over light-grey leggings and soft house
+        slippers
+      hijab_en: a soft lilac hijab
+    - key: mint
+      en: >-
+        a mint-green sweater with a small gold moon patch, navy trousers and soft house slippers
+      en_f: >-
+        a mint-green pinafore dress over a cream long-sleeved top, navy leggings and soft house slippers
+      hijab_en: a soft cream hijab
+  sleep:
+    - key: moons
+      en: light-blue pajamas with tiny golden moons
+      hijab_en: a soft light-blue hijab matching the pajamas
+
+blurb_ar: "خبرٌ سعيد، وانتظارٌ طويل، ثمّ ضيفٌ صغير يغيّر كلّ شيء. حكاية {name} {الأخِ الكبير/الأختِ الكبيرة}، وقلبٍ يتّسع للجميع."
+blurb_en: "Happy news, a long wait, and then a little guest who changes everything. The story of {name}, the proud big one, and a heart with room for everyone."
+
+for_parents:
+  lesson_ar: >-
+    وصولُ مولودٍ جديد يغيّر إيقاع البيت، وقد {يشعرُ/تشعرُ} {name} بالغيرة أو الوحدة. تطمئن الحكاية أنّ
+    {مكانَه/مكانَها} في القلب لا يتغيّر، {وتدعوه ليكونَ الأخَ الكبير/وتدعوها لتكونَ الأختَ الكبيرة} بفخر.
+  lesson_en: >-
+    A new baby changes the rhythm of home, and {name} may feel jealous or left out. This story reassures
+    that their place in the family's heart never changes, and invites them to be the proud big sibling.
+  questions_ar:
+    - "كيف {تستطيعُ أن تساعدَ/تستطيعين أن تساعدي} ماما مع الضيف الصغير؟"
+    - "ماذا {تحبُّ أن تعلّمَ/تحبّين أن تعلّمي} الضيف الصغير عندما يكبر؟"
+  questions_en:
+    - "How can you help Mama with the little guest?"
+    - "What would you like to teach the little guest when they grow up?"
+
 cover:
   scene: >-
-    The hero sits on a soft sofa carefully holding a swaddled newborn baby, a parent's hand gently
-    supporting; a crescent moon glows through the window behind them.
+    The hero sits on the soft sofa carefully holding a swaddled newborn baby, a parent's hand gently
+    supporting from the side; a crescent moon glows through the window behind them.
+  location: living_room
+  time: evening
+  others: a newborn baby wrapped in a soft blanket, and a parent's supporting hand
+  others_count: 1
   companion_action: peeks over the sofa, smiling at the baby
 
 pages:
   - index: 1
-    layout: illustration-textbox
+    layout: full
+    text_pos: top
+    location: living_room
+    time: afternoon
     beat: happy news
     scene: >-
-      A warm living room. The hero jumps for joy next to their mother, who sits smiling on the sofa.
+      The hero jumps for joy, arms high, next to Mama and Baba, who sit smiling on the sofa holding
+      hands.
+    others: Mama and Baba
+    others_count: 2
     companion_action: jumps along, arms in the air
-    text_ar: "في البيت خبرٌ سعيد: ماما تنتظر ضيفًا صغيرًا! {فرحَ/فرحَتْ} {name} {وقفزَ/وقفزَتْ} عاليًا."
-    text_en: "Happy news at home: Mama is waiting for a little guest! {name} jumped for joy."
+    text_ar: "في البيت خبرٌ سعيد: ماما تنتظر ضيفًا صغيرًا! {فرحَ/فرحَتْ} {name} {وقفزَ/وقفزَتْ} عاليًا حتّى {كادَ/كادَتْ} {يلمسُ/تلمسُ} السقف!"
+    text_en: "Happy news at home: Mama is waiting for a little guest! {name} jumped so high, almost touching the ceiling!"
   - index: 2
-    layout: illustration-textbox
-    beat: getting ready
+    layout: split
+    location: living_room
+    time: afternoon
+    beat: a welcome drawing
     scene: >-
-      The hero and their father put together a small white crib; the hero places a soft teddy bear inside.
-    companion_action: tests the tiny pillow by lying on it
-    text_ar: "{ساعدَ/ساعدَتْ} {name} بابا في تجهيز سريرٍ صغير، {واختارَ/واختارَتْ} له دبدوبًا ناعمًا."
-    text_en: "{name} helped Baba get a little crib ready and chose a soft teddy bear for it."
+      The hero lies on the rug drawing a big moon and stars with crayons on a large sheet of paper, tongue
+      out in concentration.
+    companion_action: holds the yellow crayon ready
+    text_ar: "{رسمَ/رسمَتْ} {name} للضيف الصغير قمرًا ونجومًا {وقالَ/وقالَتْ}: «سأعلّقها فوق سريره.»"
+    text_en: "{name} drew a moon and stars for the little guest: \"I'll hang it over the crib.\""
   - index: 3
-    layout: illustration-textbox
+    layout: spread
+    text_pos: top
+    location: nursery
+    time: afternoon
+    beat: getting the crib ready
+    scene: >-
+      The hero and Baba put together the white wooden crib; the hero carefully places a soft teddy bear
+      inside while the moon-and-stars drawing already hangs above the crib.
+    others: Baba
+    others_count: 1
+    companion_action: tests the tiny pillow by lying on it
+    text_ar: "{ساعدَ/ساعدَتْ} {name} بابا في تجهيز سريرٍ صغير، {واختارَ/واختارَتْ} له دبدوبًا ناعمًا. وجرّب {companion} الوسادة… مريحة جدًّا!"
+    text_en: "{name} helped Baba get a little crib ready and chose a soft teddy bear for it. {companion} tested the tiny pillow... very comfy!"
+  - index: 4
+    layout: full
+    text_pos: side
+    location: kitchen
+    time: morning
     beat: waiting
     scene: >-
-      At the breakfast table, the hero marks another circle on a paper calendar, chin in hand, waiting.
-    companion_action: counts the days on its fingers
-    text_ar: "وكل صباح {كانَ/كانَتْ} {name} {يسألُ/تسألُ}: «متى يصل ضيفنا الصغير؟»"
-    text_en: "Every morning {name} asked: \"When will our little guest arrive?\""
-  - index: 4
-    layout: illustration-textbox
+      At the breakfast table, the hero takes one ring off the long colorful paper chain on the wall, chin
+      up, curious and impatient.
+    companion_action: counts the remaining rings on its fingers
+    text_ar: "كلّ صباح {كانَ/كانَتْ} {name} {ينزعُ/تنزعُ} حلقةً من سلسلة الورق الملوّنة {ويسألُ/وتسألُ}: «متى يصل ضيفنا الصغير؟»"
+    text_en: "Every morning, {name} took one ring off the colorful paper chain and asked: \"When will our little guest arrive?\""
+  - index: 5
+    layout: full
+    text_pos: bottom
+    no_child: true
+    location: nursery
+    time: night
+    beat: the waiting crib
+    scene: >-
+      The quiet nursery at night: the white crib with the teddy bear inside, the felt mobile of stars and
+      moons turning softly, and silver moonlight falling through the window.
+    text_ar: "وفي الليل، كان السرير الصغير جاهزًا، والدبدوب ينتظر، والنجوم الصغيرة تدور فوقه بهدوء."
+    text_en: "At night, the little crib was ready, the teddy bear was waiting, and the little stars turned softly above it."
+  - index: 6
+    layout: full
+    text_pos: top
+    location: entrance
+    time: afternoon
     beat: arrival
     scene: >-
-      The hero looks into a bassinet at a sleeping newborn wrapped in a soft blanket, full of wonder.
+      The front door opens: Mama comes in holding a newborn baby wrapped in a soft blanket, Baba beside
+      her with a small bag. The hero runs toward them with open arms, overjoyed.
+    others: Mama holding a newborn baby, and Baba
+    others_count: 3
+    companion_action: zooms ahead like a little golden comet
+    text_ar: "وأخيرًا فُتح الباب، ودخلت ماما وبابا ومعهما الضيف الصغير! {ركضَ/ركضَتْ} {name} إلى الباب بسرعة البرق."
+    text_en: "At last the door opened, and in came Mama and Baba with the little guest! {name} ran to the door as fast as lightning."
+  - index: 7
+    layout: full
+    text_pos: bottom
+    location: living_room
+    time: afternoon
+    beat: first look
+    scene: >-
+      The hero leans over a bassinet and looks at the sleeping newborn wrapped in a soft blanket, full of
+      wonder, one finger gently touching the baby's tiny hand.
+    others: a sleeping newborn baby
+    others_count: 1
     companion_action: peeks over the edge of the bassinet
-    text_ar: "وأخيرًا وصل! صغيرٌ جدًّا، وأصابعه مثل حبّات الحمّص."
-    text_en: "At last the little guest arrived! So tiny, with fingers like chickpeas."
-  - index: 5
-    layout: illustration-textbox
+    text_ar: "كان صغيرًا جدًّا، وأصابعه مثل حبّات الحمّص. {همسَ/همسَتْ} {name}: «مرحبًا يا ضيفنا الصغير.»"
+    text_en: "The little guest was so tiny, with fingers like chickpeas. {name} whispered: \"Hello, little guest.\""
+  - index: 8
+    layout: spread
+    text_pos: top
+    location: living_room
+    time: afternoon
+    beat: a busy house
+    scene: >-
+      The living room full of visiting relatives with wrapped presents, all gathered around Mama and the
+      baby on the sofa. On the far side of the room, the hero stands a little apart, hugging a teddy bear,
+      watching quietly.
+    others: Mama holding the baby, the grandmother, an aunt, an uncle and a cousin
+    others_count: 6
+    companion_action: sits on the hero's foot, looking up at the hero
+    text_ar: "جاء الأقارب بالهدايا، وتجمّع الجميع حول الضيف الصغير. {ووقفَ/ووقفَتْ} {name} بعيدًا {يحضنُ/تحضنُ} الدبدوب."
+    text_en: "Relatives came with presents, and everyone gathered around the little guest. {name} stood a little apart, hugging the teddy bear."
+  - index: 9
+    layout: full
+    text_pos: side
+    location: stairs
+    time: afternoon
     beat: feeling left out
     scene: >-
-      The hero sits alone on the stairs hugging their knees; in the background the family gathers around
-      the baby.
-    companion_action: sits beside the hero, leaning on them
-    text_ar: "لكنّ {name} {شعرَ/شعرَتْ} بشيءٍ غريب: الجميع مشغولٌ بالضيف الجديد."
-    text_en: "But {name} felt something strange: everyone was busy with the new guest."
-  - index: 6
-    layout: illustration-textbox
+      The hero sits alone on the limestone stairs, hugging both knees, thoughtful and a little sad, in
+      soft light from the small window.
+    companion_action: sits beside the hero, leaning gently on them
+    text_ar: "{جلسَ/جلسَتْ} {name} على الدرج {وحيدًا/وحيدةً}، {وسألَ/وسألَتْ} {نفسَه/نفسَها}: «هل نسيني الجميع؟»"
+    text_en: "{name} sat alone on the stairs, wondering: \"Did everyone forget about me?\""
+  - index: 10
+    layout: full
+    text_pos: top
+    location: stairs
+    time: afternoon
     beat: comfort
     scene: >-
-      Close-up of the hero listening, eyes wide; a soft glowing heart shape floats in the background.
+      Close-up of the hero on the stairs listening with wide, hopeful eyes; a soft glowing heart shape
+      made of warm light floats in the air.
     companion_action: whispers into the hero's ear
-    text_ar: "همس {companion}: «قلب ماما كبيرٌ جدًّا، وفيه مكانٌ {لكَ/لكِ} لا يتغيّر.»"
-    text_en: "{companion} whispered: \"Mama's heart is very big, and your place in it never changes.\""
-  - index: 7
-    layout: illustration-textbox
+    text_ar: "همس {companion}: «قلب ماما كبيرٌ جدًّا، وفيه مكانٌ {لكَ/لكِ} لا يتغيّر أبدًا.»"
+    text_en: "{companion} whispered: \"Mama's heart is very big, and your place in it will never change.\""
+  - index: 11
+    layout: full
+    text_pos: bottom
+    location: living_room
+    time: sunset
     beat: mama's hug
     scene: >-
-      The mother hugs the hero tightly on the sofa; both smile with closed eyes.
+      Mama hugs the hero tightly on the sofa; both smile with closed eyes. The baby sleeps peacefully in
+      the bassinet beside them.
+    others: Mama and the sleeping baby in the bassinet
+    others_count: 2
     companion_action: floats nearby, glowing warmly
-    text_ar: "ثمّ ضمّت ماما {name} وقالت: «{أنتَ بطلي الكبير/أنتِ بطلتي الكبيرة}!»"
-    text_en: "Then Mama hugged {name} and said: \"You are my big hero!\""
-  - index: 8
-    layout: illustration-textbox
+    text_ar: "ثمّ جاءت ماما وضمّت {name} طويلًا وقالت: «{أنتَ بطلي الكبير/أنتِ بطلتي الكبيرة}!»"
+    text_en: "Then Mama came and gave {name} a long hug: \"You are my big hero!\""
+  - index: 12
+    layout: split
+    location: nursery
+    time: morning
     beat: helping
     scene: >-
-      The hero carries a small stack of diapers and sings to the baby, who lies in a bouncer.
+      The hero carries a small stack of soft diapers toward the baby, who lies in a bouncer, and sings
+      with an open, happy mouth.
+    others: the baby in a bouncer
+    others_count: 1
     companion_action: plays a tiny drum to the song
-    text_ar: "{صارَ/صارَتْ} {name} {يساعدُ/تساعدُ}: {يُحضرُ/تُحضرُ} الحفّاضات، {ويغنّي/وتغنّي} للضيف الصغير."
-    text_en: "{name} started helping: fetching diapers and singing to the little guest."
-  - index: 9
-    layout: illustration-textbox
+    text_ar: "{صارَ/صارَتْ} {name} {يساعدُ/تساعدُ}: {يُحضرُ/تُحضرُ} الحفّاضات، {ويغنّي/وتغنّي} للضيف الصغير أغنية القمر."
+    text_en: "{name} started helping: fetching diapers and singing the moon song to the little guest."
+  - index: 13
+    layout: full
+    text_pos: top
+    location: nursery
+    time: morning
     beat: the first smile
     scene: >-
-      The baby in the bouncer smiles up at the hero, whose face lights up with surprise and joy.
+      The baby in the bouncer smiles up at the hero for the first time; the hero's face lights up with
+      surprise and joy, both hands on the cheeks.
+    others: the baby in a bouncer
+    others_count: 1
     companion_action: gasps with delight, hands on its cheeks
-    text_ar: "وذات صباح، نظر الضيف الصغير إلى {name}… وابتسم!"
-    text_en: "One morning, the little guest looked at {name}... and smiled!"
-  - index: 10
-    layout: illustration-textbox
+    text_ar: "وذات صباح، نظر الضيف الصغير إلى {name}… وابتسم! وكانت أجمل ابتسامةٍ في الدنيا."
+    text_en: "One morning, the little guest looked at {name}... and smiled! It was the most beautiful smile in the world."
+  - index: 14
+    layout: full
+    text_pos: side
+    location: living_room
+    time: morning
     beat: clapping lesson
     scene: >-
-      On a colorful play mat, the hero claps in front of the baby, who waves tiny hands.
+      On a colorful play mat, the hero claps in front of the baby, who lies on the mat and waves tiny
+      hands.
+    others: the baby on the play mat
+    others_count: 1
     companion_action: claps along
-    text_ar: "{علّمَ/علّمَتْ} {name} الضيف الصغير كيف يصفّق: تك، تك، تك!"
-    text_en: "{name} taught the little guest how to clap: clap, clap, clap!"
-  - index: 11
-    layout: illustration-textbox
+    text_ar: "{علّمَ/علّمَتْ} {name} الضيف الصغير كيف يصفّق: تك، تك، تك! وصفّق {companion} معهما."
+    text_en: "{name} taught the little guest how to clap: clap, clap, clap! And {companion} clapped along."
+  - index: 15
+    layout: spread
+    text_pos: top
+    location: garden
+    time: sunset
+    beat: a garden walk
+    scene: >-
+      The family walks in the home garden at sunset under the grapevine pergola: Baba pushes a small
+      stroller with the baby, Mama walks beside him, and the hero points up at the lemon tree, showing it
+      to the baby.
+    others: Mama, Baba, and the baby in a stroller
+    others_count: 3
+    companion_action: picks a tiny lemon leaf for the baby
+    text_ar: "في المساء {خرجَ/خرجَتْ} {name} مع العائلة إلى الحديقة، {وأرى/وأرَتْ} الضيفَ الصغير شجرة الليمون والعريشة."
+    text_en: "In the evening, {name} went out to the garden with the family and showed the little guest the lemon tree and the grapevine."
+  - index: 16
+    layout: full
+    text_pos: bottom
+    location: living_room
+    time: evening
     beat: the family photo
     scene: >-
-      A family photo pose on the sofa: the hero sits in the middle, holding the baby's tiny hand, parents
-      on each side.
+      A family photo pose on the sofa: the hero sits in the middle holding the baby's tiny hand, Mama and
+      Baba on each side, all smiling at the viewer.
+    others: Mama, Baba and the baby
+    others_count: 3
     companion_action: pops into the corner of the photo
-    text_ar: "وفي صورة العائلة الجديدة، {جلسَ/جلسَتْ} {name} في الوسط، {فخورًا/فخورةً} بالضيف الصغير."
-    text_en: "In the new family photo, {name} sat in the middle, proud of the little guest."
-  - index: 12
-    layout: illustration-textbox
+    text_ar: "وفي صورة العائلة الجديدة، {جلسَ/جلسَتْ} {name} في الوسط، {ممسكًا/ممسكةً} بيد الضيف الصغير، {فخورًا/فخورةً} {وسعيدًا/وسعيدةً}."
+    text_en: "In the new family photo, {name} sat in the middle, holding the little guest's hand, proud and happy."
+  - index: 17
+    layout: full
+    text_pos: top
+    location: nursery
+    time: night
+    outfit: sleep
     beat: good night
     scene: >-
-      A nursery at night. The hero gently tucks a blanket over the baby in the crib; moonlight falls
-      through the window.
+      The nursery at night. The hero in pajamas gently tucks a blanket over the baby in the crib; silver
+      moonlight falls through the window and the star mobile glows softly.
+    others: the baby sleeping in the crib
+    others_count: 1
     companion_action: glows softly beside the crib like a night light
     text_ar: "وفي الليل، تحت ضوء القمر، {همسَ/همسَتْ} {name}: «تصبح على خير يا ضيفنا الصغير… أنا هنا دائمًا.»"
     text_en: "That night, under the moonlight, {name} whispered: \"Good night, little guest... I'm always here.\""

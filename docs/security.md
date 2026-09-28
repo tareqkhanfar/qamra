@@ -27,6 +27,21 @@ Last full review: 2026-09-28. No system can be proven free of vulnerabilities. T
   - Admin endpoints check `role == admin` on the server.
   - Tests cover anonymous → 401 and parent → 403.
 
+## Admin access (Addendum 3 §6.2)
+
+- **Two-step verification is required for every admin endpoint.**
+  - TOTP (RFC 6238) from any authenticator app, accepting ±1 time step.
+  - A code is never accepted twice: the last used step is stored, which stops replay.
+  - The secret is encrypted like the other admin secrets. The browser sees it only once, during setup, which asks for the password again.
+- **Recovery codes:**
+  - 10 single-use codes, stored as sha256 hashes and shown once.
+  - Admins can't turn 2FA off. If both the phone and the codes are lost: `docker compose exec api qamra reset-2fa --email …` on the server, which also signs the account out everywhere.
+- **Sessions:**
+  - A password-only session (e.g. from before 2FA was set up) gets `mfa_required` on admin endpoints.
+  - Turning 2FA on signs out every other session.
+  - The 2FA step of a login lives in a 5-minute signed cookie, and code attempts are rate-limited per login and per IP.
+- **Optional admin IP allowlist** (admin → Security): comma-separated addresses or networks, checked on every admin endpoint.
+
 ## Admin settings and secrets
 
 - **Where settings live:** prices, contact details, AI keys and models, notifications and site switches are edited in `/admin/settings`. Infrastructure secrets (database, JWT, encryption key) stay in the server environment.
@@ -54,10 +69,21 @@ Last full review: 2026-09-28. No system can be proven free of vulnerabilities. T
 - **API responses:** `default-src 'none'`, `nosniff`, `no-store` on account/admin/children/books data, `X-Robots-Tag: noindex`, and no `Server` header.
 - **No raw HTML** anywhere (no `dangerouslySetInnerHTML`). React escapes all text, and redirect targets are checked to be same-site paths.
 
+## AI providers and children's photos (Addendum 3 §6.5)
+
+- **Anthropic:** "Anthropic may not train models on Customer Content from Services" (Commercial Terms).
+- **Google (Nano Banana 2 behind fal):** paid Gemini API prompts and responses are not used to improve Google's products; they are logged for a limited time for abuse detection.
+- **fal:**
+  - Every call sends `X-Fal-Store-IO: 0` (no 30-day request history) and a 15-minute expiry for any generated file.
+  - Reference images go inline, never to fal's CDN.
+  - fal's DPA limits personal data to our instructions but allows de-identified data to improve their services. **Get written confirmation from fal before real children's photos go through it.**
+- Error messages from fal echo the request (our images), so only the error type and message are logged.
+- The public `/privacy` page states all of this with links to the terms.
+
 ## Infrastructure
 
 - **Only the nginx `edge` is public:**
-  - It sets the real client IP; the client can't spoof it.
+  - It sets the real client IP; the client can't spoof it. It trusts `X-Forwarded-For` only from Docker bridge addresses (the host nginx in front of it). Internet clients keep their real address: re-tested with spoofed headers, blocked at attempt 11.
   - Allowed methods: GET, HEAD, POST, PUT, PATCH, DELETE.
   - Per-IP request and connection limits.
   - Slow-client timeouts; 20 MB body limit.
@@ -70,6 +96,7 @@ Last full review: 2026-09-28. No system can be proven free of vulnerabilities. T
   - Memory limits, so one service can't starve the server.
 - **Database access** goes through SQLAlchemy only (no string-built SQL).
 - **Child data:**
+  - Stored encrypted at rest. The bundled SeaweedFS encrypts every volume (`-s3.encryptVolumeData`); R2 in production encrypts every object. Per-object SSE-S3 is off (`S3_SSE=none`) because SeaweedFS 4.47 corrupts SSE objects over 8 MB, which print PDFs are. See `docs/decisions.md`.
   - Original photos and drawings are deleted automatically; the cleanup job runs every 15 minutes.
   - Deleting a child cascades to all their data.
   - Audit logs hold no personal data.
@@ -79,14 +106,16 @@ Last full review: 2026-09-28. No system can be proven free of vulnerabilities. T
 | Check | Result |
 |---|---|
 | `bandit` (Python security lint) | 0 issues. Three false positives are annotated: a public URL, the dev JWT default that production refuses, and the enum name `"secret"`. The jinja2 `autoescape=False` in AI prompt templates is intentional (plain text, never HTML). |
-| `pip-audit` (275 Python packages) | No known vulnerabilities |
+| `pip-audit` (88 Python packages) | No known vulnerabilities (re-run after adding pyotp, python-multipart, pdfplumber) |
 | `npm audit --omit=dev` (web) | 0 vulnerabilities |
-| Test suite | 141 Python tests, including auth, rate limits, CSRF, role checks, secret masking/encryption, settings validation and security headers. Plus a browser e2e and a CSP-violation check in a real browser (none found). |
+| Test suite | 256 Python tests, including auth, 2FA (replay, recovery, rate limit, admin enforcement, IP allowlist), rate limits, CSRF, role checks, secret masking/encryption, settings validation, sample-upload checks (consent, face check, metadata stripped) and security headers. Plus a browser e2e and a CSP-violation check in a real browser. |
 
 ## Open items: must do before real customers
 
-1. **HTTPS.** The test site runs on plain HTTP (`http://62.84.179.155:3300`), so passwords and cookies cross the network unencrypted. With a domain behind Cloudflare, or a certificate on port 443, set `COOKIE_SECURE=true` and `QAMRA_HTTPS=1` and add HSTS at the edge.
-2. **Two-factor sign-in for admins** (TOTP). The admin panel holds the AI keys.
+1. **HTTPS.**
+   - The test site still runs on plain HTTP (`http://62.84.179.155:3300`), so passwords and cookies cross the network unencrypted.
+   - Ready to switch on: point a domain at the server, then run `sudo infra/scripts/setup-https.sh DOMAIN EMAIL`. It adds a host-nginx site + Let's Encrypt with HSTS, binds the edge to localhost, and sets `COOKIE_SECURE=true` and `QAMRA_HTTPS=1`.
+2. **Firewall.** `infra/scripts/firewall.sh` (ufw 22/80/443 + DOCKER-USER) is ready but **not applied**: on this shared server it would also close other projects' ports. It runs as a dry run unless given `--apply`.
 3. **The test server itself** (outside Qamra):
    - Root logs in by SSH with a password that has been shared in chat. Change it and switch to SSH keys.
    - `namer-postgres` is published on `0.0.0.0:5432` to the whole internet.

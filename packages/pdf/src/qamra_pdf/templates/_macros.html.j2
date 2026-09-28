@@ -1,6 +1,125 @@
 {% macro moon_mark(size='26mm', color='#F2B33D', ink='#16204A') -%}
 <svg class="moon-mark" style="width:{{ size }};height:{{ size }}" viewBox="0 0 48 48" aria-hidden="true"><path d="M21.32 5.01 A17 17 0 1 0 38.12 27.41 A14 14 0 0 1 21.32 5.01 Z" fill="{{ color }}"/><path d="M34 8 C34.6 11.2 35.8 12.4 39 13 C35.8 13.6 34.6 14.8 34 18 C33.4 14.8 32.2 13.6 29 13 C32.2 12.4 33.4 11.2 34 8 Z" fill="{{ ink }}"/><path d="M6 44 Q15 39.5 24 43.5 Q33 39.5 42 44" fill="none" stroke="{{ ink }}" stroke-width="3" stroke-linecap="round"/></svg>
 {%- endmacro %}
+
+{% macro sparkle(size='6mm', color='#F2B33D') -%}
+<svg style="width:{{ size }};height:{{ size }}" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0 C13 8 16 11 24 12 C16 13 13 16 12 24 C11 16 8 13 0 12 C8 11 11 8 12 0 Z" fill="{{ color }}"/></svg>
+{%- endmacro %}
+
 {% macro watermark(spec, s) -%}
 {% if spec.watermark %}<div class="watermark"><span>{{ s.watermark.format(brand=spec.brand.name_ar if spec.lang == 'ar' else spec.brand.name_en) }}</span></div>{% endif %}
+{%- endmacro %}
+
+{% macro folio(spec, p) -%}
+<div class="folio">{{ spec.folio(p.number) }}</div>
+{%- endmacro %}
+
+{% macro panel(spec, s, p) -%}
+{% if p.panel and p.text %}
+<div class="panel {{ p.panel.area }}" style="background: rgba(255,253,248,{{ p.panel.opacity }})" data-panel="{{ p.number }}">
+  <p class="story-text">{{ p.text }}{% if p.is_last_story %}<span class="the-end">— {{ s.the_end }} —</span>{% endif %}</p>
+</div>
+{% endif %}
+{%- endmacro %}
+
+{% macro story_page(spec, s, p, img) -%}
+{% if p.layout == 'split' %}
+<section class="page split" data-kind="story" data-layout="split" data-number="{{ p.number }}">
+  <div class="split-art"><img src="{{ img(p.image) }}" alt=""></div>
+  <svg class="split-wave" viewBox="0 0 216 16" preserveAspectRatio="none" aria-hidden="true"><path d="M0 8 C36 0 72 16 108 8 S180 0 216 8 L216 16 L0 16 Z" fill="#FBF6EC"/></svg>
+  <div class="split-text" data-panel="{{ p.number }}"><p class="story-text">{{ p.text }}{% if p.is_last_story %}<span class="the-end">— {{ s.the_end }} —</span>{% endif %}</p></div>
+  {{ folio(spec, p) }}
+  {{ watermark(spec, s) }}
+</section>
+{% else %}
+<section class="page" data-kind="story" data-layout="{{ p.layout }}" data-number="{{ p.number }}">
+  <img class="bleed-img" src="{{ img(p.image) }}" alt="">
+  {{ panel(spec, s, p) }}
+  {{ folio(spec, p) }}
+  {{ watermark(spec, s) }}
+</section>
+{% endif %}
+{%- endmacro %}
+
+{% macro title_page(spec, s, img) -%}{% set t = spec.title_page %}
+<section class="page title-page" data-kind="title" data-number="1">
+  <div class="ornament"><span></span>{{ sparkle('7mm') }}<span></span></div>
+  <h1 class="display name">{{ t.name }}</h1>
+  {% if t.subtitle %}<div class="display subtitle">{{ t.subtitle }}</div>{% endif %}
+  <div class="made-for">{{ t.made_for }}</div>
+  {% if t.portrait %}<div class="portrait"><img src="{{ img(t.portrait) }}" alt=""></div>{% endif %}
+  <div class="label">{{ s.dedication_label }}</div>
+  <p class="dedication">{{ t.dedication }}</p>
+</section>
+{%- endmacro %}
+
+{% macro keepsake_page(spec, s, p, img) -%}{% set k = spec.keepsake %}
+<section class="page keepsake" data-kind="companion" data-number="{{ p.number }}">
+  <div class="frame-border">
+    <h2 class="display">{{ s.keepsake_title }}</h2>
+    <div class="pair">
+      <figure class="drawing"><div class="paper"><span class="tape"></span><img src="{{ img(k.drawing) }}" alt=""></div><figcaption>{{ s.drawing_label }}</figcaption></figure>
+      <div class="arrow">{{ '⟵' if spec.dir == 'rtl' else '⟶' }}</div>
+      <figure class="final"><div class="circle"><img src="{{ img(k.companion) }}" alt=""></div><figcaption>{{ s.companion_label.format(companion=k.companion_name) }}</figcaption></figure>
+    </div>
+    <p class="note">{{ (s.keepsake_note_f if spec.gender == 'f' else s.keepsake_note).format(name=k.child_name) }}</p>
+    <div class="date">{{ k.date_text }}</div>
+  </div>
+  {{ folio(spec, p) }}
+</section>
+{%- endmacro %}
+
+{% macro parents_page(spec, s, p) -%}{% set fp = spec.parents %}
+<section class="page parents" data-kind="parents" data-number="{{ p.number }}">
+  <div class="head">{{ moon_mark('16mm') }}<h2 class="display">{{ s.parents_title }}</h2></div>
+  <div class="label">{{ s.parents_lesson_label }}</div>
+  <p class="lesson">{{ fp.lesson }}</p>
+  <div class="questions">
+    <div class="label">{{ s.parents_questions_label }}</div>
+    <ol>{% for q in fp.questions %}<li><span class="q-num">{{ spec.folio(loop.index) }}</span><span>{{ q }}</span></li>{% endfor %}</ol>
+  </div>
+  <div class="made-by">{{ s.made_by.format(brand=spec.brand.name_ar if spec.lang == 'ar' else spec.brand.name_en) }} · {{ spec.brand.domain }}</div>
+  {{ folio(spec, p) }}
+</section>
+{%- endmacro %}
+
+{% macro activity_page(spec, s, p) -%}
+<section class="page activity" data-kind="activity" data-number="{{ p.number }}">
+  <h2 class="display">{{ s.activity_title_f if spec.gender == 'f' else s.activity_title_m }}</h2>
+  <div class="draw-frame">{% for c in ['tl', 'tr', 'bl', 'br'] %}<span class="corner {{ c }}">{{ sparkle('7mm') }}</span>{% endfor %}</div>
+  {{ folio(spec, p) }}
+</section>
+{%- endmacro %}
+
+{% macro memories_page(spec, s, p) -%}
+<section class="page memories" data-kind="memories" data-number="{{ p.number }}">
+  <h2 class="display">{{ s.memories_title }}</h2>
+  <div class="photo"><span>{{ s.memories_photo }}</span></div>
+  <div class="lines">{% for _ in range(5) %}<span></span>{% endfor %}</div>
+  {{ folio(spec, p) }}
+</section>
+{%- endmacro %}
+
+{% macro front_panel(spec, s, img) -%}{% set c = spec.cover %}
+<div class="front">
+  <img class="bleed-img" src="{{ img(c.front_image) }}" alt="">
+  <div class="cover-shade"></div>
+  <div class="cover-title">
+    <h1 class="display cover-name">{{ c.name }}</h1>
+    {% if c.subtitle %}<div class="display cover-sub">{{ c.subtitle }}</div>{% endif %}
+  </div>
+</div>
+{%- endmacro %}
+
+{% macro back_panel(spec, s, qr_svg) -%}{% set c = spec.cover %}
+<div class="back">
+  <div class="stars">{% for x, y in [(22,18),(71,12),(160,26),(186,64),(34,150),(178,170),(120,190),(58,88),(140,110)] %}<span style="left:{{ x }}mm;top:{{ y }}mm"></span>{% endfor %}</div>
+  <p class="blurb">{{ c.blurb }}</p>
+  <div class="back-brand">{{ moon_mark('16mm', '#F2B33D', '#FFFDF8') }}<div class="back-name display">{{ spec.brand.name_ar if spec.lang == 'ar' else spec.brand.name_en }}</div></div>
+  <div class="qr-row">
+    <div class="qr">{% if qr_svg %}{{ qr_svg }}{% else %}{{ moon_mark('12mm', '#E4D6BC', '#E4D6BC') }}{% endif %}</div>
+    <div class="qr-caption">{{ s.back_voice if qr_svg else s.back_voice_soon }}</div>
+  </div>
+  <div class="back-domain">{{ spec.brand.domain }}</div>
+</div>
 {%- endmacro %}

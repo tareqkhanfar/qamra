@@ -7,7 +7,7 @@ import { Alert } from "@/components/ui/Alert";
 import { Button, buttonClasses } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
 import { Link, useRouter } from "@/i18n/navigation";
-import { api, errorText, safeNext, type User } from "@/lib/api";
+import { api, errorText, safeNext, type MfaChallenge, type User } from "@/lib/api";
 
 export function AuthForm({ mode, googleEnabled = false }: { mode: "login" | "register"; googleEnabled?: boolean }) {
   const t = useTranslations("auth");
@@ -19,6 +19,24 @@ export function AuthForm({ mode, googleEnabled = false }: { mode: "login" | "reg
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(params.get("error") === "google_failed" ? t("googleFailed") : null);
   const [badFields, setBadFields] = useState<string[]>([]);
+  const [mfaStep, setMfaStep] = useState(false);
+  const tm = useTranslations("mfa");
+
+  async function onCode(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const code = String(new FormData(e.currentTarget).get("code") ?? "").trim();
+    setBusy(true);
+    setError(null);
+    const res = await api<User>("/api/auth/mfa/verify", { json: { code } });
+    if (res.ok) {
+      router.replace(next);
+      router.refresh();
+      return;
+    }
+    setBusy(false);
+    setError(errorText(res.error, locale, res.status === 0 ? te("network") : te("unknown")));
+    if (res.error?.code === "token_expired") setMfaStep(false);
+  }
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -33,7 +51,12 @@ export function AuthForm({ mode, googleEnabled = false }: { mode: "login" | "reg
     }
     setBusy(true);
     setError(null);
-    const res = await api<User>(`/api/auth/${mode}`, { json: body });
+    const res = await api<User | MfaChallenge>(`/api/auth/${mode}`, { json: body });
+    if (res.ok && "mfa_required" in res.data) {
+      setBusy(false);
+      setMfaStep(true);
+      return;
+    }
     if (res.ok) {
       router.replace(next);
       router.refresh();
@@ -47,6 +70,37 @@ export function AuthForm({ mode, googleEnabled = false }: { mode: "login" | "reg
   }
 
   const bad = (f: string) => badFields.includes(f);
+  if (mfaStep)
+    return (
+      <form onSubmit={onCode} className="flex flex-col gap-4" noValidate>
+        <div className="flex flex-col gap-1">
+          <h2 className="text-h3 text-night-900">{tm("loginTitle")}</h2>
+          <p className="text-small text-ink-muted">{tm("loginLead")}</p>
+        </div>
+        {error && <Alert>{error}</Alert>}
+        <TextField
+          name="code"
+          label={tm("code")}
+          hint={tm("codeHint")}
+          autoComplete="one-time-code"
+          inputMode="numeric"
+          required
+          maxLength={20}
+          ltr
+          autoFocus
+        />
+        <Button
+          type="submit"
+          variant="solid"
+          size="lg"
+          loading={busy}
+          loadingLabel={tm("verifying")}
+          className="w-full"
+        >
+          {tm("verify")}
+        </Button>
+      </form>
+    );
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
       {error && <Alert>{error}</Alert>}

@@ -1,35 +1,53 @@
 """/api/auth — register, login, refresh, logout, me, Google sign-in."""
 
+import io
 import secrets
+import uuid
 from datetime import UTC, datetime
 
 import httpx
 import jwt
+import qrcode
 from fastapi import APIRouter, Request, Response
 from fastapi.responses import RedirectResponse
 from sqlalchemy import select
 
 from qamra_api import ratelimit, runtime_settings
-from qamra_api.auth import google
+from qamra_api.auth import google, mfa
 from qamra_api.auth import service as auth
-from qamra_api.auth.schemas import LoginIn, PasswordChangeIn, RegisterIn, UserOut
+from qamra_api.auth.schemas import (
+    LoginIn,
+    MfaChallengeOut,
+    MfaCodeIn,
+    MfaSetupIn,
+    MfaSetupOut,
+    PasswordChangeIn,
+    RecoveryCodesOut,
+    RegisterIn,
+    UserOut,
+)
 from qamra_api.deps import (
     ACCESS_COOKIE,
     OAUTH_COOKIE,
     REFRESH_COOKIE,
-    CurrentUser,
+    CurrentAuth,
     RedisDep,
     SessionDep,
     SettingsDep,
 )
 from qamra_api.errors import ApiError
-from qamra_api.security import TokenInvalid, read_state, sign_state
+from qamra_api.security import TokenInvalid, read_blob, read_state, sign_blob, sign_state, verify_password
 from qamra_api.settings import ApiSettings
+from qamra_core.crypto import cipher_for, decrypt, encrypt
 from qamra_core.db.models import Locale, User, UserRole
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 REFRESH_PATH = "/api/auth"
 GOOGLE_PATH = "/api/auth/google"
+MFA_PATH = "/api/auth/mfa"
+MFA_COOKIE = "qamra_mfa"
+MFA_MINUTES = 5
+MFA_MAX_ATTEMPTS = 5  # per login challenge window
 
 
 def _set_cookie(
@@ -111,7 +129,7 @@ async def login(
     db: SessionDep,
     redis: RedisDep,
     settings: SettingsDep,
-) -> UserOut:
+) -> UserOut | MfaChallengeOut:
     per_email, per_ip = ratelimit.login_keys(client_ip(request), body.email)
     window = settings.login_window_seconds
     if (
@@ -121,6 +139,11 @@ async def login(
         raise ApiError("too_many_attempts", 429)
     user = await auth.authenticate(db, body.email, body.password)
     await ratelimit.reset(redis, per_email)
+    if user.totp_enabled_at is not None:
+        # password OK; the session starts only after the second factor (POST /api/auth/mfa/verify)
+        blob = sign_blob({"uid": str(user.id)}, settings.jwt_secret.get_secret_value(), "mfa", MFA_MINUTES)
+        _set_cookie(response, MFA_COOKIE, blob, MFA_MINUTES * 60, MFA_PATH, settings)
+        return MfaChallengeOut()
     session = await auth.start_session(db, user, settings, request.headers.get("user-agent"), "password")
     set_session_cookies(response, session, settings)
     return UserOut.of(user)
@@ -136,7 +159,7 @@ async def refresh(request: Request, response: Response, db: SessionDep, settings
         clear_session_cookies(response, settings)
         raise
     set_session_cookies(response, session, settings)
-    return UserOut.of(session.user)
+    return UserOut.of(session.user, mfa_verified=session.mfa)
 
 
 @router.post("/logout", status_code=204)
@@ -148,8 +171,8 @@ async def logout(request: Request, db: SessionDep, settings: SettingsDep) -> Res
 
 
 @router.get("/me")
-async def me(user: CurrentUser) -> UserOut:
-    return UserOut.of(user)
+async def me(current: CurrentAuth) -> UserOut:
+    return UserOut.of(current.user, mfa_verified=current.claims.mfa)
 
 
 @router.post("/password")
@@ -157,21 +180,177 @@ async def change_password(
     body: PasswordChangeIn,
     request: Request,
     response: Response,
-    user: CurrentUser,
+    current: CurrentAuth,
     db: SessionDep,
     redis: RedisDep,
     settings: SettingsDep,
 ) -> UserOut:
     """Change password; signs out every other session (all refresh tokens revoked, new one issued)."""
+    user = current.user
     key = f"rl:password:{user.id}"
     if await ratelimit.hit(redis, key, settings.login_window_seconds) > settings.login_max_attempts:
         raise ApiError("too_many_attempts", 429)
     await auth.change_password(db, user, body.current_password, body.new_password)
     await ratelimit.reset(redis, key)
     session = await auth.start_session(
-        db, user, settings, request.headers.get("user-agent"), "password_change"
+        db, user, settings, request.headers.get("user-agent"), "password_change", mfa=current.claims.mfa
     )
     set_session_cookies(response, session, settings)
+    return UserOut.of(user, mfa_verified=session.mfa)
+
+
+# ---- two-step verification (TOTP) ---------------------------------------------------------------
+
+
+def _clear_mfa_cookie(response: Response, settings: ApiSettings) -> None:
+    response.delete_cookie(
+        MFA_COOKIE, path=MFA_PATH, domain=settings.cookie_domain, secure=settings.cookie_secure, httponly=True
+    )
+
+
+async def _check_code(
+    db: SessionDep, user: User, code: str, settings: ApiSettings, *, pending: bool = False
+) -> str:
+    """'totp' or 'recovery' when `code` is valid for `user`, else ApiError. Updates replay/recovery state."""
+    if not user.totp_secret_ciphertext:
+        raise ApiError("mfa_not_pending", 409)
+    secret = decrypt(cipher_for(settings), user.totp_secret_ciphertext)
+    step = mfa.match_step(secret, code, user.totp_last_step)
+    if step is not None:
+        user.totp_last_step = step
+        return "totp"
+    if not pending and user.recovery_codes:
+        remaining = mfa.consume_recovery(list(user.recovery_codes), code)
+        if remaining is not None:
+            user.recovery_codes = remaining
+            auth.audit(db, "user.mfa_recovery_used", user.id, left=len(remaining))
+            return "recovery"
+    raise ApiError("invalid_code", 401)
+
+
+@router.post("/mfa/verify")
+async def mfa_verify(
+    body: MfaCodeIn,
+    request: Request,
+    response: Response,
+    db: SessionDep,
+    redis: RedisDep,
+    settings: SettingsDep,
+) -> UserOut:
+    """Second step of a login: the challenge cookie from /login + a TOTP or recovery code."""
+    try:
+        blob = read_blob(request.cookies.get(MFA_COOKIE, ""), settings.jwt_secret.get_secret_value(), "mfa")
+        user_id = uuid.UUID(blob["uid"])
+    except (TokenInvalid, KeyError, ValueError) as e:
+        raise ApiError("token_expired", 401) from e
+    ip = client_ip(request)
+    if (
+        await ratelimit.hit(redis, f"rl:mfa:{user_id}", settings.login_window_seconds) > MFA_MAX_ATTEMPTS
+        or await ratelimit.hit(redis, f"rl:mfa-ip:{ip}", settings.login_window_seconds)
+        > settings.login_ip_max_attempts
+    ):
+        raise ApiError("too_many_attempts", 429)
+    user = await db.get(User, user_id)
+    if user is None or not user.is_active or user.totp_enabled_at is None:
+        raise ApiError("not_authenticated", 401)
+    method = await _check_code(db, user, body.code, settings)
+    await ratelimit.reset(redis, f"rl:mfa:{user_id}")
+    session = await auth.start_session(
+        db, user, settings, request.headers.get("user-agent"), f"password+{method}", mfa=True
+    )
+    _clear_mfa_cookie(response, settings)
+    set_session_cookies(response, session, settings)
+    return UserOut.of(user, mfa_verified=True)
+
+
+@router.post("/mfa/setup")
+async def mfa_setup(
+    body: MfaSetupIn, current: CurrentAuth, db: SessionDep, settings: SettingsDep
+) -> MfaSetupOut:
+    """Start enrollment: a new secret, stored encrypted and pending until a first code confirms it."""
+    user = current.user
+    if user.totp_enabled_at is not None:
+        raise ApiError("mfa_already_enabled", 409)
+    if user.password_hash is not None and not verify_password(body.password or "", user.password_hash):
+        raise ApiError("wrong_password", 403)
+    secret = mfa.new_secret()
+    user.totp_secret_ciphertext = encrypt(cipher_for(settings), secret)
+    user.totp_last_step = None
+    auth.audit(db, "user.mfa_setup_started", user.id)
+    await db.commit()
+    return MfaSetupOut(secret=secret, uri=mfa.provisioning_uri(secret, user.email, settings.brand_name_en))
+
+
+@router.get("/mfa/qr.png")
+async def mfa_qr(current: CurrentAuth, settings: SettingsDep) -> Response:
+    """QR of the pending secret for authenticator apps (only while enrollment is pending)."""
+    user = current.user
+    if user.totp_enabled_at is not None or not user.totp_secret_ciphertext:
+        raise ApiError("mfa_not_pending", 409)
+    secret = decrypt(cipher_for(settings), user.totp_secret_ciphertext)
+    img = qrcode.make(mfa.provisioning_uri(secret, user.email, settings.brand_name_en), box_size=8, border=2)
+    buf = io.BytesIO()
+    img.save(buf)
+    return Response(buf.getvalue(), media_type="image/png", headers={"Cache-Control": "no-store"})
+
+
+@router.post("/mfa/enable")
+async def mfa_enable(
+    body: MfaCodeIn,
+    request: Request,
+    response: Response,
+    current: CurrentAuth,
+    db: SessionDep,
+    settings: SettingsDep,
+) -> RecoveryCodesOut:
+    """Confirm the first code: 2FA is on, recovery codes are shown once, other sessions are signed out."""
+    user = current.user
+    if user.totp_enabled_at is not None:
+        raise ApiError("mfa_already_enabled", 409)
+    await _check_code(db, user, body.code, settings, pending=True)
+    codes, hashes = mfa.new_recovery_codes()
+    user.totp_enabled_at = datetime.now(UTC)
+    user.recovery_codes = hashes
+    await auth.revoke_all_sessions(db, user, "mfa_enabled")
+    auth.audit(db, "user.mfa_enabled", user.id)
+    session = await auth.start_session(
+        db, user, settings, request.headers.get("user-agent"), "mfa_enable", mfa=True
+    )
+    set_session_cookies(response, session, settings)
+    return RecoveryCodesOut(recovery_codes=codes)
+
+
+@router.post("/mfa/recovery-codes")
+async def mfa_new_recovery_codes(
+    body: MfaCodeIn, current: CurrentAuth, db: SessionDep, settings: SettingsDep
+) -> RecoveryCodesOut:
+    user = current.user
+    if user.totp_enabled_at is None:
+        raise ApiError("mfa_not_pending", 409)
+    await _check_code(db, user, body.code, settings)
+    codes, hashes = mfa.new_recovery_codes()
+    user.recovery_codes = hashes
+    auth.audit(db, "user.mfa_recovery_regenerated", user.id)
+    await db.commit()
+    return RecoveryCodesOut(recovery_codes=codes)
+
+
+@router.post("/mfa/disable")
+async def mfa_disable(
+    body: MfaCodeIn, current: CurrentAuth, db: SessionDep, settings: SettingsDep
+) -> UserOut:
+    user = current.user
+    if user.role == UserRole.admin:
+        raise ApiError("admin_requires_2fa", 403)
+    if user.totp_enabled_at is None:
+        return UserOut.of(user)
+    await _check_code(db, user, body.code, settings)
+    user.totp_enabled_at = None
+    user.totp_secret_ciphertext = None
+    user.totp_last_step = None
+    user.recovery_codes = []
+    auth.audit(db, "user.mfa_disabled", user.id)
+    await db.commit()
     return UserOut.of(user)
 
 

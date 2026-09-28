@@ -97,6 +97,7 @@ class AccessClaims:
     user_id: uuid.UUID
     role: str
     expires_at: datetime
+    mfa: bool = False  # the session passed the second factor
 
 
 class TokenExpired(Exception):
@@ -107,12 +108,13 @@ class TokenInvalid(Exception):
     pass
 
 
-def create_access_token(user_id: uuid.UUID, role: str, secret: str, minutes: int) -> str:
+def create_access_token(user_id: uuid.UUID, role: str, secret: str, minutes: int, mfa: bool = False) -> str:
     now = datetime.now(UTC)
     payload = {
         "sub": str(user_id),
         "role": role,
         "typ": "access",
+        "mfa": mfa,
         "iat": now,
         "exp": now + timedelta(minutes=minutes),
     }
@@ -134,7 +136,12 @@ def decode_access_token(token: str, secret: str) -> AccessClaims:
         user_id = uuid.UUID(payload["sub"])
     except ValueError as e:
         raise TokenInvalid from e
-    return AccessClaims(user_id, str(payload.get("role", "")), datetime.fromtimestamp(payload["exp"], UTC))
+    return AccessClaims(
+        user_id,
+        str(payload.get("role", "")),
+        datetime.fromtimestamp(payload["exp"], UTC),
+        mfa=payload.get("mfa") is True,
+    )
 
 
 def new_refresh_token() -> tuple[str, str]:
@@ -147,21 +154,29 @@ def hash_refresh_token(raw: str) -> str:
     return hashlib.sha256(raw.encode()).hexdigest()
 
 
-def sign_state(payload: dict[str, str], secret: str, minutes: int = 10) -> str:
-    """Short-lived signed blob (OAuth state/nonce cookie)."""
+def sign_blob(payload: dict[str, str], secret: str, typ: str, minutes: int) -> str:
+    """Short-lived signed blob for a cookie (OAuth state, the 2FA step of a login)."""
     now = datetime.now(UTC)
     return jwt.encode(
-        {**payload, "typ": "oauth", "iat": now, "exp": now + timedelta(minutes=minutes)},
+        {**payload, "typ": typ, "iat": now, "exp": now + timedelta(minutes=minutes)},
         secret,
         algorithm=JWT_ALG,
     )
 
 
-def read_state(token: str, secret: str) -> dict[str, str]:
+def read_blob(token: str, secret: str, typ: str) -> dict[str, str]:
     try:
         payload = jwt.decode(token, secret, algorithms=[JWT_ALG])
     except jwt.PyJWTError as e:
         raise TokenInvalid from e
-    if payload.get("typ") != "oauth":
+    if payload.get("typ") != typ:
         raise TokenInvalid
     return {k: str(v) for k, v in payload.items() if k not in ("typ", "iat", "exp")}
+
+
+def sign_state(payload: dict[str, str], secret: str, minutes: int = 10) -> str:
+    return sign_blob(payload, secret, "oauth", minutes)
+
+
+def read_state(token: str, secret: str) -> dict[str, str]:
+    return read_blob(token, secret, "oauth")

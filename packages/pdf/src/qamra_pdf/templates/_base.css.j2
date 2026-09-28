@@ -1,4 +1,6 @@
-/* Static font instances only: Chromium embeds variable fonts as Type 3, which print RIPs dislike. */
+/* Static font instances only: Chromium embeds variable fonts as Type 3, which print RIPs dislike.
+   Story text: Noto Naskh Arabic (full tashkeel, SIL OFL: commercial embedding allowed). Baloo Bhaijaan 2
+   only for titles and the cover (Addendum 3 §4). IBM Plex Sans Arabic for small labels and folios. */
 @font-face { font-family: "Baloo Bhaijaan 2"; src: url("{{ fonts }}/BalooBhaijaan2-Medium.ttf") format("truetype"); font-weight: 400 600; }
 @font-face { font-family: "Baloo Bhaijaan 2"; src: url("{{ fonts }}/BalooBhaijaan2-ExtraBold.ttf") format("truetype"); font-weight: 700 900; }
 @font-face { font-family: "Noto Naskh Arabic"; src: url("{{ fonts }}/NotoNaskhArabic-Regular.ttf") format("truetype"); font-weight: 400 600; }
@@ -6,32 +8,37 @@
 @font-face { font-family: "IBM Plex Sans Arabic"; src: url("{{ fonts }}/IBMPlexSansArabic-Regular.ttf") format("truetype"); font-weight: 400 500; }
 @font-face { font-family: "IBM Plex Sans Arabic"; src: url("{{ fonts }}/IBMPlexSansArabic-SemiBold.ttf") format("truetype"); font-weight: 600 900; }
 
-/* tokens.json (CMYK-friendly subset) */
+/* tokens.json, CMYK-safe subset (no saturated RGB-only blues or greens) */
 :root {
   --night-950: #0E1530; --night-900: #16204A; --night-800: #22306A;
   --moon: #F2B33D; --moon-glow: #FCEFD2; --moon-deep: #9A620A;
   --paper: #FBF6EC; --paper-raised: #FFFDF8; --line: #E4D6BC;
-  --ink: #1C2140; --ink-muted: #585C72;
+  --ink: #1C2140; --ink-muted: #585C72; --coral: #E9826B; --sage: #7FA38A;
   --page: {{ spec.page_mm }}mm; --bleed: {{ spec.bleed_mm }}mm;
-  --safe: {{ spec.bleed_mm + spec.safe_mm }}mm; /* from the page edge incl. bleed */
+  --safe: {{ spec.bleed_mm + spec.safe_mm }}mm; /* from the page edge, incl. bleed */
+  --folio-bottom: {{ spec.bleed_mm + 12 }}mm;
+  --story-pt: {{ spec.text_pt }}pt;
 }
-@page { size: {{ spec.page_mm }}mm {{ spec.page_mm }}mm; margin: 0; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { background: var(--paper); color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 body { font-family: "Noto Naskh Arabic", "IBM Plex Sans Arabic", serif; }
 .page { position: relative; width: var(--page); height: var(--page); overflow: hidden; page-break-after: always; break-after: page; background: var(--paper); }
 .page:last-child { page-break-after: auto; break-after: auto; }
 .bleed-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.safe { position: absolute; inset: var(--safe); }
 .display { font-family: "Baloo Bhaijaan 2", "IBM Plex Sans Arabic", sans-serif; }
-.textbox {
-  position: absolute; top: var(--safe); inset-inline: var(--safe);
-  background: rgba(255, 253, 248, 0.92); border-radius: 7mm; padding: 6mm 9mm;
-  box-shadow: 0 2mm 6mm rgba(22, 32, 74, 0.18);
-  font-size: 21pt; line-height: 2.05; text-align: center; color: var(--ink);
-}
-[dir="ltr"] .textbox { font-family: "Baloo Bhaijaan 2", sans-serif; font-weight: 500; line-height: 1.6; }
-.folio { position: absolute; bottom: calc(var(--safe) - 4mm); inset-inline: 0; text-align: center; font: 600 10pt "IBM Plex Sans Arabic", sans-serif; color: var(--paper-raised); text-shadow: 0 0 2mm rgba(14,21,48,.6); }
+.label { font: 600 10.5pt "IBM Plex Sans Arabic", sans-serif; letter-spacing: .3mm; color: var(--moon-deep); }
+[dir="ltr"] .story-text { font-family: "IBM Plex Sans Arabic", sans-serif; }
+
+/* Story text: ≥ 1.8 line height so tashkeel never collides (Addendum 3 §4). */
+.story-text { font-size: var(--story-pt); line-height: 1.9; text-align: center; color: var(--ink); }
+.panel { position: absolute; display: flex; flex-direction: column; justify-content: center; border-radius: 6mm; padding: 5mm 8mm; box-shadow: 0 1.5mm 5mm rgba(22,32,74,.16); }
+.panel.top { top: var(--safe); inset-inline: var(--safe); max-height: 78mm; }
+.panel.bottom { bottom: calc(var(--folio-bottom) + 9mm); inset-inline: var(--safe); max-height: 78mm; }
+.panel.left, .panel.right { top: var(--safe); bottom: calc(var(--folio-bottom) + 9mm); width: 84mm; }
+.panel.left { left: var(--safe); } .panel.right { right: var(--safe); }
+.the-end { display: block; margin-top: 2mm; font: 700 12pt "Baloo Bhaijaan 2", sans-serif; color: var(--moon-deep); letter-spacing: .4mm; }
+.folio { position: absolute; bottom: var(--folio-bottom); left: 50%; transform: translateX(-50%); min-width: 7mm; height: 7mm; padding: 0 1.8mm; border-radius: 3.5mm; background: rgba(255,253,248,.9); display: flex; align-items: center; justify-content: center; font: 600 9.5pt "IBM Plex Sans Arabic", sans-serif; color: var(--ink); }
 .watermark { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
-.watermark span { transform: rotate(-30deg); font: 800 44pt "Baloo Bhaijaan 2", sans-serif; color: rgba(255,253,248,.55); text-shadow: 0 0 3mm rgba(14,21,48,.35); white-space: nowrap; }
-.moon-mark { width: 26mm; height: 26mm; }
+.watermark span { transform: rotate(-30deg); font: 800 40pt "Baloo Bhaijaan 2", sans-serif; color: rgba(255,253,248,.55); text-shadow: 0 0 3mm rgba(14,21,48,.35); white-space: nowrap; }
+.moon-mark { display: inline-block; }
+.stars span { position: absolute; width: 2.2mm; height: 2.2mm; border-radius: 50%; background: var(--moon-glow); opacity: .7; }

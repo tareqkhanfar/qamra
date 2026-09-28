@@ -1,0 +1,54 @@
+/* Interior page kinds (design: BookTitle, BookFull, BookSplit, BookBorn, BookText). */
+@page { size: {{ spec.page_mm }}mm {{ spec.page_mm }}mm; margin: 0; }
+
+.title-page { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 4mm; padding: var(--safe); }
+.title-page .ornament { display: flex; align-items: center; gap: 3mm; }
+.title-page .ornament span { width: 34mm; border-top: .5mm dotted var(--moon); }
+.title-page .name { font-size: 40pt; line-height: 1.25; font-weight: 800; color: var(--night-900); }
+.title-page .subtitle { font-size: 22pt; line-height: 1.4; font-weight: 700; color: var(--moon-deep); }
+.title-page .made-for { font: 500 11pt "IBM Plex Sans Arabic", sans-serif; color: var(--ink-muted); margin-top: 1mm; }
+.title-page .portrait { width: 52mm; height: 52mm; border-radius: 50%; background: var(--moon-glow); overflow: hidden; margin: 4mm 0 2mm; box-shadow: 0 0 0 1.4mm var(--paper-raised), 0 0 0 1.9mm var(--line); }
+.title-page .portrait img { width: 100%; height: 100%; object-fit: cover; }
+.title-page .dedication { font-size: 15pt; line-height: 1.9; font-weight: 700; color: var(--ink); max-width: 150mm; }
+
+.split .split-art { position: absolute; top: 0; inset-inline: 0; height: {{ spec.bleed_mm + 126 }}mm; overflow: hidden; }
+.split .split-art img { width: 100%; height: 100%; object-fit: cover; }
+.split .split-wave { position: absolute; top: {{ spec.bleed_mm + 126 - 9 }}mm; inset-inline: 0; width: 100%; height: 10mm; }
+.split .split-text { position: absolute; top: {{ spec.bleed_mm + 126 + 4 }}mm; bottom: calc(var(--folio-bottom) + 9mm); inset-inline: var(--safe); display: flex; align-items: center; justify-content: center; }
+
+.keepsake .frame-border { position: absolute; inset: var(--safe); border: .7mm solid var(--moon-deep); border-radius: 5mm; padding: 9mm 8mm; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: inset 0 0 0 1.6mm var(--paper), inset 0 0 0 2mm var(--line); }
+.keepsake h2 { font-size: 26pt; font-weight: 800; color: var(--night-900); }
+.keepsake .pair { display: flex; align-items: center; justify-content: center; gap: 7mm; margin-top: 9mm; }
+.keepsake figure { display: flex; flex-direction: column; align-items: center; }
+.keepsake .paper { position: relative; width: 62mm; height: 62mm; background: var(--paper-raised); padding: 3mm; box-shadow: 0 1.5mm 4mm rgba(22,32,74,.2); transform: rotate(3deg); display: flex; align-items: center; justify-content: center; }
+.keepsake .paper img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.keepsake .tape { position: absolute; top: -3mm; left: 50%; width: 16mm; height: 6mm; margin-left: -8mm; background: rgba(242,179,61,.55); }
+.keepsake .circle { width: 58mm; height: 58mm; border-radius: 50%; background: var(--night-900); overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.keepsake .circle img { width: 92%; height: 92%; object-fit: contain; }
+.keepsake figcaption { margin-top: 4mm; font: 600 11pt "IBM Plex Sans Arabic", sans-serif; color: var(--night-900); }
+.keepsake .arrow { font-size: 22pt; color: var(--moon); }
+.keepsake .note { margin-top: 9mm; font-size: 15pt; line-height: 1.9; font-weight: 700; color: var(--ink); }
+.keepsake .date { margin-top: 2mm; font: 500 10.5pt "IBM Plex Sans Arabic", sans-serif; color: var(--moon-deep); }
+
+.parents { padding: calc(var(--safe) + 4mm) calc(var(--safe) + 6mm); }
+.parents .head { display: flex; align-items: center; gap: 4mm; margin-bottom: 8mm; }
+.parents h2 { font-size: 30pt; font-weight: 800; color: var(--night-900); }
+.parents .lesson { font-size: 15pt; line-height: 1.9; margin: 2mm 0 9mm; }
+.parents .questions { background: var(--paper-raised); border: .4mm solid var(--line); border-radius: 5mm; padding: 6mm 7mm; }
+.parents ol { list-style: none; margin-top: 3mm; display: flex; flex-direction: column; gap: 3mm; }
+.parents li { display: flex; gap: 3mm; align-items: baseline; font-size: 15pt; line-height: 1.9; }
+.parents .q-num { flex: none; width: 8mm; height: 8mm; border-radius: 50%; background: var(--moon); color: var(--night-900); display: inline-flex; align-items: center; justify-content: center; font: 700 10pt "IBM Plex Sans Arabic", sans-serif; }
+.parents .made-by { position: absolute; bottom: calc(var(--folio-bottom) + 10mm); inset-inline: 0; text-align: center; font: 500 9.5pt "IBM Plex Sans Arabic", sans-serif; color: var(--ink-muted); }
+
+.activity { display: flex; flex-direction: column; align-items: center; padding: var(--safe); }
+.activity h2 { font-size: 20pt; font-weight: 800; color: var(--night-900); margin-top: 4mm; text-align: center; }
+.activity .draw-frame { position: relative; margin-top: 8mm; width: 170mm; height: 140mm; border: .7mm dashed var(--moon-deep); border-radius: 6mm; background: var(--paper-raised); }
+.activity .corner { position: absolute; } .activity .tl { top: -3.5mm; left: -3.5mm; } .activity .tr { top: -3.5mm; right: -3.5mm; }
+.activity .bl { bottom: -3.5mm; left: -3.5mm; } .activity .br { bottom: -3.5mm; right: -3.5mm; }
+
+.memories { display: flex; flex-direction: column; align-items: center; padding: var(--safe); }
+.memories h2 { font-size: 22pt; font-weight: 800; color: var(--night-900); margin-top: 4mm; }
+.memories .photo { margin-top: 8mm; width: 120mm; height: 86mm; background: var(--paper-raised); border: .4mm solid var(--line); box-shadow: 0 1.5mm 4mm rgba(22,32,74,.15); transform: rotate(-2deg); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 4mm; }
+.memories .photo span { font: 500 10pt "IBM Plex Sans Arabic", sans-serif; color: var(--ink-muted); }
+.memories .lines { margin-top: 10mm; width: 160mm; display: flex; flex-direction: column; gap: 9mm; }
+.memories .lines span { border-bottom: .4mm dotted var(--moon-deep); height: 1px; }

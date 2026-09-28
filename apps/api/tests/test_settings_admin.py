@@ -1,19 +1,13 @@
-import uuid
-
-from api_helpers import register
+from api_helpers import make_admin, register
 from httpx import AsyncClient
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from qamra_core.db.models import AppSetting, AuditLog, User, UserRole
+from qamra_core.db.models import AppSetting, AuditLog
 
 
 async def _make_admin(client: AsyncClient, adb: AsyncSession) -> None:
-    me = await register(client, email="admin@example.com")
-    user = await adb.get(User, uuid.UUID(me["id"]))
-    assert user is not None
-    user.role = UserRole.admin
-    await adb.commit()
+    await make_admin(client, adb)
 
 
 async def test_admin_settings_forbidden_for_parents_and_anonymous(client: AsyncClient) -> None:
@@ -29,7 +23,28 @@ async def test_admin_reads_grouped_settings_with_examples(client: AsyncClient, a
     await _make_admin(client, adb)
     view = (await client.get("/api/admin/settings")).json()
     groups = {g["id"]: g for g in view["groups"]}
-    assert list(groups) == ["pricing", "contact", "site", "ai_keys", "ai_models", "notifications", "privacy"]
+    assert list(groups) == [
+        "pricing",
+        "contact",
+        "site",
+        "ai_keys",
+        "ai_models",
+        "quality",
+        "print",
+        "notifications",
+        "privacy",
+        "security",
+    ]
+    models = {s["key"]: s for s in groups["ai_models"]["settings"]}
+    assert (
+        models["image_provider"]["value"] == "fal"
+        and models["fal_image_model"]["value"] == "fal-ai/nano-banana-2"
+    )
+    assert models["fal_fallback_model"]["label"] == "نموذج fal الاحتياطي"  # renamed from "FLUX model"
+    assert models["text_model"]["value"] == "claude-sonnet-5"
+    assert models["text_model_fast"]["value"] == "claude-haiku-4-5-20251001"
+    quality = {s["key"]: s["value"] for s in groups["quality"]["settings"]}
+    assert quality["book_budget_usd"] == "3.00" and quality["qa_threshold"] == 75
     hard = next(s for s in groups["pricing"]["settings"] if s["key"] == "price_hardcover_ils")
     assert hard["value"] == "119" and hard["is_example"] and not hard["configured"]
     key = next(s for s in groups["ai_keys"]["settings"] if s["key"] == "anthropic_api_key")

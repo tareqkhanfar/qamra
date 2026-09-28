@@ -1,0 +1,25 @@
+{% import "_macros.html.j2" as m %}
+<!doctype html>
+<html lang="{{ spec.lang }}" dir="{{ spec.dir }}">
+{#- Web proof: front cover, the interior in reading order, back cover. Small images; not for print. -#}
+<head><meta charset="utf-8"><title>{{ spec.title }} — proof</title>
+<style>
+{% include "_base.css.j2" %}
+{% include "_pages.css.j2" %}
+{% include "_cover.css.j2" %}
+.front, .back { inset-inline-start: 0; width: var(--page); }
+</style></head>
+<body>
+<section class="page" data-kind="front-cover">{{ m.front_panel(spec, s, img) }}{{ m.watermark(spec, s) }}</section>
+{% for p in spec.pages %}
+{% if p.kind == 'title' %}{{ m.title_page(spec, s, img) }}
+{% elif p.kind == 'story' %}{{ m.story_page(spec, s, p, img) }}
+{% elif p.kind == 'companion' and spec.keepsake %}{{ m.keepsake_page(spec, s, p, img) }}
+{% elif p.kind == 'parents' and spec.parents %}{{ m.parents_page(spec, s, p) }}
+{% elif p.kind == 'activity' %}{{ m.activity_page(spec, s, p) }}
+{% elif p.kind == 'memories' %}{{ m.memories_page(spec, s, p) }}
+{% else %}<section class="page" data-kind="blank" data-number="{{ p.number }}"></section>
+{% endif %}
+{% endfor %}
+<section class="page" data-kind="back-cover">{{ m.back_panel(spec, s, qr_svg) }}</section>
+</body></html>

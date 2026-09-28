@@ -7,7 +7,7 @@ import openai
 
 from qamra_ai.cost import CostEntry, openai_image_cost
 from qamra_ai.errors import ContentBlocked, ProviderConfigError, ProviderError
-from qamra_ai.image.base import GeneratedImage, ImageRequest, aspect_px
+from qamra_ai.image.base import TIER_PX, GeneratedImage, ImageRequest, aspect_px
 
 _EXT = {"image/png": "png", "image/jpeg": "jpg", "image/webp": "webp"}
 Quality = Literal["low", "medium", "high", "xhigh", "max", "auto"]
@@ -16,18 +16,17 @@ Quality = Literal["low", "medium", "high", "xhigh", "max", "auto"]
 class OpenAIImageProvider:
     name = "openai"
 
-    def __init__(self, api_key: str | None, model: str, quality: Quality, long_side: int) -> None:
+    def __init__(self, api_key: str | None, model: str, quality: Quality) -> None:
         if not api_key:
-            raise ProviderConfigError("OPENAI_API_KEY is not set")
+            raise ProviderConfigError("OpenAI key is not set (admin → settings → AI keys)")
         self._client = openai.AsyncOpenAI(api_key=api_key)
         self.model = model
         self._quality = quality
-        self._long_side = long_side
 
     async def generate(self, req: ImageRequest) -> GeneratedImage:
         if not req.refs:
             raise ProviderConfigError("openai adapter uses images.edit and needs ≥ 1 reference")
-        w, h = aspect_px(req.aspect, self._long_side)
+        w, h = aspect_px(req.aspect, max(1024, TIER_PX[req.resolution]))
         files = [(f"ref{i}.{_EXT.get(r.mime, 'png')}", r.data, r.mime) for i, r in enumerate(req.refs)]
         labels = "\n".join(f"Reference image {i + 1}: {r.label}" for i, r in enumerate(req.refs))
         try:

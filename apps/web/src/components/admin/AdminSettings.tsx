@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { useRouter } from "@/i18n/navigation";
 import { api, errorText } from "@/lib/api";
 
-type Kind = "text" | "number" | "money" | "boolean" | "choice" | "secret" | "phone" | "email" | "url";
+type Kind = "text" | "number" | "money" | "decimal" | "boolean" | "choice" | "secret" | "phone" | "email" | "url";
 type Setting = {
   key: string;
   kind: Kind;
@@ -213,8 +213,10 @@ export function AdminSettings() {
                     type={
                       s.kind === "number" ? "number" : s.kind === "email" ? "email" : s.kind === "url" ? "url" : "text"
                     }
-                    inputMode={s.kind === "money" ? "decimal" : s.kind === "phone" ? "tel" : undefined}
-                    dir={["phone", "email", "url", "money", "number"].includes(s.kind) ? "ltr" : undefined}
+                    inputMode={
+                      s.kind === "money" || s.kind === "decimal" ? "decimal" : s.kind === "phone" ? "tel" : undefined
+                    }
+                    dir={["phone", "email", "url", "money", "decimal", "number"].includes(s.kind) ? "ltr" : undefined}
                     min={s.min ?? undefined}
                     max={s.max ?? undefined}
                     value={String(current ?? "")}
@@ -224,7 +226,7 @@ export function AdminSettings() {
                         s.kind === "number" ? (e.target.value === "" ? "" : Number(e.target.value)) : e.target.value,
                       )
                     }
-                    className={`${field} ${["phone", "email", "url", "money", "number"].includes(s.kind) ? "rtl:text-right" : ""} ${invalid ? "border-danger" : ""}`}
+                    className={`${field} ${["phone", "email", "url", "money", "decimal", "number"].includes(s.kind) ? "rtl:text-right" : ""} ${invalid ? "border-danger" : ""}`}
                     aria-invalid={invalid || undefined}
                   />
                 )}

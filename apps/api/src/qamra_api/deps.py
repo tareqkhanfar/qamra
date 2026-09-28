@@ -1,14 +1,17 @@
 """FastAPI dependencies: settings, db session, redis, storage, current user, roles, CSRF header."""
 
+import ipaddress
 from collections.abc import AsyncIterator, Awaitable, Callable
+from dataclasses import dataclass
 from typing import Annotated
 
 from fastapi import Depends, Request
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from qamra_api import runtime_settings
 from qamra_api.errors import ApiError
-from qamra_api.security import TokenExpired, TokenInvalid, decode_access_token
+from qamra_api.security import AccessClaims, TokenExpired, TokenInvalid, decode_access_token
 from qamra_api.settings import ApiSettings
 from qamra_core.db.models import User, UserRole
 from qamra_core.storage import ObjectStorage
@@ -53,7 +56,13 @@ async def require_client_header(request: Request) -> None:
         raise ApiError("bad_request", 403)
 
 
-async def current_user(request: Request, session: SessionDep, settings: SettingsDep) -> User:
+@dataclass(frozen=True)
+class Auth:
+    user: User
+    claims: AccessClaims
+
+
+async def current_auth(request: Request, session: SessionDep, settings: SettingsDep) -> Auth:
     token = request.cookies.get(ACCESS_COOKIE)
     if not token:
         raise ApiError("not_authenticated", 401)
@@ -68,7 +77,14 @@ async def current_user(request: Request, session: SessionDep, settings: Settings
         raise ApiError("not_authenticated", 401)
     if not user.is_active:
         raise ApiError("account_disabled", 403)
-    return user
+    return Auth(user, claims)
+
+
+CurrentAuth = Annotated[Auth, Depends(current_auth)]
+
+
+async def current_user(auth: CurrentAuth) -> User:
+    return auth.user
 
 
 CurrentUser = Annotated[User, Depends(current_user)]
@@ -81,3 +97,35 @@ def require_role(*roles: UserRole) -> Callable[[User], Awaitable[User]]:
         return user
 
     return _check
+
+
+def ip_allowed(ip: str, allowlist: str) -> bool:
+    """Empty allowlist = no limit. Otherwise the client IP must fall inside one of the networks."""
+    if not allowlist.strip():
+        return True
+    try:
+        addr = ipaddress.ip_address(ip)
+    except ValueError:
+        return False
+    nets = [ipaddress.ip_network(n.strip(), strict=False) for n in allowlist.split(",") if n.strip()]
+    return any(addr in net for net in nets)
+
+
+async def require_admin(
+    request: Request, auth: CurrentAuth, session: SessionDep, settings: SettingsDep
+) -> User:
+    """Admin endpoints (Addendum 3 §6): admin role, a 2FA-verified session, the optional IP allowlist."""
+    if auth.user.role != UserRole.admin:
+        raise ApiError("forbidden", 403)
+    values = (await runtime_settings.current(session, settings)).values
+    client = request.client.host if request.client else ""
+    if not ip_allowed(client, str(values.get("admin_ip_allowlist") or "")):
+        raise ApiError("ip_not_allowed", 403)
+    if auth.user.totp_enabled_at is None:
+        raise ApiError("mfa_setup_required", 403)
+    if not auth.claims.mfa:
+        raise ApiError("mfa_required", 403)
+    return auth.user
+
+
+AdminUser = Annotated[User, Depends(require_admin)]

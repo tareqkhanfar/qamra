@@ -31,6 +31,27 @@ class PasswordChangeIn(BaseModel):
     new_password: str = Field(max_length=128)
 
 
+class MfaCodeIn(BaseModel):
+    code: str = Field(min_length=6, max_length=20)  # 6-digit TOTP or a recovery code
+
+
+class MfaSetupIn(BaseModel):
+    password: str | None = Field(default=None, max_length=128)  # step-up: re-enter the password
+
+
+class MfaSetupOut(BaseModel):
+    secret: str  # shown once so it can be typed into an authenticator app
+    uri: str
+
+
+class RecoveryCodesOut(BaseModel):
+    recovery_codes: list[str]  # shown once
+
+
+class MfaChallengeOut(BaseModel):
+    mfa_required: bool = True
+
+
 class UserOut(BaseModel):
     id: uuid.UUID
     email: str
@@ -40,9 +61,11 @@ class UserOut(BaseModel):
     organization_id: uuid.UUID | None
     has_password: bool
     created_at: datetime
+    mfa_enabled: bool = False
+    mfa_verified: bool = False  # this session passed the second factor
 
     @classmethod
-    def of(cls, user: User) -> "UserOut":
+    def of(cls, user: User, mfa_verified: bool = False) -> "UserOut":
         return cls(
             id=user.id,
             email=user.email,
@@ -52,4 +75,6 @@ class UserOut(BaseModel):
             organization_id=user.organization_id,
             has_password=user.password_hash is not None,
             created_at=user.created_at,
+            mfa_enabled=user.totp_enabled_at is not None,
+            mfa_verified=mfa_verified,
         )

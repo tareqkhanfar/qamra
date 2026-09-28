@@ -2,16 +2,20 @@ import type { ReactNode } from "react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { brandName } from "@/config/brand";
 import { Link } from "@/i18n/navigation";
+import { AdminGate } from "./AdminGate";
+
+type Section = "queue" | "samples" | "metrics" | "settings";
 
 /** Admin chrome (design: admin artboards): night sidebar with brand + «إدارة» badge; content on paper. */
-export async function AdminShell({ active, children }: { active: "settings"; children: ReactNode }) {
+export async function AdminShell({ active, children }: { active: Section; children: ReactNode }) {
   const [t, locale] = await Promise.all([getTranslations("admin"), getLocale()]);
   const items = [
-    { id: "settings", href: "/admin/settings", ready: true },
-    { id: "queue", ready: false },
+    { id: "queue", href: "/admin/queue", ready: true },
+    { id: "samples", href: "/admin/samples", ready: true },
     { id: "orders", ready: false },
     { id: "themes", ready: false },
-    { id: "metrics", ready: false },
+    { id: "metrics", href: "/admin/metrics", ready: true },
+    { id: "settings", href: "/admin/settings", ready: true },
   ] as const;
   return (
     <div className="min-h-dvh bg-paper lg:grid lg:grid-cols-[260px_1fr]">
@@ -48,7 +52,9 @@ export async function AdminShell({ active, children }: { active: "settings"; chi
           </Link>
         </div>
       </aside>
-      <main className="min-w-0 px-4 py-6 md:px-10 md:py-10">{children}</main>
+      <main className="min-w-0 px-4 py-6 md:px-10 md:py-10">
+        <AdminGate>{children}</AdminGate>
+      </main>
     </div>
   );
 }

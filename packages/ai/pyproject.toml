@@ -17,6 +17,8 @@ dependencies = [
     "numpy>=2",
     "opencv-python-headless>=4.10",
     "tenacity>=9",
+    "qamra-pdf",
+    "structlog>=24",
 ]
 
 [build-system]
@@ -25,3 +27,6 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/qamra_ai"]
+
+[tool.uv.sources]
+qamra-pdf = { workspace = true }

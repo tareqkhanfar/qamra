@@ -26,6 +26,7 @@ class Session:
     user: User
     access_token: str
     refresh_token: str  # raw, only ever sent as an httpOnly cookie
+    mfa: bool = False
 
 
 def normalize_email(email: str) -> str:
@@ -107,7 +108,12 @@ async def authenticate(db: AsyncSession, email: str, password: str) -> User:
 
 
 async def _issue(
-    db: AsyncSession, user: User, settings: ApiSettings, family_id: uuid.UUID, user_agent: str | None
+    db: AsyncSession,
+    user: User,
+    settings: ApiSettings,
+    family_id: uuid.UUID,
+    user_agent: str | None,
+    mfa: bool = False,
 ) -> Session:
     raw, digest = new_refresh_token()
     now = datetime.now(UTC)
@@ -118,22 +124,40 @@ async def _issue(
             family_id=family_id,
             expires_at=now + timedelta(days=settings.refresh_token_days),
             user_agent=(user_agent or "")[:300] or None,
+            mfa=mfa,
         )
     )
     access = create_access_token(
-        user.id, user.role.value, settings.jwt_secret.get_secret_value(), settings.access_token_minutes
+        user.id,
+        user.role.value,
+        settings.jwt_secret.get_secret_value(),
+        settings.access_token_minutes,
+        mfa=mfa,
     )
-    return Session(user=user, access_token=access, refresh_token=raw)
+    return Session(user=user, access_token=access, refresh_token=raw, mfa=mfa)
 
 
 async def start_session(
-    db: AsyncSession, user: User, settings: ApiSettings, user_agent: str | None, method: str
+    db: AsyncSession,
+    user: User,
+    settings: ApiSettings,
+    user_agent: str | None,
+    method: str,
+    mfa: bool = False,
 ) -> Session:
     user.last_login_at = datetime.now(UTC)
-    session = await _issue(db, user, settings, uuid.uuid4(), user_agent)
-    audit(db, "user.login", user.id, method=method)
+    session = await _issue(db, user, settings, uuid.uuid4(), user_agent, mfa=mfa)
+    audit(db, "user.login", user.id, method=method, mfa=mfa)
     await db.commit()
     return session
+
+
+async def revoke_all_sessions(db: AsyncSession, user: User, reason: str) -> None:
+    await db.execute(
+        update(RefreshToken)
+        .where(RefreshToken.user_id == user.id, RefreshToken.revoked_at.is_(None))
+        .values(revoked_at=datetime.now(UTC), revoked_reason=reason[:16])
+    )
 
 
 ROTATION_GRACE = timedelta(seconds=30)  # two tabs refreshing at once must not look like theft
@@ -176,7 +200,7 @@ async def rotate(db: AsyncSession, raw: str | None, settings: ApiSettings, user_
         raise ApiError("not_authenticated", 401)
     if token.revoked_at is None:
         token.revoked_at, token.revoked_reason = now, "rotated"
-    session = await _issue(db, user, settings, token.family_id, user_agent)
+    session = await _issue(db, user, settings, token.family_id, user_agent, mfa=token.mfa)
     await db.commit()
     return session
 

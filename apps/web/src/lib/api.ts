@@ -21,9 +21,19 @@ export type User = {
   organization_id: string | null;
   has_password: boolean;
   created_at: string;
+  mfa_enabled: boolean;
+  mfa_verified: boolean;
 };
 
-const NO_REFRESH = new Set(["/api/auth/login", "/api/auth/register", "/api/auth/refresh", "/api/auth/logout"]);
+export type MfaChallenge = { mfa_required: true };
+
+const NO_REFRESH = new Set([
+  "/api/auth/login",
+  "/api/auth/register",
+  "/api/auth/refresh",
+  "/api/auth/logout",
+  "/api/auth/mfa/verify",
+]);
 let refreshing: Promise<boolean> | null = null;
 
 function refreshOnce(): Promise<boolean> {
@@ -59,6 +69,22 @@ export async function api<T>(path: string, init: { method?: string; json?: unkno
     return { ok: false, status: 0, error: null }; // network
   }
   if (res.status === 204) return { ok: true, status: 204, data: undefined as T };
+  const body = await res.json().catch(() => null);
+  if (res.ok) return { ok: true, status: res.status, data: body as T };
+  return { ok: false, status: res.status, error: (body?.error as ApiErrorBody) ?? null };
+}
+
+/** Multipart upload (photos). Same CSRF header, same one-shot refresh on 401. */
+export async function upload<T>(path: string, form: FormData): Promise<ApiResult<T>> {
+  const doFetch = () =>
+    fetch(path, { method: "POST", credentials: "same-origin", headers: { "X-Qamra-Client": "web" }, body: form });
+  let res: Response;
+  try {
+    res = await doFetch();
+    if (res.status === 401 && (await refreshOnce())) res = await doFetch();
+  } catch {
+    return { ok: false, status: 0, error: null };
+  }
   const body = await res.json().catch(() => null);
   if (res.ok) return { ok: true, status: res.status, data: body as T };
   return { ok: false, status: res.status, error: (body?.error as ApiErrorBody) ?? null };

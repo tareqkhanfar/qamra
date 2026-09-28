@@ -1,13 +1,16 @@
 from pathlib import Path
 
 import pytest
+from tests_helpers import png
 
 from qamra_ai.config import Settings
 from qamra_ai.image.fake import FakeImageProvider
+from qamra_ai.image.fallback import FallbackImageProvider
+from qamra_ai.pipeline.book import BookInputs, default_companion
 from qamra_ai.pipeline.fakes import default_fake_text_provider
 from qamra_ai.pipeline.models import Child
 from qamra_ai.pipeline.runtime import Runtime
-from qamra_ai.pipeline.theme import load_style, load_theme
+from qamra_ai.pipeline.theme import Theme, load_style, load_theme
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
@@ -23,9 +26,16 @@ def settings() -> Settings:
 
 
 @pytest.fixture
-def rt(settings: Settings) -> Runtime:
+def fake_image() -> FakeImageProvider:
+    return FakeImageProvider(long_side=128)
+
+
+@pytest.fixture
+def rt(settings: Settings, fake_image: FakeImageProvider) -> Runtime:
     return Runtime(
-        settings=settings, text=default_fake_text_provider(), image=FakeImageProvider(long_side=256)
+        settings=settings,
+        text=default_fake_text_provider(),
+        image=FallbackImageProvider(fake_image, base_delay=0),
     )
 
 
@@ -45,10 +55,23 @@ def child() -> Child:
 
 
 @pytest.fixture
-def theme():  # type: ignore[no-untyped-def]
+def theme() -> Theme:
     return load_theme("first-day")
 
 
 @pytest.fixture
 def style():  # type: ignore[no-untyped-def]
     return load_style("watercolor")
+
+
+@pytest.fixture
+def book_inputs(child: Child, theme: Theme, style) -> BookInputs:  # type: ignore[no-untyped-def]
+    return BookInputs(
+        child=child,
+        lang="ar",
+        theme=theme,
+        style=style,
+        character_sheet=png("tan", (96, 64)),
+        companion=default_companion(theme, "ar"),
+        seed=1234,
+    )

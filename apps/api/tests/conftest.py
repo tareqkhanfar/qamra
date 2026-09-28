@@ -1,7 +1,7 @@
 from collections.abc import AsyncIterator
 
 import pytest
-from fakeredis import FakeAsyncRedis
+from fakeredis import FakeAsyncRedis, FakeRedis
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -30,6 +30,7 @@ def settings() -> ApiSettings:
 async def app(settings: ApiSettings, adb: AsyncSession, storage: ObjectStorage) -> AsyncIterator[FastAPI]:
     app = create_app(settings, manage_resources=False)
     app.state.redis = FakeAsyncRedis(decode_responses=True)
+    app.state.rq_redis = FakeRedis()
     app.state.storage = storage
 
     async def _session() -> AsyncIterator[AsyncSession]:

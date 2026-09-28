@@ -1,6 +1,7 @@
 """Per-step cost ledger. Every provider call records a `CostEntry` (stored later as `GenerationCost`)."""
 
 import math
+import re
 from collections import defaultdict
 from dataclasses import asdict, dataclass, field
 from functools import lru_cache
@@ -10,6 +11,8 @@ from typing import Any
 import yaml
 
 PRICING_FILE = Path(__file__).parent / "pricing.yaml"
+_DATE_SUFFIX = re.compile(r"-\d{8}$")
+FAL_MEGAPIXEL = 1024 * 1024  # fal's unit: "a 1024x1024 image will cost $0.03" (FLUX.2 pricing page)
 
 
 @lru_cache
@@ -20,7 +23,7 @@ def pricing() -> dict[str, Any]:
 
 @dataclass(frozen=True)
 class CostEntry:
-    step: str  # e.g. "story", "page:3", "character", "judge:3"
+    step: str  # e.g. "story", "page:3:a1", "cover:a1", "qa:3:a1", "upscale:3"
     provider: str
     model: str
     units: dict[str, float]
@@ -40,7 +43,7 @@ class CostLedger:
         return round(sum(e.usd for e in self.entries), 4)
 
     def by_group(self) -> dict[str, float]:
-        """Totals per step family ("page:3" → "page")."""
+        """Totals per step family ("page:3:a1" → "page")."""
         totals: dict[str, float] = defaultdict(float)
         for e in self.entries:
             totals[e.step.split(":")[0]] += e.usd
@@ -61,8 +64,13 @@ class CostLedger:
         }
 
 
+def _anthropic_prices(model: str) -> dict[str, float] | None:
+    table: dict[str, dict[str, float]] = pricing()["anthropic"]
+    return table.get(model) or table.get(_DATE_SUFFIX.sub("", model))
+
+
 def anthropic_cost(model: str, usage: dict[str, int]) -> float:
-    p = pricing()["anthropic"].get(model)
+    p = _anthropic_prices(model)
     if p is None:
         return 0.0
     return (
@@ -74,6 +82,12 @@ def anthropic_cost(model: str, usage: dict[str, int]) -> float:
         )
         / 1_000_000
     )
+
+
+def anthropic_estimate(model: str, input_tokens: int, output_tokens: int) -> float:
+    """Upper-bound style estimate for the budget guard (no cache discount assumed)."""
+    p = _anthropic_prices(model) or {"input": 5.0, "output": 25.0}  # unknown model: assume Opus prices
+    return (input_tokens * p["input"] + output_tokens * p["output"]) / 1_000_000
 
 
 def gemini_cost(model: str, size: str, n_output: int, n_input_images: int) -> float:
@@ -90,9 +104,31 @@ def openai_image_cost(model: str, text_in: int, image_in: int, output: int) -> f
     return float(text_in * p["text_input"] + image_in * p["image_input"] + output * p["output"]) / 1e6
 
 
-def fal_cost(model: str, megapixels: float) -> float:
-    p = pricing()["fal"].get(model)
+def fal_cost(
+    endpoint: str,
+    *,
+    resolution: str | None = None,
+    out_px: tuple[int, int] | None = None,
+    in_megapixels: float = 0.0,
+) -> float | None:
+    """Price of one fal call from pricing.yaml, or None when the endpoint is not listed.
+
+    per_image (Nano Banana, Recraft): flat price × resolution multiplier.
+    first_mp/extra_mp (FLUX.2): megapixels rounded up; inputs billed when `bill_inputs`.
+    per_mp (SeedVR): per output megapixel.
+    """
+    p: dict[str, Any] | None = pricing()["fal"].get(endpoint)
     if p is None:
-        return 0.0
-    mp = math.ceil(megapixels)
-    return float(p["first_mp"] + max(0, mp - 1) * p["extra_mp"])
+        return None
+    if "per_image" in p:
+        mult = float(p.get("resolution", {}).get(resolution or "1K", 1.0))
+        return round(float(p["per_image"]) * mult, 6)
+    out_mp = (out_px[0] * out_px[1] / FAL_MEGAPIXEL) if out_px else 1.0
+    if "per_mp" in p:
+        return round(float(p["per_mp"]) * out_mp, 6)
+    billed = math.ceil(out_mp - 1e-9) + (math.ceil(in_megapixels - 1e-9) if p.get("bill_inputs") else 0)
+    return round(float(p["first_mp"]) + max(0, billed - 1) * float(p["extra_mp"]), 6)
+
+
+def fal_unknown_price(kind: str = "image") -> float:
+    return float(pricing()["fal_unknown_upscale_usd" if kind == "upscale" else "fal_unknown_image_usd"])

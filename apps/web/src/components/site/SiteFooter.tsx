@@ -65,7 +65,7 @@ export async function SiteFooter() {
                 Facebook
               </a>
             )}
-            <Link href="/#privacy" className={a}>
+            <Link href="/privacy" className={a}>
               {t("privacy")}
             </Link>
           </div>

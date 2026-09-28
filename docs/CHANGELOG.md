@@ -1,5 +1,56 @@
 # Changelog
 
+## Addendum 3: premium books at ≤ $2.50 (2026-09-28)
+
+- **Providers:**
+  - Generic fal provider (any endpoint) with fal Nano Banana 2 as the default; `/edit` is used automatically with references.
+  - `fal-ai/flux-2-pro/edit` fallback after 2 failed attempts, logged and counted.
+  - SeedVR print upscaler.
+  - Claude Sonnet 5 writes the story; Haiku 4.5 runs QA and safety checks. Prompt caching is on for the story rules and QA references.
+  - Verified prices are in `pricing.yaml`.
+- **Privacy on fal:** no request history stored (`X-Fal-Store-IO: 0`), generated files expire within 15 minutes, and images are sent inline, never uploaded to their CDN. Error logs never include our images.
+- **Quality:**
+  - House illustration style (`prompts/style/qamra_style.md`) in every image prompt, in the addendum's order.
+  - Levantine setting cues; per-book outfit lock, with the cover as the outfit and style anchor; locations and lighting kept consistent.
+  - Hijab and glasses follow the parent's choice.
+  - Haiku vision QA with weighted scoring, at most 2 automatic redraws, then human review.
+  - Per-book budget cap (default $3.00); cached background plates; 0.5K previews; finals at 1K + upscale.
+- **Themes:** first day, graduation and new sibling rewritten as 24-page books (20 story pages, 3 spreads, split pages, a plate), with a «للأهل» page and a back-cover blurb. At most 35 words per page.
+- **Print:**
+  - Premium RTL book: title and dedication, full, split and spread layouts, «وهكذا وُلد صاحبي», «للأهل», activity and memories pages.
+  - Cover wrap laid out front | spine | back with a QR slot.
+  - Arabic-Indic page numbers; Naskh type sized by age, with shrink-to-fit.
+  - Contrast- and busy-aware text panels.
+  - Low-res web proof; exact TrimBox/BleedBox; automated preflight (bleed, 300 DPI, fonts, text in bleed, page count).
+- **Server generation:**
+  - Worker jobs for books (preview or final), single-page redraws and re-rendering.
+  - Resumable, with costs written as they happen and child-scoped storage.
+- **Admin:**
+  - Sample books with guardian consent and photo checks; photos are re-encoded without metadata.
+  - Approval queue showing the book as spreads, with QA scores and flags, per-page redraw, text edit, budget cap and approval gated on preflight.
+  - Cost dashboard: per book, per page and per theme, with redraw and fallback rates.
+- **Security:**
+  - Admin two-step verification: TOTP with replay protection and recovery codes, required for every admin endpoint. `qamra reset-2fa` for recovery.
+  - Optional admin IP allowlist.
+  - HTTPS setup script (host nginx + Let's Encrypt).
+  - Dry-run firewall script.
+  - The edge trusts forwarded IPs only from Docker.
+  - A privacy page lists the providers' data terms.
+- **Tools:** `scripts/sample_book.py` (offline sketch art or real providers; report with preflight, QA and projected cost), `scripts/ab_resolution.py` and `python -m qamra_worker.ab` (1K vs 2K).
+- **Fixed after the first real books** (details in `docs/decisions.md`):
+  - The plate cache key includes the image model, so offline placeholder art can't reach a real book.
+  - Books are pinned to the theme definition they started with.
+  - Classroom scenes no longer invite writing (themes v3, house style v2): automatic redraws fell from 6 to 2 per book.
+  - Page QA caches its prefix (prompt v2): QA cost per book fell from $0.14 to $0.06.
+  - The regeneration rate counts only automatic redraws after failed QA, not preview-to-final upgrades, provider retries or admin redraws. Each attempt records why it was drawn.
+  - "Text shrunk" is no longer reported for untouched 16 pt text (a px → pt rounding error).
+  - Print files over 8 MB are stored reliably (SeaweedFS SSE bug; multipart uploads).
+  - Image prompts no longer name the page, which the model painted into corners (page prompt v3, house style v3).
+  - Page QA v3 catches a duplicated hero (look-alike children) and digits in the corners.
+  - The dedication no longer repeats «إلى {name}…» when the parent's message already starts that way.
+  - The approval queue and cost dashboard show theme names without the `{name}` placeholder, and the dashboard leaves placeholder-art ($0) books out of its averages.
+- 256 Python tests.
+
 ## Admin settings, music, animations, security hardening (2026-09-28)
 
 - **Admin settings** (`/admin/settings`, admins only):

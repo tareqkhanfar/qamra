@@ -6,17 +6,14 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
 from qamra_api import runtime_settings
-from qamra_api.deps import CurrentUser, SessionDep, SettingsDep, require_role
+from qamra_api.deps import AdminUser, SessionDep, SettingsDep, require_admin
 from qamra_api.errors import ApiError
 from qamra_core import settings_store
 from qamra_core.app_settings import GROUPS, REGISTRY, Kind, SettingError, mask
 from qamra_core.crypto import cipher_for
-from qamra_core.db.models import UserRole
 
 public_router = APIRouter(prefix="/api/settings", tags=["settings"])
-admin_router = APIRouter(
-    prefix="/api/admin/settings", tags=["admin"], dependencies=[Depends(require_role(UserRole.admin))]
-)
+admin_router = APIRouter(prefix="/api/admin/settings", tags=["admin"], dependencies=[Depends(require_admin)])
 Lang = Literal["ar", "en"]
 
 
@@ -87,7 +84,7 @@ async def get_settings(db: SessionDep, settings: SettingsDep, lang: Lang = "ar")
 
 @admin_router.put("")
 async def update_settings(
-    body: SettingsUpdate, user: CurrentUser, db: SessionDep, settings: SettingsDep, lang: Lang = "ar"
+    body: SettingsUpdate, user: AdminUser, db: SessionDep, settings: SettingsDep, lang: Lang = "ar"
 ) -> SettingsView:
     try:
         await settings_store.save(db, cipher_for(settings), body.values, user.id)

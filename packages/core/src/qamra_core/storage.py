@@ -3,10 +3,12 @@
 Everything is private; browsers only ever get short-lived signed URLs (≤ 15 minutes).
 """
 
+import io
 from dataclasses import dataclass
 from typing import Any
 
 import boto3
+from boto3.s3.transfer import TransferConfig
 from botocore.client import Config
 from botocore.exceptions import ClientError
 
@@ -15,6 +17,11 @@ from qamra_core.settings import MAX_SIGNED_URL_SECONDS, CoreSettings
 
 class ObjectNotFound(Exception):
     pass
+
+
+# Large objects (print PDFs, bundles) go up in 8 MB parts and come down in ranged parts: no single huge
+# request for the storage server to buffer.
+TRANSFER = TransferConfig(multipart_threshold=8 * 1024 * 1024, multipart_chunksize=8 * 1024 * 1024)
 
 
 @dataclass
@@ -43,17 +50,20 @@ class ObjectStorage:
         extra: dict[str, str] = {"ContentType": content_type}
         if self.sse:
             extra["ServerSideEncryption"] = self.sse
-        self.client.put_object(Bucket=self.bucket, Key=key, Body=data, **extra)
+        if len(data) <= TRANSFER.multipart_threshold:
+            self.client.put_object(Bucket=self.bucket, Key=key, Body=data, **extra)
+        else:
+            self.client.upload_fileobj(io.BytesIO(data), self.bucket, key, ExtraArgs=extra, Config=TRANSFER)
 
     def get(self, key: str) -> bytes:
+        buf = io.BytesIO()
         try:
-            obj = self.client.get_object(Bucket=self.bucket, Key=key)
+            self.client.download_fileobj(self.bucket, key, buf, Config=TRANSFER)
         except ClientError as e:
-            if e.response.get("Error", {}).get("Code") in ("NoSuchKey", "404"):
+            if e.response.get("Error", {}).get("Code") in ("NoSuchKey", "404", "NotFound"):
                 raise ObjectNotFound(key) from e
             raise
-        data: bytes = obj["Body"].read()
-        return data
+        return buf.getvalue()
 
     def exists(self, key: str) -> bool:
         try:

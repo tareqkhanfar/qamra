@@ -1,31 +1,26 @@
 {% import "_macros.html.j2" as m %}
 <!doctype html>
-<html lang="{{ spec.lang }}" dir="{{ spec.dir }}">
+<html lang="{{ spec.lang }}" dir="ltr">
+{#- The wrap is laid out left → right as the printer sees the flat sheet. Arabic books are bound on the right,
+    so the front panel is on the LEFT: [front | spine | back]. English books: [back | spine | front]. -#}
 <head><meta charset="utf-8"><title>{{ spec.title }} — cover</title>
 <style>
 {% include "_base.css.j2" %}
-.front .title { position: absolute; top: var(--safe); inset-inline: var(--safe); text-align: center; }
-.front .title h1 { display: inline-block; background: rgba(255,253,248,.93); color: var(--night-900); border-radius: 9mm; padding: 3mm 11mm 5mm; font-size: 36pt; line-height: 1.55; font-weight: 800; box-shadow: 0 2mm 6mm rgba(22,32,74,.2); }
-.front .brand { position: absolute; bottom: var(--safe); inset-inline: 0; display: flex; justify-content: center; align-items: center; gap: 2.5mm; }
-.front .brand span { font: 800 17pt "Baloo Bhaijaan 2", sans-serif; color: var(--paper-raised); text-shadow: 0 0 2mm rgba(14,21,48,.7); }
-.back { background: var(--night-900); color: var(--paper-raised); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6mm; text-align: center; }
-.back .star { position: absolute; width: 2.4mm; height: 2.4mm; border-radius: 50%; background: var(--moon-glow); opacity: .75; }
-.back .name { font: 800 40pt "Baloo Bhaijaan 2", sans-serif; }
-.back .tagline { font: 500 16pt "IBM Plex Sans Arabic", sans-serif; color: var(--moon-glow); }
-.back .domain { position: absolute; bottom: var(--safe); inset-inline: 0; font: 600 11pt "IBM Plex Sans Arabic", sans-serif; letter-spacing: .6mm; color: #B9BEDA; direction: ltr; }
+{% include "_cover.css.j2" %}
+@page { size: {{ spec.wrap_width_mm }}mm {{ spec.page_mm }}mm; margin: 0; }
+.wrap { position: relative; width: {{ spec.wrap_width_mm }}mm; height: var(--page); overflow: hidden; background: var(--night-900); }
+.spine { position: absolute; top: 0; height: var(--page); width: {{ spec.spine_mm }}mm; left: {{ spec.trim_mm + spec.bleed_mm }}mm; background: var(--night-950); display: flex; align-items: center; justify-content: center; }
+.spine .spine-text { transform: rotate(90deg); white-space: nowrap; font: 700 {{ [spec.spine_mm * 1.1, 11] | min }}pt "Baloo Bhaijaan 2", sans-serif; color: var(--moon-glow); }
+.left-panel { left: 0; } .right-panel { left: {{ spec.trim_mm + spec.bleed_mm + spec.spine_mm }}mm; }
 </style></head>
 <body>
-<section class="page front" data-kind="front-cover">
-  <img class="bleed-img" src="{{ spec.cover_image.as_uri() }}" alt="">
-  <div class="title"><h1 class="display">{{ spec.title }}</h1></div>
-  <div class="brand">{{ m.moon_mark('11mm', '#F2B33D', '#FFFDF8') }}<span>{{ spec.brand.name_ar if spec.lang == 'ar' else spec.brand.name_en }}</span></div>
+<section class="page wrap" data-kind="cover-wrap" style="width: {{ spec.wrap_width_mm }}mm">
+  {% set front_left = spec.lang == 'ar' %}
+  <div dir="{{ spec.dir }}" style="position:absolute;inset:0">
+    <div class="{{ 'left-panel' if front_left else 'right-panel' }}" style="position:absolute;top:0;width:{{ spec.trim_mm + spec.bleed_mm }}mm;height:100%">{{ m.front_panel(spec, s, img) }}</div>
+    <div class="{{ 'right-panel' if front_left else 'left-panel' }}" style="position:absolute;top:0;width:{{ spec.trim_mm + spec.bleed_mm }}mm;height:100%">{{ m.back_panel(spec, s, qr_svg) }}</div>
+  </div>
+  <div class="spine">{% if spec.spine_mm >= 6 %}<span class="spine-text" dir="{{ spec.dir }}">{{ spec.title }} · {{ spec.brand.name_ar if spec.lang == 'ar' else spec.brand.name_en }}</span>{% endif %}</div>
   {{ m.watermark(spec, s) }}
-</section>
-<section class="page back" data-kind="back-cover">
-  {% for x, y in [(22,18),(71,12),(160,26),(186,64),(34,150),(178,170),(120,190),(58,88)] %}<span class="star" style="left:{{ x }}mm;top:{{ y }}mm"></span>{% endfor %}
-  {{ m.moon_mark('40mm', '#F2B33D', '#FFFDF8') }}
-  <div class="name">{{ spec.brand.name_ar if spec.lang == 'ar' else spec.brand.name_en }}</div>
-  <div class="tagline">{{ spec.brand.tagline_ar if spec.lang == 'ar' else spec.brand.tagline_en }}</div>
-  <div class="domain">{{ spec.brand.domain }}</div>
 </section>
 </body></html>

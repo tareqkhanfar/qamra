@@ -10,6 +10,7 @@ Infrastructure secrets (database, JWT, encryption keys) stay in the environment,
 """
 
 import enum
+import ipaddress
 import re
 from dataclasses import dataclass
 from decimal import Decimal, InvalidOperation
@@ -20,6 +21,7 @@ class Kind(enum.StrEnum):
     text = "text"
     number = "number"  # integer
     money = "money"  # decimal, 2 places
+    decimal = "decimal"  # decimal, 1 place (e.g. millimetres)
     boolean = "boolean"
     choice = "choice"
     secret = "secret"  # nosec B105  (a setting kind, not a password)
@@ -41,8 +43,11 @@ GROUPS: tuple[Group, ...] = (
     Group("site", "الموقع والتسجيل", "Site & sign-up"),
     Group("ai_keys", "مفاتيح الذكاء الاصطناعي", "AI keys"),
     Group("ai_models", "نماذج الذكاء الاصطناعي", "AI models"),
+    Group("quality", "الجودة والتكلفة", "Quality & cost"),
+    Group("print", "الطباعة", "Print"),
     Group("notifications", "البريد والواتساب", "Email & WhatsApp"),
     Group("privacy", "الخصوصية والحذف", "Privacy & retention"),
+    Group("security", "الأمان", "Security"),
 )
 
 
@@ -214,34 +219,99 @@ _DEFS: list[SettingDef] = [
     ),
     SettingDef("gemini_api_key", "ai_keys", Kind.secret, "", "مفتاح Google Gemini", "Google Gemini key"),
     SettingDef("openai_api_key", "ai_keys", Kind.secret, "", "مفتاح OpenAI", "OpenAI key"),
-    SettingDef("fal_key", "ai_keys", Kind.secret, "", "مفتاح fal.ai (FLUX)", "fal.ai (FLUX) key"),
-    # ---- AI models
+    SettingDef(
+        "fal_key",
+        "ai_keys",
+        Kind.secret,
+        "",
+        "مفتاح fal.ai (الرسم والتكبير)",
+        "fal.ai key (images + upscaling)",
+        "للرسم (Nano Banana 2 والبديل FLUX.2) وتكبير الصور للطباعة.",
+        "Page art (Nano Banana 2, FLUX.2 fallback) and print upscaling.",
+    ),
+    # ---- AI models (Addendum 3 §1; exact IDs verified on the providers' docs, 2026-09-28)
     SettingDef(
         "image_provider",
         "ai_models",
         Kind.choice,
-        "gemini",
+        "fal",
         "مزوّد الرسم",
         "Image provider",
-        choices=("gemini", "flux", "openai"),
+        "fal هو الافتراضي. Gemini وOpenAI يعملان فقط إذا اخترتهما ووضعت مفاتيحهما.",
+        "fal is the default. Gemini and OpenAI run only when selected and keyed.",
+        choices=("fal", "gemini", "openai"),
+    ),
+    SettingDef(
+        "fal_image_model",
+        "ai_models",
+        Kind.text,
+        "fal-ai/nano-banana-2",
+        "نموذج fal الأساسي",
+        "fal primary model",
+        "أي نقطة نهاية على fal. نسخة /edit تُستخدم تلقائيًا مع الصور المرجعية.",
+        "Any fal endpoint. The /edit variant is used automatically with reference images.",
+        max_length=120,
+    ),
+    SettingDef(
+        "fal_fallback_model",
+        "ai_models",
+        Kind.text,
+        "fal-ai/flux-2-pro/edit",
+        "نموذج fal الاحتياطي",
+        "fal fallback model",
+        "يُستخدم فقط بعد فشل النموذج الأساسي مرّتين، ويُسجَّل ذلك.",
+        "Used only after two failed attempts on the primary; every switch is logged.",
+        max_length=120,
+    ),
+    SettingDef(
+        "fal_upscale_model",
+        "ai_models",
+        Kind.text,
+        "fal-ai/seedvr/upscale/image",
+        "نموذج التكبير للطباعة",
+        "Print upscaler",
+        max_length=120,
+    ),
+    SettingDef(
+        "fallback_after_failures",
+        "ai_models",
+        Kind.number,
+        2,
+        "محاولات قبل التحويل للبديل",
+        "Attempts before switching to the fallback",
+        min=1,
+        max=5,
     ),
     SettingDef(
         "text_model",
         "ai_models",
         Kind.text,
-        "claude-opus-5",
-        "نموذج كتابة القصة",
-        "Story model",
+        "claude-sonnet-5",
+        "نموذج كتابة القصة والتشكيل",
+        "Story & vowelization model",
+        "Sonnet هو الافتراضي. يمكن اختيار claude-opus-5 لكنه أغلى بنحو 2.5 مرة.",
+        "Sonnet is the default. claude-opus-5 is selectable but costs about 2.5×.",
         max_length=80,
     ),
     SettingDef(
         "text_model_fast",
         "ai_models",
         Kind.text,
-        "claude-opus-5",
-        "نموذج المراجعة والأمان",
-        "Review & safety model",
+        "claude-haiku-4-5-20251001",
+        "نموذج الفحص والأمان",
+        "QA & safety model",
+        "لفحص الصفحات بالرؤية ومراجعة الأمان.",
+        "Page vision QA and safety review.",
         max_length=80,
+    ),
+    SettingDef(
+        "story_effort",
+        "ai_models",
+        Kind.choice,
+        "medium",
+        "عمق التفكير عند كتابة القصة",
+        "Story thinking effort",
+        choices=("low", "medium", "high"),
     ),
     SettingDef(
         "gemini_image_model",
@@ -250,24 +320,6 @@ _DEFS: list[SettingDef] = [
         "gemini-3.1-flash-image",
         "نموذج Gemini للرسم",
         "Gemini image model",
-        max_length=80,
-    ),
-    SettingDef(
-        "gemini_image_size",
-        "ai_models",
-        Kind.choice,
-        "2K",
-        "دقة Gemini",
-        "Gemini resolution",
-        choices=("1K", "2K", "4K"),
-    ),
-    SettingDef(
-        "flux_image_model",
-        "ai_models",
-        Kind.text,
-        "fal-ai/flux-2-pro/edit",
-        "نموذج FLUX",
-        "FLUX model",
         max_length=80,
     ),
     SettingDef(
@@ -288,25 +340,106 @@ _DEFS: list[SettingDef] = [
         "OpenAI quality",
         choices=("low", "medium", "high", "xhigh", "max", "auto"),
     ),
+    # ---- quality & cost (Addendum 3 §2)
+    SettingDef(
+        "preview_resolution",
+        "quality",
+        Kind.choice,
+        "0.5K",
+        "دقة المعاينة",
+        "Preview resolution",
+        "أقل دقة متاحة، مع علامة مائية.",
+        "The lowest the model offers, watermarked.",
+        choices=("0.5K", "1K"),
+    ),
+    SettingDef(
+        "final_mode",
+        "quality",
+        Kind.choice,
+        "1k_upscale",
+        "طريقة الصفحات النهائية",
+        "Final pages",
+        "1K ثم تكبير للطباعة (أرخص)، أو 2K ثم تكبير. القرار في docs/decisions.md.",
+        "1K then upscale (cheaper), or 2K then upscale. Decision in docs/decisions.md.",
+        choices=("1k_upscale", "2k_upscale"),
+    ),
+    SettingDef(
+        "preview_pages",
+        "quality",
+        Kind.number,
+        4,
+        "صفحات المعاينة (مع الغلاف)",
+        "Preview pages (incl. cover)",
+        min=2,
+        max=8,
+    ),
     SettingDef(
         "image_concurrency",
-        "ai_models",
+        "quality",
         Kind.number,
         4,
         "صفحات تُرسم بالتوازي",
         "Pages drawn in parallel",
         min=1,
-        max=16,
+        max=8,
     ),
     SettingDef(
         "page_max_regenerations",
-        "ai_models",
+        "quality",
         Kind.number,
-        1,
-        "إعادات الرسم التلقائية",
-        "Automatic redraws",
+        2,
+        "إعادات الرسم التلقائية للصفحة",
+        "Automatic redraws per page",
+        "بعدها تُعلَّم الصفحة لمراجعة بشرية.",
+        "After that the page is flagged for human review.",
         min=0,
         max=3,
+    ),
+    SettingDef(
+        "qa_threshold",
+        "quality",
+        Kind.number,
+        75,
+        "حدّ النجاح في الفحص الآلي (٪)",
+        "Automatic QA pass mark (%)",
+        min=40,
+        max=100,
+    ),
+    SettingDef(
+        "book_budget_usd",
+        "quality",
+        Kind.money,
+        "3.00",
+        "سقف تكلفة الكتاب ($)",
+        "Budget cap per book ($)",
+        "يتوقف التوليد عند تجاوزه ويُعلَّم الكتاب في لوحة الإدارة.",
+        "Generation stops at the cap and the book is flagged in admin.",
+        min=0.5,
+        max=20,
+    ),
+    # ---- print (Addendum 3 §4; confirm with the print partner's template)
+    SettingDef(
+        "print_spine_mm",
+        "print",
+        Kind.decimal,
+        "8.0",
+        "عرض الكعب (مم)",
+        "Spine width (mm)",
+        "من قالب المطبعة: يعتمد على عدد الصفحات ونوع الورق والغلاف.",
+        "From the printer's template: depends on page count, paper and binding.",
+        example=True,
+        min=0,
+        max=40,
+    ),
+    SettingDef(
+        "print_signature",
+        "print",
+        Kind.number,
+        4,
+        "مضاعف عدد الصفحات",
+        "Page-count multiple (signature)",
+        min=2,
+        max=32,
     ),
     # ---- notifications (used from Phase 2 / 5)
     SettingDef("smtp_host", "notifications", Kind.text, "", "خادم SMTP", "SMTP host", max_length=120),
@@ -367,6 +500,19 @@ _DEFS: list[SettingDef] = [
         min=1,
         max=30,
     ),
+    # ---- security (Addendum 3 §6)
+    SettingDef(
+        "admin_ip_allowlist",
+        "security",
+        Kind.text,
+        "",
+        "عناوين IP المسموح لها بالإدارة",
+        "Admin IP allowlist",
+        "اختياري. عناوين أو شبكات مفصولة بفواصل (مثل 203.0.113.7, 198.51.100.0/24). فارغ = بلا قيود.",
+        "Optional. Comma-separated addresses or networks (e.g. 203.0.113.7, 198.51.100.0/24)."
+        " Empty = no limit.",
+        max_length=500,
+    ),
 ]
 
 REGISTRY: dict[str, SettingDef] = {d.key: d for d in _DEFS}
@@ -400,9 +546,10 @@ def validate(defn: SettingDef, raw: Any) -> Any:
         if (defn.min is not None and number < defn.min) or (defn.max is not None and number > defn.max):
             raise SettingError(defn.key, f"must be between {defn.min:g} and {defn.max:g}")
         return number
-    if k == Kind.money:
+    if k in (Kind.money, Kind.decimal):
+        step = Decimal("0.01") if k == Kind.money else Decimal("0.1")
         try:
-            amount = Decimal(str(raw)).quantize(Decimal("0.01"))
+            amount = Decimal(str(raw)).quantize(step)
         except (InvalidOperation, ValueError) as e:
             raise SettingError(defn.key, "expected an amount") from e
         if (
@@ -434,7 +581,22 @@ def validate(defn: SettingDef, raw: Any) -> Any:
         raise SettingError(defn.key, "invalid email")
     if k == Kind.url and not value.startswith("https://"):
         raise SettingError(defn.key, "links must start with https://")
+    if defn.key == "admin_ip_allowlist":
+        return normalize_allowlist(defn.key, value)
     return value
+
+
+def normalize_allowlist(key: str, value: str) -> str:
+    """Comma-separated IPs/CIDRs → canonical text; rejects anything that is not an address or network."""
+    nets: list[str] = []
+    for part in (p.strip() for p in value.split(",")):
+        if not part:
+            continue
+        try:
+            nets.append(str(ipaddress.ip_network(part, strict=False)))
+        except ValueError as e:
+            raise SettingError(key, f"not an IP address or network: {part}") from e
+    return ", ".join(nets)
 
 
 def mask(secret: str) -> str:

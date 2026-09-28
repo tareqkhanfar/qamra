@@ -6,20 +6,24 @@ from google.genai import types
 
 from qamra_ai.cost import CostEntry, gemini_cost
 from qamra_ai.errors import ContentBlocked, ProviderConfigError, ProviderError
-from qamra_ai.image.base import GeneratedImage, ImageRequest
+from qamra_ai.image.base import GeneratedImage, ImageRequest, Resolution
+
+# The direct Gemini API offers 1K/2K/4K; the 0.5K preview tier maps to 1K here.
+_SIZE: dict[Resolution, str] = {"0.5K": "1K", "1K": "1K", "2K": "2K", "4K": "4K"}
 
 
 class GeminiImageProvider:
     name = "gemini"
 
-    def __init__(self, api_key: str | None, model: str, image_size: str) -> None:
+    def __init__(self, api_key: str | None, model: str, max_size: str = "4K") -> None:
         if not api_key:
-            raise ProviderConfigError("GEMINI_API_KEY is not set")
+            raise ProviderConfigError("Gemini key is not set (admin → settings → AI keys)")
         self._client = genai.Client(api_key=api_key)
         self.model = model
-        self._size = image_size
+        self._max = max_size
 
     async def generate(self, req: ImageRequest) -> GeneratedImage:
+        size = min(_SIZE[req.resolution], self._max, key=lambda v: int(v[0]))
         contents: list[types.PartUnion] = []
         for i, ref in enumerate(req.refs, start=1):
             contents.append(f"Reference image {i}: {ref.label}")
@@ -27,7 +31,7 @@ class GeminiImageProvider:
         contents.append(req.prompt)
         config = types.GenerateContentConfig(
             response_modalities=["IMAGE"],
-            image_config=types.ImageConfig(aspect_ratio=req.aspect, image_size=self._size),
+            image_config=types.ImageConfig(aspect_ratio=req.aspect, image_size=size),
             seed=req.seed,
         )
         try:
@@ -51,7 +55,7 @@ class GeminiImageProvider:
                         provider=self.name,
                         model=self.model,
                         units={"images": 1, "input_images": len(req.refs)},
-                        usd=gemini_cost(self.model, self._size, 1, len(req.refs)),
+                        usd=gemini_cost(self.model, size, 1, len(req.refs)),
                     )
                     return GeneratedImage(
                         data=part.inline_data.data,
@@ -60,7 +64,7 @@ class GeminiImageProvider:
                         params={
                             "provider": self.name,
                             "model": self.model,
-                            "size": self._size,
+                            "size": size,
                             "seed": req.seed,
                         },
                     )

@@ -1,5 +1,5 @@
 slug: graduation
-version: 1
+version: 3
 title_ar: "يوم تخرّج {name}"
 title_en: "{name}'s Graduation Day"
 age_range: [5, 6]
@@ -39,114 +39,307 @@ default_companion:
     a tiny round glowing moon creature, soft pale-gold body shaped like a plump crescent,
     two small dot eyes, rosy cheeks, stubby little arms, floats a few centimeters above the ground
 
+# Template syntax: {name}, {companion}; gender variants {masculine/feminine}. See first-day for layouts.
+locations:
+  bedroom: >-
+    the hero's small bedroom: cream limestone walls, an arched window with pale-blue wooden shutters,
+    a low bed with an embroidered blanket, a small bookshelf and a red-and-cream patterned rug
+  classroom: >-
+    a bright kindergarten classroom: low wooden tables and small chairs, floor cushions, low wooden
+    shelves with colorful wooden toys, stacking cups and woven baskets of blocks, big arched windows, a
+    soft pastel wall and a patterned tiled floor. Nothing in the room has writing: no posters, labels,
+    charts, letters or numbers anywhere
+  yard: >-
+    the sunny kindergarten yard: a small slide, two swings, a sandbox, a lemon tree and a grapevine
+    pergola giving soft shade
+  hall: >-
+    the kindergarten's festive hall: a small wooden stage with a sage-green curtain, strings of
+    colorful triangle bunting and paper lanterns, rows of wooden chairs for families, high arched windows
+  backstage: >-
+    backstage beside the sage-green curtain, in soft warm light, with a few folded chairs and a basket
+    of paper lanterns
+  street: >-
+    a narrow sloping neighborhood street of warm limestone houses with arched doorways, potted
+    geraniums on the steps and an old olive tree beside a low stone wall
+  living_room: >-
+    the family living room: floor cushions with embroidered pillows, a low round wooden table, a big
+    arched window, patterned cement-tile floor and a plain wall above the cushions
+
+outfits:
+  day:
+    - key: gown_blue
+      en: >-
+        a night-blue graduation gown with a moon-gold collar sash over a white shirt, and a night-blue
+        graduation cap with a golden tassel
+      hijab_en: a soft white hijab under the cap
+    - key: gown_green
+      en: >-
+        a sage-green graduation gown with a cream collar sash over a white shirt, and a sage-green
+        graduation cap with a golden tassel
+      hijab_en: a soft cream hijab under the cap
+  school:
+    - key: school
+      en: a coral-red long-sleeved t-shirt with a small gold star patch and navy trousers
+      en_f: a coral-red long-sleeved dress with a small gold star patch over navy leggings
+      hijab_en: a soft cream hijab
+  sleep:
+    - key: moons
+      en: light-blue pajamas with tiny golden moons
+      hijab_en: a soft light-blue hijab matching the pajamas
+
+blurb_ar: "من ذكرى أوّل يوم إلى لحظة رفع الشهادة عاليًا: حكاية {name} في يوم التخرّج، وحلمٌ صغير اسمه الصفّ الأول."
+blurb_en: "From the memory of the very first day to the moment the certificate goes up high: {name}'s graduation day, and a little dream called first grade."
+
+for_parents:
+  lesson_ar: >-
+    التخرّج لحظةُ فخرٍ تصنعها سنةٌ من المحاولات الصغيرة. {يتعلّمُ/تتعلّمُ} {name} أن {يتذكّرَ/تتذكّرَ}
+    الرحلة، وأن {يشكرَ/تشكرَ} من ساعد، وأن {يستقبلَ/تستقبلَ} الصفّ الأول بثقة.
+  lesson_en: >-
+    Graduation is a proud moment built from a year of small tries. {name} learns to remember the journey,
+    to thank those who helped, and to welcome first grade with confidence.
+  questions_ar:
+    - "ما أجملُ ذكرى من سنة الروضة؟"
+    - "لمن {تحبُّ/تحبّين} أن {تقولَ/تقولي} «شكرًا» على هذه السنة؟"
+  questions_en:
+    - "What is your favorite memory from kindergarten?"
+    - "Who would you like to say \"thank you\" to for this year?"
+
 cover:
   scene: >-
-    The hero in a graduation gown and cap stands proudly in front of a small festive stage decorated
-    with colorful bunting, holding a rolled certificate tied with a ribbon.
+    The hero in the graduation gown and cap stands proudly in front of the small festive stage,
+    holding a rolled certificate tied with a ribbon, with bunting and paper lanterns above.
+  location: hall
+  time: morning
   companion_action: waves from the edge of the stage
 
 pages:
   - index: 1
-    layout: illustration-textbox
+    layout: full
+    text_pos: top
+    location: bedroom
+    time: morning
     beat: graduation morning
     scene: >-
-      A cozy bedroom in the morning. The hero is putting on a blue graduation gown in front of a mirror,
-      smiling proudly; a graduation cap waits on the bed.
+      The hero stands in front of a round wooden mirror in the new graduation gown, smiling proudly; the
+      graduation cap waits on the bed.
     companion_action: holds the graduation cap up with both arms
-    text_ar: "اليوم يومٌ مميّز! {استيقظَ/استيقظَتْ} {name} باكرًا {ولبسَ/ولبسَتْ} ثوب التخرّج الأزرق."
-    text_en: "Today is a special day! {name} woke up early and put on the blue graduation gown."
+    text_ar: "اليوم يومٌ مميّز! {استيقظَ/استيقظَتْ} {name} باكرًا {ولبسَ/ولبسَتْ} ثوب التخرّج، وحرسَ {companion} القبّعة على السرير."
+    text_en: "Today is a special day! {name} woke up early and put on the graduation gown, while {companion} guarded the cap."
   - index: 2
-    layout: illustration-textbox
+    layout: full
+    text_pos: side
+    location: bedroom
+    time: morning
     beat: remembering the first day
     scene: >-
-      The hero sits on the bed looking at an open photo album; the photo shows a much smaller version
-      of the hero at a kindergarten gate.
+      The hero sits on the bed looking at an open photo album; one photo shows a much smaller version of
+      the hero at a turquoise kindergarten gate. The photos have no writing.
     companion_action: peeks at the photo, amazed
-    text_ar: "{تذكّرَ/تذكّرَتْ} {name} أوّل يوم في الروضة، حين كان كل شيء جديدًا وكبيرًا."
-    text_en: "{name} remembered the first day at kindergarten, when everything was new and big."
+    text_ar: "{فتحَ/فتحَتْ} {name} ألبوم الصور {ورأى/ورأَتْ} صورةَ أوّل يوم في الروضة. «كم كنتُ {صغيرًا/صغيرةً}!»"
+    text_en: "{name} opened the photo album and found a picture from the first day at kindergarten. \"I was so little!\""
   - index: 3
-    layout: illustration-textbox
-    beat: learning
+    layout: spread
+    text_pos: top
+    location: classroom
+    time: morning
+    outfit: school
+    beat: a year of learning
     scene: >-
-      A bright kindergarten classroom. The hero sits at a low table and proudly holds up a colorful
-      drawing; building blocks and crayons are spread on the table.
-    companion_action: stacks two building blocks and balances on top
-    text_ar: "في الروضة {تعلّمَ/تعلّمَتْ} {name} الحروف كلّها، من الألف إلى الياء."
-    text_en: "At kindergarten, {name} learned all the letters, from Alif to Ya."
+      A dreamy panorama of the kindergarten year in the classroom: the hero and friends at low tables
+      building shapes, threading beads and sorting colored stones, while the big arched windows show the
+      seasons passing from autumn leaves on one side, to winter rain, to spring blossoms on the other.
+    others: four other children and the teacher
+    others_count: 5
+    companion_action: juggles three colorful beads
+    text_ar: "طوال السنة، {تعلّمَ/تعلّمَتْ} {name} الحروف والأرقام، في الخريف والشتاء والربيع. كلّ يومٍ شيءٌ جديد!"
+    text_en: "All year long, {name} learned letters and numbers, through autumn, winter and spring. Something new every day!"
   - index: 4
-    layout: illustration-textbox
-    beat: numbers and colors
+    layout: split
+    location: classroom
+    time: morning
+    outfit: school
+    beat: mixing colors
     scene: >-
-      The hero with paint on both hands mixes blue and yellow paint into green on a big sheet of paper,
-      delighted.
+      At the painting table, the hero with paint on both hands mixes blue and yellow paint into green on
+      a big sheet of paper, delighted.
     companion_action: has a drop of green paint on its nose and laughs
-    text_ar: "{وعدَّ/وعدَّتْ} النجوم، {وخلطَ/وخلطَتْ} الألوان: الأزرق والأصفر صارا أخضر!"
-    text_en: "{name} counted stars and mixed colors: blue and yellow turned green!"
+    text_ar: "{وخلطَ/وخلطَتْ} {name} الألوان: الأزرق والأصفر صارا أخضر! وعلى أنف {companion} نقطةُ طلاءٍ خضراء."
+    text_en: "{name} mixed the colors: blue and yellow turned green! And {companion} got a green dot on its nose."
   - index: 5
-    layout: illustration-textbox
+    layout: full
+    text_pos: bottom
+    location: yard
+    time: noon
+    outfit: school
     beat: friends
     scene: >-
-      A sunny playground. The hero and three friends of different looks hold hands in a circle and laugh.
+      The hero and three friends of different looks hold hands in a circle in the sunny yard, laughing.
+    others: three friends of different looks
+    others_count: 3
     companion_action: dances in the middle of the circle
-    text_ar: "{ووجدَ/ووجدَتْ} {name} أصدقاء {يلعبُ/تلعبُ} معهم كل يوم، في الشمس وفي المطر."
+    text_ar: "{ووجدَ/ووجدَتْ} {name} أصدقاء {يلعبُ/تلعبُ} معهم كلّ يوم، في الشمس وفي المطر."
     text_en: "{name} found friends to play with every day, in sunshine and in rain."
   - index: 6
-    layout: illustration-textbox
+    layout: full
+    text_pos: top
+    location: classroom
+    time: afternoon
+    outfit: school
     beat: the teacher
     scene: >-
-      A kind teacher kneels and claps for the hero, who shows a finished wooden puzzle.
+      A kind teacher kneels and claps for the hero, who proudly shows a finished wooden animal puzzle.
+    others: a kind teacher
+    others_count: 1
     companion_action: claps too
-    text_ar: "وكانت المعلّمة دائمًا هناك: تشرح، وتبتسم، وتصفّق لكل محاولة."
+    text_ar: "وكانت المعلّمة دائمًا هناك: تشرح، وتبتسم، وتصفّق لكلّ محاولة."
     text_en: "And the teacher was always there: explaining, smiling, and clapping for every try."
   - index: 7
-    layout: illustration-textbox
-    beat: rehearsal
+    layout: full
+    text_pos: bottom
+    no_child: true
+    location: hall
+    time: morning
+    beat: the festive hall
     scene: >-
-      Children in graduation gowns stand in a row, singing with open mouths; the hero stands in the middle.
-    companion_action: conducts the song with a tiny stick
-    text_ar: "قبل الحفل، {وقفَ/وقفَتْ} {name} مع الصفّ {يتدرّبُ/تتدرّبُ} على نشيدٍ جميل."
-    text_en: "Before the ceremony, {name} stood with the class, practicing a beautiful song."
+      The empty festive hall on graduation morning: the small stage with its sage-green curtain,
+      colorful bunting and paper lanterns overhead, and neat rows of empty chairs waiting, in soft light
+      from the high windows.
+    text_ar: "واليوم، تزيّنت قاعة الروضة بالأعلام الملوّنة والفوانيس، واصطفّت الكراسي تنتظر العائلات."
+    text_en: "And today, the kindergarten hall was decorated with colorful flags and lanterns, and the chairs stood waiting for the families."
   - index: 8
-    layout: illustration-textbox
-    beat: stage fright
+    layout: spread
+    text_pos: top
+    location: hall
+    time: morning
+    beat: the song
     scene: >-
-      Backstage next to a red curtain, the hero in gown and cap takes a deep breath; soft silhouettes of
-      an audience are visible beyond the curtain.
-    companion_action: sits on the hero's shoulder and whispers encouragement
-    text_ar: "على المسرح {شعرَ/شعرَتْ} {name} برجفةٍ صغيرة. همس {companion}: «{تنفّسْ/تنفّسي}… {أنتَ جاهزٌ/أنتِ جاهزةٌ}!»"
-    text_en: "On the stage, {name} felt a little shiver. {companion} whispered: \"Breathe... you're ready!\""
+      On the stage, the whole class in graduation gowns stands in a row singing with open mouths; the
+      hero stands in the middle, singing proudly.
+    others: six other children in graduation gowns
+    others_count: 6
+    companion_action: conducts the song with a tiny stick
+    text_ar: "{وقفَ/وقفَتْ} {name} مع الصفّ في صفٍّ واحد، وغنّى الجميع نشيد الروضة بصوتٍ عالٍ وجميل."
+    text_en: "{name} stood in a row with the whole class, and everyone sang the kindergarten song, loud and beautiful."
   - index: 9
-    layout: illustration-textbox
+    layout: full
+    text_pos: side
+    location: backstage
+    time: morning
+    beat: a little shiver
+    scene: >-
+      Backstage beside the curtain, the hero in gown and cap closes both eyes and takes a deep, calm
+      breath, hands on the chest.
+    companion_action: sits on the hero's shoulder and whispers encouragement
+    text_ar: "خلف الستارة {شعرَ/شعرَتْ} {name} برجفةٍ صغيرة. همس {companion}: «{تنفّسْ/تنفّسي}… {أنتَ جاهزٌ/أنتِ جاهزةٌ}!»"
+    text_en: "Behind the curtain, {name} felt a little shiver. {companion} whispered: \"Breathe... you're ready!\""
+  - index: 10
+    layout: full
+    text_pos: top
+    location: hall
+    time: morning
+    beat: the family arrives
+    scene: >-
+      The hero peeks out from the edge of the sage-green curtain and waves at Mama, Baba and the
+      grandmother, who wave back happily from the front row of chairs.
+    others: Mama, Baba and the grandmother (Teta) in the front row
+    others_count: 3
+    companion_action: peeks out right under the hero's chin
+    text_ar: "{أطلَّ/أطلَّتْ} {name} من طرف الستارة {فرأى/فرأَتْ} ماما وبابا وستّي يلوّحون، {فلوّحَ/فلوّحَتْ} لهم بفرح!"
+    text_en: "{name} peeked from behind the curtain and saw Mama, Baba and Teta waving, and waved back happily!"
+  - index: 11
+    layout: full
+    text_pos: bottom
+    location: hall
+    time: morning
     beat: the certificate
     scene: >-
       On the stage under a warm spotlight, the hero in gown and cap raises a rolled certificate tied with
-      a ribbon high above their head.
+      a ribbon high above their head, beaming.
     companion_action: cheers with both arms up
-    text_ar: "نادت المعلّمة: «{name}!» {فمشى/فمشَتْ} {name} بثقة، {ورفعَ/ورفعَتْ} الشهادة عاليًا."
-    text_en: "The teacher called: \"{name}!\" {name} walked up proudly and held the certificate high."
-  - index: 10
-    layout: illustration-textbox
+    text_ar: "نادت المعلّمة: «{name}!» {فمشى/فمشَتْ} {name} بثقة، {ورفعَ/ورفعَتْ} الشهادة عاليًا تحت الضوء."
+    text_en: "The teacher called: \"{name}!\" {name} walked up proudly and held the certificate high in the light."
+  - index: 12
+    layout: split
+    location: hall
+    time: morning
+    beat: thank you, teacher
+    scene: >-
+      Beside the stage, the hero gives the smiling teacher a small rolled drawing tied with a ribbon; the
+      teacher places a hand on her heart, touched.
+    others: the teacher
+    others_count: 1
+    companion_action: bows politely
+    text_ar: "ثمّ {قدّمَ/قدّمَتْ} {name} للمعلّمة رسمةً صغيرة {وقالَ/وقالَتْ}: «شكرًا لأنّكِ علّمتِني.»"
+    text_en: "Then {name} gave the teacher a little drawing: \"Thank you for teaching me.\""
+  - index: 13
+    layout: full
+    text_pos: top
+    location: yard
+    time: noon
     beat: caps in the air
     scene: >-
-      Children throw their graduation caps into the air among confetti, laughing with joy.
+      In the sunny yard, the hero and classmates in gowns throw their graduation caps into the air among
+      paper confetti, laughing with joy.
+    others: five classmates in graduation gowns
+    others_count: 5
     companion_action: rides on a flying cap
     text_ar: "ثمّ رمى الأطفال قبّعاتهم في الهواء، وضحك الجميع: هيييه!"
     text_en: "Then the children threw their caps into the air, and everyone laughed: hooray!"
-  - index: 11
-    layout: illustration-textbox
+  - index: 14
+    layout: full
+    text_pos: side
+    location: yard
+    time: noon
     beat: family pride
     scene: >-
-      The hero in the graduation gown runs into the arms of two parents (shown simply, from the side),
-      all smiling.
+      In the yard, the hero in the graduation gown runs into the arms of Mama and Baba, all smiling with
+      closed eyes in a big warm hug.
+    others: Mama and Baba
+    others_count: 2
     companion_action: floats above them, glowing warmly
     text_ar: "{ركضَ/ركضَتْ} {name} إلى ماما وبابا، {فضمّاه/فضمّاها} وقالا: «نحن فخوران {بكَ/بكِ}!»"
-    text_en: "{name} ran to Mama and Baba, who hugged them and said: \"We are so proud of you!\""
-  - index: 12
-    layout: illustration-textbox
+    text_en: "{name} ran to Mama and Baba, who hugged tight and said: \"We are so proud of you!\""
+  - index: 15
+    layout: spread
+    text_pos: top
+    location: street
+    time: sunset
+    beat: the walk home
+    scene: >-
+      Walking home along the sloping limestone street at sunset: the hero in the gown holds the
+      certificate to the chest like a treasure, walking between Mama, Baba and the grandmother; long
+      golden shadows and olive trees.
+    others: Mama, Baba and the grandmother (Teta)
+    others_count: 3
+    companion_action: carries the graduation cap like a little boat
+    text_ar: "في طريق العودة، تحت شمس الغروب، {حملَ/حملَتْ} {name} الشهادة كأنّها كنز، ومشت العائلة كلّها {معه/معها} فرحانة."
+    text_en: "On the way home, under the setting sun, {name} carried the certificate like a treasure, and the whole family walked along, happy."
+  - index: 16
+    layout: full
+    text_pos: bottom
+    location: living_room
+    time: evening
+    outfit: sleep
+    beat: a place on the wall
+    scene: >-
+      Evening in the living room lit by warm lamps. The hero in pajamas and Baba hang the framed
+      certificate on the plain wall together, the hero on tiptoes. The certificate shows no readable
+      writing, only a gold seal.
+    others: Baba
+    others_count: 1
+    companion_action: holds the little hammer carefully
+    text_ar: "في المساء، {علّقَ/علّقَتْ} {name} الشهادة على الحائط مع بابا. قال بابا: «هكذا نراها كلّ صباح.»"
+    text_en: "In the evening, {name} hung the certificate on the wall with Baba. \"Now we'll see it every morning,\" said Baba."
+  - index: 17
+    layout: full
+    text_pos: top
+    location: bedroom
+    time: night
+    outfit: sleep
     beat: dreaming of first grade
     scene: >-
-      Night in the hero's bedroom. The certificate is pinned on the wall; the hero in pajamas looks at a
-      big gentle moon through the window.
+      Night in the bedroom. The hero in pajamas kneels on the bed looking at a big gentle moon through
+      the window, dreaming, with a new school bag ready on the chair.
     companion_action: curls up on the windowsill, glowing like a night light
     text_ar: "وفي الليل، تحت ضوء القمر، {همسَ/همسَتْ} {name} لـ{companion}: «الصفّ الأول… {أنا قادمٌ/أنا قادمةٌ}!»"
     text_en: "That night, under the moonlight, {name} whispered to {companion}: \"First grade... here I come!\""

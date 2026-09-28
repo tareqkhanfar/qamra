@@ -58,6 +58,49 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "كلمة المرور هذه شائعة جداً وسهلة التخمين. اختاروا غيرها.",
         "This password is too common and easy to guess. Please choose another.",
     ),
+    "mfa_required": (
+        "أدخلوا رمز التحقق من تطبيق المصادقة لإكمال الدخول.",
+        "Enter the code from your authenticator app to finish signing in.",
+    ),
+    "mfa_setup_required": (
+        "الإدارة تتطلّب التحقق بخطوتين. فعّلوه أولًا.",
+        "The admin area requires two-step verification. Please set it up first.",
+    ),
+    "invalid_code": ("الرمز غير صحيح أو انتهت صلاحيته.", "The code is wrong or has expired."),
+    "mfa_not_pending": (
+        "ابدؤوا إعداد التحقق بخطوتين من جديد.",
+        "Please start the two-step verification setup again.",
+    ),
+    "mfa_already_enabled": ("التحقق بخطوتين مفعّل مسبقًا.", "Two-step verification is already on."),
+    "admin_requires_2fa": (
+        "لا يمكن إيقاف التحقق بخطوتين لحساب إداري.",
+        "Two-step verification can't be turned off for an admin account.",
+    ),
+    "ip_not_allowed": (
+        "لا يُسمح بالوصول إلى الإدارة من هذا العنوان.",
+        "Admin access isn't allowed from this address.",
+    ),
+    "consent_required": (
+        "يلزم تأكيد موافقة وليّ الأمر المكتوبة قبل رفع الصور.",
+        "Written guardian consent must be confirmed before uploading photos.",
+    ),
+    "invalid_photo": (
+        "تعذّر استخدام هذه الصورة. جرّبوا صورة أوضح بوجهٍ واحد.",
+        "We couldn't use this photo. Try a clearer photo with one face.",
+    ),
+    "file_too_large": ("الملف كبير جدًّا (الحد 10 ميغابايت).", "The file is too large (10 MB max)."),
+    "budget_exceeded": (
+        "تجاوز هذا الكتاب سقف التكلفة. ارفعوا السقف أو اعتمدوه كما هو.",
+        "This book reached its cost cap. Raise the cap or approve it as it is.",
+    ),
+    "busy": (
+        "هذا الكتاب قيد التوليد الآن. انتظروا حتى ينتهي.",
+        "This book is generating right now. Please wait.",
+    ),
+    "not_ready": (
+        "الكتاب غير جاهز للاعتماد بعد (ملفات الطباعة أو الفحص).",
+        "The book isn't ready for approval yet (print files or preflight).",
+    ),
     "service_unavailable": (
         "الخدمة غير متاحة مؤقتًا. حاولوا بعد قليل.",
         "The service is temporarily unavailable. Try again shortly.",

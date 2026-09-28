@@ -14,6 +14,7 @@ from decimal import Decimal
 from typing import Any
 
 from sqlalchemy import (
+    BigInteger,
     Boolean,
     Date,
     DateTime,
@@ -85,10 +86,19 @@ class BookStatus(enum.StrEnum):
     draft = "draft"
     generating = "generating"
     preview = "preview"
-    approved = "approved"
+    in_review = "in_review"  # final files ready; waiting for the admin's print approval (Addendum 3 §5)
+    approved = "approved"  # approved for print by an admin (the only way to reach print batches)
     ordered = "ordered"
     printed = "printed"
     failed = "failed"
+
+
+class PageStatus(enum.StrEnum):
+    pending = "pending"
+    ok = "ok"  # passed automatic QA
+    needs_review = "needs_review"  # best attempt kept after the automatic redraws; a human decides
+    failed = "failed"
+    skipped = "skipped"  # not drawn (budget cap, missing cover)
 
 
 class SafetyStatus(enum.StrEnum):
@@ -175,6 +185,11 @@ class User(IdMixin, TimestampMixin, Base):
     email_verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     last_login_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    # Two-factor sign-in (TOTP, RFC 6238). Required for admins (Addendum 3 §6).
+    totp_secret_ciphertext: Mapped[str | None] = mapped_column(Text)  # Fernet, like admin secrets
+    totp_enabled_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    totp_last_step: Mapped[int | None] = mapped_column(BigInteger)  # replay protection
+    recovery_codes: Mapped[list[str]] = mapped_column(JSONB, default=list)  # sha256 hashes, single use
 
 
 class RefreshToken(IdMixin, CreatedAtMixin, Base):
@@ -187,6 +202,7 @@ class RefreshToken(IdMixin, CreatedAtMixin, Base):
     revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     revoked_reason: Mapped[str | None] = mapped_column(String(16))  # rotated | logout | reuse
     user_agent: Mapped[str | None] = mapped_column(String(300))
+    mfa: Mapped[bool] = mapped_column(Boolean, default=False)  # the login passed the second factor
 
 
 class Classroom(IdMixin, TimestampMixin, Base):
@@ -220,6 +236,9 @@ class Child(IdMixin, TimestampMixin, Base):
     gender: Mapped[Gender] = mapped_column(str_enum(Gender, "child_gender"))
     birth_year: Mapped[int] = mapped_column(SmallInteger)
     interests: Mapped[list[str]] = mapped_column(JSONB, default=list)
+    wears_hijab: Mapped[bool] = mapped_column(Boolean, default=False)  # the parent's choice, never inferred
+    wears_glasses: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_sample: Mapped[bool] = mapped_column(Boolean, default=False)  # admin test child (acceptance runs)
 
 
 class Consent(IdMixin, Base):
@@ -323,8 +342,21 @@ class Book(IdMixin, TimestampMixin, Base):
     dedication: Mapped[str | None] = mapped_column(Text)
     pdf_interior_key: Mapped[str | None] = mapped_column(String(300))
     pdf_cover_key: Mapped[str | None] = mapped_column(String(300))
+    proof_pdf_key: Mapped[str | None] = mapped_column(String(300))
     approved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     approved_by_user_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"))
+    parent_message: Mapped[str | None] = mapped_column(String(120))  # dedication from the parent
+    is_sample: Mapped[bool] = mapped_column(Boolean, default=False)
+    # Addendum 3: everything that must stay stable across runs and redraws (seed, outfit lock, plan, mode,
+    # models used), the adapted story incl. parents page + blurb, costs, flags, QA and preflight results.
+    generation: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    story: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    cost_usd: Mapped[Decimal] = mapped_column(Numeric(10, 4), default=Decimal("0"))
+    budget_usd: Mapped[Decimal | None] = mapped_column(Numeric(10, 2))
+    flags: Mapped[list[str]] = mapped_column(JSONB, default=list)
+    qa_summary: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    preflight: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    error: Mapped[str | None] = mapped_column(Text)
 
 
 class BookPage(IdMixin, TimestampMixin, Base):
@@ -332,16 +364,27 @@ class BookPage(IdMixin, TimestampMixin, Base):
     __table_args__ = (UniqueConstraint("book_id", "index"),)
 
     book_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("books.id", ondelete="CASCADE"), index=True)
-    index: Mapped[int] = mapped_column(SmallInteger)  # 0 = cover
+    index: Mapped[int] = mapped_column(SmallInteger)  # theme page ("beat"); 0 = cover
     text: Mapped[str | None] = mapped_column(Text)
     original_text: Mapped[str | None] = mapped_column(Text)  # for "restore original" in review
-    image_key: Mapped[str | None] = mapped_column(String(300))
-    print_image_key: Mapped[str | None] = mapped_column(String(300))
-    regen_count: Mapped[int] = mapped_column(SmallInteger, default=0)
+    image_key: Mapped[str | None] = mapped_column(String(300))  # as generated
+    print_image_key: Mapped[str | None] = mapped_column(String(300))  # upscaled + fitted to the print box
+    preview_image_key: Mapped[str | None] = mapped_column(String(300))  # approved low-res preview
+    regen_count: Mapped[int] = mapped_column(SmallInteger, default=0)  # manual redraws (admin/parent)
     safety_status: Mapped[SafetyStatus] = mapped_column(
         str_enum(SafetyStatus, "safety_status"), default=SafetyStatus.pending
     )
     review: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    # Addendum 3 QA
+    layout: Mapped[str | None] = mapped_column(String(16))  # full | split | spread | cover
+    status: Mapped[PageStatus] = mapped_column(
+        str_enum(PageStatus, "page_status"), default=PageStatus.pending
+    )
+    qa: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)  # chosen attempt's QA answers
+    qa_score: Mapped[Decimal | None] = mapped_column(Numeric(4, 3))
+    attempts: Mapped[list[dict[str, Any]]] = mapped_column(JSONB, default=list)
+    flags: Mapped[list[str]] = mapped_column(JSONB, default=list)
+    cost_usd: Mapped[Decimal] = mapped_column(Numeric(10, 4), default=Decimal("0"))
 
 
 # ---- orders and printing ---------------------------------------------------------------------

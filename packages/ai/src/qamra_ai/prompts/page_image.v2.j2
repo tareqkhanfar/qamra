@@ -1,0 +1,77 @@
+{#- Addendum 3 page prompt. Order: style → setting → scene → characters → outfit → composition → safety → negatives. -#}
+{%- set light = {
+  'dawn': 'soft pink-and-gold dawn light with long gentle shadows',
+  'morning': 'fresh golden morning light',
+  'noon': 'bright, even midday light with soft shadows',
+  'afternoon': 'warm late-afternoon light',
+  'sunset': 'glowing golden-orange sunset light',
+  'evening': 'calm blue evening light with warm lamps glowing inside',
+  'night': 'quiet moonlit night: deep blue sky, silver-gold moonlight and a warm lamp glow',
+} -%}
+{%- set areas = {
+  'top': 'the TOP 30% of the image',
+  'bottom': 'the BOTTOM 30% of the image',
+  'right': 'the RIGHT 38% of the image',
+  'left': 'the LEFT 38% of the image',
+  'top-right': 'the TOP-RIGHT quarter of the image',
+  'top-left': 'the TOP-LEFT quarter of the image',
+  'bottom-right': 'the BOTTOM-RIGHT quarter of the image',
+  'bottom-left': 'the BOTTOM-LEFT quarter of the image',
+} -%}
+STYLE
+{{ style }}
+Painting medium: {{ medium }}
+
+SETTING
+{{ setting }}
+
+SCENE — {% if kind == 'cover' %}the FRONT COVER of the book{% elif layout == 'spread' %}pages {{ page_label }}, one illustration across two facing pages{% else %}page {{ page_label }}{% endif %}
+{{ scene }}
+{%- if location %}
+Location (it looks exactly like this on every page set here): {{ location }}
+{%- endif %}
+Light: {{ light[time] }}. Keep this light and time of day consistent with the rest of this scene.
+
+CHARACTERS
+{%- if kind == 'plate' %}
+- No children and no main characters in this picture: it shows the place itself. Any people are tiny, far away and unimportant.
+{%- else %}
+- THE HERO is the child in Image {{ hero.ref }} (the character reference sheet). Keep exactly the same face, skin tone, hair color and hairstyle, eye shape{% if hero.glasses %}, the same glasses{% endif %}, age and body proportions. {{ 'He is a boy' if hero.gender == 'm' else 'She is a girl' }}, about {{ hero.age }} years old. Draw the hero exactly once.
+{%- if style_ref %}
+- Image {{ style_ref }} is this book's front cover: match its painting style, palette and the hero's clothing exactly.
+{%- endif %}
+{%- if preview_ref %}
+- Image {{ preview_ref }} is the parent-approved preview of THIS page: keep its composition, poses and colors, and redraw it cleanly at full quality.
+{%- endif %}
+{%- if companion %}
+- THE COMPANION{% if companion.ref %} is the character in Image {{ companion.ref }}: same silhouette, colors, number of eyes and limbs, and quirks.{% else %} looks like this: {{ companion.description }}.{% endif %} In this picture it {{ companion.action or 'stays close to the hero' }}. Draw it exactly once.
+{%- endif %}
+{%- if others %}
+- Also in the picture: {{ others }}. They look clearly different from the hero.
+{%- else %}
+- No other children in the picture.
+{%- endif %}
+{%- endif %}
+{%- if outfit %}
+
+OUTFIT (locked for the whole book: identical on every page)
+The hero wears {{ outfit }}.{% if not hero.hijab %} No hijab or head covering on the hero.{% endif %}
+{%- endif %}
+
+COMPOSITION
+{%- if kind == 'cover' %}
+Front cover, square. Keep the TOP 30% calm and simple (sky or soft background) for the book title. The hero is large and central in the lower two thirds, happy and confident, looking toward the reader.
+{%- elif layout == 'spread' %}
+A wide panorama that spans two facing pages of an open book. Keep faces and key details away from the vertical center line (the fold) and out of the top and bottom 8% (trimmed). Keep {{ areas[text_area] }} calm for the story text.
+{%- elif layout == 'split' %}
+A wide illustration for the upper part of a page. Its lower edge fades into the paper, so keep the ground simple along the bottom edge. No text area is needed inside the image.
+{%- else %}
+Square picture-book page. Keep {{ areas[text_area] }} calm and simple for the story text panel, with no faces, hands or key objects there; place the main action in the rest of the image.
+{%- endif %}
+{{ composition }}
+
+SAFETY
+{{ safety }}
+
+NEGATIVE
+{{ negative }}

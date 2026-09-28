@@ -8,6 +8,7 @@ from qamra_ai.errors import ContentBlocked
 from qamra_ai.image.base import GeneratedImage, ImageRequest, RefImage, sniff_mime
 from qamra_ai.pipeline.models import CompanionFidelity, CompanionSpec, DrawingReview
 from qamra_ai.pipeline.runtime import Runtime
+from qamra_ai.pipeline.style import house_style
 from qamra_ai.pipeline.theme import ArtStyle
 from qamra_ai.text.base import ImagePart
 
@@ -47,14 +48,18 @@ async def review_drawing(rt: Runtime, cleaned_png: bytes, spec: CompanionSpec) -
 def companion_request(
     spec: CompanionSpec, review: DrawingReview, cleaned_png: bytes, style: ArtStyle, option: int
 ) -> ImageRequest:
+    h = house_style()
     prompt = prompts.render(
         "companion_sheet",
+        version=2,
         name=spec.name,
         type_label=type_label(spec),
         key_features=review.key_features,
         description=review.description_en,
         traits=spec.traits,
-        style_guide=style.guide,
+        style=h.style,
+        medium=style.guide,
+        negative=h.negative,
     )
     ref = RefImage(cleaned_png, sniff_mime(cleaned_png), "the child's original drawing")
     return ImageRequest(

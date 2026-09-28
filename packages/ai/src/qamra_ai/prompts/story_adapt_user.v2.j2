@@ -1,0 +1,23 @@
+Child:
+- name: {{ child.name }}
+- {{ 'boy: use masculine agreement for every word that refers to him' if child.gender == 'm' else 'girl: use feminine agreement for every word that refers to her' }}{% if lang == 'en' %} ({{ 'he/him' if child.gender == 'm' else 'she/her' }}){% endif %}
+- age: {{ child.age }}
+- interests: {{ child.interests | join(', ') if child.interests else 'none given' }}
+{% if companion %}
+Companion: {{ companion.name }} ({{ companion.type_label }}){% if companion.traits %}, {{ companion.traits }}{% endif %}. Its look: {{ companion.description_en }}
+{% endif %}
+Word limit per page: {{ max_words }}
+{% if lang == 'ar' %}Vowelization: {{ 'full تشكيل on the title, dedication and every story page' if vowelize else 'only where needed' }}
+{% endif %}
+Title template: {{ theme_title }}
+
+Base story (already rendered for this child's gender; adapt and polish it, keep the beats):
+<pages_json>
+{{ pages_json }}
+</pages_json>
+
+Base lesson for parents: {{ lesson }}
+Base questions for parents:
+{% for q in questions %}- {{ q }}
+{% endfor %}
+Base back-cover blurb: {{ blurb }}

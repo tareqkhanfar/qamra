@@ -1,3 +1,4 @@
+Read docs/ADDENDUM-03.md — it overrides earlier prompts where they conflict.
 Read docs/ADDENDUM-01.md — it overrides the main prompt where they conflict.
 
 # Build prompt — Qamra (قمرة) — Arabic personalized storybooks

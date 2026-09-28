@@ -2,6 +2,88 @@
 
 Newest first. Each entry: date — decision — why.
 
+## 2026-09-28 — Addendum 3: premium books at ≤ $2.50
+
+Verified prices and parameters are listed in `docs/plans/addendum-03.md` §1, with sources.
+
+**Models**
+- **Default image model: fal Nano Banana 2** (`fal-ai/nano-banana-2`). With reference images the provider switches to `/edit` automatically, which takes up to 14 references. It is $0.08 per image at 1K and $0.06 at 0.5K.
+- **Fallback: `fal-ai/flux-2-pro/edit`**, used only after 2 failed attempts on the primary (setting `fallback_after_failures`). Every switch is logged, recorded on the attempt, and counted on the cost dashboard. The admin field "FLUX model" became "fal fallback model"; a migration renames stored rows.
+- **Content blocks count as a failed primary attempt.** A false positive in one provider's filter shouldn't leave a child's page blank. Our own Haiku QA safety check still judges whatever comes back, and unsafe pictures are never kept, not even for review.
+- **Text models:**
+  - `claude-sonnet-5` writes the story at `effort: medium`.
+  - `claude-haiku-4-5-20251001` runs page QA, the safety review and drawing checks.
+  - Opus stays selectable in admin.
+  - Server-side refusal fallbacks are sent only to the models that support them (Opus 5/5.5, Fable). Haiku 4.5 gets no `effort`.
+
+**fal privacy**
+- **Every fal call sends `X-Fal-Store-IO: 0`** (no 30-day payload history) and a 15-minute expiry on generated files.
+- References go inline as data URIs and results come back inline (`sync_mode`), so nothing is uploaded to fal's CDN.
+- fal error payloads echo the request (which includes our reference images), so only the error type and message are ever logged.
+- fal's terms allow de-identified or aggregated usage data to improve services. There is no explicit "never train on inputs" clause outside enterprise contracts. Tareq should get written confirmation from fal before real children's photos go through it.
+
+**Prompt caching**
+- The story system prompt (rules + the theme's beats and lesson) contains no child data, so class batches of one theme reuse it. The minimum for Sonnet 5 is 1024 tokens.
+- QA calls cache the book's reference images: character sheet, cover and companion. Haiku 4.5 needs a 4096-token prefix, and the first real book showed the prefix was ~3.5K tokens, so QA never cached (29 calls, $0.14). **Fix (page QA prompt v2):** the QA system prompt now carries the full house style, people, safety and negative rules plus the book's locked outfits. Those are the rules the judge needs anyway, and they add enough tokens to cross the minimum. The cover reference is now the print cover downscaled to 1536 px instead of the small preview.
+
+**Look and consistency**
+- **The cover is the outfit anchor.** It is drawn first, in the book's locked outfit, and QA'd. Every page then gets the character sheet (identity) and the cover (outfit, style, palette) as references. This gives consistent outfits without paying for a separate outfit sheet.
+- **Locations and lighting:** each theme defines named locations whose description is repeated word for word, plus a time of day per page. This keeps rooms and light the same through a sequence.
+- **House style path:** the addendum names `packages/ai/prompts/style/qamra_style.md`. Our prompts live inside the Python package so they ship in the Docker images, so the file is `packages/ai/src/qamra_ai/prompts/style/qamra_style.md`.
+- **The art-style choice now sets only the painting medium.** Watercolor is the default; crayon and paper-cut stay optional. Palette, setting, people, composition, safety and negatives come from the house style.
+- **Names never go into image prompts.** A written name (especially Arabic) invites lettering in the picture, which would fail the no-text rule.
+
+**QA and budget**
+- **QA scoring is weighted** (likeness 45%, outfit 15%, text space 15%, count 10%, companion 10%, style 5%) and passes at 0.75, set in admin.
+- **Hard fails:** unsafe, text in the image, broken anatomy, the hero missing or duplicated, likeness below 4/10. Likeness below 7 is flagged "face".
+- **At most 2 automatic redraws**, then the best safe attempt is kept and flagged for a human.
+- **The budget cap is per book (default $3.00).** Character and companion sheets are per child and reused across books, so they are not charged to a book's cap. A book's cap can be raised in review. Manual redraws count toward it and are pre-checked by the API.
+- **Background plates:** child-free pages (`no_child: true`, one per MVP theme) are cached per theme, version, style, house-style version, resolution and language.
+
+**Resolution: 1K + upscale (A/B done with real keys, 2026-09-28)**
+- Previews are drawn at 0.5K. When the book is ordered, the preview pages are redrawn at final resolution with the approved preview as an extra reference, so the final matches what the parent saw.
+- **The final default is 1K + SeedVR upscale** (`fal-ai/seedvr/upscale/image`, $0.001 per megapixel). A local Lanczos resize then fits the image exactly to 2551 px (216 mm at 300 DPI).
+- **A/B** (`scripts/ab_resolution.py`, beats 1, 6 and 16 of a real first-day book, same prompt and references in both arms):
+  - Cost: 1K + upscale is $0.0862 per page and 2K native is $0.12, about $0.60 more per 18-image book, which would push a book past the $2.50 cap.
+  - Quality: compared on 800 px crops at 300 DPI (≈ 68 mm, i.e. true print size), they are equally sharp. 1K + upscale has slightly crisper line edges; 2K keeps slightly more paper grain. Faces, hands and hijab folds are the same in both.
+  - **Decision: 1K + upscale.** It gets the same print sharpness for 72% of the cost. It is still to be confirmed on a physical printer proof (paper grain may read differently on uncoated stock). Switching is one admin setting (`final_mode = 2k_native`).
+
+**Book structure**
+- Books are 24 pages: title + dedication, 20 story pages (17 beats: 3 spreads, 2 split pages, 1 plate), the «وهكذا وُلد صاحبي» page when there's a drawing, «للأهل», then the activity and memories pages to reach a multiple of 4.
+- **RTL imposition:**
+  - Page 1 is a left-hand page; spreads start on even pages.
+  - A spread's even page is read first and is the right half, so the text panel goes there.
+  - The cover wrap is laid out front | spine | back (the mirror of an LTR wrap), and the spine width is a setting.
+- **Typesetting:**
+  - Noto Naskh Arabic (SIL OFL 1.1: commercial embedding allowed) for story text: 20 pt for ages 3–5, 16 pt for 6–8, line height 1.9. It shrinks in 0.5 pt steps to 18/15 pt when text doesn't fit, and anything still overflowing is flagged.
+  - Baloo Bhaijaan 2 only for titles and the cover. Folios use Arabic-Indic digits.
+- **Text panel:** cream at 88% opacity. It goes to 96% when the art underneath is busy (edge measure) or the ink contrast falls below 7:1, and busy areas are flagged.
+- **Preflight** uses pypdf + pdfplumber (BSD/MIT). It checks exact MediaBox/TrimBox/BleedBox, embedded non-Type-3 fonts, every image ≥ 300 DPI effective, no text outside the trim (error), text inside the safe margin (warning), and page count % signature. Chromium rounds page sizes to CSS pixels, so the renderer rewrites the boxes to the exact millimetre size.
+- **Offline "sketch" provider:** the design's illustration parts rendered with Chromium, with no network and $0. It's used for demos, e2e and the sample PDFs until real keys run, and the admin sample form can choose it ("placeholder art").
+
+**Fixes found by the first real books**
+- **The plate cache key includes the image model.** The first real book got the offline sketch provider's plate for its child-free page, because the key did not say which model drew it. Keys are now `plates/<model>/<theme>/v<version>/…`. The polluted plate was deleted and the page redrawn.
+- **Books are pinned to the theme definition they started with** (`generation.theme_def`). A theme edit or version bump mid-generation cannot mix two versions in one book, and redraws use the same scene text as the original pages.
+- **Classroom scenes invited writing.** 6 of 18 pages in the first book were redrawn, most for text in the image (alphabet posters, labelled shelves, book titles). The first-day and graduation classroom descriptions now say what is on the shelves (wooden toys, stacking cups, baskets of blocks) and that nothing in the room has writing. The house style (v2) adds: book spines and covers are plain blocks of color; no posters, charts, calendars, labels or price tags. The themes went to version 3.
+- **SeaweedFS SSE-S3 corrupts objects over 8 MB** (4.47: reads fail with "wrote more than the declared Content-Length"). Print PDFs are 20–60 MB. We turned off per-object SSE (`S3_SSE=none`). Volumes are still encrypted at rest by SeaweedFS (`-s3.encryptVolumeData`), so photos and books stay encrypted. Uploads over 8 MB are now multipart, and the S3 container has 1 GB of memory. We verified 4/9/30/60 MB round trips. Production uses R2, which encrypts everything at rest and is not affected.
+- **Found by reading the graduation book's print PDF** (the automatic QA had passed all of these):
+  - **Painted page numbers.** The page prompt named the page ("page 3"), and on 2 of 17 pages the model painted that number into a corner like a printed folio. Page prompt v3 describes the page without a number, and house style v3 forbids page numbers and corner marks.
+  - **A duplicated hero.** One page showed two identical girls hugging where the text has one child. QA v2 scored it 0.955. QA v3 counts children by face, not by outfit (whole classes wear the same gown), and counts look-alikes as a duplicated hero. It also asks QA to check the corners for digits.
+  - **A repeated dedication opening.** Parents naturally write «إلى ليان… مبارك», which printed as «إلى ليان… إلى ليان… مبارك». The opening is now added only when the message doesn't already address the child.
+  - This is why every book still gets a human review before print. The automatic QA lowers the review load; it does not replace the review.
+- **The regeneration rate counts only automatic redraws after a failed QA check.** The addendum uses this rate to find themes whose scene prompts need work. The first count took every extra attempt, so a book with a preview showed 4 phantom redraws (the pages redrawn at print resolution after ordering), and admin redraws counted too. Each attempt now records why it was drawn: "qa", "error" (a provider retry) or "manual". The two real books were backfilled from their cost log.
+- **The cost dashboard leaves placeholder-art books out.** They cost $0 and would pull down the average the $2.50 cap is judged by.
+- **A/B and other tooling spend is not charged to a book.** It is logged against the child with `book_id` empty, so it shows on the dashboard without inflating a book's cost or tripping its budget.
+
+**Review and security**
+- **Nothing reaches print without approval.** Final books end in `in_review`. Approval requires both print files and a passing preflight. Text edits and redraws re-render the PDFs.
+- **Admin 2FA:**
+  - Every admin endpoint requires a session that passed TOTP (RFC 6238, ±1 step). Codes are never accepted twice, because the last used step is stored.
+  - 10 single-use recovery codes are stored as sha256 hashes. Admins can't turn 2FA off; recovery is `qamra reset-2fa --email …` on the server.
+  - An optional admin IP allowlist sits in admin → security.
+- **HTTPS on this server:** port 80 belongs to another project's host nginx, so `infra/scripts/setup-https.sh` adds a host-nginx site + Let's Encrypt for our domain in front of the edge, which is then bound to localhost. The edge trusts `X-Forwarded-For` only from Docker bridge addresses; internet clients keep their real IP, which was re-tested with spoofed headers.
+- **ufw is prepared, not applied.** `infra/scripts/firewall.sh` is dry-run by default. On this shared server it would close other projects' public ports (4000, 8080, 5432), so it needs Tareq's go-ahead.
+
 ## 2026-09-28 — Admin settings, music, security
 
 - **All operator-facing configuration lives in the admin** (Tareq's requirement): prices, contact details, AI keys and models, notifications, site switches and privacy retention. Infrastructure secrets (DB URL, JWT secret, `SETTINGS_ENCRYPTION_KEYS`) stay in the environment; they can't safely be edited from inside the system they protect. The registry is in `qamra_core/app_settings.py`.

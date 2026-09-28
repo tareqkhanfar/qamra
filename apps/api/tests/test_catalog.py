@@ -18,7 +18,7 @@ async def test_theme_list_sorted_with_status(client: AsyncClient, adb: AsyncSess
     soon = [c for c in cards if c["status"] == "coming_soon"]
     assert len(soon) == 5 and all(c["pages"] > 0 for c in soon)
     first = cards[0]
-    assert first["name"] == "أوّل يوم في الروضة" and first["pages"] == 12 and first["art"]["scene"] == "garden"
+    assert first["name"] == "أوّل يوم في الروضة" and first["pages"] == 24 and first["art"]["scene"] == "garden"
     en = (await client.get("/api/themes", params={"lang": "en"})).json()
     assert en[0]["name"] == "First Day at Kindergarten"
 
@@ -32,7 +32,7 @@ async def test_theme_detail_peek_uses_real_story_text(client: AsyncClient, adb: 
     text = d["peek"][1]["text"]
     assert "ليان" in text and "{" not in text and "[" not in text
     assert d["sample_name"] == "ليان"
-    assert [p["index"] for p in d["samples"]] == [1, 4, 8, 12]
+    assert [p["index"] for p in d["samples"]] == [1, 6, 11, 17]  # beginning, middle, end
     assert all("{" not in p["text"] and p["art"]["scene"] for p in d["samples"])
     soon = (await client.get("/api/themes/moon-trip")).json()
     assert soon["status"] == "coming_soon" and soon["samples"] == [] and soon["sample_name"] is None

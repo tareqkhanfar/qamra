@@ -398,7 +398,8 @@
       "queue": "Approval queue",
       "orders": "Orders & printing",
       "themes": "Theme editor",
-      "metrics": "Cost & conversion"
+      "metrics": "Cost & conversion",
+      "samples": "Sample books"
     },
     "soon": "Soon",
     "save": "Save",
@@ -433,5 +434,238 @@
     "save": "Change password",
     "saving": "One moment…",
     "done": "Password changed, and other devices were signed out."
+  },
+  "mfa": {
+    "loginTitle": "Two-step verification",
+    "loginLead": "Enter the 6-digit code from your authenticator app.",
+    "code": "Verification code",
+    "codeHint": "Or one of your recovery codes if you don't have your phone.",
+    "verify": "Confirm",
+    "verifying": "Checking…",
+    "setupTitle": "Turn on two-step verification",
+    "setupLead": "The admin area holds the AI keys and children's data, so it needs a code from an authenticator app (Google Authenticator, Microsoft Authenticator, 1Password…) as well as your password.",
+    "password": "Current password",
+    "start": "Start setup",
+    "scan": "Scan the code with your authenticator app, or type this key:",
+    "enterCode": "Then enter the code the app shows:",
+    "enable": "Turn on",
+    "recoveryTitle": "Recovery codes",
+    "recoveryLead": "Save these somewhere safe now. Each works once if you lose your phone. They won't be shown again.",
+    "download": "Download codes",
+    "done": "I saved them, continue",
+    "againTitle": "Sign in with your code",
+    "againLead": "This session started with the password only. Sign in again and enter the app code.",
+    "signInAgain": "Sign in again",
+    "ipTitle": "Address not allowed",
+    "ipLead": "Admin access isn't allowed from this network (see the allowlist in settings)."
+  },
+  "queue": {
+    "title": "Waiting for approval",
+    "filters": {
+      "review": "Waiting for approval",
+      "flagged": "Flagged",
+      "generating": "Generating",
+      "approved": "Approved",
+      "all": "All"
+    },
+    "empty": "Nothing here right now.",
+    "pick": "Pick a book from the list.",
+    "sample": "Sample",
+    "order": "Order",
+    "pages": "{n} pages",
+    "faceMatch": "Face match (avg)",
+    "flaggedPages": "Auto-flagged pages",
+    "aiCost": "Generation cost",
+    "ofBudget": "of {cap} cap",
+    "redraws": "Redraws",
+    "regenerate": "Redraw selected ({n})",
+    "approve": "Approve & send to print",
+    "approved": "Approved for print",
+    "confirmApprove": "After approval the book joins the print batch. Sure?",
+    "preflight": "Print-file preflight",
+    "pass": "Pass",
+    "fail": "Fail",
+    "files": {
+      "proof": "Web proof",
+      "interior": "Interior PDF",
+      "cover": "Cover PDF"
+    },
+    "character": "Character sheet",
+    "page": "p {n}",
+    "cover": "Cover",
+    "select": "Select",
+    "text": "Page text",
+    "saveText": "Save text & re-render",
+    "restore": "Restore original text",
+    "redrawOne": "Redraw this page",
+    "close": "Close",
+    "qa": "Automatic QA",
+    "attempts": "Attempts: {n}",
+    "score": "Score",
+    "budget": "Cost cap ($)",
+    "raiseBudget": "Save cap",
+    "generate": "Continue generating",
+    "generating": "Generating… {done} of {total}",
+    "error": "Error",
+    "flags": {
+      "face": "face",
+      "text_in_image": "text in image",
+      "anatomy": "anatomy",
+      "hero_count": "hero count",
+      "count": "people count",
+      "outfit": "outfit",
+      "text_space": "text space",
+      "companion": "companion",
+      "style": "style",
+      "unsafe": "unsafe",
+      "qa_unavailable": "QA unavailable",
+      "fallback_used": "fallback model",
+      "upscale_fallback": "local upscale",
+      "draw_failed": "draw failed",
+      "budget": "budget",
+      "no_cover": "no cover",
+      "busy_text_area": "busy text area",
+      "text_overflow": "text overflow",
+      "text_shrunk": "text shrunk",
+      "long_text": "long text",
+      "budget_exceeded": "over budget",
+      "pages_need_review": "pages to review",
+      "preflight_failed": "preflight",
+      "pages_missing": "pages missing",
+      "render_failed": "render failed",
+      "generation_failed": "generation failed",
+      "missing_image": "missing image"
+    },
+    "status": {
+      "draft": "Draft",
+      "generating": "Generating",
+      "preview": "Preview",
+      "in_review": "Waiting for approval",
+      "approved": "Approved",
+      "ordered": "Ordered",
+      "printed": "Printed",
+      "failed": "Stopped"
+    },
+    "questions": {
+      "likeness": "Likeness",
+      "people_count_ok": "People count",
+      "anatomy_ok": "Anatomy",
+      "text_in_image": "Text in image",
+      "outfit_ok": "Outfit",
+      "text_space_ok": "Text space",
+      "companion_ok": "Companion",
+      "style_ok": "Style",
+      "safe": "Safe"
+    },
+    "kinds": {
+      "title": "Title & dedication",
+      "companion": "How my friend was born",
+      "parents": "For parents",
+      "activity": "Drawing page",
+      "memories": "Our memories",
+      "blank": "Blank page",
+      "story": "Story page"
+    }
+  },
+  "metrics": {
+    "title": "Cost & quality",
+    "period": "Period",
+    "days": "Last {n} days",
+    "books": "Finished books",
+    "perBook": "AI cost / book",
+    "perPage": "Cost per page",
+    "withinCap": "Within cap ($2.50)",
+    "target": "Target {target} · cap {cap}",
+    "byTheme": "By theme",
+    "theme": "Theme",
+    "avgCost": "Avg cost",
+    "pageCost": "Per page",
+    "redrawRate": "Redraw rate",
+    "fallbackRate": "Fallback model",
+    "reviewRate": "Human review",
+    "budgetStops": "Budget stops",
+    "byStep": "Cost by step",
+    "daily": "Daily spend",
+    "noData": "No finished books in this period yet.",
+    "improve": "High redraw rate: improve this theme's scene prompts.",
+    "steps": {
+      "page": "Page art",
+      "cover": "Cover",
+      "qa": "Automatic QA",
+      "upscale": "Upscaling",
+      "story": "Story",
+      "character": "Character sheet",
+      "companion": "Companion",
+      "plate": "Backgrounds",
+      "ab": "Resolution A/B test"
+    }
+  },
+  "samples": {
+    "title": "Sample book",
+    "lead": "For acceptance runs before the parent flow opens: the full generation pipeline; the book lands in the approval queue.",
+    "theme": "Theme",
+    "name": "Child's name",
+    "gender": "Gender",
+    "boy": "Boy",
+    "girl": "Girl",
+    "age": "Age",
+    "lang": "Book language",
+    "style": "Style",
+    "hijab": "Wears a hijab (the parent's choice)",
+    "glasses": "Wears glasses",
+    "message": "Dedication message from the parent (optional, up to 120 characters)",
+    "photos": "Photos of the child (1–3)",
+    "photosHint": "One clear face per photo, good light. Originals are deleted automatically within 24 hours.",
+    "drawing": "Child's drawing for the companion (optional)",
+    "companionName": "Companion's name",
+    "companionType": "Companion type",
+    "types": {
+      "creature": "Creature",
+      "animal": "Animal",
+      "robot": "Robot",
+      "other": "Other"
+    },
+    "consent": "I have the guardian's written consent to process these photos for this test.",
+    "offline": "Placeholder art at no cost (no AI; to try the queue)",
+    "offlineHint": "Unticked, the real providers run and the cost counts toward the book's cap.",
+    "submit": "Create the book",
+    "working": "Uploading…",
+    "created": "Generation started. The book appears in the approval queue when it's done."
+  },
+  "privacyPage": {
+    "title": "Privacy and children's photos",
+    "lead": "Your child's photo is a trust. This page explains plainly what we do with it and who sees it.",
+    "sections": [
+      {
+        "h": "What we collect",
+        "p": "Your child's first name, gender, age, one to three photos, and their drawing if you add one. We don't ask for family names or schools for parent books."
+      },
+      {
+        "h": "Consent",
+        "p": "No photo is uploaded before a guardian's explicit consent; we keep a copy of the consent text and its date."
+      },
+      {
+        "h": "Storage and deletion",
+        "p": "Original photos are stored encrypted in private storage and are only opened through links that expire within 15 minutes. Originals and the drawing are deleted automatically within 24 hours of approving the character; abandoned drafts after 30 days. You can ask us to delete all of your child's data at any time, and we delete the photos, character and books immediately."
+      },
+      {
+        "h": "Who sees the photos",
+        "p": "We never send photos to analytics or advertising services. They go only to the AI providers that draw the book, through their paid APIs:"
+      },
+      {
+        "h": "Story writing",
+        "p": "Anthropic (Claude) writes and reviews the story. Its commercial terms: \"Anthropic may not train models on Customer Content from Services\" (Commercial Terms, effective June 17, 2025)."
+      },
+      {
+        "h": "Page illustration",
+        "p": "We draw through fal.ai with Google's Nano Banana 2 model. Google's terms for paid services: Google doesn't use prompts or responses to improve its products and keeps them for a limited time only to detect abuse. With fal we switch off request-history storage, send images inside the request instead of uploading them to their file servers, and set any generated file to expire within 15 minutes. fal's data processing addendum limits processing of personal data to our instructions."
+      },
+      {
+        "h": "Your rights",
+        "p": "You can ask for a copy of your data or have it deleted at any time by contacting us by email or support WhatsApp."
+      }
+    ],
+    "links": "Terms we rely on",
+    "updated": "Last updated: September 28, 2026"
   }
 }
