@@ -149,7 +149,7 @@ samples:
 
   - stage: 3
     page:
-      n: 97
+      n: 109
       section: games
       type: spot-difference
       title: "{أوجد/أوجدي} الفروق الخمسة"
@@ -161,7 +161,7 @@ samples:
 
   - stage: 3
     page:
-      n: 112
+      n: 120
       section: finale
       type: certificate
       title: "{أحسنتَ يا بطل/أحسنتِ يا بطلة}!"
