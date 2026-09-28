@@ -61,13 +61,11 @@ Items marked **external** need something only Tareq or a third party can provide
   - the WhatsApp adapter interface (the Twilio adapter stays off until approved);
   - SEO pages per theme;
   - a performance pass.
-- [ ] **W6 · Phase 6, production-ready without touching production**
-  - the production compose/stack file;
-  - Nginx and Cloudflare notes;
-  - backups (Postgres and object storage) with a restore test on the test server;
-  - monitoring and alerts;
-  - runbooks.
-  - **External:** a production server and domain.
+- [x] **Lead · Phase 6, production-ready without touching production** (2026-09-28)
+  - `compose.prod.yaml`: secure cookies, R2, required secrets, rotated logs, no published internal ports; validated with Compose on the test server.
+  - `infra/scripts/backup.sh`, `restore.sh`, `monitor.sh` and `install-ops-cron.sh`: installed on the test server. The backup ran, the restore drill matched the row counts, and the object backup holds 0 children's photos.
+  - Runbooks: `docs/runbooks/production.md`, `backups.md` and `incidents.md`.
+  - **External:** a production server, a domain, an R2 bucket and an alert webhook.
 
 ## Activity books
 - [ ] **W7 · «مغامراتي مع عائلتي», the full book**

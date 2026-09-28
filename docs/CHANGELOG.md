@@ -1,5 +1,18 @@
 # Changelog
 
+## Phase 6: production-ready (2026-09-28)
+
+- **`compose.prod.yaml`** on top of `compose.yaml`:
+  - HTTPS mode and secure cookies;
+  - Cloudflare R2 for object storage;
+  - the stack refuses to start without real secrets;
+  - rotated container logs, and only the edge published, on localhost behind the TLS proxy.
+- **Nightly encrypted backups** (`infra/scripts/backup.sh`): the database, and the object store without children's original photos. 14 daily + 8 weekly copies, and an optional off-site copy.
+- **A restore drill** (`restore.sh --check`) and disaster recovery (`--replace`).
+- **A 5-minute health check** (`monitor.sh`): site, API, containers, disk, backup age and queues, with webhook alerts on state changes.
+- **One installer** for the schedule (`install-ops-cron.sh`), tested on the test server.
+- **Runbooks:** production install and deploy, backups and restore, monitoring and incidents.
+
 ## Addendum 4, step 5: catalog, margins, price simulator and reports (2026-09-28)
 
 - **Admin → الكتالوج والأسعار:**

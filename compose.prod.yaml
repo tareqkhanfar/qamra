@@ -1,0 +1,84 @@
+# Production overrides (Phase 6). Use together with compose.yaml:
+#
+#   docker compose -f compose.yaml -f compose.prod.yaml up -d --build
+#
+# What changes from the dev/test stack:
+# - secure cookies, HTTPS mode and the real site URL (TLS terminates at the host nginx or Cloudflare);
+# - object storage on Cloudflare R2 (the local SeaweedFS service is not started);
+# - required secrets: the stack refuses to start without them (no dev defaults in production);
+# - rotated container logs, and no published database/redis ports.
+# Secrets live only in the server's .env (see .env.example and docs/runbooks/production.md).
+name: qamra
+
+x-prod-env: &prod-env
+  ENV: prod
+  COOKIE_SECURE: "true"
+  WEB_BASE_URL: ${WEB_BASE_URL:?set WEB_BASE_URL, e.g. https://qamra.app}
+  JWT_SECRET: ${JWT_SECRET:?set a long random JWT_SECRET}
+  DATABASE_URL: postgresql+psycopg://qamra:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@postgres:5432/qamra
+  REDIS_URL: redis://:${REDIS_PASSWORD:?set REDIS_PASSWORD}@redis:6379/0
+  S3_ENDPOINT_URL: ${S3_ENDPOINT_URL:?the R2 endpoint, https://<account>.r2.cloudflarestorage.com}
+  S3_REGION: ${S3_REGION:-auto}
+  S3_BUCKET: ${S3_BUCKET:?the private R2 bucket}
+  S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:?R2 access key id}
+  S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:?R2 secret access key}
+  S3_SSE: ${S3_SSE:-none}  # R2 encrypts every object at rest itself
+
+x-logging: &logging
+  logging:
+    driver: json-file
+    options: { max-size: "20m", max-file: "5" }
+
+services:
+  postgres:
+    <<: *logging
+    ports: !reset []
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+    volumes: !override
+      - pgdata:/var/lib/postgresql/data  # no test-database init script in production
+
+  redis:
+    <<: *logging
+    ports: !reset []
+
+  s3:
+    profiles: ["local-s3"]  # production stores objects on R2
+
+  migrate:
+    <<: *logging
+    environment: *prod-env
+    depends_on: !override
+      postgres: { condition: service_healthy }
+
+  api:
+    <<: *logging
+    environment: *prod-env
+    ports: !reset []
+    mem_limit: 1g
+    depends_on: !override
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+
+  worker:
+    <<: *logging
+    environment: *prod-env
+    mem_limit: 3g
+    depends_on: !override
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+
+  cron:
+    <<: *logging
+    environment: *prod-env
+
+  web:
+    <<: *logging
+    environment:
+      API_INTERNAL_URL: http://api:8000
+      QAMRA_HTTPS: "1"
+
+  edge:
+    <<: *logging
+    ports: !override
+      - "127.0.0.1:${QAMRA_WEB_PORT:-3000}:80"  # only the host nginx (TLS) reaches the edge
