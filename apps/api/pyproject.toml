@@ -1,0 +1,29 @@
+[project]
+name = "qamra-api"
+version = "0.1.0"
+description = "Qamra HTTP API (FastAPI)"
+requires-python = ">=3.12"
+dependencies = [
+    "qamra-core",
+    "qamra-ai",
+    "fastapi>=0.118",
+    "uvicorn[standard]>=0.35",
+    "pyjwt[crypto]>=2.10",
+    "pwdlib[argon2]>=0.2",
+    "email-validator>=2.2",
+    "redis>=6",
+    "rq>=2.12",
+    "httpx>=0.27",
+    "structlog>=25",
+    "sentry-sdk[fastapi]>=2.30",
+]
+
+[project.scripts]
+qamra = "qamra_api.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/qamra_api"]

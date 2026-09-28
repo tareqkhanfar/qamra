@@ -1,5 +1,6 @@
 """Theme + art style loading and gendered template rendering."""
 
+import os
 import re
 from pathlib import Path
 from typing import Literal
@@ -9,7 +10,7 @@ from pydantic import BaseModel
 
 from qamra_ai.pipeline.models import Gender, Lang
 
-CONTENT_DIR = Path(__file__).resolve().parents[5] / "content"
+CONTENT_DIR = Path(os.environ.get("QAMRA_CONTENT_DIR") or Path(__file__).resolve().parents[5] / "content")
 
 _VARIANT = re.compile(r"\{([^{}/]+)/([^{}/]+)\}")
 

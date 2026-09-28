@@ -1,0 +1,67 @@
+"""FastAPI application factory."""
+
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
+import sentry_sdk
+from fastapi import Depends, FastAPI
+from qamra_core.db.session import make_async_engine, make_async_sessionmaker
+from qamra_core.observability import configure_logging
+from qamra_core.storage import ObjectStorage
+from redis.asyncio import Redis
+
+from qamra_api.auth.router import router as auth_router
+from qamra_api.deps import require_client_header
+from qamra_api.errors import install_error_handlers
+from qamra_api.logging import RequestLogMiddleware
+from qamra_api.routers.health import router as health_router
+from qamra_api.settings import ApiSettings, get_settings
+
+
+def _init_sentry(settings: ApiSettings) -> None:
+    if settings.sentry_dsn is None:
+        return
+    sentry_sdk.init(
+        dsn=settings.sentry_dsn.get_secret_value(),
+        environment=settings.env,
+        send_default_pii=False,
+        traces_sample_rate=0.0,
+    )
+
+
+def create_app(settings: ApiSettings | None = None, *, manage_resources: bool = True) -> FastAPI:
+    """`manage_resources=False` lets tests inject their own db/redis/storage into `app.state`."""
+    settings = settings or get_settings()
+    configure_logging(settings.log_level, settings.log_json)
+    _init_sentry(settings)
+
+    @asynccontextmanager
+    async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+        if not manage_resources:
+            yield
+            return
+        engine = make_async_engine(settings.database_url, settings.db_pool_size)
+        app.state.sessionmaker = make_async_sessionmaker(engine)
+        app.state.redis = Redis.from_url(settings.redis_url, decode_responses=True)
+        app.state.storage = ObjectStorage.from_settings(settings)
+        try:
+            yield
+        finally:
+            await app.state.redis.aclose()
+            await engine.dispose()
+
+    app = FastAPI(
+        title=f"{settings.brand_name_en} API",
+        version="0.1.0",
+        lifespan=lifespan,
+        dependencies=[Depends(require_client_header)],
+        docs_url="/api/docs" if settings.env != "prod" else None,
+        redoc_url=None,
+        openapi_url="/api/openapi.json" if settings.env != "prod" else None,
+    )
+    app.state.settings = settings
+    install_error_handlers(app)
+    app.add_middleware(RequestLogMiddleware)
+    app.include_router(health_router)
+    app.include_router(auth_router)
+    return app

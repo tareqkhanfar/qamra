@@ -1,0 +1,21 @@
+[project]
+name = "qamra-worker"
+version = "0.1.0"
+description = "Qamra background jobs (RQ worker + cron)"
+requires-python = ">=3.12"
+dependencies = [
+    "qamra-core",
+    "qamra-ai",
+    "qamra-pdf",
+    "rq>=2.12",
+    "redis>=6",
+    "structlog>=25",
+    "sentry-sdk>=2.30",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/qamra_worker"]

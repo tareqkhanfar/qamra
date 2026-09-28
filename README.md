@@ -2,65 +2,79 @@
 
 «حكاية طفلك… تحت ضوء القمر»: personalized Arabic storybooks where the child is the hero and the child's own drawing becomes their companion.
 
-Specs: [CLAUDE.md](CLAUDE.md) + [docs/ADDENDUM-01.md](docs/ADDENDUM-01.md). Decisions: [docs/decisions.md](docs/decisions.md). Plans: [docs/plans/](docs/plans/).
+Specs: [CLAUDE.md](CLAUDE.md) + [docs/ADDENDUM-01.md](docs/ADDENDUM-01.md). Decisions: [docs/decisions.md](docs/decisions.md). Plans: [docs/plans/](docs/plans/). Changes: [docs/CHANGELOG.md](docs/CHANGELOG.md).
 
-**Status: Phase 0 (prototype script).** There is no web app yet.
+**Status: Phase 1 (foundations) done.** You can sign up, sign in and sign out in Arabic or English, on top of the full data model, the API, the worker and the prototype pipeline from Phase 0.
 
-## Setup
+## Run the stack
 
-Requirements: Python 3.12, [uv](https://docs.astral.sh/uv/).
+Requirements: Docker with Compose v2.
 
 ```bash
-make install            # uv sync + Playwright Chromium
-cp .env.example .env    # add keys: ANTHROPIC_API_KEY + one of GEMINI_API_KEY / FAL_KEY / OPENAI_API_KEY
-make check              # ruff + mypy + tests (offline, fake providers)
-make fake-run           # full book end to end with fake providers, $0 → out/<run>/
+cp .env.example .env        # defaults work locally; set real secrets anywhere else
+docker compose up --build   # → http://localhost:3000 (ar) · API docs http://localhost:8000/api/docs
 ```
 
-## Prototype
+| service | what | port (127.0.0.1) |
+|---|---|---|
+| `web` | Next.js (App Router, RTL, ar/en). `/api/*` is proxied to the api | `QAMRA_WEB_PORT` 3000 |
+| `api` | FastAPI: auth, health (later: books, orders…) | `QAMRA_API_PORT` 8000 |
+| `worker` / `cron` | RQ worker (generation, pdf, maintenance) and scheduler (privacy cleanup every 15 min) | — |
+| `migrate` | one-shot `alembic upgrade head` | — |
+| `postgres` | Postgres 16 (`qamra` + `qamra_test`) | `QAMRA_PG_PORT` 5433 |
+| `redis` | Redis 7 (queues, rate limits) | `QAMRA_REDIS_PORT` 6380 |
+| `s3` | SeaweedFS as local S3 (R2 in production) | `QAMRA_S3_PORT` 8333 |
+
+Useful commands:
+
+```bash
+make admin email=you@example.com name="Tareq"   # create an admin (prompts for the password)
+make seed-themes                                 # load content/themes/*/theme.yaml into the DB
+make logs
+```
+
+## Develop and test
+
+Requirements: Python 3.12 + [uv](https://docs.astral.sh/uv/), Node 24.
+
+```bash
+make install       # uv sync + Chromium + npm ci
+make test          # pytest (needs TEST_DATABASE_URL: compose provides qamra_test on :5433)
+make check         # ruff + mypy + pytest + prettier/eslint/tsc for the web
+make migration m="add something"   # autogenerate + tidy a migration
+```
+
+Tests use fake AI providers, fakeredis and moto (S3). Only Postgres is real: each run rebuilds `*_test` through the migrations, and each test is rolled back.
+
+## Prototype (Phase 0)
 
 ```bash
 uv run scripts/prototype.py --photo kid.jpg --name "سلمى" --gender f --age 5 \
   --theme first-day --style watercolor --lang ar --provider gemini \
-  --drawing drawing.jpg --companion-name "بوبو" --companion-type creature
-```
-
-- `--provider gemini|flux|openai|fake` (default `IMAGE_PROVIDER`).
-- `--style watercolor|crayon|papercut`, `--lang ar|en`.
-- `--photo` can be repeated up to 3 times.
-- `--interests "الرسم,الديناصورات"`, `--companion-pick 1|2`, `--preview` (watermark).
-
-Output in `out/<timestamp>-<provider>-<theme>/`:
-
-| file | what |
-|---|---|
-| `character-sheet.png` | hero reference sheet (front + 2 poses) |
-| `companion/` | cleaned drawing, 2 options, drawing review |
-| `pages/` | raw cover + page images |
-| `story.json` | adapted story (vowelized for ages ≤ 7) |
-| `interior.pdf`, `cover.pdf` | print files: 216 mm pages with 3 mm bleed, fonts embedded |
-| `report.md`, `cost.json` | recognizability per page, companion fidelity, cost per step |
-| `reviews.json` | every page attempt with its review |
-
-Companion fidelity over a folder of drawings:
-
-```bash
+  --drawing drawing.jpg --companion-name "بوبو"
+make fake-run      # same, offline with fake providers ($0) → out/<run>/
 uv run scripts/companion_eval.py --drawings path/to/drawings/ --provider gemini
 ```
+
+The prototype writes to `out/<run>/`: the character sheet, the companion, `story.json`, the pages, `interior.pdf` + `cover.pdf` (216 mm with bleed, fonts embedded), and `report.md` + `cost.json`.
 
 ## Layout
 
 ```
-packages/ai     qamra_ai: config, provider adapters (image/, text/), prompts/*.v1.j2, pipeline/, pricing.yaml
-packages/pdf    qamra_pdf: HTML/CSS print templates, fonts (OFL), Playwright renderer
+apps/api        qamra_api: FastAPI app (auth, health), admin CLI (`qamra`)
+apps/worker     qamra_worker: RQ jobs (maintenance/privacy cleanup), cron config
+apps/web        Next.js frontend (src/app/[locale], messages/ar.json + en.json)
+packages/core   qamra_core: settings, SQLAlchemy models, Alembic migrations, S3 storage, test fixtures
+packages/ai     qamra_ai: provider adapters, versioned prompts, generation pipeline, pricing
+packages/pdf    qamra_pdf: print templates + Playwright renderer + OFL fonts
 content/        themes/<slug>/theme.yaml, styles/styles.yaml
-scripts/        prototype.py, companion_eval.py
+infra/          Dockerfiles, postgres init
 design/         Claude Design handoff (read-only)
-docs/           plans, decisions, changelog
 ```
 
-Switch models without touching code: `IMAGE_PROVIDER`, `GEMINI_IMAGE_MODEL`, `FLUX_IMAGE_MODEL`, `OPENAI_IMAGE_MODEL`, `TEXT_MODEL`, `TEXT_MODEL_FAST` in `.env`. Prices live in `packages/ai/src/qamra_ai/pricing.yaml`.
+## Privacy (so far)
 
-## Privacy notes (Phase 0)
-
-The prototype writes to local `out/`, which git ignores. Never commit real children's photos or drawings. Photos go only to the chosen image provider and to Claude (for the page review). For fal, images are sent inline as data URIs, never uploaded to their CDN. Encrypted storage, signed URLs and auto-deletion start in Phase 1 and 2.
+- Photos and drawings live under `children/{child_id}/` in a private bucket. Browsers only get signed URLs that expire within 15 minutes; the code enforces the cap.
+- The `maintenance` cron deletes original photos and drawings whose `delete_after` has passed, and drafts abandoned for 30 days. Every deletion is written to the audit log without PII.
+- Deleting a child removes all of that child's rows in one cascade. Order items and costs keep their rows, with the link set to NULL.
+- Never commit real children's photos or drawings. `out/` and `.env` are gitignored.

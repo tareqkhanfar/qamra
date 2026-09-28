@@ -1,5 +1,35 @@
 # Changelog
 
+## Phase 1 — foundations (2026-09-28)
+
+- **Monorepo:** uv workspace (`packages/core`, `packages/ai`, `packages/pdf`, `apps/api`, `apps/worker`) and the Next.js app in `apps/web`.
+- **Data model:** 19 tables covering spec §6 and Addendum 1 (companions, recordings, share tokens), plus refresh tokens, in one reviewed Alembic migration. Autogenerate is post-processed by `scripts/make_migration.py`.
+- **API (FastAPI):**
+  - register / login / logout / refresh / me;
+  - argon2id passwords;
+  - JWT access cookie plus a rotating refresh cookie with reuse detection and a 30-second multi-tab grace window;
+  - login rate limits in Redis;
+  - CSRF header check;
+  - Google OIDC sign-in, enabled by config;
+  - role guard;
+  - friendly ar/en error bodies, JSON logs with request ids, optional Sentry;
+  - `/api/health` checks the database, Redis and storage;
+  - `qamra` CLI (create-user, seed-themes).
+- **Worker (RQ 2):** privacy cleanup job (expired photos and original drawings, 30-day drafts, audit trail) scheduled every 15 minutes by `rq cron`.
+- **Storage:** S3 adapter (put/get/delete, prefix delete per child, signed URLs capped at 15 minutes, optional SSE).
+- **Web (Next.js 16.3, Tailwind 4, next-intl):**
+  - RTL-first Arabic with English;
+  - design tokens from `design/tokens.json`, fonts Baloo Bhaijaan 2 + IBM Plex Sans Arabic;
+  - home, register, login and account pages;
+  - silent session refresh;
+  - locale switcher.
+- **Docker:** `compose.yaml` with postgres 16, redis 7, SeaweedFS (local S3), migrate, api, worker, cron and web. Every port is bound to 127.0.0.1.
+- **CI:**
+  - Python lint, types and tests against a Postgres service;
+  - web prettier, eslint, tsc and build;
+  - compose image build.
+- **Tests:** 95 Python tests: 52 from Phase 0 and 43 new (auth, Google, roles, health, migrations == models, cascades, storage, cleanup, cron). `scripts/e2e_auth.py` (browser) passed against the full `docker compose` stack on the Qamra test server: register → account → logout → login → silent refresh → English.
+
 ## Phase 0 — prototype (2026-09-28)
 
 - Monorepo skeleton (uv workspace): `packages/ai` (`qamra_ai`), `packages/pdf` (`qamra_pdf`), `content/`, `scripts/`, `docs/`. Design handoff moved into `/design`.

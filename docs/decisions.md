@@ -2,7 +2,35 @@
 
 Newest first. Each entry: date — decision — why.
 
-## 2026-09-28
+## 2026-09-28 — Phase 1
+
+- **Job queue: RQ 2** (not Celery). It needs only Redis, has few moving parts and is easy to debug. RQ 2.12 has a built-in `rq cron` scheduler, which covers the periodic privacy cleanup without Celery beat. Jobs are plain functions: the api enqueues them and `apps/worker` runs them. Queues, in priority order: `generation`, `pdf`, `maintenance`, `default`.
+- **Local S3 is SeaweedFS (`chrislusf/seaweedfs`, Apache-2.0), not MinIO.** MinIO no longer publishes pullable container images: Docker Hub denies every tag and quay.io requires authentication (checked 2026-09-28). This affects local development only. Production stays on Cloudflare R2, and the code only speaks the S3 API. SeaweedFS runs in `weed mini` mode with `-s3.encryptVolumeData` (data encrypted at rest), and it accepts SSE-S3 (`S3_SSE=AES256`, the compose default; verified with put + head). The bucket is created at startup, and credentials are generated from env vars.
+- **Shared package `packages/core` (`qamra_core`).** It holds the settings, SQLAlchemy models, Alembic migrations and the storage adapter, and is used by both the api and the worker. This is an addition to the spec's repo layout.
+- **One driver (psycopg 3)** for async FastAPI, the sync worker, and migrations.
+- **Enums are VARCHAR + CHECK** (`native_enum=False`), not PostgreSQL enum types, so values can be added without type migrations. `scripts/make_migration.py` post-processes autogenerate output for two known quirks: duplicated CHECK constraints, and `use_alter` foreign keys emitted inline.
+- **Deletion model:** tables owned by a child cascade from `children`, and objects live under `children/{child_id}/` in storage, so "delete all my child's data" is a prefix delete plus one row delete. Order items and generation costs keep their rows, with the foreign key set to NULL. Audit logs carry ids and action names only.
+- **Model changes vs spec §6:**
+  - `Book.share_token` is replaced by a `share_tokens` table (scopes read / listen / record, expiry, revoke; Addendum 1 §3).
+  - Orders get an `order_items` table.
+  - `users.organization_id` links school admins to their kindergarten.
+  - New `refresh_tokens` table.
+  - `book_pages.original_text` backs "restore original".
+- **Auth:**
+  - Access token: JWT, 15 minutes, in an httpOnly cookie (`qamra_at`, path `/`).
+  - Refresh token: opaque, 30 days (`qamra_rt`, path `/api/auth`), stored only as a sha256 hash and rotated on every use.
+  - Reuse detection: presenting a rotated or logged-out token revokes that whole login. A 30-second grace window for *rotated* tokens stops two tabs that refresh at the same moment from logging the parent out.
+  - Passwords use argon2id (pwdlib).
+  - Login is rate-limited in Redis per email+IP and per IP.
+- **CSRF:** SameSite=Lax cookies, plus a required `X-Qamra-Client` header on POST/PUT/PATCH/DELETE. Browsers can't set custom headers cross-site without a CORS preflight, and the API allows no cross-origin requests.
+- **Google sign-in:** hand-written OIDC code flow (httpx + PyJWT JWKS). State and nonce live in a signed 10-minute cookie. A verified Google email links to an existing account with the same email. The feature is enabled by `GOOGLE_CLIENT_ID/SECRET`, and the web button by `NEXT_PUBLIC_GOOGLE_LOGIN=1`.
+- **Web → API:** `src/proxy.ts` rewrites `/api/*` to `API_INTERNAL_URL` at *runtime*; `next.config` rewrites would be fixed at build time. Cookies therefore stay first-party on the web origin. In production Nginx can route `/api` directly (Phase 6).
+- **i18n:** next-intl with `/ar/...` and `/en/...` prefixes, Arabic by default. Browser-language detection is off, so Arabic-speaking parents with English phones still get Arabic until they switch.
+- **Web stack versions:** Next.js 16.3 (the proxy replaces middleware; `next/root-params`), React 19.2, Tailwind 4 with CSS `@theme` tokens transcribed from `design/tokens.json`, and next-intl 4.14.
+- **Test database:** local runs use `qamra_test` on the Qamra test server (Postgres 18, reached through an SSH tunnel). CI and `docker compose` use Postgres 16. The fixtures refuse any database whose name doesn't end in `_test`, because each session drops and rebuilds its schema through the migrations.
+- **`compose.yaml` lives at the repo root** (not under `/infra`), so `docker compose up` works from a fresh clone as the acceptance test says. Dockerfiles and database init scripts stay in `/infra`.
+
+## 2026-09-28 — Phase 0
 
 - **Brand is قمرة / Qamra** (Addendum 1). The name, domain and support contacts come from config (`BRAND_NAME_AR`, `BRAND_NAME_EN`, `BRAND_DOMAIN`), not code. `CLAUDE.md` was renamed too. `design/README.md` still says "حكايتي" in two places (the preview watermark text and the B2B owner tag). `/design` is read-only, so I left it; the code renders the watermark from config.
 - **Design handoff is partial.** The `/design` canvas holds the design system (tokens, dark mode, logo options, components, illustration parts). It does not hold the 77 screen artboards or the print-layout artboards that `design/README.md` lists. The Phase 0 PDF follows the README print spec and `tokens.json`. The screens will need the per-screen HTML exports before Phase 2.

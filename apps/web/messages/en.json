@@ -1,0 +1,64 @@
+{
+  "meta": {
+    "title": "{brand} — Your child's story, by moonlight",
+    "description": "A printed storybook where your child is the hero on every page, and their own drawing is their companion."
+  },
+  "brand": { "tagline": "Your child's story, by moonlight." },
+  "nav": {
+    "home": "Home",
+    "login": "Sign in",
+    "register": "Create account",
+    "account": "My account",
+    "logout": "Sign out",
+    "switchLocale": "العربية",
+    "menu": "Menu"
+  },
+  "home": {
+    "eyebrow": "Moonlit evenings",
+    "title": "Your child the hero… their drawing the friend",
+    "subtitle": "From one photo and one drawing, we make a printed storybook with your child on every page.",
+    "cta": "Make your child's story",
+    "secondary": "I have an account",
+    "privacy": "Children's photos are deleted automatically once the character is approved."
+  },
+  "auth": {
+    "loginTitle": "Welcome back",
+    "loginSubtitle": "Sign in to continue your children's stories.",
+    "registerTitle": "Create your account",
+    "registerSubtitle": "One minute, then the story begins.",
+    "email": "Email",
+    "password": "Password",
+    "passwordHint": "At least 8 characters",
+    "fullName": "Name",
+    "fullNameHint": "What should we call you?",
+    "submitLogin": "Sign in",
+    "submitRegister": "Create account",
+    "working": "One moment…",
+    "noAccount": "No account yet?",
+    "haveAccount": "Already have an account?",
+    "google": "Continue with Google",
+    "or": "or",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "googleFailed": "Google sign-in didn't complete. Please try again."
+  },
+  "account": {
+    "title": "My account",
+    "greeting": "Hello {name}",
+    "email": "Email",
+    "role": "Account type",
+    "roles": { "parent": "Parent", "school_admin": "Kindergarten admin", "admin": "{brand} team" },
+    "booksTitle": "My books",
+    "empty": "No books yet",
+    "emptyHint": "Your child's first story starts with one photo.",
+    "start": "Make the first book",
+    "soon": "Coming soon",
+    "loading": "Getting your page ready…"
+  },
+  "errors": {
+    "network": "We couldn't connect. Check your internet and try again.",
+    "unknown": "Something went wrong. Please try again in a moment.",
+    "notFoundTitle": "We couldn't find this page",
+    "backHome": "Back to home"
+  }
+}
