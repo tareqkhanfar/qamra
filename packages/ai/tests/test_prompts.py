@@ -50,3 +50,18 @@ def test_house_style_has_every_section() -> None:
 def test_house_style_missing_section_is_an_error() -> None:
     with pytest.raises(ValueError, match="missing"):
         parse_style("version: 1\n## Style\nsoft\n")
+
+
+def test_a_redraw_carries_what_the_parent_said() -> None:
+    from qamra_ai.pipeline.character import character_request
+    from qamra_ai.pipeline.models import Child
+    from qamra_ai.pipeline.theme import ArtStyle
+
+    child = Child(name="ليان", gender="f", age=5, hijab=True)
+    style = ArtStyle(slug="watercolor", title_ar="مائي", title_en="Watercolor", guide="soft watercolor")
+    first = character_request(child, [b"x"], style)
+    assert "did not look like" not in first.prompt  # the first drawing is the v2 prompt, unchanged
+    redraw = character_request(child, [b"x"], style, attempt=2, fixes=["age", "hair", "skin"])
+    assert "Skin tone:" in redraw.prompt and "Hijab: keep" in redraw.prompt
+    assert "older than 5" in redraw.prompt
+    assert redraw.seed != first.seed

@@ -1,5 +1,22 @@
 # Changelog
 
+## Addendum 4, step 2 (part 2): the parent create flow (2026-09-28)
+
+- **Create a book on a phone** (`/create`, design Create1–Create9):
+  1. the child;
+  2. the guardian's consent;
+  3. one photo, checked on the spot;
+  4. Classic or Magic;
+  5. the art style;
+  6. the drawn character (approve, or redraw saying what was wrong);
+  7. the story and an optional dedication;
+  8. writing and drawing progress;
+  9. the preview pages with editable words;
+  10. the format and its extras, then the cart and checkout.
+- A reload, the back button and the account page resume the book where it was.
+- **"Delete all my child's data"** on the account page: photos, character, books and files, immediately. Orders keep no child details.
+- Theme cards now carry the book title (`{name} في رحلة إلى القمر`), shown as the name is typed.
+
 ## Addendum 4, step 2 (part 1): storefront, checkout and orders (2026-09-28)
 
 - **Store API:**

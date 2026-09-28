@@ -4,7 +4,6 @@ Everything here needs an admin session that passed 2FA (and the optional IP allo
 are streamed through the API, so object storage never needs a public address.
 """
 
-import io
 import uuid
 from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal
@@ -12,18 +11,17 @@ from typing import Annotated, Any, Literal
 
 from fastapi import APIRouter, Depends, File, Form, Request, UploadFile
 from fastapi.responses import Response
-from PIL import Image, ImageOps, UnidentifiedImageError
 from pydantic import BaseModel, Field
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from qamra_ai.cost import fal_cost, fal_unknown_price
-from qamra_ai.pipeline.photo_check import check_photo
 from qamra_ai.pipeline.theme import Theme
 from qamra_api import runtime_settings
 from qamra_api.deps import AdminUser, SessionDep, SettingsDep, StorageDep, require_admin, require_permission
 from qamra_api.errors import ApiError
 from qamra_api.jobs import QueueDep, enqueue
+from qamra_api.uploads import clean_image, read_upload, require_face
 from qamra_core.db.models import (
     AuditLog,
     Book,
@@ -46,8 +44,6 @@ from qamra_core.storage import ObjectNotFound, ObjectStorage
 
 router = APIRouter(prefix="/api/admin", tags=["admin"], dependencies=[Depends(require_admin)])
 
-MAX_UPLOAD = 10 * 1024 * 1024
-PHOTO_MAX_SIDE = 2048
 SAMPLE_CONSENT_VERSION = "sample-2026-09"
 FINAL_STATUSES = (BookStatus.in_review, BookStatus.approved, BookStatus.ordered, BookStatus.printed)
 _enqueue = enqueue
@@ -56,28 +52,7 @@ _enqueue = enqueue
 # ---- samples (acceptance runs before the parent flow exists) ----------------------------------------
 
 
-def _clean_image(data: bytes, max_side: int = PHOTO_MAX_SIDE) -> bytes:
-    """Re-encode as JPEG: validates the file, applies the EXIF rotation, and drops all metadata (GPS)."""
-    if len(data) > MAX_UPLOAD:
-        raise ApiError("file_too_large", 413)
-    try:
-        with Image.open(io.BytesIO(data)) as original:
-            if original.format not in ("JPEG", "PNG", "WEBP"):
-                raise ApiError("invalid_photo", 422, {"reason": "format"})
-            im = ImageOps.exif_transpose(original).convert("RGB")
-            im.thumbnail((max_side, max_side), Image.Resampling.LANCZOS)
-            buf = io.BytesIO()
-            im.save(buf, format="JPEG", quality=92)
-            return buf.getvalue()
-    except (UnidentifiedImageError, OSError) as e:
-        raise ApiError("invalid_photo", 422, {"reason": "unreadable"}) from e
-
-
-async def _read(upload: UploadFile) -> bytes:
-    data = await upload.read(MAX_UPLOAD + 1)
-    if len(data) > MAX_UPLOAD:
-        raise ApiError("file_too_large", 413)
-    return data
+_clean_image, _read = clean_image, read_upload
 
 
 class SampleOut(BaseModel):
@@ -121,12 +96,7 @@ async def create_sample(
         raise ApiError("not_found", 404)
     cleaned = [_clean_image(await _read(p)) for p in photos]
     for data in cleaned:
-        check = check_photo(data)
-        if not check.ok:
-            issue = check.issues[0]
-            raise ApiError(
-                "invalid_photo", 422, {"reason": issue.code, "ar": issue.message_ar, "en": issue.message_en}
-            )
+        require_face(data)
     drawing_data = (
         _clean_image(await _read(drawing), 2400) if drawing is not None and drawing.filename else None
     )

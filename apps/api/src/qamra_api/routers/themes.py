@@ -22,6 +22,7 @@ Lang = Literal["ar", "en"]
 class ThemeCard(BaseModel):
     slug: str
     name: str
+    title: str  # the book's title with a {name} slot, e.g. "{name} في رحلة إلى القمر"
     tagline: str
     age_min: int
     age_max: int
@@ -71,6 +72,7 @@ def _card(theme: Theme, lang: Lang) -> ThemeCard:
     return ThemeCard(
         slug=theme.slug,
         name=c.name_ar if lang == "ar" else c.name_en,
+        title=theme.title_ar if lang == "ar" else theme.title_en,
         tagline=c.tagline_ar if lang == "ar" else c.tagline_en,
         age_min=theme.age_range[0],
         age_max=theme.age_range[1],

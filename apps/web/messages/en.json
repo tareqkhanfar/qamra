@@ -385,10 +385,209 @@
     "doneAgain": "Send another request"
   },
   "create": {
-    "title": "The story builder is being prepared",
-    "body": "We're building the steps now: your child's details, consent, photo, drawing, style, character, story, preview and order. It opens here very soon.",
-    "browse": "Browse story worlds",
-    "chosen": "Your chosen world: {name}"
+    "newBook": "New book",
+    "bookOf": "{name}'s book",
+    "stepOf": "Step {n} of {total}",
+    "close": "Close",
+    "back": "Back",
+    "continue": "Continue",
+    "retry": "Try again",
+    "loading": "One moment…",
+    "steps": {
+      "child": "Your child",
+      "consent": "Parent's consent",
+      "photo": "Photo",
+      "line": "Book type",
+      "style": "Art style",
+      "character": "Character",
+      "story": "Story",
+      "writing": "Writing and drawing",
+      "review": "Review the pages",
+      "format": "Preview and format"
+    },
+    "child": {
+      "title": "Who is the hero of our story?",
+      "body": "We use this only to write the story.",
+      "mine": "For one of your children?",
+      "newChild": "New child",
+      "name": "Child's name",
+      "namePreview": "It will appear in the story like this:",
+      "gender": "Your child is a",
+      "girl": "Girl",
+      "boy": "Boy",
+      "age": "Age",
+      "likes": "{gender, select, f {What does {name} love?} other {What does {name} love?}}",
+      "upTo3": "(pick up to 3)",
+      "likesList": [
+        "Space",
+        "Animals",
+        "The sea",
+        "Football",
+        "Drawing",
+        "Cooking",
+        "Dinosaurs",
+        "Princesses and knights",
+        "Cars",
+        "Music"
+      ],
+      "note": "{gender, select, f {Something special about her?} other {Something special about him?}}",
+      "optional": "(optional)",
+      "notePlaceholder": "e.g. she has a cat called Lulu",
+      "look": "In the pictures",
+      "hijab": "Wears a hijab",
+      "glasses": "Wears glasses",
+      "invalid": "Please write the child's name and choose girl or boy, and the age."
+    },
+    "consent": {
+      "version": "parent-2026-09",
+      "title": "Before we ask for {name}'s photo, here is our promise",
+      "p1": {
+        "title": "Only for drawing",
+        "body": "{gender, select, f {We use the photo to draw {name}'s character in her books, and nothing else.} other {We use the photo to draw {name}'s character in his books, and nothing else.}}"
+      },
+      "p2": {
+        "title": "Deleted automatically",
+        "body": "We delete the original photo within 24 hours of you approving the character."
+      },
+      "p3": {
+        "title": "Nobody sees it",
+        "body": "It is never published or shared, and never used to train any AI model."
+      },
+      "p4": {
+        "title": "Always your decision",
+        "body": "{gender, select, f {You can delete {name} and all her data from your account in one tap.} other {You can delete {name} and all his data from your account in one tap.}}"
+      },
+      "privacy": "Read the full privacy policy",
+      "accept": "{gender, select, f {I confirm I am <b>{name}'s parent</b> (or legal guardian), and I agree to her photo being used only to draw her books.} other {I confirm I am <b>{name}'s parent</b> (or legal guardian), and I agree to his photo being used only to draw his books.}}",
+      "cta": "I agree, continue",
+      "required": "Please tick the consent box to continue."
+    },
+    "photo": {
+      "title": "One clear photo is enough",
+      "body": "{name}'s face from the front, in daylight.",
+      "guide": "Face guide",
+      "pick": "Choose a photo",
+      "pickHint": "From your gallery or camera",
+      "change": "Change photo",
+      "checking": "Checking the photo…",
+      "check": "Photo check",
+      "checks": {
+        "one": "Only one face in the photo",
+        "front": "The face is seen from the front",
+        "light": "Good light and sharp enough",
+        "close": "The face is close enough"
+      },
+      "tip": "Tip: move closer so the face fills the frame, and the drawing will look more like {name}.",
+      "examples": "Examples",
+      "good": "Clear",
+      "dark": "Dark",
+      "blurry": "Blurry",
+      "far": "Too far",
+      "cta": "Use this photo",
+      "private": "The photo is private and encrypted; only the drawing model sees it."
+    },
+    "line": {
+      "title": "Which book would you like for {name}?",
+      "body": "You choose the cover after the preview. The preview is free."
+    },
+    "style": {
+      "title": "How should we draw {name}?",
+      "body": "Every page is drawn in the same style.",
+      "desc": {
+        "watercolor": "Soft and warm, as if painted with a brush on textured paper.",
+        "cartoon": "Bright colors and clean lines, playful and full of movement.",
+        "3d": "Rounded and three-dimensional like an animated film, with warm light.",
+        "semi-realistic": "A painted look close to real life, with soft features.",
+        "coloring": "Black lines on white paper, for your child to color in."
+      },
+      "popular": "Most chosen",
+      "extra": "+{amount}",
+      "cta": "Draw {name}'s character"
+    },
+    "character": {
+      "title": "Does this look like {name}?",
+      "body": "This is {name} on every page of the book.",
+      "drawing": "Drawing {name} now…",
+      "drawingHint": "Drawing takes a minute or two. Please stay on this page.",
+      "failed": "The drawing didn't work this time.",
+      "alt": "{name}'s drawn character",
+      "views": "Front · waving · walking",
+      "wrong": "{gender, select, f {What doesn't look like her?} other {What doesn't look like him?}}",
+      "wrongHint": "(helps us redraw)",
+      "fixes": {
+        "skin": "Skin tone",
+        "face": "Face shape",
+        "hair": "Hijab / hair",
+        "age": "Looks older"
+      },
+      "approve": "{gender, select, f {Yes, that's {name}} other {Yes, that's {name}}}",
+      "redraw": "Redraw · {left} of 3 left",
+      "noRedraws": "The free redraws are used up. Message us if the character isn't right."
+    },
+    "story": {
+      "title": "Where is {name} going?",
+      "body": "Stories that suit the age come first.",
+      "suggested": "Suggested for {name}",
+      "pages": "{pages} pages",
+      "dedication": "A dedication at the front",
+      "dedicationPlaceholder": "e.g. To our little hero, with all our love",
+      "dedicationPaid": "+{amount} in Qamra Classic",
+      "dedicationFree": "Included in Qamra Magic",
+      "cta": "Write the story"
+    },
+    "writing": {
+      "title": "Writing and drawing {name}'s story",
+      "messages": [
+        "Choosing the colors of the sky…",
+        "Writing the words…",
+        "Drawing the first pages…",
+        "Placing the words on the pages…",
+        "Adding a few golden stars…"
+      ],
+      "progress": "{done} of {total} preview pages",
+      "away": "No need to wait here",
+      "awayBody": "Everything is saved in your account. Come back to this page any time.",
+      "failed": "The story stumbled this time, and our team is looking at it. Try another story or message us.",
+      "account": "My account"
+    },
+    "review": {
+      "title": "{title}",
+      "body": "This is a first preview. Change the words if you like; we draw the final high-resolution book after you order.",
+      "page": "Page {n}",
+      "cover": "Cover",
+      "draft": "Preview",
+      "later": "Drawn after you order",
+      "text": "Page text",
+      "limit": "Best under 180 characters",
+      "save": "Save the change",
+      "saved": "Change saved",
+      "restore": "Restore the original",
+      "cta": "The pages are ready"
+    },
+    "format": {
+      "title": "{name}'s book is ready!",
+      "classicTitle": "{name}'s book in Qamra Classic",
+      "classicNote": "After you order, we draw {name}'s features into the story's ready illustrations and send you the book to review before printing.",
+      "previewOf": "{n} of {total} preview pages",
+      "watermark": "The full book, without the watermark, after you order",
+      "choose": "Choose the format",
+      "desc": {
+        "hardcover": "{size} cm · thick paper · lasts for years",
+        "softcover": "{size} cm · light and flexible",
+        "digital": "PDF + reader on your phone"
+      },
+      "popular": "Most chosen",
+      "addons": "Extras",
+      "total": "Total",
+      "cta": "Continue to order",
+      "prev": "Previous page",
+      "next": "Next page"
+    },
+    "delete": {
+      "button": "{gender, select, f {Delete {name} and all her data} other {Delete {name} and all his data}}",
+      "confirm": "{gender, select, f {We will permanently delete {name}'s photos, character and books now. This can't be undone. Are you sure?} other {We will permanently delete {name}'s photos, character and books now. This can't be undone. Are you sure?}}",
+      "done": "All the data was deleted."
+    }
   },
   "admin": {
     "badge": "Admin",

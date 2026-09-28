@@ -32,6 +32,16 @@ Full reasoning is in `docs/plans/addendum-04.md` §2.
 - **Personalized books need a signed-in parent at the consent step.** A consent row belongs to a guardian account (the privacy rules: consent records and "delete my child's data"). Browsing, the cart and checkout still work as a guest. Phone-number sign-in would remove the friction, but it needs a paid SMS or WhatsApp provider.
 - **`/api/pricing` now reads the catalog.** The settings-based prices are no longer used by the site.
 
+**The parent create flow (Addendum 4, step 2d; design Create1–Create9)**
+- **One full-screen wizard at `/create`.** The step and the ids (child, character, book) live in the URL, so a reload, the back button and the account page's links all resume in the right place. Everything else lives in the API. Checkout and the order page are the store's own pages (design steps 11 and 12).
+- **Step 4 is the book type (Classic or Magic),** side by side, with Magic suggested gently (Addendum 4 §7). The styles offered next are the ones that type can draw. An approved character that the type can draw is reused, so a second book costs no new drawing.
+- **The consent text is versioned in the web messages** (`create.consent.version`, now `parent-2026-09`). The API accepts only the current version, so a page showing an old text gets a "reload" answer instead of recording the wrong consent.
+- **"Change the photo" replaces it.** The earlier photo is deleted from storage at once, so the next drawing never mixes an old photo with the new one. A photo uploaded after a character was already approved gets its 24-hour deletion time immediately.
+- **Redraws can say what was wrong** (skin tone, face, hijab or hair, looks older). The choice is saved on the character and reaches the image model through character prompt v3. v3 is identical to v2 when nothing was ticked. Each redraw also gets a new seed. A drawing that failed on our side doesn't use up one of the parent's 3 free redraws.
+- **The optional "something special" note** (design Create1) is stored with the interests, and the story prompt weaves it in the same way.
+- **A Classic dedication adds the 5 ₪ dedication-page extra by itself** when the book goes to the cart. It is free in Magic.
+- **"Delete all my child's data"** is on the account page (CLAUDE.md §3.1). It deletes at once all stored files under the child's prefix: photos, character sheets, companions, books and PDFs. It then deletes the child's rows (consents, photos, characters, companions and books go with them) and removes their unbought cart lines. Orders are the shop's records, so they stay, but without the child's name, age or dedication. An open order gets a note so the team stops making that book. The audit log records only that it happened. **Issued invoices are kept as they are** (tax records), including the book line's child name. Say if they should be reissued without it.
+
 **Workbook engine (Addenda 5 and 6)**
 - **One engine package** (`packages/workbook`, `qamra_workbook`) serves both workbook products, as Addendum 6 requires.
 - **Plans are data with automated rules.**

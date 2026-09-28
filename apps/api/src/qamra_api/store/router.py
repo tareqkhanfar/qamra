@@ -332,7 +332,7 @@ def _input(c: Catalog, item: CartItem, variant: Variant, currency: Currency) -> 
     )
 
 
-async def _cart_out(db: SessionDep, cart: Cart | None) -> CartOut:
+async def cart_out(db: SessionDep, cart: Cart | None) -> CartOut:
     if cart is None:
         return EMPTY_CART
     c = await load_catalog(db)
@@ -396,7 +396,7 @@ async def _cart_out(db: SessionDep, cart: Cart | None) -> CartOut:
     )
 
 
-def _check_item(
+def check_item(
     c: Catalog, variant: Variant | None, style: str | None, addons: list[dict[str, Any]]
 ) -> Variant:
     if variant is None:
@@ -413,7 +413,7 @@ def _check_item(
 @router.get("/cart")
 async def get_cart(request: Request, db: SessionDep, user: OptionalUser) -> CartOut:
     cart = await find_cart(db, request, user)
-    out = await _cart_out(db, cart)
+    out = await cart_out(db, cart)
     await db.commit()  # a signed-in parent may just have adopted their guest cart
     return out
 
@@ -429,7 +429,7 @@ async def add_item(
 ) -> CartOut:
     c = await load_catalog(db)
     addons = [a.model_dump() for a in body.addons]
-    variant = _check_item(c, c.variants.get(body.sku), body.style, addons)
+    variant = check_item(c, c.variants.get(body.sku), body.style, addons)
     try:
         personalization = clean_personalization(body.personalization)
     except (ValueError, TypeError) as e:
@@ -448,7 +448,7 @@ async def add_item(
     )
     cart.updated_at = datetime.now(UTC)
     await db.commit()
-    return await _cart_out(db, cart)
+    return await cart_out(db, cart)
 
 
 async def _own_item(
@@ -470,7 +470,7 @@ async def update_item(
     variant = next((v for v in c.variants.values() if v.id == item.variant_id), None)
     style = body.style if body.style is not None else item.style_slug
     addons = [a.model_dump() for a in body.addons] if body.addons is not None else item.addons
-    _check_item(c, variant, style, addons)
+    check_item(c, variant, style, addons)
     if body.personalization is not None:
         try:
             item.personalization = clean_personalization(body.personalization)
@@ -481,7 +481,7 @@ async def update_item(
         item.qty = body.qty
     cart.updated_at = datetime.now(UTC)
     await db.commit()
-    return await _cart_out(db, cart)
+    return await cart_out(db, cart)
 
 
 @router.delete("/cart/items/{item_id}")
@@ -489,7 +489,7 @@ async def remove_item(item_id: uuid.UUID, request: Request, db: SessionDep, user
     cart, item = await _own_item(db, request, user, item_id)
     await db.delete(item)
     await db.commit()
-    return await _cart_out(db, cart)
+    return await cart_out(db, cart)
 
 
 class CouponIn(BaseModel):
@@ -507,7 +507,7 @@ async def set_coupon(
         raise ApiError("cart_empty", 409)
     cart.coupon_code = body.code.strip().upper()
     await db.commit()
-    return await _cart_out(db, cart)
+    return await cart_out(db, cart)
 
 
 @router.delete("/cart/coupon")
@@ -516,7 +516,7 @@ async def clear_coupon(request: Request, db: SessionDep, user: OptionalUser) -> 
     if cart is not None:
         cart.coupon_code = None
         await db.commit()
-    return await _cart_out(db, cart)
+    return await cart_out(db, cart)
 
 
 class ZoneIn(BaseModel):
@@ -534,7 +534,7 @@ async def set_zone(body: ZoneIn, request: Request, db: SessionDep, user: Optiona
         raise ApiError("unknown_zone", 404)
     cart.zone_id, cart.currency = zone.id, zone.currency  # Jordan pays in JOD
     await db.commit()
-    return await _cart_out(db, cart)
+    return await cart_out(db, cart)
 
 
 # ---- checkout ---------------------------------------------------------------------------------------------
@@ -630,7 +630,7 @@ async def checkout(
         raise ApiError("items_unavailable", 409, details={"items": missing})
     per_product: dict[uuid.UUID, int] = {}
     for item, variant in rows:
-        _check_item(c, variant, item.style_slug, item.addons)
+        check_item(c, variant, item.style_slug, item.addons)
         per_product[variant.product_id] = per_product.get(variant.product_id, 0) + item.qty
     short = [c.products[p].slug for p, n in per_product.items() if n < c.products[p].min_qty]
     if short:

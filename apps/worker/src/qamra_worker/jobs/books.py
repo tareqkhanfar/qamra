@@ -210,14 +210,23 @@ async def _character(db: Session, storage: ObjectStorage, rt: Runtime, character
     if not photos:
         raise ValueError("no accepted photos (they may have been deleted after approval)")
     data = [storage.get(p.storage_key) for p in photos[:3] if p.storage_key]
-    sheet = await generate_character_sheet(rt, ai_child(child), data, load_style(character.art_style))
+    asked: dict[str, Any] = {k: v for k, v in (character.params or {}).items() if k in ("attempt", "fixes")}
+    sheet = await generate_character_sheet(
+        rt,
+        ai_child(child),
+        data,
+        load_style(character.art_style),
+        attempt=int(asked.get("attempt", 1)),  # a redraw gets a new seed
+        fixes=[str(f) for f in asked.get("fixes", [])],
+    )
     key = f"children/{child.id}/characters/{character.id}.png"
     storage.put(key, sheet.data, sheet.mime)
     character.sheet_image_key = key
     character.status = CharacterStatus.ready
     character.provider = str(sheet.params.get("provider", rt.image.name))[:32]
     character.model = str(sheet.params.get("model", rt.image.model))[:100]
-    character.params = {k: v for k, v in sheet.params.items() if isinstance(v, str | int | float)}
+    drawn = {k: v for k, v in sheet.params.items() if isinstance(v, str | int | float)}
+    character.params = {**asked, **drawn}  # keeps what the parent asked for next to how it was drawn
     db.commit()
     return sheet.data
 

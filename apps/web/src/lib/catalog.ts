@@ -4,6 +4,8 @@ import type { SceneArt } from "@/components/art/Scene";
 export type ThemeCard = {
   slug: string;
   name: string;
+  /** The book title with a {name} slot. */
+  title: string;
   tagline: string;
   age_min: number;
   age_max: number;

@@ -9,6 +9,7 @@ import { Button, buttonClasses } from "@/components/ui/Button";
 import { brandName } from "@/config/brand";
 import { Link, useRouter } from "@/i18n/navigation";
 import { api, errorText, type User } from "@/lib/api";
+import { createApi } from "@/lib/create";
 
 type Child = { id: string; first_name: string; gender: "m" | "f"; birth_year: number };
 type Book = {
@@ -60,6 +61,9 @@ export function AccountView() {
   const [tab, setTab] = useState<"books" | "orders">("books");
   const [error, setError] = useState<string | null>(null);
   const [leaving, setLeaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
+  const tc = useTranslations("create");
   const [hour] = useState(() => new Date().getHours());
 
   useEffect(() => {
@@ -90,6 +94,23 @@ export function AccountView() {
     [books, activeChild],
   );
   const generating = books.find((b) => b.status === "generating");
+
+  /** CLAUDE.md §3.1: "Delete all my child's data", now. */
+  async function deleteChild(child: Child) {
+    const who = { name: child.first_name, gender: child.gender };
+    if (!window.confirm(tc("delete.confirm", who))) return;
+    setDeleting(true);
+    const r = await createApi.deleteChild(child.id);
+    setDeleting(false);
+    if (!r.ok) {
+      setNotice(errorText(r.error, locale, r.status === 0 ? te("network") : te("unknown")));
+      return;
+    }
+    setChildren((list) => list.filter((c) => c.id !== child.id));
+    setBooks((list) => list.filter((b) => b.child_id !== child.id));
+    setSelected(null);
+    setNotice(tc("delete.done"));
+  }
 
   async function logout() {
     setLeaving(true);
@@ -172,6 +193,24 @@ export function AccountView() {
             <span className="text-small font-semibold text-amber-700">{t("newChild")}</span>
           </Link>
         </div>
+        {activeChild && (
+          <div className="px-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-danger hover:text-danger"
+              loading={deleting}
+              onClick={() => deleteChild(activeChild)}
+            >
+              {tc("delete.button", { name: activeChild.first_name, gender: activeChild.gender })}
+            </Button>
+          </div>
+        )}
+        {notice && (
+          <div className="px-4">
+            <Alert tone="info">{notice}</Alert>
+          </div>
+        )}
       </section>
 
       <div role="tablist" className="flex gap-1 border-b border-line px-4">
@@ -212,19 +251,31 @@ export function AccountView() {
           <p className="py-10 text-center text-body text-ink-muted">{t("ordersEmpty")}</p>
         ) : shownBooks.length ? (
           <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3">
-            {shownBooks.map((b) => (
-              <div key={b.id} className="flex flex-col gap-2">
-                <div className="flex justify-center rounded-[18px] bg-paper-sunk p-3.5">
-                  <div className="w-full max-w-[120px] overflow-hidden rounded-s-[10px] rounded-e-[4px] border-s-[6px] border-night-950 shadow-[0_6px_16px_rgba(22,32,74,0.18)]">
-                    <Scene theme={THEME_SCENE[b.theme_slug] ?? "night"} ratio={1} kidScale={0.62} outfit="#F2B33D" />
+            {shownBooks.map((b) => {
+              const open = b.status === "draft" || b.status === "generating" || b.status === "preview";
+              const card = (
+                <>
+                  <div className="flex justify-center rounded-[18px] bg-paper-sunk p-3.5">
+                    <div className="w-full max-w-[120px] overflow-hidden rounded-s-[10px] rounded-e-[4px] border-s-[6px] border-night-950 shadow-[0_6px_16px_rgba(22,32,74,0.18)]">
+                      <Scene theme={THEME_SCENE[b.theme_slug] ?? "night"} ratio={1} kidScale={0.62} outfit="#F2B33D" />
+                    </div>
                   </div>
+                  <strong className="text-[15px] leading-snug">{b.title ?? "—"}</strong>
+                  <span className={`self-start rounded-full px-2.5 py-1 text-xs font-bold ${STATUS_CHIP[b.status]}`}>
+                    {t(`status.${b.status}`)}
+                  </span>
+                </>
+              );
+              return open ? (
+                <Link key={b.id} href={`/create?child=${b.child_id}&book=${b.id}`} className="flex flex-col gap-2">
+                  {card}
+                </Link>
+              ) : (
+                <div key={b.id} className="flex flex-col gap-2">
+                  {card}
                 </div>
-                <strong className="text-[15px] leading-snug">{b.title ?? "—"}</strong>
-                <span className={`self-start rounded-full px-2.5 py-1 text-xs font-bold ${STATUS_CHIP[b.status]}`}>
-                  {t(`status.${b.status}`)}
-                </span>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <section className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-line bg-paper-raised/60 px-6 py-10 text-center">

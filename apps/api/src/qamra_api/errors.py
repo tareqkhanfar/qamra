@@ -141,6 +141,24 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "The order can't move to that status from where it is.",
     ),
     "reprint_needs_items": ("اختاروا ما يُعاد طبعه من الطلب.", "Choose which items to reprint."),
+    # ---- the create flow
+    "consent_outdated": (
+        "تغيّر نصّ الموافقة. حدّثوا الصفحة واقرؤوه من جديد.",
+        "The consent text has changed. Reload the page and read it again.",
+    ),
+    "photo_required": ("أضيفوا صورة للطفل أولًا.", "Please add a photo of your child first."),
+    "redraws_used": (
+        "استخدمتم إعادات الرسم المجانية لهذا الطفل. تواصلوا معنا إن احتجتم المساعدة.",
+        "You've used the free redraws for this child. Contact us if you need help.",
+    ),
+    "character_not_approved": (
+        "اعتمدوا شخصية الطفل أولًا.",
+        "Please approve your child's character first.",
+    ),
+    "too_many_previews": (
+        "وصلتم إلى حد المعاينات لليوم. جرّبوا غدًا أو أكملوا طلبًا حاليًا.",
+        "You've reached today's preview limit. Try tomorrow or finish a current order.",
+    ),
     "internal_error": (
         "حدث خطأ غير متوقع. حاولوا مرة أخرى بعد قليل.",
         "Something went wrong. Please try again in a moment.",
