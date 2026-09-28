@@ -25,11 +25,12 @@ function savePref(on: boolean) {
 /**
  * Background lullaby (admin: music_enabled / music_volume). Browsers only allow sound after a user
  * gesture, so it starts on the first tap/key anywhere; the floating button toggles it (remembered).
- * Web Audio gives a gapless loop and soft fades. Never plays in the admin area.
+ * Web Audio gives a gapless loop and soft fades. Never plays in the admin area, and stays out of the way of the
+ * create flow and checkout, whose own action bars sit at the bottom of the screen.
  */
 export function MusicPlayer({ volume, labels }: { volume: number; labels: { play: string; pause: string } }) {
   const pathname = usePathname();
-  const hidden = pathname.startsWith("/admin");
+  const hidden = ["/admin", "/create", "/checkout"].some((p) => pathname.startsWith(p));
   const [playing, setPlaying] = useState(false);
   const ctx = useRef<AudioContext | null>(null);
   const gain = useRef<GainNode | null>(null);
