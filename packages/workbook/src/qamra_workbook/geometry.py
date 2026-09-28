@@ -76,6 +76,11 @@ class Stroke:
         return self._cumulative[-1]
 
     @property
+    def lengths(self) -> list[float]:
+        """The distance along the stroke to each point of `polyline`."""
+        return self._cumulative
+
+    @property
     def start(self) -> Point:
         return self.polyline[0]
 

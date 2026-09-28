@@ -1,52 +1,22 @@
 """Letter stroke data for tracing pages: single-stroke paths in writing order, plus the letter's dots.
 
-Hand-authored for the samples (ب isolated, A, a). Every letter and form (Arabic isolated/initial/medial/
-final, English A–Z and a–z, digits) needs the same data before the full books; an educator signs off on
-the forms and stroke directions (Addendum 5 §8, Addendum 6 §9).
+Arabic: every letter in each of its forms (isolated/initial/medial/final), plus ة ى ء and لا, in Qamra's
+own kindergarten hand (`qamra_workbook.letters`). English: the samples A and a so far; A–Z, a–z and the
+digits need the same data before the full books. An educator signs off on the forms and stroke directions
+(Addendum 5 §8, Addendum 6 §9) on the review sheet from `qamra_workbook.stroke_sheet`.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from qamra_workbook.geometry import Stroke
+from qamra_workbook.letters import ARABIC
+from qamra_workbook.letters.model import Guides, Letter
 
-from qamra_workbook.geometry import Point, Stroke
-
-
-@dataclass(frozen=True)
-class Guides:
-    """Writing lines in the letter's own units (y grows downwards)."""
-
-    top: float
-    base: float
-    mid: float | None = None
-
-
-@dataclass(frozen=True)
-class Letter:
-    char: str
-    form: str  # Arabic: isolated|initial|medial|final; English: capital|small
-    width: float  # design box width; the box starts at x = 0
-    guides: Guides
-    strokes: tuple[Stroke, ...]
-    dots: tuple[Point, ...] = ()
-    dot_r: float = 0.0
-
-    @property
-    def rtl(self) -> bool:
-        return "؀" <= self.char <= "ۿ"
-
+__all__ = ["BA", "CAPITAL_A", "LETTERS", "SMALL_A", "Guides", "Letter", "letter"]
 
 # ب isolated: from the top of the right tooth down, along the bowl to the left, up into the tail; the dot
 # below the middle comes last.
-BA = Letter(
-    "ب",
-    "isolated",
-    200,
-    Guides(top=30, base=97),
-    (Stroke("M176 36 C177 56 180 78 169 88 C159 96 147 97 130 97 L62 97 C42 97 27 93 22 70"),),
-    dots=((100, 124),),
-    dot_r=8,
-)
+BA = ARABIC[("ب", "isolated")]
 
 # A: left slant down, right slant down, crossbar left to right on the midline.
 CAPITAL_A = Letter(
@@ -72,7 +42,7 @@ SMALL_A = Letter(
     ),
 )
 
-LETTERS: dict[tuple[str, str], Letter] = {(x.char, x.form): x for x in (BA, CAPITAL_A, SMALL_A)}
+LETTERS: dict[tuple[str, str], Letter] = {**ARABIC, **{(x.char, x.form): x for x in (CAPITAL_A, SMALL_A)}}
 
 
 def letter(char: str, form: str) -> Letter:
