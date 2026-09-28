@@ -27,6 +27,7 @@ class ProductLine(enum.StrEnum):
     coloring = "coloring"  # black-and-white line-art books
     workbook = "workbook"  # «دوسية التأسيس» (Addendum 5)
     journey = "journey"  # «رحلتي الأولى للتعلّم» (Addendum 6)
+    family = "family"  # «مغامراتي مع عائلتي» (Addendum 7)
 
 
 class Audience(enum.StrEnum):
@@ -122,6 +123,8 @@ class Variant(IdMixin, TimestampMixin, Base):
     cost_packaging_ils: Mapped[Decimal] = mapped_column(Numeric(10, 2), default=Decimal("0"))
     cost_handling_ils: Mapped[Decimal] = mapped_column(Numeric(10, 2), default=Decimal("0"))  # per item
     cost_ai_usd: Mapped[Decimal] = mapped_column(Numeric(10, 4), default=Decimal("0"))  # estimate
+    # the printer's price per copy by run length (Addendum 7 §3.9): [{"min_qty": 50, "unit_ils": "30.00"}, …]
+    print_cost_tiers: Mapped[list[dict[str, Any]]] = mapped_column(JSONB, default=list)
     sort: Mapped[int] = mapped_column(SmallInteger, default=0)
     active: Mapped[bool] = mapped_column(Boolean, default=True)
 

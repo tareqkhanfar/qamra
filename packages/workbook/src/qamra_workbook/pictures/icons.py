@@ -21,6 +21,7 @@ from qamra_workbook.pictures.model import (
     line,
     p,
     rect,
+    scallop_d,
     shine,
 )
 
@@ -58,15 +59,7 @@ def _polar(cx: float, cy: float, r: float, deg: float) -> tuple[float, float]:
 
 def scallop(cx: float, cy: float, rx: float, ry: float, bumps: int, bulge: float = 0.62) -> str:
     """A cloud-like closed outline: `bumps` arcs around an ellipse (lion mane, sheep fleece)."""
-    pts = [_polar(0, 0, 1, 360 * i / bumps - 90) for i in range(bumps)]
-    pts = [(cx + x * rx, cy + y * ry) for x, y in pts]
-    d = f"M{_fmt(pts[0][0])} {_fmt(pts[0][1])}"
-    for i in range(bumps):
-        x1, y1 = pts[i]
-        x2, y2 = pts[(i + 1) % bumps]
-        radius = math.dist((x1, y1), (x2, y2)) * bulge
-        d += f" A{_fmt(radius)} {_fmt(radius)} 0 0 1 {_fmt(x2)} {_fmt(y2)}"
-    return p(d + " Z")
+    return p(scallop_d(cx, cy, rx, ry, bumps, bulge))
 
 
 def star_path(cx: float, cy: float, outer: float, inner: float, points: int = 5) -> str:

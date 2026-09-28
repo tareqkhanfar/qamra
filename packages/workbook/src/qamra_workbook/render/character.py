@@ -1,8 +1,9 @@
-"""The child's character on workbook pages: the front view cut out of the character sheet.
+"""The child's character on workbook pages: figures cut out of the character sheet.
 
 A sheet is a front view plus two poses on plain paper (qamra_ai character sheets). The first figure from
-the left is the front view; its paper background is removed by flood-filling from the border, a thin
-white "sticker" edge is added, and the result is scaled for 300 DPI at the largest printed size.
+the left is the front view, the second a pose (waving, on the sample sheets); a figure's paper background is
+removed by flood-filling from the border, a thin white "sticker" edge is added, and the result is scaled
+for 300 DPI at the largest printed size.
 """
 
 from __future__ import annotations
@@ -53,17 +54,22 @@ def paper_color(img: Image.Image) -> tuple[int, int, int]:
     )
 
 
-def front_view_box(img: Image.Image, paper: tuple[int, int, int]) -> tuple[int, int, int, int]:
-    """Bounding box of the first figure from the left."""
+def figure_box(img: Image.Image, paper: tuple[int, int, int], index: int = 0) -> tuple[int, int, int, int]:
+    """Bounding box of the figure `index` from the left (0 is the front view)."""
     mask = _ink_mask(img, paper)
     w, h = mask.size
     column_ink = [mask.crop((x, 0, x + 1, h)).getbbox() is not None for x in range(w)]
     figures = [run for run in _runs(column_ink) if run[1] - run[0] > w * 0.05]
-    if not figures:
-        raise ValueError("no figure found on the character sheet")
-    x0, x1 = figures[0]
+    if len(figures) <= index:
+        raise ValueError(f"no figure {index} on the character sheet ({len(figures)} found)")
+    x0, x1 = figures[index]
     _, top, _, bottom = mask.crop((x0, 0, x1, h)).getbbox() or (0, 0, 0, h)
     return x0, top, x1, bottom
+
+
+def front_view_box(img: Image.Image, paper: tuple[int, int, int]) -> tuple[int, int, int, int]:
+    """Bounding box of the first figure from the left."""
+    return figure_box(img, paper, 0)
 
 
 def cut_out(img: Image.Image, paper: tuple[int, int, int]) -> Image.Image:
@@ -91,14 +97,19 @@ def sticker_edge(figure: Image.Image, width: int) -> Image.Image:
 
 def front_view(sheet: Path, out_dir: Path, max_print_mm: float = MAX_PRINT_MM) -> Path:
     """The cut-out front view as a PNG ready for print; cached by the sheet's content."""
+    return pose(sheet, out_dir, 0, max_print_mm)
+
+
+def pose(sheet: Path, out_dir: Path, index: int, max_print_mm: float = MAX_PRINT_MM) -> Path:
+    """The cut-out figure `index` (0: front view, 1: the first pose) as a print PNG; cached by content."""
     digest = hashlib.sha256(sheet.read_bytes()).hexdigest()[:12]
-    out = out_dir / f"character-{digest}.png"
+    out = out_dir / (f"character-{digest}.png" if index == 0 else f"character-{digest}-pose{index}.png")
     if out.exists():
         return out
     with Image.open(sheet) as src:
         img = src.convert("RGB")
     paper = paper_color(img)
-    figure = cut_out(img.crop(front_view_box(img, paper)), paper)
+    figure = cut_out(img.crop(figure_box(img, paper, index)), paper)
     figure = sticker_edge(figure, width=max(4, figure.height // 90))
     figure = figure.crop(figure.getchannel("A").getbbox() or (0, 0, figure.width, figure.height))
     target_h = round(max_print_mm / 25.4 * DPI)

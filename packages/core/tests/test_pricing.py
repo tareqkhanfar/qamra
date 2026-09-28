@@ -102,3 +102,20 @@ def test_price_list_tiers_use_the_orders_total_quantity() -> None:
     assert {i.unit_price for i in few.items} == {
         D("69.00")
     } and "below the price list's minimum 20" in few.notes[0]
+
+
+def test_price_by_quantity_follows_the_tiers_and_the_margin_rules() -> None:
+    from qamra_core.pricing import quantity_prices
+
+    tiers = ((1, D("42")), (10, D("36")), (50, D("30")), (100, D("26")), (500, D("19")))
+    rows = quantity_prices(
+        D("89"), tiers, D("4"), (1, 10, 50, 100, 500), bulk_margin_pct=D("45"), floor_pct=D("35")
+    )
+    assert [r.unit_price for r in rows] == [D("89"), D("73"), D("62"), D("55"), D("42")]
+    assert rows[0].unit_cost == D("46") and rows[-1].total == D("21000")
+    assert all(r.margin_pct >= 35 for r in rows)
+    # a printer quote that pushes the cost up can't sell below the floor, even above the bulk price
+    dear = quantity_prices(
+        D("89"), ((1, D("70")),), D("4"), (1, 10), bulk_margin_pct=D("45"), floor_pct=D("35")
+    )
+    assert dear[0].unit_price == D("114") and dear[1].unit_price == D("114")

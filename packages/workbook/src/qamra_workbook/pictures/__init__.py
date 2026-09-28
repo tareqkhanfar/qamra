@@ -13,8 +13,12 @@ from typing import Protocol
 
 from markupsafe import Markup, escape
 
-from qamra_workbook.pictures.icons import PICTURES
+from qamra_workbook.pictures.household import HOUSEHOLD
+from qamra_workbook.pictures.icons import PICTURES as VOCABULARY
 from qamra_workbook.pictures.model import OUTLINE, Part, Picture, Style, strip_tashkeel
+
+# the vocabulary pictures (Addenda 5–6) and the family book's kitchen, market and home things (Addendum 7)
+PICTURES: dict[str, Picture] = VOCABULARY | HOUSEHOLD
 
 __all__ = [
     "OUTLINE",

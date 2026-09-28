@@ -1,0 +1,37 @@
+<div class="sheet money">
+  <header class="sheet-head">
+    <div class="sheet-title">{{ mascot('mascot') }}<div><h1>{{ p.title }}</h1><p>{{ p.instruction }}</p></div></div>
+    <div class="play-banner">{{ icon('star') }}<b>{{ d.banner }}</b>{{ icon('star') }}</div>
+  </header>
+  <div class="notes">
+    {% for n in d.notes %}
+    <div class="note-cell">
+      <div class="note" style="--nd: {{ n.deep }}">
+        {{ n.art }}
+        <b class="note-num">{{ n.value }}</b>
+        <div class="note-moon">{{ mascot('mascot') }}</div>
+        <div class="note-text"><b>نقود قمرة</b><span>{{ n.words }}</span></div>
+        <span class="note-play">{{ n.play }}</span>
+      </div>
+      {% if loop.index0 % 2 == 0 %}<span class="scissors">{{ d.scissors }}</span>{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  <div class="coins">
+    {% for c in d.coins %}
+    <div class="coin-cell"><div class="coin">{{ c.art }}<b>{{ c.value }}</b><small>قمرة</small><em>{{ c.play }}</em></div></div>
+    {% endfor %}
+  </div>
+  {% if d.tags %}
+  <div class="price-tags">
+    <div class="label">{{ icon('shop') }}بطاقات أسعار لمتجري</div>
+    <div class="tags-row">
+      {% for t in d.tags %}<div class="ptag-cell"><div class="ptag"><span class="ptag-hole"></span><small>السعر</small><span class="ptag-line"></span><b>قمرة</b></div></div>{% endfor %}
+    </div>
+  </div>
+  {% endif %}
+  <footer class="sheet-foot">
+    <span class="cut-note">{{ d.scissors }}قصّوا على الخط المتقطّع. نقود خيالية للّعب والتعلّم، لا قيمة لها.</span>
+    <span class="sheet-brand">{{ mascot('mascot') }}قمرة · بطاقات القصّ</span>
+  </footer>
+</div>

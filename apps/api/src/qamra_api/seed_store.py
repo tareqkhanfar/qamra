@@ -125,6 +125,7 @@ async def _products(db: AsyncSession, products: list[dict[str, Any]]) -> list[st
                 min_qty=p.get("min_qty", 1),
                 features=p.get("features", {}),
                 sort=sort,
+                active=p.get("active", True),
             )
             db.add(product)
             added.append(f"+product:{p['slug']}")
@@ -141,7 +142,12 @@ async def _products(db: AsyncSession, products: list[dict[str, Any]]) -> list[st
                 cost_packaging_ils=money(cost.get("packaging", 0)),
                 cost_handling_ils=money(cost.get("handling", 0)),
                 cost_ai_usd=Decimal(str(cost.get("ai_usd", 0))),
+                print_cost_tiers=[
+                    {"min_qty": int(t["min_qty"]), "unit_ils": str(money(t["unit_ils"]))}
+                    for t in v.get("print_cost_tiers", [])
+                ],
                 sort=vsort,
+                active=v.get("active", True),
             )
             db.add(variant)
             variants[v["sku"]] = variant
@@ -174,6 +180,7 @@ async def _addons(db: AsyncSession, addons: list[dict[str, Any]]) -> list[str]:
             daily_capacity=a.get("daily_capacity"),
             step=a.get("step", "format"),
             sort=sort,
+            active=a.get("active", True),
         )
         db.add(addon)
         for currency, amount in a.get("price", {}).items():

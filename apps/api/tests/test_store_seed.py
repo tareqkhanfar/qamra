@@ -18,10 +18,9 @@ async def test_seed_builds_the_catalog_once(adb: AsyncSession) -> None:
     added = await seed_store(adb)
     assert "+product:classic-book" in added and "+variant:wb-kg2-set-color-spiral" in added
     variants, addons = await _count(adb, Variant), await _count(adb, AddOn)
-    assert (
-        variants == 3 + 1 + 1 + 1 + 1 + 1 + 20 + 7
-    )  # classic, magic, custom, coloring, 2 class, workbook, journey
-    assert addons == 17
+    # classic, magic, custom story, coloring, 2 class books, workbook, journey, family
+    assert variants == 3 + 1 + 1 + 1 + 1 + 1 + 20 + 7 + 2
+    assert addons == 19
     assert await seed_store(adb) == []  # insert-only: a second run changes nothing
     assert await _count(adb, Variant) == variants
 
@@ -60,3 +59,18 @@ async def test_staff_roles_limit_the_admin(client: AsyncClient, adb: AsyncSessio
     assert (
         await client.post("/api/admin/books/00000000-0000-0000-0000-000000000000/approve")
     ).status_code == 403
+
+
+async def test_the_family_book_waits_for_approval_with_its_print_tiers(adb: AsyncSession) -> None:
+    from qamra_core.db.store import CatalogProduct
+
+    await seed_store(adb)
+    family = (
+        await adb.execute(select(CatalogProduct).where(CatalogProduct.slug == "family-adventures"))
+    ).scalar_one()
+    assert family.active is False  # Addendum 7 stops at the proposal
+    wireo = (await adb.execute(select(Variant).where(Variant.sku == "family-wireo"))).scalar_one()
+    assert [t["min_qty"] for t in wireo.print_cost_tiers] == [1, 10, 50, 100, 500]
+    assert wireo.print_cost_tiers[2] == {"min_qty": 50, "unit_ils": "30.00"}
+    gift = (await adb.execute(select(AddOn).where(AddOn.slug == "gift-box"))).scalar_one()
+    assert "family" in gift.lines

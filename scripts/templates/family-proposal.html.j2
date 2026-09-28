@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>{{ plan.title_ar }} — مقترح الكتاب</title>
+<style>
+@font-face { font-family: "Baloo Bhaijaan 2"; src: url("{{ fonts }}/BalooBhaijaan2-ExtraBold.ttf") format("truetype"); font-weight: 700 900; }
+@font-face { font-family: "Baloo Bhaijaan 2"; src: url("{{ fonts }}/BalooBhaijaan2-Medium.ttf") format("truetype"); font-weight: 400 600; }
+@font-face { font-family: "IBM Plex Sans Arabic"; src: url("{{ fonts }}/IBMPlexSansArabic-Regular.ttf") format("truetype"); font-weight: 400 500; }
+@font-face { font-family: "IBM Plex Sans Arabic"; src: url("{{ fonts }}/IBMPlexSansArabic-SemiBold.ttf") format("truetype"); font-weight: 600 900; }
+@page { size: A4; margin: 16mm 15mm 18mm; }
+:root { --night: #16204A; --ink: #1C2140; --muted: #585C72; --amber: #F2B33D; --amber-soft: #FCEFD2; --paper: #FBF6EC; --line: #E4D6BC; --sage: #3E6B4D; --coral: #A7432D; }
+* { box-sizing: border-box; }
+body { margin: 0; font: 400 10.5pt/1.75 "IBM Plex Sans Arabic", sans-serif; color: var(--ink); }
+h1, h2, h3 { font-family: "Baloo Bhaijaan 2", sans-serif; color: var(--night); margin: 0; line-height: 1.25; }
+h2 { font-size: 20pt; font-weight: 800; margin: 0 0 4mm; padding-top: 2mm; border-top: 1.2mm solid var(--amber); }
+h3 { font-size: 13.5pt; font-weight: 700; margin: 5mm 0 2mm; }
+p { margin: 0 0 2.5mm; }
+ul { margin: 0 0 2.5mm; padding-inline-start: 6mm; }
+li { margin-bottom: 1mm; }
+section { page-break-inside: auto; }
+.break { page-break-before: always; }
+.muted { color: var(--muted); }
+.cover { height: 263mm; display: flex; flex-direction: column; justify-content: space-between; background: var(--paper); border-radius: 6mm; padding: 16mm 14mm; }
+.cover h1 { font-size: 36pt; font-weight: 800; }
+.cover .sub { font-size: 14pt; color: var(--muted); margin-top: 3mm; }
+.cover .tag { display: inline-block; background: var(--night); color: #fff; border-radius: 999px; padding: 1.5mm 5mm; font-weight: 600; font-size: 10pt; }
+.cover .facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; }
+.fact { background: #fff; border: 0.3mm solid var(--line); border-radius: 4mm; padding: 4mm; }
+.fact strong { display: block; font: 800 22pt/1.1 "Baloo Bhaijaan 2", sans-serif; color: var(--night); }
+.cover-art { display: flex; gap: 4mm; justify-content: center; }
+.cover-art img { width: 38%; border-radius: 3mm; box-shadow: 0 1mm 4mm rgba(22, 32, 74, 0.15); background: #fff; }
+table { width: 100%; border-collapse: collapse; font-size: 9.5pt; margin: 2mm 0 4mm; }
+th, td { border-bottom: 0.25mm solid var(--line); padding: 1.8mm 2mm; text-align: start; vertical-align: top; }
+thead th { background: var(--amber-soft); color: var(--night); font-weight: 600; }
+.num { font-variant-numeric: tabular-nums; white-space: nowrap; direction: ltr; unicode-bidi: isolate; text-align: start; }
+.section-head { display: flex; align-items: baseline; gap: 3mm; margin-top: 6mm; }
+.section-head .icon { font-size: 16pt; }
+.hook { font-style: italic; color: var(--muted); margin-bottom: 2mm; }
+.acts { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+.acts.rest { margin-top: 3mm; }
+.keep { page-break-inside: avoid; break-inside: avoid; }  /* a section's heading stays with its first cards */
+.act { border: 0.3mm solid var(--line); border-radius: 3mm; padding: 3mm 3.5mm; page-break-inside: avoid; font-size: 9.3pt; line-height: 1.6; }
+.act h4 { margin: 0 0 1.5mm; font: 700 11pt/1.3 "Baloo Bhaijaan 2", sans-serif; color: var(--night); }
+.act .meta { display: flex; flex-wrap: wrap; gap: 1.5mm; margin-bottom: 1.5mm; }
+.pill { background: var(--paper); border-radius: 999px; padding: 0.3mm 2.5mm; font-size: 8.5pt; font-weight: 600; white-space: nowrap; }
+.pill.family { background: #E1EFE4; color: var(--sage); }
+.pill.level { background: var(--amber-soft); color: #9A620A; }
+.act dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 0.8mm 2.5mm; }
+.act dt { color: var(--muted); font-weight: 600; white-space: nowrap; }
+.act dd { margin: 0; }
+.safety { margin-top: 1.5mm; background: #F8DEDB; color: var(--coral); border-radius: 2mm; padding: 1.2mm 2.5mm; font-size: 8.7pt; }
+.samples { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; }
+.samples figure { margin: 0; page-break-inside: avoid; }
+.samples img { width: 100%; border: 0.3mm solid var(--line); border-radius: 2mm; background: #fff; }
+.samples figcaption { font-size: 8.5pt; color: var(--muted); text-align: center; margin-top: 1mm; }
+.note { background: var(--amber-soft); border-radius: 3mm; padding: 3mm 4mm; font-size: 9.3pt; }
+.skills { font-size: 8.5pt; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div>
+    <span class="tag">مقترح الكتاب · للاعتماد قبل التصميم الكامل</span>
+    <h1 style="margin-top: 8mm">{{ plan.title_ar }}</h1>
+    <p class="sub">كتاب أنشطة ومغامرات للأطفال من 3 إلى 7 سنوات، يتعلّم فيه الطفل باللعب مع عائلته</p>
+  </div>
+  {% if samples %}
+  <div class="cover-art">
+    {% for caption, src in samples[:2] %}<img src="{{ src }}" alt="{{ caption }}">{% endfor %}
+  </div>
+  {% endif %}
+  <div class="facts">
+    <div class="fact"><strong>{{ pages|length }}</strong>صفحة في الكتاب</div>
+    <div class="fact"><strong>{{ plan.sections|length }}</strong>مغامرة، ولكل مغامرة ختم في جواز السفر</div>
+    <div class="fact"><strong>{{ plan.activities|length }}</strong>نشاطًا، أغلبها بمستويين ⭐ و⭐⭐</div>
+  </div>
+</div>
+
+<section class="break">
+  <h2>١. الفكرة والرؤية</h2>
+  {{ plan.proposal.concept|md }}
+</section>
+
+<section class="break">
+  <h2>٢. الفهرس المقترح</h2>
+  <table>
+    <thead><tr><th>القسم</th><th>الصفحات</th><th>ختم الجواز</th></tr></thead>
+    <tbody>
+      {% set front = pages|selectattr("section", "equalto", "front")|list %}
+      <tr><td>الصفحات الأولى (العنوان، الفهرس، جواز السفر، عائلتي، هذا أنا)</td><td class="num">{{ front[0].n }}–{{ front[-1].n }}</td><td>—</td></tr>
+      {% for s in plan.sections %}
+      {% set mine = pages|selectattr("section", "equalto", s.id)|list %}
+      <tr><td>{{ s.icon }} {{ s.title_ar|shown }}</td><td class="num">{{ mine[0].n }}–{{ mine[-1].n }}</td><td>{{ s.badge|shown }}</td></tr>
+      {% endfor %}
+      {% set back = pages|selectattr("section", "equalto", "back")|list %}
+      <tr><td>الختام (تحدي العائلة الكبير، هذا أنا الآن، شهادة المغامر)</td><td class="num">{{ back[0].n }}–{{ back[-1].n }}</td><td>—</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="break">
+  <h2>٣. الأقسام والأنشطة</h2>
+  <p class="muted">لكل نشاط: الهدف، ما يفعله الطفل، مهمة العائلة («هيا نفعلها معاً!»)، المواد من البيت، الوقت، والمستوى (⭐ لعمر 3–4، ⭐⭐ لعمر 5–7).</p>
+  {% macro card(a) %}
+    <div class="act">
+      <h4>{{ a.title|shown }}</h4>
+      <div class="meta">
+        <span class="pill">{{ "🌳 في الخارج" if a.where == "outside" else "🏠 في البيت" }}</span>
+        {% if a.together %}<span class="pill family">👨‍👩‍👧 معًا</span>{% endif %}
+        <span class="pill">⏱ {{ a.minutes }} دقيقة</span>
+        <span class="pill level">{{ "⭐ / ⭐⭐" if a.levels.challenge else "⭐" }}</span>
+      </div>
+      <dl>
+        <dt>الهدف</dt><dd>{{ a.goal|shown }}</dd>
+        <dt>الطفل</dt><dd>{{ a.child_part|shown }}</dd>
+        {% if a.parent_part %}<dt>العائلة</dt><dd>{{ a.parent_part|shown }}</dd>{% endif %}
+        {% if a.materials %}<dt>المواد</dt><dd>{{ a.materials|join("، ") }}</dd>{% endif %}
+        <dt>⭐</dt><dd>{{ a.levels.simple|shown }}</dd>
+        {% if a.levels.challenge %}<dt>⭐⭐</dt><dd>{{ a.levels.challenge|shown }}</dd>{% endif %}
+      </dl>
+      <p class="skills">المهارات: {% for k in a.skills %}{{ skills[k] }}{{ "، " if not loop.last }}{% endfor %}</p>
+      {% if a.safety %}<div class="safety">⚠ {{ a.safety|shown }}</div>{% endif %}
+    </div>
+  {% endmacro %}
+  {% for s in plan.sections %}
+  {% set acts = plan.activities|selectattr("section", "equalto", s.id)|list %}
+  <div class="keep">
+    <div class="section-head"><span class="icon">{{ s.icon }}</span><h3>{{ s.title_ar|shown }}</h3></div>
+    <p class="hook">{{ s.hook|shown }}</p>
+    <div class="acts">{% for a in acts[:2] %}{{ card(a) }}{% endfor %}</div>
+  </div>
+  {% if acts|length > 2 %}<div class="acts rest">{% for a in acts[2:] %}{{ card(a) }}{% endfor %}</div>{% endif %}
+  {% endfor %}
+</section>
+
+<section class="break">
+  <h2>٤. عدد الصفحات</h2>
+  <table>
+    <thead><tr><th>الجزء</th><th>الصفحات</th></tr></thead>
+    <tbody>
+      <tr><td>الصفحات الأولى</td><td class="num">{{ counts["front"] }}</td></tr>
+      {% for s in plan.sections %}<tr><td>{{ s.icon }} {{ s.title_ar|shown }}</td><td class="num">{{ counts[s.id] }}</td></tr>{% endfor %}
+      <tr><td>الختام</td><td class="num">{{ counts["back"] }}</td></tr>
+      <tr><th>الكتاب كاملًا</th><th class="num">{{ pages|length }}</th></tr>
+    </tbody>
+  </table>
+  <h3>الملحقات المطبوعة منفصلة</h3>
+  <ul>
+    {% for i in plan.inserts %}<li><strong>{{ i.title }}</strong> ({{ "ورق ملصقات مطفي" if i.kind == "stickers" else "كرتون مقوّى للقصّ" }}): {{ i.items|join("، ") }}</li>{% endfor %}
+  </ul>
+</section>
+
+{% if samples %}
+<section class="break">
+  <h2>٥. نماذج من الصفحات</h2>
+  <p class="muted">صفحات مصمّمة بمحرّك قمرة، بطفلة تجريبية («ليان») وعائلة تجريبية. الشخصيات والرسوم الصغيرة مؤقتة إلى أن تُنتج مكتبة الصور.</p>
+  <div class="samples">
+    {% for caption, src in samples %}<figure><img src="{{ src }}" alt="{{ caption }}"><figcaption>{{ caption }}</figcaption></figure>{% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<section class="break">
+  <h2>٦. حجم الكتاب</h2>
+  {{ plan.proposal.size|md }}
+  <h2>٧. الورق</h2>
+  {{ plan.proposal.paper|md }}
+  <h2>٨. التجليد والطباعة</h2>
+  {{ plan.proposal.binding|md }}
+</section>
+
+<section class="break">
+  <h2>٩. السعر حسب الكمية</h2>
+  <p class="note">⚠ <strong>أسعار المطبعة تقديرية</strong> إلى أن يصل عرض السعر الفعلي، وتُعدَّل من لوحة الإدارة. تكلفتنا تشمل التغليف وكلفة رسم الشخصية ({{ "%.2f"|format(basis.other) }} ₪ للنسخة). النسخة الواحدة بسعر التجزئة ({{ "%.0f"|format(basis.retail) }} ₪). ومن 10 نسخ فأكثر: التكلفة مع هامش الكميات ({{ "%.0f"|format(basis.bulk) }}٪)، مقرّبة لأعلى إلى شيكل كامل، دون تجاوز سعر التجزئة ودون النزول عن الحد الأدنى للهامش ({{ "%.0f"|format(basis.floor) }}٪).</p>
+  <table>
+    <thead><tr><th>عدد النسخ</th><th>المطبعة للنسخة ⚠</th><th>تكلفتنا للنسخة</th><th>السعر للنسخة</th><th>مجموع الطلب</th><th>الهامش</th></tr></thead>
+    <tbody>
+      {% for row in table %}
+      <tr>{% for key, value in row.items() %}<td class="num">{{ value }}</td>{% endfor %}</tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+</body>
+</html>

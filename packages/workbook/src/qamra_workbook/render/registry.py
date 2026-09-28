@@ -22,7 +22,9 @@ from qamra_workbook.puzzles.base import rng
 from qamra_workbook.render.sections import SectionStyle, section_style
 from qamra_workbook.render.spec import BookSpec, PageSpec
 
-Frame = Literal["mission", "full"]  # mission: title + instruction + work area; full: the page lays itself out
+# mission: title + instruction + work area; full: the page lays itself out; sheet: an insert printed on its
+# own paper (sticker sheet, card stock), without section tab or page number
+Frame = Literal["mission", "full", "sheet"]
 
 
 @dataclass(frozen=True)
@@ -30,6 +32,8 @@ class Assets:
     pictures: PictureStore
     character: Path | None = None  # the cut-out front view (render.character.front_view)
     character_aspect: float = 0.47  # width / height
+    wave: Path | None = None  # the waving pose, when the sheet has one (render.character.pose)
+    wave_aspect: float = 0.6
 
 
 @dataclass
@@ -47,7 +51,7 @@ class PageContext:
 
     @property
     def style(self) -> SectionStyle:
-        return section_style(self.page.section)
+        return section_style(self.page.section, self.book.product)
 
     def rng(self, salt: str = "") -> random.Random:
         return rng(self.page.seed, salt)
@@ -56,7 +60,7 @@ class PageContext:
         return self.assets.pictures.markup(picture_id, style, css_class)
 
     def text(self, value: str) -> str:
-        return self.book.child.personalize(value)
+        return self.book.personalize(value, self.page)
 
 
 Builder = Callable[[PageContext], Built]

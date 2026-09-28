@@ -6,6 +6,7 @@ Both versions come from the same parts: the color picture paints bodies in their
 
 from __future__ import annotations
 
+import math
 import re
 from collections.abc import Mapping
 from dataclasses import dataclass, field
@@ -144,6 +145,23 @@ def p(d: str) -> str:
 
 def rect(x: float, y: float, w: float, h: float, rx: float = 0) -> str:
     return f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{rx}"/>'
+
+
+def scallop_d(cx: float, cy: float, rx: float, ry: float, bumps: int, bulge: float = 0.62) -> str:
+    """Path data of a cloud-like closed outline: `bumps` arcs around an ellipse (fleece, manes, seals)."""
+
+    def fmt(x: float) -> str:
+        return f"{x:.1f}".rstrip("0").rstrip(".")
+
+    turns = [math.radians(360 * i / bumps - 90) for i in range(bumps)]
+    pts = [(cx + math.cos(a) * rx, cy + math.sin(a) * ry) for a in turns]
+    d = f"M{fmt(pts[0][0])} {fmt(pts[0][1])}"
+    for i in range(bumps):
+        x1, y1 = pts[i]
+        x2, y2 = pts[(i + 1) % bumps]
+        radius = math.dist((x1, y1), (x2, y2)) * bulge
+        d += f" A{fmt(radius)} {fmt(radius)} 0 0 1 {fmt(x2)} {fmt(y2)}"
+    return d + " Z"
 
 
 def eyes(left: tuple[float, float], right: tuple[float, float], r: float = 3.6) -> tuple[Part, Part]:

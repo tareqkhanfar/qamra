@@ -1,0 +1,24 @@
+<div class="memory">
+  <div class="mem-top">
+    <div class="polaroid">
+      <span class="tape t1" aria-hidden="true"></span><span class="tape t2" aria-hidden="true"></span>
+      <div class="photo-slot">{{ icon('camera') }}<span>مكان صورة المغامرة</span></div>
+      <div class="pol-caption"></div>
+    </div>
+    <div class="mem-draw fcard"><span class="label">{{ icon('crayon') }}{{ d.draw_label }}</span></div>
+  </div>
+  <div class="mem-stars fcard">
+    <span class="label">{{ icon('star') }}{{ d.stars_q }}</span>
+    <div class="stars-row">{% for i in range(5) %}<span class="st">{{ d.star }}<small>{{ arabic_digits(loop.index) }}</small></span>{% endfor %}</div>
+  </div>
+  <div class="mem-with fcard">
+    <span class="label">{{ icon('family') }}{{ d.with_q }}</span>
+    <div class="who">{% for m in d.members %}<span class="who-chip"><span class="check-box"></span><span class="who-name" data-fit="8">{{ m }}</span></span>{% endfor %}</div>
+  </div>
+  <div class="mem-quote fcard">
+    <div class="label">{{ icon('talk') }}{{ d.quote_from }}:</div>
+    <div class="write-line"></div>
+    <div class="write-line"></div>
+    <div class="date-line"><small>التاريخ</small><div class="write-line"></div></div>
+  </div>
+</div>

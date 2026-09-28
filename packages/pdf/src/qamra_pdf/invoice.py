@@ -6,7 +6,8 @@ from decimal import Decimal
 from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-from playwright.async_api import async_playwright
+
+from qamra_pdf.document import html_to_pdf
 
 PKG_DIR = Path(__file__).parent
 FONTS_DIR = PKG_DIR / "fonts"
@@ -55,18 +56,4 @@ def invoice_html(spec: InvoiceSpec) -> str:
 
 
 async def render_invoice(spec: InvoiceSpec, out: Path) -> Path:
-    html = out.with_suffix(".html")
-    html.write_text(invoice_html(spec), encoding="utf-8")
-    try:
-        async with async_playwright() as pw:
-            browser = await pw.chromium.launch()
-            try:
-                page = await browser.new_page()
-                await page.goto(html.as_uri(), wait_until="load")
-                await page.evaluate("document.fonts.ready.then(() => true)")
-                await page.pdf(path=str(out), format="A4", print_background=True, prefer_css_page_size=True)
-            finally:
-                await browser.close()
-    finally:
-        html.unlink(missing_ok=True)
-    return out
+    return await html_to_pdf(invoice_html(spec), out)

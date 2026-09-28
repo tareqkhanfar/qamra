@@ -1,0 +1,32 @@
+<div class="sheet stickers">
+  <header class="sheet-head">
+    <div class="sheet-title">{{ mascot('mascot') }}<div><h1>{{ p.title }}</h1><p>{{ p.instruction }}</p></div></div>
+    <div class="sheet-owner"><small>ملصقات</small><b data-fit="11">{{ d.owner }}</b></div>
+  </header>
+  <section class="st-group">
+    <div class="label">{{ icon('passport') }}أختام الجواز: الشارات ومغامراتي</div>
+    <div class="st-badges">
+      {% for b in d.badges %}<div class="st-badge"><div class="st-seal">{{ b.svg }}{{ d.cut }}</div><span data-fit="6.5" style="color: {{ b.color }}">{{ b.label }}</span></div>{% endfor %}
+    </div>
+  </section>
+  <section class="st-group">
+    <div class="label">{{ icon('star') }}ملصقات المكافأة</div>
+    <div class="st-rewards">
+      {% for r in d.rewards %}<div class="st-reward {{ r.kind }}">{{ r.svg }}<b style="color: {{ r.ink }}">{{ r.word }}</b></div>{% endfor %}
+    </div>
+  </section>
+  <section class="st-group">
+    <div class="label">{{ icon('trophy') }}نجوم تحدي العائلة: نجمة لكل يوم</div>
+    <div class="st-days">{% for star in d.days %}<div class="st-day">{{ star }}</div>{% endfor %}</div>
+  </section>
+  <section class="st-group">
+    <div class="label">{{ icon('sun') }}رموز الروتين</div>
+    <div class="st-routine">
+      {% for r in d.routine %}<div class="st-rt" style="--rc: {{ r.color }}"><span class="rt-cut" aria-hidden="true"></span><span class="rt-ico">{{ icon(r.icon) }}</span><b data-fit="7">{{ r.label }}</b></div>{% endfor %}
+    </div>
+  </section>
+  <footer class="sheet-foot">
+    <span class="cut-key"><i></i>الخط الوردي خط القصّ للمطبعة (قصّ نصفي على ورق ملصقات مطفي)</span>
+    <span class="sheet-brand">{{ mascot('mascot') }}قمرة · مغامراتي مع عائلتي</span>
+  </footer>
+</div>

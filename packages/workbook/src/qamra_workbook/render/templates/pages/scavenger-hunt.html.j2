@@ -1,0 +1,27 @@
+<div class="hunt">
+  <div class="hunt-top fcard">
+    <div class="hunt-kid">{% if d.character %}<img src="{{ d.character }}" alt="">{% endif %}<span class="hunt-mag">{{ icon('magnifier') }}</span></div>
+    <div class="hunt-target">
+      <div class="label">{{ icon('magnifier') }}نبحث عن أشياء {{ d.shape_ar }}</div>
+      <div class="hunt-row">
+        <div class="hunt-shape">{{ d.shape }}</div>
+        <span class="hunt-like">مثل:</span>
+        {% for x in d.examples %}<div class="hunt-ex"><div class="hunt-ex-pic">{{ x.pic }}</div><small>{{ x.word }}</small></div>{% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="hunt-grid">
+    {% for c in d.cards %}
+    <div class="find fcard lvl{{ c.level }}">
+      <div class="find-head"><span class="check-box"></span><span class="pill-num">{{ c.n }}</span><span class="find-level">{{ stars(c.level) }}</span></div>
+      <div class="find-draw">{{ icon('pencil', 'ico find-hint') }}</div>
+      <div class="write-line"></div>
+    </div>
+    {% endfor %}
+    <div class="find count fcard">
+      <div class="label">{{ d.found_q }}</div>
+      <div class="count-dots">{% for n in d.count %}<span>{{ n }}</span>{% endfor %}</div>
+      <div class="count-hint">{{ icon('crayon') }}<span>{{ 'لوّني العدد' if book.child.gender == 'f' else 'لوّن العدد' }}</span></div>
+    </div>
+  </div>
+</div>

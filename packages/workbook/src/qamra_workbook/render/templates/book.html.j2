@@ -4,6 +4,7 @@
 <style>
 {% include "_base.css.j2" %}
 {% include "_pages.css.j2" %}
+{% if book.product == 'family' %}{% include "_family.css.j2" %}{% endif %}
 </style></head>
 <body>
 {% for p in pages %}

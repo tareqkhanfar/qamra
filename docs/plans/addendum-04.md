@@ -96,7 +96,7 @@ Spec: `docs/ADDENDUM-04.md`. The store also carries the workbook line from `docs
   - add-on toggles shown at the right moment;
   - cart (several books, edit, saved; guest);
   - checkout (shipping zone, COD) and order summary;
-  - the create flow steps the design already has (child → consent → photo → style → character → story → page review → preview → format), attached to cart items;
+  - the create flow steps the design already has (child → consent → photo → style → character → story → page review → preview → format), attached to cart items — built (`/create`, `/api/create`); live check on the test server pending;
   - order tracking;
   - invoice PDF;
   - order admin (statuses, notes, messages, partial reprint).

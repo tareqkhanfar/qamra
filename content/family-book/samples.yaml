@@ -1,0 +1,206 @@
+# «مغامراتي مع عائلتي» — the sample pages for approving the look (Addendum 7 §3.5).
+#
+#   uv run python -m qamra_workbook.render.samples --product family     # → out/samples/family/
+#
+# `page` uses the family plan's page schema (qamra_workbook.family.Page): a title, the child's instruction
+# (at most 10 words), the parent box (1–3 short lines) and params. `n` is the page's number in the book
+# (as in content/family-book/plan.yaml); a section-opener is the two-page spread n, n + 1. `activity`
+# carries the activity icons (A7 §5) and `skill` the skills line for grown-ups.
+# Placeholders: {child}, {adult} (the grown-up doing the activity), {member}, {family_name}, {city} and
+# {masc/fem} for the child. A page's params `adult` / `member` name who the mission is with (a role or a
+# name from `family`); otherwise the missions go round the family.
+# `inserts` are printed separately (sticker sheet, card stock), so they have no page number.
+
+product: family
+title_ar: مغامراتي مع عائلتي
+child:
+  name: ليان
+  gender: f
+  character_sheet: content/workbook/samples/sample-character.png  # AI-drawn sample, not a real child
+family:
+  name: الخطيب
+  city: رام الله
+  members:  # the figures stand in for the illustrated-family add-on; `scarf` is the family's choice
+    - {role: ماما, scarf: true}
+    - {role: بابا}
+    - {role: أخي, name: كرم}
+    - {role: ستّي, scarf: true}
+date: 2026-09-28
+
+samples:
+  - n: 3
+    section: front
+    page:
+      type: passport
+      title: "جواز سفر {المغامر الصغير/المغامرة الصغيرة}"
+      instruction: "{الصق/الصقي} ختمًا بعد كل مغامرة"
+      parent:
+        - "بعد كل مغامرة، {ساعدوه/ساعدوها} على لصق الختم من ورقة الملصقات، واحتفلوا معًا."
+      params:
+        stamps:
+          - {section: home, label: "{مستكشف/مستكشفة} البيت"}
+          - {section: market, label: "{بطل/بطلة} السوق"}
+          - {section: nature, label: "{صديق/صديقة} الطبيعة"}
+          - {section: feelings, label: "قلب شجاع"}
+          - {section: games, label: "{نجم/نجمة} الألعاب"}
+
+  - n: 6
+    section: home
+    page:
+      type: section-opener
+      title: بيتي مدرسة
+      instruction: >-
+        في بيت عائلة {family_name} كنوز صغيرة مخبّأة في كل زاوية: أشكال وألوان وأشياء نعدّها.
+        هيّا يا {child}، {جهّز/جهّزي} عينيك الذكيتين، ولنبدأ المغامرة!
+      params:
+        adventure: 1
+        badge: "{مستكشف/مستكشفة} البيت"
+        scene: house
+        inside:
+          - {icon: magnifier, text: نبحث عن كنوز}
+          - {icon: abacus, text: نعدّ ونقارن}
+          - {icon: crayon, text: نرسم ما وجدنا}
+
+  - n: 8
+    section: home
+    skill: "الملاحظة والتركيز · العدّ والحساب البسيط"
+    activity: {where: home, together: true, minutes: 10, challenge: true}
+    page:
+      type: scavenger-hunt
+      title: صيد الدوائر في المطبخ
+      instruction: "{ابحث/ابحثي} عن أشياء دائرية في المطبخ"
+      parent:
+        - "تجوّلوا مع {child} في المطبخ، وسمّوا معًا كل شيء دائري."
+        - "اسألوا: أيّها أكبر؟ أيّها أصغر؟ كم دائرة وجدنا؟"
+        - "امدحوا الملاحظة: «عيناك عينا {محقّق صغير/محقّقة صغيرة}!»"
+      params: {shape: circle, find: 3, challenge: 2, examples: [plate, orange, clock]}
+
+  - n: 15
+    section: home
+    page:
+      type: memory-page
+      title: ذكرى اليوم
+      instruction: "{الصق/الصقي} صورة أو {ارسم/ارسمي} مغامرتنا"
+      parent:
+        - "اكتبوا ما قاله {child}، وأضيفوا كلمة من {adult}."
+      params: {adult: ستّي}
+
+  - n: 18
+    section: market
+    skill: "العدّ والحساب البسيط · مهارات الحياة"
+    activity: {where: outside, together: true, minutes: 15, challenge: true}
+    page:
+      type: shopping-list
+      title: قائمة مشترياتي
+      instruction: "{ارسم/ارسمي} أو {اكتب/اكتبي} ما نحتاجه من السوق"
+      parent:
+        - "اكتبوا القائمة مع {child} قبل الذهاب إلى سوق {city}."
+        - "في السوق، يدًا بيد، {دعوه/دعوها} {يجد/تجد} الأشياء {ويعدّها/وتعدّها}."
+        - "اسألوا: هل هذا صحي؟ هل نحتاجه فعلًا؟"
+      params: {rows: 4, products: [apple, milk, bread, candy, carrot, soda], adult: بابا}
+
+  - n: 30
+    section: chef
+    skill: "مهارات الحياة · العدّ · التعاون مع الأهل"
+    activity: {where: home, together: true, minutes: 20, challenge: true}
+    page:
+      type: recipe-steps
+      title: كرات اللبنة
+      instruction: "{رقّم/رقّمي} خطوات الطبخ من ١ إلى ٤"
+      parent:
+        - "{دعوه/دعوها} {يعدّ/تعدّ} الملاعق {ويدحرج/وتدحرج} الكرات {بيديه/بيديها}."
+        - "سمّوا المكوّنات معًا: لبنة، زعتر، زيت زيتون."
+        - "صوّروا الطبق مع {adult}، والصقوا الصورة في «ذكرى اليوم»."
+      params:
+        adult: ستّي
+        ingredients:
+          - {picture: labneh, name: لبنة, count: 4}
+          - {picture: zaatar, name: زعتر, count: 3}
+          - {picture: olive-oil, name: زيت زيتون, count: 2}
+        steps:
+          - {picture: wash, text: نغسل أيدينا}
+          - {picture: roll, text: نصنع كرات صغيرة}
+          - {picture: dip, text: نغمّسها بالزعتر}
+          - {picture: oil, text: نضيف زيت الزيتون}
+        shown: [3, 1, 4, 2]
+        safety:
+          - {icon: drop, text: نغسل أيدينا قبل أن نبدأ}
+          - {icon: knife, text: السكين والنار للكبار فقط}
+          - {icon: alert, text: "اسألوا عن الحساسية (الحليب)"}
+
+  - n: 54
+    section: feelings
+    skill: "المشاعر والتواصل · التعبير والتحدّث"
+    activity: {where: home, together: true, minutes: 10, challenge: true}
+    page:
+      type: feelings-thermometer
+      title: ميزان مشاعري
+      instruction: "{لوّن/لوّني} الميزان بقدر شعورك الآن"
+      parent:
+        - "كل المشاعر مقبولة: سمّوا الشعور مع {child} دون لوم أو استعجال."
+        - "اسألوا: ماذا يساعدك عندما يكبر شعورك؟"
+        - "جرّبوا معًا نفَسًا بطيئًا، كأننا ننفخ بالونًا."
+      params: {adult: ماما}
+
+  - n: 110
+    section: back
+    activity: {where: home, together: true, minutes: 15, challenge: false}
+    page:
+      type: seven-day-challenge
+      title: تحدي العائلة الكبير
+      instruction: "{لوّن/لوّني} نجمة كل يوم {تنجزه/تنجزينه} مع العائلة"
+      parent:
+        - "اختاروا وقتًا ثابتًا كل يوم، ولو عشر دقائق."
+        - "بعد كل يوم، {دعوه/دعوها} {يلوّن/تلوّن} النجمة {ويلصق/وتلصق} ملصقًا."
+        - "في اليوم السابع، احتفلوا معًا بالمكافأة!"
+      params:
+        member: ستّي
+        days:
+          - {icon: chef, text: نطبخ معًا}
+          - {icon: book, text: نقرأ قصة}
+          - {icon: tree, text: نمشي في الحيّ}
+          - {icon: sprout, text: نزرع بذرة}
+          - {icon: phone, text: "نتصل بـ{member}"}
+          - {icon: dice, text: ليلة ألعاب}
+          - {icon: heart, text: نشكر بعضنا}
+        reward: مكافأة عائلتنا
+        ideas: "مثلًا: نزهة، أكلتنا المفضّلة، ليلة حكايات"
+
+  - n: 112
+    section: back
+    page:
+      type: certificate-family
+      title: "شهادة {المغامر/المغامرة}"
+      instruction: "{لوّن/لوّني} النجوم {واحتفل/واحتفلي} مع عائلتك"
+      params:
+        line: "{أنهى/أنهت} كل مغامرات «مغامراتي مع عائلتي»"
+
+inserts:
+  - n: 0
+    section: front
+    page:
+      type: badge-sticker-sheet
+      title: ورقة الملصقات
+      instruction: "{الصق/الصقي} كل ختم في جوازك"
+      params:
+        stamps:  # each adventure's stamp (the plan's section badges); one that is also a badge shares it
+          - {section: home, label: "{مستكشف/مستكشفة} البيت"}
+          - {section: market, label: "{بطل/بطلة} السوق"}
+          - {section: chef, label: "{طبّاخ صغير/طبّاخة صغيرة}"}
+          - {section: day, label: "{صديق/صديقة} الوقت"}
+          - {section: talk, label: "{حكّاء صغير/حكّاءة صغيرة}"}
+          - {section: feelings, label: "قلب شجاع"}
+          - {section: responsible, label: "{طفل مسؤول/طفلة مسؤولة}"}
+          - {section: nature, label: "{صديق/صديقة} الطبيعة"}
+          - {section: jobs, label: "{صحفي صغير/صحفية صغيرة}"}
+          - {section: shop, label: "{تاجر صغير/تاجرة صغيرة}"}
+          - {section: games, label: "{نجم/نجمة} الألعاب"}
+          - {section: act, label: "{فنان/فنانة}"}
+
+  - n: 0
+    section: shop
+    page:
+      type: play-money
+      title: نقود قمرة للّعب
+      instruction: "{قصّ/قصّي} النقود مع {adult} على الخط المتقطّع"
+      params: {adult: بابا, notes: [5, 5, 10, 10, 20, 20], coins: [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2], price_tags: 5}

@@ -9,7 +9,7 @@ FILL = re.compile(r'fill="(#[0-9A-Fa-f]{6})"')
 
 
 def test_library_size_and_tags() -> None:
-    assert 25 <= len(PICTURES) <= 35
+    assert 25 <= len(PICTURES) <= 400  # placeholders now; the approved library is 300–400 pictures (A5 §4)
     for pic in PICTURES.values():
         assert pic.word_ar and pic.word_en and pic.category
         assert pic.first_letter_en == pic.word_en[0].upper()

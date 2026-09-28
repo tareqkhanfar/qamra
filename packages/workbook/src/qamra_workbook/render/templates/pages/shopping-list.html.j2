@@ -1,0 +1,41 @@
+<div class="shop">
+  <div class="shop-top">
+    <div class="notepad fcard">
+      <div class="notepad-rings" aria-hidden="true">{% for i in range(7) %}<span></span>{% endfor %}</div>
+      <div class="notepad-head">
+        <div class="label">{{ icon('check-list') }}قائمتي</div>
+        <span class="notepad-count">كم؟</span>
+      </div>
+      {% for r in d.rows %}
+      <div class="list-row">
+        <span class="check-box"></span>
+        <div class="list-draw"></div>
+        <div class="list-write"><div class="write-line"></div></div>
+        <div class="list-count">{% for i in range(d.count_dots) %}<span></span>{% endfor %}</div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="shop-side">
+      <div class="market-sign"><span class="awning" aria-hidden="true"></span><b data-fit="9">سوق {{ d.city }}</b></div>
+      <div class="shop-scene">
+        {% if d.character %}<img class="shop-kid" src="{{ d.character }}" alt="">{% endif %}
+        <div class="shop-bag">{{ d.bag }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="choose fcard">
+    <div class="choose-head">
+      <div class="label">{{ icon('cart') }}{{ d.choose }}</div>
+      <div class="legend">{% for c in d.choices %}<span class="lg" style="--cc: {{ c.color }}"><i>{{ icon(c.icon) }}</i>{{ c.label }}</span>{% endfor %}</div>
+    </div>
+    <div class="products">
+      {% for x in d.products %}
+      <div class="product">
+        <div class="product-pic">{{ x.pic }}</div>
+        <small>{{ x.word }}</small>
+        <div class="chips">{% for c in d.choices %}<span class="cc" style="--cc: {{ c.color }}">{{ icon(c.icon) }}</span>{% endfor %}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>

@@ -125,6 +125,18 @@ _DEFS: list[SettingDef] = [
         max=90,
     ),
     SettingDef(
+        "bulk_margin_pct",
+        "pricing",
+        Kind.number,
+        45,
+        "هامش أسعار الكميات (%)",
+        "Bulk price margin (%)",
+        "لأسعار النسخ المتعددة: التكلفة حسب شريحة المطبعة مع هذا الهامش (ولا يقلّ عن الحد الأدنى).",
+        "Multi-copy prices: the printer's tier cost plus this margin (never under the floor).",
+        min=0,
+        max=90,
+    ),
+    SettingDef(
         "cod_cost_ils",
         "pricing",
         Kind.money,

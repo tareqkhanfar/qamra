@@ -1,0 +1,33 @@
+<div class="recipe">
+  <div class="ingredients fcard">
+    <div class="label">{{ icon('spoon') }}{{ d.count_label }}</div>
+    <div class="ing-row">
+      {% for i in d.ingredients %}
+      <div class="ing">
+        <div class="ing-pic">{{ i.pic }}</div>
+        <div class="ing-text">
+          <b>{{ i.name }}</b>
+          <div class="spoons">{% for k in range(i.count) %}{{ icon('spoon') }}{% endfor %}</div>
+        </div>
+        <div class="ing-box"><small>كم؟</small><span class="box">{% if solved %}{{ arabic_digits(i.count) }}{% endif %}</span></div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="steps-head label">{{ icon('chef') }}{{ d.steps_label }}</div>
+  <div class="steps">
+    {% for c in d.cards %}
+    <div class="step fcard">
+      <span class="step-num">{% if solved %}{{ arabic_digits(c.n) }}{% endif %}</span>
+      <div class="step-pic">{{ c.pic }}</div>
+      <div class="step-text">{{ c.text }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="safety">
+    <div class="safety-tag">{{ icon('shield') }}<span>الأمان أولًا</span></div>
+    <div class="safety-items">
+      {% for s in d.safety %}<div class="safety-item"><span class="safety-ico">{{ icon(s.icon) }}</span><span>{{ s.text }}</span></div>{% endfor %}
+    </div>
+  </div>
+</div>

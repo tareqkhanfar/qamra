@@ -1,0 +1,17 @@
+<div class="week">
+  <div class="board-wrap">
+    {{ d.board }}
+    {% for s in d.stones %}
+    <span class="day-flag" style="left: {{ s.x }}mm; top: {{ s.y - 19 }}mm; --dc: {{ s.color }}">اليوم {{ d.days[loop.index0] }}</span>
+    <div class="stone-cap" style="left: {{ s.x }}mm; top: {{ s.y + 14 }}mm"><b data-fit="8">{{ s.text }}</b>{{ stars(1, 'cap-star', '#FFFFFF', '#E2A32A') }}</div>
+    {% endfor %}
+  </div>
+  <div class="reward fcard">
+    <span class="reward-ico">{{ d.gift }}</span>
+    <div class="reward-body">
+      <div class="label">{{ d.reward }}:</div>
+      <div class="write-line"></div>
+      {% if d.ideas %}<small>{{ d.ideas }}</small>{% endif %}
+    </div>
+  </div>
+</div>

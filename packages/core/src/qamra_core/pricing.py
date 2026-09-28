@@ -251,3 +251,47 @@ def quote(
         total=after + shipping + cod,
         notes=notes,
     )
+
+
+# ---- price by quantity (Addendum 7 §3.9 and §8) --------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class QuantityPrice:
+    qty: int
+    unit_cost: Decimal  # the printer's tier + the other unit costs, in ILS
+    unit_price: Decimal
+    total: Decimal
+    margin_pct: Decimal
+
+
+def tier_cost(tiers: Sequence[tuple[int, Decimal]], qty: int) -> Decimal | None:
+    """The printer's price per copy for a run of `qty`: the tier with the highest minimum it reaches."""
+    reached = [t for t in tiers if qty >= t[0]]
+    return max(reached)[1] if reached else None
+
+
+def quantity_prices(
+    retail: Decimal,
+    print_tiers: Sequence[tuple[int, Decimal]],
+    other_unit_cost: Decimal,
+    quantities: Sequence[int],
+    *,
+    bulk_margin_pct: Decimal,
+    floor_pct: Decimal,
+) -> list[QuantityPrice]:
+    """One copy sells at retail. From 2 copies up, the price per copy is the tier's cost plus the bulk margin,
+    rounded up to a whole shekel, never above retail and never below the margin floor."""
+    out = []
+    for qty in quantities:
+        printing = tier_cost(print_tiers, qty)
+        if printing is None:
+            raise ValueError(f"no print cost tier covers {qty} copies")
+        cost = r2(printing + other_unit_cost)
+        with_margin = (cost / (1 - bulk_margin_pct / 100)).to_integral_value(rounding="ROUND_CEILING")
+        at_floor = (cost / (1 - floor_pct / 100)).to_integral_value(rounding="ROUND_CEILING")
+        price = retail if qty == 1 else min(retail, with_margin)
+        price = r2(max(price, at_floor))
+        margin = ((price - cost) / price * 100).quantize(Decimal("0.1")) if price else Decimal("0")
+        out.append(QuantityPrice(qty, cost, price, r2(price * qty), margin))
+    return out

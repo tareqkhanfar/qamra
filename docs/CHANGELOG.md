@@ -1,5 +1,21 @@
 # Changelog
 
+## Addendum 7: «مغامراتي مع عائلتي», the proposal package (2026-09-28)
+
+- **The plan** (`content/family-book/plan.yaml`), checked by `python -m qamra_workbook.family check`:
+  - 112 pages, 12 adventures and 75 activities, each with a simple level ⭐ and a challenge ⭐⭐;
+  - a sticker sheet and two card-stock sheets;
+  - 9 designed sample pages plus 2 insert sheets.
+- **The proposal:**
+  - `docs/family-book/proposal.md` and a designed PDF (`scripts/family_proposal.py --pdf`);
+  - it covers the concept, contents, activities, page counts, samples, size, paper, binding and a price-by-quantity table.
+- **Store:**
+  - a new `family` line with the printed wire-o book (89 ₪) and the printable PDF (35 ₪), inactive until approved;
+  - printer cost tiers per variant;
+  - the family-characters extra;
+  - the gift box, sticker sheet and crayon kit are now offered with it too.
+- **PDF helper:** `qamra_pdf.html_to_pdf()` for any A4 document; the invoice uses it.
+
 ## Addendum 4, step 2 (part 2): the parent create flow (2026-09-28)
 
 - **Create a book on a phone** (`/create`, design Create1–Create9):

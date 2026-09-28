@@ -1,8 +1,9 @@
 """Section styles: the color, icon, grayscale pattern and edge position of each section's tab.
 
 The journey sections (Addendum 6 §4) and the «دوسية التأسيس» subjects (Addendum 5 §4) share one table, so
-both books navigate the same way. Tabs sit on the outer edge at a height set by `slot` (a thumb index),
-and their pattern keeps them apart in black-and-white print.
+both books navigate the same way; «مغامراتي مع عائلتي» (Addendum 7 §4) has its own, in its adventures'
+order. Tabs sit on the outer edge at a height set by `slot` (a thumb index over the book's `slots`), and
+their pattern keeps them apart in black-and-white print.
 """
 
 from __future__ import annotations
@@ -20,6 +21,7 @@ class SectionStyle:
     deep: str  # text on the tint
     pattern: str  # a key of PATTERNS
     slot: int  # thumb-index position, 0 at the top
+    slots: int = 14  # positions in this book's thumb index
 
 
 # In the journey's order (content/journey/plan.yaml), so the tabs step down the edge section by section.
@@ -39,7 +41,9 @@ _TABLE = (
     ("games", "ألعاب التفكير", "puzzle", "#6B6ECF", "#E8E8FA", "#383B96", "diamonds"),
     ("finale", "المراجعة والشهادة", "star", "#E2A32A", "#FCEFD2", "#8A5A08", "stars"),
 )
-SECTIONS: dict[str, SectionStyle] = {row[0]: SectionStyle(*row, slot=i) for i, row in enumerate(_TABLE)}
+SECTIONS: dict[str, SectionStyle] = {
+    row[0]: SectionStyle(*row, slot=i, slots=len(_TABLE)) for i, row in enumerate(_TABLE)
+}
 # «دوسية التأسيس» subjects and other names that share a journey style
 ALIASES = {
     "pen": "hand",
@@ -49,21 +53,51 @@ ALIASES = {
     "coloring": "smart-coloring",
 }
 SLOTS = len(_TABLE)
+
+# «مغامراتي مع عائلتي» (Addendum 7 §4): the front pages, the twelve adventures in the book's order, the back
+# pages. Cheerful and far apart on the color wheel; the pattern tells neighbours apart in grayscale. Names
+# follow content/family-book/plan.yaml and may carry {masc/fem} variants (personalized on the page).
+_FAMILY_TABLE = (
+    ("front", "البداية", "passport", "#3C468F", "#E3E6F5", "#242A63", "sparkle"),
+    ("home", "بيتي مدرسة", "home", "#F08A3E", "#FDE9D8", "#94470F", "diagonal"),
+    ("market", "مغامرة السوق", "cart", "#2FA36B", "#DAF1E4", "#17643F", "dots"),
+    ("chef", "{الشيف الصغير/الشيف الصغيرة}", "chef", "#E4675A", "#FBE1DD", "#962C22", "rings"),
+    ("day", "يومي الجميل", "sun-moon", "#F2B21E", "#FDF0CC", "#855A00", "waves"),
+    ("talk", "احكي لي", "talk", "#2E9FD6", "#DCEFFA", "#155F87", "zigzag"),
+    ("feelings", "مشاعري", "heart", "#E4769D", "#FBE3EC", "#962A52", "checks"),
+    ("responsible", "{أنا مسؤول/أنا مسؤولة}", "check-list", "#23A094", "#D8F0ED", "#11635B", "backslash"),
+    ("nature", "{مستكشف/مستكشفة} الطبيعة", "leaf", "#5DAF4A", "#E2F2DC", "#2F6A22", "vertical"),
+    ("jobs", "مهن عائلتي", "briefcase", "#8C6CCB", "#ECE6F8", "#4E3590", "grid"),
+    ("shop", "متجري الصغير", "shop", "#9BBF2E", "#EEF5D6", "#566B0A", "horizontal"),
+    ("games", "ليلة الألعاب العائلية", "dice", "#4F79D9", "#E3EAFA", "#274A9C", "plus"),
+    ("act", "نمثّل ونحكي", "mask", "#B45FC4", "#F3E4F6", "#6B2A7A", "diamonds"),
+    ("back", "الختام", "trophy", "#D9486B", "#FAE0E6", "#8E2240", "stars"),
+)
+FAMILY: dict[str, SectionStyle] = {
+    row[0]: SectionStyle(*row, slot=i, slots=len(_FAMILY_TABLE)) for i, row in enumerate(_FAMILY_TABLE)
+}
+# each product's table; the workbooks share the journey's
+BOOK_SECTIONS: dict[str, dict[str, SectionStyle]] = {
+    "journey": SECTIONS,
+    "foundation": SECTIONS,
+    "family": FAMILY,
+}
 TAB_H = 26.0  # mm
 TAB_MARGIN = 18.0  # mm from the trim at the top and bottom of the thumb index
 
 
 def tab_top(style: SectionStyle, trim_h: float, bleed: float) -> float:
     """Top of the section's tab from the page edge: the tabs step down the edge like a thumb index."""
-    step = (trim_h - 2 * TAB_MARGIN - TAB_H) / (SLOTS - 1)
+    step = (trim_h - 2 * TAB_MARGIN - TAB_H) / (style.slots - 1)
     return bleed + TAB_MARGIN + style.slot * step
 
 
-def section_style(section_id: str) -> SectionStyle:
-    key = ALIASES.get(section_id, section_id)
-    if key not in SECTIONS:
-        raise KeyError(f"no style for section {section_id!r}; add it to render.sections.SECTIONS")
-    return SECTIONS[key]
+def section_style(section_id: str, product: str = "journey") -> SectionStyle:
+    table = BOOK_SECTIONS.get(product, SECTIONS)
+    key = ALIASES.get(section_id, section_id) if table is SECTIONS else section_id
+    if key not in table:
+        raise KeyError(f"no style for section {section_id!r} ({product}); add it to render.sections")
+    return table[key]
 
 
 # Tab patterns: white marks over the tab color, one per section, readable in grayscale. Each is drawn in a

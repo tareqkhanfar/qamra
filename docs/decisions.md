@@ -2,6 +2,28 @@
 
 Newest first. Each entry: date — decision — why.
 
+## 2026-09-28 — Addendum 7: «مغامراتي مع عائلتي» (proposal only)
+
+- **The third activity book reuses the workbook engine.** `qamra_workbook.family` holds only the plan schema, its rules and the proposal text; pages, pictures, the PDF pipeline and the samples all come from the shared engine. The unit is the *activity* (a goal, the child's part, the family's part, materials, time, levels, safety), and each activity has one or more pages.
+- **The book is 112 pages** (the range is 96–128): 5 front pages, 12 adventures and 3 back pages.
+  - Each adventure is a two-page opening spread, its activities, then «ذكرى اليوم». Every adventure has an even length, so each opening spread starts on an even page.
+  - The passport is on page 3, and the 7-day challenge and the certificate close the book.
+  - «ذكرى اليوم» is the memory page after each adventure (item 13 of the brief), not a separate section.
+  - The adventures keep the brief's order. Moving the nature adventure earlier is an open question for Tareq.
+- **The checker enforces the addendum**, including:
+  - no identical page type on consecutive pages;
+  - child instructions of 10 words or fewer and parent boxes of 3 lines or fewer;
+  - every skill in at least 3 activities;
+  - a safety note with an allergy reminder on every recipe and no nuts or raw eggs;
+  - a supervision note outdoors.
+  - **Families differ:** instructions and parent boxes never contain a fixed «ماما» or «بابا». Missions say «مع {adult}» or name `{member}`, from the family list the parent fills in.
+- **Insert sheets are separate print files:** a sticker sheet and two card-stock sheets. Play money, role cards, finger puppets and the badge stickers never appear as book pages.
+- **Price by quantity comes from the store.** The printed variant has `print_cost_tiers` (price per copy by minimum quantity, placeholders until the printer's quote), and `quantity_prices()` in `qamra_core.pricing` builds the table:
+  - one copy sells at retail;
+  - from 2 copies, the price is the tier cost plus the other unit costs, divided by (1 − bulk margin); `bulk_margin_pct` is 45% in the settings;
+  - the result is rounded up to a whole shekel, never above retail, and never under the margin floor.
+- **The product is seeded inactive** (`active: false` in the catalog) until Tareq approves the proposal and the printer's prices are in.
+
 ## 2026-09-28 — Addenda 4–6: the store, and the workbook engine
 
 Full reasoning is in `docs/plans/addendum-04.md` §2.

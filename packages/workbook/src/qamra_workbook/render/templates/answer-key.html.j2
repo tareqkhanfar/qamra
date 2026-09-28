@@ -5,6 +5,7 @@
 {% include "_base.css.j2" %}
 {% include "_pages.css.j2" %}
 {% include "_answer-key.css.j2" %}
+{% if book.product == 'family' %}{% include "_family.css.j2" %}{% endif %}
 </style></head>
 <body>
 {% for sheet in sheets %}
@@ -21,7 +22,7 @@
         <div class="key-text">
           <div class="key-page"><span class="key-folio" style="background: {{ p.style.tint }}; color: {{ p.style.deep }}">{{ p.folio }}</span>
             <span class="key-name">{{ p.title }}</span></div>
-          <div class="key-meta">المحطة {{ arabic_digits(p.spec.stage) }} · {{ p.style.name_ar }}</div>
+          <div class="key-meta">{% if p.spec.stage %}المحطة {{ arabic_digits(p.spec.stage) }} · {% endif %}{{ p.section_name or p.style.name_ar }}</div>
           <ul>{% for line in p.built.answer %}<li>{{ line }}</li>{% endfor %}</ul>
         </div>
       </article>
