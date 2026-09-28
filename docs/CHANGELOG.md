@@ -1,5 +1,19 @@
 # Changelog
 
+## Addendum 4, step 5: catalog, margins, price simulator and reports (2026-09-28)
+
+- **Admin → الكتالوج والأسعار:**
+  - every product (on sale or not), extra and delivery zone, with its price, what it costs us and the margin in ₪ and %, in red under the margin floor;
+  - edit prices, costs and on/off;
+  - create coupons and seasonal sales, switch offers off, change bundle discounts;
+  - every edit is audited.
+- **Price simulator:** any basket (books, extras, delivery, coupon, ₪ or JD) through the store's own pricing, with our cost and margin.
+- **Admin → التقارير:**
+  - orders, revenue, average order, margin and orders under the floor;
+  - sales by product line, product, story, extra and art style;
+  - the extras attach rate, preview-to-purchase per line, parents vs kindergartens, and the daily AI cost;
+  - orders and items as CSV files that open in Excel with Arabic intact.
+
 ## Addendum 4, step 6: the self-hosted GPU option, prepared and off (2026-09-28)
 
 - **`ComfyImageProvider`:** talks to our own ComfyUI server over HTTP (upload the references, queue the workflow, fetch the image, forget the job).

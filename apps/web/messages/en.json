@@ -601,7 +601,8 @@
       "metrics": "Cost & conversion",
       "samples": "Sample books",
       "printCosts": "Printer prices",
-      "catalog": "Catalog & prices"
+      "catalog": "Catalog & prices",
+      "reports": "Reports"
     },
     "soon": "Soon",
     "save": "Save",
@@ -1178,5 +1179,30 @@
     "total": "Customer pays",
     "ourCost": "Our cost",
     "belowFloorBasket": "This basket is under the margin floor ({floor})."
+  },
+  "reports": {
+    "title": "Reports",
+    "lastDays": "Last {n} days",
+    "ordersCsv": "Orders CSV",
+    "itemsCsv": "Items sold CSV",
+    "orders": "Orders",
+    "revenue": "Revenue",
+    "aov": "Average order",
+    "margin": "Margin",
+    "attach": "Extras attach rate",
+    "belowFloor": "{n} orders in this period are under the margin floor.",
+    "byLine": "By product line",
+    "byProduct": "By product",
+    "byTheme": "By story",
+    "byAddon": "Extras",
+    "byStyle": "Art styles",
+    "funnel": "Preview to purchase",
+    "b2bVsB2c": "Kindergartens and parents",
+    "b2b": "Kindergartens & organizations",
+    "b2c": "Parents",
+    "aiCost": "Daily AI cost ($)",
+    "item": "Item",
+    "qty": "Qty",
+    "none": "No data in this period."
   }
 }

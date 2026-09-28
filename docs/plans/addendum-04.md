@@ -117,7 +117,7 @@ Spec: `docs/ADDENDUM-04.md`. The store also carries the workbook line from `docs
   - template generation, per-page regeneration and locking, with one-time costs logged;
   - bulk actions (duplicate a theme to a style, translate, publish, schedule);
   - roles in the UI; audit log viewer.
-- [ ] **Step 5 — Margins and reports**
+- [x] **Step 5 — Margins and reports** — built 2026-09-28 (Excel export = UTF-8 CSV that Excel opens; B2B price-list editing still to add); API tests wait for the test database
   - catalog admin: products, variants, prices, costs, add-ons, bundles, coupons, sales, shipping, price lists;
   - price, cost and margin (₪ and %) per product and order, with red warnings;
   - price simulator;
