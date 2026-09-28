@@ -68,9 +68,9 @@ async def test_the_family_book_waits_for_approval_with_its_print_tiers(adb: Asyn
     family = (
         await adb.execute(select(CatalogProduct).where(CatalogProduct.slug == "family-adventures"))
     ).scalar_one()
-    assert family.active is False  # Addendum 7 stops at the proposal
+    assert family.active is False  # on sale once the book is designed and the printer's prices are in
     wireo = (await adb.execute(select(Variant).where(Variant.sku == "family-wireo"))).scalar_one()
     assert [t["min_qty"] for t in wireo.print_cost_tiers] == [1, 10, 50, 100, 500]
-    assert wireo.print_cost_tiers[2] == {"min_qty": 50, "unit_ils": "30.00"}
+    assert wireo.print_cost_tiers[2] == {"min_qty": 50, "unit_ils": "30.00", "estimated": True}  # ⚠
     gift = (await adb.execute(select(AddOn).where(AddOn.slug == "gift-box"))).scalar_one()
     assert "family" in gift.lines

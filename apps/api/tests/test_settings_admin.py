@@ -29,6 +29,7 @@ async def test_admin_reads_grouped_settings_with_examples(client: AsyncClient, a
         "site",
         "ai_keys",
         "ai_models",
+        "self_hosted",
         "quality",
         "print",
         "notifications",
