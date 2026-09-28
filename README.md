@@ -12,13 +12,16 @@ Requirements: Docker with Compose v2.
 
 ```bash
 cp .env.example .env        # defaults work locally; set real secrets anywhere else
-docker compose up --build   # → http://localhost:3000 (ar) · API docs http://localhost:8000/api/docs
+docker compose up --build   # → http://localhost:3000 (ar) · API docs http://localhost:3000/api/docs
 ```
 
-| service | what | port (127.0.0.1) |
+To open it to the network (e.g. a test server), set `QAMRA_BIND=0.0.0.0` and `QAMRA_WEB_PORT` in `.env`. Only the nginx `edge` is exposed; it sets the real client IP, which the login rate limits depend on. Without TLS, traffic (passwords included) is plain HTTP, so use test accounts only until HTTPS is set up (Phase 6: Cloudflare + Nginx).
+
+| service | what | published port |
 |---|---|---|
-| `web` | Next.js (App Router, RTL, ar/en). `/api/*` is proxied to the api | `QAMRA_WEB_PORT` 3000 |
-| `api` | FastAPI: auth, health (later: books, orders…) | `QAMRA_API_PORT` 8000 |
+| `edge` | nginx, the only entry point: `/api/*` → api, everything else → web; sets the real client IP | `QAMRA_BIND`:`QAMRA_WEB_PORT` 3000 |
+| `web` | Next.js (App Router, RTL, ar/en) | — |
+| `api` | FastAPI: auth, health (later: books, orders…) | `QAMRA_API_PORT` 8000 (debug) |
 | `worker` / `cron` | RQ worker (generation, pdf, maintenance) and scheduler (privacy cleanup every 15 min) | — |
 | `migrate` | one-shot `alembic upgrade head` | — |
 | `postgres` | Postgres 16 (`qamra` + `qamra_test`) | `QAMRA_PG_PORT` 5433 |

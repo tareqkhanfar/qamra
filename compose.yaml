@@ -1,5 +1,6 @@
-# Qamra local stack: `docker compose up --build` → http://localhost:${QAMRA_WEB_PORT:-3000}
-# Every published port is bound to 127.0.0.1. Secrets come from .env (see .env.example).
+# Qamra stack: `docker compose up --build` → http://localhost:${QAMRA_WEB_PORT:-3000}
+# `edge` (nginx) is the only entry point; set QAMRA_BIND=0.0.0.0 to open it on all interfaces.
+# Every other published port stays on 127.0.0.1. Secrets come from .env (see .env.example).
 name: qamra
 
 x-app-env: &app-env
@@ -132,9 +133,23 @@ services:
     image: qamra-web:dev
     environment:
       API_INTERNAL_URL: http://api:8000
-    ports:
-      - "127.0.0.1:${QAMRA_WEB_PORT:-3000}:3000"
     depends_on:
+      api: { condition: service_healthy }
+    restart: unless-stopped
+
+  edge:
+    image: nginx:1.30-alpine
+    volumes:
+      - ./infra/nginx/qamra.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "${QAMRA_BIND:-127.0.0.1}:${QAMRA_WEB_PORT:-3000}:80"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+    depends_on:
+      web: { condition: service_healthy }
       api: { condition: service_healthy }
     restart: unless-stopped
 
