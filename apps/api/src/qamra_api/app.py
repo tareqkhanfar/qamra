@@ -13,6 +13,7 @@ from qamra_api.deps import require_client_header
 from qamra_api.errors import install_error_handlers
 from qamra_api.logging import RequestLogMiddleware
 from qamra_api.routers.admin_books import router as admin_books_router
+from qamra_api.routers.admin_catalog import router as admin_catalog_router
 from qamra_api.routers.admin_orders import router as admin_orders_router
 from qamra_api.routers.admin_print_costs import router as admin_print_costs_router
 from qamra_api.routers.admin_self_hosted import router as admin_self_hosted_router
@@ -89,6 +90,7 @@ def create_app(settings: ApiSettings | None = None, *, manage_resources: bool = 
     app.include_router(store_router)
     app.include_router(admin_orders_router)
     app.include_router(create_router)
+    app.include_router(admin_catalog_router)
     app.include_router(admin_print_costs_router)
     app.include_router(admin_self_hosted_router)
     return app

@@ -141,6 +141,7 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "The order can't move to that status from where it is.",
     ),
     "reprint_needs_items": ("اختاروا ما يُعاد طبعه من الطلب.", "Choose which items to reprint."),
+    "coupon_exists": ("يوجد كوبون بهذا الرمز.", "A coupon with this code already exists."),
     "bulk_price_pending": (
         "للطلبات من 10 نسخ فأكثر من هذا الكتاب، تواصلوا معنا لعرض سعر خاص.",
         "For 10 copies or more of this book, contact us for a special quote.",
