@@ -2,6 +2,28 @@
 
 Newest first. Each entry: date — decision — why.
 
+## 2026-09-29 — Addendum 9 store pages: routes, quiz rules, and where the pages differ from the design
+
+- **Routes:** the story page is `/stories/[slug]` and the list is `/stories`. `/themes` and `/themes/[slug]` answer 308 to them (next.config redirects), and every internal link was updated.
+- **Quiz rules are one JSON row in `app_settings` (key `quiz_rules`), not a new table.**
+  - They are an ordered list, edited as a whole, so a table and a migration buy nothing, and other work adds migrations at the same time.
+  - The row sits outside the settings registry: the settings screen ignores it, and the rules have their own editor in the catalog admin (permission `prices`).
+  - `qamra seed-store` seeds it once from `content/store/quiz.yaml`. The quiz reads the YAML until then.
+  - Matching runs in the API (`qamra_api.store.quiz`, unit-tested): the first rule whose conditions hold wins, and a save must cover every answer.
+- **Everything the store page shows comes from data.**
+  - Line prices ("from" = the cheapest printed copy), formats and their prices, and the style price modifiers come from the catalog.
+  - Style availability per line comes from `ArtStyle.lines`, narrowed by the themes API's per-story Classic templates when that field is present.
+  - The free digital copy shows only while the `digital-copy` add-on is 0 ₪.
+  - The class-book price comes from `GET /api/shop/summary`.
+- **Where the pages differ from the design, and why:**
+  - «تصفّحوا الكتاب» is added after the description on the story page (Tareq: "why are there no examples?").
+  - Each line card has a small real page when an example is published.
+  - The hero shows the real cover (square) instead of the 390×320 scene.
+  - Styles are listed from the catalog, 5 instead of the design's 4, with Classic-capable styles first.
+  - The activity-book cards say «قريبًا» and link nowhere until `/workbooks/[product]` exists (`WORKBOOK_PAGES` in `lib/shop.ts`).
+  - The free-cover banner stays hidden until a `free_cover` public setting is on.
+
+
 ## 2026-09-29 — Phase 2 and 3 remainders: the web reader, share links, email, the card stub, print batches (W5)
 
 - **The reader is its own route and component** (`/[locale]/books/{id}` for the child's guardian, `/[locale]/s/{token}` for a share link, `components/reader/`). The public examples viewer (another workstream) is built around published example data (variants, watermarked web copies) and did not exist yet; the two can share a primitive later. Pictures stream through the API, so no storage URL reaches a browser. A preview shows its drawn pages; a finished book (`in_review`, `approved`, `ordered`, `printed`) shows every page; a page that failed the safety check is never shown. Page turns: buttons, keyboard (in an Arabic book ArrowLeft goes forward) and swipe (to the right goes forward in RTL). The flip is a Web Animations turn from the spine, so no inline `<style>` is needed and the strict CSP stays; it is off with reduced motion or the admin's animation switch.

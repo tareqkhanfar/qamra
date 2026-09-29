@@ -9,7 +9,36 @@
       "unpublish": "Take the example off the site",
       "confirm": "I confirm this book's child is invented (a generated face, not a real child). Its pages will be public on the site, marked \"Sample\".",
       "needsApproval": "Approve the book first, then publish it."
-    }
+    },
+    "variant": {
+      "label": "The hero's look in the example",
+      "girl": "Girl",
+      "girl_hijab": "Girl in hijab",
+      "boy": "Boy",
+      "soon": "An example for this look is coming soon"
+    },
+    "synthetic": "A real book we made for \"{name}\", an invented child",
+    "placeholder": "Illustration",
+    "placeholderNote": "Placeholder illustrations with the story's real words. The drawn pages appear here soon.",
+    "placeholderAlt": "A placeholder illustration of a story page",
+    "pageNumbers": "Page {pages}",
+    "pageAlt": "Page {pages}: {text}",
+    "zoom": "Enlarge {page}",
+    "zoomTitle": "The page, enlarged",
+    "close": "Close",
+    "theEnd": "The end",
+    "titlePage": "Dedication page",
+    "madeFor": "A story written and illustrated especially for {name}",
+    "dedication": "Dedication",
+    "parents": {
+      "title": "For parents"
+    },
+    "carousel": "a book to flip through",
+    "slide": "page",
+    "position": "{n} of {total}",
+    "prev": "Previous page",
+    "next": "Next page",
+    "swipe": "Swipe to turn the pages, or tap a picture to enlarge it"
   },
   "reader": {
     "metaTitle": "Book reader",
@@ -110,6 +139,141 @@
       "hardcover": "Hardcover",
       "spiral": "Spiral bound",
       "digital": "Digital"
+    }
+  },
+  "shop": {
+    "nav": "Shop",
+    "title": "All Qamra books",
+    "lead": "Every book carries your child's name and character. You see a preview before you pay, and you pay on delivery.",
+    "from": "From",
+    "soon": "Coming soon",
+    "freeCover": {
+      "badge": "Free",
+      "title": "See your child's cover in a minute",
+      "body": "A name and a photo, and we draw the cover right away"
+    },
+    "quiz": {
+      "title": "Which book suits my child?",
+      "body": "3 questions and we suggest the best fit for their age"
+    },
+    "stories": {
+      "title": "Stories starring your child",
+      "count": "{stories} stories · {styles} art styles",
+      "all": "All stories",
+      "classic": "Carefully made illustrations, with your child's face in them",
+      "magic": "Every page drawn afresh, and their drawing becomes their companion",
+      "withCompanion": "With a companion",
+      "hardcover": "Hardcover"
+    },
+    "learn": {
+      "title": "Learn and play",
+      "lead": "Workbooks and activity books with their name and character",
+      "chip": {
+        "workbook": "Ages 4–6 · kindergarten",
+        "journey": "Ages 3–6 · at home",
+        "family": "Ages 3–7 · a family gift"
+      },
+      "unit": {
+        "workbook": "From {price} a volume",
+        "journey": "{price} a stage",
+        "family": "{price}"
+      }
+    },
+    "b2b": {
+      "eyebrow": "For kindergartens and schools",
+      "title": "A graduation book for every child, and workbooks with your school's logo",
+      "price": "From {price} per child for orders of {n} children or more",
+      "cta": "Ask for a quote"
+    },
+    "trust": {
+      "privacy": "We delete your child's photo automatically",
+      "cod": "Cash on delivery",
+      "reprint": "Free reprint if the mistake is ours",
+      "local": "Printed locally, delivered fast"
+    },
+    "inCart": "In your cart: {n}",
+    "openCart": "Open the cart"
+  },
+  "quiz": {
+    "title": "Which book suits my child?",
+    "metaDescription": "3 questions about your child's age and what you want from the book, and we suggest the best fit.",
+    "close": "Close",
+    "back": "Back",
+    "from": "From {price}",
+    "steps": {
+      "age": "Question 1 of 3",
+      "goal": "Question 2 of 3",
+      "pen": "Question 3 of 3",
+      "result": "Your result"
+    },
+    "age": {
+      "title": "How old is your child?",
+      "3": "3 or younger",
+      "4": "4 years",
+      "5": "5 years",
+      "6": "6–7 years"
+    },
+    "goal": {
+      "title": "What should the book do?",
+      "gift": {
+        "label": "A gift and a lasting memory",
+        "hint": "A printed story starring your child"
+      },
+      "learn": {
+        "label": "Learn letters and numbers",
+        "hint": "A step-by-step workbook in their name"
+      },
+      "family": {
+        "label": "Good time with the family",
+        "hint": "Activities and adventures to do together"
+      }
+    },
+    "pen": {
+      "title": "Does your child hold a pen?",
+      "body": "There's no wrong answer. It tells us where to start.",
+      "yes": "Yes, and they scribble",
+      "no": "Not well yet"
+    },
+    "result": {
+      "badge": "The best fit for your child",
+      "see": "See the book",
+      "soon": "Coming soon to the shop",
+      "also": "Also a good fit",
+      "restart": "Start again"
+    },
+    "admin": {
+      "tab": "Quiz rules",
+      "intro": "Each rule: the goal (and the age and pen answer when needed) → the suggested book and an alternative. Rules are checked in order and the first match wins. A table that leaves an answer without a suggestion can't be saved.",
+      "seed": "The default rules (Addendum 9) are shown until the first save.",
+      "goal": "Goal",
+      "goals": {
+        "gift": "Gift",
+        "learn": "Learning",
+        "family": "Family time"
+      },
+      "ageMin": "From age",
+      "ageMax": "To age",
+      "pen": "Pen",
+      "pens": {
+        "any": "Any answer",
+        "yes": "Holds it",
+        "no": "Not yet"
+      },
+      "product": "Suggested book",
+      "alternative": "Alternative",
+      "stories": "Qamra stories",
+      "options": "Options (e.g. stage=1)",
+      "titleAr": "Title in Arabic",
+      "whyAr": "Reason in Arabic",
+      "titleEn": "Title in English",
+      "whyEn": "Reason in English",
+      "up": "Up",
+      "down": "Down",
+      "remove": "Remove",
+      "add": "Add a rule",
+      "save": "Save the rules",
+      "saved": "The rules are saved.",
+      "rule": "Rule {n}"
     }
   },
   "meta": {
@@ -260,21 +424,33 @@
     "howTitle": "How {brand} makes your child's book",
     "how": [
       {
-        "title": "Tell us about your child",
-        "body": "Name, age, and what they love: space? animals? football? We build the story around them."
+        "title": "A photo from your phone",
+        "body": "A clear photo of your child's face, their name and age. And one of their drawings if you like: it becomes their companion in the story."
       },
       {
-        "title": "A photo and a drawing",
-        "body": "A clear photo of their face, and one of their drawings if you like: it becomes their friend in the story. You approve both characters before we start."
+        "title": "We draw their character, you approve it",
+        "body": "We draw your child as the hero in the book's style, and go on only when you say \"that's my child\". The original photo is deleted automatically."
       },
       {
-        "title": "Receive the book",
-        "body": "Review the pages, change any words, then we print and deliver. Cash on delivery."
+        "title": "We print and deliver the book",
+        "body": "Review the pages and change any words, then we print the book and deliver it. Cash on delivery."
       }
     ],
-    "themesEyebrow": "Story worlds",
-    "themesTitle": "Pick the adventure that fits your child",
-    "allThemes": "All worlds",
+    "heroRealBook": "A real Qamra book: {title}",
+    "howCharacterAlt": "{name}'s character as we drew it before the book",
+    "howBookAlt": "A Qamra book cover",
+    "realBookTitle": "Flip through a real book",
+    "realBookLead": "A book we made for an invented child, page by page as it is printed. Your child's book is just like it, with their name and face.",
+    "sampleLead": "Placeholder illustrations, with the story's real words as they are written for your child.",
+    "openStory": "Open \"{name}\"",
+    "viewerEndTitle": "Like it?",
+    "viewerEndBody": "Open the story, choose the book type, style and format, and we make it for your child.",
+    "viewerEndCta": "Open the story",
+    "linesTitle": "Two kinds of story books",
+    "allBooks": "All books",
+    "themesEyebrow": "The stories",
+    "themesTitle": "Pick the story that fits your child",
+    "allThemes": "All stories",
     "samplesEyebrow": "Inside the book",
     "samplesTitle": "Pages from {name}'s story",
     "prevPage": "Previous page",
@@ -370,29 +546,101 @@
     "rights": "© {year} {brand}"
   },
   "themes": {
-    "title": "Story worlds",
-    "lead": "Each world is a complete, carefully written story your child enters as the hero, with their own name and face.",
+    "title": "Stories starring your child",
+    "lead": "Each story is a printed book, carefully written and illustrated, that your child enters as the hero with their own name and face. Open any story to flip through its pages.",
+    "coverAlt": "A real cover from \"{name}\"",
+    "placeholderAlt": "An illustration for \"{name}\"",
+    "realPages": "Real pages",
+    "from": "From {price}",
+    "choose": "Open the story",
+    "soonTitle": "Stories coming soon",
+    "soonLead": "We're writing and illustrating them now; they can't be ordered yet.",
+    "lineChosen": "You chose {line}: stories here start from {price}.",
+    "lineAll": "All types",
     "age": "Age:",
     "all": "All",
     "occasion": "Occasion",
     "sort": "Sort:",
     "sortPopular": "Most requested",
     "sortAge": "Youngest first",
-    "empty": "No worlds match these filters yet.",
+    "empty": "No stories match these filters yet.",
     "reset": "Show all",
-    "unavailable": "We couldn't load the worlds right now. Please try again shortly."
+    "unavailable": "We couldn't load the stories right now. Please try again shortly."
   },
   "themeDetail": {
-    "learns": "What your child learns",
-    "peek": "A peek inside",
-    "peekCount": "{n} of {total}",
-    "formats": "Formats and prices",
-    "formatsNote": "You choose the format after previewing the book. The preview is free.",
-    "make": "Make this story",
-    "from": "From",
-    "soonTitle": "This world is being written",
-    "soonBody": "We're writing and illustrating its story now. Meanwhile, try one of the available worlds.",
-    "browse": "Browse available worlds"
+    "make": "Make the story",
+    "coverAlt": "A real cover: {title}",
+    "placeholderCoverAlt": "An illustration of the story's cover",
+    "realExample": "Real example · {style}",
+    "styleChip": "Style: {style}",
+    "browse": "Flip through the book",
+    "viewerEnd": {
+      "title": "Like it?",
+      "body": "Choose the book type, style and format, and we make a story like this one for your child, with their name and face.",
+      "cta": "Choose the book type"
+    },
+    "step1": "1. Choose the book type",
+    "step2": "2. Art style",
+    "step3": "3. Format",
+    "lines": {
+      "label": "Book type",
+      "from": "From {price}",
+      "soon": "Coming soon for this story",
+      "classic": {
+        "tag": "Most popular",
+        "short": "Classic",
+        "desc": "Carefully made illustrations, with your child's face drawn in"
+      },
+      "magic": {
+        "tag": "The finest",
+        "short": "Magic",
+        "desc": "Every page drawn afresh for your child, with their companion"
+      }
+    },
+    "features": {
+      "classic": {
+        "art": "A carefully written and illustrated story, with your child's face in it",
+        "name": "Their name and pronouns right on every page",
+        "fast": "Ready to preview in minutes"
+      },
+      "magic": {
+        "art": "Every page drawn just for your child",
+        "text": "You can edit the words on every page"
+      },
+      "companion": "Your child's drawing becomes their companion on every page",
+      "dedication": "A dedication page in your name",
+      "companionExtra": "Companion from their drawing: an extra {price}"
+    },
+    "styles": {
+      "label": "Art style",
+      "onlyMagic": "Available in Magic",
+      "unavailable": "Not available yet",
+      "onlyLooks": "Available now for: {looks}",
+      "chosen": "Chosen",
+      "plus": "+{price}",
+      "samePrice": "Same price"
+    },
+    "formats": {
+      "label": "Format",
+      "name": {
+        "softcover": "Softcover",
+        "hardcover": "Hardcover",
+        "digital": "Digital only"
+      },
+      "desc": {
+        "softcover": "{size} cm · flexible cover",
+        "hardcover": "{size} cm · thick paper that lasts for years",
+        "digital": "PDF and a phone reader"
+      },
+      "withDigital": "with a digital copy",
+      "popular": "Most chosen"
+    },
+    "formatsNoteDigital": "The digital copy is free with any printed book.",
+    "formatsNoteExtras": "Extras (gift box, a copy for grandma…) are chosen after the preview.",
+    "trust": "The preview is free. You pay only if you love the book, on delivery.",
+    "soonTitle": "This story is being written",
+    "soonBody": "We're writing and illustrating it now. Meanwhile, try one of the available stories.",
+    "browseAvailable": "Browse the available stories"
   },
   "kg": {
     "badge": "Schools",
@@ -601,7 +849,11 @@
     },
     "line": {
       "title": "Which book would you like for {name}?",
-      "body": "You choose the cover after the preview. The preview is free."
+      "body": "You choose the cover after the preview. The preview is free.",
+      "lead": "Two kinds of the same book. Compare the pages and pick what suits you; you can change it before ordering.",
+      "realPages": "Real pages from a story (the hero: {look})",
+      "classicPages": "In Classic these are the very scenes, with {name} drawn into them.",
+      "magicPages": "In Magic every scene is drawn afresh for {name} alone, with their drawing as a companion."
     },
     "style": {
       "title": "How should we draw {name}?",
@@ -681,6 +933,7 @@
       "title": "{name}'s book is ready!",
       "classicTitle": "{name}'s book in Qamra Classic",
       "classicNote": "After you order, we draw {name}'s features into the story's ready illustrations and send you the book to review before printing.",
+      "examplePages": "Real pages from this story (a sample). In your book {name} is the hero, with their own face, and you review the book before printing.",
       "previewOf": "{n} of {total} preview pages",
       "watermark": "The full book, without the watermark, after you order",
       "choose": "Choose the format",

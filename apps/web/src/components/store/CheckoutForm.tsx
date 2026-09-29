@@ -62,7 +62,7 @@ export function CheckoutForm() {
     return (
       <div className="flex flex-col items-center gap-4 rounded-xl bg-paper-sunk px-6 py-14 text-center">
         <h2 className="text-h3 text-night-900">{tc("empty")}</h2>
-        <Link href="/themes" className={buttonClasses("solid", "md")}>
+        <Link href="/stories" className={buttonClasses("solid", "md")}>
           {tc("browse")}
         </Link>
       </div>

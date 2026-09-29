@@ -1,14 +1,19 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Scene, fromArt } from "@/components/art/Scene";
 import { Alert } from "@/components/ui/Alert";
 import { ArrowForward, Button } from "@/components/ui/Button";
-import { errorText } from "@/lib/api";
+import { ExampleImage } from "@/components/book/ExampleImage";
+import { FormatCards } from "@/components/story/Choices";
+import { api, errorText } from "@/lib/api";
 import type { ThemeCard } from "@/lib/catalog";
 import { createApi, pageImage, type Book, type Child } from "@/lib/create";
+import { pickExample, storyPages, variantOf, type Example } from "@/lib/examples";
 import { money, type Catalog, type CatalogAddOn, type CatalogVariant } from "@/lib/store";
+import { freeDigitalCopy } from "@/lib/story";
 import { Frame } from "./Frame";
 
 const PRODUCT = { classic: "classic-book", magic: "magic-book" } as const;
@@ -35,7 +40,6 @@ export function FormatStep({
   onAdded: () => void;
 }) {
   const t = useTranslations("create");
-  const tf = useTranslations("store.formats");
   const te = useTranslations("errors");
   const locale = useLocale();
   const currency = catalog?.currency ?? "ILS";
@@ -43,7 +47,20 @@ export function FormatStep({
   const variants = [...(product?.variants ?? [])]
     .filter((v) => v.price !== null)
     .sort((a, b) => ORDER.indexOf(a.options.format) - ORDER.indexOf(b.options.format));
-  const [sku, setSku] = useState(variants[0]?.sku ?? "");
+  const wanted = useSearchParams().get("format");
+  const [sku, setSku] = useState(variants.find((v) => v.options.format === wanted)?.sku ?? variants[0]?.sku ?? "");
+  const [examples, setExamples] = useState<Example[]>([]);
+  useEffect(() => {
+    let alive = true;
+    void (async () => {
+      const r = await api<Example[]>(`/api/examples?theme=${encodeURIComponent(book.theme)}&lang=ar`);
+      if (alive && r.ok) setExamples(r.data);
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [book.theme]);
+  const strip = storyPages(pickExample(examples, book.theme, variantOf(child)), 3, 1);
   const [extras, setExtras] = useState<string[]>([]);
   const [shown, setShown] = useState(0);
   const [busy, setBusy] = useState(false);
@@ -100,9 +117,9 @@ export function FormatStep({
           : t("format.classicTitle", { name: child.name })}
       </h1>
 
-      {book.line === "magic" && previews.length > 0 ? (
+      {previews.length > 0 ? (
         <div className="flex flex-col items-center gap-2">
-          <div className="relative w-full max-w-[360px] overflow-hidden rounded-2xl shadow-2">
+          <div className="relative w-full max-w-[420px] overflow-hidden rounded-2xl shadow-2">
             {/* eslint-disable-next-line @next/next/no-img-element -- private watermarked preview through the API */}
             <img
               src={pageImage(book.id, previews[shown].beat)}
@@ -139,57 +156,51 @@ export function FormatStep({
         </div>
       ) : (
         <div className="flex flex-col gap-3">
-          {theme && (
-            <div className="overflow-hidden rounded-2xl">
-              <Scene {...fromArt({ ...theme.art, hijab: child.hijab })} ratio={16 / 10} kidScale={0.6} />
+          {strip.length > 0 ? (
+            <div className="grid grid-cols-3 gap-2">
+              {strip.map((p) => (
+                <div key={p.beat} className="relative aspect-square overflow-hidden rounded-xl bg-paper-sunk">
+                  <ExampleImage
+                    page={p}
+                    alt={p.text ?? ""}
+                    sizes="140px"
+                    className="absolute inset-0 size-full object-cover"
+                  />
+                </div>
+              ))}
             </div>
+          ) : (
+            theme && (
+              <div className="overflow-hidden rounded-2xl">
+                <Scene {...fromArt({ ...theme.art, hijab: child.hijab })} ratio={16 / 10} kidScale={0.6} />
+              </div>
+            )
           )}
-          <p className="text-small text-ink-muted">{t("format.classicNote", { name: child.name })}</p>
+          <p className="text-small text-ink-muted">
+            {strip.length > 0
+              ? t("format.examplePages", { name: child.name })
+              : t("format.classicNote", { name: child.name })}
+          </p>
         </div>
       )}
 
-      <fieldset className="flex flex-col gap-2.5">
-        <legend className="mb-2 text-body font-semibold">{t("format.choose")}</legend>
-        {variants.map((v) => {
-          const on = v.sku === sku;
-          const format = v.options.format;
-          return (
-            <label
-              key={v.sku}
-              className={`flex min-h-[72px] cursor-pointer items-center gap-3 rounded-[18px] px-4 py-3 ${on ? "border-2 border-night-900 bg-night-100" : "border-[1.5px] border-line bg-paper-raised"}`}
-            >
-              <input
-                type="radio"
-                name="format"
-                checked={on}
-                onChange={() => {
-                  setSku(v.sku);
-                  setExtras([]);
-                }}
-                className="size-5 accent-night-900"
-              />
-              <div className="flex grow flex-col gap-0.5">
-                <div className="flex items-center gap-2">
-                  <strong className="text-body">{tf(format)}</strong>
-                  {format === "hardcover" && (
-                    <span className="rounded-full bg-amber-500 px-2 py-0.5 text-[11px] font-bold text-night-950">
-                      {t("format.popular")}
-                    </span>
-                  )}
-                </div>
-                <span className="text-caption text-ink-muted">
-                  {t.has(`format.desc.${format}`)
-                    ? t(`format.desc.${format}`, { size: (v.options.size ?? "21x21").replace("x", "×") })
-                    : ""}
-                </span>
-              </div>
-              <strong className="font-display text-body-l whitespace-nowrap">
-                {money(v.price ?? 0, currency, locale)}
-              </strong>
-            </label>
-          );
-        })}
-      </fieldset>
+      <section aria-labelledby="formats-title" className="flex flex-col gap-2.5">
+        <h2 id="formats-title" className="text-body font-semibold">
+          {t("format.choose")}
+        </h2>
+        <FormatCards
+          formats={variants}
+          value={sku}
+          onChange={(next) => {
+            setSku(next);
+            setExtras([]);
+          }}
+          modifier={Number(style?.price_modifier ?? 0)}
+          currency={currency}
+          freeDigital={!!freeDigitalCopy(catalog, book.line)}
+          popular="hardcover"
+        />
+      </section>
 
       {addons.length > 0 && (
         <fieldset className="flex flex-col gap-2">

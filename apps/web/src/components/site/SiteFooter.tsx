@@ -24,7 +24,7 @@ export async function SiteFooter() {
           </div>
           <div className={col}>
             <strong className="text-paper">{t("product")}</strong>
-            <Link href="/themes" className={a}>
+            <Link href="/stories" className={a}>
               {tn("themes")}
             </Link>
             <Link href="/#pricing" className={a}>

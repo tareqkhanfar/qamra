@@ -46,15 +46,32 @@ export const getThemes = (lang: string) => get<ThemeCard[]>(`/api/themes?lang=${
 export const getTheme = (slug: string, lang: string) =>
   get<ThemeDetail>(`/api/themes/${encodeURIComponent(slug)}?lang=${lang}`);
 export const getPricing = () => get<Price[]>("/api/pricing", 0);
+
 /** Published example books (real, watermarked pages); [] when none are published or the API is older. */
 export const getExamples = async (lang: string, theme?: string) =>
   (await get<import("@/lib/examples").Example[]>(
     `/api/examples?lang=${lang}${theme ? `&theme=${encodeURIComponent(theme)}` : ""}`,
   )) ?? [];
 
+/** Examples in the site's language; English visitors see the Arabic ones until English ones exist. */
+export async function examplesFor(locale: string, theme?: string) {
+  const own = await getExamples(locale, theme);
+  return own.length || locale === "ar" ? own : getExamples("ar", theme);
+}
+
 /** The store catalog (Addendum 4): products, variants and prices, styles, add-ons, delivery zones. */
 export const getStoreCatalog = (currency: "ILS" | "JOD" = "ILS") =>
   get<import("@/lib/store").Catalog>(`/api/store/catalog?currency=${currency}`, 0);
+
+/** Shop facts the catalog doesn't carry (Addendum 9): the class books' "from" price for the B2B banner. */
+export type ShopSummary = {
+  class_book_from: string | null;
+  class_book_min_qty: number | null;
+  currency: string;
+  /** Per product: can it be ordered now (the workbooks wait for the educator; admin switch). */
+  orderable?: Record<string, boolean>;
+};
+export const getShopSummary = () => get<ShopSummary>("/api/shop/summary");
 
 /** Admin-managed public settings (prices, contact details, site switches). */
 export type PublicSettings = {
@@ -74,6 +91,8 @@ export type PublicSettings = {
   music_volume: number;
   animations_enabled: boolean;
   google_login_enabled: boolean;
+  /** The free cover (Addendum 9): «شوف غلاف طفلك خلال دقيقة», off by default. */
+  free_cover?: boolean;
 };
 
 export const getPublicSettings = () => get<PublicSettings>("/api/settings/public", 0);

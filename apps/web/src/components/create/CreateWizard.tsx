@@ -8,6 +8,7 @@ import { Alert } from "@/components/ui/Alert";
 import { useRouter } from "@/i18n/navigation";
 import { api, errorText, type User } from "@/lib/api";
 import type { ThemeCard } from "@/lib/catalog";
+import { classicStyles, classicVariant } from "@/lib/classic";
 import { createApi, STEPS, type Book, type Character, type Child, type Line, type Step } from "@/lib/create";
 import type { Catalog } from "@/lib/store";
 import { CharacterStep } from "./CharacterStep";
@@ -212,14 +213,52 @@ export function CreateWizard() {
       : furthest(child, shownCharacter, shownBook, line);
   const theme = themes.find((th) => th.slug === (shownBook?.theme ?? q.theme)) ?? null;
 
-  /** After the book type: reuse an approved character that the type can draw, else choose a style. */
-  function afterLine(value: Line) {
-    if (!child) return;
+  /**
+   * The style picked on the story page (Addendum 9), when this line can draw it for this child: then the
+   * style step is already answered and the character is drawn right away.
+   */
+  function presetStyle(value: Line, c: Child): string | null {
+    const s = catalog?.styles.find((x) => x.slug === q.style);
+    if (!s || !s.lines.includes(value)) return null;
+    if (value === "classic" && !classicStyles(themes, classicVariant(c), q.theme).has(s.slug)) return null;
+    return s.slug;
+  }
+
+  /** Draw the character in the preset style, else show the style step. */
+  async function styleOrDraw(c: Child, value: Line) {
+    const preset = presetStyle(value, c);
+    if (preset) {
+      const r = await createApi.draw(c.id, preset);
+      if (r.ok) {
+        setCharacter({ id: r.data.id, value: r.data });
+        void refreshChildren();
+        go({ step: "character", child: c.id, line: value, character: r.data.id, style: r.data.style });
+        return;
+      }
+    }
+    go({ step: "style", child: c.id, line: value, character: null });
+  }
+
+  /** After the book type: reuse an approved character that the type can draw, else the photo or the style. */
+  function continueWith(c: Child, value: Line) {
     const styles = new Set((catalog?.styles ?? []).filter((s) => s.lines.includes(value)).map((s) => s.slug));
-    const ready = [...child.characters].reverse().find((c) => c.approved && styles.has(c.style));
-    if (ready) go({ step: "story", line: value, character: ready.id, style: ready.style });
-    else if (!child.photos) go({ step: "photo", line: value });
-    else go({ step: "style", line: value, character: null });
+    const ready = [...c.characters]
+      .reverse()
+      .find((ch) => ch.approved && styles.has(ch.style) && (!q.style || ch.style === q.style));
+    if (ready) go({ step: "story", child: c.id, line: value, character: ready.id, style: ready.style });
+    else if (!c.photos) go({ step: "photo", child: c.id, line: value });
+    else void styleOrDraw(c, value);
+  }
+
+  function afterLine(value: Line) {
+    if (child) continueWith(child, value);
+  }
+
+  /** Consent given: the photo, or the book type (skipped when the story page already chose it). */
+  function afterConsent(c: Child) {
+    if (!c.photos && !c.characters.some((ch) => ch.approved)) go({ step: "photo", child: c.id });
+    else if (line) continueWith(c, line);
+    else go({ step: "line", child: c.id });
   }
 
   switch (step) {
@@ -228,7 +267,11 @@ export function CreateWizard() {
         <ChildStep
           known={children ?? []}
           title={(theme ?? themes.find((th) => th.status === "available"))?.title ?? null}
-          onPick={(c) => go({ step: c.consent ? "line" : "consent", child: c.id, character: null, book: null })}
+          onPick={(c) =>
+            c.consent && line
+              ? afterConsent(c)
+              : go({ step: c.consent ? "line" : "consent", child: c.id, character: null, book: null })
+          }
           onAdded={(c) => {
             saveChild(c);
             go({ step: "consent", child: c.id, character: null, book: null });
@@ -242,7 +285,7 @@ export function CreateWizard() {
           back={() => go({ step: "child" })}
           onDone={(c) => {
             saveChild(c);
-            go({ step: c.photos ? "line" : "photo" });
+            afterConsent(c);
           }}
         />
       );
@@ -253,7 +296,7 @@ export function CreateWizard() {
           back={() => go({ step: "child" })}
           onDone={(c) => {
             saveChild(c);
-            if (line) go({ step: "style", line, character: null });
+            if (line) void styleOrDraw(c, line);
             else go({ step: "line" });
           }}
         />
@@ -263,6 +306,8 @@ export function CreateWizard() {
         <LineStep
           child={child!}
           catalog={catalog}
+          themes={themes}
+          theme={q.theme}
           initial={line}
           back={() => go({ step: "photo" })}
           onDone={afterLine}

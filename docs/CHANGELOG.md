@@ -1,5 +1,19 @@
 # Changelog
 
+## Real examples on the site, and the Addendum 9 store pages (2026-09-29)
+
+- **Public examples:** an admin publishes an approved sample book of an invented child (approval queue → «انشره نموذجًا على الموقع»). Its pages appear on the site as web copies watermarked «نموذج»: the real cover, a flip-through of every page with its words, and the character sheet. Real children's books can never be published. API: `GET /api/examples`, the page and character images, `POST|DELETE /api/admin/books/{id}/example`.
+- **The story page is now StoryProduct at `/stories/[slug]`** (`/themes/…` redirects with 308):
+  - the real cover, then «تصفّحوا الكتاب» (swipe, arrows, keyboard, tap to enlarge; girl / girl with hijab / boy);
+  - «1. اختر نوع الكتاب» (Classic «الأكثر طلباً» / Magic «الأفخم», each with a real page and its checklist), «2. أسلوب الرسم» (styles a line can't sell yet: «متوفر في سحري») and «3. شكل الكتاب»;
+  - the live price in a sticky bar. «اصنع الحكاية» carries the story, type, style and format into the create flow, which skips what is already chosen.
+- **`/stories`:** real covers, the price each story starts from, and the stories still being written in their own «قريبًا» section.
+- **`/shop`:** the two story lines, the activity books («قريبًا» until their pages exist), the quiz, kindergartens (with the class-book price), the trust strip and the cart bar.
+- **`/quiz` «أي كتاب يناسب طفلي؟»:** age, goal and (for learning) the pen answer lead to a book and an alternative. The rules are data (seeded from `content/store/quiz.yaml`, edited in Admin → الكتالوج → «أسئلة الاختيار»). A save that leaves any answer without a suggestion is refused.
+- **Home page:** the real cover in the hero, a real book to flip through, the three steps with real pictures (photo → character → book), the stories with their covers, and the two book types as in the shop.
+- **Create flow:** the book-type step uses the story page's cards with real pages in the child's look. The format step uses the same format cards, shows preview pages for either line, and starts on the format chosen on the story page.
+- Everything falls back to the illustrated placeholders, with a note, while a story has no published example.
+
 ## Phase 2 and 3 remainders: the reader, share links, email, the card stub, print batches (2026-09-29)
 
 - **The web reader** («كتبي» → a finished book or its preview): page flip, right to left for Arabic books, swipe and keyboard, full screen and night mode, mobile first (design: Reader). Pictures come through the API with the parent's session.

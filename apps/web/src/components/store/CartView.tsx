@@ -65,7 +65,7 @@ export function CartView() {
       <div className="flex flex-col items-center gap-4 rounded-xl bg-paper-sunk px-6 py-14 text-center">
         <h2 className="text-h3 text-night-900">{t("empty")}</h2>
         <p className="text-ink-muted">{t("emptyBody")}</p>
-        <Link href="/themes" className={buttonClasses("solid", "md")}>
+        <Link href="/stories" className={buttonClasses("solid", "md")}>
           {t("browse")}
         </Link>
       </div>

@@ -2,16 +2,18 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { Drawing } from "@/components/art/Drawing";
 import { Kid } from "@/components/art/Kid";
 import { Scene } from "@/components/art/Scene";
-import { SampleCarousel } from "@/components/site/SampleCarousel";
+import { BookViewer } from "@/components/book/BookViewer";
+import { CoverArt } from "@/components/book/CoverArt";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteNav } from "@/components/site/SiteNav";
 import { StickyCta } from "@/components/site/StickyCta";
-import { ThemeCardView } from "@/components/site/ThemeCardView";
+import { StoryLines } from "@/components/shop/StoryLines";
+import { StoryCard } from "@/components/site/StoryCard";
 import { brandName } from "@/config/brand";
 import { Link } from "@/i18n/navigation";
-import { formatAmount, getPricing, getPublicSettings, getTheme, getThemes, whatsappLink } from "@/lib/catalog";
+import { examplesFor, getPublicSettings, getStoreCatalog, getTheme, getThemes, whatsappLink } from "@/lib/catalog";
+import { coversOf, storyFrom } from "@/lib/story";
 
-type Plan = { desc: string; feats: string[] };
 type Card = { title: string; body: string };
 
 const SHIELD = (
@@ -36,21 +38,25 @@ function Eyebrow({ children, dark }: { children: React.ReactNode; dark?: boolean
 
 export default async function LandingPage() {
   const locale = await getLocale();
-  const [t, tc, themes, sample, prices, site] = await Promise.all([
+  const [t, ts, themes, examples, catalog, site] = await Promise.all([
     getTranslations("landing"),
-    getTranslations("common"),
+    getTranslations("shop"),
     getThemes(locale),
-    getTheme("first-day", locale),
-    getPricing(),
+    examplesFor(locale),
+    getStoreCatalog(),
     getPublicSettings(),
   ]);
+  // the book the landing shows: a published example (real pages), else the first story's illustrated sample
+  const featured = examples[0] ?? null;
+  const sample = await getTheme(featured?.theme ?? "first-day", locale);
+  const featuredExamples = examples.filter((e) => e.theme === featured?.theme);
+  const covers = coversOf(examples);
   const brand = brandName(locale);
   const how = t.raw("how") as Card[];
   const privacy = t.raw("privacy") as Card[];
   const faq = t.raw("faq") as { q: string; a: string }[];
-  const plans = t.raw("plans") as Record<"digital" | "hardcover" | "softcover", Plan>;
-  const priceOf = (p: string) => prices?.find((x) => x.product === p)?.amount ?? null;
   const whatsapp = site?.support_whatsapp;
+  const live = (themes ?? []).filter((th) => th.status === "available");
   const section = "mx-auto w-full max-w-[1440px] px-4 md:px-10 xl:px-24";
 
   return (
@@ -137,7 +143,7 @@ export default async function LandingPage() {
             <p className="max-w-[540px] text-[17px] leading-[1.75] text-night-100 md:text-[20px]">{t("lead")}</p>
             <div className="hidden items-center gap-4 md:flex">
               <Link
-                href="/create"
+                href="/stories"
                 className="flex min-h-[60px] animate-glow items-center gap-2.5 rounded-full bg-amber-500 px-8 text-[19px] font-bold text-night-950 transition hover:-translate-y-0.5"
               >
                 {t("cta")}
@@ -233,30 +239,48 @@ export default async function LandingPage() {
               />
             </svg>
             <figure className="flex -rotate-2 animate-float-slow flex-col items-center gap-2.5">
-              <div className="relative w-[300px] overflow-hidden rounded-s-[18px] rounded-e-[6px] border-s-[12px] border-night-950 shadow-[0_16px_40px_rgba(0,0,0,0.4)] lg:w-[360px]">
-                <Scene
-                  theme="night"
-                  ratio={360 / 420}
-                  hijab
-                  hijabColor="#E9826B"
-                  outfit="#F2B33D"
-                  pose="wave"
-                  kidScale={0.5}
-                  companion="blob"
-                />
-                <div className="absolute inset-x-0 top-5 text-center font-display text-[24px] leading-tight font-extrabold text-paper lg:text-[32px]">
-                  {t("heroBookTitle")}
-                  <br />
-                  <span className="text-[16px] text-amber-300 lg:text-[19px]">{t("heroBookSub")}</span>
+              {featured ? (
+                <Link
+                  href={`/stories/${featured.theme}`}
+                  aria-label={t("heroRealBook", { title: featured.title })}
+                  className="block w-[300px] overflow-hidden rounded-s-[18px] rounded-e-[6px] border-s-[12px] border-night-950 shadow-[0_16px_40px_rgba(0,0,0,0.4)] lg:w-[380px]"
+                >
+                  <CoverArt
+                    example={featured}
+                    art={sample?.art ?? { scene: "night" }}
+                    titleName={featured.title_name}
+                    titleRest={featured.title_rest}
+                    alt={t("heroRealBook", { title: featured.title })}
+                    sizes="380px"
+                    priority
+                  />
+                </Link>
+              ) : (
+                <div className="relative w-[300px] overflow-hidden rounded-s-[18px] rounded-e-[6px] border-s-[12px] border-night-950 shadow-[0_16px_40px_rgba(0,0,0,0.4)] lg:w-[360px]">
+                  <Scene
+                    theme="night"
+                    ratio={360 / 420}
+                    hijab
+                    hijabColor="#E9826B"
+                    outfit="#F2B33D"
+                    pose="wave"
+                    kidScale={0.5}
+                    companion="blob"
+                  />
+                  <div className="absolute inset-x-0 top-5 text-center font-display text-[24px] leading-tight font-extrabold text-paper lg:text-[32px]">
+                    {t("heroBookTitle")}
+                    <br />
+                    <span className="text-[16px] text-amber-300 lg:text-[19px]">{t("heroBookSub")}</span>
+                  </div>
                 </div>
-              </div>
+              )}
               <figcaption className="hidden text-small text-ink-dark-muted lg:block">{t("heroBook")}</figcaption>
             </figure>
           </div>
 
           <div className="flex flex-col gap-3 md:hidden">
             <Link
-              href="/create"
+              href="/stories"
               className="flex min-h-14 items-center justify-center rounded-full bg-amber-500 text-[18px] font-bold text-night-950"
             >
               {t("cta")}
@@ -265,6 +289,47 @@ export default async function LandingPage() {
               {SHIELD}
               {t("privacyLine")}
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* A REAL BOOK: flip through a published example (or the story's illustrated sample) */}
+      <section id="samples" className="scroll-mt-20 bg-paper-sunk py-12 md:py-20">
+        <div
+          className={`${section} grid grid-cols-[minmax(0,1fr)] items-start gap-6 md:gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]`}
+        >
+          <div className="flex flex-col gap-3 lg:sticky lg:top-28">
+            <Eyebrow>{t("samplesEyebrow")}</Eyebrow>
+            <h2 id="samples-title" className="text-[26px] text-night-900 md:text-[44px]">
+              {featured ? t("realBookTitle") : t("samplesTitle", { name: sample?.sample_name ?? "" })}
+            </h2>
+            <p className="text-body text-ink-muted md:text-body-l">{featured ? t("realBookLead") : t("sampleLead")}</p>
+            {sample && (
+              <Link
+                href={`/stories/${sample.slug}`}
+                className="flex min-h-12 items-center gap-1 self-start font-bold text-amber-700"
+              >
+                {t("openStory", { name: sample.name })} <span className="inline-block rtl:-scale-x-100">→</span>
+              </Link>
+            )}
+          </div>
+          <div className="w-full max-w-[560px] justify-self-center">
+            <BookViewer
+              examples={featuredExamples}
+              fallback={sample?.samples ?? []}
+              headingId="samples-title"
+              titlePage={false}
+              end={
+                sample
+                  ? {
+                      title: t("viewerEndTitle"),
+                      body: t("viewerEndBody"),
+                      label: t("viewerEndCta"),
+                      href: `/stories/${sample.slug}`,
+                    }
+                  : null
+              }
+            />
           </div>
         </div>
       </section>
@@ -284,16 +349,46 @@ export default async function LandingPage() {
               key={s.title}
               data-reveal
               style={{ "--d": `${i * 120}ms` } as React.CSSProperties}
-              className="flex gap-3.5 rounded-lg border border-line bg-paper-raised p-5 md:flex-col md:rounded-xl md:p-8"
+              className="flex flex-col overflow-hidden rounded-[20px] border border-line bg-paper-raised md:rounded-xl"
             >
-              <div className="flex items-center gap-3.5">
-                <span className="flex size-11 shrink-0 items-center justify-center rounded-[14px] bg-night-900 font-display text-2xl font-extrabold text-amber-500 md:size-[52px] md:rounded-md md:text-[28px]">
+              <div className="relative flex aspect-[16/10] items-center justify-center overflow-hidden bg-paper-sunk">
+                {i === 0 && (
+                  <div className="w-[34%] rotate-[-4deg] rounded-[6px] bg-paper-raised px-2 pt-2 pb-5 shadow-[0_8px_24px_rgba(22,32,74,0.18)]">
+                    <Kid look="photo" className="block h-auto w-full rounded-[4px]" />
+                  </div>
+                )}
+                {i === 1 &&
+                  (featured?.character ? (
+                    // eslint-disable-next-line @next/next/no-img-element -- the example's watermarked character sheet
+                    <img
+                      src={featured.character}
+                      alt={t("howCharacterAlt", { name: featured.child_name })}
+                      loading="lazy"
+                      className="size-full object-contain p-3"
+                    />
+                  ) : (
+                    <div className="w-[30%]">
+                      <Kid hijab hijabColor="#E9826B" outfit="#F2B33D" pose="wave" />
+                    </div>
+                  ))}
+                {i === 2 && (
+                  <div className="w-[46%] rotate-[3deg] overflow-hidden rounded-s-[10px] rounded-e-[4px] border-s-[6px] border-night-950 shadow-book">
+                    <CoverArt
+                      example={featured}
+                      art={sample?.art ?? { scene: "night" }}
+                      titleName={featured?.title_name ?? sample?.name ?? ""}
+                      titleRest={featured?.title_rest ?? ""}
+                      alt={featured ? t("heroRealBook", { title: featured.title }) : t("howBookAlt")}
+                      sizes="240px"
+                    />
+                  </div>
+                )}
+                <span className="absolute start-3 top-3 flex size-10 items-center justify-center rounded-[12px] bg-night-900 font-display text-xl font-extrabold text-amber-500">
                   {i + 1}
                 </span>
-                <h3 className="hidden text-[24px] text-night-900 md:block">{s.title}</h3>
               </div>
-              <div className="flex flex-col gap-1">
-                <h3 className="text-[19px] text-night-900 md:hidden">{s.title}</h3>
+              <div className="flex flex-col gap-1 p-5 md:p-6">
+                <h3 className="text-[19px] text-night-900 md:text-[22px]">{s.title}</h3>
                 <p className="text-[15px] leading-[1.75] text-ink-muted md:text-body">{s.body}</p>
               </div>
             </div>
@@ -301,59 +396,29 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* THEMES */}
-      {themes && themes.length > 0 && (
-        <section className="mx-auto flex w-full max-w-[1440px] flex-col gap-6 pb-12 md:gap-8 md:px-10 md:pb-24 xl:px-24">
-          <div className="flex items-end justify-between px-4 md:px-0">
-            <div className="flex flex-col gap-2.5">
-              <span className="hidden md:inline">
-                <Eyebrow>{t("themesEyebrow")}</Eyebrow>
-              </span>
-              <h2 className="text-[26px] text-night-900 md:text-[44px]">
-                <span className="md:hidden">{t("themesEyebrow")}</span>
-                <span className="hidden md:inline">{t("themesTitle")}</span>
-              </h2>
+      {/* STORIES, with their real covers */}
+      {live.length > 0 && (
+        <section className={`${section} flex flex-col gap-6 py-12 md:gap-8 md:py-24`}>
+          <div className="flex items-end justify-between gap-3">
+            <div className="flex flex-col gap-2">
+              <Eyebrow>{t("themesEyebrow")}</Eyebrow>
+              <h2 className="text-[26px] text-night-900 md:text-[44px]">{t("themesTitle")}</h2>
             </div>
-            <Link href="/themes" className="flex min-h-11 items-center gap-1 font-bold text-amber-700">
+            <Link href="/stories" className="flex min-h-11 items-center gap-1 font-bold text-amber-700">
               {t("allThemes")} <span className="inline-block rtl:-scale-x-100">→</span>
             </Link>
           </div>
-          <div className="flex snap-x gap-3 overflow-x-auto px-4 pb-2 md:grid md:grid-cols-4 md:gap-6 md:overflow-visible md:px-0">
-            {themes.slice(0, 4).map((th, i) => (
-              <div
-                key={th.slug}
-                data-reveal
-                style={{ "--d": `${i * 90}ms` } as React.CSSProperties}
-                className="w-[260px] shrink-0 snap-start md:w-auto"
-              >
-                <ThemeCardView theme={th} variant="strip" />
+          <div className="grid grid-cols-2 gap-3 md:gap-5 lg:grid-cols-3 lg:gap-7">
+            {live.slice(0, 6).map((th, i) => (
+              <div key={th.slug} data-reveal style={{ "--d": `${(i % 3) * 90}ms` } as React.CSSProperties}>
+                <StoryCard
+                  theme={th}
+                  example={covers[th.slug] ?? null}
+                  from={storyFrom(catalog, th)}
+                  currency={catalog?.currency ?? "ILS"}
+                />
               </div>
             ))}
-          </div>
-        </section>
-      )}
-
-      {/* SAMPLES */}
-      {sample && sample.samples.length > 0 && (
-        <section id="samples" className="scroll-mt-20 bg-paper-sunk py-12 md:py-24">
-          <div className={`${section} flex flex-col items-center gap-8 md:gap-10`}>
-            <div className="flex flex-col gap-2.5 self-start md:items-center md:self-center">
-              <span className="hidden md:inline">
-                <Eyebrow>{t("samplesEyebrow")}</Eyebrow>
-              </span>
-              <h2 className="text-[26px] text-night-900 md:text-[44px]">
-                {t("samplesTitle", { name: sample.sample_name ?? "" })}
-              </h2>
-            </div>
-            <SampleCarousel
-              spreads={sample.samples}
-              labels={{
-                prev: t("prevPage"),
-                next: t("nextPage"),
-                page: t("pageOf", { n: "{n}" }),
-                hint: t("swipeHint"),
-              }}
-            />
           </div>
         </section>
       )}
@@ -397,75 +462,45 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* PRICING */}
-      <section
-        id="pricing"
-        className={`${section} flex scroll-mt-20 flex-col gap-6 pb-12 md:items-center md:gap-10 md:pb-24`}
-      >
-        <div className="flex flex-col gap-2.5 md:items-center md:text-center">
-          <span className="hidden md:inline">
+      {/* THE TWO BOOK TYPES, as the shop shows them, with the quiz */}
+      <section id="pricing" className={`${section} flex scroll-mt-20 flex-col gap-5 pb-12 md:gap-8 md:pb-24`}>
+        <div className="flex items-end justify-between gap-3">
+          <div className="flex flex-col gap-2">
             <Eyebrow>{t("pricingEyebrow")}</Eyebrow>
-          </span>
-          <h2 className="text-[30px] text-night-900 md:text-[44px]">{t("pricingTitle")}</h2>
-          <p className="text-[15px] text-ink-muted md:text-[17px]">{t("pricingLead")}</p>
+            <h2 className="text-[26px] text-night-900 md:text-[44px]">{t("linesTitle")}</h2>
+            <p className="text-[15px] text-ink-muted md:text-[17px]">{t("pricingLead")}</p>
+          </div>
+          <Link href="/shop" className="flex min-h-11 shrink-0 items-center gap-1 font-bold text-amber-700">
+            {t("allBooks")} <span className="inline-block rtl:-scale-x-100">→</span>
+          </Link>
         </div>
-        <div className="grid w-full items-stretch gap-4 md:grid-cols-3 md:gap-6">
-          {(["digital", "hardcover", "softcover"] as const).map((key, i) => {
-            const featured = key === "hardcover";
-            const amount = priceOf(key);
-            return (
-              <div
-                key={key}
-                data-reveal
-                style={{ "--d": `${i * 120}ms` } as React.CSSProperties}
-                className={`flex flex-col gap-4 rounded-xl p-6 md:rounded-2xl md:p-8 ${featured ? "order-first bg-night-900 text-paper shadow-[0_16px_40px_rgba(22,32,74,0.25)] md:order-none" : "border border-line bg-paper-raised text-ink"}`}
+        <div className="grid gap-4 md:grid-cols-[2fr_1fr] md:gap-6">
+          <StoryLines catalog={catalog} stories={live} examples={examples} />
+          <Link
+            href="/quiz"
+            className="flex items-center gap-3.5 rounded-[20px] bg-paper-sunk p-4 md:flex-col md:items-start md:justify-center md:p-8"
+          >
+            <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-paper-raised">
+              <svg
+                className="size-[26px]"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#9A620A"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
               >
-                {featured && (
-                  <span className="self-start rounded-full bg-amber-500 px-3 py-1.5 text-caption font-bold text-night-950">
-                    {t("mostChosen")}
-                  </span>
-                )}
-                <h3 className="text-[22px] md:text-[26px]">{tc(`products.${key}`)}</h3>
-                <p className={`text-[15px] ${featured ? "text-ink-dark-muted" : "text-ink-muted"}`}>
-                  {plans[key].desc}
-                </p>
-                <div className="font-display text-[30px] font-extrabold md:text-[40px]">
-                  {amount ? (
-                    <>
-                      {formatAmount(amount)} <span className="text-[22px]">₪</span>
-                    </>
-                  ) : (
-                    <span className="text-[24px] md:text-[28px]">{tc("priceSoon")}</span>
-                  )}
-                </div>
-                <ul className="flex flex-col gap-2.5 text-[15px]">
-                  {plans[key].feats.map((f) => (
-                    <li key={f} className="flex items-center gap-2.5">
-                      <svg
-                        className="size-[18px] shrink-0"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="#DB9A1F"
-                        strokeWidth="2.6"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-hidden="true"
-                      >
-                        <path d="M5 12l5 5 9-10" />
-                      </svg>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  href="/create"
-                  className={`mt-auto flex min-h-14 items-center justify-center rounded-full text-[17px] font-bold ${featured ? "bg-amber-500 text-night-950" : "border-2 border-night-900 text-night-900 hover:bg-night-100"}`}
-                >
-                  {t("startNow")}
-                </Link>
-              </div>
-            );
-          })}
+                <circle cx="12" cy="12" r="9" />
+                <path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.5V14" />
+                <path d="M12 17.2v.1" />
+              </svg>
+            </span>
+            <span className="flex grow flex-col gap-0.5">
+              <strong className="text-[17px] text-night-900 md:text-[22px]">{ts("quiz.title")}</strong>
+              <span className="text-small text-ink-muted">{ts("quiz.body")}</span>
+            </span>
+          </Link>
         </div>
       </section>
 
@@ -560,7 +595,7 @@ export default async function LandingPage() {
       <StickyCta watchId="hero">
         <div className="flex items-center gap-2.5">
           <Link
-            href="/create"
+            href="/stories"
             className="flex min-h-[52px] grow items-center justify-center rounded-full bg-amber-500 text-[17px] font-bold text-night-950"
           >
             {t("cta")}

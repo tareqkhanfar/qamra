@@ -9,13 +9,19 @@ type Variant = "dark" | "light";
 
 /** Site header. `dark` sits inside the night-blue hero (landing); `light` is the paper header elsewhere. */
 export async function SiteNav({ variant = "light" }: { variant?: Variant }) {
-  const [t, locale, jar] = await Promise.all([getTranslations("nav"), getLocale(), cookies()]);
+  const [t, tShop, locale, jar] = await Promise.all([
+    getTranslations("nav"),
+    getTranslations("shop"),
+    getLocale(),
+    cookies(),
+  ]);
   const signedIn = jar.has("qamra_at");
   const hasCart = jar.has("qamra_cart");
   const dark = variant === "dark";
   const links = [
     { href: "/#how", label: t("how") },
-    { href: "/themes", label: t("themes") },
+    { href: "/stories", label: t("themes") },
+    { href: "/shop", label: tShop("nav") },
     { href: "/#pricing", label: t("pricing") },
     { href: "/kindergartens", label: t("kindergartens") },
     { href: "/#faq", label: t("faq") },

@@ -1,34 +1,71 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { ExampleImage } from "@/components/book/ExampleImage";
+import { LineCards, LineChecklist } from "@/components/story/Choices";
 import { Button } from "@/components/ui/Button";
+import { api } from "@/lib/api";
+import type { ThemeCard } from "@/lib/catalog";
+import { classicStyles, classicVariant } from "@/lib/classic";
 import type { Child, Line } from "@/lib/create";
-import { money, type Catalog } from "@/lib/store";
-import { Check, Frame, Lead } from "./Frame";
+import { pickExample, storyPages, variantOf, type Example } from "@/lib/examples";
+import type { Catalog } from "@/lib/store";
+import { LINES, offer, type Offer } from "@/lib/story";
+import { Frame, Lead } from "./Frame";
 
-const PRODUCT: Record<Line, string> = { classic: "classic-book", magic: "magic-book" };
-
-/** Step 4 (Addendum 4 §7): Classic and Magic side by side, Magic suggested gently. */
+/**
+ * Step 4 (Addendum 9, as on the story page): Classic («الأكثر طلباً») and Magic («الأفخم») side by side, with
+ * real pages of a published example in the child's look, the chosen line's checklist, and Classic suggested
+ * first wherever a Classic template exists for this child.
+ */
 export function LineStep({
   child,
   catalog,
+  themes,
+  theme,
   initial,
   back,
   onDone,
 }: {
   child: Child;
   catalog: Catalog | null;
+  themes: ThemeCard[];
+  theme: string | null;
   initial: Line | null;
   back: () => void;
   onDone: (line: Line) => void;
 }) {
   const t = useTranslations("create");
-  const tc = useTranslations("store.compare");
-  const tf = useTranslations("store.formats");
+  const tv = useTranslations("examples.variant");
   const locale = useLocale();
-  const [line, setLine] = useState<Line>(initial ?? "magic");
-  const currency = catalog?.currency ?? "ILS";
+  const [examples, setExamples] = useState<Example[]>([]);
+  useEffect(() => {
+    let alive = true;
+    void (async () => {
+      let r = await api<Example[]>(`/api/examples?lang=${locale}`);
+      if (r.ok && !r.data.length && locale !== "ar") r = await api<Example[]>("/api/examples?lang=ar");
+      if (alive && r.ok) setExamples(r.data);
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [locale]);
+
+  // Classic needs a live template for this child's look (in the chosen story, else in any); older APIs don't say
+  const known = themes.some((th) => th.classic !== undefined);
+  const classicOk = !known || classicStyles(themes, classicVariant(child), theme).size > 0;
+  const offers = LINES.map((l) => offer(catalog, l))
+    .filter((o): o is Offer => o !== null)
+    .map((o) => (o.line === "classic" ? { ...o, available: o.available && classicOk } : o));
+  const recommended: Line = offers.some((o) => o.line === "classic" && o.available) ? "classic" : "magic";
+  const [picked, setPicked] = useState<Line | null>(initial);
+  const line = offers.some((o) => o.line === picked && o.available) ? (picked as Line) : recommended;
+
+  const look = variantOf(child);
+  const example = pickExample(examples, theme ?? examples[0]?.theme, look);
+  const pages = storyPages(example, 6);
+  const strip = storyPages(example, 3, 1);
 
   return (
     <Frame
@@ -42,57 +79,39 @@ export function LineStep({
         </Button>
       }
     >
-      <Lead title={t("line.title", { name: child.name })} body={t("line.body")} />
-      <div className="grid gap-3 sm:grid-cols-2" role="radiogroup" aria-label={tc("title")}>
-        {(["magic", "classic"] as const).map((value) => {
-          const p = catalog?.products.find((x) => x.slug === PRODUCT[value]);
-          const on = line === value;
-          const best = value === "magic";
-          return (
-            <button
-              key={value}
-              type="button"
-              role="radio"
-              aria-checked={on}
-              onClick={() => setLine(value)}
-              className={`relative flex flex-col gap-3 rounded-3xl p-4 text-start transition ${best ? "bg-night-900 text-paper" : "bg-paper-raised text-ink"} ${on ? "ring-[3px] ring-amber-500" : best ? "" : "border-[1.5px] border-line"}`}
-            >
-              {best && (
-                <span className="absolute end-4 -top-2.5 rounded-full bg-amber-500 px-2.5 py-0.5 text-caption font-bold text-night-950">
-                  {tc("best")}
-                </span>
-              )}
-              <div className="flex items-center justify-between gap-2">
-                <strong className={`font-display text-[20px] ${best ? "text-amber-300" : "text-night-900"}`}>
-                  {locale === "ar" ? p?.name_ar : p?.name_en}
-                </strong>
-                <Check on={on} />
+      <Lead title={t("line.title", { name: child.name })} body={t("line.lead")} />
+      <LineCards
+        offers={offers}
+        value={line}
+        onChange={setPicked}
+        currency={catalog?.currency ?? "ILS"}
+        pages={{ classic: pages[0], magic: pages[3] ?? pages[1] }}
+      />
+      <LineChecklist line={line} catalog={catalog} />
+      {example && strip.length > 0 && (
+        <section aria-labelledby="line-pages" className="flex flex-col gap-2">
+          <h2 id="line-pages" className="text-body font-semibold text-night-900">
+            {t("line.realPages", { look: tv(example.variant) })}
+          </h2>
+          <div className="grid grid-cols-3 gap-2">
+            {strip.map((p) => (
+              <div key={p.beat} className="relative aspect-square overflow-hidden rounded-xl bg-paper-sunk">
+                <ExampleImage
+                  page={p}
+                  alt={p.text ?? ""}
+                  sizes="120px"
+                  className="absolute inset-0 size-full object-cover"
+                />
               </div>
-              <p className={`text-small ${best ? "text-night-100" : "text-ink-muted"}`}>{tc(`${value}.tagline`)}</p>
-              <ul className="flex flex-col gap-1.5 text-small">
-                {(tc.raw(`${value}.points`) as string[]).map((point) => (
-                  <li key={point} className="flex items-start gap-2">
-                    <span aria-hidden="true" className={best ? "text-amber-300" : "text-success"}>
-                      ✓
-                    </span>
-                    {point}
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-auto flex flex-wrap gap-1.5 text-caption">
-                {p?.variants.map((v) => (
-                  <span
-                    key={v.sku}
-                    className={`rounded-full px-2.5 py-1 ${best ? "bg-night-800 text-night-100" : "bg-paper-sunk"}`}
-                  >
-                    {tf(v.options.format)} · {v.price ? money(v.price, currency, locale) : "—"}
-                  </span>
-                ))}
-              </div>
-            </button>
-          );
-        })}
-      </div>
+            ))}
+          </div>
+          <p className="text-caption text-ink-muted">
+            {line === "classic"
+              ? t("line.classicPages", { name: child.name })
+              : t("line.magicPages", { name: child.name })}
+          </p>
+        </section>
+      )}
     </Frame>
   );
 }
