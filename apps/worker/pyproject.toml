@@ -7,6 +7,7 @@ dependencies = [
     "qamra-core",
     "qamra-ai",
     "qamra-pdf",
+    "qamra-workbook",  # the family book and activity books are rendered by worker jobs
     "rq>=2.12",
     "redis>=6",
     "structlog>=25",
