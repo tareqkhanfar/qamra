@@ -1,0 +1,42 @@
+<div class="seqpg mode-{{ d.mode }}">
+{% if d.mode == 'moves' %}
+  <div class="moves">
+    {% for m in d.moves %}
+    <div class="move fcard lvl{{ m.level }}">
+      <div class="move-head"><span class="pill-num">{{ m.n }}</span>{{ stars(m.level) }}</div>
+      <div class="move-pic">{{ m.pic }}</div>
+      <b>{{ m.text }}</b>
+    </div>
+    {% if not loop.last %}<span class="move-arrow" aria-hidden="true">{{ icon('check') }}</span>{% endif %}
+    {% endfor %}
+    <div class="move mine fcard">
+      <div class="move-head"><span class="pill-num">؟</span>{{ stars(2) }}</div>
+      <div class="move-pic draw-here"></div>
+      <b>{{ d.mine }}</b>
+    </div>
+  </div>
+{% elif d.mode == 'story' %}
+  <div class="panels">
+    {% for c in d.cards %}
+    <div class="panel fcard">
+      <span class="step-num">{% if solved %}{{ book.num(c.n) }}{% endif %}</span>
+      <div class="panel-pic">{{ c.pic }}</div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="ending fcard lvl2"><span class="label">{{ stars(2) }}{{ d.ending }}</span><div class="ending-draw"></div></div>
+{% else %}
+  <div class="daybar"><span>{{ icon('sun') }}{{ d.from_to[0] }}</span><i></i><span>{{ d.from_to[1] }}{{ icon('moon') }}</span></div>
+  <div class="daycards n{{ d.cards|length }}">
+    {% for c in d.cards %}
+    <div class="daycard fcard lvl{{ c.level }}">
+      <span class="step-num">{% if solved %}{{ book.num(c.n) }}{% endif %}</span>
+      <span class="dc-level">{{ stars(c.level) }}</span>
+      <div class="dc-pic">{{ c.pic }}</div>
+      <b>{{ c.text }}</b>
+    </div>
+    {% endfor %}
+  </div>
+{% endif %}
+</div>

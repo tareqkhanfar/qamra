@@ -11,6 +11,7 @@ seven different days in the challenge.
 from __future__ import annotations
 
 import math
+import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
@@ -27,6 +28,7 @@ from qamra_workbook.render.pages.journey import MEDAL, _ray, _star
 from qamra_workbook.render.pages.motor import nested_picture
 from qamra_workbook.render.pages.thinking import shape_kind
 from qamra_workbook.render.registry import Built, PageContext, page_type
+from qamra_workbook.render.sections import FAMILY as FAMILY_SECTIONS
 from qamra_workbook.render.sections import section_style
 from qamra_workbook.render.spec import Family, Member
 
@@ -53,9 +55,11 @@ CORE_BADGES = (
 
 
 def section_badges(ctx: PageContext) -> list[Badge]:
-    """The adventures' stamps a page lists in `stamps`: [{section, label}], drawn in the section's style."""
+    """The adventures' stamps a page lists in `stamps`: [{section, label}], drawn in the section's style;
+    without `stamps`, every adventure of the book under its own name."""
     out = []
-    for raw in ctx.page.params.get("stamps", []):
+    default = [{"section": k} for k in FAMILY_SECTIONS if k not in ("front", "back")]
+    for raw in ctx.page.params.get("stamps", default):
         style = section_style(str(raw["section"]), ctx.book.product)
         out.append(Badge(style.id, str(raw.get("label", style.name_ar)), style.icon, style.color))
     return out
@@ -118,6 +122,54 @@ def seal(badge: Badge, *, filled: bool = True, css_class: str = "seal") -> Marku
     return Markup(f'<svg class="{css_class}" viewBox="0 0 40 40" aria-hidden="true">{body}</svg>')  # nosec B704
 
 
+def rosette(badge: Badge, *, filled: bool = True, css_class: str = "seal") -> Markup:
+    """One of the seven adventurer badges: a rosette with two ribbon tails (the adventures' stamps are round
+    seals, so the two kinds never look alike), or (not filled) the dashed slot it goes on."""
+    tails = "M15 24 L9.5 38 L13.4 36 L15.8 39.5 L20 26 Z M25 24 L30.5 38 L26.6 36 L24.2 39.5 L20 26 Z"
+    if filled:
+        body = (
+            draw.el("path", d=tails, fill=badge.color, stroke="#FFFFFF", stroke_width=0.9)
+            + draw.el("path", d=draw.star_points(20, 17, 16.5, 13.6, 18), fill=badge.color)
+            + draw.el("circle", cx=20, cy=17, r=12.2, fill="#FFFFFF")
+            + draw.el("circle", cx=20, cy=17, r=10.6, fill=badge.color)
+            + draw.el(
+                "svg",
+                art.glyph(badge.icon, "#FFFFFF", 2.2),
+                x=13,
+                y=10,
+                width=14,
+                height=14,
+                viewBox="0 0 24 24",
+            )
+        )
+    else:
+        ring: dict[str, float | str] = {
+            "fill": "#FFFFFF",
+            "stroke": badge.color,
+            "stroke_width": 0.9,
+            "stroke_dasharray": "2.2 1.8",
+        }
+        body = (
+            draw.el("path", d=tails, stroke_linejoin="round", opacity=0.55, **ring)
+            + draw.el("path", d=draw.star_points(20, 17, 16.3, 13.4, 18), stroke_linejoin="round", **ring)
+            + draw.el("circle", cx=20, cy=17, r=11, fill=badge.color, opacity=0.08)
+            + draw.el(
+                "g",
+                draw.el(
+                    "svg",
+                    art.glyph(badge.icon, badge.color, 2),
+                    x=14,
+                    y=11,
+                    width=12,
+                    height=12,
+                    viewBox="0 0 24 24",
+                ),
+                opacity=0.4,
+            )
+        )
+    return Markup(f'<svg class="{css_class}" viewBox="0 0 40 40" aria-hidden="true">{body}</svg>')  # nosec B704
+
+
 def uri(path: Path | None) -> str:
     return path.resolve().as_uri() if path is not None else ""
 
@@ -139,11 +191,13 @@ def members_line(members: Sequence[Member]) -> str:
 
 @page_type("passport")
 def passport(ctx: PageContext) -> Built:
+    """The passport card and two rows of slots: one stamp per adventure (numbered, in the book's order) and
+    the seven adventurer badges."""
     problems: list[str] = []
     family = family_of(ctx, problems)
-    badges = [*CORE_BADGES, *section_badges(ctx)]
-    if not 7 <= len(badges) <= 12:
-        problems.append(f"the passport page shows 7–12 stamp slots, not {len(badges)}")
+    stamps = section_badges(ctx)
+    if not 1 <= len(stamps) <= 12:
+        problems.append(f"the passport holds 1–12 adventure stamps, not {len(stamps)}")
     data = {
         "photo": uri(ctx.assets.character),
         "name": ctx.book.child.name,
@@ -151,7 +205,12 @@ def passport(ctx: PageContext) -> Built:
         "city": family.city if family else "",
         "date": ctx.book.date_ar(),
         "slots": [
-            {"label": ctx.text(b.label), "svg": seal(b, filled=False), "color": b.color} for b in badges
+            {"label": ctx.text(b.label), "svg": seal(b, filled=False), "color": b.color, "n": ctx.num(i)}
+            for i, b in enumerate(stamps, start=1)
+        ],
+        "badges": [
+            {"label": ctx.text(b.label), "svg": rosette(b, filled=False), "color": b.color}
+            for b in CORE_BADGES
         ],
     }
     return Built(data, None, problems)
@@ -172,7 +231,20 @@ def _hill(y: float, amp: float, phase: float, color: str, w: float, h: float) ->
 
 
 # the picture behind the family on an adventure's opening spread
-SCENES = {"home": "house", "market": "stall", "chef": "kitchen", "nature": "tree", "day": "sun"}
+SCENES = {
+    "home": "house",
+    "market": "stall",
+    "chef": "kitchen",
+    "nature": "tree",
+    "day": "sun",
+    "responsible": "pot-plant",
+    "feelings": "heart",
+    "talk": "book",
+    "jobs": "briefcase",
+    "shop": "shopping-bag",
+    "games": "dice",
+    "act": "theatre",
+}
 
 
 def spread_size(ctx: PageContext) -> tuple[float, float]:
@@ -345,6 +417,8 @@ SHAPES_AR = {"circle": "دائرية", "square": "مربعة", "triangle": "مث
 @page_type("scavenger-hunt")
 def scavenger_hunt(ctx: PageContext) -> Built:
     params = ctx.page.params
+    if "items" in params:  # a checklist of named things to find (nature, the neighbourhood's heroes)
+        return checklist_hunt(ctx)
     if "colors" in params:  # a color hunt («كنز الألوان»)
         from qamra_workbook.render.pages.adventures import color_hunt  # (adventures imports this module)
 
@@ -374,6 +448,37 @@ def scavenger_hunt(ctx: PageContext) -> Built:
         "cards": cards,
         "count": [ctx.num(i + 1) for i in range(find + extra)],
         "found_q": ctx.text("كم شيئًا {وجدت/وجدتِ}؟"),
+    }
+    return Built(data, None, problems)
+
+
+def checklist_hunt(ctx: PageContext) -> Built:
+    """Things to find and tick: ⭐ `items`, ⭐⭐ `challenge_items` (each a picture id or {picture, label}),
+    with a box to count how many times (`count: true`) and a place to compare two finds (`compare`)."""
+    params = ctx.page.params
+
+    def entry(raw: Any, level: int) -> dict[str, Any]:
+        pic = str(raw["picture"] if isinstance(raw, Mapping) else raw)
+        label = str(raw.get("label", "")) if isinstance(raw, Mapping) else ""
+        return {
+            "pic": ctx.pic(pic),
+            "word": ctx.text(label) or strip_tashkeel(picture(pic).word_ar),
+            "level": level,
+        }
+
+    items = [entry(x, 1) for x in params.get("items", [])] + [
+        entry(x, 2) for x in params.get("challenge_items", [])
+    ]
+    problems = [] if 4 <= len(items) <= 9 else [f"a checklist hunt has 4–9 things, not {len(items)}"]
+    data = {
+        "mode": "checklist",
+        "finds": items,
+        "count": bool(params.get("count", False)),
+        "compare": ctx.text(str(params.get("compare", ""))),
+        "character": uri(ctx.assets.character),
+        "found_q": ctx.text("كم شيئًا {وجدت/وجدتِ}؟"),
+        "total": [ctx.num(i + 1) for i in range(len(items))],
+        "safety": ctx.text(str(params["safety"])) if params.get("safety") else "",
     }
     return Built(data, None, problems)
 
@@ -474,9 +579,40 @@ def step_picture(kind: str) -> Markup:
                 + f'<g transform="rotate(-38 11 10)">{nested_picture("olive-oil", 0, -2, 23)}</g>'
                 + draw.path("M17.5 16.5 Q19.2 20 19.8 23.5", stroke="#D9BE3A", width=1.4)
             )
+        case "cut":  # the grown-up's knife: fruit on a board
+            board = draw.el(
+                "rect", x=3, y=22, width=34, height=15, rx=4, fill="#E7B070", stroke=OUTLINE, stroke_width=0.9
+            )
+            knife = draw.el(
+                "svg", art.glyph("knife", OUTLINE, 1.8), x=22, y=2, width=16, height=16, viewBox="0 0 24 24"
+            )
+            body = board + nested_picture("apple", 5, 8, 17) + nested_picture("banana", 16, 14, 15) + knife
+        case "mix":
+            body = (
+                nested_picture("fruit-bowl", 2, 8, 32)
+                + f'<g transform="rotate(35 30 12)">{nested_picture("spoon", 22, -2, 20)}</g>'
+            )
         case _:
             body = nested_picture(kind, 3, 3, 34)
     return draw.svg(40.0, 40.0, body, "step-pic")
+
+
+def safety_items(ctx: PageContext, raw: Any) -> list[dict[str, str]]:
+    """The safety box: a list of {icon, text}, or the activity's safety note split into its sentences, each
+    with the icon its words call for (the knife and heat, allergies, washing hands)."""
+    if isinstance(raw, list):
+        return [{"icon": str(x.get("icon", "shield")), "text": ctx.text(str(x["text"]))} for x in raw]
+    out = []
+    for sentence in (x.strip() for x in re.split(r"(?<=[.!؟])\s+", str(raw)) if x.strip()):
+        icon = "shield"
+        if any(w in sentence for w in ("سكين", "السكين", "النار", "يقطّعون", "الفرن")):
+            icon = "knife"
+        elif "حساسي" in sentence:
+            icon = "alert"
+        elif any(w in sentence for w in ("نغسل", "اغسلوا")):
+            icon = "drop"
+        out.append({"icon": icon, "text": ctx.text(sentence.rstrip("."))})
+    return out
 
 
 @page_type("recipe-steps")
@@ -485,19 +621,16 @@ def recipe_steps(ctx: PageContext) -> Built:
     ingredients = list(params.get("ingredients", []))
     steps = list(params.get("steps", []))
     shown = [int(x) for x in params.get("shown", range(1, len(steps) + 1))]
-    raw_safety = params.get("safety", [])
-    safety = (
-        [{"icon": str(s.get("icon", "shield")), "text": ctx.text(str(s["text"]))} for s in raw_safety]
-        if isinstance(raw_safety, list)
-        else [{"icon": "shield", "text": ctx.text(str(raw_safety))}]
-    )
-    problems = []
-    if not 3 <= len(steps) <= 5:
-        problems.append(f"a recipe has 3–5 step cards, not {len(steps)}")
-    if sorted(shown) != list(range(1, len(steps) + 1)):
-        problems.append("`shown` must list every step number once")
-    elif shown == sorted(shown):
-        problems.append("the step cards are shown out of order, for the child to number")
+    safety = safety_items(ctx, params.get("safety", []))
+    variant = str(params.get("variant", "steps"))  # steps · count (count the pieces) · layers (a layered cup)
+    problems = [] if variant in ("steps", "count", "layers") else [f"no recipe variant {variant!r}"]
+    if variant != "layers":
+        if not 3 <= len(steps) <= 5:
+            problems.append(f"a recipe has 3–5 step cards, not {len(steps)}")
+        if sorted(shown) != list(range(1, len(steps) + 1)):
+            problems.append("`shown` must list every step number once")
+        elif shown == sorted(shown):
+            problems.append("the step cards are shown out of order, for the child to number")
     if not 1 <= len(ingredients) <= 4:
         problems.append(f"a recipe counts 1–4 ingredients, not {len(ingredients)}")
     words = " ".join(str(i.get("name", "")) for i in ingredients)
@@ -513,15 +646,20 @@ def recipe_steps(ctx: PageContext) -> Built:
         cards.append(
             {"pic": step_picture(str(step["picture"])), "text": ctx.text(str(step["text"])), "n": number}
         )
+    layers, more = int(params.get("layers", 2)), int(params.get("challenge_layers", 2))
     data = {
+        "variant": variant,
         "ingredients": [
             {
                 "pic": ctx.pic(str(i["picture"])),
+                "mini": ctx.pic(str(i["picture"]), css_class="pic mini"),
                 "name": ctx.text(str(i["name"])),
                 "count": int(i.get("count", 1)),
             }
             for i in ingredients
         ],
+        "cup": art_cup(layers, more) if variant == "layers" else Markup(""),
+        "layers": [{"n": ctx.num(k + 1), "level": 1 if k < layers else 2} for k in range(layers + more)],
         "cards": cards,
         "safety": safety,
         "count_label": ctx.text(str(params.get("count_label", "المكوّنات: {عُدّ/عُدّي} الملاعق"))),
@@ -531,7 +669,13 @@ def recipe_steps(ctx: PageContext) -> Built:
         "الترتيب: "
         + "، ".join(f"{ctx.num(n)} {ctx.text(str(steps[n - 1]['text']))}" for n in range(1, len(steps) + 1))
     ]
-    return Built(data, answer, problems)
+    return Built(data, answer if steps else None, problems)
+
+
+def art_cup(layers: int, more: int) -> Markup:
+    from qamra_workbook.render.pages.family_art import cup_svg
+
+    return cup_svg(layers, more)
 
 
 # ---- feelings thermometer ---------------------------------------------------------------------------------
@@ -773,7 +917,7 @@ def certificate_family(ctx: PageContext) -> Built:
         "members": ("مع " + members_line(family.members)) if family else "",
         "date": ctx.book.date_ar(),
         "character": uri(hero),
-        "badges": [seal(b, css_class="cert-seal") for b in CORE_BADGES],
+        "badges": [rosette(b, css_class="cert-seal") for b in CORE_BADGES],
         "star": _star,
         "ray": _ray,
         "medal": MEDAL,

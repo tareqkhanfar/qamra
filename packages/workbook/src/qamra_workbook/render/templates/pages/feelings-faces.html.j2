@@ -1,0 +1,13 @@
+<div class="facespg">
+  <div class="face-grid">
+    {% for f in d.faces %}
+    <div class="fface fcard lvl{{ f.level }}">
+      <span class="ff-level">{{ stars(f.level) }}</span>
+      <div class="ff-svg">{{ f.svg }}</div>
+      <b>{{ f.name }}</b>
+      <span class="ff-mirror"><span class="check-box"></span>{{ icon('eye') }}{{ d.mirror }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="my-face fcard"><span class="label">{{ icon('heart') }}{{ d.mine }}</span><div class="mf-circle"></div></div>
+</div>

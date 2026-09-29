@@ -15,7 +15,7 @@ from markupsafe import Markup, escape
 
 from qamra_workbook.pictures.model import scallop_d
 from qamra_workbook.render import art, draw
-from qamra_workbook.render.pages.family import CORE_BADGES, seal, section_badges
+from qamra_workbook.render.pages.family import CORE_BADGES, rosette, seal, section_badges
 from qamra_workbook.render.registry import Built, PageContext, page_type
 from qamra_workbook.render.spec import Numerals, format_number
 
@@ -26,14 +26,6 @@ REAL_MONEY = re.compile(
     r"شيكل|شيقل|شواقل|دينار|دنانير|دولار|يورو|₪|\$|€|\b(JOD|JD|NIS|ILS|USD)\b", re.IGNORECASE
 )
 
-REWARDS = (  # shape, word, color, text color
-    ("star", "رائع!", "#F7C84A", "#7A4E00"),
-    ("heart", "{أحسنت/أحسنتِ}!", "#E4769D", "#FFFFFF"),
-    ("sun", "{بطل/بطلة}!", "#F08A3E", "#FFFFFF"),
-    ("cloud", "شكرًا!", "#2E9FD6", "#FFFFFF"),
-    ("burst", "ممتاز!", "#8C6CCB", "#FFFFFF"),
-    ("flower", "هيّا!", "#2FA36B", "#FFFFFF"),
-)
 CHALLENGE_DAYS = 7  # one star sticker per day of «تحدي العائلة الكبير»
 ROUTINE = (  # the plan's routine icons: waking, breakfast, teeth, clothes, play, reading, sleep
     ("sun", "أستيقظ", "#F2B33D"),
@@ -43,41 +35,18 @@ ROUTINE = (  # the plan's routine icons: waking, breakfast, teeth, clothes, play
     ("ball", "ألعب", "#2FA36B"),
     ("book", "أقرأ", "#8C6CCB"),
     ("moon", "أنام", "#3C468F"),
+    # the evening's (the routine builder has a morning and an evening row)
+    ("bath", "أستحمّ", "#23A094"),
+    ("toothbrush", "أنظّف أسناني", "#2E9FD6"),
+    ("puzzle", "أرتّب ألعابي", "#D9486B"),
 )
-
-
-def _shape(kind: str, cx: float, cy: float, r: float) -> str:
-    """The outline of a reward sticker (path data)."""
-    match kind:
-        case "star":
-            return draw.star_points(cx, cy + r * 0.08, r, r * 0.62, 5)
-        case "heart":
-            return draw.heart_path(cx, cy + r * 0.04, r * 2.05, r * 1.85)
-        case "sun":
-            return draw.star_points(cx, cy, r, r * 0.84, 12)
-        case "cloud":
-            return scallop_d(cx, cy, r, r * 0.8, 9, 0.62)
-        case "burst":
-            return draw.star_points(cx, cy, r, r * 0.8, 16)
-        case _:
-            return scallop_d(cx, cy, r * 0.96, r * 0.96, 6, 0.9)
-
-
-def reward_sticker(kind: str, color: str) -> Markup:
-    """A reward sticker (the word is set over it in HTML) with its kiss-cut line."""
-    d = _shape(kind, 20, 20, 16.5)
-    body = (
-        draw.el("path", d=_shape(kind, 20, 20, 18.6), fill="none", stroke=CUT, stroke_width=0.35)
-        + draw.el("path", d=d, fill="#FFFFFF", stroke="#FFFFFF", stroke_width=2.4, stroke_linejoin="round")
-        + draw.el("path", d=d, fill=color, stroke_linejoin="round")
-    )
-    return Markup(f'<svg class="reward-art" viewBox="0 0 40 40" aria-hidden="true">{body}</svg>')  # nosec B704
+CHORE_STARS = 21  # three tasks a day for a week on the chore chart
 
 
 def cut_ring(r: float = 18.8) -> Markup:
     """A round kiss-cut line, in a 40-unit box drawn at the sticker's size (the passport slot is 27 mm with a
     24.8 mm ring; the cut is 25.4 mm across, so a stuck stamp covers its slot)."""
-    body = draw.el("circle", cx=20, cy=20, r=r, fill="none", stroke=CUT, stroke_width=0.5)
+    body = draw.el("circle", cx=20, cy=20, r=r, fill="none", stroke=CUT, stroke_width=0.5, class_="cut")
     return Markup(f'<svg class="cut" viewBox="0 0 40 40" aria-hidden="true">{body}</svg>')  # nosec B704
 
 
@@ -93,6 +62,7 @@ def day_star(label: str) -> Markup:
             stroke=CUT,
             stroke_width=0.5,
             stroke_linejoin="round",
+            class_="cut",
         )
         + draw.el("path", d=d, fill="#F7C84A", stroke="#FFFFFF", stroke_width=1.6, stroke_linejoin="round")
         + draw.el("circle", cx=20, cy=22, r=6.2, fill="#FFFFFF")
@@ -101,32 +71,57 @@ def day_star(label: str) -> Markup:
     return Markup(f"{svg}<b>{escape(label)}</b>")  # nosec B704
 
 
-MAX_STAMPS = 18  # three rows of six at the passport slot's size
+def chore_star() -> Markup:
+    """A small reward star for the chore chart's day slots, with its kiss-cut line."""
+    body = draw.el(
+        "path",
+        d=draw.star_points(20, 21, 19.4, 10.4),
+        fill="none",
+        stroke=CUT,
+        stroke_width=0.8,
+        stroke_linejoin="round",
+        class_="cut",
+    ) + draw.el(
+        "path",
+        d=draw.star_points(20, 21, 17, 8.8),
+        fill="#F7C84A",
+        stroke="#FFFFFF",
+        stroke_width=2.2,
+        stroke_linejoin="round",
+    )
+    return Markup(f'<svg class="chore-art" viewBox="0 0 40 40" aria-hidden="true">{body}</svg>')  # nosec B704
+
+
+def rosette_sticker(badge_svg: Markup) -> Markup:
+    """A badge rosette on its white sticker, with an oval kiss-cut line around the ribbons."""
+    back = draw.el("ellipse", cx=20, cy=19.8, rx=18.2, ry=19.8, fill="#FFFFFF")
+    cut = draw.el(
+        "ellipse", cx=20, cy=19.8, rx=18.8, ry=20.4, fill="none", stroke=CUT, stroke_width=0.5, class_="cut"
+    )
+    return Markup(  # nosec B704
+        f'<svg class="rosette-back" viewBox="0 0 40 40" aria-hidden="true">{back}{cut}</svg>{badge_svg}'
+    )
 
 
 @page_type("badge-sticker-sheet", frame="sheet")
 def badge_sticker_sheet(ctx: PageContext) -> Built:
-    """The seven badges and each adventure's stamp; an adventure whose stamp is one of the badges (the chef
-    earns «طبّاخ صغير») shares its sticker."""
-    labels: set[str] = set()
-    badges = []
-    for badge in [*CORE_BADGES, *section_badges(ctx)]:
-        label = ctx.text(badge.label)
-        if label not in labels:
-            labels.add(label)
-            badges.append((badge, label))
-    problems = (
-        [] if len(badges) <= MAX_STAMPS else [f"the sheet holds {MAX_STAMPS} stamps, not {len(badges)}"]
-    )
+    """One sticker for every passport slot (each adventure's stamp, then the seven badges), the reward stars
+    for the chore chart and the 7-day challenge, and the routine icons; every kiss-cut line is a die line."""
+    stamps = section_badges(ctx)
+    problems = [] if len(stamps) <= 12 else [f"the sheet holds 12 adventure stamps, not {len(stamps)}"]
     data = {
-        "badges": [{"svg": seal(b), "label": label, "color": b.color} for b, label in badges],
-        "rewards": [
-            {"svg": reward_sticker(k, c), "word": ctx.text(w), "kind": k, "ink": ink}
-            for k, w, c, ink in REWARDS
+        "stamps": [
+            {"svg": seal(b), "label": ctx.text(b.label), "color": b.color, "n": ctx.num(i)}
+            for i, b in enumerate(stamps, start=1)
         ],
+        "badges": [
+            {"svg": rosette_sticker(rosette(b)), "label": ctx.text(b.label), "color": b.color}
+            for b in CORE_BADGES
+        ],
+        "chores": [chore_star() for _ in range(int(ctx.page.params.get("chore_stars", CHORE_STARS)))],
         "days": [day_star(ctx.num(i + 1)) for i in range(CHALLENGE_DAYS)],
         "routine": [{"icon": i, "label": t, "color": c} for i, t, c in ROUTINE],
-        "cut": cut_ring(),
+        "cut": cut_ring(19.4),
         "owner": ctx.book.child.name,
     }
     return Built(data, None, problems)

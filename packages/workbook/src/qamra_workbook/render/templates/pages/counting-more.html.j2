@@ -1,0 +1,60 @@
+{# the counting modes of the whole family book (render/pages/family_count.py) #}
+{% if d.mode == 'pictures' %}
+  {% for row in d.rows %}
+  <div class="pc-row fcard lvl{{ row.level }}">
+    <span class="row-level">{{ stars(row.level) }}</span>
+    <div class="pc-art">{{ row.art }}</div>
+    <div class="pc-circles">{% for c in row.circles %}<span></span>{% endfor %}</div>
+  </div>
+  {% endfor %}
+  <div class="pc-hint">{{ icon('crayon') }}{{ d.hint }}</div>
+{% elif d.mode == 'things' %}
+  <div class="tally-card fcard things">
+    {% for c in d.columns %}
+    <div class="tally-col lvl{{ c.level }}" style="--pc: var(--c)">
+      <span class="col-level">{% if c.level == 2 %}{{ stars(2) }}{% endif %}</span>
+      <div class="tally-squares">{% for s in d.squares %}<span></span>{% endfor %}</div>
+      <div class="thing-pic">{{ c.pic }}</div>
+      <b>{{ c.name }}</b>
+      <span class="how-many"><small>كم؟</small><i></i></span>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="tally-q fcard"><span class="label">{{ icon('star') }}{{ d.question }}</span></div>
+{% elif d.mode == 'table' %}
+  <div class="dining fcard">
+    <div class="dtable" aria-hidden="true"></div>
+    <div class="seats n{{ d.seats|length }}">
+      {% for s in d.seats %}
+      <div class="seat{{ ' me' if s.child }}">
+        <b data-fit="7.5">{{ s.name }}</b>
+        <div class="setting"><span class="plate-spot"></span><span class="lvl2-spot spoon">{{ icon('spoon') }}</span><span class="lvl2-spot cup">{{ icon('cup') }}</span></div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="table-legend"><span>{{ stars(1) }}صحن لكل واحد</span><span>{{ stars(2) }}صحن وملعقة وكأس</span></div>
+  <div class="tally-q fcard"><span class="label">{{ icon('plate') }}{{ d.how_many }}</span><span class="cmp-count"><i></i></span></div>
+{% elif d.mode == 'money' %}
+  {% for row in d.rows %}
+  <div class="purse fcard lvl{{ row.level }}">
+    <span class="row-level">{{ stars(row.level) }}</span>
+    <div class="purse-pieces">{% for pc in row.pieces %}{{ pc }}{% endfor %}</div>
+    <span class="purse-eq">=</span>
+    <span class="purse-total"><small>{{ d.total_q }}</small><i></i></span>
+  </div>
+  {% endfor %}
+{% else %}
+  {% for row in d.rows %}
+  <div class="chg fcard lvl{{ row.level }}">
+    <span class="row-level">{{ stars(row.level) }}</span>
+    <div class="chg-item"><div class="chg-pic">{{ row.item }}</div>{% if row.price %}<span class="chg-price">{{ row.price }}</span>{% endif %}</div>
+    <div class="chg-paid"><small>{{ 'دفعنا' }}</small><div class="chg-pieces">{% for pc in row.paid %}{{ pc }}{% endfor %}</div></div>
+    {% if row.level == 1 %}
+    <span class="purse-eq">=</span><span class="purse-total"><small>كم دفعنا؟</small><i></i></span>
+    {% else %}
+    <div class="chg-back"><small>الباقي: {{ 'لوّني' if book.child.gender == 'f' else 'لوّن' }} القطع</small><div class="chg-pieces outline">{% for pc in row.pieces %}{{ pc }}{% endfor %}</div></div>
+    {% endif %}
+  </div>
+  {% endfor %}
+{% endif %}

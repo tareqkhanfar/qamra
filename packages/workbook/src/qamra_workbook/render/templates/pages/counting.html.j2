@@ -1,5 +1,7 @@
-<div class="countpg">
-{% if d.mode == 'tally' %}
+<div class="countpg mode-{{ d.mode }}">
+{% if d.mode in ['pictures', 'things', 'table', 'money', 'change'] %}
+{% include "pages/counting-more.html.j2" %}
+{% elif d.mode == 'tally' %}
   <div class="tally-card fcard">
     {% for c in d.columns %}
     <div class="tally-col lvl{{ c.level }}" style="--pc: {{ c.paint }}">

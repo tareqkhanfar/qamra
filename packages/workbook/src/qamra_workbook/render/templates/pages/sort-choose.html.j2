@@ -1,7 +1,30 @@
-<div class="sortpg">
+{% if d.mode == 'budget' %}
+<div class="budgetpg">
+  <div class="wallets">
+    {% for w in d.wallets %}
+    <div class="wallet fcard lvl{{ w.level }}"><span class="row-level">{{ stars(w.level) }}</span><span class="w-ico">{{ icon('bag') }}</span>
+      <div class="w-body"><small>معي</small><b>{{ w.total }}</b></div><div class="purse-pieces">{% for pc in w.pieces %}{{ pc }}{% endfor %}</div></div>
+    {% endfor %}
+  </div>
+  <div class="shelf fcard">{% for pr in d.products %}<div class="shelf-item"><span class="circle-me"></span><div class="shelf-pic">{{ pr.pic }}</div><span class="chg-price">{{ pr.price }}</span></div>{% endfor %}</div>
+  <div class="bought fcard"><span class="label">{{ icon('cart') }}{{ d.bought }}</span><div class="write-line"></div><span class="purse-total"><small>المجموع</small><i></i></span></div>
+  <div class="bought fcard lvl2"><span class="label">{{ stars(2) }}{{ d.second }}</span><div class="write-line"></div><span class="purse-total"><small>المجموع</small><i></i></span></div>
+</div>
+{% elif d.mode == 'choice' %}
+<div class="choicepg">
+  {% for sit in d.situations %}
+  <div class="situation fcard">
+    <div class="sit-top"><div class="sit-scene">{{ sit.pic }}</div><b>{{ sit.text }}</b></div>
+    <div class="options">{% for o in sit.options %}<span class="option"><i class="check-box"></i><span class="opt-ico">{{ icon(o.icon) }}</span>{{ o.text }}</span>{% endfor %}</div>
+    <div class="my-solution"><span class="label">{{ stars(2) }}{{ d.mine }}</span><div class="write-line"></div></div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="sortpg n{{ d.groups|length }}">
   <div class="sort-items">
     {% for it in d.things %}
-    <div class="sort-item fcard"><div class="sort-pic">{{ it.pic }}</div><small>{{ it.word }}</small><span class="sort-dot"></span></div>
+    <div class="sort-item fcard{{ ' lvl2' if d.levels[loop.index0] == 2 }}"><div class="sort-pic">{{ it.pic }}</div><small>{{ it.word }}</small><span class="sort-dot"></span></div>
     {% endfor %}
   </div>
   <div class="sort-gap" aria-hidden="true">{{ icon('pencil', 'ico sort-pencil') }}</div>
@@ -9,9 +32,10 @@
     {% for g in d.groups %}
     <div class="sort-group fcard" style="--gc: {{ g.color or p.style.color }}">
       <span class="sort-dot"></span>
-      {% if g.color %}<div class="sort-basket">{{ d.basket }}<span class="basket-chip">{{ g.mark }}</span></div>{% else %}<div class="sort-mark">{{ g.mark }}</div>{% endif %}
-      <b>{{ g.label }}</b>
+      {% if g.basket %}<div class="sort-basket">{{ d.basket }}<span class="basket-chip">{{ g.mark }}</span></div>{% else %}<div class="sort-mark">{{ g.mark }}</div>{% endif %}
+      <b>{{ g.label }}</b>{% if g.level == 2 %}<span class="group-level">{{ stars(2) }}</span>{% endif %}
     </div>
     {% endfor %}
   </div>
 </div>
+{% endif %}

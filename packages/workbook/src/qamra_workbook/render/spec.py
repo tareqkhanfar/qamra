@@ -353,6 +353,18 @@ OPENER_ICONS = {
     "price-tags": "shop",
     "shopping-list": "cart",
     "recipe-steps": "chef",
+    # the whole family book's page types (W7)
+    "sequence-cards": "pattern",
+    "routine-builder": "clock",
+    "picture-talk": "eye",
+    "feelings-faces": "heart",
+    "situation-feeling-match": "puzzle",
+    "feelings-thermometer": "heart",
+    "story-finish": "book",
+    "chore-chart": "check-list",
+    "nature-bingo": "leaf",
+    "interview-template": "speaker",
+    "family-game-cards": "dice",
 }
 
 

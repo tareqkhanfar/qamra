@@ -1,0 +1,24 @@
+<div class="routinepg">
+  <div class="routine-parts">
+    {% for part in d.parts %}
+    <div class="rpart fcard {{ part.key }}">
+      <div class="rpart-head"><span class="rpart-ico">{{ icon(part.icon) }}</span><b>{{ part.title }}</b></div>
+      <div class="rslots">
+        {% for s in part.slots %}
+        <div class="rslot lvl{{ s.level }}">
+          <span class="rslot-n">{{ s.n }}</span>
+          <span class="rslot-box" style="width: {{ d.slot_mm }}mm; height: {{ d.slot_mm }}mm"><small>{{ d.stick }}</small></span>
+          {% if s.level == 2 %}<span class="rslot-lvl">{{ stars(2) }}</span>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="rweek fcard">
+    <span class="label">{{ icon('check') }}{{ d.track }}</span>
+    <div class="rweek-days">
+      {% for day in d.week %}<div class="rday"><small>{{ day }}</small><span class="rtick sun">{{ icon('sun') }}</span><span class="rtick moon">{{ icon('moon') }}</span></div>{% endfor %}
+    </div>
+  </div>
+</div>

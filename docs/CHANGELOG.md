@@ -13,6 +13,20 @@
 - **Gift orders:** a printable packing slip without prices, with the card message. The print-batch manifest carries `gift` and `gift_message`.
 - **E2E tests:** Playwright flows in `tests/e2e/`, with test-only fixtures that the settings refuse in production (`docs/e2e.md`). Migration `ab04012fadad`.
 
+## «مغامراتي مع عائلتي», the whole book (Addendum 7, W7) (2026-09-29)
+
+- **The whole book from the plan:** `uv run python -m qamra_workbook.render.family --book --size both` renders all 112 pages, the cover and the insert sheets, personalized for the sample child and family.
+  - The front pages: the title page (the child in the middle of the family), the adventures map, the passport with a slot for each of the 12 adventure stamps and the 7 badges, «عائلتي» (a portrait for each of 1–6 members) and «هذا أنا» (repeated at the end as «هذا أنا الآن»).
+  - Adventures 3–12 and the back pages (the 7-day challenge and the certificate).
+  - New page types: title page, contents map, «عائلتي», sequence cards (the day, a story, a chain of moves), routine builder, chore chart, nature bingo, picture talk, feelings faces, situation–feeling match, finish the story, the interview, family game night (memory and scoreboard), and the cover.
+  - New variants of the existing types: a checklist hunt, counting pictures, things, the family table, money and change («الباقي» at ⭐⭐), fruit colors, weather, toy boxes and six jobs to sort, choosing within a budget or the kindest solution, recipes that count pieces or layer a cup, a blank shop, one-entry and day-by-day journals, and nine drawing frames.
+  - 30 new pictures in the house style (nature, weather, the routine, toys, the jobs' tools, the recipes, the games).
+- **The inserts as print files:** the sticker sheet (a sticker for every passport slot, 21 chore stars, 7 day stars, 10 routine icons) and five card-stock sheets (play money «للعب فقط» with blank price tags, recipe step cards, memory cards, question cards, role cards, finger puppets).
+  - Every cut and kiss-cut line is on the optional-content layer «CutContour»; each file also comes as `…-die.pdf` with the die lines alone. The cards' color runs 1.5 mm past the cut.
+- **Order-time render:** `qamra_worker.jobs.family_book.render_family_item(item_id)` renders one order's book from the child's approved character (no new AI cost), stores the interior, cover and inserts like the story books with every file's preflight, and leaves the book `in_review` for the print approval.
+- **Plan:** render params for every page, the cover and the insert sheets are in `content/family-book/plan.yaml`; draft texts are marked `# draft: educator review`. The interview and «حكايات زمان» now go to a grown-up (`{adult}`), not any family member.
+- **Checks:** 112 pages at both sizes, the cover and all inserts pass preflight (fonts embedded, bleed, no text in the safe margin). Tests cover every page and sheet building from the plan, 1 to 6 members, a boy and a girl, a child raised by a grandmother only, a father only, the numerals and the die layer.
+
 ## The activity-book pages (Addendum 9, WorkbookProduct) (2026-09-29)
 
 - **`/workbooks/[product]`:** one template for «دوسية التأسيس», «رحلتي الأولى للتعلّم» and «مغامراتي مع عائلتي».

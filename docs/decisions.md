@@ -415,3 +415,11 @@ Verified prices and parameters are listed in `docs/plans/addendum-03.md` §1, wi
 - **Cover and page composition:** page prompts ask for a calm top quarter (a third on the cover) for the text box. Faces stay out of the outer 6%, which is roughly the bleed plus a margin.
 - **Interior page count is not yet padded to a multiple of 4** (it is currently title + 12 + keepsake = 14). Padding rules depend on the print partner's binding.
 - **Recognizability metric (Phase 0):** a Claude vision judge compares each page with the approved character sheet. This is a proxy until a commercially licensed face-similarity model is chosen for the admin QA screen.
+
+## «مغامراتي مع عائلتي», the whole book (W7, 2026-09-29)
+
+- **Passport and stickers:** the passport has a slot for each of the 12 adventure stamps (round seals, numbered in the book's order) and each of the 7 adventurer badges (rosettes with ribbons, so the two kinds never look alike; an adventure and a badge may share a name, e.g. «طبّاخ صغير»). The sticker sheet has exactly one sticker per slot, sized to cover it, plus 21 chore stars, 7 day stars and 10 routine icons; the six word stickers («رائع!»…) were dropped for room.
+- **Card stock:** the kit is five card-stock sheets in two print files (money and price tags, recipe cards; memory cards, question cards, role cards, finger puppets), not two sheets: the cards stay big enough for small hands. The printer's quote should count five sheets.
+- **Die lines:** one layer «CutContour» (magenta #EC008C) in each insert PDF, plus the die alone as `…-die.pdf`. The printed dashed guides stay on the card stock for home cutting; the stickers print none.
+- **Grown-ups:** the job interview and «حكايات زمان» ask `{adult}` (a grown-up), not `{member}`, so a young sibling is never asked about their work or childhood.
+- **Order-time render:** a family book gets a `Book` row (on a hidden, inactive theme `family-book`, since every book has a theme) so it goes through the same print approval and print batches as the story books. An order without family details is drawn for the child with one neutral grown-up («أحد الكبار») and «عائلة <child's name>», never an assumed mother and father.

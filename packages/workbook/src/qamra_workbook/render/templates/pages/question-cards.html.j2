@@ -1,0 +1,16 @@
+<div class="sheet cards">
+  <header class="sheet-head">
+    <div class="sheet-title">{{ mascot('mascot') }}<div><h1>{{ p.title }}</h1><p>{{ p.instruction }}</p></div></div>
+    <div class="sheet-owner"><small>أسئلة العائلة</small><b data-fit="11">{{ d.owner }}</b></div>
+  </header>
+  <div class="card-grid questions">
+    {% for c in d.cards %}
+    <div class="ccard qcard lvl{{ c.level }}"><i class="guide" aria-hidden="true"></i><i class="cut cutline" aria-hidden="true"></i>
+      <span class="q-ico">{{ icon(c.icon) }}</span>
+      <b class="q-text">{{ c.text }}</b>
+      <span class="mem-level">{{ stars(c.level) }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  <footer class="sheet-foot"><span class="cut-note">{{ d.scissors }}اسحبوا بطاقة، واسألوا بالدور، وأجيبوا كلكم</span><span class="sheet-brand">{{ mascot('mascot') }}قمرة · بطاقات القصّ</span></footer>
+</div>

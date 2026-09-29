@@ -50,12 +50,13 @@ front:
     instruction: "هذا كتاب مغامراتك مع عائلة {family_name}"
   - type: toc
     title: خريطة المغامرات
-    instruction: ""
+    instruction: "{لوّن/لوّني} نجمة كل مغامرة {تنهيها/تنهينها}"  # draft: educator review
   - type: passport
     title: "جواز سفر {المغامر الصغير/المغامرة الصغيرة}"
     instruction: "{الصق/الصقي} ختمًا بعد كل مغامرة"
     parent:
       - "بعد كل مغامرة، {ساعدوه/ساعدوها} على لصق الختم من ورقة الملصقات، واحتفلوا معًا."
+      - "امنحوا {child} شارة من الشارات السبع كلما {رأيتموه/رأيتموها} {يفكّر/تفكّر} أو {يبدع/تبدع} أو {يساعد/تساعد}."  # draft: educator review
   - type: my-family
     title: عائلتي
     instruction: "{اكتب/اكتبي} أسماء عائلتك {وارسم/وارسمي} وجوههم"
@@ -67,6 +68,7 @@ front:
     instruction: "{ارسم/ارسمي} نفسك قبل أن {تبدأ/تبدئي} المغامرات"
     parent:
       - "اكتبوا تاريخ اليوم تحت الرسمة، وقارنوها في آخر الكتاب برسمة {child} الجديدة."
+    params: {frame: portrait, caption: "عمري اليوم:"}
 
 sections:
   - id: home
@@ -400,6 +402,7 @@ activities:
             - {picture: wash, text: نغسل أيدينا}
             - {picture: oil, text: ندهن الخبز بالزيت}
             - {picture: zaatar, text: نرشّ الزعتر}
+          shown: [2, 3, 1]
   - id: chef-fruit
     section: chef
     title: سلطة الفواكه الملوّنة
@@ -411,7 +414,7 @@ activities:
     materials: [موز, تفاح, برتقال, عنب, وعاء, ملعقة]
     minutes: 15
     levels: {simple: "3 فواكه ويعدّ حتى 5", challenge: "5 فواكه ويعدّ حتى 10"}
-    safety: "الكبار يقطّعون الفواكه، ويقطّعون حبّات العنب إلى أرباع للصغار. اسألوا عن الحساسية من أي فاكهة. نغسل الفواكه وأيدينا."
+    safety: "السكين للكبار: هم يقطّعون الفواكه، وحبّات العنب إلى أرباع للصغار. اسألوا عن الحساسية من أي فاكهة. نغسل الفواكه وأيدينا."  # draft: educator review (knife named for the safety box)
     pages:
       - type: sort-choose
         title: فواكه بكل الألوان
@@ -429,6 +432,14 @@ activities:
             - {picture: apple, name: تفاح, count: 1}
             - {picture: orange, name: برتقال, count: 1}
             - {picture: grapes, name: عنب, count: 8}
+          variant: count
+          count_label: "{عدّ/عدّي} القطع"
+          steps:  # draft: educator review
+            - {picture: wash, text: نغسل الفواكه وأيدينا}
+            - {picture: cut, text: الكبار يقطّعون الفواكه}
+            - {picture: fruit-bowl, text: نعدّ القطع في الوعاء}
+            - {picture: mix, text: نخلط بالملعقة}
+          shown: [3, 1, 4, 2]
   - id: chef-labneh
     section: chef
     title: كرات اللبنة
@@ -446,6 +457,7 @@ activities:
         title: كم ملعقة؟
         instruction: "{عدّ/عدّي} الملاعق {ولوّن/ولوّني} العدد نفسه"
         parent: ["عدّوا معًا ملاعق اللبنة قبل أن تبدؤوا."]
+        params: {mode: pictures, picture: spoon, rows: 3}
       - type: recipe-steps
         title: كرات اللبنة
         instruction: "{رقّم/رقّمي} خطوات الطبخ من ١ إلى ٤"
@@ -475,11 +487,12 @@ activities:
     materials: [لبن رائب, فراولة, موز, دبس أو عسل, كأس شفاف, ملعقة]
     minutes: 10
     levels: {simple: "طبقتان", challenge: "4 طبقات بالترتيب الذي رسمه"}
-    safety: "اسألوا عن الحساسية (الحليب، وأي فاكهة). الكبار يقطّعون الفواكه. نغسل أيدينا قبل أن نبدأ."
+    safety: "اسألوا عن الحساسية (الحليب، وأي فاكهة). السكين للكبار: هم يقطّعون الفواكه. نغسل أيدينا قبل أن نبدأ."  # draft: educator review
     pages:
       - type: drawing
         title: صمّم كأسك
         instruction: "{ارسم/ارسمي} طبقات كأسك قبل أن {تحضّره/تحضّريه}"
+        params: {frame: cup, layers: 2, challenge_layers: 2, caption: "اسم كأسي:"}  # caption: draft
       - type: recipe-steps
         title: كأس اللبن بالفواكه
         instruction: "{ضع/ضعي} الطبقات كما {رسمت/رسمتِ}"
@@ -491,6 +504,15 @@ activities:
             - {picture: yogurt, name: لبن رائب, count: 2}
             - {picture: strawberry, name: فراولة, count: 3}
             - {picture: banana, name: موز, count: 1}
+          variant: layers
+          layers: 2
+          challenge_layers: 2
+          steps:  # for the recipe cards on the card stock (the page shows the layers); draft: educator review
+            - {picture: wash, text: نغسل أيدينا}
+            - {picture: yogurt, text: نضع اللبن}
+            - {picture: strawberry, text: نضع الفراولة}
+            - {picture: banana, text: نزيّن بالموز}
+          count_label: "المكوّنات: {عُدّ/عُدّي} الملاعق"
   - id: chef-memory
     section: chef
     title: ذكرى اليوم
@@ -531,7 +553,10 @@ activities:
         parent:
           - "اختاروا حديقة أو طريقًا آمنًا في {city}، وابقوا معًا."
           - "لا نقطف الأزهار ولا نلمس ما لا نعرفه: نصوّره أو نرسمه."
-        params: {find: [leaf-round, leaf-long, olive-leaf, stone, bird, flower]}
+        params:
+          items: [leaf, leaf-long, olive-leaf, stone, flower]
+          challenge_items: [bird, butterfly, pinecone]
+          compare: "{قارن/قارني} ورقتين: أيّهما أكبر؟"
   - id: nature-bingo
     section: nature
     title: بنغو الطبيعة
@@ -550,6 +575,7 @@ activities:
         title: بنغو الطبيعة
         instruction: "{لوّن/لوّني} ما {تراه/ترينه} أو {تسمعه/تسمعينه}"
         parent: ["العبوا معًا، ومن يكمل صفًّا أولًا يصيح: بنغو!"]
+        params: {items: [bird, flower, tree, cloud, butterfly, stone, leaf, bee], hear: [bird, bee]}
   - id: nature-rubbing
     section: nature
     title: طبعة الورقة
@@ -566,6 +592,17 @@ activities:
         title: طبعة الورقة
         instruction: "{ضع/ضعي} الورقة تحت الصفحة {ولوّن/ولوّني} فوقها"
         parent: ["أمسكوا الورقة ثابتة، ولوّنوا بجانب القلم الشمعي لا برأسه."]
+        params:  # draft: educator review
+          icon: leaf
+          entries: 1
+          challenge: 2
+          lead: "طبعات أوراق الشجر"
+          hints: [leaf, leaf-long, olive-leaf]
+          name_label: "من أيّ شجرة؟"
+          how:
+            - {icon: leaf, text: "{ضع/ضعي} الورقة تحت الصفحة"}
+            - {icon: crayon, text: "{لوّن/لوّني} بجانب القلم"}
+            - {icon: eye, text: "{انظر/انظري}: ظهرت العروق!"}
   - id: nature-count
     section: nature
     title: نعدّ في الطبيعة
@@ -580,6 +617,7 @@ activities:
         title: نعدّ في الطبيعة
         instruction: "{عدّ/عدّي} ما {جمعته/جمعتِه} {ولوّن/ولوّني} المربّعات"
         parent: ["رتّبوا الكنوز في صفوف على الطاولة قبل العدّ."]
+        params: {mode: things, things: [stone, leaf, flower], challenge_things: [pinecone], squares: 10}
   - id: nature-olive
     section: nature
     title: شجرة الزيتون
@@ -596,6 +634,7 @@ activities:
         title: شجرة الزيتون
         instruction: "{ارسم/ارسمي} شجرة زيتون {وزيّنها/وزيّنيها} بالحبّات"
         parent: ["احكوا لـ{child} عن موسم قطف الزيتون في العائلة."]
+        params: {frame: landscape, caption: "أين {رأيت/رأيتِ} شجرة زيتون؟"}  # caption: draft
   - id: nature-journal
     section: nature
     title: دفتر المستكشف
@@ -614,6 +653,12 @@ activities:
         title: دفتر المستكشف
         instruction: "{ارسم/ارسمي} شيئًا واحدًا بكل تفاصيله"
         parent: ["اسألوا: ما لونه؟ ما حجمه؟ هل يتحرّك؟ واكتبوا الإجابات معًا."]
+        params:  # draft: educator review
+          icon: magnifier
+          entries: 1
+          challenge: 0
+          lead: "عين {المستكشف/المستكشفة}"
+          notes: ["ما اسمه؟", "ما لونه؟", "ما حجمه؟", "هل يتحرّك؟"]
   - id: nature-weather
     section: nature
     title: ماذا نلبس اليوم؟
@@ -679,6 +724,15 @@ activities:
         title: يومي بالترتيب
         instruction: "{رقّم/رقّمي} الصور من الصباح إلى المساء"
         parent: ["اسألوا: ماذا نفعل قبل الفطور؟ وماذا نفعل بعد النوم؟"]
+        params:  # draft: educator review (the day's cards)
+          mode: day
+          cards:
+            - {picture: clock, text: أستيقظ}
+            - {picture: toothbrush, text: أنظّف أسناني, level: 2}
+            - {picture: bread, text: أفطر}
+            - {picture: backpack, text: أذهب إلى الروضة, level: 2}
+            - {picture: ball, text: ألعب}
+            - {picture: bed, text: أنام}
   - id: day-before-after
     section: day
     title: قبل وبعد
@@ -695,6 +749,12 @@ activities:
         title: قبل وبعد
         instruction: "{احكِ/احكي}: ماذا حدث قبل؟ وماذا بعد؟"
         parent: ["اسألوا «كيف عرفت؟» بدل تصحيح الإجابة."]
+        params:  # draft: educator review (the three pictures)
+          mode: before-after
+          rows:
+            - {pictures: [cloud, umbrella, raindrop]}
+            - {pictures: [plate, bread, zaatar]}
+            - {pictures: [gift, balloon]}
   - id: day-routine
     section: day
     title: جدول روتيني
@@ -713,6 +773,7 @@ activities:
         parent:
           - "اتفقوا معًا على الروتين، ولا تزيدوا عن خمس خطوات."
           - "علّقوا الجدول قرب السرير، وامدحوا كل يوم ينجزه {child}."
+        params: {steps: 3, challenge: 2}
   - id: day-best-moment
     section: day
     title: أحلى لحظة في يومي
@@ -780,6 +841,7 @@ activities:
         title: نجهّز السفرة
         instruction: "{عدّ/عدّي} عائلتك {وارسم/وارسمي} صحنًا لكل واحد"
         parent: ["أعطوه أدوات لا تنكسر، واشكروه أمام العائلة على المائدة."]
+        params: {mode: table}
   - id: resp-plant
     section: responsible
     title: أسقي نبتتي
@@ -796,6 +858,15 @@ activities:
         title: أسقي نبتتي
         instruction: "{اسقِ/اسقي} نبتتك {وارسمها/وارسميها} كل يومين"
         parent: ["ازرعوا بذور عدس على قطن مبلول: تنبت في يومين أو ثلاثة."]
+        params:  # draft: educator review
+          icon: sprout
+          entries: 2
+          challenge: 2
+          lead: "يوميات نبتتي"
+          labels: [اليوم الأول, اليوم الثالث, اليوم الخامس, اليوم السابع]
+          water: true
+          name_label: "كم طولها؟"
+          hints: [pot-plant, watering-can]
   - id: resp-chart
     section: responsible
     title: جدول إنجازاتي
@@ -814,6 +885,16 @@ activities:
         parent:
           - "اختاروا معًا مهامَّ صغيرة: ترتيب الألعاب، سقاية النبتة، ترتيب الحذاء."
           - "امدحوا المحاولة: «{حاولت/حاولتِ}، وهذا رائع!»"
+        params:  # draft: educator review (the task ideas)
+          tasks: 2
+          challenge: 1
+          ideas:
+            - {picture: blocks, text: أرتّب ألعابي}
+            - {picture: watering-can, text: أسقي النبتة}
+            - {picture: boots, text: أرتّب حذائي}
+            - {picture: plate, text: أجهّز السفرة}
+            - {picture: bed, text: أرتّب سريري}
+            - {picture: book, text: أرتّب كتبي}
   - id: resp-helper
     section: responsible
     title: مساعد العائلة
@@ -878,6 +959,14 @@ activities:
         title: أيّ شعور يناسب؟
         instruction: "{صِل/صِلي} كل موقف بالوجه المناسب"
         parent: ["قد يشعر كل واحد بشيء مختلف في الموقف نفسه، وهذا طبيعي."]
+        params:  # draft: educator review (the situations)
+          simple: 3
+          situations:
+            - {pictures: [balloon, cloud], text: طار البالون بعيدًا, feeling: sad}
+            - {pictures: [gift, balloon], text: وصلتني هدية, feeling: happy}
+            - {pictures: [blocks], text: وقع برج المكعّبات, feeling: angry}
+            - {pictures: [cloud, raindrop, raindrop], text: صوت رعد قوي في الليل, feeling: scared}
+            - {pictures: [star, book], text: أنهيت عملي بنفسي, feeling: proud}
   - id: feelings-thermometer
     section: feelings
     title: ميزان مشاعري
@@ -913,6 +1002,14 @@ activities:
         title: عندما أغضب أستطيع…
         instruction: "{أكمل/أكملي} الجملة بالرسم أو بالكلمات"
         parent: ["أفكار لطيفة: أعدّ إلى خمسة، أشرب ماء، أطلب حضنًا، أرسم غضبي."]
+        params:  # draft: educator review
+          mode: sentences
+          simple: 2
+          rows:
+            - {face: angry, text: "عندما أغضب أستطيع…"}
+            - {face: sad, text: "عندما أحزن أستطيع…"}
+            - {face: scared, text: "عندما أخاف أستطيع…"}
+            - {face: missing, text: "عندما أشتاق لأحد أستطيع…"}
   - id: feelings-talk
     section: feelings
     title: نتكلّم عن موقف
@@ -931,6 +1028,14 @@ activities:
         parent:
           - "استمعوا دون تصحيح، وردّدوا الشعور: «يبدو أنك حزنت»."
           - "احكوا موقفًا حدث معكم أيضًا. هذا حديث، لا اختبار."
+        params:  # draft: educator review (the situation cards)
+          cards:
+            - {face: happy, text: "مرة فرحت كثيرًا عندما…"}
+            - {face: sad, text: "مرة حزنت لأن…"}
+            - {face: angry, text: "مرة غضبت عندما…"}
+            - {face: scared, text: "مرة خفت من…"}
+            - {face: missing, text: "اشتقت إلى…", level: 2}
+            - {face: proud, text: "أفتخر بنفسي لأن…", level: 2}
   - id: feelings-calm
     section: feelings
     title: زاوية الهدوء
@@ -947,6 +1052,7 @@ activities:
         title: زاوية الهدوء
         instruction: "{ارسم/ارسمي} ركنك الهادئ في البيت"
         parent: ["جهّزوا الركن معًا فعلًا، واتفقوا أنه مكان للراحة لا للعقاب."]
+        params: {frame: room, caption: "اسم ركني:"}  # caption: draft
   - id: feelings-kind
     section: feelings
     title: كلمات لطيفة
@@ -961,6 +1067,12 @@ activities:
         title: كلمات لطيفة
         instruction: "ماذا {تقول/تقولين} لصديق حزين؟"
         parent: ["امدحوا كل كلمة لطيفة يقولها {child} في البيت هذا الأسبوع."]
+        params:  # draft: educator review
+          mode: bubbles
+          people:
+            - {face: sad, label: صديق حزين}
+            - {face: happy, label: صديقة فرحانة}
+          kind: "فعل لطيف أستطيع أن أفعله"
   - id: feelings-memory
     section: feelings
     title: ذكرى اليوم
@@ -999,6 +1111,14 @@ activities:
         parent:
           - "استمعوا حتى النهاية، ثم أجيبوا أنتم عن السؤال نفسه."
           - "لإطالة الحديث اسألوا: وبعدين؟ كيف شعرت؟"
+        params:  # draft: educator review (the questions)
+          cards:
+            - {icon: star, text: ما أجمل شيء حدث معك اليوم؟}
+            - {icon: friend, text: مع مَن لعبت اليوم؟}
+            - {icon: heart, text: ما الذي أضحكك اليوم؟}
+            - {icon: bulb, text: ماذا تعلّمت اليوم؟}
+            - {icon: talk, text: "ما الشيء الصعب اليوم؟ وماذا فعلت؟", level: 2}
+            - {icon: talk, text: "{اسأل/اسألي} سؤالًا من عندك!", level: 2}
   - id: talk-describe
     section: talk
     title: صِف الصورة
@@ -1015,6 +1135,14 @@ activities:
         title: صِف الصورة
         instruction: "{احكِ/احكي} ماذا ترى في الصورة"
         parent: ["أضيفوا كلمة جديدة: «نعم، هذا قارب صيّاد، والصيّاد يصطاد السمك»."]
+        params:
+          mode: scene
+          sentences: 5
+          questions:
+            - {icon: family, text: مَن في الصورة؟}
+            - {icon: home, text: أين هم؟}
+            - {icon: hand, text: ماذا يفعلون؟}
+            - {icon: palette, text: ما الألوان؟}
   - id: talk-three-pictures
     section: talk
     title: حكاية من 3 صور
@@ -1031,6 +1159,12 @@ activities:
         title: حكاية من 3 صور
         instruction: "{رتّب/رتّبي} الصور {واحكِ/واحكي} الحكاية"
         parent: ["اكتبوا القصة بكلمات {child}، واقرؤوها له بصوت عالٍ."]
+        params:  # draft: educator review (the story: rain, the umbrella, the sun again)
+          mode: story
+          panels:
+            - {pictures: [cloud, raindrop, raindrop]}
+            - {pictures: [umbrella, boots]}
+            - {pictures: [sun, flower, flower]}
   - id: talk-new-words
     section: talk
     title: كلماتي الجديدة
@@ -1045,12 +1179,13 @@ activities:
         title: كلماتي الجديدة
         instruction: "{ارسم/ارسمي} كلمة جديدة {تعلّمتها/تعلّمتِها} هذا الأسبوع"
         parent: ["استعملوا الكلمة الجديدة في حديثكم مرّات خلال الأسبوع."]
+        params: {frame: words, count: 1, challenge: 2}
   - id: talk-old-days
     section: talk
     title: حكايات زمان
     goal: الحوار بين الأجيال والاستماع
     skills: [speaking, cooperation, memory]
-    child_part: يسأل {member} عن أيام الطفولة بأسئلة البطاقات، ثم يحكي ما سمعه للعائلة
+    child_part: يسأل {adult} عن أيام الطفولة بأسئلة البطاقات، ثم يحكي ما سمعه للعائلة
     parent_part: يساعد الطفل في الاتصال أو الزيارة، ويشجّعه على السؤال
     together: true
     materials: []
@@ -1059,10 +1194,17 @@ activities:
     pages:
       - type: conversation-cards
         title: حكايات زمان
-        instruction: "{اسأل/اسألي} {member}: كيف كانت طفولتك؟"
+        instruction: "{اسأل/اسألي} {adult}: كيف كانت طفولتك؟"
         parent:
           - "ساعدوا {child} في الاتصال أو الزيارة، واختاروا معًا سؤالين."
           - "بعدها اسألوا {child}: ماذا {عرفت/عرفتِ} عن زمان؟"
+        params:  # draft: educator review (the questions; no second-person verbs, so they suit any grown-up)
+          answers: true
+          cards:
+            - {icon: ball, text: ما لعبتك المفضّلة في الطفولة؟}
+            - {icon: plate, text: ما أكلتك المفضّلة زمان؟}
+            - {icon: book, text: كيف كانت مدرستك؟, level: 2}
+            - {icon: heart, text: ما أجمل ذكرى من طفولتك؟, level: 2}
   - id: talk-memory
     section: talk
     title: ذكرى اليوم
@@ -1096,10 +1238,10 @@ activities:
       - type: sort-choose
         title: أداة من هذه؟
         instruction: "{صِل/صِلي} كل أداة بصاحب المهنة"
-        params: {groups: [doctor, baker, farmer, teacher, barber, builder]}
+        params: {groups: [doctor, baker, farmer, teacher, barber, builder], simple: 3}
   - id: jobs-interview
     section: jobs
-    title: "مقابلة مع {member}"
+    title: "مقابلة مع {adult}"
     goal: الحوار وطرح الأسئلة والاستماع
     skills: [speaking, cooperation, memory]
     child_part: يسأل أحد أفراد العائلة عن عمله بأسئلة القالب ويرسم إجاباته
@@ -1110,11 +1252,18 @@ activities:
     levels: {simple: "3 أسئلة", challenge: "5 أسئلة، ويحكي المقابلة للعائلة"}
     pages:
       - type: interview-template
-        title: "مقابلة مع {member}"
-        instruction: "{اسأل/اسألي} {member} عن العمل {وارسم/وارسمي} الإجابات"
+        title: "مقابلة مع {adult}"
+        instruction: "{اسأل/اسألي} {adult} عن العمل {وارسم/وارسمي} الإجابات"
         parent:
           - "أجيبوا بجمل بسيطة، وأروا {child} أداة أو صورة من العمل."
           - "العمل في البيت ورعاية العائلة عمل مهم أيضًا."
+        params:  # draft: educator review (the questions)
+          questions:
+            - {icon: briefcase, text: ما اسم عملك؟}
+            - {icon: home, text: أين مكان عملك؟}
+            - {icon: hand, text: ما أدوات عملك؟}
+            - {icon: heart, text: ما أجمل شيء في عملك؟, level: 2}
+            - {icon: friend, text: كيف يساعد عملك الناس؟, level: 2}
   - id: jobs-play
     section: jobs
     title: نلعب المهن
@@ -1131,6 +1280,13 @@ activities:
         title: ماذا يقول صاحب المهنة؟
         instruction: "{اختر/اختاري} مهنة {ومثّلها/ومثّليها} للعائلة"
         parent: ["استعملوا بطاقات الأدوار من ورقة القصّ، وتبادلوا الأدوار."]
+        params:
+          mode: bubbles
+          people:
+            - {job: doctor, label: الطبيبة}
+            - {job: baker, label: الخبّاز}
+            - {job: teacher, label: المعلّمة}
+            - {job: farmer, label: المزارع, level: 2}
   - id: jobs-street
     section: jobs
     title: أبطال حيّنا
@@ -1149,6 +1305,15 @@ activities:
         title: أبطال حيّنا
         instruction: "{اشطب/اشطبي} كل صاحب مهنة {تراه/ترينه} في الطريق"
         parent: ["شجّعوا {child} على قول «شكرًا» لبائع أو عامل نظافة."]
+        params:  # draft: educator review (who we meet in the street)
+          count: true
+          items:
+            - {picture: stall, label: البائع}
+            - {picture: broom, label: عامل النظافة}
+            - {picture: bread, label: الخبّاز}
+          challenge_items:
+            - {picture: car, label: السائق}
+            - {picture: hammer, label: البنّاء}
   - id: jobs-dream
     section: jobs
     title: لمّا أكبر بدي أصير…
@@ -1163,6 +1328,7 @@ activities:
         title: لمّا أكبر بدي أصير…
         instruction: "{ارسم/ارسمي} نفسك {كبيرًا/كبيرة} في عملك"
         parent: ["احتفلوا بكل حلم، واسألوا: ماذا {ستفعل/ستفعلين} لتساعد الناس؟"]
+        params: {frame: id-card}
   - id: jobs-memory
     section: jobs
     title: ذكرى اليوم
@@ -1199,7 +1365,7 @@ activities:
         title: كم معي؟
         instruction: "{عدّ/عدّي} النقود {ولوّن/ولوّني} المجموع"
         parent: ["قصّوا النقود معًا بمقصّ الأطفال، وقولوا: هذه نقود للّعب فقط."]
-        params: {denominations: {simple: [1, 2, 5], challenge: [1, 2, 5, 10, 20]}}
+        params: {mode: money, denominations: {simple: [1, 2, 5], challenge: [1, 2, 5, 10, 20]}}
   - id: shop-open
     section: shop
     title: نفتح المتجر
@@ -1216,6 +1382,7 @@ activities:
         title: نفتح المتجر
         instruction: "{اكتب/اكتبي} سعر كل شيء في متجرك"
         parent: ["اقترحوا أسعارًا صغيرة من 1 إلى 10، واتركوا {child} {يقرّر/تقرّر}."]
+        params: {mode: blank, spots: 6}
   - id: shop-customer
     section: shop
     title: أول زبون
@@ -1234,6 +1401,19 @@ activities:
         parent:
           - "كونوا زبائن لطفاء، واطلبوا شيئًا ثم غيّروا رأيكم أحيانًا."
           - "امدحوا الأدب والعدّ الصحيح."
+        params:  # draft: educator review (the shop lines)
+          roles:
+            - name: "{البائع/البائعة}: {child}"
+              picture: stall
+              icon: shop
+              lines: ["أهلًا وسهلًا في متجري!", "هذا بثلاث قمرات.", "شكرًا، مع السلامة!"]
+              challenge: ["المجموع خمس قمرات.", "الباقي قمرتان."]
+            - name: الزبون
+              picture: shopping-bag
+              icon: bag
+              lines: ["مرحبًا! عندك تفاح؟", "أريد هذا من فضلك.", "{تفضّل/تفضّلي} النقود."]
+              challenge: ["أريد شيئين: بكم المجموع؟", "معي عشر قمرات: كم الباقي؟"]
+          swap: "ثم نبدّل الأدوار!"
   - id: shop-budget
     section: shop
     title: ماذا أشتري بنقودي؟
@@ -1250,6 +1430,7 @@ activities:
         title: ماذا أشتري بنقودي؟
         instruction: "{اختر/اختاري} ما {تشتريه/تشترينه} بالنقود التي معك"
         parent: ["اسألوا: هل هناك طريقة أخرى؟ كل حل صحيح يستحق نجمة."]
+        params: {mode: budget, simple_purse: [2, 2, 1], challenge_purse: [10, 5, 5], prices: [1, 2, 3, 4, 6, 8]}
   - id: shop-change
     section: shop
     title: الباقي
@@ -1264,7 +1445,7 @@ activities:
         title: كم الباقي؟
         instruction: "{احسب/احسبي} الباقي بالقطع {ولوّنه/ولوّنيه}"
         parent: ["عدّوا للأمام من السعر حتى المبلغ المدفوع: هكذا نجد الباقي."]
-        params: {denominations: {simple: [1, 2, 5], challenge: [1, 2, 5, 10, 20]}}
+        params: {mode: change, denominations: {simple: [1, 2, 5], challenge: [1, 2, 5, 10, 20]}}
   - id: shop-memory
     section: shop
     title: ذكرى اليوم
@@ -1303,6 +1484,14 @@ activities:
         parent:
           - "قصّوا البطاقات معًا، والعبوا بالدور."
           - "الخسارة جزء من اللعب: قولوا «نلعب مرة ثانية!»"
+        params:
+          mode: memory
+          pairs: 6
+          challenge: 6
+          steps:  # draft: educator review
+            - "{قصّ/قصّي} البطاقات {واقلبها/واقلبيها} على وجهها"
+            - كل لاعب يقلب بطاقتين في دوره
+            - "إذا تشابهتا، يأخذهما ويلعب مرة أخرى!"
   - id: games-questions
     section: games
     title: أسئلة العائلة
@@ -1319,6 +1508,14 @@ activities:
         title: أسئلة العائلة
         instruction: "{اسحب/اسحبي} سؤالًا {واسأله/واسأليه} للعائلة"
         parent: ["أجيبوا بصدق ومرح: ما أكلتك المفضّلة؟ ماذا يضحكك؟"]
+        params:  # draft: educator review (the questions, also on the card stock)
+          cards:
+            - {icon: plate, text: ما أكلتك المفضّلة؟}
+            - {icon: heart, text: ماذا يضحكك؟}
+            - {icon: palette, text: ما لونك المفضّل؟}
+            - {icon: home, text: أين نذهب معًا في العطلة؟}
+            - {icon: star, text: ما أجمل يوم في حياتك؟, level: 2}
+            - {icon: bulb, text: "{اخترع/اخترعي} سؤالًا جديدًا!", level: 2}
   - id: games-move
     section: games
     title: تحدّيات الحركة
@@ -1336,6 +1533,16 @@ activities:
         title: تحدّيات الحركة
         instruction: "{قلّد/قلّدي} الحركات بالترتيب {وأضف/وأضيفي} حركة"
         parent: ["كل واحد يضيف حركة، ومن ينسى الترتيب يبدأ الجولة الجديدة."]
+        params:  # draft: educator review (the moves)
+          mode: moves
+          simple: 3
+          moves:
+            - {pose: jump, text: "{اقفز/اقفزي}"}
+            - {pose: clap, text: "{صفّق/صفّقي}"}
+            - {pose: spin, text: "{دُر/دوري}"}
+            - {pose: hop, text: "{قف/قفي} على رجل"}
+            - {pose: touch, text: "{المس/المسي} قدميك"}
+            - {pose: stretch, text: "{تمطّط/تمطّطي}"}
   - id: games-scoreboard
     section: games
     title: لوحة نقاط العائلة
@@ -1352,6 +1559,7 @@ activities:
         title: لوحة نقاط عائلة {family_name}
         instruction: "{لوّن/لوّني} نجمة لكل نقطة {وعدّ/وعدّي} النجوم"
         parent: ["احتفلوا بكل الفرق، لا بالفائز وحده."]
+        params: {mode: scoreboard, rounds: 5}
   - id: games-invent
     section: games
     title: لعبة من اختراعي
@@ -1368,6 +1576,7 @@ activities:
         title: لعبة من اختراعي
         instruction: "{اخترع/اخترعي} لعبة {وارسمها/وارسميها}"
         parent: ["جرّبوا اللعبة كما {اخترعها/اخترعتها} {child}، ثم اسألوا: كيف نجعلها أحلى؟"]
+        params: {frame: rules}
   - id: games-memory-page
     section: games
     title: ذكرى اليوم
@@ -1404,6 +1613,16 @@ activities:
         title: القطة التي أضاعت بيتها
         instruction: "{أكمل/أكملي} الحكاية بالرسم أو بالكلام"
         parent: ["اقرؤوا البداية بصوت مسرحي، واكتبوا النهاية بكلمات {child}."]
+        params:  # draft: educator review (the story's beginning)
+          mode: story
+          story:
+            - في صباح مشمس، خرجت القطة «سمسمة» تلعب مع فراشة.
+            - ركضت وركضت… حتى ابتعدت كثيرًا عن بيتها.
+            - "نظرت حولها وقالت: أين بيتي؟"
+          panels:
+            - {pictures: [cat, butterfly, flower]}
+            - {pictures: [cat, tree, cloud]}
+          end: "كيف عادت سمسمة إلى بيتها؟"
   - id: act-solve
     section: act
     title: ماذا نفعل؟
@@ -1420,6 +1639,21 @@ activities:
         title: ماذا نفعل؟
         instruction: "{اختر/اختاري} الحل الأفضل {وقل/وقولي} لماذا"
         parent: ["اسألوا: وماذا يحدث بعد هذا الحل؟ هل هناك حل آخر؟"]
+        params:  # draft: educator review (the situations and their solutions)
+          mode: choice
+          situations:
+            - text: لعبة واحدة وطفلان يريدانها
+              pictures: [ball]
+              options:
+                - {icon: clock, text: نلعب بالدور}
+                - {icon: friend, text: نلعب معًا}
+                - {icon: cross, text: نتشاجر عليها}
+            - text: انسكب الحليب على الطاولة
+              pictures: [milk, cup]
+              options:
+                - {icon: hand, text: نمسحه معًا}
+                - {icon: talk, text: "نخبر {adult}"}
+                - {icon: cross, text: نتركه ونذهب}
   - id: act-roles
     section: act
     title: نمثّل الأدوار
@@ -1436,6 +1670,16 @@ activities:
         title: نمثّل الأدوار
         instruction: "{اختر/اختاري} دورًا {ومثّل/ومثّلي} المشهد مع عائلتك"
         parent: ["أضيفوا مفاجأة للمشهد: يرنّ الهاتف، أو يصل ضيف!"]
+        params:
+          mode: roles
+          roles:
+            - {job: doctor, label: الطبيبة}
+            - {job: seller, label: البائعة}
+            - {job: chef, label: الطاهية}
+            - {job: builder, label: البنّاء}
+            - {job: farmer, label: المزارع}
+            - {job: teacher, label: المعلّمة}
+          places: [البيت, السوق, الحديقة, المدرسة, العيادة]
   - id: act-puppets
     section: act
     title: مسرح الأصابع
@@ -1452,6 +1696,7 @@ activities:
         title: مسرح الأصابع
         instruction: "{ارسم/ارسمي} مسرحك وأبطال العرض"
         parent: ["اصنعوا مسرحًا من علبة كرتون، وكونوا الجمهور وصفّقوا!"]
+        params: {frame: stage, caption: "اسم العرض:"}
   - id: act-problem
     section: act
     title: مشكلة وحل
@@ -1468,6 +1713,16 @@ activities:
         title: اللعبة المكسورة
         instruction: "{جد/جدي} حلًّا {وارسمه/وارسميه}"
         parent: ["اسألوا: كيف شعر كل واحد في الحكاية؟ وكيف يشعر بعد الحل؟"]
+        params:  # draft: educator review (the problem story)
+          mode: problem
+          story:
+            - كان سامي يلعب بسيارته الحمراء مع أخته لينا.
+            - فجأة وقعت السيارة من يد لينا وانكسرت عجلتها!
+            - حزن سامي، وخافت لينا أن يغضب منها. ماذا يفعلان؟
+          panels:
+            - {pictures: [car, ball]}
+          end: "الحل: {ارسمه/ارسميه} هنا"
+          feel: [سامي, لينا]
   - id: act-memory
     section: act
     title: ذكرى اليوم
@@ -1509,33 +1764,104 @@ back:
     title: هذا أنا الآن!
     instruction: "{ارسم/ارسمي} نفسك بعد كل المغامرات"
     parent: ["قارنوا الرسمة برسمة أول الكتاب، واكتبوا ماذا تعلّم {child}."]
+    params: {frame: portrait, caption: "عمري الآن:"}
   - type: certificate-family
     title: "شهادة {المغامر/المغامرة}"
     instruction: "{لوّن/لوّني} النجوم {واحتفل/واحتفلي} مع عائلتك"
     params:
       line: "{أنهى/أنهت} كل مغامرات «مغامراتي مع عائلتي»"
 
-inserts:
+cover:  # printed on 350 g card with matte lamination, apart from the book; draft texts: educator review
+  - type: cover-front
+    title: "مغامرات {child} مع عائلتي"
+    instruction: "اثنتا عشرة مغامرة مع عائلة {family_name}"
+  - type: cover-back
+    title: مغامراتي مع عائلتي
+    instruction: كتاب أنشطة للعائلة
+    params:
+      ages: من ٣ إلى ٧ سنوات
+      blurb:
+        - "كتاب {يعيش/تعيش} فيه {child} اثنتي عشرة مغامرة حقيقية مع {عائلته/عائلتها}: في البيت والمطبخ والسوق والطبيعة، وفي الحكايات والمشاعر والألعاب."
+        - "كل نشاط من ٥ إلى ٢٠ دقيقة بأشياء موجودة في كل بيت، بمستويين للصغار والكبار، ومعه صندوق «هيا نفعلها معًا!» للأهل."
+      collect: "{يجمع/تجمع} {child} ختمًا بعد كل مغامرة وشارات المغامر السبع، ثم شهادة المغامر!"
+      kit: [١١٢ صفحة بتجليد حلزوني, ورقة ملصقات, "كرتون للقصّ: نقود اللعب والبطاقات والدمى"]
+
+inserts:  # each insert is a print file (out/family-book/inserts/<id>-<size>.pdf), its sheets on their own paper
   - kind: stickers
+    id: stickers
     title: ورقة الملصقات
     items:
       - أختام الجواز للمغامرات الاثنتي عشرة
       - "شارات: مغامر، مفكّر، فنان، مستكشف، طبّاخ صغير، طفل مسؤول، صديق لطيف"
       - نجوم المكافأة لجدول الإنجازات وتحدي الأيام السبعة
-      - "رموز الروتين: استيقاظ، فطور، أسنان، ملابس، لعب، قراءة، نوم"
+      - "رموز الروتين: استيقاظ، فطور، أسنان، ملابس، لعب، قراءة، نوم، استحمام، ترتيب"
+    sheets:
+      - type: badge-sticker-sheet
+        title: ورقة الملصقات
+        instruction: "{الصق/الصقي} كل ملصق في مكانه"
   - kind: card-stock
+    id: card-money-recipes
     title: "كرتون القصّ: النقود والوصفات"
     items:
       - "نقود قمرة للّعب (مكتوب عليها «للعب فقط»، لا تشبه الشيكل ولا الدينار)"
       - بطاقات أسعار فارغة للمتجر
       - بطاقات خطوات الوصفات
+    sheets:
+      - type: play-money
+        title: نقود قمرة للّعب
+        instruction: "{قصّ/قصّي} النقود مع {adult} على الخط المتقطّع"
+        params: {section: shop, notes: [5, 5, 10, 10, 20, 20], coins: [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2], price_tags: 5}
+      - type: recipe-cards
+        title: بطاقات خطوات الوصفات
+        instruction: "{قصّ/قصّي} البطاقات {ورتّب/ورتّبي} خطوات كل وصفة"
+        params: {section: chef}
   - kind: card-stock
+    id: card-games-roles
     title: "كرتون القصّ: الألعاب والأدوار"
     items:
       - بطاقات لعبة الذاكرة
       - بطاقات أسئلة العائلة
       - بطاقات الأدوار والمهن
       - دمى الأصابع
+    sheets:
+      - type: memory-cards
+        title: بطاقات لعبة الذاكرة
+        instruction: "{قصّ/قصّي} البطاقات {واقلبها/واقلبيها} على وجهها"
+        params: {section: games, pairs: 6, cards: [apple, cat, sun, car, fish, ball, flower, bird, house, banana, kite, teddy]}
+      - type: question-cards
+        title: أسئلة العائلة
+        instruction: "{اسحب/اسحبي} بطاقة {واسأل/واسألي} العائلة"
+        params:  # draft: educator review (the questions; no second-person verbs, so they suit everyone)
+          section: games
+          cards:
+            - {icon: plate, text: ما أكلتك المفضّلة؟}
+            - {icon: heart, text: ماذا يضحكك؟}
+            - {icon: palette, text: ما لونك المفضّل؟}
+            - {icon: home, text: أين نذهب معًا في العطلة؟}
+            - {icon: ball, text: ما لعبتك المفضّلة؟}
+            - {icon: speaker, text: ما أغنيتك المفضّلة؟}
+            - {icon: leaf, text: ما حيوانك المفضّل؟}
+            - {icon: sun, text: ما أجمل شيء اليوم؟}
+            - {icon: star, text: ما أجمل يوم في حياتك؟, level: 2}
+            - {icon: bulb, text: ما حلمك الكبير؟, level: 2}
+            - {icon: trophy, text: مَن بطلك؟ ولماذا؟, level: 2}
+            - {icon: talk, text: سؤال من اختراعك!, level: 2}
+      - type: role-cards
+        title: بطاقات الأدوار
+        instruction: "{اختر/اختاري} دورًا {ومثّله/ومثّليه} مع العائلة"
+        params:  # draft: educator review (the role lines)
+          section: act
+          roles:
+            - {job: doctor, label: الطبيبة, lines: ["سلامتك! أين يؤلمك؟", "هيّا نسمع دقات القلب."]}
+            - {job: seller, label: البائعة, prop: basket, lines: ["أهلًا! ماذا نحتاج اليوم؟", "هذا بقمرتين."]}
+            - {job: chef, label: الطاهية, prop: spoon, lines: ["نغسل أيدينا أولًا!", "الطبخة جاهزة، بالهناء!"]}
+            - {job: builder, label: البنّاء, prop: blocks, lines: ["نبني بيتًا قويًا.", "حجر فوق حجر!"]}
+            - {job: farmer, label: المزارع, prop: watering-can, lines: ["نزرع البذور ونسقيها.", "الزيتون نضج!"]}
+            - {job: teacher, label: المعلّمة, prop: book, lines: ["صباح الخير يا أبطال!", "مَن يعرف الجواب؟"]}
+      - type: puppets
+        title: دمى الأصابع
+        instruction: "{قصّ/قصّي} الدمية مع {adult} {ولفّها/ولفّيها} على إصبعك"
+        params: {section: act, animals: [cat, rabbit, lion, duck, sheep, dog]}
 
 samples:
   - {n: 3}

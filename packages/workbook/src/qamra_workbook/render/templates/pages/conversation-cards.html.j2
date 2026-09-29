@@ -13,6 +13,8 @@
   </div>
   {% if d.swap %}<div class="swap">{{ icon('talk') }}<b>{{ d.swap }}</b>{{ icon('talk') }}</div>{% endif %}
   {% else %}
-  <div class="talk-cards">{% for c in d.cards %}<div class="talk-card fcard"><span class="pill-num">{{ book.num(loop.index) }}</span><p>{{ c }}</p></div>{% endfor %}</div>
+  <div class="talk-cards n{{ d.cards|length }}">{% for c in d.cards %}<div class="talk-card fcard lvl{{ c.level }}">
+    <div class="tc-head"><span class="pill-num">{{ book.num(loop.index) }}</span>{% if c.face %}<span class="tc-face">{{ c.face }}</span>{% elif c.icon %}<span class="tc-ico">{{ icon(c.icon) }}</span>{% endif %}{% if c.level == 2 %}<span class="tc-level">{{ stars(2) }}</span>{% endif %}</div>
+    <p>{{ c.text }}</p>{% if d.answers %}<div class="write-line"></div>{% endif %}</div>{% endfor %}</div>
   {% endif %}
 </div>

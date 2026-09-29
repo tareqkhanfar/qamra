@@ -1,0 +1,36 @@
+<div class="talkpic mode-{{ d.mode }}">
+{% if d.mode == 'before-after' %}
+  <div class="ba-head"><span class="ba-tag lvl2">{{ stars(2) }}قبل</span><span class="ba-tag now">{{ icon('eye') }}الآن</span><span class="ba-tag">{{ stars(1) }}بعد</span></div>
+  {% for r in d.rows %}
+  <div class="ba-row">
+    <div class="ba-box fcard lvl2"><small>{{ icon('crayon') }}ماذا حدث قبل؟</small></div>
+    <div class="ba-now fcard"><div class="ba-pic">{{ r.pic }}</div>{% if r.text %}<b>{{ r.text }}</b>{% endif %}</div>
+    <div class="ba-box fcard"><small>{{ icon('crayon') }}ماذا سيحدث بعد؟</small></div>
+  </div>
+  {% endfor %}
+  <div class="ba-why"><span class="label">{{ stars(2) }}{{ d.why }}</span><div class="write-line"></div></div>
+{% elif d.mode == 'scene' %}
+  <div class="scene-card fcard">{{ d.scene }}</div>
+  <div class="qchips">{% for q in d.questions %}<span class="qchip"><i>{{ icon(q.icon) }}</i>{{ q.text }}</span>{% endfor %}</div>
+  <div class="sentences fcard lvl2"><span class="label">{{ stars(2) }}{{ 'لوّني نجمة لكل جملة تقولينها' if book.child.gender == 'f' else 'لوّن نجمة لكل جملة تقولها' }}</span>
+    <div class="sent-stars">{% for n in d.sentences %}<span>{{ stars(1, 'sent-star', '#FFFFFF', '#E2A32A') }}<small>{{ n }}</small></span>{% endfor %}</div>
+  </div>
+{% elif d.mode == 'bubbles' %}
+  <div class="bubbles n{{ d.people|length }}">
+    {% for x in d.people %}
+    <div class="bub fcard lvl{{ x.level }}">
+      <div class="bub-say"><span class="bub-line"></span><span class="bub-line"></span></div>
+      <div class="bub-who"><div class="bub-art">{{ x.art }}</div><b>{{ x.label }}</b>{% if x.level == 2 %}{{ stars(2) }}{% endif %}</div>
+    </div>
+    {% endfor %}
+  </div>
+  {% if d.kind %}<div class="kind-act fcard lvl2"><span class="label">{{ stars(2) }}{{ d.kind }}</span><div class="kind-draw"></div></div>{% endif %}
+{% else %}
+  <div class="roles-pick fcard">
+    <span class="label">{{ icon('mask') }}أيّ دور {{ 'تختارين' if book.child.gender == 'f' else 'تختار' }}؟</span>
+    <div class="role-thumbs">{% for r in d.roles %}<div class="role-thumb"><div class="rt-art">{{ r.art }}</div><b>{{ r.label }}</b><span class="check-box"></span></div>{% endfor %}</div>
+  </div>
+  <div class="places fcard"><span class="label">{{ icon('home') }}أين المشهد؟</span><div class="place-chips">{% for pl in d.places %}<span><i class="check-box"></i>{{ pl }}</span>{% endfor %}</div></div>
+  <div class="scene-parts">{% for part in d.parts %}<div class="spart fcard lvl2"><span class="label">{{ stars(2) }}{{ book.num(loop.index) }}. {{ part }}</span><div class="spart-draw"></div></div>{% endfor %}</div>
+{% endif %}
+</div>

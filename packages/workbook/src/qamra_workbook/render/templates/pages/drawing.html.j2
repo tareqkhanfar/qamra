@@ -2,6 +2,63 @@
   {% if d.frame == 'tray' %}
   <div class="tray-card fcard"><div class="tray-art">{{ d.tray }}</div>{% if d.legend %}<div class="tray-legend">{% for level, n in d.legend %}<span>{{ stars(level) }}{{ n }}</span>{% endfor %}</div>{% endif %}</div>
   <div class="draw-card missing fcard"><span class="label">{{ icon('magnifier') }}{{ d.missing }}</span><span class="missing-q" aria-hidden="true">؟</span></div>
+  {% elif d.frame == 'portrait' %}
+  <div class="portrait-frame">
+    {% for c in ['tl', 'tr', 'bl', 'br'] %}<span class="pf-star {{ c }}">{{ d.star }}</span>{% endfor %}
+    <div class="pf-inner"></div>
+  </div>
+  <div class="pf-plate"><b data-fit="14">{{ d.name }}</b></div>
+  <div class="pf-lines">
+    <div class="pf-line"><span class="label">{{ icon('star') }}{{ d.caption }}</span><div class="write-line"></div></div>
+    <div class="pf-line"><span class="label">{{ icon('clock') }}{{ d.date_label }}</span><div class="write-line"></div></div>
+  </div>
+  {% elif d.frame == 'cup' %}
+  <div class="cup-row">
+    <div class="cup-card fcard"><div class="cup-art">{{ d.art }}</div></div>
+    <div class="cup-side">
+      {% for level, n in d.legend %}<div class="cup-level fcard lvl{{ level }}">{{ stars(level) }}<b>{{ n }}</b></div>{% endfor %}
+      <div class="cup-ideas fcard"><span class="label">{{ icon('crayon') }}ألوان الطبقات</span>
+        <div class="cup-swatches">{% for c in ['#FFFFFF', '#F7B7C5', '#F7D774', '#E4675A', '#8B5A3C'] %}<span style="background: {{ c }}"></span>{% endfor %}</div>
+      </div>
+    </div>
+  </div>
+  <div class="draw-caption"><span class="label">{{ icon('pencil') }}{{ d.caption }}</span><div class="write-line"></div></div>
+  {% elif d.frame in ['landscape', 'stage', 'room'] %}
+  <div class="draw-card art-frame fcard"><div class="frame-art">{{ d.art }}</div>{% if d.character and d.frame == 'landscape' %}<img class="draw-kid" src="{{ d.character }}" alt="">{% endif %}</div>
+  {% if d.frame == 'room' %}
+  <div class="room-things fcard"><span class="label">{{ stars(2) }}{{ d.labels[0] }}</span><div class="thing-slots">{% for i in range(3) %}<span></span>{% endfor %}</div></div>
+  {% endif %}
+  <div class="draw-caption"><span class="label">{{ icon('pencil') }}{{ d.caption }}</span><div class="write-line"></div></div>
+  {% elif d.frame == 'words' %}
+  <div class="word-cards n{{ d.cards|length }}">
+    {% for c in d.cards %}
+    <div class="word-card fcard lvl{{ c.level }}">
+      <div class="wc-head"><span class="pill-num">{{ c.n }}</span>{{ stars(c.level) }}</div>
+      <div class="wc-draw">{{ icon('crayon', 'ico jr-hint-ico') }}</div>
+      <div class="wc-line"><small>{{ d.labels[0] }}</small><div class="write-line"></div></div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="draw-caption"><span class="label">{{ stars(2) }}{{ d.labels[1] }}</span><div class="write-line"></div></div>
+  {% elif d.frame == 'rules' %}
+  <div class="draw-card fcard">{% if d.character %}<img class="draw-kid" src="{{ d.character }}" alt="">{% endif %}</div>
+  <div class="rules-card fcard">
+    <div class="rule-line"><span class="label">{{ stars(1) }}{{ d.labels[0] }}</span><div class="write-line"></div></div>
+    <div class="rule-line"><span class="label">{{ stars(2) }}{{ d.labels[1] }}</span><div class="write-line"></div></div>
+    <div class="rule-line"><span class="label">{{ stars(2) }}{{ d.labels[2] }}</span><div class="write-line"></div></div>
+  </div>
+  {% elif d.frame == 'id-card' %}
+  <div class="idcard">
+    <div class="id-band">{{ icon('briefcase') }}<b>بطاقة عملي</b><span>عندما أكبر</span></div>
+    <div class="id-body">
+      <div class="id-photo"><small>{{ icon('crayon') }}{{ d.photo_hint }}</small></div>
+      <div class="id-fields">
+        <div class="id-field"><small>{{ d.labels[0] }}</small><b data-fit="12">{{ d.name }}</b></div>
+        <div class="id-field"><small>{{ d.labels[1] }}</small><div class="write-line"></div></div>
+        <div class="id-field"><small>{{ stars(2) }}{{ d.labels[2] }}</small><div class="write-line"></div><div class="write-line"></div></div>
+      </div>
+    </div>
+  </div>
   {% else %}
   <div class="draw-card fcard">
     {% if d.frame == 'circle' %}<div class="draw-circle" aria-hidden="true"></div>{% endif %}
@@ -9,5 +66,5 @@
     {% if d.character %}<img class="draw-kid" src="{{ d.character }}" alt="">{% endif %}
   </div>
   {% endif %}
-  <div class="draw-caption"><span class="label">{{ icon('pencil') }}{{ d.caption }}</span><div class="write-line"></div></div>
+  {% if d.frame in ['plain', 'circle', 'tray'] %}<div class="draw-caption"><span class="label">{{ icon('pencil') }}{{ d.caption }}</span><div class="write-line"></div></div>{% endif %}
 </div>

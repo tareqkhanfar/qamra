@@ -16,12 +16,25 @@ from qamra_workbook.pictures import get as picture
 from qamra_workbook.pictures.model import scallop_d, strip_tashkeel
 from qamra_workbook.puzzles.coloring import Shape
 from qamra_workbook.render import art, draw
+from qamra_workbook.render.pages import family_art, family_choose, family_count
 from qamra_workbook.render.pages.family import uri
 from qamra_workbook.render.pages.inserts import qamra_count
 from qamra_workbook.render.pages.thinking import shape_kind
 from qamra_workbook.render.registry import Built, PageContext, page_type
 
-FRAMES = ("plain", "circle", "tray")
+FRAMES = (
+    "plain",
+    "circle",
+    "tray",
+    "portrait",
+    "cup",
+    "landscape",
+    "room",
+    "words",
+    "rules",
+    "stage",
+    "id-card",
+)
 
 
 def tray_svg(spots: int, extra: int) -> Markup:
@@ -70,8 +83,50 @@ def drawing(ctx: PageContext) -> Built:
         "legend": [(1, ctx.num(spots)), (2, ctx.num(spots + extra))] if frame == "tray" and extra else [],
         "missing": ctx.text(str(params.get("missing", "ماذا اختفى؟ {ارسمه/ارسميه} هنا"))),
         "caption": ctx.text(str(params.get("caption", "اسم رسمتي:"))),
+        **frame_data(ctx, frame),
     }
     return Built(data, None, problems)
+
+
+def layers_ar(n: int, ctx: PageContext) -> str:
+    """«طبقتان», «٣ طبقات»."""
+    return "طبقتان" if n == 2 else f"{ctx.num(n)} {'طبقات' if 3 <= n <= 10 else 'طبقة'}"
+
+
+def frame_data(ctx: PageContext, frame: str) -> dict[str, Any]:
+    """What a frame draws besides the drawing space: the art around it and its labels (⭐ / ⭐⭐ parts)."""
+    params = ctx.page.params
+    labels = [ctx.text(str(x)) for x in params.get("labels", [])]
+    match frame:
+        case "portrait":
+            return {"name": ctx.book.child.name, "star": family_art.corner_stars(), "date_label": "التاريخ"}
+        case "cup":
+            layers, more = int(params.get("layers", 2)), int(params.get("challenge_layers", 2))
+            return {
+                "art": family_art.cup_svg(layers, more),
+                "legend": [(1, layers_ar(layers, ctx)), (2, layers_ar(layers + more, ctx))],
+            }
+        case "landscape":
+            return {"art": family_art.landscape_svg()}
+        case "stage":
+            return {"art": family_art.stage_svg()}
+        case "room":
+            return {"art": family_art.room_svg(), "labels": labels or [ctx.text("ماذا يساعدني على الهدوء؟")]}
+        case "words":
+            count, more = int(params.get("count", 1)), int(params.get("challenge", 2))
+            return {
+                "cards": [{"level": 1 if i < count else 2, "n": ctx.num(i + 1)} for i in range(count + more)],
+                "labels": labels or ["الكلمة:", ctx.text("جملتي:")],
+            }
+        case "rules":
+            return {"labels": labels or ["القاعدة الأولى:", "القاعدة الثانية:", "كيف نربح النقاط؟"]}
+        case "id-card":
+            return {
+                "name": ctx.book.child.name,
+                "labels": labels or ["الاسم", "مهنتي", "أساعد الناس بـ"],
+                "photo_hint": ctx.text("صورتي وأنا {كبير/كبيرة}"),
+            }
+    return {}
 
 
 # ---- counting ---------------------------------------------------------------------------------------------
@@ -141,6 +196,8 @@ def counting(ctx: PageContext) -> Built:
     child colors a square for each thing found, per color (`mode: tally`)."""
     params = ctx.page.params
     mode = str(params.get("mode", "compare"))
+    if mode in family_count.MODES:  # pictures, things, table, money, change (the whole book's pages)
+        return family_count.more_counting(ctx, mode)
     problems = [] if mode in ("compare", "tally") else [f"no counting mode {mode!r} (compare, tally)"]
     data: dict[str, Any] = {"mode": mode}
     if mode == "tally":
@@ -195,7 +252,28 @@ SORT_GROUPS: dict[str, dict[str, Any]] = {
         "items": ["candy", "soda"],
         "open": True,
     },
+    # the whole book's groups: fruit colors, the weather, the time of day, toy boxes, jobs and their tools
+    "red": {"label": "أحمر", "paint": "#E4675A", "items": ["apple", "strawberry"]},
+    "yellow": {"label": "أصفر", "paint": "#F7C84A", "items": ["banana", "lemon"]},
+    "orange": {"label": "برتقالي", "paint": "#F39A3D", "items": ["orange"]},
+    "green": {"label": "أخضر", "paint": "#8DBF4A", "items": ["pear"]},
+    "sunny": {"label": "مشمس", "pic": "sun", "items": ["sun-hat"]},
+    "rainy": {"label": "ماطر", "pic": "umbrella", "items": ["boots"]},
+    "windy": {"label": "عاصف", "pic": "wind", "items": ["kite"]},
+    "cold": {"label": "بارد", "pic": "snowflake", "items": ["scarf"]},
+    "morning": {"label": "الصباح", "pic": "sun", "items": ["backpack", "bread"]},
+    "evening": {"label": "المساء", "pic": "moon", "items": ["bed", "book"]},
+    "blocks": {"label": "المكعّبات", "chip": "blocks", "color": "#F08A3E", "items": ["blocks", "dice"]},
+    "dolls": {"label": "الدمى", "chip": "doll", "color": "#E4769D", "items": ["doll", "teddy"]},
+    "cars": {"label": "السيارات", "chip": "car", "color": "#2E9FD6", "items": ["car", "boat"]},
+    "doctor": {"label": "الطبيبة", "bust": "doctor", "items": ["stethoscope"]},
+    "baker": {"label": "الخبّاز", "bust": "baker", "items": ["bread"]},
+    "farmer": {"label": "المزارع", "bust": "farmer", "items": ["watering-can"]},
+    "teacher": {"label": "المعلّمة", "bust": "teacher", "items": ["book"]},
+    "barber": {"label": "الحلّاق", "bust": "barber", "items": ["scissors"]},
+    "builder": {"label": "البنّاء", "bust": "builder", "items": ["hammer"]},
 }
+PAIRS_MAX = 6  # a page of one-to-one pairs (a job and its tool) may show up to six groups
 
 
 def group_mark(ctx: PageContext, spec: dict[str, Any]) -> Markup:
@@ -222,23 +300,55 @@ def group_mark(ctx: PageContext, spec: dict[str, Any]) -> Markup:
             roof + draw.shape(target, fill=ctx.style.tint, stroke=ctx.style.deep, width=1.1),
             "group-mark",
         )
+    if "paint" in spec:
+        blob = "M6 20 C3 8 16 3 24 6 C34 2 39 12 35 20 C39 30 28 37 20 34 C11 38 2 31 6 20 Z"
+        return draw.svg(
+            40,
+            40,
+            draw.el("path", d=blob, fill=spec["paint"], stroke="#FFFFFF", stroke_width=1.2),
+            "group-mark",
+        )
+    if "pic" in spec:
+        return ctx.pic(str(spec["pic"]), css_class="pic group-pic")
+    if "bust" in spec:
+        from qamra_workbook.render import people
+
+        return draw.svg(60, people.BUST_H, people.job_bust(str(spec["bust"]), 1.2), "group-bust")
+    if "chip" in spec:
+        return ctx.pic(str(spec["chip"]), css_class="pic group-chip")
     return art.icon(str(spec["icon"]), "ico group-ico")
 
 
 @page_type("sort-choose")
 def sort_choose(ctx: PageContext) -> Built:
     """Join each thing to its group with a line: shapes to their houses, products to the right basket."""
+    mode = str(ctx.page.params.get("mode", "join"))
+    if mode in family_choose.MODES:  # choosing within a budget, choosing the best solution
+        return family_choose.more_choosing(ctx, mode)
     keys = [str(g) for g in ctx.page.params.get("groups", ["circle", "square"])]
+    simple = int(ctx.page.params.get("simple", len(keys)))  # the groups after the first `simple` are ⭐⭐
     problems = [f"no sorting group {k!r} yet" for k in keys if k not in SORT_GROUPS]
     groups = [SORT_GROUPS[k] for k in keys if k in SORT_GROUPS]
     items = [(pic, i) for i, g in enumerate(groups) for pic in g["items"][:2]]
     ctx.rng("sort").shuffle(items)
-    if not 2 <= len(groups) <= 4 or not 4 <= len(items) <= 8:
-        problems.append(f"a sorting page joins 4–8 things to 2–4 groups, not {len(items)} to {len(groups)}")
+    pairs = all(len(g["items"][:2]) == 1 for g in groups)
+    most = PAIRS_MAX if pairs else 4
+    if not 2 <= len(groups) <= most or not 4 <= len(items) <= 8:
+        problems.append(
+            f"a sorting page joins 4–8 things to 2–{most} groups, not {len(items)} to {len(groups)}"
+        )
     data = {
         "groups": [
-            {"label": g["label"], "mark": group_mark(ctx, g), "color": g.get("color", "")} for g in groups
+            {
+                "label": g["label"],
+                "mark": group_mark(ctx, g),
+                "color": g.get("color", g.get("paint", "")),
+                "basket": "icon" in g or "chip" in g,
+                "level": 1 if i < simple else 2,
+            }
+            for i, g in enumerate(groups)
         ],
+        "levels": [(1 if i < simple else 2) for _, i in items],
         "things": [{"pic": ctx.pic(pic), "word": strip_tashkeel(picture(pic).word_ar)} for pic, _ in items],
         "basket": ctx.pic("basket"),
     }
@@ -261,10 +371,19 @@ def observation_journal(ctx: PageContext) -> Built:
     params = ctx.page.params
     entries, extra = int(params.get("entries", 3)), int(params.get("challenge", 2))
     problems = (
-        [] if 2 <= entries + extra <= 6 else [f"a journal page holds 2–6 entries, not {entries + extra}"]
+        [] if 1 <= entries + extra <= 6 else [f"a journal page holds 1–6 entries, not {entries + extra}"]
     )
     hints = [str(h) for h in params.get("hints", [])]
+    labels = [ctx.text(str(x)) for x in params.get("labels", [])]  # instead of numbers: «اليوم الأول»…
     data = {
+        "big": entries + extra == 1,  # one big entry: a magnifying glass to draw in, and notes
+        "notes": [ctx.text(str(x)) for x in params.get("notes", [])],
+        "how": [
+            {"icon": str(h.get("icon", "star")), "text": ctx.text(str(h["text"]))}
+            for h in params.get("how", [])
+        ],
+        "labels": labels,
+        "water": bool(params.get("water", False)),
         "icon": str(params.get("icon", "eye")),
         "lead": ctx.text(str(params.get("lead", "{لاحظ/لاحظي} جيدًا"))),
         "hints": [{"pic": ctx.pic(h), "word": strip_tashkeel(picture(h).word_ar)} for h in hints],
@@ -275,6 +394,14 @@ def observation_journal(ctx: PageContext) -> Built:
         "say": ctx.text(str(params.get("say", "هيّا نلاحظ!"))),
     }
     return Built(data, None, problems)
+
+
+def face_mark(feeling: str) -> Markup:
+    """A small feelings face for a conversation card."""
+    from qamra_workbook.render import people
+
+    kind = feeling if feeling in people.FEELING_COLORS else "happy"
+    return draw.svg(20, 20, people.feeling_face(kind, 10, 10, 9.2), "face")
 
 
 # ---- conversation and role cards --------------------------------------------------------------------------
@@ -295,13 +422,22 @@ def conversation_cards(ctx: PageContext) -> Built:
         }
         for r in params.get("roles", [])
     ]
-    cards = [ctx.text(str(c)) for c in params.get("cards", [])]
+    cards = [
+        {
+            "text": ctx.text(str(c["text"] if isinstance(c, dict) else c)),
+            "face": face_mark(str(c["face"])) if isinstance(c, dict) and c.get("face") else Markup(""),
+            "icon": str(c.get("icon", "")) if isinstance(c, dict) else "",
+            "level": int(c.get("level", 1)) if isinstance(c, dict) else 1,
+        }
+        for c in params.get("cards", [])
+    ]
     problems = [] if roles or cards else ["conversation cards need `roles` or `cards` to say"]
     if any(not 2 <= len(r["lines"]) <= 4 for r in roles):
         problems.append("a role has 2–4 lines at ⭐")
     data = {
         "roles": roles,
         "cards": cards,
+        "answers": bool(params.get("answers", False)),  # a line under each card for the answer
         "swap": ctx.text(str(params.get("swap", ""))),
         "character": uri(ctx.assets.character),
     }
@@ -367,6 +503,17 @@ def price_tags(ctx: PageContext) -> Built:
     """Things with price tags; the child colors pieces of Qamra money that make the price. ⭐ rows: prices up
     to 5 with the ⭐ pieces; the ⭐⭐ row: two things together, with every piece."""
     params = ctx.page.params
+    if params.get("mode") == "blank":  # the child's own shop: draw the things, write the prices
+        spots = int(params.get("spots", 6))
+        data = {
+            "mode": "blank",
+            "sign": ctx.text(str(params.get("sign", "متجر {child}"))),
+            "spots": [{"n": ctx.num(i + 1)} for i in range(spots)],
+            "levels": [ctx.text(str(x)) for x in params.get("levels", ["أسعار من ١ إلى ٥", "أسعار حتى ٢٠"])],
+            "order": ctx.text(str(params.get("order", "{رتّب/رتّبي} من الأرخص إلى الأغلى"))),
+            "unit": "قمرة",
+        }
+        return Built(data, None, [] if 4 <= spots <= 8 else ["a shop shelf has 4–8 spots"])
     denoms = params.get("denominations", {"simple": [1, 2, 5], "challenge": [1, 2, 5, 10, 20]})
     simple, challenge = [int(x) for x in denoms["simple"]], [int(x) for x in denoms["challenge"]]
     r = ctx.rng("prices")

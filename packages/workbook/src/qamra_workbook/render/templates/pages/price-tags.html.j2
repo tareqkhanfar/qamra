@@ -1,3 +1,15 @@
+{% if d.mode == 'blank' %}
+<div class="myshop">
+  <div class="shop-sign"><span class="awning" aria-hidden="true"></span><b data-fit="12">{{ d.sign }}</b></div>
+  <div class="shop-shelves fcard">
+    {% for sp in d.spots %}
+    <div class="spot"><div class="spot-draw"><small>{{ icon('crayon') }}</small></div><div class="tag-blank"><span class="tag-hole"></span><i></i><small>{{ d.unit }}</small></div></div>
+    {% endfor %}
+  </div>
+  <div class="shop-levels"><span>{{ stars(1) }}{{ d.levels[0] }}</span><span>{{ stars(2) }}{{ d.levels[1] }}</span></div>
+  <div class="rank fcard lvl2"><span class="label">{{ stars(2) }}{{ d.order }}</span><div class="rank-boxes"><span></span><b>&lt;</b><span></span><b>&lt;</b><span></span></div></div>
+</div>
+{% else %}
 <div class="pricepg">
   {% for row in d.rows %}
   <div class="price-row fcard lvl{{ row.level }}">
@@ -14,3 +26,4 @@
   </div>
   {% endfor %}
 </div>
+{% endif %}

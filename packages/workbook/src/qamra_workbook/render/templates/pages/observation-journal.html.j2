@@ -7,10 +7,17 @@
     <div class="jr-hints">{% for h in d.hints %}<div class="jr-hint"><div class="jr-hint-pic">{{ h.pic }}</div><small>{{ h.word }}</small></div>{% endfor %}</div>
     {% endif %}
   </div>
+  {% if d.how %}<div class="jr-how">{% for h in d.how %}<div class="jr-step fcard"><span class="pill-num">{{ book.num(loop.index) }}</span><span class="jr-step-ico">{{ icon(h.icon) }}</span><span>{{ h.text }}</span></div>{% endfor %}</div>{% endif %}
+  {% if d.big %}
+  <div class="jr-big">
+    <div class="lens-wrap"><div class="lens"></div><span class="lens-handle"></span></div>
+    <div class="jr-notes fcard">{% for q in d.notes %}<div class="jr-note{{ ' lvl2' if not loop.first }}"><span class="label">{% if loop.first %}{{ icon('pencil') }}{% else %}{{ stars(2) }}{% endif %}{{ q }}</span><div class="write-line"></div></div>{% endfor %}</div>
+  </div>
+  {% else %}
   <div class="jr-grid n{{ d.entries|length }}">
     {% for e in d.entries %}
     <div class="jr-entry fcard lvl{{ e.level }}">
-      <div class="jr-head"><span class="pill-num">{{ e.n }}</span><span class="jr-level">{{ stars(e.level) }}</span></div>
+      <div class="jr-head">{% if d.labels %}<b class="jr-day">{{ d.labels[loop.index0] }}</b>{% else %}<span class="pill-num">{{ e.n }}</span>{% endif %}{% if d.water %}<span class="jr-water"><span class="check-box"></span>{{ icon('drop') }}</span>{% endif %}<span class="jr-level">{{ stars(e.level) }}</span></div>
       <div class="jr-draw">{{ icon('crayon', 'ico jr-hint-ico') }}</div>
       <div class="jr-name"><small>{{ d.name_label }}</small><div class="write-line"></div></div>
       {% if e.level == 2 and d.chips %}<div class="jr-chips">{% for c in d.chips %}<span>{{ c }}</span>{% endfor %}</div>{% endif %}
@@ -20,4 +27,5 @@
     <div class="jr-filler"><span class="jr-say">{{ d.say }}</span><img src="{{ d.character }}" alt=""></div>
     {% endif %}
   </div>
+{% endif %}
 </div>

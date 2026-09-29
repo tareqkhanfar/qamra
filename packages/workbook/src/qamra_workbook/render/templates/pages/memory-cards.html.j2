@@ -1,0 +1,16 @@
+<div class="sheet cards">
+  <header class="sheet-head">
+    <div class="sheet-title">{{ mascot('mascot') }}<div><h1>{{ p.title }}</h1><p>{{ p.instruction }}</p></div></div>
+    <div class="sheet-owner"><small>لعبة الذاكرة</small><b data-fit="11">{{ d.owner }}</b></div>
+  </header>
+  <div class="card-grid memory">
+    {% for c in d.cards %}
+    <div class="ccard mem lvl{{ c.level }}"><i class="guide" aria-hidden="true"></i><i class="cut cutline" aria-hidden="true"></i>
+      <span class="mem-level">{{ stars(c.level) }}</span>
+      <div class="cc-pic">{{ c.pic }}</div>
+      <b class="cc-word">{{ c.word }}</b>
+    </div>
+    {% endfor %}
+  </div>
+  <footer class="sheet-foot"><span class="cut-note">{{ d.scissors }}{{ stars(1) }} ستة أزواج للصغار · {{ stars(2) }} كل الأزواج للكبار</span><span class="sheet-brand">{{ mascot('mascot') }}قمرة · بطاقات القصّ</span></footer>
+</div>

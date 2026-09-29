@@ -5,7 +5,7 @@
   </header>
   <div class="notes">
     {% for n in d.notes %}
-    <div class="note-cell">
+    <div class="note-cell"><i class="cut cutline" aria-hidden="true"></i>
       <div class="note" style="--nd: {{ n.deep }}">
         {{ n.art }}
         <b class="note-num">{{ n.value }}</b>
@@ -19,14 +19,14 @@
   </div>
   <div class="coins">
     {% for c in d.coins %}
-    <div class="coin-cell"><div class="coin">{{ c.art }}<b>{{ c.value }}</b><small>قمرة</small><em>{{ c.play }}</em></div></div>
+    <div class="coin-cell"><i class="cut cutline" aria-hidden="true"></i><div class="coin">{{ c.art }}<b>{{ c.value }}</b><small>قمرة</small><em>{{ c.play }}</em></div></div>
     {% endfor %}
   </div>
   {% if d.tags %}
   <div class="price-tags">
     <div class="label">{{ icon('shop') }}بطاقات أسعار لمتجري</div>
     <div class="tags-row">
-      {% for t in d.tags %}<div class="ptag-cell"><div class="ptag"><span class="ptag-hole"></span><small>السعر</small><span class="ptag-line"></span><b>قمرة</b></div></div>{% endfor %}
+      {% for t in d.tags %}<div class="ptag-cell"><i class="cut cutline" aria-hidden="true"></i><div class="ptag"><span class="ptag-hole"></span><small>السعر</small><span class="ptag-line"></span><b>قمرة</b></div></div>{% endfor %}
     </div>
   </div>
   {% endif %}

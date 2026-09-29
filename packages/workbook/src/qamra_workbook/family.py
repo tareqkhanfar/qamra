@@ -70,9 +70,22 @@ PAGE_TYPES: dict[str, str] = {
     "sort-choose": "sort or choose (healthy / needed / not needed, before / after…)",
     "sequence-cards": "order picture cards (the day, a recipe, a story)",
     "puppets": "finger puppets to cut out (card-stock insert)",
+    "cover-front": "the front cover: the child in the middle of the family",
+    "cover-back": "the back cover: what is inside, for grown-ups",
+    "recipe-cards": "the recipes' step picture cards to cut out and order (card-stock insert)",
+    "memory-cards": "the memory game's picture pairs to cut out (card-stock insert)",
+    "question-cards": "the family question cards to cut out (card-stock insert)",
 }
 # printed on the separate sticker and card-stock sheets, never as book pages (A7 §6)
-INSERT_TYPES = ("play-money", "role-cards", "puppets", "badge-sticker-sheet")
+INSERT_TYPES = (
+    "play-money",
+    "role-cards",
+    "puppets",
+    "badge-sticker-sheet",
+    "recipe-cards",
+    "memory-cards",
+    "question-cards",
+)
 PLACEHOLDERS = {"child", "adult", "member", "family_name", "city"}
 # Inclusive (A7 §9): a mission is done "with {adult}" or "with {member}", never assumed mother and father.
 # Whole words, with an attached و/ف/ب/ل/ك/لل, so «أبيض» and «أميرة» are not caught.
@@ -153,6 +166,8 @@ class Insert(BaseModel):
     kind: Literal["stickers", "card-stock"]
     title: str
     items: list[str]
+    id: str = ""  # the print file's name (out/family-book/inserts/<id>-<size>.pdf)
+    sheets: list[Page] = Field(default_factory=list)  # the printed sheets, each an insert-only page type
 
 
 class SampleRef(BaseModel):
@@ -183,6 +198,7 @@ class FamilyPlan(BaseModel):
     sections: list[Section]  # in the book's order
     activities: list[Activity]  # grouped by section, in order
     back: list[Page]  # the 7-day challenge, the certificate
+    cover: list[Page] = Field(default_factory=list)  # the front and back cover (card, printed apart)
     inserts: list[Insert]
     samples: list[SampleRef]
 
@@ -338,6 +354,23 @@ def check_samples(plan: FamilyPlan, pages: list[Placed]) -> list[str]:
     return out
 
 
+def check_inserts(plan: FamilyPlan) -> list[str]:
+    """The insert sheets are printed on their own paper: only insert page types, the stickers on the
+    sticker sheet and the cut-outs on card stock."""
+    out = []
+    for insert in plan.inserts:
+        for sheet in insert.sheets:
+            if sheet.type not in INSERT_TYPES:
+                out.append(f"insert «{insert.title}»: {sheet.type} is a book page, not an insert sheet")
+            stickers = sheet.type == "badge-sticker-sheet"
+            if stickers != (insert.kind == "stickers"):
+                out.append(f"insert «{insert.title}»: {sheet.type} does not print on {insert.kind}")
+            for text in (sheet.title, sheet.instruction):
+                if ASSUMED_PARENTS.search(text):
+                    out.append(f"insert «{insert.title}»: write {{adult}}, not a fixed mother or father")
+    return out
+
+
 def problems(plan: FamilyPlan) -> list[str]:
     pages = book_pages(plan)
     return (
@@ -346,6 +379,7 @@ def problems(plan: FamilyPlan) -> list[str]:
         + check_variety(pages)
         + check_activities(plan)
         + check_samples(plan, pages)
+        + check_inserts(plan)
     )
 
 

@@ -1,21 +1,32 @@
-<div class="recipe">
+<div class="recipe variant-{{ d.variant }}">
   <div class="ingredients fcard">
     <div class="label">{{ icon('spoon') }}{{ d.count_label }}</div>
-    <div class="ing-row">
+    <div class="ing-row n{{ d.ingredients|length }}">
       {% for i in d.ingredients %}
       <div class="ing">
         <div class="ing-pic">{{ i.pic }}</div>
         <div class="ing-text">
           <b>{{ i.name }}</b>
-          <div class="spoons">{% for k in range(i.count) %}{{ icon('spoon') }}{% endfor %}</div>
+          {% if d.variant == 'count' %}<div class="pieces">{% for k in range(i.count) %}<span class="piece-dot"></span>{% endfor %}</div>
+          {% else %}<div class="spoons">{% for k in range(i.count) %}{{ icon('spoon') }}{% endfor %}</div>{% endif %}
         </div>
         <div class="ing-box"><small>كم؟</small><span class="box">{% if solved %}{{ p.num(i.count) }}{% endif %}</span></div>
       </div>
       {% endfor %}
     </div>
   </div>
+  {% if d.variant == 'layers' %}
+  <div class="layers-card fcard">
+    <div class="layers-cup">{{ d.cup }}</div>
+    <div class="layer-rows">
+      {% for l in d.layers|reverse %}
+      <div class="layer-row lvl{{ l.level }}"><span class="pill-num">{{ l.n }}</span>{{ stars(l.level) }}<div class="layer-chips">{% for i in d.ingredients %}<span class="layer-chip">{{ i.mini }}</span>{% endfor %}</div></div>
+      {% endfor %}
+    </div>
+  </div>
+  {% else %}
   <div class="steps-head label">{{ icon('chef') }}{{ d.steps_label }}</div>
-  <div class="steps">
+  <div class="steps" style="grid-template-columns: repeat({{ d.cards|length }}, 1fr)">
     {% for c in d.cards %}
     <div class="step fcard">
       <span class="step-num">{% if solved %}{{ p.num(c.n) }}{% endif %}</span>
@@ -24,6 +35,7 @@
     </div>
     {% endfor %}
   </div>
+  {% endif %}
   <div class="safety">
     <div class="safety-tag">{{ icon('shield') }}<span>الأمان أولًا</span></div>
     <div class="safety-items">

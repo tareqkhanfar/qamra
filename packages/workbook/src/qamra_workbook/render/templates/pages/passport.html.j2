@@ -21,9 +21,13 @@
     <div class="pass-strip" aria-hidden="true">{% for i in range(15) %}{{ icon('star' if loop.index is odd else 'moon') }}{% endfor %}</div>
   </div>
   <div class="stamps-card fcard">
-    <div class="label">{{ icon('stamp') }}أختام مغامراتي</div>
-    <div class="stamps">
-      {% for s in d.slots %}<div class="slot">{{ s.svg }}<span class="slot-label" data-fit="7" style="color: {{ s.color }}">{{ s.label }}</span></div>{% endfor %}
+    <div class="label">{{ icon('stamp') }}أختام مغامراتي<small class="stamps-count">{{ p.num(d.slots|length) }}</small></div>
+    <div class="stamps adv n{{ d.slots|length }}">
+      {% for s in d.slots %}<div class="slot"><span class="slot-n" style="background: {{ s.color }}">{{ s.n }}</span>{{ s.svg }}<span class="slot-label" data-fit="6.5" style="color: {{ s.color }}">{{ s.label }}</span></div>{% endfor %}
+    </div>
+    <div class="label badges-head">{{ icon('trophy') }}شاراتي السبع</div>
+    <div class="stamps badges">
+      {% for s in d.badges %}<div class="slot">{{ s.svg }}<span class="slot-label" data-fit="6.5" style="color: {{ s.color }}">{{ s.label }}</span></div>{% endfor %}
     </div>
   </div>
 </div>

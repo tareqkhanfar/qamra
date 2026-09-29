@@ -1,0 +1,27 @@
+<div class="finishpg mode-{{ d.mode }}">
+{% if d.mode == 'sentences' %}
+  {% for r in d.rows %}
+  <div class="fs-row fcard lvl{{ r.level }}">
+    <div class="fs-face">{{ r.face }}</div>
+    <div class="fs-body"><b>{{ r.text }}</b><div class="fs-draw"></div></div>
+    <span class="fs-level">{{ stars(r.level) }}</span>
+  </div>
+  {% endfor %}
+{% else %}
+  <div class="story-card fcard">
+    {{ mascot('mascot story-moon') }}
+    <div class="story-text">{% for line in d.story %}<p>{{ line }}</p>{% endfor %}</div>
+  </div>
+  <div class="story-strip">
+    {% for pnl in d.panels %}<div class="story-panel fcard"><span class="pill-num">{{ book.num(loop.index) }}</span><div class="sp-pic">{{ pnl }}</div></div>{% endfor %}
+    <div class="story-panel end fcard"><span class="pill-num">؟</span><div class="sp-draw"><small>{{ icon('crayon') }}{{ d.end }}</small></div></div>
+  </div>
+  {% if d.feel %}
+  <div class="feel-row fcard lvl2"><span class="label">{{ stars(2) }}كيف شعر كل واحد؟</span>
+    {% for x in d.feel %}<div class="feel-who"><b>{{ x.name }}</b>{% for f in x.faces %}<span class="fw-face">{{ f }}</span>{% endfor %}</div>{% endfor %}
+  </div>
+  {% else %}
+  <div class="second-end fcard lvl2"><span class="label">{{ stars(2) }}{{ d.second }}</span><div class="write-line"></div><div class="write-line"></div></div>
+  {% endif %}
+{% endif %}
+</div>

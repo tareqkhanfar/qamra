@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import math
 
+from qamra_workbook.pictures.family_more import FAMILY_MORE
 from qamra_workbook.pictures.icons import (
     BLUE,
     BROWN,
@@ -538,4 +539,4 @@ _H += [
     ),
 ]
 
-HOUSEHOLD: dict[str, Picture] = dict(_H)
+HOUSEHOLD: dict[str, Picture] = dict(_H) | FAMILY_MORE  # and the whole book's (family_more.py)

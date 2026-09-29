@@ -1,0 +1,22 @@
+<div class="tocpg">
+  <div class="map-card fcard">
+    <div class="map" style="height: {{ d.map_h }}mm">
+      {{ d.map }}
+      <span class="map-start" style="left: {{ d.stops[0].x + 13 if d.stops else 0 }}mm; top: 1mm">{{ icon('flag') }}{{ d.start }}</span>
+      {% for s in d.stops %}
+      <div class="stop" style="left: {{ s.x }}mm; top: {{ s.y }}mm; --sc: {{ s.color }}; --sd: {{ s.deep }}">
+        <span class="stop-ico">{{ icon(s.icon) }}</span>
+        <span class="stop-k">{{ s.k }}</span>
+        <span class="stop-star">{{ stars(1, 'stop-star-svg', '#FFFFFF', '#E2A32A') }}</span>
+        <b class="stop-title" data-fit="7">{{ s.title }}</b>
+        {% if s.n %}<span class="stop-page">ص {{ s.n }}</span>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% if d.extras %}
+  <div class="toc-extras">
+    {% for x in d.extras %}<div class="toc-extra fcard"><span class="tx-ico">{{ icon(x.icon) }}</span><b data-fit="8">{{ x.title }}</b><span class="stop-page">ص {{ x.n }}</span></div>{% endfor %}
+  </div>
+  {% endif %}
+</div>

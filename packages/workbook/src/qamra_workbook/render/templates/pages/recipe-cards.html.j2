@@ -1,0 +1,16 @@
+<div class="sheet cards">
+  <header class="sheet-head">
+    <div class="sheet-title">{{ mascot('mascot') }}<div><h1>{{ p.title }}</h1><p>{{ p.instruction }}</p></div></div>
+    <div class="sheet-owner"><small>بطاقات</small><b data-fit="11">{{ d.owner }}</b></div>
+  </header>
+  <div class="card-grid recipes">
+    {% for c in d.cards %}
+    <div class="ccard" style="--cc: {{ c.color }}"><i class="guide" aria-hidden="true"></i><i class="cut cutline" aria-hidden="true"></i>
+      <div class="cc-band"><span data-fit="6.5">{{ c.recipe }}</span></div>
+      <div class="cc-pic">{{ c.pic }}</div>
+      <b class="cc-text">{{ c.text }}</b>
+    </div>
+    {% endfor %}
+  </div>
+  <footer class="sheet-foot"><span class="cut-note">{{ d.scissors }}قصّوا البطاقات مع الكبار، ثم رتّبوا خطوات كل وصفة</span><span class="sheet-brand">{{ mascot('mascot') }}قمرة · بطاقات القصّ</span></footer>
+</div>

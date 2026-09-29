@@ -28,7 +28,9 @@ OUTFITS = ("#E98AA6", "#6E95DB", "#86BF72", "#F2A65A", "#A58BD8", "#5DB7A8")
 SCARVES = ("#8FB9A8", "#C9A7D8", "#E8B4A0", "#A9C4E8")
 BOX_W, BOX_H, FEET = 60.0, 120.0, 118.0
 
-Feeling = Literal["calm", "happy", "uneasy", "sad", "upset", "angry", "scared"]
+Feeling = Literal[
+    "calm", "happy", "uneasy", "sad", "upset", "angry", "scared", "proud", "missing", "surprised"
+]
 
 
 def shade(color: str, k: float) -> str:
@@ -324,6 +326,9 @@ FEELING_COLORS: dict[Feeling, str] = {
     "upset": "#F5A06B",
     "angry": "#EE8A7A",
     "scared": "#C5B3E6",
+    "proud": "#F7C84A",
+    "missing": "#F4B6C6",
+    "surprised": "#A8DCD0",
 }
 
 
@@ -431,7 +436,53 @@ def feeling_face(feeling: Feeling, cx: float, cy: float, r: float, color: str | 
                     stroke_width=w,
                 )
             )
-    if feeling in ("calm", "happy"):
+        case "proud":  # happy closed eyes, a big smile, chin up
+            for sx in (-1, 1):
+                x = cx + sx * ex
+                out.append(
+                    mouth(
+                        ("M", (x - r * 0.13, ey + r * 0.04)),
+                        ("Q", (x, ey - r * 0.12, x + r * 0.13, ey + r * 0.04)),
+                    )
+                )
+            out.append(
+                filled(
+                    draw.d_path(
+                        ("M", (cx - r * 0.3, my - r * 0.04)),
+                        ("Q", (cx, my + r * 0.4, cx + r * 0.3, my - r * 0.04)),
+                    )
+                )
+            )
+            out.append(
+                draw.el(
+                    "path",
+                    d=draw.star_points(cx + r * 0.72, cy - r * 0.72, r * 0.2, r * 0.09),
+                    fill="#E2A32A",
+                )
+            )
+        case "missing":  # eyes looking up, a small wistful smile, a little heart
+            for sx in (-1, 1):
+                out.append(
+                    draw.el(
+                        "ellipse", cx=cx + sx * ex, cy=ey - r * 0.06, rx=r * 0.1, ry=r * 0.13, fill=OUTLINE
+                    )
+                )
+            out.append(brows(-0.28, -0.2))
+            out.append(
+                mouth(
+                    ("M", (cx - r * 0.18, my + r * 0.04)),
+                    ("Q", (cx, my + r * 0.1, cx + r * 0.18, my + r * 0.04)),
+                )
+            )
+            out.append(
+                draw.el(
+                    "path", d=draw.heart_path(cx + r * 0.7, cy - r * 0.62, r * 0.36, r * 0.32), fill="#E4769D"
+                )
+            )
+        case "surprised":
+            out += [eye(cx - ex), eye(cx + ex), brows(-0.36, -0.34)]
+            out.append(draw.el("ellipse", cx=cx, cy=my + r * 0.04, rx=r * 0.12, ry=r * 0.15, fill=OUTLINE))
+    if feeling in ("calm", "happy", "proud"):
         for s in (-1, 1):
             out.append(
                 draw.el(
@@ -445,3 +496,95 @@ def feeling_face(feeling: Feeling, cx: float, cy: float, r: float, color: str | 
                 )
             )
     return "".join(out)
+
+
+# ---- people at work (the jobs adventure and the role cards) ------------------------------------------------
+
+Job = Literal["doctor", "baker", "farmer", "teacher", "barber", "builder", "seller", "chef"]
+# who is drawn for each job, their clothes, and what they wear on the head
+JOBS: dict[str, tuple[Figure, str, str]] = {
+    "doctor": ("woman", "#F4F6FA", "mirror"),
+    "baker": ("man", "#FFFFFF", "toque"),
+    "farmer": ("man", "#86BF72", "straw"),
+    "teacher": ("woman", "#A58BD8", ""),
+    "barber": ("man", "#5DB7A8", ""),
+    "builder": ("man", "#F2A65A", "hardhat"),
+    "seller": ("woman", "#E98AA6", ""),
+    "chef": ("woman", "#FFFFFF", "toque"),
+}
+BUST_H = 70.0  # a bust shows the top 70 units of the 60 × 120 figure box
+
+
+def _hat(kind: str, cx: float, top: float) -> str:
+    """A hat over a head whose top is at `top` (figure units)."""
+    match kind:
+        case "toque":
+            puff = "M19 5 C15 -6 24 -11 30 -6 C36 -11 45 -6 41 5 Z"
+            return draw.el(
+                "rect",
+                x=cx - 10,
+                y=top - 3,
+                width=20,
+                height=8,
+                rx=1.5,
+                fill="#FFFFFF",
+                stroke=OUTLINE,
+                stroke_width=0.8,
+            ) + draw.el(
+                "path",
+                d=puff,
+                fill="#FFFFFF",
+                stroke=OUTLINE,
+                stroke_width=0.8,
+                transform=f"translate({cx - 30} {top - 8})",
+            )
+        case "hardhat":
+            return draw.el(
+                "path",
+                d=f"M{cx - 12} {top + 6} C{cx - 12} {top - 7} {cx + 12} {top - 7} {cx + 12} {top + 6} Z",
+                fill="#F7C84A",
+                stroke=OUTLINE,
+                stroke_width=0.8,
+            ) + draw.el(
+                "rect",
+                x=cx - 15,
+                y=top + 5,
+                width=30,
+                height=3.4,
+                rx=1.7,
+                fill="#F2B33D",
+                stroke=OUTLINE,
+                stroke_width=0.8,
+            )
+        case "straw":
+            return draw.el(
+                "ellipse", cx=cx, cy=top + 4, rx=20, ry=4.2, fill="#EBCB7A", stroke=OUTLINE, stroke_width=0.8
+            ) + draw.el(
+                "path",
+                d=f"M{cx - 10} {top + 4} C{cx - 9} {top - 7} {cx + 9} {top - 7} {cx + 10} {top + 4} Z",
+                fill="#EBCB7A",
+                stroke=OUTLINE,
+                stroke_width=0.8,
+            )
+        case "mirror":
+            return draw.el(
+                "path",
+                d=f"M{cx - 11} {top + 6} Q{cx} {top - 1} {cx + 11} {top + 6}",
+                fill="none",
+                stroke="#6E6A7A",
+                stroke_width=1.4,
+            ) + draw.el("circle", cx=cx, cy=top + 3, r=3.6, fill="#E3F0FB", stroke=OUTLINE, stroke_width=0.8)
+    return ""
+
+
+def job_bust(job: str, edge_mm: float = 0.0) -> str:
+    """The head and shoulders of someone at work (figure units: 60 wide, `BUST_H` tall)."""
+    kind, outfit, hat = JOBS.get(job, ("adult", OUTFITS[0], ""))
+    figure = person(kind, outfit)
+    head_top = 20.0 - 11.0
+    extra = ""
+    if job == "doctor":  # the stethoscope on the white coat
+        extra = draw.path("M24 36 C24 48 36 48 36 36 M30 46 L30 52", stroke="#4A5078", width=1.3) + draw.el(
+            "circle", cx=30, cy=54, r=2.6, fill="#CFD2DC", stroke=OUTLINE, stroke_width=0.6
+        )
+    return figure.svg(edge_mm) + extra + _hat(hat, 30.0, head_top)

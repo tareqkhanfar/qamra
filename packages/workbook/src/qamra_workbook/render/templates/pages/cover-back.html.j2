@@ -1,0 +1,10 @@
+<div class="cover-back">
+  <div class="cb-band" aria-hidden="true"></div>
+  <div class="cb-head">{{ mascot('mascot') }}<div><b>{{ book.title_ar }}</b><small>{{ d.ages }}</small></div></div>
+  <div class="cb-blurb">{% for line in d.blurb %}<p>{{ line }}</p>{% endfor %}</div>
+  <div class="cb-advs">{% for a in d.adventures %}<div class="cb-adv"><span style="background: {{ a.color }}">{{ icon(a.icon) }}</span><small>{{ a.name }}</small></div>{% endfor %}</div>
+  {% if d.collect %}<div class="cb-collect"><b>{{ d.collect }}</b><div class="cb-badges">{% for b in d.badges %}{{ b }}{% endfor %}</div></div>{% endif %}
+  {% if d.kit %}<ul class="cb-kit">{% for k in d.kit %}<li>{{ icon('check') }}{{ k }}</li>{% endfor %}</ul>{% endif %}
+  <div class="cb-made"><span data-fit="9">{{ d.made_for }}</span></div>
+  <div class="cb-brand">{{ mascot('mascot') }}<b>قمرة</b><small>qamra.app</small></div>
+</div>

@@ -1,0 +1,11 @@
+<div class="matchpg">
+  <div class="match-left">
+    {% for s in d.situations %}
+    <div class="sit fcard lvl{{ s.level }}"><span class="sit-level">{{ stars(s.level) }}</span><div class="sit-pic">{{ s.pic }}</div><b>{{ s.text }}</b><span class="sort-dot"></span></div>
+    {% endfor %}
+  </div>
+  <div class="sort-gap" aria-hidden="true">{{ icon('pencil', 'ico sort-pencil') }}</div>
+  <div class="match-right">
+    {% for f in d.faces %}<div class="mface fcard"><span class="sort-dot"></span><div class="mf-svg">{{ f.svg }}</div><b>{{ f.name }}</b></div>{% endfor %}
+  </div>
+</div>
