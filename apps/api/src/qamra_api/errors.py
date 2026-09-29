@@ -306,6 +306,20 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "شرائح الأسعار غير صالحة: كميات من 1 فأكثر، بلا تكرار، وأسعار موجبة.",
         "Invalid price tiers: quantities from 1 up, no duplicates, and positive prices.",
     ),
+    # ---- the order path (Addendum 9 §1.4–§1.6): codes, gift cards, the gift order
+    "code_unknown": (
+        "هذا الرمز غير صحيح. تأكّدوا منه وجرّبوا مرة أخرى.",
+        "This code isn't valid. Check it and try again.",
+    ),
+    "gift_card_invalid": (
+        "بطاقة الهدية لا تصلح لهذا الطلب. أزيلوها أو جرّبوا بطاقة أخرى.",
+        "This gift card can't pay for this order. Remove it or try another one.",
+    ),
+    "gift_card_changed": (
+        "تغيّر رصيد بطاقة الهدية. راجعوا المجموع الجديد في السلة ثم أكّدوا الطلب.",
+        "The gift card's balance changed. Check the new total in your cart, then confirm.",
+    ),
+    "gift_card_exists": ("توجد بطاقة هدية بهذا الرمز.", "A gift card with this code already exists."),
     "internal_error": (
         "حدث خطأ غير متوقع. حاولوا مرة أخرى بعد قليل.",
         "Something went wrong. Please try again in a moment.",

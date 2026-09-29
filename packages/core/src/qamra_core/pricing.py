@@ -5,11 +5,13 @@
 2. add-ons: fixed prices, or a percent of the item's unit price (the extra copy at 50%); included add-ons are
    free in that line;
 3. seasonal sale: percent off matching items' base price (never on price-list items);
-4. bundle: the single best bundle that applies (2+ books, siblings);
+4. bundle: the single best bundle that applies (2+ books, siblings, «الكتاب الثاني −15%» on the cheaper);
 5. coupon: percent or fixed on the matching items after the discounts above (validity — dates, uses, first
    order — is checked where the coupon is loaded);
 6. shipping: the zone's fee unless the discounted subtotal reaches its free threshold, plus its COD fee;
-   orders with nothing to ship pay neither.
+   orders with nothing to ship pay neither;
+7. gift card (Addendum 9): stored value paying what is left after every discount, delivery included; it is
+   a payment, not a discount, so it never changes the free-delivery threshold.
 
 Pure functions on plain data: no database, so every rule is unit-tested. Amounts are rounded half-up to 0.01
 at every step, so what the cart shows is exactly what the order stores.
@@ -63,10 +65,16 @@ class SaleRule:
 @dataclass(frozen=True)
 class BundleRule:
     slug: str
-    kind: str  # min_items | siblings
+    kind: str  # min_items | siblings | cheapest
     min_items: int
     discount_pct: Decimal
     lines: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class GiftCardRule:
+    code: str
+    balance: Decimal  # in the cart currency (a card only pays in its own currency)
 
 
 @dataclass(frozen=True)
@@ -114,8 +122,11 @@ class Quote:
     coupon_problem: str | None
     shipping: Decimal
     cod_fee: Decimal
-    total: Decimal
+    total: Decimal  # what is left to pay (cash on delivery), after the gift card
     notes: list[str] = field(default_factory=list)
+    gift_card: str | None = None
+    gift_card_amount: Decimal = ZERO
+    gift_card_problem: str | None = None  # set where the card is loaded (unknown, expired, currency…)
 
     @property
     def discount(self) -> Decimal:
@@ -134,14 +145,33 @@ def unit_price(item: ItemInput, sku_qty: int) -> tuple[Decimal, bool]:
     return r2(item.unit_price + item.style_modifier), False
 
 
+def addon_amount(a: AddOnLine, unit: Decimal) -> Decimal:
+    """One add-on line of an item: free when included, a percent of the unit price, or its fixed price."""
+    if a.included:
+        return ZERO
+    each = unit * a.percent / 100 if a.percent is not None else a.unit_price
+    return r2(each) * a.qty
+
+
 def addons_total(item: ItemInput, unit: Decimal) -> Decimal:
-    total = ZERO
-    for a in item.addons:
-        if a.included:
-            continue
-        each = unit * a.percent / 100 if a.percent is not None else a.unit_price
-        total += r2(each) * a.qty
-    return total
+    return sum((addon_amount(a, unit) for a in item.addons), ZERO)
+
+
+def cheapest_cut(
+    eligible: Sequence[ItemInput], prices: dict[str, ItemPrice], b: BundleRule
+) -> dict[str, Decimal]:
+    """«الكتاب الثاني −15%»: in every `min_items` copies, the cheapest copy is discounted (2 books: the
+    cheaper one; 4 books: the two cheapest). On the book's price after the sale, never on its add-ons.
+    Between copies at the same price, the later one in the cart is "the second book"."""
+    copies: list[tuple[Decimal, int, str]] = []
+    for n, i in enumerate(eligible):
+        p = prices[i.key]
+        each = (p.base - p.sale_discount) / i.qty
+        copies += [(each, -n, i.key)] * i.qty
+    cut: dict[str, Decimal] = {}
+    for each, _, key in sorted(copies)[: len(copies) // max(b.min_items, 1)]:
+        cut[key] = cut.get(key, ZERO) + r2(each * b.discount_pct / 100)
+    return cut
 
 
 def best_bundle(
@@ -156,10 +186,14 @@ def best_bundle(
             reached = sum(i.qty for i in eligible) >= b.min_items
         if not reached:
             continue
-        cut = {
-            i.key: r2((prices[i.key].base - prices[i.key].sale_discount) * b.discount_pct / 100)
-            for i in eligible
-        }
+        cut = (
+            cheapest_cut(eligible, prices, b)
+            if b.kind == "cheapest"
+            else {
+                i.key: r2((prices[i.key].base - prices[i.key].sale_discount) * b.discount_pct / 100)
+                for i in eligible
+            }
+        )
         amount = sum(cut.values(), ZERO)
         if amount > best[0]:
             best = (amount, b.slug, cut)
@@ -198,6 +232,7 @@ def quote(
     coupon: CouponRule | None = None,
     zone: ZoneRule | None = None,
     cash_on_delivery: bool = True,
+    gift_card: GiftCardRule | None = None,
 ) -> Quote:
     sku_qty = Counter[str]()
     for i in items:
@@ -237,6 +272,8 @@ def quote(
         free = zone.free_over is not None and after >= zone.free_over
         shipping = ZERO if free else zone.fee
         cod = zone.cod_fee if cash_on_delivery else ZERO
+    due = after + shipping + cod
+    paid = r2(min(gift_card.balance, due)) if gift_card is not None and gift_card.balance > 0 else ZERO  # 7.
     return Quote(
         items=[prices[i.key] for i in items],
         subtotal=subtotal,
@@ -248,8 +285,10 @@ def quote(
         coupon_problem=coupon_problem,
         shipping=shipping,
         cod_fee=cod,
-        total=after + shipping + cod,
+        total=due - paid,
         notes=notes,
+        gift_card=gift_card.code if paid > 0 and gift_card is not None else None,
+        gift_card_amount=paid,
     )
 
 

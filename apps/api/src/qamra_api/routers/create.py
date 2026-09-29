@@ -24,8 +24,9 @@ from qamra_api.deps import CurrentUser, RedisDep, SessionDep, SettingsDep, Stora
 from qamra_api.errors import ApiError
 from qamra_api.jobs import QueueDep, enqueue
 from qamra_api.portal.privacy import forget_in_class_book
+from qamra_api.store.addons import fits
 from qamra_api.store.cart import clean_personalization, ensure_cart
-from qamra_api.store.catalog import load_catalog
+from qamra_api.store.catalog import addon_problems, load_catalog
 from qamra_api.store.router import AddOnIn, CartOut, cart_out, check_item
 from qamra_api.uploads import clean_image, read_upload, require_face
 from qamra_core.db.models import (
@@ -603,6 +604,25 @@ async def add_to_cart(
         addons.append({"slug": "dedication-page", "qty": 1})  # written on the story step; free in Magic
     check_item(catalog, variant, book.art_style, addons)
     cart = await ensure_cart(db, request, response, user, settings)
+    same = (
+        (await db.execute(select(CartItem).where(CartItem.cart_id == cart.id, CartItem.book_id == book.id)))
+        .scalars()
+        .first()
+    )
+    if same is not None:  # Addendum 9: back from the add-ons step to the format, still one line per book
+        chosen = {a["slug"] for a in addons}
+        kept = [  # the add-ons chosen after the preview that still fit the (maybe new) format
+            a
+            for a in same.addons
+            if a["slug"] not in chosen
+            and a["slug"] in catalog.addons
+            and fits(catalog, variant, catalog.addons[a["slug"]])
+        ]
+        if kept and not addon_problems(catalog, variant, [*addons, *kept]):
+            addons = [*addons, *kept]
+        same.variant_id, same.addons = variant.id, addons
+        await db.commit()
+        return await cart_out(db, cart)
     db.add(
         CartItem(
             cart_id=cart.id,

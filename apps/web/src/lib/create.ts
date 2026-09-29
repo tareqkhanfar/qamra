@@ -86,6 +86,7 @@ export const STEPS = [
   "writing",
   "review",
   "format",
+  "addons", // Addendum 9 (design AddOns), then the cart and the checkout (Create10)
 ] as const;
 export type Step = (typeof STEPS)[number];
 export const TOTAL_STEPS = 12;

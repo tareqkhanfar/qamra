@@ -145,6 +145,9 @@ def addon_problems(catalog: Catalog, variant: Variant, chosen: list[dict[str, An
         clash = [x for x in addon.excludes if x in slugs]
         if clash:
             out.append(f"{slug}: can't be combined with {', '.join(clash)}")
+        missing = [x for x in addon.needs if x not in slugs]  # Addendum 9: dependencies between add-ons
+        if missing:
+            out.append(f"{slug}: needs {', '.join(missing)}")
     if len(set(slugs)) != len(slugs):
         out.append("an add-on is listed twice")
     return out
@@ -221,6 +224,22 @@ def bulk_blocked(variant: Variant, copies: int, currency: Currency) -> bool:
     )
 
 
+def addon_lines(
+    catalog: Catalog, variant: Variant, currency: Currency, addons: list[dict[str, Any]]
+) -> list[AddOnLine]:
+    """The pricing engine's view of an item's add-ons (unknown ones are skipped: see `addon_problems`)."""
+    line = catalog.product_of(variant).line.value
+    out = []
+    for a in addons:
+        addon = catalog.addons.get(str(a["slug"]))
+        if addon is None:
+            continue
+        price = catalog.addon_prices.get((addon.id, currency), Decimal("0"))
+        percent = addon.percent if addon.pricing == AddOnPricing.percent_of_item else None
+        out.append(AddOnLine(addon.slug, int(a.get("qty", 1)), price, percent, line in addon.included_lines))
+    return out
+
+
 def item_input(
     catalog: Catalog,
     *,
@@ -237,13 +256,7 @@ def item_input(
     retail = catalog.price(variant, currency)
     if retail is None:
         raise ValueError(f"{variant.sku} has no {currency.value} price")
-    lines = []
-    for a in addons:
-        addon = catalog.addons[str(a["slug"])]
-        price = catalog.addon_prices.get((addon.id, currency), Decimal("0"))
-        percent = addon.percent if addon.pricing == AddOnPricing.percent_of_item else None
-        included = product.line.value in addon.included_lines
-        lines.append(AddOnLine(addon.slug, int(a.get("qty", 1)), price, percent, included))
+    lines = addon_lines(catalog, variant, currency, addons)
     return ItemInput(
         key=key,
         line=product.line.value,

@@ -15,13 +15,16 @@ from qamra_api.logging import RequestLogMiddleware
 from qamra_api.routers.admin_books import router as admin_books_router
 from qamra_api.routers.admin_catalog import router as admin_catalog_router
 from qamra_api.routers.admin_classic import router as admin_classic_router
+from qamra_api.routers.admin_gift_cards import router as admin_gift_cards_router
 from qamra_api.routers.admin_orders import router as admin_orders_router
+from qamra_api.routers.admin_packing import router as admin_packing_router
 from qamra_api.routers.admin_portal import router as admin_portal_router
 from qamra_api.routers.admin_print_batches import router as admin_print_batches_router
 from qamra_api.routers.admin_print_costs import router as admin_print_costs_router
 from qamra_api.routers.admin_reports import router as admin_reports_router
 from qamra_api.routers.admin_self_hosted import router as admin_self_hosted_router
 from qamra_api.routers.create import router as create_router
+from qamra_api.routers.e2e import router as e2e_router
 from qamra_api.routers.examples import admin_router as examples_admin_router
 from qamra_api.routers.examples import router as examples_router
 from qamra_api.routers.family import router as family_router
@@ -42,6 +45,7 @@ from qamra_api.routers.shop import router as shop_router
 from qamra_api.routers.themes import router as themes_router
 from qamra_api.security_headers import SecurityHeadersMiddleware
 from qamra_api.settings import ApiSettings, get_settings
+from qamra_api.store.order_path import router as order_path_router
 from qamra_api.store.payments import router as payments_router
 from qamra_api.store.router import router as store_router
 from qamra_core.db.session import make_async_engine, make_async_sessionmaker
@@ -127,4 +131,9 @@ def create_app(settings: ApiSettings | None = None, *, manage_resources: bool = 
     app.include_router(portal_order_router)
     app.include_router(invite_router)
     app.include_router(admin_portal_router)
+    app.include_router(order_path_router)  # W2: Addendum 9 order path (add-ons, gift, codes, cross-sell)
+    app.include_router(admin_gift_cards_router)
+    app.include_router(admin_packing_router)
+    if settings.e2e_fixtures and settings.env != "prod":  # test-only fixtures (tests/e2e), never in prod
+        app.include_router(e2e_router)
     return app

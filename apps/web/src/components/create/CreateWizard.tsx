@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { MoonPhase } from "@/components/art/MoonPhase";
+import { AddOnsStep } from "@/components/order/AddOnsStep";
 import { Alert } from "@/components/ui/Alert";
 import { useRouter } from "@/i18n/navigation";
 import { api, errorText, type User } from "@/lib/api";
@@ -70,6 +71,7 @@ function allowed(
     case "review":
       return !!child && !!book && book.line === "magic" && book.status === "preview";
     case "format":
+    case "addons": // Addendum 9: after the preview, the book's add-ons (its line is already in the cart)
       return !!child && !!book && book.status !== "generating" && book.status !== "failed";
   }
 }
@@ -397,7 +399,17 @@ export function CreateWizard() {
           theme={theme}
           catalog={catalog}
           back={() => go(shownBook?.line === "magic" ? { step: "review" } : { step: "story", book: null })}
-          onAdded={() => router.push("/checkout")}
+          onAdded={() => go({ step: "addons" })}
+        />
+      );
+    case "addons":
+      return (
+        <AddOnsStep
+          child={child!}
+          book={shownBook!}
+          theme={theme}
+          catalog={catalog}
+          back={() => go({ step: "format" })}
         />
       );
   }

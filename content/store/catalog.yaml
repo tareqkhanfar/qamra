@@ -148,16 +148,16 @@ products:
 
 addons:
   # Addendum 4 §4
-  - {slug: hardcover-upgrade, name_ar: ترقية إلى غلاف مقوّى, name_en: Hardcover upgrade, price: {ILS: 30, JOD: 6}, cost_ils: 12, lines: [classic], requires: {format: [softcover]}, step: format}  # placeholder cost
-  - {slug: gift-box, name_ar: علبة هدية فاخرة مع بطاقة, name_en: Premium gift box + card, price: {ILS: 15, JOD: 3}, cost_ils: 6, lines: [classic, magic, coloring, workbook, journey, family], requires: {format: [softcover, hardcover, spiral]}, step: checkout}  # placeholder cost
-  - {slug: dedication-page, name_ar: صفحة إهداء خاصة, name_en: Custom dedication page, price: {ILS: 5, JOD: 1}, cost_ils: 0, lines: [classic, magic], included_lines: [magic], step: story}
-  - {slug: drawing-companion, name_ar: صاحبي من رسمتي, name_en: Drawing companion, price: {ILS: 20, JOD: 4}, cost_ai_usd: 0.25, lines: [classic, magic], included_lines: [magic], step: character}
+  - {slug: hardcover-upgrade, name_ar: ترقية إلى غلاف مقوّى, name_en: Hardcover upgrade, description_ar: يدوم سنوات، والأنسب للهدايا, description_en: "Lasts for years, the best choice for a gift", featured: true, badge_ar: الأكثر اختياراً, badge_en: Most chosen, price: {ILS: 30, JOD: 6}, cost_ils: 12, lines: [classic], requires: {format: [softcover]}, step: format}  # placeholder cost
+  - {slug: gift-box, name_ar: علبة هدية فاخرة مع بطاقة, name_en: Premium gift box + card, description_ar: جاهز للإهداء، ونكتب رسالتك على البطاقة, description_en: "Ready to give, with your message on the card", featured: true, price: {ILS: 15, JOD: 3}, cost_ils: 6, lines: [classic, magic, coloring, workbook, journey, family], requires: {format: [softcover, hardcover, spiral]}, step: checkout}  # placeholder cost
+  - {slug: dedication-page, name_ar: صفحة إهداء خاصة, name_en: Custom dedication page, description_ar: سطرين منك بأول الكتاب, description_en: A few lines from you at the start of the book, price: {ILS: 5, JOD: 1}, cost_ils: 0, lines: [classic, magic], included_lines: [magic], step: story}
+  - {slug: drawing-companion, name_ar: صاحبي من رسمتي, name_en: Drawing companion, description_ar: رسمة طفلك تتحوّل لشخصية ترافقه في كل الصفحات, description_en: Your child's drawing becomes a companion on every page, featured: true, badge_ar: مميّز, badge_en: Special, price: {ILS: 20, JOD: 4}, cost_ai_usd: 0.25, lines: [classic, magic], included_lines: [magic], step: character}
   - {slug: extra-character, name_ar: شخصية إضافية (أخ أو صديق), name_en: Extra character (sibling or friend), price: {ILS: 20, JOD: 4}, cost_ai_usd: 0.20, lines: [classic, magic], max_qty: 3, step: character}
-  - {slug: family-voice, name_ar: أصوات العائلة (رمز QR), name_en: Family voice QR, price: {ILS: 15, JOD: 3}, cost_ils: 0, lines: [classic, magic], step: format}
-  - {slug: extra-copy, name_ar: نسخة إضافية من الكتاب نفسه, name_en: Extra copy of the same book, pricing: percent_of_item, percent: 50, cost_ils: 17, lines: [classic, magic, coloring], requires: {format: [softcover, hardcover]}, max_qty: 5, step: checkout}  # placeholder cost
-  - {slug: coloring-version, name_ar: نسخة تلوين من الحكاية نفسها, name_en: Coloring version of the story, price: {ILS: 25, JOD: 5}, cost_ils: 9, cost_ai_usd: 0.35, lines: [classic, magic], step: format}  # placeholder cost
-  - {slug: cover-poster, name_ar: بوستر الغلاف A3, name_en: Cover poster A3, price: {ILS: 25, JOD: 5}, cost_ils: 7, lines: [classic, magic], step: checkout}  # placeholder cost
-  - {slug: express, name_ar: إنتاج سريع خلال 48 ساعة, name_en: Express production (48h), price: {ILS: 20, JOD: 4}, cost_ils: 5, lines: [classic, magic, coloring, workbook, journey], requires: {format: [softcover, hardcover, spiral]}, daily_capacity: 10, step: checkout}  # placeholder cost
+  - {slug: family-voice, name_ar: أصوات العائلة (رمز QR), name_en: Family voice QR, description_ar: سجّل القصة بصوتك، وتسمعها بمسح الرمز, description_en: "Record the story in your voice, and play it by scanning the code", price: {ILS: 15, JOD: 3}, cost_ils: 0, lines: [classic, magic], step: format}
+  - {slug: extra-copy, name_ar: نسخة إضافية من الكتاب نفسه, name_en: Extra copy of the same book, description_ar: نفس الكتاب بنص السعر تقريباً, description_en: The same book at about half the price, featured: true, badge_ar: توفير, badge_en: Save, pricing: percent_of_item, percent: 50, cost_ils: 17, lines: [classic, magic, coloring], requires: {format: [softcover, hardcover]}, max_qty: 5, step: checkout}  # placeholder cost
+  - {slug: coloring-version, name_ar: نسخة تلوين من الحكاية نفسها, name_en: Coloring version of the story, description_ar: نفس الصفحات بالأبيض والأسود ليلوّنها طفلك, description_en: The same pages in black and white for your child to color, featured: true, price: {ILS: 25, JOD: 5}, cost_ils: 9, cost_ai_usd: 0.35, lines: [classic, magic], step: format}  # placeholder cost
+  - {slug: cover-poster, name_ar: بوستر الغلاف A3, name_en: Cover poster A3, description_ar: غلاف الكتاب بحجم كبير لغرفة طفلك, description_en: "The book's cover, big, for your child's room", price: {ILS: 25, JOD: 5}, cost_ils: 7, lines: [classic, magic], step: checkout}  # placeholder cost
+  - {slug: express, name_ar: إنتاج سريع خلال 48 ساعة, name_en: Express production (48h), description_ar: حسب توفر المطبعة, description_en: Subject to the printer's availability, price: {ILS: 20, JOD: 4}, cost_ils: 5, lines: [classic, magic, coloring, workbook, journey], requires: {format: [softcover, hardcover, spiral]}, daily_capacity: 10, step: checkout}  # placeholder cost
   - {slug: digital-copy, name_ar: نسخة رقمية مجانية مع المطبوع, name_en: Free digital copy with a printed order, price: {ILS: 0, JOD: 0}, lines: [classic, magic, coloring], requires: {format: [softcover, hardcover]}, step: checkout}
   # Addendum 5 §6 and Addendum 6 §8
   - {slug: wipe-sleeve, name_ar: غلاف شفاف يُمسح مع قلم, name_en: Wipe-clean sleeve + dry-erase pen, price: {ILS: 15, JOD: 3}, cost_ils: 6, lines: [workbook, journey], requires: {format: [spiral]}, step: checkout}  # placeholder cost
@@ -171,7 +171,8 @@ addons:
   - {slug: editable-files, name_ar: الملفات القابلة للتعديل, name_en: Editable source files, price: {ILS: 150, JOD: 29}, lines: [family], active: false, step: checkout}  # admin-priced; placeholder
 
 bundles:
-  - {slug: two-books, name_ar: كتابان أو أكثر −15%, name_en: 2+ books −15%, kind: min_items, min_items: 2, discount_pct: 15, lines: [classic, magic]}
+  # Addendum 9 «الكتاب الثاني −15%»: in every 2 books, the cheaper one is discounted
+  - {slug: two-books, name_ar: الكتاب الثاني −15%, name_en: Second book −15%, kind: cheapest, min_items: 2, discount_pct: 15, lines: [classic, magic]}
   - {slug: siblings, name_ar: باقة الإخوة −20%, name_en: Sibling bundle −20%, kind: siblings, min_items: 2, discount_pct: 20, lines: [classic, magic, workbook, journey]}  # suggested discount
 
 coupons:

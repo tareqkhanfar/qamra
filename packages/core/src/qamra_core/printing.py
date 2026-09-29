@@ -29,7 +29,19 @@ NOT_PRINTED_ADDONS = frozenset(
     }
 )
 FILE_KINDS = ("interior", "cover")
-CSV_COLUMNS = ("n", "order", "sku", "format", "size", "copies", "extras", "interior_file", "cover_file")
+CSV_COLUMNS = (
+    "n",
+    "order",
+    "sku",
+    "format",
+    "size",
+    "copies",
+    "extras",
+    "interior_file",
+    "cover_file",
+    "gift",  # Addendum 9: pack as a gift (no prices in the parcel) with this card message
+    "gift_message",
+)
 
 
 def batch_code(batch_id: uuid.UUID, batch_date: date) -> str:
@@ -86,6 +98,8 @@ def manifest_csv(manifest: dict[str, Any]) -> bytes:
                 " ".join(item.get("extras") or []),
                 file_name(item, "interior"),
                 file_name(item, "cover"),
+                "yes" if item.get("gift") else "",
+                item.get("gift_message") or "",
             ]
         )
     return ("﻿" + out.getvalue()).encode("utf-8")  # BOM: spreadsheet apps then read Arabic correctly

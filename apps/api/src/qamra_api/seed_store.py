@@ -178,6 +178,13 @@ async def _addons(db: AsyncSession, addons: list[dict[str, Any]]) -> list[str]:
             included_lines=a.get("included_lines", []),
             requires=a.get("requires", {}),
             excludes=a.get("excludes", []),
+            # the add-ons step (Addendum 9): descriptions, the open list and badges, dependencies
+            description_ar=a.get("description_ar", ""),
+            description_en=a.get("description_en", ""),
+            featured=a.get("featured", False),
+            badge_ar=a.get("badge_ar"),
+            badge_en=a.get("badge_en"),
+            needs=a.get("needs", []),
             max_qty=a.get("max_qty", 1),
             daily_capacity=a.get("daily_capacity"),
             step=a.get("step", "format"),

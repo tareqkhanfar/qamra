@@ -6,6 +6,7 @@ import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { errorText } from "@/lib/api";
 import { catalogAdmin, type CatalogAdmin, type CouponRow, type OfferRow } from "@/lib/catalogAdmin";
+import { BundleRules } from "./OrderPathAdmin";
 import { ActiveToggle, MoneyInput } from "./parts";
 
 const day = (iso: string | null) => (iso ? iso.slice(0, 10) : "—");
@@ -242,14 +243,7 @@ export function OffersPanel({ data, onChange }: { data: CatalogAdmin; onChange: 
 
       <section className="flex flex-col gap-3">
         <h3 className="text-h3 text-night-900">{t("bundles")}</h3>
-        <OfferList
-          rows={data.bundles}
-          name={name}
-          onToggle={async (o, v) => {
-            const r = await catalogAdmin.bundle(o.id, { active: v });
-            if (r.ok) replaceOffer("bundles", r.data);
-          }}
-        />
+        <BundleRules rows={data.bundles} onRow={(o) => replaceOffer("bundles", o)} />
       </section>
     </div>
   );

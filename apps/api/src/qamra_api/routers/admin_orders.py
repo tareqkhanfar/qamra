@@ -55,6 +55,7 @@ class OrderRow(BaseModel):
     total: Decimal
     cost_ils: Decimal
     source: str
+    gift: bool = False  # Addendum 9
 
 
 class OrdersOut(BaseModel):
@@ -106,6 +107,7 @@ async def list_orders(
                 total=o.total,
                 cost_ils=o.cost_ils,
                 source=o.source,
+                gift=o.gift,
             )
             for o in rows
         ],
@@ -168,6 +170,9 @@ class OrderOut(BaseModel):
     revenue_ils: Decimal
     margin_pct: Decimal | None  # with the unit costs frozen at ordering (Addendum 4 §6)
     margin_floor_pct: int
+    # Addendum 9: a gift order (its packing slip hides the prices) and the card message to print
+    gift: bool = False
+    gift_message: str | None = None
 
 
 def load_messages() -> dict[str, dict[str, str]]:
@@ -279,6 +284,8 @@ async def _detail(db: SessionDep, order: Order, values: dict[str, Any]) -> Order
         revenue_ils=revenue,
         margin_pct=margin,
         margin_floor_pct=int(values.get("margin_floor_pct") or 35),
+        gift=order.gift,
+        gift_message=order.gift_message,
     )
 
 

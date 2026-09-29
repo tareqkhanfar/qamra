@@ -20,6 +20,7 @@ type Row = {
   total: string;
   cost_ils: string;
   source: string;
+  gift?: boolean;
 };
 type List = { orders: Row[]; total: number; counts: Record<string, number> };
 type Item = {
@@ -62,6 +63,8 @@ type Detail = {
   revenue_ils: string;
   margin_pct: string | null;
   margin_floor_pct: number;
+  gift?: boolean; // Addendum 9
+  gift_message?: string | null;
 };
 
 const STATUSES = [
@@ -85,6 +88,7 @@ const TONE: Record<string, string> = {
 /** Order management (design: AdminOrders; Addendum 4 §5). */
 export function AdminOrders() {
   const t = useTranslations("orders");
+  const tg = useTranslations("orderPath.orders");
   const te = useTranslations("errors");
   const locale = useLocale();
   const [status, setStatus] = useState("");
@@ -182,6 +186,7 @@ export function AdminOrders() {
                 </strong>
                 <span className="text-small text-ink-muted">
                   {o.customer} · {o.city ?? "—"} · {o.items} · {new Date(o.created_at).toLocaleDateString(locale)}
+                  {o.gift && ` · ${tg("gift")}`}
                 </span>
               </span>
               <span className="font-semibold whitespace-nowrap">{amount(o.total, o.currency)}</span>
@@ -215,6 +220,20 @@ export function AdminOrders() {
                 {detail.shipping.city} — {detail.shipping.address}
               </p>
               {detail.shipping.notes && <p className="text-ink-muted">{detail.shipping.notes}</p>}
+              {detail.gift && (
+                <p className="mt-1 rounded-md bg-amber-100 px-2.5 py-1.5 text-amber-700">
+                  <strong>{tg("gift")}</strong>
+                  {detail.gift_message && <span className="block whitespace-pre-line">{detail.gift_message}</span>}
+                </p>
+              )}
+              <a
+                href={`/${locale}/admin/orders/${detail.id}/slip`}
+                target="_blank"
+                rel="noopener"
+                className="self-start font-semibold underline underline-offset-4"
+              >
+                {tg("slip")}
+              </a>
             </section>
 
             <section className="flex flex-col gap-2">

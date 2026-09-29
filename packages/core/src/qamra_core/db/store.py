@@ -13,7 +13,17 @@ from datetime import datetime
 from decimal import Decimal
 from typing import Any
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, Numeric, SmallInteger, String, Text
+from sqlalchemy import (
+    Boolean,
+    CheckConstraint,
+    DateTime,
+    ForeignKey,
+    Integer,
+    Numeric,
+    SmallInteger,
+    String,
+    Text,
+)
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -48,6 +58,8 @@ class CouponKind(enum.StrEnum):
 class BundleKind(enum.StrEnum):
     min_items = "min_items"  # e.g. 2 books −15%
     siblings = "siblings"  # books for at least `min_items` different children in one order
+    # Addendum 9 «الكتاب الثاني −15%»: in every `min_items` books, only the cheapest one is discounted
+    cheapest = "cheapest"
 
 
 class CartStatus(enum.StrEnum):
@@ -161,6 +173,11 @@ class AddOn(IdMixin, TimestampMixin, Base):
     included_lines: Mapped[list[str]] = mapped_column(JSONB, default=list)  # lines where it is free
     requires: Mapped[dict[str, list[str]]] = mapped_column(JSONB, default=dict)
     excludes: Mapped[list[str]] = mapped_column(JSONB, default=list)
+    # Addendum 9: add-ons this one depends on (turning it on turns them on; it is locked without them)
+    needs: Mapped[list[str]] = mapped_column(JSONB, default=list)
+    featured: Mapped[bool] = mapped_column(Boolean, default=False)  # the add-ons step's open list, not «more»
+    badge_ar: Mapped[str | None] = mapped_column(String(40))  # e.g. «الأكثر اختياراً», «توفير»
+    badge_en: Mapped[str | None] = mapped_column(String(40))
     max_qty: Mapped[int] = mapped_column(SmallInteger, default=1)
     daily_capacity: Mapped[int | None] = mapped_column(Integer)  # express production
     step: Mapped[str] = mapped_column(String(24), default="format")  # where the flow offers it
@@ -221,6 +238,36 @@ class CouponRedemption(IdMixin, CreatedAtMixin, Base):
     )
     user_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"), index=True)
     phone: Mapped[str | None] = mapped_column(String(32), index=True)  # guests are limited by phone
+    amount: Mapped[Decimal] = mapped_column(Numeric(10, 2))
+
+
+class GiftCard(IdMixin, TimestampMixin, Base):
+    """Addendum 9 §1.4: stored value issued by staff (not sold on the site), redeemed at checkout after every
+    discount. The balance only goes down through one conditional UPDATE (`qamra_api.store.gift_cards`), and
+    the CHECK keeps it within [0, amount], so two orders can never spend the same money."""
+
+    __tablename__ = "gift_cards"
+    __table_args__ = (CheckConstraint("balance >= 0 AND balance <= amount", name="balance_range"),)
+
+    code: Mapped[str] = mapped_column(String(24), unique=True)  # "QG" + 12 random characters, stored bare
+    currency: Mapped[Currency] = mapped_column(str_enum(Currency, "gift_card_currency"))
+    amount: Mapped[Decimal] = mapped_column(Numeric(10, 2))  # the value it was issued with
+    balance: Mapped[Decimal] = mapped_column(Numeric(10, 2))
+    expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    active: Mapped[bool] = mapped_column(Boolean, default=True)  # staff can switch a card off
+    note: Mapped[str | None] = mapped_column(String(200))  # who it is for and why (staff only)
+    created_by_user_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"))
+
+
+class GiftCardRedemption(IdMixin, CreatedAtMixin, Base):
+    __tablename__ = "gift_card_redemptions"
+
+    gift_card_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("gift_cards.id", ondelete="CASCADE"), index=True
+    )
+    order_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("orders.id", ondelete="SET NULL"), index=True
+    )
     amount: Mapped[Decimal] = mapped_column(Numeric(10, 2))
 
 
@@ -300,6 +347,9 @@ class Cart(IdMixin, TimestampMixin, Base):
     )
     currency: Mapped[Currency] = mapped_column(str_enum(Currency, "cart_currency"), default=Currency.ILS)
     coupon_code: Mapped[str | None] = mapped_column(String(32))
+    gift_card_code: Mapped[str | None] = mapped_column(String(24))  # Addendum 9: redeemed at checkout
+    gift: Mapped[bool] = mapped_column(Boolean, default=False)  # a gift: no prices on the packing slip
+    gift_message: Mapped[str | None] = mapped_column(String(200))  # printed on the gift card
     zone_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("shipping_zones.id", ondelete="SET NULL"))
     status: Mapped[CartStatus] = mapped_column(str_enum(CartStatus, "cart_status"), default=CartStatus.open)
     expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

@@ -11,9 +11,10 @@ import { PriceSimulator } from "./PriceSimulator";
 import { VariantsTable } from "./VariantsTable";
 import { QuizRules } from "./QuizRules";
 import { PriceListsPanel } from "./PriceListsPanel";
+import { AddOnRules, GiftCardsPanel } from "./OrderPathAdmin";
 import { ZonesTable } from "./ZonesTable";
 
-const TABS = ["products", "addons", "zones", "offers", "simulator", "quiz", "priceLists"] as const;
+const TABS = ["products", "addons", "zones", "offers", "giftCards", "simulator", "quiz", "priceLists"] as const;
 type Tab = (typeof TABS)[number];
 
 /** Catalog admin (Addendum 4 step 5): prices, costs and margins, offers, and the price simulator. */
@@ -21,6 +22,7 @@ export function AdminCatalog() {
   const t = useTranslations("catalogAdmin");
   const tq = useTranslations("quiz.admin");
   const tpl = useTranslations("portal.priceLists");
+  const tgc = useTranslations("orderPath.admin");
   const te = useTranslations("errors");
   const locale = useLocale();
   const [data, setData] = useState<CatalogAdmin | null>(null);
@@ -63,7 +65,13 @@ export function AdminCatalog() {
             onClick={() => setTab(id)}
             className={`min-h-11 border-b-[3px] px-3.5 whitespace-nowrap ${tab === id ? "border-amber-500 font-bold text-night-900" : "border-transparent text-ink-muted"}`}
           >
-            {id === "quiz" ? tq("tab") : id === "priceLists" ? tpl("tab") : t(`tabs.${id}`)}
+            {id === "quiz"
+              ? tq("tab")
+              : id === "priceLists"
+                ? tpl("tab")
+                : id === "giftCards"
+                  ? tgc("tab")
+                  : t(`tabs.${id}`)}
           </button>
         ))}
       </div>
@@ -89,6 +97,13 @@ export function AdminCatalog() {
           onRow={(r) => setData({ ...data, addons: data.addons.map((a) => (a.slug === r.slug ? r : a)) })}
         />
       )}
+      {tab === "addons" && (
+        <AddOnRules
+          rows={data.addons}
+          onRow={(r) => setData({ ...data, addons: data.addons.map((a) => (a.slug === r.slug ? r : a)) })}
+        />
+      )}
+      {tab === "giftCards" && <GiftCardsPanel />}
       {tab === "zones" && (
         <ZonesTable
           rows={data.zones}

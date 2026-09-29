@@ -15,6 +15,7 @@ from qamra_api import notify, ratelimit, runtime_settings
 from qamra_api.auth.router import client_ip
 from qamra_api.deps import OptionalUser, RedisDep, SessionDep, SettingsDep
 from qamra_api.errors import ApiError
+from qamra_api.store import gift_cards
 from qamra_api.store.cart import (
     COOKIE,
     cart_items,
@@ -28,6 +29,7 @@ from qamra_api.store.catalog import (
     BULK_MIN_QTY,
     BULK_SETTINGS,
     Catalog,
+    addon_lines,
     addon_problems,
     automatic_addons,
     bulk_blocked,
@@ -41,9 +43,9 @@ from qamra_api.store.payments import provider_for
 from qamra_api.store.workbooks import orderable
 from qamra_api.validation import PHONE
 from qamra_core import settings_store
-from qamra_core.db.models import AuditLog, Currency, Order, OrderItem, OrderStatus
+from qamra_core.db.models import AuditLog, Book, Currency, Order, OrderItem, OrderStatus
 from qamra_core.db.store import Cart, CartItem, CartStatus, CouponRedemption, OrderEvent, Variant
-from qamra_core.pricing import ItemInput, Quote, quote
+from qamra_core.pricing import ItemInput, Quote, addon_amount, quote
 
 router = APIRouter(prefix="/api/store", tags=["store"])
 CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"  # no 0/O or 1/I on a phone call
@@ -231,6 +233,7 @@ class CartAddOnOut(BaseModel):
     name_en: str
     qty: int
     included: bool
+    amount: Decimal = Decimal("0")  # Addendum 9: the add-on line's price on this item (0 when free)
 
 
 class CartItemOut(BaseModel):
@@ -251,6 +254,12 @@ class CartItemOut(BaseModel):
     addons_total: Decimal
     discount: Decimal
     total: Decimal
+    # Addendum 9 (cart design): the book behind the line, and its price before the cart's discounts
+    subtotal: Decimal = Decimal("0")
+    book_id: uuid.UUID | None = None
+    child_id: uuid.UUID | None = None
+    book_title: str | None = None
+    book_status: str | None = None
 
 
 class CartOut(BaseModel):
@@ -271,6 +280,15 @@ class CartOut(BaseModel):
     cod_fee: Decimal
     total: Decimal
     notes: list[str]
+    # Addendum 9: the bundle's admin name, the gift order and its card message, the gift card
+    bundle_name_ar: str | None = None
+    bundle_name_en: str | None = None
+    bundle_pct: Decimal | None = None
+    gift: bool = False
+    gift_message: str | None = None
+    gift_card: str | None = None  # masked
+    gift_card_amount: Decimal = Decimal("0")
+    gift_card_problem: str | None = None
 
 
 EMPTY_CART = CartOut(
@@ -320,6 +338,9 @@ async def _priced(
         rule, coupon, problem = await coupon_rule(
             db, cart.coupon_code, cart.currency, user_id=cart.user_id, phone=phone
         )
+    card = card_problem = None  # Addendum 9: a gift card pays after every discount
+    if cart.gift_card_code:
+        card, _, card_problem = await gift_cards.card_rule(db, cart.gift_card_code, cart.currency)
     zone = next((z for z in c.zones.values() if z.id == cart.zone_id), None)
     q = quote(
         inputs,
@@ -327,9 +348,11 @@ async def _priced(
         bundles=c.bundle_rules(),
         coupon=rule,
         zone=zone_rule(zone, cart.currency),
+        gift_card=card,
     )
     if problem:
         q.coupon_problem = problem
+    q.gift_card_problem = card_problem
     return rows, missing, q, coupon
 
 
@@ -372,11 +395,15 @@ async def cart_out(db: SessionDep, cart: Cart | None) -> CartOut:
     c = await load_catalog(db)
     rows, missing, q, _ = await _priced(db, c, cart)
     prices = {p.key: p for p in q.items}
+    books = await _books(db, [item.book_id for item, _ in rows if item.book_id])
     items = []
     for item, variant in rows:
         product = c.product_of(variant)
         p = prices[str(item.id)]
         addons = [*item.addons, *[{"slug": s, "qty": 1} for s in automatic_addons(c, variant)]]
+        lines = addon_lines(c, variant, cart.currency, addons)
+        amounts = {a.slug: addon_amount(a, p.unit_price) for a in lines}
+        book = books.get(item.book_id) if item.book_id else None
         items.append(
             CartItemOut(
                 id=item.id,
@@ -396,6 +423,7 @@ async def cart_out(db: SessionDep, cart: Cart | None) -> CartOut:
                         name_en=c.addons[a["slug"]].name_en,
                         qty=int(a.get("qty", 1)),
                         included=product.line.value in c.addons[a["slug"]].included_lines,
+                        amount=amounts.get(a["slug"], Decimal("0")),
                     )
                     for a in addons
                     if a["slug"] in c.addons
@@ -406,9 +434,15 @@ async def cart_out(db: SessionDep, cart: Cart | None) -> CartOut:
                 addons_total=p.addons,
                 discount=p.sale_discount + p.bundle_discount + p.coupon_discount,
                 total=p.total,
+                subtotal=p.base + p.addons,
+                book_id=item.book_id,
+                child_id=item.child_id,
+                book_title=book.title if book else None,
+                book_status=book.status.value if book else None,
             )
         )
     zone = next((z.slug for z in c.zones.values() if z.id == cart.zone_id), None)
+    bundle = next((b for b in c.bundles if b.slug == q.bundle), None)
     return CartOut(
         currency=cart.currency.value,
         count=sum(i.qty for i in items),
@@ -427,7 +461,22 @@ async def cart_out(db: SessionDep, cart: Cart | None) -> CartOut:
         cod_fee=q.cod_fee,
         total=q.total,
         notes=q.notes,
+        bundle_name_ar=bundle.name_ar if bundle else None,
+        bundle_name_en=bundle.name_en if bundle else None,
+        bundle_pct=bundle.discount_pct if bundle else None,
+        gift=cart.gift,
+        gift_message=cart.gift_message if cart.gift else None,
+        gift_card=gift_cards.masked(cart.gift_card_code) if cart.gift_card_code else None,
+        gift_card_amount=q.gift_card_amount,
+        gift_card_problem=q.gift_card_problem,
     )
+
+
+async def _books(db: SessionDep, ids: list[uuid.UUID]) -> dict[uuid.UUID, Book]:
+    """The books behind cart lines (Addendum 9: the cart shows each one's title and preview state)."""
+    if not ids:
+        return {}
+    return {b.id: b for b in (await db.execute(select(Book).where(Book.id.in_(ids)))).scalars()}
 
 
 def check_item(
@@ -685,6 +734,14 @@ async def checkout(
         raise ApiError("express_full", 409)
     if cart.coupon_code and q.coupon is None:
         raise ApiError("coupon_invalid", 422, details={"problem": q.coupon_problem})
+    if cart.gift_card_code and q.gift_card_problem:
+        raise ApiError("gift_card_invalid", 422, details={"problem": q.gift_card_problem})
+    redemption = None  # Addendum 9: the card's balance goes down first, atomically, or nothing is written
+    if q.gift_card_amount > 0 and cart.gift_card_code:
+        card = await gift_cards.find(db, cart.gift_card_code)
+        if card is None:
+            raise ApiError("gift_card_changed", 409)
+        redemption = await gift_cards.redeem(db, card.id, q.gift_card_amount)
 
     values = (await runtime_settings.current(db, settings)).values
     usd_ils = Decimal(str(values.get("usd_ils") or "3.70"))
@@ -713,9 +770,13 @@ async def checkout(
         coupon_id=coupon.id if coupon is not None and q.coupon else None,
         pricing=_quote_json(q),
         source="web",
+        gift=cart.gift,
+        gift_message=cart.gift_message if cart.gift else None,
     )
     db.add(order)
     await db.flush()
+    if redemption is not None:
+        redemption.order_id = order.id
     prices = {p.key: p for p in q.items}
     cost_total = Decimal("0")
     for item, variant in rows:
@@ -819,6 +880,8 @@ def _quote_json(q: Quote) -> dict[str, Any]:
         "shipping": str(q.shipping),
         "cod_fee": str(q.cod_fee),
         "total": str(q.total),
+        "gift_card": q.gift_card,  # masked; the redemption row links the card itself
+        "gift_card_amount": str(q.gift_card_amount),
         "items": {
             p.key: {
                 "unit_price": str(p.unit_price),

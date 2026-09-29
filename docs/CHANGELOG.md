@@ -1,5 +1,18 @@
 # Changelog
 
+## Addendum 9 order path: add-ons, the cart, gift cards, gift orders (2026-09-29)
+- **The flow:** preview → «الإضافات» → «السلة» → address and cash on delivery (the Create9 → AddOns → Cart → Create10 designs).
+- **Add-ons after the preview:** live totals from the server. Dependencies (`needs`), exclusions, the featured list and badges are admin data.
+- **The cart:**
+  - add-on lines, edit and remove;
+  - «الكتاب الثاني −15%» as an admin bundle rule (kind `cheapest`: in every 2 books, the cheaper one);
+  - one field for a coupon or a gift card;
+  - the gift toggle with a card message (≤ 200 characters);
+  - «شخصية ليان جاهزة»: a second story with the same approved character, never redrawn.
+- **Gift cards:** issued by staff (Admin → الكتالوج → بطاقات الهدايا). They pay after every discount; the balance goes down atomically, with a DB check.
+- **Gift orders:** a printable packing slip without prices, with the card message. The print-batch manifest carries `gift` and `gift_message`.
+- **E2E tests:** Playwright flows in `tests/e2e/`, with test-only fixtures that the settings refuse in production (`docs/e2e.md`). Migration `ab04012fadad`.
+
 ## The activity-book pages (Addendum 9, WorkbookProduct) (2026-09-29)
 
 - **`/workbooks/[product]`:** one template for «دوسية التأسيس», «رحلتي الأولى للتعلّم» and «مغامراتي مع عائلتي».

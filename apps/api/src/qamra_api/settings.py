@@ -26,6 +26,9 @@ class ApiSettings(CoreSettings):
     leads_per_ip_per_hour: int = 5
     register_ip_max_per_hour: int = 10
 
+    # Addendum 9 E2E tests: /api/e2e/* creates preview books with placeholder art (no AI). Never in prod.
+    e2e_fixtures: bool = False
+
     sentry_dsn: SecretStr | None = None
     log_level: str = "INFO"
     log_json: bool = True
@@ -38,6 +41,8 @@ class ApiSettings(CoreSettings):
                 raise ValueError("JWT_SECRET must be set to a random value of ≥ 32 chars in prod")
             if not self.cookie_secure:
                 raise ValueError("COOKIE_SECURE must be true in prod")
+            if self.e2e_fixtures:
+                raise ValueError("E2E_FIXTURES must be off in prod")
         return self
 
 

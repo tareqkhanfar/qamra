@@ -24,6 +24,7 @@ from qamra_core.db.store import (
     AddOnPrice,
     AddOnPricing,
     Bundle,
+    BundleKind,
     Coupon,
     PriceList,
     PriceListItem,
@@ -95,6 +96,13 @@ class AddOnRow(BaseModel):
     lines: list[str]
     included_lines: list[str]
     active: bool
+    # Addendum 9 (the add-ons step): where it is offered, what it needs or excludes, how it is shown
+    step: str = "format"
+    needs: list[str] = []
+    excludes: list[str] = []
+    featured: bool = False
+    badge_ar: str | None = None
+    badge_en: str | None = None
 
 
 class ZoneRow(BaseModel):
@@ -138,6 +146,7 @@ class OfferRow(BaseModel):
     starts_at: datetime | None
     ends_at: datetime | None
     active: bool
+    min_items: int | None = None  # bundles: how many books (or children) it takes
 
 
 class CatalogAdminOut(BaseModel):
@@ -216,6 +225,12 @@ def _addon_row(c: Catalog, a: AddOn, r: Rates) -> AddOnRow:
         lines=list(a.lines),
         included_lines=list(a.included_lines),
         active=a.active,
+        step=a.step,
+        needs=list(a.needs),
+        excludes=list(a.excludes),
+        featured=a.featured,
+        badge_ar=a.badge_ar,
+        badge_en=a.badge_en,
     )
 
 
@@ -264,6 +279,7 @@ def _bundle_row(b: Bundle) -> OfferRow:
         starts_at=b.starts_at,
         ends_at=b.ends_at,
         active=b.active,
+        min_items=b.min_items,
     )
 
 
@@ -400,6 +416,14 @@ class AddOnPatch(BaseModel):
     cost_ils: Decimal | None = Money
     cost_ai_usd: Decimal | None = Field(default=None, ge=0, le=1000, max_digits=9, decimal_places=4)
     active: bool | None = None
+    # Addendum 9: dependencies and the add-ons step's display
+    needs: list[str] | None = Field(default=None, max_length=5)
+    featured: bool | None = None
+    badge_ar: str | None = Field(default=None, max_length=40)  # "" clears it
+    badge_en: str | None = Field(default=None, max_length=40)
+
+
+ADDON_DISPLAY = ["needs", "featured", "badge_ar", "badge_en"]
 
 
 @router.patch("/addons/{slug}", dependencies=[Depends(require_permission("prices"))])
@@ -409,11 +433,21 @@ async def edit_addon(
     addon = (await db.execute(select(AddOn).where(AddOn.slug == slug))).scalar_one_or_none()
     if addon is None:
         raise ApiError("not_found", 404)
-    before = _plain(addon, ["cost_ils", "cost_ai_usd", "active"])
+    before = _plain(addon, ["cost_ils", "cost_ai_usd", "active", *ADDON_DISPLAY])
     changes = body.model_dump(exclude_none=True)
     for field in ("cost_ils", "cost_ai_usd", "active"):
         if field in changes:
             setattr(addon, field, changes[field])
+    if body.needs is not None:  # only add-ons that exist, never itself
+        known = set((await db.execute(select(AddOn.slug))).scalars())
+        if any(n == slug or n not in known for n in body.needs):
+            raise ApiError("invalid_input", 422, {"fields": ["needs"]})
+        addon.needs = list(dict.fromkeys(body.needs))
+    if body.featured is not None:
+        addon.featured = body.featured
+    for field in ("badge_ar", "badge_en"):
+        if field in changes:
+            setattr(addon, field, " ".join(str(changes[field]).split()) or None)
     for currency, amount in ((Currency.ILS, body.price_ils), (Currency.JOD, body.price_jod)):
         if amount is None:
             continue
@@ -562,12 +596,19 @@ async def edit_sale(sale_id: uuid.UUID, body: ActivePatch, admin: AdminUser, db:
     return _sale_row(sale)
 
 
+class BundlePatch(ActivePatch):
+    """Addendum 9: the rule itself is editable too (e.g. «الكتاب الثاني −15%» = cheapest, every 2 books)."""
+
+    kind: BundleKind | None = None
+    min_items: int | None = Field(default=None, ge=2, le=20)
+
+
 @router.patch("/bundles/{slug}", dependencies=[Depends(require_permission("prices"))])
-async def edit_bundle(slug: str, body: ActivePatch, admin: AdminUser, db: SessionDep) -> OfferRow:
+async def edit_bundle(slug: str, body: BundlePatch, admin: AdminUser, db: SessionDep) -> OfferRow:
     bundle = (await db.execute(select(Bundle).where(Bundle.slug == slug))).scalar_one_or_none()
     if bundle is None:
         raise ApiError("not_found", 404)
-    fields = ["active", "ends_at", "discount_pct"]
+    fields = ["active", "ends_at", "discount_pct", "kind", "min_items"]
     before = _plain(bundle, fields)
     for field, value in body.model_dump(exclude_none=True).items():
         setattr(bundle, field, value)

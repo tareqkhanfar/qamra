@@ -30,7 +30,9 @@ function savePref(on: boolean) {
  */
 export function MusicPlayer({ volume, labels }: { volume: number; labels: { play: string; pause: string } }) {
   const pathname = usePathname();
-  const hidden = ["/admin", "/create", "/checkout"].some((p) => pathname.startsWith(p));
+  const hidden =
+    ["/admin", "/create", "/cart", "/checkout", "/r/", "/v/"].some((p) => pathname.startsWith(p)) ||
+    /\/voice(\/|$)/.test(pathname); // «صوت أهلي»: never over a recording or a family voice
   const [playing, setPlaying] = useState(false);
   const ctx = useRef<AudioContext | null>(null);
   const gain = useRef<GainNode | null>(null);

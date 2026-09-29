@@ -450,6 +450,9 @@ class Order(IdMixin, TimestampMixin, Base):
         ForeignKey("print_batches.id", ondelete="SET NULL"), index=True
     )
     notes: Mapped[str | None] = mapped_column(Text)
+    # Addendum 9: a gift order's packing slip hides the prices and prints the parent's card message
+    gift: Mapped[bool] = mapped_column(Boolean, default=False)
+    gift_message: Mapped[str | None] = mapped_column(String(200))
 
 
 class OrderItem(IdMixin, Base):
