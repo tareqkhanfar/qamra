@@ -12,7 +12,7 @@ from qamra_core.db.store import StaffRole
 PERMISSIONS: dict[StaffRole, frozenset[str]] = {
     StaffRole.owner: frozenset({"*"}),
     StaffRole.admin: frozenset(
-        {"settings", "prices", "catalog", "users", "reports", "orders.view", "books.view"}
+        {"settings", "prices", "catalog", "users", "reports", "orders.view", "books.view", "organizations"}
     ),
     StaffRole.editor: frozenset({"themes", "templates", "workbook", "journey", "books.view"}),
     StaffRole.reviewer: frozenset({"books", "content", "themes.view", "templates.view"}),

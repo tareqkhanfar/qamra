@@ -694,12 +694,23 @@ def _classic(book_id: str) -> bool:
         return book is not None and (book.generation or {}).get("line") == "classic"
 
 
+def _class_copy(book_id: str) -> bool:
+    """A child's copy of a «كتاب الصف» (jobs.classbooks): the admin's actions redraw it within its class."""
+    with context.db_session() as db:
+        book = db.get(Book, book_id)
+        return book is not None and (book.generation or {}).get("line") == "class"
+
+
 def generate_book(book_id: str, mode: str = "final") -> dict[str, Any]:
     context.init_process()
     if _classic(book_id):
         from qamra_worker.jobs.classic import generate_classic_book
 
         return generate_classic_book(book_id, mode)
+    if _class_copy(book_id):
+        from qamra_worker.jobs.classbooks import copy_action
+
+        return copy_action(book_id, [])
     storage = context.storage()
     with context.db_session() as db:
         book = db.get(Book, book_id)
@@ -728,6 +739,10 @@ def redraw(book_id: str, beats: list[int]) -> dict[str, Any]:
         from qamra_worker.jobs.classic import redraw_classic
 
         return redraw_classic(book_id, beats)
+    if _class_copy(book_id):
+        from qamra_worker.jobs.classbooks import copy_action
+
+        return copy_action(book_id, beats)
     storage = context.storage()
     with context.db_session() as db:
         book = db.get(Book, book_id)
@@ -756,6 +771,10 @@ def rerender(book_id: str) -> dict[str, Any]:
         from qamra_worker.jobs.classic import rerender_classic
 
         return rerender_classic(book_id)
+    if _class_copy(book_id):
+        from qamra_worker.jobs.classbooks import copy_action
+
+        return copy_action(book_id, [])
     storage = context.storage()
     with context.db_session() as db:
         book = db.get(Book, book_id)

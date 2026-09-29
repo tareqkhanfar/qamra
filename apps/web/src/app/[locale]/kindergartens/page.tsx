@@ -32,6 +32,7 @@ export default async function KindergartensPage() {
     getTranslations("errors"),
     getPublicSettings(),
   ]);
+  const tp = await getTranslations("portal"); // the kindergarten portal's sign-up (Phase 4)
   const brand = brandName(locale);
   const flow = t.raw("flow") as Step[];
   const inside = t.raw("inside") as string[];
@@ -62,8 +63,11 @@ export default async function KindergartensPage() {
           </div>
           <div className="ms-auto flex items-center gap-2 lg:ms-0">
             <LocaleSwitcher label={tn("switchLocale")} />
-            <Link href="/login" className="hidden min-h-11 items-center px-2 font-semibold sm:flex">
+            <Link href="/login?next=/portal" className="hidden min-h-11 items-center px-2 font-semibold sm:flex">
               {t("portal")}
+            </Link>
+            <Link href="/portal/signup" className="hidden min-h-11 items-center px-2 font-semibold lg:flex">
+              {tp("signup.cta")}
             </Link>
             <a
               href="#demo"

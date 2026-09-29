@@ -10,15 +10,17 @@ import { OffersPanel } from "./OffersPanel";
 import { PriceSimulator } from "./PriceSimulator";
 import { VariantsTable } from "./VariantsTable";
 import { QuizRules } from "./QuizRules";
+import { PriceListsPanel } from "./PriceListsPanel";
 import { ZonesTable } from "./ZonesTable";
 
-const TABS = ["products", "addons", "zones", "offers", "simulator", "quiz"] as const;
+const TABS = ["products", "addons", "zones", "offers", "simulator", "quiz", "priceLists"] as const;
 type Tab = (typeof TABS)[number];
 
 /** Catalog admin (Addendum 4 step 5): prices, costs and margins, offers, and the price simulator. */
 export function AdminCatalog() {
   const t = useTranslations("catalogAdmin");
   const tq = useTranslations("quiz.admin");
+  const tpl = useTranslations("portal.priceLists");
   const te = useTranslations("errors");
   const locale = useLocale();
   const [data, setData] = useState<CatalogAdmin | null>(null);
@@ -61,7 +63,7 @@ export function AdminCatalog() {
             onClick={() => setTab(id)}
             className={`min-h-11 border-b-[3px] px-3.5 whitespace-nowrap ${tab === id ? "border-amber-500 font-bold text-night-900" : "border-transparent text-ink-muted"}`}
           >
-            {id === "quiz" ? tq("tab") : t(`tabs.${id}`)}
+            {id === "quiz" ? tq("tab") : id === "priceLists" ? tpl("tab") : t(`tabs.${id}`)}
           </button>
         ))}
       </div>
@@ -95,6 +97,7 @@ export function AdminCatalog() {
       )}
       {tab === "offers" && <OffersPanel data={data} onChange={setData} />}
       {tab === "simulator" && <PriceSimulator data={data} />}
+      {tab === "priceLists" && <PriceListsPanel />}
       {tab === "quiz" && (
         <QuizRules
           products={[

@@ -1,0 +1,32 @@
+/* «كتاب الصف» pages (design: BookClass, BookPortrait, BookGroup, BookTeacher). Sizes are print millimetres. */
+.school-page { display: flex; flex-direction: column; align-items: center; gap: 4mm; padding: var(--safe); text-align: center; }
+.school-page .logo { height: 24mm; max-width: 60mm; object-fit: contain; }
+.school-page .book-title { font-size: 30pt; line-height: 1.25; font-weight: 800; color: var(--night-900); }
+.school-page .school-name { font: 600 13pt "IBM Plex Sans Arabic", sans-serif; color: var(--ink-muted); }
+.school-page .class-photo { width: 150mm; height: 88mm; object-fit: cover; border-radius: 5mm; border: 1.2mm solid var(--paper-raised); box-shadow: 0 1.5mm 5mm rgba(22,32,74,.18); }
+.school-page .teacher { width: 100%; max-width: 170mm; margin-top: auto; padding: 5mm 8mm; border-radius: 6mm; background: var(--paper-raised); border: .4mm solid var(--line); }
+.school-page .teacher h2 { font-size: 15pt; color: var(--moon-deep); margin-bottom: 1.5mm; }
+.school-page .teacher p { font-size: 13pt; line-height: 1.9; color: var(--ink); white-space: pre-line; }
+.school-page .teacher .sign { display: block; margin-top: 1mm; font: 600 11pt "IBM Plex Sans Arabic", sans-serif; color: var(--ink-muted); }
+.school-page.no-photo .teacher { margin-top: 10mm; }
+.school-page.no-photo .teacher p { font-size: 15pt; }
+
+.portrait-page { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5mm; padding: var(--safe); text-align: center; background: var(--paper); }
+.portrait-page .frame { position: relative; width: 120mm; height: 132mm; border-radius: 60mm 60mm 8mm 8mm; background: var(--moon-glow); border: 1.5mm solid var(--moon); display: flex; align-items: flex-end; justify-content: center; overflow: hidden; }
+.portrait-page .frame img.kid { height: 124mm; width: auto; max-width: 110mm; object-fit: contain; }
+.portrait-page .frame img.companion { position: absolute; bottom: 4mm; inset-inline-end: 4mm; width: 34mm; height: 34mm; object-fit: contain; }
+.portrait-page .heading { font: 600 12pt "IBM Plex Sans Arabic", sans-serif; letter-spacing: .3mm; color: var(--moon-deep); }
+.portrait-page .kid-name { font-size: 34pt; line-height: 1.2; font-weight: 800; color: var(--night-900); }
+.portrait-page .line { font-size: 16pt; line-height: 1.9; max-width: 160mm; color: var(--ink); }
+.portrait-page .companion-name { font: 500 10.5pt "IBM Plex Sans Arabic", sans-serif; color: var(--ink-muted); }
+
+.group-page { display: flex; flex-direction: column; align-items: center; gap: 5mm; padding: var(--safe); }
+.group-page h2 { font-size: 24pt; color: var(--night-900); text-align: center; }
+.group-page .grid { display: grid; gap: 3mm 2.5mm; width: 100%; justify-items: center; }
+.group-page .mate { display: flex; flex-direction: column; align-items: center; gap: 1mm; }
+.group-page .mate img { width: var(--face); height: var(--face); border-radius: 50%; object-fit: cover; background: var(--moon-glow); border: .8mm solid var(--moon); }
+.group-page .mate span { font: 600 var(--name-pt) "IBM Plex Sans Arabic", sans-serif; color: var(--ink); max-width: calc(var(--face) + 6mm); text-align: center; line-height: 1.3; }
+
+.memories-page { display: flex; flex-direction: column; align-items: center; gap: 6mm; padding: var(--safe); }
+.memories-page h2 { font-size: 22pt; color: var(--night-900); }
+.memories-page .box { width: 100%; flex: 1; border: .8mm dashed var(--line); border-radius: 6mm; }

@@ -19,9 +19,11 @@ from qamra_ai.pipeline.classic import classic_budget_usd
 from qamra_ai.pipeline.theme import Theme
 from qamra_api import ratelimit, runtime_settings
 from qamra_api.classic import CLASSIC_JOB, live_template, resume_classic_draft
+from qamra_api.consent import record_consent
 from qamra_api.deps import CurrentUser, RedisDep, SessionDep, SettingsDep, StorageDep
 from qamra_api.errors import ApiError
 from qamra_api.jobs import QueueDep, enqueue
+from qamra_api.portal.privacy import forget_in_class_book
 from qamra_api.store.cart import clean_personalization, ensure_cart
 from qamra_api.store.catalog import load_catalog
 from qamra_api.store.router import AddOnIn, CartOut, cart_out, check_item
@@ -187,6 +189,7 @@ async def delete_child(
     """
     child = await _my_child(db, user, child_id)
     files = storage.delete_prefix(child_prefix(child.id))  # files first: a crash leaves rows to retry
+    await forget_in_class_book(db, storage, child)  # their drawn likeness on a class book's shared pages too
     for line in (await db.execute(select(CartItem).where(CartItem.child_id == child.id))).scalars():
         await db.delete(line)  # a book that no longer exists cannot be bought
     orders: set[uuid.UUID] = set()
@@ -230,19 +233,7 @@ async def give_consent(
     child = await _my_child(db, user, child_id)
     if body.version != CONSENT_VERSION:
         raise ApiError("consent_outdated", 409)  # the page showed an older text: reload it
-    db.add(
-        Consent(
-            child_id=child.id,
-            guardian_user_id=user.id,
-            consent_text_version=CONSENT_VERSION,
-            scope="photo_processing",
-            ip=request.client.host if request.client else None,
-            user_agent=(request.headers.get("user-agent") or "")[:300] or None,
-        )
-    )
-    db.add(
-        AuditLog(actor_user_id=user.id, action="consent.given", entity_type="child", entity_id=str(child.id))
-    )
+    record_consent(db, request, user_id=user.id, child_id=child.id, version=CONSENT_VERSION)
     await db.commit()
     return await _child_out(db, child)
 

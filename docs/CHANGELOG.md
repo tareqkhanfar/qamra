@@ -10,6 +10,38 @@
 - **The child's character is reused:** «أضف للسلة» asks which child («شخصية ليان جاهزة») and adds the book for that child (`POST /api/shop/workbooks/cart`: the item carries the child, the variant and the character). Without a ready character, the create flow draws one first, then puts the book in the cart.
 - The seed adds the set as a PDF (75 ₪) and in black and white (129 ₪) for «دوسية التأسيس». The shop cards and the quiz now link to these pages.
 
+## Phase 4: the kindergarten portal and «كتاب الصف» (2026-09-29)
+
+- **Sign-up and approval.** A kindergarten signs up at `/portal/signup` and gets a school account at once. Staff
+  approve or reject the organization at `/admin/organizations`, with an audit entry.
+- **Classes and children.**
+  - The school creates classes, then imports its children from CSV. The template includes Arabic headers, and a
+    row-by-row preview gives reasons in Arabic and English before anything is imported.
+  - Each child gets a private, expiring invite link for their parent, to copy or share on WhatsApp.
+- **The parent's invite** (`/invite/{token}`). The parent signs in and accepts, then gives the class-book consent,
+  uploads one photo (the same face check) and approves the drawing. The school's board shows the steps only,
+  never a photo.
+- **«كتاب الصف».**
+  - One story and one line (Magic or Classic) per class, and the art style.
+  - The school page: logo, class photo (only with the school's confirmation of the parents' permission) and the
+    teacher's message.
+  - An automatic, fair page plan: every child N times (2 by default), at most 3 per picture, never twice on a
+    page. A planner lets the teacher move children, by tap or by drag and drop.
+- **The batch.** One job draws the class:
+  - shared pages with every child's character as a reference, each checked for every child;
+  - a personal cover per child;
+  - each copy's print files: school page, the child's portrait, the story, the group page.
+
+  A live progress board, redraw requests and the school's bulk approval follow. Approved copies enter the admin
+  review queue, and staff can print-approve a whole class at once.
+- **The order.** Wholesale prices come from the kindergarten's price list; there is one order and one invoice per
+  class, delivered to the school, cash on delivery.
+- **The print bundle per class:** `{school}-{class}-{child}.pdf` interiors and covers, plus one combined print
+  file, private and listed for staff with per-child coverage.
+- **Catalog admin → «أسعار الروضات»:** B2B price lists, the default and per kindergarten, with tiers per variant
+  and the margin per tier.
+- **Acceptance:** a class of 30 is drawn in one batch with the offline providers and exported as one print
+  bundle, in `apps/worker/tests/test_classbooks.py`.
 
 ## Real examples on the site, and the Addendum 9 store pages (2026-09-29)
 

@@ -1,0 +1,56 @@
+{#- The shared interior of a class book. Page 2 (the child's portrait) is inserted per copy afterwards, so the
+    folios here already count it: the story starts on page 3. -#}
+{% import "_macros.html.j2" as m %}
+<!doctype html>
+<html lang="{{ spec.lang }}" dir="{{ spec.dir }}">
+<head><meta charset="utf-8"><title>{{ spec.title }}</title>
+<style>
+{% include "_base.css.j2" %}
+{% include "_class.css.j2" %}
+</style></head>
+<body>
+{% set sc = spec.school %}
+<section class="page school-page{{ '' if sc.class_photo else ' no-photo' }}" data-kind="school" data-number="1">
+  {% if sc.logo %}<img class="logo" src="{{ img(sc.logo) }}" alt="">{% else %}{{ m.moon_mark('20mm') }}{% endif %}
+  <h1 class="display book-title">{{ sc.title }}</h1>
+  <div class="school-name">{{ sc.school }}{% if sc.year %} · {{ sc.year }}{% endif %}</div>
+  {% if sc.class_photo %}<img class="class-photo" src="{{ img(sc.class_photo) }}" alt="">{% endif %}
+  {% if sc.teacher_message %}
+  <div class="teacher">
+    <h2 class="display">{{ sc.teacher_title }}</h2>
+    <p>{{ sc.teacher_message }}</p>
+    {% if sc.teacher_name %}<span class="sign">— {{ sc.teacher_name }}</span>{% endif %}
+  </div>
+  {% endif %}
+</section>
+{% for p in spec.pages %}
+{% set number = loop.index + 2 %}
+<section class="page" data-kind="story" data-layout="full" data-number="{{ number }}">
+  <img class="bleed-img" src="{{ img(p.image) }}" alt="">
+  <div class="panel top" style="background: rgba(255,253,248,.9)" data-panel="{{ number }}">
+    <p class="story-text">{{ p.text }}</p>
+  </div>
+  <div class="folio">{{ spec.folio(number) }}</div>
+</section>
+{% endfor %}
+{% set n = spec.classmates | length %}
+{% set cols = 3 if n <= 6 else (4 if n <= 12 else (5 if n <= 20 else (6 if n <= 30 else 7))) %}
+{% set face = [38, 30, 25, 21, 18][cols - 3] %}
+<section class="page group-page" data-kind="group" data-number="{{ spec.pages | length + 3 }}"
+  style="--face: {{ face }}mm; --name-pt: {{ 10 if cols <= 5 else 8.5 }}pt">
+  <h2 class="display">{{ spec.group_title }}</h2>
+  <div class="grid" style="grid-template-columns: repeat({{ cols }}, 1fr)">
+    {% for c in spec.classmates %}
+    <div class="mate"><img src="{{ img(c.face) }}" alt=""><span>{{ c.name }}</span></div>
+    {% endfor %}
+  </div>
+  <div class="folio">{{ spec.folio(spec.pages | length + 3) }}</div>
+</section>
+{% for i in range(fillers) %}
+<section class="page memories-page" data-kind="memories" data-number="{{ spec.pages | length + 4 + i }}">
+  <h2 class="display">{{ spec.memories_title }}</h2>
+  <div class="box"></div>
+  <div class="folio">{{ spec.folio(spec.pages | length + 4 + i) }}</div>
+</section>
+{% endfor %}
+</body></html>

@@ -15,6 +15,100 @@ Newest first. Each entry: date — decision — why.
   - The page asks which child. `POST /api/shop/workbooks/cart` stores `child_id`, the variant (its options) and the character used, so the order-time render can find everything.
   - Without a character, the create flow runs with `product=<sku>`. It uses the house style and reuses any approved character, then adds the book to the cart.
 
+## 2026-09-29 — Phase 4: the kindergarten portal and «كتاب الصف»
+
+Plan and file map: `docs/plans/phase-4.md`.
+
+**Accounts and privacy**
+- **A school's sign-up gives an account at once; the organization waits.** The `school_admin` user can sign in
+  right away and sees a «pending» page until staff approve the organization in `/admin/organizations`. The
+  approval is audited. Every portal query filters by the caller's organization, and another school's class
+  answers 404, like a missing one.
+- **The invite link makes the parent the child's guardian.** The school's child row has no guardian. The parent
+  opens a per-child link (a random token, stored as-is so the school can copy it again; it expires after
+  `portal_invite_days`, 30 by default), signs in, and accepts.
+  - From then on the child is the parent's, with all the create flow's rights. Deleting the child removes them
+    from the class too.
+  - A link works for one account, and school or staff accounts can't accept one.
+  - Before a parent accepts, the school can remove the child (the row is deleted). Afterwards, removing only takes
+    the child out of the class.
+- **The school sees states, not photos.** The board shows invited → consent → photo → drawing → approved.
+  - A photo counts as uploaded even after its 24-hour deletion.
+  - The school may view the parent-approved drawing, because it appears in the class book anyway. It never sees
+    the photo, and no endpoint gives a school a photo or a photo's storage key.
+  - The consent text of the invite (version `school-2026-09`) says so, and says that classmates' copies show the
+    drawing.
+- **The create flow's code is reused, not copied.** Consent is recorded by `qamra_api.consent.record_consent`, now
+  used by `create.give_consent` too. The photo upload and the character approval are the create flow's own
+  endpoints. The invite's drawing step calls `create.draw_character` with the class's art style.
+- **The class photo is the school's upload, with its confirmation.** It is accepted only with the checkbox "the
+  kindergarten has the parents' permission to print it". The confirmation, its time and the user are stored and
+  audited. The photo is re-encoded without metadata and kept privately under the class prefix. The school can
+  delete it; there is no automatic deletion yet (open point).
+- **Parents' contacts are the school's data.** They are stored on the invite row, shown masked on the board
+  (0599 ••• 456), and never logged. WhatsApp sharing opens `wa.me/?text=…` without a number, so the school picks
+  the contact itself. We send nothing: automatic WhatsApp or SMS still waits for Tareq's approval.
+
+**The class book**
+- **Class templates are content** (`content/class-books/<theme>.yaml`).
+  - Core scenes are always in the book. `extra` scenes join in their story position until the class's
+    appearances fit, and repeats are the last resort.
+  - Texts never make a verb agree with the names («… : {names}»), so any mix of boys and girls reads correctly
+    without a language model.
+  - Only `graduation` has a template for now.
+- **The plan gives every child exactly N appearances** (N = `class_book_min_appearances`, 2; the school can
+  raise it). Appearances are spread over the book, never twice on one page, and pages are as evenly filled as
+  their places allow.
+  - Places per picture are capped per image provider (`class_book_refs`, "fal:3, gemini:3, openai:3"; unlisted
+    providers get 3).
+  - A teacher's edits make the plan "manual". A later class change then asks for a new plan instead of silently
+    replacing the teacher's work.
+- **The class group page is composed, not drawn.** No model keeps 30 faces consistent in one picture, so the page
+  is a grid of every child's approved character (the front view of their sheet) with their name. Each copy has
+  its own portrait page as page 2; for this, the front view is used as-is (no extra AI cost).
+- **Classic class books** (Addendum 4 §1C) draw the shared pages once, with generic children and no named
+  children. Children appear on their personal cover, their portrait page and the group page. When W1's Classic
+  templates are live, these pages should come from the templates instead. Magic class books put named children
+  into the story.
+- **One batch job per class, resumable.** The job draws the shared pages, then the covers, then the files.
+  - A page is redrawn only when its children changed or the school asked for it. The school has 6 free redraws per
+    class.
+  - The batch budget is the per-book cap × pictures ÷ 20, because a book's cap covers about 20 pictures.
+- **Each child's copy is an ordinary `Book`** (`generation.line = "class"`). The admin review queue, print
+  approval, print batches and "delete my child's data" all apply unchanged. The per-child files live under the
+  child's storage prefix.
+  - The review queue's generate, redraw and re-render actions on a class copy are routed to
+    `jobs.classbooks.copy_action` (the same dispatch as Classic books in `jobs.books`). So a copy is never
+    redrawn as a single-hero book, and a cover redraw reruns only that picture and the files.
+  - In a re-run, copies whose pictures didn't change keep the school's and our approvals. When the class's
+    shared pages change, every copy goes back to the school.
+  - Deleting a child also deletes the class's shared pictures that show them and the combined print file. Those
+    pages are redrawn without the child.
+- **Print files.** The shared interior is rendered once, then the portraits and covers per child (one Chromium
+  session). The copies are assembled with pypdf.
+  - The combined print file puts each child's cover then their interior, and reuses the shared pictures, so the
+    file doesn't grow with 30 copies of every page.
+  - Preflight runs on the shared interior once, and on each portrait and cover.
+  - Files are named `{school}-{class}-{child}.pdf` at download (storage keys stay ASCII ids).
+  - Prepared images (logo, class photo, faces) are sized up to at least 300 DPI at their print size.
+
+**Orders and prices**
+- **The class order reuses the store:** the pricing engine with the price list's tiers, the order snapshot, and
+  `issue_invoice`.
+  - The school's own active list wins over the default kindergarten list.
+  - Each approved copy is its own order line, so the invoice lists every child.
+  - The invoice is issued when the school places the order, because schools pay against it. Cash on delivery to
+    the school's address.
+  - The product's `min_qty` of 20 is not enforced for portal orders: a class of 17 still orders. Below the lowest
+    tier, the variant's list price applies.
+- **B2B price lists live in the catalog admin** (the «أسعار الروضات» tab): the default list and per-kindergarten
+  lists, tiers per variant with the margin per tier, and every edit audited.
+
+**Dependencies**
+- **No new dependency for Excel.** `openpyxl` isn't in the workspace, so the portal reads CSV only. It reads
+  both encodings Arabic Excel writes, and gives an `.xlsx` a friendly "save as CSV UTF-8" message.
+  - Adding `openpyxl` (MIT, pure Python) would read `.xlsx` directly. It is a one-line dependency change plus
+    about 20 lines in `portal/importer.py`, left for Tareq's decision.
 
 ## 2026-09-29 — Addendum 9 store pages: routes, quiz rules, and where the pages differ from the design
 

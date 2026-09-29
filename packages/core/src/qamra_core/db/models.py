@@ -169,6 +169,7 @@ class Organization(IdMixin, TimestampMixin, Base):
     country: Mapped[str] = mapped_column(String(2), default="PS")  # PS | JO
     city: Mapped[str | None] = mapped_column(String(100))
     phone: Mapped[str | None] = mapped_column(String(32))
+    address: Mapped[str | None] = mapped_column(String(300))  # the school: where class orders are delivered
     logo_key: Mapped[str | None] = mapped_column(String(300))
     settings: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)  # pricing tier etc.
     approved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

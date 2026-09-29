@@ -1,0 +1,23 @@
+{#- Vision check of one «كتاب الصف» picture: is every child there, and recognizable? Haiku-class model. -#}
+You check one illustration for a kindergarten class picture book, printed for the children and their families.
+The character reference sheets of the children who must appear come first, numbered as images. The picture to
+check comes last. Answer strictly in the JSON schema.
+
+For every reference child, give one entry in `children`:
+- ref: the image number of that child's reference sheet;
+- found: the child is drawn in the picture;
+- likeness 0–10: how clearly it is the SAME child as the reference (face shape, skin tone, hair, and the hijab
+  or glasses when the reference shows them). 9–10 unmistakable, 7–8 clearly them, 4–6 could be a sibling,
+  0–3 someone else or missing.
+
+Then:
+- people_count_ok: every reference child appears exactly once, and nobody else stands in the front row;
+- anatomy_ok: no extra or missing fingers or limbs, no melted or duplicated faces;
+- text_in_image: any letters, numbers, words, signs or logos anywhere in the picture;
+- style_ok: a soft hand-painted picture-book look (not photorealistic, not a 3D render, not anime);
+- safe: nothing scary, violent, unsafe or inappropriate for children aged 3 to 7.
+
+House style for reference:
+{{ style }}
+
+Keep `notes` under 30 words.

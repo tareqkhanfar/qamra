@@ -1,0 +1,21 @@
+{#- One child's portrait page (page 2 of their copy): the character, the name and a line about them. -#}
+<!doctype html>
+<html lang="{{ spec.lang }}" dir="{{ spec.dir }}">
+<head><meta charset="utf-8"><title>{{ copy.name }}</title>
+<style>
+{% include "_base.css.j2" %}
+{% include "_class.css.j2" %}
+</style></head>
+<body>
+<section class="page portrait-page" data-kind="portrait" data-number="2">
+  <div class="heading">{{ spec.portrait_title }}</div>
+  <div class="frame">
+    <img class="kid" src="{{ img(copy.portrait) }}" alt="">
+    {% if copy.companion %}<img class="companion" src="{{ img(copy.companion) }}" alt="">{% endif %}
+  </div>
+  <h1 class="display kid-name">{{ copy.name }}</h1>
+  <p class="line">{{ copy.portrait_line }}</p>
+  {% if copy.companion and copy.companion_name %}<div class="companion-name">{{ copy.companion_name }}</div>{% endif %}
+  <div class="folio">{{ spec.folio(2) }}</div>
+</section>
+</body></html>

@@ -1,0 +1,56 @@
+{#- «كتاب الصف» picture (Addendum 1 §2): a shared class page with several children, or one child's personal
+    cover. Order: style → setting → scene → children → outfit → composition → safety → negatives. -#}
+{%- set light = {
+  'dawn': 'soft pink-and-gold dawn light with long gentle shadows',
+  'morning': 'fresh golden morning light',
+  'noon': 'bright, even midday light with soft shadows',
+  'afternoon': 'warm late-afternoon light',
+  'sunset': 'glowing golden-orange sunset light',
+  'evening': 'calm blue evening light with warm lamps glowing inside',
+  'night': 'quiet moonlit night: deep blue sky, silver-gold moonlight and a warm lamp glow',
+} -%}
+STYLE
+{{ style }}
+Painting medium: {{ medium }}
+
+SETTING
+{{ setting }}
+
+SCENE — {% if kind == 'cover' %}the FRONT COVER of one child's own copy of a kindergarten class book{% else %}one page of a kindergarten class picture book{% endif %}
+{{ scene }}
+{%- if location %}
+Location (it looks exactly like this on every page set here): {{ location }}
+{%- endif %}
+Light: {{ light[time] }}.
+
+CHILDREN
+{%- if children %}
+{%- for c in children %}
+- CHILD {{ loop.index }} is the child in Image {{ c.ref }} (character reference sheet). Keep exactly the same face, skin tone, hair color and hairstyle, eye shape{% if c.glasses %}, the same glasses{% endif %}, age and body proportions. {{ 'A boy' if c.gender == 'm' else 'A girl' }}, about {{ c.age }} years old{% if c.hijab %}, wearing a soft hijab as in the reference{% else %}, with no hijab or head covering{% endif %}.
+{%- endfor %}
+{%- if kind == 'cover' %}
+- CHILD 1 is the hero of this cover: draw them exactly once, large and central.
+{%- else %}
+- Draw each of these {{ children | length }} children exactly once, all clearly visible with their faces toward the viewer and easy to tell apart. They are equally important: nobody is hidden, turned away or cut off by the edge.
+{%- endif %}
+- Any teacher or other child stays in the background and looks clearly different from the children above.
+{%- else %}
+- A few kindergarten children of different looks take part, seen at a friendly distance. They are not specific real children: keep their faces simple and generic.
+{%- endif %}
+
+OUTFIT
+The children wear {{ outfit }}.
+
+COMPOSITION
+{%- if kind == 'cover' %}
+Front cover, square. Keep the TOP 30% calm and simple (sky or soft background) for the title. The hero is large and central in the lower two thirds, happy and confident, looking toward the reader.
+{%- else %}
+Square picture-book page. Keep the TOP 30% of the image calm and simple for the story text, with no faces, hands or key objects there; stage the children in the lower two thirds.
+{%- endif %}
+{{ composition }}
+
+SAFETY
+{{ safety }}
+
+NEGATIVE
+{{ negative }}

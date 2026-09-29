@@ -1,0 +1,238 @@
+# «كتاب الصف» for the graduation theme (Addendum 1 §2). Shared pages are drawn once per class; the children
+# in each picture are the ones the planner puts in its slots. Texts never make a verb agree with the names:
+# the names follow a collective noun after a colon ("the builders: …"), so any mix of boys and girls reads
+# right. {names} = the children on the page ("أطفال {class}" when there are none), {class} = the class name.
+slug: graduation
+version: 1
+title_ar: "كِتابُ {class}"
+title_en: "The {class} Book"
+everyone_ar: "أَطْفالُ {class}"
+everyone_en: "the children of {class}"
+group_title_ar: "أَصْدِقائي في {class}"
+group_title_en: "My friends in {class}"
+portrait_title_ar: "هٰذا أَنا"
+portrait_title_en: "This is me"
+teacher_title_ar: "كَلِمَةٌ مِنَ القَلْب"
+teacher_title_en: "A word from the heart"
+blurb_ar: "سَنَةٌ كامِلَةٌ مِنَ اللَّعِبِ وَالأَلْوانِ وَالأَصْدِقاءِ… وَفي كُلِّ صَفْحَةٍ أَطْفالٌ حَقيقِيّونَ مِنْ {class}."
+blurb_en: "A whole year of play, colors and friends… and on every page, the real children of {class}."
+
+cover:
+  scene: >-
+    The hero in the graduation gown and cap stands proudly in front of the small festive stage, holding a
+    rolled certificate tied with a ribbon, with bunting and paper lanterns above.
+  location: hall
+  time: morning
+  outfit: gown
+  subtitle_ar: "وَأَصْدِقاءُ {class}"
+  subtitle_en: "and the friends of {class}"
+
+portrait_lines_ar:
+  - "{name} {نَجْمٌ يُضيءُ/نَجْمَةٌ تُضيءُ} صَفَّنا كُلَّ صَباح."
+  - "{name} {صَديقٌ طَيِّبُ/صَديقَةٌ طَيِّبَةُ} القَلْبِ، {يُشارِكُ/تُشارِكُ} الجَميع."
+  - "{name} {فَنّانٌ صَغيرٌ/فَنّانَةٌ صَغيرَةٌ} {يَمْلَأُ/تَمْلَأُ} الدُّنْيا أَلْوانًا."
+  - "{name} {يَضْحَكُ/تَضْحَكُ} فَيَضْحَكُ الصَّفُّ كُلُّه."
+  - "{name} {سَأَلَ/سَأَلَتْ} أَسْئِلَةً كَثيرَةً… {وَتَعَلَّمَ/وَتَعَلَّمَتْ} أَشْياءَ كَثيرَة!"
+  - "{name} {شُجاعٌ يُجَرِّبُ/شُجاعَةٌ تُجَرِّبُ} كُلَّ جَديدٍ بِابْتِسامَة."
+portrait_lines_en:
+  - "{name} is a star who lights up our class every morning."
+  - "{name} has a kind heart and shares with everyone."
+  - "{name} is a little artist who fills the world with color."
+  - "When {name} laughs, the whole class laughs too."
+  - "{name} asked many questions… and learned so many things!"
+  - "{name} bravely tries everything new, with a smile."
+
+locations:
+  gate: >-
+    the kindergarten's turquoise wooden gate in a warm limestone wall, with potted geraniums and a small
+    lemon tree beside it
+  classroom: >-
+    a bright kindergarten classroom: low wooden tables and small chairs, floor cushions, low wooden shelves
+    with colorful wooden toys and woven baskets of blocks, big arched windows, a soft pastel wall and a
+    patterned tiled floor. Nothing in the room has writing: no posters, labels, charts, letters or numbers
+  library: >-
+    a cozy reading corner of the classroom: floor cushions on a woven rug and low wooden shelves of plain
+    colored books with no titles
+  yard: >-
+    the sunny kindergarten yard: a small slide, two swings, a sandbox, a lemon tree and a grapevine pergola
+    giving soft shade
+  garden: >-
+    the kindergarten's small vegetable garden: raised wooden beds with young green plants, a watering can
+    and a low stone wall
+  olive_grove: >-
+    a sunny olive grove on stone terraces with silvery leaves and cloth sheets spread under the trees
+  hall: >-
+    the kindergarten's festive hall: a small wooden stage with a sage-green curtain, strings of colorful
+    triangle bunting and paper lanterns, rows of wooden chairs for families, high arched windows
+  backstage: >-
+    backstage beside the sage-green curtain, in soft warm light, with a few folded chairs and a basket of
+    paper lanterns
+
+outfits:
+  school: >-
+    their own everyday kindergarten clothes: each child in a different simple solid-color top with
+    trousers, or a dress
+  gown: >-
+    matching sage-green graduation gowns with cream collar sashes over white shirts, and sage-green
+    graduation caps with golden tassels
+
+# Story order. `extra` scenes join only when the class needs more places to reach everyone's appearances.
+scenes:
+  - key: arrive
+    location: gate
+    time: morning
+    slots: 4
+    scene: Children arrive at the kindergarten gate in the morning, waving and smiling, with small backpacks.
+    text_ar: "صَباحُ الخَيْرِ يا رَوْضَتَنا! عِنْدَ البَوّابَةِ وَصَلَ الأَصْدِقاءُ: {names}."
+    text_en: "Good morning, kindergarten! At the gate, the friends arrive: {names}."
+  - key: circle
+    location: classroom
+    time: morning
+    slots: 4
+    scene: The children sit on floor cushions in a morning circle, clapping along to a song.
+    text_ar: "في حَلْقَةِ الصَّباحِ جَلَسْنا مَعًا نُغَنّي وَنُصَفِّق. أَعْلى الأَصْواتِ اليَوْمَ: {names}!"
+    text_en: "In the morning circle we sang and clapped together. The loudest voices today: {names}!"
+  - key: paint
+    location: classroom
+    time: morning
+    slots: 4
+    scene: The children at the painting table mix colors on big sheets of paper, their hands dotted with paint.
+    text_ar: "عَلى طاوِلَةِ الرَّسْمِ خَلَطْنا الأَلْوانَ: أَزْرَقُ وَأَصْفَرُ صارا أَخْضَر! الرَّسّامونَ الصِّغارُ: {names}."
+    text_en: "At the painting table we mixed colors: blue and yellow turned green! Our little painters: {names}."
+  - key: blocks
+    location: classroom
+    time: morning
+    slots: 4
+    scene: The children build a tall tower of wooden blocks together on a rug, laughing as it wobbles.
+    text_ar: "بَنَيْنا بُرْجًا عالِيًا مِنَ المُكَعَّباتِ… يَتَمايَلُ وَلا يَقَع! المُهَنْدِسونَ الصِّغارُ: {names}."
+    text_en: "We built a tall tower of blocks… it wobbles but never falls! Our little builders: {names}."
+  - key: beads
+    extra: true
+    location: classroom
+    time: morning
+    slots: 4
+    scene: The children thread colorful wooden beads into long necklaces at a low table.
+    text_ar: "نَظَمْنا الخَرَزَ المُلَوَّنَ عِقْدًا طَويلًا… طَويلًا جِدًّا! أَمْهَرُ الأَصابِعِ: {names}."
+    text_en: "We threaded colorful beads into a long, long necklace! The nimblest fingers: {names}."
+  - key: yard
+    location: yard
+    time: noon
+    slots: 4
+    scene: The children play in the sunny yard, one on the slide and others on the swings, all laughing.
+    text_ar: "في السّاحَةِ المُشْمِسَةِ رَكَضْنا وَتَزَحْلَقْنا وَضَحِكْنا كَثيرًا. أَسْرَعُ الأَقْدامِ: {names}."
+    text_en: "In the sunny yard we ran, slid and laughed a lot. The fastest feet: {names}."
+  - key: sandbox
+    extra: true
+    location: yard
+    time: afternoon
+    slots: 4
+    scene: The children build a sandcastle together in the sandbox with small buckets and spades.
+    text_ar: "في صُنْدوقِ الرَّمْلِ بَنَيْنا قَلْعَةً لَها أَبْراجٌ وَبَوّابَة. البَنّاؤونَ: {names}."
+    text_en: "In the sandbox we built a castle with towers and a gate. The builders: {names}."
+  - key: garden
+    location: garden
+    time: morning
+    slots: 4
+    scene: The children plant seedlings in the raised garden beds and water them with a small watering can.
+    text_ar: "زَرَعْنا بُذورًا صَغيرَةً وَسَقَيْناها كُلَّ يَوْمٍ حَتّى صارَتْ نَبْتَةً خَضْراء. المُزارِعونَ الصِّغارُ: {names}."
+    text_en: "We planted tiny seeds and watered them every day until they grew green. Our little farmers: {names}."
+  - key: science
+    extra: true
+    location: garden
+    time: afternoon
+    slots: 4
+    scene: The children look closely at a leaf and a snail through big magnifying glasses, amazed.
+    text_ar: "بِالعَدَسَةِ المُكَبِّرَةِ اكْتَشَفْنا عالَمًا صَغيرًا: وَرَقَةً وَحَلَزونًا! العُلَماءُ الصِّغارُ: {names}."
+    text_en: "With magnifying glasses we discovered a tiny world: a leaf and a snail! Our little scientists: {names}."
+  - key: snack
+    location: classroom
+    time: noon
+    slots: 4
+    scene: The children share a snack at a low table, passing plates of bread, cucumbers, olives and apple slices.
+    text_ar: "في وَقْتِ الفُطورِ تَقاسَمْنا الخُبْزَ وَالزَّيْتونَ وَالتُّفّاح. ما أَطْيَبَ الأَكْلَ مَعَ الأَصْدِقاءِ: {names}!"
+    text_en: "At snack time we shared bread, olives and apples. Food tastes best with friends: {names}!"
+  - key: baking
+    extra: true
+    location: classroom
+    time: morning
+    slots: 4
+    scene: The children knead dough and shape small crescent cookies on a floured table, the teacher helping.
+    text_ar: "عَجَنّا العَجينَ وَشَكَّلْنا كَعْكًا صَغيرًا عَلى شَكْلِ أَقْمار. الخَبّازونَ: {names}."
+    text_en: "We kneaded dough and shaped little moon-shaped cookies. The bakers: {names}."
+  - key: story
+    location: library
+    time: afternoon
+    slots: 4
+    scene: The children sit on cushions in the reading corner, listening wide-eyed as the teacher reads a picture book.
+    text_ar: "في رُكْنِ القِصَصِ سافَرْنا بِخَيالِنا إلى القَمَرِ وَالبَحْر. أَكْثَرُ العُيونِ دَهْشَةً: {names}."
+    text_en: "In the story corner our imaginations flew to the moon and the sea. The widest eyes: {names}."
+  - key: dressup
+    extra: true
+    location: classroom
+    time: afternoon
+    slots: 4
+    scene: The children in the dress-up corner try on a doctor's coat, a chef's hat and a firefighter's helmet, laughing.
+    text_ar: "في رُكْنِ الأَزْياءِ صِرْنا أَطِبّاءَ وَطُهاةً وَإِطْفائِيّين! أَصْحابُ الأَزْياءِ اليَوْمَ: {names}."
+    text_en: "In the dress-up corner we became doctors, chefs and firefighters! Today's costumes: {names}."
+  - key: rain
+    location: classroom
+    time: afternoon
+    slots: 4
+    scene: On a rainy day the children stand at the big arched window, watching raindrops and a small rainbow.
+    text_ar: "في يَوْمٍ ماطِرٍ عَدَدْنا قَطَراتِ المَطَرِ عَلى الشُّبّاكِ، ثُمَّ ظَهَرَ قَوْسُ قُزَح! أَوَّلُ مَنْ رَآهُ: {names}."
+    text_en: "On a rainy day we counted raindrops on the window, then a rainbow appeared! The first to see it: {names}."
+  - key: olives
+    extra: true
+    location: olive_grove
+    time: morning
+    slots: 4
+    scene: On a class trip the children pick olives into small baskets on a sunny terrace, the teacher close by.
+    text_ar: "في رِحْلَةِ الزَّيْتونِ قَطَفْنا حَبّاتٍ خَضْراءَ وَسَوْداءَ وَمَلَأْنا السِّلال. القَطّافونَ: {names}."
+    text_en: "On our olive trip we picked green and black olives and filled the baskets. The pickers: {names}."
+  - key: sports
+    extra: true
+    location: yard
+    time: morning
+    slots: 4
+    scene: The children run a friendly relay race in the yard, passing a colorful baton while everyone cheers.
+    text_ar: "في يَوْمِ الرِّياضَةِ تَسابَقْنا وَتَبادَلْنا العَصا المُلَوَّنَةَ، وَفازَ الجَميع! العَدّاؤونَ: {names}."
+    text_en: "On sports day we raced and passed the colorful baton, and everyone won! The runners: {names}."
+  - key: music
+    location: hall
+    time: morning
+    slots: 4
+    scene: The children play small drums, tambourines and a xylophone together on the little stage.
+    text_ar: "دَقَّتِ الطُّبولُ وَرَنَّتِ الدُّفوفُ، وَصارَتِ الرَّوْضَةُ فِرْقَةً موسيقِيَّة! العازِفونَ: {names}."
+    text_en: "Drums boomed and tambourines jingled: our kindergarten became a band! The musicians: {names}."
+  - key: puppets
+    extra: true
+    location: hall
+    time: afternoon
+    slots: 4
+    scene: The children put on a show with hand puppets behind a small painted puppet theater.
+    text_ar: "صَنَعْنا دُمًى مِنَ الجَوارِبِ وَقَدَّمْنا عَرْضًا مُضْحِكًا. نُجومُ العَرْضِ: {names}."
+    text_en: "We made sock puppets and put on a funny show. The stars of the show: {names}."
+  - key: rehearsal
+    location: backstage
+    time: afternoon
+    outfit: gown
+    slots: 4
+    scene: The children in their graduation gowns practice their song behind the curtain, whispering and smiling.
+    text_ar: "خَلْفَ السِّتارَةِ تَدَرَّبْنا عَلى نَشيدِ التَّخَرُّجِ بِصَوْتٍ خافِتٍ… وَقُلوبُنا تَدُقُّ: {names}."
+    text_en: "Behind the curtain we practiced our graduation song in whispers… hearts drumming: {names}."
+  - key: stage
+    location: hall
+    time: morning
+    outfit: gown
+    slots: 4
+    scene: The children in graduation gowns stand in a row on the festive stage, holding rolled certificates up high.
+    text_ar: "وَجاءَ يَوْمُ التَّخَرُّج! رَفَعْنا شَهاداتِنا عالِيًا وَصَفَّقَتِ العائِلاتُ لَنا: {names}."
+    text_en: "Graduation day came! We held our certificates up high as families clapped for us: {names}."
+  - key: caps
+    location: yard
+    time: afternoon
+    outfit: gown
+    slots: 4
+    scene: The children in graduation gowns throw their caps into the air in the yard, cheering.
+    text_ar: "ثُمَّ رَمَيْنا قُبَّعاتِنا في الهَواءِ وَهَتَفْنا: إلى الصَّفِّ الأَوَّل! أَعْلى القُبَّعاتِ: {names}."
+    text_en: "Then we threw our caps in the air and cheered: first grade, here we come! The highest caps: {names}."

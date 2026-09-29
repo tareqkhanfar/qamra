@@ -16,6 +16,7 @@ from qamra_api.routers.admin_books import router as admin_books_router
 from qamra_api.routers.admin_catalog import router as admin_catalog_router
 from qamra_api.routers.admin_classic import router as admin_classic_router
 from qamra_api.routers.admin_orders import router as admin_orders_router
+from qamra_api.routers.admin_portal import router as admin_portal_router
 from qamra_api.routers.admin_print_batches import router as admin_print_batches_router
 from qamra_api.routers.admin_print_costs import router as admin_print_costs_router
 from qamra_api.routers.admin_reports import router as admin_reports_router
@@ -26,7 +27,12 @@ from qamra_api.routers.examples import router as examples_router
 from qamra_api.routers.family import router as family_router
 from qamra_api.routers.free_cover import router as free_cover_router
 from qamra_api.routers.health import router as health_router
+from qamra_api.routers.invite import router as invite_router
 from qamra_api.routers.leads import router as leads_router
+from qamra_api.routers.portal import router as portal_router
+from qamra_api.routers.portal_book import router as portal_book_router
+from qamra_api.routers.portal_children import router as portal_children_router
+from qamra_api.routers.portal_order import router as portal_order_router
 from qamra_api.routers.printer import router as printer_router
 from qamra_api.routers.reader import router as reader_router
 from qamra_api.routers.settings import admin_router as settings_admin_router
@@ -115,4 +121,10 @@ def create_app(settings: ApiSettings | None = None, *, manage_resources: bool = 
     app.include_router(payments_router)
     app.include_router(admin_print_batches_router)
     app.include_router(printer_router)
+    app.include_router(portal_router)  # W4: the kindergarten portal (Phase 4)
+    app.include_router(portal_children_router)
+    app.include_router(portal_book_router)
+    app.include_router(portal_order_router)
+    app.include_router(invite_router)
+    app.include_router(admin_portal_router)
     return app

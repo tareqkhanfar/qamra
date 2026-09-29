@@ -235,6 +235,77 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "انتهت صلاحية الرابط أو استُبدل برابط أحدث. اطلبوا رابطًا جديدًا من فريقنا.",
         "This link has expired or was replaced by a newer one. Ask our team for a new link.",
     ),
+    # ---- the kindergarten portal (Phase 4)
+    "org_pending": (
+        "حساب روضتكم بانتظار موافقة فريقنا. سنتواصل معكم قريبًا.",
+        "Your kindergarten account is waiting for our team's approval. We'll be in touch soon.",
+    ),
+    "org_rejected": (
+        "لم نتمكّن من تفعيل حساب الروضة. تواصلوا معنا للمساعدة.",
+        "We couldn't activate this kindergarten account. Please contact us.",
+    ),
+    "not_school": ("هذه الصفحة لحسابات الروضات فقط.", "This page is for kindergarten accounts only."),
+    "import_format": (
+        "ارفعوا ملف CSV: من Excel اختاروا «حفظ باسم» ثم CSV UTF-8.",
+        "Upload a CSV file: in Excel choose Save As, then CSV UTF-8.",
+    ),
+    "import_empty": ("الملف فارغ أو لا يحتوي أطفالًا.", "The file is empty or has no children."),
+    "import_too_many": ("الحد 60 طفلًا في الصف الواحد.", "A class can have at most 60 children."),
+    "invite_expired": (
+        "لم يعد هذا الرابط صالحًا. اطلبوا من الروضة رابطًا جديدًا.",
+        "This link is no longer valid. Please ask the kindergarten for a new one.",
+    ),
+    "invite_claimed": (
+        "هذا الرابط مستخدم من حساب آخر. تواصلوا مع الروضة.",
+        "This link is already used by another account. Please contact the kindergarten.",
+    ),
+    "theme_required": ("اختاروا حكاية الصف أولًا.", "Please choose the class story first."),
+    "class_not_ready": (
+        "لا يوجد أطفال جاهزون بعد: يلزم موافقة الأهل وشخصية معتمدة.",
+        "No children are ready yet: each needs parent consent and an approved character.",
+    ),
+    "plan_outdated": (
+        "تغيّر أطفال الصف منذ آخر توزيع. وزّعوا الصفحات من جديد.",
+        "The class changed since the last plan. Please plan the pages again.",
+    ),
+    "coverage_low": (
+        "بعض الأطفال يظهرون أقل من العدد المطلوب. عدّلوا المخطط أو وزّعوا تلقائيًا.",
+        "Some children appear fewer times than required. Adjust the plan or plan automatically.",
+    ),
+    "invalid_plan": (
+        "المخطط غير صالح: تحقّقوا من الأطفال في كل صفحة.",
+        "The plan isn't valid: please check the children on each page.",
+    ),
+    "class_book_busy": (
+        "كتب الصف قيد الرسم الآن. انتظروا حتى تنتهي.",
+        "The class books are being drawn right now. Please wait.",
+    ),
+    "class_book_locked": (
+        "طُلبت كتب هذا الصف ولا يمكن تعديلها الآن. تواصلوا معنا.",
+        "This class's books are already ordered and can't change now. Please contact us.",
+    ),
+    "class_redraws_used": (
+        "استخدمتم إعادات الرسم المجانية لهذا الكتاب. تواصلوا معنا للمساعدة.",
+        "You've used this class book's free redraws. Contact us for help.",
+    ),
+    "photo_permission_required": (
+        "أكّدوا أن لديكم موافقة الأهالي على طباعة صورة الصف.",
+        "Please confirm you have the parents' permission to print the class photo.",
+    ),
+    "invalid_image": (
+        "تعذّر قراءة هذه الصورة. جرّبوا ملف PNG أو JPG.",
+        "We couldn't read this image. Try a PNG or JPG file.",
+    ),
+    "nothing_to_order": ("لا توجد كتب معتمدة للطلب بعد.", "There are no approved books to order yet."),
+    "already_ordered": ("طُلبت كتب هذا الصف من قبل.", "This class's books were already ordered."),
+    "no_price_list": (
+        "لم تُحدَّد أسعار الروضات لهذا الكتاب بعد. تواصلوا معنا.",
+        "Kindergarten prices for this book aren't set yet. Please contact us.",
+    ),
+    "invalid_tiers": (
+        "شرائح الأسعار غير صالحة: كميات من 1 فأكثر، بلا تكرار، وأسعار موجبة.",
+        "Invalid price tiers: quantities from 1 up, no duplicates, and positive prices.",
+    ),
     "internal_error": (
         "حدث خطأ غير متوقع. حاولوا مرة أخرى بعد قليل.",
         "Something went wrong. Please try again in a moment.",

@@ -18,13 +18,15 @@ from qamra_api import runtime_settings
 from qamra_api.deps import AdminUser, SessionDep, SettingsDep, require_permission
 from qamra_api.errors import ApiError
 from qamra_api.store.catalog import Catalog, load_catalog, tiers_estimated
-from qamra_core.db.models import AuditLog, Currency
+from qamra_core.db.models import AuditLog, Currency, Organization
 from qamra_core.db.store import (
     AddOn,
     AddOnPrice,
     AddOnPricing,
     Bundle,
     Coupon,
+    PriceList,
+    PriceListItem,
     Sale,
     ShippingZone,
     Variant,
@@ -691,3 +693,240 @@ async def simulate(body: SimIn, db: SessionDep, settings: SettingsDep) -> SimOut
         below_floor=pct is not None and pct < r.margin_floor_pct,
         notes=[*q.notes, *([f"coupon: {problem}"] if problem else [])],
     )
+
+
+# ---- B2B price lists (Addendum 4 §5): wholesale tiers per variant, per organization ------------------------
+
+
+class TierIn(BaseModel):
+    min_qty: int = Field(ge=1, le=10_000)
+    unit_price: Decimal = Field(gt=0, le=100_000, max_digits=9, decimal_places=2)
+
+
+class PriceListItemRow(BaseModel):
+    sku: str
+    product_ar: str
+    product_en: str
+    tiers: list[TierIn]
+    retail: Decimal | None  # the variant's own price in the list's currency
+    unit_cost_ils: Decimal
+    margin_pct: list[Decimal | None]  # per tier, in ₪ (JD lists converted)
+    below_floor: bool
+
+
+class PriceListRow(BaseModel):
+    id: uuid.UUID
+    name: str
+    currency: str
+    organization_id: uuid.UUID | None  # None = the default list for every kindergarten
+    organization: str | None
+    active: bool
+    valid_from: datetime | None
+    valid_to: datetime | None
+    items: list[PriceListItemRow]
+
+
+class PriceListsOut(BaseModel):
+    lists: list[PriceListRow]
+    variants: list[VariantRow]  # the B2B variants a list can price
+    organizations: list[dict[str, str]]  # id, name: kindergartens a list can belong to
+
+
+async def _price_list_row(db: SessionDep, c: Catalog, pl: PriceList, r: Rates) -> PriceListRow:
+    org = await db.get(Organization, pl.organization_id) if pl.organization_id else None
+    by_id = {v.id: v for v in c.variants.values()}
+    items = []
+    for item in (
+        await db.execute(select(PriceListItem).where(PriceListItem.price_list_id == pl.id))
+    ).scalars():
+        variant = by_id.get(item.variant_id)
+        if variant is None:
+            continue
+        row = _variant_row(c, variant, r)
+        tiers = sorted((TierIn.model_validate(t) for t in item.tiers), key=lambda t: t.min_qty)
+        rate = Decimal("1") if pl.currency == Currency.ILS else r.jod_ils
+        pcts = [margin((t.unit_price * rate).quantize(CENT), row.unit_cost_ils)[1] for t in tiers]
+        items.append(
+            PriceListItemRow(
+                sku=variant.sku,
+                product_ar=row.product_ar,
+                product_en=row.product_en,
+                tiers=tiers,
+                retail=c.price(variant, pl.currency),
+                unit_cost_ils=row.unit_cost_ils,
+                margin_pct=pcts,
+                below_floor=any(p is not None and p < r.margin_floor_pct for p in pcts),
+            )
+        )
+    return PriceListRow(
+        id=pl.id,
+        name=pl.name,
+        currency=pl.currency.value,
+        organization_id=pl.organization_id,
+        organization=org.name if org else None,
+        active=pl.active,
+        valid_from=pl.valid_from,
+        valid_to=pl.valid_to,
+        items=sorted(items, key=lambda i: i.sku),
+    )
+
+
+@router.get("/price-lists", dependencies=[Depends(require_permission("prices"))])
+async def price_lists(db: SessionDep, settings: SettingsDep) -> PriceListsOut:
+    r = await _rates(db, settings)
+    c = await load_catalog(db, include_b2b=True, include_inactive=True)
+    lists = (
+        await db.execute(select(PriceList).order_by(PriceList.organization_id.nulls_first(), PriceList.name))
+    ).scalars()
+    orgs = (await db.execute(select(Organization).order_by(Organization.name))).scalars()
+    return PriceListsOut(
+        lists=[await _price_list_row(db, c, pl, r) for pl in lists],
+        variants=[
+            _variant_row(c, v, r) for v in c.variants.values() if c.product_of(v).audience.value == "b2b"
+        ],
+        organizations=[{"id": str(o.id), "name": o.name} for o in orgs],
+    )
+
+
+class PriceListIn(BaseModel):
+    name: str = Field(min_length=2, max_length=120)
+    currency: Currency = Currency.ILS
+    organization_id: uuid.UUID | None = None
+    copy_from: uuid.UUID | None = None  # start from another list's tiers (usually the default one)
+
+
+async def _list_out(db: SessionDep, settings: SettingsDep, pl: PriceList) -> PriceListRow:
+    c = await load_catalog(db, include_b2b=True, include_inactive=True)
+    return await _price_list_row(db, c, pl, await _rates(db, settings))
+
+
+@router.post("/price-lists", status_code=201, dependencies=[Depends(require_permission("prices"))])
+async def add_price_list(
+    body: PriceListIn, admin: AdminUser, db: SessionDep, settings: SettingsDep
+) -> PriceListRow:
+    if body.organization_id is not None and await db.get(Organization, body.organization_id) is None:
+        raise ApiError("not_found", 404)
+    pl = PriceList(
+        name=" ".join(body.name.split()), currency=body.currency, organization_id=body.organization_id
+    )
+    db.add(pl)
+    await db.flush()
+    if body.copy_from is not None:
+        for item in (
+            await db.execute(select(PriceListItem).where(PriceListItem.price_list_id == body.copy_from))
+        ).scalars():
+            db.add(PriceListItem(price_list_id=pl.id, variant_id=item.variant_id, tiers=list(item.tiers)))
+    _audit(
+        db,
+        admin,
+        "price_list",
+        str(pl.id),
+        None,
+        {"name": pl.name, "organization_id": str(body.organization_id)},
+    )
+    await db.commit()
+    return await _list_out(db, settings, pl)
+
+
+class PriceListPatch(BaseModel):
+    name: str | None = Field(default=None, min_length=2, max_length=120)
+    active: bool | None = None
+    organization_id: uuid.UUID | None = None
+    valid_from: datetime | None = None
+    valid_to: datetime | None = None
+
+
+async def _price_list(db: SessionDep, list_id: uuid.UUID) -> PriceList:
+    pl = await db.get(PriceList, list_id)
+    if pl is None:
+        raise ApiError("not_found", 404)
+    return pl
+
+
+@router.patch("/price-lists/{list_id}", dependencies=[Depends(require_permission("prices"))])
+async def edit_price_list(
+    list_id: uuid.UUID, body: PriceListPatch, admin: AdminUser, db: SessionDep, settings: SettingsDep
+) -> PriceListRow:
+    pl = await _price_list(db, list_id)
+    fields = ["name", "active", "organization_id", "valid_from", "valid_to"]
+    before = _plain(pl, fields)
+    changes = body.model_dump(exclude_unset=True)
+    if (
+        changes.get("organization_id") is not None
+        and await db.get(Organization, changes["organization_id"]) is None
+    ):
+        raise ApiError("not_found", 404)
+    for field, value in changes.items():
+        setattr(pl, field, " ".join(value.split()) if field == "name" and value else value)
+    _audit(db, admin, "price_list", str(pl.id), before, _plain(pl, fields))
+    await db.commit()
+    return await _list_out(db, settings, pl)
+
+
+class TiersIn(BaseModel):
+    tiers: list[TierIn] = Field(min_length=1, max_length=10)
+
+
+@router.put("/price-lists/{list_id}/items/{sku}", dependencies=[Depends(require_permission("prices"))])
+async def set_tiers(
+    list_id: uuid.UUID, sku: str, body: TiersIn, admin: AdminUser, db: SessionDep, settings: SettingsDep
+) -> PriceListRow:
+    """A variant's wholesale tiers in this list: the unit price from each minimum quantity up."""
+    pl = await _price_list(db, list_id)
+    variant = (await db.execute(select(Variant).where(Variant.sku == sku))).scalar_one_or_none()
+    if variant is None:
+        raise ApiError("unknown_product", 404)
+    quantities = [t.min_qty for t in body.tiers]
+    if len(set(quantities)) != len(quantities):
+        raise ApiError("invalid_tiers", 422)
+    tiers = [
+        {"min_qty": t.min_qty, "unit_price": str(t.unit_price.quantize(CENT))}
+        for t in sorted(body.tiers, key=lambda t: t.min_qty)
+    ]
+    item = (
+        await db.execute(
+            select(PriceListItem).where(
+                PriceListItem.price_list_id == pl.id, PriceListItem.variant_id == variant.id
+            )
+        )
+    ).scalar_one_or_none()
+    before = list(item.tiers) if item else None
+    if item is None:
+        db.add(PriceListItem(price_list_id=pl.id, variant_id=variant.id, tiers=tiers))
+    else:
+        item.tiers = tiers
+    _audit(db, admin, "price_list", str(pl.id), {"sku": sku, "tiers": before}, {"sku": sku, "tiers": tiers})
+    await db.commit()
+    return await _list_out(db, settings, pl)
+
+
+@router.delete("/price-lists/{list_id}/items/{sku}", dependencies=[Depends(require_permission("prices"))])
+async def remove_tiers(
+    list_id: uuid.UUID, sku: str, admin: AdminUser, db: SessionDep, settings: SettingsDep
+) -> PriceListRow:
+    pl = await _price_list(db, list_id)
+    variant = (await db.execute(select(Variant).where(Variant.sku == sku))).scalar_one_or_none()
+    item = (
+        (
+            await db.execute(
+                select(PriceListItem).where(
+                    PriceListItem.price_list_id == pl.id, PriceListItem.variant_id == variant.id
+                )
+            )
+        ).scalar_one_or_none()
+        if variant
+        else None
+    )
+    if item is None:
+        raise ApiError("not_found", 404)
+    _audit(
+        db,
+        admin,
+        "price_list",
+        str(pl.id),
+        {"sku": sku, "tiers": list(item.tiers)},
+        {"sku": sku, "tiers": None},
+    )
+    await db.delete(item)
+    await db.commit()
+    return await _list_out(db, settings, pl)
