@@ -92,8 +92,8 @@ products:
     description_ar: منهج متكامل للروضة في ثلاثة أجزاء، باسم طفلك وشخصيته.
     description_en: A complete kindergarten curriculum in three volumes, with your child's name and character.
     option_names: [level, volume, interior, format]
-    # orderable: false until the educator signs the curriculum off (Tareq, 2026-09-29); switched in the admin
-    features: {size: A4, binding: spiral, orderable: false}
+    # sold now: Tareq reviewed every page himself (2026-09-30)
+    features: {size: A4, binding: spiral, orderable: true}
     variant_matrix:
       levels: [kg1, kg2]
       rows:
@@ -119,8 +119,8 @@ products:
     description_ar: كتاب مغامرة يتعلّم فيه طفلك وهو يلعب، من التفكير حتى القراءة.
     description_en: An adventure book of missions, from thinking to reading, for ages 3–6.
     option_names: [stage, format]
-    # orderable: false until the educator signs it off (Tareq, 2026-09-29); switched in the admin
-    features: {size: A4, binding: spiral, interior: color, audio: included, orderable: false}
+    # sold now: Tareq reviewed every page himself (2026-09-30)
+    features: {size: A4, binding: spiral, interior: color, audio: included, orderable: true}
     variants:
       - {sku: journey-s1-digital, options: {stage: "1", format: digital}, price: {ILS: 29, JOD: 5.5}, cost: {ai_usd: 0.03}}
       - {sku: journey-s2-digital, options: {stage: "2", format: digital}, price: {ILS: 29, JOD: 5.5}, cost: {ai_usd: 0.03}}
@@ -133,7 +133,7 @@ products:
   # ---- «مغامراتي مع عائلتي» (Addendum 7): inactive until the proposal is approved and the book is built --
   - slug: family-adventures
     line: family
-    active: false
+    active: true
     name_ar: مغامراتي مع عائلتي
     name_en: My Adventures with My Family
     description_ar: مغامرات حقيقية مع العائلة، من المطبخ إلى السوق والطبيعة، باسم طفلك وشخصيته.

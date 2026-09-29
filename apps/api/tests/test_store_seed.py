@@ -61,14 +61,16 @@ async def test_staff_roles_limit_the_admin(client: AsyncClient, adb: AsyncSessio
     ).status_code == 403
 
 
-async def test_the_family_book_waits_for_approval_with_its_print_tiers(adb: AsyncSession) -> None:
+async def test_the_family_book_is_sold_with_its_print_tiers_marked_estimated(adb: AsyncSession) -> None:
     from qamra_core.db.store import CatalogProduct
 
     await seed_store(adb)
     family = (
         await adb.execute(select(CatalogProduct).where(CatalogProduct.slug == "family-adventures"))
     ).scalar_one()
-    assert family.active is False  # on sale once the book is designed and the printer's prices are in
+    assert (
+        family.active is True
+    )  # the book is designed and reviewed (Tareq, 2026-09-30); the tiers stay ⚠ estimates
     wireo = (await adb.execute(select(Variant).where(Variant.sku == "family-wireo"))).scalar_one()
     assert [t["min_qty"] for t in wireo.print_cost_tiers] == [1, 10, 50, 100, 500]
     assert wireo.print_cost_tiers[2] == {"min_qty": 50, "unit_ils": "30.00", "estimated": True}  # ⚠
