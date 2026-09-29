@@ -1,5 +1,20 @@
 # Changelog
 
+## The template studio (Addendum 4 step 4) (2026-09-29)
+- **Admin → الاستوديو:**
+  - Classic templates per story × style × look, with status, pages, flags, cost, vowelized texts and a scheduled go-live;
+  - bulk actions: copy to another style as a draft, publish or unpublish several, schedule.
+- **The page editor:**
+  - drag or resize the hero box;
+  - lock, redraw, draw missing pages (paid actions ask first);
+  - m/f/en texts with a live preview of the book's text panel.
+- **Theme versions:**
+  - draft → in review → approved → live, with history, rollback and a diff against live;
+  - an English draft made on request, with its cost shown first;
+  - the deploy seed no longer overwrites a theme published from the studio.
+- **Staff:** roles in the UI (only owners grant owner; nobody edits their own roles), and an audit-log viewer with filters.
+- Migration `918b650a07fc`.
+
 ## Phase 5: «صوت أهلي», SEO and a performance pass (2026-09-29)
 
 - **«صوت أهلي» (family voice)** for books bought with the «أصوات العائلة» extra:

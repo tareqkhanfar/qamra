@@ -76,6 +76,8 @@ class ClassicTemplate(IdMixin, TimestampMixin, Base):
     approved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     approved_by_user_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"))
     live_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    # The studio's scheduled go-live: an approved template goes live then (qamra_worker.jobs.studio, cron)
+    publish_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
 class ClassicTemplatePage(IdMixin, TimestampMixin, Base):

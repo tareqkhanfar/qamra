@@ -2,6 +2,20 @@
 
 Newest first. Each entry: date — decision — why.
 
+## 2026-09-29 — The template studio: theme versions, bulk actions, staff roles (Addendum 4 step 4, W8)
+
+- **Theme versions live in `theme_versions`** (definition JSON, status, author, timestamps). `themes.definition` stays the live copy that every reader already uses, so nothing else had to change.
+  - Statuses: draft → in_review → approved → live. A replaced live version becomes `retired`, and a rollback publishes it again (the same row and number, so the history keeps its meaning).
+  - One open version per theme (draft, in review or approved), enforced by a partial unique index. Edits never fork.
+  - The migration records each theme's current definition as its first live version (`source = file`).
+- **A text edit lands in the open draft**, or makes one from the live version. A version in review or approved must go back to draft first. The whole definition is re-validated on every save (story rules and placeholders), so a draft is always publishable.
+- **Deploys keep studio work.** `upsert_themes` publishes a content file only when its version is newer than every version of the theme, or corrects its own live file version in place (as before). A theme published from the studio is left alone until a file with a higher version arrives.
+- **Classic templates keep their art and their pinned words.** When the live words differ, the template shows «texts out of date». The existing texts endpoint (`refresh`) takes the new words and now also records the template's `theme_version`. As before, it sends an approved or live template back to review.
+- **Books keep their definition** (`books.generation.theme_def`, unchanged).
+- **Scheduled go-live is a cron job** (`qamra_worker.jobs.studio.run_scheduled_publish`, every 5 minutes), not a check on read. The shop's reads stay as they are. A template that is no longer approved on its date is skipped, its date is cleared, and the audit log says why.
+- **«ترجمة» is an English draft of one version**, made by the text model only after the editor sees the estimate (`GET …/translate`) and confirms. A failed draft is marked failed and not retried, because a retry would pay again. The cost goes to `generation_costs` with no book.
+- **Staff roles:** admins (the `users` permission) add, change and remove staff. Only an owner grants or takes away the owner role, and nobody changes their own roles, so an owner always remains. The audit viewer (`users.audit`) returns only what the log holds. The page names staff actors from the staff list; anyone else shows as a short id.
+- **Font size is not editable per page.** The renderer sets it from the child's age (20 pt for ages 3–5, 16 pt for 6–8) and shrinks it to fit (18 or 15 pt at least). The preview follows the same rule. The template's text box is shown, but the renderer places the panel by its area.
 
 ## 2026-09-29 — Phase 5: «صوت أهلي», the WhatsApp seam, SEO, performance
 

@@ -89,6 +89,22 @@ def fake_vowelized(step: str, system: str, user: list[UserPart]) -> BaseModel:
     return VowelizedTexts.model_validate(json.loads(_text(user)))
 
 
+def fake_translation(step: str, system: str, user: list[UserPart]) -> BaseModel:
+    """English that says where it came from: one line per page, the placeholders kept."""
+    from qamra_ai.pipeline.translate import ThemeTranslation, TranslatedPage
+
+    source = json.loads(_text(user))
+    indices = [p["index"] for p in source["pages"]]
+    pages = [TranslatedPage(index=i, text_en=f"{{name}} on page {i}.") for i in indices]
+    return ThemeTranslation(
+        title_en="{name}'s story",
+        blurb_en="A story about {name}.",
+        lesson_en="Kindness helps.",
+        questions_en=[f"Question {i + 1}?" for i in range(len(source["questions_ar"]))],
+        pages=pages,
+    )
+
+
 def default_fake_text_provider() -> FakeTextProvider:
     return FakeTextProvider(
         {
@@ -126,5 +142,6 @@ def default_fake_text_provider() -> FakeTextProvider:
             ),
             "PortraitQA": lambda *_: PortraitQA(likeness=9, safe=True, text_in_image=False, notes="ok"),
             "VowelizedTexts": fake_vowelized,
+            "ThemeTranslation": fake_translation,  # the template studio's English draft
         }
     )

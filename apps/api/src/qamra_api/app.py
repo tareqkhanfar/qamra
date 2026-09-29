@@ -23,6 +23,9 @@ from qamra_api.routers.admin_print_batches import router as admin_print_batches_
 from qamra_api.routers.admin_print_costs import router as admin_print_costs_router
 from qamra_api.routers.admin_reports import router as admin_reports_router
 from qamra_api.routers.admin_self_hosted import router as admin_self_hosted_router
+from qamra_api.routers.admin_staff import router as admin_staff_router
+from qamra_api.routers.admin_studio import router as admin_studio_router
+from qamra_api.routers.admin_themes import router as admin_themes_router
 from qamra_api.routers.create import router as create_router
 from qamra_api.routers.e2e import router as e2e_router
 from qamra_api.routers.examples import admin_router as examples_admin_router
@@ -118,6 +121,9 @@ def create_app(settings: ApiSettings | None = None, *, manage_resources: bool = 
     app.include_router(admin_reports_router)
     app.include_router(admin_self_hosted_router)
     app.include_router(admin_classic_router)
+    app.include_router(admin_themes_router)  # W8: the template studio (Addendum 4 §3)
+    app.include_router(admin_studio_router)
+    app.include_router(admin_staff_router)
     app.include_router(free_cover_router)
     app.include_router(examples_router)
     app.include_router(examples_admin_router)

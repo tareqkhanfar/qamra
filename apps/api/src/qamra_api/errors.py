@@ -320,6 +320,24 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "The gift card's balance changed. Check the new total in your cart, then confirm.",
     ),
     "gift_card_exists": ("توجد بطاقة هدية بهذا الرمز.", "A gift card with this code already exists."),
+    # ---- the template studio (Addendum 4 §3): theme versions, schedules, staff roles
+    "version_open": (
+        "لهذا الثيم نسخة مفتوحة بالفعل. أكملوها أو احذفوا المسودة أولًا.",
+        "This theme already has an open version. Finish it or discard the draft first.",
+    ),
+    "version_pending": (
+        "النسخة المفتوحة قيد المراجعة أو معتمدة. أعيدوها إلى مسودة لتعديلها.",
+        "The open version is in review or approved. Send it back to draft to edit it.",
+    ),
+    "theme_invalid": (
+        "هذا التعديل يخالف قواعد القصة. راجعوا الملاحظات وحاولوا مرة أخرى.",
+        "This change breaks the story's rules. Check the notes and try again.",
+    ),
+    "schedule_invalid": ("اختاروا موعد نشر في المستقبل.", "Choose a publish date in the future."),
+    "self_change": (
+        "لا يمكنكم تغيير صلاحياتكم بأنفسكم. اطلبوا ذلك من مسؤول آخر.",
+        "You can't change your own access. Ask another admin.",
+    ),
     "internal_error": (
         "حدث خطأ غير متوقع. حاولوا مرة أخرى بعد قليل.",
         "Something went wrong. Please try again in a moment.",

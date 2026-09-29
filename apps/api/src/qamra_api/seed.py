@@ -1,4 +1,9 @@
-"""Load content/themes/*/theme.yaml into the database (idempotent upsert; runs on every deploy)."""
+"""Load content/themes/*/theme.yaml into the database (idempotent upsert; runs on every deploy).
+
+Every theme keeps a version history (qamra_api.theme_versions). A file's definition goes live when its
+version is newer than every version of the theme, or corrects its own live version in place. A theme whose
+live version was published from the template studio is left alone (a higher file version replaces it).
+"""
 
 from pathlib import Path
 
@@ -7,6 +12,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from qamra_ai.pipeline.theme import CONTENT_DIR, load_theme
+from qamra_api.theme_versions import ensure_live, sync_file, theme_columns
 from qamra_core.db.models import Theme
 
 
@@ -15,25 +21,14 @@ async def upsert_themes(db: AsyncSession, content_dir: Path = CONTENT_DIR) -> li
     for path in sorted((content_dir / "themes").glob("*/theme.yaml")):
         theme = load_theme(path.parent.name, content_dir)  # validates the story before it goes live
         raw = yaml.safe_load(path.read_text(encoding="utf-8"))
-        values = {
-            "version": theme.version,
-            "title_ar": theme.title_ar,
-            "title_en": theme.title_en,
-            "age_min": theme.age_range[0],
-            "age_max": theme.age_range[1],
-            "occasion": theme.catalog.occasions[0] if theme.catalog and theme.catalog.occasions else None,
-            "is_b2b": theme.is_b2b,
-            "active": theme.active,
-            "companion_slot": theme.companion_slot,
-            "definition": raw,
-        }
         row = (await db.execute(select(Theme).where(Theme.slug == theme.slug))).scalar_one_or_none()
         if row is None:
-            db.add(Theme(slug=theme.slug, **values))
+            row = Theme(slug=theme.slug, definition=raw, **theme_columns(theme))
+            db.add(row)
+            await db.flush()
+            await ensure_live(db, row)  # the first entry of its history
             changed.append(f"+{theme.slug}")
         else:
-            for k, v in values.items():
-                setattr(row, k, v)
-            changed.append(f"~{theme.slug}")
+            changed.append(await sync_file(db, row, theme, raw))
     await db.commit()
     return changed

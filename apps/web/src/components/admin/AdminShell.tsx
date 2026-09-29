@@ -14,13 +14,17 @@ type Section =
   | "metrics"
   | "settings"
   | "printBatches"
-  | "organizations";
+  | "organizations"
+  | "themes"
+  | "staff"
+  | "audit";
 
 /** Admin chrome (design: admin artboards): night sidebar with brand + «إدارة» badge; content on paper. */
 export async function AdminShell({ active, children }: { active: Section; children: ReactNode }) {
   const [t, locale] = await Promise.all([getTranslations("admin"), getLocale()]);
   const tp = await getTranslations("printBatches"); // print batches: their label lives in their namespace
   const tk = await getTranslations("portal.admin"); // kindergartens (Phase 4 portal)
+  const ts = await getTranslations("studio.nav"); // the template studio: staff roles and the audit log
   const items = [
     { id: "queue", href: "/admin/queue", ready: true },
     { id: "samples", href: "/admin/samples", ready: true },
@@ -30,9 +34,11 @@ export async function AdminShell({ active, children }: { active: Section; childr
     { id: "printBatches", href: "/admin/print-batches", ready: true, label: tp("nav") },
     { id: "organizations", href: "/admin/organizations", ready: true, label: tk("nav") },
     { id: "reports", href: "/admin/reports", ready: true },
-    { id: "themes", ready: false },
+    { id: "themes", href: "/admin/studio", ready: true },
     { id: "metrics", href: "/admin/metrics", ready: true },
     { id: "settings", href: "/admin/settings", ready: true },
+    { id: "staff", href: "/admin/staff", ready: true, label: ts("staff") },
+    { id: "audit", href: "/admin/audit", ready: true, label: ts("audit") },
   ] as const;
   return (
     <div className="min-h-dvh bg-paper lg:grid lg:grid-cols-[260px_1fr]">

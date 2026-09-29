@@ -497,6 +497,7 @@ async def vowelize_texts(
             t.generation = {**t.generation, "theme_def": with_current_texts(before, row.definition)}
             if t.generation["theme_def"] != before:
                 _changed(t)
+                t.theme_version = row.version  # its words are the live version's now; its art stays
     t.job = TemplateJob.queued
     db.add(_audit(admin, "classic.template_texts", t, {"refresh": body.refresh}))
     await db.commit()

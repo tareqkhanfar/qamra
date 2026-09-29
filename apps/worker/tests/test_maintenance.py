@@ -129,6 +129,7 @@ def test_cron_config_registers_cleanup() -> None:
 
     scheduler = CronScheduler(connection=FakeRedis())
     scheduler.load_config_from_file("qamra_worker.cron_config")
-    [job] = scheduler.get_jobs()
-    assert job.func_name == "qamra_worker.jobs.maintenance.run_cleanup"
+    jobs = {j.func_name: j for j in scheduler.get_jobs()}  # the studio's scheduled publish runs there too
+    job = jobs["qamra_worker.jobs.maintenance.run_cleanup"]
     assert job.interval == 900 and job.queue_name == "maintenance"
+    assert "qamra_worker.jobs.studio.run_scheduled_publish" in jobs

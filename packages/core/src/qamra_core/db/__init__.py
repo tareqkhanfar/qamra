@@ -5,4 +5,5 @@ from qamra_core.db import (  # noqa: F401  (registers every table on Base.metada
     models,
     portal,  # the kindergarten portal's tables
     store,
+    studio,  # the template studio's theme versions
 )

@@ -1175,6 +1175,263 @@
       "next": "Page {n}"
     }
   },
+  "studio": {
+    "title": "Template studio",
+    "lead": "«Qamra Classic» templates for each theme × art style × look: status, pages, cost and texts. The studio calls no AI model unless you click generate.",
+    "empty": "No templates match these filters.",
+    "liveVersion": "live v{version}",
+    "versionsLink": "Theme versions",
+    "select": "Select {name}",
+    "bulkResult": "Done for {done}, skipped {skipped}",
+    "textsStale": "Texts out of date",
+    "storyChanged": "Story changed",
+    "scheduledFor": "Goes live {date}",
+    "pagesDrawn": "{drawn} of {total} pages drawn",
+    "oneTimeCost": "One-time cost",
+    "vowelizedLabel": "Tashkeel",
+    "vowelized": "Vowelized",
+    "notVowelized": "Not vowelized",
+    "themeVersion": "Text version",
+    "filters": {
+      "theme": "Theme",
+      "status": "Status",
+      "all": "All"
+    },
+    "status": {
+      "draft": "Draft",
+      "in_review": "In review",
+      "approved": "Approved",
+      "live": "Live",
+      "retired": "Earlier"
+    },
+    "job": {
+      "queued": "Queued",
+      "running": "Drawing",
+      "failed": "Generation failed"
+    },
+    "skip": {
+      "not_found": "not found",
+      "same_style": "same style",
+      "exists": "already exists",
+      "status": "wrong status",
+      "busy": "generating"
+    },
+    "variant": {
+      "girl": "Girl",
+      "girl_hijab": "Girl with hijab",
+      "boy": "Boy"
+    },
+    "tabs": {
+      "label": "Studio sections",
+      "templates": "Templates",
+      "themes": "Theme versions"
+    },
+    "nav": {
+      "staff": "Staff & roles",
+      "audit": "Audit log"
+    },
+    "bulk": {
+      "label": "Bulk actions",
+      "selected": "{count} selected",
+      "clear": "Clear",
+      "publish": "Publish",
+      "unpublish": "Unpublish",
+      "date": "Publish date",
+      "schedule": "Schedule",
+      "unschedule": "Clear date",
+      "style": "Art style",
+      "copy": "Copy settings as draft",
+      "copyNote": "The copy is an undrawn draft: no cost until you click generate on it."
+    },
+    "preview": {
+      "options": "Preview options",
+      "lang": {
+        "ar": "عربي",
+        "en": "English"
+      },
+      "age": {
+        "young": "Ages 3–5 ({pt}pt)",
+        "older": "Ages 6–8 ({pt}pt)"
+      },
+      "tooLong": "The text doesn't fit the text panel even at the smallest allowed size: shorten it.",
+      "fits": "Fits at {pt}pt.",
+      "note": "Previewed with {name}, close to the print file: the child's age sets the size ({size}pt), and it shrinks to {min}pt to fit."
+    },
+    "text": {
+      "coverTitle": "Cover title",
+      "coverNote": "The title is one of the theme's texts; it can't be edited here yet.",
+      "title": "Page text",
+      "editing": "Edits go to draft v{version}",
+      "newDraft": "The first edit starts a new theme version",
+      "label": {
+        "ar": "Arabic (boy and girl forms)",
+        "en": "English"
+      },
+      "insert": "Insert:",
+      "gender": {
+        "m": "Boy:",
+        "f": "Girl:"
+      },
+      "note": "Note about the change (optional)",
+      "broken": "The text has an unknown placeholder or an incomplete '{…/…}' variant.",
+      "saved": "Saved in draft v{version}. Publish it in Theme versions, then refresh the template's texts.",
+      "save": "Save text",
+      "reset": "Undo"
+    },
+    "editor": {
+      "metaTitle": "Template editor",
+      "back": "← All templates",
+      "job": {
+        "queued": "Queued",
+        "running": "Working",
+        "failed": "Last job failed"
+      },
+      "pages": "{drawn} of {total} pages",
+      "vowelized": "Vowelized",
+      "notVowelized": "Not vowelized",
+      "move": {
+        "in_review": "Send to review",
+        "approved": "Approve (locks pages)",
+        "live": "Publish",
+        "draft": "Back to draft",
+        "unpublish": "Unpublish"
+      },
+      "generate": "Draw missing pages",
+      "confirmGenerate": "The image model will draw the missing pages (a one-time cost). Continue?",
+      "refreshTexts": "Refresh and vowelize texts",
+      "vowelize": "Vowelize texts",
+      "confirmTexts": "One text-model call for the tashkeel. If the words changed, the template goes back to review. Continue?",
+      "stale": "The theme's live texts (v{live}) changed since this template was drawn (v{pinned}). The art stays; refresh the texts to take the new words.",
+      "storyChanged": "The theme's story pages changed order: this needs a new template, not just new texts.",
+      "incomplete": "Can't approve yet: {drawn} of {total} pages drawn, hero boxes {boxes}, texts vowelized {texts}.",
+      "pagesNav": "Template pages",
+      "cover": "Cover",
+      "page": "Page {n}",
+      "pageSection": "Selected page",
+      "layout": {
+        "full": "Full art",
+        "split": "Split",
+        "spread": "Spread",
+        "cover": "Cover"
+      },
+      "pageImage": "Art of page {n}",
+      "heroBox": "Hero",
+      "textBox": "Text",
+      "notDrawn": "This page isn't drawn yet.",
+      "boxHelp": "Drag the box to move it and its corner to resize, or use the arrow keys (Shift to resize), then save.",
+      "addBox": "Add hero box",
+      "saveBox": "Save box",
+      "resetBox": "Undo",
+      "hasHero": "Hero on this page",
+      "unlock": "Unlock",
+      "lock": "Lock page",
+      "redraw": "Redraw",
+      "confirmRedraw": "This page will be redrawn by the image model (a one-time cost) and the template goes back to review. Continue?",
+      "pageCost": "Page cost {cost} · redraws {redraws}",
+      "preview": "Preview"
+    },
+    "versions": {
+      "title": "Theme versions",
+      "lead": "Every change to a theme's texts is a new version: draft → review → approved → live, with history and rollback. Books already made keep their texts.",
+      "done": "Done.",
+      "theme": "Theme",
+      "summary": "live v{live} · {count} versions",
+      "openVersion": "open v{version}",
+      "staleTemplates": "{count} templates with old texts",
+      "source": {
+        "file": "From content files",
+        "studio": "From the studio"
+      },
+      "basedOn": "based on v{version}",
+      "translateState": {
+        "queued": "Translation queued",
+        "running": "Translating",
+        "done": "Translated ({cost})",
+        "failed": "Translation failed"
+      },
+      "created": "Created by {who} {at}",
+      "published": "published by {who} {at}",
+      "files": "content files",
+      "to": {
+        "in_review": "Send to review",
+        "approved": "Approve",
+        "draft": "Back to draft"
+      },
+      "translate": "English draft",
+      "discard": "Discard draft",
+      "confirmDiscard": "Discard this draft and all its edits?",
+      "publish": "Publish this version",
+      "confirmPublish": "New books will use this version. Existing books don't change, and templates show their texts as old until refreshed. Continue?",
+      "rollback": "Roll back to this version",
+      "confirmRollback": "Publish v{version} again instead of the current version?",
+      "newDraft": "New draft",
+      "showChanges": "Show changes",
+      "hideChanges": "Hide changes",
+      "estimate": "Estimated cost {usd} to translate {pages} pages with {model}. The translation is saved as a draft for review.",
+      "translateConfirm": "Translate now",
+      "cancel": "Cancel",
+      "noChanges": "No difference from live v{live}.",
+      "changesAgainst": "Changes against live v{live}:",
+      "keys": {
+        "page": "Page {n} · {lang}",
+        "question": "Parents' question {n} · {lang}",
+        "title": "Title · {lang}",
+        "blurb": "Back-cover blurb · {lang}",
+        "lesson": "Parents' lesson · {lang}"
+      },
+      "langs": {
+        "ar": "Arabic",
+        "en": "English"
+      }
+    },
+    "staff": {
+      "title": "Staff & roles",
+      "lead": "Staff accounts and their roles. Every change is in the audit log. Only an owner grants the owner role, and nobody changes their own access.",
+      "saved": "Roles saved.",
+      "confirmRemove": "Remove {name} from the staff? The account becomes a regular one.",
+      "addTitle": "Add a staff member",
+      "addLead": "For an account that already exists. They must turn on two-step verification before the admin opens.",
+      "email": "Email",
+      "add": "Add",
+      "legend": "Roles and what they allow",
+      "roles": {
+        "owner": "Owner",
+        "admin": "Admin",
+        "editor": "Editor",
+        "reviewer": "Reviewer",
+        "production": "Production",
+        "support": "Support"
+      },
+      "everything": "everything",
+      "you": "you",
+      "mfaOn": "2-step on",
+      "mfaOff": "2-step off",
+      "lastLogin": "last sign-in {at}",
+      "save": "Save",
+      "remove": "Remove from staff"
+    },
+    "audit": {
+      "title": "Audit log",
+      "lead": "Who changed what, and when. It shows only what the log holds: ids, action names and their data.",
+      "actor": "Who",
+      "anyone": "Anyone",
+      "action": "Action (starts with)",
+      "entityType": "Entity type",
+      "any": "Any",
+      "entityId": "Entity id",
+      "since": "From",
+      "until": "To",
+      "apply": "Show",
+      "clear": "Clear",
+      "count": "{total} entries · page {page} of {pages}",
+      "empty": "No entries match these filters.",
+      "system": "System",
+      "pagination": "Log pages",
+      "newer": "Newer",
+      "older": "Older",
+      "pageOf": "{page} / {pages}"
+    }
+  },
   "meta": {
     "title": "{brand} — Your child's story, by moonlight",
     "description": "A printed storybook where your child is the hero on every page, and their own drawing is their companion."
