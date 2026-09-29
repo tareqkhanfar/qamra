@@ -368,9 +368,25 @@ def family_group(
             tags.append({"x": x, "y": feet + 3, "w": slot - 1.5, "label": ctx.book.child.name, "child": True})
             continue
         index = members.index(who)
-        scarf = people.SCARVES[index % len(people.SCARVES)] if who.scarf else None
-        figure = people.person(who.drawn_as, people.OUTFITS[index % len(people.OUTFITS)], scarf=scarf)
-        body.append(people.place(figure, x, feet + 1.2, 98 * scale))
+        drawn = ctx.assets.family.get(index)  # the illustrated-family add-on: their approved character
+        if drawn is not None:
+            art, ratio = drawn
+            h = (82 if who.is_adult else 70) * max(scale, 0.75)
+            front.append(
+                draw.el(
+                    "image",
+                    href=uri(art),
+                    x=x - h * ratio / 2,
+                    y=feet + 1 - h,
+                    width=h * ratio,
+                    height=h,
+                    preserveAspectRatio="xMidYMax meet",
+                )
+            )
+        else:
+            scarf = people.SCARVES[index % len(people.SCARVES)] if who.scarf else None
+            figure = people.person(who.drawn_as, people.OUTFITS[index % len(people.OUTFITS)], scarf=scarf)
+            body.append(people.place(figure, x, feet + 1.2, 98 * scale))
         tags.append({"x": x, "y": feet + 3, "w": slot - 1.5, "label": who.label, "child": False})
     return draw.svg(width, height, "".join(body + front), "family-group"), tags
 

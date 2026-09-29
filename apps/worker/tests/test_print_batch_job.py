@@ -34,6 +34,8 @@ def _batch(db: Session, status: PrintBatchStatus = PrintBatchStatus.sent) -> Pri
             "extras": ["gift-box"] if n == 2 else [],
             "interior_key": f"children/x/books/{n}/files/interior.pdf",
             "cover_key": f"children/x/books/{n}/files/cover.pdf",
+            # the second is a family book: its sticker sheet is printed apart
+            "inserts": {"stickers": f"children/x/books/{n}/files/inserts/stickers.pdf"} if n == 2 else {},
         }
         for n in (1, 2)
     ]
@@ -70,8 +72,11 @@ def test_the_printer_gets_one_link_per_file_once(db: Session, storage: ObjectSto
     assert batch.bundle_key == f"print-batches/2026/09/{batch.id}/manifest.csv"
     csv = storage.get(batch.bundle_key).decode("utf-8-sig")
     header = "n,order,sku,format,size,copies,extras,interior_file,cover_file,gift,gift_message"
+    header += ",insert_files"
     assert csv.splitlines()[0] == header
     assert "002-QM-PRNT02-cover.pdf" in csv and "gift-box" in csv and "children/" not in csv
+    assert "002-QM-PRNT02-insert-stickers.pdf" in csv and "001-QM-PRNT01-insert" not in csv
+    assert "/files/2/inserts/stickers" in mail.text and "ورقة الملصقات" in mail.text
 
     # the same send again (a duplicated job): nothing new, the printer's link keeps working
     assert send_batch(db, storage, sender, str(batch.id), BASE, VALUES, now) == "duplicate"

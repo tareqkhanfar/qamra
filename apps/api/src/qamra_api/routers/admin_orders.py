@@ -383,6 +383,10 @@ async def change_status(
         enqueue(queue, "qamra_worker.jobs.invoices.render_invoice", str(render.id))
     for book_id in classic_finals:
         enqueue(queue, CLASSIC_JOB, book_id, "final")
+    if body.to == S.confirmed and await db.scalar(
+        select(OrderItem.id).where(OrderItem.order_id == order.id, OrderItem.line == "family").limit(1)
+    ):  # «مغامراتي مع عائلتي»: its print files, drawn from the plan with the child's character (no AI cost)
+        enqueue(queue, "qamra_worker.jobs.family_book.render_order_family_items", str(order.id))
     notify.order_statuses(queue.connection, order.id, [body.to])  # customer email (once per status)
     return await _detail(db, order, await _values(db, settings))
 

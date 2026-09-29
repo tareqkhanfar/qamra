@@ -29,7 +29,17 @@ import structlog
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from qamra_core.db.models import AuditLog, Book, BookStatus, Character, Child, Locale, OrderItem, Theme
+from qamra_core.db.models import (
+    AuditLog,
+    Book,
+    BookStatus,
+    Character,
+    Child,
+    FamilyMember,
+    Locale,
+    OrderItem,
+    Theme,
+)
 from qamra_core.storage import ObjectStorage
 from qamra_worker import context
 from qamra_worker.jobs.books import file_key
@@ -40,25 +50,28 @@ LINE = "family"
 THEME_SLUG = "family-book"  # a hidden theme row: every Book needs one; the family book is not a story theme
 NEUTRAL_ADULT = "أحد الكبار"
 SIZES = ("21x28", "a4")
+MAX_MEMBERS_IN_BOOK = 6  # A7 §7
 
 
 def family_of(item: OrderItem, child: Child) -> Any:
-    """The order's family, or the child with one neutral grown-up when the order does not list it."""
+    """The order's family, or the child with one neutral grown-up when the order does not list it. A member
+    the store marked grown-up or child (`adult`) is drawn that way when the relation alone says otherwise
+    (an older brother, a young cousin), so a child never becomes the grown-up of a mission."""
     from qamra_workbook.render.spec import MAX_MEMBERS, Family, Member
 
     raw = (item.personalization or {}).get("family") or {}
-    members = tuple(
-        Member(
-            str(m.get("role", "")).strip() or NEUTRAL_ADULT,
-            str(m.get("name", "")).strip(),
-            None,
-            bool(m.get("scarf")),
-        )
-        for m in (raw.get("members") or [])[:MAX_MEMBERS]
-        if isinstance(m, dict)
-    ) or (Member(NEUTRAL_ADULT),)
+    members = []
+    for m in (raw.get("members") or [])[:MAX_MEMBERS]:
+        if not isinstance(m, dict):
+            continue
+        role, name = str(m.get("role", "")).strip() or NEUTRAL_ADULT, str(m.get("name", "")).strip()
+        member = Member(role, name, None, bool(m.get("scarf")))
+        adult = m.get("adult")
+        if isinstance(adult, bool) and adult != member.is_adult:
+            member = Member(role, name, "adult" if adult else "child", member.scarf)
+        members.append(member)
     name = str(raw.get("name") or "").strip() or child.first_name
-    return Family(name, members, str(raw.get("city") or "").strip())
+    return Family(name, tuple(members) or (Member(NEUTRAL_ADULT),), str(raw.get("city") or "").strip())
 
 
 def size_of(item: OrderItem) -> str:
@@ -70,6 +83,52 @@ def size_of(item: OrderItem) -> str:
 def numerals_of(item: OrderItem) -> str:
     value = str((item.personalization or {}).get("numerals") or "hindi")
     return value if value in ("hindi", "latin") else "hindi"
+
+
+def org_of(item: OrderItem, storage: ObjectStorage, tmp: Path) -> dict[str, Any] | None:
+    """An organization's copies (A7 §8): `personalization["org"] = {name, logo_key}` puts its logo on the back
+    cover; the logo is fetched into the render's folder."""
+    raw = (item.personalization or {}).get("org") or {}
+    name = str(raw.get("name") or "").strip()
+    if not name:
+        return None
+    org: dict[str, Any] = {"name": name}
+    key = str(raw.get("logo_key") or "")
+    if key and storage.exists(key):
+        logo = tmp / "org-logo.png"
+        logo.write_bytes(storage.get(key))
+        org["logo"] = str(logo)
+    return org
+
+
+def member_sheets_of(
+    db: Session, item: OrderItem, child: Child, storage: ObjectStorage, tmp: Path
+) -> dict[int, Path]:
+    """The illustrated-family add-on: the child's approved family members, matched to the order's family by
+    relation and first name, as the member's index → their character sheet (fetched into the render's
+    folder). Nothing without the add-on on the item."""
+    if not any(str(a.get("slug")) == "family-characters" for a in (item.addons or []) if isinstance(a, dict)):
+        return {}
+    approved = db.scalars(
+        select(FamilyMember).where(
+            FamilyMember.child_id == child.id,
+            FamilyMember.approved_at.is_not(None),
+            FamilyMember.sheet_key.is_not(None),
+        )
+    ).all()
+    by_person = {(m.relation, m.first_name.strip()): m for m in approved}
+    out: dict[int, Path] = {}
+    members = ((item.personalization or {}).get("family") or {}).get("members") or []
+    for index, raw in enumerate(members[:MAX_MEMBERS_IN_BOOK]):
+        if not isinstance(raw, dict):
+            continue
+        member = by_person.get((str(raw.get("relation", "")), str(raw.get("name", "")).strip()))
+        if member is None or not member.sheet_key or not storage.exists(member.sheet_key):
+            continue
+        path = tmp / f"member-{index}.png"
+        path.write_bytes(storage.get(member.sheet_key))
+        out[index] = path
+    return out
 
 
 def approved_character(db: Session, item: OrderItem, child: Child) -> Character | None:
@@ -137,12 +196,15 @@ async def render_item(db: Session, storage: ObjectStorage, item: OrderItem) -> d
     with tempfile.TemporaryDirectory(prefix="qamra-family-") as tmp:
         sheet = Path(tmp) / "character-sheet.png"
         sheet.write_bytes(storage.get(character.sheet_image_key))
+        family = family_of(item, child)
         files = await render_order(
             BookChild(child.first_name, child.gender.value, sheet),
-            family_of(item, child),
+            family,
             Path(tmp) / "files",
             size=size_of(item),
             numerals=numerals_of(item),  # type: ignore[arg-type]
+            org=org_of(item, storage, Path(tmp)),
+            member_sheets=member_sheets_of(db, item, child, storage, Path(tmp)),
         )
         book.pdf_interior_key = file_key(book, "interior.pdf")
         storage.put(book.pdf_interior_key, files.interior.read_bytes(), "application/pdf")

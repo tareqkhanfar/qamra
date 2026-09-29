@@ -1,0 +1,25 @@
+STYLE
+{{ style }}
+Painting medium: {{ medium }}
+
+TASK
+Create a picture-book CHARACTER REFERENCE SHEET of the person in the reference photo{{ 's' if n_photos > 1 else '' }}: {{ who }}. The character stands next to the child in a family activity book, so the sheet must be clear and exact.
+
+Layout: three full-body views of the same person side by side on a plain warm cream background, evenly spaced, same scale:
+1. front view, standing, gentle smile, arms relaxed
+2. three-quarter view, waving
+3. side view, walking
+
+LIKENESS (top priority)
+Keep exactly what the photo shows: face shape, skin tone, hair color, texture and hairstyle (or the head covering), eye shape, eyebrows, glasses, and distinctive features. {{ age_line }}
+
+CLOTHING
+Modest everyday family clothes in soft colors, the same in all three views.
+{% if scarf %}The family chose a headscarf: a simple soft headscarf neatly covering the hair, with the face fully visible, the same in all three views.{% else %}No head covering unless the photo shows one.{% endif %}
+
+PEOPLE
+{{ people }}
+
+NEGATIVE
+{{ negative }}
+Do not copy the photo's background, lighting or clothing brand logos. No text or letters anywhere.

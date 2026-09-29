@@ -1,5 +1,21 @@
 # Changelog
 
+
+## «مغامراتي مع عائلتي» in the store: quotes for organizations, illustrated family (W4) (2026-09-29)
+
+- **«طلب عرض سعر» for organizations:** `POST /api/leads/family-quote` (multipart) takes the organization, the contact, 10–5000 copies, the desired date and an optional logo for the back cover.
+  - It is a request, never an order (`request_only`).
+  - The logo must be PNG or JPG, ≤ 5 MB and ≥ 300 px on its long side; it is re-encoded and kept private at `leads/<id>/logo.png`.
+  - Staff (`/api/admin/leads`) list the requests, see the logo and set the status.
+  - `POST /api/admin/leads/{id}/quote` prices the request from the printer's tiers and the margin rules. From 10 copies it answers `bulk_price_pending` while the tiers are estimates (Tareq, 2026-09-28).
+- **The logo on the back cover:** the renderer's back cover has an organization slot (the name and the logo, never printed below 300 DPI); `render_order(org=…)` fills it for an organization's copies.
+- **The illustrated-family add-on (off by default: `family_characters_enabled`):**
+  - Up to four of the child's family, each with the parent's consent for that person, one photo (one clear face, re-encoded, private), a drawing with the approved providers (3 redraws) and approval.
+  - The photo is deleted by the cleanup job after approval, like the child's; «forget this person» deletes everything at once.
+  - Approved members are drawn from their sheets in place of the placeholder figures (`render_order(member_sheets=…)`).
+  - One sheet costs about $0.07–0.08 (Gemini 3.1 Flash Image at 1K, or Nano Banana 2 on fal).
+- **Migration** `5c7e2f19a4b6`: the `family_members` table and `leads.details`.
+
 ## The template studio (Addendum 4 step 4) (2026-09-29)
 - **Admin → الاستوديو:**
   - Classic templates per story × style × look, with status, pages, flags, cost, vowelized texts and a scheduled go-live;

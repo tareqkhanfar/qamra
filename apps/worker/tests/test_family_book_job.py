@@ -21,6 +21,8 @@ from qamra_core.db.models import (
     CharacterStatus,
     Child,
     Currency,
+    FamilyMember,
+    FamilyMemberStatus,
     Gender,
     Order,
     OrderItem,
@@ -105,6 +107,38 @@ def test_the_family_comes_from_the_order_or_is_one_neutral_grown_up(
     assert family_book.size_of(item) == "a4" and family_book.numerals_of(item) == "hindi"
 
 
+def test_the_stores_grown_up_or_child_choice_decides_who_does_the_missions(
+    db: Session, storage: ObjectStorage
+) -> None:
+    members = [
+        {
+            "relation": "brother",
+            "role": "أخي",
+            "name": "سامي",
+            "adult": True,
+            "scarf": False,
+        },  # an older brother
+        {
+            "relation": "other",
+            "role": "من العائلة",
+            "name": "جود",
+            "adult": False,
+            "scarf": False,
+        },  # a cousin
+        {"relation": "grandmother", "role": "ستّي", "name": "", "adult": True, "scarf": True},
+    ]
+    item = _item(db, storage, {"family": {"name": "الأحمد", "members": members}})
+    child = db.get(Child, item.child_id)
+    assert child is not None
+    family = family_book.family_of(item, child)
+    assert [(m.label, m.drawn_as, m.is_adult) for m in family.members] == [
+        ("سامي", "adult", True),
+        ("جود", "child", False),
+        ("ستّي", "grandma", True),
+    ]
+    assert {m.label for m in family.adults} == {"سامي", "ستّي"}  # the cousin is never the mission's grown-up
+
+
 async def test_the_job_stores_the_print_files_on_a_book_for_approval(
     db: Session, storage: ObjectStorage, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -133,3 +167,58 @@ async def test_the_job_stores_the_print_files_on_a_book_for_approval(
     assert book.preflight["interior.pdf"]["passed"] and book.cost_usd == 0
     # rendering again reuses the same book (a retried job never makes a second one)
     assert (await family_book.render_item(db, storage, item))["book_id"] == str(book.id)
+
+
+async def test_an_organizations_logo_and_the_drawn_members_reach_the_render(
+    db: Session, storage: ObjectStorage, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A7 §7–8: the order's organization puts its logo on the back cover, and with the add-on the approved
+    family members (matched by relation and first name) are drawn from their sheets."""
+    members = [
+        {"relation": "grandmother", "role": "ستّي", "name": "أم خليل", "adult": True, "scarf": True},
+        {"relation": "father", "role": "بابا", "name": "", "adult": True, "scarf": False},
+    ]
+    item = _item(
+        db,
+        storage,
+        {
+            "family": {"name": "الكيلاني", "members": members},
+            "org": {"name": "روضة الأمل", "logo_key": "leads/x/logo.png"},
+        },
+    )
+    item.addons = [{"slug": "family-characters", "qty": 1}]
+    storage.put("leads/x/logo.png", b"\x89PNG logo", "image/png")
+    child = db.get(Child, item.child_id)
+    assert child is not None
+    drawn = FamilyMember(
+        child_id=child.id,
+        guardian_user_id=child.guardian_user_id,
+        relation="grandmother",
+        first_name="أم خليل",
+        adult=True,
+        scarf=True,
+        status=FamilyMemberStatus.approved,
+        approved_at=dt.datetime(2026, 9, 29, tzinfo=dt.UTC),
+        sheet_key=f"children/{child.id}/family/gm/sheet-1.png",
+        regen_count=1,
+        params={},
+    )
+    db.add(drawn)
+    storage.put(drawn.sheet_key or "", b"\x89PNG sheet", "image/png")
+    db.commit()
+    seen: dict[str, Any] = {}
+
+    async def fake_render(child: Any, family: Any, out: Path, **kw: Any) -> OrderFiles:
+        seen.update(kw)
+        files = OrderFiles(interior=_pdf(out / "interior.pdf"), cover=_pdf(out / "cover.pdf"), pages=1)
+        files.preflight = {"interior.pdf": {"passed": True}, "cover.pdf": {"passed": True}}
+        return files
+
+    monkeypatch.setattr("qamra_workbook.render.family_order.render_order", fake_render)
+    assert (await family_book.render_item(db, storage, item))["status"] == "in_review"
+    assert seen["org"]["name"] == "روضة الأمل" and Path(seen["org"]["logo"]).name == "org-logo.png"
+    assert list(seen["member_sheets"]) == [0]  # the grandmother (index 0) is drawn; the father has no sheet
+    item.addons = []  # without the add-on, the placeholder figures
+    db.commit()
+    await family_book.render_item(db, storage, item)
+    assert seen["member_sheets"] == {}

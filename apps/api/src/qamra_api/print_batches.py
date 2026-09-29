@@ -147,6 +147,8 @@ def build_manifest(candidates: list[Candidate], sends: int) -> dict[str, Any]:
                     "extras": item_extras(item.addons or []),
                     "interior_key": book.pdf_interior_key if book else None,
                     "cover_key": book.pdf_cover_key if book else None,
+                    # a family book's sticker sheet and card stock (name → key), printed on their own paper
+                    "inserts": dict((book.generation or {}).get("files") or {}) if book else {},
                     # Addendum 9: a gift parcel has no prices inside and carries the parent's card message
                     "gift": bool(c.order.gift),
                     "gift_message": c.order.gift_message if c.order.gift else None,

@@ -142,6 +142,14 @@ MESSAGES: dict[str, tuple[str, str]] = {
     ),
     "reprint_needs_items": ("اختاروا ما يُعاد طبعه من الطلب.", "Choose which items to reprint."),
     "coupon_exists": ("يوجد كوبون بهذا الرمز.", "A coupon with this code already exists."),
+    "invalid_logo": (
+        "الشعار غير صالح: أرسلوه بصيغة PNG أو JPG، بعرض 300 بكسل على الأقل.",
+        "The logo won't work: send a PNG or JPG at least 300 pixels wide.",
+    ),
+    "family_characters_off": (
+        "رسم أفراد العائلة غير متاح حاليًا.",
+        "Illustrated family characters aren't available yet.",
+    ),
     "bulk_price_pending": (
         "للطلبات من 10 نسخ فأكثر من هذا الكتاب، تواصلوا معنا لعرض سعر خاص.",
         "For 10 copies or more of this book, contact us for a special quote.",

@@ -44,6 +44,7 @@ export default async function WorkbookPage({ params, searchParams }: Props) {
         previews={PREVIEWS[product.slug] ?? []}
         query={picks}
         whatsapp={site?.support_whatsapp || null}
+        familyCharacters={site?.family_characters_enabled ?? false}
       />
     </PageShell>
   );

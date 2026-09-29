@@ -14,7 +14,14 @@ import structlog
 from sqlalchemy.orm import Session
 
 from qamra_core.db.models import NotificationStatus, PrintBatch, PrintBatchStatus
-from qamra_core.printing import batch_code, file_name, manifest_csv, new_token
+from qamra_core.printing import (
+    INSERT_LABELS,
+    batch_code,
+    file_name,
+    insert_file_name,
+    manifest_csv,
+    new_token,
+)
 from qamra_core.storage import ObjectStorage
 from qamra_worker import context
 from qamra_worker.jobs.notify import FORMATS, base_values, sender_and_values
@@ -42,6 +49,14 @@ def _items(manifest: dict[str, Any], link: str) -> list[Item]:
                 Item(
                     f"{head} — {KIND_LABEL[kind]} ({file_name(item, kind)})",
                     f"{link}/files/{item['n']}/{kind}",
+                )
+            )
+        for name in item.get("inserts") or {}:  # a family book's sticker sheet and card stock
+            label = INSERT_LABELS.get(name, name)
+            rows.append(
+                Item(
+                    f"{head} — {label} ({insert_file_name(item, name)})",
+                    f"{link}/files/{item['n']}/inserts/{name}",
                 )
             )
     return rows

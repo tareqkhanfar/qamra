@@ -30,7 +30,7 @@ Side = Literal["left", "right"]
 Where = Literal["home", "outside"]
 Numerals = Literal["hindi", "latin"]  # ١٢٣ or 123
 # how a family member is drawn until the illustrated-family add-on replaces the figures (A7 §7)
-Figure = Literal["woman", "man", "grandma", "grandpa", "girl", "boy", "baby", "adult"]
+Figure = Literal["woman", "man", "grandma", "grandpa", "girl", "boy", "baby", "adult", "child"]
 
 _VARIANT = re.compile(r"\{([^{}/]+)/([^{}/]+)\}")
 _PLACEHOLDER = re.compile(r"\{[a-z_]+\}")

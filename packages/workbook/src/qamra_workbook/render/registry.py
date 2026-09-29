@@ -10,7 +10,7 @@ page's automated checks. Pages whose checks fail are never rendered.
 from __future__ import annotations
 
 import random
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Literal
@@ -34,6 +34,8 @@ class Assets:
     character_aspect: float = 0.47  # width / height
     wave: Path | None = None  # the waving pose, when the sheet has one (render.character.pose)
     wave_aspect: float = 0.6
+    # the family book's illustrated members: the member's index in the family → (cut-out, width / height)
+    family: Mapping[int, tuple[Path, float]] = field(default_factory=dict)
 
 
 @dataclass

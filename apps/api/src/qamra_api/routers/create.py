@@ -668,7 +668,14 @@ async def add_to_cart(
     addons = [a.model_dump() for a in body.addons]
     if book.parent_message and line == "classic" and all(a["slug"] != "dedication-page" for a in addons):
         addons.append({"slug": "dedication-page", "qty": 1})  # written on the story step; free in Magic
-    if book.companion_id and line == "classic" and all(a["slug"] != "drawing-companion" for a in addons):
+    companion_addon = catalog.addons.get("drawing-companion")
+    if (
+        book.companion_id
+        and line == "classic"
+        and companion_addon is not None
+        and line in companion_addon.lines  # withdrawn from Classic until its templates draw the companion
+        and all(a["slug"] != "drawing-companion" for a in addons)
+    ):
         addons.append({"slug": "drawing-companion", "qty": 1})  # chosen on the companion step; free in Magic
     check_item(catalog, variant, book.art_style, addons)
     cart = await ensure_cart(db, request, response, user, settings)

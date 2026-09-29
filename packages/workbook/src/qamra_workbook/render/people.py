@@ -210,6 +210,8 @@ def person(kind: Figure, outfit: str, *, scarf: str | None = None) -> Drawing:
     """A friendly flat figure in the 60 × 120 box, feet on y = 118, facing the reader."""
     if kind == "baby":
         return _baby(outfit)
+    if kind == "child":  # a young relative the family did not describe further: short hair, trousers
+        return person("boy", outfit, scarf=scarf)
     cx = BOX_W / 2
     old = kind in ("grandma", "grandpa")
     child = kind in ("girl", "boy")

@@ -93,6 +93,7 @@ export type PublicSettings = {
   google_login_enabled: boolean;
   /** The free cover (Addendum 9): «شوف غلاف طفلك خلال دقيقة», off by default. */
   free_cover?: boolean;
+  family_characters_enabled?: boolean; // the illustrated-family add-on (W4), off by default
 };
 
 export const getPublicSettings = () => get<PublicSettings>("/api/settings/public", 0);

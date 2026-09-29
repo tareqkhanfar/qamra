@@ -5,6 +5,7 @@ import { MoonMark } from "@/components/Logo";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { LeadForm } from "@/components/site/LeadForm";
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { FamilyQuoteForm } from "@/components/workbook/FamilyQuoteForm";
 import { brandName } from "@/config/brand";
 import { Link } from "@/i18n/navigation";
 import { getPublicSettings, whatsappLink } from "@/lib/catalog";
@@ -255,6 +256,9 @@ export default async function KindergartensPage() {
               unknown: te("unknown"),
             }}
           />
+        </section>
+        <section id="family-book" className={`${wrap} scroll-mt-24 pb-12 md:pb-20`}>
+          <FamilyQuoteForm />
         </section>
       </main>
       <SiteFooter />

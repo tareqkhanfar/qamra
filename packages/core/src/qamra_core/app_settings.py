@@ -254,6 +254,19 @@ _DEFS: list[SettingDef] = [
         public=True,
     ),
     SettingDef(
+        "family_characters_enabled",
+        "site",
+        Kind.boolean,
+        False,
+        "رسم أفراد العائلة من صورهم («مغامراتي مع عائلتي»)",
+        "Illustrated family characters from photos (the family book)",
+        "إضافة مدفوعة: أفراد العائلة يُرسمون من صورهم بموافقة الأهل، بقواعد صور الطفل نفسها. "
+        "مغلقة حتى الاعتماد.",
+        "A paid add-on: family members drawn from their photos with the parent's consent, under the child's "
+        "photo rules. Off until approved.",
+        public=True,
+    ),
+    SettingDef(
         "portal_invite_days",
         "site",
         Kind.number,

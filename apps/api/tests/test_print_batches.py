@@ -265,3 +265,36 @@ async def test_print_batches_need_the_print_permission(client: AsyncClient, adb:
     await make_admin(client, adb, roles=("support",))
     assert (await client.get("/api/admin/print-batches")).status_code == 403
     assert (await client.post("/api/admin/print-batches/collect")).status_code == 403
+
+
+async def test_a_family_books_inserts_reach_the_printer(
+    client: AsyncClient, adb: AsyncSession, storage: ObjectStorage
+) -> None:
+    """«مغامراتي مع عائلتي»: besides its interior and cover, the book's sticker sheet and card stock are
+    in the manifest, the printer's email, the CSV and the printer's links (by name, never another book's)."""
+    parent = await register(client)
+    w = World(adb, storage, parent["id"])
+    book = await w.book()
+    files = {
+        name: f"children/{book.child_id}/books/{book.id}/files/inserts/{name}.pdf"
+        for name in ("stickers", "card-games-roles")
+    }
+    for key in files.values():
+        storage.put(key, b"%PDF-1.7 insert", "application/pdf")
+    book.generation = {"line": "family", "files": files}
+    await w.order("QM-FAMILY", S.review, [(book, "spiral", [])])
+    await make_admin(client, adb, email="print@example.com", roles=("production",))
+    [batch] = (await client.post("/api/admin/print-batches/collect")).json()["batches"]
+    await client.post(f"/api/admin/print-batches/{batch['id']}/send")
+
+    fake = FakeEmailSender()
+    await adb.run_sync(lambda s: send_batch(s, storage, fake, batch["id"], "http://testserver", PRINTER))
+    text = fake.outbox[0].text
+    token = re.search(r"/api/printer/([A-Za-z0-9_-]+)/files/1/inserts/stickers", text)
+    assert token is not None and "/files/1/inserts/card-games-roles" in text and "/files/1/interior" in text
+    r = await client.get(f"/api/printer/{token[1]}/files/1/inserts/stickers", follow_redirects=False)
+    assert r.status_code == 302 and "stickers.pdf" in r.headers["location"]
+    unknown = await client.get(f"/api/printer/{token[1]}/files/1/inserts/puppets", follow_redirects=False)
+    assert unknown.status_code == 404
+    csv = (await client.get(f"/api/printer/{token[1]}/manifest.csv")).text
+    assert "001-QM-FAMILY-insert-stickers.pdf 001-QM-FAMILY-insert-card-games-roles.pdf" in csv

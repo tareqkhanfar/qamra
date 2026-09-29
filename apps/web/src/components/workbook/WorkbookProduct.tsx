@@ -7,6 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { money, type CatalogProduct, type Currency } from "@/lib/store";
 import { groups, initialPicks, resolve, type Picks, type Preview } from "@/lib/workbook";
 import { AddWorkbook } from "./AddWorkbook";
+import { FamilyQuoteForm } from "./FamilyQuoteForm";
 import { WorkbookCover } from "./WorkbookCover";
 
 const TONE: Record<string, string> = { workbook: "bg-night-100", journey: "bg-success-bg", family: "bg-amber-100" };
@@ -31,6 +32,7 @@ export function WorkbookProduct({
   previews,
   query,
   whatsapp,
+  familyCharacters = false,
 }: {
   product: CatalogProduct;
   currency: Currency;
@@ -38,6 +40,7 @@ export function WorkbookProduct({
   previews: Preview[];
   query: Picks;
   whatsapp: string | null;
+  familyCharacters?: boolean; // the illustrated-family add-on is switched on
 }) {
   const t = useTranslations("workbook");
   const locale = useLocale();
@@ -225,8 +228,13 @@ export function WorkbookProduct({
           )}
 
           {line === "family" && orderable && (
-            <Link href="/kindergartens#demo" className="text-small font-semibold text-amber-700 underline">
+            <a href="#family-quote" className="text-small font-semibold text-amber-700 underline">
               {t("bulk")}
+            </a>
+          )}
+          {line === "family" && orderable && familyCharacters && (
+            <Link href="/family-characters" className="text-small font-semibold text-amber-700 underline">
+              {t("familyCharacters")}
             </Link>
           )}
 
@@ -263,9 +271,14 @@ export function WorkbookProduct({
               {price === null ? "—" : money(price, currency, locale)}
             </strong>
           </div>
-          <AddWorkbook sku={variant?.sku ?? null} disabled={!orderable} />
+          <AddWorkbook sku={variant?.sku ?? null} disabled={!orderable} family={line === "family"} />
         </div>
       </div>
+      {line === "family" && (
+        <section className="mt-8">
+          <FamilyQuoteForm />
+        </section>
+      )}
 
       <dialog
         ref={dialog}

@@ -15,6 +15,7 @@ type Section =
   | "settings"
   | "printBatches"
   | "organizations"
+  | "leads"
   | "themes"
   | "staff"
   | "audit";
@@ -33,6 +34,12 @@ export async function AdminShell({ active, children }: { active: Section; childr
     { id: "printCosts", href: "/admin/print-costs", ready: true },
     { id: "printBatches", href: "/admin/print-batches", ready: true, label: tp("nav") },
     { id: "organizations", href: "/admin/organizations", ready: true, label: tk("nav") },
+    {
+      id: "leads",
+      href: "/admin/leads",
+      ready: true,
+      label: locale === "en" ? "Quote requests" : "طلبات عروض الأسعار",
+    },
     { id: "reports", href: "/admin/reports", ready: true },
     { id: "themes", href: "/admin/studio", ready: true },
     { id: "metrics", href: "/admin/metrics", ready: true },

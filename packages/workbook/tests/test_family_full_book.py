@@ -42,6 +42,7 @@ LONG_SIX = Family(
 )
 GRANDMOTHER_ONLY = Family("الكيلاني", (Member("ستّي", scarf=True),), "الخليل")
 FATHER_ONLY = Family("النجار", (Member("بابا", "سامي"),), "نابلس")
+GRANDMA_AND_COUSIN = Family("الأحمد", (Member("ستّي"), Member("من العائلة", "جود", "child")), "جنين")
 GIRL, BOY = Child("ليان", "f"), Child("عبد الرحمن نور الدين", "m")
 PARENTS = re.compile(r"(?<![\w])(ماما|بابا)(?![\w])")
 
@@ -103,8 +104,20 @@ def test_every_insert_sheet_builds_and_prints_on_its_own_paper() -> None:
 
 @pytest.mark.parametrize(
     ("child", "family"),
-    [(GIRL, GRANDMOTHER_ONLY), (BOY, LONG_SIX), (BOY, FATHER_ONLY), (GIRL, KHATIB)],
-    ids=["girl, grandmother only", "boy, six members, long names", "boy, father only", "girl, four members"],
+    [
+        (GIRL, GRANDMOTHER_ONLY),
+        (BOY, LONG_SIX),
+        (BOY, FATHER_ONLY),
+        (GIRL, KHATIB),
+        (BOY, GRANDMA_AND_COUSIN),
+    ],
+    ids=[
+        "girl, grandmother only",
+        "boy, six members, long names",
+        "boy, father only",
+        "girl, four",
+        "cousin",
+    ],
 )
 def test_personalization_never_assumes_a_mother_and_a_father(child: Child, family: Family) -> None:
     book = plan_book(child, family)

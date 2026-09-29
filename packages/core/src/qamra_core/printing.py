@@ -41,7 +41,15 @@ CSV_COLUMNS = (
     "cover_file",
     "gift",  # Addendum 9: pack as a gift (no prices in the parcel) with this card message
     "gift_message",
+    "insert_files",  # «مغامراتي مع عائلتي»: its sticker sheet and card-stock sheets, printed apart
 )
+# A family book's insert files (manifest item["inserts"]: name → storage key), each a PDF with its die lines
+# on the optional-content layer «CutContour»; the labels tell the printer the paper.
+INSERT_LABELS = {
+    "stickers": "ورقة الملصقات (ورق لاصق مطفي، قصّ نصفي)",
+    "card-money-recipes": "كرتون القصّ 250 غ: النقود والوصفات",
+    "card-games-roles": "كرتون القصّ 250 غ: الألعاب والأدوار",
+}
 
 
 def batch_code(batch_id: uuid.UUID, batch_date: date) -> str:
@@ -82,6 +90,10 @@ def file_name(item: dict[str, Any], kind: str) -> str:
     return f"{int(item['n']):03d}-{item['order']}-{kind}.pdf"
 
 
+def insert_file_name(item: dict[str, Any], name: str) -> str:
+    return file_name(item, f"insert-{name}")
+
+
 def manifest_csv(manifest: dict[str, Any]) -> bytes:
     out = io.StringIO()
     writer = csv.writer(out)
@@ -100,6 +112,7 @@ def manifest_csv(manifest: dict[str, Any]) -> bytes:
                 file_name(item, "cover"),
                 "yes" if item.get("gift") else "",
                 item.get("gift_message") or "",
+                " ".join(insert_file_name(item, name) for name in item.get("inserts") or {}),
             ]
         )
     return ("﻿" + out.getvalue()).encode("utf-8")  # BOM: spreadsheet apps then read Arabic correctly

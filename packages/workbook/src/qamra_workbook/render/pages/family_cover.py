@@ -5,11 +5,13 @@ the child in the middle of the family, as on the title page; the back tells grow
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 from markupsafe import Markup
+from PIL import Image
 
-from qamra_workbook.render.pages.family import CORE_BADGES, family_group, family_of, rosette
+from qamra_workbook.render.pages.family import CORE_BADGES, family_group, family_of, rosette, uri
 from qamra_workbook.render.pages.family_front import split_name, title_art
 from qamra_workbook.render.registry import Built, PageContext, page_type
 from qamra_workbook.render.sections import FAMILY
@@ -40,6 +42,30 @@ def cover_front(ctx: PageContext) -> Built:
     return Built(data, None, problems)
 
 
+LOGO_BOX_MM = (44.0, 22.0)  # the organization's logo on the back cover, at most
+LOGO_DPI = 300
+
+
+def logo_size(path: Path) -> tuple[float, float]:
+    """The logo's printed size (mm): as big as its box allows, never below 300 DPI."""
+    with Image.open(path) as im:
+        w_px, h_px = im.size
+    k = min(LOGO_BOX_MM[0] / w_px, LOGO_BOX_MM[1] / h_px, 25.4 / LOGO_DPI)
+    return round(w_px * k, 2), round(h_px * k, 2)
+
+
+def org_slot(org: Any) -> dict[str, Any]:
+    """An organization's copies (A7 §8): its name and logo in the back cover's slot."""
+    if not isinstance(org, dict) or not org.get("name"):
+        return {"org_name": "", "org_logo": "", "org_logo_mm": (0.0, 0.0)}
+    logo = Path(str(org["logo"])) if org.get("logo") else None
+    return {
+        "org_name": str(org["name"]),
+        "org_logo": uri(logo) if logo else "",
+        "org_logo_mm": logo_size(logo) if logo else (0.0, 0.0),
+    }
+
+
 @page_type("cover-back", frame="full")
 def cover_back(ctx: PageContext) -> Built:
     problems: list[str] = []
@@ -54,5 +80,6 @@ def cover_back(ctx: PageContext) -> Built:
         "ages": ctx.text(str(ctx.page.params.get("ages", "من ٣ إلى ٧ سنوات"))),
         "badges": [rosette(b, css_class="cb-badge") for b in CORE_BADGES],
         "collect": ctx.text(str(ctx.page.params.get("collect", ""))),
+        **org_slot(ctx.page.params.get("org")),
     }
     return Built(data, None, problems)

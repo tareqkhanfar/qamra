@@ -72,6 +72,25 @@ async def printer_file(
     return RedirectResponse(storage.signed_get_url(key, SIGNED_SECONDS), status_code=302, headers=NO_STORE)
 
 
+@router.get("/{token}/files/{n}/inserts/{name}")
+async def printer_insert(
+    token: str,
+    n: int,
+    name: str,
+    request: Request,
+    db: SessionDep,
+    redis: RedisDep,
+    storage: StorageDep,
+) -> Response:
+    """A family book's insert sheet (stickers or card stock), by the name the manifest lists it under."""
+    batch = await _batch(db, redis, request, token)
+    item = next((i for i in batch.manifest.get("items", []) if int(i["n"]) == n), None)
+    key = (item.get("inserts") or {}).get(name) if item else None
+    if not key or not storage.exists(key):
+        raise ApiError("not_found", 404)
+    return RedirectResponse(storage.signed_get_url(key, SIGNED_SECONDS), status_code=302, headers=NO_STORE)
+
+
 @router.get("/{token}/manifest.csv")
 async def printer_manifest(token: str, request: Request, db: SessionDep, redis: RedisDep) -> Response:
     batch = await _batch(db, redis, request, token)

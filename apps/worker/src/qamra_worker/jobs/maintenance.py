@@ -8,7 +8,7 @@ import structlog
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from qamra_core.db.models import AuditLog, Book, BookStatus, ChildPhoto, Companion, PhotoStatus
+from qamra_core.db.models import AuditLog, Book, BookStatus, ChildPhoto, Companion, FamilyMember, PhotoStatus
 from qamra_core.settings import CoreSettings
 from qamra_core.storage import ObjectStorage
 from qamra_worker import context
@@ -22,6 +22,7 @@ class CleanupSummary:
     photos_deleted: int = 0
     drawings_deleted: int = 0
     drafts_deleted: int = 0
+    family_photos_deleted: int = 0  # the illustrated-family add-on's photos, 24 h after approval
 
 
 def _audit(db: Session, action: str, entity_type: str, entity_id: object) -> None:
@@ -61,6 +62,19 @@ def cleanup_expired_media(
         comp.drawing_key = None
         _audit(db, "drawing.auto_deleted", "companion", comp.id)
         summary.drawings_deleted += 1
+    db.commit()
+
+    members = db.scalars(
+        select(FamilyMember)
+        .where(FamilyMember.photo_delete_after <= now, FamilyMember.photo_key.is_not(None))
+        .with_for_update(skip_locked=True)
+    ).all()
+    for member in members:
+        if member.photo_key:
+            storage.delete(member.photo_key)  # storage first: a crash leaves a row to retry, never a file
+        member.photo_key = None
+        _audit(db, "family_photo.auto_deleted", "family_member", member.id)
+        summary.family_photos_deleted += 1
     db.commit()
 
     cutoff = now - timedelta(days=settings.draft_retention_days)

@@ -5,6 +5,7 @@
   <div class="cb-advs">{% for a in d.adventures %}<div class="cb-adv"><span style="background: {{ a.color }}">{{ icon(a.icon) }}</span><small>{{ a.name }}</small></div>{% endfor %}</div>
   {% if d.collect %}<div class="cb-collect"><b>{{ d.collect }}</b><div class="cb-badges">{% for b in d.badges %}{{ b }}{% endfor %}</div></div>{% endif %}
   {% if d.kit %}<ul class="cb-kit">{% for k in d.kit %}<li>{{ icon('check') }}{{ k }}</li>{% endfor %}</ul>{% endif %}
+  {% if d.org_name %}<div class="cb-org">{% if d.org_logo %}<img src="{{ d.org_logo }}" alt="" style="width: {{ d.org_logo_mm[0] }}mm; height: {{ d.org_logo_mm[1] }}mm">{% endif %}<span data-fit="8">بالتعاون مع {{ d.org_name }}</span></div>{% endif %}
   <div class="cb-made"><span data-fit="9">{{ d.made_for }}</span></div>
   <div class="cb-brand">{{ mascot('mascot') }}<b>قمرة</b><small>qamra.app</small></div>
 </div>

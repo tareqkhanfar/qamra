@@ -329,6 +329,44 @@ class Companion(IdMixin, TimestampMixin, Base):
     params: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
 
 
+class FamilyMemberStatus(enum.StrEnum):
+    draft = "draft"  # entered; waiting for consent and a photo
+    generating = "generating"
+    ready = "ready"  # drawn; waiting for the parent's approval
+    approved = "approved"
+    failed = "failed"
+
+
+class FamilyMember(IdMixin, TimestampMixin, Base):
+    """Addendum 7 §7, the illustrated-family add-on: one of the child's family drawn as a character from their
+    photo, with the same privacy rules as the child (the parent's consent for this person, the photo private
+    and deleted after approval, approved providers only); reused by every family book of the child."""
+
+    __tablename__ = "family_members"
+
+    child_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("children.id", ondelete="CASCADE"), index=True)
+    guardian_user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    relation: Mapped[str] = mapped_column(String(32))
+    first_name: Mapped[str] = mapped_column(String(40), default="")
+    adult: Mapped[bool] = mapped_column(Boolean, default=True)
+    scarf: Mapped[bool] = mapped_column(Boolean, default=False)
+    consent_version: Mapped[str | None] = mapped_column(String(32))  # the parent's consent for this person
+    consented_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    consent_ip: Mapped[str | None] = mapped_column(String(45))
+    photo_key: Mapped[str | None] = mapped_column(String(300))  # the original photo; None once deleted
+    photo_delete_after: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), index=True)
+    art_style: Mapped[str | None] = mapped_column(String(32))
+    sheet_key: Mapped[str | None] = mapped_column(String(300))
+    status: Mapped[FamilyMemberStatus] = mapped_column(
+        str_enum(FamilyMemberStatus, "family_member_status"), default=FamilyMemberStatus.draft
+    )
+    regen_count: Mapped[int] = mapped_column(SmallInteger, default=0)
+    approved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    provider: Mapped[str | None] = mapped_column(String(32))
+    model: Mapped[str | None] = mapped_column(String(100))
+    params: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+
+
 # ---- themes and books ------------------------------------------------------------------------
 
 
@@ -539,6 +577,7 @@ class Lead(IdMixin, CreatedAtMixin, Base):
     notes: Mapped[str | None] = mapped_column(Text)
     locale: Mapped[Locale] = mapped_column(str_enum(Locale, "lead_locale"), default=Locale.ar)
     status: Mapped[LeadStatus] = mapped_column(str_enum(LeadStatus, "lead_status"), default=LeadStatus.new)
+    details: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict, server_default="{}")
 
 
 # ---- costs, audit ------------------------------------------------------------------------------

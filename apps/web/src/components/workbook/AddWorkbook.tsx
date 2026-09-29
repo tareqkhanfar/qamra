@@ -7,6 +7,7 @@ import { Link, useRouter } from "@/i18n/navigation";
 import { api, errorText, type User } from "@/lib/api";
 import type { Child } from "@/lib/create";
 import type { Cart } from "@/lib/store";
+import { emptyFamily, FamilyDetails, familyPayload } from "./FamilyDetails";
 
 /** Where a parent without a ready character goes: the create flow draws one, then adds this book. */
 export const createFor = (sku: string, child?: string) =>
@@ -16,7 +17,15 @@ export const createFor = (sku: string, child?: string) =>
  * «أضف للسلة» on an activity book: the book is drawn with the child's approved character (Addendum 9 §1.6),
  * so the parent picks which child («شخصية ليان جاهزة»); without one, the create flow draws it first.
  */
-export function AddWorkbook({ sku, disabled }: { sku: string | null; disabled: boolean }) {
+export function AddWorkbook({
+  sku,
+  disabled,
+  family: askFamily = false,
+}: {
+  sku: string | null;
+  disabled: boolean;
+  family?: boolean; // «مغامراتي مع عائلتي»: ask who is in the family (optional)
+}) {
   const t = useTranslations("workbook");
   const te = useTranslations("errors");
   const locale = useLocale();
@@ -25,6 +34,7 @@ export function AddWorkbook({ sku, disabled }: { sku: string | null; disabled: b
   const [ready, setReady] = useState<Child[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [family, setFamily] = useState(emptyFamily);
 
   async function start() {
     if (!sku) return;
@@ -51,7 +61,10 @@ export function AddWorkbook({ sku, disabled }: { sku: string | null; disabled: b
     if (!sku) return;
     setBusy(true);
     setError(null);
-    const r = await api<Cart>("/api/shop/workbooks/cart", { json: { sku, child_id: child.id } });
+    const details = askFamily ? familyPayload(family) : undefined;
+    const r = await api<Cart>("/api/shop/workbooks/cart", {
+      json: { sku, child_id: child.id, ...(details ? { family: details } : {}) },
+    });
     setBusy(false);
     if (r.ok) {
       dialog.current?.close();
@@ -79,6 +92,7 @@ export function AddWorkbook({ sku, disabled }: { sku: string | null; disabled: b
             {t("chooser.title")}
           </h2>
           {error && <Alert>{error}</Alert>}
+          {askFamily && <FamilyDetails value={family} onChange={setFamily} />}
           {ready.map((c) => (
             <button
               key={c.id}

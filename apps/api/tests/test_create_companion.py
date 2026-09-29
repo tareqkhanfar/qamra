@@ -4,7 +4,6 @@ the photo privacy rules applied to the drawing."""
 import io
 import uuid
 from datetime import UTC, datetime, timedelta
-from decimal import Decimal
 from pathlib import Path
 from typing import Any
 
@@ -147,8 +146,9 @@ async def test_from_the_drawing_to_the_book_and_the_classic_cart(
     assert stored_book is not None and str(stored_book.companion_id) == comp["id"]
     cart = await client.post(f"/api/create/books/{book.json()['id']}/cart", json={"sku": "classic-soft-21"})
     assert cart.status_code == 201, cart.text
-    addon = {a["slug"]: a for a in cart.json()["items"][0]["addons"]}["drawing-companion"]
-    assert addon["included"] is False and Decimal(addon["amount"]) == Decimal("20")  # Classic: +20₪
+    # the Classic add-on (+20₪) is withdrawn from the catalog until Classic templates draw the companion
+    # (docs/decisions.md, W3): the cart line carries no companion add-on, and nothing is charged for it
+    assert all(a["slug"] != "drawing-companion" for a in cart.json()["items"][0]["addons"])
 
     magic = await client.post("/api/create/books", json={**body, "line": "magic", "companion_id": comp["id"]})
     cart = await client.post(f"/api/create/books/{magic.json()['id']}/cart", json={"sku": "magic-hard-21"})

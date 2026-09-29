@@ -29,7 +29,7 @@ from qamra_api.store.quiz import (
     match,
 )
 from qamra_api.store.router import CartOut, cart_out, check_copies, check_item
-from qamra_api.store.workbooks import ACTIVITY, orderable
+from qamra_api.store.workbooks import ACTIVITY, FamilyIn, family_personalization, orderable
 from qamra_core.db.models import AppSetting, AuditLog, Character, Child, Currency
 from qamra_core.db.store import CartItem, CatalogProduct
 
@@ -202,6 +202,7 @@ class WorkbookItemIn(BaseModel):
     sku: str = Field(max_length=64)
     child_id: uuid.UUID
     qty: int = Field(default=1, ge=1, le=50)
+    family: FamilyIn | None = None  # «مغامراتي مع عائلتي»: the family's name, city and members (optional)
 
 
 @router.post("/workbooks/cart", status_code=201)
@@ -248,6 +249,11 @@ async def add_workbook(
                 "hijab": child.wears_hijab,
                 "glasses": child.wears_glasses,
                 "character_id": str(character.id),
+                **(
+                    {"family": family_personalization(body.family)}
+                    if body.family is not None and c.product_of(variant).line.value == "family"
+                    else {}
+                ),
             },
         )
     )
