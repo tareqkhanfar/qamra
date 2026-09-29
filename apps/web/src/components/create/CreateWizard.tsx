@@ -10,6 +10,7 @@ import { useRouter } from "@/i18n/navigation";
 import { api, errorText, type User } from "@/lib/api";
 import type { ThemeCard } from "@/lib/catalog";
 import { classicStyles, classicVariant } from "@/lib/classic";
+import { companionAddOn } from "@/lib/companion";
 import { createApi, STEPS, type Book, type Character, type Child, type Line, type Step } from "@/lib/create";
 import type { Cart, Catalog } from "@/lib/store";
 import { CharacterStep } from "./CharacterStep";
@@ -22,9 +23,13 @@ import { ReviewStep } from "./ReviewStep";
 import { StoryStep } from "./StoryStep";
 import { StyleStep } from "./StyleStep";
 import { WritingStep } from "./WritingStep";
+import { CompanionStep } from "./companion/CompanionStep";
 
 type Query = Partial<
-  Record<"step" | "child" | "character" | "book" | "line" | "theme" | "style" | "product", string | null>
+  Record<
+    "step" | "child" | "character" | "book" | "line" | "theme" | "style" | "product" | "companion" | "cstep",
+    string | null
+  >
 >;
 /** What was fetched for an id in the URL (null: not found or not this parent's). */
 type Loaded<T> = { id: string; value: T | null };
@@ -64,6 +69,7 @@ function allowed(
       return !!child?.consent && !!line;
     case "character":
       return !!child && !!character;
+    case "companion": // «ارسم صاحبك»: optional, between the approved character and the story
     case "story":
       return !!child && !!line && !!character?.approved;
     case "writing":
@@ -93,6 +99,8 @@ export function CreateWizard() {
     style: params.get("style"),
     // an activity book (Addendum 9, /workbooks): once the character is approved it goes to the cart
     product: params.get("product"),
+    companion: params.get("companion"), // the drawn companion for this book, and the companion sub-step
+    cstep: params.get("cstep"),
   };
   const [children, setChildren] = useState<Child[] | null>(null);
   const [catalog, setCatalog] = useState<Catalog | null>(null);
@@ -219,6 +227,9 @@ export function CreateWizard() {
       : furthest(child, shownCharacter, shownBook, line);
   const theme = themes.find((th) => th.slug === (shownBook?.theme ?? q.theme)) ?? null;
 
+  /** After the character: «ارسم صاحبك» when the catalog offers a drawn companion for this line, else the story. */
+  const storyOrCompanion = (value: Line): Step => (companionAddOn(catalog, value) ? "companion" : "story");
+
   /**
    * The style picked on the story page (Addendum 9), when this line can draw it for this child: then the
    * style step is already answered and the character is drawn right away.
@@ -253,7 +264,8 @@ export function CreateWizard() {
       // an activity book reuses any approved character (no new drawing); a story wants the chosen style
       .find((ch) => ch.approved && (q.product ? true : styles.has(ch.style) && (!q.style || ch.style === q.style)));
     if (ready && q.product) void addProduct(c);
-    else if (ready) go({ step: "story", child: c.id, line: value, character: ready.id, style: ready.style });
+    else if (ready)
+      go({ step: storyOrCompanion(value), child: c.id, line: value, character: ready.id, style: ready.style });
     else if (!c.photos) go({ step: "photo", child: c.id, line: value });
     else void styleOrDraw(c, value);
   }
@@ -352,8 +364,22 @@ export function CreateWizard() {
             setCharacter({ id: c.id, value: c });
             void refreshChildren();
             if (q.product && child) void addProduct(child);
-            else go({ step: line ? "story" : "line" });
+            else go({ step: line ? storyOrCompanion(line) : "line" });
           }}
+        />
+      );
+    case "companion":
+      return (
+        <CompanionStep
+          child={child!}
+          line={line!}
+          catalog={catalog}
+          style={shownCharacter?.style ?? q.style}
+          companionId={q.companion}
+          sub={q.cstep}
+          go={(patch) => go(patch)}
+          back={() => go({ step: "character", cstep: null })}
+          onDone={(id) => go({ step: "story", companion: id, cstep: null })}
         />
       );
     case "story":
@@ -365,7 +391,9 @@ export function CreateWizard() {
           themes={themes}
           catalog={catalog}
           initial={q.theme}
-          back={() => go({ step: "character" })}
+          back={() => go({ step: companionAddOn(catalog, line!) ? "companion" : "character" })}
+          companion={companionAddOn(catalog, line!) ? q.companion : null}
+          onCompanion={companionAddOn(catalog, line!) ? () => go({ step: "companion" }) : undefined}
           onStarted={(b) => {
             setBook({ id: b.id, value: b });
             go({ step: b.status === "generating" ? "writing" : "format", book: b.id, theme: b.theme });

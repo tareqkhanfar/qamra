@@ -9,6 +9,7 @@ import { Button, buttonClasses } from "@/components/ui/Button";
 import { brandName } from "@/config/brand";
 import { Link, useRouter } from "@/i18n/navigation";
 import { api, errorText, type User } from "@/lib/api";
+import { MyCompanions } from "@/components/create/companion/MyCompanions";
 import { createApi } from "@/lib/create";
 import { READABLE } from "@/lib/reader";
 import { useVoiceBooks, VoiceBookLink } from "@/components/voice/VoiceBookLink";
@@ -62,12 +63,13 @@ export function AccountView() {
   const [children, setChildren] = useState<Child[]>([]);
   const [books, setBooks] = useState<Book[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
-  const [tab, setTab] = useState<"books" | "orders">("books");
+  const [tab, setTab] = useState<"books" | "orders" | "companions">("books");
   const [error, setError] = useState<string | null>(null);
   const [leaving, setLeaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const tc = useTranslations("create");
+  const tco = useTranslations("companion.mine");
   const voiceBooks = useVoiceBooks(); // «صوت أهلي»: books bought with the family-voice add-on
   const [hour] = useState(() => new Date().getHours());
 
@@ -239,6 +241,15 @@ export function AccountView() {
         >
           {t("orders")}
         </button>
+        <button
+          role="tab"
+          type="button"
+          aria-selected={tab === "companions"}
+          onClick={() => setTab("companions")}
+          className={tabClass(tab === "companions")}
+        >
+          {tco("tab")}
+        </button>
       </div>
 
       <div className="flex flex-col gap-4 px-4 pt-4">
@@ -252,7 +263,9 @@ export function AccountView() {
           </div>
         )}
 
-        {tab === "orders" ? (
+        {tab === "companions" ? (
+          <MyCompanions />
+        ) : tab === "orders" ? (
           <p className="py-10 text-center text-body text-ink-muted">{t("ordersEmpty")}</p>
         ) : shownBooks.length ? (
           <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3">

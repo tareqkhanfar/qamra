@@ -57,6 +57,52 @@ def fake_story(step: str, system: str, user: list[UserPart]) -> BaseModel:
     )
 
 
+def fake_custom_story(step: str, system: str, user: list[UserPart]) -> BaseModel:
+    """A custom story shaped like Claude's (story_custom.v1): the plan's beats with the brief woven in."""
+    from qamra_ai.pipeline.custom_story import CustomLocation, CustomPageOut, CustomScene, CustomStoryOut
+
+    text = _text(user)
+    pages_m, name_m = _PAGES.search(text), _NAME.search(text)
+    place_m, title_m = re.search(r"^- place: (.+)$", text, re.M), re.search(r"^Title idea: (.+)$", text, re.M)
+    if not (pages_m and name_m and place_m and title_m):
+        raise ValueError("fake custom story responder: unexpected prompt shape")
+    name, place = name_m.group(1).strip(), place_m.group(1).strip()
+    loves = re.findall(r"^  - (.+)$", text, re.M)
+    arabic = "Vowelization:" in text  # only an Arabic request has that line
+    comp = re.search(r"^Companion: (.+?) \(", text, re.M)
+    with_comp = f" {'مع' if arabic else 'with'} {comp.group(1)}" if comp else ""
+    out = []
+    for p in json.loads(pages_m.group(1)):
+        thing = loves[(p["index"] - 6) % len(loves)] if loves and p["index"] in (6, 7, 11) else ""
+        line = f"{name} {'في' if arabic else 'at'} {place}{with_comp}. {thing}"
+        out.append(
+            CustomPageOut(
+                index=p["index"],
+                text=line.strip(),
+                scene=f"The hero at {place}: {p['beat']}.",
+                location="main_place" if p["index"] not in (1, 14) else "home",
+                time="night" if p["index"] == 14 else "morning",
+                outfit="sleep" if p["index"] == 14 else "festive",
+                others="a kind grandmother" if p["index"] == 10 else None,
+                others_count=1 if p["index"] == 10 else 0,
+                companion_action="walks beside the hero",
+            )
+        )
+    return CustomStoryOut(
+        title=title_m.group(1).strip(),
+        dedication=f"إلى {name}، بكلّ الحبّ." if arabic else f"To {name}, with all our love.",
+        locations=[
+            CustomLocation(key="home", description="a cozy limestone family home"),
+            CustomLocation(key="main_place", description=f"{place}, bright and welcoming"),
+        ],
+        cover=CustomScene(scene=f"The hero smiling at {place}.", location="main_place", outfit="festive"),
+        pages=out,
+        parents_lesson="?",
+        parents_questions=["?", "?"],
+        blurb=f"{name}!",
+    )
+
+
 def good_page_qa(*_: object) -> PageQA:
     return PageQA(
         children=["the hero, center, smiling"],
@@ -109,6 +155,7 @@ def default_fake_text_provider() -> FakeTextProvider:
     return FakeTextProvider(
         {
             "StoryOut": fake_story,
+            "CustomStoryOut": fake_custom_story,
             "SafetyVerdict": lambda *_: SafetyVerdict(safe=True, reasons=[]),
             "DrawingReview": lambda *_: DrawingReview(
                 safe=True,

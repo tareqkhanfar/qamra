@@ -46,7 +46,12 @@ async def review_drawing(rt: Runtime, cleaned_png: bytes, spec: CompanionSpec) -
 
 
 def companion_request(
-    spec: CompanionSpec, review: DrawingReview, cleaned_png: bytes, style: ArtStyle, option: int
+    spec: CompanionSpec,
+    review: DrawingReview,
+    cleaned_png: bytes,
+    style: ArtStyle,
+    option: int,
+    round_: int = 1,  # the parent's redraws get new seeds (round 1 keeps the original ones)
 ) -> ImageRequest:
     h = house_style()
     prompt = prompts.render(
@@ -67,7 +72,7 @@ def companion_request(
         prompt=prompt,
         refs=[ref],
         aspect="3:2",
-        seed=1000 + option,
+        seed=1000 * round_ + option,
     )
 
 
@@ -79,12 +84,12 @@ class CompanionOptions:
 
 
 async def generate_companion_options(
-    rt: Runtime, cleaned_png: bytes, spec: CompanionSpec, style: ArtStyle, n: int = 2
+    rt: Runtime, cleaned_png: bytes, spec: CompanionSpec, style: ArtStyle, n: int = 2, round_: int = 1
 ) -> CompanionOptions:
     review = await review_drawing(rt, cleaned_png, spec)
     spec = spec.model_copy(update={"description_en": review.description_en, "from_drawing": True})
     options = await asyncio.gather(
-        *(rt.draw(companion_request(spec, review, cleaned_png, style, i + 1)) for i in range(n))
+        *(rt.draw(companion_request(spec, review, cleaned_png, style, i + 1, round_)) for i in range(n))
     )
     return CompanionOptions(spec=spec, review=review, options=list(options))
 

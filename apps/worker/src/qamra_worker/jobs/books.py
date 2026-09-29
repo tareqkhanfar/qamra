@@ -28,6 +28,7 @@ from qamra_ai.pipeline.book import BookRun, choose_outfits, default_companion, n
 from qamra_ai.pipeline.budget import Budget, BudgetExceeded
 from qamra_ai.pipeline.character import generate_character_sheet
 from qamra_ai.pipeline.companion import generate_companion_options
+from qamra_ai.pipeline.custom_story import BriefRejected, CustomBrief, write_custom_story
 from qamra_ai.pipeline.drawing import clean_drawing
 from qamra_ai.pipeline.layout import BookPlan, PrintSpec, plan_book
 from qamra_ai.pipeline.models import Child as AIChild
@@ -432,8 +433,16 @@ async def run_book_job(db: Session, storage: ObjectStorage, book: Book, mode: st
     lang = book_lang(book)
     story_out: StoryOut | None = StoryOut.model_validate(book.story) if book.story else None
     try:
-        if story_out is None:
+        brief = book.generation.get("custom")  # «حكاية خاصة» (W3): text and pictures from the family's brief
+        if story_out is None and brief:
+            wish, note = CustomBrief.model_validate(brief), book.parent_message
+            custom = await write_custom_story(rt, theme, ai_child(child), lang, companion, wish, note)
+            story, theme = custom.story, custom.theme
+            job.theme = theme  # the pages are drawn from the story's own scenes, pinned with the book
+            book.generation = {**book.generation, "theme_def": theme.model_dump(mode="json")}
+        elif story_out is None:
             story = await write_story(rt, theme, ai_child(child), lang, companion, book.parent_message)
+        if story_out is None:
             story_out = story.out
             book.story = story_out.model_dump()
             book.title = story_out.title[:200]
@@ -451,6 +460,11 @@ async def run_book_job(db: Session, storage: ObjectStorage, book: Book, mode: st
             if story.long_pages:
                 _set_flags(book, ["long_text"])
             db.commit()
+    except BriefRejected as e:  # the parent edits the brief and starts again (not retried)
+        _set_flags(book, ["brief_unsafe"])
+        book.status, book.error = BookStatus.failed, str(e)[:500]
+        db.commit()
+        return {"status": "brief_unsafe"}
     except BudgetExceeded:
         _set_flags(book, ["budget_exceeded"])
         book.status = BookStatus.failed

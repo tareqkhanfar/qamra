@@ -10,7 +10,9 @@ import { ExampleImage } from "@/components/book/ExampleImage";
 import { FormatCards } from "@/components/story/Choices";
 import { api, errorText } from "@/lib/api";
 import type { ThemeCard } from "@/lib/catalog";
+import { companionAddOn } from "@/lib/companion";
 import { createApi, pageImage, type Book, type Child } from "@/lib/create";
+import { CUSTOM_PRODUCT } from "@/lib/customStory";
 import { pickExample, storyPages, variantOf, type Example } from "@/lib/examples";
 import { money, type Catalog, type CatalogAddOn, type CatalogVariant } from "@/lib/store";
 import { freeDigitalCopy } from "@/lib/story";
@@ -43,7 +45,8 @@ export function FormatStep({
   const te = useTranslations("errors");
   const locale = useLocale();
   const currency = catalog?.currency ?? "ILS";
-  const product = catalog?.products.find((p) => p.slug === PRODUCT[book.line]);
+  // a custom story is its own product (magic-custom-story); every other book is sold by its line
+  const product = catalog?.products.find((p) => p.slug === (book.custom ? CUSTOM_PRODUCT : PRODUCT[book.line]));
   const variants = [...(product?.variants ?? [])]
     .filter((v) => v.price !== null)
     .sort((a, b) => ORDER.indexOf(a.options.format) - ORDER.indexOf(b.options.format));
@@ -77,7 +80,8 @@ export function FormatStep({
     Number(variant?.price ?? 0) +
     Number(style?.price_modifier ?? 0) +
     chosen.reduce((sum, a) => sum + Number(a.price ?? 0), 0) +
-    Number(dedication?.price ?? 0);
+    Number(dedication?.price ?? 0) +
+    Number(book.companion && book.line === "classic" ? (companionAddOn(catalog, "classic")?.price ?? 0) : 0);
   const previews = book.pages.filter((p) => p.image);
 
   async function order() {

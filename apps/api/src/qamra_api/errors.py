@@ -338,6 +338,45 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "لا يمكنكم تغيير صلاحياتكم بأنفسكم. اطلبوا ذلك من مسؤول آخر.",
         "You can't change your own access. Ask another admin.",
     ),
+    # W3: «ارسم صاحبك» and the custom story (Magic)
+    "invalid_drawing": (
+        "تعذّر استخدام هذه الصورة. صوّروا الرسمة كاملة على ورقتها، في ضوء جيد.",
+        "We couldn't use this picture. Photograph the whole drawing on its paper, in good light.",
+    ),
+    "drawing_gone": (
+        "حذفنا الصورة الأصلية للرسمة حفاظًا على الخصوصية. صوّروها من جديد لتعديلها.",
+        "We deleted the original photo of the drawing for privacy. Take it again to change it.",
+    ),
+    "companion_busy": (
+        "ما زلنا نرسم الصاحب، أو تم اختياره. انتظروا لحظات أو ابدؤوا برسمة جديدة.",
+        "The companion is still being drawn, or was already chosen. Wait a moment or start a new drawing.",
+    ),
+    "companion_not_ready": (
+        "لم يُرسم الصاحب بعد. انتظروا الخيارين ثم اختاروا واحدًا.",
+        "The companion isn't drawn yet. Wait for the two options, then choose one.",
+    ),
+    "companion_not_approved": (
+        "اختاروا شكل الصاحب أولًا، أو تخطّوا هذه الخطوة.",
+        "Choose the companion's look first, or skip this step.",
+    ),
+    "companion_in_use": (
+        "هذا الصاحب في كتاب لم يكتمل بعد. احذفوه بعد وصول الكتاب، أو احذفوا كل بيانات الطفل الآن.",
+        "This companion is in a book that isn't finished yet. Delete it once the book arrives, "
+        "or delete all your child's data now.",
+    ),
+    "custom_story_invalid": (
+        "راجعوا تفاصيل الحكاية الخاصة: بعض الحقول ناقصة أو أطول من المسموح.",
+        "Check the custom story details: some fields are missing or too long.",
+    ),
+    "custom_story_unsafe": (
+        "بعض ما كتبتموه لا يناسب كتاب أطفال (كالعنف أو أرقام الهواتف والروابط). عدّلوه وحاولوا مرة أخرى.",
+        "Some of what you wrote doesn't fit a children's book (like violence, phone numbers or links). "
+        "Please edit it and try again.",
+    ),
+    "custom_story_magic_only": (
+        "الحكاية الخاصة متوفرة في الكتاب السحري فقط.",
+        "Custom stories are available for Magic books only.",
+    ),
     "internal_error": (
         "حدث خطأ غير متوقع. حاولوا مرة أخرى بعد قليل.",
         "Something went wrong. Please try again in a moment.",

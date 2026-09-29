@@ -1,4 +1,184 @@
 {
+  "companion": {
+    "upload": {
+      "title": "Photograph the drawing",
+      "preview": "The drawing you chose",
+      "cleaning": "Tidying and cleaning the drawing…",
+      "frame": "The whole drawing inside the frame — hold the phone still",
+      "tipsLabel": "Photo tips",
+      "tips": {
+        "paper": "White paper",
+        "light": "Good light",
+        "shadow": "No shadow on the paper"
+      },
+      "gallery": "Choose from the gallery",
+      "shoot": "Take the photo",
+      "hint": "Shoot from above"
+    },
+    "crop": {
+      "title": "Tidy the drawing",
+      "retake": "Retake",
+      "ready": "The drawing is ready",
+      "view": "View",
+      "original": "Original photo",
+      "cleaned": "Cleaned",
+      "originalAlt": "The original photo of the drawing",
+      "cleanedAlt": "The drawing after cleaning",
+      "area": "Crop area",
+      "corner": {
+        "tl": "Top-left corner",
+        "tr": "Top-right corner",
+        "bl": "Bottom-left corner",
+        "br": "Bottom-right corner"
+      },
+      "applying": "Applying…",
+      "hint": "Drag the gold corners around the drawing only",
+      "gone": "We deleted the original photo for privacy; the cleaned drawing is kept.",
+      "rotate": "Rotate",
+      "clean": "Remove paper color and shadows"
+    },
+    "name": {
+      "title": "Introduce the companion",
+      "cta": "Turn the drawing into {name}",
+      "placeholder": "My friend",
+      "drawingAlt": "{name}'s drawing",
+      "label": "What's its name?",
+      "ask": "Ask {name} — they know its name best",
+      "typeLabel": "What is it?",
+      "types": {
+        "creature": "Creature",
+        "animal": "Animal",
+        "robot": "Robot",
+        "other": "Something else"
+      },
+      "otherLabel": "What exactly?",
+      "otherPlaceholder": "For example: a little dragon",
+      "traitsLabel": "What's it like?",
+      "optional": "(optional)",
+      "traits": {
+        "funny": "Funny",
+        "brave": "Brave",
+        "shy": "Shy",
+        "kind": "Kind",
+        "curious": "Curious"
+      }
+    },
+    "gen": {
+      "title": "{name} is waking up…",
+      "closer": "The fuller the moon, the closer {name} is",
+      "messages": [
+        "Keeping {child}'s colors just as they are…",
+        "Drawing a sparkling eye…",
+        "Teaching it how to wave…",
+        "Getting it ready for the story…"
+      ],
+      "time": "About a minute. Stay here, then pick one of two looks we draw.",
+      "skip": "Skip — a book without a companion",
+      "failedTitle": "The drawing didn't finish",
+      "failed": "We couldn't draw the companion this time.",
+      "retry": "Try again",
+      "newDrawing": "Photograph another drawing"
+    },
+    "choose": {
+      "title": "Which one is {name}?",
+      "cta": "That's {name}!",
+      "redraw": "Draw it again · {left} of {total} left",
+      "noRedraws": "The free redraws are used",
+      "body": "We drew {name} two ways. Choose the one closest to {child}'s drawing.",
+      "drawing": "The drawing",
+      "optionAlt": "Option {n} for {name}",
+      "option0": "Option one",
+      "option1": "Option two"
+    },
+    "intro": {
+      "label": "Draw your companion",
+      "badge": "A {brand} special",
+      "title": "{name}'s drawing becomes a friend in the story",
+      "exampleDrawing": "Joud's drawing",
+      "exampleCompanion": "Her friend \"Mishmish\"",
+      "steps": {
+        "one": "Photograph one of {name}'s drawings — any creature, animal or robot.",
+        "two": "We turn it into an illustrated character that keeps its colors and shape.",
+        "three": "It goes with {name} on every page, and the last page, \"How my friend was born\", shows the original drawing."
+      },
+      "free": "Free in the Magic book, and the companion stays for your next books.",
+      "paid": "An add-on of {amount} on a Classic book, and the companion stays for your next books.",
+      "mine": "{name}'s companions from earlier books",
+      "start": "Photograph {name}'s drawing",
+      "use": "Continue with {name}",
+      "skip": "Skip — a book without a companion"
+    },
+    "summary": {
+      "with": "{name} goes along in the story",
+      "none": "No companion from {name}'s drawing",
+      "free": "Free in the Magic book",
+      "change": "Change",
+      "add": "Add a companion"
+    },
+    "mine": {
+      "tab": "My companions",
+      "title": "My children's companions",
+      "body": "Every companion can go along with its child in any new book.",
+      "all": "All ({count})",
+      "of": "{name}'s companions",
+      "alt": "{name} as we drew it",
+      "meta": "{books, plural, =0 {{name}'s companion · new} one {{name}'s companion · 1 book} other {{name}'s companion · # books}}",
+      "newStory": "A new story with it",
+      "delete": "Delete the companion and its drawing",
+      "confirm": "Delete {name} and its drawing for good? This can't be undone.",
+      "deleted": "We deleted {name} and its drawing.",
+      "new": "A new companion from a drawing"
+    }
+  },
+  "customStory": {
+    "title": "A story of their own",
+    "badge": "New",
+    "tagline": "We write and draw a story for {name} from your ideas",
+    "intro": "Tell us about the special day, and we'll write and draw a story only {name} has.",
+    "occasion": "The occasion",
+    "occasions": {
+      "birthday": "Birthday",
+      "eid": "Eid",
+      "sibling": "A new baby in the family",
+      "school": "Starting school",
+      "trip": "A trip or a visit",
+      "other": "Something else"
+    },
+    "occasionPlaceholder": "For example: her fifth birthday",
+    "fix": "Check this field: too short, or something that doesn't fit a children's book.",
+    "place": "The place",
+    "placeHint": "A home, a garden, a city… we draw it as you describe it.",
+    "placePlaceholder": "For example: Grandma's house in Nablus",
+    "loves": "Things {name} loves or did",
+    "lovesHint": "At least two; each gets its own page in the story.",
+    "lovesPlaceholder": {
+      "0": "For example: knafeh",
+      "1": "For example: the swing under the olive tree",
+      "2": "A third (optional)"
+    },
+    "loveN": "Thing number {n}",
+    "wish": "A wish or a lesson",
+    "wishPlaceholder": "For example: to keep loving to share toys",
+    "family": "Who would you like in the story? (optional)",
+    "familyHint": "In your child's own words: Teta, Auntie, Uncle… we only write the people you name.",
+    "rolePlaceholder": "For example: Teta",
+    "role": "Relation {n}",
+    "namePlaceholder": "Name (optional)",
+    "personName": "Person {n}'s name",
+    "remove": "Remove person {n}",
+    "roles": {
+      "mom": "Mama",
+      "dad": "Baba",
+      "grandma": "Teta",
+      "grandpa": "Jiddo",
+      "aunt": "Auntie",
+      "uncle": "Uncle",
+      "sister": "Sister",
+      "brother": "Brother"
+    },
+    "addPerson": "Add a person",
+    "unsafeBrief": "Some of the story details don't fit a children's book, so we haven't written it yet. Go back, edit them a little, and we'll write it again."
+  },
   "classic": {
     "noStyle": "Qamra Classic's ready-made art isn't finished yet for this look. Try Qamra Magic: we paint every page for {name}.",
     "toMagic": "Choose Qamra Magic"

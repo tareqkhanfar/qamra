@@ -1,0 +1,216 @@
+# «حكاية خاصة» — the base of a Magic custom story (product magic-custom-story, Addendum 4 §1B).
+#
+# Not in the catalog (no `catalog` block): parents reach it through the custom story form on the story step.
+# The story model (prompts story_custom.v1) writes every page's text AND picture from the parent's brief
+# (occasion, place, 2–3 things the child loves or did, a wish or lesson, optional family names) and keeps
+# these beats, layouts and page count. The scenes below are only the fallback shape of each beat; the book
+# pins the rewritten theme in `generation.theme_def`, so every page prompt uses the brief's own scenes.
+# No page is a child-free plate: plates are cached per theme, and every custom book is different.
+slug: custom
+version: 1
+title_ar: "حكاية {name} الخاصة"
+title_en: "{name}'s Very Own Story"
+age_range: [3, 8]
+is_b2b: false
+active: true
+companion_slot: true
+default_companion:
+  name_ar: قَمّور
+  name_en: Qamour
+  description_en: >-
+    a tiny round glowing moon creature, soft pale-gold body shaped like a plump crescent,
+    two small dot eyes, rosy cheeks, stubby little arms, floats a few centimeters above the ground
+
+locations:
+  home: >-
+    the family home: cream limestone walls, an arched window, floor cushions with embroidered pillows,
+    a patterned cement-tile floor
+  place: >-
+    the special place of the story, bright and welcoming, with room for the family to gather
+
+outfits:
+  day:
+    - key: casual
+      en: a soft mustard-yellow long-sleeved t-shirt, navy trousers and white sneakers
+      en_f: a soft mustard-yellow long-sleeved dress over navy leggings and white sneakers
+      hijab_en: a soft cream hijab
+  festive:
+    - key: festive
+      en: a neat festive outfit, a cream shirt with a small embroidered collar and dark-green trousers
+      en_f: a festive dark-green dress with delicate cream embroidery on the collar and sleeves
+      hijab_en: a soft cream hijab with a thin gold edge
+  sleep:
+    - key: moons
+      en: light-blue pajamas with tiny golden moons
+      hijab_en: a soft light-blue hijab matching the pajamas
+
+blurb_ar: "حكايةٌ كُتبت لـ{name} وحدَ{ه/ها}، فيها ما {يحبُّه/تحبُّه} ومَن {يحبُّهم/تحبُّهم}."
+blurb_en: "A story written for {name} alone, full of the things and the people {name} loves."
+
+for_parents:
+  lesson_ar: "لكلّ طفلٍ حكايةٌ تشبهه، وأجملُ الحكايات ما نعيشه معًا."
+  lesson_en: "Every child has a story of their own, and the best stories are the ones we live together."
+  questions_ar:
+    - "ما أجملُ لحظةٍ في حكايتِك؟"
+    - "مَن {تحبُّ/تحبّين} أن {تحكيَ/تحكي} له هذه الحكاية؟"
+  questions_en:
+    - "What was the best moment in your story?"
+    - "Who would you like to tell this story to?"
+
+cover:
+  scene: The hero smiles in the special place of the story, arms open wide, in warm golden light.
+  location: place
+  time: afternoon
+  outfit: festive
+  companion_action: floats beside the hero's shoulder, waving happily
+
+pages:
+  - index: 1
+    layout: full
+    text_pos: top
+    location: home
+    time: morning
+    beat: opening — the hero at home on the morning the story begins
+    scene: The hero wakes up smiling in a sunny room, excited about the day ahead.
+    companion_action: peeks out from behind the pillow
+    text_ar: "في صباحٍ جميل، {استيقظَ/استيقظتْ} {name} {وقلبُه/وقلبُها} يرقص فرحًا."
+    text_en: "One lovely morning, {name} woke up with a happy, dancing heart."
+  - index: 2
+    layout: split
+    location: home
+    time: morning
+    beat: the occasion is announced — why today is special
+    scene: The hero learns what today is about, eyes shining with excitement.
+    companion_action: claps its little hands
+    text_ar: "اليوم يومٌ مميّز، {وكان/وكانت} {name} {يعرفُ/تعرفُ} ذلك."
+    text_en: "Today was a special day, and {name} knew it."
+  - index: 3
+    layout: full
+    text_pos: bottom
+    location: home
+    outfit: festive
+    time: morning
+    beat: getting ready with the family
+    scene: The hero gets ready for the day, proud and cheerful.
+    companion_action: helps carry something small
+    text_ar: "{استعدَّ/استعدّتْ} {name} بكلّ حماس."
+    text_en: "{name} got ready with lots of excitement."
+  - index: 4
+    layout: full
+    text_pos: top
+    location: place
+    outfit: festive
+    time: morning
+    beat: arriving at the special place — the first wonder
+    scene: The hero arrives at the special place and looks around in wonder.
+    companion_action: floats up high to see everything
+    text_ar: "{وصلَ/وصلتْ} {name} إلى المكان، {وفتحَ/وفتحتْ} {عينيه/عينيها} على كلّ شيء جميل."
+    text_en: "{name} arrived and looked around at everything lovely."
+  - index: 5
+    layout: spread
+    text_pos: top
+    location: place
+    outfit: festive
+    time: noon
+    beat: the big wide scene of the place
+    scene: A wide view of the special place with the hero in the middle of it all, full of life and color.
+    companion_action: twirls happily in the air
+    text_ar: "كان المكانُ أجملَ ممّا {تخيّلَ/تخيّلتْ} {name}."
+    text_en: "The place was even more beautiful than {name} had imagined."
+  - index: 6
+    layout: full
+    text_pos: top
+    location: place
+    outfit: festive
+    time: noon
+    beat: the first thing the child loves or did
+    scene: The hero enjoys the first favorite thing, laughing.
+    companion_action: joins in
+    text_ar: "{وجدَ/وجدتْ} {name} أوّلَ شيءٍ {يحبُّه/تحبُّه}."
+    text_en: "{name} found the first thing {name} loves."
+  - index: 7
+    layout: split
+    location: place
+    outfit: festive
+    time: noon
+    beat: the second thing the child loves or did
+    scene: The hero enjoys the second favorite thing with a big smile.
+    companion_action: cheers from close by
+    text_ar: "ثمّ {جاءَ/جاءتْ} لحظةُ الشيء الثاني الذي {يحبُّه/تحبُّه} {name}."
+    text_en: "Then came the second thing {name} loves."
+  - index: 8
+    layout: full
+    text_pos: bottom
+    location: place
+    outfit: festive
+    time: afternoon
+    beat: a small, gentle challenge
+    scene: The hero meets a small, gentle problem and thinks about what to do.
+    companion_action: looks at the hero, ready to help
+    text_ar: "لكنّ أمرًا صغيرًا {حيّرَه/حيّرَها} قليلًا."
+    text_en: "But something small puzzled {name} a little."
+  - index: 9
+    layout: full
+    text_pos: top
+    location: place
+    outfit: festive
+    time: afternoon
+    beat: the hero finds a way, with a little help
+    scene: The hero solves the little problem with a clever, kind idea.
+    companion_action: gives a gentle nudge of encouragement
+    text_ar: "{فكّرَ/فكّرتْ} {name} قليلًا، {ووجدَ/ووجدتْ} فكرةً رائعة."
+    text_en: "{name} thought for a moment and found a wonderful idea."
+  - index: 10
+    layout: spread
+    text_pos: top
+    location: place
+    outfit: festive
+    time: afternoon
+    beat: the joyful peak of the day, together with loved ones
+    scene: The joyful peak of the day, the hero celebrating with the people who love them.
+    companion_action: spins in circles of joy
+    text_ar: "{وضحكَ/وضحكتْ} {name} مع كلّ مَن {يحبُّهم/تحبُّهم}."
+    text_en: "{name} laughed with everyone {name} loves."
+  - index: 11
+    layout: full
+    text_pos: top
+    location: place
+    outfit: festive
+    time: afternoon
+    beat: the third loved thing, or a sharing moment with the family
+    scene: The hero shares a warm, happy moment with the family.
+    companion_action: snuggles close
+    text_ar: "{وشاركَ/وشاركتْ} {name} فرحتَه مع عائلتِه."
+    text_en: "{name} shared the happiness with the family."
+  - index: 12
+    layout: split
+    location: place
+    outfit: festive
+    time: sunset
+    beat: the wish or the lesson, said simply
+    scene: The hero pauses in the soft light, thinking about a warm wish.
+    companion_action: listens closely
+    text_ar: "{وتمنّى/وتمنّتْ} {name} أمنيةً جميلة."
+    text_en: "{name} made a lovely wish."
+  - index: 13
+    layout: full
+    text_pos: bottom
+    location: home
+    outfit: festive
+    time: sunset
+    beat: going home, tired and happy
+    scene: The hero heads home with the family as the sun sets, tired and happy.
+    companion_action: yawns sleepily
+    text_ar: "{وعادَ/وعادتْ} {name} إلى البيت {متعبًا وسعيدًا/متعبةً وسعيدة}."
+    text_en: "{name} went home, tired and happy."
+  - index: 14
+    layout: full
+    text_pos: top
+    location: home
+    outfit: sleep
+    time: night
+    beat: closing — bedtime under the moon, the day remembered
+    scene: The hero lies in bed under a window with a bright crescent moon, smiling at the memories.
+    companion_action: curls up at the foot of the bed, glowing softly
+    text_ar: "{ونامَ/ونامتْ} {name} تحت ضوء القمر، {يحلمُ/تحلمُ} بيومٍ جميلٍ آخر."
+    text_en: "{name} fell asleep in the moonlight, dreaming of another lovely day."

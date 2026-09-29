@@ -8,7 +8,10 @@ import { Button } from "@/components/ui/Button";
 import { errorText } from "@/lib/api";
 import type { ThemeCard } from "@/lib/catalog";
 import { createApi, type Book, type Character, type Child, type Line } from "@/lib/create";
+import { briefBody, briefReady, CUSTOM_THEME, customExtra, useCustomBrief } from "@/lib/customStory";
 import { money, type Catalog } from "@/lib/store";
+import { CompanionSummary } from "./companion/CompanionSummary";
+import { CustomStoryForm } from "./CustomStoryForm";
 import { Check, Frame, Lead } from "./Frame";
 
 /** Step 7 (design Create6): the story world, stories for the child's age first, and an optional dedication. */
@@ -21,6 +24,8 @@ export function StoryStep({
   initial,
   back,
   onStarted,
+  companion = null,
+  onCompanion,
 }: {
   child: Child;
   character: Character;
@@ -30,15 +35,25 @@ export function StoryStep({
   initial: string | null;
   back: () => void;
   onStarted: (book: Book) => void;
+  companion?: string | null; // «ارسم صاحبك»: the chosen companion's id (none: the theme's own)
+  onCompanion?: () => void; // back to the companion step, to add or change it
 }) {
   const t = useTranslations("create");
+  const tcs = useTranslations("customStory");
   const te = useTranslations("errors");
   const locale = useLocale();
   const fits = (th: ThemeCard) => th.age_min <= child.age && child.age <= th.age_max;
   const list = themes.filter((th) => th.status === "available").sort((a, b) => Number(fits(b)) - Number(fits(a)));
+  // «حكاية خاصة» (Magic): a story of their own instead of a ready theme, when the catalog sells it
+  const extra = line === "magic" ? customExtra(catalog) : null;
   const [theme, setTheme] = useState<string | null>(
-    initial && list.some((th) => th.slug === initial) ? initial : (list[0]?.slug ?? null),
+    (initial === CUSTOM_THEME && extra !== null) || (initial && list.some((th) => th.slug === initial))
+      ? initial
+      : (list[0]?.slug ?? null),
   );
+  const custom = theme === CUSTOM_THEME;
+  const [brief, setBrief] = useCustomBrief(child.id);
+  const [bad, setBad] = useState<string[]>([]);
   const [dedication, setDedication] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -54,10 +69,16 @@ export function StoryStep({
       theme,
       line,
       dedication: dedication.trim() || undefined,
+      companion_id: companion ?? undefined,
+      custom: custom ? briefBody(brief) : undefined,
     });
     setBusy(false);
+    setBad([]);
     if (r.ok) onStarted(r.data);
-    else setError(errorText(r.error, locale, r.status === 0 ? te("network") : te("unknown")));
+    else {
+      setError(errorText(r.error, locale, r.status === 0 ? te("network") : te("unknown")));
+      setBad(((r.error?.details as { fields?: string[] } | undefined)?.fields ?? []).map(String));
+    }
   }
 
   return (
@@ -67,13 +88,44 @@ export function StoryStep({
       n={7}
       back={back}
       footer={
-        <Button onClick={start} loading={busy} size="lg" className="grow" disabled={!theme}>
+        <Button
+          onClick={start}
+          loading={busy}
+          size="lg"
+          className="grow"
+          disabled={!theme || (custom && !briefReady(brief))}
+        >
           {t("story.cta")}
         </Button>
       }
     >
       <Lead title={t("story.title", { name: child.name, gender: child.gender })} body={t("story.body")} />
       <div className="flex flex-col gap-3" role="radiogroup" aria-label={t("steps.story")}>
+        {extra !== null && (
+          <button
+            type="button"
+            role="radio"
+            aria-checked={custom}
+            onClick={() => setTheme(CUSTOM_THEME)}
+            className={`flex items-center gap-3 rounded-[20px] bg-night-900 p-2.5 text-start text-paper ${custom ? "ring-[3px] ring-amber-500" : ""}`}
+          >
+            <span
+              aria-hidden="true"
+              className="flex size-[104px] shrink-0 items-center justify-center rounded-2xl bg-night-800 text-[44px] text-amber-300"
+            >
+              ✦
+            </span>
+            <div className="flex grow flex-col gap-1">
+              <span className="self-start rounded-full bg-amber-500 px-2 py-0.5 text-[11px] font-bold text-night-950">
+                {extra > 0 ? `+${money(extra, catalog?.currency ?? "ILS", locale)}` : tcs("badge")}
+              </span>
+              <h2 className="text-[18px] leading-snug text-paper">{tcs("title")}</h2>
+              <p className="text-caption text-night-100">{tcs("tagline", { name: child.name })}</p>
+            </div>
+            <Check on={custom} />
+          </button>
+        )}
+        {custom && <CustomStoryForm child={child} value={brief} onChange={setBrief} bad={bad} />}
         {list.map((th) => {
           const on = theme === th.slug;
           return (
@@ -104,6 +156,9 @@ export function StoryStep({
           );
         })}
       </div>
+      {onCompanion && (
+        <CompanionSummary child={child} line={line} catalog={catalog} companionId={companion} onChange={onCompanion} />
+      )}
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="dedication" className="flex flex-wrap items-baseline justify-between gap-2">

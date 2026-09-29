@@ -26,6 +26,7 @@ from qamra_api.routers.admin_self_hosted import router as admin_self_hosted_rout
 from qamra_api.routers.admin_staff import router as admin_staff_router
 from qamra_api.routers.admin_studio import router as admin_studio_router
 from qamra_api.routers.admin_themes import router as admin_themes_router
+from qamra_api.routers.companions import router as companions_router
 from qamra_api.routers.create import router as create_router
 from qamra_api.routers.e2e import router as e2e_router
 from qamra_api.routers.examples import admin_router as examples_admin_router
@@ -116,6 +117,7 @@ def create_app(settings: ApiSettings | None = None, *, manage_resources: bool = 
     app.include_router(store_router)
     app.include_router(admin_orders_router)
     app.include_router(create_router)
+    app.include_router(companions_router)  # W3: «ارسم صاحبك» in the parent flow
     app.include_router(admin_catalog_router)
     app.include_router(admin_print_costs_router)
     app.include_router(admin_reports_router)

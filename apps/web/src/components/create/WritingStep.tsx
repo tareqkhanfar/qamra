@@ -24,6 +24,7 @@ export function WritingStep({
   onChange: (b: Book) => void;
 }) {
   const t = useTranslations("create");
+  const tcs = useTranslations("customStory");
   const [tick, setTick] = useState(0);
   const failed = book.status === "failed";
   const messages = t.raw("writing.messages") as string[];
@@ -43,7 +44,7 @@ export function WritingStep({
   return (
     <Frame title={t("bookOf", { name: child.name })} label={t("steps.writing")} n={8} back={failed ? back : undefined}>
       {failed ? (
-        <Alert>{t("writing.failed")}</Alert>
+        <Alert>{book.problem === "brief_unsafe" ? tcs("unsafeBrief") : t("writing.failed")}</Alert>
       ) : (
         <div role="status" className="flex flex-col items-center gap-5 py-8 text-center">
           <MoonPhase p={total ? Math.max(0.08, done / total) : ((tick % 12) + 1) / 12} className="size-28" />

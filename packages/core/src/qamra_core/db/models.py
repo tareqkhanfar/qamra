@@ -82,6 +82,16 @@ class CompanionType(enum.StrEnum):
     other = "other"
 
 
+class CompanionStatus(enum.StrEnum):
+    """The parent's «ارسم صاحبك» step: the drawing is uploaded, 2 options are drawn, the parent picks one."""
+
+    draft = "draft"  # uploaded and cleaned; not drawn yet
+    generating = "generating"
+    ready = "ready"  # options to choose from
+    approved = "approved"  # one option chosen: the companion is reusable in the child's books
+    failed = "failed"
+
+
 class BookStatus(enum.StrEnum):
     draft = "draft"
     generating = "generating"
@@ -310,6 +320,13 @@ class Companion(IdMixin, TimestampMixin, Base):
     approved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     provider: Mapped[str | None] = mapped_column(String(32))
     model: Mapped[str | None] = mapped_column(String(100))
+    # The parent flow: where the step is, the drawn options ({key, round, provider, model}) and the
+    # parent's crop/clean choices and the last failure reason.
+    status: Mapped[CompanionStatus] = mapped_column(
+        str_enum(CompanionStatus, "companion_status"), default=CompanionStatus.draft
+    )
+    options: Mapped[list[dict[str, Any]]] = mapped_column(JSONB, default=list)
+    params: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
 
 
 # ---- themes and books ------------------------------------------------------------------------

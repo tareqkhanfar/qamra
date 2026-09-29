@@ -1,5 +1,6 @@
 /** The parent create flow (design Create1–Create11): the child, consent, photo, character, story, preview. */
 import { api, upload } from "@/lib/api";
+import type { CustomBriefBody } from "@/lib/customStory";
 import type { Cart } from "@/lib/store";
 
 export type Line = "classic" | "magic";
@@ -43,8 +44,20 @@ export type Book = {
   preview: boolean;
   progress: { done?: number; total?: number };
   pages: BookPage[];
+  custom?: boolean; // «حكاية خاصة»: sold as magic-custom-story
+  companion?: { id: string; name: string } | null; // the child's drawn companion
+  problem?: "brief_unsafe" | null; // why the book stopped, when the parent can fix it
 };
 export type Fix = "skin" | "face" | "hair" | "age";
+export type StartBook = {
+  child_id: string;
+  character_id: string;
+  theme: string;
+  line: Line;
+  dedication?: string;
+  companion_id?: string;
+  custom?: CustomBriefBody;
+};
 
 export const createApi = {
   children: () => api<Child[]>("/api/create/children"),
@@ -60,8 +73,7 @@ export const createApi = {
     api<Character>(`/api/create/children/${childId}/characters`, { json: { style, fixes } }),
   character: (id: string) => api<Character>(`/api/create/characters/${id}`),
   approve: (id: string) => api<Character>(`/api/create/characters/${id}/approve`, { method: "POST" }),
-  startBook: (input: { child_id: string; character_id: string; theme: string; line: Line; dedication?: string }) =>
-    api<Book>("/api/create/books", { json: input }),
+  startBook: (input: StartBook) => api<Book>("/api/create/books", { json: input }),
   book: (id: string) => api<Book>(`/api/create/books/${id}`),
   editPage: (id: string, beat: number, text: string) =>
     api<Book>(`/api/create/books/${id}/pages/${beat}`, { method: "PATCH", json: { text } }),
@@ -82,6 +94,7 @@ export const STEPS = [
   "line",
   "style",
   "character",
+  "companion", // «ارسم صاحبك»: optional sub-steps of step 6 (design CompIntro…CompChoose)
   "story",
   "writing",
   "review",

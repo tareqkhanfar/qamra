@@ -12,10 +12,11 @@ from decimal import Decimal
 from typing import Annotated, Any, Literal
 
 from fastapi import APIRouter, File, Request, Response, UploadFile
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, ValidationError, field_validator
 from sqlalchemy import func, select
 
 from qamra_ai.pipeline.classic import classic_budget_usd
+from qamra_ai.pipeline.custom_story import CUSTOM_THEME, CustomBrief, screen_brief
 from qamra_ai.pipeline.theme import Theme
 from qamra_api import ratelimit, runtime_settings
 from qamra_api.classic import CLASSIC_JOB, live_template, resume_classic_draft
@@ -38,6 +39,8 @@ from qamra_core.db.models import (
     CharacterStatus,
     Child,
     ChildPhoto,
+    Companion,
+    CompanionStatus,
     Consent,
     Gender,
     Locale,
@@ -56,6 +59,7 @@ MAX_CHARACTERS = 4  # the first drawing and 3 free redraws per child
 PREVIEWS_PER_DAY = 3  # Magic previews cost real money: per parent, per day
 UPLOADS_PER_HOUR = 20
 LINE_PRODUCTS = {"classic": ("classic-book",), "magic": ("magic-book", "magic-custom-story")}
+CUSTOM_PRODUCT = "magic-custom-story"  # «قمرة سحري» with a custom story (Addendum 4 §7)
 
 
 class ChildIn(BaseModel):
@@ -426,6 +430,13 @@ class BookIn(BaseModel):
     line: Literal["classic", "magic"]
     language: Literal["ar", "en"] = "ar"
     dedication: str | None = Field(default=None, max_length=120)
+    companion_id: uuid.UUID | None = None  # «ارسم صاحبك»: the child's chosen companion; None → the theme's
+    custom: dict[str, Any] | None = None  # «حكاية خاصة» (Magic): the brief, checked by `custom_brief`
+
+
+class CompanionRef(BaseModel):
+    id: uuid.UUID
+    name: str
 
 
 class PageOut(BaseModel):
@@ -445,9 +456,21 @@ class BookOut(BaseModel):
     preview: bool  # Magic draws a preview before ordering; Classic uses the theme's ready template
     progress: dict[str, Any]
     pages: list[PageOut]
+    custom: bool = False  # a custom story: sold as magic-custom-story
+    companion: CompanionRef | None = None  # the child's drawn companion, when the book has one
+    problem: str | None = None  # why the book stopped, when the parent can fix it (brief_unsafe)
 
 
 async def _book_out(db: SessionDep, book: Book) -> BookOut:
+    out = await _book_core(db, book)
+    comp = await db.get(Companion, book.companion_id) if book.companion_id else None
+    out.custom = bool(book.generation.get("custom"))
+    out.companion = CompanionRef(id=comp.id, name=comp.name) if comp else None
+    out.problem = "brief_unsafe" if "brief_unsafe" in (book.flags or []) else None
+    return out
+
+
+async def _book_core(db: SessionDep, book: Book) -> BookOut:
     theme = await db.get(ThemeRow, book.theme_id)
     pages = (
         (await db.execute(select(BookPage).where(BookPage.book_id == book.id).order_by(BookPage.index)))
@@ -475,6 +498,43 @@ async def _my_book(db: SessionDep, user: CurrentUser, book_id: uuid.UUID) -> Boo
     return book
 
 
+def custom_brief(body: BookIn) -> dict[str, Any] | None:
+    """«حكاية خاصة» (Magic only): the brief's lengths, then the instant screen (links, phone numbers, plainly
+    unsafe words). The worker runs the AI safety review on it before any story is written."""
+    if body.custom is None:
+        if body.theme == CUSTOM_THEME:
+            raise ApiError("custom_story_invalid", 422, {"fields": ["custom"]})
+        return None
+    if body.line != "magic":
+        raise ApiError("custom_story_magic_only", 422)
+    if body.theme != CUSTOM_THEME:
+        raise ApiError("custom_story_invalid", 422, {"fields": ["theme"]})
+    try:
+        brief = CustomBrief.model_validate(body.custom)
+    except ValidationError as e:
+        fields = sorted({str(err["loc"][0]) for err in e.errors() if err["loc"]})
+        raise ApiError("custom_story_invalid", 422, {"fields": fields}) from e
+    unsafe = screen_brief(brief)
+    if unsafe:
+        raise ApiError("custom_story_unsafe", 422, {"fields": unsafe})
+    return brief.model_dump()
+
+
+async def _book_extras(
+    db: SessionDep, child: Child, body: BookIn
+) -> tuple[uuid.UUID | None, dict[str, Any] | None]:
+    """The book's optional extras: the child's chosen companion and the custom story brief."""
+    companion_id = None
+    if body.companion_id is not None:
+        comp = await db.get(Companion, body.companion_id)
+        if comp is None or comp.child_id != child.id:
+            raise ApiError("not_found", 404)
+        if comp.status != CompanionStatus.approved or not comp.sheet_key:
+            raise ApiError("companion_not_approved", 409)
+        companion_id = comp.id
+    return companion_id, custom_brief(body)
+
+
 @router.post("/books", status_code=201)
 async def start_book(
     body: BookIn, user: CurrentUser, db: SessionDep, settings: SettingsDep, queue: QueueDep
@@ -483,6 +543,7 @@ async def start_book(
     character = await _my_character(db, user, body.character_id)
     if character.child_id != child.id or character.approved_at is None:
         raise ApiError("character_not_approved", 409)
+    companion_id, custom = await _book_extras(db, child, body)
     row = (
         await db.execute(select(ThemeRow).where(ThemeRow.slug == body.theme, ThemeRow.active))
     ).scalar_one_or_none()
@@ -505,9 +566,12 @@ async def start_book(
         raise ApiError("too_many_previews", 429)
     values = (await runtime_settings.current(db, settings)).values
     classic = {"template_id": str(template.id), "budget_pinned": True} if template else {}
+    if custom:
+        classic["custom"] = custom  # the worker writes the story and its pictures from the brief
     book = Book(
         child_id=child.id,
         character_id=character.id,
+        companion_id=companion_id,
         theme_id=row.id,
         theme_version=row.version,
         created_by_user_id=user.id,
@@ -599,9 +663,13 @@ async def add_to_cart(
     line = str(book.generation.get("line", "magic"))
     if variant is None or catalog.product_of(variant).slug not in LINE_PRODUCTS[line]:
         raise ApiError("unknown_product", 404)
+    if (catalog.product_of(variant).slug == CUSTOM_PRODUCT) != bool(book.generation.get("custom")):
+        raise ApiError("unknown_product", 404)  # a custom story is sold as magic-custom-story, and only it is
     addons = [a.model_dump() for a in body.addons]
     if book.parent_message and line == "classic" and all(a["slug"] != "dedication-page" for a in addons):
         addons.append({"slug": "dedication-page", "qty": 1})  # written on the story step; free in Magic
+    if book.companion_id and line == "classic" and all(a["slug"] != "drawing-companion" for a in addons):
+        addons.append({"slug": "drawing-companion", "qty": 1})  # chosen on the companion step; free in Magic
     check_item(catalog, variant, book.art_style, addons)
     cart = await ensure_cart(db, request, response, user, settings)
     same = (

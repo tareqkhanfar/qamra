@@ -15,6 +15,19 @@
 - **Staff:** roles in the UI (only owners grant owner; nobody edits their own roles), and an audit-log viewer with filters.
 - Migration `918b650a07fc`.
 
+## W3: «ارسم صاحبك» and «حكاية خاصة» in the parent flow (2026-09-29)
+
+- **«ارسم صاحبك»**, optional sub-steps of step 6, between the character and the story (designs CompIntro, CompUpload, CompCrop, CompName, CompGen, CompChoose):
+  - photograph the drawing (camera or gallery), then crop, turn and clean it (original / cleaned views);
+  - name it, say what it is, pick its nature, and see 2 options drawn in the book's art style, each beside the drawing;
+  - choose one, or redraw (3 free); a big «تخطّي» keeps the theme's own companion;
+  - the book is drawn with it: the story names it, every page shows it, and the book ends with «وهكذا وُلد صاحبي».
+- **Privacy:** consent first, no EXIF/GPS, private storage under the child. The original photo is deleted 24 h after the choice, the options not chosen at once, and everything with "delete my child's data".
+- **«أصحابي»** in the account: the chosen companions, «حكاية جديدة معه», and delete.
+- **Pricing:** included in Magic; +20₪ on a Classic cart line, added automatically.
+- **«حكاية خاصة» (Magic, 169₪):** a short guided brief on the story step (the occasion, the place, 2–3 loved things, a wish, optional family members in the family's own words). Claude writes the story and every page's picture from it (prompt `story_custom.v1`). The brief gets an instant screen and the safety review before anything is written; errors are friendly and per field.
+- Migration `d022f9307892` (companion status, options, crop choices).
+
 ## Phase 5: «صوت أهلي», SEO and a performance pass (2026-09-29)
 
 - **«صوت أهلي» (family voice)** for books bought with the «أصوات العائلة» extra:
