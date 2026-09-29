@@ -370,7 +370,9 @@ async def book_detail(book_id: uuid.UUID, db: SessionDep) -> BookDetail:
         qa_summary=dict(book.qa_summary or {}),
         preflight=dict(book.preflight or {}),
         error=book.error,
-        generation={k: gen.get(k) for k in ("mode", "progress", "models", "outfits", "offline")},
+        generation={
+            k: gen.get(k) for k in ("mode", "progress", "models", "outfits", "offline", "public_example")
+        },
         files={
             "interior": bool(book.pdf_interior_key),
             "cover": bool(book.pdf_cover_key),

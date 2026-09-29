@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
+import { ExamplePublish } from "./ExamplePublish";
 import { api, errorText } from "@/lib/api";
 
 type Status = "draft" | "generating" | "preview" | "in_review" | "approved" | "ordered" | "printed" | "failed";
@@ -67,7 +68,12 @@ type Detail = {
   };
   preflight: Record<string, { passed: boolean; min_dpi: number | null; checks: Check[] }>;
   error: string | null;
-  generation: { mode?: string; progress?: { done?: number; total?: number }; offline?: string | boolean };
+  generation: {
+    mode?: string;
+    progress?: { done?: number; total?: number };
+    offline?: string | boolean;
+    public_example?: boolean;
+  };
   files: { interior: boolean; cover: boolean; proof: boolean };
   pages: Page[];
   plan: Slot[];
@@ -303,6 +309,15 @@ export function AdminQueue() {
                   >
                     {t("approve")}
                   </Button>
+                )}
+                {detail.is_sample && (
+                  <ExamplePublish
+                    bookId={detail.id}
+                    status={detail.status}
+                    published={!!detail.generation.public_example}
+                    onChange={() => void loadDetail(detail.id)}
+                    onError={(text) => setMessage({ tone: "error", text })}
+                  />
                 )}
                 {(detail.status === "failed" || detail.status === "preview") && (
                   <Button

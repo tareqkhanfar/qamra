@@ -16,6 +16,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from qamra_ai.pipeline.style import style_guides
 from qamra_ai.pipeline.theme import CONTENT_DIR
+from qamra_api.store.quiz import seed_quiz_rules
 from qamra_core.db.models import Currency
 from qamra_core.db.store import (
     AddOn,
@@ -273,5 +274,6 @@ async def seed_store(db: AsyncSession, path: Path = CATALOG) -> list[str]:
     added += await _products(db, data["products"])
     added += await _addons(db, data.get("addons", []))
     added += await _rules(db, data)
+    added += await seed_quiz_rules(db)  # Addendum 9 §1.3
     await db.commit()
     return added

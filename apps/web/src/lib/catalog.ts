@@ -44,6 +44,11 @@ export const getThemes = (lang: string) => get<ThemeCard[]>(`/api/themes?lang=${
 export const getTheme = (slug: string, lang: string) =>
   get<ThemeDetail>(`/api/themes/${encodeURIComponent(slug)}?lang=${lang}`);
 export const getPricing = () => get<Price[]>("/api/pricing", 0);
+/** Published example books (real, watermarked pages); [] when none are published or the API is older. */
+export const getExamples = async (lang: string, theme?: string) =>
+  (await get<import("@/lib/examples").Example[]>(
+    `/api/examples?lang=${lang}${theme ? `&theme=${encodeURIComponent(theme)}` : ""}`,
+  )) ?? [];
 
 /** The store catalog (Addendum 4): products, variants and prices, styles, add-ons, delivery zones. */
 export const getStoreCatalog = (currency: "ILS" | "JOD" = "ILS") =>

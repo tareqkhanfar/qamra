@@ -1,6 +1,13 @@
 # Decisions log
 
 Newest first. Each entry: date — decision — why.
+## 2026-09-29 — Public examples: real books on the site, only from invented sample children
+
+- **Only sample books can be public examples.** An admin with `books.review` publishes an *approved* book (Admin → the approval queue → «انشره نموذجًا على الموقع»). The API refuses any book whose book or child is not `is_sample`, and the admin must confirm that the child is invented (a generated face), as for Classic templates: a volunteer child's book stays private even with written consent. Unpublishing is one click.
+- **The flag lives in `Book.generation["public_example"]`** (no migration). A published book is listed only while it stays approved in an active theme: a redraw or a text edit sends it back to review, which hides it until it is approved again.
+- **Public images are web copies, watermarked «نموذج»** ("SAMPLE" in English books): at most 1280 px (560 px thumbnails), diagonal marks plus a corner tag, JPEG without metadata. They are made once from the stored art at publish time (or on first request) and kept under the sample child's prefix, so deleting the sample child deletes them. The key and the URL carry a hash of the source and the page's last change, so the responses can be `Cache-Control: public, max-age=86400` and a redrawn page still shows at once. The responses carry no names, child ids or storage keys.
+- **API:** `GET /api/examples?theme=&lang=` (the variant girl / girl with hijab / boy comes from the child's gender and hijab; pages in reading order with their words, layout and printed page numbers), `GET /api/examples/{id}/pages/{beat}/{s|m}.jpg`, `GET /api/examples/{id}/character/{s|m}.jpg`, `POST|DELETE /api/admin/books/{id}/example`.
+- **The site falls back to the illustrated placeholders** (with a note) wherever no example is published yet, so every page looks finished before the first example goes live.
 
 ## 2026-09-28 — Addendum 7: «مغامراتي مع عائلتي» (proposal only)
 

@@ -164,6 +164,20 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "وصلتم إلى حد المعاينات لليوم. جرّبوا غدًا أو أكملوا طلبًا حاليًا.",
         "You've reached today's preview limit. Try tomorrow or finish a current order.",
     ),
+    # public examples (docs/decisions.md)
+    "example_not_sample": (
+        "يمكن نشر كتب الأطفال المتخيَّلين التجريبية فقط كنماذج. كتب الأطفال الحقيقيين لا تُنشر أبدًا.",
+        "Only sample books of invented children can be published as examples. Real children's books never "
+        "are.",
+    ),
+    "example_not_approved": (
+        "اعتمدوا الكتاب أولًا (بغلافه وصفحاته)، ثم انشروه نموذجًا.",
+        "Approve the book first (with its cover and pages), then publish it as an example.",
+    ),
+    "quiz_gaps": (
+        "بعض الإجابات لا تصل إلى أي اقتراح. أضيفوا قاعدة تغطيها ثم احفظوا.",
+        "Some answers lead to no recommendation. Add a rule that covers them, then save.",
+    ),
     "internal_error": (
         "حدث خطأ غير متوقع. حاولوا مرة أخرى بعد قليل.",
         "Something went wrong. Please try again in a moment.",

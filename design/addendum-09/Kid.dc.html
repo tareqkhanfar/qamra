@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>شخصية طفل — رسم أصلي</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="{{rootStyle}}">
+  <svg width="100%" height="100%" viewBox="0 0 240 280" preserveAspectRatio="xMidYMid meet" role="img" aria-label="{{label}}">
+    <defs>
+      <filter id="kp-desat"><feColorMatrix type="saturate" values="0.3"></feColorMatrix></filter>
+    </defs>
+    <rect width="240" height="280" fill="#D9D3C7" display="{{photoDisp}}"></rect>
+    <circle cx="150" cy="90" r="120" fill="#E8E3D8" display="{{photoDisp}}"></circle>
+    <g filter="{{filt}}">
+      <path d="M36 280 C36 222 78 204 120 204 C162 204 204 222 204 280 Z" fill="{{outfit}}" stroke="{{ink}}" stroke-width="2.5"></path>
+      <path d="M100 206 L120 230 L140 206" fill="none" stroke="#FFFDF8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"></path>
+      <g display="{{waveDisp}}">
+        <path d="M170 232 C192 214 202 192 204 170" fill="none" stroke="{{outfit}}" stroke-width="24" stroke-linecap="round"></path>
+        <circle cx="205" cy="160" r="13" fill="{{skin}}" stroke="{{ink}}" stroke-width="2.5"></circle>
+      </g>
+      <rect x="106" y="168" width="28" height="42" rx="12" fill="{{skin}}"></rect>
+      <g transform="{{headTf}}">
+        <path d="M42 124 A78 82 0 0 1 198 124 L206 236 C170 256 70 256 34 236 Z" fill="{{hijabColor}}" stroke="{{ink}}" stroke-width="2.5" display="{{hijabDisp}}"></path>
+        <path d="M60 126 A60 66 0 0 1 180 126 L184 152 L56 152 Z" fill="{{hair}}" display="{{hairDisp}}"></path>
+        <path d="M58 120 C50 170 54 200 70 214 L92 200 L86 130 Z M182 120 C190 170 186 200 170 214 L148 200 L154 130 Z" fill="{{hair}}" stroke="{{ink}}" stroke-width="2.5" display="{{longDisp}}"></path>
+        <circle cx="68" cy="132" r="11" fill="{{skin}}" stroke="{{ink}}" stroke-width="2.5" display="{{hairDisp}}"></circle>
+        <circle cx="172" cy="132" r="11" fill="{{skin}}" stroke="{{ink}}" stroke-width="2.5" display="{{hairDisp}}"></circle>
+        <ellipse cx="120" cy="128" rx="52" ry="58" fill="{{skin}}" stroke="{{ink}}" stroke-width="2.5"></ellipse>
+        <path d="M66 120 C66 64 174 64 174 120 C158 94 82 94 66 120 Z" fill="{{hijabColor}}" stroke="{{ink}}" stroke-width="2.5" display="{{hijabDisp}}"></path>
+        <path d="M64 116 C68 62 172 54 178 116 C162 98 134 90 108 100 C94 106 80 112 64 116 Z" fill="{{hair}}" stroke="{{ink}}" stroke-width="2.5" display="{{hairDisp}}"></path>
+        <g fill="{{hair}}" stroke="{{ink}}" stroke-width="2.5" display="{{curlyDisp}}">
+          <circle cx="78" cy="88" r="16"></circle><circle cx="100" cy="72" r="17"></circle><circle cx="126" cy="68" r="17"></circle><circle cx="150" cy="76" r="16"></circle><circle cx="166" cy="96" r="14"></circle>
+        </g>
+        <path d="M92 110 q8 -6 16 0 M132 110 q8 -6 16 0" fill="none" stroke="#3A2A22" stroke-width="3" stroke-linecap="round"></path>
+        <ellipse cx="100" cy="128" rx="6.5" ry="8.5" fill="#1C2140"></ellipse>
+        <ellipse cx="140" cy="128" rx="6.5" ry="8.5" fill="#1C2140"></ellipse>
+        <circle cx="102.5" cy="125" r="2.2" fill="#FFFFFF"></circle>
+        <circle cx="142.5" cy="125" r="2.2" fill="#FFFFFF"></circle>
+        <circle cx="86" cy="150" r="9" fill="#E9826B" opacity="0.4"></circle>
+        <circle cx="154" cy="150" r="9" fill="#E9826B" opacity="0.4"></circle>
+        <path d="M108 154 Q120 166 132 154" fill="none" stroke="#7A3B2E" stroke-width="3.5" stroke-linecap="round"></path>
+        <g display="{{capDisp}}">
+          <path d="M66 70 L120 48 L174 70 L120 92 Z" fill="#16204A" stroke="#0E1530" stroke-width="2"></path>
+          <path d="M92 78 L92 94 C108 102 132 102 148 94 L148 78" fill="#22306A"></path>
+          <path d="M120 70 L166 80 L166 104" fill="none" stroke="#F2B33D" stroke-width="3" stroke-linecap="round"></path>
+          <circle cx="166" cy="108" r="5" fill="#F2B33D"></circle>
+        </g>
+      </g>
+    </g>
+  </svg>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"w":{"editor":"int","default":240,"min":40,"max":800},"skin":{"editor":"color","default":"#E8B98F","options":["#F3CFAE","#E8B98F","#C98F63","#8D5A3B"]},"hair":{"editor":"color","default":"#3A2A22","options":["#3A2A22","#1E1614","#6B4226","#A0673C"]},"outfit":{"editor":"color","default":"#5B6FC0","options":["#5B6FC0","#E9826B","#7FA38A","#A99BD6"]},"hairStyle":{"editor":"enum","default":"short","options":["short","long","curly"]},"hijab":{"editor":"boolean","default":false},"hijabColor":{"editor":"color","default":"#A99BD6","options":["#A99BD6","#7FA38A","#E9826B","#F2B33D"]},"look":{"editor":"enum","default":"art","options":["art","photo"]},"pose":{"editor":"enum","default":"front","options":["front","wave","tilt"]},"cap":{"editor":"boolean","default":false},"$preview":{"width":240,"height":280}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const w = p.w ?? 240;
+    const h = Math.round(w * 280 / 240);
+    const hijab = !!p.hijab;
+    const style = p.hairStyle ?? 'short';
+    const photo = (p.look ?? 'art') === 'photo';
+    const pose = p.pose ?? 'front';
+    const show = (b) => (b ? 'inline' : 'none');
+    return {
+      rootStyle: 'width:' + w + 'px;height:' + h + 'px;overflow:hidden;' + (photo ? 'border-radius:8px;' : ''),
+      skin: p.skin ?? '#E8B98F',
+      hair: p.hair ?? '#3A2A22',
+      outfit: p.outfit ?? '#5B6FC0',
+      hijabColor: p.hijabColor ?? '#A99BD6',
+      ink: photo ? 'none' : '#1C2140',
+      filt: photo ? 'url(#kp-desat)' : 'none',
+      photoDisp: show(photo),
+      hijabDisp: show(hijab),
+      hairDisp: show(!hijab),
+      longDisp: show(!hijab && style === 'long'),
+      curlyDisp: show(!hijab && style === 'curly'),
+      waveDisp: show(pose === 'wave'),
+      capDisp: show(!!p.cap),
+      headTf: pose === 'tilt' ? 'rotate(-9 120 150)' : 'rotate(0)',
+      label: photo ? 'صورة الطفل (عنصر نائب)' : 'رسم الطفل بطل القصة'
+    };
+  }
+}
+</script>
+</body>
+</html>

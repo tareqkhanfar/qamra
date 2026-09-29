@@ -1,0 +1,88 @@
+# «أي كتاب يناسب طفلي؟» (Addendum 9 §1.3): the default rules, seeded once by `qamra seed-store`.
+# The admin edits them in Admin → الكتالوج → «أسئلة الاختيار»; the database is the source of truth after that.
+#
+# Answers: age 3 = "3 or younger", 4, 5, 6 = "6–7"; goal gift / learn / family; pen yes / no (asked only
+# for learn). Rules are checked in order and the first one whose conditions all hold wins.
+# product / alternative: a catalog product slug (options narrow its variants), or `stories` for the story
+# books. Titles and reasons are optional; without a title the product's own name is shown.
+
+rules:
+  - goal: gift
+    product:
+      slug: stories
+      title_ar: قصة قمرة، طفلك بطلها
+      title_en: A Qamra story starring your child
+      why_ar: كتاب مطبوع باسمه وشخصيته. أجمل هدية لعيد ميلاد أو مناسبة.
+      why_en: A printed book with their name and character. The loveliest gift for a birthday or an occasion.
+    alternative:
+      slug: family-adventures
+      why_ar: هدية بتجمع العيلة حول 12 مغامرة
+      why_en: A gift that gathers the family around 12 adventures
+
+  - goal: family
+    product:
+      slug: family-adventures
+      why_ar: 12 مغامرة بالبيت والسوق والمطبخ والطبيعة، مع جواز سفر وملصقات.
+      why_en: 12 adventures at home, at the market, in the kitchen and outdoors, with a passport and stickers.
+    alternative:
+      slug: stories
+      title_ar: قصة قمرة
+      title_en: A Qamra story
+      why_ar: قصة مطبوعة بطلها طفلك
+      why_en: A printed story starring your child
+
+  - goal: learn
+    age_max: 3
+    product: &journey1
+      slug: learning-journey
+      options: {stage: "1"}
+      title_ar: رحلتي الأولى — المحطة 1
+      title_en: My First Learning Journey — stage 1
+      why_ar: يبدأ بالتفكير وتدريب اليد والألوان قبل الحروف، على قد عمره.
+      why_en: Starts with thinking, hand skills and colors before letters, just right for their age.
+    alternative: &story_first
+      slug: stories
+      title_ar: قصة قمرة
+      title_en: A Qamra story
+      why_ar: ليحب الكتب من صغره
+      why_en: So they love books from the start
+
+  - goal: learn
+    pen: "no"
+    product: *journey1
+    alternative: *story_first
+
+  - goal: learn
+    age_min: 4
+    age_max: 4
+    product:
+      slug: learning-journey
+      options: {stage: "2"}
+      title_ar: رحلتي الأولى — المحطة 2
+      title_en: My First Learning Journey — stage 2
+      why_ar: أول الحروف والأرقام حتى 10، بمهمات وألعاب.
+      why_en: First letters and numbers up to 10, with missions and games.
+    alternative:
+      slug: foundation-workbook
+      options: {level: kg1}
+      title_ar: دوسية التأسيس — KG1
+      title_en: Foundation workbook — KG1
+      why_ar: إذا روضته بتمشي على منهج فصلي
+      why_en: If their kindergarten follows a term-by-term curriculum
+
+  - goal: learn
+    age_min: 5
+    product:
+      slug: foundation-workbook
+      options: {level: kg2}
+      title_ar: دوسية التأسيس — KG2
+      title_en: Foundation workbook — KG2
+      why_ar: عربي وإنجليزي ورياضيات بدوسية وحدة، جزء لكل فصل.
+      why_en: Arabic, English and math in one workbook, a volume per term.
+    alternative:
+      slug: learning-journey
+      options: {stage: "3"}
+      title_ar: رحلتي الأولى — المحطة 3
+      title_en: My First Learning Journey — stage 3
+      why_ar: نفس المهارات بأسلوب ألعاب ومهمات
+      why_en: The same skills through games and missions

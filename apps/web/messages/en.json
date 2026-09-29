@@ -1,4 +1,12 @@
 {
+  "examples": {
+    "admin": {
+      "publish": "Publish as a site example",
+      "unpublish": "Take the example off the site",
+      "confirm": "I confirm this book's child is invented (a generated face, not a real child). Its pages will be public on the site, marked \"Sample\".",
+      "needsApproval": "Approve the book first, then publish it."
+    }
+  },
   "meta": {
     "title": "{brand} — Your child's story, by moonlight",
     "description": "A printed storybook where your child is the hero on every page, and their own drawing is their companion."

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>قمرة — المتجر</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#FBF6EC;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;color:#1C2140}
+h1,h2,h3{font-family:'Baloo Bhaijaan 2','Tajawal',system-ui,sans-serif;margin:0;font-weight:700;text-wrap:balance}
+p{margin:0;text-wrap:pretty}
+button,input{font-family:inherit}
+a{color:#16204A;text-decoration:none}
+</style>
+</helmet>
+<div dir="rtl" style="width: 390px; height: 1760px; background: #FBF6EC; position: relative; overflow: hidden; display: flex; flex-direction: column">
+  <header style="height: 64px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #E4D6BC">
+    <a href="LandingMobile.dc.html" style="display: flex; align-items: center; gap: 8px"><svg width="30" height="30" viewBox="0 0 48 48" aria-hidden="true"><path d="M21.32 5.01 A17 17 0 1 0 38.12 27.41 A14 14 0 0 1 21.32 5.01 Z" fill="#F2B33D"/><path d="M34 8 C34.6 11.2 35.8 12.4 39 13 C35.8 13.6 34.6 14.8 34 18 C33.4 14.8 32.2 13.6 29 13 C32.2 12.4 33.4 11.2 34 8 Z" fill="#16204A"/></svg><span style="font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; font-weight: 800; font-size: 22px; color: #16204A">قمرة</span></a>
+    <a href="Cart.dc.html" aria-label="السلة، فيها منتجان" style="position: relative; width: 44px; height: 44px; border-radius: 14px; background: #FFFDF8; border: 1px solid #E4D6BC; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16204A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span style="position: absolute; top: -6px; left: -6px; min-width: 22px; height: 22px; border-radius: 999px; background: #E9826B; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">2</span></a>
+  </header>
+
+  <main style="padding: 20px 16px 120px; display: flex; flex-direction: column; gap: 22px">
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <h1 style="font-size: 30px; color: #16204A">كل كتب قمرة</h1>
+      <p style="font-size: 15px; line-height: 1.7; color: #585C72">كل كتاب باسم طفلك وشخصيته. تشوف المعاينة قبل ما تدفع، والدفع عند الاستلام.</p>
+    </div>
+
+    <a href="FreeCover.dc.html" style="background: #16204A; color: #FBF6EC; border-radius: 24px; padding: 18px; display: flex; gap: 14px; align-items: center; overflow: hidden">
+      <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 6px">
+        <span style="align-self: flex-start; padding: 4px 10px; border-radius: 999px; background: #F2B33D; color: #0E1530; font-size: 12px; font-weight: 700">مجاناً</span>
+        <h2 style="font-size: 21px; line-height: 1.3; color: #FBF6EC">شوف غلاف طفلك خلال دقيقة</h2>
+        <span style="font-size: 14px; color: #E4E8F7">اسم وصورة، وبنرسملك الغلاف فوراً</span>
+      </div>
+      <div style="flex-shrink: 0; border-radius: 4px 10px 10px 4px; overflow: hidden; border-right: 5px solid #0E1530; transform: rotate(-4deg)"><dc-import name="Scene" w="104" h="120" theme="night" hijab="{{true}}" hijab-color="#E9826B" outfit="#F2B33D" pose="wave" kid-scale="0.7" hint-size="104px,120px"></dc-import></div>
+    </a>
+
+    <a href="Quiz.dc.html" style="background: #F3EAD8; border-radius: 20px; padding: 16px; display: flex; gap: 14px; align-items: center; min-height: 72px">
+      <span style="flex-shrink: 0; width: 48px; height: 48px; border-radius: 16px; background: #FFFDF8; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9A620A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.5V14"/><path d="M12 17.2v.1"/></svg></span>
+      <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 17px; color: #16204A">أي كتاب يناسب طفلي؟</strong><span style="font-size: 14px; color: #585C72">3 أسئلة وبنقترح الأنسب لعمره</span></div>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16204A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
+    </a>
+
+    <section style="display: flex; flex-direction: column; gap: 12px">
+      <div style="display: flex; flex-direction: column; gap: 2px"><h2 style="font-size: 22px; color: #16204A">حكايات بطلها طفلك</h2><span style="font-size: 14px; color: #585C72">30 حكاية · 4 أساليب رسم</span></div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+        <a href="StoryProduct.dc.html" style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column">
+          <dc-import name="Scene" w="173" h="140" theme="garden" outfit="#5B6FC0" skin="#C98F63" hair-style="curly" kid-scale="0.72" hint-size="173px,140px"></dc-import>
+          <div style="padding: 12px; display: flex; flex-direction: column; gap: 4px">
+            <h3 style="font-size: 18px; color: #16204A">قمرة كلاسيك</h3>
+            <span style="font-size: 13px; line-height: 1.5; color: #585C72">رسومات جاهزة بعناية، ووجه طفلك فيها</span>
+            <span style="font-size: 13px; color: #585C72; margin-top: 4px">يبدأ من</span>
+            <strong style="font-size: 20px; color: #16204A; font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif">69 ₪</strong>
+          </div>
+        </a>
+        <a href="StoryProduct.dc.html" style="background: #16204A; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; color: #FBF6EC">
+          <div style="position: relative"><dc-import name="Scene" w="173" h="140" theme="space" outfit="#A99BD6" pose="wave" kid-scale="0.62" companion="blob" hint-size="173px,140px"></dc-import><span style="position: absolute; top: 10px; right: 10px; padding: 3px 8px; border-radius: 999px; background: #F2B33D; color: #0E1530; font-size: 11px; font-weight: 700">مع صاحبه</span></div>
+          <div style="padding: 12px; display: flex; flex-direction: column; gap: 4px">
+            <h3 style="font-size: 18px; color: #FBF6EC">قمرة سحري</h3>
+            <span style="font-size: 13px; line-height: 1.5; color: #E4E8F7">كل صفحة تُرسم من جديد، ورسمته تصير صاحبه</span>
+            <span style="font-size: 13px; color: #B9BEDA; margin-top: 4px">غلاف مقوّى</span>
+            <strong style="font-size: 20px; color: #F5C465; font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif">139 ₪</strong>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 12px">
+      <div style="display: flex; flex-direction: column; gap: 2px"><h2 style="font-size: 22px; color: #16204A">يتعلّم ويلعب</h2><span style="font-size: 14px; color: #585C72">دوسيات وكتب أنشطة باسمه وشخصيته</span></div>
+
+      <a href="WorkbookProduct.dc.html" style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 20px; padding: 12px; display: flex; gap: 14px; align-items: center">
+        <div style="flex-shrink: 0; width: 96px; height: 124px; border-radius: 12px; background: #E4E8F7; display: flex; align-items: center; justify-content: center"><svg width="76" height="100" viewBox="0 0 96 124" aria-hidden="true"><rect x="1" y="1" width="94" height="122" rx="6" fill="#FFFFFF" stroke="#E4D6BC"/><rect x="84" y="12" width="11" height="26" fill="#5B6FC0"/><text x="46" y="74" text-anchor="middle" font-size="58" font-family="IBM Plex Sans Arabic, sans-serif" fill="none" stroke="#16204A" stroke-width="1.8" stroke-dasharray="2 3">ب</text><circle cx="64" cy="38" r="3.5" fill="#E9826B"/><path d="M14 98 H82 M14 110 H82" stroke="#E4D6BC" stroke-width="1.5"/></svg></div>
+        <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 4px">
+          <span style="align-self: flex-start; padding: 3px 8px; border-radius: 999px; background: #E4E8F7; color: #16204A; font-size: 12px; font-weight: 600">4–6 سنوات · للروضة</span>
+          <h3 style="font-size: 18px; color: #16204A">دوسية التأسيس</h3>
+          <span style="font-size: 13px; line-height: 1.5; color: #585C72">عربي وإنجليزي ورياضيات بدوسية وحدة، 3 أجزاء للسنة</span>
+          <strong style="font-size: 16px; color: #16204A">من 49 ₪ للجزء</strong>
+        </div>
+      </a>
+
+      <a href="WorkbookProduct.dc.html" style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 20px; padding: 12px; display: flex; gap: 14px; align-items: center">
+        <div style="flex-shrink: 0; width: 96px; height: 124px; border-radius: 12px; background: #DDEFE3; display: flex; align-items: center; justify-content: center"><svg width="76" height="100" viewBox="0 0 96 124" aria-hidden="true"><rect x="1" y="1" width="94" height="122" rx="6" fill="#FFFFFF" stroke="#E4D6BC"/><rect x="84" y="12" width="11" height="26" fill="#7FA38A"/><path d="M16 30 H40 V54 H64 V30 M16 54 V82 H40 M64 54 V82 H80 M40 82 V100 H64" fill="none" stroke="#16204A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16" cy="22" r="5" fill="#E9826B"/><path d="M76 98 l4 -8 l4 8 z" fill="#F2B33D"/></svg></div>
+        <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 4px">
+          <span style="align-self: flex-start; padding: 3px 8px; border-radius: 999px; background: #DDEFE3; color: #2E7A52; font-size: 12px; font-weight: 600">3–6 سنوات · للبيت</span>
+          <h3 style="font-size: 18px; color: #16204A">رحلتي الأولى للتعلّم</h3>
+          <span style="font-size: 13px; line-height: 1.5; color: #585C72">يبدأ بالتفكير واليد قبل الحروف، مهمة بعد مهمة</span>
+          <strong style="font-size: 16px; color: #16204A">69 ₪ للمحطة</strong>
+        </div>
+      </a>
+
+      <a href="WorkbookProduct.dc.html" style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 20px; padding: 12px; display: flex; gap: 14px; align-items: center">
+        <div style="flex-shrink: 0; width: 96px; height: 124px; border-radius: 12px; background: #FCEFD2; display: flex; align-items: center; justify-content: center"><svg width="76" height="100" viewBox="0 0 96 124" aria-hidden="true"><rect x="1" y="1" width="94" height="122" rx="6" fill="#FFFFFF" stroke="#E4D6BC"/><circle cx="48" cy="54" r="26" fill="none" stroke="#E9826B" stroke-width="3" stroke-dasharray="5 4"/><path d="M36 54 l8 8 l16 -16" fill="none" stroke="#E9826B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 98 H78 M18 108 H62" stroke="#E4D6BC" stroke-width="1.5"/></svg></div>
+        <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 4px">
+          <span style="align-self: flex-start; padding: 3px 8px; border-radius: 999px; background: #FCEFD2; color: #9A620A; font-size: 12px; font-weight: 600">3–7 سنوات · هدية للعيلة</span>
+          <h3 style="font-size: 18px; color: #16204A">مغامراتي مع عائلتي</h3>
+          <span style="font-size: 13px; line-height: 1.5; color: #585C72">12 مغامرة مع العيلة، وجواز سفر وملصقات</span>
+          <strong style="font-size: 16px; color: #16204A">89 ₪</strong>
+        </div>
+      </a>
+    </section>
+
+    <a href="Kindergartens.dc.html" style="background: #0E1530; color: #FBF6EC; border-radius: 24px; padding: 20px; display: flex; flex-direction: column; gap: 8px">
+      <span style="color: #F5C465; font-weight: 700; font-size: 13px">للروضات والمدارس</span>
+      <h2 style="font-size: 21px; color: #FBF6EC; line-height: 1.3">كتاب تخرّج لكل طفل، ودوسيات بشعار روضتكم</h2>
+      <span style="font-size: 14px; color: #E4E8F7">من 35 ₪ للطفل للطلبات من 20 طفل وأكثر</span>
+      <span style="align-self: flex-start; margin-top: 6px; min-height: 44px; padding: 0 18px; border-radius: 999px; background: #F2B33D; color: #0E1530; font-weight: 700; font-size: 15px; display: flex; align-items: center">اطلب عرض سعر</span>
+    </a>
+
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+      <div style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 6px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2E7A52" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg><span style="font-size: 14px; font-weight: 600; line-height: 1.5">نحذف صورة طفلك تلقائياً</span></div>
+      <div style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 6px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2E7A52" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg><span style="font-size: 14px; font-weight: 600; line-height: 1.5">الدفع عند الاستلام</span></div>
+      <div style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 6px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2E7A52" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3L20 9"/><path d="M20 4v5h-5"/><path d="M20 12a8 8 0 0 1-14 5.3L4 15"/><path d="M4 20v-5h5"/></svg><span style="font-size: 14px; font-weight: 600; line-height: 1.5">إعادة طباعة مجانية إذا الخطأ منّا</span></div>
+      <div style="background: #FFFDF8; border: 1px solid #E4D6BC; border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 6px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2E7A52" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M5 21V10l7-5 7 5v11"/><path d="M10 21v-6h4v6"/></svg><span style="font-size: 14px; font-weight: 600; line-height: 1.5">طباعة محلية وتوصيل سريع</span></div>
+    </div>
+  </main>
+
+  <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 12px 16px 24px; background: rgba(251,246,236,0.97); border-top: 1px solid #E4D6BC; display: flex; gap: 12px; align-items: center">
+    <div style="display: flex; flex-direction: column"><span style="font-size: 12px; color: #585C72">في السلة: 2</span><strong style="font-size: 17px">178 ₪</strong></div>
+    <a href="Cart.dc.html" style="flex-grow: 1; min-height: 56px; border-radius: 999px; background: #16204A; color: #FBF6EC; font-weight: 700; font-size: 17px; display: flex; align-items: center; justify-content: center">افتح السلة</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1760}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
