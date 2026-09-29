@@ -20,6 +20,7 @@ STRINGS: dict[str, dict[str, str]] = {
         "memories_photo": "صورَةٌ مِنْ هذا اليَوْم",
         "back_voice": "امْسَحوا الرَّمْزَ لِتَسْمَعوا الحِكايَةَ بِصَوْتِ العائِلَة",
         "back_voice_soon": "قَريبًا: الحِكايَةُ بِصَوْتِ العائِلَة",
+        "scan_listen": "امْسَحْ وَاسْمَعْ",
         "made_by": "صُنِعَ بِحُبٍّ في {brand}",
     },
     "en": {
@@ -41,6 +42,7 @@ STRINGS: dict[str, dict[str, str]] = {
         "memories_photo": "A photo from this day",
         "back_voice": "Scan to hear the story in your family's voice",
         "back_voice_soon": "Coming soon: the story in your family's voice",
+        "scan_listen": "Scan & listen",
         "made_by": "Made with love by {brand}",
     },
 }

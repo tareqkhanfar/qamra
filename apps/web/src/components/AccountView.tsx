@@ -11,6 +11,7 @@ import { Link, useRouter } from "@/i18n/navigation";
 import { api, errorText, type User } from "@/lib/api";
 import { createApi } from "@/lib/create";
 import { READABLE } from "@/lib/reader";
+import { useVoiceBooks, VoiceBookLink } from "@/components/voice/VoiceBookLink";
 
 type Child = { id: string; first_name: string; gender: "m" | "f"; birth_year: number };
 type Book = {
@@ -67,6 +68,7 @@ export function AccountView() {
   const [deleting, setDeleting] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const tc = useTranslations("create");
+  const voiceBooks = useVoiceBooks(); // «صوت أهلي»: books bought with the family-voice add-on
   const [hour] = useState(() => new Date().getHours());
 
   useEffect(() => {
@@ -269,7 +271,7 @@ export function AccountView() {
                   </span>
                 </>
               );
-              return open ? (
+              const tile = open ? (
                 <Link key={b.id} href={`/create?child=${b.child_id}&book=${b.id}`} className="flex flex-col gap-2">
                   {card}
                 </Link>
@@ -281,6 +283,14 @@ export function AccountView() {
                 <div key={b.id} className="flex flex-col gap-2">
                   {card}
                 </div>
+              );
+              return voiceBooks.has(b.id) ? (
+                <div key={b.id} className="flex flex-col gap-2">
+                  {tile}
+                  <VoiceBookLink id={b.id} />
+                </div>
+              ) : (
+                tile
               );
             })}
           </div>

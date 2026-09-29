@@ -759,6 +759,18 @@ _DEFS: list[SettingDef] = [
         min=1,
         max=30,
     ),
+    # ---- «صوت أهلي» narration fallback (Phase 5): no paid provider until Tareq approves one
+    SettingDef(
+        "tts_provider",
+        "ai_models",
+        Kind.choice,
+        "none",
+        "راوي الصفحات بلا تسجيل (TTS)",
+        "Narrator for pages without a recording (TTS)",
+        "none = تُعرض الكلمات فقط. fake للتجربة فقط. أي مزوّد مدفوع ينتظر موافقة طارق.",
+        "none = the text only. fake is for testing. Any paid provider waits for Tareq's approval.",
+        choices=("none", "fake"),
+    ),
     # ---- privacy (bounded by the privacy rules: never longer than the spec allows)
     SettingDef(
         "photo_retention_hours",

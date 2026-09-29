@@ -2,6 +2,44 @@
 
 Newest first. Each entry: date — decision — why.
 
+
+## 2026-09-29 — Phase 5: «صوت أهلي», the WhatsApp seam, SEO, performance
+
+- **The add-on switches the feature on.** A book has family voice when a live order line for it carries `family-voice` (a cancelled order doesn't count). Without it there is no QR in the PDF, and recording answers «هذا الكتاب بلا إضافة» (403).
+- **One printed link per book, fixed for good:** a `listen` share token of 20 URL-safe characters (120 bits), made when the final PDF renders or the parent first opens the record screen.
+  - Each story page's QR is `https://{BRAND_DOMAIN}/v/{token}/{page}` (the theme beat), and the back cover's QR opens the first page.
+  - The parent can pause and resume listening, but not rotate the token: a new one would orphan the printed book.
+  - **A QR goes on every story page**, not only the pages recorded before printing (the BookQR design note): families record after the book arrives, and a page without a voice shows its words.
+  - The design's `/l/` path is `/v/`, as Addendum 1 and the task say.
+- **Placement (design BookQR):** an 18 mm code with a 2 mm quiet zone on a paper card with 3 mm corners and «امسح واسمع» in 8 pt. Its edges sit on the 10 mm safe line in the outer bottom corner (left on left-hand pages, right on right-hand pages), and text boxes on that side move away. The code is a vector (`qrcode`, already in the lockfile, BSD) at error correction M, and a test decodes it from the print PDF rendered at 300 DPI.
+- **Recordings are real voices only.** The browser's MediaRecorder tries MP4/AAC first (it plays everywhere, Safari included), then WebM/Opus and Ogg.
+  - The API checks the file's own bytes, ≤ 8 MB and ≤ 3 minutes a page, and up to 3 voices a page, named by the family.
+  - They are stored encrypted under `children/{child}/books/{book}/voice/`, so «حذف بيانات الطفل» removes them; their rows go with the book.
+- **Audio links are same-origin API URLs signed with an HMAC that expires in 10 minutes**, not bucket URLs. The site's CSP allows media from 'self' only, and a grandparent's phone never talks to the bucket. The API streams the bytes and answers range requests (Safari needs them).
+- **A grandparent's link** is a `record` share token: 7 days, revocable, and optionally limited to chosen pages.
+  - New columns `share_tokens.pages` and `opened_at` (migration `19ebf7d578eb`).
+  - No account; the voice's name is the invite's label.
+  - The parent sends it from their own WhatsApp (a `wa.me` share), never through our sender.
+- **The TTS fallback** is `qamra_ai.tts`: `TTSProvider.speak(text, lang)` has no voice-sample parameter, so it can't imitate anyone. The admin setting `tts_provider` is `none` (default) or `fake`. A paid provider waits for Tareq's approval; until then a page without a recording shows its text.
+- **The listen and grandparent pages fetch from the browser**, not the server, so each visitor counts against their own per-IP rate limit.
+- **Link tokens stay out of the request log:** the access line masks the token in `/api/shared/…`, `/api/voice/invites/…` and `/api/voice/listen/…` paths. Query strings, where the audio signatures travel, were never logged.
+- **WhatsApp:** `qamra_api.whatsapp` has a `WhatsAppSender` interface with three senders.
+  - `links` (the default) sends nothing: the status messages stay ready-to-send links.
+  - `log` writes only the template and the order code.
+  - `twilio` is built but disabled: it refuses unless `approved=True`, which nothing passes.
+  - Addendum 9 keeps email as the only automatic channel.
+- **SEO for the story pages:**
+  - title and description in each language;
+  - canonical and hreflang (ar, en, and x-default → ar);
+  - the published example's cover as the Open Graph picture;
+  - Product + Book JSON-LD with the lowest price a parent can order at;
+  - `/sitemap.xml` built per request from the API, and `/robots.txt` with the private paths disallowed.
+  - Private pages stay noindex; the account page was missing it.
+- **Performance** was measured with Lighthouse 13 (mobile, simulated 4G) on a local production build. The first load is fonts (13 files, about 380 KB) and framework JS (about 160 KB).
+  - Preloading only the Arabic font files was tried and reverted: Latin digits and punctuation appear on every page, so those files load anyway, just later (FCP 1.4 → 2.1 s).
+  - Kept: a week of browser caching for the files in `/public`, which had `max-age=0`.
+  - Fewer font weights would help most, but that is a design decision.
+
 ## 2026-09-29 — Activity-book pages: orderable flag, previews, and the child's character
 
 - **"Can it be ordered now" is a product flag, `features.orderable`**, not a new column: no migration, and it is edited in the admin next to the product. The API decides it (`qamra_api.store.workbooks.orderable`):

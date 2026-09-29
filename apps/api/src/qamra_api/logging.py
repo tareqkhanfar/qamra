@@ -1,5 +1,6 @@
 """Structured JSON logs + request ids. Never log bodies, cookies or query strings (tokens, PII)."""
 
+import re
 import time
 import uuid
 
@@ -7,6 +8,12 @@ import structlog
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 log = structlog.get_logger("qamra.api")
+# Link tokens are bearer secrets: share links, «صوت أهلي» recording invites and listening links (Phase 5)
+_TOKEN_PATHS = re.compile(r"^(/api/(?:shared|voice/invites|voice/listen)/)[^/]+")
+
+
+def safe_path(path: str) -> str:
+    return _TOKEN_PATHS.sub(r"\1…", path)
 
 
 class RequestLogMiddleware:
@@ -36,13 +43,13 @@ class RequestLogMiddleware:
         try:
             await self.app(scope, receive, send_wrapper)
         except Exception:
-            log.exception("request.error", method=scope["method"], path=scope["path"])
+            log.exception("request.error", method=scope["method"], path=safe_path(scope["path"]))
             raise
         finally:
             log.info(
                 "request",
                 method=scope["method"],
-                path=scope["path"],
+                path=safe_path(scope["path"]),
                 status=status,
                 ms=round((time.perf_counter() - started) * 1000, 1),
             )

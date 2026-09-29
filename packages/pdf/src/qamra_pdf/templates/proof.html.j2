@@ -13,7 +13,7 @@
 <section class="page" data-kind="front-cover">{{ m.front_panel(spec, s, img) }}{{ m.watermark(spec, s) }}</section>
 {% for p in spec.pages %}
 {% if p.kind == 'title' %}{{ m.title_page(spec, s, img) }}
-{% elif p.kind == 'story' %}{{ m.story_page(spec, s, p, img) }}
+{% elif p.kind == 'story' %}{{ m.story_page(spec, s, p, img, qr) }}
 {% elif p.kind == 'companion' and spec.keepsake %}{{ m.keepsake_page(spec, s, p, img) }}
 {% elif p.kind == 'parents' and spec.parents %}{{ m.parents_page(spec, s, p) }}
 {% elif p.kind == 'activity' %}{{ m.activity_page(spec, s, p) }}

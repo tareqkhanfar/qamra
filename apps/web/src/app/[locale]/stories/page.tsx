@@ -5,14 +5,15 @@ import { ThemesGrid } from "@/components/site/ThemesGrid";
 import { Alert } from "@/components/ui/Alert";
 import { Link } from "@/i18n/navigation";
 import { examplesFor, getStoreCatalog, getThemes } from "@/lib/catalog";
+import { alternates } from "@/lib/seo";
 import { money } from "@/lib/store";
 import { LINES, coversOf, offer, storyFrom, type Line } from "@/lib/story";
 
 type Props = { searchParams: Promise<{ line?: string }> };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("themes");
-  return { title: t("title"), description: t("lead") };
+  const [t, locale] = await Promise.all([getTranslations("themes"), getLocale()]);
+  return { title: t("title"), description: t("lead"), alternates: alternates("/stories", locale) };
 }
 
 /** The stories (Addendum 9: /stories; /themes redirects here), with real covers where an example exists. */

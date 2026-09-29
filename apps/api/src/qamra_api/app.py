@@ -43,6 +43,8 @@ from qamra_api.routers.settings import public_router as settings_public_router
 from qamra_api.routers.shop import admin_router as shop_admin_router
 from qamra_api.routers.shop import router as shop_router
 from qamra_api.routers.themes import router as themes_router
+from qamra_api.routers.voice import router as voice_router
+from qamra_api.routers.voice_public import router as voice_public_router
 from qamra_api.security_headers import SecurityHeadersMiddleware
 from qamra_api.settings import ApiSettings, get_settings
 from qamra_api.store.order_path import router as order_path_router
@@ -134,6 +136,8 @@ def create_app(settings: ApiSettings | None = None, *, manage_resources: bool = 
     app.include_router(order_path_router)  # W2: Addendum 9 order path (add-ons, gift, codes, cross-sell)
     app.include_router(admin_gift_cards_router)
     app.include_router(admin_packing_router)
+    app.include_router(voice_router)  # W6: «صوت أهلي» (Phase 5)
+    app.include_router(voice_public_router)
     if settings.e2e_fixtures and settings.env != "prod":  # test-only fixtures (tests/e2e), never in prod
         app.include_router(e2e_router)
     return app

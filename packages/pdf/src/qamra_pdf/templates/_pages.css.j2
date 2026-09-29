@@ -52,3 +52,14 @@
 .memories .photo span { font: 500 10pt "IBM Plex Sans Arabic", sans-serif; color: var(--ink-muted); }
 .memories .lines { margin-top: 10mm; width: 160mm; display: flex; flex-direction: column; gap: 9mm; }
 .memories .lines span { border-bottom: .4mm dotted var(--moon-deep); height: 1px; }
+
+/* «صوت أهلي» (design BookQR): an 18 mm code + 2 mm quiet zone on a paper card with 3 mm corners, never printed
+   straight on the art, in the outer bottom corner with its edges on the 10 mm safe line. Text boxes move away. */
+.voice-qr { position: absolute; bottom: var(--safe); width: 22mm; padding: 2mm; background: var(--paper-raised); border-radius: 3mm; display: flex; flex-direction: column; align-items: center; gap: .8mm; }
+.qr-left .voice-qr { left: var(--safe); } .qr-right .voice-qr { right: var(--safe); }
+.voice-qr .code { width: 18mm; height: 18mm; }
+.voice-qr .code svg { width: 100%; height: 100%; display: block; }
+.voice-qr .caption { display: flex; align-items: center; gap: .8mm; font: 700 8pt/1 "IBM Plex Sans Arabic", sans-serif; color: var(--night-900); white-space: nowrap; }
+.qr-left .panel.bottom, .qr-left.split .split-text { left: calc(var(--safe) + 25mm); }
+.qr-right .panel.bottom, .qr-right.split .split-text { right: calc(var(--safe) + 25mm); }
+.qr-left .panel.left, .qr-right .panel.right { bottom: calc(var(--safe) + 30mm); }

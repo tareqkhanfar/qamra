@@ -568,6 +568,9 @@ class ShareToken(IdMixin, CreatedAtMixin, Base):
     label: Mapped[str | None] = mapped_column(String(60))  # e.g. "ستّي" for a recording invite
     expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    # «صوت أهلي» (Phase 5): the pages a recording invite covers (NULL = the whole book), first opened
+    pages: Mapped[list[int] | None] = mapped_column(JSONB)
+    opened_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
 class Recording(IdMixin, CreatedAtMixin, Base):

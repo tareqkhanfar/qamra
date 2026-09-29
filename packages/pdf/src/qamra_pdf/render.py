@@ -84,6 +84,7 @@ def render_html(template: str, spec: BookSpec, img: Callable[[Path | None], str]
         fonts=FONTS_DIR.as_uri(),
         img=img or uri,
         qr_svg=qr_svg(spec.cover.qr_url),
+        qr=qr_svg,
     )
 
 

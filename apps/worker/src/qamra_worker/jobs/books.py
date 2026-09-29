@@ -63,6 +63,7 @@ from qamra_worker import context
 from qamra_worker.ai import ai_settings, make_runtime
 from qamra_worker.notify import queue as notify_queue
 from qamra_worker.settings import get_settings
+from qamra_worker.voice import voice_url
 
 log = structlog.get_logger("qamra.worker.books")
 
@@ -561,6 +562,7 @@ async def render_files(
                     companion_sheet=companion_sheet,
                     made_on=date.today(),
                     watermark=mode == "preview",
+                    voice_url=voice_url(db, book, brand().domain) if mode == "final" else None,
                 ),
                 Path(tmp),
                 print_files=mode == "final" and not missing,

@@ -22,20 +22,26 @@
 {% endif %}
 {%- endmacro %}
 
-{% macro story_page(spec, s, p, img) -%}
+{% macro voice_qr(spec, s, p, qr) -%}
+{% if p.qr_url and qr %}<div class="voice-qr" data-qr="{{ p.number }}"><div class="code">{{ qr(p.qr_url) }}</div><div class="caption">{{ moon_mark('3.2mm') }}<span>{{ s.scan_listen }}</span></div></div>{% endif %}
+{%- endmacro %}
+
+{% macro story_page(spec, s, p, img, qr=none) -%}
 {% if p.layout == 'split' %}
-<section class="page split" data-kind="story" data-layout="split" data-number="{{ p.number }}">
+<section class="page split{{ ' qr-' ~ p.side if p.qr_url and qr }}" data-kind="story" data-layout="split" data-number="{{ p.number }}">
   <div class="split-art"><img src="{{ img(p.image) }}" alt=""></div>
   <svg class="split-wave" viewBox="0 0 216 16" preserveAspectRatio="none" aria-hidden="true"><path d="M0 8 C36 0 72 16 108 8 S180 0 216 8 L216 16 L0 16 Z" fill="#FBF6EC"/></svg>
   <div class="split-text" data-panel="{{ p.number }}"><p class="story-text">{{ p.text }}{% if p.is_last_story %}<span class="the-end">— {{ s.the_end }} —</span>{% endif %}</p></div>
   {{ folio(spec, p) }}
+  {{ voice_qr(spec, s, p, qr) }}
   {{ watermark(spec, s) }}
 </section>
 {% else %}
-<section class="page" data-kind="story" data-layout="{{ p.layout }}" data-number="{{ p.number }}">
+<section class="page{{ ' qr-' ~ p.side if p.qr_url and qr }}" data-kind="story" data-layout="{{ p.layout }}" data-number="{{ p.number }}">
   <img class="bleed-img" src="{{ img(p.image) }}" alt="">
   {{ panel(spec, s, p) }}
   {{ folio(spec, p) }}
+  {{ voice_qr(spec, s, p, qr) }}
   {{ watermark(spec, s) }}
 </section>
 {% endif %}

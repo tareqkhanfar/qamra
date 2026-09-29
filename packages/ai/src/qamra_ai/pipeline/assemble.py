@@ -162,6 +162,8 @@ class AssemblyInputs:
     qr_url: str | None = None
     made_on: date | None = None
     watermark: bool = False
+    # «صوت أهلي» (family-voice add-on): https://{domain}/v/{token}; each story page prints <voice_url>/<page>
+    voice_url: str | None = None
 
 
 async def assemble_book(
@@ -225,6 +227,7 @@ async def assemble_book(
                 text=texts.get(slot.beat) if first else None,
                 panel=panel,
                 is_last_story=first and slot.beat == last_beat,
+                qr_url=f"{inp.voice_url}/{slot.beat}" if inp.voice_url and first else None,
             )
         )
 
@@ -268,7 +271,11 @@ async def assemble_book(
         brand=inp.brand,
         title_page=title_page,
         cover=CoverSpec(
-            front_image=cover_path, name=name, subtitle=subtitle, blurb=inp.story.blurb, qr_url=inp.qr_url
+            front_image=cover_path,
+            name=name,
+            subtitle=subtitle,
+            blurb=inp.story.blurb,
+            qr_url=inp.qr_url or inp.voice_url,
         ),
         pages=pages,
         parents=ParentsSpec(inp.story.parents_lesson, inp.story.parents_questions)

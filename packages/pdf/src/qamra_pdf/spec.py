@@ -34,6 +34,7 @@ class PageSpec:
     text: str | None = None
     panel: Panel | None = None  # None: no text panel on this page (e.g. the second half of a spread)
     is_last_story: bool = False
+    qr_url: str | None = None  # «صوت أهلي»: this page's listen link, printed as a QR in the outer corner
 
 
 @dataclass(frozen=True)

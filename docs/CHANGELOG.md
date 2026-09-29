@@ -1,5 +1,17 @@
 # Changelog
 
+## Phase 5: «صوت أهلي», SEO and a performance pass (2026-09-29)
+
+- **«صوت أهلي» (family voice)** for books bought with the «أصوات العائلة» extra:
+  - **Record screen** (account → «سجّلوا الحكاية»): the page text in large type, one page at a time, with record, listen and record again. Up to three voices per page (ماما، بابا، ستّي… or any name the family types).
+  - **Grandparent link:** no account, works 7 days, can be cancelled, and can cover the whole book or chosen pages. It is sent from the parent's own WhatsApp, and the parent sees who opened it and how many pages they recorded.
+  - **A QR on every story page** of the print PDF (18 mm, in the outer bottom corner inside the safe area) and on the back cover. It opens the listen page: the picture, the words, and the family's voices to switch between.
+  - Parents can pause and resume listening, and delete any recording. Deleting the child's data deletes the recordings.
+  - **Narration fallback** behind a TTS adapter; it stays off (no paid provider yet).
+- **WhatsApp adapter interface:** manual links (the default), a log sender, and Twilio built but disabled. Nothing is sent automatically.
+- **SEO for the story pages:** per-language titles and descriptions, canonical and ar/en alternates, the example's cover as the share picture, and Product/Book structured data with the price. Also `/sitemap.xml` and `/robots.txt`.
+- **Performance:** a week of browser caching for images and audio in `/public`, and Lighthouse before/after numbers in `docs/plans/phase-5.md`.
+
 ## Addendum 9 order path: add-ons, the cart, gift cards, gift orders (2026-09-29)
 - **The flow:** preview → «الإضافات» → «السلة» → address and cash on delivery (the Create9 → AddOns → Cart → Create10 designs).
 - **Add-ons after the preview:** live totals from the server. Dependencies (`needs`), exclusions, the featured list and badges are admin data.

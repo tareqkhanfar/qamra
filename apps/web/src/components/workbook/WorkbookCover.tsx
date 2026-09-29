@@ -25,7 +25,14 @@ export function WorkbookCover({
           {title}
         </span>
         <span className="mt-0.5 px-2 text-center text-[11px] font-semibold text-amber-300">{line}</span>
-        <img src={character} alt="" className="mt-auto h-[128px] w-auto object-contain" />
+        <img
+          src={character}
+          alt=""
+          width={64}
+          height={128}
+          decoding="async"
+          className="mt-auto h-[128px] w-auto object-contain"
+        />
       </div>
       {binding && (
         <span className="absolute bottom-3 left-3 rounded-full bg-paper-raised px-2.5 py-1 text-caption font-semibold">
