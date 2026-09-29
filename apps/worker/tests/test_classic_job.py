@@ -11,6 +11,7 @@ from PIL import Image
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from qamra_ai.config import Settings as AISettings
 from qamra_ai.cost import CostEntry, fal_cost
 from qamra_ai.image.base import GeneratedImage, ImageRequest
 from qamra_ai.pipeline.fakes import default_fake_text_provider
@@ -40,6 +41,7 @@ from qamra_worker.jobs.classic import (
     classic_book_flow,
     classic_redraw_pages,
     classic_rerender,
+    ensure_texts,
     run_template_from_book,
     run_template_job,
     setup_classic,
@@ -135,6 +137,17 @@ async def test_a_generated_template(db: Session, storage: ObjectStorage) -> None
     again = await run_template_job(db, storage, t, beats=[5])  # one manual redraw
     assert again["status"] == "in_review" and template_pages(db, t)[5].regen_count == 1
 
+    # the Arabic words, vowelized once for the variant's gender and cached by their hash
+    texts = t.generation["texts"]
+    assert texts["gender"] == "f" and texts["hash"] and texts["kept"] == []
+    assert "tpl:vowelize:f" in {c.step for c in db.scalars(select(GenerationCost))}
+    sibling = _template(db, theme, "girl")  # another look of the same gender: the words are lent, no call
+    text_rt = Runtime(
+        settings=AISettings(_env_file=None), text=default_fake_text_provider(), image=PricedEdits()
+    )  # type: ignore[call-arg]
+    await ensure_texts(db, text_rt, sibling)
+    assert sibling.generation["texts"]["hash"] == texts["hash"] and text_rt.text.calls == []  # type: ignore[attr-defined]
+
 
 async def test_a_template_from_an_approved_sample_book(db: Session, storage: ObjectStorage) -> None:
     theme = _theme(db, "first-day")
@@ -187,6 +200,10 @@ async def _live_template(
 async def test_a_classic_book_preview_then_final(db: Session, storage: ObjectStorage) -> None:
     theme = _theme(db)
     t = await _live_template(db, storage, theme, "girl_hijab")
+    words = t.generation["texts"]["texts"]
+    words["pages"][0]["text"] = words["pages"][0]["text"].replace("اليوم", "اَلْيَوْمَ")  # as the model would
+    t.generation = {**t.generation, "texts": {**t.generation["texts"], "texts": words}}
+    db.commit()
     child = _child(db, storage)
     book = _book(db, theme, child)
     result = await classic_book_flow(db, storage, book, "preview")
@@ -199,6 +216,7 @@ async def test_a_classic_book_preview_then_final(db: Session, storage: ObjectSto
     assert all(storage.exists(pages[b].print_image_key or "") for b in previewed)
     assert book.proof_pdf_key and not book.pdf_interior_key
     assert pages[1].text and "ليان" in pages[1].text and pages[1].text == pages[1].original_text
+    assert pages[1].text.startswith("اَلْيَوْمَ") and "text_not_vowelized" not in book.flags  # vowelized once
     portrait = db.scalar(select(ChildPortrait).where(ChildPortrait.child_id == child.id))
     assert portrait is not None and portrait.image_key.startswith(f"children/{child.id}/")
     assert portrait.source == "photo"
@@ -310,3 +328,66 @@ async def test_the_budget_stops_a_classic_book(db: Session, storage: ObjectStora
     skipped = [p for p in _pages(db, book).values() if p.status == PageStatus.skipped]
     assert skipped and all("budget" in p.flags for p in skipped)
     assert not book.pdf_interior_key  # an unfinished book never gets print files
+
+
+async def test_a_free_cover_and_its_photo_rule(db: Session, storage: ObjectStorage) -> None:
+    from datetime import timedelta
+
+    from qamra_core.db.classic import FreeCover, FreeCoverStatus
+    from qamra_core.settings import get_core_settings
+    from qamra_worker.jobs.free_cover import run_free_cover
+    from qamra_worker.jobs.maintenance import cleanup_expired_media
+
+    theme = _theme(db)
+    t = _small_template(db, storage, theme, "girl_hijab")
+    child = _child(db, storage)
+    cover = FreeCover(user_id=child.guardian_user_id, child_id=child.id, theme_id=theme.id, template_id=t.id)
+    db.add(cover)
+    db.commit()
+    result = await run_free_cover(db, storage, cover, offline="fake")
+    assert result["status"] == "ready" and result["reference"] == "photo", (result, cover.error)
+    assert cover.status == FreeCoverStatus.ready and cover.qa["likeness"] == 9
+    for key, size in ((cover.image_key, (1024, 1024)), (cover.story_key, (1080, 1920))):
+        assert key and key.startswith(f"children/{child.id}/free-covers/")  # deleted with the child
+        with Image.open(io.BytesIO(storage.get(key))) as im:
+            assert im.size == size and im.format == "JPEG"
+    costs = db.scalars(select(GenerationCost).where(GenerationCost.child_id == child.id)).all()
+    assert {c.step for c in costs} >= {"free_cover:hero:cover:a1", "free_cover:qa:cover:a1"}
+    assert all(c.book_id is None for c in costs)
+
+    # the photo's 24-hour rule: the request set it, the cleanup job deletes the original
+    photo = db.scalars(select(ChildPhoto).where(ChildPhoto.child_id == child.id)).one()
+    photo.delete_after = photo.created_at + timedelta(hours=24)
+    db.commit()
+    early = cleanup_expired_media(
+        db, storage, get_core_settings(), now=photo.created_at + timedelta(hours=23)
+    )
+    assert early.photos_deleted == 0 and storage.exists(photo.storage_key or "")
+    key = photo.storage_key or ""
+    later = cleanup_expired_media(
+        db, storage, get_core_settings(), now=photo.created_at + timedelta(hours=25)
+    )
+    assert later.photos_deleted == 1 and not storage.exists(key)
+    assert storage.exists(cover.image_key or "")  # the drawn cover stays until the child's data is deleted
+
+
+async def test_a_free_cover_stops_at_its_cap(db: Session, storage: ObjectStorage, monkeypatch: Any) -> None:
+    from qamra_core.db.classic import FreeCover, FreeCoverStatus
+    from qamra_core.db.models import AppSetting
+    from qamra_worker.jobs.free_cover import run_free_cover
+
+    theme = _theme(db)
+    t = _small_template(db, storage, theme, "girl_hijab")
+    child = _child(db, storage)
+    db.add(AppSetting(key="free_cover_budget_usd", value="0.005"))
+    cover = FreeCover(user_id=child.guardian_user_id, child_id=child.id, theme_id=theme.id, template_id=t.id)
+    db.add(cover)
+    db.commit()
+
+    def priced(settings: Any) -> Runtime:
+        return Runtime(settings=settings, text=default_fake_text_provider(), image=PricedEdits())
+
+    monkeypatch.setattr("qamra_worker.jobs.free_cover.make_classic_runtime", priced)
+    result = await run_free_cover(db, storage, cover)  # the edit (~$0.01) would pass the cap: never started
+    assert result["status"] == "failed" and cover.status == FreeCoverStatus.failed and not cover.image_key
+    assert cover.cost_usd == 0

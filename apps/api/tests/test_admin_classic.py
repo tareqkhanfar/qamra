@@ -12,10 +12,12 @@ from rq import Queue
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from qamra_ai.pipeline.theme import Theme
+from qamra_ai.pipeline.vowelize import source_hash, sources
 from qamra_api.routers.create import CONSENT_VERSION
 from qamra_api.seed import upsert_themes
 from qamra_api.seed_store import seed_store
-from qamra_core.db.classic import ClassicTemplate, ClassicTemplatePage, TemplateStatus
+from qamra_core.db.classic import ClassicTemplate, ClassicTemplatePage, TemplateJob, TemplateStatus
 from qamra_core.db.models import (
     Book,
     BookStatus,
@@ -53,10 +55,13 @@ async def _drawn_template(
     variant: str = "girl_hijab",
     status: TemplateStatus = TemplateStatus.in_review,
 ) -> ClassicTemplate:
-    """What the worker leaves behind: every page drawn, hero boxes found."""
+    """What the worker leaves behind: every page drawn, hero boxes found, the texts vowelized."""
+    gender = "m" if variant == "boy" else "f"
+    words = sources(Theme.model_validate(theme.definition), gender)  # type: ignore[arg-type]
+    texts = {"hash": source_hash(words), "gender": gender, "texts": words.model_dump(), "kept": []}
     t = ClassicTemplate(
         theme_id=theme.id, theme_version=theme.version, art_style="watercolor", variant=variant,
-        status=status, generation={"theme_def": theme.definition},
+        status=status, generation={"theme_def": theme.definition, "texts": texts},
     )  # fmt: skip
     adb.add(t)
     await adb.flush()
@@ -95,7 +100,7 @@ async def test_template_permissions(client: AsyncClient, adb: AsyncSession, app:
 
 
 async def test_review_lock_and_publish(
-    client: AsyncClient, adb: AsyncSession, storage: ObjectStorage
+    client: AsyncClient, adb: AsyncSession, storage: ObjectStorage, app: FastAPI
 ) -> None:
     theme = await _theme(adb)
     t = await _drawn_template(adb, theme, status=TemplateStatus.draft)
@@ -123,10 +128,20 @@ async def test_review_lock_and_publish(
         )
     ).scalar_one()
     page1.hero_box = None
+    words = t.generation["texts"]
+    t.generation = {k: v for k, v in t.generation.items() if k != "texts"}  # not vowelized yet
     await adb.commit()
     r = await client.post(f"{base}/status", json={"to": "approved"})
     assert r.status_code == 409 and r.json()["error"]["code"] == "template_incomplete"
+    assert r.json()["error"]["details"] == {"drawn": 18, "total": 18, "hero_boxes": False, "texts": False}
     await client.patch(f"{base}/pages/1", json={"hero_box": {"x": 0.2, "y": 0.2, "w": 0.4, "h": 0.6}})
+    queued = await client.post(f"{base}/texts", json={"refresh": True})
+    assert queued.status_code == 202 and queued.json()["texts"]["vowelized"] is False
+    job = _queue(app).jobs[-1]
+    assert job.func_name == "qamra_worker.jobs.classic.vowelize_template" and job.args == (str(t.id), True)
+    await adb.refresh(t)
+    t.generation, t.job = {**t.generation, "texts": words}, TemplateJob.idle  # what the worker leaves
+    await adb.commit()
 
     r = await client.post(f"{base}/status", json={"to": "approved"})
     assert r.status_code == 200 and r.json()["status"] == "approved"
@@ -362,3 +377,52 @@ async def test_classic_samples_and_invented_faces(
         "/api/admin/classic/samples", data={**form, "consent": "false"}, files=files
     )
     assert no_consent.status_code == 422
+
+
+async def test_a_second_book_reuses_the_approved_character(
+    client: AsyncClient, adb: AsyncSession, app: FastAPI, storage: ObjectStorage
+) -> None:
+    await _theme(adb)
+    await seed_store(adb)
+    child_id, character_id = await _parent_with_character(client, adb, storage)
+    before = len(_queue(app).jobs)
+    r = await client.post(f"/api/create/children/{child_id}/characters", json={"style": "watercolor"})
+    assert r.status_code == 202 and r.json()["id"] == character_id and r.json()["approved"] is True
+    assert len(_queue(app).jobs) == before  # no new drawing, no new cost
+    redraw = await client.post(
+        f"/api/create/children/{child_id}/characters", json={"style": "watercolor", "fixes": ["face"]}
+    )
+    assert redraw.status_code == 409  # a deliberate redraw needs the photo, which is gone after approval
+    assert redraw.json()["error"]["code"] == "photo_required"
+
+
+async def test_metrics_split_by_line(client: AsyncClient, adb: AsyncSession) -> None:
+    theme = await _theme(adb)
+    await make_admin(client, adb, roles=("owner",))
+    admin = (await adb.execute(select(User).where(User.email == "admin@example.com"))).scalar_one()
+    child = Child(guardian_user_id=admin.id, first_name="آدم", gender=Gender.m, birth_year=2020)
+    adb.add(child)
+    await adb.flush()
+
+    def book(line: str, cost: str) -> Book:
+        return Book(
+            child_id=child.id, theme_id=theme.id, theme_version=theme.version, language=Locale.ar,
+            art_style="watercolor", status=BookStatus.in_review, generation={"line": line},
+            cost_usd=Decimal(cost),
+        )  # fmt: skip
+
+    classic, magic = book("classic", "0.40"), book("magic", "2.10")
+    adb.add_all([classic, magic])
+    await adb.flush()
+    order = Order(
+        code="QM-LINES1", user_id=admin.id, payment_method=PaymentMethod.cod, currency=Currency.ILS,
+        subtotal=Decimal("69"), total=Decimal("69"), status=OrderStatus.new,
+    )  # fmt: skip
+    adb.add(order)
+    await adb.flush()
+    adb.add(OrderItem(order_id=order.id, book_id=classic.id, unit_price=Decimal("69")))
+    await adb.commit()
+    m = (await client.get("/api/admin/metrics")).json()
+    assert m["books"] == 1 and m["avg_cost_per_book"] == 2.1  # Magic's own figures, judged by its cap
+    assert m["lines"]["classic"]["books"] == 1 and m["lines"]["classic"]["avg_cost_per_book"] == 0.4
+    assert m["lines"]["classic"]["preview_to_purchase"] == 1.0 and m["lines"]["magic"]["bought"] == 0

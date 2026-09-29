@@ -44,6 +44,7 @@ from qamra_ai.pipeline.qa import LIKENESS_HARD_FAIL, QAResult
 from qamra_ai.pipeline.runtime import Runtime
 from qamra_ai.pipeline.style import house_style
 from qamra_ai.pipeline.theme import ArtStyle, Theme, render_template
+from qamra_ai.pipeline.vowelize import VowelizedTexts, fill
 from qamra_ai.text.base import ImagePart, UserPart
 
 VARIANTS: tuple[str, ...] = ("girl", "girl_hijab", "boy")
@@ -558,8 +559,28 @@ async def edit_pages(
 # ---- text ---------------------------------------------------------------------------------------------
 
 
-def classic_story(theme: Theme, child: Child, lang: Lang, companion_name: str) -> StoryOut:
-    """The Classic book's words: the theme's page templates with the name and gender forms, no AI call."""
+def classic_story(
+    theme: Theme, child: Child, lang: Lang, companion_name: str, texts: VowelizedTexts | None = None
+) -> StoryOut:
+    """The Classic book's words: the theme's page templates with the name and gender forms, no AI call.
+    `texts`: the theme's Arabic texts vowelized once for this gender (pipeline.vowelize), used when given."""
+    if texts is not None and lang == "ar":
+        by_index = {p.index: p.text for p in texts.pages}
+        return StoryOut(
+            title=fill(texts.title, child.name, companion_name),
+            dedication=fill(texts.dedication, child.name, companion_name),
+            pages=[
+                StoryPageOut(index=p.index, text=fill(by_index[p.index], child.name, companion_name))
+                if p.index in by_index
+                else StoryPageOut(
+                    index=p.index, text=theme.base_text(p, lang, child.gender, child.name, companion_name)
+                )
+                for p in theme.pages
+            ],
+            parents_lesson=fill(texts.lesson, child.name, companion_name),
+            parents_questions=[fill(q, child.name, companion_name) for q in texts.questions],
+            blurb=fill(texts.blurb, child.name, companion_name),
+        )
 
     def render(template: str) -> str:
         return render_template(template, child.gender, child.name, companion_name)

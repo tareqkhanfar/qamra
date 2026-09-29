@@ -19,9 +19,10 @@ from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from qamra_ai.pipeline.classic import VARIANTS, classic_budget_usd, variant_for
+from qamra_ai.pipeline.classic import VARIANTS, classic_budget_usd, parse_variant, variant_for
 from qamra_ai.pipeline.classic_geometry import normalize_box
 from qamra_ai.pipeline.theme import Theme
+from qamra_ai.pipeline.vowelize import source_hash, sources, with_current_texts
 from qamra_api import runtime_settings
 from qamra_api.classic import CLASSIC_JOB
 from qamra_api.deps import AdminUser, SessionDep, SettingsDep, StorageDep, require_admin, require_permission
@@ -53,6 +54,7 @@ router = APIRouter(prefix="/api/admin/classic", tags=["admin"], dependencies=[De
 TEMPLATE_JOB = "qamra_worker.jobs.classic.generate_template"
 FROM_BOOK_JOB = "qamra_worker.jobs.classic.template_from_book"
 FACE_JOB = "qamra_worker.jobs.classic.synthetic_face"
+TEXTS_JOB = "qamra_worker.jobs.classic.vowelize_template"
 SAMPLE_CONSENT_VERSION = "sample-2026-09"  # the same written-consent rule as the Magic samples
 S = TemplateStatus
 MOVES: dict[TemplateStatus, tuple[TemplateStatus, ...]] = {
@@ -105,6 +107,7 @@ class TemplateOut(BaseModel):
     pages_drawn: int
     pages_total: int
     updated_at: datetime
+    texts: dict[str, Any]  # the Arabic words vowelized once: {"vowelized", "kept", "at"}
     pages: list[TemplatePageOut] = []
 
 
@@ -154,8 +157,23 @@ async def _out(db: AsyncSession, t: ClassicTemplate, *, pages: bool = False) -> 
         pages_drawn=sum(bool(p.image_key) for p in rows),
         pages_total=total,
         updated_at=t.updated_at,
+        texts={
+            "vowelized": texts_ready(t),
+            "kept": list((t.generation.get("texts") or {}).get("kept") or []),
+            "at": (t.generation.get("texts") or {}).get("at"),
+        },
         pages=[_page_out(p) for p in rows] if pages else [],
     )
+
+
+def texts_ready(t: ClassicTemplate) -> bool:
+    """The Arabic texts are vowelized for this template's gender, from its current words."""
+    definition = t.generation.get("theme_def")
+    cached = t.generation.get("texts") or {}
+    if not definition or not cached:
+        return False
+    gender = parse_variant(t.variant).gender
+    return bool(cached.get("hash") == source_hash(sources(Theme.model_validate(definition), gender)))
 
 
 async def _template(db: AsyncSession, template_id: uuid.UUID) -> ClassicTemplate:
@@ -439,8 +457,10 @@ async def change_status(
     if body.to == S.approved:
         total = 1 + len((t.generation.get("theme_def") or {}).get("pages") or [])
         drawn = [p for p in pages if p.image_key]
-        if len(drawn) < total or any(p.has_hero and not p.hero_box for p in drawn):
-            raise ApiError("template_incomplete", 409, {"drawn": len(drawn), "total": total})
+        boxes = not any(p.has_hero and not p.hero_box for p in drawn)
+        if len(drawn) < total or not boxes or not texts_ready(t):
+            details = {"drawn": len(drawn), "total": total, "hero_boxes": boxes, "texts": texts_ready(t)}
+            raise ApiError("template_incomplete", 409, details)
         for p in pages:
             p.locked = True
         t.approved_at, t.approved_by_user_id = now, admin.id
@@ -454,6 +474,34 @@ async def change_status(
     db.add(_audit(admin, "classic.template_status", t, {"from": before.value, "to": body.to.value}))
     await db.commit()
     return await _out(db, t, pages=True)
+
+
+class TextsIn(BaseModel):
+    refresh: bool = False  # take the theme's current words first (the story's pages must still line up)
+
+
+@router.post(
+    "/templates/{template_id}/texts", status_code=202, dependencies=[Depends(require_permission("templates"))]
+)
+async def vowelize_texts(
+    template_id: uuid.UUID, body: TextsIn, admin: AdminUser, db: SessionDep, queue: QueueDep
+) -> TemplateOut:
+    """Vowelize the template's Arabic texts once (a Sonnet call, cached by the words' hash)."""
+    t = await _template(db, template_id)
+    if t.job in (TemplateJob.queued, TemplateJob.running):
+        raise ApiError("busy", 409)
+    if body.refresh:
+        row = await db.get(ThemeRow, t.theme_id)
+        if row is not None:
+            before = t.generation.get("theme_def") or {}
+            t.generation = {**t.generation, "theme_def": with_current_texts(before, row.definition)}
+            if t.generation["theme_def"] != before:
+                _changed(t)
+    t.job = TemplateJob.queued
+    db.add(_audit(admin, "classic.template_texts", t, {"refresh": body.refresh}))
+    await db.commit()
+    enqueue(queue, TEXTS_JOB, str(t.id), body.refresh)
+    return await _out(db, t)
 
 
 @router.get(

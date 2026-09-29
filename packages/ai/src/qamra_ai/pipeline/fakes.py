@@ -82,6 +82,13 @@ def fake_page_qa(step: str, system: str, user: list[UserPart]) -> BaseModel:
     return qa
 
 
+def fake_vowelized(step: str, system: str, user: list[UserPart]) -> BaseModel:
+    """The texts back as they came (only diacritics may change; the fake adds none)."""
+    from qamra_ai.pipeline.vowelize import VowelizedTexts
+
+    return VowelizedTexts.model_validate(json.loads(_text(user)))
+
+
 def default_fake_text_provider() -> FakeTextProvider:
     return FakeTextProvider(
         {
@@ -118,5 +125,6 @@ def default_fake_text_provider() -> FakeTextProvider:
                 notes="ok",
             ),
             "PortraitQA": lambda *_: PortraitQA(likeness=9, safe=True, text_in_image=False, notes="ok"),
+            "VowelizedTexts": fake_vowelized,
         }
     )

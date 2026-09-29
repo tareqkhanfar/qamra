@@ -24,6 +24,7 @@ from qamra_api.routers.create import router as create_router
 from qamra_api.routers.examples import admin_router as examples_admin_router
 from qamra_api.routers.examples import router as examples_router
 from qamra_api.routers.family import router as family_router
+from qamra_api.routers.free_cover import router as free_cover_router
 from qamra_api.routers.health import router as health_router
 from qamra_api.routers.leads import router as leads_router
 from qamra_api.routers.printer import router as printer_router
@@ -105,6 +106,7 @@ def create_app(settings: ApiSettings | None = None, *, manage_resources: bool = 
     app.include_router(admin_reports_router)
     app.include_router(admin_self_hosted_router)
     app.include_router(admin_classic_router)
+    app.include_router(free_cover_router)
     app.include_router(examples_router)
     app.include_router(examples_admin_router)
     app.include_router(shop_router)

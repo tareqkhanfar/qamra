@@ -51,6 +51,7 @@ from qamra_ai.pipeline.printimg import downscale
 from qamra_ai.pipeline.runtime import Runtime
 from qamra_ai.pipeline.style import house_style
 from qamra_ai.pipeline.theme import Theme, load_style
+from qamra_ai.pipeline.vowelize import VowelizedTexts, source_hash, sources, vowelize
 from qamra_core.db.classic import (
     ChildPortrait,
     ClassicTemplate,
@@ -273,6 +274,51 @@ def _set_flags_on(template: ClassicTemplate, add: list[str], remove: tuple[str, 
     template.flags = list(dict.fromkeys([*kept, *add]))
 
 
+async def ensure_texts(db: Session, rt: Runtime, template: ClassicTemplate, *, refresh: bool = False) -> None:
+    """The template's Arabic texts vowelized once for its gender (plan §2.13), cached with the template and
+    keyed by a hash of the source words: a sibling template of the same theme and gender lends its copy, so a
+    theme is vowelized once per gender. The one-time cost is logged as `tpl:vowelize:<gender>`."""
+    theme = template_theme(template)
+    gender = parse_variant(template.variant).gender
+    digest = source_hash(sources(theme, gender))
+    cached = template.generation.get("texts") or {}
+    if not refresh and cached.get("hash") == digest:
+        return
+    siblings = db.scalars(
+        select(ClassicTemplate).where(
+            ClassicTemplate.theme_id == template.theme_id, ClassicTemplate.id != template.id
+        )
+    ).all()
+    lent: dict[str, Any] | None = None
+    for sibling in [] if refresh else siblings:
+        theirs = sibling.generation.get("texts") or {}
+        if theirs.get("hash") == digest and theirs.get("gender") == gender:
+            lent = dict(theirs)  # the same words, already vowelized for this gender: no new call
+            break
+    if lent is None:
+        result = await vowelize(rt, theme, gender, step=f"vowelize:{gender}")
+        lent = {
+            "hash": digest,
+            "gender": gender,
+            "texts": result.texts.model_dump(),
+            "kept": result.kept,
+            "model": rt.settings.text_model,
+            "at": datetime.now(UTC).isoformat(),
+        }
+    template.generation = {**template.generation, "texts": lent}
+    _set_flags_on(template, ["text_kept"] if lent.get("kept") else [], remove=("text_kept", "texts_pending"))
+    db.commit()
+
+
+async def texts_or_flag(db: Session, rt: Runtime, template: ClassicTemplate) -> None:
+    try:
+        await ensure_texts(db, rt, template)
+    except (BudgetExceeded, QamraError) as e:
+        log.warning("classic.vowelize_failed", template=str(template.id), error=str(e)[:200])
+        _set_flags_on(template, ["texts_pending"])
+        db.commit()
+
+
 def finish_template(
     db: Session, template: ClassicTemplate, plan: BookPlan, *, budget_hit: bool
 ) -> dict[str, Any]:
@@ -382,6 +428,7 @@ async def run_template_job(
             if beat == 0:
                 ctx.cover, ctx.cover_qa = res.image.data, res.print_image or res.image.data
     await find_boxes(db, storage, rt, template, hero, sheet)
+    await texts_or_flag(db, rt, template)
     return finish_template(db, template, plan, budget_hit=bool(rt.budget and rt.budget.exceeded))
 
 
@@ -431,6 +478,7 @@ async def run_template_from_book(
     }
     db.commit()
     await find_boxes(db, storage, rt, template, ai_child(child), sheet)
+    await texts_or_flag(db, rt, template)
     return finish_template(db, template, plan, budget_hit=False)
 
 
@@ -587,7 +635,15 @@ def ensure_text(job: ClassicJob) -> StoryOut:
         return StoryOut.model_validate(book.story)
     lang = book_lang(book)
     companion = default_companion(job.theme, lang)
-    story = classic_story(job.theme, job.ai, lang, companion.name if companion else "")
+    texts = None
+    if lang == "ar":
+        cached = job.template.generation.get("texts") or {}
+        fresh = cached.get("hash") == source_hash(sources(job.theme, job.ai.gender))
+        if fresh and cached.get("gender") == job.ai.gender:
+            texts = VowelizedTexts.model_validate(cached["texts"])
+        else:
+            _set_flags(book, ["text_not_vowelized"])  # the reviewer sees it; printing waits for the words
+    story = classic_story(job.theme, job.ai, lang, companion.name if companion else "", texts)
     book.story = story.model_dump()
     book.title = story.title[:200]
     book.dedication = story.dedication
@@ -950,3 +1006,19 @@ def synthetic_face(key: str, spec: dict[str, Any]) -> dict[str, Any]:
         )
         db.commit()
         return {"key": key, "usd": image.cost.usd}
+
+
+def vowelize_template(template_id: str, refresh: bool = False) -> dict[str, Any]:
+    """Admin «شكّل النصوص»: vowelize the template's Arabic texts for its gender (again, with `refresh`)."""
+
+    async def work(db: Session, st: ObjectStorage, t: ClassicTemplate) -> dict[str, Any]:
+        offline = t.generation.get("offline") or False
+        rt = make_runtime(ai_settings(resolved_settings(db), get_settings(), offline=offline))
+        rt.on_cost = TemplateCostSink(db, t)
+        await ensure_texts(db, rt, t, refresh=refresh)
+        t.job, t.error = TemplateJob.idle, None
+        db.commit()
+        texts = t.generation.get("texts") or {}
+        return {"status": t.status.value, "kept": texts.get("kept", []), "cost_usd": float(t.cost_usd or 0)}
+
+    return _template_entry(template_id, work)

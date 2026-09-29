@@ -313,6 +313,34 @@ async def draw_character(
     catalog = await load_catalog(db)
     if body.style not in catalog.styles:
         raise ApiError("invalid_style", 422)
+    if not body.fixes:  # Addendum 9 §6: the child's approved character is reused by every book, never redrawn
+        approved = (
+            (
+                await db.execute(
+                    select(Character)
+                    .where(
+                        Character.child_id == child.id,
+                        Character.art_style == body.style,
+                        Character.approved_at.is_not(None),
+                        Character.sheet_image_key.is_not(None),
+                    )
+                    .order_by(Character.approved_at.desc())
+                )
+            )
+            .scalars()
+            .first()
+        )
+        newer_photo = (
+            await db.execute(
+                select(func.max(ChildPhoto.created_at)).where(
+                    ChildPhoto.child_id == child.id, ChildPhoto.storage_key.is_not(None)
+                )
+            )
+        ).scalar_one()
+        if approved is not None and (
+            newer_photo is None or newer_photo <= (approved.approved_at or newer_photo)
+        ):
+            return _character_out(approved)  # a new photo since then means the parent wants a new drawing
     photos = (
         await db.execute(
             select(func.count())

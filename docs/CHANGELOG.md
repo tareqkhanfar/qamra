@@ -23,6 +23,13 @@
 - **Admin → دفعات الطباعة** (permission `print`): collect the approved books of printed orders into a batch per day, or per kindergarten; send to the printer, which freezes the list, moves the orders to «في الطباعة» and emails the printer one link per file (each click opens a 10-minute download); then printing → done → handed to delivery (the orders become «شُحن»). The batch list downloads as CSV.
 - New settings: `printer_email`, `printer_link_days`, `smtp_security`, `mail_from_name`, `email_notifications_enabled`. Migration `5125d903ce3f`: the `notifications` table and the printer fields on `print_batches`.
 
+## Classic follow-ups and the free cover (2026-09-29)
+
+- **Classic texts with full تشكيل:** each template's Arabic words are vowelized once per gender by the text model (checked letter for letter, placeholders kept, cached by the words' hash, ≤ $0.1 per theme one time). Books fill in the name at no AI cost. Admin: `POST /api/admin/classic/templates/{id}/texts` (with `refresh`, the theme's current words first); approving a template needs them.
+- **One character per child:** a second book reuses the approved character (no redraw, no cost) unless the parent asks for fixes or uploads a newer photo.
+- **Metrics per line:** `/api/admin/metrics` keeps Magic's figures on top and adds `lines` (cost per book and page, preview → purchase) for Classic and Magic.
+- **The free cover** (Addendum 9, off by default: setting `free_cover`): `/free-cover` (name, look, consent, photo and story, through the create flow's endpoints) → one small watermarked cover edit from the story's Classic cover → `/free-cover/result` with WhatsApp, story-size and download, and the way on to Classic or Magic for the same child. One per account and story, 5 per IP per day, capped by `free_cover_budget_usd`; the photo is deleted 24 hours after upload.
+
 ## Addendum 4, step 3: «قمرة كلاسيك», the Classic pipeline (2026-09-29)
 
 - **Classic templates** per story × art style × look (girl, girl with hijab, boy): drawn once with the premium pipeline around a placeholder hero, or copied from an approved sample book of an invented child. Hero boxes found by the fast vision model; review, per-page redraw, locks, approve and publish (`/api/admin/classic/templates…`, permission `templates`). One-time costs logged.

@@ -37,6 +37,9 @@ from qamra_core.db.models import (
     Gender,
     GenerationCost,
     Locale,
+    Order,
+    OrderItem,
+    OrderStatus,
     PageStatus,
     PhotoStatus,
 )
@@ -657,9 +660,18 @@ async def metrics(db: SessionDep, days: int = 30) -> dict[str, Any]:
 
     per_theme: dict[str, dict[str, Any]] = {}
     costs, per_page = [], []
+    lines: dict[str, dict[str, Any]] = {}  # Addendum 4: Classic and Magic are judged by their own targets
     for b, t in books:
         pages = [p for p in pages_by_book.get(b.id, []) if p.status != PageStatus.pending]
         cost = float(b.cost_usd or 0)
+        line = lines.setdefault(_line_of(b), {"books": 0, "cost": 0.0, "pages": 0})
+        line["books"], line["cost"], line["pages"] = (
+            line["books"] + 1,
+            line["cost"] + cost,
+            line["pages"] + len(pages),
+        )
+        if _line_of(b) != "magic":
+            continue  # the top-level figures and the per-theme rates are Magic's ($2 target, $2.50 cap)
         costs.append(cost)
         if pages:
             per_page.append(cost / len(pages))
@@ -738,4 +750,49 @@ async def metrics(db: SessionDep, days: int = 30) -> dict[str, Any]:
         "by_step": {str(k): round(float(v), 4) for k, v in groups},
         "daily": [{"date": d.date().isoformat(), "usd": round(float(v), 4)} for d, v in daily],
         "status_counts": {str(getattr(k, "value", k)): int(v) for k, v in status_counts.items()},
+        "lines": await _line_metrics(db, since, lines),
     }
+
+
+def _line_of(book: Book) -> str:
+    return str((book.generation or {}).get("line") or "magic")
+
+
+async def _line_metrics(
+    db: AsyncSession, since: datetime, lines: dict[str, dict[str, Any]]
+) -> dict[str, Any]:
+    """Per line: the average AI cost per finished book and per page, and preview → purchase for books made
+    through the create flow in the period (bought = in an order that was not cancelled)."""
+    made = (
+        await db.execute(
+            select(Book.id, Book.generation["line"].astext).where(
+                Book.created_at >= since,
+                Book.is_sample.is_(False),
+                Book.generation["line"].astext.is_not(None),
+            )
+        )
+    ).all()
+    bought = {
+        b
+        for (b,) in (
+            await db.execute(
+                select(OrderItem.book_id)
+                .join(Order, Order.id == OrderItem.order_id)
+                .where(OrderItem.book_id.in_([m[0] for m in made]), Order.status != OrderStatus.cancelled)
+            )
+        ).all()
+    } if made else set()  # fmt: skip
+    out: dict[str, Any] = {}
+    for name in sorted({*lines, *(str(m[1]) for m in made)}):
+        stats = lines.get(name, {"books": 0, "cost": 0.0, "pages": 0})
+        previews = [m for m in made if m[1] == name]
+        n, got = len(previews), sum(m[0] in bought for m in previews)
+        out[name] = {
+            "books": stats["books"],
+            "avg_cost_per_book": round(stats["cost"] / stats["books"], 4) if stats["books"] else None,
+            "avg_cost_per_page": round(stats["cost"] / stats["pages"], 4) if stats["pages"] else None,
+            "previews": n,
+            "bought": got,
+            "preview_to_purchase": round(got / n, 3) if n else None,
+        }
+    return out

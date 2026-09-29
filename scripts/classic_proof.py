@@ -6,6 +6,7 @@ admin endpoints. Every paid call happens on the server; this script never talks 
   python scripts/classic_proof.py --creds DIR status
   python scripts/classic_proof.py --creds DIR from-samples [BOOK_ID ...]   # approved sample books → templates
   python scripts/classic_proof.py --creds DIR generate --theme graduation  # or draw missing templates here
+  python scripts/classic_proof.py --creds DIR texts [TEMPLATE_ID ...]      # vowelize the Arabic words once
   python scripts/classic_proof.py --creds DIR wait                         # until no template job runs
   python scripts/classic_proof.py --creds DIR publish TEMPLATE_ID ...      # approve (locks pages) + live
   python scripts/classic_proof.py --creds DIR proof --theme graduation     # 5 invented children → 5 books
@@ -94,6 +95,7 @@ def show(t: dict[str, Any]) -> None:
     print(
         f"{t['id']}  {t['theme']:<14} {t['style']:<11} {t['variant']:<11} {t['status']:<10} job={t['job']:<8}"
         f" pages={t['pages_drawn']}/{t['pages_total']} ${t['cost_usd']:.3f} {t['flags']}"
+        + (" texts=ok" if (t.get("texts") or {}).get("vowelized") else " texts=missing")
         + (f" error={t['error']}" if t.get("error") else "")
     )
 
@@ -136,6 +138,20 @@ def generate(c: httpx.Client, theme: str, variants: list[str], offline: bool) ->
         body = {"theme": theme, "style": "watercolor", "variant": variant, "offline": offline}
         t = check(c.post("/api/admin/classic/templates", json=body))
         print("drawing", t["id"], theme, variant)
+    wait_templates(c)
+
+
+def vowelize(c: httpx.Client, ids: list[str], refresh: bool) -> None:
+    """Vowelize the Arabic texts of these templates (all of them when no ids): one Sonnet call per theme and
+    gender, cached; templates made before this step existed need it once before they can be approved."""
+    for t in templates(c):
+        if ids and t["id"] not in ids:
+            continue
+        if t["texts"]["vowelized"] and not refresh:
+            print(t["id"], t["theme"], t["variant"], "texts already vowelized")
+            continue
+        check(c.post(f"/api/admin/classic/templates/{t['id']}/texts", json={"refresh": refresh}))
+        print(t["id"], t["theme"], t["variant"], "vowelizing")
     wait_templates(c)
 
 
@@ -219,7 +235,10 @@ def main() -> None:
     ap.add_argument("--lang", default="ar", choices=("ar", "en"))
     ap.add_argument("--variants", nargs="+", default=["girl", "girl_hijab", "boy"])
     ap.add_argument("--out", type=Path, default=ROOT / "out" / "classic-proof")
-    ap.add_argument("command", choices=("status", "from-samples", "generate", "wait", "publish", "proof"))
+    ap.add_argument("--refresh", action="store_true", help="texts: take the theme's current words first")
+    ap.add_argument(
+        "command", choices=("status", "from-samples", "generate", "texts", "wait", "publish", "proof")
+    )
     ap.add_argument("ids", nargs="*", help="book ids (from-samples) or template ids (publish)")
     args = ap.parse_args()
     with client(args.base) as c:
@@ -231,6 +250,8 @@ def main() -> None:
             from_samples(c, args.ids)
         elif args.command == "generate":
             generate(c, args.theme, args.variants, args.offline)
+        elif args.command == "texts":
+            vowelize(c, args.ids, args.refresh)
         elif args.command == "wait":
             wait_templates(c)
         elif args.command == "publish":
