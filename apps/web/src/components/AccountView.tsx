@@ -10,6 +10,7 @@ import { brandName } from "@/config/brand";
 import { Link, useRouter } from "@/i18n/navigation";
 import { api, errorText, type User } from "@/lib/api";
 import { createApi } from "@/lib/create";
+import { READABLE } from "@/lib/reader";
 
 type Child = { id: string; first_name: string; gender: "m" | "f"; birth_year: number };
 type Book = {
@@ -17,13 +18,14 @@ type Book = {
   child_id: string;
   title: string | null;
   theme_slug: string;
-  status: "draft" | "generating" | "preview" | "approved" | "ordered" | "printed" | "failed";
+  status: "draft" | "generating" | "preview" | "in_review" | "approved" | "ordered" | "printed" | "failed";
 };
 
 const STATUS_CHIP: Record<Book["status"], string> = {
   draft: "bg-paper-sunk text-ink",
   generating: "bg-night-100 text-night-900",
   preview: "bg-amber-100 text-amber-700",
+  in_review: "bg-success-bg text-success", // final files ready: readable (reader namespace: shelfReady)
   approved: "bg-success-bg text-success",
   ordered: "bg-paper-sunk text-ink",
   printed: "bg-success-bg text-success",
@@ -49,6 +51,7 @@ function Avatar({ name, active }: { name: string; active: boolean }) {
 /** Parent account home (design: account-books — mobile). */
 export function AccountView() {
   const t = useTranslations("account");
+  const tr = useTranslations("reader");
   const tn = useTranslations("nav");
   const te = useTranslations("errors");
   const ta = useTranslations("admin");
@@ -262,12 +265,16 @@ export function AccountView() {
                   </div>
                   <strong className="text-[15px] leading-snug">{b.title ?? "—"}</strong>
                   <span className={`self-start rounded-full px-2.5 py-1 text-xs font-bold ${STATUS_CHIP[b.status]}`}>
-                    {t(`status.${b.status}`)}
+                    {b.status === "in_review" ? tr("shelfReady") : t(`status.${b.status}`)}
                   </span>
                 </>
               );
               return open ? (
                 <Link key={b.id} href={`/create?child=${b.child_id}&book=${b.id}`} className="flex flex-col gap-2">
+                  {card}
+                </Link>
+              ) : READABLE.has(b.status) ? (
+                <Link key={b.id} href={`/books/${b.id}`} className="flex flex-col gap-2">
                   {card}
                 </Link>
               ) : (

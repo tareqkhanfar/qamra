@@ -38,11 +38,13 @@ Items marked **external** need something only Tareq or a third party can provide
 - [ ] **External:** Addendum 2 («قواعد تدقيق الإنتاج», the feature matrix) is not in the repo. Until Tareq sends it, the matrix is written from the addenda.
 
 ## Build prompt phases
-- [ ] **W5 · Phase 2 remainder**
+- [x] **W5 · Phase 2 remainder**
   - the web reader (page flip, RTL) and share links;
   - email notifications (SMTP adapter; order placed, status changes, preview ready, book ready);
   - the card-payment gateway stub behind `PaymentProvider`.
-- [ ] **W5 · Phase 3 remainder:** print batches in the admin (collect approved printed books, the bundle PDF, the printer email with links, statuses).
+  - **External:** an SMTP account (host, port, user, password, sender address) entered in Admin → الإعدادات; until then emails are only logged.
+- [x] **W5 · Phase 3 remainder:** print batches in the admin (collect approved printed books, the bundle PDF, the printer email with links, statuses).
+  - **External:** the printer's email address (`printer_email`) and the printer's confirmation that 10-minute links work for them.
 - [ ] **W4 · Phase 4, the kindergarten portal**
   - organization sign-up with admin approval;
   - classrooms;

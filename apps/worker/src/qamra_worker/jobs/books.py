@@ -61,6 +61,7 @@ from qamra_core.storage import ObjectNotFound, ObjectStorage
 from qamra_pdf import Brand
 from qamra_worker import context
 from qamra_worker.ai import ai_settings, make_runtime
+from qamra_worker.notify import queue as notify_queue
 from qamra_worker.settings import get_settings
 
 log = structlog.get_logger("qamra.worker.books")
@@ -611,6 +612,7 @@ async def render_files(
     )
     db.commit()
     log.info("book.ready", book=str(book.id), mode=mode, cost=float(book.cost_usd), flags=book.flags)
+    notify_queue.book_ready(book, mode)  # "preview ready" / "book ready" email, once per book and stage
     return {"status": book.status.value, "cost_usd": float(book.cost_usd), "flags": book.flags}
 
 

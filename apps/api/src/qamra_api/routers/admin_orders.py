@@ -15,7 +15,7 @@ from sqlalchemy import func, or_, select
 from sqlalchemy.dialects.postgresql import insert
 
 from qamra_ai.pipeline.theme import CONTENT_DIR
-from qamra_api import runtime_settings
+from qamra_api import notify, runtime_settings
 from qamra_api.classic import CLASSIC_JOB, start_classic_finals
 from qamra_api.deps import AdminUser, SessionDep, SettingsDep, StorageDep, require_permission
 from qamra_api.errors import ApiError
@@ -376,6 +376,7 @@ async def change_status(
         enqueue(queue, "qamra_worker.jobs.invoices.render_invoice", str(render.id))
     for book_id in classic_finals:
         enqueue(queue, CLASSIC_JOB, book_id, "final")
+    notify.order_statuses(queue.connection, order.id, [body.to])  # customer email (once per status)
     return await _detail(db, order, await _values(db, settings))
 
 

@@ -11,6 +11,107 @@
       "needsApproval": "Approve the book first, then publish it."
     }
   },
+  "reader": {
+    "metaTitle": "Book reader",
+    "loading": "Opening the book…",
+    "close": "Close the reader",
+    "previewBadge": "Preview",
+    "listenSoon": "Listen to the story · soon",
+    "fullscreen": "Full screen",
+    "exitFullscreen": "Exit full screen",
+    "previous": "Previous page",
+    "next": "Next page",
+    "progress": "Progress through the book",
+    "night": "Night mode",
+    "theEnd": "The end",
+    "cover": "Cover",
+    "coverLabel": "A story by moonlight",
+    "pageOf": "Page {n} of {total}",
+    "unavailable": "We can't open the book right now",
+    "backToBooks": "Back to my books",
+    "previewEnd": "These are the preview pages of {name}'s book. The rest of the story is drawn after you order.",
+    "continueOrder": "Continue your order",
+    "ownerEnd": "{name}'s whole book is here. Share it with grandparents and family through a private link.",
+    "shelfReady": "Ready to read",
+    "share": {
+      "open": "Share",
+      "title": "Share the book with family",
+      "privacy": "A private link that opens this book only: no account, and no other data about you or your child. You can turn it off at any time.",
+      "close": "Close",
+      "link": "Link",
+      "until": "Works until {date}",
+      "copy": "Copy the link",
+      "copied": "Copied ✓",
+      "send": "Send…",
+      "renew": "New link (the old one stops)",
+      "revoke": "Turn the link off",
+      "revokeConfirm": "The link will stop working at once for everyone you sent it to. Are you sure?",
+      "validFor": "The link works for",
+      "days": {
+        "7": "A week",
+        "30": "A month",
+        "90": "3 months"
+      },
+      "create": "Create the link"
+    },
+    "shared": {
+      "metaTitle": "A book from the family",
+      "gone": "This link no longer works",
+      "visit": "Visit the site",
+      "end": "A story a family made with {brand}, with their child as the hero on every page.",
+      "cta": "Make a book for your child"
+    }
+  },
+  "printBatches": {
+    "nav": "Print batches",
+    "title": "Print batches",
+    "lead": "Approved books of printed orders are collected into one batch a day for families and one per kindergarten, then their file links go to the printer.",
+    "collect": "Collect the ready ones ({count})",
+    "noPrinterEmail": "The printer's email isn't set yet: batches are prepared but no email is sent.",
+    "settingsLink": "Settings",
+    "ready": "Ready to print",
+    "waiting": "Waiting for book approval",
+    "waitingHint": "An order joins a batch once all its printed books are approved (approved/all).",
+    "empty": "No batches yet.",
+    "families": "Family orders",
+    "counts": "{orders} orders · {books} books · {copies} copies",
+    "status": {
+      "open": "Open",
+      "sent": "Sent to the printer",
+      "printing": "Printing",
+      "done": "Printed"
+    },
+    "sentAt": "Sent",
+    "email": "Printer email",
+    "emailStatus": {
+      "pending": "Sending",
+      "sent": "Delivered to the printer",
+      "logged": "Logged only (no mail server set)",
+      "skipped": "Not sent (no printer email)",
+      "failed": "Couldn't send, retrying"
+    },
+    "linkUntil": "Printer link valid until",
+    "doneAt": "Printing finished",
+    "actions": {
+      "send": "Send to the printer",
+      "printing": "Printing started",
+      "done": "Printing finished",
+      "resend": "Resend the links",
+      "ship": "Handed to delivery"
+    },
+    "csv": "Batch list (CSV)",
+    "sendHint": "Sending freezes the batch list, moves its orders to “printing” and emails the customers.",
+    "sendConfirm": "Send batch {code} to the printer?",
+    "interior": "Interior",
+    "cover": "Cover",
+    "remove": "Take the order out of the batch",
+    "formats": {
+      "softcover": "Softcover",
+      "hardcover": "Hardcover",
+      "spiral": "Spiral bound",
+      "digital": "Digital"
+    }
+  },
   "meta": {
     "title": "{brand} — Your child's story, by moonlight",
     "description": "A printed storybook where your child is the hero on every page, and their own drawing is their companion."

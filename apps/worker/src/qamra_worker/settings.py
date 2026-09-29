@@ -9,6 +9,7 @@ class WorkerSettings(CoreSettings):
     sentry_dsn: SecretStr | None = None
     log_level: str = "INFO"
     log_json: bool = True
+    web_base_url: str = "http://localhost:3000"  # links in emails (reader, tracking, printer files)
 
 
 @lru_cache

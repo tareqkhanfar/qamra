@@ -11,7 +11,7 @@ from fastapi import APIRouter, Request, Response
 from pydantic import BaseModel, Field, field_validator
 from sqlalchemy import func, select
 
-from qamra_api import ratelimit, runtime_settings
+from qamra_api import notify, ratelimit, runtime_settings
 from qamra_api.auth.router import client_ip
 from qamra_api.deps import OptionalUser, RedisDep, SessionDep, SettingsDep
 from qamra_api.errors import ApiError
@@ -37,9 +37,10 @@ from qamra_api.store.catalog import (
     unit_costs,
     zone_rule,
 )
+from qamra_api.store.payments import provider_for
 from qamra_api.validation import PHONE
 from qamra_core import settings_store
-from qamra_core.db.models import AuditLog, Currency, Order, OrderItem, OrderStatus, PaymentMethod
+from qamra_core.db.models import AuditLog, Currency, Order, OrderItem, OrderStatus
 from qamra_core.db.store import Cart, CartItem, CartStatus, CouponRedemption, OrderEvent, Variant
 from qamra_core.pricing import ItemInput, Quote, quote
 
@@ -582,7 +583,7 @@ class CheckoutIn(BaseModel):
     city: str = Field(min_length=2, max_length=60)
     address: str = Field(min_length=5, max_length=300)
     notes: str | None = Field(default=None, max_length=500)
-    payment: Literal["cod"] = "cod"
+    payment: Literal["cod", "card"] = "cod"  # card: a disabled gateway stub for now (store.payments)
     accept_terms: bool
 
     @field_validator("phone")
@@ -646,6 +647,7 @@ async def checkout(
 ) -> PlacedOut:
     if not body.accept_terms:
         raise ApiError("terms_required", 422)
+    payer = provider_for(body.payment)  # cash on delivery; the card stub is refused here
     if await ratelimit.hit(redis, f"rl:checkout:{client_ip(request)}", 3600) > CHECKOUTS_PER_IP_PER_HOUR:
         raise ApiError("too_many_attempts", 429)
     cart = await find_cart(db, request, user)
@@ -690,7 +692,7 @@ async def checkout(
         code=await _new_code(db),
         user_id=user.id if user is not None else None,
         status=OrderStatus.new,
-        payment_method=PaymentMethod.cod,
+        payment_method=payer.method,
         currency=cart.currency,
         subtotal=q.subtotal,
         discount=q.discount,
@@ -761,7 +763,9 @@ async def checkout(
         )
     )
     cart.status = CartStatus.ordered
+    order.payment_status = payer.start(order).status
     await db.commit()
+    notify.order_placed(request.app.state.rq_redis, order.id)  # "we've received your order" email
     response.delete_cookie(COOKIE, path="/", domain=settings.cookie_domain)
     return PlacedOut(
         code=order.code,

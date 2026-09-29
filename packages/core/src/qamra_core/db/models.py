@@ -407,6 +407,14 @@ class PrintBatch(IdMixin, TimestampMixin, Base):
     )
     bundle_key: Mapped[str | None] = mapped_column(String(300))
     printer_notified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    # Phase 3 print batches: the printer's download link is a token whose sha256 is kept here (the raw token
+    # is only in the printer's email); each click turns into a fresh signed URL of ≤ 15 minutes.
+    printer_token_hash: Mapped[str | None] = mapped_column(String(64), unique=True)
+    printer_token_expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    manifest: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)  # orders, books, files at send
+    sent_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    printing_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    done_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
 class Order(IdMixin, TimestampMixin, Base):
@@ -571,3 +579,39 @@ class Recording(IdMixin, CreatedAtMixin, Base):
     created_by_share_token_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("share_tokens.id", ondelete="SET NULL")
     )
+
+
+# ---- notifications (Phase 2: email) -----------------------------------------------------------
+
+
+class NotificationStatus(enum.StrEnum):
+    pending = "pending"
+    sent = "sent"
+    logged = "logged"  # no SMTP configured: written to the log instead of sent
+    skipped = "skipped"  # nobody to write to (a guest order, a closed account, no printer address)
+    failed = "failed"
+
+
+class Notification(IdMixin, TimestampMixin, Base):
+    """One outgoing message per `dedupe_key` (an order and a status, a book and a stage, a batch send): jobs
+    may run twice, people hear once. No address, name or message body is stored here."""
+
+    __tablename__ = "notifications"
+
+    dedupe_key: Mapped[str] = mapped_column(String(120), unique=True)
+    channel: Mapped[str] = mapped_column(String(16), default="email")
+    template: Mapped[str] = mapped_column(String(40))
+    status: Mapped[NotificationStatus] = mapped_column(
+        str_enum(NotificationStatus, "notification_status"), default=NotificationStatus.pending
+    )
+    user_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"), index=True)
+    order_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("orders.id", ondelete="SET NULL"), index=True
+    )
+    book_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("books.id", ondelete="SET NULL"))
+    print_batch_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("print_batches.id", ondelete="SET NULL")
+    )
+    attempts: Mapped[int] = mapped_column(SmallInteger, default=0)
+    error: Mapped[str | None] = mapped_column(String(200))
+    sent_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

@@ -1,0 +1,125 @@
+# Customer and printer emails (Phase 2 notifications, Phase 3 print batches).
+# Each message: subject, lines (paragraphs), an optional button (label + the link variable it opens), and
+# an optional list (`items`). Values are filled with Jinja2: {{ name }}, {{ code }}, {{ total }}, {{ brand }},
+# {{ child }}, {{ title }}, and the links track_url, reader_url, create_url, manifest_url.
+# Only what the recipient already owns goes in: their order, their child's book. Never another family's data.
+
+order_placed:
+  ar:
+    subject: "استلمنا طلبكم {{ code }} 🌙"
+    lines:
+      - "مرحبًا {{ name }}،"
+      - "شكرًا لأنكم اخترتم {{ brand }}! وصلنا طلبكم رقم {{ code }}، والمبلغ عند الاستلام {{ total }}."
+      - "سنتواصل معكم قريبًا لتأكيد العنوان، ثم نبدأ العمل على الكتاب."
+    button: { label: "تتبّعوا الطلب", link: track_url }
+  en:
+    subject: "We've received your order {{ code }} 🌙"
+    lines:
+      - "Hello {{ name }},"
+      - "Thank you for choosing {{ brand }}! Your order {{ code }} is in, and the amount due on delivery is {{ total }}."
+      - "We'll contact you soon to confirm the address, then we start on the book."
+    button: { label: "Track your order", link: track_url }
+
+order_confirmed:
+  ar:
+    subject: "تأكّد طلبكم {{ code }} ✨"
+    lines:
+      - "مرحبًا {{ name }}،"
+      - "تأكّد طلبكم {{ code }}، وبدأنا العمل على الكتاب. سنخبركم عند كل خطوة."
+    button: { label: "تتبّعوا الطلب", link: track_url }
+  en:
+    subject: "Your order {{ code }} is confirmed ✨"
+    lines:
+      - "Hello {{ name }},"
+      - "Your order {{ code }} is confirmed and we've started on the book. We'll keep you posted at every step."
+    button: { label: "Track your order", link: track_url }
+
+order_printing:
+  ar:
+    subject: "كتابكم في المطبعة الآن 📖"
+    lines:
+      - "مرحبًا {{ name }}،"
+      - "كتاب طلبكم {{ code }} في المطبعة الآن. بعد الطباعة والتغليف يخرج إليكم مع المندوب."
+    button: { label: "تتبّعوا الطلب", link: track_url }
+  en:
+    subject: "Your book is at the printer 📖"
+    lines:
+      - "Hello {{ name }},"
+      - "The book for order {{ code }} is being printed. Once it's printed and packed, it goes out with the courier."
+    button: { label: "Track your order", link: track_url }
+
+order_shipped:
+  ar:
+    subject: "طلبكم {{ code }} في الطريق إليكم 🚚"
+    lines:
+      - "مرحبًا {{ name }}،"
+      - "خرج طلبكم {{ code }} مع المندوب، وسيتصل بكم قبل الوصول."
+      - "المبلغ عند الاستلام: {{ total }}."
+    button: { label: "تتبّعوا الطلب", link: track_url }
+  en:
+    subject: "Order {{ code }} is on its way 🚚"
+    lines:
+      - "Hello {{ name }},"
+      - "Order {{ code }} is out with the courier, who will call before arriving."
+      - "Amount due on delivery: {{ total }}."
+    button: { label: "Track your order", link: track_url }
+
+order_delivered:
+  ar:
+    subject: "وصل كتابكم 🎉"
+    lines:
+      - "مرحبًا {{ name }}،"
+      - "وصل طلبكم {{ code }}. نتمنى أن يسعد به طفلكم ليالي كثيرة تحت ضوء القمر!"
+      - "إن لاحظتم أي شيء في الطباعة، ردّوا على هذه الرسالة وسنساعدكم."
+  en:
+    subject: "Your book has arrived 🎉"
+    lines:
+      - "Hello {{ name }},"
+      - "Order {{ code }} has been delivered. We hope your child enjoys it for many moonlit nights!"
+      - "If anything about the print isn't right, reply to this email and we'll help."
+
+preview_ready:
+  ar:
+    subject: "معاينة كتاب {{ child }} جاهزة 🌙"
+    lines:
+      - "رسمنا أولى صفحات «{{ title }}»."
+      - "تفرّجوا على المعاينة مع {{ child }}، وعدّلوا النصوص إن أحببتم قبل الطلب."
+    button: { label: "شاهدوا المعاينة", link: create_url }
+  en:
+    subject: "{{ child }}'s book preview is ready 🌙"
+    lines:
+      - "We've drawn the first pages of “{{ title }}”."
+      - "Look through the preview with {{ child }}, and edit the text if you like before ordering."
+    button: { label: "See the preview", link: create_url }
+
+book_ready:
+  ar:
+    subject: "كتاب {{ child }} جاهز للقراءة 📖"
+    lines:
+      - "اكتمل «{{ title }}»، وصار بإمكانكم قراءته الآن على الجوال."
+      - "الرابط يفتح بعد تسجيل الدخول إلى حسابكم، ومنه تستطيعون مشاركة الكتاب مع العائلة برابط خاص."
+    button: { label: "اقرؤوا الكتاب", link: reader_url }
+  en:
+    subject: "{{ child }}'s book is ready to read 📖"
+    lines:
+      - "“{{ title }}” is complete, and you can read it on your phone now."
+      - "The link opens after you sign in; from there you can share the book with family through a private link."
+    button: { label: "Read the book", link: reader_url }
+
+printer_batch:
+  ar:
+    subject: "دفعة طباعة {{ code }} — {{ copies }} نسخة"
+    lines:
+      - "مرحبًا،"
+      - "هذه ملفات دفعة الطباعة {{ code }} ({{ date }}): {{ books }} كتاب، {{ copies }} نسخة."
+      - "كل رابط يفتح تنزيلًا مؤقتًا لعشر دقائق، والروابط صالحة حتى {{ expires }}. قائمة الدفعة كاملة في ملف CSV."
+      - "الملفات لطباعة هذه الدفعة فقط؛ نرجو حذفها بعد التسليم."
+    button: { label: "قائمة الدفعة (CSV)", link: manifest_url }
+  en:
+    subject: "Print batch {{ code }} — {{ copies }} copies"
+    lines:
+      - "Hello,"
+      - "Here are the files for print batch {{ code }} ({{ date }}): {{ books }} books, {{ copies }} copies."
+      - "Each link opens a download that lasts ten minutes; the links work until {{ expires }}. The full list is in the CSV file."
+      - "The files are for printing this batch only; please delete them after delivery."
+    button: { label: "Batch list (CSV)", link: manifest_url }

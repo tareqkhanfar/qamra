@@ -4,17 +4,31 @@ import { brandName } from "@/config/brand";
 import { Link } from "@/i18n/navigation";
 import { AdminGate } from "./AdminGate";
 
-type Section = "queue" | "samples" | "orders" | "catalog" | "printCosts" | "reports" | "metrics" | "settings";
+type Section =
+  | "queue"
+  | "samples"
+  | "orders"
+  | "catalog"
+  | "printCosts"
+  | "reports"
+  | "metrics"
+  | "settings"
+  | "printBatches"
+  | "organizations";
 
 /** Admin chrome (design: admin artboards): night sidebar with brand + «إدارة» badge; content on paper. */
 export async function AdminShell({ active, children }: { active: Section; children: ReactNode }) {
   const [t, locale] = await Promise.all([getTranslations("admin"), getLocale()]);
+  const tp = await getTranslations("printBatches"); // print batches: their label lives in their namespace
+  const tk = await getTranslations("portal.admin"); // kindergartens (Phase 4 portal)
   const items = [
     { id: "queue", href: "/admin/queue", ready: true },
     { id: "samples", href: "/admin/samples", ready: true },
     { id: "orders", href: "/admin/orders", ready: true },
     { id: "catalog", href: "/admin/catalog", ready: true },
     { id: "printCosts", href: "/admin/print-costs", ready: true },
+    { id: "printBatches", href: "/admin/print-batches", ready: true, label: tp("nav") },
+    { id: "organizations", href: "/admin/organizations", ready: true, label: tk("nav") },
     { id: "reports", href: "/admin/reports", ready: true },
     { id: "themes", ready: false },
     { id: "metrics", href: "/admin/metrics", ready: true },
@@ -37,7 +51,7 @@ export async function AdminShell({ active, children }: { active: Section; childr
                   aria-current={active === it.id ? "page" : undefined}
                   className={`flex min-h-11 items-center rounded-sm px-3 font-semibold whitespace-nowrap ${active === it.id ? "bg-night-800 text-paper" : "hover:bg-night-900 hover:text-paper"}`}
                 >
-                  {t(`nav.${it.id}`)}
+                  {"label" in it ? it.label : t(`nav.${it.id}`)}
                 </Link>
               ) : (
                 <span

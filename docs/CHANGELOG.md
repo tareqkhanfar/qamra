@@ -1,4 +1,14 @@
 # Changelog
+
+## Phase 2 and 3 remainders: the reader, share links, email, the card stub, print batches (2026-09-29)
+
+- **The web reader** («كتبي» → a finished book or its preview): page flip, right to left for Arabic books, swipe and keyboard, full screen and night mode, mobile first (design: Reader). Pictures come through the API with the parent's session.
+- **Share links:** the parent creates a private link to a finished book (a week, a month or 3 months), copies or sends it, and can turn it off at any time. The public page shows the book only, is never indexed and is rate-limited.
+- **Emails** (SMTP from the admin settings; without SMTP they are only logged): order placed, confirmed, at the printer, shipped, delivered; preview ready; book ready with its reader link. Arabic and English, each sent once per order and status.
+- **Payments:** cash on delivery behind a `PaymentProvider` interface, unchanged; the card gateway is a disabled stub («الدفع بالبطاقة — قريبًا»).
+- **Admin → دفعات الطباعة** (permission `print`): collect the approved books of printed orders into a batch per day, or per kindergarten; send to the printer, which freezes the list, moves the orders to «في الطباعة» and emails the printer one link per file (each click opens a 10-minute download); then printing → done → handed to delivery (the orders become «شُحن»). The batch list downloads as CSV.
+- New settings: `printer_email`, `printer_link_days`, `smtp_security`, `mail_from_name`, `email_notifications_enabled`. Migration `5125d903ce3f`: the `notifications` table and the printer fields on `print_batches`.
+
 ## Addendum 4, step 3: «قمرة كلاسيك», the Classic pipeline (2026-09-29)
 
 - **Classic templates** per story × art style × look (girl, girl with hijab, boy): drawn once with the premium pipeline around a placeholder hero, or copied from an approved sample book of an invented child. Hero boxes found by the fast vision model; review, per-page redraw, locks, approve and publish (`/api/admin/classic/templates…`, permission `templates`). One-time costs logged.

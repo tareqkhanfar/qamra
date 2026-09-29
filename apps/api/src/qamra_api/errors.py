@@ -208,6 +208,29 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "بعض الإجابات لا تصل إلى أي اقتراح. أضيفوا قاعدة تغطيها ثم احفظوا.",
         "Some answers lead to no recommendation. Add a rule that covers them, then save.",
     ),
+    # W5: the reader, share links, payments, print batches
+    "book_not_ready": (
+        "الكتاب لم يجهز بعد. سنرسل لكم رسالة عندما يصبح جاهزًا للقراءة.",
+        "The book isn't ready yet. We'll email you when it's ready to read.",
+    ),
+    "share_unavailable": (
+        "هذا الرابط لم يعد يعمل: ربما انتهت صلاحيته أو أوقفه صاحب الكتاب.",
+        "This link no longer works: it may have expired or been turned off by the book's owner.",
+    ),
+    "payment_unavailable": (
+        "الدفع بالبطاقة غير متاح بعد. اختاروا الدفع عند الاستلام.",
+        "Card payment isn't available yet. Please choose cash on delivery.",
+    ),
+    "batch_empty": ("لا توجد طلبات في هذه الدفعة.", "There are no orders in this batch."),
+    "batch_not_ready": (
+        "بعض طلبات الدفعة غير جاهزة (كتاب غير معتمد أو طلب ملغى). أخرجوها من الدفعة أو اعتمدوا كتبها.",
+        "Some orders in this batch aren't ready (a book not approved, or a cancelled order). Remove them or "
+        "approve their books.",
+    ),
+    "link_expired": (
+        "انتهت صلاحية الرابط أو استُبدل برابط أحدث. اطلبوا رابطًا جديدًا من فريقنا.",
+        "This link has expired or was replaced by a newer one. Ask our team for a new link.",
+    ),
     "internal_error": (
         "حدث خطأ غير متوقع. حاولوا مرة أخرى بعد قليل.",
         "Something went wrong. Please try again in a moment.",

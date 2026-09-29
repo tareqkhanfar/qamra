@@ -16,6 +16,7 @@ from qamra_api.routers.admin_books import router as admin_books_router
 from qamra_api.routers.admin_catalog import router as admin_catalog_router
 from qamra_api.routers.admin_classic import router as admin_classic_router
 from qamra_api.routers.admin_orders import router as admin_orders_router
+from qamra_api.routers.admin_print_batches import router as admin_print_batches_router
 from qamra_api.routers.admin_print_costs import router as admin_print_costs_router
 from qamra_api.routers.admin_reports import router as admin_reports_router
 from qamra_api.routers.admin_self_hosted import router as admin_self_hosted_router
@@ -25,6 +26,8 @@ from qamra_api.routers.examples import router as examples_router
 from qamra_api.routers.family import router as family_router
 from qamra_api.routers.health import router as health_router
 from qamra_api.routers.leads import router as leads_router
+from qamra_api.routers.printer import router as printer_router
+from qamra_api.routers.reader import router as reader_router
 from qamra_api.routers.settings import admin_router as settings_admin_router
 from qamra_api.routers.settings import public_router as settings_public_router
 from qamra_api.routers.shop import admin_router as shop_admin_router
@@ -32,6 +35,7 @@ from qamra_api.routers.shop import router as shop_router
 from qamra_api.routers.themes import router as themes_router
 from qamra_api.security_headers import SecurityHeadersMiddleware
 from qamra_api.settings import ApiSettings, get_settings
+from qamra_api.store.payments import router as payments_router
 from qamra_api.store.router import router as store_router
 from qamra_core.db.session import make_async_engine, make_async_sessionmaker
 from qamra_core.observability import configure_logging
@@ -105,4 +109,8 @@ def create_app(settings: ApiSettings | None = None, *, manage_resources: bool = 
     app.include_router(examples_admin_router)
     app.include_router(shop_router)
     app.include_router(shop_admin_router)
+    app.include_router(reader_router)  # W5: the web reader and share links
+    app.include_router(payments_router)
+    app.include_router(admin_print_batches_router)
+    app.include_router(printer_router)
     return app
