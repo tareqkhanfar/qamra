@@ -37,13 +37,13 @@ def upgrade() -> None:
     op.drop_constraint(op.f("ck_products_product_line"), "products", type_="check")
     op.create_check_constraint(op.f("ck_products_product_line"), "products", f"line IN ({LINES_NEW})")
     op.execute(
-        f"UPDATE addons SET lines = lines || '[\"family\"]'::jsonb "
+        f"UPDATE addons SET lines = lines || '[\"family\"]'::jsonb "  # nosec B608: module constants, no user input
         f"WHERE slug IN {SHARED_ADDONS} AND NOT lines @> '[\"family\"]'::jsonb"
     )
 
 
 def downgrade() -> None:
-    op.execute(f"UPDATE addons SET lines = lines - 'family' WHERE slug IN {SHARED_ADDONS}")
+    op.execute(f"UPDATE addons SET lines = lines - 'family' WHERE slug IN {SHARED_ADDONS}")  # nosec B608: module constants, no user input
     op.execute("DELETE FROM products WHERE line = 'family'")
     op.drop_constraint(op.f("ck_products_product_line"), "products", type_="check")
     op.create_check_constraint(op.f("ck_products_product_line"), "products", f"line IN ({LINES_OLD})")

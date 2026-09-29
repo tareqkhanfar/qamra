@@ -101,14 +101,22 @@ Last full review: 2026-09-28. No system can be proven free of vulnerabilities. T
   - Deleting a child cascades to all their data.
   - Audit logs hold no personal data.
 
-## Automated checks (2026-09-28)
+## Automated checks (2026-09-30)
 
 | Check | Result |
 |---|---|
-| `bandit` (Python security lint) | 0 issues. Three false positives are annotated: a public URL, the dev JWT default that production refuses, and the enum name `"secret"`. The jinja2 `autoescape=False` in AI prompt templates is intentional (plain text, never HTML). |
-| `pip-audit` (88 Python packages) | No known vulnerabilities (re-run after adding pyotp, python-multipart, pdfplumber) |
+| `bandit` (Python security lint, now including `packages/workbook`) | 0 issues. Annotated false positives: layout seeds from `random` (not secrets), migrations that format module constants into SQL, `Markup` on SVG built from letter paths (no user input), a picture's `shell=` colour argument, and an ops script's default output path. The jinja2 `autoescape=False` in AI prompt templates is intentional (plain text, never HTML). |
+| `pip-audit` (the locked Python dependencies) | No known vulnerabilities |
 | `npm audit --omit=dev` (web) | 0 vulnerabilities |
-| Test suite | 256 Python tests, including auth, 2FA (replay, recovery, rate limit, admin enforcement, IP allowlist), rate limits, CSRF, role checks, secret masking/encryption, settings validation, sample-upload checks (consent, face check, metadata stripped) and security headers. Plus a browser e2e and a CSP-violation check in a real browser. |
+| Test suite | About 1,500 Python tests across the API, worker, core, AI, PDF and workbook packages, including auth, 2FA (replay, recovery, rate limit, admin enforcement, IP allowlist), rate limits, CSRF, role checks, secret masking/encryption, upload checks (consent, face check, EXIF stripped, size and type), signed-link expiry and tampering (audio, printer files, share links), gift-card balance races, portal isolation between schools, and child-data deletion across every feature. Plus the Playwright order-path flows in `tests/e2e/`. |
+
+## What the new features do for privacy
+
+- **Uploads:** photos, drawings, family members' photos, logos and recordings are type- and size-checked, re-encoded without metadata, and stored privately under the child's prefix (logos under the lead's). Browsers get signed URLs of ≤ 15 minutes; audio and printer files use 10-minute links whose tokens the request logs mask.
+- **Deletion:** originals go 24 h after approval (photos, drawings, family photos) or after upload (the free cover); recordings, companions, family members and class-book likenesses go with «حذف بيانات الطفل».
+- **Public pages:** only sample books of invented children can be public examples or Classic templates; share, listen and invite pages are `noindex`/`no-referrer` and carry no ids or names.
+- **Payments and codes:** cash on delivery only; gift-card codes are random, logged by their last 4 characters, and redeemed atomically with a DB check.
+- **Staff:** roles are edited only by owners for the owner role, never by the user for themselves, and every change is audited; the audit log holds no personal data.
 
 ## Open items: must do before real customers
 
@@ -120,8 +128,9 @@ Last full review: 2026-09-28. No system can be proven free of vulnerabilities. T
    - Root logs in by SSH with a password that has been shared in chat. Change it and switch to SSH keys.
    - `namer-postgres` is published on `0.0.0.0:5432` to the whole internet.
    - Other projects share the machine.
-4. **Before launch:** backups and restore drills (Phase 6), monitoring/alerts, and an external penetration test.
-5. **Phase 2 features** get their own review: photo and drawing uploads (type/size checks, stripping EXIF location, private storage with signed URLs only) and payments.
+4. **Before launch:** production (Phase 6 is built and drilled on the test server: `docs/runbooks/`), alerts wired to a webhook, and an external penetration test.
+5. **fal's written confirmation** that no children's photos are used to improve their services (their DPA allows de-identified data).
+6. **The temporary `ops-bot` admin account** on the test server is deactivated when the work is handed over; create real staff accounts in Admin → الموظفون.
 
 ## Re-running the checks
 

@@ -135,7 +135,7 @@ def upgrade() -> None:
         "WHERE slug = 'two-books' AND kind = 'min_items' AND min_items = 2 AND discount_pct = 15"
     )
     # the add-ons step (design AddOns): the open list, the badges, and descriptions not written yet
-    op.execute(f"UPDATE addons SET featured = true WHERE slug IN {FEATURED}")
+    op.execute(f"UPDATE addons SET featured = true WHERE slug IN {FEATURED}")  # nosec B608: module constants, no user input
     rows = sa.table(
         "addons",
         sa.column("slug", sa.String),

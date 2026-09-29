@@ -59,7 +59,7 @@ def auto_plan(
     cb: ClassBook, template: ClassTemplate, children: list[str], cap: int, seed: int | None = None
 ) -> dict[str, Any]:
     seed = (
-        seed if seed is not None else int((cb.plan or {}).get("seed") or random.randrange(1, 2_000_000_000))
+        seed if seed is not None else int((cb.plan or {}).get("seed") or random.randrange(1, 2_000_000_000))  # nosec B311: a layout seed, not a secret
     )
     line: ClassLine = "classic" if cb.line == "classic" else "magic"
     pages = build_plan(template, children, min_each=cb.min_appearances, cap=cap, line=line, seed=seed)

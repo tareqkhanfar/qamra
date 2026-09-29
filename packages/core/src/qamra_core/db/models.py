@@ -577,6 +577,8 @@ class Lead(IdMixin, CreatedAtMixin, Base):
     notes: Mapped[str | None] = mapped_column(Text)
     locale: Mapped[Locale] = mapped_column(str_enum(Locale, "lead_locale"), default=Locale.ar)
     status: Mapped[LeadStatus] = mapped_column(str_enum(LeadStatus, "lead_status"), default=LeadStatus.new)
+    # a family-book quote request (kind "family_quote"): copies, email, the back-cover logo's key, the staff's
+    # price from the print-cost tiers
     details: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict, server_default="{}")
 
 

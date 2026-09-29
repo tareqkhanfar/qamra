@@ -80,7 +80,7 @@ def cli() -> None:
     p = argparse.ArgumentParser(prog="qamra_worker.ab")
     p.add_argument("book_id")
     p.add_argument("--beats", default="1,6,13")
-    p.add_argument("--out", type=Path, default=Path("/tmp/ab"))
+    p.add_argument("--out", type=Path, default=Path("/tmp/ab"))  # nosec B108: a CLI default for an ops script, overridable
     args = p.parse_args()
     asyncio.run(main(args.book_id, [int(b) for b in args.beats.split(",")], args.out))
 

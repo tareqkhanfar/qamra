@@ -267,7 +267,7 @@ def assign(children: Sequence[str], places: Sequence[int], min_each: int, seed: 
     pages: list[list[str]] = [[] for _ in places]
     if not children or not places or min_each <= 0:
         return pages
-    rng = random.Random(seed)
+    rng = random.Random(seed)  # nosec B311: page layout, not a secret
     stream: list[str] = []
     for _ in range(min_each):
         order = list(children)
