@@ -10,7 +10,7 @@ import { api, errorText, type User } from "@/lib/api";
 import type { ThemeCard } from "@/lib/catalog";
 import { classicStyles, classicVariant } from "@/lib/classic";
 import { createApi, STEPS, type Book, type Character, type Child, type Line, type Step } from "@/lib/create";
-import type { Catalog } from "@/lib/store";
+import type { Cart, Catalog } from "@/lib/store";
 import { CharacterStep } from "./CharacterStep";
 import { ChildStep } from "./ChildStep";
 import { ConsentStep } from "./ConsentStep";
@@ -22,7 +22,9 @@ import { StoryStep } from "./StoryStep";
 import { StyleStep } from "./StyleStep";
 import { WritingStep } from "./WritingStep";
 
-type Query = Partial<Record<"step" | "child" | "character" | "book" | "line" | "theme" | "style", string | null>>;
+type Query = Partial<
+  Record<"step" | "child" | "character" | "book" | "line" | "theme" | "style" | "product", string | null>
+>;
 /** What was fetched for an id in the URL (null: not found or not this parent's). */
 type Loaded<T> = { id: string; value: T | null };
 
@@ -87,6 +89,8 @@ export function CreateWizard() {
     line: (["classic", "magic"].includes(params.get("line") ?? "") ? params.get("line") : null) as Line | null,
     theme: params.get("theme"),
     style: params.get("style"),
+    // an activity book (Addendum 9, /workbooks): once the character is approved it goes to the cart
+    product: params.get("product"),
   };
   const [children, setChildren] = useState<Child[] | null>(null);
   const [catalog, setCatalog] = useState<Catalog | null>(null);
@@ -244,10 +248,19 @@ export function CreateWizard() {
     const styles = new Set((catalog?.styles ?? []).filter((s) => s.lines.includes(value)).map((s) => s.slug));
     const ready = [...c.characters]
       .reverse()
-      .find((ch) => ch.approved && styles.has(ch.style) && (!q.style || ch.style === q.style));
-    if (ready) go({ step: "story", child: c.id, line: value, character: ready.id, style: ready.style });
+      // an activity book reuses any approved character (no new drawing); a story wants the chosen style
+      .find((ch) => ch.approved && (q.product ? true : styles.has(ch.style) && (!q.style || ch.style === q.style)));
+    if (ready && q.product) void addProduct(c);
+    else if (ready) go({ step: "story", child: c.id, line: value, character: ready.id, style: ready.style });
     else if (!c.photos) go({ step: "photo", child: c.id, line: value });
     else void styleOrDraw(c, value);
+  }
+
+  /** An activity book (Addendum 9): drawn with this child's approved character, straight into the cart. */
+  async function addProduct(c: Child) {
+    const r = await api<Cart>("/api/shop/workbooks/cart", { json: { sku: q.product, child_id: c.id } });
+    if (r.ok) router.push("/cart");
+    else setError(errorText(r.error, locale, r.status === 0 ? te("network") : te("unknown")));
   }
 
   function afterLine(value: Line) {
@@ -336,7 +349,8 @@ export function CreateWizard() {
           onApproved={(c) => {
             setCharacter({ id: c.id, value: c });
             void refreshChildren();
-            go({ step: line ? "story" : "line" });
+            if (q.product && child) void addProduct(child);
+            else go({ step: line ? "story" : "line" });
           }}
         />
       );

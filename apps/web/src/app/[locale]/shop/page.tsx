@@ -144,7 +144,7 @@ export default async function ShopPage() {
                             {t(`learn.chip.${p.line}`)}
                           </span>
                         )}
-                        {!WORKBOOK_PAGES && (
+                        {(!WORKBOOK_PAGES || summary?.orderable?.[p.slug] === false) && (
                           <span className="rounded-full bg-lav-300 px-2 py-0.5 text-[12px] font-bold text-night-900">
                             {t("soon")}
                           </span>

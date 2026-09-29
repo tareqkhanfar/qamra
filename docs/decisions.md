@@ -2,6 +2,20 @@
 
 Newest first. Each entry: date — decision — why.
 
+## 2026-09-29 — Activity-book pages: orderable flag, previews, and the child's character
+
+- **"Can it be ordered now" is a product flag, `features.orderable`**, not a new column: no migration, and it is edited in the admin next to the product. The API decides it (`qamra_api.store.workbooks.orderable`):
+  - A missing flag means orderable, except the educational lines («دوسية التأسيس» and «رحلتي الأولى»). Those wait for the educator's sign-off, per Tareq's rule.
+  - The seed writes `orderable: false` for both.
+  - `check_item` refuses a closed product in every cart path.
+  - The pages read the flags from `GET /api/shop/summary`.
+- **The previews are static files:** real engine pages of the invented sample child (AI-drawn, no real child's data), exported once by `scripts/export_workbook_previews.py` to `apps/web/public/workbooks/`, and listed in `apps/web/src/lib/workbook-previews.json`.
+  - «دوسية التأسيس» shows the design's illustrations, with a note, until its renderer is complete (it is still being built).
+- **A workbook is bought for a child with an approved character.**
+  - The page asks which child. `POST /api/shop/workbooks/cart` stores `child_id`, the variant (its options) and the character used, so the order-time render can find everything.
+  - Without a character, the create flow runs with `product=<sku>`. It uses the house style and reuses any approved character, then adds the book to the cart.
+
+
 ## 2026-09-29 — Addendum 9 store pages: routes, quiz rules, and where the pages differ from the design
 
 - **Routes:** the story page is `/stories/[slug]` and the list is `/stories`. `/themes` and `/themes/[slug]` answer 308 to them (next.config redirects), and every internal link was updated.

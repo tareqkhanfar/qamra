@@ -38,6 +38,7 @@ from qamra_api.store.catalog import (
     zone_rule,
 )
 from qamra_api.store.payments import provider_for
+from qamra_api.store.workbooks import orderable
 from qamra_api.validation import PHONE
 from qamra_core import settings_store
 from qamra_core.db.models import AuditLog, Currency, Order, OrderItem, OrderStatus
@@ -435,6 +436,8 @@ def check_item(
     if variant is None:
         raise ApiError("unknown_product", 404)
     product = c.product_of(variant)
+    if not orderable(product):  # e.g. the workbooks until the educator signs them off (store/workbooks.py)
+        raise ApiError("not_orderable", 409)
     if style is not None and (style not in c.styles or product.line.value not in c.styles[style].lines):
         raise ApiError("invalid_style", 422)
     problems = addon_problems(c, variant, addons)

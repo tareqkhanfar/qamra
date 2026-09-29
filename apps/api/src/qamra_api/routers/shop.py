@@ -2,14 +2,18 @@
 public facts.
 """
 
+import uuid
+from datetime import UTC, date, datetime
 from decimal import Decimal
-from typing import Literal
+from typing import Any, Literal
 
-from fastapi import APIRouter, Depends, Response
-from pydantic import BaseModel
+from fastapi import APIRouter, Depends, Request, Response
+from pydantic import BaseModel, Field
+from sqlalchemy import select
 
-from qamra_api.deps import AdminUser, SessionDep, require_admin, require_permission
+from qamra_api.deps import AdminUser, CurrentUser, SessionDep, SettingsDep, require_admin, require_permission
 from qamra_api.errors import ApiError
+from qamra_api.store.cart import ensure_cart
 from qamra_api.store.catalog import PRINTED_FORMATS, Catalog, load_catalog
 from qamra_api.store.quiz import (
     AGES,
@@ -24,7 +28,10 @@ from qamra_api.store.quiz import (
     load_rules,
     match,
 )
-from qamra_core.db.models import AppSetting, AuditLog, Currency
+from qamra_api.store.router import CartOut, cart_out, check_copies, check_item
+from qamra_api.store.workbooks import ACTIVITY, orderable
+from qamra_core.db.models import AppSetting, AuditLog, Character, Child, Currency
+from qamra_core.db.store import CartItem, CatalogProduct
 
 router = APIRouter(prefix="/api/shop", tags=["shop"])
 admin_router = APIRouter(prefix="/api/admin", tags=["admin"], dependencies=[Depends(require_admin)])
@@ -128,6 +135,7 @@ class ShopSummary(BaseModel):
     class_book_from: Decimal | None  # kindergartens: the cheapest class book per child
     class_book_min_qty: int | None
     currency: Currency
+    orderable: dict[str, bool]  # per product: can it be ordered now (store/workbooks.py)
 
 
 @router.get("/summary")
@@ -142,6 +150,7 @@ async def summary(db: SessionDep, response: Response, currency: Literal["ILS", "
         class_book_from=from_price(catalog, class_books, {}, cur) if class_books else None,
         class_book_min_qty=min(mins) if mins else None,
         currency=cur,
+        orderable={p.slug: orderable(p) for p in catalog.products.values() if p.audience.value == "b2c"},
     )
 
 
@@ -184,3 +193,97 @@ async def put_rules(body: QuizRules, admin: AdminUser, db: SessionDep) -> RulesO
     )
     await db.commit()
     return RulesOut(rules=body.rules, saved=True)
+
+
+# ---- activity books: the order item for a child, and who can order what ------------------------------------
+
+
+class WorkbookItemIn(BaseModel):
+    sku: str = Field(max_length=64)
+    child_id: uuid.UUID
+    qty: int = Field(default=1, ge=1, le=50)
+
+
+@router.post("/workbooks/cart", status_code=201)
+async def add_workbook(
+    body: WorkbookItemIn,
+    request: Request,
+    response: Response,
+    user: CurrentUser,
+    db: SessionDep,
+    settings: SettingsDep,
+) -> CartOut:
+    """An activity book for one of the parent's children, drawn with the child's approved character (no new
+    AI cost). The order item carries the child, the variant (its options) and the character used."""
+    child = await db.get(Child, body.child_id)
+    if child is None or child.guardian_user_id != user.id:
+        raise ApiError("not_found", 404)
+    character = (
+        await db.execute(
+            select(Character)
+            .where(Character.child_id == child.id, Character.approved_at.is_not(None))
+            .order_by(Character.approved_at.desc())
+            .limit(1)
+        )
+    ).scalar_one_or_none()
+    if character is None:
+        raise ApiError("character_not_approved", 409)
+    c = await load_catalog(db)
+    variant = check_item(c, c.variants.get(body.sku), None, [])  # unknown, off sale or not orderable yet
+    if c.product_of(variant).line.value not in ACTIVITY:
+        raise ApiError("unknown_product", 404)
+    cart = await ensure_cart(db, request, response, user, settings)
+    await check_copies(db, cart, variant, body.qty)  # 10+ family books wait for the printer's prices
+    db.add(
+        CartItem(
+            cart_id=cart.id,
+            variant_id=variant.id,
+            child_id=child.id,
+            qty=body.qty,
+            addons=[],
+            personalization={
+                "child_name": child.first_name,
+                "gender": child.gender.value,
+                "age": max(2, min(12, date.today().year - child.birth_year)),
+                "hijab": child.wears_hijab,
+                "glasses": child.wears_glasses,
+                "character_id": str(character.id),
+            },
+        )
+    )
+    cart.updated_at = datetime.now(UTC)
+    await db.commit()
+    return await cart_out(db, cart)
+
+
+class OrderableIn(BaseModel):
+    orderable: bool
+
+
+@admin_router.get("/shop/orderable", dependencies=[Depends(require_permission("catalog"))])
+async def orderable_flags(db: SessionDep) -> dict[str, bool]:
+    catalog = await load_catalog(db, include_inactive=True)
+    return {p.slug: orderable(p) for p in catalog.products.values()}
+
+
+@admin_router.put("/shop/products/{slug}/orderable", dependencies=[Depends(require_permission("catalog"))])
+async def set_orderable(slug: str, body: OrderableIn, admin: AdminUser, db: SessionDep) -> dict[str, Any]:
+    """Open or close a product for orders (it stays visible as «قريبًا» while closed)."""
+    product = (
+        await db.execute(select(CatalogProduct).where(CatalogProduct.slug == slug))
+    ).scalar_one_or_none()
+    if product is None:
+        raise ApiError("not_found", 404)
+    before = orderable(product)
+    product.features = {**(product.features or {}), "orderable": body.orderable}
+    db.add(
+        AuditLog(
+            actor_user_id=admin.id,
+            action="admin.product_orderable",
+            entity_type="product",
+            entity_id=slug,
+            data={"before": before, "after": body.orderable},
+        )
+    )
+    await db.commit()
+    return {"slug": slug, "orderable": body.orderable}

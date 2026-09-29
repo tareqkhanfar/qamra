@@ -7,7 +7,7 @@ export type Currency = "ILS" | "JOD";
 export type CatalogVariant = { sku: string; options: Record<string, string>; price: string | null };
 export type CatalogProduct = {
   slug: string;
-  line: "classic" | "magic" | "coloring" | "workbook" | "journey";
+  line: "classic" | "magic" | "coloring" | "workbook" | "journey" | "family";
   name_ar: string;
   name_en: string;
   description_ar: string;

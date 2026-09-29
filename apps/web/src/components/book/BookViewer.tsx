@@ -165,6 +165,16 @@ export function BookViewer({
     };
   }, []);
 
+  // the book is as tall as the page shown (a short page doesn't leave the tallest page's gap under it)
+  const [height, setHeight] = useState<number | undefined>(undefined);
+  useEffect(() => {
+    const slide = scroller.current?.children[current] as HTMLElement | undefined;
+    if (!slide) return;
+    const observer = new ResizeObserver(() => setHeight(slide.offsetHeight));
+    observer.observe(slide);
+    return () => observer.disconnect();
+  }, [current, views]);
+
   useEffect(() => {
     if (zoom) dialog.current?.showModal();
   }, [zoom]);
@@ -314,7 +324,9 @@ export function BookViewer({
       {example && available.length > 0 && (
         <div className="flex flex-wrap items-center justify-between gap-2">
           <VariantSwitch value={example.variant} available={available} onChange={pick} />
-          <span className="text-caption text-ink-muted">{t("synthetic", { name: example.child_name })}</span>
+          <span className="text-caption text-ink-muted">
+            {t("synthetic", { name: example.child_name, variant: example.variant })}
+          </span>
         </div>
       )}
       {!example && fallback.length > 0 && <p className="text-caption text-ink-muted">{t("placeholderNote")}</p>}
@@ -325,7 +337,8 @@ export function BookViewer({
         aria-roledescription={t("carousel")}
         aria-labelledby={headingId}
         onKeyDown={onKey}
-        className="flex snap-x snap-mandatory [scrollbar-width:none] items-stretch overflow-x-auto overscroll-x-contain scroll-smooth rounded-2xl focus-visible:outline-offset-4 [&::-webkit-scrollbar]:hidden"
+        style={height ? { height } : undefined}
+        className="flex snap-x snap-mandatory [scrollbar-width:none] items-start overflow-x-auto overflow-y-hidden overscroll-x-contain scroll-smooth rounded-2xl transition-[height] duration-300 focus-visible:outline-offset-4 [&::-webkit-scrollbar]:hidden"
       >
         {views.map((v, i) => (
           <div
@@ -335,7 +348,7 @@ export function BookViewer({
             aria-label={t("position", { n: i + 1, total: views.length })}
             aria-hidden={i !== current}
             inert={i !== current}
-            className="flex w-full shrink-0 snap-center snap-always flex-col"
+            className="w-full shrink-0 snap-center snap-always"
           >
             {slide(v, i)}
           </div>

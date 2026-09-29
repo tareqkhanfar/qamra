@@ -18,8 +18,8 @@ async def test_seed_builds_the_catalog_once(adb: AsyncSession) -> None:
     added = await seed_store(adb)
     assert "+product:classic-book" in added and "+variant:wb-kg2-set-color-spiral" in added
     variants, addons = await _count(adb, Variant), await _count(adb, AddOn)
-    # classic, magic, custom story, coloring, 2 class books, workbook, journey, family
-    assert variants == 3 + 1 + 1 + 1 + 1 + 1 + 20 + 7 + 2
+    # classic, magic, custom story, coloring, 2 class books, workbook (2 levels × 12), journey, family
+    assert variants == 3 + 1 + 1 + 1 + 1 + 1 + 24 + 7 + 2
     assert addons == 19
     assert await seed_store(adb) == []  # insert-only: a second run changes nothing
     assert await _count(adb, Variant) == variants

@@ -323,6 +323,126 @@
     "ctaBook": "Finish {name}'s book · from {price}",
     "ctaPlain": "Finish {name}'s book"
   },
+  "workbook": {
+    "back": "Back",
+    "sampleName": "Layan",
+    "cover": {
+      "workbook": "{name}'s workbook",
+      "journey": "{name}'s first journey",
+      "family": "{name}'s adventures"
+    },
+    "ages": {
+      "workbook": "Ages 4–6",
+      "journey": "Ages 3–6",
+      "family": "Ages 3–7"
+    },
+    "pages": {
+      "workbook": "About 120 pages a volume",
+      "family": "112 pages and stickers"
+    },
+    "desc": {
+      "workbook": "Arabic, English, math and pen skills in one workbook, step by step every week, instead of buying several.",
+      "journey": "A learning journey that starts with thinking, hand skills and colors, then letters and numbers, mission by mission.",
+      "family": "12 adventures at home, at the market, in the kitchen and outdoors, done with the family, with a passport and stickers."
+    },
+    "binding": {
+      "spiral": "Spiral bound · lies flat",
+      "wire-o": "Wire-o bound · lies flat"
+    },
+    "peek": "A peek inside",
+    "peekSoon": "Illustrations only. The workbook's real pages appear here after the educator's review.",
+    "placeholder": {
+      "trace": "Trace the letter",
+      "name": "Write my name",
+      "count": "How many apples?"
+    },
+    "zoom": "Enlarge the page: {title}",
+    "zoomTitle": "A page of the book",
+    "close": "Close",
+    "mine": {
+      "title": "Made for your child",
+      "workbook": [
+        "A cover with their character and name",
+        "Pages where they learn to write their name in Arabic and English",
+        "A certificate in their name at the end of the year"
+      ],
+      "journey": [
+        "A cover with their character and name",
+        "Their name in every mission",
+        "A journey certificate in their name"
+      ],
+      "family": [
+        "Their character is the hero of every adventure",
+        "Family names in the missions",
+        "A passport with their picture and an adventurer's certificate"
+      ]
+    },
+    "options": {
+      "level": "Level",
+      "volume": "Volume",
+      "stage": "Stage",
+      "format": "Format",
+      "interior": "Colors"
+    },
+    "values": {
+      "level": {
+        "kg1": "KG1 · ages 4–5",
+        "kg2": "KG2 · ages 5–6"
+      },
+      "volume": {
+        "1": "First",
+        "2": "Second",
+        "3": "Third",
+        "set": "All three"
+      },
+      "stage": {
+        "1": "First",
+        "2": "Second",
+        "3": "Third",
+        "set": "All three"
+      },
+      "format": {
+        "spiral": "Printed",
+        "digital": "PDF to print at home"
+      },
+      "interior": {
+        "color": "Color",
+        "bw": "Black and white"
+      }
+    },
+    "summary": {
+      "volume": "{value} volume",
+      "stage": "{value} stage"
+    },
+    "note": {
+      "workbook": "{set, select, true {{pdf, select, true {All three volumes download right away.} other {All three volumes arrive together, or one at the start of each term if you prefer.}}} other {One volume per term, about 10 pages a week.}}",
+      "journey": "{set, select, true {All three stages together; each builds on the one before.} other {Each stage builds on the one before, with short daily missions.}}",
+      "family": "{pdf, select, true {A PDF to print at home, with the cut-outs and stickers.} other {A printed book with wire-o binding, a sticker sheet and cut-out pages.}}"
+    },
+    "soon": {
+      "badge": "Coming soon",
+      "title": "Coming soon to the shop",
+      "body": "We review it with a kindergarten educator before we sell it. Leave us a message and we'll tell you as soon as it's available.",
+      "notify": "Tell me when it's available",
+      "message": "Hello, please tell me when \"{name}\" is available."
+    },
+    "bulk": "10 copies or more? Ask for a quote",
+    "quiz": "Not sure which level? Answer 3 questions",
+    "b2b": {
+      "familyTitle": "For kindergartens and organizations: a family-day gift with your logo",
+      "familyBody": "Special prices for quantities, with your logo on the back cover.",
+      "title": "For kindergartens: with your logo and the whole year's curriculum",
+      "body": "Special prices for 20 children or more, each volume delivered at the start of its term."
+    },
+    "add": "Add to cart",
+    "soonCta": "Coming soon",
+    "chooser": {
+      "title": "Who is the book for?",
+      "ready": "{name}'s character is ready",
+      "other": "Another child (we draw their character first)",
+      "close": "Close"
+    }
+  },
   "meta": {
     "title": "{brand} — Your child's story, by moonlight",
     "description": "A printed storybook where your child is the hero on every page, and their own drawing is their companion."

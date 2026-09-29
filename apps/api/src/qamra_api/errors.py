@@ -208,6 +208,10 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "بعض الإجابات لا تصل إلى أي اقتراح. أضيفوا قاعدة تغطيها ثم احفظوا.",
         "Some answers lead to no recommendation. Add a rule that covers them, then save.",
     ),
+    "not_orderable": (
+        "هذا الكتاب غير متاح للطلب بعد. نخبركم حين يتوفّر.",
+        "This book can't be ordered yet. We'll let you know when it's available.",
+    ),
     # W5: the reader, share links, payments, print batches
     "book_not_ready": (
         "الكتاب لم يجهز بعد. سنرسل لكم رسالة عندما يصبح جاهزًا للقراءة.",

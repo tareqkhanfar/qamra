@@ -181,7 +181,8 @@
     outline-offset: 2px;
   }
   /* scroll reveal (RevealObserver sets data-shown) */
-  @media (prefers-reduced-motion: no-preference) {
+  /* only when scripts run (RevealObserver reveals them); without JS, or with reduced motion, all is visible */
+  @media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
     html:not([data-motion="off"]) [data-reveal]:not([data-shown]) {
       opacity: 0;
       translate: 0 28px;

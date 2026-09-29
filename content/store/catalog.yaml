@@ -92,7 +92,8 @@ products:
     description_ar: منهج متكامل للروضة في ثلاثة أجزاء، باسم طفلك وشخصيته.
     description_en: A complete kindergarten curriculum in three volumes, with your child's name and character.
     option_names: [level, volume, interior, format]
-    features: {size: A4, binding: spiral}
+    # orderable: false until the educator signs the curriculum off (Tareq, 2026-09-29); switched in the admin
+    features: {size: A4, binding: spiral, orderable: false}
     variant_matrix:
       levels: [kg1, kg2]
       rows:
@@ -106,6 +107,9 @@ products:
         - {volume: "2", interior: color, format: spiral, price: {ILS: 69, JOD: 13}, cost: {print: 24, packaging: 2, ai_usd: 0.03}}  # placeholder
         - {volume: "3", interior: color, format: spiral, price: {ILS: 69, JOD: 13}, cost: {print: 24, packaging: 2, ai_usd: 0.03}}  # placeholder
         - {volume: set, interior: color, format: spiral, price: {ILS: 179, JOD: 34}, cost: {print: 72, packaging: 4, ai_usd: 0.03}}  # placeholder
+        # the set as a PDF and in black and white (Addendum 9, WorkbookProduct design)
+        - {volume: set, interior: color, format: digital, price: {ILS: 75, JOD: 14.5}, cost: {ai_usd: 0.03}}
+        - {volume: set, interior: bw, format: spiral, price: {ILS: 129, JOD: 25}, cost: {print: 39, packaging: 4, ai_usd: 0.03}}  # placeholder
 
   # ---- «رحلتي الأولى للتعلّم» (Addendum 6): full color only ---------------------------------------------
   - slug: learning-journey
@@ -115,7 +119,8 @@ products:
     description_ar: كتاب مغامرة يتعلّم فيه طفلك وهو يلعب، من التفكير حتى القراءة.
     description_en: An adventure book of missions, from thinking to reading, for ages 3–6.
     option_names: [stage, format]
-    features: {size: A4, binding: spiral, interior: color, audio: included}
+    # orderable: false until the educator signs it off (Tareq, 2026-09-29); switched in the admin
+    features: {size: A4, binding: spiral, interior: color, audio: included, orderable: false}
     variants:
       - {sku: journey-s1-digital, options: {stage: "1", format: digital}, price: {ILS: 29, JOD: 5.5}, cost: {ai_usd: 0.03}}
       - {sku: journey-s2-digital, options: {stage: "2", format: digital}, price: {ILS: 29, JOD: 5.5}, cost: {ai_usd: 0.03}}

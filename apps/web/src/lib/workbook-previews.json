@@ -1,0 +1,66 @@
+{
+  "learning-journey": [
+    {
+      "src": "/workbooks/learning-journey/01.jpg",
+      "title_ar": "متاهة: ساعدي ليان للوصول إلى الحديقة",
+      "title_en": "A maze to the garden"
+    },
+    {
+      "src": "/workbooks/learning-journey/02.jpg",
+      "title_ar": "تلوين ذكي",
+      "title_en": "Smart coloring"
+    },
+    {
+      "src": "/workbooks/learning-journey/03.jpg",
+      "title_ar": "أتتبّع بإصبعي",
+      "title_en": "Trace with a finger"
+    },
+    {
+      "src": "/workbooks/learning-journey/04.jpg",
+      "title_ar": "حرف إنجليزي",
+      "title_en": "An English letter"
+    },
+    {
+      "src": "/workbooks/learning-journey/05.jpg",
+      "title_ar": "جِد الفرق",
+      "title_en": "Spot the difference"
+    },
+    {
+      "src": "/workbooks/learning-journey/06.jpg",
+      "title_ar": "شهادة الرحلة باسمه",
+      "title_en": "A certificate in their name"
+    }
+  ],
+  "family-adventures": [
+    {
+      "src": "/workbooks/family-adventures/01.jpg",
+      "title_ar": "جواز سفر المغامر",
+      "title_en": "The adventurer's passport"
+    },
+    {
+      "src": "/workbooks/family-adventures/02.jpg",
+      "title_ar": "مغامرة البحث في البيت",
+      "title_en": "A treasure hunt at home"
+    },
+    {
+      "src": "/workbooks/family-adventures/03.jpg",
+      "title_ar": "قائمة مشتريات السوق",
+      "title_en": "The market shopping list"
+    },
+    {
+      "src": "/workbooks/family-adventures/04.jpg",
+      "title_ar": "الشيف الصغير: خطوات الوصفة",
+      "title_en": "Little chef: the recipe steps"
+    },
+    {
+      "src": "/workbooks/family-adventures/05.jpg",
+      "title_ar": "ميزان المشاعر",
+      "title_en": "The feelings thermometer"
+    },
+    {
+      "src": "/workbooks/family-adventures/06.jpg",
+      "title_ar": "نقود قمرة للّعب",
+      "title_en": "Qamra play money"
+    }
+  ]
+}

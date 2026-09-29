@@ -1,5 +1,16 @@
 # Changelog
 
+## The activity-book pages (Addendum 9, WorkbookProduct) (2026-09-29)
+
+- **`/workbooks/[product]`:** one template for «دوسية التأسيس», «رحلتي الأولى للتعلّم» and «مغامراتي مع عائلتي».
+  - The choices (level, volume or stage, format, colors) and the live price come from the product's variants. A choice that doesn't exist with the others is greyed out.
+  - Real pages drawn by the workbook engine for its invented sample child, exported once by `scripts/export_workbook_previews.py` into `apps/web/public/workbooks/`.
+  - «خاصة بطفلك», the quiz link and the kindergarten card.
+- **Who can order what:** a product flag (`features.orderable`), switched in the catalog admin (`PUT /api/admin/shop/products/{slug}/orderable`). «دوسية التأسيس» and «رحلتي الأولى» stay «قريبًا» with a "tell me when" link until the educator signs them off; the cart refuses them either way. The family book sells single copies; 10 or more copies still go through «اطلب عرض سعر».
+- **The child's character is reused:** «أضف للسلة» asks which child («شخصية ليان جاهزة») and adds the book for that child (`POST /api/shop/workbooks/cart`: the item carries the child, the variant and the character). Without a ready character, the create flow draws one first, then puts the book in the cart.
+- The seed adds the set as a PDF (75 ₪) and in black and white (129 ₪) for «دوسية التأسيس». The shop cards and the quiz now link to these pages.
+
+
 ## Real examples on the site, and the Addendum 9 store pages (2026-09-29)
 
 - **Public examples:** an admin publishes an approved sample book of an invented child (approval queue → «انشره نموذجًا على الموقع»). Its pages appear on the site as web copies watermarked «نموذج»: the real cover, a flip-through of every page with its words, and the character sheet. Real children's books can never be published. API: `GET /api/examples`, the page and character images, `POST|DELETE /api/admin/books/{id}/example`.

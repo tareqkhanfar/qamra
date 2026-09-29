@@ -2,14 +2,11 @@
 import { api } from "@/lib/api";
 import type { CatalogProduct, Currency } from "@/lib/store";
 
-/** The activity-book lines the shop lists (their product pages come later: /workbooks/[product]). */
+/** The activity-book lines the shop lists; each has its product page at /workbooks/[product]. */
 export const ACTIVITY_LINES = ["workbook", "journey", "family"] as const;
 
-/**
- * /workbooks/[product] is built by another part of the work (Addendum 9 §1.1). Until it exists the cards and the
- * quiz show «قريبًا» and link nowhere; flip this when the pages ship.
- */
-export const WORKBOOK_PAGES = false;
+/** The activity books have their product pages (/workbooks/[product]); the cards and the quiz link there. */
+export const WORKBOOK_PAGES = true;
 
 const PRINTED = ["softcover", "hardcover", "spiral"];
 
@@ -44,7 +41,7 @@ export const quizApi = {
 /** Where a quiz pick leads: the stories, or the product's page once it exists (null: not yet). */
 export function pickHref(p: QuizPick): string | null {
   if (p.kind === "stories") return "/stories";
-  if (!WORKBOOK_PAGES || !p.available) return null;
+  if (!WORKBOOK_PAGES || !p.from_price) return null; // a product that isn't in the catalog has no page
   const q = new URLSearchParams(p.options).toString();
   return `/workbooks/${p.slug}${q ? `?${q}` : ""}`;
 }
