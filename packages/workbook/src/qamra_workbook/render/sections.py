@@ -77,10 +77,25 @@ _FAMILY_TABLE = (
 FAMILY: dict[str, SectionStyle] = {
     row[0]: SectionStyle(*row, slot=i, slots=len(_FAMILY_TABLE)) for i, row in enumerate(_FAMILY_TABLE)
 }
-# each product's table; the workbooks share the journey's
+# «دوسية التأسيس» (Addendum 5 §4): one tab per subject of the curriculum plan, in the journey's colors and
+# patterns for the same kind of work, so parents navigate by subject (Arabic / Math / English / Thinking).
+_FOUNDATION_TABLE = (
+    ("intro", "البداية", "flag", "#E9A62B", "#FCEFD2", "#8A5A08", "sparkle"),
+    ("pen", "مهارات القلم", "pencil", "#E27D63", "#FBE5DD", "#9A3E28", "waves"),
+    ("arabic", "العربية", "letter-ba", "#D9961B", "#FCEFD2", "#7E5206", "vertical"),
+    ("math", "الرياضيات", "abacus", "#5A9E6C", "#E1EFE4", "#2C6440", "plus"),
+    ("english", "الإنجليزية", "letter-a", "#D65E54", "#F9E2DF", "#983027", "horizontal"),
+    ("thinking", "التفكير والتركيز", "brain", "#8C79C9", "#EEEAF8", "#4F4090", "diagonal"),
+    ("mixed", "مراجعة شاملة", "star", "#E2A32A", "#FCEFD2", "#8A5A08", "stars"),
+)
+FOUNDATION: dict[str, SectionStyle] = {
+    row[0]: SectionStyle(*row, slot=i, slots=len(_FOUNDATION_TABLE))
+    for i, row in enumerate(_FOUNDATION_TABLE)
+}
+# each product's table
 BOOK_SECTIONS: dict[str, dict[str, SectionStyle]] = {
     "journey": SECTIONS,
-    "foundation": SECTIONS,
+    "foundation": FOUNDATION,
     "family": FAMILY,
 }
 TAB_H = 26.0  # mm

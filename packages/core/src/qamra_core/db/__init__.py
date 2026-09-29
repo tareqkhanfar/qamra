@@ -1,6 +1,7 @@
 """Database: declarative models, engines and sessions."""
 
 from qamra_core.db import (  # noqa: F401  (registers every table on Base.metadata)
+    audio,  # the activity books' audio QR recordings
     classic,  # Classic templates and identity portraits
     models,
     portal,  # the kindergarten portal's tables

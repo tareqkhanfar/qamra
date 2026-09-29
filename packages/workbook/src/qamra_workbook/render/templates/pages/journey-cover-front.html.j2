@@ -1,0 +1,19 @@
+<div class="jc-bg" aria-hidden="true">
+  <svg viewBox="0 0 {{ g.page_w }} {{ g.page_h }}" preserveAspectRatio="none">
+    <defs><linearGradient id="jc-sky-{{ p.spec.id }}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#DCEEFA"/><stop offset="0.6" stop-color="#FDF6E8"/></linearGradient></defs>
+    <rect width="{{ g.page_w }}" height="{{ g.page_h }}" fill="url(#jc-sky-{{ p.spec.id }})"/>
+    <path d="M0 {{ g.page_h * 0.72 }} C{{ g.page_w * 0.3 }} {{ g.page_h * 0.66 }} {{ g.page_w * 0.6 }} {{ g.page_h * 0.78 }} {{ g.page_w }} {{ g.page_h * 0.7 }} L{{ g.page_w }} {{ g.page_h }} L0 {{ g.page_h }} Z" fill="#CFE6BE"/>
+    <path d="M0 {{ g.page_h * 0.82 }} C{{ g.page_w * 0.35 }} {{ g.page_h * 0.76 }} {{ g.page_w * 0.7 }} {{ g.page_h * 0.88 }} {{ g.page_w }} {{ g.page_h * 0.8 }} L{{ g.page_w }} {{ g.page_h }} L0 {{ g.page_h }} Z" fill="#B7DAA0"/>
+    <path d="M{{ g.page_w * 0.62 }} {{ g.page_h }} C{{ g.page_w * 0.58 }} {{ g.page_h * 0.86 }} {{ g.page_w * 0.3 }} {{ g.page_h * 0.84 }} {{ g.page_w * 0.36 }} {{ g.page_h * 0.72 }}" fill="none" stroke="#F6E7C8" stroke-width="14" stroke-linecap="round"/>
+    {% for x, y, r in [(0.12, 0.08, 2.2), (0.86, 0.12, 1.8), (0.2, 0.3, 1.4), (0.9, 0.36, 1.6), (0.07, 0.5, 1.2)] %}<circle cx="{{ g.page_w * x }}" cy="{{ g.page_h * y }}" r="{{ r }}" fill="#F2B33D"/>{% endfor %}
+  </svg>
+</div>
+<div class="jc">
+  <div class="jc-brand">{{ mascot('mascot') }}<span>قمرة</span></div>
+  <h1 class="jc-title">رحلتي الأولى<br>للتعلّم</h1>
+  <div class="jc-stage">{{ d.stage }}{% if d.subtitle %}: {{ d.subtitle }}{% endif %}</div>
+  <div class="jc-hero">{% if d.character %}<img src="{{ d.character }}" alt="">{% endif %}</div>
+  <div class="jc-name"><span data-fit="16">{{ d.kicker }}</span></div>
+  <div class="jc-stops">{% for s in d.stops %}<span style="background: {{ s.color }}">{{ s.icon }}</span>{% endfor %}</div>
+  <div class="jc-ages">{{ d.ages }}</div>
+</div>

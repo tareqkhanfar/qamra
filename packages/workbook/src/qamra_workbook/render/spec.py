@@ -294,7 +294,8 @@ class BookSpec:
         return arabic_date(self.date, self.numerals)
 
     def audio_url(self, page: PageSpec) -> str:
-        return f"{self.audio_base}{page.id}"
+        """The page's QR link: its audio item's code (the journey's `journey_book`), else its id."""
+        return f"{self.audio_base}{page.params.get('audio_code') or page.id}"
 
     def personalize(self, text: str, page: PageSpec | None = None) -> str:
         """The text as printed for this child (and family): a page may name the grown-up (`adult`) or the

@@ -1,0 +1,12 @@
+<div class="wb-toc">
+  <div class="wb-toc-vol">{{ d.volume_title }}</div>
+  {% for r in d.rows %}
+  <div class="wb-toc-row">
+    <span class="wb-toc-ico" style="background: {{ r.color }}">{{ icon(r.icon) }}</span>
+    <span class="wb-toc-subject" style="color: {{ r.deep }}">{{ r.subject }}</span>
+    <span class="wb-toc-title">{{ r.title }}</span>
+    <span class="wb-toc-lead"></span>
+    <span class="wb-toc-page" style="background: {{ r.tint }}; color: {{ r.deep }}">{{ r.page }}</span>
+  </div>
+  {% endfor %}
+</div>

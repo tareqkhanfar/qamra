@@ -39,6 +39,16 @@ def nested_picture(picture_id: str, x: float, y: float, size: float, style: Styl
     return draw.el("svg", inner, x=x, y=y, width=size, height=size, viewBox="0 0 100 100")
 
 
+def runner_image(ctx: PageContext, x: float, y_feet: float, height: float) -> str:
+    """Who walks the maze, standing above the entrance: the child's character, or the picture in the page's
+    `runner` param (the bird that flies home to its nest)."""
+    runner = ctx.page.params.get("runner")
+    if runner:
+        size = height * 0.62
+        return nested_picture(str(runner), x - size / 2, y_feet - size, size)
+    return character_image(ctx, x - height * ctx.assets.character_aspect / 2, y_feet, height)
+
+
 @page_type("maze")
 def maze(ctx: PageContext) -> Built:
     """In at the top right (the child stands above the entrance), out at the bottom left into the goal."""
@@ -63,7 +73,7 @@ def maze(ctx: PageContext) -> Built:
         draw.path(walls, stroke=HEDGE, width=4.4),
         draw.path(walls, stroke=HEDGE_LIGHT, width=1.5),
         nested_picture(goal, x0 - 43, exit_y - 26, 40),
-        character_image(ctx, entry_x - figure * ctx.assets.character_aspect / 2, y0 - 1.5, figure),
+        runner_image(ctx, entry_x, y0 - 1.5, figure),
         draw.start_dot((entry_x, y0 + 7), 3.4),
         draw.arrow((entry_x, y0 + 14.5), 90, 4.4, "#2FA36B"),
     ]

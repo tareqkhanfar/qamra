@@ -110,50 +110,91 @@ def finger_trace(ctx: PageContext) -> Built:
     return Built(data, None, problems)
 
 
+def letter_extent(shape: Letter) -> tuple[float, float, float, float]:
+    """The letter's bounds in its own units, its dots included."""
+    x0, y0, x1, y1 = bounds(list(shape.strokes))
+    for x, y in shape.dots:
+        r = shape.dot_r
+        x0, y0, x1, y1 = min(x0, x - r), min(y0, y - r), max(x1, x + r), max(y1, y + r)
+    return x0, y0, x1, y1
+
+
 def dotted_letter(shape: Letter, *, scale: float, x: float, y: float, first: bool, number: Number) -> str:
-    """A letter in bold tracing dots at (x, y) (its design box's top-left), in mm."""
+    """A letter in bold tracing dots at (x, y) (its design box's top-left), in mm. The letter's own dots are
+    dashed rings to fill in; on the first letter of a row they are numbered after the strokes."""
     moved = [s.scaled(scale, x, y) for s in shape.strokes]
     radius = 1.9 if first else 1.5
     out = [draw.dotted(s, spacing=3.5, r=0.95) for s in moved]
+    for cx, cy in shape.dots:
+        r = max(shape.dot_r * scale, 1.3)
+        out.append(
+            draw.el(
+                "circle",
+                cx=x + cx * scale,
+                cy=y + cy * scale,
+                r=r,
+                fill="none",
+                stroke=draw.DOT,
+                stroke_width=0.55,
+                stroke_dasharray="0.9 0.8",
+            )
+        )
     if first:
         for s in moved:
             point, angle = s.at(min(0.55, 8.5 / max(s.length, 1)))
             out.append(draw.arrow(point, angle, 2.6))
     for k, point in enumerate(start_points(moved, radius), start=1):
         out.append(draw.start_dot(point, radius, number(k) if first else "", font_size=2.6))
+    if first:
+        for k, (cx, cy) in enumerate(shape.dots, start=len(moved) + 1):
+            dx = max(shape.dot_r * scale, 1.3) + 2.2
+            out.append(draw.start_dot((x + cx * scale + dx, y + cy * scale), 1.5, number(k), font_size=2.1))
     return "".join(out)
+
+
+def row_room(shape: Letter, cap: float) -> tuple[float, float]:
+    """Room (mm) a writing row keeps above its top line and below its base line: marks above the top line
+    (the hamza of أ), and for Arabic the whole band down to the descender line, where tails and bowls go."""
+    g = shape.guides
+    scale = cap / (g.base - g.top)
+    _, y0, _, y1 = letter_extent(shape)
+    low = g.low if g.low is not None and shape.rtl else g.base
+    return max(0.0, (g.top - y0) * scale), max(0.0, (max(y1, low) - g.base) * scale)
 
 
 def tracing_row(
     shape: Letter, *, width: float, cap: float, count: int | None = None, number: Number
 ) -> Markup:
     """One writing row: guide lines, then `count` dotted letters (as many as fit when None); the first has
-    numbered start dots and arrows, and the rest of the row is left for writing alone."""
-    scale = cap / (shape.guides.base - shape.guides.top)
-    height = cap + 12
-    top = 5.0
+    numbered start dots and arrows, and the rest of the row is left for writing alone. Arabic rows run right
+    to left and keep room below the base line for tails (down to the descender line, drawn dashed)."""
+    g = shape.guides
+    scale = cap / (g.base - g.top)
+    above, below = row_room(shape, cap)
+    top = 5.0 + above
+    height = top + cap + max(7.0, below + 4.0)
 
     def gy(units: float) -> float:
-        return top + (units - shape.guides.top) * scale
+        return top + (units - g.top) * scale
 
     def guide(units: float, color: str, stroke: float, dash: str = "none") -> str:
         y = gy(units)
         d = draw.d_path(("M", (2, y)), ("L", (width - 2, y)))
         return draw.el("path", d=d, stroke=color, stroke_width=stroke, stroke_dasharray=dash)
 
-    body = [guide(shape.guides.top, "#9BB7E0", 0.5), guide(shape.guides.base, "#E27D63", 0.6)]
-    if shape.guides.mid is not None:
-        body.append(guide(shape.guides.mid, "#9BB7E0", 0.45, "2 1.6"))
-    x0, _, x1, _ = bounds(list(shape.strokes))
+    body = [guide(g.top, "#9BB7E0", 0.5), guide(g.base, "#E27D63", 0.6)]
+    if g.mid is not None:
+        body.append(guide(g.mid, "#9BB7E0", 0.45, "2 1.6"))
+    if shape.rtl and g.low is not None:
+        body.append(guide(g.low, "#C9D6EA", 0.4, "1 1.6"))
+    x0, _, x1, _ = letter_extent(shape)
     glyph = (x1 - x0) * scale
     step = glyph + 13
     fits = int((width - 16 - glyph) // step) + 1
     for i in range(fits if count is None else min(count, fits)):
-        x = 10 + i * step - x0 * scale
+        x = width - 10 - i * step - x1 * scale if shape.rtl else 10 + i * step - x0 * scale
         body.append(
-            dotted_letter(
-                shape, scale=scale, x=x, y=top - shape.guides.top * scale, first=i == 0, number=number
-            )
+            dotted_letter(shape, scale=scale, x=x, y=top - g.top * scale, first=i == 0, number=number)
         )
     return draw.svg(width, height, "".join(body), "trace-row")
 
@@ -181,19 +222,24 @@ def en_letter(ctx: PageContext) -> Built:
         + "</g>"
     )
     total_w = capital.width + 6 + small.width
+    depth = max(124.0, letter_extent(small)[3] + 12)  # room for a tail (g, j, p, q, y)
+    cap = (
+        28.0 if row_room(small, 33)[1] > 0 else 33.0
+    )  # a small letter with a tail (g, j, p, q, y) needs room
     data = {
         "model": Markup(  # nosec B704 (numbers and stroke data)
-            f'<svg class="en-model" viewBox="0 -2 {draw.n(total_w)} 124" aria-hidden="true">{model}</svg>'
+            f'<svg class="en-model" viewBox="0 -2 {draw.n(total_w)} {draw.n(depth)}" aria-hidden="true">'
+            f"{model}</svg>"
         ),
-        "pic": ctx.pic(word),
+        "pic": ctx.pic(word, "line" if params.get("color_in") else "color"),
         "word": Markup('<span style="color: {}">{}</span>{}').format(
             ctx.style.color, pic.word_en[:1].upper(), pic.word_en[1:]
         ),
         "word_ar": pic.word_ar,
         "rows": [
-            tracing_row(capital, width=176, cap=33, number=ctx.num),
-            tracing_row(small, width=176, cap=33, number=ctx.num),
-            tracing_row(capital, width=176, cap=33, count=2, number=ctx.num),  # then on their own
+            tracing_row(capital, width=176, cap=cap, number=ctx.num),
+            tracing_row(small, width=176, cap=cap, number=ctx.num),
+            tracing_row(capital, width=176, cap=cap, count=2, number=ctx.num),  # then on their own
         ],
     }
     return Built(data, None, problems)

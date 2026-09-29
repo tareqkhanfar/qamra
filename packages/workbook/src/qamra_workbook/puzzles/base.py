@@ -10,7 +10,7 @@ from dataclasses import dataclass
 def rng(seed: int | str, salt: str = "") -> random.Random:
     """A generator that gives the same sequence for the same seed on every run and machine."""
     key = f"{seed}:{salt}".encode()
-    return random.Random(zlib.crc32(key))
+    return random.Random(zlib.crc32(key))  # nosec B311: puzzle layout, reproducible on purpose
 
 
 @dataclass(frozen=True)

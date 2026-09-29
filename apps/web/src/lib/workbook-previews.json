@@ -2,33 +2,75 @@
   "learning-journey": [
     {
       "src": "/workbooks/learning-journey/01.jpg",
+      "title_ar": "الغلاف باسم طفلك وشخصيته",
+      "title_en": "The cover with your child's name"
+    },
+    {
+      "src": "/workbooks/learning-journey/02.jpg",
+      "title_ar": "خريطة الرحلة",
+      "title_en": "The journey map"
+    },
+    {
+      "src": "/workbooks/learning-journey/03.jpg",
       "title_ar": "متاهة: ساعدي ليان للوصول إلى الحديقة",
       "title_en": "A maze to the garden"
     },
     {
-      "src": "/workbooks/learning-journey/02.jpg",
+      "src": "/workbooks/learning-journey/04.jpg",
+      "title_ar": "أسمع وأميّز مع رمز QR",
+      "title_en": "Listen and choose, with a QR code"
+    },
+    {
+      "src": "/workbooks/learning-journey/05.jpg",
+      "title_ar": "رحلة الدائرة",
+      "title_en": "Meet the circle"
+    },
+    {
+      "src": "/workbooks/learning-journey/06.jpg",
       "title_ar": "تلوين ذكي",
       "title_en": "Smart coloring"
     },
     {
-      "src": "/workbooks/learning-journey/03.jpg",
-      "title_ar": "أتتبّع بإصبعي",
-      "title_en": "Trace with a finger"
+      "src": "/workbooks/learning-journey/07.jpg",
+      "title_ar": "كم تفاحة؟",
+      "title_en": "How many apples?"
     },
     {
-      "src": "/workbooks/learning-journey/04.jpg",
-      "title_ar": "حرف إنجليزي",
-      "title_en": "An English letter"
+      "src": "/workbooks/learning-journey/08.jpg",
+      "title_ar": "شهادة المحطة الأولى",
+      "title_en": "The stage 1 certificate"
+    }
+  ],
+  "foundation-workbook": [
+    {
+      "src": "/workbooks/foundation-workbook/01.jpg",
+      "title_ar": "هذا الكتاب لطفلك: اسمه وصورته وبصمة كفّه",
+      "title_en": "This book belongs to your child"
     },
     {
-      "src": "/workbooks/learning-journey/05.jpg",
-      "title_ar": "جِد الفرق",
-      "title_en": "Spot the difference"
+      "src": "/workbooks/foundation-workbook/02.jpg",
+      "title_ar": "يتتبّع اسمه ويكتبه",
+      "title_en": "Tracing their own name"
     },
     {
-      "src": "/workbooks/learning-journey/06.jpg",
-      "title_ar": "شهادة الرحلة باسمه",
-      "title_en": "A certificate in their name"
+      "src": "/workbooks/foundation-workbook/03.jpg",
+      "title_ar": "أتعرّف على الحرف وألوّنه",
+      "title_en": "Meet a letter and color it"
+    },
+    {
+      "src": "/workbooks/foundation-workbook/04.jpg",
+      "title_ar": "أتتبّع الحرف من نقطة البداية",
+      "title_en": "Trace the letter from the start dot"
+    },
+    {
+      "src": "/workbooks/foundation-workbook/05.jpg",
+      "title_ar": "العدد: رقمه وكميّته واسمه",
+      "title_en": "A number: numeral, amount and name"
+    },
+    {
+      "src": "/workbooks/foundation-workbook/06.jpg",
+      "title_ar": "تقييم مهارات القلم للأهل والمعلّمة",
+      "title_en": "The pen-skills check for grown-ups"
     }
   ],
   "family-adventures": [

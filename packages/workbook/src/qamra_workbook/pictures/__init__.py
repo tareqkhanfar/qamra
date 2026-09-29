@@ -15,10 +15,17 @@ from markupsafe import Markup, escape
 
 from qamra_workbook.pictures.household import HOUSEHOLD
 from qamra_workbook.pictures.icons import PICTURES as VOCABULARY
+from qamra_workbook.pictures.journey_words import JOURNEY_WORDS
 from qamra_workbook.pictures.model import OUTLINE, Part, Picture, Style, strip_tashkeel
+from qamra_workbook.pictures.workbook_words import WORKBOOK_WORDS
+from qamra_workbook.pictures.workbook_words_2 import WORKBOOK_WORDS_2
 
-# the vocabulary pictures (Addenda 5–6) and the family book's kitchen, market and home things (Addendum 7)
-PICTURES: dict[str, Picture] = VOCABULARY | HOUSEHOLD
+# the vocabulary pictures (Addenda 5–6) and the family book's kitchen, market and home things (Addendum 7),
+# and the letter words of «دوسية التأسيس» (Addendum 5)
+PICTURES: dict[str, Picture] = VOCABULARY | HOUSEHOLD | WORKBOOK_WORDS | WORKBOOK_WORDS_2
+# «رحلتي الأولى» stage 1's extra words (Addendum 6): a picture drawn elsewhere under the same id wins
+for _id, _picture in JOURNEY_WORDS.items():
+    PICTURES.setdefault(_id, _picture)
 
 __all__ = [
     "OUTLINE",

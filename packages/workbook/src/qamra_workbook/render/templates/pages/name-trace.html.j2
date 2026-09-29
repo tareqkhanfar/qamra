@@ -1,0 +1,6 @@
+<div class="wb-name">
+  <div class="wb-name-model">{{ d.model }}</div>
+  <div class="wb-name-rows">
+    {% for row in d.rows %}{% if loop.last %}<div class="wb-alone">{{ icon('pencil') }}<span>{{ 'أكتب اسمي وحدي' if d.script == 'ar' else 'I write my name' }}</span></div>{% endif %}{{ row }}{% endfor %}
+  </div>
+</div>

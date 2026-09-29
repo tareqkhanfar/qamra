@@ -1,0 +1,3 @@
+{# «رحلتي الأولى» work areas drawn as one SVG (render/pages/journey_*.py); an audio page gets its QR card on top. #}
+{% if p.qr %}<div class="j-qr">{{ ui.qr_card(p, 'Scan and listen' if p.spec.lang == 'en' else 'امسح الرمز واسمع', d.qr_note or '') }}</div>{% endif %}
+<div class="wb-fill{% if solved %} solved{% endif %}">{{ d.svg }}</div>

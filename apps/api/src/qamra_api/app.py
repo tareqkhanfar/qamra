@@ -36,6 +36,8 @@ from qamra_api.routers.family_members import router as family_members_router
 from qamra_api.routers.free_cover import router as free_cover_router
 from qamra_api.routers.health import router as health_router
 from qamra_api.routers.invite import router as invite_router
+from qamra_api.routers.journey_audio import admin_router as journey_audio_admin_router
+from qamra_api.routers.journey_audio import router as journey_audio_router
 from qamra_api.routers.leads import admin_router as admin_leads_router
 from qamra_api.routers.leads import router as leads_router
 from qamra_api.routers.portal import router as portal_router
@@ -150,6 +152,8 @@ def create_app(settings: ApiSettings | None = None, *, manage_resources: bool = 
     app.include_router(admin_packing_router)
     app.include_router(voice_router)  # W6: «صوت أهلي» (Phase 5)
     app.include_router(voice_public_router)
+    app.include_router(journey_audio_router)  # W5: «رحلتي الأولى» audio QR player (/api/a/{code})
+    app.include_router(journey_audio_admin_router)
     if settings.e2e_fixtures and settings.env != "prod":  # test-only fixtures (tests/e2e), never in prod
         app.include_router(e2e_router)
     return app

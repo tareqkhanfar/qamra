@@ -4,9 +4,10 @@ JPEGs into apps/web/public/workbooks/<product>/, listed in apps/web/src/lib/work
 imports it). No real child's data.
 
     uv run python -m qamra_workbook.render.samples      # the engine's sample pages → out/samples/<book>/png/
+    uv run python -m qamra_workbook.render.journey --stage 1 --book   # «رحلتي الأولى» stage 1 → out/journey/
+    uv run python -m qamra_workbook.render.samples --product family
+    uv run python -m qamra_workbook.render.workbook --level kg2 --volume 1   # «دوسية التأسيس» → out/workbook/
     uv run python scripts/export_workbook_previews.py
-
-«دوسية التأسيس» has no engine renders yet: add it here once `qamra_workbook.render.workbook` renders pages.
 """
 
 import io
@@ -22,15 +23,29 @@ WIDTH = 720  # A4 pages at ~2× a 360 px card
 
 # product slug → (source folder, [(file stem, title ar, title en)])
 PAGES: dict[str, tuple[Path, list[tuple[str, str, str]]]] = {
+    # stage 1 as rendered by `uv run python -m qamra_workbook.render.journey --stage 1 --book`
     "learning-journey": (
-        ROOT / "out/samples/journey/png",
+        ROOT / "out/journey/stage-1",
         [
-            ("03-maze", "متاهة: ساعدي ليان للوصول إلى الحديقة", "A maze to the garden"),
-            ("06-smart-coloring", "تلوين ذكي", "Smart coloring"),
-            ("09-finger-trace", "أتتبّع بإصبعي", "Trace with a finger"),
-            ("10-en-letter", "حرف إنجليزي", "An English letter"),
-            ("11-spot-difference", "جِد الفرق", "Spot the difference"),
-            ("12-certificate", "شهادة الرحلة باسمه", "A certificate in their name"),
+            ("png-cover/journey-cover-front", "الغلاف باسم طفلك وشخصيته", "The cover with your child's name"),
+            ("png-book/p002-journey-map", "خريطة الرحلة", "The journey map"),
+            ("png-book/p022-maze", "متاهة: ساعدي ليان للوصول إلى الحديقة", "A maze to the garden"),
+            ("png-book/p028-listen-rows", "أسمع وأميّز مع رمز QR", "Listen and choose, with a QR code"),
+            ("png-book/p050-shape-journey", "رحلة الدائرة", "Meet the circle"),
+            ("png-book/p077-smart-coloring", "تلوين ذكي", "Smart coloring"),
+            ("png-book/p104-quantity-first", "كم تفاحة؟", "How many apples?"),
+            ("png-book/p118-certificate", "شهادة المحطة الأولى", "The stage 1 certificate"),
+        ],
+    ),
+    "foundation-workbook": (
+        ROOT / "out/workbook/png-kg2-v1",
+        [
+            ("p001-owner-page", "هذا الكتاب لطفلك: اسمه وصورته وبصمة كفّه", "This book belongs to your child"),
+            ("p002-name-trace", "يتتبّع اسمه ويكتبه", "Tracing their own name"),
+            ("p018-letter-intro", "أتعرّف على الحرف وألوّنه", "Meet a letter and color it"),
+            ("p027-letter-trace", "أتتبّع الحرف من نقطة البداية", "Trace the letter from the start dot"),
+            ("p033-number-intro", "العدد: رقمه وكميّته واسمه", "A number: numeral, amount and name"),
+            ("p124-assessment", "تقييم مهارات القلم للأهل والمعلّمة", "The pen-skills check for grown-ups"),
         ],
     ),
     "family-adventures": (

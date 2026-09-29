@@ -1714,6 +1714,38 @@
       "other": "Another relative"
     }
   },
+  "journeyAudio": {
+    "player": {
+      "metaTitle": "Listen — My First Learning Journey",
+      "kicker": "My First Learning Journey",
+      "gone": "We couldn't find this sound",
+      "home": "Go to {brand}",
+      "play": "Play the sound",
+      "pause": "Pause the sound",
+      "narrator": "Read by the narrator",
+      "recorded": "Recorded voice",
+      "noAudio": "The sound is being recorded. Read the words to your child for now, and try the code again later."
+    },
+    "admin": {
+      "nav": "Journey audio",
+      "title": "«My First Learning Journey» audio",
+      "intro": "Every printed QR plays one sound: record the script as written, upload or replace the file, then listen. Until a sound is uploaded, the player shows the words only.",
+      "loading": "Loading…",
+      "stage": "Stage",
+      "stageN": "Stage {n}",
+      "empty": "No audio items in this stage yet.",
+      "page": "Page {n}",
+      "say": "Script",
+      "recorded": "Recorded ({s} s)",
+      "narrated": "Narrator voice ({s} s) — a human recording is better",
+      "missing": "No audio yet: the page shows the words only",
+      "missingTts": "No recording yet: the narrator reads the words when it is on",
+      "saved": "Saved.",
+      "uploading": "Uploading…",
+      "upload": "Upload audio",
+      "replace": "Replace"
+    }
+  },
   "meta": {
     "title": "{brand} — Your child's story, by moonlight",
     "description": "A printed storybook where your child is the hero on every page, and their own drawing is their companion."

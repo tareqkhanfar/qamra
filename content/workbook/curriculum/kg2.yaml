@@ -169,7 +169,7 @@ volumes:
       - {n: 19, week: 2, subject: arabic, unit: v1-ar-01, type: letter-trace, skill: "أتتبّع حرف الألف من أعلى إلى أسفل: الكبير ثم الأصغر", difficulty: 1, params: {letter: أ, sizes: [xl, l, m]}}
       - {n: 20, week: 2, subject: math, unit: v1-ma-01, type: compare, skill: "أميّز المجموعة التي فيها أشياء كثيرة من التي فيها أشياء قليلة", difficulty: 2, params: {concept: many-few}}
       - {n: 21, week: 2, subject: pen, unit: v1-pen-01, type: unit-review, skill: "أراجع الخطوط المستقيمة: أفقية وعمودية ومائلة ومتعرّجة", difficulty: 2, params: {skills: [horizontal, vertical, diagonal, zigzag]}}
-      - {n: 22, week: 2, subject: thinking, unit: v1-th-01, type: maze, skill: "أحلّ متاهة سهلة لأوصل العصفور إلى عشّه", difficulty: 1, params: {level: 1}}
+      - {n: 22, week: 2, subject: thinking, unit: v1-th-01, type: maze, skill: "أحلّ متاهة سهلة لأوصل العصفور إلى عشّه", difficulty: 1, params: {level: 1, runner: bird, goal: nest}}
       - {n: 23, week: 3, subject: arabic, unit: v1-ar-01, type: letter-write, skill: "أكتب حرف الألف: سطر موجّه ثم سطر مستقل", difficulty: 2, params: {letter: أ, guided: 2, independent: 1}}
       - {n: 24, week: 3, subject: math, unit: v1-ma-01, type: unit-review, skill: "أراجع الألوان والمقارنة: كبير/صغير، طويل/قصير، كثير/قليل", difficulty: 2, params: {skills: [colors, big-small, long-short, many-few]}}
       - {n: 25, week: 3, subject: pen, unit: v1-pen-02, type: pen-lines, skill: "أرسم خطوطًا منحنية مثل أمواج البحر", difficulty: 2, params: {line: curve}}
@@ -242,7 +242,7 @@ volumes:
       - {n: 92, week: 9, subject: english, unit: v1-en-02, type: en-letter, skill: "أتعرّف على الحرف F f وأتتبّعه وأكتبه وألوّن صورة fish", difficulty: 2, params: {letter: F, word: fish}}
       - {n: 93, week: 9, subject: math, unit: v1-ma-03, type: number-write, skill: "أكتب العدد خمسة: سطر موجّه ثم سطر مستقل", difficulty: 2, params: {number: 5}}
       - {n: 94, week: 9, subject: arabic, unit: v1-ar-03, type: unit-review, skill: "أراجع الجيم والحاء والخاء: أقرأ وأكتب وأصل", difficulty: 3, params: {letters: [ج, ح, خ]}}
-      - {n: 95, week: 9, subject: thinking, unit: v1-th-02, type: maze, skill: "أحلّ متاهة أطول لأوصل القطة إلى الكرة", difficulty: 2, params: {level: 2}}
+      - {n: 95, week: 9, subject: thinking, unit: v1-th-02, type: maze, skill: "أحلّ متاهة أطول لأوصل القطة إلى الكرة", difficulty: 2, params: {level: 2, runner: cat, goal: ball}}
       - {n: 96, week: 9, subject: english, unit: v1-en-02, type: find-letter, skill: "أجد الحروف D وE وF بين الحروف وأحوّط الحرف الصحيح", difficulty: 2, params: {letters: [D, E, F]}}
       - {n: 97, week: 9, subject: math, unit: v1-ma-03, type: number-intro, skill: "أتعرّف على الصفر بعد الخمسة: «لا شيء»، أكلنا التفاحات الخمس فصار الصحن فارغًا", difficulty: 2, params: {number: 0, concept: nothing}}
       - {n: 98, week: 9, subject: math, unit: v1-ma-03, type: number-trace, skill: "أتتبّع الصفر المنقّط مبتدئًا من نقطة البداية", difficulty: 2, params: {number: 0}}

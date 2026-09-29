@@ -1,5 +1,22 @@
 # Changelog
 
+## «رحلتي الأولى للتعلّم» stage 1 in full, with the audio QR system (W9) (2026-09-30)
+- **The whole stage:** `python -m qamra_workbook.render.journey --stage 1 --book` renders 118 pages, the cover and a 20-page answer key; every file passes preflight. About 40 new page types (thinking, eye, listening, hand, shapes, math, review), 18 new pictures, the print layer `content/journey/stage-1.yaml` with every text marked for the educator.
+- **Audio QR:** pages with audio print a QR to `/a/{code}` (a stable code per letter or word); the public player plays the recording through a 10-minute signed link, shows the words when nothing is recorded, and never carries child data. Staff upload recordings in Admin → صوتيات الرحلة; the TTS fallback stays off.
+- **Orders:** confirming an order renders each stage's book from the plan with the child's approved character (no AI cost), as a book in review; print batches pick it up. The store previews show real pages. The product stays «قريبًا» until the educator signs. Migration `97b657f5bf00`.
+
+## «دوسية التأسيس» KG2 volume 2 (W8) (2026-09-30)
+- 124 A4 pages and an 18-sheet answer key, both passing preflight: letter positions and place words, numbers to ten (10 as two digits), twin letters, spirals and narrow paths, categories, story order, colour by letter, and the volume's reviews and assessments. 23 page types and 40 pictures; number sequences run left to right as numerals are read (for the educator to confirm). `--volume 2` renders it through the same CLI.
+
+## «دوسية التأسيس» KG2 volume 1 in full (W8) (2026-09-29)
+
+- **Renderer from the curriculum plan:** `python -m qamra_workbook.render.workbook --level kg2 --volume 1 [--size a4] [--pages 1-40] [--numerals latin]` renders every page of a volume, in order, for the journey samples' child and character: `out/workbook/kg2-v1.pdf` (128 pages), `kg2-v1-answer-key.pdf` (17 sheets), page PNGs, a sheet of open spreads and preflight (both PDFs pass: bleed, boxes, embedded fonts, 300 DPI, safe area).
+  - `render/foundation.py` turns plan pages into engine pages: a child-facing title and a ≤ 7-word instruction per page type (`foundation_text.py`), English pages LTR and bilingual, the week on every page's chip, and the params builders need from the plan (unit titles, objectives, the table of contents).
+  - The workbook has its own subject tabs (pen, Arabic, math, English, thinking, review) in `render/sections.py`.
+- **28 new page types** (`render/pages/workbook_*.py`): owner page with the handprint, name tracing (Arabic and English), table of contents, unit openers, letter intro (hollow letter to color), letter trace (big track, then smaller rows), letter write (guided, then alone), find the letter (grid by color and "count the dots", then pick the first letter), letter–picture–word matching, first-sound connect and sort, number intro / trace / write, count and circle, number ↔ quantity, compare (big/small, long/short, many/few, more/less), pen lines (straight to loops to letter strokes), road tracing, dot-to-dot, shapes, coloring (colors and inside the borders), memory, cut and paste (one-sided, with its blank back), symmetry drawing, unit reviews for every subject, assessments with a score box, and the pen-skills check (grip, pressure, direction, and two tracing tasks; decision 9). Every puzzle has an answer key and checks.
+- **Letters and numerals:** English A–Z and a–z (`latin.py`) and Hindi and Latin digits (`digits.py`) as single-stroke paths; أ is the alif with its hamza. `tracing_row` keeps room below the base line down to the tail line for Arabic letters and runs right to left (English rows unchanged).
+- **26 new pictures** for the volume's words (`pictures/workbook_words.py`), including ذَيْل (decision 7).
+- **Store previews:** `scripts/export_workbook_previews.py` exports six real pages for `foundation-workbook`.
 
 ## «مغامراتي مع عائلتي» in the store: quotes for organizations, illustrated family (W4) (2026-09-29)
 

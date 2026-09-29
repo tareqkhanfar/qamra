@@ -1,0 +1,74 @@
+/* «دوسية التأسيس» (Addendum 5): the workbook's own page types. Most work areas are one SVG in mm (class wb),
+   scaled into the space under the header; text inside those SVGs uses the classes below. */
+.wb-fill { position: relative; flex: 1; min-height: 0; }
+.wb-fill > svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.wb-label { font-family: var(--body); font-weight: 600; }
+.wb-word { font-family: var(--naskh); font-weight: 700; }
+.wb-title { font-family: var(--title); font-weight: 800; }
+.wb-num { font-family: var(--title); font-weight: 800; }
+.wb-en { font-family: var(--title); font-weight: 800; }
+.wb-muted { font-family: var(--body); font-weight: 500; }
+.key-line, .key-ring { display: none; }
+.solved .key-line, .solved .key-ring { display: inline; }
+
+/* ---- «هذا الكتاب لـ…» */
+.own { flex: 1; display: flex; flex-direction: column; align-items: center; padding-top: 4mm; }
+.own-kicker { font: 600 11pt var(--body); color: var(--muted); }
+.own-title { font: 800 30pt/1.2 var(--title); color: var(--night); margin-top: 2mm; }
+.own-name { margin-top: 2mm; padding: 1mm 14mm 2.5mm; border-radius: 10mm; background: var(--night);
+            box-shadow: 0 1.2mm 0 #0E1530; max-width: 150mm; }
+.own-name span { display: block; font: 800 36pt/1.25 var(--title); color: #FFFFFF; white-space: nowrap;
+                 overflow: hidden; text-align: center; }
+.own-vol { font: 700 13pt var(--body); color: var(--deep); margin-top: 4mm; }
+.own-mid { flex: 1; min-height: 0; width: 100%; display: flex; align-items: flex-end; justify-content: center;
+           gap: 8mm; margin-top: 4mm; }
+.own-hand { position: relative; width: 96mm; height: 128mm; background: var(--card); border: 0.5mm solid var(--line);
+            border-radius: 8mm; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+            padding: 4mm; }
+.own-hand svg { position: absolute; inset: 6mm 8mm 16mm; width: calc(100% - 16mm); height: calc(100% - 22mm); }
+.own-hand span { position: relative; font: 600 10.5pt var(--body); color: var(--muted); }
+.own-child { height: 118mm; }
+.own-lines { width: 100%; display: flex; gap: 6mm; margin-top: 6mm; }
+.own-line { flex: 1; display: flex; align-items: flex-end; gap: 2mm; font: 700 12pt var(--body); color: var(--ink-2); }
+.own-line i { flex: 1; border-bottom: 0.4mm dashed var(--line); height: 8mm; }
+
+/* ---- my name */
+.wb-name { flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 3mm; }
+.wb-name-model { align-self: stretch; display: flex; align-items: center; justify-content: center; padding: 2mm 3mm;
+                 background: var(--card); border: 0.5mm solid var(--line); border-radius: 6mm; }
+.wb-name-rows { flex: 1; display: flex; flex-direction: column; justify-content: space-evenly; padding: 2mm 3mm;
+                background: var(--card); border: 0.5mm solid var(--line); border-radius: 6mm; }
+.wb-name-rows svg { width: 176mm; height: auto; }
+.wb-alone { display: flex; align-items: center; gap: 1.5mm; font: 700 11pt var(--body); color: var(--deep); }
+.wb-alone .ico { width: 5mm; height: 5mm; color: var(--c); }
+
+/* ---- table of contents */
+.wb-toc { flex: 1; display: flex; flex-direction: column; gap: 1.1mm; }
+.wb-toc-vol { align-self: center; font: 700 12pt var(--body); color: var(--deep); margin-bottom: 1mm; }
+.wb-toc-row { display: flex; align-items: center; gap: 3mm; height: 7.2mm; padding: 0 3mm; border-radius: 4mm;
+              background: var(--card); border: 0.4mm solid var(--line-soft); }
+.wb-toc-ico { width: 6.4mm; height: 6.4mm; border-radius: 50%; flex: none; display: flex; align-items: center;
+              justify-content: center; color: #FFFFFF; }
+.wb-toc-ico .ico { width: 4.2mm; height: 4.2mm; }
+.wb-toc-subject { width: 30mm; flex: none; font: 600 9pt var(--body); }
+.wb-toc-title { font: 700 11.5pt var(--body); color: var(--ink); white-space: nowrap; }
+.wb-toc-lead { flex: 1; border-bottom: 0.4mm dotted #D8C9AC; margin: 0 1mm; height: 3mm; }
+.wb-toc-page { min-width: 9mm; height: 6.4mm; border-radius: 3.2mm; display: flex; align-items: center;
+               justify-content: center; font: 800 11pt var(--title); padding: 0 1.5mm; }
+
+/* ---- unit opener */
+.wb-open { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5mm; }
+.wb-open-card { width: 100%; background: var(--card); border: 0.6mm solid var(--c); border-radius: 8mm;
+                padding: 5mm 7mm; box-shadow: 0 1mm 0 var(--tint); }
+.wb-open-card h2 { font: 800 17pt/1.3 var(--title); color: var(--deep); margin-bottom: 2mm; }
+.wb-open-card ul { list-style: none; display: flex; flex-direction: column; gap: 1.8mm; }
+.wb-open-card li { display: flex; align-items: flex-start; gap: 2mm; font: 600 11.5pt/1.5 var(--body); color: var(--ink); }
+.wb-open-card li .ico { width: 5mm; height: 5mm; color: var(--moon); flex: none; margin-top: 1mm; }
+.wb-open-hero { position: relative; flex: 1; min-height: 0; width: 120mm; display: flex; justify-content: center; }
+.wb-open-hero .burst { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 110mm; height: 110mm;
+                       border-radius: 50%; background: var(--tint); }
+.wb-open-hero img { position: relative; height: 100%; max-height: 118mm; }
+
+/* ---- the blank back of a cut & paste sheet */
+.wb-blank { flex: 1; display: flex; align-items: center; justify-content: center; }
+.wb-blank p { font: 500 10pt var(--body); color: #B3AFA3; }

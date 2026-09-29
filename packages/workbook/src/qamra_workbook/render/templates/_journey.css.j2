@@ -1,0 +1,41 @@
+/* «رحلتي الأولى للتعلّم» (Addendum 6): the stage pages' QR card and the cover. Work areas are one SVG each
+   (class wb, the دوسية's `wb-*` text classes); answers show only in the answer key (`.solved`). */
+.j-qr { margin-bottom: 3mm; }
+.j-qr .qr-card { padding: 2.2mm 3mm; }
+.j-qr .qr-card .qr { width: 22mm; height: 22mm; }
+
+/* covers: no tab, no page number; the background runs into the bleed, the text stays in the safe area */
+.type-journey-cover-front .foot, .type-journey-cover-back .foot,
+.type-journey-cover-front .tab, .type-journey-cover-back .tab { display: none; }
+.jc-bg { position: absolute; left: calc(-1 * var(--inset)); top: calc(-1 * var(--inset));
+         width: {{ g.page_w }}mm; height: {{ g.page_h }}mm; z-index: 0; }
+.jc-bg svg { width: 100%; height: 100%; }
+.jc-bg.back { background: #FDF6E8; }
+.jc, .jb { position: relative; z-index: 1; flex: 1; padding: 3mm 2mm 4mm; display: flex; flex-direction: column; align-items: center; min-height: 0; }
+.jc-brand { align-self: flex-start; display: flex; align-items: center; gap: 1.5mm; font: 800 13pt var(--title); color: var(--night); }
+.jc-brand .mascot { width: 9mm; height: 9mm; }
+.jc-title { font: 800 44pt/1.05 var(--title); color: var(--night); text-align: center; margin-top: 4mm; }
+.jc-stage { margin-top: 4mm; padding: 1.5mm 7mm 2.2mm; border-radius: 8mm; background: #E9A62B; color: #FFFFFF;
+            font: 800 15pt var(--title); }
+.jc-hero { flex: 1; min-height: 0; width: 100%; display: flex; align-items: flex-end; justify-content: center; }
+.jc-hero img { max-height: min(100%, 118mm); max-width: 70%; object-fit: contain; }
+.jc-name { margin-top: 2mm; padding: 1mm 12mm 2mm; border-radius: 10mm; background: var(--night); max-width: 160mm;
+           box-shadow: 0 1.2mm 0 #0E1530; }
+.jc-name span { display: block; font: 800 26pt/1.25 var(--title); color: #FFFFFF; white-space: nowrap; overflow: hidden; }
+.jc-stops { display: flex; gap: 2mm; margin-top: 5mm; }
+.jc-stops span { width: 11mm; height: 11mm; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+                 color: #FFFFFF; box-shadow: 0 0 0 0.8mm #FFFFFF; }
+.jc-stops .ico { width: 6.5mm; height: 6.5mm; }
+.jc-ages { margin-top: 3mm; font: 700 12pt var(--body); color: var(--ink-2); }
+.jb-title { font: 800 30pt/1.2 var(--title); color: var(--night); margin-top: 6mm; }
+.jb-blurb { margin-top: 6mm; font: 500 13pt/1.8 var(--body); color: var(--ink); text-align: center; max-width: 160mm; }
+.jb-points { list-style: none; margin-top: 5mm; display: flex; flex-direction: column; gap: 2mm; align-self: stretch; }
+.jb-points li { display: flex; align-items: center; gap: 2mm; font: 600 12pt var(--body); color: var(--ink-2); }
+.jb-points .ico { width: 5mm; height: 5mm; color: var(--go); flex: none; }
+.jb-map { margin-top: 7mm; display: grid; grid-template-columns: 1fr 1fr; gap: 2mm 6mm; align-self: stretch; }
+.jb-sec { display: flex; align-items: center; gap: 2mm; font: 600 11pt var(--body); color: var(--ink); }
+.jb-sec i { width: 7.5mm; height: 7.5mm; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #FFFFFF; flex: none; }
+.jb-sec .ico { width: 4.6mm; height: 4.6mm; }
+.jb-foot { margin-top: auto; align-self: stretch; display: flex; align-items: flex-end; justify-content: space-between; }
+.jb-ages { font: 700 12pt var(--body); color: var(--ink-2); }
+.jb-code { width: 40mm; height: 22mm; border-radius: 2mm; background: #FFFFFF; border: 0.4mm solid var(--line); }

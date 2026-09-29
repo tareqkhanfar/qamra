@@ -1,0 +1,7 @@
+<div class="wb-open">
+  <div class="wb-open-card">
+    <h2>{{ 'في هذا الجزء سأتعلّم' }}</h2>
+    <ul>{% for o in d.objectives %}<li>{{ icon('star') }}<span>{{ o }}</span></li>{% endfor %}</ul>
+  </div>
+  <div class="wb-open-hero"><div class="burst"></div>{% if d.character %}<img src="{{ d.character }}" alt="">{% endif %}</div>
+</div>

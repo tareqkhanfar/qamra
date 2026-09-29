@@ -6,7 +6,7 @@
       <div class="en-word">{{ d.word }}</div>
       <div class="en-word-ar" dir="rtl" lang="ar">{{ d.word_ar }}</div>
     </div>
-    <div class="en-qr">{{ p.qr }}<span>{{ icon('speaker') }}Scan &amp; listen</span></div>
+    {% if p.qr %}<div class="en-qr">{{ p.qr }}<span>{{ icon('speaker') }}Scan &amp; listen</span></div>{% endif %}
   </div>
   <div class="en-rows">
     {% for row in d.rows %}<div class="en-row">{{ row }}</div>{% endfor %}

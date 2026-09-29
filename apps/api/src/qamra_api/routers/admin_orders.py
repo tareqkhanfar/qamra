@@ -387,6 +387,10 @@ async def change_status(
         select(OrderItem.id).where(OrderItem.order_id == order.id, OrderItem.line == "family").limit(1)
     ):  # «مغامراتي مع عائلتي»: its print files, drawn from the plan with the child's character (no AI cost)
         enqueue(queue, "qamra_worker.jobs.family_book.render_order_family_items", str(order.id))
+    if body.to == S.confirmed and await db.scalar(
+        select(OrderItem.id).where(OrderItem.order_id == order.id, OrderItem.line == "journey").limit(1)
+    ):  # «رحلتي الأولى للتعلّم»: each stage drawn from its plan with the child's character (no AI cost)
+        enqueue(queue, "qamra_worker.jobs.journey_book.render_order_journey_items", str(order.id))
     notify.order_statuses(queue.connection, order.id, [body.to])  # customer email (once per status)
     return await _detail(db, order, await _values(db, settings))
 

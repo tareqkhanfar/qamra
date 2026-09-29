@@ -86,3 +86,16 @@ From the decisions of 28 September 2026:
 8. Terms have 12, 11 and 11 weeks. A review week (`review_weeks`) introduces nothing new, reviews every letter met since the previous one, and has fewer pages than the volume's average week. KG2's Volume 2 lists its extra review week.
 9. Each volume closes with a pen-skills `assessment` in its last week, among the final assessments: a `checklist` of grip, pressure and direction, and two `tracing` tasks.
 10. Every English note has an Arabic version (`*_ar`) for the educator's document.
+
+## Render a volume
+
+```bash
+uv run python -m qamra_workbook.render.workbook --level kg2 --volume 1          # the whole volume
+uv run python -m qamra_workbook.render.workbook --level kg2 --volume 1 --pages 18-27   # a few pages
+```
+
+The renderer (`packages/workbook/src/qamra_workbook/render/workbook.py`) builds every page of the volume from the plan, in order, for the sample child and character of `content/journey/samples.yaml` (`--name-en` sets the name for the English name page; `--numerals latin` prints 123 instead of ١٢٣). It writes into `out/workbook/`: `<level>-v<volume>.pdf`, `<level>-v<volume>-answer-key.pdf`, the page previews in `png-<level>-v<volume>/`, a sheet of the open spreads and `<level>-v<volume>-preflight.json`. A page whose checks fail, or whose text or layout overflows, stops the render.
+
+- Each plan page becomes an engine page in `render/foundation.py`: its title and short instruction come from its type (`render/foundation_text.py`), and its params from the plan. The plan's own params always win.
+- The page types live in `render/pages/workbook_*.py`, the pictures of the plan's words in `pictures/workbook_words.py`.
+- Render params the plan may carry beyond its rules: `runner` and `goal` on a maze (picture ids), `shape` on a symmetry drawing, `picture` on a cut & paste page.

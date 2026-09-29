@@ -4,6 +4,8 @@
 <style>
 {% include "_base.css.j2" %}
 {% include "_pages.css.j2" %}
+{% if book.product == 'foundation' %}{% include "_workbook.css.j2" %}{% endif %}
+{% if book.product == 'journey' %}{% include "_workbook.css.j2" %}{% include "_journey.css.j2" %}{% endif %}
 {% include "_answer-key.css.j2" %}
 {% if book.product == 'family' %}{% include "_family.css.j2" %}{% endif %}
 </style></head>

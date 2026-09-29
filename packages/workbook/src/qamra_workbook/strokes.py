@@ -1,14 +1,16 @@
 """Letter stroke data for tracing pages: single-stroke paths in writing order, plus the letter's dots.
 
 Arabic: every letter in each of its forms (isolated/initial/medial/final), plus ة ى ء and لا, in Qamra's
-own kindergarten hand (`qamra_workbook.letters`). English: the samples A and a so far; A–Z, a–z and the
-digits need the same data before the full books. An educator signs off on the forms and stroke directions
+own kindergarten hand (`qamra_workbook.letters`). English: A–Z and a–z in print (`qamra_workbook.latin`; the
+samples A and a below keep their original guides). Digits live in `qamra_workbook.digits`. An educator
+signs off on the forms and stroke directions
 (Addendum 5 §8, Addendum 6 §9) on the review sheet from `qamra_workbook.stroke_sheet`.
 """
 
 from __future__ import annotations
 
 from qamra_workbook.geometry import Stroke
+from qamra_workbook.latin import LATIN
 from qamra_workbook.letters import ARABIC
 from qamra_workbook.letters.model import Guides, Letter
 
@@ -42,7 +44,11 @@ SMALL_A = Letter(
     ),
 )
 
-LETTERS: dict[tuple[str, str], Letter] = {**ARABIC, **{(x.char, x.form): x for x in (CAPITAL_A, SMALL_A)}}
+LETTERS: dict[tuple[str, str], Letter] = {
+    **ARABIC,
+    **LATIN,
+    **{(x.char, x.form): x for x in (CAPITAL_A, SMALL_A)},
+}
 
 
 def letter(char: str, form: str) -> Letter:
