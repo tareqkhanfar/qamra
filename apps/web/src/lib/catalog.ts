@@ -14,6 +14,8 @@ export type ThemeCard = {
   tag: "popular" | "new" | "kindergarten" | null;
   status: "available" | "coming_soon";
   art: SceneArt;
+  /** «قمرة كلاسيك»: art style → the looks (girl, girl_hijab, boy) with a live template; see lib/classic.ts. */
+  classic?: Record<string, string[]>;
 };
 
 export type ThemeDetail = ThemeCard & {

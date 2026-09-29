@@ -1,0 +1,9 @@
+You locate the hero of a picture-book page. Image 1 is the hero's character reference sheet ({{ 'a boy' if gender == 'm' else 'a girl' }}{% if hijab %} in a hijab{% endif %}). Image 2 is the page ({{ width }} × {{ height }} pixels).
+
+Scene of the page: {{ scene }}
+
+Find the hero in image 2: the child who matches the reference sheet, not a classmate, adult or the small companion creature. Answer with the smallest box that holds the hero's whole visible figure, from the top of the head (or hijab, or cap) to the lowest visible part, including both hands.
+
+- found: false if the hero is not on the page.
+- x, y: the box's top-left corner; w, h: its width and height. All four are fractions of the image size between 0 and 1 (x and w of the width, y and h of the height).
+- notes: one short sentence, e.g. "standing left of center, waving".

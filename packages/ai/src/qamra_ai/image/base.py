@@ -27,6 +27,9 @@ class ImageRequest:
     aspect: Aspect = "1:1"
     resolution: Resolution = "1K"
     seed: int | None = None
+    # Exact output (width, height) for models that take pixels (FLUX.2, self-hosted); overrides aspect and
+    # resolution there. The Classic hero edit uses it: a crop keeps its own shape, often portrait.
+    size: tuple[int, int] | None = None
 
 
 @dataclass(frozen=True)

@@ -9,7 +9,7 @@ from decimal import Decimal
 from pydantic import SecretStr
 
 from qamra_ai.config import Settings as AISettings
-from qamra_ai.image import make_image_provider, make_upscaler
+from qamra_ai.image import make_classic_image_provider, make_image_provider, make_upscaler
 from qamra_ai.pipeline.runtime import Runtime
 from qamra_ai.text import make_text_provider
 from qamra_core.settings import CoreSettings
@@ -44,6 +44,7 @@ def ai_settings(resolved: Resolved, core: CoreSettings, *, offline: bool | str =
         openai_image_model=v["openai_image_model"],
         openai_image_quality=v["openai_image_quality"],
         classic_image_provider=v["classic_image_provider"],
+        classic_fal_model=v["classic_fal_model"],
         self_hosted_url=v["self_hosted_url"],
         self_hosted_token=_secret(v["self_hosted_token"]),
         self_hosted_workflow=v["self_hosted_workflow"],
@@ -61,6 +62,15 @@ def ai_settings(resolved: Resolved, core: CoreSettings, *, offline: bool | str =
         provider = "fake" if offline == "fake" else "sketch"
         settings = settings.model_copy(update={"image_provider": provider, "text_provider": "fake"})
     return settings
+
+
+def make_classic_runtime(settings: AISettings) -> Runtime:
+    """Classic hero edits: klein on fal, or our GPU with fal as the fallback (Addendum 4 §1A, §8)."""
+    return Runtime(
+        settings=settings,
+        text=make_text_provider(settings),
+        image=make_classic_image_provider(settings),
+    )
 
 
 def make_runtime(settings: AISettings) -> Runtime:

@@ -287,6 +287,19 @@ _DEFS: list[SettingDef] = [
         public=True,
     ),
     SettingDef(
+        "free_cover",
+        "site",
+        Kind.boolean,
+        False,
+        "الغلاف المجاني",
+        "Free cover",
+        "«شوف غلاف طفلك خلال دقيقة»: غلاف معاينة من قالب «كلاسيك»، مرة لكل حساب وحكاية. "
+        "يظهر في المتجر عند تشغيله.",
+        "“See your child's cover in a minute”: a preview cover from a Classic template, once per account and "
+        "story. Shown in the shop when on.",
+        public=True,
+    ),
+    SettingDef(
         "google_login_enabled",
         "site",
         Kind.boolean,
@@ -367,6 +380,18 @@ _DEFS: list[SettingDef] = [
         "fal-ai/seedvr/upscale/image",
         "نموذج التكبير للطباعة",
         "Print upscaler",
+        max_length=120,
+    ),
+    SettingDef(
+        "classic_fal_model",
+        "ai_models",
+        Kind.text,
+        "fal-ai/flux-2/klein/4b/edit",
+        "نموذج تعديل البطل في «قمرة كلاسيك»",
+        "Qamra Classic hero-edit model",
+        "يرسم ملامح الطفل على البطل في رسوم القالب الجاهزة. FLUX.2 [klein] 4B مرخّص تجاريًا (Apache 2.0).",
+        "Paints the child's features onto the hero of the ready-made template art. FLUX.2 [klein] 4B is "
+        "commercially licensed (Apache 2.0).",
         max_length=120,
     ),
     SettingDef(
@@ -570,6 +595,18 @@ _DEFS: list[SettingDef] = [
         "Generation stops at the cap and the book is flagged in admin.",
         min=0.5,
         max=20,
+    ),
+    SettingDef(
+        "free_cover_budget_usd",
+        "quality",
+        Kind.money,
+        "0.05",
+        "سقف تكلفة الغلاف المجاني ($)",
+        "Budget cap per free cover ($)",
+        "تعديل واحد صغير وفحص: نحو سنتين. لا يتجاوز الرسم هذا السقف.",
+        "One small edit and its check: about two cents. Drawing never passes this cap.",
+        min=0.01,
+        max=1,
     ),
     # ---- print (Addendum 3 §4; confirm with the print partner's template)
     SettingDef(

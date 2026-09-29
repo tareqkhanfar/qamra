@@ -164,6 +164,36 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "وصلتم إلى حد المعاينات لليوم. جرّبوا غدًا أو أكملوا طلبًا حاليًا.",
         "You've reached today's preview limit. Try tomorrow or finish a current order.",
     ),
+    # «قمرة كلاسيك» (Addendum 4 §1A)
+    "classic_unavailable": (
+        "هذه الحكاية غير متوفّرة بعد في «قمرة كلاسيك» بهذا الشكل. جرّبوا «قمرة سحري» أو حكاية أخرى.",
+        "This story isn't ready in Qamra Classic for this look yet. Try Qamra Magic or another story.",
+    ),
+    "template_exists": (
+        "يوجد قالب معتمد لهذه الحكاية بهذا الأسلوب والشكل. أعيدوه للمراجعة أولًا لتغييره.",
+        "An approved template already exists for this story, style and look. Send it back to review first.",
+    ),
+    "template_source_invalid": (
+        "يمكن تحويل كتاب تجريبي معتمد فقط، لطفل متخيَّل، ومن دون رفيق مرسوم.",
+        "Only an approved sample book of an invented child, without a drawn companion, can become a "
+        "template.",
+    ),
+    "template_locked": (
+        "هذه الصفحة مقفلة. افتحوا القفل أولًا لتعديلها.",
+        "This page is locked. Unlock it first to change it.",
+    ),
+    "template_incomplete": (
+        "لا يمكن اعتماد القالب قبل رسم كل صفحاته وتحديد مكان البطل في كل صفحة يظهر فيها.",
+        "The template can be approved only when every page is drawn and every hero page has its hero box.",
+    ),
+    "free_cover_off": (
+        "الغلاف المجاني غير متاح الآن. تصفّحوا الحكايات وابدؤوا كتابكم.",
+        "The free cover isn't available right now. Browse the stories and start your book.",
+    ),
+    "free_cover_used": (
+        "صمّمتم غلافًا مجانيًا لهذه الحكاية من قبل. جرّبوا حكاية أخرى أو أكملوا الكتاب.",
+        "You already made a free cover for this story. Try another story or finish the book.",
+    ),
     # public examples (docs/decisions.md)
     "example_not_sample": (
         "يمكن نشر كتب الأطفال المتخيَّلين التجريبية فقط كنماذج. كتب الأطفال الحقيقيين لا تُنشر أبدًا.",

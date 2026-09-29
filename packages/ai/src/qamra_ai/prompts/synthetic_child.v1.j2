@@ -1,0 +1,4 @@
+An ordinary smartphone photo of an invented {{ age }}-year-old {{ 'boy' if gender == 'm' else 'girl' }} from the Levant, looking straight at the camera with a relaxed small smile, head and shoulders, in soft natural daylight outdoors in front of a plain light wall.
+{% if hijab %}She wears a simple plain hijab that covers her hair, her whole face visible.{% elif gender == 'm' %}Short {{ hair }} hair.{% else %}{{ hair | capitalize }} hair.{% endif %}{% if glasses %} {{ 'He' if gender == 'm' else 'She' }} wears simple children's glasses.{% endif %}
+{{ skin | capitalize }} skin. A plain {{ top }} t-shirt. The face is sharp, evenly lit and fills about half of the frame.
+This must be a fictional child who does not resemble any real or famous person. No text, no logos, no filters, no other people.

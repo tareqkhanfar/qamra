@@ -1,0 +1,26 @@
+STYLE
+{{ style }}
+Painting medium: {{ medium }}
+
+TASK
+Create a picture-book CHARACTER REFERENCE SHEET of an invented, ordinary child: the placeholder hero of a ready-made picture book. Parents later see their own child's face painted onto this hero, so the child must look neutral and average, never like a specific real person.
+
+Layout: three full-body views of the same child side by side on a plain warm cream background, evenly spaced, same scale:
+1. front view, standing, gentle smile, arms relaxed
+2. three-quarter view, waving
+3. side view, walking
+
+THE CHILD
+{{ 'A boy' if gender == 'm' else 'A girl' }}, {{ age }} years old, and looking {{ age }}: a round child's face, a medium olive-tan skin tone, dark brown eyes, a soft friendly expression.
+{% if hijab %}She wears a simple soft sage-green hijab neatly covering the hair, the face fully visible.{% elif gender == 'm' %}Short dark-brown hair.{% else %}Dark-brown shoulder-length hair.{% endif %}
+{% for extra in extras %}- {{ extra }}
+{% endfor %}No glasses.
+
+CLOTHING
+A plain, modest reference outfit: a soft cream long-sleeved top, night-blue trousers and simple shoes, the same in all three views (each book dresses the hero in its own outfit).
+
+PEOPLE
+{{ people }}
+
+NEGATIVE
+{{ negative }}

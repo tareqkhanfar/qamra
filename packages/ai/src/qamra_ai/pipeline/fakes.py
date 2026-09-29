@@ -5,6 +5,7 @@ import re
 
 from pydantic import BaseModel
 
+from qamra_ai.pipeline.classic import ClassicQA, HeroBoxOut, PortraitQA
 from qamra_ai.pipeline.models import (
     CompanionFidelity,
     DrawingReview,
@@ -103,5 +104,19 @@ def default_fake_text_provider() -> FakeTextProvider:
             "CompanionFidelity": lambda *_: CompanionFidelity(
                 score=4, preserved_features=["fake"], lost_features=[], safe=True
             ),
+            # Classic (Addendum 4 §1A): the hero stands in the middle of every page; edits pass
+            "HeroBoxOut": lambda *_: HeroBoxOut(found=True, x=0.3, y=0.3, w=0.35, h=0.6, notes="fake"),
+            "ClassicQA": lambda *_: ClassicQA(
+                likeness=9,
+                same_scene=True,
+                seams=False,
+                hero_count=1,
+                anatomy_ok=True,
+                text_in_image=False,
+                style_ok=True,
+                safe=True,
+                notes="ok",
+            ),
+            "PortraitQA": lambda *_: PortraitQA(likeness=9, safe=True, text_in_image=False, notes="ok"),
         }
     )

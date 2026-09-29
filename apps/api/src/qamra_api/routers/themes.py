@@ -9,6 +9,7 @@ from sqlalchemy import select
 
 from qamra_ai.pipeline.layout import plan_book
 from qamra_ai.pipeline.theme import CatalogArt, Theme, render_template
+from qamra_api.classic import classic_availability
 from qamra_api.deps import SessionDep
 from qamra_api.errors import ApiError
 from qamra_api.store.catalog import load_catalog
@@ -31,6 +32,8 @@ class ThemeCard(BaseModel):
     tag: str | None
     status: Literal["available", "coming_soon"]
     art: dict[str, Any]
+    # «قمرة كلاسيك»: art style → the looks (girl, girl_hijab, boy) with a live template; empty = Magic only
+    classic: dict[str, list[str]] = {}
 
 
 class PeekItem(BaseModel):
@@ -149,7 +152,8 @@ async def _load(db: SessionDep) -> list[Theme]:
 
 @router.get("/themes")
 async def list_themes(db: SessionDep, lang: Lang = "ar") -> list[ThemeCard]:
-    return [_card(t, lang) for t in await _load(db)]
+    classic = await classic_availability(db)
+    return [_card(t, lang).model_copy(update={"classic": classic.get(t.slug, {})}) for t in await _load(db)]
 
 
 @router.get("/themes/{slug}")
@@ -163,8 +167,9 @@ async def get_theme(slug: str, db: SessionDep, lang: Lang = "ar") -> ThemeDetail
     if theme.catalog is None:
         raise ApiError("not_found", 404)
     c = theme.catalog
+    classic = (await classic_availability(db)).get(theme.slug, {})
     return ThemeDetail(
-        **_card(theme, lang).model_dump(),
+        **_card(theme, lang).model_copy(update={"classic": classic}).model_dump(),
         description=c.description_ar if lang == "ar" else c.description_en,
         values=c.values_ar if lang == "ar" else c.values_en,
         companion_slot=theme.companion_slot,

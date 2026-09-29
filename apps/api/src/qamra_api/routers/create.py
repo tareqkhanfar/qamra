@@ -15,8 +15,10 @@ from fastapi import APIRouter, File, Request, Response, UploadFile
 from pydantic import BaseModel, Field, field_validator
 from sqlalchemy import func, select
 
+from qamra_ai.pipeline.classic import classic_budget_usd
 from qamra_ai.pipeline.theme import Theme
 from qamra_api import ratelimit, runtime_settings
+from qamra_api.classic import CLASSIC_JOB, live_template, resume_classic_draft
 from qamra_api.deps import CurrentUser, RedisDep, SessionDep, SettingsDep, StorageDep
 from qamra_api.errors import ApiError
 from qamra_api.jobs import QueueDep, enqueue
@@ -440,7 +442,7 @@ async def _book_out(db: SessionDep, book: Book) -> BookOut:
         style=book.art_style,
         title=book.title,
         dedication=book.parent_message,
-        preview=book.generation.get("line") == "magic",
+        preview=book.generation.get("line") == "magic" or bool(book.generation.get("template_id")),
         progress=dict(book.generation.get("progress") or {}),
         pages=[PageOut(beat=p.index, text=p.text, image=bool(p.preview_image_key)) for p in pages],
     )
@@ -467,20 +469,22 @@ async def start_book(
     if row is None or not Theme.model_validate(row.definition).available:
         raise ApiError("not_found", 404)
     magic = body.line == "magic"
-    if magic:
-        since = datetime.now(UTC) - timedelta(days=1)
-        previews = (
-            await db.execute(
-                select(func.count())
-                .select_from(Book)
-                .where(
-                    Book.created_by_user_id == user.id, Book.created_at >= since, Book.is_sample.is_(False)
-                )
-            )
-        ).scalar_one()
-        if previews >= PREVIEWS_PER_DAY:
-            raise ApiError("too_many_previews", 429)
+    # Classic (Addendum 4 §1A) needs a live template for this story, style and the child's look
+    template = None if magic else await live_template(db, row.id, character.art_style, child)
+    if not magic and template is None:
+        raise ApiError("classic_unavailable", 409)
+    since = datetime.now(UTC) - timedelta(days=1)
+    previews = (
+        await db.execute(
+            select(func.count())
+            .select_from(Book)
+            .where(Book.created_by_user_id == user.id, Book.created_at >= since, Book.is_sample.is_(False))
+        )
+    ).scalar_one()
+    if previews >= PREVIEWS_PER_DAY:  # every preview costs real money, Classic ones too
+        raise ApiError("too_many_previews", 429)
     values = (await runtime_settings.current(db, settings)).values
+    classic = {"template_id": str(template.id), "budget_pinned": True} if template else {}
     book = Book(
         child_id=child.id,
         character_id=character.id,
@@ -489,21 +493,27 @@ async def start_book(
         created_by_user_id=user.id,
         language=Locale(body.language),
         art_style=character.art_style,
-        status=BookStatus.generating if magic else BookStatus.draft,
+        status=BookStatus.generating,
         parent_message=" ".join(body.dedication.split()) if body.dedication else None,
-        budget_usd=Decimal(str(values["book_budget_usd"])),
-        generation={"line": body.line, "offline": False, "requested_by": str(user.id)},
+        budget_usd=Decimal(str(values["book_budget_usd"])) if magic else classic_budget_usd(values),
+        generation={"line": body.line, "offline": False, "requested_by": str(user.id), **classic},
     )
     db.add(book)
     await db.commit()
-    if magic:
-        enqueue(queue, "qamra_worker.jobs.books.generate_book", str(book.id), "preview")
+    job = "qamra_worker.jobs.books.generate_book" if magic else CLASSIC_JOB
+    enqueue(queue, job, str(book.id), "preview")  # the cover and the first pages, watermarked
     return await _book_out(db, book)
 
 
 @router.get("/books/{book_id}")
-async def book_status(book_id: uuid.UUID, user: CurrentUser, db: SessionDep) -> BookOut:
-    return await _book_out(db, await _my_book(db, user, book_id))
+async def book_status(
+    book_id: uuid.UUID, user: CurrentUser, db: SessionDep, settings: SettingsDep, queue: QueueDep
+) -> BookOut:
+    book = await _my_book(db, user, book_id)
+    values = (await runtime_settings.current(db, settings)).values
+    if await resume_classic_draft(db, book, values):  # a Classic draft from before its template went live
+        enqueue(queue, CLASSIC_JOB, str(book.id), "preview")
+    return await _book_out(db, book)
 
 
 @router.get("/books/{book_id}/pages/{beat}/image")

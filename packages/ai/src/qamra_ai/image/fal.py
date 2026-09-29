@@ -5,6 +5,9 @@ Argument shapes verified against fal's OpenAPI schemas (2026-09-28):
   reference images). Takes `resolution` (0.5K/1K/2K/4K) and `aspect_ratio`. The admin sets the base
   endpoint; `/edit` is used automatically whenever references are passed.
 - FLUX.2 (`fal-ai/flux-2-pro/edit`, up to 9 references / 9 MP): `image_size` {width, height}.
+- FLUX.2 [klein] (`fal-ai/flux-2/klein/4b/edit`, the Classic hero edit): up to 4 references, `image_size`
+  {width, height}, `enable_safety_checker`, `output_format`, `num_images`; no `safety_tolerance`. Billed per
+  megapixel of input and output, so references are sent at most 1 MP each (fal resizes them to 1 MP anyway).
 - Any other endpoint: prompt + image_urls + seed + sync_mode. The admin chose it, the budget guard prices
   it conservatively (pricing.yaml `fal_unknown_image_usd`).
 
@@ -32,9 +35,10 @@ PRIVACY_HEADERS: dict[str, str] = {
     "X-Fal-Store-IO": "0",
     "X-Fal-Object-Lifecycle-Preference": json.dumps({"expiration_duration_seconds": 900}),
 }
-Family = Literal["nano-banana", "flux-2", "generic"]
-MAX_REFS: dict[Family, int] = {"nano-banana": 14, "flux-2": 9, "generic": 8}
+Family = Literal["nano-banana", "flux-2", "flux-2-klein", "generic"]
+MAX_REFS: dict[Family, int] = {"nano-banana": 14, "flux-2": 9, "flux-2-klein": 4, "generic": 8}
 REF_MAX_SIDE = 1536  # references are downscaled before sending: faster, cheaper, same guidance
+KLEIN_REF_MAX_SIDE = 1024  # klein bills input megapixels: never send more than 1 MP per reference
 _MAX_DOWNLOAD = 60 * 1024 * 1024
 _ALLOWED_HOSTS = (".fal.media", ".fal.run", ".fal.ai")
 
@@ -48,6 +52,8 @@ class FalClient(Protocol):
 def family_of(endpoint: str) -> Family:
     if "nano-banana" in endpoint:
         return "nano-banana"
+    if "flux-2" in endpoint and "klein" in endpoint:
+        return "flux-2-klein"
     if "flux-2" in endpoint:
         return "flux-2"
     return "generic"
@@ -55,8 +61,9 @@ def family_of(endpoint: str) -> Family:
 
 def endpoint_for(endpoint: str, has_refs: bool) -> str:
     """Nano Banana 2 and FLUX.2 pair a text-to-image endpoint with an `/edit` one (verified schemas:
-    `fal-ai/nano-banana-2[/edit]`, `fal-ai/flux-2-pro[/edit]`): pick by whether references are passed."""
-    if family_of(endpoint) in ("nano-banana", "flux-2"):
+    `fal-ai/nano-banana-2[/edit]`, `fal-ai/flux-2-pro[/edit]`, `fal-ai/flux-2/klein/4b[/edit]`): pick by
+    whether references are passed."""
+    if family_of(endpoint) in ("nano-banana", "flux-2", "flux-2-klein"):
         base = endpoint.removesuffix("/edit")
         return f"{base}/edit" if has_refs else base
     return endpoint
@@ -158,7 +165,8 @@ class FalImageProvider:
     def build(self, req: ImageRequest) -> tuple[str, dict[str, Any], float]:
         """(endpoint, arguments, input megapixels) for this request."""
         refs = req.refs[: MAX_REFS[self.family]]
-        encoded = [encode_ref(r) for r in refs]
+        max_side = KLEIN_REF_MAX_SIDE if self.family == "flux-2-klein" else REF_MAX_SIDE
+        encoded = [encode_ref(r, max_side) for r in refs]
         in_mp = sum(mp for _, mp in encoded)
         endpoint = endpoint_for(self.model, bool(refs))
         labels = "\n".join(f"Image {i + 1}: {r.label}" for i, r in enumerate(refs))
@@ -176,14 +184,17 @@ class FalImageProvider:
                 "output_format": "png",
                 "limit_generations": True,
             }
-        elif self.family == "flux-2":
-            w, h = aspect_px(req.aspect, TIER_PX[req.resolution])
+        elif self.family in ("flux-2", "flux-2-klein"):
+            w, h = req.size or aspect_px(req.aspect, TIER_PX[req.resolution])
             args |= {
                 "image_size": {"width": w, "height": h},
                 "output_format": "png",
                 "enable_safety_checker": True,
-                "safety_tolerance": "2",
             }
+            if self.family == "flux-2":
+                args["safety_tolerance"] = "2"
+            else:
+                args["num_images"] = 1
         return endpoint, args, in_mp
 
     async def generate(self, req: ImageRequest) -> GeneratedImage:

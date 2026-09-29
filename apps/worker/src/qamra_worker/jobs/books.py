@@ -183,8 +183,10 @@ def _beat_of(step: str) -> int | None:
     parts = step.split(":")
     if parts[0] == "cover" or (parts[0] in ("qa", "upscale") and len(parts) > 1 and parts[1] == "cover"):
         return 0
-    if parts[0] == "page" and len(parts) > 1 and parts[1].isdigit():
+    if parts[0] in ("page", "hero") and len(parts) > 1 and parts[1].isdigit():  # hero: Classic edits
         return int(parts[1])
+    if parts[0] == "hero" and len(parts) > 1 and parts[1] == "cover":
+        return 0
     if parts[0] in ("qa", "upscale") and len(parts) > 1:
         tail = parts[-1] if parts[0] == "upscale" else parts[1]
         return int(tail) if tail.isdigit() else None
@@ -683,8 +685,19 @@ def _run(coro_factory: Any) -> Any:
     return asyncio.run(coro_factory())
 
 
+def _classic(book_id: str) -> bool:
+    """«قمرة كلاسيك» books have their own jobs (jobs.classic); the admin's actions reach them through here."""
+    with context.db_session() as db:
+        book = db.get(Book, book_id)
+        return book is not None and (book.generation or {}).get("line") == "classic"
+
+
 def generate_book(book_id: str, mode: str = "final") -> dict[str, Any]:
     context.init_process()
+    if _classic(book_id):
+        from qamra_worker.jobs.classic import generate_classic_book
+
+        return generate_classic_book(book_id, mode)
     storage = context.storage()
     with context.db_session() as db:
         book = db.get(Book, book_id)
@@ -709,6 +722,10 @@ def generate_book(book_id: str, mode: str = "final") -> dict[str, Any]:
 
 def redraw(book_id: str, beats: list[int]) -> dict[str, Any]:
     context.init_process()
+    if _classic(book_id):
+        from qamra_worker.jobs.classic import redraw_classic
+
+        return redraw_classic(book_id, beats)
     storage = context.storage()
     with context.db_session() as db:
         book = db.get(Book, book_id)
@@ -733,6 +750,10 @@ def redraw(book_id: str, beats: list[int]) -> dict[str, Any]:
 def rerender(book_id: str) -> dict[str, Any]:
     """After text edits: rebuild the PDFs from the stored pages (no AI calls)."""
     context.init_process()
+    if _classic(book_id):
+        from qamra_worker.jobs.classic import rerender_classic
+
+        return rerender_classic(book_id)
     storage = context.storage()
     with context.db_session() as db:
         book = db.get(Book, book_id)

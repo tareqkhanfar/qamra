@@ -16,6 +16,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from qamra_ai.cost import fal_cost, fal_unknown_price
+from qamra_ai.pipeline.classic import edit_estimate_usd
 from qamra_ai.pipeline.theme import Theme
 from qamra_api import runtime_settings
 from qamra_api.deps import AdminUser, SessionDep, SettingsDep, StorageDep, require_admin, require_permission
@@ -484,6 +485,8 @@ async def redraw(
     estimate = (
         0.0 if (book.generation or {}).get("offline") else _redraw_estimate(values, len(set(body.beats)))
     )
+    if (book.generation or {}).get("line") == "classic" and estimate:  # a klein hero edit, not a new page
+        estimate = round(edit_estimate_usd(str(values["classic_fal_model"])) * len(set(body.beats)), 4)
     remaining = float(book.budget_usd or 0) - float(book.cost_usd or 0)
     if estimate > remaining:
         raise ApiError(

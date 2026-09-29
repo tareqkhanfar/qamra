@@ -115,7 +115,8 @@ def fal_cost(
 
     per_image (Nano Banana, Recraft): flat price × resolution multiplier.
     first_mp/extra_mp (FLUX.2): megapixels rounded up; inputs billed when `bill_inputs`.
-    per_mp (SeedVR): per output megapixel.
+    per_mp (SeedVR, FLUX.2 [klein]): per output megapixel, plus the input megapixels when `bill_inputs`
+    (klein: "per megapixel of input and output", not rounded).
     """
     p: dict[str, Any] | None = pricing()["fal"].get(endpoint)
     if p is None:
@@ -125,7 +126,8 @@ def fal_cost(
         return round(float(p["per_image"]) * mult, 6)
     out_mp = (out_px[0] * out_px[1] / FAL_MEGAPIXEL) if out_px else 1.0
     if "per_mp" in p:
-        return round(float(p["per_mp"]) * out_mp, 6)
+        billed_mp = out_mp + (in_megapixels if p.get("bill_inputs") else 0.0)
+        return round(float(p["per_mp"]) * billed_mp, 6)
     billed = math.ceil(out_mp - 1e-9) + (math.ceil(in_megapixels - 1e-9) if p.get("bill_inputs") else 0)
     return round(float(p["first_mp"]) + max(0, billed - 1) * float(p["extra_mp"]), 6)
 

@@ -53,6 +53,8 @@ class Settings(BaseSettings):
 
     # Self-hosted GPU (Addendum 4 §8): our ComfyUI server, for Classic template edits only; off by default
     classic_image_provider: Literal["fal", "self_hosted"] = "fal"
+    # Classic hero edits (Addendum 4 §1A): FLUX.2 [klein] 4B, Apache 2.0; also the fal fallback of self_hosted
+    classic_fal_model: str = "fal-ai/flux-2/klein/4b/edit"
     self_hosted_url: str = ""
     self_hosted_token: SecretStr | None = None
     self_hosted_workflow: str = ""  # a file in qamra_ai/image/comfy_workflows/, approved in docs/licenses.md

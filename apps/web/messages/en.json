@@ -1,4 +1,8 @@
 {
+  "classic": {
+    "noStyle": "Qamra Classic's ready-made art isn't finished yet for this look. Try Qamra Magic: we paint every page for {name}.",
+    "toMagic": "Choose Qamra Magic"
+  },
   "examples": {
     "admin": {
       "publish": "Publish as a site example",

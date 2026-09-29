@@ -100,7 +100,7 @@ Spec: `docs/ADDENDUM-04.md`. The store also carries the workbook line from `docs
   - order tracking;
   - invoice PDF;
   - order admin (statuses, notes, messages, partial reprint).
-- [ ] **Step 3 — Classic pipeline**
+- [ ] **Step 3 — Classic pipeline** — built 2026-09-29 and tested with fake providers (decisions.md, "«قمرة كلاسيك»"); **open until the real proof**: templates from the approved sample books (or generated), published live, then `scripts/classic_proof.py … proof` on the server (fal balance needed). Still to do: the custom story builder (W3), full vowelization of the Classic texts, an editor's look at every template page.
   - templates (tables + generation script for 3 variants of one theme);
   - hero boxes;
   - identity portrait;

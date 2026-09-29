@@ -274,6 +274,8 @@ export function CreateWizard() {
           child={child!}
           line={line!}
           catalog={catalog}
+          themes={themes}
+          theme={q.theme}
           initial={q.style}
           back={() => go({ step: "line" })}
           onDrawing={onCharacter}

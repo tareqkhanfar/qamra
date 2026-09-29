@@ -16,6 +16,7 @@ from sqlalchemy.dialects.postgresql import insert
 
 from qamra_ai.pipeline.theme import CONTENT_DIR
 from qamra_api import runtime_settings
+from qamra_api.classic import CLASSIC_JOB, start_classic_finals
 from qamra_api.deps import AdminUser, SessionDep, SettingsDep, StorageDep, require_permission
 from qamra_api.errors import ApiError
 from qamra_api.jobs import QueueDep, enqueue
@@ -366,11 +367,15 @@ async def change_status(
         )
     )
     render = None
+    classic_finals: list[str] = []
     if body.to == S.confirmed:
         render = await issue_invoice(db, order)
+        classic_finals = await start_classic_finals(db, order.id)  # Classic books: the whole book now
     await db.commit()
     if render is not None and not render.pdf_key:
         enqueue(queue, "qamra_worker.jobs.invoices.render_invoice", str(render.id))
+    for book_id in classic_finals:
+        enqueue(queue, CLASSIC_JOB, book_id, "final")
     return await _detail(db, order, await _values(db, settings))
 
 

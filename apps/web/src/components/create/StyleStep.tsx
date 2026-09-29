@@ -6,6 +6,8 @@ import { Kid } from "@/components/art/Kid";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { errorText } from "@/lib/api";
+import type { ThemeCard } from "@/lib/catalog";
+import { classicStyles, classicVariant } from "@/lib/classic";
 import { createApi, type Character, type Child, type Line } from "@/lib/create";
 import { money, type Catalog } from "@/lib/store";
 import { Check, Frame, Lead } from "./Frame";
@@ -25,11 +27,16 @@ const LOOK: Record<string, { bg: string; fx: string }> = {
   coloring: { bg: "bg-white", fx: "grayscale contrast-[1.6]" },
 };
 
-/** Step 5 (design Create4): the art style, then the character is drawn right away. */
+/**
+ * Step 5 (design Create4): the art style, then the character is drawn right away. A Classic book offers only
+ * the styles that have a live template for the child's look (and for the chosen story, when there is one).
+ */
 export function StyleStep({
   child,
   line,
   catalog,
+  themes,
+  theme,
   initial,
   back,
   onDrawing,
@@ -37,14 +44,21 @@ export function StyleStep({
   child: Child;
   line: Line;
   catalog: Catalog | null;
+  themes: ThemeCard[];
+  theme: string | null;
   initial: string | null;
   back: () => void;
   onDrawing: (c: Character) => void;
 }) {
   const t = useTranslations("create");
+  const tc = useTranslations("classic");
   const te = useTranslations("errors");
   const locale = useLocale();
-  const styles = (catalog?.styles ?? []).filter((s) => s.lines.includes(line));
+  const ready = classicStyles(themes, classicVariant(child), theme);
+  const styles = (catalog?.styles ?? []).filter(
+    (s) => s.lines.includes(line) && (line !== "classic" || ready.has(s.slug)),
+  );
+  const noClassic = line === "classic" && catalog !== null && themes.length > 0 && styles.length === 0;
   const [style, setStyle] = useState<string>(
     initial && styles.some((s) => s.slug === initial) ? initial : (styles[0]?.slug ?? "watercolor"),
   );
@@ -73,6 +87,14 @@ export function StyleStep({
       }
     >
       <Lead title={t("style.title", { name: child.name })} body={t("style.body")} />
+      {noClassic && (
+        <div className="flex flex-col gap-3">
+          <Alert>{tc("noStyle", { name: child.name })}</Alert>
+          <Button variant="secondary" onClick={back} className="self-start">
+            {tc("toMagic")}
+          </Button>
+        </div>
+      )}
       <div className="flex flex-col gap-3" role="radiogroup" aria-label={t("steps.style")}>
         {styles.map((s, i) => {
           const on = style === s.slug;

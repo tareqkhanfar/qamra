@@ -10,7 +10,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from qamra_api.routers.create import CONSENT_VERSION, MAX_CHARACTERS
 from qamra_api.seed import upsert_themes
 from qamra_api.seed_store import seed_store
+from qamra_core.db.classic import ClassicTemplate, TemplateStatus
 from qamra_core.db.models import AuditLog, Book, Character, CharacterStatus, Child, ChildPhoto, OrderItem
+from qamra_core.db.models import Theme as ThemeRow
 from qamra_core.db.store import OrderEvent
 from qamra_core.storage import ObjectNotFound, ObjectStorage
 
@@ -122,7 +124,8 @@ async def test_from_child_to_cart(
             "line": "classic",
         },
     )
-    assert classic.json()["status"] == "draft" and classic.json()["preview"] is False
+    # no live Classic template for this story and look yet: a clear answer, never a dead draft
+    assert classic.status_code == 409 and classic.json()["error"]["code"] == "classic_unavailable"
 
     wrong = await client.post(f"/api/create/books/{magic.json()['id']}/cart", json={"sku": "classic-soft-21"})
     assert wrong.status_code == 404  # a Magic book is sold as Magic
@@ -163,6 +166,18 @@ async def test_deleting_a_child_removes_their_data_and_keeps_the_order_without_i
     ).json()["id"]
     await _drawn(adb, storage, character_id, child["id"])
     await client.post(f"/api/create/characters/{character_id}/approve")
+    graduation = (await adb.execute(select(ThemeRow).where(ThemeRow.slug == "graduation"))).scalar_one()
+    adb.add(  # a live Classic template for her look (Addendum 4 §1A)
+        ClassicTemplate(
+            theme_id=graduation.id,
+            theme_version=graduation.version,
+            art_style="watercolor",
+            variant="girl_hijab",
+            status=TemplateStatus.live,
+            generation={},
+        )
+    )
+    await adb.commit()
     book = await client.post(
         "/api/create/books",
         json={

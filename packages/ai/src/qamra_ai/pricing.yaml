@@ -24,6 +24,11 @@ fal:
   fal-ai/flux-2-pro: {first_mp: 0.03, extra_mp: 0.015, bill_inputs: false}
   fal-ai/flux-2-flex/edit: {first_mp: 0.06, extra_mp: 0.06, bill_inputs: true}
   fal-ai/flux-2/edit: {first_mp: 0.012, extra_mp: 0.012, bill_inputs: true}
+  # FLUX.2 [klein]: "$0.01 per megapixel" of input and output (fal model page, checked 2026-09-28). The 4B
+  # weights are Apache 2.0 (the Classic hero edit); the 9B weights are non-commercial, fal's API only.
+  fal-ai/flux-2/klein/4b/edit: {per_mp: 0.01, bill_inputs: true}
+  fal-ai/flux-2/klein/4b: {per_mp: 0.01}
+  fal-ai/flux-2/klein/9b/edit: {per_mp: 0.011, bill_inputs: true}
   # Upscalers
   fal-ai/seedvr/upscale/image: {per_mp: 0.001}  # per output megapixel
   fal-ai/recraft/upscale/crisp: {per_image: 0.004}

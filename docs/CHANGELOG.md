@@ -1,4 +1,11 @@
 # Changelog
+## Addendum 4, step 3: «قمرة كلاسيك», the Classic pipeline (2026-09-29)
+
+- **Classic templates** per story × art style × look (girl, girl with hijab, boy): drawn once with the premium pipeline around a placeholder hero, or copied from an approved sample book of an invented child. Hero boxes found by the fast vision model; review, per-page redraw, locks, approve and publish (`/api/admin/classic/templates…`, permission `templates`). One-time costs logged.
+- **Classic books:** one identity portrait per child and style, then only the hero of each page is edited with FLUX.2 [klein] 4B (crop, edit, feathered paste), checked for likeness, seams and stray text; pages without the hero reuse the template. Texts from the theme with the name and gender forms. A **2₪ budget guard** per book (`classic_budget_ils` ÷ `usd_ils`).
+- **In the shop:** Classic is offered only where a live template exists (the themes API lists them; the style step shows only those styles; otherwise a friendly «جرّبوا قمرة سحري»). The preview (cover + 2 hero pages, watermarked) is drawn right after the story step; confirming the order draws the whole book, which then waits in the approval queue. Old Classic drafts start once their template is live.
+- **Settings:** `classic_fal_model` (default `fal-ai/flux-2/klein/4b/edit`); `classic_image_provider` (fal or our GPU, with fal klein as the fallback) and `classic_budget_ils` are used.
+- **Cost proof tooling:** `scripts/classic_proof.py` (templates from samples, publish, and 5 invented children → 5 Classic books with their ₪ cost and PDFs); admin endpoints for Classic test books and invented faces.
 
 ## Phase 6: production-ready (2026-09-28)
 

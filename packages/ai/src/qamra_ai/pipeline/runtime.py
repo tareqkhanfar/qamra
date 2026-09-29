@@ -1,10 +1,20 @@
 """What every step needs: providers, settings, the cost ledger, the per-book budget and cost callbacks."""
 
+import io
 from collections.abc import Callable
 from dataclasses import dataclass, field
 
+from PIL import Image
+
 from qamra_ai.config import Settings
-from qamra_ai.cost import CostEntry, CostLedger, anthropic_estimate, fal_cost, fal_unknown_price
+from qamra_ai.cost import (
+    FAL_MEGAPIXEL,
+    CostEntry,
+    CostLedger,
+    anthropic_estimate,
+    fal_cost,
+    fal_unknown_price,
+)
 from qamra_ai.image.base import GeneratedImage, ImageProvider, ImageRequest
 from qamra_ai.image.upscale import LocalUpscaler, Upscaled, Upscaler
 from qamra_ai.pipeline.budget import Budget
@@ -17,6 +27,12 @@ ESTIMATES = {
     "qa": (8000, 700),
     "check": (4000, 700),
 }
+
+
+def _mp(data: bytes) -> float:
+    """Megapixels of an image (fal's unit), read from its header only."""
+    with Image.open(io.BytesIO(data)) as img:
+        return float(img.size[0] * img.size[1]) / FAL_MEGAPIXEL
 
 
 @dataclass
@@ -42,11 +58,21 @@ class Runtime:
         if self.image.name in ("fake", "sketch"):
             return 0.0
         model = self.image.model
-        if self.image.name == "fal":
+        if self.image.name == "self_hosted":
+            # our own GPU costs nothing per image; budget for the fal fallback in case it has to draw
+            fallback = getattr(self.image, "fallback", None)
+            if fallback is None or fallback.name != "fal":
+                return 0.0
+            model = fallback.model
+        if self.image.name in ("fal", "self_hosted"):
             from qamra_ai.image.fal import endpoint_for
 
             model = endpoint_for(model, bool(req.refs))
-            price = fal_cost(model, resolution=req.resolution, in_megapixels=len(req.refs) * 1.5)
+            if req.size is not None:  # exact size: 1 MP-capped references (klein), known output
+                in_mp = sum(min(1.0, _mp(r.data)) for r in req.refs)
+                price = fal_cost(model, resolution=req.resolution, out_px=req.size, in_megapixels=in_mp)
+            else:
+                price = fal_cost(model, resolution=req.resolution, in_megapixels=len(req.refs) * 1.5)
             return price if price is not None else fal_unknown_price()
         return fal_unknown_price()  # direct Gemini/OpenAI: conservative flat estimate
 

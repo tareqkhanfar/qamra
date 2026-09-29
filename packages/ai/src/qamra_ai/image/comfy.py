@@ -94,7 +94,7 @@ class ComfyImageProvider:
     async def generate(self, req: ImageRequest) -> GeneratedImage:
         started = time.monotonic()
         seed = req.seed if req.seed is not None else secrets.randbelow(2**31)
-        width, height = aspect_px(req.aspect, TIER_PX[req.resolution])
+        width, height = req.size or aspect_px(req.aspect, TIER_PX[req.resolution])
         try:
             async with self._client() as http:
                 names = [await self._upload(http, ref) for ref in req.refs]
