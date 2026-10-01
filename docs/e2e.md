@@ -10,7 +10,13 @@
 | `test_the_gift_toggle_and_card_message` | cart → «هذا الطلب هدية» + card message (kept by the server across a reload) → gift order |
 | `test_a_sibling_bundle_with_a_coupon` | two children's books → «باقة الإخوة» → discount code → order with both discounts |
 
-The shop → quiz and workbook flows of §3 belong to the site pages and are not covered here.
+`test_public_site.py` is the launch site seen by an anonymous visitor (no fixtures, no orders, no AI; it needs
+only a running site with the store seeded): every public page fits a 390 px phone and says nothing is "coming
+soon"; the menu and footer are the launch structure (الحكايات · كتب الأنشطة · للروضات · الأسعار · كيف نعمل); the
+home shows the four offers with prices; the activity-books hub lists the three books, each with a price and an
+orderable page; the pricing page has every kind of price; the English site has the same structure.
+
+The shop → quiz flow of §3 is not covered here.
 
 ## No AI, no paid calls
 

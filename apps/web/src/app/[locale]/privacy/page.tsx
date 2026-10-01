@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { PageShell } from "@/components/site/PageShell";
+import { pageMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("privacyPage");
-  return { title: t("title"), description: t("lead") };
+  const [t, locale] = await Promise.all([getTranslations("privacyPage"), getLocale()]);
+  return pageMetadata({ path: "/privacy", locale, title: t("title"), description: t("lead") });
 }
 
 const TERMS = [

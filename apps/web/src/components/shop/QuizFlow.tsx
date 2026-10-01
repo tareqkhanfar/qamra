@@ -171,9 +171,12 @@ export function QuizFlow() {
                   {t("result.see")}
                 </Link>
               ) : (
-                <span className="flex min-h-14 items-center justify-center rounded-full bg-night-800 text-[17px] font-bold text-night-100">
-                  {t("result.soon")}
-                </span>
+                <Link
+                  href="/shop"
+                  className="flex min-h-14 items-center justify-center rounded-full bg-amber-500 text-[17px] font-bold text-night-950"
+                >
+                  {t("result.browse")}
+                </Link>
               )}
             </div>
             <div className="flex flex-col gap-1 rounded-[20px] border border-line bg-paper-raised p-4">

@@ -180,7 +180,7 @@
     "unsafeBrief": "Some of the story details don't fit a children's book, so we haven't written it yet. Go back, edit them a little, and we'll write it again."
   },
   "classic": {
-    "noStyle": "Qamra Classic's ready-made art isn't finished yet for this look. Try Qamra Magic: we paint every page for {name}.",
+    "noStyle": "Qamra Classic's ready-made art isn't offered for this look. Try Qamra Magic: we paint every page for {name}.",
     "toMagic": "Choose Qamra Magic"
   },
   "examples": {
@@ -195,11 +195,11 @@
       "girl": "Girl",
       "girl_hijab": "Girl in hijab",
       "boy": "Boy",
-      "soon": "An example for this look is coming soon"
+      "other": "The example shown is in another look"
     },
     "synthetic": "A real book we made for \"{name}\", an invented child",
     "placeholder": "Illustration",
-    "placeholderNote": "Placeholder illustrations with the story's real words. The drawn pages appear here soon.",
+    "placeholderNote": "Placeholder illustrations with the story's real words.",
     "placeholderAlt": "A placeholder illustration of a story page",
     "pageNumbers": "Page {pages}",
     "pageAlt": "Page {pages}: {text}",
@@ -225,7 +225,6 @@
     "loading": "Opening the book…",
     "close": "Close the reader",
     "previewBadge": "Preview",
-    "listenSoon": "Listen to the story · soon",
     "fullscreen": "Full screen",
     "exitFullscreen": "Exit full screen",
     "previous": "Previous page",
@@ -323,10 +322,9 @@
   },
   "shop": {
     "nav": "Shop",
-    "title": "All Qamra books",
+    "title": "All books",
     "lead": "Every book carries your child's name and character. You see a preview before you pay, and you pay on delivery.",
     "from": "From",
-    "soon": "Coming soon",
     "freeCover": {
       "badge": "Free",
       "title": "See your child's cover in a minute",
@@ -349,9 +347,9 @@
       "title": "Learn and play",
       "lead": "Workbooks and activity books with their name and character",
       "chip": {
-        "workbook": "Ages 4–6 · kindergarten",
-        "journey": "Ages 3–6 · at home",
-        "family": "Ages 3–7 · a family gift"
+        "workbook": "{ages} · kindergarten",
+        "journey": "{ages} · at home",
+        "family": "{ages} · a family gift"
       },
       "unit": {
         "workbook": "From {price} a volume",
@@ -417,9 +415,9 @@
     "result": {
       "badge": "The best fit for your child",
       "see": "See the book",
-      "soon": "Coming soon to the shop",
       "also": "Also a good fit",
-      "restart": "Start again"
+      "restart": "Start again",
+      "browse": "Browse all books"
     },
     "admin": {
       "tab": "Quiz rules",
@@ -459,8 +457,6 @@
   "freeCover": {
     "title": "Free cover",
     "close": "Close",
-    "off": "The free cover isn't available right now. Browse the stories and start your child's book.",
-    "browse": "Browse the stories",
     "formTitle": "See your child's cover in a minute",
     "formBody": "A name and a photo, and we paint the story's cover right away. Free, once per story.",
     "who": "Who is it for?",
@@ -473,7 +469,7 @@
     "age": "Age",
     "hijab": "Wears a hijab",
     "story": "The story",
-    "noStory": "There's no ready cover for this look yet. Try again later, or start Qamra Magic.",
+    "noStory": "There's no ready cover for this look. Start Qamra Magic and we'll paint every page for your child.",
     "photo": "A clear photo of the face, from the front",
     "photoHint": "In daylight, with the whole face showing",
     "photoRule": "If you don't order a book within 24 hours, we delete {name}'s original photo automatically.",
@@ -514,7 +510,7 @@
     "errorTitle": "We couldn't open the portal",
     "errorBody": "Check your connection and try again.",
     "pendingTitle": "Welcome, {name}",
-    "pendingBody": "We received your kindergarten's request. Our team will review it and get in touch soon; the portal opens fully once approved.",
+    "pendingBody": "We received your kindergarten's request. Our team will review it and get in touch within a working day; the portal opens fully once approved.",
     "rejectedTitle": "{name} isn't activated",
     "rejectedBody": "We couldn't activate this kindergarten account. Please contact us.",
     "nav": {
@@ -834,7 +830,7 @@
       "mineTitle": "{name}'s book",
       "stepsLabel": "Consent, photo, character",
       "doneTitle": "Thank you! Your steps are done.",
-      "doneBody": "You approved {name}'s character. {school} will draw the class book soon, and we'll delete the original photo within 24 hours.",
+      "doneBody": "You approved {name}'s character. {school} now prepares the class book, and we'll delete the original photo within 24 hours.",
       "consent": {
         "title": "Consent of {name}'s parent",
         "p1": "We use the photo only to draw {name}'s character; nobody sees it, not even the kindergarten.",
@@ -984,7 +980,6 @@
       "wire-o": "Wire-o bound · lies flat"
     },
     "peek": "A peek inside",
-    "peekSoon": "Illustrations only. The workbook's real pages appear here after the educator's review.",
     "placeholder": {
       "trace": "Trace the letter",
       "name": "Write my name",
@@ -1049,27 +1044,19 @@
       "stage": "{value} stage"
     },
     "note": {
-      "workbook": "{set, select, true {{pdf, select, true {All three volumes download right away.} other {All three volumes arrive together, or one at the start of each term if you prefer.}}} other {One volume per term, about 10 pages a week.}}",
-      "journey": "{set, select, true {All three stages together; each builds on the one before.} other {Each stage builds on the one before, with short daily missions.}}",
+      "workbook": "{set, select, true {{pdf, select, true {All three volumes download right away.} other {All three volumes arrive together, or one at the start of each term if you prefer.}}} other {{many, select, true {One volume per term, about 10 pages a week.} other {A full term of learning, about 10 pages a week.}}}}",
+      "journey": "{set, select, true {All three stages together; each builds on the one before.} other {{many, select, true {Each stage builds on the one before, with short daily missions.} other {Short daily missions that build your child's skills step by step.}}}}",
       "family": "{pdf, select, true {A PDF to print at home, with the cut-outs and stickers.} other {A printed book with wire-o binding, a sticker sheet and cut-out pages.}}"
     },
-    "soon": {
-      "badge": "Coming soon",
-      "title": "Coming soon to the shop",
-      "body": "We review it with a kindergarten educator before we sell it. Leave us a message and we'll tell you as soon as it's available.",
-      "notify": "Tell me when it's available",
-      "message": "Hello, please tell me when \"{name}\" is available."
-    },
     "bulk": "10 copies or more? Ask for a quote",
-    "quiz": "Not sure which level? Answer 3 questions",
+    "quiz": "Not sure which book fits your child? Answer 3 questions",
     "b2b": {
       "familyTitle": "For kindergartens and organizations: a family-day gift with your logo",
       "familyBody": "Special prices for quantities, with your logo on the back cover.",
-      "title": "For kindergartens: with your logo and the whole year's curriculum",
+      "title": "For kindergartens: with your logo and class pricing",
       "body": "Special prices for 20 children or more, each volume delivered at the start of its term."
     },
     "add": "Add to cart",
-    "soonCta": "Coming soon",
     "familyCharacters": "Draw your family in the book (add-on)",
     "chooser": {
       "title": "Who is the book for?",
@@ -1107,7 +1094,13 @@
         "baby": "Baby",
         "other": "Another family member"
       }
-    }
+    },
+    "photoAlt": {
+      "workbook": "A child tracing letters in the Foundation workbook",
+      "journey": "A child scanning a QR code in My First Learning Journey",
+      "family": "A family around the table with My Adventures with My Family"
+    },
+    "ageRange": "Ages {min}–{max}"
   },
   "orderPath": {
     "back": "Back",
@@ -1138,7 +1131,7 @@
     "cart": {
       "title": "Cart ({n})",
       "backToShop": "Back to the shop",
-      "toShop": "Browse the shop",
+      "toShop": "Browse the books",
       "previewReady": "Preview ready",
       "editAddons": "Edit extras",
       "edit": "Edit",
@@ -1203,7 +1196,6 @@
       "payment": "Payment",
       "cod": "Cash on delivery",
       "codBody": "Pay the courier in cash when the book arrives",
-      "card": "Card payment — coming soon",
       "withAddons": "{n, plural, one {with 1 extra} other {with # extras}}",
       "discounts": "Discounts",
       "deliveryTo": "Delivery ({city})",
@@ -1661,7 +1653,7 @@
     "logoPrivate": "The logo stays private and is printed on your copies only.",
     "submit": "Send the quote request",
     "sending": "Sending…",
-    "done": "We got your request. We'll send you a quote soon; nothing has been ordered.",
+    "done": "We got your request. We'll send you a quote within one working day; nothing has been ordered.",
     "tooBig": "The logo is larger than 5 MB."
   },
   "adminLeads": {
@@ -1748,7 +1740,7 @@
   },
   "meta": {
     "title": "{brand} — Your child's story, by moonlight",
-    "description": "A printed storybook where your child is the hero on every page, and their own drawing is their companion."
+    "description": "Printed books in your child's name: stories they star in, and workbooks and activity books with their character. Free preview, cash on delivery."
   },
   "brand": {
     "tagline": "Your child's story, by moonlight."
@@ -1762,9 +1754,9 @@
     "switchLocale": "العربية",
     "menu": "Menu",
     "how": "How it works",
-    "themes": "Story worlds",
+    "themes": "Stories",
     "pricing": "Pricing",
-    "kindergartens": "For kindergartens",
+    "kindergartens": "Kindergartens",
     "faq": "FAQ",
     "start": "Start the story",
     "signIn": "Sign in",
@@ -1772,7 +1764,9 @@
     "closeMenu": "Close menu",
     "books": "My books",
     "newBook": "New book",
-    "cart": "Cart"
+    "cart": "Cart",
+    "workbooks": "Activity books",
+    "allBooks": "All books"
   },
   "home": {
     "eyebrow": "Moonlit evenings",
@@ -1817,7 +1811,6 @@
     "empty": "No books yet",
     "emptyHint": "Your child's first story starts with one photo.",
     "start": "Make the first book",
-    "soon": "Coming soon",
     "loading": "Getting your page ready…",
     "greetingMorning": "Good morning",
     "greetingEvening": "Good evening",
@@ -1831,7 +1824,7 @@
     "status": {
       "draft": "Draft",
       "generating": "Drawing",
-      "preview": "Awaiting order",
+      "preview": "Preview ready",
       "approved": "Approved",
       "ordered": "Printing",
       "printed": "Delivered",
@@ -1849,10 +1842,6 @@
     "ages": "Ages {min}–{max}",
     "pages": "{count} pages",
     "priceFrom": "From ₪{price}",
-    "priceSoon": "Prices coming soon",
-    "priceTbd": "Soon",
-    "chooseWorld": "Choose this world",
-    "comingSoon": "Coming soon",
     "back": "Back",
     "share": "Share",
     "occasions": {
@@ -1867,8 +1856,7 @@
     "tags": {
       "popular": "Most requested",
       "new": "New",
-      "kindergarten": "For kindergartens",
-      "coming_soon": "Coming soon"
+      "kindergarten": "For kindergartens"
     },
     "products": {
       "digital": "Digital copy",
@@ -1878,141 +1866,142 @@
     "privacyNote": "Your child's photo is deleted automatically once the character is approved."
   },
   "landing": {
-    "tagline": "Your child's story, by moonlight",
-    "title1": "Your child the hero…",
-    "title2": "their drawing the friend",
-    "lead": "One photo from your phone and one drawing in their own colors: we turn them into a hero and a friend in an illustrated book with your child's name, printed to keep for years.",
-    "cta": "Make your child's story",
-    "samplesCta": "See real pages",
-    "privacyLine": "We delete your child's photo automatically once the character is approved",
-    "heroPhoto": "1 · Their photo",
-    "heroDrawing": "2 · Their drawing",
-    "heroBook": "3 · Together in their book",
+    "title": "Printed books in your child's name",
+    "lead": "Stories they star in, and workbooks and activity books with their character. You choose the book, we draw your child into it, print it and deliver it to your door.",
+    "ctaStories": "Browse the stories",
+    "ctaWorkbooks": "Activity books",
+    "privacyLine": "Your child's photo is deleted automatically once the character is approved",
+    "heroPhoto": "1 · their photo",
+    "heroDrawing": "2 · their drawing",
+    "heroBook": "3 · together in their book",
     "heroBookTitle": "Layan and her friend Nono",
-    "heroBookSub": "Under the moonlight",
-    "howEyebrow": "Just three steps",
-    "howTitle": "How {brand} makes your child's book",
+    "heroBookSub": "By moonlight",
+    "heroRealBook": "A real Qamra book: {title}",
+    "heroPhotoAlt": "A child reading their printed Qamra book",
+    "offersEyebrow": "What we make for your child",
+    "offersTitle": "Every book carries your child's name",
+    "offers": {
+      "classic": {
+        "title": "Qamra Classic",
+        "body": "A ready-illustrated story, with your child drawn in as the hero on every page.",
+        "cta": "Choose a story"
+      },
+      "magic": {
+        "title": "Qamra Magic",
+        "body": "Every page drawn fresh for your child, and their own drawing becomes their companion.",
+        "cta": "Choose a story"
+      },
+      "workbooks": {
+        "title": "Activity books",
+        "body": "The Foundation workbook, My First Learning Journey and My Adventures with My Family: in their name, with their character.",
+        "cta": "See the books"
+      },
+      "kg": {
+        "title": "Kindergartens",
+        "body": "A graduation book for every child in the class, with a school page and class pricing.",
+        "cta": "Request a quote"
+      }
+    },
+    "from": "From {price}",
+    "perChild": "From {price} per child",
+    "story": "Story",
+    "samplesEyebrow": "Inside the book",
+    "realBookTitle": "Flip through a real book",
+    "realBookLead": "We made this book for an imaginary child, page by page as it prints. Your child's book looks like it, with their name and face.",
+    "samplesTitle": "Pages from {name}'s story",
+    "sampleLead": "Placeholder illustrations with the story's real words, as they'd be written for your child.",
+    "openStory": "Open the story «{name}»",
+    "viewerEndTitle": "Like it?",
+    "viewerEndBody": "Open the story, choose the book type, art style and format, and we'll make it for your child.",
+    "viewerEndCta": "Open the story",
+    "howEyebrow": "Three steps",
+    "howTitle": "How we make your child's book",
+    "howMore": "How it works, in detail",
     "how": [
       {
         "title": "A photo from your phone",
-        "body": "A clear photo of your child's face, their name and age. And one of their drawings if you like: it becomes their companion in the story."
+        "body": "A clear photo of your child's face, their name and age. Add one of their drawings if you like: it becomes their companion in the story."
       },
       {
         "title": "We draw their character, you approve it",
-        "body": "We draw your child as the hero in the book's style, and go on only when you say \"that's my child\". The original photo is deleted automatically."
+        "body": "We draw your child in the book's style and don't continue until you say “that's my child”."
       },
       {
-        "title": "We print and deliver the book",
-        "body": "Review the pages and change any words, then we print the book and deliver it. Cash on delivery."
+        "title": "Free preview, then we print and deliver",
+        "body": "Flip through every page and edit the words if you want, then we print the book and bring it to you. Cash on delivery."
       }
     ],
-    "heroRealBook": "A real Qamra book: {title}",
     "howCharacterAlt": "{name}'s character as we drew it before the book",
     "howBookAlt": "A Qamra book cover",
-    "realBookTitle": "Flip through a real book",
-    "realBookLead": "A book we made for an invented child, page by page as it is printed. Your child's book is just like it, with their name and face.",
-    "sampleLead": "Placeholder illustrations, with the story's real words as they are written for your child.",
-    "openStory": "Open \"{name}\"",
-    "viewerEndTitle": "Like it?",
-    "viewerEndBody": "Open the story, choose the book type, style and format, and we make it for your child.",
-    "viewerEndCta": "Open the story",
-    "linesTitle": "Two kinds of story books",
-    "allBooks": "All books",
-    "themesEyebrow": "The stories",
-    "themesTitle": "Pick the story that fits your child",
-    "allThemes": "All stories",
-    "samplesEyebrow": "Inside the book",
-    "samplesTitle": "Pages from {name}'s story",
-    "prevPage": "Previous page",
-    "nextPage": "Next page",
-    "swipeHint": "Swipe to turn the pages",
-    "pageOf": "Page {n}",
-    "privacyTitle": "Your child's photo is safe with us",
-    "privacyLead": "We know you're sharing what's most precious to you. So {brand} is built on one simple rule: we use the photo only to draw the book, then we delete it.",
-    "privacyLink": "Read the privacy policy",
-    "privacy": [
+    "whyTitle": "Why Qamra?",
+    "why": [
       {
-        "title": "Automatic deletion",
-        "body": "The original photo is deleted from our servers within 24 hours of approving your child's character."
+        "title": "Your child's photo is safe",
+        "body": "Deleted automatically once the character is approved, never used to train any model."
       },
       {
-        "title": "Parent consent",
-        "body": "We never start without your explicit consent. In kindergartens, every parent consents personally."
+        "title": "Printed locally",
+        "body": "Thick paper and lasting colors, from a printer near you."
       },
       {
-        "title": "No training on your children's photos",
-        "body": "We never use your children's photos to train any AI model."
+        "title": "Cash on delivery",
+        "body": "No card, no prepayment. You pay the courier at the door."
       },
       {
-        "title": "Delete everything in one tap",
-        "body": "From your account you can permanently delete a child, their books and their data at any time."
+        "title": "Free preview",
+        "body": "Flip through the whole book before you pay anything."
+      },
+      {
+        "title": "Free reprint",
+        "body": "A printing defect, or a mistake on our side? We print it again."
       }
     ],
-    "pricingEyebrow": "Pricing",
-    "pricingTitle": "Choose the format",
-    "pricingLead": "The preview is free. You only pay when you love the book, cash on delivery.",
-    "mostChosen": "Most chosen",
-    "startNow": "Start now",
-    "plans": {
-      "digital": {
-        "desc": "A PDF book and a reader on your phone.",
-        "feats": ["Every page of the story", "Read on any device", "Share with family", "Upgrade to print later"]
-      },
-      "hardcover": {
-        "desc": "The gift that lasts. Thick paper, glossy cover.",
-        "feats": [
-          "Everything in digital",
-          "Premium print, 21×21 cm",
-          "A dedication page from you",
-          "Delivery to every city"
-        ]
-      },
-      "softcover": {
-        "desc": "Light and lovely for every night's reading.",
-        "feats": ["Everything in digital", "Color print, 21×21 cm", "Flexible soft cover", "Delivery to every city"]
-      }
-    },
-    "kgEyebrow": "For kindergartens and schools",
-    "kgTitle": "A graduation book for every child in the class, and every child is the hero",
-    "kgLead": "You upload the class list; we send consent links to parents, collect the photos, and print the whole class's books with a page for your kindergarten.",
-    "kgCta": "Request a demo",
-    "kgHow": "How does a class order work?",
-    "faqTitle": "FAQ",
-    "faqLead": "Didn't find your answer? Message us and we'll reply.",
-    "faqWhatsapp": "Message us on WhatsApp",
+    "activityEyebrow": "Activity books",
+    "activityTitle": "Learning and playing, as the hero of the pages",
+    "activityLead": "Three printed books in your child's name and with their character, with real pages to flip through.",
+    "activityAll": "All activity books",
+    "order": "Order",
+    "faqTitle": "Common questions",
+    "faqMore": "All questions and answers",
     "faq": [
       {
         "q": "Will the drawing really look like my child?",
-        "a": "Before drawing the story we show you a \"character card\": your child from the front and in two poses. We don't continue until you say it looks like your child."
+        "a": "Before drawing the story we show you a \"character card\": your child from the front and in two poses. We don't continue until you say \"that's my child\"."
       },
       {
-        "q": "How long does delivery take?",
-        "a": "We send you the expected delivery date when you confirm the order; it depends on the city. You can follow your order step by step from your account."
+        "q": "How long until the book arrives?",
+        "a": "Once you approve the pages we print the book and send it. Delivery takes a few days depending on your city, and you can follow your order step by step."
+      },
+      {
+        "q": "How do I pay?",
+        "a": "Cash on delivery, to the courier. No card and no prepayment."
       },
       {
         "q": "What if I don't like the pages?",
-        "a": "You review every page before printing and can redraw any page. The preview is free, and you don't pay until you love the book."
-      },
-      {
-        "q": "Can I edit the story text?",
-        "a": "Yes. In the review step you can edit each page's text, or restore it in one tap."
-      },
-      {
-        "q": "Do you ship to Jordan?",
-        "a": "We're starting in Palestine; Jordan is coming soon."
+        "a": "You review every page before printing and can redraw any of them. The preview is free, and you don't pay until you like the book."
       }
     ],
+    "closingTitle": "Start now",
+    "closingBody": "Choose a story or an activity book, and we'll make it in your child's name.",
     "stickyNote": "Free preview"
   },
   "footer": {
-    "about": "Printed picture books starring our children. From Palestine and Jordan.",
-    "product": "Product",
-    "samples": "Samples",
+    "about": "Printed books in your child's name: stories they star in, and workbooks and activity books with their character. From Palestine.",
+    "products": "Products",
+    "stories": "Stories",
+    "foundation": "Foundation workbook",
+    "journey": "My First Learning Journey",
+    "family": "My Adventures with My Family",
+    "allBooks": "All books",
     "forKg": "Kindergartens",
     "gradBooks": "Graduation books",
-    "trust": "Trust",
+    "quote": "Request a quote",
+    "portal": "Kindergarten sign-in",
+    "how": "How it works",
+    "pricing": "Pricing",
     "privacy": "Privacy & data deletion",
     "contact": "Contact us",
+    "whatsapp": "WhatsApp",
     "rights": "© {year} {brand}"
   },
   "themes": {
@@ -2023,8 +2012,6 @@
     "realPages": "Real pages",
     "from": "From {price}",
     "choose": "Open the story",
-    "soonTitle": "Stories coming soon",
-    "soonLead": "We're writing and illustrating them now; they can't be ordered yet.",
     "lineChosen": "You chose {line}: stories here start from {price}.",
     "lineAll": "All types",
     "age": "Age:",
@@ -2033,7 +2020,7 @@
     "sort": "Sort:",
     "sortPopular": "Most requested",
     "sortAge": "Youngest first",
-    "empty": "No stories match these filters yet.",
+    "empty": "No stories match these filters.",
     "reset": "Show all",
     "unavailable": "We couldn't load the stories right now. Please try again shortly."
   },
@@ -2055,7 +2042,6 @@
     "lines": {
       "label": "Book type",
       "from": "From {price}",
-      "soon": "Coming soon for this story",
       "classic": {
         "tag": "Most popular",
         "short": "Classic",
@@ -2065,7 +2051,8 @@
         "tag": "The finest",
         "short": "Magic",
         "desc": "Every page drawn afresh for your child, with their companion"
-      }
+      },
+      "unavailable": "Not offered for this story"
     },
     "features": {
       "classic": {
@@ -2084,8 +2071,8 @@
     "styles": {
       "label": "Art style",
       "onlyMagic": "Available in Magic",
-      "unavailable": "Not available yet",
-      "onlyLooks": "Available now for: {looks}",
+      "unavailable": "Not offered for this book",
+      "onlyLooks": "Available for: {looks}",
       "chosen": "Chosen",
       "plus": "+{price}",
       "samePrice": "Same price"
@@ -2107,10 +2094,7 @@
     },
     "formatsNoteDigital": "The digital copy is free with any printed book.",
     "formatsNoteExtras": "Extras (gift box, a copy for grandma…) are chosen after the preview.",
-    "trust": "The preview is free. You pay only if you love the book, on delivery.",
-    "soonTitle": "This story is being written",
-    "soonBody": "We're writing and illustrating it now. Meanwhile, try one of the available stories.",
-    "browseAvailable": "Browse the available stories"
+    "trust": "The preview is free. You pay only if you love the book, on delivery."
   },
   "kg": {
     "badge": "Schools",
@@ -2118,7 +2102,7 @@
     "navBook": "What's inside",
     "navTrust": "Privacy",
     "portal": "Kindergarten login",
-    "requestShort": "Request a demo",
+    "requestShort": "Get a demo",
     "eyebrow": "Graduation books · End-of-year celebrations",
     "title": "A graduation gift every child, and their family, keeps forever",
     "lead": "An illustrated book for every child in the class, with them as the hero, plus a page for your kindergarten, the class photo and a word from the teacher. You upload the list; we do the rest.",
@@ -2213,7 +2197,10 @@
     "submit": "Send request",
     "sending": "Sending…",
     "done": "Request received! We'll contact you within one working day.",
-    "doneAgain": "Send another request"
+    "doneAgain": "Send another request",
+    "perChild": "From {price} per child for {n}+ children",
+    "photoAlt": "A kindergarten class at graduation with their books",
+    "teacherAlt": "A teacher reading the graduation book with the children"
   },
   "create": {
     "newBook": "New book",
@@ -2742,8 +2729,8 @@
     "cart": {
       "title": "My cart",
       "empty": "Your cart is empty",
-      "emptyBody": "Pick a story world and start your child's book.",
-      "browse": "Browse story worlds",
+      "emptyBody": "Pick a story or an activity book for your child.",
+      "browse": "Browse the stories",
       "bookFor": "{name}'s book",
       "remove": "Remove",
       "addOns": "Extras",
@@ -2800,7 +2787,6 @@
       "payment": "Payment",
       "cod": "Cash on delivery",
       "codBody": "Pay the courier in cash when the book arrives",
-      "card": "Card payment — coming soon",
       "eta": "Arrives in {min}–{max} working days",
       "terms": "I accept the order terms and the privacy policy",
       "confirm": "Place order · {total}",
@@ -3040,5 +3026,218 @@
     "item": "Item",
     "qty": "Qty",
     "none": "No data in this period."
+  },
+  "workbooksHub": {
+    "title": "Activity books",
+    "lead": "Three printed books in your child's name, with their drawn character: learning letters and numbers, solving missions, and going on adventures with the family. Real pages to flip through before you order.",
+    "photoAlt": "Qamra activity books stacked on a table",
+    "from": "From {price}",
+    "order": "Order",
+    "peek": "Real pages",
+    "coverAlt": "The cover of {name}",
+    "insideList": {
+      "workbook": [
+        "A cover with their character and name, and a handprint page",
+        "Traces and writes their own name in Arabic and English",
+        "A check for parents and teachers, and a certificate in their name"
+      ],
+      "journey": [
+        "A QR code to hear the sounds and words",
+        "A journey map, mazes and smart coloring",
+        "A stage certificate in their name"
+      ],
+      "family": [
+        "The family's names in the missions and the “My family” page",
+        "A passport with their drawn picture and reward stickers",
+        "An adventurer's certificate in their name"
+      ]
+    },
+    "howTitle": "How an activity book is made",
+    "how": [
+      {
+        "title": "Your child's name and character",
+        "body": "The same character we draw for the story, from a photo on your phone, or we draw it now."
+      },
+      {
+        "title": "We put them in the pages",
+        "body": "Their name in the exercises and the certificate, their character on the cover and between the pages."
+      },
+      {
+        "title": "We print and deliver",
+        "body": "Spiral binding that opens flat, thick paper, cash on delivery."
+      }
+    ],
+    "kgTitle": "For kindergartens: with your logo",
+    "kgBody": "Class pricing from 20 children, with each volume delivered at the start of its term.",
+    "kgCta": "Request a quote",
+    "storiesTitle": "And a story they star in?",
+    "storiesBody": "A printed storybook in your child's name and likeness, in the art style you choose.",
+    "storiesCta": "Browse the stories",
+    "ctaTitle": "Which book is right for your child?",
+    "ctaBody": "Answer three questions about their age and what they like, and we'll suggest a book.",
+    "ctaQuiz": "Take the quiz",
+    "volume": "Volume {list}",
+    "volumes": "Volumes {list}",
+    "stage": "Stage {list}",
+    "stages": "Stages {list}"
+  },
+  "pricingPage": {
+    "title": "Pricing",
+    "lead": "Prices include the free preview. Cash on delivery, with delivery by zone.",
+    "storiesTitle": "Story books",
+    "storiesLead": "Any of our stories, in the art style you choose. The price depends on the book type and format.",
+    "pages": "{count} pages",
+    "chooseStory": "Choose a story",
+    "formats": {
+      "digital": "Digital copy (PDF and reader)",
+      "softcover": "Softcover",
+      "hardcover": "Hardcover",
+      "spiral": "Printed, spiral-bound"
+    },
+    "addonsTitle": "Add-ons",
+    "addonsLead": "Chosen after the preview or in the cart.",
+    "included": "Included in {lines}",
+    "percent": "{percent}% of the book's price",
+    "free": "Free",
+    "photoAlt": "A Qamra gift box with its card",
+    "activityTitle": "Activity books",
+    "activityLead": "Price per copy, by volume or stage and format.",
+    "orderBook": "Order {name}",
+    "kgTitle": "Kindergartens",
+    "kgBody": "From {price} per child for orders of {n} children or more: one book per child with its own cover and a school page, on one invoice.",
+    "kgCta": "Request a quote",
+    "deliveryTitle": "Delivery and payment",
+    "zone": "Zone",
+    "fee": "Delivery fee",
+    "freeOver": "Free on orders over {amount}",
+    "eta": "{min}–{max} working days",
+    "codTitle": "Cash on delivery",
+    "codBody": "You pay the courier in cash when the book arrives. No card and no prepayment.",
+    "codFee": "Cash-on-delivery fee: {fee}",
+    "etaHead": "Delivery time",
+    "ctaTitle": "Ready?",
+    "ctaBody": "The preview is free, and you pay only on delivery.",
+    "country": {
+      "label": "Prices for",
+      "PS": "Palestine (₪)",
+      "JO": "Jordan (JD)"
+    }
+  },
+  "howPage": {
+    "title": "How it works",
+    "lead": "From a photo on your phone to a printed book at your door. This is how we make the story book and the activity books, and what we promise along the way.",
+    "photoAlt": "A child on their first day at kindergarten holding their book",
+    "storyTitle": "The story book",
+    "storyLead": "Five steps; the three that are yours take under ten minutes.",
+    "storySteps": [
+      {
+        "title": "A photo from your phone",
+        "body": "A clear photo of your child's face, their name and age, and your consent as a guardian. Add one of their drawings if you like."
+      },
+      {
+        "title": "We draw their character, you approve it",
+        "body": "We show you the character card: your child from the front and in two poses. We don't continue until you say \"that's my child\"."
+      },
+      {
+        "title": "Free preview",
+        "body": "Flip through every page on your phone, edit the words or redraw a page, before you pay anything."
+      },
+      {
+        "title": "We print locally",
+        "body": "Full color on thick paper, hardcover or softcover as you chose, from a printer near you."
+      },
+      {
+        "title": "Delivered in {min}–{max} working days",
+        "body": "To your door, cash on delivery. You follow your order step by step."
+      }
+    ],
+    "privacyTitle": "Your child's photo is safe with us",
+    "privacyLead": "We use the photo to draw the character, then we delete it.",
+    "privacy": [
+      {
+        "title": "Deleted automatically",
+        "body": "The original photo is deleted from our servers within 24 hours of approving your child's character."
+      },
+      {
+        "title": "Guardian consent",
+        "body": "We never start without your explicit consent. In kindergartens, every parent consents themselves."
+      },
+      {
+        "title": "No training on your children's photos",
+        "body": "We never use your children's photos to train any AI model."
+      },
+      {
+        "title": "Delete everything with one tap",
+        "body": "From your account you can permanently delete the child, their books and their data at any time."
+      }
+    ],
+    "privacyMore": "The full privacy policy",
+    "activityTitle": "The activity books",
+    "activityLead": "The Foundation workbook, My First Learning Journey, and My Adventures with My Family.",
+    "activityPhotoAlt": "A child tracing letters in their workbook",
+    "activitySteps": [
+      {
+        "title": "Your child's name and character",
+        "body": "The same character we draw for the story, or we draw it now from a photo."
+      },
+      {
+        "title": "We put them in the pages",
+        "body": "Their name in the exercises and the certificate, their character on the cover. In the family book, the family's names appear in the missions."
+      },
+      {
+        "title": "We print and deliver",
+        "body": "Spiral binding that opens flat, cash on delivery."
+      }
+    ],
+    "activityCta": "See the activity books",
+    "voiceTitle": "My family's voice",
+    "voiceBody": "Record the story in Mom's or Grandma's voice from your phone, and we print a QR code in the book so your child can hear the story in your voice, whenever they like.",
+    "voicePrice": "Add-on, {price}",
+    "voicePhotoAlt": "A grandmother recording the story in her voice for her granddaughter",
+    "faqTitle": "Common questions",
+    "faqLead": "Didn't find your answer? Message us.",
+    "faqWhatsapp": "Message us on WhatsApp",
+    "faq": [
+      {
+        "q": "Will the drawing really look like my child?",
+        "a": "Before drawing the story we show you a \"character card\": your child from the front and in two poses. We don't continue until you say \"that's my child\"."
+      },
+      {
+        "q": "How long until the book arrives?",
+        "a": "Once you approve the pages we print the book and send it. Delivery time depends on your zone and is shown on the pricing page; you follow your order step by step from your account."
+      },
+      {
+        "q": "Where do you deliver?",
+        "a": "We deliver to your door across the West Bank, Jerusalem and Jordan. The zones, fees and delivery times are on the pricing page."
+      },
+      {
+        "q": "How do I pay?",
+        "a": "Cash on delivery, to the courier. No card and no prepayment."
+      },
+      {
+        "q": "What if I don't like the pages?",
+        "a": "You review every page before printing and can redraw any of them. The preview is free, and you don't pay until you like the book."
+      },
+      {
+        "q": "Can I edit the story's text?",
+        "a": "Yes. In the review step you edit each page's text as you like, or restore it with one tap."
+      },
+      {
+        "q": "What happens to my child's photo?",
+        "a": "We use it only to draw their character, and it is deleted automatically within 24 hours of approving the character. We never use it to train any model and never share it."
+      },
+      {
+        "q": "How are the activity books personalized?",
+        "a": "A cover with their character and name, and their name inside the exercises and the certificate. We use the same character we draw for the story, so it only needs drawing once."
+      },
+      {
+        "q": "What if the book arrives with a printing defect?",
+        "a": "We reprint it for free when the fault is ours. Message us with a photo of the page."
+      }
+    ],
+    "closingTitle": "Ready?",
+    "closingBody": "Choose a story or an activity book, and leave the rest to us.",
+    "ctaStories": "Browse the stories",
+    "ctaWorkbooks": "Activity books"
   }
 }

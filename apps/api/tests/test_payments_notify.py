@@ -37,18 +37,12 @@ def _emails(app: FastAPI) -> list[tuple[str, ...]]:
     ]
 
 
-async def test_payment_methods_cod_now_card_later(client: AsyncClient) -> None:
+async def test_only_cash_on_delivery_is_offered(client: AsyncClient) -> None:
     r = await client.get("/api/store/payment-methods")
     assert r.status_code == 200
     assert r.json() == [
         {"method": "cod", "enabled": True, "label_ar": "الدفع عند الاستلام", "label_en": "Cash on delivery"},
-        {
-            "method": "card",
-            "enabled": False,
-            "label_ar": "الدفع بالبطاقة — قريبًا",
-            "label_en": "Card payment — coming soon",
-        },
-    ]
+    ]  # the card gateway's seat is never listed
     assert isinstance(provider_for("cod"), CashOnDelivery) and CardGatewayStub.enabled is False
 
 

@@ -198,9 +198,6 @@ export function CheckoutScreen() {
               <span className="text-caption text-ink-muted">{t("checkout.codBody")}</span>
             </span>
           </label>
-          <div className="flex min-h-14 items-center rounded-2xl bg-paper-sunk px-4 py-3 text-small text-ink-muted">
-            {t("checkout.card")}
-          </div>
         </section>
 
         <section

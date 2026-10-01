@@ -19,11 +19,9 @@ export const createFor = (sku: string, child?: string) =>
  */
 export function AddWorkbook({
   sku,
-  disabled,
   family: askFamily = false,
 }: {
   sku: string | null;
-  disabled: boolean;
   family?: boolean; // «مغامراتي مع عائلتي»: ask who is in the family (optional)
 }) {
   const t = useTranslations("workbook");
@@ -77,10 +75,10 @@ export function AddWorkbook({
       <button
         type="button"
         onClick={() => void start()}
-        disabled={disabled || busy || !sku}
+        disabled={busy || !sku}
         className="flex min-h-14 grow items-center justify-center rounded-full bg-amber-500 px-6 text-[17px] font-bold text-night-950 hover:shadow-lamp disabled:bg-paper-sunk disabled:text-ink-faint disabled:shadow-none md:max-w-[360px] md:grow-0 md:px-12 ltr:md:ml-auto rtl:md:mr-auto"
       >
-        {disabled ? t("soonCta") : t("add")}
+        {t("add")}
       </button>
       <dialog
         ref={dialog}

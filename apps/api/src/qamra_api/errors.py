@@ -217,8 +217,8 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "Some answers lead to no recommendation. Add a rule that covers them, then save.",
     ),
     "not_orderable": (
-        "هذا الكتاب غير متاح للطلب بعد. نخبركم حين يتوفّر.",
-        "This book can't be ordered yet. We'll let you know when it's available.",
+        "هذا الكتاب غير متاح للطلب. تصفّحوا بقية كتبنا.",
+        "This book isn't available to order. Have a look at our other books.",
     ),
     # W5: the reader, share links, payments, print batches
     "book_not_ready": (
@@ -245,8 +245,8 @@ MESSAGES: dict[str, tuple[str, str]] = {
     ),
     # ---- the kindergarten portal (Phase 4)
     "org_pending": (
-        "حساب روضتكم بانتظار موافقة فريقنا. سنتواصل معكم قريبًا.",
-        "Your kindergarten account is waiting for our team's approval. We'll be in touch soon.",
+        "حساب روضتكم قيد المراجعة عند فريقنا، وسنتواصل معكم خلال يوم عمل.",
+        "Your kindergarten account is with our team for review; we'll be in touch within a working day.",
     ),
     "org_rejected": (
         "لم نتمكّن من تفعيل حساب الروضة. تواصلوا معنا للمساعدة.",

@@ -68,10 +68,11 @@ export type ShopSummary = {
   class_book_from: string | null;
   class_book_min_qty: number | null;
   currency: string;
-  /** Per product: can it be ordered now (the workbooks wait for the educator; admin switch). */
+  /** Per product: can it be ordered now (admin switch). */
   orderable?: Record<string, boolean>;
 };
-export const getShopSummary = () => get<ShopSummary>("/api/shop/summary");
+export const getShopSummary = (currency: "ILS" | "JOD" = "ILS") =>
+  get<ShopSummary>(`/api/shop/summary?currency=${currency}`);
 
 /** Admin-managed public settings (prices, contact details, site switches). */
 export type PublicSettings = {

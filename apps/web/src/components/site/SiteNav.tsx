@@ -9,22 +9,16 @@ type Variant = "dark" | "light";
 
 /** Site header. `dark` sits inside the night-blue hero (landing); `light` is the paper header elsewhere. */
 export async function SiteNav({ variant = "light" }: { variant?: Variant }) {
-  const [t, tShop, locale, jar] = await Promise.all([
-    getTranslations("nav"),
-    getTranslations("shop"),
-    getLocale(),
-    cookies(),
-  ]);
+  const [t, locale, jar] = await Promise.all([getTranslations("nav"), getLocale(), cookies()]);
   const signedIn = jar.has("qamra_at");
-  const hasCart = jar.has("qamra_cart");
   const dark = variant === "dark";
+  // the launch IA: what we sell first (stories, activity books, kindergartens), then prices and the process
   const links = [
-    { href: "/#how", label: t("how") },
     { href: "/stories", label: t("themes") },
-    { href: "/shop", label: tShop("nav") },
-    { href: "/#pricing", label: t("pricing") },
+    { href: "/workbooks", label: t("workbooks") },
     { href: "/kindergartens", label: t("kindergartens") },
-    { href: "/#faq", label: t("faq") },
+    { href: "/pricing", label: t("pricing") },
+    { href: "/how-it-works", label: t("how") },
   ];
   const linkColor = dark ? "text-night-100 hover:text-amber-300" : "text-night-900 hover:text-amber-700";
   return (
@@ -52,27 +46,25 @@ export async function SiteNav({ variant = "light" }: { variant?: Variant }) {
         </div>
         <div className="ms-auto flex items-center gap-2 lg:ms-0">
           <LocaleSwitcher label={t("switchLocale")} tone={dark ? "dark" : "light"} />
-          {hasCart && (
-            <Link
-              href="/cart"
-              aria-label={t("cart")}
-              className={`flex size-11 items-center justify-center rounded-full ${dark ? "text-paper hover:text-amber-300" : "text-night-900 hover:text-amber-700"}`}
+          <Link
+            href="/cart"
+            aria-label={t("cart")}
+            className={`flex size-11 items-center justify-center rounded-full ${dark ? "text-paper hover:text-amber-300" : "text-night-900 hover:text-amber-700"}`}
+          >
+            <svg
+              className="size-6"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
             >
-              <svg
-                className="size-6"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M5 8h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8z" />
-                <path d="M9 8V6.5a3 3 0 0 1 6 0V8" />
-              </svg>
-            </Link>
-          )}
+              <path d="M5 8h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8z" />
+              <path d="M9 8V6.5a3 3 0 0 1 6 0V8" />
+            </svg>
+          </Link>
           <Link
             href={signedIn ? "/account" : "/login"}
             className={`hidden min-h-11 items-center px-2 font-semibold sm:flex ${dark ? "text-paper hover:text-amber-300" : "text-night-900 hover:text-amber-700"}`}

@@ -169,10 +169,6 @@ export function CheckoutForm() {
               <span className="text-small text-ink-muted">{t("codBody")}</span>
             </span>
           </label>
-          <label className="flex items-center gap-3 rounded-md border border-line p-3 text-ink-muted">
-            <input type="radio" name="payment" disabled className="size-5" />
-            {t("card")}
-          </label>
         </section>
       </div>
 

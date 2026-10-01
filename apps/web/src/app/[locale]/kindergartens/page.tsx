@@ -4,17 +4,20 @@ import { Scene } from "@/components/art/Scene";
 import { MoonMark } from "@/components/Logo";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { LeadForm } from "@/components/site/LeadForm";
+import { Photo } from "@/components/site/Photo";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { FamilyQuoteForm } from "@/components/workbook/FamilyQuoteForm";
 import { brandName } from "@/config/brand";
 import { Link } from "@/i18n/navigation";
-import { getPublicSettings, whatsappLink } from "@/lib/catalog";
+import { getPublicSettings, getShopSummary, whatsappLink } from "@/lib/catalog";
+import { pageMetadata } from "@/lib/seo";
+import { money } from "@/lib/store";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("kg");
-  return { title: t("title"), description: t("lead") };
+  const [t, locale] = await Promise.all([getTranslations("kg"), getLocale()]);
+  return pageMetadata({ path: "/kindergartens", locale, title: t("title"), description: t("lead") });
 }
 
 type Step = { title: string; body: string; who: "school" | "us" | "parents" };
@@ -27,12 +30,20 @@ const WHO_STYLE = {
 
 export default async function KindergartensPage() {
   const locale = await getLocale();
-  const [t, tn, te, site] = await Promise.all([
+  const [t, tn, te, site, summary] = await Promise.all([
     getTranslations("kg"),
     getTranslations("nav"),
     getTranslations("errors"),
     getPublicSettings(),
+    getShopSummary(),
   ]);
+  const perChild =
+    summary?.class_book_from && summary.class_book_min_qty
+      ? t("perChild", {
+          price: money(summary.class_book_from, summary.currency as "ILS" | "JOD", locale),
+          n: summary.class_book_min_qty,
+        })
+      : null;
   const tp = await getTranslations("portal"); // the kindergarten portal's sign-up (Phase 4)
   const brand = brandName(locale);
   const flow = t.raw("flow") as Step[];
@@ -49,7 +60,9 @@ export default async function KindergartensPage() {
           <Link href="/" className="flex items-center gap-2.5">
             <MoonMark className="size-8 md:size-10" />
             <span className="font-display text-2xl font-extrabold text-night-900 md:text-[28px]">{brand}</span>
-            <span className="rounded-full bg-night-900 px-2.5 py-1 text-xs font-bold text-paper">{t("badge")}</span>
+            <span className="rounded-full bg-night-900 px-2.5 py-1 text-xs font-bold text-paper max-[480px]:hidden">
+              {t("badge")}
+            </span>
           </Link>
           <div className="hidden grow gap-7 lg:flex">
             <a href="#flow" className="hover:text-amber-700">
@@ -72,7 +85,7 @@ export default async function KindergartensPage() {
             </Link>
             <a
               href="#demo"
-              className="flex min-h-11 items-center rounded-full bg-amber-500 px-4 font-bold whitespace-nowrap text-night-950 md:min-h-12 md:px-5"
+              className="flex min-h-11 items-center rounded-full bg-amber-500 px-3 font-bold whitespace-nowrap text-night-950 md:min-h-12 md:px-5"
             >
               {t("requestShort")}
             </a>
@@ -87,6 +100,11 @@ export default async function KindergartensPage() {
             <span className="font-bold text-amber-700">{t("eyebrow")}</span>
             <h1 className="text-[36px] leading-[1.15] font-extrabold text-night-900 md:text-[60px]">{t("title")}</h1>
             <p className="text-body-l leading-[1.75] text-ink-muted md:text-[19px]">{t("lead")}</p>
+            {perChild && (
+              <strong className="self-start rounded-full bg-amber-100 px-4 py-2 text-[17px] text-night-900">
+                {perChild}
+              </strong>
+            )}
             <div className="flex flex-wrap gap-3 md:gap-4">
               <a
                 href="#demo"
@@ -102,34 +120,51 @@ export default async function KindergartensPage() {
               </a>
             </div>
           </div>
-          <div className="relative mx-auto h-[380px] w-full max-w-[520px] md:h-[520px]">
-            <div className="absolute top-5 right-5 w-[48%] rotate-[4deg] animate-float overflow-hidden rounded-lg shadow-book [animation-delay:0.6s]">
-              <Scene
-                theme="grad"
-                ratio={280 / 340}
-                cap
-                hairStyle="curly"
-                skin="#8D5A3B"
-                outfit="#7FA38A"
-                pose="wave"
-                kidScale={0.8}
-              />
-            </div>
-            <div className="absolute top-[120px] left-[28%] z-10 w-[48%] animate-float-slow overflow-hidden rounded-lg shadow-book">
-              <Scene theme="grad" ratio={280 / 340} cap hijab hijabColor="#E9826B" outfit="#A99BD6" kidScale={0.8} />
-            </div>
-            <div className="absolute top-10 left-0 w-[40%] -rotate-[5deg] animate-float overflow-hidden rounded-lg shadow-book [animation-delay:1.5s]">
-              <Scene
-                theme="grad"
-                ratio={220 / 270}
-                cap
-                hairStyle="long"
-                skin="#F3CFAE"
-                outfit="#E9826B"
-                kidScale={0.8}
-              />
-            </div>
-          </div>
+          <Photo
+            name="graduation-class"
+            alt={t("photoAlt")}
+            sizes="(min-width: 1024px) 640px, 100vw"
+            priority
+            className="mx-auto w-full max-w-[640px] rounded-[24px] shadow-book"
+            fallback={
+              <div className="relative mx-auto h-[380px] w-full max-w-[520px] md:h-[520px]">
+                <div className="absolute top-5 right-5 w-[48%] rotate-[4deg] animate-float overflow-hidden rounded-lg shadow-book [animation-delay:0.6s]">
+                  <Scene
+                    theme="grad"
+                    ratio={280 / 340}
+                    cap
+                    hairStyle="curly"
+                    skin="#8D5A3B"
+                    outfit="#7FA38A"
+                    pose="wave"
+                    kidScale={0.8}
+                  />
+                </div>
+                <div className="absolute top-[120px] left-[28%] z-10 w-[48%] animate-float-slow overflow-hidden rounded-lg shadow-book">
+                  <Scene
+                    theme="grad"
+                    ratio={280 / 340}
+                    cap
+                    hijab
+                    hijabColor="#E9826B"
+                    outfit="#A99BD6"
+                    kidScale={0.8}
+                  />
+                </div>
+                <div className="absolute top-10 left-0 w-[40%] -rotate-[5deg] animate-float overflow-hidden rounded-lg shadow-book [animation-delay:1.5s]">
+                  <Scene
+                    theme="grad"
+                    ratio={220 / 270}
+                    cap
+                    hairStyle="long"
+                    skin="#F3CFAE"
+                    outfit="#E9826B"
+                    kidScale={0.8}
+                  />
+                </div>
+              </div>
+            }
+          />
         </section>
 
         {/* FLOW */}
@@ -224,6 +259,12 @@ export default async function KindergartensPage() {
           <div className="flex flex-col gap-4">
             <h2 className="text-[30px] text-night-900 md:text-[44px]">{t("formTitle")}</h2>
             <p className="text-body-l leading-[1.75] text-ink-muted">{t("formLead")}</p>
+            <Photo
+              name="kindergarten-teacher"
+              alt={t("teacherAlt")}
+              sizes="(min-width: 1024px) 480px, 100vw"
+              className="rounded-[20px]"
+            />
             {(salesWhatsapp || salesEmail) && (
               <div className="mt-2 flex flex-col gap-2 text-body">
                 {salesWhatsapp && (

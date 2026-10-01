@@ -2,24 +2,15 @@ import { useLocale, useTranslations } from "next-intl";
 import { Scene } from "@/components/art/Scene";
 import { ExampleImage } from "@/components/book/ExampleImage";
 import { Link } from "@/i18n/navigation";
-import type { ThemeCard } from "@/lib/catalog";
 import { storyPages, type Example } from "@/lib/examples";
 import { money, type Catalog } from "@/lib/store";
-import { LINES, classicReady, offer } from "@/lib/story";
+import { LINES, offer } from "@/lib/story";
 
 /**
  * Design Shop: the two story lines side by side (Classic, Magic «مع صاحبه») with a real page each when an
- * example is published, and the price they start from. Classic shows «قريبًا» until a story has a template.
+ * example is published, and the price they start from.
  */
-export function StoryLines({
-  catalog,
-  stories,
-  examples,
-}: {
-  catalog: Catalog | null;
-  stories: ThemeCard[];
-  examples: Example[];
-}) {
+export function StoryLines({ catalog, examples }: { catalog: Catalog | null; examples: Example[] }) {
   const t = useTranslations("shop");
   const locale = useLocale();
   const currency = catalog?.currency ?? "ILS";
@@ -28,7 +19,6 @@ export function StoryLines({
   const pages = storyPages(examples[0] ?? null, 6);
   const classic = offer(catalog, "classic");
   const magic = offer(catalog, "magic");
-  const classicLive = stories.some((th) => classicReady(th));
   return (
     <div className="grid grid-cols-2 gap-3 md:gap-5">
       {LINES.map((line) => {
@@ -86,18 +76,12 @@ export function StoryLines({
               >
                 {t(`stories.${line}`)}
               </span>
-              {line === "classic" && !classicLive ? (
-                <strong className="mt-auto pt-1 text-body text-ink-muted">{t("soon")}</strong>
-              ) : (
-                <>
-                  <span className={`mt-auto pt-1 text-caption ${dark ? "text-ink-dark-muted" : "text-ink-muted"}`}>
-                    {o.formats.length > 1 ? t("from") : t("stories.hardcover")}
-                  </span>
-                  <strong className={`font-display text-[20px] ${dark ? "text-amber-300" : "text-night-900"}`}>
-                    {price(o.from)}
-                  </strong>
-                </>
-              )}
+              <span className={`mt-auto pt-1 text-caption ${dark ? "text-ink-dark-muted" : "text-ink-muted"}`}>
+                {o.formats.length > 1 ? t("from") : t("stories.hardcover")}
+              </span>
+              <strong className={`font-display text-[20px] ${dark ? "text-amber-300" : "text-night-900"}`}>
+                {price(o.from)}
+              </strong>
             </div>
           </Link>
         );

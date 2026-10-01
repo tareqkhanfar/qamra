@@ -74,7 +74,7 @@ export function LineCards({
             </span>
             <strong className="mt-auto text-[17px]">
               {!o.available
-                ? t("soon")
+                ? t("unavailable")
                 : o.from === null
                   ? "—"
                   : o.formats.length > 1

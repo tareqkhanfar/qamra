@@ -21,8 +21,9 @@ async def test_every_variant_shows_its_cost_and_margin(client: AsyncClient, adb:
     cost = Decimal("14") + Decimal("3") + (Decimal("0.35") * Decimal("3.70")).quantize(Decimal("0.01"))
     assert Decimal(soft["price_ils"]) == 69 and Decimal(soft["unit_cost_ils"]) == cost
     assert Decimal(soft["margin_ils"]) == 69 - cost and soft["below_floor"] is False
-    family = _row(catalog, "family-wireo")  # inactive products are listed for staff
-    assert family["product_active"] is False and family["printer_estimated"] is True
+    family = _row(catalog, "family-wireo")  # on sale since 2026-09-30; the printer quote is an estimate
+    assert family["product_active"] is True and family["printer_estimated"] is True
+    assert _row(catalog, "wb-kg1-v1-color-spiral")["active"] is False  # not rendered: staff see it
     assert any(a["slug"] == "gift-box" for a in catalog["addons"]) and catalog["zones"]
 
 

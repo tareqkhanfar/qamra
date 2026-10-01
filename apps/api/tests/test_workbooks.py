@@ -8,7 +8,7 @@ from httpx import AsyncClient
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from qamra_api.seed_store import seed_store
+from qamra_api.seed_store import expand_variants, seed_store
 from qamra_api.store.workbooks import orderable
 from qamra_core.db.models import AuditLog, Character, Child, Gender
 from qamra_core.db.store import CartItem, CatalogProduct, ProductLine, Variant
@@ -45,16 +45,24 @@ async def _child(adb: AsyncSession, user_id: str, *, approved: bool = True) -> C
     return child
 
 
-def test_the_educational_lines_wait_unless_switched_on() -> None:
-    workbook = CatalogProduct(slug="x", line=ProductLine.workbook, features={})
-    family = CatalogProduct(slug="y", line=ProductLine.family, features={})
-    assert not orderable(workbook) and orderable(family)
+def test_a_product_is_orderable_unless_the_admin_closes_it() -> None:
+    for line in (ProductLine.workbook, ProductLine.journey, ProductLine.family):
+        assert orderable(CatalogProduct(slug="x", line=line, features={}))
     assert orderable(CatalogProduct(slug="z", line=ProductLine.journey, features={"orderable": True}))
     assert not orderable(CatalogProduct(slug="w", line=ProductLine.family, features={"orderable": False}))
 
 
+async def _hold_back(adb: AsyncSession, *slugs: str) -> None:
+    """The seed sells everything (Tareq, 2026-09-30); this covers the admin switch that holds a product."""
+    for slug in slugs:
+        product = (await adb.execute(select(CatalogProduct).where(CatalogProduct.slug == slug))).scalar_one()
+        product.features = {**product.features, "orderable": False}
+    await adb.commit()
+
+
 async def test_the_cart_refuses_what_is_not_orderable(client: AsyncClient, adb: AsyncSession) -> None:
     await seed_store(adb)
+    await _hold_back(adb, "foundation-workbook", "learning-journey")
     for sku in ("wb-kg2-v1-color-spiral", "journey-s1-spiral"):
         r = await client.post("/api/store/cart/items", json={"sku": sku})
         assert r.status_code == 409 and r.json()["error"]["code"] == "not_orderable"
@@ -74,6 +82,37 @@ async def test_the_cart_refuses_what_is_not_orderable(client: AsyncClient, adb: 
     assert (
         await client.put("/api/admin/shop/products/nope/orderable", json={"orderable": True})
     ).status_code == 404
+
+
+def test_the_matrix_marks_unrendered_volumes_inactive() -> None:
+    rows = [
+        {"volume": "1", "interior": "color", "format": "spiral", "price": {"ILS": 1}},
+        {"volume": "2", "interior": "color", "format": "spiral", "price": {"ILS": 1}},
+        {"volume": "3", "interior": "color", "format": "spiral", "price": {"ILS": 1}},
+        {"volume": "set", "interior": "color", "format": "spiral", "price": {"ILS": 1}},
+    ]
+    matrix = {"levels": ["kg1", "kg2"], "rendered": {"kg1": [], "kg2": ["1", "2"]}, "rows": rows}
+    got = {v["sku"]: v["active"] for v in expand_variants({"variant_matrix": matrix})}
+    assert got["wb-kg2-v1-color-spiral"] and got["wb-kg2-v2-color-spiral"]
+    assert not got["wb-kg2-v3-color-spiral"] and not got["wb-kg2-set-color-spiral"]
+    assert not any(active for sku, active in got.items() if sku.startswith("wb-kg1-"))
+    # without `rendered`, every row is inserted as before (active by default)
+    plain = expand_variants({"variant_matrix": {"levels": ["kg1"], "rows": rows}})
+    assert all("active" not in v for v in plain)
+
+
+async def test_only_rendered_volumes_are_listed_and_sold(client: AsyncClient, adb: AsyncSession) -> None:
+    await seed_store(adb)
+    products = {p["slug"]: p for p in (await client.get("/api/store/catalog")).json()["products"]}
+    skus = {v["sku"] for v in products["foundation-workbook"]["variants"]}
+    assert {"wb-kg2-v1-color-spiral", "wb-kg2-v2-color-digital", "wb-kg2-v2-bw-spiral"} <= skus
+    assert not {s for s in skus if "kg1" in s or "-v3-" in s or "-set-" in s}
+    journey = {v["sku"] for v in products["learning-journey"]["variants"]}
+    assert journey == {"journey-s1-digital", "journey-s1-spiral"}
+    for sku in ("wb-kg1-v1-color-spiral", "wb-kg2-v3-color-spiral", "journey-s2-spiral"):
+        r = await client.post("/api/store/cart/items", json={"sku": sku})
+        assert r.status_code == 404 and r.json()["error"]["code"] == "unknown_product"
+    assert (await client.post("/api/store/cart/items", json={"sku": "journey-s1-spiral"})).status_code == 201
 
 
 async def test_only_catalog_staff_open_products(client: AsyncClient, adb: AsyncSession) -> None:
@@ -107,10 +146,15 @@ async def test_a_workbook_for_my_child_with_the_approved_character(
         "/api/shop/workbooks/cart", json={"sku": "classic-soft-21", "child_id": str(mine.id)}
     )
     assert r.status_code == 404  # stories go through the create flow, not here
+    await _hold_back(adb, "learning-journey")
     r = await client.post(
         "/api/shop/workbooks/cart", json={"sku": "journey-s1-spiral", "child_id": str(mine.id)}
     )
     assert r.status_code == 409 and r.json()["error"]["code"] == "not_orderable"
+    r = await client.post(
+        "/api/shop/workbooks/cart", json={"sku": "journey-s2-spiral", "child_id": str(mine.id)}
+    )
+    assert r.status_code == 404  # stage 2 does not render yet: it is not in the store at all
 
     drafting = await _child(adb, me["id"], approved=False)
     r = await client.post("/api/shop/workbooks/cart", json={**body, "child_id": str(drafting.id)})

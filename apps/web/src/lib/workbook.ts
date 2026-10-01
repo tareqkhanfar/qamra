@@ -18,7 +18,11 @@ function fits(v: CatalogVariant, picks: Picks, skip?: string): boolean {
   return Object.entries(picks).every(([k, x]) => k === skip || v.options[k] === x);
 }
 
-/** The option groups in the design's order; a value is available if some variant has it with the other picks. */
+/**
+ * The option groups in the design's order; a value is available if some variant has it with the other picks.
+ * Only variants the catalog sells are listed (the API omits inactive ones), so a level, volume or stage that
+ * doesn't exist yet is simply absent; a group with one value still shows, as one selected chip.
+ */
 export function groups(product: CatalogProduct, picks: Picks): Group[] {
   const priced = product.variants.filter((v) => v.price !== null);
   const names = [...product.option_names].sort((a, b) => (ORDER.indexOf(a) + 1 || 99) - (ORDER.indexOf(b) + 1 || 99));
@@ -33,7 +37,7 @@ export function groups(product: CatalogProduct, picks: Picks): Group[] {
         })),
       };
     })
-    .filter((g) => g.values.length > 1 || g.name === "format");
+    .filter((g) => g.values.length > 0);
 }
 
 /**
@@ -54,17 +58,43 @@ export function resolve(
   return { variant: best, picks: best ? { ...picks, ...best.options } : picks };
 }
 
-/** Start from what the page's URL asks for (e.g. ?level=kg2 from the quiz), else a printed single copy. */
+/**
+ * Start from what the page's URL asks for (e.g. ?level=kg2 from the quiz), else a printed single copy. A pick the
+ * store doesn't sell (an old link to a volume or stage that isn't listed) is ignored.
+ */
 export function initialPicks(product: CatalogProduct, query: Picks): Picks {
   const priced = product.variants.filter((v) => v.price !== null);
   const wanted = Object.fromEntries(Object.entries(query).filter(([k]) => product.option_names.includes(k)));
-  const printed = priced.find(
-    (v) =>
-      fits(v, wanted) &&
-      v.options.format !== "digital" &&
-      !Object.values(v.options).includes("set") &&
-      (v.options.interior ?? "color") === "color",
-  );
-  const start = printed ?? priced.find((v) => fits(v, wanted)) ?? priced[0];
+  const printed = (picks: Picks) =>
+    priced.find(
+      (v) =>
+        fits(v, picks) &&
+        v.options.format !== "digital" &&
+        !Object.values(v.options).includes("set") &&
+        (v.options.interior ?? "color") === "color",
+    );
+  const start = printed(wanted) ?? priced.find((v) => fits(v, wanted)) ?? printed({}) ?? priced[0];
   return start ? { ...start.options } : {};
+}
+
+/** The values each option group sells now, in the catalog's order (e.g. volume → ["1", "2"]). */
+export function soldOptions(product: CatalogProduct): Record<string, string[]> {
+  const out: Record<string, string[]> = {};
+  for (const v of product.variants.filter((x) => x.price !== null)) {
+    for (const [k, x] of Object.entries(v.options)) {
+      const list = (out[k] ??= []);
+      if (!list.includes(x)) list.push(x);
+    }
+  }
+  return out;
+}
+
+/** The school levels and the ages they are for (the foundation workbook sells by level). */
+const LEVEL_AGES: Record<string, [number, number]> = { kg1: [4, 5], kg2: [5, 6] };
+
+/** The ages the levels sold now cover, as [min, max]; null when the product has no levels (use its fixed ages). */
+export function soldAges(product: CatalogProduct): [number, number] | null {
+  const ranges = (soldOptions(product).level ?? []).map((l) => LEVEL_AGES[l]).filter((r): r is [number, number] => !!r);
+  if (!ranges.length) return null;
+  return [Math.min(...ranges.map((r) => r[0])), Math.max(...ranges.map((r) => r[1]))];
 }

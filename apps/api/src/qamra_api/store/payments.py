@@ -40,12 +40,12 @@ class CashOnDelivery:
 
 
 class CardGatewayStub:
-    """Placeholder for the card gateway (to be chosen). Shown in checkout as «الدفع بالبطاقة — قريبًا»."""
+    """The card gateway's seat (to be chosen): disabled, refused at checkout, never offered to a customer."""
 
     method = PaymentMethod.card
     enabled = False
-    label_ar = "الدفع بالبطاقة — قريبًا"
-    label_en = "Card payment — coming soon"
+    label_ar = "الدفع بالبطاقة"
+    label_en = "Card payment"
 
     def start(self, order: Order) -> PaymentStart:
         raise ApiError("payment_unavailable", 409)
@@ -71,7 +71,9 @@ class MethodView:
 
 
 def methods() -> list[MethodView]:
-    return [MethodView(p.method.value, p.enabled, p.label_ar, p.label_en) for p in PROVIDERS.values()]
+    """The methods a customer can pay with: the enabled providers only (today, cash on delivery)."""
+    on = [p for p in PROVIDERS.values() if p.enabled]
+    return [MethodView(p.method.value, p.enabled, p.label_ar, p.label_en) for p in on]
 
 
 router = APIRouter(prefix="/api/store", tags=["store"])
@@ -79,5 +81,5 @@ router = APIRouter(prefix="/api/store", tags=["store"])
 
 @router.get("/payment-methods")
 async def payment_methods() -> list[MethodView]:
-    """What checkout can offer: cash on delivery, and the card gateway shown as «قريبًا» until it exists."""
+    """What checkout offers: cash on delivery (a disabled provider is never listed)."""
     return methods()

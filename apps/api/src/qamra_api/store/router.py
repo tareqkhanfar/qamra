@@ -485,7 +485,7 @@ def check_item(
     if variant is None:
         raise ApiError("unknown_product", 404)
     product = c.product_of(variant)
-    if not orderable(product):  # e.g. the workbooks until the educator signs them off (store/workbooks.py)
+    if not orderable(product):  # closed by the admin (store/workbooks.py)
         raise ApiError("not_orderable", 409)
     if style is not None and (style not in c.styles or product.line.value not in c.styles[style].lines):
         raise ApiError("invalid_style", 422)

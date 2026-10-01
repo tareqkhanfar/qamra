@@ -96,12 +96,17 @@ def pick(catalog: Catalog, ref: ProductRef, currency: Currency) -> Pick:
         )
     product = next((p for p in catalog.products.values() if p.slug == ref.slug), None)
     price = from_price(catalog, (ref.slug,), ref.options, currency)
+    options, title_ar, title_en = ref.options, ref.title_ar, ref.title_en
+    if price is None and options and product is not None:
+        # the rule names a volume or stage the store doesn't sell yet: recommend the book as it is sold now
+        price = from_price(catalog, (ref.slug,), {}, currency)
+        options, title_ar, title_en = {}, "", ""
     return Pick(
         slug=ref.slug,
-        options=ref.options,
+        options=options,
         kind="product",
-        name_ar=ref.title_ar or (product.name_ar if product else ref.slug),
-        name_en=ref.title_en or (product.name_en if product else ref.slug),
+        name_ar=title_ar or (product.name_ar if product else ref.slug),
+        name_en=title_en or (product.name_en if product else ref.slug),
         why_ar=ref.why_ar or (product.description_ar if product else ""),
         why_en=ref.why_en or (product.description_en if product else ""),
         from_price=price,
@@ -274,7 +279,7 @@ async def orderable_flags(db: SessionDep) -> dict[str, bool]:
 
 @admin_router.put("/shop/products/{slug}/orderable", dependencies=[Depends(require_permission("catalog"))])
 async def set_orderable(slug: str, body: OrderableIn, admin: AdminUser, db: SessionDep) -> dict[str, Any]:
-    """Open or close a product for orders (it stays visible as «قريبًا» while closed)."""
+    """Open or close a product for orders (the cart refuses a closed one)."""
     product = (
         await db.execute(select(CatalogProduct).where(CatalogProduct.slug == slug))
     ).scalar_one_or_none()

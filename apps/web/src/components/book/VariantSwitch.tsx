@@ -32,7 +32,7 @@ export function VariantSwitch({
             role="radio"
             aria-checked={on}
             aria-disabled={!ok}
-            title={ok ? undefined : t("variant.soon")}
+            title={ok ? undefined : t("variant.other")}
             onClick={() => ok && onChange(v)}
             className={`min-h-11 rounded-full px-3.5 text-small font-semibold whitespace-nowrap transition ${
               on

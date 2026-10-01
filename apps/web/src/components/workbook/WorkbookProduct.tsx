@@ -2,10 +2,10 @@
 
 /* eslint-disable @next/next/no-img-element -- static preview pages from /public (exported once by a script) */
 import { useLocale, useTranslations } from "next-intl";
-import { useRef, useState } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { Link } from "@/i18n/navigation";
 import { money, type CatalogProduct, type Currency } from "@/lib/store";
-import { groups, initialPicks, resolve, type Picks, type Preview } from "@/lib/workbook";
+import { groups, initialPicks, resolve, soldAges, soldOptions, type Picks, type Preview } from "@/lib/workbook";
 import { AddWorkbook } from "./AddWorkbook";
 import { FamilyQuoteForm } from "./FamilyQuoteForm";
 import { WorkbookCover } from "./WorkbookCover";
@@ -28,18 +28,16 @@ const chip = (on: boolean, off: boolean) =>
 export function WorkbookProduct({
   product,
   currency,
-  orderable,
   previews,
   query,
-  whatsapp,
+  photo = null,
   familyCharacters = false,
 }: {
   product: CatalogProduct;
   currency: Currency;
-  orderable: boolean;
   previews: Preview[];
   query: Picks;
-  whatsapp: string | null;
+  photo?: ReactNode; // the book's lifestyle photo (components/site/Photo), when Tareq has added it
   familyCharacters?: boolean; // the illustrated-family add-on is switched on
 }) {
   const t = useTranslations("workbook");
@@ -60,10 +58,15 @@ export function WorkbookProduct({
     .join(" · ");
   const set = Object.values(picks).includes("set");
   const pdf = picks.format === "digital";
-  const note = t.has(`note.${line}`) ? t(`note.${line}`, { set: String(set), pdf: String(pdf) }) : "";
+  const sold = soldOptions(product);
+  const many = ["volume", "stage"].some((g) => (sold[g] ?? []).filter((v) => v !== "set").length > 1);
+  const note = t.has(`note.${line}`)
+    ? t(`note.${line}`, { set: String(set), pdf: String(pdf), many: String(many) })
+    : "";
   const size = String(product.features.size ?? "").replace("x", "×");
   const binding = String(product.features.binding ?? "");
   const price = variant?.price ?? null;
+  const ages = soldAges(product);
 
   function pick(group: string, value: string) {
     setState(resolve(product, { ...picks, [group]: value }, group));
@@ -75,7 +78,7 @@ export function WorkbookProduct({
         <div className="flex flex-col gap-3 md:sticky md:top-28 md:self-start">
           <div className="flex h-[52px] items-center px-2 md:hidden">
             <Link
-              href="/shop"
+              href="/workbooks"
               aria-label={t("back")}
               className="flex size-11 items-center justify-center text-night-900"
             >
@@ -106,16 +109,15 @@ export function WorkbookProduct({
         <main className="flex flex-col gap-[22px] px-4 md:px-0">
           <div className="flex flex-col gap-2">
             <div className="flex flex-wrap gap-2 text-caption font-semibold">
-              {t.has(`ages.${line}`) && (
-                <span className="rounded-full bg-night-100 px-2.5 py-1 text-night-900">{t(`ages.${line}`)}</span>
+              {(ages || t.has(`ages.${line}`)) && (
+                <span className="rounded-full bg-night-100 px-2.5 py-1 text-night-900">
+                  {ages ? t("ageRange", { min: ages[0], max: ages[1] }) : t(`ages.${line}`)}
+                </span>
               )}
               {t.has(`pages.${line}`) && (
                 <span className="rounded-full bg-paper-sunk px-2.5 py-1">{t(`pages.${line}`)}</span>
               )}
               {size && <span className="rounded-full bg-success-bg px-2.5 py-1 text-success">{size}</span>}
-              {!orderable && (
-                <span className="rounded-full bg-lav-300 px-2.5 py-1 text-night-900">{t("soon.badge")}</span>
-              )}
             </div>
             <h1 className="text-[32px] leading-tight text-night-900 md:text-[40px]">{name}</h1>
             <p className="text-body leading-[1.75] text-ink-muted">
@@ -169,7 +171,6 @@ export function WorkbookProduct({
                     </div>
                   ))}
             </div>
-            {previews.length === 0 && <p className="text-caption text-ink-muted">{t("peekSoon")}</p>}
           </section>
 
           <section className="flex flex-col gap-2.5 rounded-[20px] border border-line bg-paper-raised p-4">
@@ -186,6 +187,8 @@ export function WorkbookProduct({
               </div>
             ))}
           </section>
+
+          {photo}
 
           <section className="flex flex-col gap-3.5">
             {groups(product, picks).map((g) => (
@@ -211,28 +214,12 @@ export function WorkbookProduct({
             {note && <p className="text-caption leading-[1.6] text-ink-muted">{note}</p>}
           </section>
 
-          {!orderable && (
-            <div className="flex flex-col gap-2 rounded-[16px] bg-lav-300/50 p-4">
-              <strong className="text-body text-night-900">{t("soon.title")}</strong>
-              <p className="text-small leading-[1.6] text-ink">{t("soon.body")}</p>
-              {whatsapp && (
-                <a
-                  href={`https://wa.me/${whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(t("soon.message", { name }))}`}
-                  rel="noopener"
-                  className="flex min-h-11 items-center self-start font-bold text-night-900 underline"
-                >
-                  {t("soon.notify")}
-                </a>
-              )}
-            </div>
-          )}
-
-          {line === "family" && orderable && (
+          {line === "family" && (
             <a href="#family-quote" className="text-small font-semibold text-amber-700 underline">
               {t("bulk")}
             </a>
           )}
-          {line === "family" && orderable && familyCharacters && (
+          {line === "family" && familyCharacters && (
             <Link href="/family-characters" className="text-small font-semibold text-amber-700 underline">
               {t("familyCharacters")}
             </Link>
@@ -271,7 +258,7 @@ export function WorkbookProduct({
               {price === null ? "—" : money(price, currency, locale)}
             </strong>
           </div>
-          <AddWorkbook sku={variant?.sku ?? null} disabled={!orderable} family={line === "family"} />
+          <AddWorkbook sku={variant?.sku ?? null} family={line === "family"} />
         </div>
       </div>
       {line === "family" && (

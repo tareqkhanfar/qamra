@@ -90,12 +90,6 @@ export function BookReader({ book, lead, actions, end, keysEnabled = true }: Pro
             {t("previewBadge")}
           </span>
         )}
-        <span
-          className={`hidden min-h-11 items-center gap-2 rounded-full border px-4 text-small font-semibold opacity-80 lg:flex ${night ? "border-line-dark text-ink-dark-muted" : "border-line text-ink-muted"}`}
-        >
-          <Icon d="M11 5L6 9H3v6h3l5 4zM15.5 8.5a5 5 0 0 1 0 7" className="size-[18px]" />
-          {t("listenSoon")}
-        </span>
         <button
           type="button"
           onClick={toggleFull}

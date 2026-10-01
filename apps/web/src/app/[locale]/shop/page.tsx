@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element -- the activity books' real cover pages (static files in /public) */
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Scene } from "@/components/art/Scene";
@@ -5,14 +6,17 @@ import { ActivityArt } from "@/components/shop/ActivityArt";
 import { CartBar } from "@/components/shop/CartBar";
 import { StoryLines } from "@/components/shop/StoryLines";
 import { PageShell } from "@/components/site/PageShell";
+import { Arrow } from "@/components/site/blocks";
 import { Link } from "@/i18n/navigation";
 import { examplesFor, getPublicSettings, getShopSummary, getStoreCatalog, getThemes } from "@/lib/catalog";
+import { pageMetadata } from "@/lib/seo";
 import { ACTIVITY_LINES, WORKBOOK_PAGES, productFrom } from "@/lib/shop";
 import { money } from "@/lib/store";
+import { PREVIEWS, soldAges } from "@/lib/workbook";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("shop");
-  return { title: t("title"), description: t("lead") };
+  const [t, locale] = await Promise.all([getTranslations("shop"), getLocale()]);
+  return pageMetadata({ path: "/shop", locale, title: t("title"), description: t("lead") });
 }
 
 const ICON = "size-[22px] shrink-0";
@@ -35,6 +39,7 @@ export default async function ShopPage() {
   const activity = (catalog?.products ?? []).filter((p) => (ACTIVITY_LINES as readonly string[]).includes(p.line));
   const freeCover = (site as Record<string, unknown> | null)?.free_cover === true;
   const name = (p: { name_ar: string; name_en: string }) => (locale === "ar" ? p.name_ar : p.name_en);
+  const tw = await getTranslations("workbook");
 
   return (
     <PageShell>
@@ -117,10 +122,10 @@ export default async function ShopPage() {
               </span>
             </div>
             <Link href="/stories" className="flex min-h-11 items-center gap-1 text-small font-bold text-amber-700">
-              {t("stories.all")} <span className="inline-block rtl:-scale-x-100">→</span>
+              {t("stories.all")} <Arrow />
             </Link>
           </div>
-          <StoryLines catalog={catalog} stories={stories} examples={examples} />
+          <StoryLines catalog={catalog} examples={examples} />
         </section>
 
         {activity.length > 0 && (
@@ -134,25 +139,42 @@ export default async function ShopPage() {
             <div className="grid gap-3 md:grid-cols-3 md:gap-5">
               {activity.map((p) => {
                 const from = productFrom(p);
+                const cover = PREVIEWS[p.slug]?.[0];
+                const sold = soldAges(p);
+                const ages = sold
+                  ? tw("ageRange", { min: sold[0], max: sold[1] })
+                  : tw.has(`ages.${p.line}`)
+                    ? tw(`ages.${p.line}`)
+                    : "";
                 const card = (
                   <>
-                    <ActivityArt line={p.line} />
+                    {cover ? (
+                      <img
+                        src={cover.src}
+                        alt=""
+                        width={720}
+                        height={1018}
+                        loading="lazy"
+                        className="h-[124px] w-[88px] shrink-0 rounded-[10px] border border-line object-cover object-top"
+                      />
+                    ) : (
+                      <ActivityArt line={p.line} />
+                    )}
                     <div className="flex grow flex-col gap-1">
                       <span className="flex flex-wrap gap-1.5">
                         {t.has(`learn.chip.${p.line}`) && (
                           <span className="rounded-full bg-night-100 px-2 py-0.5 text-[12px] font-semibold text-night-900">
-                            {t(`learn.chip.${p.line}`)}
-                          </span>
-                        )}
-                        {(!WORKBOOK_PAGES || summary?.orderable?.[p.slug] === false) && (
-                          <span className="rounded-full bg-lav-300 px-2 py-0.5 text-[12px] font-bold text-night-900">
-                            {t("soon")}
+                            {t(`learn.chip.${p.line}`, { ages })}
                           </span>
                         )}
                       </span>
                       <h3 className="text-[18px] text-night-900">{name(p)}</h3>
                       <span className="text-caption leading-[1.5] text-ink-muted">
-                        {locale === "ar" ? p.description_ar : p.description_en}
+                        {tw.has(`desc.${p.line}`)
+                          ? tw(`desc.${p.line}`)
+                          : locale === "ar"
+                            ? p.description_ar
+                            : p.description_en}
                       </span>
                       {from !== null && (
                         <strong className="text-body text-night-900">
