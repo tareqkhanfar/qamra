@@ -59,20 +59,20 @@ SLOTS = len(_TABLE)
 # pattern tells neighbours apart in grayscale. Names follow content/family-book/plan.yaml and may carry
 # {masc/fem} variants (personalized on the page).
 _FAMILY_TABLE = (
-    ("front", "البداية", "passport", "#3C468F", "#E3E6F5", "#242A63", "sparkle"),
-    ("home", "بيتي مدرسة", "home", "#F08A3E", "#FDE9D8", "#94470F", "diagonal"),
-    ("market", "مغامرة السوق", "cart", "#2FA36B", "#DAF1E4", "#17643F", "dots"),
-    ("chef", "{الشيف الصغير/الشيف الصغيرة}", "chef", "#E4675A", "#FBE1DD", "#962C22", "rings"),
-    ("nature", "{مستكشف/مستكشفة} الطبيعة", "leaf", "#5DAF4A", "#E2F2DC", "#2F6A22", "vertical"),
-    ("day", "يومي الجميل", "sun-moon", "#F2B21E", "#FDF0CC", "#855A00", "waves"),
-    ("responsible", "{أنا مسؤول/أنا مسؤولة}", "check-list", "#23A094", "#D8F0ED", "#11635B", "backslash"),
-    ("feelings", "مشاعري", "heart", "#E4769D", "#FBE3EC", "#962A52", "checks"),
-    ("talk", "احكي لي", "talk", "#2E9FD6", "#DCEFFA", "#155F87", "zigzag"),
-    ("jobs", "مهن عائلتي", "briefcase", "#8C6CCB", "#ECE6F8", "#4E3590", "grid"),
-    ("shop", "متجري الصغير", "shop", "#9BBF2E", "#EEF5D6", "#566B0A", "horizontal"),
-    ("games", "ليلة الألعاب العائلية", "dice", "#4F79D9", "#E3EAFA", "#274A9C", "plus"),
-    ("act", "نمثّل ونحكي", "mask", "#B45FC4", "#F3E4F6", "#6B2A7A", "diamonds"),
-    ("back", "الختام", "trophy", "#D9486B", "#FAE0E6", "#8E2240", "stars"),
+    ("front", "البِدايَةُ", "passport", "#3C468F", "#E3E6F5", "#242A63", "sparkle"),
+    ("home", "بَيْتي مَدْرَسَةٌ", "home", "#F08A3E", "#FDE9D8", "#94470F", "diagonal"),
+    ("market", "مُغامَرَةُ السّوقِ", "cart", "#2FA36B", "#DAF1E4", "#17643F", "dots"),
+    ("chef", "{الشّيفُ الصَّغيرُ/الشّيفُ الصَّغيرَةُ}", "chef", "#E4675A", "#FBE1DD", "#962C22", "rings"),
+    ("nature", "{مُسْتَكْشِفُ/مُسْتَكْشِفَةُ} الطَّبيعَةِ", "leaf", "#5DAF4A", "#E2F2DC", "#2F6A22", "vertical"),
+    ("day", "يَوْمي الجَميلُ", "sun-moon", "#F2B21E", "#FDF0CC", "#855A00", "waves"),
+    ("responsible", "{أَنا مَسْؤولٌ/أَنا مَسْؤولَةٌ}", "check-list", "#23A094", "#D8F0ED", "#11635B", "backslash"),
+    ("feelings", "مَشاعِري", "heart", "#E4769D", "#FBE3EC", "#962A52", "checks"),
+    ("talk", "{احْكِ لي/احْكي لي}", "talk", "#2E9FD6", "#DCEFFA", "#155F87", "zigzag"),
+    ("jobs", "مِهَنُ عائِلَتي", "briefcase", "#8C6CCB", "#ECE6F8", "#4E3590", "grid"),
+    ("shop", "مَتْجَري الصَّغيرُ", "shop", "#9BBF2E", "#EEF5D6", "#566B0A", "horizontal"),
+    ("games", "لَيْلَةُ الأَلْعابِ العائِلِيَّةِ", "dice", "#4F79D9", "#E3EAFA", "#274A9C", "plus"),
+    ("act", "نُمَثِّلُ وَنَحْكي", "mask", "#B45FC4", "#F3E4F6", "#6B2A7A", "diamonds"),
+    ("back", "الخِتامُ", "trophy", "#D9486B", "#FAE0E6", "#8E2240", "stars"),
 )
 FAMILY: dict[str, SectionStyle] = {
     row[0]: SectionStyle(*row, slot=i, slots=len(_FAMILY_TABLE)) for i, row in enumerate(_FAMILY_TABLE)

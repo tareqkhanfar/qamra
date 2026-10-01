@@ -236,10 +236,10 @@ def test_a_recipe_carries_its_safety_box() -> None:
 def test_section_names_are_personalized() -> None:
     specs = (page(60, "memory-page", "responsible"), page(30, "memory-page", "chef"))
     girl = build_pages(book(*specs), ASSETS)
-    assert [p.section_name for p in girl] == ["أنا مسؤولة", "الشيف الصغيرة"]
-    assert build_pages(book(specs[0], child=Child("كرم", "m")), ASSETS)[0].section_name == "أنا مسؤول"
+    assert [p.section_name for p in girl] == ["أَنا مَسْؤولَةٌ", "الشّيفُ الصَّغيرَةُ"]
+    assert build_pages(book(specs[0], child=Child("كرم", "m")), ASSETS)[0].section_name == "أَنا مَسْؤولٌ"
     html = book_html(book(*specs), girl, ASSETS)
-    assert "أنا مسؤولة" in html and "{أنا مسؤول/" not in html
+    assert "أَنا مَسْؤولَةٌ" in html and "{أَنا مَسْؤولٌ/" not in html
 
 
 FAMILY_ORDER = ["home", "market", "chef", "nature", "day", "responsible", "feelings", "talk", "jobs", "shop"]
@@ -249,7 +249,7 @@ FAMILY_ORDER += ["games", "act"]
 def test_the_family_book_has_its_own_section_styles() -> None:
     assert section_style("games").name_ar == "ألعاب التفكير"  # the journey's, as before
     games = section_style("games", "family")
-    assert games.name_ar == "ليلة الألعاب العائلية" and games.slots == 14
+    assert games.name_ar == "لَيْلَةُ الأَلْعابِ العائِلِيَّةِ" and games.slots == 14
     styles = [section_style(s, "family") for s in ["front", *FAMILY_ORDER, "back"]]
     assert [s.slot for s in styles] == list(range(14))  # the tabs step down in the book's order
     assert len({s.color for s in styles}) == len(styles) and len({s.pattern for s in styles}) == len(styles)
