@@ -1,0 +1,74 @@
+# «قلبي يعرف الله»: the hadith the series plans to print or cite (collection + number; references only). Every entry is
+# `proposed`: the reference and grading are the drafter's belief and `scripts/islamic_sources.py fetch` sanity-checks
+# them against an open dataset before the scholar sees them. Bukhari and Muslim entries are preferred; entries from
+# other collections are kept to the established adhkar and a few well-known sahih/hasan hadith, flagged for verification.
+# Commonly repeated sayings that are weak or invented are NOT used (see the proposal's "excluded" list).
+sources:
+  # ---- النبي ﷺ: رحمته وصدقه وأخلاقه
+  - {id: h-bukhari-5997, kind: hadith, title_ar: "«من لا يرحم لا يُرحم» (تقبيل الحسن)", hadith: {collection: bukhari, number: 5997}, expect: [يرحم, الحسن], grading_claimed: "متفق عليه (البخاري ٥٩٩٧ ومسلم ٢٣١٨)", topic: prophet-mercy}
+  - {id: h-bukhari-516, kind: hadith, title_ar: "النبي ﷺ يصلّي وهو حامل أمامة", hadith: {collection: bukhari, number: 516}, expect: [أمامة], grading_claimed: "متفق عليه (البخاري ٥١٦ ومسلم ٥٤٣)", topic: prophet-mercy}
+  - {id: h-bukhari-707, kind: hadith, title_ar: "النبي ﷺ يخفّف الصلاة لبكاء الصبي", hadith: {collection: bukhari, number: 707}, expect: [الصبي, أتجوز], grading_claimed: "متفق عليه (البخاري ٧٠٧ ومسلم ٤٧٠)", topic: prophet-mercy}
+  - {id: h-bukhari-6038, kind: hadith, title_ar: "أنس رضي الله عنه: «لم يقل لي أُفٍّ قطّ»", hadith: {collection: bukhari, number: 6038}, expect: [أف, عشر], grading_claimed: "متفق عليه (البخاري ٦٠٣٨ ومسلم ٢٣٠٩)", topic: prophet-kindness}
+  - {id: h-bukhari-6203, kind: hadith, title_ar: "«كان النبي ﷺ أحسن الناس خُلقًا»", hadith: {collection: bukhari, number: 6203}, expect: [أحسن, خلقا], grading_claimed: "متفق عليه (البخاري ٦٢٠٣ ومسلم ٢١٥٠)", topic: prophet-character}
+  - {id: h-bukhari-3560, kind: hadith, title_ar: "ما انتقم لنفسه ﷺ", hadith: {collection: bukhari, number: 3560}, expect: [انتقم, أيسرهما], grading_claimed: "متفق عليه (البخاري ٣٥٦٠ ومسلم ٢٣٢٧)", topic: forgiveness}
+  - {id: h-bukhari-676, kind: hadith, title_ar: "كان ﷺ في خدمة أهله", hadith: {collection: bukhari, number: 676}, expect: [مهنة, أهله], grading_claimed: "البخاري ٦٧٦", topic: helping-home}
+  - {id: h-bukhari-4770, kind: hadith, title_ar: "«ما جرّبنا عليك كذبًا» (النداء من الصفا)", hadith: {collection: bukhari, number: 4770}, expect: [الصفا, مصدقي, كذبا], grading_claimed: "متفق عليه (البخاري ٤٧٧٠ ومسلم ٢٠٨)", topic: prophet-honesty}
+  - {id: h-bukhari-3653, kind: hadith, title_ar: "الغار: «ما ظنّك باثنين الله ثالثهما»", hadith: {collection: bukhari, number: 3653}, expect: [الغار, ثالثهما], grading_claimed: "متفق عليه (البخاري ٣٦٥٣ ومسلم ٢٣٨١)", topic: hijra}
+  - {id: h-bukhari-1356, kind: hadith, title_ar: "النبي ﷺ يعود غلامًا مريضًا", hadith: {collection: bukhari, number: 1356}, expect: [غلام, يعوده], grading_claimed: "البخاري ١٣٥٦", topic: visiting-sick}
+  - {id: h-bukhari-3149, kind: hadith, title_ar: "صبر النبي ﷺ على الأعرابي", hadith: {collection: bukhari, number: 3149}, expect: [أعرابي, بردائه], grading_claimed: "متفق عليه (البخاري ٣١٤٩ ومسلم ١٠٥٧)", topic: prophet-patience}
+  # ---- الإسلام والإيمان
+  - {id: h-bukhari-8, kind: hadith, title_ar: "«بُني الإسلام على خمس»", hadith: {collection: bukhari, number: 8}, expect: [خمس, الصلاة, الزكاة], grading_claimed: "متفق عليه (البخاري ٨ ومسلم ١٦)", topic: pillars}
+  - {id: h-muslim-8, kind: hadith, title_ar: "حديث جبريل (الإسلام والإيمان والإحسان)", hadith: {collection: muslim, number: 8}, expect: [جبريل, الإيمان, القدر], grading_claimed: "مسلم ٨", topic: iman}
+  - {id: h-bukhari-46, kind: hadith, title_ar: "«خمس صلوات في اليوم والليلة»", hadith: {collection: bukhari, number: 46}, expect: [خمس, صلوات], grading_claimed: "متفق عليه (البخاري ٤٦ ومسلم ١١)", topic: prayer}
+  - {id: h-muslim-2996, kind: hadith, title_ar: "«خُلقت الملائكة من نور»", hadith: {collection: muslim, number: 2996}, expect: [الملائكة, نور], grading_claimed: "مسلم ٢٩٩٦", topic: angels}
+  - {id: h-muslim-2664, kind: hadith, title_ar: "المؤمن القوي واحرص على ما ينفعك (القدر)", hadith: {collection: muslim, number: 2664}, expect: [القوي, ينفعك, قدر], grading_claimed: "مسلم ٢٦٦٤", topic: qadar}
+  # ---- الصلاة والمسجد
+  - {id: h-bukhari-528, kind: hadith, title_ar: "الصلوات الخمس كنهر على باب أحدكم", hadith: {collection: bukhari, number: 528}, expect: [نهرا, خمسا, درنه], grading_claimed: "متفق عليه (البخاري ٥٢٨ ومسلم ٦٦٧)", topic: prayer}
+  - {id: h-bukhari-527, kind: hadith, title_ar: "أحبّ العمل إلى الله الصلاة على وقتها", hadith: {collection: bukhari, number: 527}, expect: [الصلاة, وقتها], grading_claimed: "متفق عليه (البخاري ٥٢٧ ومسلم ٨٥)", topic: prayer-times}
+  - {id: h-bukhari-631, kind: hadith, title_ar: "«صلّوا كما رأيتموني أصلّي»", hadith: {collection: bukhari, number: 631}, expect: [صلوا, رأيتموني], grading_claimed: "البخاري ٦٣١", topic: prayer}
+  - {id: h-abudawud-495, kind: hadith, title_ar: "أمر الأبناء بالصلاة لسبع", hadith: {collection: abudawud, number: 495}, expect: [أولادكم, سبع], grading_claimed: "صحّحه الألباني (للتحقق)", topic: prayer-kids, scholar_decision: "كيف نخاطب الطفل والأهل بهذا الحديث بلا ضغط: نكتفي بالتشجيع اللطيف والقدوة؛ المشرف يقرّر الاستشهاد به ولأي عمر"}
+  - {id: h-bukhari-597, kind: hadith, title_ar: "من نسي صلاة فليصلّها إذا ذكرها", hadith: {collection: bukhari, number: 597}, expect: [نسي, ذكرها], grading_claimed: "متفق عليه (البخاري ٥٩٧ ومسلم ٦٨٤)", topic: forgot-prayer}
+  - {id: h-muslim-671, kind: hadith, title_ar: "«أحبّ البلاد إلى الله مساجدها»", hadith: {collection: muslim, number: 671}, expect: [البلاد, مساجدها], grading_claimed: "مسلم ٦٧١", topic: mosque}
+  - {id: h-muslim-772, kind: hadith, title_ar: "سبحان ربي العظيم وسبحان ربي الأعلى", hadith: {collection: muslim, number: 772}, expect: [العظيم, الأعلى], grading_claimed: "مسلم ٧٧٢", topic: prayer-words}
+  - {id: h-bukhari-831, kind: hadith, title_ar: "التشهد (حديث ابن مسعود)", hadith: {collection: bukhari, number: 831}, expect: [التحيات, الطيبات], grading_claimed: "متفق عليه (البخاري ٨٣١ ومسلم ٤٠٢)", topic: prayer-words}
+  - {id: h-abudawud-874, kind: hadith, title_ar: "«رب اغفر لي» بين السجدتين", hadith: {collection: abudawud, number: 874}, expect: [اغفر, السجدتين], grading_claimed: "صحّحه الألباني (للتحقق)", topic: prayer-words}
+  - {id: h-muslim-234, kind: hadith, title_ar: "الشهادة بعد الوضوء", hadith: {collection: muslim, number: 234}, expect: [يتوضأ, أشهد], grading_claimed: "مسلم ٢٣٤", topic: wudu}
+  # ---- الصدقة والصيام ورمضان والعيد والحج
+  - {id: h-bukhari-6021, kind: hadith, title_ar: "«كلّ معروف صدقة»", hadith: {collection: bukhari, number: 6021}, expect: [معروف, صدقة], grading_claimed: "متفق عليه (البخاري ٦٠٢١ ومسلم ١٠٠٥)", topic: charity}
+  - {id: h-tirmidhi-1956, kind: hadith, title_ar: "«تبسّمك في وجه أخيك صدقة»", hadith: {collection: tirmidhi, number: 1956}, expect: [تبسمك, صدقة], grading_claimed: "صحّحه الألباني (للتحقق)", topic: charity}
+  - {id: h-muslim-2588, kind: hadith, title_ar: "«ما نقصت صدقة من مال»", hadith: {collection: muslim, number: 2588}, expect: [صدقة, مال], grading_claimed: "مسلم ٢٥٨٨", topic: charity}
+  - {id: h-bukhari-1894, kind: hadith, title_ar: "«الصيام جُنّة»", hadith: {collection: bukhari, number: 1894}, expect: [الصيام, جنة], grading_claimed: "متفق عليه (البخاري ١٨٩٤ ومسلم ١١٥١)", topic: fasting}
+  - {id: h-bukhari-38, kind: hadith, title_ar: "من صام رمضان إيمانًا واحتسابًا", hadith: {collection: bukhari, number: 38}, expect: [رمضان, إيمانا, احتسابا], grading_claimed: "متفق عليه (البخاري ٣٨ ومسلم ٧٦٠)", topic: ramadan, scholar_decision: "صيغة الحديث لا تذكر المغفرة بتفصيل مخوِّف؛ نعرضها بشرى لا شرطًا"}
+  - {id: h-bukhari-1960, kind: hadith, title_ar: "صيام الصبيان وتعويضهم باللعبة", hadith: {collection: bukhari, number: 1960}, expect: [نصوم, صبياننا, اللعبة], grading_claimed: "متفق عليه (البخاري ١٩٦٠ ومسلم ١١٣٦)", topic: fasting-kids}
+  - {id: h-bukhari-1923, kind: hadith, title_ar: "«تسحّروا فإن في السحور بركة»", hadith: {collection: bukhari, number: 1923}, expect: [تسحروا, بركة], grading_claimed: "متفق عليه (البخاري ١٩٢٣ ومسلم ١٠٩٥)", topic: suhoor}
+  - {id: h-abudawud-2357, kind: hadith, title_ar: "ذكر الإفطار", hadith: {collection: abudawud, number: 2357}, expect: [الظمأ, العروق], grading_claimed: "حسّنه الألباني (للتحقق)", topic: iftar}
+  - {id: h-bukhari-6, kind: hadith, title_ar: "أجود ما يكون النبي ﷺ في رمضان", hadith: {collection: bukhari, number: 6}, expect: [أجود, رمضان], grading_claimed: "متفق عليه (البخاري ٦ ومسلم ٢٣٠٨)", topic: ramadan-generosity}
+  - {id: h-bukhari-2017, kind: hadith, title_ar: "التماس ليلة القدر في العشر الأواخر", hadith: {collection: bukhari, number: 2017}, expect: [القدر, الأواخر], grading_claimed: "البخاري ٢٠١٧", topic: laylat-alqadr}
+  - {id: h-bukhari-977, kind: hadith, title_ar: "ابن عباس يشهد صلاة العيد وهو صغير", hadith: {collection: bukhari, number: 977}, expect: [العيد, الصغر], grading_claimed: "البخاري ٩٧٧", topic: eid-prayer}
+  - {id: h-abudawud-1609, kind: hadith, title_ar: "زكاة الفطر طُهرةً للصائم وطُعمةً للمساكين", hadith: {collection: abudawud, number: 1609}, expect: [الفطر, المساكين], grading_claimed: "حسّنه الألباني (للتحقق)", topic: eid-charity}
+  - {id: h-bukhari-1521, kind: hadith, title_ar: "«من حجّ فلم يرفث ولم يفسق»", hadith: {collection: bukhari, number: 1521}, expect: [حج, يرفث, يفسق], grading_claimed: "متفق عليه (البخاري ١٥٢١ ومسلم ١٣٥٠)", topic: hajj}
+  - {id: h-muslim-1336, kind: hadith, title_ar: "«ألهذا حجّ؟ قال: نعم» (حجّ الصبي)", hadith: {collection: muslim, number: 1336}, expect: [صبيا, حج], grading_claimed: "مسلم ١٣٣٦", topic: hajj-kids}
+  # ---- الأخلاق والآداب
+  - {id: h-bukhari-6018, kind: hadith, title_ar: "«فليقل خيرًا أو ليصمت» وإكرام الجار والضيف", hadith: {collection: bukhari, number: 6018}, expect: [خيرا, ليصمت, جاره, ضيفه], grading_claimed: "متفق عليه (البخاري ٦٠١٨ ومسلم ٤٧)", topic: tongue}
+  - {id: h-bukhari-10, kind: hadith, title_ar: "«المسلم من سلم المسلمون من لسانه ويده»", hadith: {collection: bukhari, number: 10}, expect: [المسلم, لسانه, يده], grading_claimed: "متفق عليه (البخاري ١٠ ومسلم ٤١)", topic: tongue}
+  - {id: h-bukhari-13, kind: hadith, title_ar: "«يحبّ لأخيه ما يحبّ لنفسه»", hadith: {collection: bukhari, number: 13}, expect: [يحب, لأخيه, لنفسه], grading_claimed: "متفق عليه (البخاري ١٣ ومسلم ٤٥)", topic: sharing}
+  - {id: h-bukhari-5392, kind: hadith, title_ar: "«طعام الاثنين كافي الثلاثة»", hadith: {collection: bukhari, number: 5392}, expect: [الاثنين, الثلاثة], grading_claimed: "متفق عليه (البخاري ٥٣٩٢ ومسلم ٢٠٥٨)", topic: sharing}
+  - {id: h-muslim-2699, kind: hadith, title_ar: "«والله في عون العبد ما كان العبد في عون أخيه»", hadith: {collection: muslim, number: 2699}, expect: [عون, أخيه], grading_claimed: "مسلم ٢٦٩٩", topic: helping}
+  - {id: h-bukhari-6245, kind: hadith, title_ar: "«الاستئذان ثلاث»", hadith: {collection: bukhari, number: 6245}, expect: [الاستئذان, ثلاث], grading_claimed: "متفق عليه (البخاري ٦٢٤٥ ومسلم ٢١٥٣)", topic: permission}
+  - {id: h-muslim-54, kind: hadith, title_ar: "«أفشوا السلام بينكم»", hadith: {collection: muslim, number: 54}, expect: [السلام, تحاببتم], grading_claimed: "مسلم ٥٤", topic: salam}
+  - {id: h-bukhari-12, kind: hadith, title_ar: "«تطعم الطعام وتقرأ السلام»", hadith: {collection: bukhari, number: 12}, expect: [الطعام, السلام], grading_claimed: "متفق عليه (البخاري ١٢ ومسلم ٣٩)", topic: salam}
+  - {id: h-bukhari-6014, kind: hadith, title_ar: "«ما زال جبريل يوصيني بالجار»", hadith: {collection: bukhari, number: 6014}, expect: [جبريل, بالجار], grading_claimed: "متفق عليه (البخاري ٦٠١٤ ومسلم ٢٦٢٤)", topic: neighbor}
+  - {id: h-abudawud-4941, kind: hadith, title_ar: "«الراحمون يرحمهم الرحمن»", hadith: {collection: abudawud, number: 4941}, expect: [الراحمون, الرحمن], grading_claimed: "صحّحه الألباني (للتحقق)", topic: mercy}
+  - {id: h-tirmidhi-1919, kind: hadith, title_ar: "«ليس منّا من لم يرحم صغيرنا ويوقّر كبيرنا»", hadith: {collection: tirmidhi, number: 1919}, expect: [صغيرنا, كبيرنا], grading_claimed: "صحّحه الألباني (للتحقق)", topic: elders}
+  - {id: h-bukhari-5971, kind: hadith, title_ar: "«أمّك ثم أمّك ثم أمّك ثم أبوك»", hadith: {collection: bukhari, number: 5971}, expect: [أمك, أبوك], grading_claimed: "متفق عليه (البخاري ٥٩٧١ ومسلم ٢٥٤٨)", topic: parents}
+  - {id: h-tirmidhi-1899, kind: hadith, title_ar: "«رضا الربّ في رضا الوالد»", hadith: {collection: tirmidhi, number: 1899}, expect: [رضا, الوالد], grading_claimed: "صحّحه الألباني (للتحقق)", topic: parents}
+  - {id: h-abudawud-3535, kind: hadith, title_ar: "«أدِّ الأمانة إلى من ائتمنك»", hadith: {collection: abudawud, number: 3535}, expect: [الأمانة, ائتمنك], grading_claimed: "صحّحه الألباني (للتحقق)", topic: trust}
+  - {id: h-muslim-223, kind: hadith, title_ar: "«الطُّهور شطر الإيمان»", hadith: {collection: muslim, number: 223}, expect: [الطهور, الإيمان], grading_claimed: "مسلم ٢٢٣", topic: cleanliness}
+  - {id: h-bukhari-5889, kind: hadith, title_ar: "«الفطرة خمس»", hadith: {collection: bukhari, number: 5889}, expect: [الفطرة, خمس], grading_claimed: "متفق عليه (البخاري ٥٨٨٩ ومسلم ٢٥٧)", topic: cleanliness, scholar_decision: "الاقتصار على ما يناسب الطفل (قصّ الأظافر، النظافة) وتأجيل بقية الخصال لسن لاحقة"}
+  - {id: h-bukhari-3563, kind: hadith, title_ar: "ما عاب النبي ﷺ طعامًا قطّ", hadith: {collection: bukhari, number: 3563}, expect: [عاب, طعاما], grading_claimed: "متفق عليه (البخاري ٣٥٦٣ ومسلم ٢٠٦٤)", topic: blessings-respect}
+  - {id: h-muslim-2034, kind: hadith, title_ar: "لقمة سقطت: يميط عنها الأذى ويأكلها", hadith: {collection: muslim, number: 2034}, expect: [لقمة, الأذى], grading_claimed: "مسلم ٢٠٣٤", topic: blessings-respect}
+  - {id: h-bukhari-2363, kind: hadith, title_ar: "«في كلّ كبد رطبة أجر» (سقي الحيوان)", hadith: {collection: bukhari, number: 2363}, expect: [كبد, رطبة, أجر], grading_claimed: "متفق عليه (البخاري ٢٣٦٣ ومسلم ٢٢٤٤)", topic: animals}
+  - {id: h-bukhari-6064, kind: hadith, title_ar: "«لا تحاسدوا ولا تباغضوا… وكونوا عباد الله إخوانًا»", hadith: {collection: bukhari, number: 6064}, expect: [تحاسدوا, إخوانا], grading_claimed: "متفق عليه (البخاري ٦٠٦٤ ومسلم ٢٥٥٩)", topic: friends}
+  - {id: h-tirmidhi-2499, kind: hadith, title_ar: "«كلّ بني آدم خطّاء وخير الخطّائين التوّابون»", hadith: {collection: tirmidhi, number: 2499}, expect: [خطاء, التوابون], grading_claimed: "حسّنه الألباني (للتحقق)", topic: repentance}
+  - {id: h-muslim-1015, kind: hadith, title_ar: "«إن الله طيّب لا يقبل إلا طيّبًا»", hadith: {collection: muslim, number: 1015}, expect: [طيب, طيبا], grading_claimed: "مسلم ١٠١٥", topic: halal}
+  - {id: h-bukhari-6116, kind: hadith, title_ar: "«لا تغضب»", hadith: {collection: bukhari, number: 6116}, expect: [تغضب], grading_claimed: "البخاري ٦١١٦", topic: anger}

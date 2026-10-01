@@ -1,0 +1,87 @@
+# «قلبي يعرف الله» (Addendum 10): the series plan. This file holds the series, its units' visual identities, the
+# page-type vocabulary and the retention forms; the volumes' lessons are in content/islamic/volumes/*.yaml.
+# The proposal (docs/islamic/proposal.md) is generated from these files; edit them, not the proposal.
+#
+#   uv run python -m qamra_workbook.islamic check      # rule problems, page counts, retention coverage
+#
+# AI-drafted: the structure, titles, activity ideas and wording below are drafts by the AI drafter. No religious
+# statement is final until the scholar signs it off (Addendum 10 §3); every religious statement cites an id of
+# content/islamic/sources.yaml.
+
+series:
+  working_title: قلبي يعرف الله
+  tagline: رحلة يحبّ فيها الطفلُ ربَّه ونبيَّه ﷺ، ويعيش دينَه كلَّ يوم
+  ages: [4, 8]
+  names:   # five alternatives to the working title: short, warm, easy for a child to say
+    - {ar: أُحِبُّ اللهَ, why: "جملة يقولها الطفل بنفسه، قصيرة وصادقة. تصلح اسمًا لسلسلة وشعارًا", watch: "فيها اسم الله على الغلاف وفي كل مكان: يلزم رأي المشرف في طباعته على مواد قد تُرمى"}
+    - {ar: بَذْرَةُ الْإِيمَانِ, why: "صورة تنمو مع الطفل: كل وحدة ورقة جديدة في الشجرة. تعطي رمزًا ثابتًا للتذكّر", watch: "لا تذكر الله ولا النبي ﷺ، فتحتاج جملة توضيحية تحتها"}
+    - {ar: بِسْمِ اللهِ نَبْدَأُ, why: "تبدأ بها كل عادة يومية في الكتب؛ دافئة وسهلة النطق", watch: "عبارة ذكر مقدّسة: لا تُكتب على صفحات تُرمى (ملصقات، قصّ)"}
+    - {ar: مُسْلِمٌ صَغِيرٌ, why: "تطابق جواز المسلم الصغير والشهادة. قصيرة جدًا", watch: "مذكّرة للذكر فقط؛ نحتاج صيغة مؤنثة «مسلمة صغيرة» بشخصية البنت (تُبدَّل تلقائيًا)"}
+    - {ar: أَنَا وَرَبِّي, why: "علاقة حب لا واجب: الطفل وربّه. قصيرة ولطيفة", watch: "قد يُفهم منها أنها كتاب للدعاء فقط"}
+  vision: >-
+    رحلة إيمانية كاملة لا كتاب حقائق للحفظ: يتعرّف الطفل إلى الله ويحبّه، ويعرف رسوله ﷺ ويقتدي به، ويعيش
+    دينه في يومه (صلاة وذكر وأخلاق وأدب) بالقصة والحوار والتكرار والتلوين والألعاب ومواقف الحياة، والأهل
+    شركاء في كل وحدة. المحبة قبل الخوف، والخطأ يقابله اعتذار وتوبة وعودة.
+  principles:
+    - "كل فكرة أساسية تتكرّر بأشكال مختلفة: قصة ← نشاط ← سؤال ← موقف ← مراجعة ← تطبيق في البيت"
+    - "لا خوف ولا تهديد (لا نار ولا عقاب) في هذه الأعمار؛ الخطأ يقابله اعتذار وتوبة ومحاولة جديدة"
+    - "لا يُصوَّر الله ولا الأنبياء ولا الملائكة ولا الصحابة بأي شكل، حتى بظلال أو رموز بديلة"
+    - "كل جملة دينية لها رقم في سجلّ المصادر، ولا شيء يُطبع قبل اعتماد المشرف"
+    - "نصوص القرآن والأذكار لا تُكتب على صفحات التلوين أو القصّ أو ما قد يُرمى"
+
+characters:
+  - {id: reem, ar: رِيم, role: "أخت كبيرة (7 سنوات): فضولية وتسأل «لماذا؟»", note: "ترتدي حجابًا خفيفًا في الصلاة فقط"}
+  - {id: salem, ar: سَالِم, role: "أخ صغير (5 سنوات): مرِح يخطئ ويتعلّم", note: "هو من يقع في المواقف في «ماذا أفعل لو…؟»"}
+  - {id: huda, ar: سِتِّي هُدَى, role: "الجدّة الحكّاءة: تحكي قصص الأنبياء وتجيب عن الأسئلة بحنان", note: "الراوية الوحيدة لقصص الأنبياء؛ المشاهد خالية من أي شخص"}
+  - {id: reader, ar: "{child}", role: "طفلنا القارئ: شخصيته من صورته، على الغلاف والجواز وبداية الوحدات والشهادة", note: "حجاب البنت يتبع اختيار الأهل"}
+  - {id: naanaa, ar: نَعْنَاع, role: "قطّتهم الكسولة: لمسة خفيفة للضحك، لا دور ديني", note: "تظهر في الهوامش فقط"}
+
+unit_endings:   # Addendum 10 §5: the closing of every unit
+  - {id: learned, ar: مَاذَا تَعَلَّمْتُ؟, form: review}
+  - {id: apply, ar: مَاذَا سَأُطَبِّقُ هَذَا الْأُسْبُوعَ؟, form: home}
+  - {id: dhikr, ar: دُعَاءُ الْوَحْدَةِ أَوْ ذِكْرُهَا, form: situation, note: "نصّ من سجلّ المصادر؛ يتبدّل مع كل وحدة"}
+  - {id: challenge, ar: تَحَدٍّ صَغِيرٌ مَعَ أُمِّي وَأَبِي, form: home}
+
+forms:   # the retention forms (Addendum 10 §4); a concept must reach most of them across the volume
+  story: قصة
+  activity: نشاط
+  question: سؤال
+  situation: موقف
+  review: مراجعة
+  home: تطبيق في البيت
+
+# page types: the engine type (qamra_workbook/render/pages), the retention form it counts for, and whether the
+# page may carry sacred text (Quran, hadith, dhikr). `sacred: false` pages are the ones that get coloured, cut,
+# stuck or thrown away: no verse, no dhikr and no hadith ever goes on them (Addendum 10 §3.6).
+page_types:
+  unit-opener:        {form: null,      sacred: true,  note: "افتتاح الوحدة: رمزها ولونها وسؤال يفتح الباب"}
+  story:              {form: story,     sacred: true,  note: "قصة قصيرة أو حوار بين الشخصيات"}
+  prophet-story:      {form: story,     sacred: true,  note: "قصة نبي بالمشاهد والطبيعة فقط؛ الجدّة تحكي؛ بلا أي شخص في المشهد"}
+  sira-story:         {form: story,     sacred: true,  note: "موقف من سيرة نبينا ﷺ بمشهد خالٍ من الأشخاص"}
+  pillar-card:        {form: story,     sacred: true,  note: "بطاقة ركن: الفكرة في سطرين وصورة وسؤال"}
+  coloring:           {form: activity,  sacred: false, note: "تلوين بلا نصوص دينية"}
+  maze:               {form: activity,  sacred: false, note: "متاهة أو توصيل"}
+  find-objects:       {form: activity,  sacred: true,  note: "ابحث عن الأشياء في الصورة (نعم، أدوات الوضوء…)"}
+  blessings-hunt:     {form: activity,  sacred: true,  note: "ابحث عن نِعَم الله في الصورة أو في البيت"}
+  order-steps:        {form: activity,  sacred: true,  note: "رتّب بطاقات الخطوات (الوضوء، الصلاة، الصيام…)"}
+  match:              {form: activity,  sacred: true,  note: "صِل بين صورتين أو صورة وكلمة"}
+  draw:               {form: activity,  sacred: false, note: "ارسم أو أكمل الرسم"}
+  cut-paste:          {form: activity,  sacred: false, note: "قصّ ولصق (ورقة منفصلة قابلة للقصّ)"}
+  surah:              {form: activity,  sacred: true,  note: "صفحة سورة بإطارها وQR الصوت وجدول الحفظ"}
+  true-false:         {form: question,  sacred: true,  note: "صح أم خطأ"}
+  choose:             {form: question,  sacred: true,  note: "اختر الإجابة الصحيحة"}
+  quiz:               {form: question,  sacred: true,  note: "أسئلة متنوعة من الوحدة"}
+  dhikr:              {form: situation, sacred: true,  note: "صورة موقف + متى نقوله ولماذا + نصّ الذكر من المصادر"}
+  wwyd:               {form: situation, sacred: true,  note: "ماذا كنت ستفعل؟ ثلاث خيارات وتعليق لطيف"}
+  wdif:               {form: situation, sacred: true,  note: "ماذا أفعل لو…؟ خطوات هادئة وصحيحة"}
+  role-play:          {form: situation, sacred: true,  note: "تمثيل موقف مع الأهل"}
+  day:                {form: situation, sacred: true,  note: "يومي مع الله: خط زمني للنهار والليل"}
+  unit-review:        {form: review,    sacred: true,  note: "«ماذا أتذكّر؟»: مراجعة الوحدة"}
+  self-test:          {form: review,    sacred: true,  note: "«اختبر نفسك»: مراجعة تراكمية"}
+  unit-closing:       {form: [review, home], sacred: true, note: "خاتمة الوحدة بأقسامها الأربعة (صفحتان): ماذا تعلّمت؟ + ماذا سأطبّق؟ + ذكر الوحدة + تحدٍّ مع أمي وأبي"}
+  parent-guide:       {form: home,      sacred: true,  note: "صفحة الأهل: ما تعلّمه الطفل، كيف تشرح، سؤال، نشاط، عادة"}
+  home-challenge:     {form: home,      sacred: false, note: "تحدٍّ أسبوعي مع الأسرة بجدول نجوم"}
+  passport:           {form: null,      sacred: false, note: "جواز المسلم الصغير: أختام الوحدات ونجوم التحدّيات"}
+  front:              {form: null,      sacred: true,  note: "صفحات البداية: العنوان، التعارف، كيف نستعمل الكتاب، هذا أنا"}
+  assessment:         {form: review,    sacred: true,  note: "التقييم الختامي الممتع: أسئلة وألعاب ومواقف + نجوم ملاحظة الأهل"}
+  certificate:        {form: null,      sacred: false, note: "شهادة المسلم الصغير/المسلمة الصغيرة"}

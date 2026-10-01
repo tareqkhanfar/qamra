@@ -40,6 +40,16 @@ The provider's terms cover commercial use of outputs. Each is used only with ter
 | Baloo Bhaijaan 2 | SIL Open Font License 1.1 |
 | Noto Naskh Arabic | SIL Open Font License 1.1 |
 | IBM Plex Sans Arabic | SIL Open Font License 1.1 |
+| Amiri Quran 1.003 | SIL Open Font License 1.1 (the Quran text of «قلبي يعرف الله», Addendum 10) |
+
+## «قلبي يعرف الله»: the Quran font and the religious texts (Addendum 10 §3)
+
+| Item | License / status | Note |
+|---|---|---|
+| **Amiri Quran** (`packages/pdf/src/qamra_pdf/fonts/AmiriQuran-Regular.ttf`, licence text `OFL-AmiriQuran.txt`) | SIL OFL 1.1, © 2010-2022 The Amiri Quran Project Authors (github.com/aliftype/amiri). Embedding in print PDFs and commercial sale of documents that use it is allowed; the font itself must not be sold on its own | Static TrueType (no variable font, so Chromium embeds it as TrueType, not Type 3). Fetched from `github.com/google/fonts` (`ofl/amiriquran`, Amiri release 1.003). Covers the harakat, the dagger alef, the Quranic annotation signs (U+06D6–U+06ED), the ayah-end sign U+06DD and ﷺ (U+FDFA). Used only for verses on the series' pages |
+| KFGQPC Uthmanic Hafs (King Fahd Complex) | **not used**: its licence has not been read and recorded | Alternative if the scholar prefers the Madinah mushaf script: read its licence terms first and record them here before adding it |
+| Tanzil Uthmani text (`content/islamic/quran/quran-uthmani.txt`) | Tanzil terms: verbatim copies may be distributed, changing the text is not allowed, the copyright header must be kept | **File not in the repo yet** (tanzil.net does not answer from the build server). Tareq places it there; then copy its header lines here. Until then pages print a marked placeholder and a print build fails |
+| Hadith candidates (`fawazahmed0/hadith-api` through jsdelivr) | The API code is Unlicense; the status of each collection's text is the scholar's call | Used only to sanity-check references and to preview pages (`content/islamic/candidates.json`, status `text_candidate`). Never printed before the scholar approves each source |
 
 ## Self-hosted software
 

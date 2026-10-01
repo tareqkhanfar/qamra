@@ -1,0 +1,13 @@
+{% import "pages/_islamic.html.j2" as isl with context %}
+{% set c = d.chrome %}
+<div class="isl" {{ isl.container(c) }}>
+  {{ isl.start(p, g, c) }}
+  {{ isl.head(p, c, false, true) }}
+  <div class="isl-body dy">
+    {% for m in d.moments %}
+    <article class="dy-row"><span class="dy-n">{{ m.n }}</span><div class="dy-pic-box">{{ m.pic }}</div><div class="dy-t"><b>{{ m.when }}</b><p>{{ m.text }}</p></div></article>
+    {% endfor %}
+    {{ isl.refs(c, d.refs) }}
+  </div>
+  {{ isl.foot(p, c) }}
+</div>

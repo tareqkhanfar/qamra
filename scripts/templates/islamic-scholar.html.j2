@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>مصادر «قلبي يعرف الله» للمراجعة العلمية</title>
+<style>
+@font-face { font-family: "IBM Plex Sans Arabic"; src: url("{{ fonts }}/IBMPlexSansArabic-Regular.ttf") format("truetype"); font-weight: 400 500; }
+@font-face { font-family: "IBM Plex Sans Arabic"; src: url("{{ fonts }}/IBMPlexSansArabic-SemiBold.ttf") format("truetype"); font-weight: 600 900; }
+@font-face { font-family: "Noto Naskh Arabic"; src: url("{{ fonts }}/NotoNaskhArabic-Regular.ttf") format("truetype"); font-weight: 400 600; }
+@font-face { font-family: "Noto Naskh Arabic"; src: url("{{ fonts }}/NotoNaskhArabic-Bold.ttf") format("truetype"); font-weight: 700 900; }
+@font-face { font-family: "Amiri Quran"; src: url("{{ fonts }}/AmiriQuran-Regular.ttf") format("truetype"); }
+@page { size: A4; margin: 15mm 14mm 17mm; }
+:root { --ink: #1C2140; --muted: #5C6078; --line: #D9CDB4; --soft: #FBF6EC; --green: #1F5A46; --amber: #B8741A; --amber-soft: #FCEFD2; --red: #A7432D; --red-soft: #F8E3DE; }
+* { box-sizing: border-box; }
+body { margin: 0; font: 400 10pt/1.65 "IBM Plex Sans Arabic", sans-serif; color: var(--ink); }
+h1, h2, h3 { margin: 0; font-family: "IBM Plex Sans Arabic", sans-serif; line-height: 1.3; color: var(--ink); }
+h1 { font-size: 24pt; font-weight: 700; } h2 { font-size: 15pt; font-weight: 700; margin: 0 0 3mm; border-top: 1.1mm solid var(--green); padding-top: 2mm; }
+.cover { padding-top: 6mm; }
+.cover .sub { color: var(--muted); font-size: 11.5pt; margin: 2mm 0 5mm; }
+.rules { background: var(--soft); border-radius: 3mm; padding: 3mm 5mm; margin: 4mm 0; }
+.rules li { margin-bottom: 1mm; }
+table { width: 100%; border-collapse: collapse; margin: 2mm 0 4mm; font-size: 9.5pt; }
+th, td { border-bottom: 0.25mm solid var(--line); padding: 1.4mm 2mm; text-align: start; vertical-align: top; }
+thead th { background: var(--amber-soft); font-weight: 600; }
+td.n { text-align: center; font-variant-numeric: tabular-nums; }
+.break { page-break-before: always; }
+.queue td:first-child { white-space: nowrap; direction: ltr; text-align: right; font-size: 8.5pt; }
+.queue .pg { color: var(--muted); font-size: 8.5pt; }
+.section-title { margin: 0 0 4mm; }
+
+.entry { border: 0.3mm solid var(--line); border-radius: 3mm; padding: 3mm 4mm 2.6mm; margin-bottom: 4mm; break-inside: avoid; page-break-inside: avoid; }
+.entry .top { display: flex; align-items: baseline; gap: 3mm; }
+.entry .title { font: 700 11.5pt/1.5 "IBM Plex Sans Arabic", sans-serif; flex: 1; }
+.id { direction: ltr; unicode-bidi: isolate; font: 600 8.5pt "IBM Plex Sans Arabic", monospace; color: var(--muted); background: var(--soft); padding: 0.4mm 2mm; border-radius: 1.5mm; white-space: nowrap; }
+.chip { font-size: 8pt; font-weight: 600; padding: 0.4mm 2.2mm; border-radius: 3mm; background: var(--soft); color: var(--green); white-space: nowrap; }
+.chip.st-proposed { background: #EFEAF7; color: #4F4090; } .chip.st-text_candidate { background: var(--amber-soft); color: var(--amber); }
+.chip.st-text_verified { background: #DDEFE6; color: var(--green); } .chip.st-scholar_approved { background: var(--green); color: #fff; }
+dl { margin: 1.4mm 0 0; display: grid; grid-template-columns: 31mm 1fr; gap: 0.5mm 3mm; font-size: 9pt; }
+dt { color: var(--muted); font-weight: 600; } dd { margin: 0; }
+dd.ltr { direction: ltr; text-align: right; unicode-bidi: isolate; }
+dd.where { font-size: 8.3pt; line-height: 1.55; } dd.where span + span::before { content: " · "; color: var(--amber); font-weight: 700; }
+.text { margin-top: 2mm; padding: 2.4mm 4mm; background: #FFFDF8; border: 0.3mm dashed #CDBF9F; border-radius: 2mm; }
+.text .label { font: 600 8pt "IBM Plex Sans Arabic", sans-serif; color: var(--amber); margin-bottom: 1mm; }
+.text .body { font: 400 15pt/2.1 "Noto Naskh Arabic", serif; color: #14181F; }
+.text.quran .body { font-family: "Amiri Quran", "Noto Naskh Arabic", serif; font-size: 17pt; line-height: 2.2; }
+.text .ay { display: inline-block; min-width: 5.2mm; text-align: center; font: 600 7.5pt/1 "IBM Plex Sans Arabic", sans-serif; color: var(--green); border: 0.25mm solid var(--green); border-radius: 50%; padding: 0.7mm; margin-inline: 1mm; vertical-align: middle; }
+.text .prov { font: 400 7.5pt/1.5 "IBM Plex Sans Arabic", sans-serif; color: var(--muted); margin-top: 1mm; direction: ltr; text-align: left; unicode-bidi: isolate; }
+.text.pending { background: var(--soft); border-style: dashed; color: var(--muted); font-size: 9.5pt; }
+.text.bad { background: var(--red-soft); border-color: var(--red); }
+.decision { margin-top: 2mm; padding: 1.8mm 3.4mm; background: var(--amber-soft); border-inline-start: 1.2mm solid var(--amber); border-radius: 1.5mm; font-size: 9.3pt; }
+.decision b { color: var(--amber); }
+.sign { display: flex; align-items: center; gap: 6mm; margin-top: 2.2mm; padding-top: 1.8mm; border-top: 0.25mm solid var(--line); font-size: 9pt; }
+.box { display: inline-block; width: 4.2mm; height: 4.2mm; border: 0.4mm solid var(--ink); border-radius: 0.8mm; vertical-align: -0.8mm; margin-inline-end: 1.4mm; }
+.sign .note { flex: 1; border-bottom: 0.3mm dotted var(--muted); height: 5mm; color: var(--muted); }
+.sign .who { color: var(--muted); }
+</style>
+</head>
+<body>
+<section class="cover">
+  <h1>مصادر «قلبي يعرف الله»</h1>
+  <div class="sub">ملف المراجعة العلمية للمشرف · أُعدّ آليًّا من سجلّ المصادر في <bdi dir="ltr">{{ generated }}</bdi></div>
+  <div class="rules">
+    <p><b>ما هذا الملف؟</b> كل آية أو حديث أو دعاء أو حكم تنوي السلسلة طباعته أو الاستشهاد به، مع مرجعه، وأين يرد في الكتب، والدرجة التي يدّعيها المُعِدّ <b>وهي تحتاج إلى تحقّقك</b>، وأسئلة القرار.</p>
+    <ul>
+      <li>لا يُطبع أي نصّ ديني قبل اعتماده: حالة «معتمد من المشرف» وحدها تسمح بالطباعة.</li>
+      <li>النصوص الظاهرة هنا <b>مرشَّحة</b> من مجموعة بيانات مفتوحة لتسهيل المراجعة فقط؛ النصّ المعتمد للطباعة يُنسخ من المصدر الموثوق ويُقارن به حرفًا بحرف.</li>
+      <li>نصّ القرآن الكريم يُنسخ من ملف طنزيل العثماني الرسمي، ولا يُكتب من الذاكرة أبدًا.</li>
+      <li>الأذكار والأدعية تُقتطع من نصّ الحديث الذي وردت فيه بين علامتين؛ العلامتان للبحث فقط ولا تُطبعان.</li>
+      <li>حيث يختلف العلماء اخترنا المتّفق عليه البسيط ورفعنا النقطة إلى «قرارات المشرف»؛ لا يُختار مذهب بصمت.</li>
+    </ul>
+  </div>
+  <h2>الملخّص</h2>
+  <table>
+    <thead><tr><th>النوع</th>{% for st in statuses %}<th class="n">{{ st.ar }}</th>{% endfor %}<th class="n">المجموع</th></tr></thead>
+    <tbody>
+    {% for row in summary %}<tr><td>{{ row.kind }}</td>{% for n in row.counts %}<td class="n">{{ n }}</td>{% endfor %}<td class="n">{{ row.total }}</td></tr>{% endfor %}
+    </tbody>
+  </table>
+  <table>
+    <tbody>
+      <tr><td>مرشّحات الأحاديث المجلوبة ({{ hadith_total }})</td><td>{{ candidates_line }}</td></tr>
+      <tr><td>ملف القرآن الرسمي (طنزيل)</td><td>{{ quran_line }}</td></tr>
+      <tr><td>قرارات المشرف المفتوحة</td><td class="n">{{ queue|length }}</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="break">
+  <h2>قرارات المشرف المفتوحة ({{ queue|length }})</h2>
+  <table class="queue">
+    <thead><tr><th>المصدر</th><th>السؤال</th></tr></thead>
+    <tbody>
+    {% for d in queue %}<tr><td>{{ d.source }}</td><td>{{ d.question }}<div class="pg">{{ d.where }}</div></td></tr>{% endfor %}
+    </tbody>
+  </table>
+</section>
+
+{% for group in groups %}
+<section class="break">
+  <h2 class="section-title">{{ group.title }} ({{ group.entries|length }})</h2>
+  {% for e in group.entries %}
+  <article class="entry">
+    <div class="top"><span class="id">{{ e.id }}</span><span class="title">{{ e.title }}</span><span class="chip">{{ e.kind }}</span><span class="chip st-{{ e.status }}">{{ e.status_ar }}</span></div>
+    <dl>
+      <dt>المرجع</dt><dd>{{ e.reference }}</dd>
+      {% if e.cut %}<dt>الاقتطاع</dt><dd>{{ e.cut }}</dd>{% endif %}
+      {% if e.basis %}<dt>مبنيّ على</dt><dd>{{ e.basis }}</dd>{% endif %}
+      <dt>أين يرد</dt><dd class="where">{% if e.where %}{% for w in e.where %}<span>{{ w }}</span>{% endfor %}{% else %}لم يُحدَّد بعدُ في المجلّدات{% endif %}</dd>
+      {% if e.grading %}<dt>الدرجة (للتحقق)</dt><dd>{{ e.grading }}{% if e.dataset_grades %}<br>في مجموعة البيانات: {{ e.dataset_grades }}{% endif %}</dd>{% endif %}
+    </dl>
+    {% if e.text_kind == 'candidate' %}
+    <div class="text{{ ' bad' if e.check_bad }}"><div class="label">نصّ مرشَّح من مجموعة بيانات مفتوحة — غير معتمد{% if e.check_note %} · {{ e.check_note }}{% endif %}</div>
+      <div class="body">{{ e.text }}</div><div class="prov">{{ e.provenance }}</div></div>
+    {% elif e.text_kind == 'quran' %}
+    <div class="text quran"><div class="label" style="color: var(--green)">من ملف طنزيل المعتمد (نسخ حرفي)</div>
+      <div class="body">{% for n, t in e.lines %}{{ t }} <span class="ay">{{ n }}</span> {% endfor %}</div><div class="prov">{{ e.provenance }}</div></div>
+    {% elif e.text_kind == 'none' %}
+    <div class="text pending">{{ e.pending }}</div>
+    {% endif %}
+    {% if e.decision %}<div class="decision"><b>قرار المشرف:</b> {{ e.decision }}</div>{% endif %}
+    <div class="sign"><span><i class="box"></i>معتمد</span><span><i class="box"></i>يحتاج تعديلًا</span><span class="note">ملاحظة:</span><span class="who">الاسم والتاريخ: ____________</span></div>
+  </article>
+  {% endfor %}
+</section>
+{% endfor %}
+</body>
+</html>

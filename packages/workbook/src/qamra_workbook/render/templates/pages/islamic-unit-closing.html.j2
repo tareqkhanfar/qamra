@@ -1,0 +1,15 @@
+{% import "pages/_islamic.html.j2" as isl with context %}
+{% set c = d.chrome %}
+<div class="isl" {{ isl.container(c) }}>
+  {{ isl.start(p, g, c) }}
+  {{ isl.head(p, c, false, true) }}
+  <div class="isl-body pg">
+    <section class="pg-card"><div class="pg-ico">{{ icon('check', 'ico', 2.4) }}</div><div class="pg-text"><h2>{{ d.labels.learned }}</h2><ul class="uc-list">{% for t in d.learned %}<li>{{ t }}</li>{% endfor %}</ul></div></section>
+    <section class="pg-card"><div class="pg-ico">{{ icon('target', 'ico', 2.2) }}</div><div class="pg-text"><h2>{{ d.labels.apply }}</h2><p>{{ d.apply }}</p></div></section>
+    <section class="uc-dhikr"><div class="dk-say-l">{{ d.labels.dhikr }}</div>{{ isl.sacred(d.dhikr, c) }}</section>
+    <section class="pg-card"><div class="pg-ico">{{ icon('family', 'ico', 2.2) }}</div><div class="pg-text"><h2>{{ d.labels.challenge }}</h2><p>{{ d.challenge }}</p>
+      <div class="dk-days">{% for n in d.days %}<span>{{ icon('star', 'star-outline', 1.5) }}<i>{{ n }}</i></span>{% endfor %}</div></div></section>
+    {{ isl.refs(c, d.refs) }}
+  </div>
+  {{ isl.foot(p, c) }}
+</div>

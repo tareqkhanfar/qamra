@@ -1,5 +1,11 @@
 # Changelog
 
+## «قلبي يعرف الله» step 1: the proposal package (Addendum 10), and every activity book complete (2026-10-01)
+- **Proposal:** `docs/islamic/proposal.md` and `out/islamic/proposal.pdf` (`scripts/islamic_proposal.py --pdf`): concept and 5 names, 5 volumes + a Ramadan book (639 pages, 43 units, 93 concepts), the full table of contents, the retention matrix computed from the plan, characters, unit identities, 12 designed sample pages, the source list, print and prices. Waiting for Tareq's approval (step 1 stops here).
+- **No religious text typed by us:** `content/islamic/sources.yaml` + `sources.d/` hold references only (192); hadith candidates come from an open dataset (`scripts/islamic_sources.py fetch`), the Quran from the Tanzil file once Tareq places it; a print build fails on any placeholder or source the scholar has not approved. The scholar's readable list: `scripts/islamic_sources.py scholar-pdf`.
+- **Engine:** 18 Islamic page types, the checks (sources, sacred text off disposable pages, no depiction, typed wording), Amiri Quran (OFL) for verses; 41 tests.
+- **Activity books:** «دوسية التأسيس» KG1 volumes 1–3 and KG2 volume 3, «رحلتي الأولى» stages 2–3, all rendered, preflighted and on sale (migration `b7d2e91c4a05`).
+
 ## The launch site, and a clear sign-up for new parents (2026-10-01)
 - **One structure:** the menu is الحكايات · كتب الأنشطة · للروضات · الأسعار · كيف نعمل. New pages: an activity-books hub (`/workbooks`), `/pricing` (read from the catalog, in shekels or, with `?country=jo`, dinars) and `/how-it-works`. The home has one promise, four offers with real covers and "from" prices, a real book to flip through and a short FAQ. «العوالم» is gone everywhere.
 - **Only what renders is sold, and nothing says «قريبًا»:** a volume or stage that does not render yet is an inactive variant (`variant_matrix.rendered`, `active: false`, migration `a3c1f0b7e2d4`), so no page, price list, structured data or cart mentions it. Checkout offers cash on delivery only, and the API messages no longer promise "soon".

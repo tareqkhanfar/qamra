@@ -1,0 +1,2088 @@
+{
+ "version": 1,
+ "generated_at": "2026-10-01T05:55:21Z",
+ "dataset": "fawazahmed0/hadith-api",
+ "note": "CANDIDATES from an open dataset: for previews and the scholar's review. Never printed before approval.",
+ "entries": {
+  "d-after-eat": {
+   "id": "d-after-eat",
+   "kind": "dua",
+   "from": "h-abudawud-4023",
+   "text": "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنِي هَذَا الطَّعَامَ وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلاَ قُوَّةٍ",
+   "sha256": "d1ec0f02fac8a4ed9a8160a27dd105fbe0ea653844a6701e645019baae888d6d",
+   "missing": [],
+   "reference_check": "matched",
+   "note": "the start marker matches 2 places; the first is used"
+  },
+  "d-anger-refuge": {
+   "id": "d-anger-refuge",
+   "kind": "dua",
+   "from": "h-bukhari-3282",
+   "text": "",
+   "sha256": "",
+   "missing": [],
+   "reference_check": "not_found",
+   "note": "its hadith is mismatch"
+  },
+  "d-bath-in": {
+   "id": "d-bath-in",
+   "kind": "dua",
+   "from": "h-bukhari-142",
+   "text": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ",
+   "sha256": "6271ced14d2f1a8bef97eaeade0cbefce39669f7249301c3a85f91684c1987af",
+   "missing": [],
+   "reference_check": "matched",
+   "note": ""
+  },
+  "d-bath-out": {
+   "id": "d-bath-out",
+   "kind": "dua",
+   "from": "h-abudawud-30",
+   "text": "غُفْرَانَكَ",
+   "sha256": "b9c094071a52749920a3e0624d2f980951915db284649c3ae052a6e4c8841468",
+   "missing": [],
+   "reference_check": "matched",
+   "note": ""
+  },
+  "d-between-sujud": {
+   "id": "d-between-sujud",
+   "kind": "dua",
+   "from": "h-abudawud-874",
+   "text": "رَبِّ اغْفِرْ لِي",
+   "sha256": "263b3fb91fc22a8db3c54a5058dd86a81395f19298f55d1f4c79ae304e29857f",
+   "missing": [],
+   "reference_check": "matched",
+   "note": "the start marker matches 2 places; the first is used"
+  },
+  "d-eat-start": {
+   "id": "d-eat-start",
+   "kind": "dua",
+   "from": "h-abudawud-3767",
+   "text": "بِسْمِ اللَّهِ",
+   "sha256": "e04227e76e93073d4986e666c2d93df8cb9ee56e50fc400f6a93cee30b7f3513",
+   "missing": [],
+   "reference_check": "matched",
+   "note": ""
+  },
+  "d-iftar": {
+   "id": "d-iftar",
+   "kind": "dua",
+   "from": "h-abudawud-2357",
+   "text": "ذَهَبَ الظَّمَأُ وَابْتَلَّتِ الْعُرُوقُ وَثَبَتَ الأَجْرُ إِنْ شَاءَ اللَّهُ",
+   "sha256": "f9612b53e6e9896add24e019bcdd1be69141a4405b799c1d327c8b6a24b8200d",
+   "missing": [],
+   "reference_check": "matched",
+   "note": ""
+  },
+  "d-leave-home": {
+   "id": "d-leave-home",
+   "kind": "dua",
+   "from": "h-abudawud-5095",
+   "text": "بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ لاَ حَوْلَ وَلاَ قُوَّةَ إِلاَّ بِاللَّهِ",
+   "sha256": "33e98e886d67e66657f1471e5cc0444be8b7153efffdae7a087b2e9a8977e351",
+   "missing": [],
+   "reference_check": "matched",
+   "note": ""
+  },
+  "d-mosque-in": {
+   "id": "d-mosque-in",
+   "kind": "dua",
+   "from": "h-muslim-713",
+   "text": "اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ",
+   "sha256": "ba5d9d688cc88dfd23eb9d17f413355f889801ddceb508c4adf94b44c51bc069",
+   "missing": [],
+   "reference_check": "matched",
+   "note": ""
+  },
+  "d-mosque-out": {
+   "id": "d-mosque-out",
+   "kind": "dua",
+   "from": "h-muslim-713",
+   "text": "اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ",
+   "sha256": "08cc07bfe5d00b020184279df823c77bf15f2dd4d154e4cc0ae155ea940ca788",
+   "missing": [],
+   "reference_check": "matched",
+   "note": ""
+  },
+  "d-rising": {
+   "id": "d-rising",
+   "kind": "dua",
+   "from": "h-bukhari-689",
+   "text": "سَمِعَ اللَّهُ لِمَنْ حَمِدَهُ",
+   "sha256": "750edf50c589dc499779046d10ba68dbb3e2bd74ba3327f2fedad3513b67ee9f",
+   "missing": [],
+   "reference_check": "matched",
+   "note": ""
+  },
+  "d-ruku": {
+   "id": "d-ruku",
+   "kind": "dua",
+   "from": "h-muslim-772",
+   "text": "سُبْحَانَ رَبِّيَ الْعَظِيمِ",
+   "sha256": "b26e15b6991d0a647fda3ec0e7aa86db7052369b0655014eaa159f989e8a09cc",
+   "missing": [],
+   "reference_check": "matched",
+   "note": ""
+  },
+  "d-sleep": {
+   "id": "d-sleep",
+   "kind": "dua",
+   "from": "h-bukhari-6324",
+   "text": "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
+   "sha256": "654f5adca985550602b79feb72ef6a211bf49c6aab78afca71b29679388b8522",
+   "missing": [],
+   "reference_check": "matched",
+   "note": ""
+  },
+  "d-sneeze-1": {
+   "id": "d-sneeze-1",
+   "kind": "dua",
+   "from": "h-bukhari-6224",
+   "text": "الْحَمْدُ لِلَّهِ",
+   "sha256": "0cde81587afebd788a3d6cc1fffecb74d4742a967f3b13d897d883bb37c70658",
+   "missing": [],
+   "reference_check": "matched",
+   "note": ""
+  },
+  "d-sneeze-2": {
+   "id": "d-sneeze-2",
+   "kind": "dua",
+   "from": "h-bukhari-6224",
+   "text": "يَرْحَمُكَ اللَّهُ",
+   "sha256": "778a75c50cf31b21026b4f90452d396038c0c0d1d494e36b141a558bd476aace",
+   "missing": [],
+   "reference_check": "matched",
+   "note": "the start marker matches 2 places; the first is used"
+  },
+  "d-sneeze-3": {
+   "id": "d-sneeze-3",
+   "kind": "dua",
+   "from": "h-bukhari-6224",
+   "text": "يَهْدِيكُمُ اللَّهُ وَيُصْلِحُ بَالَكُمْ",
+   "sha256": "528f618fc5c3846ce4788fcb18142c2ee1eb0d46bf0504b940b1dd9838f1cdbe",
+   "missing": [],
+   "reference_check": "matched",
+   "note": ""
+  },
+  "d-sujud": {
+   "id": "d-sujud",
+   "kind": "dua",
+   "from": "h-muslim-772",
+   "text": "سُبْحَانَ رَبِّيَ الأَعْلَى",
+   "sha256": "37d951dbf51ddade019d1d519db4c684f77bc80aac2e1db39fdb8cbb33e56977",
+   "missing": [],
+   "reference_check": "matched",
+   "note": ""
+  },
+  "d-tashahhud": {
+   "id": "d-tashahhud",
+   "kind": "dua",
+   "from": "h-bukhari-831",
+   "text": "التَّحِيَّاتُ لِلَّهِ، وَالصَّلَوَاتُ وَالطَّيِّبَاتُ، السَّلاَمُ عَلَيْكَ أَيُّهَا النَّبِيُّ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ، السَّلاَمُ عَلَيْنَا وَعَلَى عِبَادِ اللَّهِ الصَّالِحِينَ‏.‏ فَإِنَّكُمْ إِذَا قُلْتُمُوهَا أَصَابَتْ كُلَّ عَبْدٍ لِلَّهِ صَالِحٍ فِي السَّمَاءِ وَالأَرْضِ، أَشْهَدُ أَنْ لاَ إِلَهَ إِلاَّ اللَّهُ، وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ",
+   "sha256": "604d4bb74d3fa7703d1367faed1c5e5929708b5133e8f3e7b08a28f519911117",
+   "missing": [],
+   "reference_check": "matched",
+   "note": ""
+  },
+  "d-wake": {
+   "id": "d-wake",
+   "kind": "dua",
+   "from": "h-bukhari-6312",
+   "text": "الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ",
+   "sha256": "635fb0ab3bcd41d7f4ec2a6314d02a1864971d093eb5716da37197fb747c79e4",
+   "missing": [],
+   "reference_check": "matched",
+   "note": ""
+  },
+  "d-wudu-end": {
+   "id": "d-wudu-end",
+   "kind": "dua",
+   "from": "h-muslim-234",
+   "text": "أَشْهَدُ أَنْ لاَ إِلَهَ إِلاَّ اللَّهُ وَأَنَّ مُحَمَّدًا عَبْدُ اللَّهِ وَرَسُولُهُ",
+   "sha256": "78f04ecfa9c0305532abaf665773799033e43be7747daf3a1c7aa0902d55b08e",
+   "missing": [],
+   "reference_check": "matched",
+   "note": ""
+  },
+  "h-abudawud-101": {
+   "id": "h-abudawud-101",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-abudawud",
+   "number": 101,
+   "dataset_number": 101,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا قُتَيْبَةُ بْنُ سَعِيدٍ، حَدَّثَنَا مُحَمَّدُ بْنُ مُوسَى، عَنْ يَعْقُوبَ بْنِ سَلَمَةَ، عَنْ أَبِيهِ، عَنْ أَبِي هُرَيْرَةَ، قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ لاَ صَلاَةَ لِمَنْ لاَ وُضُوءَ لَهُ وَلاَ وُضُوءَ لِمَنْ لَمْ يَذْكُرِ اسْمَ اللَّهِ تَعَالَى عَلَيْهِ ‏\"‏ ‏.‏",
+   "sha256": "9c7c67b690a40f6cd7950599080388ec0fae9a9a9bfc1e7db85254ff31516851",
+   "grades": [
+    {
+     "name": "Al-Albani",
+     "grade": "Sahih"
+    },
+    {
+     "name": "Muhammad Muhyi Al-Din Abdul Hamid",
+     "grade": "Sahih"
+    },
+    {
+     "name": "Zubair Ali Zai",
+     "grade": "Hasan"
+    }
+   ],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-abudawud/101.json",
+   "reference": {
+    "book": 1,
+    "hadith": 101
+   },
+   "reference_check": "matched"
+  },
+  "h-abudawud-1609": {
+   "id": "h-abudawud-1609",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-abudawud",
+   "number": 1609,
+   "dataset_number": 1609,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا مَحْمُودُ بْنُ خَالِدٍ الدِّمَشْقِيُّ، وَعَبْدُ اللَّهِ بْنُ عَبْدِ الرَّحْمَنِ السَّمَرْقَنْدِيُّ، قَالاَ حَدَّثَنَا مَرْوَانُ، قَالَ عَبْدُ اللَّهِ حَدَّثَنَا أَبُو يَزِيدَ الْخَوْلاَنِيُّ، - وَكَانَ شَيْخَ صِدْقٍ وَكَانَ ابْنُ وَهْبٍ يَرْوِي عَنْهُ - حَدَّثَنَا سَيَّارُ بْنُ عَبْدِ الرَّحْمَنِ، - قَالَ مَحْمُودٌ الصَّدَفِيُّ - عَنْ عِكْرِمَةَ، عَنِ ابْنِ عَبَّاسٍ، قَالَ فَرَضَ رَسُولُ اللَّهِ صلى الله عليه وسلم زَكَاةَ الْفِطْرِ طُهْرَةً لِلصَّائِمِ مِنَ اللَّغْوِ وَالرَّفَثِ وَطُعْمَةً لِلْمَسَاكِينِ مَنْ أَدَّاهَا قَبْلَ الصَّلاَةِ فَهِيَ زَكَاةٌ مَقْبُولَةٌ وَمَنْ أَدَّاهَا بَعْدَ الصَّلاَةِ فَهِيَ صَدَقَةٌ مِنَ الصَّدَقَاتِ ‏.‏",
+   "sha256": "c31df9c8880fa13154e33e8cc4c9d177aac58fa1ba4b42791425e89e5c44e710",
+   "grades": [
+    {
+     "name": "Al-Albani",
+     "grade": "Hasan"
+    },
+    {
+     "name": "Muhammad Muhyi Al-Din Abdul Hamid",
+     "grade": "Hasan"
+    },
+    {
+     "name": "Shuaib Al Arnaut",
+     "grade": "Hasan"
+    },
+    {
+     "name": "Zubair Ali Zai",
+     "grade": "Isnaad Hasan"
+    }
+   ],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-abudawud/1609.json",
+   "reference": {
+    "book": 9,
+    "hadith": 54
+   },
+   "reference_check": "matched"
+  },
+  "h-abudawud-2357": {
+   "id": "h-abudawud-2357",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-abudawud",
+   "number": 2357,
+   "dataset_number": 2357,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا عَبْدُ اللَّهِ بْنُ مُحَمَّدِ بْنِ يَحْيَى أَبُو مُحَمَّدٍ، حَدَّثَنَا عَلِيُّ بْنُ الْحَسَنِ، أَخْبَرَنِي الْحُسَيْنُ بْنُ وَاقِدٍ، حَدَّثَنَا مَرْوَانُ، - يَعْنِي ابْنَ سَالِمٍ - الْمُقَفَّعُ - قَالَ رَأَيْتُ ابْنَ عُمَرَ يَقْبِضُ عَلَى لِحْيَتِهِ فَيَقْطَعُ مَا زَادَ عَلَى الْكَفِّ وَقَالَ كَانَ رَسُولُ اللَّهِ صلى الله عليه وسلم إِذَا أَفْطَرَ قَالَ ‏ \"‏ ذَهَبَ الظَّمَأُ وَابْتَلَّتِ الْعُرُوقُ وَثَبَتَ الأَجْرُ إِنْ شَاءَ اللَّهُ ‏\"‏ ‏.‏",
+   "sha256": "74e8a9aeff6d478ae3177f5855971a11d6d4f9d77f57ec6793e86a1992328004",
+   "grades": [
+    {
+     "name": "Al-Albani",
+     "grade": "Hasan"
+    },
+    {
+     "name": "Muhammad Muhyi Al-Din Abdul Hamid",
+     "grade": "Hasan"
+    },
+    {
+     "name": "Shuaib Al Arnaut",
+     "grade": "Hasan"
+    },
+    {
+     "name": "Zubair Ali Zai",
+     "grade": "Isnaad Hasan"
+    }
+   ],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-abudawud/2357.json",
+   "reference": {
+    "book": 14,
+    "hadith": 45
+   },
+   "reference_check": "matched"
+  },
+  "h-abudawud-30": {
+   "id": "h-abudawud-30",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-abudawud",
+   "number": 30,
+   "dataset_number": 30,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا عَمْرُو بْنُ مُحَمَّدٍ النَّاقِدُ، حَدَّثَنَا هَاشِمُ بْنُ الْقَاسِمِ، حَدَّثَنَا إِسْرَائِيلُ، عَنْ يُوسُفَ بْنِ أَبِي بُرْدَةَ، عَنْ أَبِيهِ، حَدَّثَتْنِي عَائِشَةُ، رضى الله عنها أَنَّ النَّبِيَّ صلى الله عليه وسلم كَانَ إِذَا خَرَجَ مِنَ الْغَائِطِ قَالَ ‏ \"‏ غُفْرَانَكَ ‏\"‏ ‏.‏",
+   "sha256": "e96026daa88edb81a2bc714a5ac82ce727a09b7947799224f46999a18cdd067c",
+   "grades": [
+    {
+     "name": "Al-Albani",
+     "grade": "Sahih"
+    },
+    {
+     "name": "Muhammad Muhyi Al-Din Abdul Hamid",
+     "grade": "Sahih"
+    },
+    {
+     "name": "Zubair Ali Zai",
+     "grade": "Isnaad Sahih"
+    }
+   ],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-abudawud/30.json",
+   "reference": {
+    "book": 1,
+    "hadith": 30
+   },
+   "reference_check": "matched"
+  },
+  "h-abudawud-3535": {
+   "id": "h-abudawud-3535",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-abudawud",
+   "number": 3535,
+   "dataset_number": 3535,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا مُحَمَّدُ بْنُ الْعَلاَءِ، وَأَحْمَدُ بْنُ إِبْرَاهِيمَ، قَالاَ حَدَّثَنَا طَلْقُ بْنُ غَنَّامٍ، عَنْ شَرِيكٍ، - قَالَ ابْنُ الْعَلاَءِ وَقَيْسٍ - عَنْ أَبِي حُصَيْنٍ، عَنْ أَبِي صَالِحٍ، عَنْ أَبِي هُرَيْرَةَ، قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ أَدِّ الأَمَانَةَ إِلَى مَنِ ائْتَمَنَكَ وَلاَ تَخُنْ مَنْ خَانَكَ ‏\"‏ ‏.‏",
+   "sha256": "a4ac503a0afa5ef918aa6b572fbe84c02e1c94675cc18467b0061bd3af25d259",
+   "grades": [
+    {
+     "name": "Al-Albani",
+     "grade": "Hasan Sahih"
+    },
+    {
+     "name": "Muhammad Muhyi Al-Din Abdul Hamid",
+     "grade": "Hasan Sahih"
+    },
+    {
+     "name": "Shuaib Al Arnaut",
+     "grade": "Daif"
+    },
+    {
+     "name": "Zubair Ali Zai",
+     "grade": "Daif"
+    }
+   ],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-abudawud/3535.json",
+   "reference": {
+    "book": 24,
+    "hadith": 120
+   },
+   "reference_check": "matched"
+  },
+  "h-abudawud-3767": {
+   "id": "h-abudawud-3767",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-abudawud",
+   "number": 3767,
+   "dataset_number": 3767,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا مُؤَمَّلُ بْنُ هِشَامٍ، حَدَّثَنَا إِسْمَاعِيلُ، عَنْ هِشَامٍ، - يَعْنِي ابْنَ أَبِي عَبْدِ اللَّهِ الدَّسْتَوَائِيَّ - عَنْ بُدَيْلٍ، عَنْ عَبْدِ اللَّهِ بْنِ عُبَيْدٍ، عَنِ امْرَأَةٍ، مِنْهُمْ يُقَالُ لَهَا أُمُّ كُلْثُومٍ عَنْ عَائِشَةَ، - رضى الله عنها - أَنَّ رَسُولَ اللَّهِ صلى الله عليه وسلم قَالَ ‏ \"‏ إِذَا أَكَلَ أَحَدُكُمْ فَلْيَذْكُرِ اسْمَ اللَّهِ تَعَالَى فَإِنْ نَسِيَ أَنْ يَذْكُرَ اسْمَ اللَّهِ تَعَالَى فِي أَوَّلِهِ فَلْيَقُلْ بِسْمِ اللَّهِ أَوَّلَهُ وَآخِرَهُ ‏\"‏ ‏.‏",
+   "sha256": "779aa5372eb369b15d75bb8eac7521d1dd7389d0b4e3eae5621b6296d416db1e",
+   "grades": [
+    {
+     "name": "Al-Albani",
+     "grade": "Sahih"
+    },
+    {
+     "name": "Muhammad Muhyi Al-Din Abdul Hamid",
+     "grade": "Sahih"
+    },
+    {
+     "name": "Shuaib Al Arnaut",
+     "grade": "Sahih Lighairihi"
+    },
+    {
+     "name": "Zubair Ali Zai",
+     "grade": "Isnaad Sahih"
+    }
+   ],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-abudawud/3767.json",
+   "reference": {
+    "book": 28,
+    "hadith": 32
+   },
+   "reference_check": "matched"
+  },
+  "h-abudawud-4023": {
+   "id": "h-abudawud-4023",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-abudawud",
+   "number": 4023,
+   "dataset_number": 4023,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا نُصَيْرُ بْنُ الْفَرَجِ، حَدَّثَنَا عَبْدُ اللَّهِ بْنُ يَزِيدَ، حَدَّثَنَا سَعِيدٌ، - يَعْنِي ابْنَ أَبِي أَيُّوبَ - عَنْ أَبِي مَرْحُومٍ، عَنْ سَهْلِ بْنِ مُعَاذِ بْنِ أَنَسٍ، عَنْ أَبِيهِ، أَنَّ رَسُولَ اللَّهِ صلى الله عليه وسلم قَالَ ‏ \"‏ مَنْ أَكَلَ طَعَامًا ثُمَّ قَالَ الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنِي هَذَا الطَّعَامَ وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلاَ قُوَّةٍ غُفِرَ لَهُ مَا تَقَدَّمَ مِنْ ذَنْبِهِ وَمَا تَأَخَّرَ وَمَنْ لَبِسَ ثَوْبًا فَقَالَ الْحَمْدُ لِلَّهِ الَّذِي كَسَانِي هَذَا الثَّوْبَ وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلاَ قُوَّةٍ غُفِرَ لَهُ مَا تَقَدَّمَ مِنْ ذَنْبِهِ وَمَا تَأَخَّرَ ‏\"‏ ‏.‏",
+   "sha256": "1d87074fca867cdd692ce5095c45be0b9e1ad2da36815b3b4e74e88b85914883",
+   "grades": [
+    {
+     "name": "Al-Albani",
+     "grade": "Hasan"
+    },
+    {
+     "name": "Muhammad Muhyi Al-Din Abdul Hamid",
+     "grade": "Hasan"
+    },
+    {
+     "name": "Zubair Ali Zai",
+     "grade": "Hasan"
+    }
+   ],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-abudawud/4023.json",
+   "reference": {
+    "book": 34,
+    "hadith": 4
+   },
+   "reference_check": "matched"
+  },
+  "h-abudawud-4782": {
+   "id": "h-abudawud-4782",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-abudawud",
+   "number": 4782,
+   "dataset_number": 4782,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا أَحْمَدُ بْنُ حَنْبَلٍ، حَدَّثَنَا أَبُو مُعَاوِيَةَ، حَدَّثَنَا دَاوُدُ بْنُ أَبِي هِنْدٍ، عَنْ أَبِي حَرْبِ بْنِ الأَسْوَدِ، عَنْ أَبِي ذَرٍّ، قَالَ إِنَّ رَسُولَ اللَّهِ صلى الله عليه وسلم قَالَ لَنَا ‏ \"‏ إِذَا غَضِبَ أَحَدُكُمْ وَهُوَ قَائِمٌ فَلْيَجْلِسْ فَإِنْ ذَهَبَ عَنْهُ الْغَضَبُ وَإِلاَّ فَلْيَضْطَجِعْ ‏\"‏ ‏.‏",
+   "sha256": "2e99670c5714645613d30cb9f8201c101924662747e7ef63bc398d58583c3c1c",
+   "grades": [
+    {
+     "name": "Al-Albani",
+     "grade": "Sahih"
+    },
+    {
+     "name": "Muhammad Muhyi Al-Din Abdul Hamid",
+     "grade": "Sahih"
+    },
+    {
+     "name": "Zubair Ali Zai",
+     "grade": "Sahih"
+    }
+   ],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-abudawud/4782.json",
+   "reference": {
+    "book": 43,
+    "hadith": 10
+   },
+   "reference_check": "matched"
+  },
+  "h-abudawud-4941": {
+   "id": "h-abudawud-4941",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-abudawud",
+   "number": 4941,
+   "dataset_number": 4941,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا أَبُو بَكْرِ بْنُ أَبِي شَيْبَةَ، وَمُسَدَّدٌ، - الْمَعْنَى - قَالاَ حَدَّثَنَا سُفْيَانُ، عَنْ عَمْرٍو، عَنْ أَبِي قَابُوسَ، مَوْلًى لِعَبْدِ اللَّهِ بْنِ عَمْرٍو عَنْ عَبْدِ اللَّهِ بْنِ عَمْرٍو، يَبْلُغُ بِهِ النَّبِيَّ صلى الله عليه وسلم ‏ \"‏ الرَّاحِمُونَ يَرْحَمُهُمُ الرَّحْمَنُ ارْحَمُوا أَهْلَ الأَرْضِ يَرْحَمْكُمْ مَنْ فِي السَّمَاءِ ‏\"‏ ‏.‏ لَمْ يَقُلْ مُسَدَّدٌ مَوْلَى عَبْدِ اللَّهِ بْنِ عَمْرٍو وَقَالَ قَالَ النَّبِيُّ صلى الله عليه وسلم ‏.‏",
+   "sha256": "9336c3042817c732d5f89cfcc1d06d7c768f1bafaa3578da933ecdcca8249acf",
+   "grades": [
+    {
+     "name": "Al-Albani",
+     "grade": "Sahih"
+    },
+    {
+     "name": "Muhammad Muhyi Al-Din Abdul Hamid",
+     "grade": "Sahih"
+    },
+    {
+     "name": "Shuaib Al Arnaut",
+     "grade": "Sahih Lighairihi"
+    },
+    {
+     "name": "Zubair Ali Zai",
+     "grade": "Isnaad Hasan"
+    }
+   ],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-abudawud/4941.json",
+   "reference": {
+    "book": 43,
+    "hadith": 169
+   },
+   "reference_check": "matched"
+  },
+  "h-abudawud-495": {
+   "id": "h-abudawud-495",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-abudawud",
+   "number": 495,
+   "dataset_number": 495,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا مُؤَمَّلُ بْنُ هِشَامٍ، - يَعْنِي الْيَشْكُرِيَّ - حَدَّثَنَا إِسْمَاعِيلُ، عَنْ سَوَّارٍ أَبِي حَمْزَةَ، - قَالَ أَبُو دَاوُدَ وَهُوَ سَوَّارُ بْنُ دَاوُدَ أَبُو حَمْزَةَ الْمُزَنِيُّ الصَّيْرَفِيُّ - عَنْ عَمْرِو بْنِ شُعَيْبٍ، عَنْ أَبِيهِ، عَنْ جَدِّهِ، قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ مُرُوا أَوْلاَدَكُمْ بِالصَّلاَةِ وَهُمْ أَبْنَاءُ سَبْعِ سِنِينَ وَاضْرِبُوهُمْ عَلَيْهَا وَهُمْ أَبْنَاءُ عَشْرِ سِنِينَ وَفَرِّقُوا بَيْنَهُمْ فِي الْمَضَاجِعِ ‏\"‏ ‏.‏",
+   "sha256": "b5fa0bb07ad9d33b318031a151548a6febcc88ccee7bb52a1e9caf7fd46cefd7",
+   "grades": [
+    {
+     "name": "Al-Albani",
+     "grade": "Hasan Sahih"
+    },
+    {
+     "name": "Muhammad Muhyi Al-Din Abdul Hamid",
+     "grade": "Hasan Sahih"
+    },
+    {
+     "name": "Zubair Ali Zai",
+     "grade": "Sahih"
+    }
+   ],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-abudawud/495.json",
+   "reference": {
+    "book": 2,
+    "hadith": 105
+   },
+   "reference_check": "matched"
+  },
+  "h-abudawud-5095": {
+   "id": "h-abudawud-5095",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-abudawud",
+   "number": 5095,
+   "dataset_number": 5095,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا إِبْرَاهِيمُ بْنُ الْحَسَنِ الْخَثْعَمِيُّ، حَدَّثَنَا حَجَّاجُ بْنُ مُحَمَّدٍ، عَنِ ابْنِ جُرَيْجٍ، عَنْ إِسْحَاقَ بْنِ عَبْدِ اللَّهِ بْنِ أَبِي طَلْحَةَ، عَنْ أَنَسِ بْنِ مَالِكٍ، أَنَّ النَّبِيَّ صلى الله عليه وسلم قَالَ ‏\"‏ إِذَا خَرَجَ الرَّجُلُ مِنْ بَيْتِهِ فَقَالَ بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ لاَ حَوْلَ وَلاَ قُوَّةَ إِلاَّ بِاللَّهِ ‏\"‏ ‏.‏ قَالَ ‏\"‏ يُقَالُ حِينَئِذٍ هُدِيتَ وَكُفِيتَ وَوُقِيتَ فَتَتَنَحَّى لَهُ الشَّيَاطِينُ فَيَقُولُ لَهُ شَيْطَانٌ آخَرُ كَيْفَ لَكَ بِرَجُلٍ قَدْ هُدِيَ وَكُفِيَ وَوُقِيَ ‏\"‏ ‏.‏",
+   "sha256": "a27a333f6a7230075a397f073626b000763e98f2f3f4309b397bda2addccd6e7",
+   "grades": [
+    {
+     "name": "Al-Albani",
+     "grade": "Sahih"
+    },
+    {
+     "name": "Muhammad Muhyi Al-Din Abdul Hamid",
+     "grade": "Sahih"
+    },
+    {
+     "name": "Zubair Ali Zai",
+     "grade": "Hasan"
+    }
+   ],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-abudawud/5095.json",
+   "reference": {
+    "book": 43,
+    "hadith": 323
+   },
+   "reference_check": "matched"
+  },
+  "h-abudawud-874": {
+   "id": "h-abudawud-874",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-abudawud",
+   "number": 874,
+   "dataset_number": 874,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا أَبُو الْوَلِيدِ الطَّيَالِسِيُّ، وَعَلِيُّ بْنُ الْجَعْدِ، قَالاَ حَدَّثَنَا شُعْبَةُ، عَنْ عَمْرِو بْنِ مُرَّةَ، عَنْ أَبِي حَمْزَةَ، مَوْلَى الأَنْصَارِ عَنْ رَجُلٍ، مِنْ بَنِي عَبْسٍ عَنْ حُذَيْفَةَ، أَنَّهُ رَأَى رَسُولَ اللَّهِ صلى الله عليه وسلم يُصَلِّي مِنَ اللَّيْلِ فَكَانَ يَقُولُ ‏\"‏ اللَّهُ أَكْبَرُ - ثَلاَثًا - ذُو الْمَلَكُوتِ وَالْجَبَرُوتِ وَالْكِبْرِيَاءِ وَالْعَظَمَةِ ‏\"‏ ‏.‏ ثُمَّ اسْتَفْتَحَ فَقَرَأَ الْبَقَرَةَ ثُمَّ رَكَعَ فَكَانَ رُكُوعُهُ نَحْوًا مِنْ قِيَامِهِ وَكَانَ يَقُولُ فِي رُكُوعِهِ ‏\"‏ سُبْحَانَ رَبِّيَ الْعَظِيمِ سُبْحَانَ رَبِّيَ الْعَظِيمِ ‏\"‏ ‏.‏ ثُمَّ رَفَعَ رَأْسَهُ مِنَ الرُّكُوعِ فَكَانَ قِيَامُهُ نَحْوًا مِنْ رُكُوعِهِ يَقُولُ ‏\"‏ لِرَبِّيَ الْحَمْدُ ‏\"‏ ‏.‏ ثُمَّ سَجَدَ فَكَانَ سُجُودُهُ نَحْوًا مِنْ قِيَامِهِ فَكَانَ يَقُولُ فِي سُجُودِهِ ‏\"‏ سُبْحَانَ رَبِّيَ الأَعْلَى ‏\"‏ ‏.‏ ثُمَّ رَفَعَ رَأْسَهُ مِنَ السُّجُودِ وَكَانَ يَقْعُدُ فِيمَا بَيْنَ السَّجْدَتَيْنِ نَحْوًا مِنْ سُجُودِهِ وَكَانَ يَقُولُ ‏\"‏ رَبِّ اغْفِرْ لِي رَبِّ اغْفِرْ لِي ‏\"‏ ‏.‏ فَصَلَّى أَرْبَعَ رَكَعَاتٍ فَقَرَأَ فِيهِنَّ الْبَقَرَةَ وَآلَ عِمْرَانَ وَالنِّسَاءَ وَالْمَائِدَةَ أَوِ الأَنْعَامَ شَكَّ شُعْبَةُ ‏.‏",
+   "sha256": "b915f685b9b5a8847514e6d1e12773dcc0d5bc32a638e1c3a4db2de3a8299a65",
+   "grades": [
+    {
+     "name": "Al-Albani",
+     "grade": "Sahih"
+    },
+    {
+     "name": "Muhammad Muhyi Al-Din Abdul Hamid",
+     "grade": "Sahih"
+    },
+    {
+     "name": "Shuaib Al Arnaut",
+     "grade": "Sahih"
+    },
+    {
+     "name": "Zubair Ali Zai",
+     "grade": "Sahih"
+    }
+   ],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-abudawud/874.json",
+   "reference": {
+    "book": 2,
+    "hadith": 484
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-10": {
+   "id": "h-bukhari-10",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 10,
+   "dataset_number": 10,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا آدَمُ بْنُ أَبِي إِيَاسٍ، قَالَ حَدَّثَنَا شُعْبَةُ، عَنْ عَبْدِ اللَّهِ بْنِ أَبِي السَّفَرِ، وَإِسْمَاعِيلَ، عَنِ الشَّعْبِيِّ، عَنْ عَبْدِ اللَّهِ بْنِ عَمْرٍو ـ رضى الله عنهما ـ عَنِ النَّبِيِّ صلى الله عليه وسلم قَالَ ‏ \"‏ الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِنْ لِسَانِهِ وَيَدِهِ، وَالْمُهَاجِرُ مَنْ هَجَرَ مَا نَهَى اللَّهُ عَنْهُ ‏\"‏‏.‏ قَالَ أَبُو عَبْدِ اللَّهِ وَقَالَ أَبُو مُعَاوِيَةَ حَدَّثَنَا دَاوُدُ عَنْ عَامِرٍ قَالَ سَمِعْتُ عَبْدَ اللَّهِ عَنِ النَّبِيِّ صلى الله عليه وسلم‏.‏ وَقَالَ عَبْدُ الأَعْلَى عَنْ دَاوُدَ عَنْ عَامِرٍ عَنْ عَبْدِ اللَّهِ عَنِ النَّبِيِّ صلى الله عليه وسلم‏.‏",
+   "sha256": "25ba68d80baaff17128281c997036241a994926188a375ec47ff5147b1d7f5f8",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/10.json",
+   "reference": {
+    "book": 2,
+    "hadith": 3
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-12": {
+   "id": "h-bukhari-12",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 12,
+   "dataset_number": 12,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا عَمْرُو بْنُ خَالِدٍ، قَالَ حَدَّثَنَا اللَّيْثُ، عَنْ يَزِيدَ، عَنْ أَبِي الْخَيْرِ، عَنْ عَبْدِ اللَّهِ بْنِ عَمْرٍو ـ رضى الله عنهما ـ أَنَّ رَجُلاً، سَأَلَ النَّبِيَّ صلى الله عليه وسلم أَىُّ الإِسْلاَمِ خَيْرٌ قَالَ ‏ \"‏ تُطْعِمُ الطَّعَامَ، وَتَقْرَأُ السَّلاَمَ عَلَى مَنْ عَرَفْتَ وَمَنْ لَمْ تَعْرِفْ ‏\"‏‏.‏",
+   "sha256": "8d2186bb5203b1d945d032128fcb9110598561670bec036d29dea926a6a9ba6d",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/12.json",
+   "reference": {
+    "book": 2,
+    "hadith": 5
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-13": {
+   "id": "h-bukhari-13",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 13,
+   "dataset_number": 13,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا مُسَدَّدٌ، قَالَ حَدَّثَنَا يَحْيَى، عَنْ شُعْبَةَ، عَنْ قَتَادَةَ، عَنْ أَنَسٍ ـ رضى الله عنه ـ عَنِ النَّبِيِّ صلى الله عليه وسلم‏.‏ وَعَنْ حُسَيْنٍ الْمُعَلِّمِ، قَالَ حَدَّثَنَا قَتَادَةُ، عَنْ أَنَسٍ، عَنِ النَّبِيِّ صلى الله عليه وسلم قَالَ ‏ \"‏ لا يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ ‏\"‏‏.‏",
+   "sha256": "f68795dd829332bba5f9ad18a9323931892dae4d3838118b5f5b337d20ee62d5",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/13.json",
+   "reference": {
+    "book": 2,
+    "hadith": 6
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-1356": {
+   "id": "h-bukhari-1356",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 1356,
+   "dataset_number": 1356,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا سُلَيْمَانُ بْنُ حَرْبٍ، حَدَّثَنَا حَمَّادٌ ـ وَهْوَ ابْنُ زَيْدٍ ـ عَنْ ثَابِتٍ، عَنْ أَنَسٍ ـ رضى الله عنه ـ قَالَ كَانَ غُلاَمٌ يَهُودِيٌّ يَخْدُمُ النَّبِيَّ صلى الله عليه وسلم فَمَرِضَ، فَأَتَاهُ النَّبِيُّ صلى الله عليه وسلم يَعُودُهُ، فَقَعَدَ عِنْدَ رَأْسِهِ فَقَالَ لَهُ ‏\"‏ أَسْلِمْ ‏\"‏‏.‏ فَنَظَرَ إِلَى أَبِيهِ وَهْوَ عِنْدَهُ فَقَالَ لَهُ أَطِعْ أَبَا الْقَاسِمِ صلى الله عليه وسلم‏.‏ فَأَسْلَمَ، فَخَرَجَ النَّبِيُّ صلى الله عليه وسلم وَهْوَ يَقُولُ ‏\"‏ الْحَمْدُ لِلَّهِ الَّذِي أَنْقَذَهُ مِنَ النَّارِ ‏\"‏‏.‏",
+   "sha256": "04793af46306d21e26fb8c8f98008145fe241e686f39df43a39f175660bd815a",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/1356.json",
+   "reference": {
+    "book": 23,
+    "hadith": 109
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-142": {
+   "id": "h-bukhari-142",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 142,
+   "dataset_number": 142,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا آدَمُ، قَالَ حَدَّثَنَا شُعْبَةُ، عَنْ عَبْدِ الْعَزِيزِ بْنِ صُهَيْبٍ، قَالَ سَمِعْتُ أَنَسًا، يَقُولُ كَانَ النَّبِيُّ صلى الله عليه وسلم إِذَا دَخَلَ الْخَلاَءَ قَالَ ‏ \"‏ اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ ‏\"‏‏.‏ تَابَعَهُ ابْنُ عَرْعَرَةَ عَنْ شُعْبَةَ‏.‏ وَقَالَ غُنْدَرٌ عَنْ شُعْبَةَ إِذَا أَتَى الْخَلاَءَ‏.‏ وَقَالَ مُوسَى عَنْ حَمَّادٍ إِذَا دَخَلَ‏.‏ وَقَالَ سَعِيدُ بْنُ زَيْدٍ حَدَّثَنَا عَبْدُ الْعَزِيزِ إِذَا أَرَادَ أَنْ يَدْخُلَ‏.‏",
+   "sha256": "8639a43ef5c1ec30b84bed26c86b802f1da6443cbf56f31e029622e48478b5ac",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/142.json",
+   "reference": {
+    "book": 4,
+    "hadith": 8
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-1521": {
+   "id": "h-bukhari-1521",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 1521,
+   "dataset_number": 1521,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا آدَمُ، حَدَّثَنَا شُعْبَةُ، حَدَّثَنَا سَيَّارٌ أَبُو الْحَكَمِ، قَالَ سَمِعْتُ أَبَا حَازِمٍ، قَالَ سَمِعْتُ أَبَا هُرَيْرَةَ ـ رضى الله عنه ـ قَالَ سَمِعْتُ النَّبِيَّ صلى الله عليه وسلم يَقُولُ ‏ \"‏ مَنْ حَجَّ لِلَّهِ فَلَمْ يَرْفُثْ وَلَمْ يَفْسُقْ رَجَعَ كَيَوْمِ وَلَدَتْهُ أُمُّهُ ‏\"‏‏.‏",
+   "sha256": "d5ba5789111cf4256b919d9fa7b0c1f47befce7c838e67635d652e01a5e2ff7e",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/1521.json",
+   "reference": {
+    "book": 25,
+    "hadith": 9
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-159": {
+   "id": "h-bukhari-159",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 159,
+   "dataset_number": 159,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا عَبْدُ الْعَزِيزِ بْنُ عَبْدِ اللَّهِ الأُوَيْسِيُّ، قَالَ حَدَّثَنِي إِبْرَاهِيمُ بْنُ سَعْدٍ، عَنِ ابْنِ شِهَابٍ، أَنَّ عَطَاءَ بْنَ يَزِيدَ، أَخْبَرَهُ أَنَّ حُمْرَانَ مَوْلَى عُثْمَانَ أَخْبَرَهُ أَنَّهُ، رَأَى عُثْمَانَ بْنَ عَفَّانَ دَعَا بِإِنَاءٍ، فَأَفْرَغَ عَلَى كَفَّيْهِ ثَلاَثَ مِرَارٍ فَغَسَلَهُمَا، ثُمَّ أَدْخَلَ يَمِينَهُ فِي الإِنَاءِ فَمَضْمَضَ، وَاسْتَنْشَقَ، ثُمَّ غَسَلَ وَجْهَهُ ثَلاَثًا، وَيَدَيْهِ إِلَى الْمِرْفَقَيْنِ ثَلاَثَ مِرَارٍ، ثُمَّ مَسَحَ بِرَأْسِهِ، ثُمَّ غَسَلَ رِجْلَيْهِ ثَلاَثَ مِرَارٍ إِلَى الْكَعْبَيْنِ، ثُمَّ قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ مَنْ تَوَضَّأَ نَحْوَ وُضُوئِي هَذَا، ثُمَّ صَلَّى رَكْعَتَيْنِ، لاَ يُحَدِّثُ فِيهِمَا نَفْسَهُ، غُفِرَ لَهُ مَا تَقَدَّمَ مِنْ ذَنْبِهِ ‏\"‏‏.‏",
+   "sha256": "caef7a5575b882fe0d1085d618952ace7063b5a58d36e65052def60a5700f237",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/159.json",
+   "reference": {
+    "book": 4,
+    "hadith": 25
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-1894": {
+   "id": "h-bukhari-1894",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 1894,
+   "dataset_number": 1894,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا عَبْدُ اللَّهِ بْنُ مَسْلَمَةَ، عَنْ مَالِكٍ، عَنْ أَبِي الزِّنَادِ، عَنِ الأَعْرَجِ، عَنْ أَبِي هُرَيْرَةَ ـ رضى الله عنه ـ أَنَّ رَسُولَ اللَّهِ صلى الله عليه وسلم قَالَ ‏ \"‏ الصِّيَامُ جُنَّةٌ، فَلاَ يَرْفُثْ وَلاَ يَجْهَلْ، وَإِنِ امْرُؤٌ قَاتَلَهُ أَوْ شَاتَمَهُ فَلْيَقُلْ إِنِّي صَائِمٌ‏.‏ مَرَّتَيْنِ، وَالَّذِي نَفْسِي بِيَدِهِ لَخُلُوفُ فَمِ الصَّائِمِ أَطْيَبُ عِنْدَ اللَّهِ تَعَالَى مِنْ رِيحِ الْمِسْكِ، يَتْرُكُ طَعَامَهُ وَشَرَابَهُ وَشَهْوَتَهُ مِنْ أَجْلِي، الصِّيَامُ لِي، وَأَنَا أَجْزِي بِهِ، وَالْحَسَنَةُ بِعَشْرِ أَمْثَالِهَا ‏\"‏‏.‏",
+   "sha256": "f138e592957c6bd4ed1f55b83ab75133d4e04aa018b63dd835cfab8f658e0e29",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/1894.json",
+   "reference": {
+    "book": 30,
+    "hadith": 4
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-1923": {
+   "id": "h-bukhari-1923",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 1923,
+   "dataset_number": 1923,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا آدَمُ بْنُ أَبِي إِيَاسٍ، حَدَّثَنَا شُعْبَةُ، حَدَّثَنَا عَبْدُ الْعَزِيزِ بْنُ صُهَيْبٍ، قَالَ سَمِعْتُ أَنَسَ بْنَ مَالِكٍ ـ رضى الله عنه ـ قَالَ قَالَ النَّبِيُّ صلى الله عليه وسلم ‏ \"‏ تَسَحَّرُوا فَإِنَّ فِي السَّحُورِ بَرَكَةً ‏\"‏‏.‏",
+   "sha256": "cafe40a379f044bb4fd2ffcc06c711449e83ac8cb057e6f487066b956fb6d408",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/1923.json",
+   "reference": {
+    "book": 30,
+    "hadith": 32
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-1960": {
+   "id": "h-bukhari-1960",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 1960,
+   "dataset_number": 1960,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا مُسَدَّدٌ، حَدَّثَنَا بِشْرُ بْنُ الْمُفَضَّلِ، حَدَّثَنَا خَالِدُ بْنُ ذَكْوَانَ، عَنِ الرُّبَيِّعِ بِنْتِ مُعَوِّذٍ، قَالَتْ أَرْسَلَ النَّبِيُّ صلى الله عليه وسلم غَدَاةَ عَاشُورَاءَ إِلَى قُرَى الأَنْصَارِ ‏ \"‏ مَنْ أَصْبَحَ مُفْطِرًا فَلْيُتِمَّ بَقِيَّةَ يَوْمِهِ، وَمَنْ أَصْبَحَ صَائِمًا فَلْيَصُمْ ‏\"‏‏.‏ قَالَتْ فَكُنَّا نَصُومُهُ بَعْدُ، وَنُصَوِّمُ صِبْيَانَنَا، وَنَجْعَلُ لَهُمُ اللُّعْبَةَ مِنَ الْعِهْنِ، فَإِذَا بَكَى أَحَدُهُمْ عَلَى الطَّعَامِ أَعْطَيْنَاهُ ذَاكَ، حَتَّى يَكُونَ عِنْدَ الإِفْطَارِ‏.‏",
+   "sha256": "4d44847f4bbc2e8345e3611e6b93fed344c9887738c626359fb617e95a4e1ae9",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/1960.json",
+   "reference": {
+    "book": 30,
+    "hadith": 67
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-2017": {
+   "id": "h-bukhari-2017",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 2017,
+   "dataset_number": 2017,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا قُتَيْبَةُ بْنُ سَعِيدٍ، حَدَّثَنَا إِسْمَاعِيلُ بْنُ جَعْفَرٍ، حَدَّثَنَا أَبُو سُهَيْلٍ، عَنْ أَبِيهِ، عَنْ عَائِشَةَ ـ رضى الله عنها ـ أَنَّ رَسُولَ اللَّهِ صلى الله عليه وسلم قَالَ ‏ \"‏ تَحَرَّوْا لَيْلَةَ الْقَدْرِ فِي الْوِتْرِ مِنَ الْعَشْرِ الأَوَاخِرِ مِنْ رَمَضَانَ ‏\"‏‏.‏",
+   "sha256": "24e1a2623edd67ec26086c7dd5413377ad944da55d687b8313c188a585b3318e",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/2017.json",
+   "reference": {
+    "book": 32,
+    "hadith": 4
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-2363": {
+   "id": "h-bukhari-2363",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 2363,
+   "dataset_number": 2363,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا عَبْدُ اللَّهِ بْنُ يُوسُفَ، أَخْبَرَنَا مَالِكٌ، عَنْ سُمَىٍّ، عَنْ أَبِي صَالِحٍ، عَنْ أَبِي هُرَيْرَةَ ـ رضى الله عنه ـ أَنَّ رَسُولَ اللَّهِ صلى الله عليه وسلم قَالَ ‏\"‏ بَيْنَا رَجُلٌ يَمْشِي فَاشْتَدَّ عَلَيْهِ الْعَطَشُ، فَنَزَلَ بِئْرًا فَشَرِبَ مِنْهَا، ثُمَّ خَرَجَ فَإِذَا هُوَ بِكَلْبٍ يَلْهَثُ، يَأْكُلُ الثَّرَى مِنَ الْعَطَشِ، فَقَالَ لَقَدْ بَلَغَ هَذَا مِثْلُ الَّذِي بَلَغَ بِي فَمَلأَ خُفَّهُ ثُمَّ أَمْسَكَهُ بِفِيهِ، ثُمَّ رَقِيَ، فَسَقَى الْكَلْبَ فَشَكَرَ اللَّهُ لَهُ، فَغَفَرَ لَهُ ‏\"‏‏.‏ قَالُوا يَا رَسُولَ اللَّهِ، وَإِنَّ لَنَا فِي الْبَهَائِمِ أَجْرًا قَالَ ‏\"‏ فِي كُلِّ كَبِدٍ رَطْبَةٍ أَجْرٌ ‏\"‏‏.‏ تَابَعَهُ حَمَّادُ بْنُ سَلَمَةَ وَالرَّبِيعُ بْنُ مُسْلِمٍ عَنْ مُحَمَّدِ بْنِ زِيَادٍ‏.‏",
+   "sha256": "3e483a24095b09a242b335136e2e1b0255c391eca21263b0cacb9b6769a14ba9",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/2363.json",
+   "reference": {
+    "book": 42,
+    "hadith": 11
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-3149": {
+   "id": "h-bukhari-3149",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 3149,
+   "dataset_number": 3149,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا يَحْيَى بْنُ بُكَيْرٍ، حَدَّثَنَا مَالِكٌ، عَنْ إِسْحَاقَ بْنِ عَبْدِ اللَّهِ، عَنْ أَنَسِ بْنِ مَالِكٍ ـ رضى الله عنه قَالَ كُنْتُ أَمْشِي مَعَ النَّبِيِّ صلى الله عليه وسلم وَعَلَيْهِ بُرْدٌ نَجْرَانِيٌّ غَلِيظُ الْحَاشِيَةِ، فَأَدْرَكَهُ أَعْرَابِيٌّ فَجَذَبَهُ جَذْبَةً شَدِيدَةً، حَتَّى نَظَرْتُ إِلَى صَفْحَةِ عَاتِقِ النَّبِيِّ صلى الله عليه وسلم قَدْ أَثَّرَتْ بِهِ حَاشِيَةُ الرِّدَاءِ مِنْ شِدَّةِ جَذْبَتِهِ، ثُمَّ قَالَ مُرْ لِي مِنْ مَالِ اللَّهِ الَّذِي عِنْدَكَ‏.‏ فَالْتَفَتَ إِلَيْهِ، فَضَحِكَ ثُمَّ أَمَرَ لَهُ بِعَطَاءٍ‏.‏",
+   "sha256": "e29725f8178d85ef502c4a898ecb9953c8da596e8226359c5005743caeed8b2d",
+   "grades": [],
+   "missing": [
+    "بردائه"
+   ],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/3149.json",
+   "reference": {
+    "book": 57,
+    "hadith": 57
+   },
+   "reference_check": "mismatch"
+  },
+  "h-bukhari-3282": {
+   "id": "h-bukhari-3282",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 3282,
+   "dataset_number": 3282,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا عَبْدَانُ، عَنْ أَبِي حَمْزَةَ، عَنِ الأَعْمَشِ، عَنْ عَدِيِّ بْنِ ثَابِتٍ، عَنْ سُلَيْمَانَ بْنِ صُرَدٍ، قَالَ كُنْتُ جَالِسًا مَعَ النَّبِيِّ صلى الله عليه وسلم وَرَجُلاَنِ يَسْتَبَّانِ، فَأَحَدُهُمَا احْمَرَّ وَجْهُهُ وَانْتَفَخَتْ أَوْدَاجُهُ، فَقَالَ النَّبِيُّ صلى الله عليه وسلم ‏\"‏ إِنِّي لأَعْلَمُ كَلِمَةً لَوْ قَالَهَا ذَهَبَ عَنْهُ مَا يَجِدُ، لَوْ قَالَ أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ‏.‏ ذَهَبَ عَنْهُ مَا يَجِدُ ‏\"‏‏.‏ فَقَالُوا لَهُ إِنَّ النَّبِيَّ صلى الله عليه وسلم قَالَ ‏\"‏ تَعَوَّذْ بِاللَّهِ مِنَ الشَّيْطَانِ ‏\"‏‏.‏ فَقَالَ وَهَلْ بِي جُنُونٌ",
+   "sha256": "8c37cf626bfcaaed30e512491009193e63f30f339387840dd86ed5caac498e37",
+   "grades": [],
+   "missing": [
+    "الغضب"
+   ],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/3282.json",
+   "reference": {
+    "book": 59,
+    "hadith": 91
+   },
+   "reference_check": "mismatch"
+  },
+  "h-bukhari-3560": {
+   "id": "h-bukhari-3560",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 3560,
+   "dataset_number": 3560,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا عَبْدُ اللَّهِ بْنُ يُوسُفَ، أَخْبَرَنَا مَالِكٌ، عَنِ ابْنِ شِهَابٍ، عَنْ عُرْوَةَ بْنِ الزُّبَيْرِ، عَنْ عَائِشَةَ ـ رضى الله عنها ـ أَنَّهَا قَالَتْ مَا خُيِّرَ رَسُولُ اللَّهِ صلى الله عليه وسلم بَيْنَ أَمْرَيْنِ إِلاَّ أَخَذَ أَيْسَرَهُمَا، مَا لَمْ يَكُنْ إِثْمًا، فَإِنْ كَانَ إِثْمًا كَانَ أَبْعَدَ النَّاسِ مِنْهُ، وَمَا انْتَقَمَ رَسُولُ اللَّهِ صلى الله عليه وسلم لِنَفْسِهِ، إِلاَّ أَنْ تُنْتَهَكَ حُرْمَةُ اللَّهِ فَيَنْتَقِمَ لِلَّهِ بِهَا‏.‏",
+   "sha256": "33c972928992c6ba55537821e43942b752714aeca7b31a2a964bed2deb34eac3",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/3560.json",
+   "reference": {
+    "book": 61,
+    "hadith": 69
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-3563": {
+   "id": "h-bukhari-3563",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 3563,
+   "dataset_number": 3563,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنِي عَلِيُّ بْنُ الْجَعْدِ، أَخْبَرَنَا شُعْبَةُ، عَنِ الأَعْمَشِ، عَنْ أَبِي حَازِمٍ، عَنْ أَبِي هُرَيْرَةَ ـ رضى الله عنه ـ قَالَ مَا عَابَ النَّبِيُّ صلى الله عليه وسلم طَعَامًا قَطُّ، إِنِ اشْتَهَاهُ أَكَلَهُ، وَإِلاَّ تَرَكَهُ‏.‏",
+   "sha256": "c541d3a99cae524fce2bdf620da8453e8a243de8261fd503bcd506cf5f99debf",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/3563.json",
+   "reference": {
+    "book": 61,
+    "hadith": 73
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-3653": {
+   "id": "h-bukhari-3653",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 3653,
+   "dataset_number": 3653,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا مُحَمَّدُ بْنُ سِنَانٍ، حَدَّثَنَا هَمَّامٌ، عَنْ ثَابِتٍ، عَنْ أَنَسٍ، عَنْ أَبِي بَكْرٍ ـ رضى الله عنه ـ قَالَ قُلْتُ لِلنَّبِيِّ صلى الله عليه وسلم وَأَنَا فِي الْغَارِ لَوْ أَنَّ أَحَدَهُمْ نَظَرَ تَحْتَ قَدَمَيْهِ لأَبْصَرَنَا‏.‏ فَقَالَ ‏ \"‏ مَا ظَنُّكَ يَا أَبَا بَكْرٍ بِاثْنَيْنِ اللَّهُ ثَالِثُهُمَا ‏\"‏‏.‏",
+   "sha256": "6d2347e844ca9b4c0de03d2ab2adafc9a7eabcd43c65c53a3b07b225eba20237",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/3653.json",
+   "reference": {
+    "book": 62,
+    "hadith": 5
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-38": {
+   "id": "h-bukhari-38",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 38,
+   "dataset_number": 38,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا ابْنُ سَلاَمٍ، قَالَ أَخْبَرَنَا مُحَمَّدُ بْنُ فُضَيْلٍ، قَالَ حَدَّثَنَا يَحْيَى بْنُ سَعِيدٍ، عَنْ أَبِي سَلَمَةَ، عَنْ أَبِي هُرَيْرَةَ، قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ مَنْ صَامَ رَمَضَانَ إِيمَانًا وَاحْتِسَابًا غُفِرَ لَهُ مَا تَقَدَّمَ مِنْ ذَنْبِهِ ‏\"‏‏.‏",
+   "sha256": "f16f9557aaecd83ad2a56ff342e9cbe90fa0aef35278e4767648f8352cf2b343",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/38.json",
+   "reference": {
+    "book": 2,
+    "hadith": 31
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-46": {
+   "id": "h-bukhari-46",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 46,
+   "dataset_number": 46,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا إِسْمَاعِيلُ، قَالَ حَدَّثَنِي مَالِكُ بْنُ أَنَسٍ، عَنْ عَمِّهِ أَبِي سُهَيْلِ بْنِ مَالِكٍ، عَنْ أَبِيهِ، أَنَّهُ سَمِعَ طَلْحَةَ بْنَ عُبَيْدِ اللَّهِ، يَقُولُ جَاءَ رَجُلٌ إِلَى رَسُولِ اللَّهِ صلى الله عليه وسلم مِنْ أَهْلِ نَجْدٍ، ثَائِرُ الرَّأْسِ، يُسْمَعُ دَوِيُّ صَوْتِهِ، وَلاَ يُفْقَهُ مَا يَقُولُ حَتَّى دَنَا، فَإِذَا هُوَ يَسْأَلُ عَنِ الإِسْلاَمِ فَقَالَ رَسُولُ اللَّهِ ـ صلى الله عليه وسلم ‏\"‏ خَمْسُ صَلَوَاتٍ فِي الْيَوْمِ وَاللَّيْلَةِ ‏\"‏‏.‏ فَقَالَ هَلْ عَلَىَّ غَيْرُهَا قَالَ ‏\"‏ لاَ، إِلاَّ أَنْ تَطَوَّعَ ‏\"‏‏.‏ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏\"‏ وَصِيَامُ رَمَضَانَ ‏\"‏‏.‏ قَالَ هَلْ عَلَىَّ غَيْرُهُ قَالَ ‏\"‏ لاَ، إِلاَّ أَنْ تَطَوَّعَ ‏\"‏‏.‏ قَالَ وَذَكَرَ لَهُ رَسُولُ اللَّهِ صلى الله عليه وسلم الزَّكَاةَ‏.‏ قَالَ هَلْ عَلَىَّ غَيْرُهَا قَالَ ‏\"‏ لاَ، إِلاَّ أَنْ تَطَوَّعَ ‏\"‏‏.‏ قَالَ فَأَدْبَرَ الرَّجُلُ وَهُوَ يَقُولُ وَاللَّهِ لاَ أَزِيدُ عَلَى هَذَا وَلاَ أَنْقُصُ‏.‏ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏\"‏ أَفْلَحَ إِنْ صَدَقَ ‏\"‏‏.‏",
+   "sha256": "abc64f26c542236de40d1335483a3481650d063c857c5013cc7846f124e761a9",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/46.json",
+   "reference": {
+    "book": 2,
+    "hadith": 39
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-4770": {
+   "id": "h-bukhari-4770",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 4770,
+   "dataset_number": 4770,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا عُمَرُ بْنُ حَفْصِ بْنِ غِيَاثٍ، حَدَّثَنَا أَبِي، حَدَّثَنَا الأَعْمَشُ، قَالَ حَدَّثَنِي عَمْرُو بْنُ مُرَّةَ، عَنْ سَعِيدِ بْنِ جُبَيْرٍ، عَنِ ابْنِ عَبَّاسٍ ـ رضى الله عنهما ـ قَالَ لَمَّا نَزَلَتْ ‏{‏وَأَنْذِرْ عَشِيرَتَكَ الأَقْرَبِينَ‏}‏ صَعِدَ النَّبِيُّ صلى الله عليه وسلم عَلَى الصَّفَا فَجَعَلَ يُنَادِي ‏\"‏ يَا بَنِي فِهْرٍ، يَا بَنِي عَدِيٍّ ‏\"‏‏.‏ لِبُطُونِ قُرَيْشٍ حَتَّى اجْتَمَعُوا، فَجَعَلَ الرَّجُلُ إِذَا لَمْ يَسْتَطِعْ أَنْ يَخْرُجَ أَرْسَلَ رَسُولاً لِيَنْظُرَ مَا هُوَ، فَجَاءَ أَبُو لَهَبٍ وَقُرَيْشٌ فَقَالَ ‏\"‏ أَرَأَيْتَكُمْ لَوْ أَخْبَرْتُكُمْ أَنَّ خَيْلاً بِالْوَادِي تُرِيدُ أَنْ تُغِيرَ عَلَيْكُمْ، أَكُنْتُمْ مُصَدِّقِيَّ ‏\"‏‏.‏ قَالُوا نَعَمْ، مَا جَرَّبْنَا عَلَيْكَ إِلاَّ صِدْقًا‏.‏ قَالَ ‏\"‏ فَإِنِّي نَذِيرٌ لَكُمْ بَيْنَ يَدَىْ عَذَابٍ شَدِيدٍ ‏\"‏‏.‏ فَقَالَ أَبُو لَهَبٍ تَبًّا لَكَ سَائِرَ الْيَوْمِ، أَلِهَذَا جَمَعْتَنَا فَنَزَلَتْ ‏{‏تَبَّتْ يَدَا أَبِي لَهَبٍ وَتَبَّ * مَا أَغْنَى عَنْهُ مَالُهُ وَمَا كَسَبَ‏}‏",
+   "sha256": "572f9081f21e043231a37443dee6190f180d289466e3578e7854cfef223379dd",
+   "grades": [],
+   "missing": [
+    "كذبا"
+   ],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/4770.json",
+   "reference": {
+    "book": 65,
+    "hadith": 292
+   },
+   "reference_check": "mismatch"
+  },
+  "h-bukhari-5017": {
+   "id": "h-bukhari-5017",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 5017,
+   "dataset_number": 5017,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا قُتَيْبَةُ بْنُ سَعِيدٍ، حَدَّثَنَا الْمُفَضَّلُ، عَنْ عُقَيْلٍ، عَنِ ابْنِ شِهَابٍ، عَنْ عُرْوَةَ، عَنْ عَائِشَةَ، أَنَّ النَّبِيَّ صلى الله عليه وسلم كَانَ إِذَا أَوَى إِلَى فِرَاشِهِ كُلَّ لَيْلَةٍ جَمَعَ كَفَّيْهِ ثُمَّ نَفَثَ فِيهِمَا فَقَرَأَ فِيهِمَا ‏{‏قُلْ هُوَ اللَّهُ أَحَدٌ‏}‏ وَ‏{‏قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ‏}‏ وَ‏{‏قُلْ أَعُوذُ بِرَبِّ النَّاسِ‏}‏ ثُمَّ يَمْسَحُ بِهِمَا مَا اسْتَطَاعَ مِنْ جَسَدِهِ يَبْدَأُ بِهِمَا عَلَى رَأْسِهِ وَوَجْهِهِ وَمَا أَقْبَلَ مِنْ جَسَدِهِ يَفْعَلُ ذَلِكَ ثَلاَثَ مَرَّاتٍ‏.‏",
+   "sha256": "2a36a954ad31294211ff1f50fd07876a86037e4b55f7fea905dc7e7e6ffd1d40",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/5017.json",
+   "reference": {
+    "book": 66,
+    "hadith": 39
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-516": {
+   "id": "h-bukhari-516",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 516,
+   "dataset_number": 516,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا عَبْدُ اللَّهِ بْنُ يُوسُفَ، قَالَ أَخْبَرَنَا مَالِكٌ، عَنْ عَامِرِ بْنِ عَبْدِ اللَّهِ بْنِ الزُّبَيْرِ، عَنْ عَمْرِو بْنِ سُلَيْمٍ الزُّرَقِيِّ، عَنْ أَبِي قَتَادَةَ الأَنْصَارِيِّ، أَنَّ رَسُولَ اللَّهِ صلى الله عليه وسلم كَانَ يُصَلِّي وَهْوَ حَامِلٌ أُمَامَةَ بِنْتَ زَيْنَبَ بِنْتِ رَسُولِ اللَّهِ صلى الله عليه وسلم وَلأَبِي الْعَاصِ بْنِ رَبِيعَةَ بْنِ عَبْدِ شَمْسٍ، فَإِذَا سَجَدَ وَضَعَهَا، وَإِذَا قَامَ حَمَلَهَا‏.‏",
+   "sha256": "94e43ac2fc1967b062540a729f13e6735ced670447dbeef165b04d5aeb86b982",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/516.json",
+   "reference": {
+    "book": 8,
+    "hadith": 163
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-527": {
+   "id": "h-bukhari-527",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 527,
+   "dataset_number": 527,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا أَبُو الْوَلِيدِ، هِشَامُ بْنُ عَبْدِ الْمَلِكِ قَالَ حَدَّثَنَا شُعْبَةُ، قَالَ الْوَلِيدُ بْنُ الْعَيْزَارِ أَخْبَرَنِي قَالَ سَمِعْتُ أَبَا عَمْرٍو الشَّيْبَانِيَّ، يَقُولُ حَدَّثَنَا صَاحِبُ، هَذِهِ الدَّارِ وَأَشَارَ إِلَى دَارِ عَبْدِ اللَّهِ قَالَ سَأَلْتُ النَّبِيَّ صلى الله عليه وسلم أَىُّ الْعَمَلِ أَحَبُّ إِلَى اللَّهِ قَالَ ‏\"‏ الصَّلاَةُ عَلَى وَقْتِهَا ‏\"‏‏.‏ قَالَ ثُمَّ أَىُّ قَالَ ‏\"‏ ثُمَّ بِرُّ الْوَالِدَيْنِ ‏\"‏‏.‏ قَالَ ثُمَّ أَىُّ قَالَ ‏\"‏ الْجِهَادُ فِي سَبِيلِ اللَّهِ ‏\"‏‏.‏ قَالَ حَدَّثَنِي بِهِنَّ وَلَوِ اسْتَزَدْتُهُ لَزَادَنِي‏.‏",
+   "sha256": "22c01233aff8007e57dc34d16ece7ac454c6f8baa04206f943ff05500c587618",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/527.json",
+   "reference": {
+    "book": 9,
+    "hadith": 6
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-528": {
+   "id": "h-bukhari-528",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 528,
+   "dataset_number": 528,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا إِبْرَاهِيمُ بْنُ حَمْزَةَ، قَالَ حَدَّثَنِي ابْنُ أَبِي حَازِمٍ، وَالدَّرَاوَرْدِيُّ، عَنْ يَزِيدَ، عَنْ مُحَمَّدِ بْنِ إِبْرَاهِيمَ، عَنْ أَبِي سَلَمَةَ بْنِ عَبْدِ الرَّحْمَنِ، عَنْ أَبِي هُرَيْرَةَ، أَنَّهُ سَمِعَ رَسُولَ اللَّهِ صلى الله عليه وسلم يَقُولُ ‏\"‏ أَرَأَيْتُمْ لَوْ أَنَّ نَهَرًا بِبَابِ أَحَدِكُمْ، يَغْتَسِلُ فِيهِ كُلَّ يَوْمٍ خَمْسًا، مَا تَقُولُ ذَلِكَ يُبْقِي مِنْ دَرَنِهِ ‏\"‏‏.‏ قَالُوا لاَ يُبْقِي مِنْ دَرَنِهِ شَيْئًا‏.‏ قَالَ ‏\"‏ فَذَلِكَ مِثْلُ الصَّلَوَاتِ الْخَمْسِ، يَمْحُو اللَّهُ بِهَا الْخَطَايَا ‏\"‏‏.‏",
+   "sha256": "b8de6739f520a27cb33f27459d8110974a15df167b08a537281333cae4e7919b",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/528.json",
+   "reference": {
+    "book": 9,
+    "hadith": 7
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-5376": {
+   "id": "h-bukhari-5376",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 5376,
+   "dataset_number": 5376,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا عَلِيُّ بْنُ عَبْدِ اللَّهِ، أَخْبَرَنَا سُفْيَانُ، قَالَ الْوَلِيدُ بْنُ كَثِيرٍ أَخْبَرَنِي أَنَّهُ، سَمِعَ وَهْبَ بْنَ كَيْسَانَ، أَنَّهُ سَمِعَ عُمَرَ بْنَ أَبِي سَلَمَةَ، يَقُولُ كُنْتُ غُلاَمًا فِي حَجْرِ رَسُولِ اللَّهِ صلى الله عليه وسلم وَكَانَتْ يَدِي تَطِيشُ فِي الصَّحْفَةِ فَقَالَ لِي رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ يَا غُلاَمُ سَمِّ اللَّهَ، وَكُلْ بِيَمِينِكَ وَكُلْ مِمَّا يَلِيكَ ‏\"‏‏.‏ فَمَا زَالَتْ تِلْكَ طِعْمَتِي بَعْدُ‏.‏",
+   "sha256": "723fa8c573447780b23de99070dbb8c2b5c018a1b6dbdb9edc67410b4c13d782",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/5376.json",
+   "reference": {
+    "book": 70,
+    "hadith": 4
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-5392": {
+   "id": "h-bukhari-5392",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 5392,
+   "dataset_number": 5392,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا عَبْدُ اللَّهِ بْنُ يُوسُفَ، أَخْبَرَنَا مَالِكٌ، وَحَدَّثَنَا إِسْمَاعِيلُ، قَالَ حَدَّثَنِي مَالِكٌ، عَنْ أَبِي الزِّنَادِ، عَنِ الأَعْرَجِ، عَنْ أَبِي هُرَيْرَةَ ـ رضى الله عنه ـ أَنَّهُ قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ طَعَامُ الاِثْنَيْنِ كَافِي الثَّلاَثَةِ، وَطَعَامُ الثَّلاَثَةِ كَافِي الأَرْبَعَةِ ‏\"‏‏.‏",
+   "sha256": "1c53c17a10cbf465bef97e903e632d1590660cf4d73584b097ffc250cb83b72e",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/5392.json",
+   "reference": {
+    "book": 70,
+    "hadith": 20
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-5889": {
+   "id": "h-bukhari-5889",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 5889,
+   "dataset_number": 5889,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا عَلِيٌّ، حَدَّثَنَا سُفْيَانُ، قَالَ الزُّهْرِيُّ حَدَّثَنَا عَنْ سَعِيدِ بْنِ الْمُسَيَّبِ، عَنْ أَبِي هُرَيْرَةَ، رِوَايَةً ‏ \"‏ الْفِطْرَةُ خَمْسٌ ـ أَوْ خَمْسٌ مِنَ الْفِطْرَةِ ـ الْخِتَانُ، وَالاِسْتِحْدَادُ، وَنَتْفُ الإِبْطِ، وَتَقْلِيمُ الأَظْفَارِ، وَقَصُّ الشَّارِبِ ‏\"‏‏.‏",
+   "sha256": "26beb39ce7bde8ab1f01f45dd48f098d9ab28674a2593a9b20afb47dd45162a4",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/5889.json",
+   "reference": {
+    "book": 77,
+    "hadith": 106
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-597": {
+   "id": "h-bukhari-597",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 597,
+   "dataset_number": 597,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا أَبُو نُعَيْمٍ، وَمُوسَى بْنُ إِسْمَاعِيلَ، قَالاَ حَدَّثَنَا هَمَّامٌ، عَنْ قَتَادَةَ، عَنْ أَنَسٍ، عَنِ النَّبِيِّ صلى الله عليه وسلم قَالَ ‏\"‏ مَنْ نَسِيَ صَلاَةً فَلْيُصَلِّ إِذَا ذَكَرَهَا، لاَ كَفَّارَةَ لَهَا إِلاَّ ذَلِكَ ‏\"‏‏.‏ ‏{‏وَأَقِمِ الصَّلاَةَ لِذِكْرِي‏}‏ قَالَ مُوسَى قَالَ هَمَّامٌ سَمِعْتُهُ يَقُولُ بَعْدُ ‏{‏وَأَقِمِ الصَّلاَةَ لِذِكْرِي‏}‏‏.‏وَقَالَ حَبَّانُ حَدَّثَنَا هَمَّامٌ، حَدَّثَنَا قَتَادَةُ، حَدَّثَنَا أَنَسٌ، عَنِ النَّبِيِّ صلى الله عليه وسلم نَحْوَهُ‏.‏",
+   "sha256": "396a1c1f16ac0fb8e524d596e9874cb460a6467de81f7d9de934d2b8a1c48d21",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/597.json",
+   "reference": {
+    "book": 9,
+    "hadith": 72
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-5971": {
+   "id": "h-bukhari-5971",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 5971,
+   "dataset_number": 5971,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا قُتَيْبَةُ بْنُ سَعِيدٍ، حَدَّثَنَا جَرِيرٌ، عَنْ عُمَارَةَ بْنِ الْقَعْقَاعِ بْنِ شُبْرُمَةَ، عَنْ أَبِي زُرْعَةَ، عَنْ أَبِي هُرَيْرَةَ ـ رضى الله عنه ـ قَالَ جَاءَ رَجُلٌ إِلَى رَسُولِ اللَّهِ صلى الله عليه وسلم فَقَالَ يَا رَسُولَ اللَّهِ مَنْ أَحَقُّ بِحُسْنِ صَحَابَتِي قَالَ ‏\"‏ أُمُّكَ ‏\"‏‏.‏ قَالَ ثُمَّ مَنْ قَالَ ‏\"‏ أُمُّكَ ‏\"‏‏.‏ قَالَ ثُمَّ مَنْ قَالَ ‏\"‏ أُمُّكَ ‏\"‏‏.‏ قَالَ ثُمَّ مَنْ قَالَ ‏\"‏ ثُمَّ أَبُوكَ ‏\"‏‏.‏ وَقَالَ ابْنُ شُبْرُمَةَ وَيَحْيَى بْنُ أَيُّوبَ حَدَّثَنَا أَبُو زُرْعَةَ مِثْلَهُ‏.‏",
+   "sha256": "7813c25acaba9bf2d110536186a529fb4d5c6a3c2a9cc352d7e564577c9d7a39",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/5971.json",
+   "reference": {
+    "book": 78,
+    "hadith": 2
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-5997": {
+   "id": "h-bukhari-5997",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 5997,
+   "dataset_number": 5997,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا أَبُو الْيَمَانِ، أَخْبَرَنَا شُعَيْبٌ، عَنِ الزُّهْرِيِّ، حَدَّثَنَا أَبُو سَلَمَةَ بْنُ عَبْدِ الرَّحْمَنِ، أَنَّ أَبَا هُرَيْرَةَ ـ رضى الله عنه ـ قَالَ قَبَّلَ رَسُولُ اللَّهِ صلى الله عليه وسلم الْحَسَنَ بْنَ عَلِيٍّ وَعِنْدَهُ الأَقْرَعُ بْنُ حَابِسٍ التَّمِيمِيُّ جَالِسًا‏.‏ فَقَالَ الأَقْرَعُ إِنَّ لِي عَشَرَةً مِنَ الْوَلَدِ مَا قَبَّلْتُ مِنْهُمْ أَحَدًا‏.‏ فَنَظَرَ إِلَيْهِ رَسُولُ اللَّهِ صلى الله عليه وسلم ثُمَّ قَالَ ‏ \"‏ مَنْ لاَ يَرْحَمُ لاَ يُرْحَمُ ‏\"‏‏.‏",
+   "sha256": "40b18f8ba7d4de784f4d235271510be8365a5abdfbc0fb8add0718769630c8ac",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/5997.json",
+   "reference": {
+    "book": 78,
+    "hadith": 28
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-6": {
+   "id": "h-bukhari-6",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 6,
+   "dataset_number": 6,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا عَبْدَانُ، قَالَ أَخْبَرَنَا عَبْدُ اللَّهِ، قَالَ أَخْبَرَنَا يُونُسُ، عَنِ الزُّهْرِيِّ، ح وَحَدَّثَنَا بِشْرُ بْنُ مُحَمَّدٍ، قَالَ أَخْبَرَنَا عَبْدُ اللَّهِ، قَالَ أَخْبَرَنَا يُونُسُ، وَمَعْمَرٌ، عَنِ الزُّهْرِيِّ، نَحْوَهُ قَالَ أَخْبَرَنِي عُبَيْدُ اللَّهِ بْنُ عَبْدِ اللَّهِ، عَنِ ابْنِ عَبَّاسٍ، قَالَ كَانَ رَسُولُ اللَّهِ صلى الله عليه وسلم أَجْوَدَ النَّاسِ، وَكَانَ أَجْوَدُ مَا يَكُونُ فِي رَمَضَانَ حِينَ يَلْقَاهُ جِبْرِيلُ، وَكَانَ يَلْقَاهُ فِي كُلِّ لَيْلَةٍ مِنْ رَمَضَانَ فَيُدَارِسُهُ الْقُرْآنَ، فَلَرَسُولُ اللَّهِ صلى الله عليه وسلم أَجْوَدُ بِالْخَيْرِ مِنَ الرِّيحِ الْمُرْسَلَةِ‏.‏",
+   "sha256": "9b5b044ca7ecb37f40c50bfee79c68f630c721d745cdc4265df7f4c0406ac420",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/6.json",
+   "reference": {
+    "book": 1,
+    "hadith": 6
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-6014": {
+   "id": "h-bukhari-6014",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 6014,
+   "dataset_number": 6014,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا إِسْمَاعِيلُ بْنُ أَبِي أُوَيْسٍ، قَالَ حَدَّثَنِي مَالِكٌ، عَنْ يَحْيَى بْنِ سَعِيدٍ، قَالَ أَخْبَرَنِي أَبُو بَكْرِ بْنُ مُحَمَّدٍ، عَنْ عَمْرَةَ، عَنْ عَائِشَةَ ـ رضى الله عنها ـ عَنِ النَّبِيِّ صلى الله عليه وسلم قَالَ ‏ \"‏ مَا زَالَ يُوصِينِي جِبْرِيلُ بِالْجَارِ حَتَّى ظَنَنْتُ أَنَّهُ سَيُوَرِّثُهُ ‏\"‏‏.‏",
+   "sha256": "49ca0180b5aa09123e3bab2b5f1b30b8aa9f5b3f48cdef3e63061741b9d6dd50",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/6014.json",
+   "reference": {
+    "book": 78,
+    "hadith": 45
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-6018": {
+   "id": "h-bukhari-6018",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 6018,
+   "dataset_number": 6018,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا قُتَيْبَةُ بْنُ سَعِيدٍ، حَدَّثَنَا أَبُو الأَحْوَصِ، عَنْ أَبِي حَصِينٍ، عَنْ أَبِي صَالِحٍ، عَنْ أَبِي هُرَيْرَةَ، قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلاَ يُؤْذِ جَارَهُ، وَمَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيُكْرِمْ ضَيْفَهُ، وَمَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ ‏\"‏‏.‏",
+   "sha256": "a0471b81285c57f2c8b4dee09e668a4e3363d55a355f030953d14648fc3fb00a",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/6018.json",
+   "reference": {
+    "book": 78,
+    "hadith": 49
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-6021": {
+   "id": "h-bukhari-6021",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 6021,
+   "dataset_number": 6021,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا عَلِيُّ بْنُ عَيَّاشٍ، حَدَّثَنَا أَبُو غَسَّانَ، قَالَ حَدَّثَنِي مُحَمَّدُ بْنُ الْمُنْكَدِرِ، عَنْ جَابِرِ بْنِ عَبْدِ اللَّهِ ـ رضى الله عنهما ـ عَنِ النَّبِيِّ صلى الله عليه وسلم قَالَ ‏ \"‏ كُلُّ مَعْرُوفٍ صَدَقَةٌ ‏\"‏‏.‏",
+   "sha256": "0a31712e2c3ffd7ab6fe3b81c8af7b48028884db03c45f6270a2312e1d1b5c67",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/6021.json",
+   "reference": {
+    "book": 78,
+    "hadith": 52
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-6038": {
+   "id": "h-bukhari-6038",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 6038,
+   "dataset_number": 6038,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا مُوسَى بْنُ إِسْمَاعِيلَ، سَمِعَ سَلاَّمَ بْنَ مِسْكِينٍ، قَالَ سَمِعْتُ ثَابِتًا، يَقُولُ حَدَّثَنَا أَنَسٌ ـ رضى الله عنه ـ قَالَ خَدَمْتُ النَّبِيَّ صلى الله عليه وسلم عَشْرَ سِنِينَ، فَمَا قَالَ لِي أُفٍّ‏.‏ وَلاَ لِمَ صَنَعْتَ وَلاَ أَلاَّ صَنَعْتَ‏.‏",
+   "sha256": "08a399d61aa4ba8e7e543fc03870f54e56a38daccea849297f9de4f533f7e715",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/6038.json",
+   "reference": {
+    "book": 78,
+    "hadith": 68
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-6064": {
+   "id": "h-bukhari-6064",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 6064,
+   "dataset_number": 6064,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا بِشْرُ بْنُ مُحَمَّدٍ، أَخْبَرَنَا عَبْدُ اللَّهِ، أَخْبَرَنَا مَعْمَرٌ، عَنْ هَمَّامِ بْنِ مُنَبِّهٍ، عَنْ أَبِي هُرَيْرَةَ، عَنِ النَّبِيِّ صلى الله عليه وسلم قَالَ ‏ \"‏ إِيَّاكُمْ وَالظَّنَّ، فَإِنَّ الظَّنَّ أَكْذَبُ الْحَدِيثِ، وَلاَ تَحَسَّسُوا، وَلاَ تَجَسَّسُوا، وَلاَ تَحَاسَدُوا، وَلاَ تَدَابَرُوا، وَلاَ تَبَاغَضُوا، وَكُونُوا عِبَادَ اللَّهِ إِخْوَانًا ‏\"‏‏.‏",
+   "sha256": "bf6216c365e72df06fda647e433bbd1078e16be3e74a9cbbd523cc1e40f83984",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/6064.json",
+   "reference": {
+    "book": 78,
+    "hadith": 94
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-6094": {
+   "id": "h-bukhari-6094",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 6094,
+   "dataset_number": 6094,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا عُثْمَانُ بْنُ أَبِي شَيْبَةَ، حَدَّثَنَا جَرِيرٌ، عَنْ مَنْصُورٍ، عَنْ أَبِي وَائِلٍ، عَنْ عَبْدِ اللَّهِ ـ رضى الله عنه ـ عَنِ النَّبِيِّ صلى الله عليه وسلم قَالَ ‏ \"‏ إِنَّ الصِّدْقَ يَهْدِي إِلَى الْبِرِّ، وَإِنَّ الْبِرَّ يَهْدِي إِلَى الْجَنَّةِ، وَإِنَّ الرَّجُلَ لَيَصْدُقُ حَتَّى يَكُونَ صِدِّيقًا، وَإِنَّ الْكَذِبَ يَهْدِي إِلَى الْفُجُورِ، وَإِنَّ الْفُجُورَ يَهْدِي إِلَى النَّارِ، وَإِنَّ الرَّجُلَ لَيَكْذِبُ، حَتَّى يُكْتَبَ عِنْدَ اللَّهِ كَذَّابًا ‏\"‏‏.‏",
+   "sha256": "6d55f555cb2572030de104165a3789a52020d6f3a7e4addb10201ee2f4934f6f",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/6094.json",
+   "reference": {
+    "book": 78,
+    "hadith": 121
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-6114": {
+   "id": "h-bukhari-6114",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 6114,
+   "dataset_number": 6114,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا عَبْدُ اللَّهِ بْنُ يُوسُفَ، أَخْبَرَنَا مَالِكٌ، عَنِ ابْنِ شِهَابٍ، عَنْ سَعِيدِ بْنِ الْمُسَيَّبِ، عَنْ أَبِي هُرَيْرَةَ ـ رضى الله عنه ـ أَنَّ رَسُولَ اللَّهِ صلى الله عليه وسلم قَالَ ‏ \"‏ لَيْسَ الشَّدِيدُ بِالصُّرَعَةِ، إِنَّمَا الشَّدِيدُ الَّذِي يَمْلِكُ نَفْسَهُ عِنْدَ الْغَضَبِ ‏\"‏‏.‏",
+   "sha256": "7c0e8861fd8a9abe9565ba4dfa4c81ec8b67091a010d67129390bb9ede091627",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/6114.json",
+   "reference": {
+    "book": 78,
+    "hadith": 141
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-6116": {
+   "id": "h-bukhari-6116",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 6116,
+   "dataset_number": 6116,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنِي يَحْيَى بْنُ يُوسُفَ، أَخْبَرَنَا أَبُو بَكْرٍ ـ هُوَ ابْنُ عَيَّاشٍ ـ عَنْ أَبِي حَصِينٍ، عَنْ أَبِي صَالِحٍ، عَنْ أَبِي هُرَيْرَةَ ـ رضى الله عنه ـ أَنَّ رَجُلاً، قَالَ لِلنَّبِيِّ صلى الله عليه وسلم أَوْصِنِي‏.‏ قَالَ ‏\"‏ لاَ تَغْضَبْ ‏\"‏‏.‏ فَرَدَّدَ مِرَارًا، قَالَ ‏\"‏ لاَ تَغْضَبْ ‏\"‏‏.‏",
+   "sha256": "7a7bd6fe9bc7c850779f8c3c8214ed02927c9e866f5f9ae6618eaebe53b9b25b",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/6116.json",
+   "reference": {
+    "book": 78,
+    "hadith": 143
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-6203": {
+   "id": "h-bukhari-6203",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 6203,
+   "dataset_number": 6203,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا مُسَدَّدٌ، حَدَّثَنَا عَبْدُ الْوَارِثِ، عَنْ أَبِي التَّيَّاحِ، عَنْ أَنَسٍ، قَالَ كَانَ النَّبِيُّ صلى الله عليه وسلم أَحْسَنَ النَّاسِ خُلُقًا، وَكَانَ لِي أَخٌ يُقَالُ لَهُ أَبُو عُمَيْرٍ ـ قَالَ أَحْسِبُهُ فَطِيمٌ ـ وَكَانَ إِذَا جَاءَ قَالَ ‏ \"‏ يَا أَبَا عُمَيْرٍ مَا فَعَلَ النُّغَيْرُ ‏\"‏‏.‏ نُغَرٌ كَانَ يَلْعَبُ بِهِ، فَرُبَّمَا حَضَرَ الصَّلاَةَ وَهُوَ فِي بَيْتِنَا، فَيَأْمُرُ بِالْبِسَاطِ الَّذِي تَحْتَهُ فَيُكْنَسُ وَيُنْضَحُ، ثُمَّ يَقُومُ وَنَقُومُ خَلْفَهُ فَيُصَلِّي بِنَا‏.‏",
+   "sha256": "542e8da37c1d261345add01acfe601212f14e0879de54837e040cab475a83319",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/6203.json",
+   "reference": {
+    "book": 78,
+    "hadith": 227
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-6224": {
+   "id": "h-bukhari-6224",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 6224,
+   "dataset_number": 6224,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا مَالِكُ بْنُ إِسْمَاعِيلَ، حَدَّثَنَا عَبْدُ الْعَزِيزِ بْنُ أَبِي سَلَمَةَ، أَخْبَرَنَا عَبْدُ اللَّهِ بْنُ دِينَارٍ، عَنْ أَبِي صَالِحٍ، عَنْ أَبِي هُرَيْرَةَ ـ رضى الله عنه ـ عَنِ النَّبِيِّ صلى الله عليه وسلم قَالَ ‏ \"‏ إِذَا عَطَسَ أَحَدُكُمْ فَلْيَقُلِ الْحَمْدُ لِلَّهِ‏.‏ وَلْيَقُلْ لَهُ أَخُوهُ أَوْ صَاحِبُهُ يَرْحَمُكَ اللَّهُ‏.‏ فَإِذَا قَالَ لَهُ يَرْحَمُكَ اللَّهُ‏.‏ فَلْيَقُلْ يَهْدِيكُمُ اللَّهُ وَيُصْلِحُ بَالَكُمْ ‏\"‏‏.‏",
+   "sha256": "328b0d598df9b5fa26ab3477ab4b9a948da93dd1f9c66c1a27a329a49e1f7369",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/6224.json",
+   "reference": {
+    "book": 78,
+    "hadith": 248
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-6245": {
+   "id": "h-bukhari-6245",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 6245,
+   "dataset_number": 6245,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا عَلِيُّ بْنُ عَبْدِ اللَّهِ، حَدَّثَنَا سُفْيَانُ، حَدَّثَنَا يَزِيدُ بْنُ خُصَيْفَةَ، عَنْ بُسْرِ بْنِ سَعِيدٍ، عَنْ أَبِي سَعِيدٍ الْخُدْرِيِّ، قَالَ كُنْتُ فِي مَجْلِسٍ مِنْ مَجَالِسِ الأَنْصَارِ إِذْ جَاءَ أَبُو مُوسَى كَأَنَّهُ مَذْعُورٌ فَقَالَ اسْتَأْذَنْتُ عَلَى عُمَرَ ثَلاَثًا، فَلَمْ يُؤْذَنْ لِي فَرَجَعْتُ فَقَالَ مَا مَنَعَكَ قُلْتُ اسْتَأْذَنْتُ ثَلاَثًا، فَلَمْ يُؤْذَنْ لِي فَرَجَعْتُ، وَقَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ إِذَا اسْتَأْذَنَ أَحَدُكُمْ ثَلاَثًا فَلَمْ يُؤْذَنْ لَهُ، فَلْيَرْجِعْ ‏\"‏‏.‏ فَقَالَ وَاللَّهِ لَتُقِيمَنَّ عَلَيْهِ بِبَيِّنَةٍ‏.‏ أَمِنْكُمْ أَحَدٌ سَمِعَهُ مِنَ النَّبِيِّ صلى الله عليه وسلم فَقَالَ أُبَىُّ بْنُ كَعْبٍ وَاللَّهِ لاَ يَقُومُ مَعَكَ إِلاَّ أَصْغَرُ الْقَوْمِ، فَكُنْتُ أَصْغَرَ الْقَوْمِ، فَقُمْتُ مَعَهُ فَأَخْبَرْتُ عُمَرَ أَنَّ النَّبِيَّ صلى الله عليه وسلم قَالَ ذَلِكَ‏.‏ وَقَالَ ابْنُ الْمُبَارَكِ أَخْبَرَنِي ابْنُ عُيَيْنَةَ حَدَّثَنِي يَزِيدُ عَنْ بُسْرٍ سَمِعْتُ أَبَا سَعِيدٍ بِهَذَا‏.‏",
+   "sha256": "0f059d5ba11c8e3a1fd03071c830bd005809e6ae4f64684f3a956475554ebe12",
+   "grades": [],
+   "missing": [
+    "الاستئذان"
+   ],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/6245.json",
+   "reference": {
+    "book": 79,
+    "hadith": 19
+   },
+   "reference_check": "mismatch"
+  },
+  "h-bukhari-631": {
+   "id": "h-bukhari-631",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 631,
+   "dataset_number": 631,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا مُحَمَّدُ بْنُ الْمُثَنَّى، قَالَ حَدَّثَنَا عَبْدُ الْوَهَّابِ، قَالَ حَدَّثَنَا أَيُّوبُ، عَنْ أَبِي قِلاَبَةَ، قَالَ حَدَّثَنَا مَالِكٌ، أَتَيْنَا إِلَى النَّبِيِّ صلى الله عليه وسلم وَنَحْنُ شَبَبَةٌ مُتَقَارِبُونَ، فَأَقَمْنَا عِنْدَهُ عِشْرِينَ يَوْمًا وَلَيْلَةً، وَكَانَ رَسُولُ اللَّهِ صلى الله عليه وسلم رَحِيمًا رَفِيقًا، فَلَمَّا ظَنَّ أَنَّا قَدِ اشْتَهَيْنَا أَهْلَنَا أَوْ قَدِ اشْتَقْنَا سَأَلَنَا عَمَّنْ تَرَكْنَا بَعْدَنَا فَأَخْبَرْنَاهُ قَالَ ‏ \"‏ ارْجِعُوا إِلَى أَهْلِيكُمْ فَأَقِيمُوا فِيهِمْ وَعَلِّمُوهُمْ وَمُرُوهُمْ ـ وَذَكَرَ أَشْيَاءَ أَحْفَظُهَا أَوْ لاَ أَحْفَظُهَا ـ وَصَلُّوا كَمَا رَأَيْتُمُونِي أُصَلِّي، فَإِذَا حَضَرَتِ الصَّلاَةُ فَلْيُؤَذِّنْ لَكُمْ أَحَدُكُمْ وَلْيَؤُمَّكُمْ أَكْبَرُكُمْ ‏\"‏‏.‏",
+   "sha256": "45f190f37b19641dcc52d9fb00f6d7e42b78ce01f79be342ee2457a794290748",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/631.json",
+   "reference": {
+    "book": 10,
+    "hadith": 28
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-6312": {
+   "id": "h-bukhari-6312",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 6312,
+   "dataset_number": 6312,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا قَبِيصَةُ، حَدَّثَنَا سُفْيَانُ، عَنْ عَبْدِ الْمَلِكِ، عَنْ رِبْعِيِّ بْنِ حِرَاشٍ، عَنْ حُذَيْفَةَ، قَالَ كَانَ النَّبِيُّ صلى الله عليه وسلم إِذَا أَوَى إِلَى فِرَاشِهِ قَالَ ‏\"‏ بِاسْمِكَ أَمُوتُ وَأَحْيَا ‏\"‏‏.‏ وَإِذَا قَامَ قَالَ ‏\"‏ الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ ‏\"‏‏.‏ تُنْشِرُهَا: تُخْرِجُهَا",
+   "sha256": "b74030202b1f85aff8951883f19e1ff4b4c6ef5097db260fd60a1e344f1fe29d",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/6312.json",
+   "reference": {
+    "book": 80,
+    "hadith": 9
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-6324": {
+   "id": "h-bukhari-6324",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 6324,
+   "dataset_number": 6324,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا أَبُو نُعَيْمٍ، حَدَّثَنَا سُفْيَانُ، عَنْ عَبْدِ الْمَلِكِ بْنِ عُمَيْرٍ، عَنْ رِبْعِيِّ بْنِ حِرَاشٍ، عَنْ حُذَيْفَةَ، قَالَ كَانَ النَّبِيُّ صلى الله عليه وسلم إِذَا أَرَادَ أَنْ يَنَامَ قَالَ ‏\"‏ بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا ‏\"‏‏.‏ وَإِذَا اسْتَيْقَظَ مِنْ مَنَامِهِ قَالَ ‏\"‏ الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا، وَإِلَيْهِ النُّشُورُ ‏\"‏‏.‏",
+   "sha256": "fbd1766125cdae3228c7e63061037583c1fb424331e08959cef79cf63c671dbb",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/6324.json",
+   "reference": {
+    "book": 80,
+    "hadith": 21
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-676": {
+   "id": "h-bukhari-676",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 676,
+   "dataset_number": 676,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا آدَمُ، قَالَ حَدَّثَنَا شُعْبَةُ، قَالَ حَدَّثَنَا الْحَكَمُ، عَنْ إِبْرَاهِيمَ، عَنِ الأَسْوَدِ، قَالَ سَأَلْتُ عَائِشَةَ مَا كَانَ النَّبِيُّ صلى الله عليه وسلم يَصْنَعُ فِي بَيْتِهِ قَالَتْ كَانَ يَكُونُ فِي مِهْنَةِ أَهْلِهِ ـ تَعْنِي خِدْمَةَ أَهْلِهِ ـ فَإِذَا حَضَرَتِ الصَّلاَةُ خَرَجَ إِلَى الصَّلاَةِ‏.‏",
+   "sha256": "b83908229f8bfba4fa2921844ee18170d0116883038ea27e74100ca1dfb70367",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/676.json",
+   "reference": {
+    "book": 10,
+    "hadith": 70
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-689": {
+   "id": "h-bukhari-689",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 689,
+   "dataset_number": 689,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا عَبْدُ اللَّهِ بْنُ يُوسُفَ، قَالَ أَخْبَرَنَا مَالِكٌ، عَنِ ابْنِ شِهَابٍ، عَنْ أَنَسِ بْنِ مَالِكٍ، أَنَّ رَسُولَ اللَّهِ صلى الله عليه وسلم رَكِبَ فَرَسًا فَصُرِعَ عَنْهُ، فَجُحِشَ شِقُّهُ الأَيْمَنُ، فَصَلَّى صَلاَةً مِنَ الصَّلَوَاتِ وَهْوَ قَاعِدٌ، فَصَلَّيْنَا وَرَاءَهُ قُعُودًا، فَلَمَّا انْصَرَفَ قَالَ ‏\"‏ إِنَّمَا جُعِلَ الإِمَامُ لِيُؤْتَمَّ بِهِ، فَإِذَا صَلَّى قَائِمًا فَصَلُّوا قِيَامًا، فَإِذَا رَكَعَ فَارْكَعُوا، وَإِذَا رَفَعَ فَارْفَعُوا، وَإِذَا قَالَ سَمِعَ اللَّهُ لِمَنْ حَمِدَهُ‏.‏ فَقُولُوا رَبَّنَا وَلَكَ الْحَمْدُ‏.‏ وَإِذَا صَلَّى قَائِمًا فَصَلُّوا قِيَامًا، وَإِذَا صَلَّى جَالِسًا فَصَلُّوا جُلُوسًا أَجْمَعُونَ ‏\"‏‏.‏ قَالَ أَبُو عَبْدِ اللَّهِ قَالَ الْحُمَيْدِيُّ قَوْلُهُ ‏\"‏ إِذَا صَلَّى جَالِسًا فَصَلُّوا جُلُوسًا ‏\"‏‏.‏ هُوَ فِي مَرَضِهِ الْقَدِيمِ، ثُمَّ صَلَّى بَعْدَ ذَلِكَ النَّبِيُّ صلى الله عليه وسلم جَالِسًا وَالنَّاسُ خَلْفَهُ قِيَامًا، لَمْ يَأْمُرْهُمْ بِالْقُعُودِ، وَإِنَّمَا يُؤْخَذُ بِالآخِرِ فَالآخِرِ مِنْ فِعْلِ النَّبِيِّ صلى الله عليه وسلم‏.‏",
+   "sha256": "5c5a569a76fde982070fc34bb589bcde3d48716293ba13404eb7a4335e122466",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/689.json",
+   "reference": {
+    "book": 10,
+    "hadith": 83
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-707": {
+   "id": "h-bukhari-707",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 707,
+   "dataset_number": 707,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا إِبْرَاهِيمُ بْنُ مُوسَى، قَالَ أَخْبَرَنَا الْوَلِيدُ، قَالَ حَدَّثَنَا الأَوْزَاعِيُّ، عَنْ يَحْيَى بْنِ أَبِي كَثِيرٍ، عَنْ عَبْدِ اللَّهِ بْنِ أَبِي قَتَادَةَ، عَنْ أَبِيهِ أَبِي قَتَادَةَ، عَنِ النَّبِيِّ صلى الله عليه وسلم قَالَ ‏ \"‏ إِنِّي لأَقُومُ فِي الصَّلاَةِ أُرِيدُ أَنْ أُطَوِّلَ فِيهَا، فَأَسْمَعُ بُكَاءَ الصَّبِيِّ، فَأَتَجَوَّزُ فِي صَلاَتِي كَرَاهِيَةَ أَنْ أَشُقَّ عَلَى أُمِّهِ ‏\"‏‏.‏ تَابَعَهُ بِشْرُ بْنُ بَكْرٍ وَابْنُ الْمُبَارَكِ وَبَقِيَّةُ عَنِ الأَوْزَاعِيِّ‏.‏",
+   "sha256": "1ea0c3a0cdd9b962d38854128b86362119da8e0e8b0d27a3e0d3abc84fe853a7",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/707.json",
+   "reference": {
+    "book": 10,
+    "hadith": 102
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-8": {
+   "id": "h-bukhari-8",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 8,
+   "dataset_number": 8,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا عُبَيْدُ اللَّهِ بْنُ مُوسَى، قَالَ أَخْبَرَنَا حَنْظَلَةُ بْنُ أَبِي سُفْيَانَ، عَنْ عِكْرِمَةَ بْنِ خَالِدٍ، عَنِ ابْنِ عُمَرَ ـ رضى الله عنهما ـ قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ بُنِيَ الإِسْلاَمُ عَلَى خَمْسٍ شَهَادَةِ أَنْ لاَ إِلَهَ إِلاَّ اللَّهُ وَأَنَّ مُحَمَّدًا رَسُولُ اللَّهِ، وَإِقَامِ الصَّلاَةِ، وَإِيتَاءِ الزَّكَاةِ، وَالْحَجِّ، وَصَوْمِ رَمَضَانَ ‏\"‏‏.‏",
+   "sha256": "67d8b677bc90f68f4e1ce24565b34025c0184f8740fc4bec1bdc44cad3406cf1",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/8.json",
+   "reference": {
+    "book": 2,
+    "hadith": 1
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-831": {
+   "id": "h-bukhari-831",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 831,
+   "dataset_number": 831,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا أَبُو نُعَيْمٍ، قَالَ حَدَّثَنَا الأَعْمَشُ، عَنْ شَقِيقِ بْنِ سَلَمَةَ، قَالَ قَالَ عَبْدُ اللَّهِ كُنَّا إِذَا صَلَّيْنَا خَلْفَ النَّبِيِّ صلى الله عليه وسلم قُلْنَا السَّلاَمُ عَلَى جِبْرِيلَ وَمِيكَائِيلَ، السَّلاَمُ عَلَى فُلاَنٍ وَفُلاَنٍ‏.‏ فَالْتَفَتَ إِلَيْنَا رَسُولُ اللَّهِ صلى الله عليه وسلم فَقَالَ ‏ \"‏ إِنَّ اللَّهَ هُوَ السَّلاَمُ، فَإِذَا صَلَّى أَحَدُكُمْ فَلْيَقُلِ التَّحِيَّاتُ لِلَّهِ، وَالصَّلَوَاتُ وَالطَّيِّبَاتُ، السَّلاَمُ عَلَيْكَ أَيُّهَا النَّبِيُّ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ، السَّلاَمُ عَلَيْنَا وَعَلَى عِبَادِ اللَّهِ الصَّالِحِينَ‏.‏ فَإِنَّكُمْ إِذَا قُلْتُمُوهَا أَصَابَتْ كُلَّ عَبْدٍ لِلَّهِ صَالِحٍ فِي السَّمَاءِ وَالأَرْضِ، أَشْهَدُ أَنْ لاَ إِلَهَ إِلاَّ اللَّهُ، وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ ‏\"‏‏.‏",
+   "sha256": "2eddac435ebbf283ee1b43d5b2ef872a72cc6df154d3258e4005e8aa3ffd059b",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/831.json",
+   "reference": {
+    "book": 10,
+    "hadith": 225
+   },
+   "reference_check": "matched"
+  },
+  "h-bukhari-977": {
+   "id": "h-bukhari-977",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-bukhari",
+   "number": 977,
+   "dataset_number": 977,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا مُسَدَّدٌ، قَالَ حَدَّثَنَا يَحْيَى، عَنْ سُفْيَانَ، قَالَ حَدَّثَنِي عَبْدُ الرَّحْمَنِ بْنُ عَابِسٍ، قَالَ سَمِعْتُ ابْنَ عَبَّاسٍ، قِيلَ لَهُ أَشَهِدْتَ الْعِيدَ مَعَ النَّبِيِّ صلى الله عليه وسلم قَالَ نَعَمْ، وَلَوْلاَ مَكَانِي مِنَ الصِّغَرِ مَا شَهِدْتُهُ، حَتَّى أَتَى الْعَلَمَ الَّذِي عِنْدَ دَارِ كَثِيرِ بْنِ الصَّلْتِ فَصَلَّى ثُمَّ خَطَبَ ثُمَّ أَتَى النِّسَاءَ، وَمَعَهُ بِلاَلٌ، فَوَعَظَهُنَّ وَذَكَّرَهُنَّ، وَأَمَرَهُنَّ بِالصَّدَقَةِ، فَرَأَيْتُهُنَّ يُهْوِينَ بِأَيْدِيهِنَّ يَقْذِفْنَهُ فِي ثَوْبِ بِلاَلٍ، ثُمَّ انْطَلَقَ هُوَ وَبِلاَلٌ إِلَى بَيْتِهِ‏.‏",
+   "sha256": "fddbbfa6cc43ff09cabce33c57c1343994c975250fd28bb24e1ef193454af215",
+   "grades": [],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-bukhari/977.json",
+   "reference": {
+    "book": 13,
+    "hadith": 26
+   },
+   "reference_check": "matched"
+  },
+  "h-muslim-1015": {
+   "id": "h-muslim-1015",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-muslim",
+   "number": 1015,
+   "dataset_number": 2346,
+   "numbering": "arabicnumber",
+   "text": "وَحَدَّثَنِي أَبُو كُرَيْبٍ، مُحَمَّدُ بْنُ الْعَلاَءِ حَدَّثَنَا أَبُو أُسَامَةَ، حَدَّثَنَا فُضَيْلُ بْنُ مَرْزُوقٍ، حَدَّثَنِي عَدِيُّ بْنُ ثَابِتٍ، عَنْ أَبِي حَازِمٍ، عَنْ أَبِي هُرَيْرَةَ، قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏\"‏ أَيُّهَا النَّاسُ إِنَّ اللَّهَ طَيِّبٌ لاَ يَقْبَلُ إِلاَّ طَيِّبًا وَإِنَّ اللَّهَ أَمَرَ الْمُؤْمِنِينَ بِمَا أَمَرَ بِهِ الْمُرْسَلِينَ فَقَالَ ‏{‏ يَا أَيُّهَا الرُّسُلُ كُلُوا مِنَ الطَّيِّبَاتِ وَاعْمَلُوا صَالِحًا إِنِّي بِمَا تَعْمَلُونَ عَلِيمٌ‏}‏ وَقَالَ ‏{‏ يَا أَيُّهَا الَّذِينَ آمَنُوا كُلُوا مِنْ طَيِّبَاتِ مَا رَزَقْنَاكُمْ‏}‏ ‏\"‏ ‏.‏ ثُمَّ ذَكَرَ الرَّجُلَ يُطِيلُ السَّفَرَ أَشْعَثَ أَغْبَرَ يَمُدُّ يَدَيْهِ إِلَى السَّمَاءِ يَا رَبِّ يَا رَبِّ وَمَطْعَمُهُ حَرَامٌ وَمَشْرَبُهُ حَرَامٌ وَمَلْبَسُهُ حَرَامٌ وَغُذِيَ بِالْحَرَامِ فَأَنَّى يُسْتَجَابُ لِذَلِكَ ‏\"‏ ‏.‏",
+   "sha256": "d7b9debd2b4d021988ccda78d92732d243f376469d553e4adb62baf2dd9aeacc",
+   "grades": [],
+   "missing": [],
+   "note": "found by its standard number (the dataset's file number is 2346)",
+   "url": "ara-muslim.json (arabicnumber 1015)",
+   "reference": {
+    "book": 12,
+    "hadith": 83
+   },
+   "reference_check": "matched"
+  },
+  "h-muslim-1336": {
+   "id": "h-muslim-1336",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-muslim",
+   "number": 1336,
+   "dataset_number": 3253,
+   "numbering": "arabicnumber",
+   "text": "حَدَّثَنَا أَبُو بَكْرِ بْنُ أَبِي شَيْبَةَ، وَزُهَيْرُ بْنُ حَرْبٍ، وَابْنُ أَبِي عُمَرَ، جَمِيعًا عَنِ ابْنِ، عُيَيْنَةَ - قَالَ أَبُو بَكْرٍ حَدَّثَنَا سُفْيَانُ بْنُ عُيَيْنَةَ، - عَنْ إِبْرَاهِيمَ بْنِ عُقْبَةَ، عَنْ كُرَيْبٍ، مَوْلَى ابْنِ عَبَّاسٍ عَنِ ابْنِ عَبَّاسٍ، عَنِ النَّبِيِّ صلى الله عليه وسلم لَقِيَ رَكْبًا بِالرَّوْحَاءِ فَقَالَ ‏\"‏ مَنِ الْقَوْمُ ‏\"‏ ‏.‏ قَالُوا الْمُسْلِمُونَ ‏.‏ فَقَالُوا مَنْ أَنْتَ قَالَ ‏\"‏ رَسُولُ اللَّهِ ‏\"‏ ‏.‏ فَرَفَعَتْ إِلَيْهِ امْرَأَةٌ صَبِيًّا فَقَالَتْ أَلِهَذَا حَجٌّ قَالَ ‏\"‏ نَعَمْ وَلَكِ أَجْرٌ ‏\"‏ ‏.‏",
+   "sha256": "4e9e841ca245b4da2ab7ab2bd5059794036caf1aa10e4b3657d3a6124d088f8d",
+   "grades": [],
+   "missing": [],
+   "note": "found by its standard number (the dataset's file number is 3253)",
+   "url": "ara-muslim.json (arabicnumber 1336.01)",
+   "reference": {
+    "book": 15,
+    "hadith": 457
+   },
+   "reference_check": "matched"
+  },
+  "h-muslim-2018": {
+   "id": "h-muslim-2018",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-muslim",
+   "number": 2018,
+   "dataset_number": 5262,
+   "numbering": "arabicnumber",
+   "text": "حَدَّثَنَا مُحَمَّدُ بْنُ الْمُثَنَّى الْعَنَزِيُّ، حَدَّثَنَا الضَّحَّاكُ، - يَعْنِي أَبَا عَاصِمٍ - عَنِ ابْنِ، جُرَيْجٍ أَخْبَرَنِي أَبُو الزُّبَيْرِ، عَنْ جَابِرِ بْنِ عَبْدِ اللَّهِ، أَنَّهُ سَمِعَ النَّبِيَّ صلى الله عليه وسلم يَقُولُ ‏ \"‏ إِذَا دَخَلَ الرَّجُلُ بَيْتَهُ فَذَكَرَ اللَّهَ عِنْدَ دُخُولِهِ وَعِنْدَ طَعَامِهِ قَالَ الشَّيْطَانُ لاَ مَبِيتَ لَكُمْ وَلاَ عَشَاءَ ‏.‏ وَإِذَا دَخَلَ فَلَمْ يَذْكُرِ اللَّهَ عِنْدَ دُخُولِهِ قَالَ الشَّيْطَانُ أَدْرَكْتُمُ الْمَبِيتَ ‏.‏ وَإِذَا لَمْ يَذْكُرِ اللَّهَ عِنْدَ طَعَامِهِ قَالَ أَدْرَكْتُمُ الْمَبِيتَ وَالْعَشَاءَ ‏\"‏ ‏.‏",
+   "sha256": "09118d6988b7d36e2c2989879b7b01d6cf1adf3e5284632e80bf2b4ba8edf822",
+   "grades": [],
+   "missing": [],
+   "note": "found by its standard number (the dataset's file number is 5262)",
+   "url": "ara-muslim.json (arabicnumber 2018.01)",
+   "reference": {
+    "book": 36,
+    "hadith": 136
+   },
+   "reference_check": "matched"
+  },
+  "h-muslim-2034": {
+   "id": "h-muslim-2034",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-muslim",
+   "number": 2034,
+   "dataset_number": 5306,
+   "numbering": "arabicnumber",
+   "text": "وَحَدَّثَنِي مُحَمَّدُ بْنُ حَاتِمٍ، وَأَبُو بَكْرِ بْنُ نَافِعٍ الْعَبْدِيُّ قَالاَ حَدَّثَنَا بَهْزٌ، حَدَّثَنَا حَمَّادُ، بْنُ سَلَمَةَ حَدَّثَنَا ثَابِتٌ، عَنْ أَنَسٍ، أَنَّ رَسُولَ اللَّهِ صلى الله عليه وسلم كَانَ إِذَا أَكَلَ طَعَامًا لَعِقَ أَصَابِعَهُ الثَّلاَثَ ‏.‏ قَالَ وَقَالَ ‏\"‏ إِذَا سَقَطَتْ لُقْمَةُ أَحَدِكُمْ فَلْيُمِطْ عَنْهَا الأَذَى وَلْيَأْكُلْهَا وَلاَ يَدَعْهَا لِلشَّيْطَانِ ‏\"‏ ‏.‏ وَأَمَرَنَا أَنْ نَسْلُتَ الْقَصْعَةَ قَالَ ‏\"‏ فَإِنَّكُمْ لاَ تَدْرُونَ فِي أَىِّ طَعَامِكُمُ الْبَرَكَةُ ‏\"‏ ‏.‏",
+   "sha256": "885315ac0e151fcc95331e8c353827dc9d0513663b07b1feb53b66c31bb63bbc",
+   "grades": [],
+   "missing": [],
+   "note": "found by its standard number (the dataset's file number is 5306)",
+   "url": "ara-muslim.json (arabicnumber 2034)",
+   "reference": {
+    "book": 36,
+    "hadith": 180
+   },
+   "reference_check": "matched"
+  },
+  "h-muslim-223": {
+   "id": "h-muslim-223",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-muslim",
+   "number": 223,
+   "dataset_number": 534,
+   "numbering": "arabicnumber",
+   "text": "حَدَّثَنَا إِسْحَاقُ بْنُ مَنْصُورٍ، حَدَّثَنَا حَبَّانُ بْنُ هِلاَلٍ، حَدَّثَنَا أَبَانٌ، حَدَّثَنَا يَحْيَى، أَنَّ زَيْدًا، حَدَّثَهُ أَنَّ أَبَا سَلاَّمٍ حَدَّثَهُ عَنْ أَبِي مَالِكٍ الأَشْعَرِيِّ، قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ الطُّهُورُ شَطْرُ الإِيمَانِ وَالْحَمْدُ لِلَّهِ تَمْلأُ الْمِيزَانَ ‏.‏ وَسُبْحَانَ اللَّهِ وَالْحَمْدُ لِلَّهِ تَمْلآنِ - أَوْ تَمْلأُ - مَا بَيْنَ السَّمَوَاتِ وَالأَرْضِ وَالصَّلاَةُ نُورٌ وَالصَّدَقَةُ بُرْهَانٌ وَالصَّبْرُ ضِيَاءٌ وَالْقُرْآنُ حُجَّةٌ لَكَ أَوْ عَلَيْكَ كُلُّ النَّاسِ يَغْدُو فَبَائِعٌ نَفْسَهُ فَمُعْتِقُهَا أَوْ مُوبِقُهَا ‏\"‏ ‏.‏",
+   "sha256": "8e01ef0663c40ce5708a4875169710883274985dcbef8f25cb2a459872bfe5c6",
+   "grades": [],
+   "missing": [],
+   "note": "found by its standard number (the dataset's file number is 534)",
+   "url": "ara-muslim.json (arabicnumber 223)",
+   "reference": {
+    "book": 2,
+    "hadith": 1
+   },
+   "reference_check": "matched"
+  },
+  "h-muslim-234": {
+   "id": "h-muslim-234",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-muslim",
+   "number": 234,
+   "dataset_number": 553,
+   "numbering": "arabicnumber",
+   "text": "حَدَّثَنِي مُحَمَّدُ بْنُ حَاتِمِ بْنِ مَيْمُونٍ، حَدَّثَنَا عَبْدُ الرَّحْمَنِ بْنُ مَهْدِيٍّ، حَدَّثَنَا مُعَاوِيَةُ بْنُ صَالِحٍ، عَنْ رَبِيعَةَ، - يَعْنِي ابْنَ يَزِيدَ - عَنْ أَبِي إِدْرِيسَ الْخَوْلاَنِيِّ، عَنْ عُقْبَةَ بْنِ عَامِرٍ، ح وَحَدَّثَنِي أَبُو عُثْمَانَ، عَنْ جُبَيْرِ بْنِ نُفَيْرٍ، عَنْ عُقْبَةَ بْنِ عَامِرٍ، قَالَ كَانَتْ عَلَيْنَا رِعَايَةُ الإِبِلِ فَجَاءَتْ نَوْبَتِي فَرَوَّحْتُهَا بِعَشِيٍّ فَأَدْرَكْتُ رَسُولَ اللَّهِ صلى الله عليه وسلم قَائِمًا يُحَدِّثُ النَّاسَ فَأَدْرَكْتُ مِنْ قَوْلِهِ ‏\"‏ مَا مِنْ مُسْلِمٍ يَتَوَضَّأُ فَيُحْسِنُ وُضُوءَهُ ثُمَّ يَقُومُ فَيُصَلِّي رَكْعَتَيْنِ مُقْبِلٌ عَلَيْهِمَا بِقَلْبِهِ وَوَجْهِهِ إِلاَّ وَجَبَتْ لَهُ الْجَنَّةُ ‏\"‏ ‏.‏ قَالَ فَقُلْتُ مَا أَجْوَدَ هَذِهِ ‏.‏ فَإِذَا قَائِلٌ بَيْنَ يَدَىَّ يَقُولُ الَّتِي قَبْلَهَا أَجْوَدُ ‏.‏ فَنَظَرْتُ فَإِذَا عُمَرُ قَالَ إِنِّي قَدْ رَأَيْتُكَ جِئْتَ آنِفًا قَالَ ‏\"‏ مَا مِنْكُمْ مِنْ أَحَدٍ يَتَوَضَّأُ فَيُبْلِغُ - أَوْ فَيُسْبِغُ - الْوُضُوءَ ثُمَّ يَقُولُ أَشْهَدُ أَنْ لاَ إِلَهَ إِلاَّ اللَّهُ وَأَنَّ مُحَمَّدًا عَبْدُ اللَّهِ وَرَسُولُهُ إِلاَّ فُتِحَتْ لَهُ أَبْوَابُ الْجَنَّةِ الثَّمَانِيَةُ يَدْخُلُ مِنْ أَيِّهَا شَاءَ ‏\"‏ ‏.‏",
+   "sha256": "6be672cdc2b217875b4e5f611461bc56cf9f45bfab0c2fbf9f4a7719887054d6",
+   "grades": [],
+   "missing": [],
+   "note": "found by its standard number (the dataset's file number is 553)",
+   "url": "ara-muslim.json (arabicnumber 234.01)",
+   "reference": {
+    "book": 2,
+    "hadith": 20
+   },
+   "reference_check": "matched"
+  },
+  "h-muslim-2588": {
+   "id": "h-muslim-2588",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-muslim",
+   "number": 2588,
+   "dataset_number": 6592,
+   "numbering": "arabicnumber",
+   "text": "حَدَّثَنَا يَحْيَى بْنُ أَيُّوبَ، وَقُتَيْبَةُ، وَابْنُ، حُجْرٍ قَالُوا حَدَّثَنَا إِسْمَاعِيلُ، - وَهُوَ ابْنُ جَعْفَرٍ - عَنِ الْعَلاَءِ، عَنْ أَبِيهِ، عَنْ أَبِي هُرَيْرَةَ، عَنْ رَسُولِ اللَّهِ صلى الله عليه وسلم قَالَ ‏ \"‏ مَا نَقَصَتْ صَدَقَةٌ مِنْ مَالٍ وَمَا زَادَ اللَّهُ عَبْدًا بِعَفْوٍ إِلاَّ عِزًّا وَمَا تَوَاضَعَ أَحَدٌ لِلَّهِ إِلاَّ رَفَعَهُ اللَّهُ ‏\"‏ ‏.‏",
+   "sha256": "19f8e35d28bcfd757a0f7c84d3ffa721d3b3b213fea603e7c8eb6be4f00b2066",
+   "grades": [],
+   "missing": [],
+   "note": "found by its standard number (the dataset's file number is 6592)",
+   "url": "ara-muslim.json (arabicnumber 2588)",
+   "reference": {
+    "book": 45,
+    "hadith": 90
+   },
+   "reference_check": "matched"
+  },
+  "h-muslim-2664": {
+   "id": "h-muslim-2664",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-muslim",
+   "number": 2664,
+   "dataset_number": 6774,
+   "numbering": "arabicnumber",
+   "text": "حَدَّثَنَا أَبُو بَكْرِ بْنُ أَبِي شَيْبَةَ، وَابْنُ، نُمَيْرٍ قَالاَ حَدَّثَنَا عَبْدُ اللَّهِ بْنُ إِدْرِيسَ، عَنْ رَبِيعَةَ بْنِ عُثْمَانَ، عَنْ مُحَمَّدِ بْنِ يَحْيَى بْنِ حَبَّانَ، عَنِ الأَعْرَجِ، عَنْ أَبِي هُرَيْرَةَ، قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ الْمُؤْمِنُ الْقَوِيُّ خَيْرٌ وَأَحَبُّ إِلَى اللَّهِ مِنَ الْمُؤْمِنِ الضَّعِيفِ وَفِي كُلٍّ خَيْرٌ احْرِصْ عَلَى مَا يَنْفَعُكَ وَاسْتَعِنْ بِاللَّهِ وَلاَ تَعْجِزْ وَإِنْ أَصَابَكَ شَىْءٌ فَلاَ تَقُلْ لَوْ أَنِّي فَعَلْتُ كَانَ كَذَا وَكَذَا ‏.‏ وَلَكِنْ قُلْ قَدَرُ اللَّهِ وَمَا شَاءَ فَعَلَ فَإِنَّ لَوْ تَفْتَحُ عَمَلَ الشَّيْطَانِ ‏\"‏ ‏.‏",
+   "sha256": "6359a66141c50131ab97f757a02cbf6b7d0bc3271c95182455967c00ebe7d2b5",
+   "grades": [],
+   "missing": [],
+   "note": "found by its standard number (the dataset's file number is 6774)",
+   "url": "ara-muslim.json (arabicnumber 2664)",
+   "reference": {
+    "book": 46,
+    "hadith": 52
+   },
+   "reference_check": "matched"
+  },
+  "h-muslim-2699": {
+   "id": "h-muslim-2699",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-muslim",
+   "number": 2699,
+   "dataset_number": 6853,
+   "numbering": "arabicnumber",
+   "text": "حَدَّثَنَا يَحْيَى بْنُ يَحْيَى التَّمِيمِيُّ، وَأَبُو بَكْرِ بْنُ أَبِي شَيْبَةَ وَمُحَمَّدُ بْنُ الْعَلاَءِ الْهَمْدَانِيُّ - وَاللَّفْظُ لِيَحْيَى - قَالَ يَحْيَى أَخْبَرَنَا وَقَالَ الآخَرَانِ، حَدَّثَنَا أَبُو مُعَاوِيَةَ، عَنِ الأَعْمَشِ، عَنْ أَبِي صَالِحٍ، عَنْ أَبِي هُرَيْرَةَ، قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ مَنْ نَفَّسَ عَنْ مُؤْمِنٍ كُرْبَةً مِنْ كُرَبِ الدُّنْيَا نَفَّسَ اللَّهُ عَنْهُ كُرْبَةً مِنْ كُرَبِ يَوْمِ الْقِيَامَةِ وَمَنْ يَسَّرَ عَلَى مُعْسِرٍ يَسَّرَ اللَّهُ عَلَيْهِ فِي الدُّنْيَا وَالآخِرَةِ وَمَنْ سَتَرَ مُسْلِمًا سَتَرَهُ اللَّهُ فِي الدُّنْيَا وَالآخِرَةِ وَاللَّهُ فِي عَوْنِ الْعَبْدِ مَا كَانَ الْعَبْدُ فِي عَوْنِ أَخِيهِ وَمَنْ سَلَكَ طَرِيقًا يَلْتَمِسُ فِيهِ عِلْمًا سَهَّلَ اللَّهُ لَهُ بِهِ طَرِيقًا إِلَى الْجَنَّةِ وَمَا اجْتَمَعَ قَوْمٌ فِي بَيْتٍ مِنْ بُيُوتِ اللَّهِ يَتْلُونَ كِتَابَ اللَّهِ وَيَتَدَارَسُونَهُ بَيْنَهُمْ إِلاَّ نَزَلَتْ عَلَيْهِمُ السَّكِينَةُ وَغَشِيَتْهُمُ الرَّحْمَةُ وَحَفَّتْهُمُ الْمَلاَئِكَةُ وَذَكَرَهُمُ اللَّهُ فِيمَنْ عِنْدَهُ وَمَنْ بَطَّأَ بِهِ عَمَلُهُ لَمْ يُسْرِعْ بِهِ نَسَبُهُ ‏\"‏ ‏.‏",
+   "sha256": "27d8e8f0dc057643c396b0e6073270729828910830ccfa49adcf245a18f5f5cf",
+   "grades": [],
+   "missing": [],
+   "note": "found by its standard number (the dataset's file number is 6853)",
+   "url": "ara-muslim.json (arabicnumber 2699.01)",
+   "reference": {
+    "book": 48,
+    "hadith": 48
+   },
+   "reference_check": "matched"
+  },
+  "h-muslim-2996": {
+   "id": "h-muslim-2996",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-muslim",
+   "number": 2996,
+   "dataset_number": 7495,
+   "numbering": "arabicnumber",
+   "text": "حَدَّثَنَا مُحَمَّدُ بْنُ رَافِعٍ، وَعَبْدُ بْنُ حُمَيْدٍ، قَالَ عَبْدٌ أَخْبَرَنَا وَقَالَ ابْنُ رَافِعٍ، حَدَّثَنَا عَبْدُ الرَّزَّاقِ، أَخْبَرَنَا مَعْمَرٌ، عَنِ الزُّهْرِيِّ، عَنْ عُرْوَةَ، عَنْ عَائِشَةَ، قَالَتْ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ خُلِقَتِ الْمَلاَئِكَةُ مِنْ نُورٍ وَخُلِقَ الْجَانُّ مِنْ مَارِجٍ مِنْ نَارٍ وَخُلِقَ آدَمُ مِمَّا وُصِفَ لَكُمْ ‏\"‏ ‏.‏",
+   "sha256": "fec565a69c86f370738fdd7e97d8128d1d6a72af0a6483fbae071f2ae41fcb3a",
+   "grades": [],
+   "missing": [],
+   "note": "found by its standard number (the dataset's file number is 7495)",
+   "url": "ara-muslim.json (arabicnumber 2996)",
+   "reference": {
+    "book": 55,
+    "hadith": 78
+   },
+   "reference_check": "matched"
+  },
+  "h-muslim-54": {
+   "id": "h-muslim-54",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-muslim",
+   "number": 54,
+   "dataset_number": 194,
+   "numbering": "arabicnumber",
+   "text": "حَدَّثَنَا أَبُو بَكْرِ بْنُ أَبِي شَيْبَةَ، حَدَّثَنَا أَبُو مُعَاوِيَةَ، وَوَكِيعٌ، عَنِ الأَعْمَشِ، عَنْ أَبِي صَالِحٍ، عَنْ أَبِي هُرَيْرَةَ، قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ لاَ تَدْخُلُونَ الْجَنَّةَ حَتَّى تُؤْمِنُوا وَلاَ تُؤْمِنُوا حَتَّى تَحَابُّوا ‏.‏ أَوَلاَ أَدُلُّكُمْ عَلَى شَىْءٍ إِذَا فَعَلْتُمُوهُ تَحَابَبْتُمْ أَفْشُوا السَّلاَمَ بَيْنَكُمْ ‏\"‏ ‏.‏",
+   "sha256": "c7effef90982cfe48cf28c2dee43657cdb4f64e9d9fa0fc3af5df21021ffd945",
+   "grades": [],
+   "missing": [],
+   "note": "found by its standard number (the dataset's file number is 194)",
+   "url": "ara-muslim.json (arabicnumber 54.01)",
+   "reference": {
+    "book": 1,
+    "hadith": 101
+   },
+   "reference_check": "matched"
+  },
+  "h-muslim-671": {
+   "id": "h-muslim-671",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-muslim",
+   "number": 671,
+   "dataset_number": 1528,
+   "numbering": "arabicnumber",
+   "text": "وَحَدَّثَنَا هَارُونُ بْنُ مَعْرُوفٍ، وَإِسْحَاقُ بْنُ مُوسَى الأَنْصَارِيُّ، قَالاَ حَدَّثَنَا أَنَسُ بْنُ عِيَاضٍ، - حَدَّثَنِي ابْنُ أَبِي ذُبَابٍ، فِي رِوَايَةِ هَارُونَ - وَفِي حَدِيثِ الأَنْصَارِيِّ حَدَّثَنِي الْحَارِثُ - عَنْ عَبْدِ الرَّحْمَنِ بْنِ مِهْرَانَ مَوْلَى أَبِي هُرَيْرَةَ عَنْ أَبِي هُرَيْرَةَ أَنَّ رَسُولَ اللَّهِ صلى الله عليه وسلم قَالَ ‏ \"‏ أَحَبُّ الْبِلاَدِ إِلَى اللَّهِ مَسَاجِدُهَا وَأَبْغَضُ الْبِلاَدِ إِلَى اللَّهِ أَسْوَاقُهَا ‏\"‏ ‏.‏",
+   "sha256": "a90bb8ff21e7aa312874b26aee15263927699c17e79599d6fa8bd220da1b6cc6",
+   "grades": [],
+   "missing": [],
+   "note": "found by its standard number (the dataset's file number is 1528)",
+   "url": "ara-muslim.json (arabicnumber 671)",
+   "reference": {
+    "book": 5,
+    "hadith": 361
+   },
+   "reference_check": "matched"
+  },
+  "h-muslim-713": {
+   "id": "h-muslim-713",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-muslim",
+   "number": 713,
+   "dataset_number": 1652,
+   "numbering": "arabicnumber",
+   "text": "حَدَّثَنَا يَحْيَى بْنُ يَحْيَى، أَخْبَرَنَا سُلَيْمَانُ بْنُ بِلاَلٍ، عَنْ رَبِيعَةَ بْنِ أَبِي عَبْدِ الرَّحْمَنِ، عَنْ عَبْدِ الْمَلِكِ بْنِ سَعِيدٍ، عَنْ أَبِي حُمَيْدٍ، - أَوْ عَنْ أَبِي أُسَيْدٍ، - قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ إِذَا دَخَلَ أَحَدُكُمُ الْمَسْجِدَ فَلْيَقُلِ اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ ‏.‏ وَإِذَا خَرَجَ فَلْيَقُلِ اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ ‏\"‏ ‏.‏ قَالَ مُسْلِمٌ سَمِعْتُ يَحْيَى بْنَ يَحْيَى يَقُولُ كَتَبْتُ هَذَا الْحَدِيثَ مِنْ كِتَابِ سُلَيْمَانَ بْنِ بِلاَلٍ ‏.‏ قَالَ بَلَغَنِي أَنَّ يَحْيَى الْحِمَّانِيَّ يَقُولُ وَأَبِي أُسَيْدٍ ‏.‏",
+   "sha256": "956d4e25d01a0b693bcfc9aedb946aa24209880f979f26caabb7f384ac21bb48",
+   "grades": [],
+   "missing": [],
+   "note": "found by its standard number (the dataset's file number is 1652)",
+   "url": "ara-muslim.json (arabicnumber 713.01)",
+   "reference": {
+    "book": 6,
+    "hadith": 82
+   },
+   "reference_check": "matched"
+  },
+  "h-muslim-772": {
+   "id": "h-muslim-772",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-muslim",
+   "number": 772,
+   "dataset_number": 1814,
+   "numbering": "arabicnumber",
+   "text": "وَحَدَّثَنَا أَبُو بَكْرِ بْنُ أَبِي شَيْبَةَ، حَدَّثَنَا عَبْدُ اللَّهِ بْنُ نُمَيْرٍ، وَأَبُو مُعَاوِيَةَ ح وَحَدَّثَنَا زُهَيْرُ بْنُ حَرْبٍ، وَإِسْحَاقُ بْنُ إِبْرَاهِيمَ، جَمِيعًا عَنْ جَرِيرٍ، كُلُّهُمْ عَنِ الأَعْمَشِ، ح وَحَدَّثَنَا ابْنُ، نُمَيْرٍ - وَاللَّفْظُ لَهُ - حَدَّثَنَا أَبِي، حَدَّثَنَا الأَعْمَشُ، عَنْ سَعْدِ بْنِ عُبَيْدَةَ، عَنِ الْمُسْتَوْرِدِ بْنِ الأَحْنَفِ، عَنْ صِلَةَ بْنِ زُفَرَ، عَنْ حُذَيْفَةَ، قَالَ صَلَّيْتُ مَعَ النَّبِيِّ صلى الله عليه وسلم ذَاتَ لَيْلَةٍ فَافْتَتَحَ الْبَقَرَةَ فَقُلْتُ يَرْكَعُ عِنْدَ الْمِائَةِ ‏.‏ ثُمَّ مَضَى فَقُلْتُ يُصَلِّي بِهَا فِي رَكْعَةٍ فَمَضَى فَقُلْتُ يَرْكَعُ بِهَا ‏.‏ ثُمَّ افْتَتَحَ النِّسَاءَ فَقَرَأَهَا ثُمَّ افْتَتَحَ آلَ عِمْرَانَ فَقَرَأَهَا يَقْرَأُ مُتَرَسِّلاً إِذَا مَرَّ بِآيَةٍ فِيهَا تَسْبِيحٌ سَبَّحَ وَإِذَا مَرَّ بِسُؤَالٍ سَأَلَ وَإِذَا مَرَّ بِتَعَوُّذٍ تَعَوَّذَ ثُمَّ رَكَعَ فَجَعَلَ يَقُولُ ‏\"‏ سُبْحَانَ رَبِّيَ الْعَظِيمِ ‏\"‏ ‏.‏ فَكَانَ رُكُوعُهُ نَحْوًا مِنْ قِيَامِهِ ثُمَّ قَالَ ‏\"‏ سَمِعَ اللَّهُ لِمَنْ حَمِدَهُ ‏\"‏ ‏.‏ ثُمَّ قَامَ طَوِيلاً قَرِيبًا مِمَّا رَكَعَ ثُمَّ سَجَدَ فَقَالَ ‏\"‏ سُبْحَانَ رَبِّيَ الأَعْلَى ‏\"‏ ‏.‏ فَكَانَ سُجُودُهُ قَرِيبًا مِنْ قِيَامِهِ ‏.‏ قَالَ وَفِي حَدِيثِ جَرِيرٍ مِنَ الزِّيَادَةِ فَقَالَ ‏\"‏ سَمِعَ اللَّهُ لِمَنْ حَمِدَهُ رَبَّنَا لَكَ الْحَمْدُ\"‏ ‏.‏",
+   "sha256": "f29bb75138a1234d03bebd7e81472f5fca8eac46b8471e051416da9bb5ecf547",
+   "grades": [],
+   "missing": [],
+   "note": "found by its standard number (the dataset's file number is 1814)",
+   "url": "ara-muslim.json (arabicnumber 772)",
+   "reference": {
+    "book": 6,
+    "hadith": 242
+   },
+   "reference_check": "matched"
+  },
+  "h-muslim-8": {
+   "id": "h-muslim-8",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-muslim",
+   "number": 8,
+   "dataset_number": 93,
+   "numbering": "arabicnumber",
+   "text": "حَدَّثَنِي أَبُو خَيْثَمَةَ، زُهَيْرُ بْنُ حَرْبٍ حَدَّثَنَا وَكِيعٌ، عَنْ كَهْمَسٍ، عَنْ عَبْدِ اللَّهِ بْنِ بُرَيْدَةَ، عَنْ يَحْيَى بْنِ يَعْمَرَ، ح وَحَدَّثَنَا عُبَيْدُ اللَّهِ بْنُ مُعَاذٍ الْعَنْبَرِيُّ، - وَهَذَا حَدِيثُهُ - حَدَّثَنَا أَبِي، حَدَّثَنَا كَهْمَسٌ، عَنِ ابْنِ بُرَيْدَةَ، عَنْ يَحْيَى بْنِ يَعْمَرَ، قَالَ كَانَ أَوَّلَ مَنْ قَالَ فِي الْقَدَرِ بِالْبَصْرَةِ مَعْبَدٌ الْجُهَنِيُّ فَانْطَلَقْتُ أَنَا وَحُمَيْدُ بْنُ عَبْدِ الرَّحْمَنِ الْحِمْيَرِيُّ حَاجَّيْنِ أَوْ مُعْتَمِرَيْنِ فَقُلْنَا لَوْ لَقِينَا أَحَدًا مِنْ أَصْحَابِ رَسُولِ اللَّهِ صلى الله عليه وسلم فَسَأَلْنَاهُ عَمَّا يَقُولُ هَؤُلاَءِ فِي الْقَدَرِ فَوُفِّقَ لَنَا عَبْدُ اللَّهِ بْنُ عُمَرَ بْنِ الْخَطَّابِ دَاخِلاً الْمَسْجِدَ فَاكْتَنَفْتُهُ أَنَا وَصَاحِبِي أَحَدُنَا عَنْ يَمِينِهِ وَالآخَرُ عَنْ شِمَالِهِ فَظَنَنْتُ أَنَّ صَاحِبِي سَيَكِلُ الْكَلاَمَ إِلَىَّ فَقُلْتُ أَبَا عَبْدِ الرَّحْمَنِ إِنَّهُ قَدْ ظَهَرَ قِبَلَنَا نَاسٌ يَقْرَءُونَ الْقُرْآنَ وَيَتَقَفَّرُونَ الْعِلْمَ - وَذَكَرَ مِنْ شَأْنِهِمْ - وَأَنَّهُمْ يَزْعُمُونَ أَنْ لاَ قَدَرَ وَأَنَّ الأَمْرَ أُنُفٌ ‏.‏ قَالَ فَإِذَا لَقِيتَ أُولَئِكَ فَأَخْبِرْهُمْ أَنِّي بَرِيءٌ مِنْهُمْ وَأَنَّهُمْ بُرَآءُ مِنِّي وَالَّذِي يَحْلِفُ بِهِ عَبْدُ اللَّهِ بْنُ عُمَرَ لَوْ أَنَّ لأَحَدِهِمْ مِثْلَ أُحُدٍ ذَهَبًا فَأَنْفَقَهُ مَا قَبِلَ اللَّهُ مِنْهُ حَتَّى يُؤْمِنَ بِالْقَدَرِ ثُمَّ قَالَ حَدَّثَنِي أَبِي عُمَرُ بْنُ الْخَطَّابِ قَالَ بَيْنَمَا نَحْنُ عِنْدَ رَسُولِ اللَّهِ صلى الله عليه وسلم ذَاتَ يَوْمٍ إِذْ طَلَعَ عَلَيْنَا رَجُلٌ شَدِيدُ بَيَاضِ الثِّيَابِ شَدِيدُ سَوَادِ الشَّعَرِ لاَ يُرَى عَلَيْهِ أَثَرُ السَّفَرِ وَلاَ يَعْرِفُهُ مِنَّا أَحَدٌ حَتَّى جَلَسَ إِلَى النَّبِيِّ صلى الله عليه وسلم فَأَسْنَدَ رُكْبَتَيْهِ إِلَى رُكْبَتَيْهِ وَوَضَعَ كَفَّيْهِ عَلَى فَخِذَيْهِ وَقَالَ يَا مُحَمَّدُ أَخْبِرْنِي عَنِ الإِسْلاَمِ ‏.‏ فَقَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏\"‏ الإِسْلاَمُ أَنْ تَشْهَدَ أَنْ لاَ إِلَهَ إِلاَّ اللَّهُ وَأَنَّ مُحَمَّدًا رَسُولُ اللَّهِ وَتُقِيمَ الصَّلاَةَ وَتُؤْتِيَ الزَّكَاةَ وَتَصُومَ رَمَضَانَ وَتَحُجَّ الْبَيْتَ إِنِ اسْتَطَعْتَ إِلَيْهِ سَبِيلاً ‏.‏ قَالَ صَدَقْتَ ‏.‏ قَالَ فَعَجِبْنَا لَهُ يَسْأَلُهُ وَيُصَدِّقُهُ ‏.‏ قَالَ فَأَخْبِرْنِي عَنِ الإِيمَانِ ‏.‏ قَالَ ‏\"‏ أَنْ تُؤْمِنَ بِاللَّهِ وَمَلاَئِكَتِهِ وَكُتُبِهِ وَرُسُلِهِ وَالْيَوْمِ الآخِرِ وَتُؤْمِنَ بِالْقَدَرِ خَيْرِهِ وَشَرِّهِ ‏\"‏ ‏.‏ قَالَ صَدَقْتَ ‏.‏ قَالَ فَأَخْبِرْنِي عَنِ الإِحْسَانِ ‏.‏ قَالَ ‏\"‏ أَنْ تَعْبُدَ اللَّهَ كَأَنَّكَ تَرَاهُ فَإِنْ لَمْ تَكُنْ تَرَاهُ فَإِنَّهُ يَرَاكَ ‏\"‏ ‏.‏ قَالَ فَأَخْبِرْنِي عَنِ السَّاعَةِ ‏.‏ قَالَ ‏\"‏ مَا الْمَسْئُولُ عَنْهَا بِأَعْلَمَ مِنَ السَّائِلِ ‏\"‏ ‏.‏ قَالَ فَأَخْبِرْنِي عَنْ أَمَارَتِهَا ‏.‏ قَالَ ‏\"‏ أَنْ تَلِدَ الأَمَةُ رَبَّتَهَا وَأَنْ تَرَى الْحُفَاةَ الْعُرَاةَ الْعَالَةَ رِعَاءَ الشَّاءِ يَتَطَاوَلُونَ فِي الْبُنْيَانِ ‏\"‏ ‏.‏ قَالَ ثُمَّ انْطَلَقَ فَلَبِثْتُ مَلِيًّا ثُمَّ قَالَ لِي ‏\"‏ يَا عُمَرُ أَتَدْرِي مَنِ السَّائِلُ ‏\"‏ ‏.‏ قُلْتُ اللَّهُ وَرَسُولُهُ أَعْلَمُ ‏.‏ قَالَ ‏\"‏ فَإِنَّهُ جِبْرِيلُ أَتَاكُمْ يُعَلِّمُكُمْ دِينَكُمْ ‏\"‏ ‏.‏",
+   "sha256": "f02ee7607561028084cd99a3a9cd67b235a9d4ca4414beef80f1792a7a1ccd8b",
+   "grades": [],
+   "missing": [],
+   "note": "found by its standard number (the dataset's file number is 93)",
+   "url": "ara-muslim.json (arabicnumber 8.01)",
+   "reference": {
+    "book": 1,
+    "hadith": 1
+   },
+   "reference_check": "matched"
+  },
+  "h-tirmidhi-1899": {
+   "id": "h-tirmidhi-1899",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-tirmidhi",
+   "number": 1899,
+   "dataset_number": 1899,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا أَبُو حَفْصٍ، عَمْرُو بْنُ عَلِيٍّ حَدَّثَنَا خَالِدُ بْنُ الْحَارِثِ، حَدَّثَنَا شُعْبَةُ، عَنْ يَعْلَى بْنِ عَطَاءٍ، عَنْ أَبِيهِ، عَنْ عَبْدِ اللَّهِ بْنِ عَمْرٍو، عَنِ النَّبِيِّ صلى الله عليه وسلم قَالَ ‏ \"‏ رِضَا الرَّبِّ فِي رِضَا الْوَالِدِ وَسَخَطُ الرَّبِّ فِي سَخَطِ الْوَالِدِ ‏\"‏ ‏.‏ حَدَّثَنَا مُحَمَّدُ بْنُ بَشَّارٍ، حَدَّثَنَا مُحَمَّدُ بْنُ جَعْفَرٍ، عَنْ شُعْبَةَ، عَنْ يَعْلَى بْنِ عَطَاءٍ، عَنْ أَبِيهِ، عَنْ عَبْدِ اللَّهِ بْنِ عَمْرٍو، نَحْوَهُ وَلَمْ يَرْفَعْهُ وَهَذَا أَصَحُّ ‏.‏ قَالَ أَبُو عِيسَى وَهَكَذَا رَوَى أَصْحَابُ شُعْبَةَ عَنْ شُعْبَةَ عَنْ يَعْلَى بْنِ عَطَاءٍ عَنْ أَبِيهِ عَنْ عَبْدِ اللَّهِ بْنِ عَمْرٍو مَوْقُوفًا وَلاَ نَعْلَمُ أَحَدًا رَفَعَهُ غَيْرَ خَالِدِ بْنِ الْحَارِثِ عَنْ شُعْبَةَ ‏.‏ وَخَالِدُ بْنُ الْحَارِثِ ثِقَةٌ مَأْمُونٌ ‏.‏ قَالَ سَمِعْتُ مُحَمَّدَ بْنَ الْمُثَنَّى يَقُولُ مَا رَأَيْتُ بِالْبَصْرَةِ مِثْلَ خَالِدِ بْنِ الْحَارِثِ وَلاَ بِالْكُوفَةِ مِثْلَ عَبْدِ اللَّهِ بْنِ إِدْرِيسَ ‏.‏ قَالَ وَفِي الْبَابِ عَنْ عَبْدِ اللَّهِ بْنِ مَسْعُودٍ ‏.‏",
+   "sha256": "61450a918aeaa97b817836a87a4d9f1547a1733153a4ed40b773209a3183b5a5",
+   "grades": [
+    {
+     "name": "Ahmad Muhammad Shakir",
+     "grade": "Sahih"
+    },
+    {
+     "name": "Al-Albani",
+     "grade": "Sahih"
+    },
+    {
+     "name": "Zubair Ali Zai",
+     "grade": "Hasan"
+    }
+   ],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-tirmidhi/1899.json",
+   "reference": {
+    "book": 27,
+    "hadith": 3
+   },
+   "reference_check": "matched"
+  },
+  "h-tirmidhi-1919": {
+   "id": "h-tirmidhi-1919",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-tirmidhi",
+   "number": 1919,
+   "dataset_number": 1919,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا مُحَمَّدُ بْنُ مَرْزُوقٍ الْبَصْرِيُّ، حَدَّثَنَا عُبَيْدُ بْنُ وَاقِدٍ، عَنْ زَرْبِيٍّ، قَالَ سَمِعْتُ أَنَسَ بْنَ مَالِكٍ، يَقُولُ جَاءَ شَيْخٌ يُرِيدُ النَّبِيَّ صلى الله عليه وسلم فَأَبْطَأَ الْقَوْمُ عَنْهُ أَنْ يُوَسِّعُوا لَهُ فَقَالَ النَّبِيُّ صلى الله عليه وسلم ‏ \"‏ لَيْسَ مِنَّا مَنْ لَمْ يَرْحَمْ صَغِيرَنَا وَيُوَقِّرْ كَبِيرَنَا ‏\"‏ ‏.‏ قَالَ وَفِي الْبَابِ عَنْ عَبْدِ اللَّهِ بْنِ عَمْرٍو وَأَبِي هُرَيْرَةَ وَابْنِ عَبَّاسٍ وَأَبِي أُمَامَةَ ‏.‏ قَالَ أَبُو عِيسَى هَذَا حَدِيثٌ غَرِيبٌ ‏.‏ وَزَرْبِيٌّ لَهُ أَحَادِيثُ مَنَاكِيرُ عَنْ أَنَسِ بْنِ مَالِكٍ وَغَيْرِهِ ‏.‏",
+   "sha256": "8baad647ef05550071d51709d7550f4451f7e050f3672dbda800138519ae6d79",
+   "grades": [
+    {
+     "name": "Ahmad Muhammad Shakir",
+     "grade": "Sahih"
+    },
+    {
+     "name": "Al-Albani",
+     "grade": "Sahih"
+    },
+    {
+     "name": "Zubair Ali Zai",
+     "grade": "Hasan"
+    }
+   ],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-tirmidhi/1919.json",
+   "reference": {
+    "book": 27,
+    "hadith": 25
+   },
+   "reference_check": "matched"
+  },
+  "h-tirmidhi-1956": {
+   "id": "h-tirmidhi-1956",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-tirmidhi",
+   "number": 1956,
+   "dataset_number": 1956,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا عَبَّاسُ بْنُ عَبْدِ الْعَظِيمِ الْعَنْبَرِيُّ، حَدَّثَنَا النَّضْرُ بْنُ مُحَمَّدٍ الْجُرَشِيُّ الْيَمَامِيُّ، حَدَّثَنَا عِكْرِمَةُ بْنُ عَمَّارٍ، حَدَّثَنَا أَبُو زُمَيْلٍ، عَنْ مَالِكِ بْنِ مَرْثَدٍ، عَنْ أَبِيهِ، عَنْ أَبِي ذَرٍّ، قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ تَبَسُّمُكَ فِي وَجْهِ أَخِيكَ لَكَ صَدَقَةٌ وَأَمْرُكَ بِالْمَعْرُوفِ وَنَهْيُكَ عَنِ الْمُنْكَرِ صَدَقَةٌ وَإِرْشَادُكَ الرَّجُلَ فِي أَرْضِ الضَّلاَلِ لَكَ صَدَقَةٌ وَبَصَرُكَ لِلرَّجُلِ الرَّدِيءِ الْبَصَرِ لَكَ صَدَقَةٌ وَإِمَاطَتُكَ الْحَجَرَ وَالشَّوْكَةَ وَالْعَظْمَ عَنِ الطَّرِيقِ لَكَ صَدَقَةٌ وَإِفْرَاغُكَ مِنْ دَلْوِكَ فِي دَلْوِ أَخِيكَ لَكَ صَدَقَةٌ ‏\"‏ ‏.‏ قَالَ وَفِي الْبَابِ عَنِ ابْنِ مَسْعُودٍ وَجَابِرٍ وَحُذَيْفَةَ وَعَائِشَةَ وَأَبِي هُرَيْرَةَ ‏.‏ قَالَ أَبُو عِيسَى هَذَا حَدِيثٌ حَسَنٌ غَرِيبٌ ‏.‏ وَأَبُو زُمَيْلٍ اسْمُهُ سِمَاكُ بْنُ الْوَلِيدِ الْحَنَفِيُّ ‏.‏",
+   "sha256": "4e1ba571cd977baae05d705d5497511d06705737005a07714452d0a3cb7ed387",
+   "grades": [
+    {
+     "name": "Ahmad Muhammad Shakir",
+     "grade": "Sahih"
+    },
+    {
+     "name": "Al-Albani",
+     "grade": "Sahih"
+    },
+    {
+     "name": "Zubair Ali Zai",
+     "grade": "Isnaad Hasan"
+    }
+   ],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-tirmidhi/1956.json",
+   "reference": {
+    "book": 27,
+    "hadith": 62
+   },
+   "reference_check": "matched"
+  },
+  "h-tirmidhi-2499": {
+   "id": "h-tirmidhi-2499",
+   "kind": "hadith",
+   "dataset": "fawazahmed0/hadith-api",
+   "edition": "ara-tirmidhi",
+   "number": 2499,
+   "dataset_number": 2499,
+   "numbering": "hadithnumber",
+   "text": "حَدَّثَنَا أَحْمَدُ بْنُ مَنِيعٍ، حَدَّثَنَا زَيْدُ بْنُ حُبَابٍ، حَدَّثَنَا عَلِيُّ بْنُ مَسْعَدَةَ الْبَاهِلِيُّ، حَدَّثَنَا قَتَادَةُ، عَنْ أَنَسٍ، أَنَّ النَّبِيَّ صلى الله عليه وسلم قَالَ ‏ \"‏ كُلُّ ابْنِ آدَمَ خَطَّاءٌ وَخَيْرُ الْخَطَّائِينَ التَّوَّابُونَ ‏\"‏ ‏.‏ قَالَ أَبُو عِيسَى هَذَا حَدِيثٌ غَرِيبٌ لاَ نَعْرِفُهُ إِلاَّ مِنْ حَدِيثِ عَلِيِّ بْنِ مَسْعَدَةَ عَنْ قَتَادَةَ ‏.‏",
+   "sha256": "3914d9962943b1376c4cdbfa53441bde0e0d54b7b30427224ed415e3df74fc5a",
+   "grades": [
+    {
+     "name": "Ahmad Muhammad Shakir",
+     "grade": "Hasan"
+    },
+    {
+     "name": "Al-Albani",
+     "grade": "Hasan"
+    },
+    {
+     "name": "Zubair Ali Zai",
+     "grade": "Daif"
+    }
+   ],
+   "missing": [],
+   "note": "",
+   "url": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-tirmidhi/2499.json",
+   "reference": {
+    "book": 37,
+    "hadith": 85
+   },
+   "reference_check": "matched"
+  }
+ }
+}

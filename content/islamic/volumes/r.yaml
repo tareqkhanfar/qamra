@@ -1,0 +1,39 @@
+# «قلبي يعرف الله»: الكتاب الموسمي «رمضان والعيد» (Addendum 10 §9): a small standalone book for ages 4–8 (two levels
+# of difficulty on the pages: ⭐ for 4–6 and ⭐⭐ for 6–8), sold from 6 weeks before Ramadan. See v1.yaml for the format.
+volume: R
+level: 0          # seasonal; not part of a level
+title_ar: رَمَضَانُ وَالْعِيدُ
+title_en: Ramadan and Eid
+age: [4, 8]
+goal: "أجواء رمضان والعيد بالقصة واللعب والأنشطة: الصيام بقدر الطاقة، والقرآن والصدقة، وليلة القدر، وآداب العيد وفرحته"
+front: 4
+units:
+  - id: u-ram1
+    lessons:
+      - {t: "شَهْرُ الْقُرْآنِ", c: [c-ramadan], s: [q-2-185, q-2-183], p: [story, find-objects, choose]}
+      - {t: "أَجْوَاءُ رَمَضَانَ", c: [c-ramadan], s: [h-bukhari-1923], p: [story, coloring, match]}
+  - id: u-ram2
+    lessons:
+      - {t: "صِيَامٌ يُنَاسِبُ عُمْرِي", c: [c-fasting-kids, c-fasting], r: [c-quran-ramadan], s: [h-bukhari-1960, s-fasting-kids], p: [story, wwyd, true-false]}
+      - {t: "أُفْطِرُ وَأَذْكُرُ", c: [c-fasting-kids], s: [d-iftar, h-abudawud-2357], p: [dhikr, match]}
+      - {t: "صَوْمُ اللِّسَانِ وَالْيَدِ", c: [c-fasting, c-tongue], s: [h-bukhari-1894, h-bukhari-6018], p: [story, wwyd]}
+  - id: u-ram3
+    lessons:
+      - {t: "أَقْرَأُ فِي رَمَضَانَ", c: [c-quran-ramadan, c-quran-read], s: [q-2-185, q-54-17], p: [story, draw, choose]}
+      - {t: "أَجُودُ كَمَا جَادَ نَبِيِّي ﷺ", c: [c-ramadan-charity, c-sharing], s: [h-bukhari-6, h-bukhari-6021, s-charity-kids], p: [sira-story, wwyd, coloring]}
+  - id: u-ram4
+    lessons:
+      - {t: "لَيْلَةٌ مُبَارَكَةٌ", c: [c-laylat-alqadr], s: [q-97, h-bukhari-2017], p: [story, find-objects, choose]}
+  - id: u-eid1
+    lessons:
+      - {t: "أَسْتَعِدُّ لِلْعِيدِ", c: [c-eid-manners], s: [h-bukhari-977], p: [story, find-objects, choose]}
+      - {t: "التَّكْبِيرُ", c: [c-takbir], s: [q-2-185, s-eid-takbir], p: [story, match, choose]}
+      - {t: "صَلَاةُ الْعِيدِ مَعَ أَهْلِي", c: [c-eid-manners], s: [h-bukhari-977], p: [story, order-steps]}
+  - id: u-eid2
+    lessons:
+      - {t: "أَزُورُ وَأُهَنِّئُ", c: [c-eid-joy, c-adab-greeting, c-adab-visiting], r: [c-eid-manners, c-takbir], s: [s-eid-greeting, h-muslim-54], p: [story, role-play, match]}
+      - {t: "عِيدِيَّتِي وَصَدَقَتِي", c: [c-eid-joy, c-zakat-sadaqa], s: [h-abudawud-1609, h-bukhari-6021], p: [story, wwyd]}
+      - {t: "أَلْعَابُ الْعِيدِ", c: [c-eid-joy], p: [maze, coloring, draw]}
+cumulative:
+  - {after: u-ram4, c: [c-ramadan, c-fasting-kids, c-laylat-alqadr, c-eid-manners], p: [self-test, self-test]}
+back: [assessment, passport, certificate]

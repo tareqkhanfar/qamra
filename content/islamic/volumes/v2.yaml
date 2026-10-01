@@ -1,0 +1,54 @@
+# «قلبي يعرف الله»: المجلد ٢ (المستوى الأول). See v1.yaml for the format.
+volume: V2
+level: 1
+title_ar: أُصَلِّي وَأَتَعَلَّمُ
+title_en: I Pray and I Learn
+age: [5, 6]
+goal: "يتعلّم الطفل الصلاة والوضوء، ويقرأ القرآن ويحفظ سورًا قصيرة، ويزداد أذكارًا وأدبًا مع أهله، ويتدرّب على المواقف"
+front: 5
+units:
+  - id: u-why-pray
+    lessons:
+      - {t: "أُصَلِّي لِأَنِّي أُحِبُّ اللهَ", c: [c-prayer-why], s: [q-20-14, h-bukhari-528], p: [story, choose]}
+      - {t: "خَمْسُ صَلَوَاتٍ فِي الْيَوْمِ", c: [c-prayer-times], s: [h-bukhari-46, q-4-103, h-bukhari-527], p: [order-steps, match, true-false]}
+      - {t: "أُحِبُّ الْمَسْجِدَ", c: [c-mosque, c-dhikr-mosque], s: [h-muslim-671, d-mosque-in, d-mosque-out], p: [story, dhikr, coloring]}
+  - id: u-wudu
+    lessons:
+      - {t: "لِمَاذَا نَتَوَضَّأُ؟", c: [c-wudu, c-cleanliness], s: [h-muslim-223, q-5-6], p: [story, find-objects, choose]}
+      - {t: "خُطُوَاتُ الْوُضُوءِ", c: [c-wudu], s: [q-5-6, h-bukhari-159, h-abudawud-101], p: [order-steps, order-steps, match]}
+      - {t: "أَقُولُ بَعْدَ الْوُضُوءِ", c: [c-wudu, c-shahada], s: [d-wudu-end, h-muslim-234], p: [dhikr, true-false]}
+  - id: u-prayer
+    lessons:
+      - {t: "أَقِفُ بَيْنَ يَدَيِ اللهِ", c: [c-prayer-steps], s: [h-bukhari-631, s-prayer-hands, s-prayer-clothing], p: [story, order-steps, find-objects]}
+      - {t: "أَرْكَعُ وَأَسْجُدُ", c: [c-prayer-steps, c-prayer-words], s: [d-ruku, d-sujud, d-rising, d-between-sujud], p: [order-steps, dhikr, match]}
+      - {t: "أَجْلِسُ وَأُسَلِّمُ", c: [c-prayer-steps, c-prayer-words], s: [d-tashahhud, q-33-56, s-prayer-rakaat], p: [order-steps, dhikr, true-false]}
+      - {t: "أُصَلِّي مَعَ أَهْلِي", c: [c-prayer-steps, c-family-love], r: [c-surah-fatiha, c-surah-ikhlas, c-surah-kawthar], s: [s-prayer-age, h-abudawud-495], p: [story, role-play]}
+  - id: u-quran1
+    lessons:
+      - {t: "الْقُرْآنُ كَلَامُ اللهِ", c: [c-quran-what], s: [q-96-1-5, q-2-185], p: [story, find-objects, choose]}
+      - {t: "أُحَافِظُ عَلَى الْمُصْحَفِ", c: [c-quran-respect], s: [q-56-77-79, s-quran-respect], p: [story, wwyd, true-false]}
+      - {t: "أَقْرَأُ وَأَسْتَمِعُ", c: [c-quran-read, c-dua-knowledge], s: [q-54-17, q-20-114], p: [story, draw, choose]}
+  - id: u-surahs1
+    lessons:
+      - {t: "سُورَةُ الْفَاتِحَةِ", c: [c-surah-fatiha], s: [q-1, q-1-3], p: [surah, story, match, true-false]}
+      - {t: "سُورَةُ الْإِخْلَاصِ", c: [c-surah-ikhlas, c-allah-one], s: [q-112], p: [surah, story, find-objects, choose]}
+      - {t: "سُورَةُ الْكَوْثَرِ", c: [c-surah-kawthar], s: [q-108], p: [surah, story, match, true-false]}
+  - id: u-adhkar2
+    lessons:
+      - {t: "أَدْعُو لِأُمِّي وَأَبِي", c: [c-dua-parents], s: [q-17-24, q-14-41, q-71-28], p: [dhikr, story]}
+      - {t: "أَقُولُ إِذَا عَطَسْتُ", c: [c-dhikr-sneeze, c-adab-greeting], r: [c-dhikr-bathroom, c-dhikr-home], s: [d-sneeze-1, d-sneeze-2, d-sneeze-3, h-muslim-54], p: [dhikr, dhikr, match]}
+      - {t: "أُصَلِّي عَلَى نَبِيِّي ﷺ", c: [c-salawat], s: [q-33-56], p: [dhikr, coloring]}
+  - id: u-family1
+    lessons:
+      - {t: "أُحِبُّ أُمِّي وَأَبِي", c: [c-family-love, c-kind-parents], s: [q-17-23, h-bukhari-5971, h-tirmidhi-1899], p: [story, draw, wwyd]}
+      - {t: "أُسَاعِدُ فِي الْبَيْتِ", c: [c-help-home], r: [c-helping], s: [h-bukhari-676, h-muslim-2699], p: [story, find-objects, true-false]}
+      - {t: "أَتَكَلَّمُ بِأَدَبٍ", c: [c-polite-speech, c-respect-elders], s: [q-17-23, h-tirmidhi-1919, h-bukhari-6018], p: [story, wwyd, match]}
+  - id: u-whatif1
+    lessons:
+      - {t: "لَوْ كَذَبْتُ", c: [c-wdif-lie, c-honesty], s: [h-bukhari-6094, h-tirmidhi-2499, q-2-222], p: [wdif, story, true-false]}
+      - {t: "لَوْ ظَلَمْتُ صَدِيقِي", c: [c-wdif-friend, c-forgive], s: [q-49-10, h-bukhari-6064], p: [wdif, story, wwyd, choose]}
+      - {t: "لَوْ غَضِبْتُ", c: [c-wdif-anger], s: [h-bukhari-6114, d-anger-refuge, h-abudawud-4782, q-41-34], p: [wdif, story, true-false]}
+cumulative:
+  - {after: u-quran1, c: [c-prayer-why, c-prayer-times, c-wudu, c-prayer-steps], p: [self-test, self-test]}
+  - {after: u-whatif1, c: [c-quran-respect, c-surah-fatiha, c-dua-parents, c-honesty], p: [self-test]}
+back: [assessment, assessment, passport, certificate, front]

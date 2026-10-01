@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>{{ series.working_title }} — مقترح السلسلة</title>
+<style>
+@font-face { font-family: "Baloo Bhaijaan 2"; src: url("{{ fonts }}/BalooBhaijaan2-ExtraBold.ttf") format("truetype"); font-weight: 700 900; }
+@font-face { font-family: "Baloo Bhaijaan 2"; src: url("{{ fonts }}/BalooBhaijaan2-Medium.ttf") format("truetype"); font-weight: 400 600; }
+@font-face { font-family: "IBM Plex Sans Arabic"; src: url("{{ fonts }}/IBMPlexSansArabic-Regular.ttf") format("truetype"); font-weight: 400 500; }
+@font-face { font-family: "IBM Plex Sans Arabic"; src: url("{{ fonts }}/IBMPlexSansArabic-SemiBold.ttf") format("truetype"); font-weight: 600 900; }
+@page { size: A4; margin: 16mm 14mm 18mm; }
+:root { --night: #16204A; --ink: #1C2140; --muted: #585C72; --amber: #F2B33D; --amber-soft: #FCEFD2; --paper: #FBF6EC; --line: #E4D6BC; --sage: #3E6B4D; --coral: #A7432D; }
+* { box-sizing: border-box; }
+body { margin: 0; font: 400 10.3pt/1.75 "IBM Plex Sans Arabic", sans-serif; color: var(--ink); }
+h1, h2, h3 { font-family: "Baloo Bhaijaan 2", sans-serif; color: var(--night); margin: 0; line-height: 1.25; }
+h2 { font-size: 19pt; font-weight: 800; margin: 0 0 4mm; padding-top: 2mm; border-top: 1.2mm solid var(--amber); }
+h3 { font-size: 13pt; font-weight: 700; margin: 5mm 0 2mm; }
+p { margin: 0 0 2.5mm; }
+ul { margin: 0 0 2.5mm; padding-inline-start: 6mm; }
+li { margin-bottom: 1mm; }
+.break { page-break-before: always; }
+.muted { color: var(--muted); }
+.cover { height: 262mm; display: flex; flex-direction: column; justify-content: space-between; background: var(--paper); border-radius: 6mm; padding: 16mm 14mm; }
+.cover h1 { font-size: 38pt; font-weight: 800; }
+.cover .sub { font-size: 14pt; color: var(--muted); margin-top: 3mm; }
+.tag { display: inline-block; background: var(--night); color: #fff; border-radius: 999px; padding: 1.5mm 5mm; font-weight: 600; font-size: 10pt; }
+.warn { background: #F8DEDB; color: var(--coral); border-radius: 3mm; padding: 3mm 4mm; font-size: 9.6pt; margin-top: 5mm; }
+.facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3.5mm; }
+.fact { background: #fff; border: 0.3mm solid var(--line); border-radius: 4mm; padding: 3.5mm; font-size: 9pt; }
+.fact strong { display: block; font: 800 20pt/1.1 "Baloo Bhaijaan 2", sans-serif; color: var(--night); }
+.cover-art { display: flex; gap: 4mm; justify-content: center; }
+.cover-art img { width: 30%; border-radius: 3mm; box-shadow: 0 1mm 4mm rgba(22, 32, 74, 0.15); background: #fff; }
+table { width: 100%; border-collapse: collapse; font-size: 9pt; margin: 2mm 0 4mm; }
+th, td { border-bottom: 0.25mm solid var(--line); padding: 1.5mm 2mm; text-align: start; vertical-align: top; }
+thead th { background: var(--amber-soft); color: var(--night); font-weight: 600; }
+tr { page-break-inside: avoid; }
+.num { font-variant-numeric: tabular-nums; white-space: nowrap; direction: ltr; unicode-bidi: isolate; text-align: start; }
+.matrix { font-size: 7.6pt; }
+.matrix td, .matrix th { padding: 0.9mm 1.4mm; }
+.matrix td.n { font-variant-numeric: tabular-nums; direction: ltr; unicode-bidi: isolate; text-align: center; color: var(--muted); }
+.note { background: var(--amber-soft); border-radius: 3mm; padding: 3mm 4mm; font-size: 9.3pt; margin: 3mm 0; }
+.chip { display: inline-block; width: 4.2mm; height: 4.2mm; border-radius: 1mm; vertical-align: middle; margin-inline-end: 1.5mm; border: 0.2mm solid rgba(0,0,0,0.15); }
+.names { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+.name { border: 0.3mm solid var(--line); border-radius: 3mm; padding: 3mm 3.5mm; page-break-inside: avoid; }
+.name h4 { margin: 0 0 1mm; font: 700 13pt/1.3 "Baloo Bhaijaan 2", sans-serif; color: var(--night); }
+.name .w { font-size: 8.7pt; color: var(--coral); margin-top: 1mm; }
+.samples { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; }
+.samples figure { margin: 0; page-break-inside: avoid; }
+.samples img { width: 100%; border: 0.3mm solid var(--line); border-radius: 2mm; background: #fff; }
+.samples .ph { height: 80mm; display: flex; align-items: center; justify-content: center; border: 0.3mm dashed var(--line); border-radius: 2mm; color: var(--muted); }
+.samples figcaption { font-size: 8.5pt; color: var(--muted); text-align: center; margin-top: 1mm; }
+.units { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5mm; }
+.unit { border: 0.3mm solid var(--line); border-radius: 2.5mm; padding: 2mm 2.5mm; font-size: 8.8pt; page-break-inside: avoid; }
+.unit .bar { height: 2mm; border-radius: 1mm; margin-bottom: 1.5mm; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div>
+    <span class="tag">مقترح السلسلة · للاعتماد قبل بناء أي مجلد</span>
+    <h1 style="margin-top: 8mm">{{ series.working_title }}</h1>
+    <p class="sub">{{ series.tagline }}</p>
+    <div class="warn"><strong>مسوّدة من الأداة الذكية:</strong> لا شيء من النصوص الدينية هنا نهائي قبل أن يراجعه المشرف العلمي ويعتمده. الآيات والأحاديث والأذكار في الصفحات النموذجية منسوخة آليًا من مصادر مرشّحة غير معتمدة، وآية السورة بدل مؤقت لحين وصول ملف طنزيل الرسمي.</div>
+  </div>
+  {% set shown = samples|selectattr("src")|list %}
+  {% if shown %}
+  <div class="cover-art">
+    {% for s in shown[:3] %}<img src="{{ s.src }}" alt="{{ s.title }}">{% endfor %}
+  </div>
+  {% endif %}
+  <div class="facts">
+    <div class="fact"><strong>{{ total_pages }}</strong>صفحة في ستة كتب</div>
+    <div class="fact"><strong>{{ volumes|length - 1 }}</strong>مجلدات في مستويين، وكتاب موسمي</div>
+    <div class="fact"><strong>{{ concepts }}</strong>مفهومًا أساسيًا، يتكرّر كل منها بخمسة أشكال أو ستة</div>
+    <div class="fact"><strong>{{ sources_total }}</strong>مرجعًا في سجلّ المصادر للمشرف</div>
+  </div>
+</div>
+
+<section class="break">
+  <h2>١. الفكرة والرؤية</h2>
+  {% for p in text.concept.paragraphs %}<p>{{ p }}</p>{% endfor %}
+  <h3>ما يميّزها</h3>
+  <ul>{% for d in text.concept.differentiators %}<li>{{ d|md }}</li>{% endfor %}</ul>
+  <h3>خمسة أسماء مقترحة (والاسم المبدئي «قلبي يعرف الله»)</h3>
+  <div class="names">
+    {% for n in series.names %}<div class="name"><h4>{{ n.ar }}</h4><p>{{ n.why }}</p><p class="w">{{ n.watch }}</p></div>{% endfor %}
+  </div>
+</section>
+
+<section class="break">
+  <h2>٢. تقسيم السلسلة</h2>
+  <p>{{ text.split.intro }}</p>
+  <table>
+    <thead><tr><th>المجلد</th><th>المستوى</th><th>العمر</th><th>العنوان</th><th>الصفحات</th><th>الوحدات</th><th>الدروس</th></tr></thead>
+    <tbody>
+    {% for v in volumes %}
+      <tr><td>{{ v.id }}</td><td>{{ "موسمي" if v.level == 0 else ("الأول" if v.level == 1 else "الثاني") }}</td><td class="num">{{ v.age[0] }}–{{ v.age[1] }}</td><td><strong>{{ v.title }}</strong></td><td class="num">{{ v.pages }}</td><td class="num">{{ v.units|length }}</td><td class="num">{{ v.lessons }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <ul>{% for w in text.split.why %}<li>{{ w }}</li>{% endfor %}</ul>
+  <div class="note">{{ text.split.alternative|md }}</div>
+  <div class="note">{{ text.split.seasonal|md }}</div>
+  <h3>ما يغطّيه كل مجلد</h3>
+  <ul>{% for v in volumes %}<li><strong>{{ v.id }} · {{ v.title }}:</strong> {{ v.goal }}</li>{% endfor %}</ul>
+</section>
+
+<section class="break">
+  <h2>٣. الفهرس الكامل</h2>
+  <p class="muted">لكل وحدة تلقائيًا: صفحة افتتاح، ثم الدروس، ثم صفحتا الخاتمة، ثم صفحة الأهل. أرقام الصفحات محسوبة من الخطة.</p>
+  {% for v in volumes %}
+  <h3>{{ v.id }} · {{ v.title }} — {{ v.pages }} صفحة</h3>
+  <p class="muted">صفحات البداية {{ v.front_pages }} · مراجعات تراكمية {{ v.cumulative_pages }} · النهاية (تقييم وجواز وشهادة) {{ v.back_pages }}</p>
+  <table>
+    <thead><tr><th>الوحدة</th><th>الصفحات</th><th>الدروس (صفحاتها: أنواعها)</th></tr></thead>
+    <tbody>
+    {% for u in v.units %}
+      <tr><td><span class="chip" style="background: {{ u.color }}"></span><strong>{{ u.title }}</strong><br><span class="muted num">{{ u.count }} ص</span></td><td class="num">{{ u.pages }}</td>
+      <td>{% for l in u.lessons %}{{ l.title }} <span class="muted num">({{ l.pages }}: {{ l.kinds }})</span>{% if not loop.last %}<br>{% endif %}{% endfor %}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% endfor %}
+</section>
+
+<section class="break">
+  <h2>٤. نظام التثبيت</h2>
+  <p>{{ text.retention.intro }}</p>
+  <table>
+    <thead><tr><th>الشكل</th><th>ما هو</th></tr></thead>
+    <tbody>{% for f in text.retention.forms %}<tr><td><strong>{{ f.ar }}</strong></td><td>{{ f.d }}</td></tr>{% endfor %}</tbody>
+  </table>
+  <ul>{% for r in text.retention.rules %}<li>{{ r }}</li>{% endfor %}</ul>
+  <div class="note"><strong>النتيجة:</strong> {{ concepts }} مفهومًا أساسيًا: {{ six }} يصل إلى الأشكال الستة و{{ five }} إلى خمسة، ولا مفهوم أقل من ذلك (فحص بناء الخطة).</div>
+  <p class="muted">{{ text.retention.how_to_read }}</p>
+  {% for v in volumes %}
+  <h3>مصفوفة {{ v.id }} · {{ v.title }}</h3>
+  <table class="matrix">
+    <thead><tr><th>المفهوم</th>{% for f in FORMS %}<th>{{ names[f] }}</th>{% endfor %}</tr></thead>
+    <tbody>
+    {% for m in v.matrix %}<tr><td>{{ m.ar }}</td>{% for f in FORMS %}<td class="n">{{ m.cells[f] or "·" }}</td>{% endfor %}</tr>{% endfor %}
+    </tbody>
+  </table>
+  {% endfor %}
+</section>
+
+<section class="break">
+  <h2>٥. خاتمة الوحدة وصفحات الأهل</h2>
+  <p>{{ text.closing.intro }}</p>
+  <ul>{% for i in text.closing["items"] %}<li>{{ i|md }}</li>{% endfor %}</ul>
+  <p>{{ text.closing.placement }}</p>
+  <h2 style="margin-top: 8mm">٦. الشخصيات المتكرّرة</h2>
+  <ul>{% for ch in characters %}<li><strong>{{ ch.ar }}</strong> — {{ ch.role }}. <span class="muted">{{ ch.note }}</span></li>{% endfor %}</ul>
+  <div class="note">{{ text.characters_note }}</div>
+  <h2 style="margin-top: 8mm">٧. الهوية البصرية لكل وحدة</h2>
+  <p>{{ text.identity_note }}</p>
+  <div class="units">
+    {% for u in units %}<div class="unit"><div class="bar" style="background: {{ u.color }}"></div><strong>{{ u.title_ar }}</strong><br><span class="muted">{{ u.volume }} · {{ u.icon }} · {{ u.motif }}</span></div>{% endfor %}
+  </div>
+</section>
+
+<section class="break">
+  <h2>٨. اثنتا عشرة صفحة نموذجية</h2>
+  <div class="note">{{ text.samples_note }}</div>
+  <div class="samples">
+    {% for s in samples %}
+    <figure>
+      {% if s.src %}<img src="{{ s.src }}" alt="{{ s.title }}">{% else %}<div class="ph">قيد التصميم</div>{% endif %}
+      <figcaption>{{ s.title }} · {{ s.type }}{% if s.unit %} · {{ s.unit }}{% endif %}</figcaption>
+    </figure>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="break">
+  <h2>٩. قائمة المصادر للمشرف العلمي</h2>
+  <p>{{ text.sources.intro|md }}</p>
+  <p>المجموع <strong>{{ sources_total }} مرجعًا</strong>: {{ kinds.quran }} مقطعًا قرآنيًا، {{ kinds.hadith }} حديثًا، {{ kinds.dua }} ذكرًا ودعاءً، {{ kinds.sira }} من السيرة، {{ kinds.ruling }} من الأحكام المبسّطة. القائمة المقروءة بالنصوص المرشّحة وخانات الاعتماد في ملف «المصادر للمشرف».</p>
+  <ul>{% for h in text.sources.how %}<li>{{ h|md }}</li>{% endfor %}</ul>
+  <h3>قرارات للمشرف ({{ decisions|length }} نقطة)</h3>
+  <p class="muted">نقاط اختلاف أو حساسية؛ لا يُختار فيها مذهب بصمت وتُرفع إلى طابور المراجعة.</p>
+  <table>
+    <thead><tr><th style="width: 28%">المصدر</th><th>السؤال</th></tr></thead>
+    <tbody>{% for d in decisions %}<tr><td>{{ d.title }}</td><td>{{ d.q }}</td></tr>{% endfor %}</tbody>
+  </table>
+  <h3>ما لن نستعمله</h3>
+  <p>{{ text.sources.excluded_intro }}</p>
+  <ul>{% for e in text.sources.excluded %}<li>{{ e }}</li>{% endfor %}</ul>
+</section>
+
+<section class="break">
+  <h2>١٠. الحجم والورق والتجليد والأسعار</h2>
+  <p>{{ text.print.size }}</p>
+  <p>{{ text.print.paper }}</p>
+  <p>{{ text.print.binding_intro }}</p>
+  <table>
+    <thead><tr><th>الخيار</th><th>المزايا</th><th>العيوب</th></tr></thead>
+    <tbody>{% for b in text.print.bindings %}<tr><td><strong>{{ b.name }}</strong></td><td>{{ b.pros }}</td><td>{{ b.cons }}</td></tr>{% endfor %}</tbody>
+  </table>
+  <div class="note">{{ text.print.recommendation|md }}</div>
+  <p>{{ text.print.product_note }}</p>
+  <h3>سعر المجلد حسب الكمية</h3>
+  <p class="muted">⚠ أسعار الطباعة تقديرات مؤقتة (غلاف ورقي لاصق 21×28، نحو 112 صفحة ملوّنة) حتى عرض المطبعة. تكلفتنا تضيف التغليف وكلفة الذكاء الاصطناعي لشخصية الطفل ({{ "%.2f"|format(basis.other) }} ₪ للنسخة). نسخة واحدة بسعر {{ "%.0f"|format(retail) }} ₪، ومن 10 نسخ: التكلفة + هامش الجملة ({{ "%.0f"|format(basis.bulk) }}%) مقرّبة لشيكل صحيح، لا فوق سعر المفرّق ولا تحت حدّ الهامش ({{ "%.0f"|format(basis.floor) }}%).</p>
+  <table>
+    <thead><tr><th>النسخ</th><th>الطابعة ⚠</th><th>تكلفتنا</th><th>السعر للنسخة</th><th>إجمالي الطلب</th><th>الهامش %</th></tr></thead>
+    <tbody>{% for r in price %}<tr><td class="num">{{ r.copies }}</td><td class="num">{{ r.printer }} ₪</td><td class="num">{{ r.cost }} ₪</td><td class="num">{{ r.price }} ₪</td><td class="num">{{ r.total }} ₪</td><td class="num">{{ r.margin }}</td></tr>{% endfor %}</tbody>
+  </table>
+  <p>النسخة الرقمية PDF: {{ "%.0f"|format(digital) }} ₪.</p>
+  <table>
+    <thead><tr><th>المجموعة</th><th>سعرها</th><th>مجموع الأسعار منفصلة</th><th>التوفير %</th><th>الهامش %</th></tr></thead>
+    <tbody>{% for s in sets %}<tr><td>{{ s.name }}</td><td class="num">{{ s.price }} ₪</td><td class="num">{{ s.separate }} ₪</td><td class="num">{{ s.saving }}</td><td class="num">{{ s.margin }}</td></tr>{% endfor %}</tbody>
+  </table>
+  <p>{{ text.print.prices_note }}</p>
+</section>
+
+<section class="break">
+  <h2>١١. القرارات المطلوبة منك والخطوات التالية</h2>
+  <table>
+    <thead><tr><th style="width: 22%">القرار</th><th>توصيتي</th></tr></thead>
+    <tbody>{% for d in text.decisions %}<tr><td><strong>{{ d.q }}</strong></td><td>{{ d.a }}</td></tr>{% endfor %}</tbody>
+  </table>
+  <h3>ترتيب العمل والمدد التقريبية</h3>
+  <table>
+    <thead><tr><th>الخطوة</th><th>ما فيها</th><th>المدة</th></tr></thead>
+    <tbody>{% for st in text.timeline %}<tr><td><strong>{{ st.step }}</strong></td><td>{{ st.what }}</td><td>{{ st.when }}</td></tr>{% endfor %}</tbody>
+  </table>
+</section>
+
+</body>
+</html>

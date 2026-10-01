@@ -1,0 +1,14 @@
+{% import "pages/_islamic.html.j2" as isl with context %}
+{% set c = d.chrome %}
+<div class="isl" {{ isl.container(c) }}>
+  {{ isl.start(p, g, c) }}
+  {{ isl.head(p, c, true, true) }}
+  <div class="isl-body ur">
+    {% for r in d.rows %}
+    <div class="tf-row card"><span class="tf-n">{{ r.n }}</span><p class="tf-text">{{ r.text }}</p>
+      <span class="tf-btns"><span class="tf-btn yes">{{ icon('check', 'ico', 2.6) }}{{ d.labels.true }}</span><span class="tf-btn no">{{ icon('cross', 'ico', 2.6) }}{{ d.labels.false }}</span></span></div>
+    {% endfor %}
+    {{ isl.refs(c, d.refs) }}
+  </div>
+  {{ isl.foot(p, c) }}
+</div>

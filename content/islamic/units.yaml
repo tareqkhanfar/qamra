@@ -1,0 +1,55 @@
+# «قلبي يعرف الله»: the units and their visual identity (Addendum 10 §4.7): a colour, an icon and a small motif per
+# unit, so the child remembers by symbols. `area` is the brief's area number (docs/ADDENDUM-10.md §2, 1–16).
+# Icons and motifs are programmatic SVG (qamra_workbook/pictures/islamic.py); none depicts a person of the faith.
+# Titles are fully vowelised (ages 4–8). `volume` is the volume the unit belongs to (volumes/*.yaml lists its lessons).
+
+units:
+  # ---- المستوى الأول · المجلد ١: أعرف ربّي وأحبّه
+  - {id: u-allah,     volume: V1, area: 1,  title_ar: "اللهُ خَلَقَنِي", color: "#5B6FC0", icon: star,          motif: stars}
+  - {id: u-blessings, volume: V1, area: 1,  title_ar: "نِعَمُ رَبِّي", color: "#F2B33D", icon: sun,           motif: sun-and-dates}
+  - {id: u-prophet,   volume: V1, area: 2,  title_ar: "نَبِيُّنَا مُحَمَّدٌ ﷺ", color: "#3E6B4D", icon: palm,          motif: palm-leaves}
+  - {id: u-follow,    volume: V1, area: 2,  title_ar: "أَقْتَدِي بِنَبِيِّي ﷺ", color: "#2FA597", icon: footprints,    motif: footprint-trail}
+  - {id: u-house,     volume: V1, area: 3,  title_ar: "بَيْتُ الْإِسْلَامِ", color: "#A7432D", icon: five-columns,  motif: columns}
+  - {id: u-myday1,    volume: V1, area: 16, title_ar: "يَوْمِي مَعَ اللهِ", color: "#DB9A1F", icon: sun-moon,      motif: sun-moon-arc}
+  - {id: u-adhkar1,   volume: V1, area: 7,  title_ar: "أَقُولُ وَأَذْكُرُ", color: "#C0265B", icon: beads,         motif: bead-string}
+  - {id: u-manners1,  volume: V1, area: 8,  title_ar: "أَخْلَاقِي الْجَمِيلَةُ", color: "#F28C28", icon: tulip,         motif: tulips}
+  # ---- المستوى الأول · المجلد ٢: أصلّي وأتعلّم
+  - {id: u-why-pray,  volume: V2, area: 5,  title_ar: "لِمَاذَا نُصَلِّي؟", color: "#1F7A8C", icon: dome,          motif: mosque-skyline}
+  - {id: u-wudu,      volume: V2, area: 5,  title_ar: "أَتَوَضَّأُ", color: "#4FB3BF", icon: water-drop,    motif: drops}
+  - {id: u-prayer,    volume: V2, area: 5,  title_ar: "أُصَلِّي", color: "#14606E", icon: prayer-mat,    motif: mat-pattern}
+  - {id: u-quran1,    volume: V2, area: 6,  title_ar: "الْقُرْآنُ كِتَابُ اللهِ", color: "#1F7A5A", icon: book-stand,    motif: open-book}
+  - {id: u-surahs1,   volume: V2, area: 6,  title_ar: "سُوَرٌ أَحْفَظُهَا", color: "#5FA37F", icon: ribbon,        motif: bookmarks}
+  - {id: u-adhkar2,   volume: V2, area: 7,  title_ar: "أَدْعِيَتِي", color: "#D86A8E", icon: beads,         motif: bead-string}
+  - {id: u-family1,   volume: V2, area: 13, title_ar: "أُحِبُّ أَهْلِي", color: "#F4A259", icon: heart-house,   motif: hearts}
+  - {id: u-whatif1,   volume: V2, area: 15, title_ar: "مَاذَا أَفْعَلُ لَوْ…؟", color: "#7C8FD8", icon: question-cloud, motif: clouds}
+  # ---- المستوى الثاني · المجلد ٣: أركان الإسلام وأركان الإيمان
+  - {id: u-shahada,   volume: V3, area: 3,  title_ar: "الشَّهَادَتَانِ", color: "#8A3B2A", icon: key,           motif: keys}
+  - {id: u-prayer2,   volume: V3, area: 5,  title_ar: "الصَّلَاةُ كَامِلَةً", color: "#14606E", icon: prayer-mat,    motif: mat-pattern}
+  - {id: u-zakat,     volume: V3, area: 3,  title_ar: "الزَّكَاةُ وَالصَّدَقَةُ", color: "#8C6D1F", icon: coin-heart,    motif: coins}
+  - {id: u-fasting,   volume: V3, area: 3,  title_ar: "الصِّيَامُ", color: "#5A4A9C", icon: crescent,      motif: crescents}
+  - {id: u-hajj,      volume: V3, area: 3,  title_ar: "الْحَجُّ", color: "#B8864B", icon: cube,          motif: sand-dunes}
+  - {id: u-iman1,     volume: V3, area: 4,  title_ar: "أَرْكَانُ الْإِيمَانِ ١", color: "#6B5BA8", icon: six-stars,     motif: stars}
+  - {id: u-iman2,     volume: V3, area: 4,  title_ar: "أَرْكَانُ الْإِيمَانِ ٢", color: "#8E7CC3", icon: books,         motif: book-stack}
+  # ---- المستوى الثاني · المجلد ٤: قصص الأنبياء وسيرة نبينا ﷺ
+  - {id: u-adam,      volume: V4, area: 10, title_ar: "آدَمُ عَلَيْهِ السَّلَامُ", color: "#7A5C3E", icon: earth-leaf,   motif: leaves}
+  - {id: u-nuh,       volume: V4, area: 10, title_ar: "نُوحٌ عَلَيْهِ السَّلَامُ", color: "#3A7CA5", icon: ship,         motif: waves}
+  - {id: u-ibrahim,   volume: V4, area: 10, title_ar: "إِبْرَاهِيمُ عَلَيْهِ السَّلَامُ", color: "#D9822B", icon: night-stars, motif: stars}
+  - {id: u-yusuf,     volume: V4, area: 10, title_ar: "يُوسُفُ عَلَيْهِ السَّلَامُ", color: "#B5495B", icon: wheat,        motif: wheat}
+  - {id: u-musa,      volume: V4, area: 10, title_ar: "مُوسَى عَلَيْهِ السَّلَامُ", color: "#C79A2C", icon: staff-sea,    motif: waves}
+  - {id: u-yunus,     volume: V4, area: 10, title_ar: "يُونُسُ عَلَيْهِ السَّلَامُ", color: "#2A5D8F", icon: whale,        motif: waves}
+  - {id: u-sira,      volume: V4, area: 2,  title_ar: "مِنْ حَيَاةِ نَبِيِّنَا ﷺ", color: "#3E6B4D", icon: palm,         motif: palm-leaves}
+  # ---- المستوى الثاني · المجلد ٥: أخلاقي وآدابي وأحكامي
+  - {id: u-manners2,  volume: V5, area: 8,  title_ar: "أَخْلَاقِي أَكْبَرُ", color: "#D9731A", icon: tulip,        motif: tulips}
+  - {id: u-adab,      volume: V5, area: 14, title_ar: "آدَابِي كُلَّ يَوْمٍ", color: "#9B6FD1", icon: cup-spoon,    motif: dots}
+  - {id: u-family2,   volume: V5, area: 13, title_ar: "بِرُّ وَالِدَيَّ", color: "#E08A5A", icon: heart-house,  motif: hearts}
+  - {id: u-halal,     volume: V5, area: 9,  title_ar: "حَلَالٌ وَحَرَامٌ", color: "#E07B39", icon: scales,       motif: scales}
+  - {id: u-whatif2,   volume: V5, area: 15, title_ar: "مَاذَا أَفْعَلُ لَوْ…؟ ٢", color: "#5B6FC0", icon: question-cloud, motif: clouds}
+  - {id: u-surahs2,   volume: V5, area: 6,  title_ar: "سُوَرٌ جَدِيدَةٌ", color: "#5FA37F", icon: ribbon,       motif: bookmarks}
+  - {id: u-myday2,    volume: V5, area: 16, title_ar: "يَوْمِي مَعَ اللهِ ٢", color: "#DB9A1F", icon: sun-moon,     motif: sun-moon-arc}
+  # ---- الكتاب الموسمي: رمضان والعيد
+  - {id: u-ram1,      volume: R,  area: 11, title_ar: "مَا هُوَ رَمَضَانُ؟", color: "#22306A", icon: lantern,      motif: lanterns}
+  - {id: u-ram2,      volume: R,  area: 11, title_ar: "أَصُومُ بِحُبٍّ", color: "#5A4A9C", icon: crescent,     motif: crescents}
+  - {id: u-ram3,      volume: R,  area: 11, title_ar: "قُرْآنِي وَصَدَقَتِي", color: "#1F7A5A", icon: book-stand,   motif: open-book}
+  - {id: u-ram4,      volume: R,  area: 11, title_ar: "لَيْلَةُ الْقَدْرِ", color: "#33458F", icon: night-stars,  motif: stars}
+  - {id: u-eid1,      volume: R,  area: 12, title_ar: "صَبَاحُ الْعِيدِ", color: "#FFD23F", icon: balloon,      motif: balloons}
+  - {id: u-eid2,      volume: R,  area: 12, title_ar: "أَفْرَحُ وَأُفْرِحُ", color: "#F28C28", icon: gift,         motif: stars}

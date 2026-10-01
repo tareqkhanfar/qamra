@@ -1,3 +1,4 @@
+Read docs/ADDENDUM-10.md — it overrides earlier prompts where they conflict.
 Read docs/ADDENDUM-09.md — it overrides earlier prompts where they conflict.
 Read docs/ADDENDUM-07.md — it overrides earlier prompts where they conflict.
 Read docs/ADDENDUM-06.md — it overrides earlier prompts where they conflict.

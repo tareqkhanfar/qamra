@@ -1,0 +1,114 @@
+# «قلبي يعرف الله»: the core concepts the series teaches (Addendum 10 §4.4). The retention matrix of the proposal is
+# built from these: a lesson names the concepts it teaches; the checker counts, per concept, the retention forms it
+# reaches (story, activity, question, situation, review, home) and how far apart its appearances are.
+# `area` is the brief's area number (1–16).
+concepts:
+  # 1 · التعرّف إلى الله
+  - {id: c-allah-creator, area: 1, ar: "الله خالقي وخالق كل شيء"}
+  - {id: c-allah-one, area: 1, ar: "الله واحد"}
+  - {id: c-allah-names, area: 1, ar: "من أسماء الله: الخالق والرحمن والرزّاق"}
+  - {id: c-allah-near, area: 1, ar: "الله قريب مني يسمعني ويحبني"}
+  - {id: c-blessings, area: 1, ar: "نِعَم الله عليّ"}
+  - {id: c-thanks, area: 1, ar: "كيف أشكر الله"}
+  - {id: c-love-allah, area: 1, ar: "كيف أحبّ الله"}
+  # 2 · نبينا محمد ﷺ
+  - {id: c-prophet-who, area: 2, ar: "من هو نبينا محمد ﷺ"}
+  - {id: c-prophet-mercy, area: 2, ar: "رحمته ﷺ بالأطفال"}
+  - {id: c-prophet-honest, area: 2, ar: "صدقه وأمانته ﷺ"}
+  - {id: c-prophet-kind, area: 2, ar: "حلمه وحُسن خلقه ﷺ"}
+  - {id: c-follow-prophet, area: 2, ar: "أقتدي به ﷺ كل يوم"}
+  - {id: c-salawat, area: 2, ar: "الصلاة على النبي ﷺ"}
+  # 3 · أركان الإسلام
+  - {id: c-shahada, area: 3, ar: "الشهادتان"}
+  - {id: c-pillars-five, area: 3, ar: "أركان الإسلام الخمسة"}
+  - {id: c-zakat-sadaqa, area: 3, ar: "الزكاة والصدقة"}
+  - {id: c-fasting, area: 3, ar: "الصيام"}
+  - {id: c-hajj, area: 3, ar: "الحج"}
+  # 4 · أركان الإيمان
+  - {id: c-pillars-iman, area: 4, ar: "أركان الإيمان الستة"}
+  - {id: c-angels, area: 4, ar: "الإيمان بالملائكة"}
+  - {id: c-books, area: 4, ar: "الإيمان بالكتب"}
+  - {id: c-messengers, area: 4, ar: "الإيمان بالرسل"}
+  - {id: c-last-day, area: 4, ar: "الإيمان باليوم الآخر (بشارة وفرح)"}
+  - {id: c-qadar, area: 4, ar: "الإيمان بالقدر (أحاول وأرضى)"}
+  # 5 · الصلاة
+  - {id: c-prayer-why, area: 5, ar: "لماذا نصلّي"}
+  - {id: c-prayer-times, area: 5, ar: "أوقات الصلوات الخمس"}
+  - {id: c-wudu, area: 5, ar: "خطوات الوضوء"}
+  - {id: c-prayer-steps, area: 5, ar: "ترتيب الصلاة"}
+  - {id: c-prayer-words, area: 5, ar: "ما يقوله المصلّي"}
+  - {id: c-mosque, area: 5, ar: "المسجد وآدابه"}
+  # 6 · القرآن الكريم
+  - {id: c-quran-what, area: 6, ar: "ما هو القرآن ومن أنزله ولمن"}
+  - {id: c-quran-respect, area: 6, ar: "كيف نحترم القرآن"}
+  - {id: c-quran-read, area: 6, ar: "أقرأ القرآن وأستمع إليه"}
+  - {id: c-surah-fatiha, area: 6, ar: "سورة الفاتحة"}
+  - {id: c-surah-ikhlas, area: 6, ar: "سورة الإخلاص"}
+  - {id: c-surah-kawthar, area: 6, ar: "سورة الكوثر"}
+  - {id: c-surah-falaq, area: 6, ar: "سورة الفلق"}
+  - {id: c-surah-nas, area: 6, ar: "سورة الناس"}
+  - {id: c-surah-asr, area: 6, ar: "سورة العصر"}
+  # 7 · الأذكار والأدعية
+  - {id: c-dhikr-wake, area: 7, ar: "ذكر الاستيقاظ"}
+  - {id: c-dhikr-sleep, area: 7, ar: "ذكر النوم"}
+  - {id: c-dhikr-eat, area: 7, ar: "ذكر الطعام قبله وبعده"}
+  - {id: c-dhikr-bathroom, area: 7, ar: "دعاء الخلاء"}
+  - {id: c-dhikr-home, area: 7, ar: "ذكر الخروج من البيت والدخول إليه"}
+  - {id: c-dhikr-mosque, area: 7, ar: "دعاء دخول المسجد والخروج منه"}
+  - {id: c-dhikr-sneeze, area: 7, ar: "آداب العطاس"}
+  - {id: c-dua-parents, area: 7, ar: "الدعاء للوالدين"}
+  - {id: c-dua-knowledge, area: 7, ar: "رب زدني علمًا"}
+  # 8 · الأخلاق
+  - {id: c-honesty, area: 8, ar: "الصدق"}
+  - {id: c-trust, area: 8, ar: "الأمانة"}
+  - {id: c-kind-parents, area: 8, ar: "الإحسان إلى الوالدين"}
+  - {id: c-respect-elders, area: 8, ar: "احترام الكبار"}
+  - {id: c-mercy, area: 8, ar: "الرحمة"}
+  - {id: c-helping, area: 8, ar: "مساعدة الآخرين"}
+  - {id: c-sharing, area: 8, ar: "المشاركة"}
+  - {id: c-permission, area: 8, ar: "الاستئذان"}
+  - {id: c-forgive, area: 8, ar: "التسامح والاعتذار"}
+  - {id: c-tongue, area: 8, ar: "حفظ اللسان"}
+  - {id: c-cleanliness, area: 8, ar: "النظافة"}
+  - {id: c-blessings-respect, area: 8, ar: "احترام النعمة وعدم الإسراف"}
+  - {id: c-friends, area: 8, ar: "الأخوّة والصداقة"}
+  - {id: c-neighbors, area: 8, ar: "الجار والضيف"}
+  - {id: c-animals, area: 8, ar: "الرفق بالحيوان"}
+  # 9 · الحلال والحرام
+  - {id: c-halal-haram, area: 9, ar: "أختار ما يرضي الله"}
+  # 10 · قصص الأنبياء
+  - {id: c-adam, area: 10, ar: "آدم عليه السلام: الخطأ والتوبة"}
+  - {id: c-nuh, area: 10, ar: "نوح عليه السلام: الصبر والعمل"}
+  - {id: c-ibrahim, area: 10, ar: "إبراهيم عليه السلام: التفكّر والثقة بالله"}
+  - {id: c-yusuf, area: 10, ar: "يوسف عليه السلام: الصبر والعفو"}
+  - {id: c-musa, area: 10, ar: "موسى عليه السلام: الله يحفظ من يتوكّل عليه"}
+  - {id: c-yunus, area: 10, ar: "يونس عليه السلام: الله يسمع الدعاء"}
+  - {id: c-sira, area: 10, ar: "مواقف من حياة نبينا ﷺ"}
+  # 11 · رمضان
+  - {id: c-ramadan, area: 11, ar: "ما هو رمضان"}
+  - {id: c-fasting-kids, area: 11, ar: "صيام يناسب عمري"}
+  - {id: c-quran-ramadan, area: 11, ar: "القرآن في رمضان"}
+  - {id: c-ramadan-charity, area: 11, ar: "الصدقة والعطاء في رمضان"}
+  - {id: c-laylat-alqadr, area: 11, ar: "ليلة القدر"}
+  # 12 · العيد
+  - {id: c-eid-manners, area: 12, ar: "آداب العيد وصلاته"}
+  - {id: c-takbir, area: 12, ar: "التكبير"}
+  - {id: c-eid-joy, area: 12, ar: "الزيارة والفرحة والهدايا"}
+  # 13 · بر الوالدين والأسرة
+  - {id: c-family-love, area: 13, ar: "كيف أُظهر حبي لأمي وأبي"}
+  - {id: c-help-home, area: 13, ar: "أساعد في البيت"}
+  - {id: c-polite-speech, area: 13, ar: "أتكلّم بأدب"}
+  # 14 · الآداب اليومية
+  - {id: c-adab-eating, area: 14, ar: "آداب الطعام والشراب"}
+  - {id: c-adab-sleep, area: 14, ar: "آداب النوم"}
+  - {id: c-adab-greeting, area: 14, ar: "السلام والتحية"}
+  - {id: c-adab-visiting, area: 14, ar: "آداب الزيارة"}
+  # 15 · ماذا أفعل لو…؟
+  - {id: c-wdif-lie, area: 15, ar: "لو كذبت"}
+  - {id: c-wdif-friend, area: 15, ar: "لو ظلمت صديقي"}
+  - {id: c-wdif-anger, area: 15, ar: "لو غضبت"}
+  - {id: c-wdif-found, area: 15, ar: "لو وجدت شيئًا ليس لي"}
+  - {id: c-wdif-no, area: 15, ar: "لو قالت أمي «لا»"}
+  - {id: c-wdif-forgot, area: 15, ar: "لو نسيت الصلاة"}
+  # 16 · يومي مع الله
+  - {id: c-day-with-allah, area: 16, ar: "يومي كله مع الله"}

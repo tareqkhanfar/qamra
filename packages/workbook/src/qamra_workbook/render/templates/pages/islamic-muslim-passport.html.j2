@@ -1,0 +1,25 @@
+{% import "pages/_islamic.html.j2" as isl with context %}
+{% set c = d.chrome %}
+<div class="isl" {{ isl.container(c) }}>
+  {{ isl.start(p, g, c) }}
+  {{ isl.head(p, c, false, true) }}
+  <div class="isl-body pp">
+    <section class="pp-card">
+      <div class="pp-band"><span class="pp-emblem">{{ d.star }}</span><div class="pp-band-t"><b>{{ d.labels.series }}</b><small>قمرة</small></div></div>
+      <div class="pp-body">
+        <div class="pp-photo">{% if d.photo %}<img src="{{ d.photo }}" alt="">{% endif %}</div>
+        <dl class="pp-fields">
+          <div class="pf"><dt>{{ d.labels.name }}</dt><dd data-fit="12">{{ d.name }}</dd></div>
+          <div class="pf"><dt>{{ d.labels.date }}</dt><dd>{{ d.date }}</dd></div>
+          <div class="pf sign"><dt>{{ d.labels.sign }}</dt><dd></dd></div>
+        </dl>
+      </div>
+      <div class="pp-strip" aria-hidden="true">{% for i in range(17) %}{{ icon('star', 'ico', 2) }}{% endfor %}</div>
+    </section>
+    <section class="pp-block"><h2 class="pp-h">{{ icon('stamp', 'ico', 2.2) }}{{ d.labels.stamps }}</h2><p class="pp-how">{{ d.labels.stick }}</p>
+      <div class="pp-grid">{% for st in d.stamps %}<div class="pp-stamp"><span class="pp-stn" style="background: {{ st.color }}; color: {{ st.ink }}">{{ st.n }}</span>{{ st.art }}<span class="pp-stt">{{ st.title }}</span></div>{% endfor %}</div></section>
+    <section class="pp-block"><h2 class="pp-h">{{ icon('trophy', 'ico', 2.2) }}{{ d.labels.stars }}</h2><p class="pp-how">{{ d.labels.colour }}</p>
+      <div class="pp-stars">{% for n in d.stars %}<span class="pp-star">{{ icon('star', 'star-outline big', 1.5) }}<i>{{ n }}</i></span>{% endfor %}</div></section>
+  </div>
+  {{ isl.foot(p, c) }}
+</div>

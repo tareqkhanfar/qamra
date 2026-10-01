@@ -1,0 +1,51 @@
+{# «قلبي يعرف الله»: the series' page chrome (ribbon, thumb tab, header, footer) and the shared blocks. #}
+{% import "_ui.html.j2" as ui with context %}
+
+{% macro start(p, g, c) -%}
+<div class="isl-ribbon" aria-hidden="true">{{ c.ribbon }}</div>
+<div class="isl-tabhost" aria-hidden="true">{{ ui.tab(p, g) }}</div>
+{%- endmacro %}
+
+{% macro head(p, c, with_instruction=true, compact=false) -%}
+<header class="isl-head{{ ' compact' if compact }}">
+  <div class="isl-chip"><i>{{ icon(p.style.icon, 'ico', 2.4) }}</i><span>{{ c.unit }}</span></div>
+  <h1 class="isl-title" data-fit="17">{{ p.title }}</h1>
+  {% if with_instruction and p.instruction %}<p class="isl-say"><i>{{ icon('star', 'ico', 2.2) }}</i><span>{{ p.instruction }}</span></p>{% endif %}
+</header>
+{%- endmacro %}
+
+{% macro refs(c, list) -%}
+{% if list %}<div class="isl-refs"><span>المراجع:</span>{% for r in list %}<bdi dir="auto">{{ r }}</bdi>{% endfor %}</div>{% endif %}
+{%- endmacro %}
+
+{% macro foot(p, c) -%}
+<footer class="isl-foot">
+  <span class="isl-foot-unit">{{ c.unit }}</span>
+  <span class="isl-folio"><span>{{ p.folio }}</span></span>
+  <span class="isl-end">{% if c.preview %}<span class="isl-legend"><b></b>مسودة آليّة بانتظار مراجعة المشرف</span>{% endif %}<span class="isl-brand">قمرة</span></span>
+</footer>
+{%- endmacro %}
+
+{# a block that prints a source's wording: a dignified frame for a verse, a quiet one for a hadith or dhikr, or a marked
+   placeholder while there is no verified text #}
+{% macro sacred(b, c, stacked=false, fit=false) -%}
+<figure class="sacred {{ 'quran' if b.quran else 'quote' }}{{ ' is-placeholder' if b.placeholder }}{{ ' fixed' if fit }}">
+  {% if b.quran %}<span class="corner tl">{{ c.star }}</span><span class="corner tr">{{ c.star }}</span><span class="corner bl">{{ c.star }}</span><span class="corner br">{{ c.star }}</span>{% endif %}
+  {% if b.tag %}<div class="sacred-tag">{{ b.tag }}</div>{% endif %}
+  {% if b.label %}<figcaption class="sacred-label">{{ b.label }}</figcaption>{% endif %}
+  {% if b.placeholder %}
+  <div class="sacred-hole"><i>{{ icon('alert', 'ico', 2) }}</i><p>{{ b.notice }}</p><small>{{ b.title }}{% if b.reference %} · <bdi dir="ltr">{{ b.reference }}</bdi>{% endif %}</small></div>
+  {% elif b.quran %}
+  <div class="sacred-text{{ ' stacked' if stacked }}"{% if fit %} data-fit="14"{% endif %}>{% for l in b.lines %}<span class="ayah">{{ l.text }}<span class="ay-no">{{ l.n }}</span></span> {% endfor %}</div>
+  {% else %}
+  <div class="sacred-text">{{ b.text }}</div>
+  {% endif %}
+  {% if not b.placeholder and b.reference %}<div class="sacred-ref"><bdi dir="ltr">{{ b.reference }}</bdi></div>{% endif %}
+</figure>
+{%- endmacro %}
+
+{% macro outline_stars(n, cls='star-outline') -%}
+<span class="stars-row">{% for i in range(n) %}{{ icon('star', cls, 1.5) }}{% endfor %}</span>
+{%- endmacro %}
+
+{% macro container(c) -%}style="--on: {{ c.ink }}"{% if c.preview %} data-preview{% endif %}{%- endmacro %}

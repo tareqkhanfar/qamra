@@ -1,0 +1,36 @@
+# «قلبي يعرف الله»: the adhkar and duas the series plans (Addendum 10 §2.7, §3.1). Each dua is a span cut by code from
+# the verified text of the hadith that reports it; `start`/`end` are search markers (letters only, inclusive) and are
+# never printed. Duas that are Quran verses (the duas for parents, «رب زدني علمًا»…) are in quran.yaml and printed by a
+# page-level `span`. All `proposed`: reference and grading are the drafter's belief, to be verified.
+sources:
+  # ---- the hadith that report the adhkar
+  - {id: h-bukhari-6312, kind: hadith, title_ar: "دعاء الاستيقاظ", hadith: {collection: bukhari, number: 6312}, expect: [أحيانا, أماتنا, النشور], grading_claimed: "البخاري ٦٣١٢", topic: waking}
+  - {id: h-bukhari-6324, kind: hadith, title_ar: "دعاء النوم", hadith: {collection: bukhari, number: 6324}, expect: [باسمك, أموت, وأحيا], grading_claimed: "البخاري ٦٣٢٤", topic: sleeping}
+  - {id: h-bukhari-5017, kind: hadith, title_ar: "قراءة الإخلاص والمعوّذتين والنفث قبل النوم", hadith: {collection: bukhari, number: 5017}, expect: [فراشه, نفث, الفلق], grading_claimed: "البخاري ٥٠١٧", topic: sleeping, scholar_decision: "النفث والمسح على الجسد: نصف الحركة للطفل ببساطة، والمشرف يقرّر وصفها"}
+  - {id: h-bukhari-142, kind: hadith, title_ar: "دعاء دخول الخلاء", hadith: {collection: bukhari, number: 142}, expect: [الخلاء, الخبث, الخبائث], grading_claimed: "متفق عليه (البخاري ١٤٢ ومسلم ٣٧٥)", topic: bathroom}
+  - {id: h-abudawud-30, kind: hadith, title_ar: "دعاء الخروج من الخلاء", hadith: {collection: abudawud, number: 30}, expect: [غفرانك, الغائط], grading_claimed: "صحّحه الألباني (للتحقق)", topic: bathroom}
+  - {id: h-abudawud-5095, kind: hadith, title_ar: "دعاء الخروج من البيت", hadith: {collection: abudawud, number: 5095}, expect: [توكلت, حول, قوة], grading_claimed: "صحّحه الألباني (للتحقق)", topic: leaving-home}
+  - {id: h-muslim-2018, kind: hadith, title_ar: "ذكر الله عند دخول البيت وعند الطعام", hadith: {collection: muslim, number: 2018}, expect: [دخل, بيته, عشاء], grading_claimed: "مسلم ٢٠١٨", topic: entering-home}
+  - {id: h-abudawud-4023, kind: hadith, title_ar: "الذكر بعد الطعام", hadith: {collection: abudawud, number: 4023}, expect: [أطعمني, حول, قوة], grading_claimed: "حسّنه الألباني (للتحقق)", topic: eating}
+  - {id: h-bukhari-6224, kind: hadith, title_ar: "آداب العطاس: الحمد لله ويرحمك الله ويهديكم الله", hadith: {collection: bukhari, number: 6224}, expect: [عطس, الحمد, يرحمك], grading_claimed: "البخاري ٦٢٢٤", topic: sneezing}
+  - {id: h-muslim-713, kind: hadith, title_ar: "دعاء دخول المسجد والخروج منه", hadith: {collection: muslim, number: 713}, expect: [المسجد, أبواب, رحمتك], grading_claimed: "مسلم ٧١٣", topic: mosque}
+  - {id: h-bukhari-689, kind: hadith, title_ar: "«سمع الله لمن حمده» و«ربنا ولك الحمد»", hadith: {collection: bukhari, number: 689}, expect: [سمع, حمده, الحمد], grading_claimed: "البخاري ٦٨٩", topic: prayer-words}
+  # ---- the duas (spans)
+  - {id: d-wake, kind: dua, title_ar: "ذكر الاستيقاظ", dua: {from: h-bukhari-6312, start: "الحمد لله الذي أحيانا", end: "النشور"}, topic: waking}
+  - {id: d-sleep, kind: dua, title_ar: "ذكر النوم", dua: {from: h-bukhari-6324, start: "باسمك اللهم", end: "وأحيا"}, topic: sleeping}
+  - {id: d-bath-in, kind: dua, title_ar: "دعاء دخول الخلاء", dua: {from: h-bukhari-142, start: "اللهم إني أعوذ", end: "الخبائث"}, topic: bathroom}
+  - {id: d-bath-out, kind: dua, title_ar: "دعاء الخروج من الخلاء", dua: {from: h-abudawud-30, start: "غفرانك", end: "غفرانك"}, topic: bathroom}
+  - {id: d-leave-home, kind: dua, title_ar: "دعاء الخروج من البيت", dua: {from: h-abudawud-5095, start: "بسم الله", end: "إلا بالله"}, topic: leaving-home}
+  - {id: d-after-eat, kind: dua, title_ar: "دعاء ما بعد الطعام", dua: {from: h-abudawud-4023, start: "الحمد لله", end: "ولا قوة"}, topic: eating}
+  - {id: d-sneeze-1, kind: dua, title_ar: "ما يقوله العاطس", dua: {from: h-bukhari-6224, start: "الحمد لله", end: "الحمد لله"}, topic: sneezing}
+  - {id: d-sneeze-2, kind: dua, title_ar: "ما يقوله من سمعه", dua: {from: h-bukhari-6224, start: "يرحمك الله", end: "يرحمك الله"}, topic: sneezing}
+  - {id: d-sneeze-3, kind: dua, title_ar: "ردّ العاطس", dua: {from: h-bukhari-6224, start: "يهديكم الله", end: "بالكم"}, topic: sneezing}
+  - {id: d-mosque-in, kind: dua, title_ar: "دعاء دخول المسجد", dua: {from: h-muslim-713, start: "اللهم افتح", end: "رحمتك"}, topic: mosque}
+  - {id: d-mosque-out, kind: dua, title_ar: "دعاء الخروج من المسجد", dua: {from: h-muslim-713, start: "اللهم إني أسألك", end: "فضلك"}, topic: mosque}
+  - {id: d-ruku, kind: dua, title_ar: "ذكر الركوع", dua: {from: h-muslim-772, start: "سبحان ربي العظيم", end: "سبحان ربي العظيم"}, topic: prayer-words}
+  - {id: d-sujud, kind: dua, title_ar: "ذكر السجود", dua: {from: h-muslim-772, start: "سبحان ربي الأعلى", end: "سبحان ربي الأعلى"}, topic: prayer-words}
+  - {id: d-rising, kind: dua, title_ar: "ذكر الرفع من الركوع", dua: {from: h-bukhari-689, start: "سمع الله لمن حمده", end: "حمده"}, topic: prayer-words}
+  - {id: d-between-sujud, kind: dua, title_ar: "ما بين السجدتين", dua: {from: h-abudawud-874, start: "رب اغفر لي", end: "رب اغفر لي"}, topic: prayer-words}
+  - {id: d-tashahhud, kind: dua, title_ar: "التشهّد", dua: {from: h-bukhari-831, start: "التحيات", end: "ورسوله"}, topic: prayer-words, scholar_decision: "صيغ التشهّد متعدّدة وكلها ثابتة؛ نختار صيغة ابن مسعود المتّفق عليها ونعرضها بلا خلط؛ المشرف يؤكّد"}
+  - {id: d-wudu-end, kind: dua, title_ar: "الشهادة بعد الوضوء", dua: {from: h-muslim-234, start: "أشهد أن لا إله", end: "ورسوله"}, topic: wudu}
+  - {id: d-iftar, kind: dua, title_ar: "ذكر الإفطار", dua: {from: h-abudawud-2357, start: "ذهب الظمأ", end: "إن شاء الله"}, topic: iftar}

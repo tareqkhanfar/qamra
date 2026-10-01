@@ -1,0 +1,61 @@
+# «قلبي يعرف الله»: المجلد ١ (المستوى الأول). A lesson: t = title (vowelised), c = concepts it teaches, s = source ids,
+# p = its pages (page types of plan.yaml). Each unit adds automatically: an opener (1), a closing (2: «ماذا تعلّمت؟»
+# + «ماذا سأطبّق؟» + the unit's dhikr + «تحدٍّ مع أمي وأبي») and a parent page (1); the closing and parent pages carry
+# the unit's concepts for the retention matrix. `cumulative` pages review earlier units. AI-drafted; nothing here is
+# final before the scholar signs it off.
+volume: V1
+level: 1
+title_ar: أَعْرِفُ رَبِّي وَأُحِبُّهُ
+title_en: I Know My Lord and Love Him
+age: [4, 5]
+goal: "يتعرّف الطفل إلى الله ونعمه ونبيّه ﷺ، ويبدأ عاداته الأولى: الأذكار والأخلاق ويومه مع الله"
+front: 5   # title, «meet Reem, Salem and Sitti Huda», how to use + a note for parents on caring for the book, the passport, «this is me»
+units:
+  - id: u-allah
+    lessons:
+      - {t: "مَنْ خَلَقَنِي؟", c: [c-allah-creator], r: [c-allah-names], s: [q-6-1, q-39-62], p: [story, find-objects, choose]}
+      - {t: "اللهُ خَلَقَ كُلَّ شَيْءٍ", c: [c-allah-creator, c-allah-one], r: [c-blessings], s: [q-39-62, q-112], p: [story, coloring, true-false]}
+      - {t: "مِنْ أَسْمَاءِ اللهِ الْحُسْنَى", c: [c-allah-names], s: [q-59-24, q-51-58, q-1-3], p: [pillar-card, match]}
+      - {t: "اللهُ قَرِيبٌ مِنِّي", c: [c-allah-near], s: [q-2-186, q-57-4], p: [story, wwyd]}
+  - id: u-blessings
+    lessons:
+      - {t: "أَنْظُرُ حَوْلِي", c: [c-blessings], s: [q-16-18, q-14-34], p: [story, blessings-hunt, coloring]}
+      - {t: "نِعْمَةُ الطَّعَامِ وَالْمَاءِ", c: [c-blessings, c-blessings-respect, c-thanks], s: [q-2-172, q-7-31, h-bukhari-3563], p: [story, find-objects, true-false]}
+      - {t: "كَيْفَ أَشْكُرُ اللهَ؟", c: [c-thanks, c-love-allah], r: [c-allah-names, c-blessings], s: [q-14-7, q-1-2, q-2-152], p: [story, dhikr, wwyd]}
+  - id: u-prophet
+    lessons:
+      - {t: "مَنْ هُوَ نَبِيُّنَا؟", c: [c-prophet-who], s: [s-name-lineage, q-33-21], p: [story, pillar-card, choose]}
+      - {t: "رَحْمَتُهُ ﷺ بِالْأَطْفَالِ", c: [c-prophet-mercy], s: [h-bukhari-5997, h-bukhari-516, h-bukhari-707, q-21-107], p: [sira-story, coloring, true-false]}
+      - {t: "صَادِقٌ أَمِينٌ", c: [c-prophet-honest], s: [h-bukhari-4770, s-al-amin], p: [sira-story, wwyd]}
+      - {t: "أُصَلِّي عَلَى نَبِيِّي ﷺ", c: [c-salawat], r: [c-love-allah], s: [q-33-56], p: [story, draw]}
+  - id: u-follow
+    lessons:
+      - {t: "أَقْتَدِي بِنَبِيِّي", c: [c-follow-prophet], r: [c-love-allah], s: [q-33-21, q-3-31, h-bukhari-6203], p: [story, choose]}
+      - {t: "يَتَبَسَّمُ وَيُسَامِحُ", c: [c-prophet-kind, c-forgive], s: [h-tirmidhi-1956, h-bukhari-3560, h-bukhari-6038], p: [sira-story, wwyd, coloring]}
+      - {t: "يُسَاعِدُ فِي الْبَيْتِ", c: [c-help-home, c-follow-prophet], r: [c-helping], s: [h-bukhari-676], p: [story, draw]}
+  - id: u-house
+    lessons:
+      - {t: "شَهَادَةُ التَّوْحِيدِ", c: [c-shahada, c-pillars-five], s: [q-47-19, h-bukhari-8], p: [pillar-card, story, choose]}
+      - {t: "الصَّلَاةُ خَمْسُ مَرَّاتٍ", c: [c-prayer-why, c-pillars-five], s: [h-bukhari-46, h-bukhari-528], p: [pillar-card, story, true-false]}
+      - {t: "نُعْطِي وَنُشَارِكُ", c: [c-zakat-sadaqa], s: [h-bukhari-6021, s-charity-kids], p: [pillar-card, story]}
+      - {t: "نَصُومُ وَنَحُجُّ", c: [c-fasting, c-hajj], s: [q-2-183, q-3-97], p: [pillar-card, match]}
+  - id: u-myday1
+    lessons:
+      - {t: "صَبَاحِي مَعَ اللهِ", c: [c-day-with-allah, c-dhikr-wake], s: [d-wake, h-bukhari-6312], p: [day, dhikr, story]}
+      - {t: "نَهَارِي مَعَ اللهِ", c: [c-day-with-allah, c-adab-eating, c-helping], r: [c-dhikr-eat, c-cleanliness], s: [h-bukhari-5376, h-muslim-2699], p: [day, wwyd, story]}
+      - {t: "مَسَائِي مَعَ اللهِ", c: [c-day-with-allah, c-dhikr-sleep], r: [c-dhikr-wake, c-dhikr-eat], s: [d-sleep, h-bukhari-6324], p: [day, dhikr, true-false]}
+  - id: u-adhkar1
+    lessons:
+      - {t: "قَبْلَ الطَّعَامِ وَبَعْدَهُ", c: [c-dhikr-eat, c-adab-eating], s: [d-eat-start, d-after-eat, h-bukhari-5376, q-2-172], p: [dhikr, dhikr, match, true-false]}
+      - {t: "حِينَ أَسْتَيْقِظُ وَحِينَ أَنَامُ", c: [c-dhikr-wake, c-dhikr-sleep], r: [c-surah-ikhlas], s: [d-wake, d-sleep, h-bukhari-5017], p: [dhikr, dhikr, coloring]}
+      - {t: "فِي الْحَمَّامِ وَعِنْدَ الْخُرُوجِ", c: [c-dhikr-bathroom, c-dhikr-home], s: [d-bath-in, d-bath-out, d-leave-home], p: [dhikr, dhikr, choose]}
+  - id: u-manners1
+    lessons:
+      - {t: "أَصْدُقُ", c: [c-honesty], s: [h-bukhari-6094], p: [story, wwyd, true-false]}
+      - {t: "أُحْسِنُ إِلَى وَالِدَيَّ", c: [c-kind-parents], s: [q-17-23, h-bukhari-5971], p: [story, wwyd, coloring]}
+      - {t: "أُشَارِكُ وَأُسَاعِدُ", c: [c-sharing, c-helping], s: [h-bukhari-5392, h-muslim-2699, h-bukhari-13], p: [story, wwyd]}
+      - {t: "أَقُولُ: شُكْرًا وَآسِفٌ", c: [c-forgive, c-thanks], s: [h-tirmidhi-2499, q-2-222], p: [story, wwyd]}
+cumulative:
+  - {after: u-follow, c: [c-allah-creator, c-blessings, c-thanks, c-prophet-who, c-prophet-mercy], p: [self-test]}
+  - {after: u-manners1, c: [c-allah-names, c-dhikr-eat, c-dhikr-wake, c-dhikr-sleep, c-honesty, c-shahada], p: [self-test, self-test]}
+back: [assessment, assessment, passport, certificate, front]   # the final fun assessment, the passport, the certificate, the back page

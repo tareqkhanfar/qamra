@@ -1,0 +1,54 @@
+# «قلبي يعرف الله»: المجلد ٤ (المستوى الثاني). See v1.yaml for the format.
+# Every `prophet-story` and `sira-story` page is tagged `prophet_story`: told by Sitti Huda to Reem, Salem and the
+# reader; the SCENES show nature, places and objects only. Nobody is drawn as a prophet, an angel or a Companion.
+volume: V4
+level: 2
+title_ar: قَصَصُ الْأَنْبِيَاءِ وَسِيرَةُ نَبِيِّنَا ﷺ
+title_en: Stories of the Prophets and the Life of Our Prophet
+age: [6, 8]
+goal: "يسمع الطفل قصص الأنبياء المختارة فيأخذ منها قيمة واحدة في كل قصة، ويقترب من نبيّنا ﷺ بمواقف صحيحة من حياته"
+front: 5
+units:
+  - id: u-adam
+    lessons:
+      - {t: "آدَمُ وَالْأَسْمَاءُ", c: [c-adam], s: [q-2-30-37], p: [prophet-story, find-objects, choose]}
+      - {t: "آدَمُ يَتُوبُ", c: [c-adam, c-forgive], s: [q-2-30-37, q-7-23, h-tirmidhi-2499], p: [prophet-story, wwyd, true-false]}
+      - {t: "أُلَوِّنُ وَأَحْكِي", c: [c-adam], p: [coloring]}
+  - id: u-nuh
+    lessons:
+      - {t: "نُوحٌ وَالسَّفِينَةُ", c: [c-nuh], s: [q-11-37-44], p: [prophet-story, maze, choose]}
+      - {t: "نُوحٌ يَصْبِرُ", c: [c-nuh, c-qadar], s: [q-11-37-44, q-2-216], p: [prophet-story, wwyd, true-false]}
+      - {t: "أُلَوِّنُ وَأَحْكِي", c: [c-nuh], p: [coloring]}
+  - id: u-ibrahim
+    lessons:
+      - {t: "إِبْرَاهِيمُ يَنْظُرُ إِلَى النُّجُومِ", c: [c-ibrahim, c-allah-creator], s: [q-6-75-79, q-39-62], p: [prophet-story, find-objects, choose]}
+      - {t: "إِبْرَاهِيمُ لَا يَخَافُ", c: [c-ibrahim], s: [q-21-51-70], p: [prophet-story, wwyd, true-false]}
+      - {t: "الْفِدَاءُ", c: [c-ibrahim, c-eid-manners], s: [q-37-99-111], p: [prophet-story, match]}
+      - {t: "أُلَوِّنُ وَأَحْكِي", c: [c-ibrahim], p: [coloring]}
+  - id: u-yusuf
+    lessons:
+      - {t: "رُؤْيَا يُوسُفَ", c: [c-yusuf], s: [q-12-4-6], p: [prophet-story, maze, choose]}
+      - {t: "يُوسُفُ يَصْبِرُ", c: [c-yusuf, c-qadar], s: [q-12-4-6, q-2-216], p: [prophet-story, wwyd, true-false]}
+      - {t: "يُوسُفُ يَعْفُو", c: [c-yusuf, c-forgive], s: [q-12-92, q-3-134], p: [prophet-story, wwyd, match]}
+      - {t: "أُلَوِّنُ وَأَحْكِي", c: [c-yusuf], p: [coloring]}
+  - id: u-musa
+    lessons:
+      - {t: "مُوسَى وَأُمُّهُ", c: [c-musa], s: [q-28-7-13], p: [prophet-story, find-objects, choose]}
+      - {t: "مُوسَى وَالْبَحْرُ", c: [c-musa, c-qadar], s: [q-26-61-67], p: [prophet-story, maze, true-false]}
+      - {t: "أُلَوِّنُ وَأَحْكِي", c: [c-musa], p: [coloring]}
+  - id: u-yunus
+    lessons:
+      - {t: "يُونُسُ وَالْحُوتُ", c: [c-yunus], s: [q-37-139-148, q-21-87, q-21-88], p: [prophet-story, find-objects, choose]}
+      - {t: "اللهُ يَسْمَعُ دُعَائِي", c: [c-yunus, c-allah-near], s: [q-2-186, q-2-222], p: [wwyd, true-false]}
+  - id: u-sira
+    lessons:
+      - {t: "صَادِقٌ لَمْ يُجَرِّبُوا عَلَيْهِ كَذِبًا", c: [c-sira, c-prophet-honest], s: [h-bukhari-4770], p: [sira-story, wwyd, true-false]}
+      - {t: "فِي الْغَارِ مَعَ صَدِيقِهِ", c: [c-sira, c-allah-near], s: [q-9-40, h-bukhari-3653], p: [sira-story, choose]}
+      - {t: "صَبْرُهُ عَلَى الْأَعْرَابِيِّ", c: [c-sira, c-prophet-kind], s: [h-bukhari-3149, h-bukhari-3560], p: [sira-story, wwyd]}
+      - {t: "يَعُودُ الْمَرِيضَ", c: [c-sira, c-mercy], s: [h-bukhari-1356], p: [sira-story, match]}
+      - {t: "لَمْ يَقُلْ لِي: أُفٍّ", c: [c-sira, c-prophet-kind], s: [h-bukhari-6038], p: [sira-story, draw]}
+cumulative:
+  - {after: u-ibrahim, c: [c-adam, c-nuh, c-ibrahim], p: [self-test]}
+  - {after: u-yunus, c: [c-yusuf, c-musa, c-yunus, c-qadar], p: [self-test, self-test]}
+  - {after: u-sira, c: [c-sira, c-prophet-honest, c-prophet-kind], p: [self-test]}
+back: [assessment, assessment, passport, certificate, front]

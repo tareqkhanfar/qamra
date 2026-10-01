@@ -14,6 +14,7 @@ from qamra_workbook.render.pages import (
     family_games,
     family_talk,
     inserts,
+    islamic,  # «قلبي يعرف الله» (Addendum 10): islamic_* modules
     journey,
     journey_eye,  # «رحلتي الأولى» stage pages (Addendum 6 §5): journey_* modules
     journey_frame,
@@ -42,6 +43,7 @@ __all__ = [
     "family_games",
     "family_talk",
     "inserts",
+    "islamic",
     "journey",
     "journey_eye",
     "journey_frame",

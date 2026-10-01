@@ -1,0 +1,53 @@
+# «قلبي يعرف الله»: المجلد ٥ (المستوى الثاني). See v1.yaml for the format.
+volume: V5
+level: 2
+title_ar: أَخْلَاقِي وَآدَابِي وَأَحْكَامِي
+title_en: My Manners, My Etiquette and My Rulings
+age: [6, 8]
+goal: "تتحوّل القيم إلى عادات: أخلاق أكبر وآداب يومية وبرّ بالوالدين وحلال وحرام بلا خوف، وسور جديدة، ويوم كامل مع الله"
+front: 5
+units:
+  - id: u-manners2
+    lessons:
+      - {t: "أَحْفَظُ لِسَانِي", c: [c-tongue], s: [h-bukhari-6018, h-bukhari-10, q-49-11], p: [story, wwyd, true-false]}
+      - {t: "أَمِينٌ عَلَى مَا عِنْدِي", c: [c-trust], s: [q-4-58, h-abudawud-3535], p: [story, wwyd, match]}
+      - {t: "أَسْتَأْذِنُ قَبْلَ أَنْ أَدْخُلَ", c: [c-permission], s: [h-bukhari-6245, q-24-27], p: [story, role-play, true-false]}
+      - {t: "أَرْحَمُ الْجَمِيعَ", c: [c-mercy, c-animals, c-respect-elders], s: [h-abudawud-4941, h-tirmidhi-1919, h-bukhari-2363, h-bukhari-5997], p: [story, wwyd, coloring]}
+      - {t: "صَدِيقِي وَجَارِي", c: [c-friends, c-neighbors], s: [q-49-10, h-bukhari-6014, h-bukhari-6064], p: [story, wwyd, match]}
+      - {t: "أُسَامِحُ وَأَعْتَذِرُ", c: [c-forgive], s: [q-3-134, q-12-92, h-bukhari-3560], p: [story, wwyd]}
+  - id: u-adab
+    lessons:
+      - {t: "آدَابُ الطَّعَامِ", c: [c-adab-eating, c-blessings-respect], r: [c-dhikr-eat, c-cleanliness], s: [h-bukhari-5376, h-bukhari-3563, h-muslim-2034, q-7-31], p: [story, order-steps, true-false]}
+      - {t: "آدَابُ النَّوْمِ وَالنَّظَافَةِ", c: [c-adab-sleep, c-cleanliness, c-dhikr-sleep], s: [h-muslim-223, h-bukhari-5889, d-sleep], p: [story, order-steps, true-false, wwyd]}
+      - {t: "السَّلَامُ وَالزِّيَارَةُ", c: [c-adab-greeting, c-adab-visiting, c-neighbors], r: [c-dhikr-sneeze], s: [h-muslim-54, h-bukhari-12, h-bukhari-6018], p: [story, role-play, choose]}
+      - {t: "آدَابُ الْمَسْجِدِ", c: [c-mosque, c-dhikr-mosque], s: [d-mosque-in, d-mosque-out, h-muslim-671], p: [story, dhikr, find-objects]}
+  - id: u-family2
+    lessons:
+      - {t: "بِرُّ الْوَالِدَيْنِ", c: [c-kind-parents, c-family-love], s: [q-17-23, h-bukhari-5971, h-tirmidhi-1899], p: [story, wwyd, true-false]}
+      - {t: "أَدْعُو لَهُمَا", c: [c-dua-parents], s: [q-17-24, q-14-41, q-71-28], p: [dhikr, draw]}
+      - {t: "أَتَحَمَّلُ مَسْؤُولِيَّتِي", c: [c-help-home], s: [h-bukhari-676], p: [story, find-objects, wwyd]}
+      - {t: "لَوْ قَالَتْ أُمِّي لَا", c: [c-wdif-no, c-kind-parents], s: [q-2-216, q-17-23], p: [wdif, story, wwyd, choose]}
+  - id: u-halal
+    lessons:
+      - {t: "اللهُ يُحِبُّ الطَّيِّبَ", c: [c-halal-haram], s: [q-2-168, q-7-157, h-muslim-1015], p: [story, match, true-false]}
+      - {t: "أَخْتَارُ مَا يُرْضِي اللهَ", c: [c-halal-haram, c-honesty, c-trust], s: [s-halal-haram-kids, q-4-29], p: [story, wwyd, choose]}
+  - id: u-whatif2
+    lessons:
+      - {t: "لَوْ وَجَدْتُ شَيْئًا لَيْسَ لِي", c: [c-wdif-found, c-trust], s: [q-4-58, s-found-item], p: [wdif, story, choose]}
+      - {t: "لَوْ نَسِيتُ الصَّلَاةَ", c: [c-wdif-forgot], s: [h-bukhari-597], p: [wdif, wwyd, order-steps]}
+      - {t: "لَوْ كَذَبْتُ مَرَّةً أُخْرَى", c: [c-wdif-lie, c-forgive], s: [h-tirmidhi-2499, q-2-222, h-bukhari-6094], p: [wdif, story, draw]}
+      - {t: "لَوْ ظَلَمْتُ صَدِيقِي", c: [c-wdif-friend], s: [q-49-10, h-bukhari-6064], p: [wdif, wwyd, match]}
+      - {t: "لَوْ غَضِبْتُ", c: [c-wdif-anger], s: [h-bukhari-6114, d-anger-refuge, h-abudawud-4782], p: [wdif, story, draw]}
+  - id: u-surahs2
+    lessons:
+      - {t: "سُورَةُ الْفَلَقِ", c: [c-surah-falaq], s: [q-113], p: [surah, story, true-false]}
+      - {t: "سُورَةُ النَّاسِ", c: [c-surah-nas], s: [q-114, h-bukhari-5017], p: [surah, story, true-false]}
+      - {t: "سُورَةُ الْعَصْرِ", c: [c-surah-asr], s: [q-103], p: [surah, story, true-false]}
+  - id: u-myday2
+    lessons:
+      - {t: "يَوْمِي كُلُّهُ لِلَّهِ", c: [c-day-with-allah, c-dhikr-wake, c-dhikr-eat, c-dhikr-sleep], s: [d-wake, d-eat-start, d-after-eat, d-sleep], p: [day, day, dhikr]}
+      - {t: "أَبْنِي عَادَاتِي", c: [c-day-with-allah, c-prayer-times, c-quran-read, c-follow-prophet], r: [c-dua-knowledge], s: [h-bukhari-527, q-54-17, q-33-21], p: [day, story, wwyd]}
+cumulative:
+  - {after: u-adab, c: [c-tongue, c-trust, c-permission, c-mercy, c-adab-eating], p: [self-test, self-test]}
+  - {after: u-whatif2, c: [c-wdif-found, c-wdif-forgot, c-wdif-lie, c-wdif-friend, c-wdif-anger, c-halal-haram], p: [self-test, self-test]}
+back: [assessment, assessment, passport, certificate, front]

@@ -1,0 +1,23 @@
+{% import "pages/_islamic.html.j2" as isl with context %}
+{% set c = d.chrome %}
+<div class="isl" {{ isl.container(c) }}>
+  {{ isl.start(p, g, c) }}
+  {{ isl.head(p, c, false, true) }}
+  <div class="isl-body st">
+    <section class="st-narr">
+      {{ d.cast }}
+      <div class="st-bubble"><p>{{ d.intro }}</p></div>
+    </section>
+    <section class="st-grid">
+      {% for s in d.scenes %}
+      <figure class="st-cell"><div class="st-img"><span class="st-n">{{ s.n }}</span>{{ s.svg }}</div><figcaption class="st-cap{{ ' ai' if s.ai }}">{{ s.text }}</figcaption></figure>
+      {% endfor %}
+    </section>
+    {{ isl.sacred(d.verse, c, false, true) }}
+    <section class="st-lesson card"><i>{{ icon('bulb', 'ico', 2.2) }}</i><div><b>{{ d.labels.lesson }}</b><p{{ ' class=ai' if d.lesson.ai }}>{{ d.lesson.text }}</p></div></section>
+    <section class="st-q card"><p class="st-qt"><i>{{ icon('target', 'ico', 2.2) }}</i><span>{{ d.question.text }}</span></p>
+      <div class="st-choices">{% for ch in d.question.choices %}<div class="st-choice"><span class="tick"></span><span>{% if ch.placeholder %}<span class="hole">{{ ch.notice }}</span>{% else %}{{ ch.text }}{% endif %}</span></div>{% endfor %}</div></section>
+    {{ isl.refs(c, d.refs) }}
+  </div>
+  {{ isl.foot(p, c) }}
+</div>

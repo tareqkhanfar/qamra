@@ -1,0 +1,19 @@
+{% import "pages/_islamic.html.j2" as isl with context %}
+{% set c = d.chrome %}
+<div class="isl" {{ isl.container(c) }}>
+  {{ isl.start(p, g, c) }}
+  {{ isl.head(p, c, false, true) }}
+  <div class="isl-body su">
+    <section class="su-verse">{{ isl.sacred(d.verse, c, true, true) }}</section>
+    <section class="su-meaning card"><h2>{{ icon('bulb', 'ico', 2.2) }}{{ d.labels.meaning }}</h2><p{{ ' class=ai' if d.meaning.ai }}>{{ d.meaning.text }}</p></section>
+    <section class="su-row">
+      <div class="su-qr card"><div class="su-qr-code">{{ p.qr }}</div><span>{{ icon('speaker', 'ico', 2.2) }}{{ d.labels.listen }}</span></div>
+      <div class="su-track card"><h2>{{ icon('star', 'ico', 2.2) }}{{ d.labels.tracker }}</h2>
+        <div class="su-grid" style="--days: {{ d.days|length }}"><span class="su-corner">{{ d.labels.ayah }}</span>{% for n in d.days %}<span class="su-day">{{ n }}</span>{% endfor %}
+          {% for r in d.rows %}<span class="su-ay">{{ r }}</span>{% for n in d.days %}<span class="su-cell">{{ icon('star', 'star-outline', 1.6) }}</span>{% endfor %}{% endfor %}</div></div>
+    </section>
+    <aside class="pg-care su-care"><div class="pg-care-ico">{{ icon('book', 'ico', 2) }}</div><p>{{ d.care }}</p></aside>
+    {{ isl.refs(c, d.refs) }}
+  </div>
+  {{ isl.foot(p, c) }}
+</div>

@@ -39,6 +39,17 @@ Items marked **external** need something only Tareq or a third party can provide
   - physical proofs tested with children and families;
   - recordings for the journey's audio items (or a paid TTS provider).
 
+## Addendum 10 — «قلبي يعرف الله»: the Islamic education series
+Order of work from the addendum (§11). Nothing religious is final before the scholar's sign-off, and nothing prints or sells before it.
+- [x] **Step 1 · The proposal package** (2026-10-01): `docs/islamic/proposal.md` and its PDF (`scripts/islamic_proposal.py --pdf`) from `content/islamic/` (plan, units, concepts, volumes, sources, proposal-text). 5 volumes + a seasonal Ramadan and Eid book, 639 pages; the retention matrix is computed from the plan (every concept reaches ≥ 5 of 6 forms); 192 planned references in the source register; 12 designed sample pages; price tiers marked ⚠ until the printer's quote (`docs/islamic/printer-quote-request.md`).
+- [ ] **STOP: Tareq's approval and decisions** (name, split, Ramadan-first, scholar, the Tanzil file, binding and size, prices): `docs/islamic/proposal.md` §11.
+- [ ] **Step 2 · `sources.yaml` and the scholar's review of the list:** fetch candidates (`scripts/islamic_sources.py fetch`), diff the Quran against the official Tanzil file (Tareq must place it in `content/islamic/quran/`), send `out/islamic/sources-for-scholar.pdf`.
+- [ ] **Step 3 · Page types and build checks:** the sample pages' types exist; the remaining types of §7 (`prayer-steps`, `my-day-with-allah`, `pillar-card`, `true-false`, `unit-closing`, `final-assessment`), the source-id, no-depiction and no-sacred-text-on-disposable-pages checks in the print build.
+- [ ] **Step 4 · Seasonal book first (live by ~28 Dec 2026), then volume 1:** content → scholar review page by page → physical proof (scholar + 2–3 families).
+- [ ] **Step 5 · Store product and personalization** (line «قلبي يعرف الله», variants, add-ons, the quiz goal «تعليم ديني»).
+- [ ] **Step 6 · Volumes 2–5.**
+- [ ] **External:** the scholar (name, availability, review format), the Quran source file, a licensed reciter, the printer's quote and templates.
+
 ## Housekeeping (lead)
 - [x] Every workstream deployed to the test server (2026-09-30).
 - [x] README, CHANGELOG, `docs/decisions.md`, `docs/security.md` and `docs/feature-matrix.md` updated (2026-09-30).

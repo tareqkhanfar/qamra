@@ -1,0 +1,15 @@
+{% import "pages/_islamic.html.j2" as isl with context %}
+{% set c = d.chrome %}
+<div class="isl" {{ isl.container(c) }}>
+  {{ isl.start(p, g, c) }}
+  {{ isl.head(p, c, true, true) }}
+  <div class="isl-body pg">
+    <p class="wd-intro">{{ d.labels.play }}</p>
+    {% for s in d.skills %}
+    <section class="card fa-row"><div class="fa-t"><b>{{ s.skill }}</b><p>{{ s.text }}</p></div><div class="fa-stars"><small>{{ d.labels.parent }}</small>{{ isl.outline_stars(d.stars, 'star-outline big') }}</div></section>
+    {% endfor %}
+    {% if d.note %}<p class="wd-intro">{{ d.note }}</p>{% endif %}
+    {{ isl.refs(c, d.refs) }}
+  </div>
+  {{ isl.foot(p, c) }}
+</div>

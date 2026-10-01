@@ -1,0 +1,51 @@
+# «قلبي يعرف الله»: المجلد ٣ (المستوى الثاني). See v1.yaml for the format.
+# Pages about the angels carry the tag `angels`: no person, figure or symbolic stand-in is drawn (Addendum 10 §3.5).
+volume: V3
+level: 2
+title_ar: أَرْكَانُ الْإِسْلَامِ وَأَرْكَانُ الْإِيمَانِ
+title_en: The Pillars of Islam and of Iman
+age: [6, 7]
+goal: "يفهم الطفل أركان الإسلام والإيمان بأمثلة من عالمه، ويتقن الصلاة كاملة، ويتعلّق بالصيام والزكاة والحج حبًّا لا خوفًا"
+front: 5
+units:
+  - id: u-shahada
+    lessons:
+      - {t: "شَهَادَةُ التَّوْحِيدِ", c: [c-shahada, c-allah-one], s: [q-47-19, q-112, h-bukhari-8], p: [pillar-card, story, true-false]}
+      - {t: "شَهَادَةُ الرِّسَالَةِ", c: [c-shahada, c-prophet-who], s: [q-33-21, h-bukhari-8], p: [pillar-card, story, match]}
+      - {t: "أَشْهَدُ وَأَعْمَلُ", c: [c-shahada, c-follow-prophet], s: [q-3-31], p: [story, wwyd]}
+  - id: u-prayer2
+    lessons:
+      - {t: "صَلَاةُ الْفَجْرِ وَالظُّهْرِ", c: [c-prayer-times, c-prayer-steps], s: [s-prayer-rakaat, h-bukhari-527], p: [order-steps, story, match]}
+      - {t: "الْعَصْرُ وَالْمَغْرِبُ وَالْعِشَاءُ", c: [c-prayer-times, c-prayer-steps], s: [s-prayer-rakaat], p: [order-steps, match, true-false]}
+      - {t: "أَحْفَظُ أَذْكَارَ الصَّلَاةِ", c: [c-prayer-words], s: [d-ruku, d-sujud, d-rising, d-between-sujud, d-tashahhud], p: [order-steps, dhikr, dhikr]}
+      - {t: "الْجَمَاعَةُ وَالْمَسْجِدُ", c: [c-mosque, c-prayer-why], s: [h-muslim-671, h-bukhari-528], p: [story, find-objects, choose]}
+      - {t: "لَوْ نَسِيتُ الصَّلَاةَ", c: [c-wdif-forgot, c-prayer-why], s: [h-bukhari-597], p: [wdif, story, wwyd, true-false]}
+  - id: u-zakat
+    lessons:
+      - {t: "لِمَاذَا نُعْطِي؟", c: [c-zakat-sadaqa], s: [q-2-43, h-muslim-2588, h-bukhari-6021], p: [pillar-card, story, true-false]}
+      - {t: "صَدَقَتِي الصَّغِيرَةُ", c: [c-zakat-sadaqa, c-sharing], s: [s-charity-kids, h-tirmidhi-1956, h-bukhari-5392], p: [story, wwyd, draw]}
+  - id: u-fasting
+    lessons:
+      - {t: "الصِّيَامُ عِبَادَةُ حُبٍّ", c: [c-fasting, c-ramadan], s: [q-2-183, h-bukhari-1894], p: [pillar-card, story, true-false]}
+      - {t: "أَصُومُ بِقَدْرِ طَاقَتِي", c: [c-fasting-kids], s: [h-bukhari-1960, s-fasting-kids], p: [story, wwyd, match]}
+      - {t: "أَصُومُ بِأَخْلَاقِي أَيْضًا", c: [c-fasting, c-tongue], s: [h-bukhari-1894, h-bukhari-6018], p: [story, choose]}
+  - id: u-hajj
+    lessons:
+      - {t: "رِحْلَةُ الْحَجِّ", c: [c-hajj], s: [q-3-97, q-22-27, h-bukhari-1521], p: [pillar-card, story, find-objects]}
+      - {t: "أَشْتَاقُ إِلَى الْحَجِّ", c: [c-hajj], s: [h-muslim-1336], p: [story, draw, choose]}
+  - id: u-iman1
+    lessons:
+      - {t: "أُؤْمِنُ بِاللهِ", c: [c-pillars-iman, c-allah-creator], s: [q-2-285, h-muslim-8, q-39-62], p: [pillar-card, story, choose]}
+      - {t: "الْمَلَائِكَةُ خَلْقٌ مِنْ نُورٍ", c: [c-angels], s: [h-muslim-2996, q-2-285], p: [pillar-card, story, true-false, match]}
+      - {t: "كُتُبُ اللهِ", c: [c-books], s: [q-2-285, q-4-136], p: [pillar-card, match, true-false]}
+  - id: u-iman2
+    lessons:
+      - {t: "رُسُلُ اللهِ", c: [c-messengers], s: [q-4-136, q-2-285], p: [pillar-card, story, match, true-false]}
+      - {t: "يَوْمُ لِقَاءِ اللهِ وَالْفَرَحِ", c: [c-last-day], s: [q-10-9], p: [pillar-card, story, coloring, true-false, wwyd]}
+      - {t: "أَحْرِصُ وَأَسْتَعِينُ بِاللهِ", c: [c-qadar], s: [h-muslim-2664, q-2-216], p: [pillar-card, story, wwyd]}
+      - {t: "أَرْكَانُ الْإِيمَانِ فِي حَيَاتِي", c: [c-pillars-iman, c-pillars-five], s: [h-muslim-8, h-bukhari-8], p: [match, choose, true-false]}
+cumulative:
+  - {after: u-prayer2, c: [c-prayer-why, c-prayer-times, c-wudu], p: [self-test]}
+  - {after: u-hajj, c: [c-pillars-five, c-shahada, c-zakat-sadaqa, c-fasting, c-hajj], p: [self-test, self-test]}
+  - {after: u-iman2, c: [c-pillars-iman, c-angels, c-books, c-messengers, c-qadar], p: [self-test]}
+back: [assessment, assessment, passport, certificate, front]

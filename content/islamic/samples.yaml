@@ -1,0 +1,169 @@
+# «قلبي يعرف الله» (Addendum 10 §4.8): the content of the 12 sample pages of the proposal. The page builders render
+# these (qamra_workbook/render/pages/islamic_*.py → `uv run python -m qamra_workbook.render.islamic_samples`).
+#
+# Rules this file follows (the builders and checks enforce them):
+#  * Wording of a verse, hadith or dhikr is NEVER written here. A block asks for it by source id
+#    (content/islamic/sources.yaml); the page prints what the code copies from the verified source, or, while the
+#    source has no verified text, a clearly marked placeholder. `span: {start, end}` picks a stretch of a hadith.
+#  * Every block with a religious statement lists `sources`. Blocks marked `ai_drafted: true` are the drafter's
+#    simple explanation of a source (allowed, reviewed by the scholar); they never replace the source's wording.
+#  * Text is fully vowelised for the children's pages; the parents' page is plain modern Arabic.
+#  * {masc/fem} picks the form for the child's gender; {child} is the child's name.
+#  * Nothing here depicts Allah, a prophet, an angel or a Companion. People appear only as the recurring
+#    characters (huda, reem, salem) and the reader (`reader`); `prophet_story` scenes have no person at all.
+
+pages:
+  - id: s01-yunus
+    type: prophet-story
+    unit: u-yunus
+    title: يُونُسُ عَلَيْهِ السَّلَامُ وَالْحُوتُ
+    tags: [prophet_story]
+    narrator:
+      figures: [huda, reem, salem]
+      intro: "جَلَسَ رِيمُ وَسَالِمٌ بِجَانِبِ سِتِّي هُدَى، فَقَالَتْ: سَأَحْكِي لَكُمَا حِكَايَةَ نَبِيٍّ مِنْ أَنْبِيَاءِ اللهِ."
+    scenes:   # nature, places and objects only
+      - {art: ship-at-sea, text: رَكِبَ يُونُسُ عَلَيْهِ السَّلَامُ سَفِينَةً فِي الْبَحْرِ., sources: [q-37-139-148], ai_drafted: true}
+      - {art: dark-sea-whale, text: ثُمَّ الْتَقَمَهُ حُوتٌ كَبِيرٌ، فَصَارَ فِي ظُلُمَاتِ الْبَحْرِ., sources: [q-37-139-148], ai_drafted: true}
+      - {art: moonlit-sea, text: فَنَادَى يُونُسُ رَبَّهُ، وَاللهُ قَرِيبٌ يَسْمَعُ., sources: [q-21-87, q-2-186], ai_drafted: true}
+      - {art: shore-gourd-sunrise, text: فَاسْتَجَابَ اللهُ لَهُ وَنَجَّاهُ، وَأَنْبَتَ عَلَيْهِ شَجَرَةَ يَقْطِينٍ., sources: [q-21-88, q-37-139-148], ai_drafted: true}
+    verse: {source: q-21-87, label: دُعَاءُ يُونُسَ عَلَيْهِ السَّلَامُ}
+    lesson: {text: نَدْعُو اللهَ فِي كُلِّ وَقْتٍ، وَهُوَ يَسْمَعُنَا وَيُحِبُّ أَنْ نَرْجِعَ إِلَيْهِ إِذَا أَخْطَأْنَا., sources: [q-2-186, q-2-222], ai_drafted: true}
+    question:
+      text: مَاذَا فَعَلَ يُونُسُ وَهُوَ فِي الظُّلُمَاتِ؟
+      choices: [{t: دَعَا رَبَّهُ وَسَبَّحَهُ, ok: true}, {t: لَمْ يَدْعُ أَحَدًا}, {t: خَافَ وَهَرَبَ}]
+      sources: [q-21-87, q-37-139-148]
+
+  - id: s02-wudu
+    type: order-steps
+    engine_type: wudu-steps
+    unit: u-wudu
+    title: أَتَوَضَّأُ كَمَا عَلَّمَنَا نَبِيُّنَا ﷺ
+    instruction: "{رَتِّبِ/رَتِّبِي} الْخُطُوَاتِ مِنْ ١ إِلَى ٨"
+    steps:   # the right order; the page shows the cards shuffled; art is a body-part icon, never a person
+      - {n: 1, t: أَبْدَأُ بِذِكْرِ اسْمِ اللهِ, art: speech-bubble, sources: [h-abudawud-101], scholar_decision: true}
+      - {n: 2, t: أَغْسِلُ كَفَّيَّ, times: 3, art: hands, sources: [h-bukhari-159]}
+      - {n: 3, t: أَتَمَضْمَضُ, art: mouth, sources: [h-bukhari-159]}
+      - {n: 4, t: أَسْتَنْشِقُ الْمَاءَ وَأَنْثُرُهُ, art: nose, sources: [h-bukhari-159]}
+      - {n: 5, t: أَغْسِلُ وَجْهِي, times: 3, art: face, sources: [q-5-6, h-bukhari-159]}
+      - {n: 6, t: أَغْسِلُ يَدَيَّ إِلَى الْمِرْفَقَيْنِ, times: 3, art: arms, sources: [q-5-6, h-bukhari-159]}
+      - {n: 7, t: أَمْسَحُ رَأْسِي وَأُذُنَيَّ, art: head, sources: [q-5-6, h-bukhari-159], scholar_decision: true}
+      - {n: 8, t: أَغْسِلُ قَدَمَيَّ إِلَى الْكَعْبَيْنِ, times: 3, art: feet, sources: [q-5-6, h-bukhari-159]}
+    scholar_points: [h-abudawud-101, h-bukhari-159]
+    parent_line: رَاجِعُوا الْخُطُوَاتِ مَعًا أَمَامَ الْحَوْضِ، ثُمَّ يُجَرِّبُ الطِّفْلُ بِنَفْسِهِ وَأَنْتُمْ بِجَانِبِهِ.
+
+  - id: s03-dhikr-eating
+    type: dhikr
+    unit: u-adhkar1
+    title: قَبْلَ الطَّعَامِ
+    when: حِينَ أَبْدَأُ الْأَكْلَ
+    dhikr: {source: d-eat-start}
+    why: {text: لِأَنَّ اللهَ هُوَ الَّذِي رَزَقَنَا هَذَا الطَّعَامَ، فَنَذْكُرُ اسْمَهُ وَنَشْكُرُهُ., sources: [q-2-172], ai_drafted: true}
+    manner: {text: وَآكُلُ بِيَدِي الْيُمْنَى مِمَّا يَلِينِي., sources: [h-bukhari-5376], ai_drafted: true}
+    scene: {art: family-meal, figures: [reader, reem, salem, huda]}
+    home: نَقُولُهَا مَعًا قَبْلَ كُلِّ وَجْبَةٍ هَذَا الْأُسْبُوعَ، وَنُلَوِّنُ نَجْمَةً بَعْدَ كُلِّ يَوْمٍ.
+    audio: {kind: human-voice, note: "بصوت بشري مسجّل؛ لا TTS لنص ديني"}
+
+  - id: s04-wwyd-honesty
+    type: wwyd
+    unit: u-manners1
+    title: "{مَاذَا كُنْتَ سَتَفْعَلُ؟/مَاذَا كُنْتِ سَتَفْعَلِينَ؟}"
+    scenario: "{كَسَرْتَ/كَسَرْتِ} كَأْسًا فِي الْمَطْبَخِ بِالْخَطَأِ، وَلَيْسَ فِي الْمَطْبَخِ أَحَدٌ."
+    scene: {art: kitchen-broken-cup, figures: [reader]}
+    choices:
+      - {t: أُخْبِرُ أُمِّي بِالصِّدْقِ وَأَعْتَذِرُ, ok: true, feedback: "أَحْسَنْتَ يَا {بَطَلُ/بَطَلَةُ}! الصِّدْقُ يَهْدِي إِلَى الْخَيْرِ."}
+      - {t: أُخَبِّئُ الْقِطَعَ حَتَّى لَا يَرَاهَا أَحَدٌ, feedback: "لَيْسَ هَذَا أَجْمَلَ اخْتِيَارٍ. {جَرِّبْ/جَرِّبِي} مَرَّةً أُخْرَى!"}
+      - {t: أَقُولُ إِنَّ الْقِطَّةَ هِيَ الَّتِي كَسَرَتْهُ, feedback: "لَيْسَ هَذَا أَجْمَلَ اخْتِيَارٍ. {جَرِّبْ/جَرِّبِي} مَرَّةً أُخْرَى!"}
+    quote: {source: h-bukhari-6094, span: {start: "الصدق يهدي", end: "البر"}}
+    sources: [h-bukhari-6094]
+    role_play: "{مَثِّلْ/مَثِّلِي} الْمَوْقِفَ مَعَ أُمِّكَ بِصَوْتٍ هَادِئٍ."
+
+  - id: s05-wdif-anger
+    type: wdif
+    unit: u-whatif1
+    title: مَاذَا أَفْعَلُ لَوْ غَضِبْتُ؟
+    intro: {text: الْغَضَبُ شُعُورٌ يَمُرُّ بِكُلِّ النَّاسِ، وَنَتَعَلَّمُ مَعًا كَيْفَ نَهْدَأُ., ai_drafted: true}
+    steps:
+      - {n: 1, t: أَتَوَقَّفُ وَآخُذُ نَفَسًا عَمِيقًا.}
+      - {n: 2, t: أَقُولُ دُعَاءَ الِاسْتِعَاذَةِ., dua: d-anger-refuge, sources: [h-bukhari-3282]}
+      - {n: 3, t: أَجْلِسُ حَتَّى أَهْدَأَ., sources: [h-abudawud-4782]}
+      - {n: 4, t: أَتَكَلَّمُ بِلُطْفٍ، وَأَعْتَذِرُ إِنْ أَخْطَأْتُ., sources: [q-41-34]}
+    quote: {source: h-bukhari-6114, span: {start: "ليس الشديد", end: "الغضب"}}
+    meaning: {text: الْقَوِيُّ الْحَقِيقِيُّ هُوَ مَنْ يَمْلِكُ نَفْسَهُ عِنْدَ الْغَضَبِ., sources: [h-bukhari-6114], ai_drafted: true}
+    tracker: "{جَرَّبْتَ/جَرَّبْتِ} هَذَا الْأُسْبُوعَ؟ {لَوِّنْ/لَوِّنِي} نَجْمَةً"
+
+  - id: s06-coloring-blessings
+    type: coloring
+    unit: u-blessings
+    sacred_text: none        # a page that gets coloured: no verse, hadith or dhikr (Addendum 10 §3.6)
+    title: أُلَوِّنُ نِعَمَ رَبِّي
+    instruction: "{لَوِّنْ/لَوِّنِي} مَا تُحِبُّ"
+    art: blessings-garden    # line art: sun, tree with fruit, water, bird, house, the reader's character
+
+  - id: s07-blessings-hunt
+    type: blessings-hunt
+    unit: u-blessings
+    title: أَبْحَثُ عَنْ نِعَمِ اللهِ
+    instruction: "{ضَعْ/ضَعِي} دَائِرَةً حَوْلَ كُلِّ نِعْمَةٍ"
+    art: blessings-scene
+    find: [الشَّمْسُ, الْمَاءُ, الشَّجَرَةُ, الثَّمَرَةُ, الطَّائِرُ, الْخُبْزُ, الْقَمَرُ, الْأُسْرَةُ]
+    closing: {text: وَهَذِهِ بَعْضُ نِعَمِ اللهِ عَلَيْنَا، وَهِيَ أَكْثَرُ مِنْ أَنْ نَعُدَّهَا!, sources: [q-16-18], ai_drafted: true}
+    draw_box: هَلْ تَرَى نِعْمَةً أُخْرَى؟ ارْسُمْهَا هُنَا
+
+  - id: s08-unit-review
+    type: unit-review
+    unit: u-blessings
+    title: مَاذَا أَتَذَكَّرُ؟
+    subtitle: وَحْدَةُ نِعَمِ رَبِّي
+    true_false:
+      - {t: اللهُ هُوَ الَّذِي خَلَقَنَا وَخَلَقَ كُلَّ شَيْءٍ., ok: true, sources: [q-39-62]}
+      - {t: الشَّمْسُ وَالْمَاءُ مِنْ نِعَمِ اللهِ., ok: true, sources: [q-16-18]}
+      - {t: "نَشْكُرُ اللهَ حِينَ نَقُولُ: {src:d-sneeze-1}.", ok: true, sources: [q-1-2, q-14-7]}
+      - {t: الْجِبَالُ خَلَقَهَا إِنْسَانٌ., ok: false, sources: [q-39-62]}
+    choose:
+      text: مَاذَا نَقُولُ لِنَشْكُرَ اللهَ؟
+      choices: [{source: d-sneeze-1, ok: true}, {source: d-eat-start}, {source: d-ruku}]   # options that are wording come from the register
+      sources: [q-1-2, q-14-7]
+    stars: "كَمْ نَجْمَةً {تَسْتَحِقُّ/تَسْتَحِقِّينَ}؟"
+
+  - id: s09-parent-guide
+    type: parent-guide
+    unit: u-blessings
+    title: "لِلْأَهْلِ: نِعَمُ اللهِ حَوْلَنَا"
+    lang: modern-standard   # parents' page: not vowelised
+    learned: {text: "تعلّم طفلكم في هذه الوحدة أنّ الله هو الخالق المنعم، وأنّ نعمه كثيرة حولنا، وأنّ شكره يكون بالقول والعمل.", sources: [q-39-62, q-16-18, q-2-172], ai_drafted: true}
+    explain: {text: "ابدؤوا ممّا يراه: «من خلق الشمس؟ ومن أعطانا الماء؟»، ثم قولوا: «وهذا من حبّ الله لنا». أبقوا الشرح قصيرًا ودافئًا، واتركوا للطفل أن يسأل.", ai_drafted: true}
+    ask: "ما أجمل شيء أعطاك الله إيّاه اليوم؟"
+    together: "جولة امتنان: قبل النوم يذكر كل فرد من الأسرة ثلاث نِعَم، ونرسم واحدة منها في دفتر العائلة."
+    habit: {text: "قولوا «{src:d-sneeze-1}» بعد الوجبات وعند ذكر أيّ نعمة، وكرّروها أمام الطفل ليقلّدكم.", sources: [q-1-2, q-14-7], ai_drafted: true}
+    care_note: "في الكتاب صفحات فيها كلام الله تعالى وأذكار ودعوات؛ نرجو حفظ الكتاب في مكان نظيف مرتفع، وعدم رميه أو وضع شيء فوقه."
+
+  - id: s10-passport
+    type: passport
+    engine_type: muslim-passport
+    volume: V1
+    title: جَوَازُ الْمُسْلِمِ الصَّغِيرِ
+    gendered_title: "{جَوَازُ الْمُسْلِمِ الصَّغِيرِ/جَوَازُ الْمُسْلِمَةِ الصَّغِيرَةِ}"
+    photo_slot: reader        # the reader's character, like a passport photo
+    stamps_from: units.yaml   # one stamp circle per V1 unit (colour + icon of the unit), stickers from the sticker sheet
+    challenge_stars: 8
+
+  - id: s11-certificate
+    type: certificate
+    engine_type: muslim-certificate
+    volume: V1
+    title: "{شَهَادَةُ الْمُسْلِمِ الصَّغِيرِ/شَهَادَةُ الْمُسْلِمَةِ الصَّغِيرَةِ}"
+    statement: "{أَنَا مُسْلِمٌ صَغِيرٌ/أَنَا مُسْلِمَةٌ صَغِيرَةٌ} أُحِبُّ اللهَ وَأَقْتَدِي بِنَبِيِّي مُحَمَّدٍ ﷺ"
+    fields: [name, character, date, parent_signature]
+    reviewed_by_line: false   # «راجعه علميًا: [الاسم]» only if the scholar agrees (Addendum 10 §3.3)
+
+  - id: s12-surah-ikhlas
+    type: surah
+    engine_type: surah-page
+    unit: u-surahs1
+    title: سُورَةُ الْإِخْلَاصِ
+    verse: {source: q-112, frame: dignified}   # the whole surah, copied from the verified Quran file
+    meaning: {text: تُعَلِّمُنَا هَذِهِ السُّورَةُ أَنَّ اللهَ وَاحِدٌ، وَهُوَ الَّذِي نَقْصِدُهُ فِي كُلِّ حَاجَاتِنَا., sources: [q-112], ai_drafted: true}
+    audio_qr: {kind: licensed-recitation, note: "تسجيل بصوت قارئ مجاز أو بتسجيلنا مع قارئ مؤهَّل؛ لا TTS للقرآن أبدًا"}
+    tracker: {ayahs: 4, days: 7}   # a star per ayah per day
+    care_note: "هذه الصفحة فيها كلام الله تعالى. لنحفظها في مكان نظيف ولا نرميها."
+    flags: [never_cut, never_colored]

@@ -1,0 +1,24 @@
+{% import "pages/_islamic.html.j2" as isl with context %}
+{% set c = d.chrome %}
+<div class="isl" {{ isl.container(c) }}>
+  {{ isl.start(p, g, c) }}
+  {{ isl.head(p, c, false) }}
+  {% if d.subtitle %}<p class="ur-sub">{{ d.subtitle }}</p>{% endif %}
+  <div class="isl-body ur">
+    <section class="ur-block">
+      <h2 class="ur-label">{{ icon('check-list', 'ico', 2.2) }}{{ d.labels.tf }}</h2>
+      {% for r in d.rows %}
+      <div class="tf-row card"><span class="tf-n">{{ r.n }}</span><p class="tf-text{{ ' ai' if false }}">{{ r.text }}</p>
+        <span class="tf-btns"><span class="tf-btn yes">{{ icon('check', 'ico', 2.6) }}{{ d.labels.true }}</span><span class="tf-btn no">{{ icon('cross', 'ico', 2.6) }}{{ d.labels.false }}</span></span></div>
+      {% endfor %}
+    </section>
+    <section class="ur-block">
+      <h2 class="ur-label">{{ icon('target', 'ico', 2.2) }}{{ d.labels.choose }}</h2>
+      <div class="card ur-choose"><p class="ur-q">{{ d.choose.text }}</p>
+        <div class="ur-choices">{% for ch in d.choose.choices %}<div class="ur-choice"><span class="tick"></span><span class="ur-ct">{% if ch.placeholder %}<span class="hole">{{ ch.notice }}</span>{% else %}{{ ch.text }}{% endif %}</span>{% if ch.tag %}<i class="opt-tag">{{ ch.tag }}</i>{% endif %}</div>{% endfor %}</div></div>
+    </section>
+    <section class="ur-stars card"><p>{{ d.stars_text }}</p>{{ isl.outline_stars(d.star_count, 'star-outline big') }}</section>
+    {{ isl.refs(c, d.refs) }}
+  </div>
+  {{ isl.foot(p, c) }}
+</div>

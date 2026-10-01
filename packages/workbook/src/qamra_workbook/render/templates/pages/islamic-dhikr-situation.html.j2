@@ -1,0 +1,22 @@
+{% import "pages/_islamic.html.j2" as isl with context %}
+{% set c = d.chrome %}
+<div class="isl" {{ isl.container(c) }}>
+  {{ isl.start(p, g, c) }}
+  {{ isl.head(p, c, false, true) }}
+  <div class="isl-body dk">
+    <section class="dk-when"><span class="dk-when-l">{{ icon('clock', 'ico', 2.2) }}{{ d.labels.when }}</span><span class="dk-when-t">{{ d.when }}</span></section>
+    <figure class="dk-scene">{{ d.scene }}</figure>
+    <section class="dk-say"><div class="dk-say-l">{{ d.labels.say }}</div>{{ isl.sacred(d.dhikr, c) }}</section>
+    <section class="dk-two">
+      <article class="card dk-card"><h2>{{ icon('heart', 'ico', 2.2) }}{{ d.labels.why }}</h2><p{{ ' class=ai' if d.why.ai }}>{{ d.why.text }}</p></article>
+      <article class="card dk-card"><h2>{{ icon('star', 'ico', 2.2) }}{{ d.labels.manner }}</h2><p{{ ' class=ai' if d.manner.ai }}>{{ d.manner.text }}</p></article>
+    </section>
+    <section class="dk-home">
+      <div class="dk-qr card"><div class="dk-qr-code">{{ p.qr }}</div><span>{{ icon('speaker', 'ico', 2.2) }}{{ d.labels.listen }}</span></div>
+      <div class="dk-week card"><h2>{{ icon('home', 'ico', 2.2) }}{{ d.labels.home }}</h2><p>{{ d.home }}</p>
+        <div class="dk-days">{% for n in d.days %}<span>{{ icon('star', 'star-outline', 1.5) }}<i>{{ n }}</i></span>{% endfor %}</div></div>
+    </section>
+    {{ isl.refs(c, d.refs) }}
+  </div>
+  {{ isl.foot(p, c) }}
+</div>

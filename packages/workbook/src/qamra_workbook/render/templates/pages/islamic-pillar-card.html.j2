@@ -1,0 +1,14 @@
+{% import "pages/_islamic.html.j2" as isl with context %}
+{% set c = d.chrome %}
+<div class="isl" {{ isl.container(c) }}>
+  {{ isl.start(p, g, c) }}
+  {{ isl.head(p, c, false, true) }}
+  <div class="isl-body pg">
+    <section class="card pl-pillar"><i>{{ icon(p.style.icon, 'ico', 2.2) }}</i><h2>{{ d.pillar }}</h2></section>
+    <section class="card pl-idea"><p{{ ' class=ai' if d.idea.ai }}>{{ d.idea.text }}</p></section>
+    <section class="card ur-choose"><p class="ur-q">{{ d.question.text }}</p>
+      <div class="ur-choices">{% for ch in d.question.choices %}<div class="ur-choice"><span class="tick"></span><span class="ur-ct">{% if ch.placeholder %}<span class="hole">{{ ch.notice }}</span>{% else %}{{ ch.text }}{% endif %}</span></div>{% endfor %}</div></section>
+    {{ isl.refs(c, d.refs) }}
+  </div>
+  {{ isl.foot(p, c) }}
+</div>

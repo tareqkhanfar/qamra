@@ -1,0 +1,19 @@
+{% import "pages/_islamic.html.j2" as isl with context %}
+{% set c = d.chrome %}
+<div class="isl" {{ isl.container(c) }}>
+  {{ isl.start(p, g, c) }}
+  {{ isl.head(p, c, false, true) }}
+  <div class="isl-body wd">
+    <p class="wd-intro{{ ' ai' if d.intro.ai }}">{{ d.intro.text }}</p>
+    <section class="wd-grid">
+      {% for s in d.steps %}
+      <article class="card wd-step"><span class="wd-n">{{ s.n }}</span><div class="wd-pic-box">{{ s.picture }}</div><p class="wd-t">{{ s.text }}</p>{% if s.dua %}<div class="wd-dua">{{ isl.sacred(s.dua, c) }}</div>{% endif %}</article>
+      {% endfor %}
+    </section>
+    {{ isl.sacred(d.quote, c) }}
+    <section class="wd-mean card"><i>{{ icon('bulb', 'ico', 2.2) }}</i><p{{ ' class=ai' if d.meaning.ai }}>{{ d.meaning.text }}</p></section>
+    <section class="wd-track card"><p>{{ d.tracker }}</p><div class="dk-days">{% for n in d.days %}<span>{{ icon('star', 'star-outline', 1.5) }}<i>{{ n }}</i></span>{% endfor %}</div></section>
+    {{ isl.refs(c, d.refs) }}
+  </div>
+  {{ isl.foot(p, c) }}
+</div>
