@@ -9,7 +9,7 @@ every price, rule and cost is editable in the admin without a deploy.
 
 import enum
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime
 from decimal import Decimal
 from typing import Any
 
@@ -23,6 +23,7 @@ from sqlalchemy import (
     SmallInteger,
     String,
     Text,
+    func,
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
@@ -357,6 +358,12 @@ class Cart(IdMixin, TimestampMixin, Base):
 
 class CartItem(IdMixin, TimestampMixin, Base):
     __tablename__ = "cart_items"
+
+    # a Python timestamp, so lines added in one transaction keep the order they were added in (the cart
+    # lists them by created_at; Postgres now() is the same for the whole transaction)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(UTC), server_default=func.now(), nullable=False
+    )
 
     cart_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("carts.id", ondelete="CASCADE"), index=True)
     variant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("product_variants.id", ondelete="CASCADE"))
