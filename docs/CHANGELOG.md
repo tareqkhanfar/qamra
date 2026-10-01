@@ -1,5 +1,11 @@
 # Changelog
 
+## The launch site, and a clear sign-up for new parents (2026-10-01)
+- **One structure:** the menu is الحكايات · كتب الأنشطة · للروضات · الأسعار · كيف نعمل. New pages: an activity-books hub (`/workbooks`), `/pricing` (read from the catalog, in shekels or, with `?country=jo`, dinars) and `/how-it-works`. The home has one promise, four offers with real covers and "from" prices, a real book to flip through and a short FAQ. «العوالم» is gone everywhere.
+- **Only what renders is sold, and nothing says «قريبًا»:** a volume or stage that does not render yet is an inactive variant (`variant_matrix.rendered`, `active: false`, migration `a3c1f0b7e2d4`), so no page, price list, structured data or cart mentions it. Checkout offers cash on delivery only, and the API messages no longer promise "soon".
+- **Sign-in:** a guest sent to sign in from «أضف للسلة» sees «أهلًا بكم» and a full-width «إنشاء حساب جديد», and switching between sign-in and sign-up keeps where they were going, so a new parent comes back to their book instead of `/account`.
+- **Search and tests:** Organization, WebSite, Product and FAQPage structured data and a fuller sitemap; `tests/e2e/test_public_site.py` checks every public page as an anonymous visitor on a 390 px phone.
+
 ## «رحلتي الأولى للتعلّم» stage 1 in full, with the audio QR system (W9) (2026-09-30)
 - **The whole stage:** `python -m qamra_workbook.render.journey --stage 1 --book` renders 118 pages, the cover and a 20-page answer key; every file passes preflight. About 40 new page types (thinking, eye, listening, hand, shapes, math, review), 18 new pictures, the print layer `content/journey/stage-1.yaml` with every text marked for the educator.
 - **Audio QR:** pages with audio print a QR to `/a/{code}` (a stable code per letter or word); the public player plays the recording through a 10-minute signed link, shows the words when nothing is recorded, and never carries child data. Staff upload recordings in Admin → صوتيات الرحلة; the TTS fallback stays off.
