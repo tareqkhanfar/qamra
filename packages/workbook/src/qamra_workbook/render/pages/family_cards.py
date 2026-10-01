@@ -12,7 +12,6 @@ from typing import Any
 from markupsafe import Markup
 
 from qamra_workbook.pictures import get as picture
-from qamra_workbook.pictures.model import strip_tashkeel
 from qamra_workbook.render import art, draw, people
 from qamra_workbook.render.pages.family import step_picture
 from qamra_workbook.render.pages.family_games import MEMORY_PAIRS
@@ -55,7 +54,7 @@ def memory_cards(ctx: PageContext) -> Built:
     pics = [str(x) for x in params.get("cards", MEMORY_PAIRS)]
     simple = int(params.get("pairs", 6))
     cards = [
-        {"pic": ctx.pic(x), "word": strip_tashkeel(picture(x).word_ar), "level": 1 if i < simple else 2}
+        {"pic": ctx.pic(x), "word": picture(x).word_ar, "level": 1 if i < simple else 2}
         for i, x in enumerate(pics)
         for _ in range(2)
     ]
@@ -129,7 +128,7 @@ def puppets(ctx: PageContext) -> Built:
     items = [
         {
             "pic": ctx.pic(a),
-            "word": strip_tashkeel(picture(a).word_ar),
+            "word": picture(a).word_ar,
             "back": draw.svg(PUPPET_W, PUPPET_H, back + glue, "puppet-back"),
             "outline": draw.svg(PUPPET_W, PUPPET_H, guide + die, "puppet-lines"),
         }

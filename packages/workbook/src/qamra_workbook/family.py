@@ -94,6 +94,14 @@ NUTS_AND_RAW_EGGS = re.compile(
     r"(مكسّرات|مكسرات|جوز|لوز|فستق|بندق|كاجو|فول سوداني|زبدة الفول|بيض ني|بيض غير مطبوخ)"
 )
 _PLACEHOLDER = re.compile(r"\{([a-z_]+)\}")
+_TASHKEEL = re.compile(r"[\u064B-\u0652\u0670]")  # the printed texts are vowelized; the checks match letters
+
+
+def letters(text: str) -> str:
+    """`text` without its tashkeel, so a rule written in plain letters still finds a vowelized word."""
+    return _TASHKEEL.sub("", text)
+
+
 _PAIR = re.compile(r"\{([^{}/]+)/([^{}/]+)\}")  # {masc/fem}
 # How the proposal shows a placeholder to its readers (the book fills in the family's own words)
 SHOWN = {
@@ -257,7 +265,7 @@ def check_pages(plan: FamilyPlan, pages: list[Placed]) -> list[str]:
             unknown = set(_PLACEHOLDER.findall(text)) - PLACEHOLDERS
             if unknown:
                 out.append(f"p{p.n}: unknown placeholders {sorted(unknown)}")
-            if ASSUMED_PARENTS.search(text):
+            if ASSUMED_PARENTS.search(letters(text)):
                 out.append(f"p{p.n}: write {{adult}} or {{member}}, not a fixed mother or father: {text!r}")
     return out
 
@@ -317,10 +325,10 @@ def check_activities(plan: FamilyPlan) -> list[str]:
         if (recipe or a.where == "outside") and not (a.safety or "").strip():
             out.append(f"{tag}: {'recipes' if recipe else 'outdoor activities'} need a safety note")
         if recipe:
-            if "حساسي" not in (a.safety or ""):
+            if "حساسي" not in letters(a.safety or ""):
                 out.append(f"{tag}: every recipe reminds grown-ups to ask about allergies")
             ingredients = " ".join(str(x) for p in a.pages for x in p.params.get("ingredients", []))
-            if NUTS_AND_RAW_EGGS.search(ingredients + " " + " ".join(a.materials)):
+            if NUTS_AND_RAW_EGGS.search(letters(ingredients + " " + " ".join(a.materials))):
                 out.append(f"{tag}: no nuts or raw eggs by default (A7 §9)")
     counts = Counter(s for a in plan.activities for s in set(a.skills))
     thin = [s for s in SKILLS if counts[s] < MIN_SKILL_ACTIVITIES]
@@ -366,7 +374,7 @@ def check_inserts(plan: FamilyPlan) -> list[str]:
             if stickers != (insert.kind == "stickers"):
                 out.append(f"insert «{insert.title}»: {sheet.type} does not print on {insert.kind}")
             for text in (sheet.title, sheet.instruction):
-                if ASSUMED_PARENTS.search(text):
+                if ASSUMED_PARENTS.search(letters(text)):
                     out.append(f"insert «{insert.title}»: write {{adult}}, not a fixed mother or father")
     return out
 

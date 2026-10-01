@@ -181,7 +181,7 @@ def toc(ctx: PageContext) -> Built:
         "map_h": _ROWS[0] + 36 * (rows - 1) + 18,
         "stops": stops,
         "extras": extras,
-        "start": ctx.text("{ابدأ/ابدئي} من هنا"),
+        "start": ctx.text("{ابْدَأْ/ابْدَئي} مِنْ هُنا"),
         "character": uri(ctx.assets.character),
     }
     return Built(data, None, problems)
@@ -199,9 +199,9 @@ def my_family(ctx: PageContext) -> Built:
     problems: list[str] = []
     family = family_of(ctx, problems)
     members = list(family.members) if family else []
-    frames = [{"name": ctx.book.child.name, "role": "أنا", "child": True}]
+    frames = [{"name": ctx.book.child.name, "role": "أَنا", "child": True}]
     frames += [{"name": m.label, "role": m.role if m.name else "", "child": False} for m in members]
-    frames.append({"name": "", "role": str(ctx.page.params.get("more", "ومن أيضًا؟")), "child": False})
+    frames.append({"name": "", "role": str(ctx.page.params.get("more", "وَمَنْ أَيْضًا؟")), "child": False})
     for i, frame in enumerate(frames):
         frame["color"] = FRAME_COLORS[i % len(FRAME_COLORS)]
     columns = 2 if len(frames) <= 4 else 3 if len(frames) <= 6 else 4  # portraits never get too narrow
@@ -209,7 +209,7 @@ def my_family(ctx: PageContext) -> Built:
         "frames": frames,
         "columns": columns,
         "rows": math.ceil(len(frames) / columns),
-        "house": ctx.text(str(ctx.page.params.get("house", "بيت عائلة {family_name}"))),
-        "face_hint": ctx.text("{ارسم/ارسمي} الوجه"),
+        "house": ctx.text(str(ctx.page.params.get("house", "بَيْتُ عائِلَةِ {family_name}"))),
+        "face_hint": ctx.text("{ارْسُمِ/ارْسُمي} الوَجْهَ"),
     }
     return Built(data, None, problems)

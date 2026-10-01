@@ -11,7 +11,6 @@ from typing import Any
 from markupsafe import Markup
 
 from qamra_workbook.pictures import get as picture
-from qamra_workbook.pictures.model import strip_tashkeel
 from qamra_workbook.render import draw
 from qamra_workbook.render.pages.family import family_of
 from qamra_workbook.render.pages.inserts import NOTE_COLORS, qamra_count
@@ -65,8 +64,8 @@ def picture_rows(ctx: PageContext) -> tuple[dict[str, Any], list[str]]:
     ]
     data = {
         "rows": rows,
-        "word": strip_tashkeel(picture(pic).word_ar),
-        "hint": ctx.text("{لوّن/لوّني} العدد نفسه"),
+        "word": picture(pic).word_ar,
+        "hint": ctx.text("{لَوِّنِ/لَوِّني} العَدَدَ نَفْسَهُ"),
     }
     return data, [f"{ctx.num(i + 1)}: {ctx.num(n)}" for i, n in enumerate(counts)]
 
@@ -77,11 +76,11 @@ def things_tally(ctx: PageContext) -> dict[str, Any]:
     more = [str(x) for x in params.get("challenge_things", [])]
     return {
         "columns": [
-            {"pic": ctx.pic(x), "name": strip_tashkeel(picture(x).word_ar), "level": 1 if x in simple else 2}
+            {"pic": ctx.pic(x), "name": picture(x).word_ar, "level": 1 if x in simple else 2}
             for x in [*simple, *more]
         ],
         "squares": list(range(int(params.get("squares", 10)))),
-        "question": ctx.text(str(params.get("question", "أيّها أكثر؟ {ضع/ضعي} دائرة حوله"))),
+        "question": ctx.text(str(params.get("question", "أَيُّها أَكْثَرُ؟ {ضَعْ/ضَعي} دائِرَةً حَوْلَهُ"))),
     }
 
 
@@ -92,7 +91,7 @@ def table(ctx: PageContext, problems: list[str]) -> dict[str, Any]:
     names = [ctx.book.child.name] + [m.label for m in (family.members if family else ())]
     return {
         "seats": [{"name": n, "child": i == 0} for i, n in enumerate(names)],
-        "how_many": ctx.text("كم صحنًا {وضعت/وضعتِ}؟"),
+        "how_many": ctx.text("كَمْ صَحْنًا {وَضَعْتَ/وَضَعْتِ}؟"),
     }
 
 
@@ -174,7 +173,7 @@ def more_counting(ctx: PageContext, mode: str) -> Built:
             data |= table(ctx, problems)
         case "money":
             data["rows"], answer = money_rows(ctx)
-            data["total_q"] = ctx.text("كم معي؟")
+            data["total_q"] = ctx.text("كَمْ مَعي؟")
         case "change":
             data["rows"], answer = change_rows(ctx)
             problems += change_problems()

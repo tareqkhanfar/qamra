@@ -42,8 +42,8 @@ def budget(ctx: PageContext, problems: list[str]) -> dict[str, Any]:
             {"pic": ctx.pic(i), "price": qamra_count(p, ctx.numerals)}
             for i, p in zip(items, prices, strict=False)
         ],
-        "bought": ctx.text("ماذا {اشتريت/اشتريتِ}؟"),
-        "second": ctx.text("طريقة ثانية"),
+        "bought": ctx.text("ماذا {اشْتَرَيْتَ/اشْتَرَيْتِ}؟"),
+        "second": ctx.text("طَريقَةٌ ثانِيَةٌ"),
     }
 
 
@@ -65,7 +65,7 @@ def choice(ctx: PageContext, problems: list[str]) -> dict[str, Any]:
             }
             for x in situations
         ],
-        "mine": ctx.text("حلّ من عندي:"),
+        "mine": ctx.text("حَلٌّ مِنْ عِنْدي:"),
     }
 
 

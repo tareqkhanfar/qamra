@@ -155,7 +155,7 @@ def test_long_names_and_big_families_fit_the_parent_box_and_the_certificate(
     pdf = render(b, tmp_path)
     assert len(PdfReader(pdf).pages) == len(pages)
     html = (tmp_path / "b.html").read_text(encoding="utf-8")
-    assert f"عائلة {family.name}" in html
+    assert f"عائِلَةُ {family.name}" in html
     assert all(m.label in html for m in family.members)
     assert html.count('class="op-tag') == len(family.members) + 1  # the child and every member on the spread
     assert html.count('<aside class="parent-box') == 3  # passport, hunt, memory page; never the certificate
@@ -197,7 +197,7 @@ def test_play_money_is_for_play_only(tmp_path: Path) -> None:
     assert all(item["play"] == FOR_PLAY for item in [*built.data["notes"], *built.data["coins"]])
     html = book_html(b, build_pages(b, ASSETS), ASSETS)
     assert html.count(f">{FOR_PLAY}<") >= 6  # on every note and every coin
-    assert "للعب فقط — نقود قمرة" in html
+    assert f"{FOR_PLAY} — نُقودُ قَمْرَةَ" in html
     printed = re.sub(r"<[^>]+>", " ", re.sub(r"<style>.*?</style>", "", html, flags=re.S))
     assert not REAL_MONEY.search(printed)
     shekels = dataclasses.replace(money, title="نقود بالشيكل")

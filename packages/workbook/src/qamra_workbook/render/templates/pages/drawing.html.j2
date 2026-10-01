@@ -17,7 +17,7 @@
     <div class="cup-card fcard"><div class="cup-art">{{ d.art }}</div></div>
     <div class="cup-side">
       {% for level, n in d.legend %}<div class="cup-level fcard lvl{{ level }}">{{ stars(level) }}<b>{{ n }}</b></div>{% endfor %}
-      <div class="cup-ideas fcard"><span class="label">{{ icon('crayon') }}ألوان الطبقات</span>
+      <div class="cup-ideas fcard"><span class="label">{{ icon('crayon') }}أَلْوانُ الطَّبَقاتِ</span>
         <div class="cup-swatches">{% for c in ['#FFFFFF', '#F7B7C5', '#F7D774', '#E4675A', '#8B5A3C'] %}<span style="background: {{ c }}"></span>{% endfor %}</div>
       </div>
     </div>
@@ -49,7 +49,7 @@
   </div>
   {% elif d.frame == 'id-card' %}
   <div class="idcard">
-    <div class="id-band">{{ icon('briefcase') }}<b>بطاقة عملي</b><span>عندما أكبر</span></div>
+    <div class="id-band">{{ icon('briefcase') }}<b>بِطاقَةُ عَمَلي</b><span>عِنْدَما أَكْبَرُ</span></div>
     <div class="id-body">
       <div class="id-photo"><small>{{ icon('crayon') }}{{ d.photo_hint }}</small></div>
       <div class="id-fields">

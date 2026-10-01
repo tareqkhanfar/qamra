@@ -10,12 +10,11 @@ from typing import Any
 from markupsafe import Markup
 
 from qamra_workbook.pictures import get as picture
-from qamra_workbook.pictures.model import strip_tashkeel
 from qamra_workbook.render import draw
 from qamra_workbook.render.pages.family import uri
 from qamra_workbook.render.registry import Built, PageContext, page_type
 
-WEEK = ("السبت", "الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة")
+WEEK = ("السَّبْتُ", "الأَحَدُ", "الاثْنَيْنِ", "الثُّلاثاءُ", "الأَرْبِعاءُ", "الخَميسُ", "الجُمُعَةُ")
 
 # ---- pictogram moves --------------------------------------------------------------------------------------
 
@@ -113,7 +112,7 @@ def sequence_cards(ctx: PageContext) -> Built:
             }
             for i, m in enumerate(moves)
         ]
-        data["mine"] = ctx.text(str(params.get("mine", "حركتي أنا")))
+        data["mine"] = ctx.text(str(params.get("mine", "حَرَكَتي أَنا")))
     else:
         key = "panels" if mode == "story" else "cards"
         steps = [dict(c) for c in params.get(key, [])]  # in the right order; a card may be `level: 2`
@@ -134,8 +133,8 @@ def sequence_cards(ctx: PageContext) -> Built:
                 }
             )
         data["cards"] = cards
-        data["from_to"] = [ctx.text(str(x)) for x in params.get("from_to", ["الصباح", "المساء"])]
-        data["ending"] = ctx.text(str(params.get("ending", "{غيّر/غيّري} النهاية: ماذا حدث بعد ذلك؟")))
+        data["from_to"] = [ctx.text(str(x)) for x in params.get("from_to", ["الصَّباحُ", "المَساءُ"])]
+        data["ending"] = ctx.text(str(params.get("ending", "{غَيِّرِ/غَيِّري} النِّهايَةَ: ماذا حَدَثَ بَعْدَ ذَلِكَ؟")))
         answer = [
             "الترتيب: "
             + "، ".join(f"{ctx.num(i + 1)} {ctx.text(str(s.get('text', '')))}" for i, s in enumerate(steps))
@@ -162,14 +161,14 @@ def routine_builder(ctx: PageContext) -> Built:
     hints = [str(h) for h in params.get("hints", [])]
     data = {
         "parts": [
-            {"key": "morning", "icon": "sun", "title": "روتين الصباح", "slots": slots},
-            {"key": "evening", "icon": "moon", "title": "روتين المساء", "slots": slots},
+            {"key": "morning", "icon": "sun", "title": "روتينُ الصَّباحِ", "slots": slots},
+            {"key": "evening", "icon": "moon", "title": "روتينُ المَساءِ", "slots": slots},
         ],
         "slot_mm": ROUTINE_SLOT_MM,
-        "stick": ctx.text("{ألصق/ألصقي} هنا"),
+        "stick": ctx.text("{أَلْصِقْ/أَلْصِقي} هُنا"),
         "week": WEEK,
-        "hints": [{"pic": ctx.pic(h), "word": strip_tashkeel(picture(h).word_ar)} for h in hints],
-        "track": ctx.text(str(params.get("track", "{لوّن/لوّني} الشمس والقمر كل يوم"))),
+        "hints": [{"pic": ctx.pic(h), "word": picture(h).word_ar} for h in hints],
+        "track": ctx.text(str(params.get("track", "{لَوِّنِ/لَوِّني} الشَّمْسَ وَالقَمَرَ كُلَّ يَوْمٍ"))),
     }
     return Built(data, None, problems)
 
@@ -189,8 +188,8 @@ def chore_chart(ctx: PageContext) -> Built:
         "ideas": [
             {"pic": ctx.pic(str(i["picture"])), "text": ctx.text(str(i.get("text", "")))} for i in ideas[:6]
         ],
-        "owner": ctx.text(str(params.get("owner", "جدول {child}"))),
-        "reward": ctx.text(str(params.get("reward", "مكافأتي في آخر الأسبوع:"))),
+        "owner": ctx.text(str(params.get("owner", "جَدْوَلُ {child}"))),
+        "reward": ctx.text(str(params.get("reward", "مُكافَأَتي فِي آخِرِ الأُسْبوعِ:"))),
     }
     return Built(data, None, problems)
 
@@ -214,9 +213,8 @@ def nature_bingo(ctx: PageContext) -> Built:
         ctx.rng(f"bingo-{k}").shuffle(order)
         order.insert(len(order) // 2, "")
         cells = [
-            {"pic": ctx.pic(i), "word": strip_tashkeel(picture(i).word_ar), "hear": i in hear} if i else {}
-            for i in order
+            {"pic": ctx.pic(i), "word": picture(i).word_ar, "hear": i in hear} if i else {} for i in order
         ]
         cards.append({"owner": owner, "cells": cells, "child": k == 0})
-    data = {"cards": cards, "size": BINGO_SIZE, "see": "أرى", "listen": "أسمع"}
+    data = {"cards": cards, "size": BINGO_SIZE, "see": "أَرى", "listen": "أَسْمَعُ"}
     return Built(data, None, problems)

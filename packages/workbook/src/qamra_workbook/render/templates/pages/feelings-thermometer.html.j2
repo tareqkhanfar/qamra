@@ -1,7 +1,7 @@
 <div class="feel">
   <div class="feel-main">
     <div class="thermo-card fcard">
-      <div class="label">{{ icon('heart') }}كم حجم شعوري الآن؟</div>
+      <div class="label">{{ icon('heart') }}كَمْ حَجْمُ شُعوري الآنَ؟</div>
       <div class="thermo-wrap" style="height: {{ d.thermo_mm }}mm">
         <div class="thermo-svg">{{ d.thermo }}</div>
         <div class="levels">
@@ -11,15 +11,15 @@
     </div>
     <div class="feel-side">
       <div class="when fcard">
-        <div class="label">{{ icon('talk') }}عندما أشعر بـ…</div>
+        <div class="label">{{ icon('talk') }}عِنْدَما أَشْعُرُ بِـ…</div>
         <div class="faces">{% for f in d.feelings %}<div class="face-opt">{{ f.face }}<span>{{ f.label }}</span></div>{% endfor %}</div>
       </div>
       <div class="can fcard">
-        <div class="label">{{ icon('star') }}أستطيع أن…</div>
+        <div class="label">{{ icon('star') }}أَسْتَطيعُ أَنْ…</div>
         <div class="strategies">{% for s in d.strategies %}<div class="strat"><span class="strat-ico">{{ icon(s.icon) }}</span><span data-fit="8.5">{{ s.text }}</span></div>{% endfor %}</div>
-        <div class="my-idea"><span class="idea-label">{{ stars(2) }}فكرتي:</span><div class="write-line"></div></div>
+        <div class="my-idea"><span class="idea-label">{{ stars(2) }}فِكْرَتي:</span><div class="write-line"></div></div>
       </div>
     </div>
   </div>
-  <div class="feel-note">{{ icon('heart') }}<span>كل المشاعر مقبولة، ونحن معك دائمًا</span>{{ icon('heart') }}</div>
+  <div class="feel-note">{{ icon('heart') }}<span>كُلُّ المَشاعِرِ مَقْبولَةٌ، وَنَحْنُ {{ 'مَعَكِ' if book.child.gender == 'f' else 'مَعَكَ' }} دائِمًا</span>{{ icon('heart') }}</div>
 </div>

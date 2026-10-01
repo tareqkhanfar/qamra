@@ -2,7 +2,7 @@
   <div class="pass-card">
     <div class="pass-band">
       {{ mascot('mascot') }}
-      <div class="pass-band-text"><b>جواز سفر المغامرين</b><span>قمرة · مغامراتي مع عائلتي</span></div>
+      <div class="pass-band-text"><b>جَوازُ سَفَرِ المُغامِرينَ</b><span>قمرة · مغامراتي مع عائلتي</span></div>
       <span class="pass-emblem">{{ icon('passport') }}</span>
     </div>
     <div class="pass-body">
@@ -11,21 +11,21 @@
         <span class="pass-photo-stamp">{{ icon('star') }}</span>
       </div>
       <dl class="pass-fields">
-        <div class="pf"><dt>الاسم</dt><dd data-fit="12">{{ d.name }}</dd></div>
-        <div class="pf"><dt>العائلة</dt><dd data-fit="12">{{ d.family }}</dd></div>
-        <div class="pf"><dt>المدينة</dt><dd data-fit="10">{{ d.city }}</dd></div>
-        <div class="pf"><dt>تاريخ الإصدار</dt><dd>{{ d.date }}</dd></div>
-        <div class="pf sign"><dt>توقيعي</dt><dd></dd></div>
+        <div class="pf"><dt>الاسْمُ</dt><dd data-fit="12">{{ d.name }}</dd></div>
+        <div class="pf"><dt>العائِلَةُ</dt><dd data-fit="12">{{ d.family }}</dd></div>
+        <div class="pf"><dt>المَدينَةُ</dt><dd data-fit="10">{{ d.city }}</dd></div>
+        <div class="pf"><dt>تاريخُ الإِصْدارِ</dt><dd>{{ d.date }}</dd></div>
+        <div class="pf sign"><dt>تَوْقيعي</dt><dd></dd></div>
       </dl>
     </div>
     <div class="pass-strip" aria-hidden="true">{% for i in range(15) %}{{ icon('star' if loop.index is odd else 'moon') }}{% endfor %}</div>
   </div>
   <div class="stamps-card fcard">
-    <div class="label">{{ icon('stamp') }}أختام مغامراتي<small class="stamps-count">{{ p.num(d.slots|length) }}</small></div>
+    <div class="label">{{ icon('stamp') }}أَخْتامُ مُغامَراتي<small class="stamps-count">{{ p.num(d.slots|length) }}</small></div>
     <div class="stamps adv n{{ d.slots|length }}">
       {% for s in d.slots %}<div class="slot"><span class="slot-n" style="background: {{ s.color }}">{{ s.n }}</span>{{ s.svg }}<span class="slot-label" data-fit="6.5" style="color: {{ s.color }}">{{ s.label }}</span></div>{% endfor %}
     </div>
-    <div class="label badges-head">{{ icon('trophy') }}شاراتي السبع</div>
+    <div class="label badges-head">{{ icon('trophy') }}شاراتِيَ السَّبْعُ</div>
     <div class="stamps badges">
       {% for s in d.badges %}<div class="slot">{{ s.svg }}<span class="slot-label" data-fit="6.5" style="color: {{ s.color }}">{{ s.label }}</span></div>{% endfor %}
     </div>

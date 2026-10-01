@@ -10,6 +10,7 @@ import pytest
 from pypdf import PdfReader
 from qamra_workbook.family import load
 from qamra_workbook.pictures import LibraryStore
+from qamra_workbook.pictures.model import strip_tashkeel
 from qamra_workbook.render.engine import book_html, build_pages, print_pdf
 from qamra_workbook.render.family import PLAN, SAMPLES, plan_pages, spread_pairs
 from qamra_workbook.render.pages.adventures import payable
@@ -114,7 +115,7 @@ def test_counting_compares_baskets_that_never_tie_and_tallies_colors() -> None:
     assert [r["level"] for r in rows] == [1, 1, 2]
     assert all(len({b["count"] for b in r["baskets"]}) == 2 for r in rows)
     assert all(b["count"] <= 5 for r in rows[:2] for b in r["baskets"])
-    assert [c["name"] for c in tally.built.data["columns"]] == ["أحمر", "أزرق", "أخضر"]
+    assert [strip_tashkeel(c["name"]) for c in tally.built.data["columns"]] == ["أحمر", "أزرق", "أخضر"]
 
 
 def test_the_color_hunt_and_the_star_count_come_from_the_plan_params() -> None:
@@ -125,7 +126,7 @@ def test_the_color_hunt_and_the_star_count_come_from_the_plan_params() -> None:
         ASSETS,
     )
     assert hunt.built.data["mode"] == "colors" and len(hunt.built.data["columns"]) == 4
-    assert memory.built.data["stars"] == 3 and "كم نجمة" in memory.built.data["stars_q"]
+    assert memory.built.data["stars"] == 3 and "كم نجمة" in strip_tashkeel(memory.built.data["stars_q"])
 
 
 def test_role_cards_need_something_to_say() -> None:
@@ -145,5 +146,5 @@ def test_prices_and_money_follow_the_books_numerals(numerals: str, price: str) -
     html = book_html(book, [tags], ASSETS)
     html = html[html.index("<body") :]  # the printed page, not the stylesheet
     prices = [it["price"] for row in tags.built.data["rows"] for it in row["items"]]
-    assert all(any(ch.isdigit() for ch in p) or p in ("قمرتان", "قمرة واحدة") for p in prices)
+    assert all(any(ch.isdigit() for ch in p) or strip_tashkeel(p) in ("قمرتان", "قمرة واحدة") for p in prices)
     assert (price in html) and (("٣" in html) == (numerals == "hindi"))

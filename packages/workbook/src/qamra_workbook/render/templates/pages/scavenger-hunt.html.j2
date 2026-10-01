@@ -7,12 +7,12 @@
       <span class="ci-level">{{ stars(it.level) }}</span>
       <div class="ci-pic">{{ it.pic }}</div>
       <b>{{ it.word }}</b>
-      <div class="ci-foot"><span class="check-box"></span>{% if d.count %}<span class="ci-count"><small>كم مرة؟</small><i></i></span>{% endif %}</div>
+      <div class="ci-foot"><span class="check-box"></span>{% if d.count %}<span class="ci-count"><small>كَمْ مَرَّةً؟</small><i></i></span>{% endif %}</div>
     </div>
     {% endfor %}
   </div>
   <div class="hunt-bottom">
-    {% if d.compare %}<div class="compare fcard lvl2"><span class="label">{{ stars(2) }}{{ d.compare }}</span><div class="compare-boxes"><span></span><b>أم</b><span></span></div></div>{% endif %}
+    {% if d.compare %}<div class="compare fcard lvl2"><span class="label">{{ stars(2) }}{{ d.compare }}</span><div class="compare-boxes"><span></span><b>أَمْ</b><span></span></div></div>{% endif %}
     <div class="found fcard"><span class="label">{{ icon('magnifier') }}{{ d.found_q }}</span><div class="found-nums">{% for n in d.total %}<span>{{ n }}</span>{% endfor %}</div></div>
   </div>
 </div>
@@ -40,10 +40,10 @@
   <div class="hunt-top fcard">
     <div class="hunt-kid">{% if d.character %}<img src="{{ d.character }}" alt="">{% endif %}<span class="hunt-mag">{{ icon('magnifier') }}</span></div>
     <div class="hunt-target">
-      <div class="label">{{ icon('magnifier') }}نبحث عن أشياء {{ d.shape_ar }}</div>
+      <div class="label">{{ icon('magnifier') }}نَبْحَثُ عَنْ أَشْياءَ {{ d.shape_ar }}</div>
       <div class="hunt-row">
         <div class="hunt-shape">{{ d.shape }}</div>
-        <span class="hunt-like">مثل:</span>
+        <span class="hunt-like">مِثْلَ:</span>
         {% for x in d.examples %}<div class="hunt-ex"><div class="hunt-ex-pic">{{ x.pic }}</div><small>{{ x.word }}</small></div>{% endfor %}
       </div>
     </div>
@@ -59,7 +59,7 @@
     <div class="find count fcard">
       <div class="label">{{ d.found_q }}</div>
       <div class="count-dots">{% for n in d.count %}<span>{{ n }}</span>{% endfor %}</div>
-      <div class="count-hint">{{ icon('crayon') }}<span>{{ 'لوّني العدد' if book.child.gender == 'f' else 'لوّن العدد' }}</span></div>
+      <div class="count-hint">{{ icon('crayon') }}<span>{{ 'لَوِّني العَدَدَ' if book.child.gender == 'f' else 'لَوِّنِ العَدَدَ' }}</span></div>
     </div>
   </div>
 </div>

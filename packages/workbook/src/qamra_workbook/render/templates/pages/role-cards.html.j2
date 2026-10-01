@@ -1,7 +1,7 @@
 <div class="sheet cards">
   <header class="sheet-head">
     <div class="sheet-title">{{ mascot('mascot') }}<div><h1>{{ p.title }}</h1><p>{{ p.instruction }}</p></div></div>
-    <div class="sheet-owner"><small>بطاقات الأدوار</small><b data-fit="11">{{ d.owner }}</b></div>
+    <div class="sheet-owner"><small>بِطاقاتُ الأَدْوارِ</small><b data-fit="11">{{ d.owner }}</b></div>
   </header>
   <div class="card-grid roles">
     {% for r in d.roles %}
@@ -9,9 +9,9 @@
       <div class="role-art">{{ r.art }}</div>
       <b class="role-name">{{ r.label }}</b>
       <div class="role-says">{% for line in r.lines %}<span>{{ line }}</span>{% endfor %}</div>
-      {% if r.prop %}<div class="role-prop"><span class="rp-pic">{{ r.prop }}</span><small>من البيت</small></div>{% endif %}
+      {% if r.prop %}<div class="role-prop"><span class="rp-pic">{{ r.prop }}</span><small>مِنَ البَيْتِ</small></div>{% endif %}
     </div>
     {% endfor %}
   </div>
-  <footer class="sheet-foot"><span class="cut-note">{{ d.scissors }}{{ 'اختاري' if book.child.gender == 'f' else 'اختر' }} بطاقة، {{ 'ومثّلي' if book.child.gender == 'f' else 'ومثّل' }} الدور مع العائلة</span><span class="sheet-brand">{{ mascot('mascot') }}قمرة · بطاقات القصّ</span></footer>
+  <footer class="sheet-foot"><span class="cut-note">{{ d.scissors }}{{ 'اخْتاري' if book.child.gender == 'f' else 'اخْتَرْ' }} بِطاقَةً، {{ 'وَمَثِّلي' if book.child.gender == 'f' else 'وَمَثِّلِ' }} الدَّوْرَ مَعَ العائِلَةِ</span><span class="sheet-brand">{{ mascot('mascot') }}قمرة · بطاقات القصّ</span></footer>
 </div>

@@ -3,8 +3,8 @@
     <div class="notepad fcard">
       <div class="notepad-rings" aria-hidden="true">{% for i in range(7) %}<span></span>{% endfor %}</div>
       <div class="notepad-head">
-        <div class="label">{{ icon('check-list') }}قائمتي</div>
-        <span class="notepad-count">كم؟</span>
+        <div class="label">{{ icon('check-list') }}قائِمَتي</div>
+        <span class="notepad-count">كَمْ؟</span>
       </div>
       {% for r in d.rows %}
       <div class="list-row">
@@ -16,7 +16,7 @@
       {% endfor %}
     </div>
     <div class="shop-side">
-      <div class="market-sign"><span class="awning" aria-hidden="true"></span><b data-fit="9">سوق {{ d.city }}</b></div>
+      <div class="market-sign"><span class="awning" aria-hidden="true"></span><b data-fit="9">سوقُ {{ d.city }}</b></div>
       <div class="shop-scene">
         {% if d.character %}<img class="shop-kid" src="{{ d.character }}" alt="">{% endif %}
         <div class="shop-bag">{{ d.bag }}</div>

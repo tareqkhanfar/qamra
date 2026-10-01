@@ -5,7 +5,7 @@
     <h1 class="tp-title">{{ d.before }}<span class="tp-name" data-fit="30">{{ d.name }}</span>{{ d.after }}</h1>
     <p class="tp-sub" data-fit="11">{{ d.sub }}</p>
     <div class="tp-adv">
-      <span class="tp-count">{{ d.count }} مغامرة</span>
+      <span class="tp-count">{{ d.count }} مُغامَرَةً</span>
       <div class="tp-dots">{% for a in d.adventures %}<span style="background: {{ a.color }}">{{ icon(a.icon) }}</span>{% endfor %}</div>
     </div>
   </div>
@@ -13,5 +13,5 @@
     {{ d.group }}
     {% for t in d.tags %}<span class="op-tag{{ ' child' if t.child }}" style="left: {{ t.x }}mm; top: {{ t.y }}mm; max-width: {{ t.w }}mm" data-fit="7.5">{{ t.label }}</span>{% endfor %}
   </div>
-  <div class="op-family-name tp-family-name">{{ icon('home') }}<span data-fit="10">عائلة {{ d.family }}{% if d.city %} · {{ d.city }}{% endif %}</span></div>
+  <div class="op-family-name tp-family-name">{{ icon('home') }}<span data-fit="10">عائِلَةُ {{ d.family }}{% if d.city %} · {{ d.city }}{% endif %}</span></div>
 </div>

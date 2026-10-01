@@ -13,14 +13,14 @@ from typing import Any
 
 from markupsafe import Markup, escape
 
-from qamra_workbook.pictures.model import scallop_d
+from qamra_workbook.pictures.model import scallop_d, strip_tashkeel
 from qamra_workbook.render import art, draw
 from qamra_workbook.render.pages.family import CORE_BADGES, rosette, seal, section_badges
 from qamra_workbook.render.registry import Built, PageContext, page_type
 from qamra_workbook.render.spec import Numerals, format_number
 
 CUT = "#EC008C"  # the printer's cut-contour color (a kiss-cut line, not printed ink)
-FOR_PLAY = "للعب فقط"
+FOR_PLAY = "لِلَّعِبِ فَقَطْ"
 # names and signs of real money that must never appear on play money
 REAL_MONEY = re.compile(
     r"شيكل|شيقل|شواقل|دينار|دنانير|دولار|يورو|₪|\$|€|\b(JOD|JD|NIS|ILS|USD)\b", re.IGNORECASE
@@ -28,17 +28,17 @@ REAL_MONEY = re.compile(
 
 CHALLENGE_DAYS = 7  # one star sticker per day of «تحدي العائلة الكبير»
 ROUTINE = (  # the plan's routine icons: waking, breakfast, teeth, clothes, play, reading, sleep
-    ("sun", "أستيقظ", "#F2B33D"),
-    ("plate", "أفطر", "#F08A3E"),
-    ("toothbrush", "أنظّف أسناني", "#2E9FD6"),
-    ("shirt", "ألبس ثيابي", "#E4769D"),
-    ("ball", "ألعب", "#2FA36B"),
-    ("book", "أقرأ", "#8C6CCB"),
-    ("moon", "أنام", "#3C468F"),
+    ("sun", "أَسْتَيْقِظُ", "#F2B33D"),
+    ("plate", "أُفْطِرُ", "#F08A3E"),
+    ("toothbrush", "أُنَظِّفُ أَسْناني", "#2E9FD6"),
+    ("shirt", "أَلْبَسُ ثِيابي", "#E4769D"),
+    ("ball", "أَلْعَبُ", "#2FA36B"),
+    ("book", "أَقْرَأُ", "#8C6CCB"),
+    ("moon", "أَنامُ", "#3C468F"),
     # the evening's (the routine builder has a morning and an evening row)
-    ("bath", "أستحمّ", "#23A094"),
-    ("toothbrush", "أنظّف أسناني", "#2E9FD6"),
-    ("puzzle", "أرتّب ألعابي", "#D9486B"),
+    ("bath", "أَسْتَحِمُّ", "#23A094"),
+    ("toothbrush", "أُنَظِّفُ أَسْناني", "#2E9FD6"),
+    ("puzzle", "أُرَتِّبُ أَلْعابي", "#D9486B"),
 )
 CHORE_STARS = 21  # three tasks a day for a week on the chore chart
 
@@ -142,10 +142,10 @@ NOTE_COLORS = {  # pastel, nothing like a real banknote
 def qamra_count(n: int, numerals: Numerals = "hindi") -> str:
     """«قمرة واحدة», «قمرتان», «٥ قمرات», «٢٠ قمرة»: the play currency's name agrees with the number."""
     if n == 1:
-        return "قمرة واحدة"
+        return "قَمْرَةٌ واحِدَةٌ"
     if n == 2:
-        return "قمرتان"
-    return f"{format_number(n, numerals)} {'قمرات' if 3 <= n <= 10 else 'قمرة'}"
+        return "قَمْرَتانِ"
+    return f"{format_number(n, numerals)} {'قَمْراتٍ' if 3 <= n <= 10 else 'قَمْرَةً'}"
 
 
 def note_art(color: str, deep: str) -> Markup:
@@ -222,14 +222,14 @@ def play_money(ctx: PageContext) -> Built:
     printed = " ".join(
         [*(n["words"] for n in notes), ctx.text(ctx.page.title), ctx.text(ctx.page.instruction)]
     )
-    if REAL_MONEY.search(printed):
+    if REAL_MONEY.search(strip_tashkeel(printed)):
         problems.append("play money never names or shows a real currency")
     tags = int(params.get("price_tags", 5))  # blank price tags for the home shop (A7 §4.2)
     data = {
         "notes": notes,
         "coins": coins,
         "tags": list(range(tags)),
-        "banner": f"{FOR_PLAY} — نقود قمرة",
+        "banner": f"{FOR_PLAY} — نُقودُ قَمْرَةَ",
         "scissors": art.icon("scissors"),
     }
     return Built(data, None, problems)

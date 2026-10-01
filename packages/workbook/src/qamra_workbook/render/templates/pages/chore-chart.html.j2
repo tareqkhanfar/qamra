@@ -2,7 +2,7 @@
   <div class="chart fcard">
     <div class="chart-title">{{ icon('check-list') }}<b data-fit="11">{{ d.owner }}</b></div>
     <div class="chart-grid" style="--days: {{ d.week|length }}">
-      <div class="ch-head task">المهمّة</div>
+      <div class="ch-head task">المَهَمَّةُ</div>
       {% for day in d.week %}<div class="ch-head">{{ day }}</div>{% endfor %}
       {% for r in d.rows %}
       <div class="ch-task lvl{{ r.level }}"><span class="pill-num">{{ r.n }}</span>{% if r.level == 2 %}{{ stars(2) }}{% endif %}<div class="ch-draw"></div></div>
@@ -12,7 +12,7 @@
   </div>
   {% if d.ideas %}
   <div class="ideas fcard">
-    <span class="label">{{ icon('bulb') }}أفكار لمهامّ صغيرة</span>
+    <span class="label">{{ icon('bulb') }}أَفْكارٌ لِمَهامَّ صَغيرَةٍ</span>
     <div class="idea-row">{% for i in d.ideas %}<div class="idea"><div class="idea-pic">{{ i.pic }}</div><small>{{ i.text }}</small></div>{% endfor %}</div>
   </div>
   {% endif %}

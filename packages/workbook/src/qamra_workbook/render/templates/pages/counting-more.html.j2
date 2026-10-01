@@ -16,7 +16,7 @@
       <div class="tally-squares">{% for s in d.squares %}<span></span>{% endfor %}</div>
       <div class="thing-pic">{{ c.pic }}</div>
       <b>{{ c.name }}</b>
-      <span class="how-many"><small>كم؟</small><i></i></span>
+      <span class="how-many"><small>كَمْ؟</small><i></i></span>
     </div>
     {% endfor %}
   </div>
@@ -33,7 +33,7 @@
       {% endfor %}
     </div>
   </div>
-  <div class="table-legend"><span>{{ stars(1) }}صحن لكل واحد</span><span>{{ stars(2) }}صحن وملعقة وكأس</span></div>
+  <div class="table-legend"><span>{{ stars(1) }}صَحْنٌ لِكُلِّ واحِدٍ</span><span>{{ stars(2) }}صَحْنٌ وَمِلْعَقَةٌ وَكَأْسٌ</span></div>
   <div class="tally-q fcard"><span class="label">{{ icon('plate') }}{{ d.how_many }}</span><span class="cmp-count"><i></i></span></div>
 {% elif d.mode == 'money' %}
   {% for row in d.rows %}
@@ -49,11 +49,11 @@
   <div class="chg fcard lvl{{ row.level }}">
     <span class="row-level">{{ stars(row.level) }}</span>
     <div class="chg-item"><div class="chg-pic">{{ row.item }}</div>{% if row.price %}<span class="chg-price">{{ row.price }}</span>{% endif %}</div>
-    <div class="chg-paid"><small>{{ 'دفعنا' }}</small><div class="chg-pieces">{% for pc in row.paid %}{{ pc }}{% endfor %}</div></div>
+    <div class="chg-paid"><small>دَفَعْنا</small><div class="chg-pieces">{% for pc in row.paid %}{{ pc }}{% endfor %}</div></div>
     {% if row.level == 1 %}
-    <span class="purse-eq">=</span><span class="purse-total"><small>كم دفعنا؟</small><i></i></span>
+    <span class="purse-eq">=</span><span class="purse-total"><small>كَمْ دَفَعْنا؟</small><i></i></span>
     {% else %}
-    <div class="chg-back"><small>الباقي: {{ 'لوّني' if book.child.gender == 'f' else 'لوّن' }} القطع</small><div class="chg-pieces outline">{% for pc in row.pieces %}{{ pc }}{% endfor %}</div></div>
+    <div class="chg-back"><small>الباقي: {{ 'لَوِّني' if book.child.gender == 'f' else 'لَوِّنِ' }} القِطَعَ</small><div class="chg-pieces outline">{% for pc in row.pieces %}{{ pc }}{% endfor %}</div></div>
     {% endif %}
   </div>
   {% endfor %}

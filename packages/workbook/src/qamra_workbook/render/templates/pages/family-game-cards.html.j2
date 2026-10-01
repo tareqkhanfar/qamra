@@ -8,18 +8,18 @@
       {% for i in range(d.backs) %}<span class="mcard back">{{ mascot('mascot') }}</span>{% endfor %}
       {% for c in d.shown %}<span class="mcard face"><span class="mc-pic">{{ c.pic }}</span><small>{{ c.word }}</small></span>{% endfor %}
     </div>
-    <div class="deck-levels">{% for level, n in d.levels %}<span class="dl">{{ stars(level) }}<b>{{ n }}</b></span>{% endfor %}<span class="dl note">{{ icon('scissors') }}البطاقات في ورقة القصّ</span></div>
+    <div class="deck-levels">{% for level, n in d.levels %}<span class="dl">{{ stars(level) }}<b>{{ n }}</b></span>{% endfor %}<span class="dl note">{{ icon('scissors') }}البِطاقاتُ فِي وَرَقَةِ القَصِّ</span></div>
   </div>
   <div class="tally fcard">
-    <span class="label">{{ icon('trophy') }}كم زوجًا وجد كل لاعب؟</span>
+    <span class="label">{{ icon('trophy') }}كَمْ زَوْجًا وَجَدَ كُلُّ لاعِبٍ؟</span>
     {% for pl in d.players %}
     <div class="tally-row{{ ' me' if pl.child }}"><b data-fit="8">{{ pl.name }}</b><div class="tally-boxes">{% for b in d.boxes %}<span class="{{ 'lvl2' if b >= d.simple }}"></span>{% endfor %}</div></div>
     {% endfor %}
   </div>
 {% else %}
   <div class="score fcard" style="--rounds: {{ d.rounds|length }}">
-    <div class="sc-head name">اللاعب</div>
-    {% for r in d.rounds %}<div class="sc-head">الجولة {{ r }}</div>{% endfor %}
+    <div class="sc-head name">اللّاعِبُ</div>
+    {% for r in d.rounds %}<div class="sc-head">الجَوْلَةُ {{ r }}</div>{% endfor %}
     <div class="sc-head total">{{ stars(2) }}{{ d.total }}</div>
     {% for pl in d.players %}
     <div class="sc-name{{ ' me' if pl.child }}"><b data-fit="8">{{ pl.name }}</b></div>

@@ -19,14 +19,14 @@ from qamra_workbook.render.pages.motor import nested_picture
 from qamra_workbook.render.registry import Built, PageContext, page_type
 
 FEELING_NAMES: dict[str, str] = {
-    "happy": "الفرح",
-    "sad": "الحزن",
-    "angry": "الغضب",
-    "scared": "الخوف",
-    "missing": "الاشتياق",
-    "proud": "الفخر",
-    "calm": "الهدوء",
-    "surprised": "المفاجأة",
+    "happy": "الفَرَحُ",
+    "sad": "الحُزْنُ",
+    "angry": "الغَضَبُ",
+    "scared": "الخَوْفُ",
+    "missing": "الاشْتِياقُ",
+    "proud": "الفَخْرُ",
+    "calm": "الهُدوءُ",
+    "surprised": "المُفاجَأَةُ",
 }
 
 
@@ -84,7 +84,7 @@ def picture_talk(ctx: PageContext) -> Built:
             {"pic": scene([str(x) for x in r.get("pictures", [])]), "text": ctx.text(str(r.get("text", "")))}
             for r in rows
         ]
-        data["why"] = ctx.text("لماذا؟")
+        data["why"] = ctx.text("لِماذا؟")
     elif mode == "scene":
         data["scene"] = harbour()
         data["questions"] = [
@@ -111,7 +111,7 @@ def picture_talk(ctx: PageContext) -> Built:
             for x in params.get("roles", [])
         ]
         data["places"] = [ctx.text(str(x)) for x in params.get("places", [])]
-        data["parts"] = [ctx.text(str(x)) for x in params.get("parts", ["البداية", "المشكلة", "الحل"])]
+        data["parts"] = [ctx.text(str(x)) for x in params.get("parts", ["البِدايَةُ", "المُشْكِلَةُ", "الحَلُّ"])]
     return Built(data, None, problems)
 
 
@@ -131,8 +131,8 @@ def feelings_faces(ctx: PageContext) -> Built:
             {"svg": face_svg(f, 40), "name": FEELING_NAMES.get(f, f), "level": 1 if f in simple else 2}
             for f in [*simple, *more]
         ],
-        "mirror": ctx.text(str(params.get("mirror", "{قلّدته/قلّدتِه}"))),
-        "mine": ctx.text(str(params.get("mine", "وجهي الآن"))),
+        "mirror": ctx.text(str(params.get("mirror", "{قَلَّدْتَهُ/قَلَّدْتِهِ}"))),
+        "mine": ctx.text(str(params.get("mine", "وَجْهِيَ الآنَ"))),
     }
     return Built(data, None, problems)
 
@@ -189,8 +189,8 @@ def story_finish(ctx: PageContext) -> Built:
             problems.append(f"the story's beginning has 1–4 sentences, not {len(story)}")
         data["story"] = story
         data["panels"] = [scene([str(p) for p in x.get("pictures", [])]) for x in params.get("panels", [])]
-        data["end"] = ctx.text(str(params.get("end", "النهاية كما {أتخيّلها/أتخيّلها}")))
-        data["second"] = ctx.text(str(params.get("second", "نهاية ثانية")))
+        data["end"] = ctx.text(str(params.get("end", "النِّهايَةُ كَما أَتَخَيَّلُها")))
+        data["second"] = ctx.text(str(params.get("second", "نِهايَةٌ ثانِيَةٌ")))
         data["feel"] = [
             {"name": ctx.text(str(x)), "faces": [face_svg(f, 13) for f in ("sad", "angry", "happy")]}
             for x in params.get("feel", [])
@@ -222,6 +222,6 @@ def interview_template(ctx: PageContext) -> Built:
             }
             for i, q in enumerate(questions)
         ],
-        "reporter": ctx.text("{الصحفي/الصحفية}: {child}"),
+        "reporter": ctx.text("{الصَّحَفِيُّ/الصَّحَفِيَّةُ}: {child}"),
     }
     return Built(data, None, problems)

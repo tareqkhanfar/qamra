@@ -10,7 +10,7 @@
           {% if d.variant == 'count' %}<div class="pieces">{% for k in range(i.count) %}<span class="piece-dot"></span>{% endfor %}</div>
           {% else %}<div class="spoons">{% for k in range(i.count) %}{{ icon('spoon') }}{% endfor %}</div>{% endif %}
         </div>
-        <div class="ing-box"><small>كم؟</small><span class="box">{% if solved %}{{ p.num(i.count) }}{% endif %}</span></div>
+        <div class="ing-box"><small>كَمْ؟</small><span class="box">{% if solved %}{{ p.num(i.count) }}{% endif %}</span></div>
       </div>
       {% endfor %}
     </div>

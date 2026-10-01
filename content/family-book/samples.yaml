@@ -32,34 +32,34 @@ samples:
     section: front
     page:
       type: passport
-      title: "جواز سفر {المغامر الصغير/المغامرة الصغيرة}"
-      instruction: "{ألصق/ألصقي} ختمًا بعد كل مغامرة"
+      title: "جَوازُ سَفَرِ {المُغامِرِ الصَّغيرِ/المُغامِرَةِ الصَّغيرَةِ}"
+      instruction: "{أَلْصِقْ/أَلْصِقي} خَتْمًا بَعْدَ كُلِّ مُغامَرَةٍ"
       parent:
         - "بعد كل مغامرة، {ساعدوه/ساعدوها} على لصق الختم من ورقة الملصقات، واحتفلوا معًا."
       params:
         stamps:
-          - {section: home, label: "{مستكشف/مستكشفة} البيت"}
-          - {section: market, label: "{بطل/بطلة} السوق"}
-          - {section: nature, label: "{صديق/صديقة} الطبيعة"}
-          - {section: feelings, label: "قلب شجاع"}
-          - {section: games, label: "{نجم/نجمة} الألعاب"}
+          - {section: home, label: "{مُسْتَكْشِفُ/مُسْتَكْشِفَةُ} البَيْتِ"}
+          - {section: market, label: "{بَطَلُ/بَطَلَةُ} السّوقِ"}
+          - {section: nature, label: "{صَديقُ/صَديقَةُ} الطَّبيعَةِ"}
+          - {section: feelings, label: "قَلْبٌ شُجاعٌ"}
+          - {section: games, label: "{نَجْمُ/نَجْمَةُ} الأَلْعابِ"}
 
   - n: 6
     section: home
     page:
       type: section-opener
-      title: بيتي مدرسة
+      title: "بَيْتي مَدْرَسَةٌ"
       instruction: >-
-        في بيت عائلة {family_name} كنوز صغيرة مخبّأة في كل زاوية: أشكال وألوان وأشياء نعدّها.
-        هيّا يا {child}، {جهّز/جهّزي} عينيك الذكيتين، ولنبدأ المغامرة!
+        فِي بَيْتِ عائِلَةِ {family_name} كُنوزٌ صَغيرَةٌ مُخَبَّأَةٌ فِي كُلِّ زاوِيَةٍ: أَشْكالٌ وَأَلْوانٌ وَأَشْياءُ نَعُدُّها.
+        هَيّا يا {child}، {جَهِّزْ عَيْنَيْكَ/جَهِّزي عَيْنَيْكِ} الذَّكِيَّتَيْنِ، وَلْنَبْدَأِ المُغامَرَةَ!
       params:
         adventure: 1
-        badge: "{مستكشف/مستكشفة} البيت"
+        badge: "{مُسْتَكْشِفُ/مُسْتَكْشِفَةُ} البَيْتِ"
         scene: house
         inside:
-          - {icon: magnifier, text: نبحث عن كنوز}
-          - {icon: abacus, text: نعدّ ونقارن}
-          - {icon: crayon, text: نرسم ما وجدنا}
+          - {icon: magnifier, text: "نَبْحَثُ عَنْ كُنوزٍ"}
+          - {icon: abacus, text: "نَعُدُّ وَنُقارِنُ"}
+          - {icon: crayon, text: "نَرْسُمُ ما وَجَدْنا"}
 
   - n: 8
     section: home
@@ -67,8 +67,8 @@ samples:
     activity: {where: home, together: true, minutes: 10, challenge: true}
     page:
       type: scavenger-hunt
-      title: صيد الدوائر في المطبخ
-      instruction: "{ابحث/ابحثي} عن أشياء دائرية في المطبخ"
+      title: "صَيْدُ الدَّوائِرِ فِي المَطْبَخِ"
+      instruction: "{ابْحَثْ/ابْحَثي} عَنْ أَشْياءَ دائِرِيَّةٍ فِي المَطْبَخِ"
       parent:
         - "تجوّلوا مع {child} في المطبخ، وسمّوا معًا كل شيء دائري."
         - "اسألوا: أيّها أكبر؟ أيّها أصغر؟ كم دائرة وجدنا؟"
@@ -79,8 +79,8 @@ samples:
     section: home
     page:
       type: memory-page
-      title: ذكرى اليوم
-      instruction: "{ألصق/ألصقي} صورة أو {ارسم/ارسمي} مغامرتنا"
+      title: "ذِكْرى اليَوْمِ"
+      instruction: "{أَلْصِقْ/أَلْصِقي} صورَةً أَوِ {ارْسُمْ/ارْسُمي} مُغامَرَتَنا"
       parent:
         - "اكتبوا ما قاله {child}، وأضيفوا كلمة من {adult}."
       params: {adult: ستّي}
@@ -91,8 +91,8 @@ samples:
     activity: {where: outside, together: true, minutes: 15, challenge: true}
     page:
       type: shopping-list
-      title: قائمة مشترياتي
-      instruction: "{ارسم/ارسمي} أو {اكتب/اكتبي} ما نحتاجه من السوق"
+      title: "قائِمَةُ مُشْتَرَياتي"
+      instruction: "{ارْسُمْ/ارْسُمي} أَوِ {اكْتُبْ/اكْتُبي} ما نَحْتاجُهُ مِنَ السّوقِ"
       parent:
         - "اكتبوا القائمة مع {child} قبل الذهاب إلى سوق {city}."
         - "في السوق، يدًا بيد، {دعوه/دعوها} {يجد/تجد} الأشياء {ويعدّها/وتعدّها}."
@@ -105,8 +105,8 @@ samples:
     activity: {where: home, together: true, minutes: 20, challenge: true}
     page:
       type: recipe-steps
-      title: كرات اللبنة
-      instruction: "{رقّم/رقّمي} خطوات الطبخ من ١ إلى ٤"
+      title: "كُراتُ اللَّبْنَةِ"
+      instruction: "{رَقِّمْ/رَقِّمي} خُطُواتِ الطَّبْخِ مِنْ ١ إِلى ٤"
       parent:
         - "{دعوه/دعوها} {يعدّ/تعدّ} الملاعق {ويدحرج/وتدحرج} الكرات {بيديه/بيديها}."
         - "سمّوا المكوّنات معًا: لبنة، زعتر، زيت زيتون."
@@ -114,14 +114,14 @@ samples:
       params:
         adult: ستّي
         ingredients:
-          - {picture: labneh, name: لبنة, count: 4}
-          - {picture: zaatar, name: زعتر, count: 3}
-          - {picture: olive-oil, name: زيت زيتون, count: 2}
+          - {picture: labneh, name: "لَبْنَةٌ", count: 4}
+          - {picture: zaatar, name: "زَعْتَرٌ", count: 3}
+          - {picture: olive-oil, name: "زَيْتُ زَيْتونٍ", count: 2}
         steps:
-          - {picture: wash, text: نغسل أيدينا}
-          - {picture: roll, text: نصنع كرات صغيرة}
-          - {picture: dip, text: نغمّسها بالزعتر}
-          - {picture: oil, text: نضيف زيت الزيتون}
+          - {picture: wash, text: "نَغْسِلُ أَيْدِيَنا"}
+          - {picture: roll, text: "نَصْنَعُ كُراتٍ صَغيرَةً"}
+          - {picture: dip, text: "نُغَمِّسُها بِالزَّعْتَرِ"}
+          - {picture: oil, text: "نُضيفُ زَيْتَ الزَّيْتونِ"}
         shown: [3, 1, 4, 2]
         safety:
           - {icon: drop, text: نغسل أيدينا قبل أن نبدأ}
@@ -134,8 +134,8 @@ samples:
     activity: {where: home, together: true, minutes: 10, challenge: true}
     page:
       type: feelings-thermometer
-      title: ميزان مشاعري
-      instruction: "{لوّن/لوّني} الميزان بقدر شعورك الآن"
+      title: "ميزانُ مَشاعِري"
+      instruction: "{لَوِّنِ/لَوِّني} الميزانَ بِقَدْرِ {شُعورِكَ/شُعورِكِ} الآنَ"
       parent:
         - "كل المشاعر مقبولة: سمّوا الشعور مع {child} دون لوم أو استعجال."
         - "اسألوا: ماذا يساعدك عندما يكبر شعورك؟"
@@ -147,8 +147,8 @@ samples:
     activity: {where: home, together: true, minutes: 15, challenge: false}
     page:
       type: seven-day-challenge
-      title: تحدي العائلة الكبير
-      instruction: "{لوّن/لوّني} نجمة كل يوم {تنجزه/تنجزينه} مع العائلة"
+      title: "تَحَدّي العائِلَةِ الكَبيرُ"
+      instruction: "{لَوِّنْ/لَوِّني} نَجْمَةً كُلَّ يَوْمٍ {تُنْجِزُهُ/تُنْجِزينَهُ} مَعَ العائِلَةِ"
       parent:
         - "اختاروا وقتًا ثابتًا كل يوم، ولو عشر دقائق."
         - "بعد كل يوم، {دعوه/دعوها} {يلوّن/تلوّن} النجمة {ويلصق/وتلصق} ملصقًا."
@@ -156,51 +156,51 @@ samples:
       params:
         member: ستّي
         days:
-          - {icon: chef, text: نطبخ معًا}
-          - {icon: book, text: نقرأ قصة}
-          - {icon: tree, text: نمشي في الحيّ}
-          - {icon: sprout, text: نزرع بذرة}
-          - {icon: phone, text: "نتصل بـ{member}"}
-          - {icon: dice, text: ليلة ألعاب}
-          - {icon: heart, text: نشكر بعضنا}
-        reward: مكافأة عائلتنا
-        ideas: "مثلًا: نزهة، أكلتنا المفضّلة، ليلة حكايات"
+          - {icon: chef, text: "نَطْبُخُ مَعًا"}
+          - {icon: book, text: "نَقْرَأُ قِصَّةً"}
+          - {icon: tree, text: "نَمْشي فِي الحَيِّ"}
+          - {icon: sprout, text: "نَزْرَعُ بِذْرَةً"}
+          - {icon: phone, text: "نَتَّصِلُ بِـ{member}"}
+          - {icon: dice, text: "لَيْلَةُ أَلْعابٍ"}
+          - {icon: heart, text: "نَشْكُرُ بَعْضُنا بَعْضًا"}
+        reward: "مُكافَأَةُ عائِلَتِنا"
+        ideas: "مَثَلًا: نُزْهَةٌ، أَكْلَتُنا المُفَضَّلَةُ، لَيْلَةُ حِكاياتٍ"
 
   - n: 112
     section: back
     page:
       type: certificate-family
-      title: "شهادة {المغامر/المغامرة}"
-      instruction: "{لوّن/لوّني} النجوم {واحتفل/واحتفلي} مع عائلتك"
+      title: "شَهادَةُ {المُغامِرِ/المُغامِرَةِ}"
+      instruction: "{لَوِّنِ/لَوِّني} النُّجومَ {وَاحْتَفِلْ مَعَ عائِلَتِكَ/وَاحْتَفِلي مَعَ عائِلَتِكِ}"
       params:
-        line: "{أنهى/أنهت} كل مغامرات «مغامراتي مع عائلتي»"
+        line: "{أَنْهى/أَنْهَتْ} كُلَّ مُغامَراتِ «مُغامَراتي مَعَ عائِلَتي»"
 
 inserts:
   - n: 0
     section: front
     page:
       type: badge-sticker-sheet
-      title: ورقة الملصقات
-      instruction: "{ألصق/ألصقي} كل ختم في جوازك"
+      title: "وَرَقَةُ المُلْصَقاتِ"
+      instruction: "{أَلْصِقْ كُلَّ خَتْمٍ فِي جَوازِكَ/أَلْصِقي كُلَّ خَتْمٍ فِي جَوازِكِ}"
       params:
         stamps:  # each adventure's stamp (the plan's section badges); one that is also a badge shares it
-          - {section: home, label: "{مستكشف/مستكشفة} البيت"}
-          - {section: market, label: "{بطل/بطلة} السوق"}
-          - {section: chef, label: "{طبّاخ صغير/طبّاخة صغيرة}"}
-          - {section: day, label: "{صديق/صديقة} الوقت"}
-          - {section: talk, label: "{حكّاء صغير/حكّاءة صغيرة}"}
-          - {section: feelings, label: "قلب شجاع"}
-          - {section: responsible, label: "{طفل مسؤول/طفلة مسؤولة}"}
-          - {section: nature, label: "{صديق/صديقة} الطبيعة"}
-          - {section: jobs, label: "{صحفي صغير/صحفية صغيرة}"}
-          - {section: shop, label: "{تاجر صغير/تاجرة صغيرة}"}
-          - {section: games, label: "{نجم/نجمة} الألعاب"}
-          - {section: act, label: "{فنان/فنانة}"}
+          - {section: home, label: "{مُسْتَكْشِفُ/مُسْتَكْشِفَةُ} البَيْتِ"}
+          - {section: market, label: "{بَطَلُ/بَطَلَةُ} السّوقِ"}
+          - {section: chef, label: "{طَبّاخٌ صَغيرٌ/طَبّاخَةٌ صَغيرَةٌ}"}
+          - {section: day, label: "{صَديقُ/صَديقَةُ} الوَقْتِ"}
+          - {section: talk, label: "{حَكّاءٌ صَغيرٌ/حَكّاءَةٌ صَغيرَةٌ}"}
+          - {section: feelings, label: "قَلْبٌ شُجاعٌ"}
+          - {section: responsible, label: "{طِفْلٌ مَسْؤولٌ/طِفْلَةٌ مَسْؤولَةٌ}"}
+          - {section: nature, label: "{صَديقُ/صَديقَةُ} الطَّبيعَةِ"}
+          - {section: jobs, label: "{صَحَفِيٌّ صَغيرٌ/صَحَفِيَّةٌ صَغيرَةٌ}"}
+          - {section: shop, label: "{تاجِرٌ صَغيرٌ/تاجِرَةٌ صَغيرَةٌ}"}
+          - {section: games, label: "{نَجْمُ/نَجْمَةُ} الأَلْعابِ"}
+          - {section: act, label: "{فَنّانٌ/فَنّانَةٌ}"}
 
   - n: 0
     section: shop
     page:
       type: play-money
-      title: نقود قمرة للّعب
-      instruction: "{قصّ/قصّي} النقود مع {adult} على الخط المتقطّع"
+      title: "نُقودُ قَمْرَةَ لِلَّعِبِ"
+      instruction: "{قُصَّ/قُصّي} النُّقودَ مَعَ {adult} عَلى الخَطِّ المُتَقَطِّعِ"
       params: {adult: بابا, notes: [5, 5, 10, 10, 20, 20], coins: [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2], price_tags: 5}

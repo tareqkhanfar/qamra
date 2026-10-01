@@ -81,8 +81,8 @@ def drawing(ctx: PageContext) -> Built:
         "character": uri(ctx.assets.character),
         "tray": tray_svg(spots, extra) if frame == "tray" else "",
         "legend": [(1, ctx.num(spots)), (2, ctx.num(spots + extra))] if frame == "tray" and extra else [],
-        "missing": ctx.text(str(params.get("missing", "ماذا اختفى؟ {ارسمه/ارسميه} هنا"))),
-        "caption": ctx.text(str(params.get("caption", "اسم رسمتي:"))),
+        "missing": ctx.text(str(params.get("missing", "ماذا اخْتَفى؟ {ارْسُمْهُ/ارْسُميهِ} هُنا"))),
+        "caption": ctx.text(str(params.get("caption", "اسْمُ رَسْمَتي:"))),
         **frame_data(ctx, frame),
     }
     return Built(data, None, problems)
@@ -91,8 +91,8 @@ def drawing(ctx: PageContext) -> Built:
 def layers_ar(n: int, ctx: PageContext) -> str:
     """«طبقة واحدة», «طبقتان», «٣ طبقات»."""
     if n == 1:
-        return "طبقة واحدة"
-    return "طبقتان" if n == 2 else f"{ctx.num(n)} {'طبقات' if 3 <= n <= 10 else 'طبقة'}"
+        return "طَبَقَةٌ واحِدَةٌ"
+    return "طَبَقَتانِ" if n == 2 else f"{ctx.num(n)} {'طَبَقاتٍ' if 3 <= n <= 10 else 'طَبَقَةً'}"
 
 
 def frame_data(ctx: PageContext, frame: str) -> dict[str, Any]:
@@ -101,7 +101,7 @@ def frame_data(ctx: PageContext, frame: str) -> dict[str, Any]:
     labels = [ctx.text(str(x)) for x in params.get("labels", [])]
     match frame:
         case "portrait":
-            return {"name": ctx.book.child.name, "star": family_art.corner_stars(), "date_label": "التاريخ"}
+            return {"name": ctx.book.child.name, "star": family_art.corner_stars(), "date_label": "التّاريخُ"}
         case "cup":
             layers, more = int(params.get("layers", 2)), int(params.get("challenge_layers", 2))
             return {
@@ -113,20 +113,20 @@ def frame_data(ctx: PageContext, frame: str) -> dict[str, Any]:
         case "stage":
             return {"art": family_art.stage_svg()}
         case "room":
-            return {"art": family_art.room_svg(), "labels": labels or [ctx.text("ماذا يساعدني على الهدوء؟")]}
+            return {"art": family_art.room_svg(), "labels": labels or [ctx.text("ماذا يُساعِدُني عَلى الهُدوءِ؟")]}
         case "words":
             count, more = int(params.get("count", 1)), int(params.get("challenge", 2))
             return {
                 "cards": [{"level": 1 if i < count else 2, "n": ctx.num(i + 1)} for i in range(count + more)],
-                "labels": labels or ["الكلمة:", ctx.text("جملتي:")],
+                "labels": labels or ["الكَلِمَةُ:", ctx.text("جُمْلَتي:")],
             }
         case "rules":
-            return {"labels": labels or ["القاعدة الأولى:", "القاعدة الثانية:", "كيف نربح النقاط؟"]}
+            return {"labels": labels or ["القاعِدَةُ الأولى:", "القاعِدَةُ الثّانِيَةُ:", "كَيْفَ نَرْبَحُ النِّقاطَ؟"]}
         case "id-card":
             return {
                 "name": ctx.book.child.name,
-                "labels": labels or ["الاسم", "مهنتي", "أساعد الناس بـ"],
-                "photo_hint": ctx.text("صورتي وأنا {كبير/كبيرة}"),
+                "labels": labels or ["الاسْمُ", "مِهْنَتي", "أُساعِدُ النّاسَ بِـ"],
+                "photo_hint": ctx.text("صورَتي وَأَنا {كَبيرٌ/كَبيرَةٌ}"),
             }
     return {}
 
@@ -134,12 +134,12 @@ def frame_data(ctx: PageContext, frame: str) -> dict[str, Any]:
 # ---- counting ---------------------------------------------------------------------------------------------
 
 COLORS = {  # a color hunt's colors: name, paint
-    "red": ("أحمر", "#E4675A"),
-    "yellow": ("أصفر", "#F7C84A"),
-    "blue": ("أزرق", "#4F8BC9"),
-    "green": ("أخضر", "#5DAF4A"),
-    "orange": ("برتقالي", "#F39A3D"),
-    "purple": ("بنفسجي", "#9376CF"),
+    "red": ("أَحْمَرُ", "#E4675A"),
+    "yellow": ("أَصْفَرُ", "#F7C84A"),
+    "blue": ("أَزْرَقُ", "#4F8BC9"),
+    "green": ("أَخْضَرُ", "#5DAF4A"),
+    "orange": ("بُرْتُقالِيٌّ", "#F39A3D"),
+    "purple": ("بَنَفْسَجِيٌّ", "#9376CF"),
 }
 FRUITS = ("apple", "orange", "banana", "strawberry", "tomato", "carrot", "grapes")
 
@@ -213,10 +213,10 @@ def counting(ctx: PageContext) -> Built:
             if c in COLORS
         ]
         data["squares"] = list(range(squares))
-        data["question"] = ctx.text(str(params.get("question", "أيّ لون أكثر؟ {ضع/ضعي} دائرة حوله")))
+        data["question"] = ctx.text(str(params.get("question", "أَيُّ لَوْنٍ أَكْثَرُ؟ {ضَعْ/ضَعي} دائِرَةً حَوْلَهُ")))
     else:
         data["rows"] = compare_rows(ctx)
-        data["star_hint"] = ctx.text("{ضع/ضعي} نجمة هنا")
+        data["star_hint"] = ctx.text("{ضَعْ/ضَعي} نَجْمَةً هُنا")
     answer = [
         f"السلة الأكثر: {'اليمنى' if row['more'] == 0 else 'اليسرى'} (فرق {row['diff']})"
         for row in data.get("rows", [])
@@ -229,51 +229,51 @@ def counting(ctx: PageContext) -> Built:
 # a group: its label, how it is drawn (a shape's house, or a basket with an icon), its things; `open`: a
 # choice with no single right answer («لا توجد إجابة واحدة صحيحة دائمًا»), so no answer key
 SORT_GROUPS: dict[str, dict[str, Any]] = {
-    "circle": {"label": "دائرة", "shape": "circle", "items": ["plate", "clock", "orange"]},
-    "square": {"label": "مربّع", "shape": "square", "items": ["gift", "window"]},
-    "triangle": {"label": "مثلث", "shape": "triangle", "items": ["watermelon"]},
-    "rectangle": {"label": "مستطيل", "shape": "rectangle", "items": ["door", "book"]},
+    "circle": {"label": "دائِرَةٌ", "shape": "circle", "items": ["plate", "clock", "orange"]},
+    "square": {"label": "مُرَبَّعٌ", "shape": "square", "items": ["gift", "window"]},
+    "triangle": {"label": "مُثَلَّثٌ", "shape": "triangle", "items": ["watermelon"]},
+    "rectangle": {"label": "مُسْتَطيلٌ", "shape": "rectangle", "items": ["door", "book"]},
     "healthy": {
-        "label": "صحي",
+        "label": "صِحِّيٌّ",
         "icon": "heart",
         "color": "#E4769D",
         "items": ["apple", "carrot"],
         "open": True,
     },
     "needed": {
-        "label": "نحتاجه",
+        "label": "نَحْتاجُهُ",
         "icon": "check",
         "color": "#2FA36B",
         "items": ["milk", "bread"],
         "open": True,
     },
     "not-needed": {
-        "label": "لا نحتاجه اليوم",
+        "label": "لا نَحْتاجُهُ اليَوْمَ",
         "icon": "cross",
         "color": "#8A8FA8",
         "items": ["candy", "soda"],
         "open": True,
     },
     # the whole book's groups: fruit colors, the weather, the time of day, toy boxes, jobs and their tools
-    "red": {"label": "أحمر", "paint": "#E4675A", "items": ["apple", "strawberry"]},
-    "yellow": {"label": "أصفر", "paint": "#F7C84A", "items": ["banana", "lemon"]},
-    "orange": {"label": "برتقالي", "paint": "#F39A3D", "items": ["orange"]},
-    "green": {"label": "أخضر", "paint": "#8DBF4A", "items": ["pear"]},
-    "sunny": {"label": "مشمس", "pic": "sun", "items": ["sun-hat"]},
-    "rainy": {"label": "ماطر", "pic": "umbrella", "items": ["boots"]},
-    "windy": {"label": "عاصف", "pic": "wind", "items": ["kite"]},
-    "cold": {"label": "بارد", "pic": "snowflake", "items": ["scarf"]},
-    "morning": {"label": "الصباح", "pic": "sun", "items": ["backpack", "bread"]},
-    "evening": {"label": "المساء", "pic": "moon", "items": ["bed", "book"]},
-    "blocks": {"label": "المكعّبات", "chip": "blocks", "color": "#F08A3E", "items": ["blocks", "dice"]},
-    "dolls": {"label": "الدمى", "chip": "doll", "color": "#E4769D", "items": ["doll", "teddy"]},
-    "cars": {"label": "السيارات", "chip": "car", "color": "#2E9FD6", "items": ["car", "boat"]},
-    "doctor": {"label": "الطبيبة", "bust": "doctor", "items": ["stethoscope"]},
-    "baker": {"label": "الخبّاز", "bust": "baker", "items": ["bread"]},
-    "farmer": {"label": "المزارع", "bust": "farmer", "items": ["watering-can"]},
-    "teacher": {"label": "المعلّمة", "bust": "teacher", "items": ["book"]},
-    "barber": {"label": "الحلّاق", "bust": "barber", "items": ["scissors"]},
-    "builder": {"label": "البنّاء", "bust": "builder", "items": ["hammer"]},
+    "red": {"label": "أَحْمَرُ", "paint": "#E4675A", "items": ["apple", "strawberry"]},
+    "yellow": {"label": "أَصْفَرُ", "paint": "#F7C84A", "items": ["banana", "lemon"]},
+    "orange": {"label": "بُرْتُقالِيٌّ", "paint": "#F39A3D", "items": ["orange"]},
+    "green": {"label": "أَخْضَرُ", "paint": "#8DBF4A", "items": ["pear"]},
+    "sunny": {"label": "مُشْمِسٌ", "pic": "sun", "items": ["sun-hat"]},
+    "rainy": {"label": "ماطِرٌ", "pic": "umbrella", "items": ["boots"]},
+    "windy": {"label": "عاصِفٌ", "pic": "wind", "items": ["kite"]},
+    "cold": {"label": "بارِدٌ", "pic": "snowflake", "items": ["scarf"]},
+    "morning": {"label": "الصَّباحُ", "pic": "sun", "items": ["backpack", "bread"]},
+    "evening": {"label": "المَساءُ", "pic": "moon", "items": ["bed", "book"]},
+    "blocks": {"label": "المُكَعَّباتُ", "chip": "blocks", "color": "#F08A3E", "items": ["blocks", "dice"]},
+    "dolls": {"label": "الدُّمى", "chip": "doll", "color": "#E4769D", "items": ["doll", "teddy"]},
+    "cars": {"label": "السَّيّاراتُ", "chip": "car", "color": "#2E9FD6", "items": ["car", "boat"]},
+    "doctor": {"label": "الطَّبيبَةُ", "bust": "doctor", "items": ["stethoscope"]},
+    "baker": {"label": "الخَبّازُ", "bust": "baker", "items": ["bread"]},
+    "farmer": {"label": "المُزارِعُ", "bust": "farmer", "items": ["watering-can"]},
+    "teacher": {"label": "المُعَلِّمَةُ", "bust": "teacher", "items": ["book"]},
+    "barber": {"label": "الحَلّاقُ", "bust": "barber", "items": ["scissors"]},
+    "builder": {"label": "البَنّاءُ", "bust": "builder", "items": ["hammer"]},
 }
 PAIRS_MAX = 6  # a page of one-to-one pairs (a job and its tool) may show up to six groups
 
@@ -351,14 +351,19 @@ def sort_choose(ctx: PageContext) -> Built:
             for i, g in enumerate(groups)
         ],
         "levels": [(1 if i < simple else 2) for _, i in items],
-        "things": [{"pic": ctx.pic(pic), "word": strip_tashkeel(picture(pic).word_ar)} for pic, _ in items],
+        "things": [{"pic": ctx.pic(pic), "word": picture(pic).word_ar} for pic, _ in items],
         "basket": ctx.pic("basket"),
     }
     open_choice = any(g.get("open") for g in groups)
     answer = (
         None
         if open_choice
-        else ["، ".join(f"{strip_tashkeel(picture(pic).word_ar)} ← {groups[i]['label']}" for pic, i in items)]
+        else [
+            "، ".join(
+                f"{strip_tashkeel(picture(pic).word_ar)} ← {strip_tashkeel(groups[i]['label'])}"
+                for pic, i in items
+            )
+        ]
     )
     return Built(data, answer, problems)
 
@@ -387,13 +392,13 @@ def observation_journal(ctx: PageContext) -> Built:
         "labels": labels,
         "water": bool(params.get("water", False)),
         "icon": str(params.get("icon", "eye")),
-        "lead": ctx.text(str(params.get("lead", "{لاحظ/لاحظي} جيدًا"))),
-        "hints": [{"pic": ctx.pic(h), "word": strip_tashkeel(picture(h).word_ar)} for h in hints],
+        "lead": ctx.text(str(params.get("lead", "{لاحِظْ/لاحِظي} جَيِّدًا"))),
+        "hints": [{"pic": ctx.pic(h), "word": picture(h).word_ar} for h in hints],
         "entries": [{"n": ctx.num(i + 1), "level": 1 if i < entries else 2} for i in range(entries + extra)],
         "chips": [ctx.text(str(c)) for c in params.get("chips", [])],
-        "name_label": ctx.text(str(params.get("name_label", "ما هو؟"))),
+        "name_label": ctx.text(str(params.get("name_label", "ما هُوَ؟"))),
         "character": uri(ctx.assets.character),
-        "say": ctx.text(str(params.get("say", "هيّا نلاحظ!"))),
+        "say": ctx.text(str(params.get("say", "هَيّا نُلاحِظُ!"))),
     }
     return Built(data, None, problems)
 
@@ -509,11 +514,11 @@ def price_tags(ctx: PageContext) -> Built:
         spots = int(params.get("spots", 6))
         data = {
             "mode": "blank",
-            "sign": ctx.text(str(params.get("sign", "متجر {child}"))),
+            "sign": ctx.text(str(params.get("sign", "مَتْجَرُ {child}"))),
             "spots": [{"n": ctx.num(i + 1)} for i in range(spots)],
-            "levels": [ctx.text(str(x)) for x in params.get("levels", ["أسعار من ١ إلى ٥", "أسعار حتى ٢٠"])],
-            "order": ctx.text(str(params.get("order", "{رتّب/رتّبي} من الأرخص إلى الأغلى"))),
-            "unit": "قمرة",
+            "levels": [ctx.text(str(x)) for x in params.get("levels", ["أَسْعارٌ مِنْ ١ إِلى ٥", "أَسْعارٌ حَتّى ٢٠"])],
+            "order": ctx.text(str(params.get("order", "{رَتِّبْ/رَتِّبي} مِنَ الأَرْخَصِ إِلى الأَغْلى"))),
+            "unit": "قَمْرَة",
         }
         return Built(data, None, [] if 4 <= spots <= 8 else ["a shop shelf has 4–8 spots"])
     denoms = params.get("denominations", {"simple": [1, 2, 5], "challenge": [1, 2, 5, 10, 20]})
@@ -541,7 +546,7 @@ def price_tags(ctx: PageContext) -> Built:
             }
             for row in rows
         ],
-        "total": ctx.text("كم المجموع؟"),
+        "total": ctx.text("كَمِ المَجْموعُ؟"),
     }
     return Built(data, answer, problems)
 
@@ -583,6 +588,6 @@ def color_hunt(ctx: PageContext) -> Built:
         "boxes": [ctx.num(i + 1) for i in range(per)],
         "character": uri(ctx.assets.character),
         "basket": ctx.pic("basket"),
-        "lead": ctx.text(str(params.get("lead", "{اجمع/اجمعي} في السلة، ثم {ارسم/ارسمي}"))),
+        "lead": ctx.text(str(params.get("lead", "{اجْمَعْ/اجْمَعي} فِي السَّلَّةِ، ثُمَّ {ارْسُمْ/ارْسُمي}"))),
     }
     return Built(data, None, problems)

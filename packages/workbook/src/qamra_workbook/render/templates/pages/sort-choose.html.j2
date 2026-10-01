@@ -3,12 +3,12 @@
   <div class="wallets">
     {% for w in d.wallets %}
     <div class="wallet fcard lvl{{ w.level }}"><span class="row-level">{{ stars(w.level) }}</span><span class="w-ico">{{ icon('bag') }}</span>
-      <div class="w-body"><small>معي</small><b>{{ w.total }}</b></div><div class="purse-pieces">{% for pc in w.pieces %}{{ pc }}{% endfor %}</div></div>
+      <div class="w-body"><small>مَعي</small><b>{{ w.total }}</b></div><div class="purse-pieces">{% for pc in w.pieces %}{{ pc }}{% endfor %}</div></div>
     {% endfor %}
   </div>
   <div class="shelf fcard">{% for pr in d.products %}<div class="shelf-item"><span class="circle-me"></span><div class="shelf-pic">{{ pr.pic }}</div><span class="chg-price">{{ pr.price }}</span></div>{% endfor %}</div>
-  <div class="bought fcard"><span class="label">{{ icon('cart') }}{{ d.bought }}</span><div class="write-line"></div><span class="purse-total"><small>المجموع</small><i></i></span></div>
-  <div class="bought fcard lvl2"><span class="label">{{ stars(2) }}{{ d.second }}</span><div class="write-line"></div><span class="purse-total"><small>المجموع</small><i></i></span></div>
+  <div class="bought fcard"><span class="label">{{ icon('cart') }}{{ d.bought }}</span><div class="write-line"></div><span class="purse-total"><small>المَجْموعُ</small><i></i></span></div>
+  <div class="bought fcard lvl2"><span class="label">{{ stars(2) }}{{ d.second }}</span><div class="write-line"></div><span class="purse-total"><small>المَجْموعُ</small><i></i></span></div>
 </div>
 {% elif d.mode == 'choice' %}
 <div class="choicepg">

@@ -2,12 +2,12 @@
   <div class="spread-art" style="left: calc({{ d.shift }}mm - var(--inset)); width: {{ d.art_size[0] }}mm; height: {{ d.art_size[1] }}mm">{{ d.art }}</div>
   {% if d.first %}
   <div class="op-text">
-    <div class="op-adv">{{ icon(p.style.icon) }}<span>المغامرة {{ d.adventure }}</span></div>
+    <div class="op-adv">{{ icon(p.style.icon) }}<span>المُغامَرَةُ {{ d.adventure }}</span></div>
     <h1 class="op-title">{{ p.title }}</h1>
     <div class="op-hook">{{ mascot('mascot') }}<p>{{ d.hook }}</p></div>
     {% if d.inside %}
     <div class="op-inside">
-      <div class="op-inside-head">في هذه المغامرة</div>
+      <div class="op-inside-head">فِي هَذِهِ المُغامَرَةِ</div>
       <div class="op-items">
       {% for x in d.inside %}<div class="op-item"><span class="op-ico">{{ icon(x.icon) }}</span><span>{{ x.text }}</span></div>{% endfor %}
       </div>
@@ -18,15 +18,15 @@
   <div class="op-stamp">
     <div class="op-seal">{{ d.badge }}</div>
     <div class="op-stamp-text">
-      <small>{{ 'الختم الذي ستربحينه' if book.child.gender == 'f' else 'الختم الذي ستربحه' }}</small>
+      <small>{{ 'الخَتْمُ الَّذي سَتَرْبَحينَهُ' if book.child.gender == 'f' else 'الخَتْمُ الَّذي سَتَرْبَحُهُ' }}</small>
       <b data-fit="12">{{ d.badge_label }}</b>
-      <span>{{ icon('passport') }}{{ 'ألصقيه في جوازك' if book.child.gender == 'f' else 'ألصقه في جوازك' }}</span>
+      <span>{{ icon('passport') }}{{ 'أَلْصِقيهِ فِي جَوازِكِ' if book.child.gender == 'f' else 'أَلْصِقْهُ فِي جَوازِكَ' }}</span>
     </div>
   </div>
   <div class="op-family">
     {{ d.group }}
     {% for t in d.tags %}<span class="op-tag{{ ' child' if t.child }}" style="left: {{ t.x }}mm; top: {{ t.y }}mm; max-width: {{ t.w }}mm" data-fit="7.5">{{ t.label }}</span>{% endfor %}
   </div>
-  <div class="op-family-name">{{ icon('home') }}<span data-fit="10">عائلة {{ d.family }}</span></div>
+  <div class="op-family-name">{{ icon('home') }}<span data-fit="10">عائِلَةُ {{ d.family }}</span></div>
   {% endif %}
 </div>

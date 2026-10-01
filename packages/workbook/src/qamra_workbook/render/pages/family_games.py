@@ -8,7 +8,6 @@ from __future__ import annotations
 from typing import Any
 
 from qamra_workbook.pictures import get as picture
-from qamra_workbook.pictures.model import strip_tashkeel
 from qamra_workbook.render.pages.family import family_of
 from qamra_workbook.render.registry import Built, PageContext, page_type
 
@@ -31,8 +30,8 @@ MEMORY_PAIRS = (
 def pairs_ar(n: int, ctx: PageContext) -> str:
     """«زوجان», «٦ أزواج», «١٢ زوجًا»: the counted noun agrees with the number."""
     if n == 2:
-        return "زوجان"
-    return f"{ctx.num(n)} {'أزواج' if 3 <= n <= 10 else 'زوجًا'}"
+        return "زَوْجانِ"
+    return f"{ctx.num(n)} {'أَزْواجٍ' if 3 <= n <= 10 else 'زَوْجًا'}"
 
 
 def players(ctx: PageContext, problems: list[str]) -> list[dict[str, Any]]:
@@ -57,7 +56,7 @@ def family_game_cards(ctx: PageContext) -> Built:
             problems.append(f"the memory game needs {pairs + more} pictures")
         data |= {
             "steps": [ctx.text(str(s)) for s in params.get("steps", [])],
-            "shown": [{"pic": ctx.pic(cards[0]), "word": strip_tashkeel(picture(cards[0]).word_ar)}] * 2,
+            "shown": [{"pic": ctx.pic(cards[0]), "word": picture(cards[0]).word_ar}] * 2,
             "backs": 6,
             "levels": [(1, pairs_ar(pairs, ctx)), (2, pairs_ar(pairs + more, ctx))],
             "boxes": list(range(pairs + more)),
@@ -67,7 +66,7 @@ def family_game_cards(ctx: PageContext) -> Built:
         rounds = int(params.get("rounds", 5))
         data |= {
             "rounds": [ctx.num(i + 1) for i in range(rounds)],
-            "total": "المجموع",
-            "cheer": ctx.text(str(params.get("cheer", "كلنا ربحنا وقتًا حلوًا معًا!"))),
+            "total": "المَجْموعُ",
+            "cheer": ctx.text(str(params.get("cheer", "كُلُّنا رَبِحْنا وَقْتًا حُلْوًا مَعًا!"))),
         }
     return Built(data, None, problems)

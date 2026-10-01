@@ -12,6 +12,7 @@ import pypdfium2 as pdfium
 import pytest
 from qamra_workbook.family import INSERT_TYPES, Insert, Page, book_pages, check_inserts, load
 from qamra_workbook.pictures import LibraryStore
+from qamra_workbook.pictures.model import strip_tashkeel
 from qamra_workbook.render.dielines import layers
 from qamra_workbook.render.engine import book_html, build_pages, print_pdf
 from qamra_workbook.render.family import PLAN, cover_specs, insert_sheets, plan_pages
@@ -126,7 +127,7 @@ def test_personalization_never_assumes_a_mother_and_a_father(child: Child, famil
     words = {m.label for m in family.members} | {m.role for m in family.members}  # the family's own words
     assert set(PARENTS.findall(html)) <= words  # «ماما» / «بابا» only when the family has them
     assert "{" not in html.replace("{{", "")  # no placeholder left anywhere on the pages
-    assert f"عائلة {family.name}" in html and all(m.label in html for m in family.members)
+    assert f"عائِلَةُ {family.name}" in html and all(m.label in html for m in family.members)
     assert child.name in html
     scoreboard = next(p for p in pages if p.spec.number == 99)
     assert len(scoreboard.built.data["players"]) == len(family.members) + 1
@@ -135,9 +136,13 @@ def test_personalization_never_assumes_a_mother_and_a_father(child: Child, famil
 def test_gender_forms_follow_the_child() -> None:
     girl = {p.spec.number: p for p in build_pages(plan_book(GIRL), ASSETS)}
     boy = {p.spec.number: p for p in build_pages(plan_book(BOY), ASSETS)}
-    assert girl[8].instruction.startswith("ابحثي") and boy[8].instruction.startswith("ابحث ")
-    assert girl[3].title.endswith("المغامرة الصغيرة") and boy[3].title.endswith("المغامر الصغير")
-    assert "مستكشفة" in girl[34].title and "مستكشف الطبيعة" in boy[34].title
+    assert strip_tashkeel(girl[8].instruction).startswith("ابحثي") and strip_tashkeel(
+        boy[8].instruction
+    ).startswith("ابحث ")
+    assert strip_tashkeel(girl[3].title).endswith("المغامرة الصغيرة") and strip_tashkeel(
+        boy[3].title
+    ).endswith("المغامر الصغير")
+    assert "مستكشفة" in strip_tashkeel(girl[34].title) and "مستكشف الطبيعة" in strip_tashkeel(boy[34].title)
 
 
 @pytest.mark.parametrize("numerals", ["hindi", "latin"])

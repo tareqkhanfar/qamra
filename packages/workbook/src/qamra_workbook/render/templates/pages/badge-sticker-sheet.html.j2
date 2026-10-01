@@ -1,31 +1,31 @@
 <div class="sheet stickers">
   <header class="sheet-head">
     <div class="sheet-title">{{ mascot('mascot') }}<div><h1>{{ p.title }}</h1><p>{{ p.instruction }}</p></div></div>
-    <div class="sheet-owner"><small>ملصقات</small><b data-fit="11">{{ d.owner }}</b></div>
+    <div class="sheet-owner"><small>مُلْصَقاتُ</small><b data-fit="11">{{ d.owner }}</b></div>
   </header>
   <section class="st-group">
-    <div class="label">{{ icon('passport') }}أختام المغامرات: ختم بعد كل مغامرة</div>
+    <div class="label">{{ icon('passport') }}أَخْتامُ المُغامَراتِ: خَتْمٌ بَعْدَ كُلِّ مُغامَرَةٍ</div>
     <div class="st-stamps">
       {% for b in d.stamps %}<div class="st-badge"><div class="st-seal">{{ b.svg }}{{ d.cut }}</div><span data-fit="6" style="color: {{ b.color }}">{{ b.n }} · {{ b.label }}</span></div>{% endfor %}
     </div>
-    <div class="label">{{ icon('trophy') }}الشارات السبع</div>
+    <div class="label">{{ icon('trophy') }}الشّاراتُ السَّبْعُ</div>
     <div class="st-rosettes">
       {% for b in d.badges %}<div class="st-badge"><div class="st-rosette">{{ b.svg }}</div><span data-fit="6" style="color: {{ b.color }}">{{ b.label }}</span></div>{% endfor %}
     </div>
   </section>
   <section class="st-group">
-    <div class="label">{{ icon('star') }}نجوم جدول إنجازاتي، ونجمة لكل يوم من تحدي العائلة</div>
+    <div class="label">{{ icon('star') }}نُجومُ جَدْوَلِ إِنْجازاتي، وَنَجْمَةٌ لِكُلِّ يَوْمٍ مِنْ تَحَدّي العائِلَةِ</div>
     <div class="st-chores">{% for c in d.chores %}<span class="st-chore">{{ c }}</span>{% endfor %}</div>
     <div class="st-days">{% for star in d.days %}<div class="st-day">{{ star }}</div>{% endfor %}</div>
   </section>
   <section class="st-group">
-    <div class="label">{{ icon('sun') }}رموز الروتين: الصباح والمساء</div>
+    <div class="label">{{ icon('sun') }}رُموزُ الرّوتينِ: الصَّباحُ وَالمَساءُ</div>
     <div class="st-routine">
       {% for r in d.routine %}<div class="st-rt" style="--rc: {{ r.color }}"><span class="rt-cut cut" aria-hidden="true"></span><span class="rt-ico">{{ icon(r.icon) }}</span><b data-fit="6.5">{{ r.label }}</b></div>{% endfor %}
     </div>
   </section>
   <footer class="sheet-foot">
-    <span class="cut-key">ورق ملصقات مطفي بقصّ نصفي: {{ 'انزعي' if book.child.gender == 'f' else 'انزع' }} الملصق {{ 'وألصقيه' if book.child.gender == 'f' else 'وألصقه' }} في مكانه</span>
+    <span class="cut-key">ورق ملصقات مطفي بقصّ نصفي: {{ 'انْزِعي' if book.child.gender == 'f' else 'انْزِعِ' }} المُلْصَقَ {{ 'وَأَلْصِقيهِ' if book.child.gender == 'f' else 'وَأَلْصِقْهُ' }} فِي مَكانِهِ</span>
     <span class="sheet-brand">{{ mascot('mascot') }}قمرة · مغامراتي مع عائلتي</span>
   </footer>
 </div>

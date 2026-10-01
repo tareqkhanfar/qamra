@@ -21,7 +21,7 @@ from markupsafe import Markup
 
 from qamra_workbook.family import NUTS_AND_RAW_EGGS
 from qamra_workbook.pictures import get as picture
-from qamra_workbook.pictures.model import OUTLINE, scallop_d, strip_tashkeel
+from qamra_workbook.pictures.model import OUTLINE, scallop_d
 from qamra_workbook.puzzles.coloring import Shape
 from qamra_workbook.render import art, draw, people
 from qamra_workbook.render.pages.journey import MEDAL, _ray, _star
@@ -44,13 +44,13 @@ class Badge:
 
 
 CORE_BADGES = (
-    Badge("adventurer", "{مغامر/مغامرة}", "compass", "#F08A3E"),
-    Badge("thinker", "{مفكّر/مفكّرة}", "bulb", "#8C6CCB"),
-    Badge("artist", "{فنان/فنانة}", "palette", "#E4769D"),
-    Badge("explorer", "{مستكشف/مستكشفة}", "magnifier", "#2FA36B"),
-    Badge("chef", "{طبّاخ صغير/طبّاخة صغيرة}", "chef", "#E4675A"),
-    Badge("responsible", "{طفل مسؤول/طفلة مسؤولة}", "check-list", "#23A094"),
-    Badge("friend", "{صديق لطيف/صديقة لطيفة}", "friend", "#2E9FD6"),
+    Badge("adventurer", "{مُغامِرٌ/مُغامِرَةٌ}", "compass", "#F08A3E"),
+    Badge("thinker", "{مُفَكِّرٌ/مُفَكِّرَةٌ}", "bulb", "#8C6CCB"),
+    Badge("artist", "{فَنّانٌ/فَنّانَةٌ}", "palette", "#E4769D"),
+    Badge("explorer", "{مُسْتَكْشِفٌ/مُسْتَكْشِفَةٌ}", "magnifier", "#2FA36B"),
+    Badge("chef", "{طَبّاخٌ صَغيرٌ/طَبّاخَةٌ صَغيرَةٌ}", "chef", "#E4675A"),
+    Badge("responsible", "{طِفْلٌ مَسْؤولٌ/طِفْلَةٌ مَسْؤولَةٌ}", "check-list", "#23A094"),
+    Badge("friend", "{صَديقٌ لَطيفٌ/صَديقَةٌ لَطيفَةٌ}", "friend", "#2E9FD6"),
 )
 
 
@@ -427,7 +427,7 @@ def section_opener(ctx: PageContext) -> Built:
 
 # ---- treasure hunt ----------------------------------------------------------------------------------------
 
-SHAPES_AR = {"circle": "دائرية", "square": "مربعة", "triangle": "مثلثة"}
+SHAPES_AR = {"circle": "دائِرِيَّةٍ", "square": "مُرَبَّعَةٍ", "triangle": "مُثَلَّثَةٍ"}
 
 
 @page_type("scavenger-hunt")
@@ -460,10 +460,10 @@ def scavenger_hunt(ctx: PageContext) -> Built:
         "character": uri(ctx.assets.character),
         "shape": shape_svg,
         "shape_ar": SHAPES_AR.get(shape, shape),
-        "examples": [{"pic": ctx.pic(x), "word": strip_tashkeel(picture(x).word_ar)} for x in examples],
+        "examples": [{"pic": ctx.pic(x), "word": picture(x).word_ar} for x in examples],
         "cards": cards,
         "count": [ctx.num(i + 1) for i in range(find + extra)],
-        "found_q": ctx.text("كم شيئًا {وجدت/وجدتِ}؟"),
+        "found_q": ctx.text("كَمْ شَيْئًا {وَجَدْتَ/وَجَدْتِ}؟"),
     }
     return Built(data, None, problems)
 
@@ -478,7 +478,7 @@ def checklist_hunt(ctx: PageContext) -> Built:
         label = str(raw.get("label", "")) if isinstance(raw, Mapping) else ""
         return {
             "pic": ctx.pic(pic),
-            "word": ctx.text(label) or strip_tashkeel(picture(pic).word_ar),
+            "word": ctx.text(label) or picture(pic).word_ar,
             "level": level,
         }
 
@@ -492,7 +492,7 @@ def checklist_hunt(ctx: PageContext) -> Built:
         "count": bool(params.get("count", False)),
         "compare": ctx.text(str(params.get("compare", ""))),
         "character": uri(ctx.assets.character),
-        "found_q": ctx.text("كم شيئًا {وجدت/وجدتِ}؟"),
+        "found_q": ctx.text("كَمْ شَيْئًا {وَجَدْتَ/وَجَدْتِ}؟"),
         "total": [ctx.num(i + 1) for i in range(len(items))],
         "safety": ctx.text(str(params["safety"])) if params.get("safety") else "",
     }
@@ -502,9 +502,9 @@ def checklist_hunt(ctx: PageContext) -> Built:
 # ---- shopping list ----------------------------------------------------------------------------------------
 
 CHOICES = (
-    {"key": "healthy", "icon": "heart", "label": "صحي", "color": "#E4769D"},
-    {"key": "needed", "icon": "check", "label": "نحتاجه", "color": "#2FA36B"},
-    {"key": "not-needed", "icon": "cross", "label": "لا نحتاجه", "color": "#8A8FA8"},
+    {"key": "healthy", "icon": "heart", "label": "صِحِّيٌّ", "color": "#E4769D"},
+    {"key": "needed", "icon": "check", "label": "نَحْتاجُهُ", "color": "#2FA36B"},
+    {"key": "not-needed", "icon": "cross", "label": "لا نَحْتاجُهُ", "color": "#8A8FA8"},
 )
 
 
@@ -522,12 +522,12 @@ def shopping_list(ctx: PageContext) -> Built:
     data = {
         "rows": list(range(rows)),
         "count_dots": 5,
-        "products": [{"pic": ctx.pic(x), "word": strip_tashkeel(picture(x).word_ar)} for x in products],
+        "products": [{"pic": ctx.pic(x), "word": picture(x).word_ar} for x in products],
         "choices": CHOICES,
         "city": family.city if family else "",
         "character": uri(ctx.assets.character),
         "bag": ctx.pic("shopping-bag"),
-        "choose": ctx.text(str(params.get("choose", "{اختر/اختاري} لكل شيء: صحي؟ نحتاجه؟"))),
+        "choose": ctx.text(str(params.get("choose", "{اخْتَرْ/اخْتاري} لِكُلِّ شَيْءٍ: صِحِّيٌّ؟ نَحْتاجُهُ؟"))),
         "safety": ctx.text(str(params["safety"])) if params.get("safety") else "",  # outdoors (A7 §9)
     }
     return Built(data, None, problems)
@@ -678,8 +678,8 @@ def recipe_steps(ctx: PageContext) -> Built:
         "layers": [{"n": ctx.num(k + 1), "level": 1 if k < layers else 2} for k in range(layers + more)],
         "cards": cards,
         "safety": safety,
-        "count_label": ctx.text(str(params.get("count_label", "المكوّنات: {عُدّ/عُدّي} الملاعق"))),
-        "steps_label": ctx.text(str(params.get("steps_label", "خطوات الطبخ: ما رقم كل بطاقة؟"))),
+        "count_label": ctx.text(str(params.get("count_label", "المُكَوِّناتُ: {عُدَّ/عُدّي} المَلاعِقَ"))),
+        "steps_label": ctx.text(str(params.get("steps_label", "خُطُواتُ الطَّبْخِ: ما رَقْمُ كُلِّ بِطاقَةٍ؟"))),
     }
     answer = [
         "الترتيب: "
@@ -697,20 +697,20 @@ def art_cup(layers: int, more: int) -> Markup:
 # ---- feelings thermometer ---------------------------------------------------------------------------------
 
 LEVELS: tuple[tuple[people.Feeling, str, str], ...] = (  # bottom to top: how big the feeling is
-    ("calm", "هادئ", "#8FD3B6"),
-    ("happy", "صغير", "#C9E27A"),
-    ("uneasy", "متوسط", "#F7D774"),
-    ("upset", "كبير", "#F5B06B"),
-    ("angry", "كبير جدًا", "#EE8A7A"),
+    ("calm", "هادِئٌ", "#8FD3B6"),
+    ("happy", "صَغيرٌ", "#C9E27A"),
+    ("uneasy", "مُتَوَسِّطٌ", "#F7D774"),
+    ("upset", "كَبيرٌ", "#F5B06B"),
+    ("angry", "كَبيرٌ جِدًّا", "#EE8A7A"),
 )
-FEELINGS: tuple[tuple[people.Feeling, str], ...] = (("angry", "الغضب"), ("sad", "الحزن"), ("scared", "الخوف"))
+FEELINGS: tuple[tuple[people.Feeling, str], ...] = (("angry", "الغَضَبُ"), ("sad", "الحُزْنُ"), ("scared", "الخَوْفُ"))
 STRATEGIES = (
-    ("wind", "أتنفّس ببطء"),
-    ("heart", "أطلب حضنًا"),
-    ("talk", "أحكي لـ{adult}"),
-    ("cup", "أشرب ماء"),
-    ("crayon", "أرسم شعوري"),
-    ("hand", "أعدّ حتى ٥"),
+    ("wind", "أَتَنَفَّسُ بِبُطْءٍ"),
+    ("heart", "أَطْلُبُ حِضْنًا"),
+    ("talk", "أَحْكي لِـ{adult}"),
+    ("cup", "أَشْرَبُ ماءً"),
+    ("crayon", "أَرْسُمُ شُعوري"),
+    ("hand", "أَعُدُّ حَتّى ٥"),
 )
 
 
@@ -823,11 +823,11 @@ def memory_page(ctx: PageContext) -> Built:
     members = list(family.members) if family else []
     data = {
         "members": [m.label for m in members],
-        "quote_from": ctx.text(str(ctx.page.params.get("quote_from", "كلمة من {adult}"))),
-        "stars_q": ctx.text(str(ctx.page.params.get("stars_q", "كم نجمة {تعطي/تعطين} مغامرتنا؟"))),
+        "quote_from": ctx.text(str(ctx.page.params.get("quote_from", "كَلِمَةٌ مِنْ {adult}"))),
+        "stars_q": ctx.text(str(ctx.page.params.get("stars_q", "كَمْ نَجْمَةً {تُعْطي/تُعْطينَ} مُغامَرَتَنا؟"))),
         "stars": int(ctx.page.params.get("stars", 5)),  # how many stars to color (the plan's `stars`)
-        "draw_label": ctx.text("أو {ارسم/ارسمي} ما فعلناه"),
-        "with_q": "مع مَن كانت المغامرة؟",
+        "draw_label": ctx.text("أَوِ {ارْسُمْ/ارْسُمي} ما فَعَلْناهُ"),
+        "with_q": "مَعَ مَنْ كانَتِ المُغامَرَةُ؟",
         "star": art.stars(1, "big-star", fill="#FFFFFF", edge="#E2A32A"),
     }
     return Built(data, None, problems)
@@ -835,7 +835,7 @@ def memory_page(ctx: PageContext) -> Built:
 
 # ---- the 7-day family challenge (back pages) ------------------------------------------------------------
 
-DAY_NAMES = ("الأول", "الثاني", "الثالث", "الرابع", "الخامس", "السادس", "السابع")
+DAY_NAMES = ("الأَوَّلُ", "الثّاني", "الثّالِثُ", "الرّابِعُ", "الخامِسُ", "السّادِسُ", "السّابِعُ")
 
 
 def challenge_board(
@@ -911,7 +911,7 @@ def seven_day_challenge(ctx: PageContext) -> Built:
         "board": board,
         "stones": stones,
         "days": DAY_NAMES,
-        "reward": ctx.text(str(ctx.page.params.get("reward", "مكافأة عائلتنا"))),
+        "reward": ctx.text(str(ctx.page.params.get("reward", "مُكافَأَةُ عائِلَتِنا"))),
         "ideas": ctx.text(str(ctx.page.params.get("ideas", ""))),
         "gift": art.icon("gift"),
     }
@@ -927,10 +927,10 @@ def certificate_family(ctx: PageContext) -> Built:
     family = family_of(ctx, problems)
     hero = ctx.assets.wave or ctx.assets.character
     data = {
-        "line": ctx.text(str(ctx.page.params.get("line", "{أنهى/أنهت} كل مغامرات «مغامراتي مع عائلتي»"))),
+        "line": ctx.text(str(ctx.page.params.get("line", "{أَنْهى/أَنْهَتْ} كُلَّ مُغامَراتِ «مُغامَراتي مَعَ عائِلَتي»"))),
         "name": ctx.book.child.name,
         "family": family.name if family else "",
-        "members": ("مع " + members_line(family.members)) if family else "",
+        "members": ("مَعَ " + members_line(family.members)) if family else "",
         "date": ctx.book.date_ar(),
         "character": uri(hero),
         "badges": [rosette(b, css_class="cert-seal") for b in CORE_BADGES],

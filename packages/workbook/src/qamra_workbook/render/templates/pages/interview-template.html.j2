@@ -1,7 +1,7 @@
 <div class="interview">
   <div class="iv-top">
-    <div class="iv-portrait fcard"><div class="iv-face"><small>{{ icon('crayon') }}{{ 'ارسمي' if book.child.gender == 'f' else 'ارسم' }} الضيف</small></div><b data-fit="9">{{ d.who }}</b></div>
-    <div class="iv-mic fcard"><span class="iv-mic-ico">{{ icon('speaker') }}</span><b>مقابلة صحفية</b><small data-fit="8">{{ d.reporter }}</small></div>
+    <div class="iv-portrait fcard"><div class="iv-face"><small>{{ icon('crayon') }}{{ 'ارْسُمي' if book.child.gender == 'f' else 'ارْسُمِ' }} الضَّيْفَ</small></div><b data-fit="9">{{ d.who }}</b></div>
+    <div class="iv-mic fcard"><span class="iv-mic-ico">{{ icon('speaker') }}</span><b>مُقابَلَةٌ صَحَفِيَّةٌ</b><small data-fit="8">{{ d.reporter }}</small></div>
   </div>
   <div class="iv-questions">
     {% for q in d.questions %}

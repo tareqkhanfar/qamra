@@ -1,17 +1,17 @@
 <div class="bingopg">
   <div class="bingo-legend fcard">
-    <span>{{ stars(1) }}<b>صفّ واحد</b></span><span>{{ stars(2) }}<b>البطاقة كاملة</b></span>
+    <span>{{ stars(1) }}<b>صَفٌّ واحِدٌ</b></span><span>{{ stars(2) }}<b>البِطاقَةُ كامِلَةً</b></span>
     <span class="bl-sep"></span>
     <span class="bl-ico">{{ icon('eye') }}{{ d.see }}</span><span class="bl-ico">{{ icon('ear') }}{{ d.listen }}</span>
   </div>
   <div class="bingo-cards">
     {% for card in d.cards %}
     <div class="bingo fcard{{ ' mine' if card.child }}">
-      <div class="bingo-head"><b>بنغو</b><span data-fit="8">{{ card.owner }}</span></div>
+      <div class="bingo-head"><b>بِنْغو</b><span data-fit="8">{{ card.owner }}</span></div>
       <div class="bingo-grid" style="--n: {{ d.size }}">
         {% for c in card.cells %}
         {% if c %}<div class="bcell"><span class="bmark">{{ icon('ear' if c.hear else 'eye') }}</span><div class="bpic">{{ c.pic }}</div><small>{{ c.word }}</small></div>
-        {% else %}<div class="bcell free">{{ stars(1, 'free-star') }}<small>مجانية!</small></div>{% endif %}
+        {% else %}<div class="bcell free">{{ stars(1, 'free-star') }}<small>مَجّانِيَّةٌ!</small></div>{% endif %}
         {% endfor %}
       </div>
     </div>
