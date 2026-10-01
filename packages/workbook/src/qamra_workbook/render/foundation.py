@@ -23,7 +23,17 @@ from qamra_workbook.render.spec import BookSpec, Child, Geometry, Lang, Numerals
 PRODUCT = "foundation"
 ENGINE_TYPES = {"drawing": "symmetry-drawing", "certificate": "workbook-certificate", "toc": "workbook-toc"}
 # English-subject pages printed LTR with the instruction in English and Arabic; openers stay Arabic
-ENGLISH_PAGES = frozenset({"en-letter", "find-letter", "match-letter-picture", "unit-review", "assessment"})
+ENGLISH_PAGES = frozenset(
+    {
+        "en-letter",
+        "find-letter",
+        "match-letter-picture",
+        "unit-review",
+        "assessment",
+        "word-read",  # volume 3: first English words and sentences read with their pictures
+        "sentence-read",
+    }
+)
 VOLUME_AR = {1: "الجزء الأول", 2: "الجزء الثاني", 3: "الجزء الثالث"}
 
 
@@ -31,10 +41,17 @@ def page_id(level: str, volume: int, n: int) -> str:
     return f"{level}-v{volume}-p{n}"
 
 
-def engine_type(page: Page) -> str:
+def engine_type(page: Page, level: str = "kg2") -> str:
+    from qamra_workbook.render.foundation_kg1 import engine_type_kg1  # lazy: KG1 imports this module
     from qamra_workbook.render.foundation_v2 import engine_type_v2  # lazy: volume 2 imports this module
+    from qamra_workbook.render.foundation_v3 import engine_type_v3  # lazy: volume 3 imports this module
 
-    return engine_type_v2(page) or ENGINE_TYPES.get(page.type, page.type)  # volume 2's pages first
+    return (
+        (engine_type_kg1(page) if level == "kg1" else None)  # KG1's own pages first
+        or engine_type_v3(page)
+        or engine_type_v2(page)
+        or ENGINE_TYPES.get(page.type, page.type)
+    )
 
 
 def toc_entries(volume: Volume) -> list[dict[str, Any]]:
@@ -93,16 +110,24 @@ def plan_params(page: Page, plan: Curriculum, volume: Volume, name_en: str) -> d
 def from_curriculum(page: Page, plan: Curriculum, volume: Volume, name_en: str = "") -> PageSpec:
     params = plan_params(page, plan, volume, name_en)
     lang: Lang = "en" if page.subject == "english" and page.type in ENGLISH_PAGES else "ar"
+    from qamra_workbook.render.foundation_kg1 import params_kg1, texts_kg1  # lazy: KG1 imports this module
     from qamra_workbook.render.foundation_v2 import texts_v2  # lazy: volume 2 imports this module
+    from qamra_workbook.render.foundation_v3 import texts_v3  # lazy: volume 3 imports this module
 
-    title, instruction, instruction_en = texts_v2(
-        page.subject, page.type, params, params["unit_title"]
-    ) or page_texts(page.subject, page.type, params, params["unit_title"])
+    kg1 = plan.level == "kg1"
+    if kg1:
+        params = params_kg1(page, params)
+    title, instruction, instruction_en = (
+        (texts_kg1(page.subject, page.type, params, params["unit_title"]) if kg1 else None)
+        or texts_v3(page.subject, page.type, params, params["unit_title"])
+        or texts_v2(page.subject, page.type, params, params["unit_title"])
+        or page_texts(page.subject, page.type, params, params["unit_title"])
+    )
     if page.type == "unit-opener" and ":" in page.skill:  # «أنا وعالم الأرقام: أتعرّف على ما سأتعلّمه»
         title = page.skill.split(":")[0].strip()
     return PageSpec(
         id=page_id(plan.level, volume.volume, page.n),
-        type=engine_type(page),
+        type=engine_type(page, plan.level),
         number=page.n,
         section=page.subject,
         title=title,

@@ -7,6 +7,7 @@ from __future__ import annotations
 from typing import Any
 
 from qamra_workbook.pictures import PICTURES
+from qamra_workbook.pictures.model import strip_tashkeel
 from qamra_workbook.render import draw
 from qamra_workbook.render.pages.journey_kit import (
     CUTS,
@@ -132,16 +133,21 @@ def memory_recall(ctx: PageContext) -> Built:
     if shown:
         top = 70.0
         body.append(card(0, 0, W, 62, r=8, fill=SOFT, stroke="none"))
-        slots = [*shown, ""]
+        slots = [*shown, *[""] * max(1, len(answer))]  # a "?" for each picture that went
+        small = len(slots) > 4  # up to four slots keep stage 1's layout; more are packed to fit the card
+        size = min(40.0, (W - 28 - (len(slots) - 1) * 3) / len(slots)) if small else 40.0
         for k, w in enumerate(slots):
-            x = W - 14 - (k + 1) * 42 - k * 2
+            x = W - 14 - (k + 1) * size - k * 3 if small else W - 14 - (k + 1) * 42 - k * 2
+            y0 = 11 + (40 - size) / 2
             if w:
-                body.append(picture(w, x, 11, 40))
+                body.append(picture(w, x, y0, size))
             else:
                 body.append(
-                    card(x, 11, 40, 40, r=6, fill="#FFFFFF", stroke="#8C90A6", dash="3 2.4", width=0.8)
+                    card(x, y0, size, size, r=6, fill="#FFFFFF", stroke="#8C90A6", dash="3 2.4", width=0.8)
                 )
-                body.append(text("؟", x + 20, 38, 18, cls="wb-title", color="#8C90A6"))
+                body.append(
+                    text("؟", x + size / 2, y0 + size * 0.66, size * 0.45, cls="wb-title", color="#8C90A6")
+                )
     style = "color" if shown else "line"
     for w, (x, y, size) in zip(choices, grid(len(choices), 3, h=H - top), strict=True):
         body.append(card(x - 3, top + y - 3, size + 6, size + 6, r=8))
@@ -318,8 +324,19 @@ def classify_by(ctx: PageContext) -> Built:
         x = W - 12 - (k + 1) * bw - k * 12
         color = COLOR_HEX.get(str(g.get("color", "")), str(g.get("color") or "#FCEFD2"))
         body.append(card(x, top_h + 26, bw, H - top_h - 28, r=10, fill=color, stroke="#2B2E4A", width=0.8))
+        label = str(g.get("label", ""))
+        letters = len(strip_tashkeel(label))
         body.append(card(x + 6, top_h + 32, bw - 12, 16, r=6, fill="#FFFFFF", stroke="none"))
-        body.append(text(str(g.get("label", "")), x + bw / 2, top_h + 43, 7, cls="wb-title", color="#1C2140"))
+        body.append(  # a long colour name (بنفسجي) is set smaller so it stays on its label
+            text(
+                label,
+                x + bw / 2,
+                top_h + 43,
+                min(7.0, (bw - 14) / (max(letters, 3) * 0.62)),
+                cls="wb-title",
+                color="#1C2140",
+            )
+        )
         if g.get("icon"):
             body.append(picture(str(g["icon"]), x + bw / 2 - 12, top_h + 50, 24))
         tops.append((x + bw / 2, top_h + 22))
@@ -331,3 +348,185 @@ def classify_by(ctx: PageContext) -> Built:
         for g in range(len(groups))
     ]
     return Built({"svg": svg(body)}, key, problems)
+
+
+# ---- stages 2–3 (§4.1, §4.12): longer picture stories, hidden pictures, sorting by two attributes ----------
+
+
+def _scene(*parts: str) -> str:
+    return "".join(parts)
+
+
+def _tiny(word: str, x: float, y: float, s: float, **colors: str) -> str:
+    inner = PICTURES[pid(word)].inner("color", colors or None)
+    return f'<svg x="{x}" y="{y}" width="{s}" height="{s}" viewBox="0 0 100 100">{inner}</svg>'
+
+
+TABLE = '<rect x="6" y="70" width="88" height="8" rx="2" fill="#C98A5B" stroke="#2B2E4A" stroke-width="2"/>'
+STORIES: dict[str, list[str]] = {
+    "eid": [
+        _scene(
+            TABLE,
+            '<ellipse cx="50" cy="52" rx="30" ry="18" fill="#F3E2C6" stroke="#2B2E4A" stroke-width="2.4"/>',
+            '<path d="M36 46 C40 36 60 36 64 46" fill="none" stroke="#2B2E4A" stroke-width="2"/>',
+        ),
+        _scene(
+            TABLE,
+            '<ellipse cx="34" cy="56" rx="16" ry="12" fill="#F3E2C6" stroke="#2B2E4A" stroke-width="2.4"/>',
+            _tiny("dates", 52, 30, 40),
+        ),
+        _scene(
+            '<rect x="14" y="20" width="72" height="66" rx="6" fill="#6E6A7A" stroke="#2B2E4A"'
+            ' stroke-width="2.4"/>',
+            '<rect x="24" y="34" width="52" height="34" rx="3" fill="#F39A3D" stroke="#2B2E4A"'
+            ' stroke-width="2"/>',
+            '<circle cx="38" cy="52" r="6" fill="#F3E2C6"/><circle cx="62" cy="52" r="6" fill="#F3E2C6"/>',
+        ),
+        _scene(
+            TABLE,
+            _tiny("plate", 16, 22, 68),
+            '<circle cx="42" cy="50" r="6" fill="#E3B982" stroke="#2B2E4A" stroke-width="1.6"/>',
+            '<circle cx="58" cy="50" r="6" fill="#E3B982" stroke="#2B2E4A" stroke-width="1.6"/>',
+            '<circle cx="50" cy="40" r="6" fill="#E3B982" stroke="#2B2E4A" stroke-width="1.6"/>',
+        ),
+    ],
+    "olive": [
+        _scene(
+            _tiny("tree", 14, 2, 72, main="#9DB48A", fruit="#4F6B2E"),
+            '<path d="M6 82 L94 82 L84 94 L16 94 Z" fill="#F3E2C6" stroke="#2B2E4A" stroke-width="2"/>',
+        ),
+        _scene(
+            _tiny("tree", 14, 2, 72, main="#9DB48A", fruit="#4F6B2E"),
+            '<path d="M6 82 L94 82 L84 94 L16 94 Z" fill="#F3E2C6" stroke="#2B2E4A" stroke-width="2"/>',
+            "".join(
+                f'<ellipse cx="{x}" cy="{y}" rx="4" ry="3" fill="#4F6B2E" stroke="#2B2E4A" stroke-width="1"/>'
+                for x, y in ((28, 86), (42, 90), (58, 86), (72, 90))
+            ),
+        ),
+        _scene(  # a basket heaped with olives
+            '<path d="M16 54 L84 54 L75 90 L25 90 Z" fill="#C98A5B" stroke="#2B2E4A" stroke-width="2.4"'
+            ' stroke-linejoin="round"/>',
+            '<path d="M20 66 L80 66 M23 78 L77 78" stroke="#8A5A33" stroke-width="2"/>',
+            "".join(
+                f'<ellipse cx="{x}" cy="{y}" rx="7" ry="5.4" fill="#4F6B2E" stroke="#2B2E4A" '
+                'stroke-width="1.6"/>'
+                for x, y in ((30, 50), (44, 46), (58, 46), (70, 50), (37, 38), (51, 34), (64, 38))
+            ),
+        ),
+        _scene(  # the press: oil drips into a jar
+            '<path d="M28 14 L72 14 L60 36 L40 36 Z" fill="#CFD2DC" stroke="#2B2E4A" stroke-width="2.4"'
+            ' stroke-linejoin="round"/>',
+            '<rect x="46" y="36" width="8" height="10" fill="#CFD2DC" stroke="#2B2E4A" stroke-width="2"/>',
+            '<path d="M50 50 C45 57 45 62 50 64 C55 62 55 57 50 50 Z" fill="#F2B33D" stroke="#2B2E4A"'
+            ' stroke-width="1.6"/>',
+            '<rect x="28" y="66" width="44" height="26" rx="7" fill="#FFFFFF" stroke="#2B2E4A"'
+            ' stroke-width="2.4"/>',
+            '<rect x="31" y="77" width="38" height="12" rx="4" fill="#F2B33D"/>',
+        ),
+        _scene(_tiny("olive-oil", 26, 16, 52)),
+        _scene(TABLE, _tiny("bread", 12, 24, 44), _tiny("olive-oil", 54, 22, 36)),
+    ],
+}
+STORY_STEPS.update({"eid": 4, "olive": 6})
+
+
+def _story_panel(story: str, step: int) -> str:
+    return STORIES[story][step] if story in STORIES else _panel(story, step)
+
+
+@page_type("journey-story")
+def journey_story(ctx: PageContext) -> Built:
+    """Four or six panels out of order (two rows): number them with dots in the order they happened."""
+    story = str(ctx.page.params.get("story", "eid"))
+    steps = STORY_STEPS.get(story, 4)
+    order = list(range(steps))
+    shuffler = ctx.rng("story")
+    while order == list(range(steps)):
+        shuffler.shuffle(order)
+    cols = 3 if steps == 6 else 2
+    size = 50.0 if steps == 6 else 64.0
+    gap_x = (W - cols * size) / (cols + 1)
+    body = []
+    for k, step in enumerate(order):
+        r, c = divmod(k, cols)
+        x, y = W - gap_x - (c + 1) * size - c * gap_x, 6 + r * (size + 34)
+        body.append(card(x - 3, y - 3, size + 6, size + 6, r=8))
+        body.append(nested(_story_panel(story, step), x, y, size))
+        body.append(
+            card(
+                x + size / 2 - 12,
+                y + size + 6,
+                24,
+                16,
+                r=4,
+                fill="#FFFFFF",
+                stroke="#8C90A6",
+                dash="2.6 2",
+                width=0.7,
+            )
+        )
+        body.append(
+            text(ctx.num(step + 1), x + size / 2, y + size + 18, 9, cls="wb-num key-ring", color="#E0483A")
+        )
+    key = ["الترتيب: " + "، ".join(f"الصورة {ctx.num(order.index(s) + 1)}" for s in range(steps))]
+    return Built({"svg": svg(body)}, key, [] if steps in (4, 6) else ["4 or 6 panels"])
+
+
+@page_type("journey-hidden-picture")
+def hidden_picture(ctx: PageContext) -> Built:
+    """A scene (a market stall with fruit) with small line-art objects hidden in it at logged positions: find
+    and colour them."""
+    hidden = [pid(str(w)) for w in ctx.page.params.get("hidden", [])]
+    body = [
+        card(0, 0, W, H, r=10, fill="#F4F9FD", stroke="none"),
+        card(0, 150, W, 54, r=8, fill="#EFE5D2", stroke="none"),
+    ]
+    body.append(picture("stall", 30, 30, 126))
+    for k, w in enumerate(("apple", "banana", "orange", "grapes", "tomato", "cucumber")):
+        body.append(picture(w, 42 + (k % 3) * 34, 96 + (k // 3) * 26, 24))
+    spots = [(150, 24), (18, 60), (160, 120), (30, 172), (100, 178), (170, 176)]
+    key = []
+    for k, w in enumerate(hidden[:6]):
+        x, y = spots[k]
+        body.append(picture(w, x, y, 22, "line"))
+        body.append(ring_at(x + 11, y + 11, 14, 14))
+        key.append(
+            f"{PICTURES[w].word_ar}: {'يمين' if x > W / 2 else 'يسار'} {'أعلى' if y < 100 else 'أسفل'}"
+        )
+    return Built({"svg": svg(body)}, key, [] if 3 <= len(hidden) <= 6 else ["hide 3–6 things"])
+
+
+@page_type("journey-classify-shapes")
+def classify_shapes(ctx: PageContext) -> Built:
+    """Sort by shape and colour at once: coloured shapes above, a box per shape × colour below."""
+    from qamra_workbook.render.pages.journey_shapes import filled
+
+    kinds = [str(k) for k in ctx.page.params.get("shapes", ["circle", "triangle"])]
+    colors = {
+        str(k): str(v)
+        for k, v in dict(ctx.page.params.get("colors", {"red": "#E5604E", "blue": "#5E86D6"})).items()
+    }
+    groups = [(k, c) for k in kinds for c in colors]
+    items = [(k, c) for k, c in groups for _ in range(2)]
+    ctx.rng("sort").shuffle(items)
+    half = (len(items) + 1) // 2
+    bw = (W - 6 * (len(groups) + 1)) / len(groups)
+    box_top, box_bottom = 58.0, 146.0
+    centers = [W - 6 - (j + 1) * bw - j * 6 + bw / 2 for j in range(len(groups))]
+    body = []
+    for side, row_items in enumerate((items[:half], items[half:])):  # shapes above and below the boxes
+        for col, (k, c) in enumerate(row_items):
+            cx, cy = W - 24 - col * 46, 22 if side == 0 else 182
+            body.append(filled(k, cx, cy, 22, colors[c]))
+            start_y, end_y = (cy + 15, box_top - 4) if side == 0 else (cy - 15, box_bottom + 4)
+            body.append(hook(cx, start_y, 1.8))
+            body.append(answer_line((cx, start_y), (centers[groups.index((k, c))], end_y)))
+    for j, (k, c) in enumerate(groups):
+        x = centers[j] - bw / 2
+        body.append(
+            card(x, box_top, bw, box_bottom - box_top, r=8, fill="#FFFFFF", stroke=colors[c], width=1.2)
+        )
+        body.append(filled(k, centers[j], (box_top + box_bottom) / 2, 18, colors[c]))
+        body += [hook(centers[j], box_top - 4, 2), hook(centers[j], box_bottom + 4, 2)]
+    key = [f"{ctx.num(2)} من كل نوع: " + "، ".join(f"{k}/{c}" for k, c in groups)]
+    return Built({"svg": svg(body)}, key)

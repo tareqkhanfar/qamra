@@ -47,7 +47,10 @@ def printed_word_problems(book: BookSpec) -> list[str]:
         for i, w in enumerate(words):
             bare = w[2:] if w.startswith("ال") else w
             new = REPLACED_WORDS.get(bare)
-            if new and " ".join(words[i : i + len(new.split())]) != new:
+            if not new:
+                continue
+            following = [x[2:] if x.startswith("ال") else x for x in words[i : i + len(new.split())]]
+            if " ".join(following) != new:  # «الطائرة الورقية» is still a kite
                 out.append(f"{p.id}: «{bare}» was replaced by «{new}» (decision 7)")
     return out
 

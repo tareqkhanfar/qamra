@@ -863,8 +863,13 @@ def unit_review(ctx: PageContext) -> Built:
     from qamra_workbook.render.pages.workbook_review2 import (
         review_sections_v2,  # lazy: it imports this module
     )
+    from qamra_workbook.render.pages.workbook_review3 import review_sections_v3  # lazy, as above
 
-    drawn = review_sections_v2(ctx, ctx.rng("review")) or review_sections(ctx, ctx.rng("review"))
+    drawn = (
+        review_sections_v3(ctx, ctx.rng("review"))
+        or review_sections_v2(ctx, ctx.rng("review"))
+        or review_sections(ctx, ctx.rng("review"))
+    )
     return Built({"svg": svg(drawn.body)}, compact(drawn.answer), drawn.problems)
 
 
@@ -1000,8 +1005,11 @@ def assessment(ctx: PageContext) -> Built:
     from qamra_workbook.render.pages.workbook_review2 import (
         assessment_sections_v2,  # lazy: it imports this module
     )
+    from qamra_workbook.render.pages.workbook_review3 import assessment_sections_v3  # lazy, as above
 
-    drawn = assessment_sections_v2(ctx, ctx.rng("assessment")) or assessment_sections(
-        ctx, ctx.rng("assessment")
+    drawn = (
+        assessment_sections_v3(ctx, ctx.rng("assessment"))
+        or assessment_sections_v2(ctx, ctx.rng("assessment"))
+        or assessment_sections(ctx, ctx.rng("assessment"))
     )
     return Built({"svg": svg(drawn.body)}, compact(drawn.answer), drawn.problems)

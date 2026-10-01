@@ -308,7 +308,10 @@ class BookSpec:
                 str(params.get("adult", "")),
                 str(params.get("member", "")),
             )
-        return self.child.personalize(text)
+        text = self.child.personalize(text)
+        if page is not None and "{name_en}" in text:  # an English page greets the child by their Latin name
+            text = text.replace("{name_en}", str(page.params.get("name_en") or self.child.name))
+        return text
 
 
 def journey_page_id(stage: int, number: int) -> str:

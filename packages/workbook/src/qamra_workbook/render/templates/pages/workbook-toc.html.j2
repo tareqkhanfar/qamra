@@ -1,4 +1,4 @@
-<div class="wb-toc">
+<div class="wb-toc{% if d.rows|length > 22 %} dense{% endif %}">
   <div class="wb-toc-vol">{{ d.volume_title }}</div>
   {% for r in d.rows %}
   <div class="wb-toc-row">

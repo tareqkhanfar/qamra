@@ -10,9 +10,8 @@ cover and the parents' answer key, with cut-outs of the child from the character
 render does. Audio QR codes point to `https://{BRAND_DOMAIN}/a/{code}`. The files are stored like the story
 books' (`children/<child>/books/<book>/files/…`) on a `Book` row linked to the order item, with every file's
 preflight; the book waits `in_review` for an admin's print approval (Addendum 3 §5), after which print batches
-pick up its interior and cover. A set gets one book per built stage; a stage that is not built yet is skipped.
-
-The product stays «قريبًا» (not orderable) until the educator signs the plan (Tareq's decision, 2026-09-29).
+pick up its interior and cover. A set gets one book per built stage (all three: stages 1, 2 and 3 are built);
+a stage that is not built yet is skipped.
 """
 
 from __future__ import annotations
@@ -116,6 +115,7 @@ async def render_stage(
         tmp / f"stage-{stage}",
         numerals=numerals_of(item),  # type: ignore[arg-type]
         domain=get_settings().brand_domain,
+        name_en=str((item.personalization or {}).get("name_en") or ""),  # the English name page
     )
     book.pdf_interior_key = file_key(book, "interior.pdf")
     storage.put(book.pdf_interior_key, files.interior.read_bytes(), "application/pdf")

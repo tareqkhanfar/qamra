@@ -3,8 +3,8 @@
 The plan (content/journey/plan.yaml) says what each page teaches. The print layer
 (content/journey/stage-<n>.yaml) says how it prints: the vowelised title and instruction with {masc/fem}
 variants, the engine page type when it differs from the plan's, the render params, and the audio item its
-QR plays. Every text in a print layer is a draft for the educator (`# draft: educator review`); nothing
-educational is printed for sale before the educator signs (Tareq's decisions of 2026-09-28).
+QR plays. Tareq reviewed the pages himself; the `# draft: educator review` marks in the layers and the catalog
+are comments for whoever edits them next, and gate nothing.
 
 Audio (Addendum 6 §4.8): a page with audio prints a QR to `https://{BRAND_DOMAIN}/a/{code}`, a short public
 player with no child data. An item is a letter, a word or a page's sounds; its code comes from its key, so
@@ -22,6 +22,7 @@ import dataclasses
 import datetime as dt
 import hashlib
 import os
+import re
 import sys
 from pathlib import Path
 from typing import Any, Literal
@@ -40,6 +41,10 @@ PLAN = CONTENT / "plan.yaml"
 AUDIO = CONTENT / "audio.yaml"
 TITLE_AR = "رحلتي الأولى للتعلّم"
 STAGE_NAMES = {1: "المحطة الأولى", 2: "المحطة الثانية", 3: "المحطة الثالثة"}
+
+
+# plan page types the journey draws with its own builder (sized for 3–6-year-olds and small letters)
+JOURNEY_TYPES = {"letter-trace": "journey-letter-trace"}
 
 
 def layer_path(stage: int) -> Path:
@@ -135,10 +140,12 @@ def page_specs(plan: Journey, layer: PrintLayer) -> list[PageSpec]:
         if printed.audio is not None:
             params["audio_code"] = audio_item(layer.stage, page, printed.audio, printed.title).code
         params.setdefault("brief", dict(page.params))  # the plan's params, for builders that read them
+        if (printed.type or JOURNEY_TYPES.get(page.type, page.type)) == "find-letter":
+            params.setdefault("box_pitch", 18.0)  # three answer boxes stay inside a half-width card
         out.append(
             dataclasses.replace(
                 spec,
-                type=printed.type or page.type,
+                type=printed.type or JOURNEY_TYPES.get(page.type, page.type),
                 title=printed.title or page.title,
                 instruction=printed.instruction or page.instruction,
                 lang=printed.params.get("lang", spec.lang),
@@ -167,6 +174,76 @@ def cover_specs(layer: PrintLayer) -> list[PageSpec]:
     ]
 
 
+# draft: educator review — a plain transliteration for the English name page when the parent gave no
+# English spelling (the order's `name_en` wins). Consonants get an "a" between them so the name reads.
+_LATIN = {
+    "ا": "a",
+    "أ": "a",
+    "إ": "i",
+    "آ": "a",
+    "ب": "b",
+    "ت": "t",
+    "ث": "th",
+    "ج": "j",
+    "ح": "h",
+    "خ": "kh",
+    "د": "d",
+    "ذ": "th",
+    "ر": "r",
+    "ز": "z",
+    "س": "s",
+    "ش": "sh",
+    "ص": "s",
+    "ض": "d",
+    "ط": "t",
+    "ظ": "z",
+    "ع": "a",
+    "غ": "gh",
+    "ف": "f",
+    "ق": "q",
+    "ك": "k",
+    "ل": "l",
+    "م": "m",
+    "ن": "n",
+    "ه": "h",
+    "و": "w",
+    "ي": "y",
+    "ة": "a",
+    "ى": "a",
+    "ء": "",
+}
+_VOWELS = set("aeiou")
+
+
+def latin_name(name: str) -> str:
+    """«ليان» → «Lyan», «سلمى» → «Salma»: a readable Latin spelling for the name-tracing page."""
+    bare = re.sub("[\u064b-\u0652]", "", name.strip().split()[0] if name.strip() else "")
+    out = ""
+    for k, ch in enumerate(bare):
+        piece = _LATIN.get(ch, "")
+        if ch == "ي" and 0 < k < len(bare) - 1 and bare[k + 1] not in "او":
+            piece = "i"
+        if ch == "و" and 0 < k < len(bare) - 1:
+            piece = "ou" if k < len(bare) - 1 else "w"
+        if out and piece and out[-1] not in _VOWELS and piece[0] not in _VOWELS:
+            out += "a"
+        out += piece
+    return out[:1].upper() + out[1:] if out else "Name"
+
+
+def with_name_en(pages: list[PageSpec], child: Child, name_en: str = "") -> list[PageSpec]:
+    """The English pages (the name-tracing page, the greetings «Well done, {name_en}!») get the child's Latin
+    name: the order's `name_en`, else a transliteration."""
+    latin = name_en.strip() or latin_name(child.name)
+    return [
+        dataclasses.replace(p, params={**p.params, "name_en": latin})
+        if (p.lang == "en" or (p.type == "name-trace" and p.params.get("script") == "en"))
+        and not p.params.get("name_en")
+        else p
+        for p in pages
+    ]
+
+
 def stage_book(
     pages: list[PageSpec],
     child: Child,
@@ -174,12 +251,13 @@ def stage_book(
     numerals: Numerals = "hindi",
     day: dt.date | None = None,
     domain: str = "qamra.app",
+    name_en: str = "",
 ) -> BookSpec:
     return BookSpec(
         product="journey",
         title_ar=TITLE_AR,
         child=child,
-        pages=tuple(pages),
+        pages=tuple(with_name_en(pages, child, name_en)),
         date=day or dt.date.today(),
         numerals=numerals,
         audio_base=f"https://{domain.strip().rstrip('/')}/a/",
@@ -198,6 +276,22 @@ def audio_items(plan: Journey, layer: PrintLayer) -> list[AudioItem]:
     return list(items.values())
 
 
+# the find-letter page colours its letters red, blue, yellow, green in turn (workbook_find.CRAYONS)
+_CRAYONS = ("احمر", "ازرق", "اصفر", "اخضر")
+_MARKS = re.compile("[\u064b-\u0652\u0640]")
+
+
+def colour_problems(spec: PageSpec) -> list[str]:
+    """A find-letter instruction that names colours must name them in the page's order."""
+    plain = _MARKS.sub("", spec.instruction).translate(str.maketrans("أإآ", "ااا"))
+    named = [c for _, c in sorted((m.start(), m.group()) for c in _CRAYONS for m in re.finditer(c, plain))]
+    return (
+        []
+        if named == list(_CRAYONS[: len(named)])
+        else [f"p{spec.number}: colours must go {_CRAYONS}, not {named}"]
+    )
+
+
 def layer_problems(plan: Journey, layer: PrintLayer) -> list[str]:
     """What the engine can check before drawing: every page known to the plan and the engine, audio where the
     plan asks for it, one code per item, and player titles that fit every child."""
@@ -210,6 +304,8 @@ def layer_problems(plan: Journey, layer: PrintLayer) -> list[str]:
     for spec in page_specs(plan, layer):
         if spec.type not in REGISTRY:
             out.append(f"p{spec.number}: page type {spec.type!r} is not in the engine")
+        if spec.type == "find-letter":
+            out += colour_problems(spec)
     for page in stage_of(plan, layer.stage):
         printed = layer.pages.get(page.n)
         if page.audio and (printed is None or printed.audio is None):

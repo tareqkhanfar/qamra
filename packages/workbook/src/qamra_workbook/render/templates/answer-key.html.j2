@@ -8,6 +8,7 @@
 {% if book.product == 'journey' %}{% include "_workbook.css.j2" %}{% include "_journey.css.j2" %}{% endif %}
 {% include "_answer-key.css.j2" %}
 {% if book.product == 'family' %}{% include "_family.css.j2" %}{% endif %}
+{% if book.product == 'islamic' %}{% include "islamic-book.css.j2" %}{% endif %}
 </style></head>
 <body>
 {% for sheet in sheets %}

@@ -168,3 +168,25 @@ def join_columns(start: Draw, end: Draw, n: int, answer: Sequence[int], *, h: fl
         body += [hook(right_x, cy, 2.2), hook(left_x, cy, 2.2)]
     body += [answer_line((right_x, hooks[i]), (left_x, hooks[j])) for i, j in enumerate(answer)]
     return body
+
+
+def join_columns_ltr(start: Draw, end: Draw, n: int, answer: Sequence[int], *, h: float = H) -> list[str]:
+    """`join_columns` for pages that read left to right (English): the child starts at the left column
+    (item i) and draws to the right one (`answer[i]`). Nothing is mirrored, so words keep their shape."""
+    pitch = h / n
+    size = min(pitch - 10, 56.0)
+    body, hooks = [], []
+    for i in range(n):
+        cy = i * pitch + pitch / 2
+        body.append(card(4, cy - size / 2 - 4, size + 10, size + 8, r=6))
+        body.append(start(i, 9, cy - size / 2, size))
+        body.append(
+            card(W - size - 14, cy - size / 2 - 4, size + 10, size + 8, r=6, fill=SOFT, stroke="none")
+        )
+        body.append(end(i, W - size - 9, cy - size / 2, size))
+        hooks.append(cy)
+    left_x, right_x = size + 20, W - size - 20
+    for cy in hooks:
+        body += [hook(left_x, cy, 2.2), hook(right_x, cy, 2.2)]
+    body += [answer_line((left_x, hooks[i]), (right_x, hooks[j])) for i, j in enumerate(answer)]
+    return body

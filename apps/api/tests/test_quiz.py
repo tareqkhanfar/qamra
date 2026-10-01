@@ -59,9 +59,9 @@ async def test_quiz_answers_with_catalog_prices(client: AsyncClient, adb: AsyncS
     assert r.status_code == 200 and r.headers["cache-control"] == "public, max-age=60"
     body = r.json()
     product, alternative = body["product"], body["alternative"]
-    # the rule names stage 2, which does not render yet: the answer is the journey as the store sells it now
-    assert product["slug"] == "learning-journey" and product["options"] == {}
-    assert product["name_ar"] == "رحلتي الأولى للتعلّم" and product["available"] is True
+    # the rule names stage 2, which is sold: the answer is that stage (an unsold stage falls back to the book)
+    assert product["slug"] == "learning-journey" and product["options"] == {"stage": "2"}
+    assert product["available"] is True
     assert Decimal(product["from_price"]) == Decimal("69")  # the cheapest printed copy, not the PDF
     assert alternative["slug"] == "foundation-workbook" and Decimal(alternative["from_price"]) == Decimal(
         "49"

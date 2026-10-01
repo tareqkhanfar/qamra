@@ -49,12 +49,13 @@ def stage_specs(
     domain: str = "qamra.app",
     plan: Journey | None = None,
     numbers: list[int] | None = None,
+    name_en: str = "",
 ) -> tuple[BookSpec, BookSpec]:
     """The stage's interior (all pages, or `numbers`) and its cover, checked before anything is drawn."""
     plan = plan or load(PLAN)
     layer = load_layer(stage)
     pages = [p for p in page_specs(plan, layer) if numbers is None or p.number in numbers]
-    interior = stage_book(pages, child, numerals=numerals, day=day, domain=domain)
+    interior = stage_book(pages, child, numerals=numerals, day=day, domain=domain, name_en=name_en)
     cover = stage_book(cover_specs(layer), child, numerals=numerals, day=day, domain=domain)
     problems = layer_problems(plan, layer) + book_problems(interior)
     if problems:
@@ -80,10 +81,13 @@ async def render_order(
     day: dt.date | None = None,
     domain: str = "qamra.app",
     plan: Journey | None = None,
+    name_en: str = "",
 ) -> OrderFiles:
     """Every file of one stage into `out`: interior.pdf, cover.pdf and answer-key.pdf."""
     out.mkdir(parents=True, exist_ok=True)
-    interior, cover = stage_specs(child, stage, numerals=numerals, day=day, domain=domain, plan=plan)
+    interior, cover = stage_specs(
+        child, stage, numerals=numerals, day=day, domain=domain, plan=plan, name_en=name_en
+    )
     assets = assets_for(interior, out)
     key = await render_book(interior, assets, out / "interior.pdf", key=out / "answer-key.pdf")
     await render_book(cover, assets, out / "cover.pdf")

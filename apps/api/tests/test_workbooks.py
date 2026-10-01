@@ -101,18 +101,22 @@ def test_the_matrix_marks_unrendered_volumes_inactive() -> None:
     assert all("active" not in v for v in plain)
 
 
-async def test_only_rendered_volumes_are_listed_and_sold(client: AsyncClient, adb: AsyncSession) -> None:
+async def test_only_active_variants_are_listed_and_sold(client: AsyncClient, adb: AsyncSession) -> None:
     await seed_store(adb)
     products = {p["slug"]: p for p in (await client.get("/api/store/catalog")).json()["products"]}
     skus = {v["sku"] for v in products["foundation-workbook"]["variants"]}
-    assert {"wb-kg2-v1-color-spiral", "wb-kg2-v2-color-digital", "wb-kg2-v2-bw-spiral"} <= skus
-    assert not {s for s in skus if "kg1" in s or "-v3-" in s or "-set-" in s}
+    # every volume of both levels renders (2026-10-01), so both levels and their sets are sold
+    assert {"wb-kg1-v1-color-spiral", "wb-kg2-v3-color-spiral", "wb-kg1-set-color-spiral"} <= skus
     journey = {v["sku"] for v in products["learning-journey"]["variants"]}
-    assert journey == {"journey-s1-digital", "journey-s1-spiral"}
-    for sku in ("wb-kg1-v1-color-spiral", "wb-kg2-v3-color-spiral", "journey-s2-spiral"):
-        r = await client.post("/api/store/cart/items", json={"sku": sku})
-        assert r.status_code == 404 and r.json()["error"]["code"] == "unknown_product"
-    assert (await client.post("/api/store/cart/items", json={"sku": "journey-s1-spiral"})).status_code == 201
+    assert {"journey-s2-spiral", "journey-s3-digital", "journey-set-spiral"} <= journey
+    # a variant switched off (a volume that does not render) is neither listed nor sold
+    await adb.execute(update(Variant).where(Variant.sku == "journey-s3-spiral").values(active=False))
+    await adb.commit()
+    products = {p["slug"]: p for p in (await client.get("/api/store/catalog")).json()["products"]}
+    assert "journey-s3-spiral" not in {v["sku"] for v in products["learning-journey"]["variants"]}
+    r = await client.post("/api/store/cart/items", json={"sku": "journey-s3-spiral"})
+    assert r.status_code == 404 and r.json()["error"]["code"] == "unknown_product"
+    assert (await client.post("/api/store/cart/items", json={"sku": "journey-s2-spiral"})).status_code == 201
 
 
 async def test_only_catalog_staff_open_products(client: AsyncClient, adb: AsyncSession) -> None:
@@ -151,10 +155,6 @@ async def test_a_workbook_for_my_child_with_the_approved_character(
         "/api/shop/workbooks/cart", json={"sku": "journey-s1-spiral", "child_id": str(mine.id)}
     )
     assert r.status_code == 409 and r.json()["error"]["code"] == "not_orderable"
-    r = await client.post(
-        "/api/shop/workbooks/cart", json={"sku": "journey-s2-spiral", "child_id": str(mine.id)}
-    )
-    assert r.status_code == 404  # stage 2 does not render yet: it is not in the store at all
 
     drafting = await _child(adb, me["id"], approved=False)
     r = await client.post("/api/shop/workbooks/cart", json={**body, "child_id": str(drafting.id)})

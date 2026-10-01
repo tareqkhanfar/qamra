@@ -8,10 +8,12 @@ from typing import Any
 
 from qamra_workbook.pictures import PICTURES
 from qamra_workbook.pictures.journey_words import COLORS
+from qamra_workbook.pictures.model import strip_tashkeel
 from qamra_workbook.render import draw
 from qamra_workbook.render.pages.journey_kit import H, W, card, dots_mark, picture, pid, svg, text
 from qamra_workbook.render.pages.workbook_common import ring_at
 from qamra_workbook.render.registry import Built, PageContext, page_type
+from qamra_workbook.render.spec import Figure
 
 QR_NOTE = "للأهل: امسحوا الرمز بالهاتف ليسمع الطفل، أو اقرؤوا الكلمات بصوتكم."
 
@@ -224,7 +226,13 @@ def picture_riddle(ctx: PageContext) -> Built:
     )
     body = [card(8, 0, W - 16, 70, r=12, fill="#FCEFD2", stroke="#E2A32A", width=0.8)]
     body.append(text("؟", W - 24, 44, 26, cls="wb-title", color="#E2A32A"))
-    body.append(text(riddle, W / 2 - 6, 40, 9.5, cls="wb-word", color="#1C2140"))
+    if len(strip_tashkeel(riddle)) <= 34:  # a short riddle on one line
+        body.append(text(riddle, W / 2 - 6, 40, 9.5, cls="wb-word", color="#1C2140"))
+    else:  # a longer one: a clue to a line
+        clues = [c.strip() for c in riddle.replace("؟", "").split("،") if c.strip()]
+        for k, clue in enumerate(clues):
+            y = 70 * (k + 1) / (len(clues) + 1) + 3.2
+            body.append(text(clue, W - 42, y, 8.6, cls="wb-word", color="#1C2140", anchor="end"))
     size, step = 50.0, (W - 20) / max(len(choices), 1)
     for k, w in enumerate(choices):
         x = W - 10 - (k + 0.5) * step - size / 2
@@ -234,4 +242,182 @@ def picture_riddle(ctx: PageContext) -> Built:
             body.append(ring_at(x + size / 2, 125, size / 2 + 5, size / 2 + 5))
     return Built(
         {"svg": svg(body)}, [f"الجواب: {PICTURES[pid(answer)].word_ar}"] if answer else None, problems
+    )
+
+
+# ---- stages 2–3: syllable claps, rhymes, English vocabulary without pictures ------------------------------
+
+
+@page_type("journey-claps")
+def claps(ctx: PageContext) -> Built:
+    """Clap the syllables of a word: its picture, then circles to colour, one per clap."""
+    words = [pid(str(w)) for w in ctx.page.params.get("words", [])]
+    counts = [int(c) for c in ctx.page.params.get("claps", [])]
+    problems = _audio_problem(ctx) + ([] if len(words) == len(counts) else ["one clap count per word"])
+    counts = (counts + [1] * len(words))[: len(words)]
+    body, key = [], []
+    for i, ((y, h), w) in enumerate(zip(rows_of(len(words)), words, strict=True)):
+        body.append(card(0, y, W, h, r=8))
+        body.append(dots_mark(i + 1, W - 12, y + h / 2))
+        size = min(h - 8, 40.0)
+        body.append(picture(w, W - 28 - size, y + (h - size) / 2, size))
+        body.append(
+            text(PICTURES[w].word_ar, W - 28 - size / 2, y + h - 3, 4.8, cls="wb-word", color="#676B83")
+        )
+        for k in range(4):
+            cx = W - 44 - size - (k + 0.5) * 22
+            fill = "#FFFFFF" if not (i == 0 and ctx.page.example and k < counts[0]) else ctx.style.color
+            body.append(
+                draw.el("circle", cx=cx, cy=y + h / 2, r=8, fill=fill, stroke="#2B2E4A", stroke_width=0.8)
+            )
+            if k < counts[i]:
+                body.append(
+                    draw.el("circle", cx=cx, cy=y + h / 2, r=6.4, fill=ctx.style.color, class_="key-ring")
+                )
+        key.append(f"{PICTURES[w].word_ar}: {ctx.num(counts[i])}")
+    return Built({"svg": svg(body), "qr_note": QR_NOTE}, key, problems)
+
+
+@page_type("journey-rhyme")
+def rhyme(ctx: PageContext) -> Built:
+    """Each row: three pictures; colour the two whose names end the same way (`pairs` lists the rhyming
+    pair, `odd` the third)."""
+    pairs = [[pid(str(a)), pid(str(b))] for a, b in ctx.page.params.get("pairs", [])]
+    odd = [pid(str(o)) for o in ctx.page.params.get("odd", [])]
+    problems = _audio_problem(ctx) + ([] if len(odd) == len(pairs) else ["one odd picture per pair"])
+    odd = (odd + ["apple"] * len(pairs))[: len(pairs)]
+    body, key = [], []
+    for i, ((y, h), pair) in enumerate(zip(rows_of(len(pairs)), pairs, strict=True)):
+        body.append(card(0, y, W, h, r=8))
+        body.append(dots_mark(i + 1, W - 12, y + h / 2))
+        row = [*pair, odd[i]]
+        ctx.rng(f"rhyme{i}").shuffle(row)
+        for w, x, size in _row_cards(row, y, h):
+            body.append(picture(w, x, y + (h - size) / 2, size, "line"))
+            if w in pair:
+                body.append(
+                    picture(w, x, y + (h - size) / 2, size).replace("<svg", '<svg class="key-ring"', 1)
+                )
+        key.append(f"{PICTURES[pair[0]].word_ar} و{PICTURES[pair[1]].word_ar}")
+    return Built({"svg": svg(body), "qr_note": QR_NOTE}, key, problems)
+
+
+FIGURES: dict[str, Figure] = {
+    "mother": "woman",
+    "father": "man",
+    "sister": "girl",
+    "brother": "boy",
+    "grandma": "grandma",
+    "grandpa": "grandpa",
+    "baby": "baby",
+}
+SHAPE_COLORS = {
+    "circle": "#F7C84A",
+    "square": "#5E86D6",
+    "triangle": "#E5604E",
+    "rectangle": "#7DB46C",
+    "star": "#F2994A",
+    "heart": "#E97A98",
+}
+NUMBER_WORDS = {
+    1: "one",
+    2: "two",
+    3: "three",
+    4: "four",
+    5: "five",
+    6: "six",
+    7: "seven",
+    8: "eight",
+    9: "nine",
+    10: "ten",
+}
+
+
+@page_type("journey-vocab-cards")
+def vocab_cards(ctx: PageContext) -> Built:
+    """An English vocabulary unit as word cards, left to right: family members as figures, numbers as digits
+    with dots, everything else as its picture (`words` are picture ids or family words)."""
+    from qamra_workbook.render.pages.journey_kit import person
+    from qamra_workbook.render.people import person as figure
+
+    words = [str(w) for w in ctx.page.params.get("words", [])]
+    numbers = [int(n) for n in ctx.page.params.get("numbers", [])]
+    body, labels = [], []
+    cells = [(w, k) for k, w in enumerate(words or [str(n) for n in numbers])]
+    cols = 4 if len(cells) > 6 else 3
+    size = 38.0 if cols == 4 else 48.0
+    rows = (len(cells) + cols - 1) // cols
+    step_x, step_y = (W - 8) / cols, min((H - 8) / rows, size + 44)  # the cards use the page, centred in it
+    left = (H - 8 - rows * step_y) / 2
+    for w, k in cells:
+        r, c = divmod(k, cols)
+        x, y = 4 + c * step_x + (step_x - size) / 2, 4 + left + r * step_y + (step_y - (size + 26)) / 2 + 3
+        body.append(card(x - 4, y - 3, size + 8, size + 26, r=8))
+        if numbers:
+            n = int(w)
+            body.append(
+                text(
+                    str(n),
+                    x + size / 2,
+                    y + size * 0.62,
+                    size * 0.6,
+                    cls="wb-en",
+                    color=ctx.style.deep,
+                    rtl=False,
+                )
+            )
+            body += [
+                draw.el(
+                    "circle",
+                    cx=x + 4 + (j % 5) * (size - 8) / 4,
+                    cy=y + size - 8 + (j // 5) * 6,
+                    r=2.2,
+                    fill=ctx.style.color,
+                )
+                for j in range(n)
+            ]
+            label = NUMBER_WORDS[n]
+        elif w in FIGURES:
+            outfit = {
+                "woman": "#E98AA6",
+                "man": "#6E95DB",
+                "girl": "#F2A65A",
+                "boy": "#86BF72",
+                "grandma": "#A58BD8",
+                "grandpa": "#5DB7A8",
+                "baby": "#F2A65A",
+            }[FIGURES[w]]
+            body.append(
+                person(
+                    figure(FIGURES[w], outfit, scarf="#8FB9A8" if w in ("mother", "grandma") else None),
+                    x + size / 2,
+                    y + size,
+                    size * 0.98,
+                )
+            )
+            label = w
+        elif w in SHAPE_COLORS:  # the shapes themselves, in the colours of the shape key
+            from qamra_workbook.render.pages.journey_shapes import filled
+
+            body.append(filled(w, x + size / 2, y + size / 2, size * 0.78, SHAPE_COLORS[w]))
+            label = w
+        else:
+            body.append(picture(w, x, y, size))
+            label = PICTURES[pid(w)].word_en
+        body.append(
+            text(
+                label,
+                x + size / 2,
+                y + size + 16,
+                7.5 if len(label) < 9 else 6,
+                cls="wb-en",
+                color="#1C2140",
+                rtl=False,
+            )
+        )
+        labels.append(label)
+    return Built(
+        {"svg": svg(body), "qr_note": "For parents: scan to hear the words, or read them aloud."},
+        [", ".join(labels)],
+        _audio_problem(ctx),
     )

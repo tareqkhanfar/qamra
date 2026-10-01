@@ -81,7 +81,11 @@ def write_progression(ctx: PageContext) -> Built:
     params = ctx.page.params
     level, rows = int(params.get("level", 1)), int(params.get("rows", 3))
     kinds = targets(ctx)
-    problems = [] if level in (1, 2) else [f"stage 1 writes at levels 1–2, not {level}"]
+    if level >= 3:  # letters (stages 2–3): journey_letters draws levels 3–7
+        from qamra_workbook.render.pages.journey_letters import letter_progression
+
+        return letter_progression(ctx, min(level, 7))
+    problems: list[str] = []
     body: list[str] = []
     if level == 1:
         pitch = H / rows
@@ -222,6 +226,12 @@ HALVES: dict[str, list[str]] = {
         "M50 84 L50 94",
     ],
     "heart": ["M50 30 C56 18 76 16 82 30 C88 46 70 64 50 80"],
+    "butterfly": [
+        "M50 48 C60 22 83 14 89 27 C95 40 80 54 50 52",
+        "M50 52 C67 54 81 64 77 77 C73 87 56 81 50 58",
+    ],
+    "house": ["M50 17 L89 51 L86 56 L80 56 L80 90 L50 90"],
+    "face": ["M50 22 C70 22 80 36 80 52 C80 68 66 82 50 82", "M60 50 L60 52", "M56 63 Q60 66 64 63"],
 }
 
 
@@ -296,3 +306,40 @@ def boat_trace(ctx: PageContext) -> Built:
     body.append(draw.start_dot(s.start, 5.5))
     body.append(draw.arrow((s.start[0], s.start[1] - 12), 90, 6))
     return Built({"svg": svg(body)})
+
+
+BRIDGE_PAIRS = (
+    ("bee", "flower"),
+    ("rabbit", "carrot"),
+    ("bird", "nest"),
+    ("car", "house"),
+    ("cat", "ball"),
+)
+
+
+def bridges_path(xr: float, xl: float, y: float, count: int, rise: float) -> Stroke:
+    """A row of `count` small arches from xr (the start) to xl, the pen touching the line between them."""
+    step = (xr - xl) / count
+    d = f"M{draw.n(xr)} {draw.n(y)}"
+    for k in range(count):
+        mid, end = xr - step * (k + 0.5), xr - step * (k + 1)
+        d += f" Q{draw.n(mid)} {draw.n(y - 2 * rise)} {draw.n(end)} {draw.n(y)}"
+    return Stroke(d)
+
+
+@page_type("journey-bridges")
+def bridges(ctx: PageContext) -> Built:
+    """Small arches (`count`, `rise`) to trace without lifting the pen, one row per pair of pictures: the
+    pen-lines of stage 3, where the arches are the joins between letters."""
+    count, rise = int(ctx.page.params.get("count", 8)), float(ctx.page.params.get("rise", 6.0))
+    pitch = H / len(BRIDGE_PAIRS)
+    body = []
+    for row, (a, b) in enumerate(BRIDGE_PAIRS):
+        y = row * pitch
+        body.append(card(0, y + 1, W, pitch - 4, r=7))
+        body.append(picture(a, W - 32, y + 6, 26))
+        body.append(picture(b, 6, y + 6, 26))
+        body.append(
+            traced(bridges_path(W - 38, 38, y + pitch / 2 + rise / 2, count, rise), spacing=3.2, r=1.0)
+        )
+    return Built({"svg": svg(body)}, None, [] if count >= 2 else ["at least two arches"])

@@ -256,3 +256,68 @@ def rtl_path(ctx: PageContext) -> Built:
     return Built(
         {"svg": svg(body)}, ["من اليمين إلى اليسار: " + "، ".join(PICTURES[pid(w)].word_ar for w in stops)]
     )
+
+
+@page_type("journey-tangled")
+def tangled(ctx: PageContext) -> Built:
+    """Three or four tangled strings: kites (`from` colours) to children, or the child to places (`to`
+    pictures, `answer` the right place). Every string crosses another; the key draws each in its colour."""
+    colors = [str(c) for c in ctx.page.params.get("from", [])]
+    ends = [str(k) for k in ctx.page.params.get("to", ["boy", "girl", "boy"])]
+    n = len(ends)
+    child_start = not colors
+    hexes = ["#E5604E", "#5E86D6", "#F7C84A", "#7DB46C"]
+    tops = [W - 26 - k * (W - 52) / max(n - 1, 1) for k in range(n)]
+    owner = list(range(n))
+    shuffler = ctx.rng("tangle")
+    while any(owner[k] == k for k in range(n)):
+        shuffler.shuffle(owner)
+    body = [card(0, 0, W, H, r=10, fill="#F4F9FD", stroke="none")]
+    strings = []
+    for k in range(n):
+        x1, x2 = tops[k], tops[owner[k]]
+        cx, mx = x2 + (28 if k % 2 else -28), (x1 + x2) / 2
+        d = f"M{x1} 50 C{x1} 96 {cx} 108 {mx} 126 C{2 * mx - cx} 146 {x2} 148 {x2} 168"
+        strings.append(Stroke(d))
+        body.append(draw.path(d, stroke="#5B5F7A", width=1.4))
+        body.append(draw.path(d, stroke=hexes[k % 4], width=2.2, opacity=0.9, class_="key-line"))
+        if child_start:
+            if k == 0:
+                body.append(starter(ctx, x1, 48, 40))
+        else:
+            body.append(picture("kite", x1 - 18, 8, 36, main=hexes[k % 4]))
+    for k, end in enumerate(ends):
+        if end in ("boy", "girl", "ولد", "بنت"):
+            body.append(
+                person(
+                    figure(
+                        "girl" if end in ("girl", "بنت") else "boy",
+                        ("#6E95DB", "#E98AA6", "#86BF72", "#F2A65A")[k % 4],
+                    ),
+                    tops[k],
+                    202,
+                    34,
+                )
+            )
+        else:
+            body.append(picture(end, tops[k] - 16, 170, 32))
+    crossed = all(
+        any(_crosses(strings[a].polyline, strings[b].polyline) for b in range(n) if b != a) for a in range(n)
+    )
+    if child_start:
+        answer = str(ctx.page.params.get("answer", ends[owner[0]]))
+        key = [f"{ctx.text('{child}')} يصل إلى: {PICTURES[pid(ends[owner[0]])].word_ar}"]
+        problems = (
+            []
+            if crossed and ends[owner[0]] == answer
+            else ["the child's string must lead to the answer and cross the others"]
+        )
+        if ends[owner[0]] != answer and answer in ends:  # swap so the child's string ends at the answer
+            j = ends.index(answer)
+            ends[owner[0]], ends[j] = ends[j], ends[owner[0]]
+            problems = [] if crossed else ["the strings must cross"]
+            key = [f"{ctx.text('{child}')} يصل إلى: {PICTURES[pid(answer)].word_ar}"]
+    else:
+        key = [f"الطائرة {c}: للطفل {ctx.num(owner[k] + 1)} من اليمين" for k, c in enumerate(colors)]
+        problems = [] if crossed else ["the strings must cross"]
+    return Built({"svg": svg(body)}, key, problems)

@@ -138,9 +138,64 @@ async def test_a_set_renders_the_built_stages_and_skips_the_rest(
     assert len(fake_render) == 1
 
 
+@pytest.mark.parametrize("stage", [2, 3])
+async def test_stages_two_and_three_render_through_the_order_job(
+    db: Session, storage: ObjectStorage, fake_render: list[dict[str, Any]], stage: int
+) -> None:
+    item = _item(db, storage, stage=str(stage))
+    item.personalization = {**(item.personalization or {}), "name_en": "Adam"}
+    db.commit()
+    result = await journey_book.render_item(db, storage, item)
+    assert result["status"] == "in_review" and [b["stage"] for b in result["books"]] == [stage]
+    assert fake_render[0]["stage"] == stage and fake_render[0]["name_en"] == "Adam"
+    book = db.get(Book, uuid.UUID(result["books"][0]["book_id"]))
+    assert book is not None and book.generation["stage"] == stage and book.status == BookStatus.in_review
+    assert stage in journey_book.built_stages()
+
+
+class _Borrowed:
+    """The test's session as the job's `with context.db_session() as db:` (the fixture closes it)."""
+
+    def __init__(self, db: Session) -> None:
+        self.db = db
+
+    def __enter__(self) -> Session:
+        return self.db
+
+    def __exit__(self, *exc: object) -> bool:
+        return False
+
+
+@pytest.mark.parametrize(("variant", "stages"), [("1", [1]), ("2", [2]), ("3", [3]), ("set", [1, 2, 3])])
+def test_the_order_entry_point_renders_each_stage_and_a_set_gets_all_three(
+    db: Session,
+    storage: ObjectStorage,
+    fake_render: list[dict[str, Any]],
+    monkeypatch: pytest.MonkeyPatch,
+    variant: str,
+    stages: list[int],
+) -> None:
+    from qamra_worker import context
+
+    item = _item(db, storage, stage=variant)
+    monkeypatch.setattr(context, "init_process", lambda: None)
+    monkeypatch.setattr(context, "db_session", lambda: _Borrowed(db))
+    monkeypatch.setattr(context, "storage", lambda: storage)
+    results = journey_book.render_order_journey_items(str(item.order_id))
+    assert len(results) == 1 and results[0]["status"] == "in_review" and results[0]["skipped"] == []
+    assert [b["stage"] for b in results[0]["books"]] == stages
+    assert [c["stage"] for c in fake_render] == stages  # one render per stage, in order
+    db.expire_all()
+    for entry in results[0]["books"]:
+        book = db.get(Book, uuid.UUID(entry["book_id"]))
+        assert book is not None and book.status == BookStatus.in_review
+        assert book.generation["stage"] == entry["stage"] and book.pdf_interior_key and book.pdf_cover_key
+        assert storage.exists(book.generation["files"]["answer-key"])
+
+
 def test_the_stage_comes_from_the_variant() -> None:
     item = OrderItem(title={"options": {"stage": "2"}}, personalization={})
     assert journey_book.stages_of(item) == [2]
     assert journey_book.stages_of(OrderItem(title={"options": {"stage": "set"}})) == [1, 2, 3]
     assert journey_book.stages_of(OrderItem(title={}, personalization={})) == [1]
-    assert 1 in journey_book.built_stages()
+    assert journey_book.built_stages() == [1, 2, 3]

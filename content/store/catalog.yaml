@@ -101,7 +101,7 @@ products:
       # here (fresh installs) and switch its variants on for the running store: Admin → الكتالوج → the
       # variant's «active», or `UPDATE product_variants SET active = true WHERE sku LIKE 'wb-kg1-%'`.
       # A set is active only when all three volumes of its level render.
-      rendered: {kg1: [], kg2: ["1", "2"]}
+      rendered: {kg1: ["1", "2", "3"], kg2: ["1", "2", "3"]}
       rows:
         - {volume: "1", interior: color, format: digital, price: {ILS: 29, JOD: 5.5}, cost: {ai_usd: 0.03}}
         - {volume: "2", interior: color, format: digital, price: {ILS: 29, JOD: 5.5}, cost: {ai_usd: 0.03}}
@@ -128,16 +128,15 @@ products:
     # sold now: Tareq reviewed every page himself (2026-09-30)
     features: {size: A4, binding: spiral, interior: color, audio: included, orderable: true}
     variants:
-      # Stage 1 renders today; stages 2–3 and the set are inserted inactive (`active: false`): not listed, not
-      # sold. When a stage lands: drop its flag here and switch it on in Admin → الكتالوج (or
-      # `UPDATE product_variants SET active = true WHERE sku LIKE 'journey-s2-%'`).
+      # A stage that does not render yet is inserted inactive (`active: false`): not listed, not sold.
+      # All three stages render (2026-10-01).
       - {sku: journey-s1-digital, options: {stage: "1", format: digital}, price: {ILS: 29, JOD: 5.5}, cost: {ai_usd: 0.03}}
-      - {sku: journey-s2-digital, options: {stage: "2", format: digital}, price: {ILS: 29, JOD: 5.5}, cost: {ai_usd: 0.03}, active: false}
-      - {sku: journey-s3-digital, options: {stage: "3", format: digital}, price: {ILS: 29, JOD: 5.5}, cost: {ai_usd: 0.03}, active: false}
+      - {sku: journey-s2-digital, options: {stage: "2", format: digital}, price: {ILS: 29, JOD: 5.5}, cost: {ai_usd: 0.03}}
+      - {sku: journey-s3-digital, options: {stage: "3", format: digital}, price: {ILS: 29, JOD: 5.5}, cost: {ai_usd: 0.03}}
       - {sku: journey-s1-spiral, options: {stage: "1", format: spiral}, price: {ILS: 69, JOD: 13}, cost: {print: 24, packaging: 2, ai_usd: 0.03}}  # placeholder
-      - {sku: journey-s2-spiral, options: {stage: "2", format: spiral}, price: {ILS: 69, JOD: 13}, cost: {print: 24, packaging: 2, ai_usd: 0.03}, active: false}  # placeholder
-      - {sku: journey-s3-spiral, options: {stage: "3", format: spiral}, price: {ILS: 69, JOD: 13}, cost: {print: 24, packaging: 2, ai_usd: 0.03}, active: false}  # placeholder
-      - {sku: journey-set-spiral, options: {stage: set, format: spiral}, price: {ILS: 179, JOD: 34}, cost: {print: 72, packaging: 4, ai_usd: 0.03}, active: false}  # placeholder
+      - {sku: journey-s2-spiral, options: {stage: "2", format: spiral}, price: {ILS: 69, JOD: 13}, cost: {print: 24, packaging: 2, ai_usd: 0.03}}  # placeholder
+      - {sku: journey-s3-spiral, options: {stage: "3", format: spiral}, price: {ILS: 69, JOD: 13}, cost: {print: 24, packaging: 2, ai_usd: 0.03}}  # placeholder
+      - {sku: journey-set-spiral, options: {stage: set, format: spiral}, price: {ILS: 179, JOD: 34}, cost: {print: 72, packaging: 4, ai_usd: 0.03}}  # placeholder
 
   # ---- «مغامراتي مع عائلتي» (Addendum 7): inactive until the proposal is approved and the book is built --
   - slug: family-adventures

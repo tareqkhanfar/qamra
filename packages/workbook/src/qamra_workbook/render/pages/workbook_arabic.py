@@ -58,15 +58,26 @@ def word_markup(word: str, x: float, y: float, size: float, color: str, rtl: boo
     )
 
 
-def big_track(shape: Letter, x: float, y: float, w: float, h: float, number: Number, color: str) -> str:
-    """The letter as big as the box allows: a wide pale band with a dotted centre line to trace, numbered
+def big_track(
+    shape: Letter,
+    x: float,
+    y: float,
+    w: float,
+    h: float,
+    number: Number,
+    color: str,
+    most: float = 0.5,
+    band_units: float = 24.0,
+) -> str:
+    """The letter as big as the box allows (at most `most` mm per letter unit): a wide pale band (`band_units`
+    wide, narrower for a small letter so its loop stays open) with a dotted centre line to trace, numbered
     green start dots and arrows; its dots are rings to fill in."""
     scale, dx, dy = (
         fit_lines(shape, x + 6, y + 6, w - 12, h - 12)
         if shape.form == "digit"
-        else fit_capped(shape, x, y, w, h, 6, 0.5)
+        else fit_capped(shape, x, y, w, h, 6, most)
     )
-    band = 24 * scale
+    band = band_units * scale
     moved = [s.scaled(scale, dx, dy) for s in shape.strokes]
     marks = [
         band * 0.55 if i and shape.rtl and raw.length < 60 else band for i, raw in enumerate(shape.strokes)

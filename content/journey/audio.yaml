@@ -125,3 +125,934 @@ items:
   - blue
   lang: en
   tts: true
+- code: qprh7fie
+  key: journey:s2:p12
+  stage: 2
+  page: 12
+  title: مُتَشابِهَتانِ أَمْ مُخْتَلِفَتانِ؟
+  say: 'الأولى: قَمَر، قَمَر. الثانية: بَطَّة، قِطَّة. الثالثة: باب، باب. الرابعة: سَمَكَة، شَمْس.'
+  show:
+  - قَمَر
+  - بَطَّة
+  - باب
+  - سَمَكَة
+  lang: ar
+  tts: true
+- code: aa6peu6e
+  key: journey:s2:p13
+  stage: 2
+  page: 13
+  title: نُصَفِّقُ لِلْكَلِمَةِ
+  say: 'شَمْس: شَمْس. بَطَّة: بَطْ، طَة. أَرْنَب: أَرْ، نَب. فَراشَة: فَ، را، شَة.'
+  show:
+  - شَمْس
+  - بَطَّة
+  - أَرْنَب
+  - فَراشَة
+  lang: ar
+  tts: true
+- code: d635p4w4
+  key: journey:s2:p14
+  stage: 2
+  page: 14
+  title: 'صَوْتُ الأَلِفِ: أَسَد'
+  say: أَسَد. أَرْنَب. أُذُن. قَمَر. بَيْت. سَمَكَة.
+  show:
+  - أَسَد
+  - أَرْنَب
+  - أُذُن
+  lang: ar
+  tts: true
+- code: ocyjdd7u
+  key: journey:s2:p15
+  stage: 2
+  page: 15
+  title: 'صَوْتُ الباءِ: بَطَّة'
+  say: بَطَّة. باب. بَيْت. سَمَكَة. تُفّاحَة. مَوْزَة.
+  show:
+  - بَطَّة
+  - باب
+  - بَيْت
+  lang: ar
+  tts: true
+- code: zyksktln
+  key: journey:s2:p18
+  stage: 2
+  page: 18
+  title: ماذا تَعَلَّمْتُ؟
+  say: 'الأولى: كلمة شَمْس. الثانية: فَراشَة. الثالثة: بَطَّة، بَيْت، سَمَكَة.'
+  show:
+  - شَمْس
+  - فَراشَة
+  - بَطَّة
+  lang: ar
+  tts: true
+- code: uoufkitt
+  key: letter:ar:أ
+  stage: 2
+  page: 30
+  title: حَرْفُ الأَلِف
+  say: أَلِف. أَسَد. أَرْنَب.
+  show:
+  - أ
+  - أَسَد
+  lang: ar
+  tts: true
+- code: uqysnb2n
+  key: letter:ar:ب
+  stage: 2
+  page: 32
+  title: حَرْفُ الباءِ
+  say: باء. بَطَّة. باب.
+  show:
+  - ب
+  - بَطَّة
+  lang: ar
+  tts: true
+- code: zhhbjj2g
+  key: letter:ar:ت
+  stage: 2
+  page: 35
+  title: حَرْفُ التّاء
+  say: تاء. تُفّاحَة. تَمْر.
+  show:
+  - ت
+  - تُفّاحَة
+  lang: ar
+  tts: true
+- code: rixgi2k2
+  key: letter:ar:ث
+  stage: 2
+  page: 37
+  title: حَرْفُ الثّاء
+  say: ثاء. ثَعْلَب. ثَوْم.
+  show:
+  - ث
+  - ثَعْلَب
+  lang: ar
+  tts: true
+- code: 6ilqudb4
+  key: letter:ar:ج
+  stage: 2
+  page: 41
+  title: حَرْفُ الجيمِ
+  say: جيم. جَمَل. جَزَرَة.
+  show:
+  - ج
+  - جَمَل
+  lang: ar
+  tts: true
+- code: stp6gsvu
+  key: letter:ar:ح
+  stage: 2
+  page: 43
+  title: حَرْفُ الحاءِ
+  say: حاء. حِصان. حَليب.
+  show:
+  - ح
+  - حِصان
+  lang: ar
+  tts: true
+- code: t7aiuzpp
+  key: letter:ar:خ
+  stage: 2
+  page: 45
+  title: حَرْفُ الخاءِ
+  say: خاء. خَروف. خَيْمَة.
+  show:
+  - خ
+  - خَروف
+  lang: ar
+  tts: true
+- code: ewspronu
+  key: letter:ar:د
+  stage: 2
+  page: 48
+  title: حَرْفُ الدّال
+  say: دال. دُبّ. دَجاجَة.
+  show:
+  - د
+  - دُبّ
+  lang: ar
+  tts: true
+- code: yywsldvh
+  key: letter:ar:ذ
+  stage: 2
+  page: 50
+  title: حَرْفُ الذّال
+  say: ذال. ذُرَة. ذَيْل.
+  show:
+  - ذ
+  - ذُرَة
+  lang: ar
+  tts: true
+- code: a74dlguv
+  key: letter:ar:ر
+  stage: 2
+  page: 54
+  title: حَرْفُ الرّاء
+  say: راء. رُمّان. ريشَة.
+  show:
+  - ر
+  - رُمّان
+  lang: ar
+  tts: true
+- code: gqkhrvbe
+  key: letter:ar:ز
+  stage: 2
+  page: 56
+  title: حَرْفُ الزّاي
+  say: زاي. زَرافَة. زَيْتون.
+  show:
+  - ز
+  - زَرافَة
+  lang: ar
+  tts: true
+- code: nvxfjcw5
+  key: letter:ar:س
+  stage: 2
+  page: 59
+  title: حَرْفُ السّين
+  say: سين. سَمَكَة. ساعَة.
+  show:
+  - س
+  - سَمَكَة
+  lang: ar
+  tts: true
+- code: t3fn4zb3
+  key: letter:ar:ش
+  stage: 2
+  page: 61
+  title: حَرْفُ الشّين
+  say: شين. شَمْس. شَجَرَة.
+  show:
+  - ش
+  - شَمْس
+  lang: ar
+  tts: true
+- code: uf2vsjsd
+  key: letter:ar:ص
+  stage: 2
+  page: 63
+  title: حَرْفُ الصّاد
+  say: صاد. صَقْر. صُنْدوق.
+  show:
+  - ص
+  - صَقْر
+  lang: ar
+  tts: true
+- code: wptk3srn
+  key: letter:en:A
+  stage: 2
+  page: 80
+  title: A a
+  say: A. Apple.
+  show:
+  - A a
+  - Apple
+  lang: en
+  tts: true
+- code: ag5vvgcz
+  key: letter:en:B
+  stage: 2
+  page: 81
+  title: B b
+  say: B. Ball.
+  show:
+  - B b
+  - Ball
+  lang: en
+  tts: true
+- code: uf4zbyev
+  key: journey:s2:p82
+  stage: 2
+  page: 82
+  title: Shapes
+  say: circle. square. triangle. rectangle. star. heart.
+  show:
+  - circle
+  - square
+  - triangle
+  - rectangle
+  - star
+  - heart
+  lang: en
+  tts: true
+- code: 764oxprz
+  key: letter:en:C
+  stage: 2
+  page: 83
+  title: C c
+  say: C. Cat.
+  show:
+  - C c
+  - Cat
+  lang: en
+  tts: true
+- code: atd4x3ab
+  key: letter:en:D
+  stage: 2
+  page: 84
+  title: D d
+  say: D. Duck.
+  show:
+  - D d
+  - Duck
+  lang: en
+  tts: true
+- code: 6hfwydyf
+  key: journey:s2:p85
+  stage: 2
+  page: 85
+  title: Fruits
+  say: apple. banana. orange. grapes. lemon. watermelon.
+  show:
+  - apple
+  - banana
+  - orange
+  - grapes
+  - lemon
+  - watermelon
+  lang: en
+  tts: true
+- code: fhrksmj7
+  key: letter:en:E
+  stage: 2
+  page: 86
+  title: E e
+  say: E. Egg.
+  show:
+  - E e
+  - Egg
+  lang: en
+  tts: true
+- code: 7r5wntij
+  key: letter:en:F
+  stage: 2
+  page: 87
+  title: F f
+  say: F. Fish.
+  show:
+  - F f
+  - Fish
+  lang: en
+  tts: true
+- code: i3jk5ko2
+  key: journey:s2:p88
+  stage: 2
+  page: 88
+  title: Family
+  say: mother. father. sister. brother. grandma. grandpa. baby.
+  show:
+  - mother
+  - father
+  - sister
+  - brother
+  - grandma
+  - grandpa
+  - baby
+  lang: en
+  tts: true
+- code: sj3bqwgv
+  key: letter:en:G
+  stage: 2
+  page: 89
+  title: G g
+  say: G. Grapes.
+  show:
+  - G g
+  - Grapes
+  lang: en
+  tts: true
+- code: imcdyein
+  key: letter:en:H
+  stage: 2
+  page: 90
+  title: H h
+  say: H. Hat.
+  show:
+  - H h
+  - Hat
+  lang: en
+  tts: true
+- code: iftzupll
+  key: letter:en:I
+  stage: 2
+  page: 92
+  title: I i
+  say: I. Ice cream.
+  show:
+  - I i
+  - Ice cream
+  lang: en
+  tts: true
+- code: jmvtqjli
+  key: letter:en:J
+  stage: 2
+  page: 93
+  title: J j
+  say: J. Juice.
+  show:
+  - J j
+  - Juice
+  lang: en
+  tts: true
+- code: 253noxgd
+  key: journey:s2:p94
+  stage: 2
+  page: 94
+  title: Body Parts
+  say: face. eye. nose. mouth. ear. hand. foot.
+  show:
+  - face
+  - eye
+  - nose
+  - mouth
+  - ear
+  - hand
+  - foot
+  lang: en
+  tts: true
+- code: 26o24fna
+  key: letter:en:K
+  stage: 2
+  page: 95
+  title: K k
+  say: K. Kite.
+  show:
+  - K k
+  - Kite
+  lang: en
+  tts: true
+- code: 4lyfdzpk
+  key: letter:en:L
+  stage: 2
+  page: 96
+  title: L l
+  say: L. Lion.
+  show:
+  - L l
+  - Lion
+  lang: en
+  tts: true
+- code: olvoaur7
+  key: journey:s2:p97
+  stage: 2
+  page: 97
+  title: Toys
+  say: ball. doll. car. kite. blocks. teddy.
+  show:
+  - ball
+  - doll
+  - car
+  - kite
+  - blocks
+  - teddy
+  lang: en
+  tts: true
+- code: bmz2hg7g
+  key: letter:en:M
+  stage: 2
+  page: 98
+  title: M m
+  say: M. Moon.
+  show:
+  - M m
+  - Moon
+  lang: en
+  tts: true
+- code: dpxsed6f
+  key: letter:en:N
+  stage: 2
+  page: 99
+  title: N n
+  say: N. Nest.
+  show:
+  - N n
+  - Nest
+  lang: en
+  tts: true
+- code: x2af72ub
+  key: journey:s3:p11
+  stage: 3
+  page: 11
+  title: كَلِماتٌ تَتَشابَهُ فِي آخِرِها
+  say: 'الأول: قَمَر، شَجَر، قِطَّة. الثاني: باب، كِتاب، شَمْس. الثالث: سَمَكَة، بَطَّة، بَيْت.'
+  show:
+  - قَمَر
+  - شَجَر
+  - باب
+  - كِتاب
+  lang: ar
+  tts: true
+- code: eyj7j2fm
+  key: journey:s3:p12
+  stage: 3
+  page: 12
+  title: كَلِماتٌ طَويلَةٌ
+  say: 'فَراشَة: فَ، را، شَة. دَجاجَة: دَ، جا، جَة. بُرْتُقالَة: بُرْ، تُ، قا، لَة. سَيّارَة: سَيْ، يا، رَة.'
+  show:
+  - فَراشَة
+  - دَجاجَة
+  - بُرْتُقالَة
+  - سَيّارَة
+  lang: ar
+  tts: true
+- code: qq77m5rm
+  key: journey:s3:p15
+  stage: 3
+  page: 15
+  title: ماذا تَعَلَّمْتُ؟
+  say: 'قَمَر، شَجَر، قِطَّة: أيّها تتشابه؟ فَراشَة: فَ، را، شَة.'
+  show:
+  - قَمَر
+  - شَجَر
+  - فَراشَة
+  lang: ar
+  tts: true
+- code: y67kyj25
+  key: letter:ar:ض
+  stage: 3
+  page: 27
+  title: حَرْفُ الضّاد
+  say: ضاد. ضِفْدَع. ضِرْس.
+  show:
+  - ض
+  - ضِفْدَع
+  lang: ar
+  tts: true
+- code: i64srqnl
+  key: letter:ar:ط
+  stage: 3
+  page: 30
+  title: حَرْفُ الطّاء
+  say: طاء. طائِرَة. طَبْل.
+  show:
+  - ط
+  - طائِرَة
+  lang: ar
+  tts: true
+- code: snvnvfvo
+  key: letter:ar:ظ
+  stage: 3
+  page: 32
+  title: حَرْفُ الظّاء
+  say: ظاء. ظَرْف. ظِلّ.
+  show:
+  - ظ
+  - ظَرْف
+  lang: ar
+  tts: true
+- code: 3ae3nzsf
+  key: letter:ar:ع
+  stage: 3
+  page: 35
+  title: حَرْفُ العَيْن
+  say: عَيْن. عِنَب. عَصا.
+  show:
+  - ع
+  - عِنَب
+  lang: ar
+  tts: true
+- code: 4osdwrck
+  key: letter:ar:غ
+  stage: 3
+  page: 37
+  title: حَرْفُ الغَيْن
+  say: غَيْن. غَيْمَة. غَزال.
+  show:
+  - غ
+  - غَيْمَة
+  lang: ar
+  tts: true
+- code: 75ew2i72
+  key: letter:ar:ف
+  stage: 3
+  page: 41
+  title: حَرْفُ الفاءِ
+  say: فاء. فيل. فَراشَة.
+  show:
+  - ف
+  - فيل
+  lang: ar
+  tts: true
+- code: f2zjvnqh
+  key: letter:ar:ق
+  stage: 3
+  page: 43
+  title: حَرْفُ القافِ
+  say: قاف. قَمَر. قِطَّة.
+  show:
+  - ق
+  - قَمَر
+  lang: ar
+  tts: true
+- code: 6eeby3k6
+  key: letter:ar:ك
+  stage: 3
+  page: 46
+  title: حَرْفُ الكافِ
+  say: كاف. كُرَة. كِتاب.
+  show:
+  - ك
+  - كُرَة
+  lang: ar
+  tts: true
+- code: pv3y4uko
+  key: letter:ar:ل
+  stage: 3
+  page: 48
+  title: حَرْفُ اللّام
+  say: لام. لَيْمون. لِسان.
+  show:
+  - ل
+  - لَيْمون
+  lang: ar
+  tts: true
+- code: 5rcpxfrl
+  key: letter:ar:م
+  stage: 3
+  page: 51
+  title: حَرْفُ الميمِ
+  say: ميم. مَوْزَة. مِفْتاح.
+  show:
+  - م
+  - مَوْزَة
+  lang: ar
+  tts: true
+- code: wguix4pr
+  key: letter:ar:ن
+  stage: 3
+  page: 53
+  title: حَرْفُ النّون
+  say: نون. نَحْلَة. نَجْمَة.
+  show:
+  - ن
+  - نَحْلَة
+  lang: ar
+  tts: true
+- code: 7wgk5z3y
+  key: letter:ar:ه
+  stage: 3
+  page: 56
+  title: حَرْفُ الهاءِ
+  say: هاء. هَدِيَّة. هِلال.
+  show:
+  - ه
+  - هَدِيَّة
+  lang: ar
+  tts: true
+- code: q5oljdtb
+  key: letter:ar:و
+  stage: 3
+  page: 58
+  title: حَرْفُ الواوِ
+  say: واو. وَرْدَة. وَلَد.
+  show:
+  - و
+  - وَرْدَة
+  lang: ar
+  tts: true
+- code: yhoccvbb
+  key: letter:ar:ي
+  stage: 3
+  page: 60
+  title: حَرْفُ الياءِ
+  say: ياء. يَد. يَمامَة.
+  show:
+  - ي
+  - يَد
+  lang: ar
+  tts: true
+- code: 3m4pqu7q
+  key: song:ar:alphabet
+  stage: 3
+  page: 63
+  title: أُغْنِيَةُ الحُروف
+  say: أَلِف، باء، تاء، ثاء، جيم، حاء، خاء، دال، ذال، راء، زاي، سين، شين، صاد، ضاد، طاء، ظاء، عَيْن، غَيْن، فاء،
+    قاف، كاف، لام، ميم، نون، هاء، واو، ياء.
+  show:
+  - أ ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي
+  lang: ar
+  tts: true
+- code: waimymsw
+  key: journey:s3:p65
+  stage: 3
+  page: 65
+  title: الفَتْحَةُ
+  say: بَ. دَ. رَ.
+  show:
+  - بَ
+  - دَ
+  - رَ
+  lang: ar
+  tts: true
+- code: ygt2dk6p
+  key: journey:s3:p66
+  stage: 3
+  page: 66
+  title: الضَّمَّةُ
+  say: بُ. دُ. رُ.
+  show:
+  - بُ
+  - دُ
+  - رُ
+  lang: ar
+  tts: true
+- code: 5sxquwfs
+  key: journey:s3:p67
+  stage: 3
+  page: 67
+  title: بَ أَمْ بُ؟
+  say: 'بَ: بَطَّة. بُ: بُرْتُقالَة. مَ: مَوْزَة. مُ: مُكَعَّبات. كَ: كَلْب. كُ: كُرَة.'
+  show:
+  - بَ
+  - بُ
+  - مَ
+  - مُ
+  - كَ
+  - كُ
+  lang: ar
+  tts: true
+- code: utzx2s5g
+  key: journey:s3:p68
+  stage: 3
+  page: 68
+  title: الكَسْرَةُ
+  say: بِ. دِ. رِ.
+  show:
+  - بِ
+  - دِ
+  - رِ
+  lang: ar
+  tts: true
+- code: 7iarfk47
+  key: journey:s3:p69
+  stage: 3
+  page: 69
+  title: السُّكونُ
+  say: أَبْ. أُمْ. نَمْ. قُمْ.
+  show:
+  - أَبْ
+  - أُمْ
+  - نَمْ
+  - قُمْ
+  lang: ar
+  tts: true
+- code: g7qncfg6
+  key: journey:s3:p70
+  stage: 3
+  page: 70
+  title: أُرَكِّبُ كَلِمَةً
+  say: 'قَ، مَ، رْ: قَمَر. وَ، لَ، دْ: وَلَد. جَ، مَ، لْ: جَمَل.'
+  show:
+  - قَمَر
+  - وَلَد
+  - جَمَل
+  lang: ar
+  tts: true
+- code: acd34yui
+  key: journey:s3:p85
+  stage: 3
+  page: 85
+  title: إِمْلاءٌ صَغيرٌ
+  say: 'الأول: لام. الثاني: ميم. الثالث: نون.'
+  show:
+  - لام
+  - ميم
+  - نون
+  lang: ar
+  tts: true
+- code: h4o7hdhr
+  key: letter:en:O
+  stage: 3
+  page: 88
+  title: O o
+  say: O. Orange.
+  show:
+  - O o
+  - Orange
+  lang: en
+  tts: true
+- code: cxdarrz7
+  key: letter:en:P
+  stage: 3
+  page: 89
+  title: P p
+  say: P. Pencil.
+  show:
+  - P p
+  - Pencil
+  lang: en
+  tts: true
+- code: lmkysfal
+  key: journey:s3:p90
+  stage: 3
+  page: 90
+  title: Numbers 1–10
+  say: one. two. three. four. five. six. seven. eight. nine. ten.
+  show:
+  - one
+  - two
+  - three
+  - four
+  - five
+  - six
+  - seven
+  - eight
+  - nine
+  - ten
+  lang: en
+  tts: true
+- code: gkrv7xgd
+  key: letter:en:Q
+  stage: 3
+  page: 91
+  title: Q q
+  say: Q. Queen.
+  show:
+  - Q q
+  - Queen
+  lang: en
+  tts: true
+- code: q6ocp7az
+  key: letter:en:R
+  stage: 3
+  page: 92
+  title: R r
+  say: R. Rabbit.
+  show:
+  - R r
+  - Rabbit
+  lang: en
+  tts: true
+- code: luoeu544
+  key: journey:s3:p93
+  stage: 3
+  page: 93
+  title: Food
+  say: bread. milk. egg. rice. cheese. water.
+  show:
+  - bread
+  - milk
+  - egg
+  - rice
+  - cheese
+  - water
+  lang: en
+  tts: true
+- code: v5stzo6a
+  key: letter:en:S
+  stage: 3
+  page: 94
+  title: S s
+  say: S. Sun.
+  show:
+  - S s
+  - Sun
+  lang: en
+  tts: true
+- code: cjaedyjy
+  key: letter:en:T
+  stage: 3
+  page: 95
+  title: T t
+  say: T. Tree.
+  show:
+  - T t
+  - Tree
+  lang: en
+  tts: true
+- code: 2rehlmuf
+  key: letter:en:U
+  stage: 3
+  page: 97
+  title: U u
+  say: U. Umbrella.
+  show:
+  - U u
+  - Umbrella
+  lang: en
+  tts: true
+- code: dwrtprom
+  key: letter:en:V
+  stage: 3
+  page: 98
+  title: V v
+  say: V. Van.
+  show:
+  - V v
+  - Van
+  lang: en
+  tts: true
+- code: nsgegve2
+  key: journey:s3:p99
+  stage: 3
+  page: 99
+  title: School Objects
+  say: bag. book. pencil. eraser. ruler. crayons.
+  show:
+  - bag
+  - book
+  - pencil
+  - eraser
+  - ruler
+  - crayons
+  lang: en
+  tts: true
+- code: 636tjaas
+  key: letter:en:W
+  stage: 3
+  page: 100
+  title: W w
+  say: W. Watch.
+  show:
+  - W w
+  - Watch
+  lang: en
+  tts: true
+- code: cftcp4bh
+  key: letter:en:X
+  stage: 3
+  page: 101
+  title: X x
+  say: X. Box.
+  show:
+  - X x
+  - Box
+  lang: en
+  tts: true
+- code: lr4ymiec
+  key: letter:en:Y
+  stage: 3
+  page: 103
+  title: Y y
+  say: Y. Yo-yo.
+  show:
+  - Y y
+  - Yo-yo
+  lang: en
+  tts: true
+- code: aesx6de6
+  key: letter:en:Z
+  stage: 3
+  page: 104
+  title: Z z
+  say: Z. Zebra.
+  show:
+  - Z z
+  - Zebra
+  lang: en
+  tts: true
+- code: 2ngzcyo3
+  key: journey:s3:p105
+  stage: 3
+  page: 105
+  title: My first sentences
+  say: I see a cat. I like apples. I have a ball.
+  show:
+  - I see a cat.
+  - I like apples.
+  - I have a ball.
+  lang: en
+  tts: true

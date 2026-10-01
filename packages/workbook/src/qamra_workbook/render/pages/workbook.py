@@ -9,7 +9,9 @@ from qamra_workbook.render.pages import (
     workbook_pen,
     workbook_review,
     workbook_thinking,
+    workbook_kg1,  # KG1's own page types
     workbook_v2,  # «دوسية التأسيس» volume 2
+    workbook_v3,  # volume 3
 )
 
 __all__ = [
@@ -20,5 +22,7 @@ __all__ = [
     "workbook_pen",
     "workbook_review",
     "workbook_thinking",
+    "workbook_kg1",
     "workbook_v2",
+    "workbook_v3",
 ]

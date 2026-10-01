@@ -23,7 +23,7 @@ async def test_every_variant_shows_its_cost_and_margin(client: AsyncClient, adb:
     assert Decimal(soft["margin_ils"]) == 69 - cost and soft["below_floor"] is False
     family = _row(catalog, "family-wireo")  # on sale since 2026-09-30; the printer quote is an estimate
     assert family["product_active"] is True and family["printer_estimated"] is True
-    assert _row(catalog, "wb-kg1-v1-color-spiral")["active"] is False  # not rendered: staff see it
+    assert _row(catalog, "wb-kg1-v1-color-spiral")["active"] is True  # every volume renders (2026-10-01)
     assert any(a["slug"] == "gift-box" for a in catalog["addons"]) and catalog["zones"]
 
 

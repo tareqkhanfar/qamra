@@ -2,43 +2,123 @@
   "learning-journey": [
     {
       "src": "/workbooks/learning-journey/01.jpg",
-      "title_ar": "الغلاف باسم طفلك وشخصيته",
-      "title_en": "The cover with your child's name"
+      "title_ar": "المحطة 1: الغلاف باسم طفلك وشخصيته",
+      "title_en": "Stage 1: the cover with your child's name"
     },
     {
       "src": "/workbooks/learning-journey/02.jpg",
-      "title_ar": "خريطة الرحلة",
-      "title_en": "The journey map"
+      "title_ar": "المحطة 1: خريطة الرحلة",
+      "title_en": "Stage 1: the journey map"
     },
     {
       "src": "/workbooks/learning-journey/03.jpg",
-      "title_ar": "متاهة: ساعدي ليان للوصول إلى الحديقة",
-      "title_en": "A maze to the garden"
+      "title_ar": "المحطة 1: متاهة، ساعدي ليان للوصول إلى الحديقة",
+      "title_en": "Stage 1: a maze to the garden"
     },
     {
       "src": "/workbooks/learning-journey/04.jpg",
-      "title_ar": "أسمع وأميّز مع رمز QR",
-      "title_en": "Listen and choose, with a QR code"
+      "title_ar": "المحطة 1: أسمع وأميّز مع رمز QR",
+      "title_en": "Stage 1: listen and choose, with a QR code"
     },
     {
       "src": "/workbooks/learning-journey/05.jpg",
-      "title_ar": "رحلة الدائرة",
-      "title_en": "Meet the circle"
+      "title_ar": "المحطة 1: رحلة الدائرة",
+      "title_en": "Stage 1: meet the circle"
     },
     {
       "src": "/workbooks/learning-journey/06.jpg",
-      "title_ar": "تلوين ذكي",
-      "title_en": "Smart coloring"
+      "title_ar": "المحطة 1: تلوين ذكي",
+      "title_en": "Stage 1: smart coloring"
     },
     {
       "src": "/workbooks/learning-journey/07.jpg",
-      "title_ar": "كم تفاحة؟",
-      "title_en": "How many apples?"
+      "title_ar": "المحطة 1: كم تفاحة؟",
+      "title_en": "Stage 1: how many apples?"
     },
     {
       "src": "/workbooks/learning-journey/08.jpg",
-      "title_ar": "شهادة المحطة الأولى",
-      "title_en": "The stage 1 certificate"
+      "title_ar": "المحطة 1: شهادة المحطة الأولى",
+      "title_en": "Stage 1: the certificate"
+    },
+    {
+      "src": "/workbooks/learning-journey/09.jpg",
+      "title_ar": "المحطة 2: الغلاف باسم طفلك",
+      "title_en": "Stage 2: the cover with your child's name"
+    },
+    {
+      "src": "/workbooks/learning-journey/10.jpg",
+      "title_ar": "المحطة 2: الصوت الأول للكلمة",
+      "title_en": "Stage 2: the first sound of a word"
+    },
+    {
+      "src": "/workbooks/learning-journey/11.jpg",
+      "title_ar": "المحطة 2: حرف الباء بإصبعي وصوته",
+      "title_en": "Stage 2: the letter ب, with its sound"
+    },
+    {
+      "src": "/workbooks/learning-journey/12.jpg",
+      "title_ar": "المحطة 2: الباء بالقلم",
+      "title_en": "Stage 2: the letter ب with a pen"
+    },
+    {
+      "src": "/workbooks/learning-journey/13.jpg",
+      "title_ar": "المحطة 2: A a، Apple",
+      "title_en": "Stage 2: A a, Apple"
+    },
+    {
+      "src": "/workbooks/learning-journey/14.jpg",
+      "title_ar": "المحطة 2: أتتبّع الأرقام 1–5",
+      "title_en": "Stage 2: tracing the numbers 1–5"
+    },
+    {
+      "src": "/workbooks/learning-journey/15.jpg",
+      "title_ar": "المحطة 2: ابحث في السوق",
+      "title_en": "Stage 2: search the market"
+    },
+    {
+      "src": "/workbooks/learning-journey/16.jpg",
+      "title_ar": "المحطة 2: شهادة المحطة الثانية",
+      "title_en": "Stage 2: the certificate"
+    },
+    {
+      "src": "/workbooks/learning-journey/17.jpg",
+      "title_ar": "المحطة 3: الغلاف باسم طفلك",
+      "title_en": "Stage 3: the cover with your child's name"
+    },
+    {
+      "src": "/workbooks/learning-journey/18.jpg",
+      "title_ar": "المحطة 3: الفتحة",
+      "title_en": "Stage 3: the fatha"
+    },
+    {
+      "src": "/workbooks/learning-journey/19.jpg",
+      "title_ar": "المحطة 3: أركّب كلمة",
+      "title_en": "Stage 3: build a word"
+    },
+    {
+      "src": "/workbooks/learning-journey/20.jpg",
+      "title_ar": "المحطة 3: أقرأ كلمات قصيرة",
+      "title_en": "Stage 3: read short words"
+    },
+    {
+      "src": "/workbooks/learning-journey/21.jpg",
+      "title_ar": "المحطة 3: أكتب الكلمة على السطر",
+      "title_en": "Stage 3: write the word on the line"
+    },
+    {
+      "src": "/workbooks/learning-journey/22.jpg",
+      "title_ar": "المحطة 3: I see a cat.",
+      "title_en": "Stage 3: I see a cat."
+    },
+    {
+      "src": "/workbooks/learning-journey/23.jpg",
+      "title_ar": "المحطة 3: أجمع بالصور",
+      "title_en": "Stage 3: add with pictures"
+    },
+    {
+      "src": "/workbooks/learning-journey/24.jpg",
+      "title_ar": "المحطة 3: شهادة إتمام الرحلة",
+      "title_en": "Stage 3: the journey certificate"
     }
   ],
   "foundation-workbook": [
@@ -103,6 +183,70 @@
       "src": "/workbooks/family-adventures/06.jpg",
       "title_ar": "نقود قمرة للّعب",
       "title_en": "Qamra play money"
+    }
+  ],
+  "foundation-workbook-v3": [
+    {
+      "src": "/workbooks/foundation-workbook-v3/01.jpg",
+      "title_ar": "عشرة وآحاد: أصل العدد بكميّته",
+      "title_en": "Tens and ones: match a number to its amount"
+    },
+    {
+      "src": "/workbooks/foundation-workbook-v3/02.jpg",
+      "title_ar": "الحركات: أقرأ الحرف مع الفتحة",
+      "title_en": "The vowel marks: read a letter with its fatha"
+    },
+    {
+      "src": "/workbooks/foundation-workbook-v3/03.jpg",
+      "title_ar": "أقرأ كلمات وأصلها بصورها",
+      "title_en": "Read words and match their pictures"
+    },
+    {
+      "src": "/workbooks/foundation-workbook-v3/04.jpg",
+      "title_ar": "أجمع بالصور وأكتب جملة الجمع",
+      "title_en": "Add with pictures and write the sum"
+    },
+    {
+      "src": "/workbooks/foundation-workbook-v3/05.jpg",
+      "title_ar": "أنا أقرأ: أصل الجملة بصورتي",
+      "title_en": "I can read: match each sentence to my picture"
+    },
+    {
+      "src": "/workbooks/foundation-workbook-v3/06.jpg",
+      "title_ar": "شهادة إنجاز باسمه وصورته",
+      "title_en": "A certificate in their name and picture"
+    }
+  ],
+  "foundation-workbook-kg1": [
+    {
+      "src": "/workbooks/foundation-workbook-kg1/01.jpg",
+      "title_ar": "هذا الكتاب لطفلك: اسمه وصورته وبصمة كفّه",
+      "title_en": "This book belongs to your child"
+    },
+    {
+      "src": "/workbooks/foundation-workbook-kg1/02.jpg",
+      "title_ar": "خطوط كبيرة بالقلم من النقطة الخضراء",
+      "title_en": "Big pen lines from the green dot"
+    },
+    {
+      "src": "/workbooks/foundation-workbook-kg1/03.jpg",
+      "title_ar": "أتتبّع الألف الكبيرة بإصبعي ثم بقلمي",
+      "title_en": "Trace a big letter, then a smaller one"
+    },
+    {
+      "src": "/workbooks/foundation-workbook-kg1/04.jpg",
+      "title_ar": "العدد واحد: رقمه وكميّته",
+      "title_en": "Meet the number one"
+    },
+    {
+      "src": "/workbooks/foundation-workbook-kg1/05.jpg",
+      "title_ar": "أقصّ الصورة وألصقها فوق ظلّها",
+      "title_en": "Cut each picture and paste it on its shadow"
+    },
+    {
+      "src": "/workbooks/foundation-workbook-kg1/06.jpg",
+      "title_ar": "أسمع الفتحة وأحوّط ما أسمع",
+      "title_en": "Listening to the fatha"
     }
   ]
 }

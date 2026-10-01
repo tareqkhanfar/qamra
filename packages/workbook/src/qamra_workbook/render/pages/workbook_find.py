@@ -159,7 +159,7 @@ def arabic_find(ctx: PageContext) -> Built:
         body.append(pic(word, x + card_w - size - 6, top + (card_h - size) / 2, size))
         box_h = min(card_h - 8, 20.0)
         for j, c in enumerate(options):
-            bx = x + card_w - size - 18 - j * 19
+            bx = x + card_w - size - 18 - j * float(params.get("box_pitch", 19.0))  # journey: 18
             body.append(
                 draw.el(
                     "rect",

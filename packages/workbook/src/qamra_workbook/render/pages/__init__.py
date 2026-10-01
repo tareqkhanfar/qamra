@@ -18,6 +18,7 @@ from qamra_workbook.render.pages import (
     journey_eye,  # «رحلتي الأولى» stage pages (Addendum 6 §5): journey_* modules
     journey_frame,
     journey_hand,
+    journey_letters,
     journey_listen,
     journey_math,
     journey_review,
@@ -45,6 +46,7 @@ __all__ = [
     "journey_eye",
     "journey_frame",
     "journey_hand",
+    "journey_letters",
     "journey_listen",
     "journey_math",
     "journey_review",

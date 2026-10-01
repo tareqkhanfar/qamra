@@ -8,6 +8,11 @@
 .wb-num { font-family: var(--title); font-weight: 800; }
 .wb-en { font-family: var(--title); font-weight: 800; }
 .wb-muted { font-family: var(--body); font-weight: 500; }
+/* KG1: a long page title (a review of a few letters) breaks into two even lines, not one word on the second */
+[class*="type-kg1-"] .title { text-wrap: balance; }
+/* the plan's skill line may carry a kasra: keep its glyph box above the safe margin */
+.foot .skill { position: relative; top: -1.4mm; }
+.foot .skill span { line-height: 1.32; }  /* two lines with a kasra stay inside the safe margin (Volume 3, p111) */
 .key-line, .key-ring { display: none; }
 .solved .key-line, .solved .key-ring { display: inline; }
 
@@ -53,6 +58,7 @@
 .wb-toc-subject { width: 30mm; flex: none; font: 600 9pt var(--body); }
 .wb-toc-title { font: 700 11.5pt var(--body); color: var(--ink); white-space: nowrap; }
 .wb-toc-lead { flex: 1; border-bottom: 0.4mm dotted #D8C9AC; margin: 0 1mm; height: 3mm; }
+.wb-toc.dense { gap: 0.6mm; } .wb-toc.dense .wb-toc-row { height: 6.3mm; } .wb-toc.dense .wb-toc-title { font-size: 10pt; }
 .wb-toc-page { min-width: 9mm; height: 6.4mm; border-radius: 3.2mm; display: flex; align-items: center;
                justify-content: center; font: 800 11pt var(--title); padding: 0 1.5mm; }
 
@@ -72,3 +78,6 @@
 /* ---- the blank back of a cut & paste sheet */
 .wb-blank { flex: 1; display: flex; align-items: center; justify-content: center; }
 .wb-blank p { font: 500 10pt var(--body); color: #B3AFA3; }
+
+/* ---- the answer key: a card with a long answer (three lines) stays inside the safe margin */
+.key-card .key-text li { line-height: 1.34; }

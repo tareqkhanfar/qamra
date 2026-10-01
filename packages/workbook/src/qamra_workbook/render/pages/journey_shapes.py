@@ -195,14 +195,15 @@ def pattern_train(ctx: PageContext) -> Built:
     problems = [] if period and blanks else ["the train must repeat and have an empty wagon"]
     per_row = 3
     rows = (len(seq) + per_row - 1) // per_row
-    size, pitch = 44.0, 170.0 / rows
+    size, pitch = 36.0, 170.0 / rows  # three wagons and the engine fit the page's width
     body = [
         card(W - 40, 22, 34, 36, r=6, fill="#E5604E", stroke="#2B2E4A", width=0.9),
         card(W - 34, 12, 12, 14, r=2, fill="#3D4262", stroke="none"),
     ]
+    fills = iter(blanks)
     for k, w in enumerate(seq):
         row, col = divmod(k, per_row)
-        x, y = W - 50 - (col + 1) * (size + 8), 10 + row * pitch
+        x, y = W - 50 - (col + 1) * (size + 7), 10 + row * pitch
         track = y + size + 12
         if col == 0:
             body.append(draw.path(f"M8 {track} L{W - 8} {track}", stroke="#8C90A6", width=1.6))
@@ -225,11 +226,11 @@ def pattern_train(ctx: PageContext) -> Built:
         ]
         if blank:
             body.append(
-                picture(blanks[0], x + 4, y + 4, size - 8).replace("<svg", '<svg class="key-ring"', 1)
+                picture(next(fills), x + 4, y + 4, size - 8).replace("<svg", '<svg class="key-ring"', 1)
             )
         else:
             body.append(picture(w, x + 4, y + 4, size - 8))
-    key = [f"العربة الفارغة: {PICTURES[pid(blanks[0])].word_ar}"] if blanks else None
+    key = ["العربات الفارغة: " + "، ".join(PICTURES[pid(b)].word_ar for b in blanks)] if blanks else None
     return Built({"svg": svg(body)}, key, problems)
 
 
@@ -433,3 +434,275 @@ def draw_myself(ctx: PageContext) -> Built:
     body.append(card(W / 2 - 30, 184, 60, 20, r=6, fill="#FFFFFF", stroke="#8C90A6", dash="3 2.4", width=0.7))
     body.append(text("بصمتي", W / 2 + 22, 197, 4.2, cls="wb-muted", color=STEP))
     return Built({"svg": svg(body)})
+
+
+# ---- stages 2–3: growing patterns, shapes in a city, building with shapes, mixing colours, keys --------
+
+
+@page_type("journey-growing-pattern")
+def growing_pattern(ctx: PageContext) -> Built:
+    """A pattern that grows (● ●● ●●● …): draw the next step in the empty box."""
+    steps = int(ctx.page.params.get("steps", 3))
+    body, key = [], []
+    for row in range(2):
+        y = row * 100
+        kind = ("circle", "square")[row]
+        body.append(card(0, y + 2, W, 94, r=8))
+        for k in range(steps + 1):
+            x = W - 8 - (k + 1) * (W - 16) / (steps + 1)
+            bw = (W - 16) / (steps + 1) - 6
+            blank = k == steps
+            body.append(
+                card(
+                    x + 3,
+                    y + 8,
+                    bw,
+                    80,
+                    r=6,
+                    fill="#FFFFFF",
+                    stroke="#8C90A6" if blank else "none",
+                    dash="3 2.4" if blank else "none",
+                    width=0.7,
+                )
+            )
+            n = k + 1
+            for j in range(n):  # a tower that grows by one shape each step
+                cx, cy = x + 3 + bw / 2, y + 80 - 8 - j * 17
+                body.append(filled(kind, cx, cy, 14, "#5E86D6", "key-ring" if blank else ""))
+        key.append(f"الصف {ctx.num(row + 1)}: {ctx.num(steps + 1)} أشكال")
+    return Built({"svg": svg(body)}, key)
+
+
+CITY = [
+    ("rectangle", 30, 120, 40, 70),
+    ("triangle", 30, 76, 40, 24),
+    ("square", 92, 128, 36, 36),
+    ("triangle", 92, 96, 36, 28),
+    ("rectangle", 150, 112, 30, 88),
+    ("circle", 26, 26, 22, 22),
+    ("star", 78, 30, 18, 18),
+    ("circle", 150, 40, 16, 16),
+    ("heart", 118, 60, 18, 18),
+    ("rectangle", 30, 138, 12, 20),
+    ("square", 150, 80, 10, 10),
+    ("square", 150, 100, 10, 10),
+    ("circle", 58, 60, 12, 12),
+    ("circle", 108, 20, 14, 14),
+    ("star", 176, 22, 12, 12),
+]
+
+
+@page_type("journey-shape-city")
+def shape_city(ctx: PageContext) -> Built:
+    """A city built from shapes: count each kind and colour it with its key colour."""
+    legend = {str(k): str(v) for k, v in dict(ctx.page.params.get("key", {})).items()}
+    body = [
+        card(0, 0, W, 160, r=10, fill="#F4F9FD", stroke="none"),
+        card(0, 154, W, 8, r=4, fill="#DDEFD6", stroke="none"),
+    ]
+    counts: dict[str, int] = {}
+    for kind, cx, cy, w, h in CITY:
+        s = w
+        if kind == "rectangle":
+            body.append(
+                draw.el(
+                    "rect",
+                    x=cx - w / 2,
+                    y=cy - h / 2,
+                    width=w,
+                    height=h,
+                    rx=1.5,
+                    fill="#FFFFFF",
+                    stroke="#2B2E4A",
+                    stroke_width=0.9,
+                    data_shape="rectangle",
+                )
+            )
+            if "rectangle" in legend:
+                body.append(
+                    draw.el(
+                        "rect",
+                        x=cx - w / 2,
+                        y=cy - h / 2,
+                        width=w,
+                        height=h,
+                        rx=1.5,
+                        fill=COLORS[legend["rectangle"]][0],
+                        class_="key-ring",
+                    )
+                )
+        else:
+            body.append(filled(kind, cx, cy, s, "#FFFFFF"))
+            if kind in legend:
+                body.append(filled(kind, cx, cy, s, COLORS[legend[kind]][0], "key-ring"))
+        counts[kind] = counts.get(kind, 0) + 1
+    step = W / max(len(legend), 1)
+    for k, (kind, c) in enumerate(
+        legend.items()
+    ):  # one cell per shape: its colour, a box for the count, its name
+        lx = W - step * (k + 0.5)
+        body.append(card(lx - step / 2 + 2, 166, step - 4, 38, r=6))
+        body.append(filled(kind, lx, 177, 11, COLORS[c][0]))
+        body.append(card(lx - 8, 184, 16, 12, r=3, fill="#FFFFFF", stroke="#8C90A6", dash="2 1.6", width=0.6))
+        body.append(text(ctx.num(counts.get(kind, 0)), lx, 193, 7.5, cls="wb-num key-ring", color="#E0483A"))
+        body.append(text(SHAPE_NAMES[kind], lx, 201.4, 3.8, cls="wb-label", color=STEP))
+    return Built({"svg": svg(body)}, [f"{SHAPE_NAMES[k]}: {ctx.num(counts.get(k, 0))}" for k in legend])
+
+
+@page_type("journey-shape-build")
+def shape_build(ctx: PageContext) -> Built:
+    """Two models built from shapes (a house, a rocket) and a big empty space to build one's own."""
+    body = [card(0, 0, W, 70, r=10, fill=SOFT, stroke="none")]
+    house = [
+        ("square", 40, 44, 28, "#F7C84A"),
+        ("triangle", 40, 22, 32, "#E5604E"),
+        ("rectangle", 40, 52, 8, "#A8734D"),
+    ]
+    rocket = [
+        ("rectangle", 120, 40, 14, "#5E86D6"),
+        ("triangle", 120, 16, 18, "#E5604E"),
+        ("triangle", 108, 58, 10, "#E5604E"),
+        ("triangle", 132, 58, 10, "#E5604E"),
+        ("circle", 120, 38, 8, "#8EC1EC"),
+    ]
+    for kind, cx, cy, s, color in house + rocket:
+        if kind == "rectangle" and s == 14:
+            body.append(
+                draw.el(
+                    "rect",
+                    x=cx - 7,
+                    y=cy - 20,
+                    width=14,
+                    height=40,
+                    rx=1.5,
+                    fill=color,
+                    stroke="#2B2E4A",
+                    stroke_width=0.9,
+                )
+            )
+        elif kind == "rectangle":
+            body.append(
+                draw.el(
+                    "rect",
+                    x=cx - 4,
+                    y=cy - 6,
+                    width=8,
+                    height=12,
+                    rx=1,
+                    fill=color,
+                    stroke="#2B2E4A",
+                    stroke_width=0.9,
+                )
+            )
+        else:
+            body.append(filled(kind, cx, cy, s, color))
+    body.append(text("بَيْت", 40, 68, 5, cls="wb-word", color=STEP))
+    body.append(text("صاروخ", 120, 68, 5, cls="wb-word", color=STEP))
+    body.append(card(0, 78, W, H - 78, r=10, fill="#FFFFFF", stroke="#8C90A6", dash="3 2.4", width=0.8))
+    for k, kind in enumerate(("square", "triangle", "rectangle", "circle")):
+        body.append(filled(kind, W - 14 - k * 18, 90, 10, "#F0EAE0"))
+    return Built({"svg": svg(body)})
+
+
+@page_type("journey-color-mix")
+def color_mix(ctx: PageContext) -> Built:
+    """Two colours mix into a third: colour the empty drop with the result."""
+    mixes = [[str(c) for c in m] for m in ctx.page.params.get("mixes", [])]
+    pitch = H / max(len(mixes), 1)
+    body, key = [], []
+    for i, (a, b, c) in enumerate(mixes):
+        y = i * pitch
+        body.append(card(0, y + 2, W, pitch - 6, r=8))
+        cy = y + pitch / 2
+        for _k, (color, x) in enumerate(((a, W - 36), (b, W - 92))):
+            body.append(
+                draw.el(
+                    "circle", cx=x, cy=cy, r=16, fill=COLORS[color][0], stroke="#2B2E4A", stroke_width=0.9
+                )
+            )
+            body.append(text(COLORS[color][1], x, cy + 24, 4.6, cls="wb-label", color=STEP))
+        body.append(text("+", W - 64, cy + 5, 12, cls="wb-num", color=STEP))
+        body.append(text("=", W - 124, cy + 5, 12, cls="wb-num", color=STEP))
+        body.append(
+            draw.el(
+                "circle",
+                cx=34,
+                cy=cy,
+                r=17,
+                fill="#FFFFFF",
+                stroke="#8C90A6",
+                stroke_width=0.9,
+                stroke_dasharray="3 2.4",
+            )
+        )
+        body.append(draw.el("circle", cx=34, cy=cy, r=15, fill=COLORS[c][0], class_="key-ring"))
+        key.append(f"{COLORS[a][1]} + {COLORS[b][1]} = {COLORS[c][1]}")
+    return Built({"svg": svg(body)}, key)
+
+
+@page_type("journey-key-coloring")
+def key_coloring(ctx: PageContext) -> Built:
+    """Colour by number or by letter: a picture cut into zones, each labelled, and the key."""
+    from qamra_workbook.pictures.model import strip_tashkeel
+
+    legend = {str(k): str(v) for k, v in dict(ctx.page.params.get("key", {})).items()}
+    labels = list(legend)
+    zones = [
+        (26, 60, 42),
+        (74, 60, 42),
+        (50, 24, 30),
+        (50, 96, 30),
+        (26, 130, 26),
+        (74, 130, 26),
+        (50, 160, 26),
+        (16, 20, 18),
+        (84, 20, 18),
+        (16, 104, 18),
+        (84, 104, 18),
+        (50, 190, 16),
+    ]
+    body = [card(0, 0, W, 158, r=10)]
+    for k, (zx, zy, s) in enumerate(zones):
+        label = labels[k % len(labels)]
+        color = COLORS[legend[label]][0]
+        x, y = zx * 1.7 + 8, zy * 0.72 + 6
+        body.append(
+            draw.el("circle", cx=x, cy=y, r=s * 0.32, fill="#FFFFFF", stroke="#2B2E4A", stroke_width=0.8)
+        )
+        body.append(draw.el("circle", cx=x, cy=y, r=s * 0.32, fill=color, class_="key-ring"))
+        body.append(
+            text(
+                ctx.num(label) if label.isdigit() else strip_tashkeel(label),
+                x,
+                y + 2.4,
+                6.5,
+                cls="wb-num" if label.isdigit() else "wb-word",
+                color="#1C2140",
+            )
+        )
+    step = W / len(labels)
+    for k, label in enumerate(labels):
+        cx = W - step * (k + 0.5)
+        body.append(card(cx - step / 2 + 2, 166, step - 4, 36, r=6))
+        body.append(
+            draw.el(
+                "circle",
+                cx=cx + step / 4,
+                cy=184,
+                r=8,
+                fill=COLORS[legend[label]][0],
+                stroke="#2B2E4A",
+                stroke_width=0.7,
+            )
+        )
+        body.append(
+            text(
+                ctx.num(label) if label.isdigit() else label,
+                cx - step / 4,
+                187,
+                8,
+                cls="wb-num" if label.isdigit() else "wb-word",
+                color="#1C2140",
+            )
+        )
+    return Built({"svg": svg(body)}, ["، ".join(f"{k}: {COLORS[v][1]}" for k, v in legend.items())])

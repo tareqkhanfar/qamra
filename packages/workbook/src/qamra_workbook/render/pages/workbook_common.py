@@ -18,6 +18,8 @@ from qamra_workbook.letters.model import Letter
 from qamra_workbook.pictures import PICTURES, Picture, Style, find_ar
 from qamra_workbook.pictures.model import OUTLINE, strip_tashkeel
 from qamra_workbook.pictures.workbook_words_2 import WORD_ALIASES_2
+from qamra_workbook.pictures.workbook_words_3 import WORD_ALIASES_3
+from qamra_workbook.pictures.workbook_words_kg1 import WORD_ALIASES_KG1
 from qamra_workbook.render import draw
 from qamra_workbook.render.pages.letters import letter_extent, start_points
 from qamra_workbook.strokes import letter as stroke_letter
@@ -30,6 +32,8 @@ Number = Callable[[int], str]
 # plan words whose picture has a different library word (the library word is printed under the picture)
 WORD_ALIASES = {"خيار": "cucumber", "حقيبة": "bag", "دب": "bear", "ثوم": "garlic", "بيضة": "egg"}
 WORD_ALIASES.update(WORD_ALIASES_2)  # volume 2's words
+WORD_ALIASES.update(WORD_ALIASES_3)  # volume 3's words
+WORD_ALIASES.update(WORD_ALIASES_KG1)  # KG1's words
 
 
 def picture_id(word: str) -> str:

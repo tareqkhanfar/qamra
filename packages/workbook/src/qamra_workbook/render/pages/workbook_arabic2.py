@@ -58,6 +58,13 @@ def letters_write(ctx: PageContext) -> Built:
         shape = shape_of(char)
         body.append(card(W - 30, y - 1, 28, 10, r=5, fill=ctx.style.tint, stroke="none"))
         body.append(text(f"حرف {letter_name(char)}", W - 16, y + 6, 4.2, color=ctx.style.deep))
+        if len(chars) >= 3:  # three letters: one row each, two dotted then room to write alone
+            row = tracing_row(shape, width=W - 10, cap=cap, count=2, number=ctx.num)
+            part, height = row_svg(row, 5, y + 10)
+            body.append(card(0, y + 8, W, height + 3, r=6))
+            body.append(part)
+            y += height + 12
+            continue
         for k in range(guided + alone):
             if k < guided:
                 part, height = row_svg(tracing_row(shape, width=W - 10, cap=cap, number=ctx.num), 5, y + 10)

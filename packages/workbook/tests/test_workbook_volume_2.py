@@ -10,7 +10,6 @@ import pytest
 from pypdf import PdfReader
 from qamra_workbook.curriculum import load
 from qamra_workbook.pictures import LibraryStore
-from qamra_workbook.render import foundation, foundation_v2
 from qamra_workbook.render.engine import book_html, build_pages, print_pdf
 from qamra_workbook.render.foundation import volume_book
 from qamra_workbook.render.pages import (  # noqa: F401  (registers the builders)
@@ -31,32 +30,6 @@ ROOT = Path(__file__).resolve().parents[3]
 PLAN = load(ROOT / "content/workbook/curriculum/kg2.yaml")
 ASSETS = Assets(LibraryStore())
 CHILD = Child("ليان", "f")
-
-
-def _wire() -> None:
-    """Until the Volume 1 files take their one-line hooks, route the plan through the Volume 2 modules."""
-    if hasattr(foundation, "engine_type_v2"):
-        return
-    import qamra_workbook.render.pages.workbook_v2  # noqa: F401
-    from qamra_workbook.pictures import PICTURES
-    from qamra_workbook.pictures.workbook_words_2 import WORD_ALIASES_2, WORKBOOK_WORDS_2
-    from qamra_workbook.render import foundation_text
-    from qamra_workbook.render.pages import workbook_common, workbook_review
-
-    PICTURES.update(WORKBOOK_WORDS_2)
-    workbook_common.WORD_ALIASES.update(WORD_ALIASES_2)
-    engine_type, texts = foundation.engine_type, foundation_text.page_texts
-    foundation.engine_type = lambda page: foundation_v2.engine_type_v2(page) or engine_type(page)
-    foundation.page_texts = lambda s, k, p, u: foundation_v2.texts_v2(s, k, p, u) or texts(s, k, p, u)
-    review, assess = workbook_review.review_sections, workbook_review.assessment_sections
-    workbook_review.review_sections = lambda c, r: workbook_review2.review_sections_v2(c, r) or review(c, r)
-    workbook_review.assessment_sections = lambda c, r: (
-        workbook_review2.assessment_sections_v2(c, r) or assess(c, r)
-    )
-    foundation.engine_type_v2 = foundation_v2.engine_type_v2  # type: ignore[attr-defined]
-
-
-_wire()
 
 
 def volume(pages: range | None = None) -> BookSpec:
