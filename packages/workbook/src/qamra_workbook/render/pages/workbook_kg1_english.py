@@ -32,10 +32,10 @@ from qamra_workbook.render.registry import Built, PageContext, page_type
 from qamra_workbook.strokes import letter
 
 NUMBERS = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5}
-NUMBER_AR = {1: "واحد", 2: "اثنان", 3: "ثلاثة", 4: "أربعة", 5: "خمسة"}
-COLORS = {"red": ("#E5604E", "أحمر", "apple"), "blue": ("#5E86D6", "أزرق", "fish")}
-COLORS |= {"yellow": ("#F7C84A", "أصفر", "sun"), "green": ("#6FAE5F", "أخضر", "leaf")}
-SHAPES = {"circle": "دائرة", "square": "مربع", "triangle": "مثلث", "star": "نجمة"}
+NUMBER_AR = {1: "واحِد", 2: "اثْنان", 3: "ثَلاثَة", 4: "أَرْبَعَة", 5: "خَمْسَة"}
+COLORS = {"red": ("#E5604E", "أَحْمَر", "apple"), "blue": ("#5E86D6", "أَزْرَق", "fish")}
+COLORS |= {"yellow": ("#F7C84A", "أَصْفَر", "sun"), "green": ("#6FAE5F", "أَخْضَر", "leaf")}
+SHAPES = {"circle": "دائِرَة", "square": "مُرَبَّع", "triangle": "مُثَلَّث", "star": "نَجْمَة"}
 VOCAB = {  # the units of the plan, for the reviews
     "Numbers": ["one", "two", "three", "four", "five"],
     "Colors": ["red", "blue", "yellow", "green"],

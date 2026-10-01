@@ -15,7 +15,7 @@ from qamra_workbook.render import draw
 from qamra_workbook.render.pages.family import uri
 from qamra_workbook.render.registry import Built, PageContext, page_type
 
-WEEK = ("السبت", "الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة")
+WEEK = ("السبت", "الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة")
 
 # ---- pictogram moves --------------------------------------------------------------------------------------
 
@@ -166,7 +166,7 @@ def routine_builder(ctx: PageContext) -> Built:
             {"key": "evening", "icon": "moon", "title": "روتين المساء", "slots": slots},
         ],
         "slot_mm": ROUTINE_SLOT_MM,
-        "stick": ctx.text("{الصق/الصقي} هنا"),
+        "stick": ctx.text("{ألصق/ألصقي} هنا"),
         "week": WEEK,
         "hints": [{"pic": ctx.pic(h), "word": strip_tashkeel(picture(h).word_ar)} for h in hints],
         "track": ctx.text(str(params.get("track", "{لوّن/لوّني} الشمس والقمر كل يوم"))),

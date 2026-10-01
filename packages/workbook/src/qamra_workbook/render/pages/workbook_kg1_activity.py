@@ -25,7 +25,7 @@ from qamra_workbook.render.pages.workbook_common import (
     svg,
     text,
 )
-from qamra_workbook.render.pages.workbook_pen import OUTLINES, crayon, dot_points
+from qamra_workbook.render.pages.workbook_pen import COLOR_WORDS, OUTLINES, crayon, dot_points
 from qamra_workbook.render.registry import Built, PageContext, page_type
 
 # the colors a KG1 child learns, each with things that are that color (drawn as line art to color)
@@ -76,7 +76,7 @@ def kg1_colors(ctx: PageContext) -> Built:
         y = i * pitch
         body.append(card(0, y + 1, W, pitch - 5, r=7))
         body.append(crayon(W - 44, y + pitch / 2 - 10, color))
-        body.append(text(name, W - 25, y + pitch / 2 + 9, 5.6, color=color))
+        body.append(text(COLOR_WORDS[name], W - 25, y + pitch / 2 + 9, 5.6, color=color))
         size = min(pitch - 14, 50.0)
         for k, thing in enumerate(things):
             x = W - 96 - k * (size - 2)
@@ -227,7 +227,7 @@ def kg1_hidden_stars(ctx: PageContext) -> Built:
     body = [card(0, 0, W, 30, r=7, fill=ctx.style.tint, stroke="none")]
     body.append(pic("star", W - 28, 3, 24))
     body.append(
-        text(f"أبحث عن {ctx.num(count)} نجوم وألوّنها", W - 34, 18, 5.6, anchor="end", color=ctx.style.deep)
+        text(f"أَبْحَثُ عَنْ {ctx.num(count)} نُجومٍ وَأُلَوِّنُها", W - 34, 18, 5.6, anchor="end", color=ctx.style.deep)
     )
     body.append(card(0, 34, W, 170, r=8))
     for (cx, cy), thing in zip(SCENE_BIG, r.sample(SCENE_THINGS, len(SCENE_BIG)), strict=True):
@@ -282,7 +282,7 @@ def kg1_dot_to_dot(ctx: PageContext) -> Built:
                 color=ctx.style.deep,
             )
         )
-    body.append(text(f"ثم أصل {ctx.num(to)} بالنقطة {ctx.num(1)}", W / 2, 196, 5, color="#676B83"))
+    body.append(text(f"ثُمَّ أَصِلُ {ctx.num(to)} بِالنُّقْطَةِ {ctx.num(1)}", W / 2, 196, 5, color="#676B83"))
     body.append(
         draw.path(draw.polyline([*points, points[0]]), stroke="#E0483A", width=1.1, class_="key-line")
     )
@@ -297,11 +297,11 @@ def kg1_self_portrait(ctx: PageContext) -> Built:
     body = [card(0, 0, W, 176, r=8, fill="#FFFFFF")]
     body.append(draw.el("circle", cx=W - 22, cy=22, r=11, fill="#FFF3B0", stroke="#E2A32A", stroke_width=0.8))
     body.append(draw.path(draw.d_path(("M", (6, 150)), ("L", (W - 6, 150))), stroke="#B8D9A0", width=1.2))
-    body.append(text("أنا وأصدقائي في الروضة", W / 2, 168, 5.6, cls="wb-title", color=ctx.style.deep))
+    body.append(text("أَنا وَأَصْدِقائي في الرَّوْضَةِ", W / 2, 168, 5.6, cls="wb-title", color=ctx.style.deep))
     body.append(card(0, 182, W, 22, r=6, fill="#FFFDF6", stroke="#D8C9AC", dash="2.4 1.6"))
     body.append(
         text(
-            "أصدقائي في الرسم: ..............................................",
+            "أَصْدِقائي في الرَّسْمِ: ..............................................",
             W - 6,
             196,
             4.4,
@@ -338,13 +338,13 @@ def kg1_cut_shadows(ctx: PageContext) -> Built:
 
     rows = (pieces + 1) // 2
     cut_top = 12 + rows * (ch + gap) + 14
-    body = [text("ألصق كل صورة فوق ظلّها", W - 4, 8, 5, anchor="end", color=ctx.style.deep)]
+    body = [text("أُلْصِقُ كُلَّ صورَةٍ فَوْقَ ظِلِّها", W - 4, 8, 5, anchor="end", color=ctx.style.deep)]
     for k in range(pieces):
         x, y = cell(k, 12)
         body.append(card(x, y, cw, ch, r=5, fill="#FFF6F2", stroke="#D8C9AC", dash="2.4 1.6"))
         body.append(shadow(things[order[k]], x + (cw - size) / 2, y + 3, size))
         body.append(text(ctx.num(k + 1), x + cw - 8, y + 9, 6, cls="wb-num", color="#676B83"))
-    body.append(text("أقصّ على الخط المنقّط", W - 4, cut_top - 4, 5, anchor="end", color=ctx.style.deep))
+    body.append(text("أَقُصُّ عَلى الخَطِّ المُنَقَّطِ", W - 4, cut_top - 4, 5, anchor="end", color=ctx.style.deep))
     for k, thing in enumerate(things):
         x, y = cell(k, cut_top)
         body.append(card(x, y, cw, ch, r=0, fill="#FFFFFF", stroke=INK, dash="2 1.6", width=0.6))

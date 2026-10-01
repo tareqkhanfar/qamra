@@ -60,11 +60,11 @@
 </div>
 {%- endmacro %}
 
-{# «للأهل» / «هيا نفعلها معاً!»: 1–3 short lines for the grown-up (A7 §5) #}
+{# «للأهل» / «هيا نفعلها معًا!»: 1–3 short lines for the grown-up (A7 §5) #}
 {% macro parent_box(p) -%}
 {% set together = p.spec.activity and p.spec.activity.together %}
 <aside class="parent-box{{ ' together' if together }}" dir="rtl" lang="ar">
-  <div class="pb-tag"><span class="pb-ico">{{ icon('family' if together else 'heart') }}</span><span>{{ 'هيا نفعلها معاً!' if together else 'للأهل' }}</span></div>
+  <div class="pb-tag"><span class="pb-ico">{{ icon('family' if together else 'heart') }}</span><span>{{ 'هيا نفعلها معًا!' if together else 'للأهل' }}</span></div>
   {% if together %}<span class="pb-for">للأهل</span>{% endif %}
   <ul data-fit="8.5">{% for line in p.parent %}<li>{{ line }}</li>{% endfor %}</ul>
 </aside>

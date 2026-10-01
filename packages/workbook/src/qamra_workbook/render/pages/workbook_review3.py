@@ -455,10 +455,10 @@ def pen_row3(skill: str) -> Task:
 
 
 PEN_LABELS_3 = {
-    "joins": "خطوط الوصل",
-    "dot-to-dot": "مثلث",
-    "complex-path": "طريق طويل",
-    "fine-coloring": "تلوين دقيق",
+    "joins": "خُطوطُ الوَصْلِ",
+    "dot-to-dot": "مُثَلَّثٌ",
+    "complex-path": "طَريقٌ طَويلٌ",
+    "fine-coloring": "تَلْوينٌ دَقيقٌ",
 }
 V3_MATH = {"addition", "subtraction", "story-add", "story-subtract", "number-line", "choose-operation"}
 
@@ -474,8 +474,8 @@ def review_sections_v3(ctx: PageContext, r: random.Random) -> Drawn | None:
         return stack(  # three letters need taller writing rows than the two-letter reviews give them
             ctx,
             [
-                ("أكتب الحرف", write_letters(letters), 1.5),
-                ("أحوّط الصورة التي تبدأ بالحرف", circle_first_letter(letters), 0.95),
+                ("أَكْتُبُ الحَرْفَ", write_letters(letters), 1.5),
+                ("أُحَوِّطُ الصّورَةَ الَّتي تَبْدَأُ بِالحَرْفِ", circle_first_letter(letters), 0.95),
             ],
             r,
         )
@@ -483,8 +483,8 @@ def review_sections_v3(ctx: PageContext, r: random.Random) -> Drawn | None:
         out = stack(
             ctx,
             [
-                ("أقرأ الحرف مع كل حركة", marks_task(["ب", "ن", "م"], marks), 1.4),
-                ("أقرأ", syllable_rows(["بَ بُ بِ بْ", "نَ نُ نِ نْ", "مَ مُ مِ مْ"]), 0.8),
+                ("أَقْرَأُ الحَرْفَ مَعَ كُلِّ حَرَكَةٍ", marks_task(["ب", "ن", "م"], marks), 1.4),
+                ("أَقْرَأُ", syllable_rows(["بَ بُ بِ بْ", "نَ نُ نِ نْ", "مَ مُ مِ مْ"]), 0.8),
             ],
             r,
         )
@@ -494,9 +494,9 @@ def review_sections_v3(ctx: PageContext, r: random.Random) -> Drawn | None:
         return stack(
             ctx,
             [
-                ("مقاطع قصيرة", syllable_rows(["سَ سُ سِ", "تَ تُ تِ", "رَ رُ رِ"]), 1.0),
-                ("مقاطع طويلة", syllable_rows(["با بو بي", "دا دو دي", "نا نو ني"]), 1.0),
-                ("أركّب وأقرأ", marks_task(["ك", "ل"], ["فتحة", "ضمة", "كسرة"]), 1.2),
+                ("مَقاطِعُ قَصيرَةٌ", syllable_rows(["سَ سُ سِ", "تَ تُ تِ", "رَ رُ رِ"]), 1.0),
+                ("مَقاطِعُ طَويلَةٌ", syllable_rows(["با بو بي", "دا دو دي", "نا نو ني"]), 1.0),
+                ("أُرَكِّبُ وَأَقْرَأُ", marks_task(["ك", "ل"], ["فتحة", "ضمة", "كسرة"]), 1.2),
             ],
             r,
         )
@@ -504,8 +504,8 @@ def review_sections_v3(ctx: PageContext, r: random.Random) -> Drawn | None:
         return stack(
             ctx,
             [
-                ("أقرأ وأحوّط الصورة", words_task(["بَاب", "قَمَر", "الْفِيل"]), 1.4),
-                ("أكتب الكلمة", write_word_task("سَمَك"), 0.8),
+                ("أَقْرَأُ وَأُحَوِّطُ الصّورَةَ", words_task(["بَاب", "قَمَر", "الْفِيل"]), 1.4),
+                ("أَكْتُبُ الكَلِمَةَ", write_word_task("سَمَك"), 0.8),
             ],
             r,
         )
@@ -514,13 +514,13 @@ def review_sections_v3(ctx: PageContext, r: random.Random) -> Drawn | None:
             ctx,
             [
                 (
-                    "أصل الجملة بصورتها",
+                    "أَصِلُ الجُمْلَةَ بِصورَتِها",
                     sentences_task(
                         [("كَتَبَ باسِم", "writing"), ("رَسَمَتْ سَلْمى", "drawing"), ("لَعِبَ عُمَر", "playing")]
                     ),
                     1.4,
                 ),
-                ("أقرأ وأحوّط الصورة", words_task(["شَمْس", "وَرْد"]), 1.0),
+                ("أَقْرَأُ وَأُحَوِّطُ الصّورَةَ", words_task(["شَمْس", "وَرْد"]), 1.0),
             ],
             r,
         )
@@ -528,9 +528,9 @@ def review_sections_v3(ctx: PageContext, r: random.Random) -> Drawn | None:
         return stack(
             ctx,
             [
-                ("أعدّ العشرة والآحاد وأكتب", teen_task(numbers), 1.0),
-                ("أجمع", sums_task(False, 5, 1), 0.9),
-                ("أحوّط الأكبر", compare_task(), 0.8),
+                ("أَعُدُّ العَشَرَةَ وَالآحادَ وَأَكْتُبُ", teen_task(numbers), 1.0),
+                ("أَجْمَعُ", sums_task(False, 5, 1), 0.9),
+                ("أُحَوِّطُ الأَكْبَرَ", compare_task(), 0.8),
             ],
             r,
         )
@@ -548,10 +548,10 @@ def review_sections_v3(ctx: PageContext, r: random.Random) -> Drawn | None:
         ]
         per_task = {1: 4, 2: 2}.get(len(kinds), 1)  # one kind: four problems; more kinds: fewer, bigger
         sections: dict[str, tuple[str, Task, float]] = {
-            "add": ("أجمع", sums_task(False, top, per_task), 1.0),
-            "sub": ("أطرح", sums_task(True, top, per_task), 1.0),
-            "line": ("أجمع على خط الأعداد", line_task(), 0.95),
-            "choose": ("أجمع أم أطرح؟", choose_task(), 0.85),
+            "add": ("أَجْمَعُ", sums_task(False, top, per_task), 1.0),
+            "sub": ("أَطْرَحُ", sums_task(True, top, per_task), 1.0),
+            "line": ("أَجْمَعُ عَلى خَطِّ الأَعْدادِ", line_task(), 0.95),
+            "choose": ("أَجْمَعُ أَمْ أَطْرَحُ؟", choose_task(), 0.85),
         }
         return stack(ctx, [sections[k] for k in kinds], r)
     if subject == "english" and units:
@@ -566,21 +566,21 @@ def review_sections_v3(ctx: PageContext, r: random.Random) -> Drawn | None:
         return stack(ctx, pen_tasks, r)
     if subject == "thinking" and ("cause-effect" in skills or "problem-solving" in skills):
         tasks2 = {
-            "classify": ("أصنّف بالألوان", mini_classify()),
-            "pattern": ("أكمل النمط المتزايد", growing_task()),
-            "cause-effect": ("السبب والنتيجة", causes_task()),
-            "maze": ("أحلّ المتاهة", mini_maze()),
-            "problem-solving": ("أرسم حلًّا: كيف تعبر البطة؟", river_task()),
+            "classify": ("أُصَنِّفُ بِالأَلْوانِ", mini_classify()),
+            "pattern": ("أُكْمِلُ النَّمَطَ المُتَزايِدَ", growing_task()),
+            "cause-effect": ("السَّبَبُ وَالنَّتيجَةُ", causes_task()),
+            "maze": ("أَحُلُّ المَتاهَةَ", mini_maze()),
+            "problem-solving": ("أَرْسُمُ حَلًّا: كَيْفَ تَعْبُرُ البَطَّةُ؟", river_task()),
         }
         return grid(ctx, [tasks2[s] for s in skills if s in tasks2][:4], r)
     if subject == "mixed" and "arabic" in params.get("covers", []):
         return stack(
             ctx,
             [
-                ("أقرأ وأحوّط الصورة", words_task(["بَاب", "فِيل"]), 0.9),
-                ("أجمع وأطرح", sums_task(False, 10, 1), 0.75),
+                ("أَقْرَأُ وَأُحَوِّطُ الصّورَةَ", words_task(["بَاب", "فِيل"]), 0.9),
+                ("أَجْمَعُ وَأَطْرَحُ", sums_task(False, 10, 1), 0.75),
                 ("Match the words", vocab_task(["Animals", "Fruits", "Toys"]), 0.95),
-                ("أكمل النمط", growing_task(), 0.85),
+                ("أُكْمِلُ النَّمَطَ", growing_task(), 0.85),
             ],
             r,
         )
@@ -612,7 +612,7 @@ def assessment_sections_v3(ctx: PageContext, r: random.Random) -> Drawn | None:
     tracing = [str(t) for t in ctx.page.params.get("tracing", [])]
     if subject == "pen" and {"joins", "complex-path"} & set(tracing):
         checklist = [str(c) for c in ctx.page.params.get("checklist", [])]
-        out = stack(ctx, [(f"أتتبّع: {PEN_LABELS_3.get(t, t)}", pen_row3(t), 1.0) for t in tracing], r, 0, 104)
+        out = stack(ctx, [(f"أَتَتَبَّعُ: {PEN_LABELS_3.get(t, t)}", pen_row3(t), 1.0) for t in tracing], r, 0, 104)
         out.body += checklist_box(ctx, checklist)
         out.answer.append(
             "تقييم ملاحظة: " + "، ".join(CHECKLIST_AR.get(c, c).split(":")[0] for c in checklist)
@@ -626,10 +626,10 @@ def assessment_sections_v3(ctx: PageContext, r: random.Random) -> Drawn | None:
         out = stack(
             ctx,
             [
-                ("أقرأ الحروف", read_letters(V3_LETTERS), 0.75),
-                ("أقرأ الحرف مع حركته", marks_task(["ب", "د"], ["فتحة", "ضمة", "كسرة", "سكون"]), 0.9),
-                ("أقرأ وأحوّط الصورة", words_task(["قَمَر", "بَاب"]), 0.85),
-                ("أكتب الكلمة", write_word_task("فِيل"), 0.9),
+                ("أَقْرَأُ الحُروفَ", read_letters(V3_LETTERS), 0.75),
+                ("أَقْرَأُ الحَرْفَ مَعَ حَرَكَتِهِ", marks_task(["ب", "د"], ["فتحة", "ضمة", "كسرة", "سكون"]), 0.9),
+                ("أَقْرَأُ وَأُحَوِّطُ الصّورَةَ", words_task(["قَمَر", "بَاب"]), 0.85),
+                ("أَكْتُبُ الكَلِمَةَ", write_word_task("فِيل"), 0.9),
             ],
             r,
             0,
@@ -639,9 +639,9 @@ def assessment_sections_v3(ctx: PageContext, r: random.Random) -> Drawn | None:
         out = stack(
             ctx,
             [
-                ("أعدّ العشرة والآحاد وأكتب", teen_task([13, 17]), 1.0),
-                ("أجمع", sums_task(False, 10, 1), 0.75),
-                ("أطرح", sums_task(True, 10, 1), 0.75),
+                ("أَعُدُّ العَشَرَةَ وَالآحادَ وَأَكْتُبُ", teen_task([13, 17]), 1.0),
+                ("أَجْمَعُ", sums_task(False, 10, 1), 0.75),
+                ("أَطْرَحُ", sums_task(True, 10, 1), 0.75),
             ],
             r,
             0,
@@ -664,10 +664,10 @@ def assessment_sections_v3(ctx: PageContext, r: random.Random) -> Drawn | None:
         out = grid(
             ctx,
             [
-                ("أصنّف بالألوان", mini_classify()),
-                ("أكمل النمط", growing_task()),
-                ("أطابق الصور", match_pairs(3)),
-                ("أحلّ المتاهة", mini_maze()),
+                ("أُصَنِّفُ بِالأَلْوانِ", mini_classify()),
+                ("أُكْمِلُ النَّمَطَ", growing_task()),
+                ("أُطابِقُ الصُّوَرَ", match_pairs(3)),
+                ("أَحُلُّ المَتاهَةَ", mini_maze()),
             ],
             r,
             0,
@@ -716,7 +716,7 @@ def workbook_certificate(ctx: PageContext) -> Built:
     ]
     level = str(ctx.page.params.get("level_title", "دوسية التأسيس"))
     data = {
-        "line": ctx.text(f"لقد {{أنهيتَ/أنهيتِ}} «{level}» بنجاح"),
+        "line": ctx.text(f"لَقَدْ {{أَنْهَيْتَ/أَنْهَيْتِ}} «{level}» بِنَجاحٍ"),
         "name": ctx.book.child.name,
         "date": ctx.book.date_ar(),
         "character": ctx.assets.character.resolve().as_uri() if ctx.assets.character else "",

@@ -120,7 +120,7 @@ pages:
     others: Mama and Baba
     others_count: 2
     companion_action: jumps along, arms in the air
-    text_ar: "في البيت خبرٌ سعيد: ماما تنتظر ضيفًا صغيرًا! {فرحَ/فرحَتْ} {name} {وقفزَ/وقفزَتْ} عاليًا حتّى {كادَ/كادَتْ} {يلمسُ/تلمسُ} السقف!"
+    text_ar: "فِي الْبَيْتِ خَبَرٌ سَعِيدٌ: مَامَا تَنْتَظِرُ ضَيْفًا صَغِيرًا! {فَرِحَ/فَرِحَتْ} {name} {وَقَفَزَ/وَقَفَزَتْ} عَالِيًا حَتَّى {كَادَ/كَادَتْ} {يَلْمِسُ/تَلْمِسُ} السَّقْفَ!"
     text_en: "Happy news at home: Mama is waiting for a little guest! {name} jumped so high, almost touching the ceiling!"
   - index: 2
     layout: split
@@ -131,7 +131,7 @@ pages:
       The hero lies on the rug drawing a big moon and stars with crayons on a large sheet of paper, tongue
       out in concentration.
     companion_action: holds the yellow crayon ready
-    text_ar: "{رسمَ/رسمَتْ} {name} للضيف الصغير قمرًا ونجومًا {وقالَ/وقالَتْ}: «سأعلّقها فوق سريره.»"
+    text_ar: "{رَسَمَ/رَسَمَتْ} {name} لِلضَّيْفِ الصَّغِيرِ قَمَرًا وَنُجُومًا {وَقَالَ/وَقَالَتْ}: «سَأُعَلِّقُهَا فَوْقَ سَرِيرِهِ.»"
     text_en: "{name} drew a moon and stars for the little guest: \"I'll hang it over the crib.\""
   - index: 3
     layout: spread
@@ -145,7 +145,7 @@ pages:
     others: Baba
     others_count: 1
     companion_action: tests the tiny pillow by lying on it
-    text_ar: "{ساعدَ/ساعدَتْ} {name} بابا في تجهيز سريرٍ صغير، {واختارَ/واختارَتْ} له دبدوبًا ناعمًا. وجرّب {companion} الوسادة… مريحة جدًّا!"
+    text_ar: "{سَاعَدَ/سَاعَدَتْ} {name} بَابَا فِي تَجْهِيزِ سَرِيرٍ صَغِيرٍ، {وَاخْتَارَ/وَاخْتَارَتْ} لَهُ دَبْدُوبًا نَاعِمًا. وَجَرَّبَ {companion} الْوِسَادَةَ… مُرِيحَةٌ جِدًّا!"
     text_en: "{name} helped Baba get a little crib ready and chose a soft teddy bear for it. {companion} tested the tiny pillow... very comfy!"
   - index: 4
     layout: full
@@ -157,7 +157,7 @@ pages:
       At the breakfast table, the hero takes one ring off the long colorful paper chain on the wall, chin
       up, curious and impatient.
     companion_action: counts the remaining rings on its fingers
-    text_ar: "كلّ صباح {كانَ/كانَتْ} {name} {ينزعُ/تنزعُ} حلقةً من سلسلة الورق الملوّنة {ويسألُ/وتسألُ}: «متى يصل ضيفنا الصغير؟»"
+    text_ar: "كُلَّ صَبَاحٍ {كَانَ/كَانَتْ} {name} {يَنْزِعُ/تَنْزِعُ} حَلْقَةً مِنْ سِلْسِلَةِ الْوَرَقِ الْمُلَوَّنَةِ {وَيَسْأَلُ/وَتَسْأَلُ}: «مَتَى يَصِلُ ضَيْفُنَا الصَّغِيرُ؟»"
     text_en: "Every morning, {name} took one ring off the colorful paper chain and asked: \"When will our little guest arrive?\""
   - index: 5
     layout: full
@@ -169,7 +169,7 @@ pages:
     scene: >-
       The quiet nursery at night: the white crib with the teddy bear inside, the felt mobile of stars and
       moons turning softly, and silver moonlight falling through the window.
-    text_ar: "وفي الليل، كان السرير الصغير جاهزًا، والدبدوب ينتظر، والنجوم الصغيرة تدور فوقه بهدوء."
+    text_ar: "وَفِي اللَّيْلِ، كَانَ السَّرِيرُ الصَّغِيرُ جَاهِزًا، وَالدَّبْدُوبُ يَنْتَظِرُ، وَالنُّجُومُ الصَّغِيرَةُ تَدُورُ فَوْقَهُ بِهُدُوءٍ."
     text_en: "At night, the little crib was ready, the teddy bear was waiting, and the little stars turned softly above it."
   - index: 6
     layout: full
@@ -183,7 +183,7 @@ pages:
     others: Mama holding a newborn baby, and Baba
     others_count: 3
     companion_action: zooms ahead like a little golden comet
-    text_ar: "وأخيرًا فُتح الباب، ودخلت ماما وبابا ومعهما الضيف الصغير! {ركضَ/ركضَتْ} {name} إلى الباب بسرعة البرق."
+    text_ar: "وَأَخِيرًا فُتِحَ الْبَابُ، وَدَخَلَتْ مَامَا وَبَابَا وَمَعَهُمَا الضَّيْفُ الصَّغِيرُ! {رَكَضَ/رَكَضَتْ} {name} إِلَى الْبَابِ بِسُرْعَةِ الْبَرْقِ."
     text_en: "At last the door opened, and in came Mama and Baba with the little guest! {name} ran to the door as fast as lightning."
   - index: 7
     layout: full
@@ -197,7 +197,7 @@ pages:
     others: a sleeping newborn baby
     others_count: 1
     companion_action: peeks over the edge of the bassinet
-    text_ar: "كان صغيرًا جدًّا، وأصابعه مثل حبّات الحمّص. {همسَ/همسَتْ} {name}: «مرحبًا يا ضيفنا الصغير.»"
+    text_ar: "كَانَ صَغِيرًا جِدًّا، وَأَصَابِعُهُ مِثْلُ حَبَّاتِ الْحِمَّصِ. {هَمَسَ/هَمَسَتْ} {name}: «مَرْحَبًا يَا ضَيْفَنَا الصَّغِيرَ.»"
     text_en: "The little guest was so tiny, with fingers like chickpeas. {name} whispered: \"Hello, little guest.\""
   - index: 8
     layout: spread
@@ -212,7 +212,7 @@ pages:
     others: Mama holding the baby, the grandmother, an aunt, an uncle and a cousin
     others_count: 6
     companion_action: sits on the hero's foot, looking up at the hero
-    text_ar: "جاء الأقارب بالهدايا، وتجمّع الجميع حول الضيف الصغير. {ووقفَ/ووقفَتْ} {name} بعيدًا {يحضنُ/تحضنُ} الدبدوب."
+    text_ar: "جَاءَ الْأَقَارِبُ بِالْهَدَايَا، وَتَجَمَّعَ الْجَمِيعُ حَوْلَ الضَّيْفِ الصَّغِيرِ. {وَوَقَفَ/وَوَقَفَتْ} {name} بَعِيدًا {يَحْضُنُ/تَحْضُنُ} الدَّبْدُوبَ."
     text_en: "Relatives came with presents, and everyone gathered around the little guest. {name} stood a little apart, hugging the teddy bear."
   - index: 9
     layout: full
@@ -224,7 +224,7 @@ pages:
       The hero sits alone on the limestone stairs, hugging both knees, thoughtful and a little sad, in
       soft light from the small window.
     companion_action: sits beside the hero, leaning gently on them
-    text_ar: "{جلسَ/جلسَتْ} {name} على الدرج {وحيدًا/وحيدةً}، {وسألَ/وسألَتْ} {نفسَه/نفسَها}: «هل نسيني الجميع؟»"
+    text_ar: "{جَلَسَ/جَلَسَتْ} {name} عَلَى الدَّرَجِ {وَحِيدًا/وَحِيدَةً}، {وَسَأَلَ/وَسَأَلَتْ} {نَفْسَهُ/نَفْسَهَا}: «هَلْ نَسِيَنِي الْجَمِيعُ؟»"
     text_en: "{name} sat alone on the stairs, wondering: \"Did everyone forget about me?\""
   - index: 10
     layout: full
@@ -236,7 +236,7 @@ pages:
       Close-up of the hero on the stairs listening with wide, hopeful eyes; a soft glowing heart shape
       made of warm light floats in the air.
     companion_action: whispers into the hero's ear
-    text_ar: "همس {companion}: «قلب ماما كبيرٌ جدًّا، وفيه مكانٌ {لكَ/لكِ} لا يتغيّر أبدًا.»"
+    text_ar: "هَمَسَ {companion}: «قَلْبُ مَامَا كَبِيرٌ جِدًّا، وَفِيهِ مَكَانٌ {لَكَ/لَكِ} لَا يَتَغَيَّرُ أَبَدًا.»"
     text_en: "{companion} whispered: \"Mama's heart is very big, and your place in it will never change.\""
   - index: 11
     layout: full
@@ -250,7 +250,7 @@ pages:
     others: Mama and the sleeping baby in the bassinet
     others_count: 2
     companion_action: floats nearby, glowing warmly
-    text_ar: "ثمّ جاءت ماما وضمّت {name} طويلًا وقالت: «{أنتَ بطلي الكبير/أنتِ بطلتي الكبيرة}!»"
+    text_ar: "ثُمَّ جَاءَتْ مَامَا وَضَمَّتْ {name} طَوِيلًا وَقَالَتْ: «{أَنْتَ بَطَلِي الْكَبِيرُ/أَنْتِ بَطَلَتِي الْكَبِيرَةُ}!»"
     text_en: "Then Mama came and gave {name} a long hug: \"You are my big hero!\""
   - index: 12
     layout: split
@@ -263,7 +263,7 @@ pages:
     others: the baby in a bouncer
     others_count: 1
     companion_action: plays a tiny drum to the song
-    text_ar: "{صارَ/صارَتْ} {name} {يساعدُ/تساعدُ}: {يُحضرُ/تُحضرُ} الحفّاضات، {ويغنّي/وتغنّي} للضيف الصغير أغنية القمر."
+    text_ar: "{صَارَ/صَارَتْ} {name} {يُسَاعِدُ/تُسَاعِدُ}: {يُحْضِرُ/تُحْضِرُ} الْحَفَّاضَاتِ، {وَيُغَنِّي/وَتُغَنِّي} لِلضَّيْفِ الصَّغِيرِ أُغْنِيَةَ الْقَمَرِ."
     text_en: "{name} started helping: fetching diapers and singing the moon song to the little guest."
   - index: 13
     layout: full
@@ -277,7 +277,7 @@ pages:
     others: the baby in a bouncer
     others_count: 1
     companion_action: gasps with delight, hands on its cheeks
-    text_ar: "وذات صباح، نظر الضيف الصغير إلى {name}… وابتسم! وكانت أجمل ابتسامةٍ في الدنيا."
+    text_ar: "وَذَاتَ صَبَاحٍ، نَظَرَ الضَّيْفُ الصَّغِيرُ إِلَى {name}… وَابْتَسَمَ! وَكَانَتْ أَجْمَلَ ابْتِسَامَةٍ فِي الدُّنْيَا."
     text_en: "One morning, the little guest looked at {name}... and smiled! It was the most beautiful smile in the world."
   - index: 14
     layout: full
@@ -291,7 +291,7 @@ pages:
     others: the baby on the play mat
     others_count: 1
     companion_action: claps along
-    text_ar: "{علّمَ/علّمَتْ} {name} الضيف الصغير كيف يصفّق: تك، تك، تك! وصفّق {companion} معهما."
+    text_ar: "{عَلَّمَ/عَلَّمَتْ} {name} الضَّيْفَ الصَّغِيرَ كَيْفَ يُصَفِّقُ: تَكْ، تَكْ، تَكْ! وَصَفَّقَ {companion} مَعَهُمَا."
     text_en: "{name} taught the little guest how to clap: clap, clap, clap! And {companion} clapped along."
   - index: 15
     layout: spread
@@ -306,7 +306,7 @@ pages:
     others: Mama, Baba, and the baby in a stroller
     others_count: 3
     companion_action: picks a tiny lemon leaf for the baby
-    text_ar: "في المساء {خرجَ/خرجَتْ} {name} مع العائلة إلى الحديقة، {وأرى/وأرَتْ} الضيفَ الصغير شجرة الليمون والعريشة."
+    text_ar: "فِي الْمَسَاءِ {خَرَجَ/خَرَجَتْ} {name} مَعَ الْعَائِلَةِ إِلَى الْحَدِيقَةِ، {وَأَرَى/وَأَرَتْ} الضَّيْفَ الصَّغِيرَ شَجَرَةَ اللَّيْمُونِ وَالْعَرِيشَةَ."
     text_en: "In the evening, {name} went out to the garden with the family and showed the little guest the lemon tree and the grapevine."
   - index: 16
     layout: full
@@ -320,7 +320,7 @@ pages:
     others: Mama, Baba and the baby
     others_count: 3
     companion_action: pops into the corner of the photo
-    text_ar: "وفي صورة العائلة الجديدة، {جلسَ/جلسَتْ} {name} في الوسط، {ممسكًا/ممسكةً} بيد الضيف الصغير، {فخورًا/فخورةً} {وسعيدًا/وسعيدةً}."
+    text_ar: "وَفِي صُورَةِ الْعَائِلَةِ الْجَدِيدَةِ، {جَلَسَ/جَلَسَتْ} {name} فِي الْوَسَطِ، {مُمْسِكًا/مُمْسِكَةً} بِيَدِ الضَّيْفِ الصَّغِيرِ، {فَخُورًا/فَخُورَةً} {وَسَعِيدًا/وَسَعِيدَةً}."
     text_en: "In the new family photo, {name} sat in the middle, holding the little guest's hand, proud and happy."
   - index: 17
     layout: full
@@ -335,5 +335,5 @@ pages:
     others: the baby sleeping in the crib
     others_count: 1
     companion_action: glows softly beside the crib like a night light
-    text_ar: "وفي الليل، تحت ضوء القمر، {همسَ/همسَتْ} {name}: «تصبح على خير يا ضيفنا الصغير… أنا هنا دائمًا.»"
+    text_ar: "وَفِي اللَّيْلِ، تَحْتَ ضَوْءِ الْقَمَرِ، {هَمَسَ/هَمَسَتْ} {name}: «تُصْبِحُ عَلَى خَيْرٍ يَا ضَيْفَنَا الصَّغِيرَ… أَنَا هُنَا دَائِمًا.»"
     text_en: "That night, under the moonlight, {name} whispered: \"Good night, little guest... I'm always here.\""

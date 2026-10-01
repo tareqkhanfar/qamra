@@ -68,31 +68,31 @@ from qamra_workbook.render.pages.workbook_review2 import (
 from qamra_workbook.render.registry import Built, PageContext, page_type
 
 PEN_LABELS_KG1 = {
-    "horizontal": "خطوط أفقية",
-    "vertical": "خطوط عمودية",
-    "diagonal": "خطوط مائلة",
-    "arc": "أقواس",
-    "wave": "أمواج",
-    "zigzag": "خط متعرّج",
-    "circle": "دوائر",
-    "spiral": "حلزون",
-    "shape": "أشكال",
-    "coloring": "ألوان",
-    "maze": "متاهة",
-    "lane": "داخل الممر",
-    "dot-to-dot": "مثلث",
-    "bridge": "جسور",
-    "loop": "حلقات",
-    "teeth": "أسنان السين",
-    "small-loop": "حلقات مغلقة",
-    "winding": "طريق متعرّج",
-    "grid-copy": "أرسم مثله",
-    "connected": "خطوط متصلة",
-    "connected-rtl": "خط متصل إلى اليسار",
-    "connected-ltr": "خط متصل إلى اليمين",
-    "trace-path": "طريق",
-    "drawing": "أكمل الرسم",
-    "sharp-turns": "منعطفات",
+    "horizontal": "خُطوطٌ أُفُقِيَّةٌ",
+    "vertical": "خُطوطٌ عَمودِيَّةٌ",
+    "diagonal": "خُطوطٌ مائِلَةٌ",
+    "arc": "أَقْواسٌ",
+    "wave": "أَمْواجٌ",
+    "zigzag": "خَطٌّ مُتَعَرِّجٌ",
+    "circle": "دَوائِرُ",
+    "spiral": "حَلَزونٌ",
+    "shape": "أَشْكالٌ",
+    "coloring": "أَلْوانٌ",
+    "maze": "مَتاهَةٌ",
+    "lane": "داخِلَ المَمَرِّ",
+    "dot-to-dot": "مُثَلَّثٌ",
+    "bridge": "جُسورٌ",
+    "loop": "حَلَقاتٌ",
+    "teeth": "أَسْنانُ السّينِ",
+    "small-loop": "حَلَقاتٌ مُغْلَقَةٌ",
+    "winding": "طَريقٌ مُتَعَرِّجٌ",
+    "grid-copy": "أَرْسُمُ مِثْلَهُ",
+    "connected": "خُطوطٌ مُتَّصِلَةٌ",
+    "connected-rtl": "خَطٌّ مُتَّصِلٌ إلى اليَسارِ",
+    "connected-ltr": "خَطٌّ مُتَّصِلٌ إلى اليَمينِ",
+    "trace-path": "طَريقٌ",
+    "drawing": "أُكْمِلُ الرَّسْمَ",
+    "sharp-turns": "مُنْعَطَفاتٌ",
 }
 VOLUME_LETTERS = {1: "أبتثجحخدذ", 2: "رزسشصضطظعغ", 3: "فقكلمنهوي"}
 VOLUME_ENGLISH = {1: "ABCDEF", 2: "IJKLMN", 3: "STUVWX"}
@@ -267,8 +267,8 @@ def kg1_review(ctx: PageContext, r: random.Random) -> Drawn | None:
         return stack(
             ctx,
             [
-                ("أين الحرف في الكلمة؟", letter_place(chosen, words), 1.4),
-                ("أحوّط الصورة التي تبدأ بالحرف", circle_first_letter(letters[:2]), 1.0),
+                ("أَيْنَ الحَرْفُ في الكَلِمَةِ؟", letter_place(chosen, words), 1.4),
+                ("أُحَوِّطُ الصّورَةَ الَّتي تَبْدَأُ بِالحَرْفِ", circle_first_letter(letters[:2]), 1.0),
             ],
             r,
         )
@@ -276,9 +276,9 @@ def kg1_review(ctx: PageContext, r: random.Random) -> Drawn | None:
         return stack(
             ctx,
             [
-                ("أحوّط الحرف نفسه", circle_letter(letters[:3]), 1.0),
-                ("أحوّط الصورة التي تبدأ بالحرف", circle_first_letter(with_pictures(letters, r)[:3]), 1.0),
-                ("أتتبّع الحرف", trace_letters(letters), 0.9),
+                ("أُحَوِّطُ الحَرْفَ نَفْسَهُ", circle_letter(letters[:3]), 1.0),
+                ("أُحَوِّطُ الصّورَةَ الَّتي تَبْدَأُ بِالحَرْفِ", circle_first_letter(with_pictures(letters, r)[:3]), 1.0),
+                ("أَتَتَبَّعُ الحَرْفَ", trace_letters(letters), 0.9),
             ],
             r,
         )
@@ -287,23 +287,23 @@ def kg1_review(ctx: PageContext, r: random.Random) -> Drawn | None:
         return stack(
             ctx,
             [
-                ("أعدّ وأكتب", count_write_any(sorted(r.sample([n for n in numbers if n >= 2], 4))), 1.3),
-                ("أتتبّع الأعداد", trace_numbers_any(numbers[-5:]), 0.8),
-                ("أكتب العدد الناقص", order_numbers(list(range(max(1, top - 4), top + 1))), 0.8),
+                ("أَعُدُّ وَأَكْتُبُ", count_write_any(sorted(r.sample([n for n in numbers if n >= 2], 4))), 1.3),
+                ("أَتَتَبَّعُ الأَعْدادَ", trace_numbers_any(numbers[-5:]), 0.8),
+                ("أَكْتُبُ العَدَدَ النّاقِصَ", order_numbers(list(range(max(1, top - 4), top + 1))), 0.8),
             ],
             r,
         )
     if subject == "math" and "max" in params:
         top = int(params["max"])
         return stack(
-            ctx, [("أجمع بالصور", sums_task(top, False), 1.0), ("أطرح بالصور", sums_task(top, True), 1.0)], r
+            ctx, [("أَجْمَعُ بِالصُّوَرِ", sums_task(top, False), 1.0), ("أَطْرَحُ بِالصُّوَرِ", sums_task(top, True), 1.0)], r
         )
     if subject == "pen":
         return stack(ctx, [pen_task(s) for s in skills[:5]], r)
     if subject == "thinking":
         keys = [THINKING_KG1.get(s, s) for s in skills]
-        extra = {"related": ("أصل ما يناسب", related_task()), "sequence": ("أرتّب القصة", sequence_task())}
-        extra["pattern"] = ("أكمل النمط", pattern_abc_task())
+        extra = {"related": ("أَصِلُ ما يُناسِبُ", related_task()), "sequence": ("أُرَتِّبُ القِصَّةَ", sequence_task())}
+        extra["pattern"] = ("أُكْمِلُ النَّمَطَ", pattern_abc_task())
         tasks: dict[str, Task] = {}
         for k in [*keys, "matching", "pattern", "classify", "odd-one-out"]:
             found = extra.get(k) or THINKING.get(k)
@@ -326,12 +326,12 @@ def kg1_review(ctx: PageContext, r: random.Random) -> Drawn | None:
             ctx,
             [
                 (
-                    "أحوّط الصورة التي تبدأ بالحرف",
+                    "أُحَوِّطُ الصّورَةَ الَّتي تَبْدَأُ بِالحَرْفِ",
                     circle_first_letter(r.sample(list(VOLUME_LETTERS[volume]), 3)),
                     1.1,
                 ),
-                ("أعدّ وأكتب", count_write(counts) if volume == 1 else count_write_any(counts), 1.0),
-                ("أصل الحرف الكبير بالصغير", match_capitals(list(VOLUME_ENGLISH[volume])), 0.9),
+                ("أَعُدُّ وَأَكْتُبُ", count_write(counts) if volume == 1 else count_write_any(counts), 1.0),
+                ("أَصِلُ الحَرْفَ الكَبيرَ بِالصَّغيرِ", match_capitals(list(VOLUME_ENGLISH[volume])), 0.9),
             ],
             r,
         )
@@ -363,7 +363,7 @@ def pen_check_kg1(ctx: PageContext, r: random.Random) -> Drawn:
     """Decision 9 with KG1's strokes: two tracing rows, then the grip / pressure / direction checklist."""
     tracing = [str(t) for t in ctx.page.params.get("tracing", ["wave", "circle"])]
     checklist = [str(c) for c in ctx.page.params.get("checklist", ["grip", "pressure", "direction"])]
-    out = stack(ctx, [(f"أتتبّع: {label}", task, 1.0) for label, task, _ in map(pen_task, tracing)], r, 0, 104)
+    out = stack(ctx, [(f"أَتَتَبَّعُ: {label}", task, 1.0) for label, task, _ in map(pen_task, tracing)], r, 0, 104)
     y = 110.0
     out.body.append(card(0, y, W, 204 - y, r=6, fill="#FFFDF6", stroke="#D8C9AC"))
     out.body.append(
@@ -418,31 +418,31 @@ def kg1_assessment(ctx: PageContext, r: random.Random) -> Drawn | None:
     if subject == "arabic" and letters:
         write = [str(x) for x in params.get("write", [])][:3]
         sections = [
-            ("أقرأ الحروف", read_letters(letters), 0.8),
+            ("أَقْرَأُ الحُروفَ", read_letters(letters), 0.8),
             (
-                "أحوّط الصورة التي تبدأ بالحرف",
+                "أُحَوِّطُ الصّورَةَ الَّتي تَبْدَأُ بِالحَرْفِ",
                 circle_first_letter(r.sample(with_pictures(letters, r), 3)),
                 1.2,
             ),
             (
-                "أكتب الحرف" if write else "أتتبّع الحرف",
+                "أَكْتُبُ الحَرْفَ" if write else "أَتَتَبَّعُ الحَرْفَ",
                 write_letters(write) if write else trace_letters(letters[:3]),
                 1.1,
             ),
         ]
     elif subject == "math" and numbers:
         third = (
-            ("أجمع بالصور", sums_task(3, False), 1.0)
+            ("أَجْمَعُ بِالصُّوَرِ", sums_task(3, False), 1.0)
             if "picture-add" in covers
-            else ("أحوّط المثلثات وألوّن الدوائر", shapes_task(), 0.9)
+            else ("أُحَوِّطُ المُثَلَّثاتِ وَأُلَوِّنُ الدَّوائِرَ", shapes_task(), 0.9)
             if "shapes" in covers
-            else ("أحوّط الكثير", compare_pair("many-few"), 0.9)
+            else ("أُحَوِّطُ الكَثيرَ", compare_pair("many-few"), 0.9)
         )
         counting = r.sample([n for n in numbers if n], min(4, len(numbers)))
         sections = [
-            ("أعدّ وأكتب", count_write(counting) if max(numbers) <= 5 else count_write_any(counting), 1.3),
+            ("أَعُدُّ وَأَكْتُبُ", count_write(counting) if max(numbers) <= 5 else count_write_any(counting), 1.3),
             (
-                "أتتبّع الأعداد",
+                "أَتَتَبَّعُ الأَعْدادَ",
                 trace_numbers(numbers[:6]) if max(numbers) <= 5 else trace_numbers_any(numbers[-5:]),
                 0.8,
             ),
@@ -456,8 +456,8 @@ def kg1_assessment(ctx: PageContext, r: random.Random) -> Drawn | None:
         ]
     elif subject == "thinking":
         keys = [THINKING_KG1.get(s, s) for s in covers]
-        extra = {"related": ("أصل ما يناسب", related_task()), "sequence": ("أرتّب القصة", sequence_task())}
-        extra["pattern"] = ("أكمل النمط", pattern_abc_task())
+        extra = {"related": ("أَصِلُ ما يُناسِبُ", related_task()), "sequence": ("أُرَتِّبُ القِصَّةَ", sequence_task())}
+        extra["pattern"] = ("أُكْمِلُ النَّمَطَ", pattern_abc_task())
         tasks: dict[str, Task] = {}
         for k in [*keys, "matching", "pattern", "classify", "maze"]:
             found = extra.get(k) or THINKING.get(k)

@@ -15,12 +15,12 @@ from qamra_workbook.render.pages.workbook_pen import traced
 from qamra_workbook.render.registry import Built, PageContext, page_type
 
 SHAPE_NAMES = {
-    "circle": "الدائرة",
-    "square": "المربع",
-    "triangle": "المثلث",
-    "rectangle": "المستطيل",
-    "star": "النجمة",
-    "heart": "القلب",
+    "circle": "الدّائِرَةُ",
+    "square": "المُرَبَّعُ",
+    "triangle": "المُثَلَّثُ",
+    "rectangle": "المُسْتَطيلُ",
+    "star": "النَّجْمَةُ",
+    "heart": "القَلْبُ",
 }
 STEP = "#676B83"
 
@@ -432,7 +432,7 @@ def draw_myself(ctx: PageContext) -> Built:
     ]
     body += [star(W / 2 + dx, 8 + abs(dx) / 5, 5, "#F7C84A") for dx in (-36, 0, 36)]
     body.append(card(W / 2 - 30, 184, 60, 20, r=6, fill="#FFFFFF", stroke="#8C90A6", dash="3 2.4", width=0.7))
-    body.append(text("بصمتي", W / 2 + 22, 197, 4.2, cls="wb-muted", color=STEP))
+    body.append(text("بَصْمَتي", W / 2 + 22, 197, 4.2, cls="wb-muted", color=STEP))
     return Built({"svg": svg(body)})
 
 

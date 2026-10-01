@@ -420,17 +420,17 @@ MORE = (
 
 # the colours a colour page names (Addendum 6 §4.6): id → (colour, Arabic name, English name)
 COLORS: dict[str, tuple[str, str, str]] = {
-    "red": (RED, "الأحمر", "red"),
-    "yellow": (YELLOW, "الأصفر", "yellow"),
-    "blue": (BLUE, "الأزرق", "blue"),
-    "green": (LEAF, "الأخضر", "green"),
-    "orange": (ORANGE, "البرتقالي", "orange"),
-    "purple": (PURPLE, "البنفسجي", "purple"),
-    "pink": ("#F4A6B8", "الوردي", "pink"),
-    "black": ("#3A3A48", "الأسود", "black"),
-    "white": (WHITE, "الأبيض", "white"),
-    "brown": (BROWN, "البني", "brown"),
-    "gray": (GRAY, "الرمادي", "gray"),
+    "red": (RED, "الأَحْمَرُ", "red"),
+    "yellow": (YELLOW, "الأَصْفَرُ", "yellow"),
+    "blue": (BLUE, "الأَزْرَقُ", "blue"),
+    "green": (LEAF, "الأَخْضَرُ", "green"),
+    "orange": (ORANGE, "البُرْتُقالِيُّ", "orange"),
+    "purple": (PURPLE, "البَنَفْسَجِيُّ", "purple"),
+    "pink": ("#F4A6B8", "الوَرْدِيُّ", "pink"),
+    "black": ("#3A3A48", "الأَسْوَدُ", "black"),
+    "white": (WHITE, "الأَبْيَضُ", "white"),
+    "brown": (BROWN, "البُنِّيُّ", "brown"),
+    "gray": (GRAY, "الرَّمادِيُّ", "gray"),
 }
 
 JOURNEY_WORDS: dict[str, Picture] = {pic.id: pic for pic in (*ANIMALS, *THINGS, *MORE)}

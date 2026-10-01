@@ -607,7 +607,13 @@ def front_behind(ctx: PageContext) -> Built:
     body.append(card(0, 148, W, 56, r=10, fill="#FFF6F2", stroke="none"))
     body.append(
         text(
-            "ضَعْ دائِرَةً حَوْلَ ما عَلى يَمينِ الشَّجَرَةِ", W - 8, 160, 5.2, cls="wb-label", color="#676B83", anchor="end"
+            ctx.text("{ضَعْ/ضَعي} دائِرَةً حَوْلَ ما عَلى يَمينِ الشَّجَرَةِ"),
+            W - 8,
+            160,
+            5.2,
+            cls="wb-label",
+            color="#676B83",
+            anchor="end",
         )
     )
     body.append(picture("tree", 73, 164, 40))

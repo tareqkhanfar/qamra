@@ -26,11 +26,12 @@ from qamra_workbook.render.registry import Built, PageContext, page_type
 
 HARAKA = {"فتحة": "َ", "ضمة": "ُ", "كسرة": "ِ", "سكون": "ْ"}
 HARAKA_EN = {"fatha": "فتحة", "damma": "ضمة", "kasra": "كسرة", "sukun": "سكون"}
+HARAKA_TITLE = {"فتحة": "الفَتْحَةُ", "ضمة": "الضَّمَّةُ", "كسرة": "الكَسْرَةُ", "سكون": "السُّكونُ"}
 HARAKA_SAY = {  # draft: educator review
-    "فتحة": "خط صغير فوق الحرف، نفتح فمنا: بَ",
-    "ضمة": "واو صغيرة فوق الحرف، نضمّ شفتينا: بُ",
-    "كسرة": "خط صغير تحت الحرف، نكسر صوتنا: بِ",
-    "سكون": "دائرة صغيرة فوق الحرف: لا حركة، الصوت يقف",
+    "فتحة": "خَطٌّ صَغيرٌ فَوْقَ الحَرْفِ، نَفْتَحُ فَمَنا: بَ",
+    "ضمة": "واوٌ صَغيرَةٌ فَوْقَ الحَرْفِ، نَضُمُّ شَفَتَيْنا: بُ",
+    "كسرة": "خَطٌّ صَغيرٌ تَحْتَ الحَرْفِ، نَكْسِرُ صَوْتَنا: بِ",
+    "سكون": "دائِرَةٌ صَغيرَةٌ فَوْقَ الحَرْفِ: لا حَرَكَةَ، الصَّوْتُ يَقِفُ",
 }
 MADD = {"ا": "ا", "و": "و", "ي": "ي"}
 
@@ -105,7 +106,9 @@ def harakat(ctx: PageContext) -> Built:
     color = ctx.style.color
     body = [card(0, 0, W, 34, r=7, fill=ctx.style.tint, stroke="none")]
     body.append(marked_letter("ب", haraka, W - 40, 2, 34, 30, color))
-    body.append(text(f"ال{haraka}", W - 50, 14, 6.2, anchor="end", cls="wb-title", color=ctx.style.deep))
+    body.append(
+        text(HARAKA_TITLE[haraka], W - 50, 14, 6.2, anchor="end", cls="wb-title", color=ctx.style.deep)
+    )
     body.append(text(HARAKA_SAY[haraka], W - 50, 26, 4.4, anchor="end", color=INK))
     cols = 3
     rows = -(-len(letters) // cols)
@@ -120,13 +123,13 @@ def harakat(ctx: PageContext) -> Built:
     if haraka == "سكون":
         words = [str(w) for w in params.get("words", ["أَبْ", "مِنْ", "قُمْ"])]
         body.append(card(0, y, W, 204 - y, r=7))
-        body.append(text("أقرأ: الحرف الساكن يقف", W - 8, y + 10, 4.8, anchor="end", color=ctx.style.deep))
+        body.append(text("أَقْرَأُ: الحَرْفُ السّاكِنُ يَقِفُ", W - 8, y + 10, 4.8, anchor="end", color=ctx.style.deep))
         for k, word in enumerate(words):
             body.append(text(word, W - 30 - k * 52, y + (204 - y) / 2 + 4, 14, cls="wb-word", color=INK))
     else:
         body.append(card(0, y, W, 204 - y, r=7))
         body.append(
-            text("أقرأ الصفّ من اليمين إلى اليسار", W - 8, y + 10, 4.8, anchor="end", color=ctx.style.deep)
+            text("أَقْرَأُ الصَّفَّ مِنَ اليَمينِ إلى اليَسارِ", W - 8, y + 10, 4.8, anchor="end", color=ctx.style.deep)
         )
         line_y = y + (204 - y) / 2 + 4
         for k, char in enumerate(letters):
@@ -559,7 +562,7 @@ def build_words(ctx: PageContext) -> Built:
             body.append(text(part, x + 13, y + pitch / 2 + 4, 11, cls="key-line wb-word", color="#E0483A"))
         answer.append(f"{word}: " + " + ".join(parts))
     r.shuffle(cards)
-    body.append(text("أقصّ البطاقات على الخط المتقطّع", W - 8, 132, 4.8, anchor="end", color=ctx.style.deep))
+    body.append(text("أَقُصُّ البِطاقاتِ عَلى الخَطِّ المُتَقَطِّعِ", W - 8, 132, 4.8, anchor="end", color=ctx.style.deep))
     for k, part in enumerate(cards):
         row, col = divmod(k, 5)
         x, y = W - 4 - (col + 1) * 36, 138 + row * 34

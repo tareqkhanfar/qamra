@@ -164,7 +164,7 @@ scenes:
     time: afternoon
     slots: 4
     scene: The children sit on cushions in the reading corner, listening wide-eyed as the teacher reads a picture book.
-    text_ar: "في رُكْنِ القِصَصِ سافَرْنا بِخَيالِنا إلى القَمَرِ وَالبَحْر. أَكْثَرُ العُيونِ دَهْشَةً: {names}."
+    text_ar: "في رُكْنِ القِصَصِ سافَرْنا بِخَيالِنا إِلى القَمَرِ وَالبَحْر. أَكْثَرُ العُيونِ دَهْشَةً: {names}."
     text_en: "In the story corner our imaginations flew to the moon and the sea. The widest eyes: {names}."
   - key: dressup
     extra: true
@@ -234,5 +234,5 @@ scenes:
     outfit: gown
     slots: 4
     scene: The children in graduation gowns throw their caps into the air in the yard, cheering.
-    text_ar: "ثُمَّ رَمَيْنا قُبَّعاتِنا في الهَواءِ وَهَتَفْنا: إلى الصَّفِّ الأَوَّل! أَعْلى القُبَّعاتِ: {names}."
+    text_ar: "ثُمَّ رَمَيْنا قُبَّعاتِنا في الهَواءِ وَهَتَفْنا: إِلى الصَّفِّ الأَوَّل! أَعْلى القُبَّعاتِ: {names}."
     text_en: "Then we threw our caps in the air and cheered: first grade, here we come! The highest caps: {names}."

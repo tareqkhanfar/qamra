@@ -28,7 +28,8 @@ from qamra_workbook.render.pages.workbook_common import (
 )
 from qamra_workbook.render.registry import Built, PageContext, page_type
 
-CRAYONS = (("#E5604E", "الأحمر"), ("#5E86D6", "الأزرق"), ("#F2B33D", "الأصفر"), ("#5FA85A", "الأخضر"))
+# the crayon names follow «بِـ» in the legend («أُلَوِّنُهُ بِالأَحْمَرِ»)
+CRAYONS = (("#E5604E", "الأَحْمَرِ"), ("#5E86D6", "الأَزْرَقِ"), ("#F2B33D", "الأَصْفَرِ"), ("#5FA85A", "الأَخْضَرِ"))
 # letters that look alike, the distractors a find page draws from (count the dots: Addendum 5 §3)
 LOOKALIKE = {
     "أ": "لد",
@@ -113,7 +114,7 @@ def arabic_find(ctx: PageContext) -> Built:
         body.append(draw.el("circle", cx=x + legend_w - 11, cy=7.5, r=4.6, fill=color))
         shape = shape_of(t)
         body.append(glyph(shape, *fit_lines(shape, x + legend_w - 32, 1.5, 14, 12), color=INK, width=14))
-        body.append(text(f"ألوّنه ب{name}", x + legend_w - 36, 10.2, 4.6, anchor="end", color=color))
+        body.append(text(f"أُلَوِّنُهُ بِ{name}", x + legend_w - 36, 10.2, 4.6, anchor="end", color=color))
     cw, ch, top = W / cols, 26.0, 20.0
     solved_marks = []
     for k, cell in enumerate(grid):
@@ -136,7 +137,7 @@ def arabic_find(ctx: PageContext) -> Built:
         )
     body += solved_marks
     y = top + rows * (ch + 3) + 6
-    body.append(text("أحوّط الحرف الذي تبدأ به الصورة", W - 4, y + 2, 5, anchor="end", color=ctx.style.deep))
+    body.append(text("أُحَوِّطُ الحَرْفَ الَّذي تَبْدَأُ بِهِ الصّورَةُ", W - 4, y + 2, 5, anchor="end", color=ctx.style.deep))
     answer = [f"{t}: {ctx.num(sum(1 for c in grid if c.target == i))} مرات" for i, t in enumerate(targets)]
     problems = _grid_problems(grid, targets)
     used: set[str] = set()

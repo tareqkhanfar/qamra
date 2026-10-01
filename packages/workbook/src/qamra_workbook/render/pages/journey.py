@@ -213,7 +213,7 @@ def certificate(ctx: PageContext) -> Built:
         for s in stops
     ]
     data = {
-        "line": ctx.text(str(ctx.page.params.get("line", "لقد {أنهيتَ/أنهيتِ} «رحلتي الأولى للتعلّم»"))),
+        "line": ctx.text(str(ctx.page.params.get("line", "لَقَدْ {أَنْهَيْتَ/أَنْهَيْتِ} «رِحْلَتي الأولى لِلتَّعَلُّمِ»"))),
         "name": ctx.book.child.name,
         "date": ctx.book.date_ar(),
         "character": ctx.assets.character.resolve().as_uri() if ctx.assets.character else "",

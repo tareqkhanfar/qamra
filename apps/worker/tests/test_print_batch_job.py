@@ -56,7 +56,7 @@ def test_the_printer_gets_one_link_per_file_once(db: Session, storage: ObjectSto
     now = datetime(2026, 9, 29, 9, 0, tzinfo=UTC)
     assert send_batch(db, storage, sender, str(batch.id), BASE, VALUES, now) == "sent"
     [mail] = sender.outbox
-    assert mail.to == "orders@printer.test" and "3 نسخة" in mail.subject
+    assert mail.to == "orders@printer.test" and "عدد النسخ: 3" in mail.subject
     links = re.findall(rf"{BASE}/api/printer/([A-Za-z0-9_-]+)/files/(\d)/(interior|cover)", mail.text)
     assert {(n, kind) for _, n, kind in links} == {
         ("1", "interior"),

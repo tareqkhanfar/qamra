@@ -12,16 +12,16 @@ from qamra_workbook.render.pages.workbook_common import INK, W, card, pic, pictu
 from qamra_workbook.render.registry import Built, PageContext, page_type
 
 UNIT_AR = {
-    "Numbers": "الأعداد",
-    "Colors": "الألوان",
-    "Shapes": "الأشكال",
-    "Family": "العائلة",
-    "Body Parts": "أعضاء الجسم",
-    "Animals": "الحيوانات",
-    "Fruits": "الفواكه",
-    "Food": "الطعام",
-    "Toys": "الألعاب",
-    "School Objects": "أدوات المدرسة",
+    "Numbers": "الأَعْدادُ",
+    "Colors": "الأَلْوانُ",
+    "Shapes": "الأَشْكالُ",
+    "Family": "العائِلَةُ",
+    "Body Parts": "أَعْضاءُ الجِسْمِ",
+    "Animals": "الحَيَواناتُ",
+    "Fruits": "الفَواكِهُ",
+    "Food": "الطَّعامُ",
+    "Toys": "الأَلْعابُ",
+    "School Objects": "أَدَواتُ المَدْرَسَةِ",
 }
 
 

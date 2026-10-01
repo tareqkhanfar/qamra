@@ -62,7 +62,7 @@ def _smile(x: float, y: float, w: float = 4.5) -> Part:
 ANIMALS = (
     _pic(
         "elephant",
-        "فيل",
+        "فِيل",
         "elephant",
         "animal",
         (

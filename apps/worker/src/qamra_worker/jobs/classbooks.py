@@ -410,7 +410,7 @@ async def _draw_cover(job: ClassJob, child_id: str, sem: asyncio.Semaphore) -> N
 
 # ---- print files ------------------------------------------------------------------------------------
 
-MEMORIES = {"ar": "ذِكْرَياتي مَعَ أَصْدِقائي", "en": "Memories with my friends"}
+MEMORIES = {"ar": "ذِكْرَيَاتِي مَعَ أَصْدِقَائِي", "en": "Memories with my friends"}
 FACE_MM, PORTRAIT_MM, COMPANION_MM = 38.0, 124.0, 34.0
 LOGO_MM, CLASS_PHOTO_MM = (60.0, 24.0), (150.0, 88.0)
 

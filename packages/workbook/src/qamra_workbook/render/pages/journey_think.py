@@ -269,7 +269,7 @@ def _panel(story: str, step: int) -> str:
 
 
 STORY_STEPS = {"seed": 3, "handwash": 3}
-ORDER_WORDS = ("أولًا", "ثمّ", "أخيرًا")
+ORDER_WORDS = ("أَوَّلًا", "ثُمَّ", "أَخيرًا")
 
 
 @page_type("sequence-story")

@@ -102,7 +102,7 @@ def owner_page(ctx: PageContext) -> Built:
         "character": character,
         "volume_title": str(ctx.page.params.get("volume_title", "")),
         "level_title": str(ctx.page.params.get("level_title", "")),
-        "lines": ["روضتي", "صفّي", "عمري"],  # draft: educator review
+        "lines": ["رَوْضَتي", "صَفّي", "عُمْري"],  # draft: educator review
     }
     return Built(data)
 
@@ -217,4 +217,4 @@ def unit_opener(ctx: PageContext) -> Built:
 @page_type("blank", frame="full")
 def blank(ctx: PageContext) -> Built:
     """The back of a one-sided sheet (cut & paste): left blank so cutting never destroys an activity."""
-    return Built({"note": "تُركت هذه الصفحة فارغة: على وجهها نشاط القصّ واللصق."})
+    return Built({"note": "تُركت هذه الصفحة فارغة: على الوجه الآخر من الورقة نشاط القصّ واللصق."})

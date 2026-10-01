@@ -115,7 +115,7 @@ def test_the_plan_routes_to_the_kg1_pages_and_the_kg2_ones_it_reuses() -> None:
     page = next(p for p in PLAN.volumes[0].pages if p.n == 31)  # find-letter gets its look-alikes
     assert engine_type_kg1(page) == "kg1-find-letter" and types[31] == "kg1-find-letter"
     assert types[61] == "kg1-color-by-letter" and types3[81] == "kg1-color-by-letter"
-    assert texts_kg1("arabic", "harakat", {"haraka": "damma"}, "")[0] == "أسمع الضمة"
+    assert texts_kg1("arabic", "harakat", {"haraka": "damma"}, "")[0] == "أَسْمَعُ الضَّمَّةَ"
 
 
 def test_every_picture_word_of_kg1_is_drawn_and_the_replaced_words_are_gone() -> None:
@@ -169,7 +169,7 @@ def test_picture_sums_stay_within_five_and_show_their_counts() -> None:
     assert problems == [] and len(answer) == 3 and counts and max(counts) <= 5
     svg, answer, problems = built(one("kg1-picture-subtract", "math", max=4, mode="story"))
     crossed = [int(n) for n in re.findall(r'data-crossed="(\d+)"', svg)]
-    assert problems == [] and all(c >= 1 for c in crossed) and "بقي" in svg
+    assert problems == [] and all(c >= 1 for c in crossed) and "بَقِيَ" in svg
 
 
 def test_pen_rows_run_from_the_start_side_and_the_pen_check_takes_kg1_strokes() -> None:
@@ -179,7 +179,7 @@ def test_pen_rows_run_from_the_start_side_and_the_pen_check_takes_kg1_strokes() 
     svg, _, problems = built(
         one("kg1-assessment", "pen", checklist=["grip", "pressure", "direction"], tracing=["loop", "teeth"])
     )
-    assert problems == [] and "مسكة القلم" in svg and "أسنان السين" in svg
+    assert problems == [] and "مسكة القلم" in svg and "أَسْنانُ السّينِ" in svg
     _, _, problems = built(one("kg1-assessment", "pen", checklist=["grip"], tracing=["wave"]))
     assert problems
 
@@ -201,26 +201,26 @@ def boxes(svg: str, pattern: str) -> list[tuple[float, float, float, float]]:
 def test_number_pages_write_each_number_and_never_show_none() -> None:
     svg, _, problems = built(one("kg1-number-write", "math", numbers=[4, 5, 0], guided=2, independent=1))
     assert problems == [] and svg.count('class="trace-row"') == 4  # a row for each number, then one alone
-    assert "أكتب وحدي: ٤ ٥ ٠" in svg
+    assert "أَكْتُبُ وَحْدي: ٤ ٥ ٠" in svg
     svg, _, problems = built(one("kg1-number-write", "math", numbers=[9, 10], guided=2, independent=1))
     assert (
         problems == [] and svg.count('class="trace-row"') == 3
     )  # two numbers: a full row and a row to go on
     title = texts_kg1("math", "number-write", {"numbers": [1, 2, 3]}, "")
-    assert title and title[0] == "أكتب الأعداد 1 و2 و3"
+    assert title and title[0] == "أَكْتُبُ الأَعْدادَ 1 وَ2 وَ3"
     assert all("None" not in p.title + p.instruction for n in (1, 2, 3) for p in volume(n).pages)
 
 
 def test_texts_name_the_shapes_the_place_words_and_the_number_train_of_the_page() -> None:
-    assert texts_kg1("math", "shapes", {"shapes": ["circle", "square"]}, "")[0] == "الدائرة والمربع"
-    assert texts_kg1("math", "shapes", {"shapes": ["triangle", "rectangle"]}, "")[0] == "المثلث والمستطيل"
+    assert texts_kg1("math", "shapes", {"shapes": ["circle", "square"]}, "")[0] == "الدّائِرَةُ وَالمُرَبَّعُ"
+    assert texts_kg1("math", "shapes", {"shapes": ["triangle", "rectangle"]}, "")[0] == "المُثَلَّثُ وَالمُسْتَطيلُ"
     assert texts_kg1("pen", "pen-lines", {"line": "shape", "shapes": ["square", "triangle"]}, "")[0] == (
-        "المربع والمثلث"
+        "المُرَبَّعُ وَالمُثَلَّثُ"
     )
     assert (
-        texts_kg1("math", "position-words", {"concept": "inside-outside"}, "")[0] == "داخل الصندوق أم خارجه؟"
+        texts_kg1("math", "position-words", {"concept": "inside-outside"}, "")[0] == "داخِلَ الصُّنْدوقِ أَمْ خارِجَهُ؟"
     )
-    assert texts_kg1("math", "pattern-complete", {"kind": "numbers"}, "")[0] == "قطار الأعداد"
+    assert texts_kg1("math", "pattern-complete", {"kind": "numbers"}, "")[0] == "قِطارُ الأَعْدادِ"
 
 
 def test_picture_sums_keep_their_groups_clear_of_the_numerals_and_agree_with_their_nouns() -> None:
@@ -236,13 +236,14 @@ def test_picture_sums_keep_their_groups_clear_of_the_numerals_and_agree_with_the
             for cx, cy, r in rings:  # clear of the three numerals of its row
                 assert x + w <= cx - r or x >= cx + r or y + w <= cy - r or y >= cy + r
     ctx = PageContext(one("kg1-picture-add", "math"), volume(1, range(0)), ASSETS)
-    assert counted(ctx, 1, "bird", subject=True) == "عصفور واحد" and counted(ctx, 1, "bird") == "عصفور"
-    assert counted(ctx, 2, "bird") == "عصفوران" and counted(ctx, 3, "bird") == "٣ عصافير"
-    assert counted(ctx, 1, "apple", subject=True) == "تفاحة واحدة"
-    assert counted(ctx, 2, "apple", subject=True) == "تفاحتان"
-    assert counted(ctx, 2, "apple", accusative=True) == "تفاحتين"
+    assert counted(ctx, 1, "bird", subject=True) == "عُصْفورٌ واحِدٌ" and counted(ctx, 1, "bird") == "عُصْفورٌ"
+    assert counted(ctx, 2, "bird") == "عُصْفورانِ" and counted(ctx, 3, "bird") == "٣ عَصافيرَ"
+    assert counted(ctx, 1, "apple", subject=True) == "تُفّاحَةٌ واحِدَةٌ"
+    assert counted(ctx, 1, "apple", accusative=True) == "تُفّاحَةً"
+    assert counted(ctx, 2, "apple", subject=True) == "تُفّاحَتانِ"
+    assert counted(ctx, 2, "apple", accusative=True) == "تُفّاحَتَيْنِ"
     svg, _, problems = built(one("kg1-picture-add", "math", max=5, mode="story"))
-    assert problems == [] and "١ عصافير" not in svg and "١ تفاحات" not in svg
+    assert problems == [] and "١ عَصافيرَ" not in svg and "١ تُفّاحاتٍ" not in svg
 
 
 def test_counting_to_ten_offers_three_numerals_a_row() -> None:

@@ -36,6 +36,7 @@ from qamra_core.db.models import (
     Character,
     Child,
     FamilyMember,
+    Gender,
     Locale,
     OrderItem,
     Theme,
@@ -185,7 +186,7 @@ async def render_item(db: Session, storage: ObjectStorage, item: OrderItem) -> d
             language=Locale.ar,
             art_style=character.art_style,
             status=BookStatus.generating,
-            title=f"مغامرات {child.first_name} مع عائلتي",
+            title=f"مغامرات {child.first_name} مع {'عائلتها' if child.gender == Gender.f else 'عائلته'}",
             generation={"line": LINE, "order_item_id": str(item.id)},
         )
         db.add(book)

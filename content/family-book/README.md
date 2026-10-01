@@ -30,7 +30,7 @@ proposal:            # Addendum 7 §3, in Arabic
   paper: |           # interior, cover, sticker sheet, card stock
   binding: |         # wire-o; digital vs offset and the break-even
 front:               # pages before the first adventure (title page, «عائلتي», the passport, contents)
-  - {type: passport, title: "جواز سفر المغامر {child}", instruction: "الصق ختمًا بعد كل مغامرة"}
+  - {type: passport, title: "جواز سفر المغامر {child}", instruction: "ألصق ختمًا بعد كل مغامرة"}
 sections:            # the adventures, in the book's order
   - {id: home, title_ar: بيتي مدرسة, icon: 🏠, hook: "…", badge: "مستكشف البيت"}
 activities:          # grouped by section, in order
@@ -40,7 +40,7 @@ activities:          # grouped by section, in order
     goal: …
     skills: [observation, counting]       # from the list below
     child_part: …                         # what the child does alone
-    parent_part: …                        # the grown-up's part («هيا نفعلها معاً!»)
+    parent_part: …                        # the grown-up's part («هيا نفعلها معًا!»)
     together: true
     where: home                           # home | outside
     materials: [ورقة, أقلام تلوين]         # common household items only
@@ -111,7 +111,7 @@ Texts still waiting for the educator are marked `# draft: educator review` in `p
   - Only the placeholders above are allowed.
 - **Activities:**
   - Each has 1+ skills and takes 5–20 minutes.
-  - A «هيا نفعلها معاً!» activity has a parent part and a parent box.
+  - A «هيا نفعلها معًا!» activity has a parent part and a parent box.
 - **Safety:** recipes and outdoor activities carry a safety note. Recipes remind grown-ups about allergies and contain no nuts or raw eggs.
 - **Coverage:**
   - Every skill has at least 3 activities.

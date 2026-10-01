@@ -25,7 +25,7 @@ from qamra_ai.pipeline.vowelize import (
 def test_sources_choose_the_gender_and_keep_the_placeholders() -> None:
     theme = load_theme("graduation")
     girl, boy = sources(theme, "f"), sources(theme, "m")
-    assert "استيقظَتْ {name}" in girl.pages[0].text and "استيقظَ {name}" in boy.pages[0].text
+    assert "اسْتَيْقَظَتْ {name}" in girl.pages[0].text and "اسْتَيْقَظَ {name}" in boy.pages[0].text
     assert "{companion}" in girl.pages[0].text and "/" not in girl.pages[0].text
     assert girl.title == "يوم تخرّج {name}" and "نحبُّكِ" in girl.dedication and len(girl.questions) == 2
     assert source_hash(girl) != source_hash(boy) and source_hash(girl) == source_hash(sources(theme, "f"))

@@ -11,7 +11,7 @@ import math
 from qamra_workbook.geometry import Stroke
 from qamra_workbook.letters import ARABIC
 from qamra_workbook.render import draw
-from qamra_workbook.render.pages.workbook_common import INK, W, card, pic, picture_id, svg, text
+from qamra_workbook.render.pages.workbook_common import INK, W, card, pic, picture_id, picture_of, svg, text
 from qamra_workbook.render.registry import Built, PageContext, page_type
 
 PAIRS = (
@@ -198,7 +198,7 @@ def dot_to_dot(ctx: PageContext) -> Built:
     return Built({"svg": svg(body)}, answer, problems)
 
 
-SHAPE_AR = {"circle": "دائرة", "square": "مربع", "triangle": "مثلث", "rectangle": "مستطيل"}
+SHAPE_AR = {"circle": "دائِرَة", "square": "مُرَبَّع", "triangle": "مُثَلَّث", "rectangle": "مُسْتَطيل"}
 
 
 def shape_stroke(kind: str, cx: float, cy: float, s: float) -> Stroke:
@@ -250,6 +250,9 @@ COLOR_ROWS = {
     "أصفر": ("#F7C84A", ("sun", "banana", "corn")),
     "أخضر": ("#6FAE5F", ("leaf", "cucumber", "tree")),
 }
+# the color names as printed under the crayon
+COLOR_WORDS = {"أحمر": "أَحْمَر", "أزرق": "أَزْرَق", "أصفر": "أَصْفَر", "أخضر": "أَخْضَر"}
+COLOR_WORDS |= {"برتقالي": "بُرْتُقالِيّ", "بنفسجي": "بَنَفْسَجِيّ"}
 
 
 def crayon(x: float, y: float, color: str) -> str:
@@ -282,12 +285,14 @@ def coloring(ctx: PageContext) -> Built:
             y = i * pitch
             body.append(card(0, y + 1, W, pitch - 5, r=7))
             body.append(crayon(W - 44, y + pitch / 2 - 8, color))
-            body.append(text(name, W - 25, y + pitch / 2 + 10, 5.2, color=color))
+            body.append(text(COLOR_WORDS[name], W - 25, y + pitch / 2 + 10, 5.2, color=color))
             for k, thing in enumerate(things):
                 x = W - 92 - k * 46
                 body.append(pic(thing, x, y + 4, pitch - 13, "line"))
                 solved.append(pic(thing, x, y + 4, pitch - 13, "color", class_="key-ring"))
-        answer = [f"{name}: " + "، ".join(t for t in COLOR_ROWS[name][1]) for name in colors]
+        answer = [
+            f"{name}: " + "، ".join(picture_of(t).word_ar for t in COLOR_ROWS[name][1]) for name in colors
+        ]
         return Built({"svg": svg(body + solved)}, answer, [])
     words = [str(w) for w in params.get("words", ["butterfly"])]
     thing = picture_id(words[0])

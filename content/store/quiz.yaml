@@ -10,7 +10,7 @@ rules:
   - goal: gift
     product:
       slug: stories
-      title_ar: قصة قمرة، طفلك بطلها
+      title_ar: قصة قمرة، طفلكم بطلها
       title_en: A Qamra story starring your child
       why_ar: كتاب مطبوع باسمه وشخصيته. أجمل هدية لعيد ميلاد أو مناسبة.
       why_en: A printed book with their name and character. The loveliest gift for a birthday or an occasion.
@@ -28,7 +28,7 @@ rules:
       slug: stories
       title_ar: قصة قمرة
       title_en: A Qamra story
-      why_ar: قصة مطبوعة بطلها طفلك
+      why_ar: قصة مطبوعة بطلها طفلكم
       why_en: A printed story starring your child
 
   - goal: learn

@@ -137,4 +137,4 @@ def test_the_replaced_words_stay_out_of_the_samples() -> None:
     ok = page(50, "finger-trace", "arabic", letter="ذ", word="duck")
     retired = dataclasses.replace(ok, title="حرف الذال: ذ — ذِئْب")
     found = book_problems(BookSpec(b.product, b.title_ar, b.child, (retired,), b.date))
-    assert found == ["test-p50: «ذئب» was replaced by «ذَيل» (decision 2026-09-28)"]
+    assert found == ["test-p50: «ذئب» was replaced by «ذَيْل» (decision 2026-09-28)"]

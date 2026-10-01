@@ -12,7 +12,7 @@ from qamra_workbook.pictures import PICTURES
 from qamra_workbook.pictures.model import strip_tashkeel
 from qamra_workbook.render import draw
 from qamra_workbook.render.foundation_kg1 import HARAKA_AR, LETTER_PICTURES_KG1, LOOKALIKE_KG1
-from qamra_workbook.render.foundation_text import letter_name
+from qamra_workbook.render.foundation_text import letter_name, letters_head
 from qamra_workbook.render.pages.letters import dotted_letter, letter_extent, tracing_row
 from qamra_workbook.render.pages.workbook_arabic import (
     big_track,
@@ -91,7 +91,7 @@ def kg1_letter_trace(ctx: PageContext) -> Built:
     body = [card(0, 0, W, big, r=7)]
     body.append(big_track(shape, 20, 2, 146, big - 4, ctx.num, ctx.style.color, most=0.85))
     body.append(card(5, 5, 30, 10, r=5, fill=ctx.style.tint, stroke="none"))
-    body.append(text("كبير", 20, 12, 5, color=ctx.style.deep))
+    body.append(text("كَبيرٌ", 20, 12, 5, color=ctx.style.deep))
     rows = [s for s in sizes[1:] if s in CAPS] or ["l"]
     if len(rows) == 1:
         rows = rows * 2
@@ -123,7 +123,7 @@ def model_header(ctx: PageContext, chars: list[str], y: float, h: float, note: s
         scale, dx, dy = fit_lines(shape, W - 40 - k * 42, y + 3, 34, h - 6)
         out.append(glyph(shape, scale, dx, dy, color=ctx.style.color, width=15))
         out.append(start_marks(shape, scale, dx, dy, 2.2, ctx.num))
-    out.append(text("أبدأ من النقطة الخضراء وأتبع السهم", 58, y + h / 2 - 3, 5.0, color=INK))
+    out.append(text("أَبْدَأُ مِنَ النُّقْطَةِ الخَضْراءِ وَأَتْبَعُ السَّهْمَ", 58, y + h / 2 - 3, 5.0, color=INK))
     out.append(text(note, 58, y + h / 2 + 6, 4.6, color="#676B83"))
     return out
 
@@ -163,7 +163,7 @@ def kg1_letter_write(ctx: PageContext) -> Built:
     char = str(params.get("letter", "ب"))
     guided, alone = int(params.get("guided", 3)), int(params.get("independent", 1))
     cap = fitting_cap(shape_of(char), guided + alone, 204 - 32, (24.0, 22.0, 20.0, 18.0, 16.0, 14.0, 12.0))
-    body = model_header(ctx, [char], 0, 28, "ثم أكتب على النقاط، ثم وحدي")
+    body = model_header(ctx, [char], 0, 28, "ثُمَّ أَكْتُبُ عَلى النِّقاطِ، ثُمَّ وَحْدي")
     rows, y = writing_rows(ctx, char, guided, alone, cap, 32)
     problems = [] if y <= 208 else [f"the writing rows need {y:.0f} mm (max 204)"]
     if guided < 1 or alone < 1:
@@ -179,10 +179,10 @@ def kg1_letters_write(ctx: PageContext) -> Built:
     guided, alone = int(params.get("guided", 2)), int(params.get("independent", 1))
     per = guided + alone
     cap = fitting_cap(shape_of(chars[0]), per * len(chars), 204 - 26, (16.0, 14.0, 12.0, 11.0, 10.0), 3.0)
-    body = model_header(ctx, chars, 0, 22, "الحرفان يختلفان بالنقاط فقط")
+    body = model_header(ctx, chars, 0, 22, "الحَرْفانِ يَخْتَلِفانِ بِالنِّقاطِ فَقَطْ")
     y = 26.0
     for char in chars:
-        rows, y = writing_rows(ctx, char, guided, alone, cap, y, 3.0, f"حرف {letter_name(char)}")
+        rows, y = writing_rows(ctx, char, guided, alone, cap, y, 3.0, letters_head([char]))
         body += rows
     problems = [] if y <= 208 else [f"the writing rows need {y:.0f} mm (max 204)"]
     return Built({"svg": svg(body)}, None, problems)
@@ -232,7 +232,7 @@ def kg1_harakat(ctx: PageContext) -> Built:
     body = [card(0, 0, W, 48, r=7, fill=ctx.style.tint, stroke="none")]
     names = " و".join(HARAKA_AR[t] for t in targets)
     body.append(text(names, W - 8, 11, 6.2, cls="wb-title", anchor="end", color=ctx.style.deep))
-    body.append(text("أسمع وأقول", 8, 11, 4.8, anchor="start", color=ctx.style.deep))
+    body.append(text("أَسْمَعُ وَأَقولُ", 8, 11, 4.8, anchor="start", color=ctx.style.deep))
     big = 32.0
     left = (W - len(chars) * big - (len(chars) - 1) * 8) / 2
     for k, char in enumerate(chars):  # the first letter at the right, as the book is read
@@ -245,7 +245,7 @@ def kg1_harakat(ctx: PageContext) -> Built:
         y = 54 + i * pitch
         target = targets[i % len(targets)]
         body.append(card(0, y, W, pitch - 5, r=7))
-        body.append(text(f"حرف {letter_name(char)}", W - 8, y + 9, 4.8, anchor="end", color=ctx.style.deep))
+        body.append(text(letters_head([char]), W - 8, y + 9, 4.8, anchor="end", color=ctx.style.deep))
         size = min(pitch - 17, 36.0)
         for k, kind in enumerate(HARAKAT):
             x = W - 30 - (k + 1) * (size + 12)
@@ -449,7 +449,7 @@ def kg1_find_letter(ctx: PageContext) -> Built:
         body.append(draw.el("circle", cx=x + legend_w - 11, cy=7.5, r=4.6, fill=color))
         shape = shape_of(t)
         body.append(glyph(shape, *fit_lines(shape, x + legend_w - 32, 1.5, 14, 12), color=INK, width=14))
-        body.append(text(f"ألوّنه ب{name}", x + legend_w - 36, 10.2, 4.4, anchor="end", color=color))
+        body.append(text(f"أُلَوِّنُهُ بِ{name}", x + legend_w - 36, 10.2, 4.4, anchor="end", color=color))
     cw, pitch, top = W / cols, 29.0, 19.0
     radius = min(14.0, cw / 2 - 2)
     for k, cell in enumerate(grid):
@@ -465,7 +465,7 @@ def kg1_find_letter(ctx: PageContext) -> Built:
             glyph(shape, *fit_lines(shape, cx - side / 2, cy - side / 2, side, side), color=INK, width=15)
         )
     y = top + rows * pitch + 4
-    body.append(text("أحوّط الحرف الذي تبدأ به الصورة", W - 4, y + 4, 5, anchor="end", color=ctx.style.deep))
+    body.append(text("أُحَوِّطُ الحَرْفَ الَّذي تَبْدَأُ بِهِ الصّورَةُ", W - 4, y + 4, 5, anchor="end", color=ctx.style.deep))
     answer = [f"{t}: {ctx.num(sum(1 for c in grid if c.target == i))} مرات" for i, t in enumerate(targets)]
     problems = _grid_problems(grid, targets)
     used: set[str] = set()

@@ -93,7 +93,7 @@ KG1 is the gentler level: the same scope and volume split as KG2, with more pen 
 
   V1 weeks 1–3 have three pen pages each. From V1 week 4, pen settles at about one page a week.
 - **Staggered starts.** V1 opens with pen, thinking and color pages. Alif follows in week 2, and numbers and English in week 4, so the child takes on one new routine at a time. In V2 and V3 every subject runs from week 1.
-- **Units spread over days.** A two-letter unit runs over two to three weeks, woven between other subjects. Each letter is met, traced and practised on different days, then revisited in the review.
+- **Units spread over days.** A two-letter unit runs over two to three weeks, woven between other subjects. Each letter is met, traced and practiced on different days, then revisited in the review.
 - **Review weeks.** V1 week 7, V2 weeks 5 and 9 and V3 weeks 4 and 8 introduce nothing new. Each brings back the last 4–5 letters, closes the units that just ended in the other subjects, and has fewer pages than an average week (the checker enforces it).
 - **Term end.** Each volume's last week has the cross-subject review, the pen-skills check and the four subject assessments. V3 ends with the certificate.
 - **One cut-and-paste activity per volume**, on the front of a sheet whose back is blank (V1 p65, V2 p59, V3 p59).

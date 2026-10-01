@@ -9,7 +9,7 @@ catalog:
   status: available
   name_ar: أوّل يوم في الروضة
   name_en: First Day at Kindergarten
-  tagline_ar: خطوة كبيرة في يوم جديد، وصاحب صغير يقول "أنا معك".
+  tagline_ar: خطوة كبيرة في يوم جديد، وصاحب صغير يقول «أنا معك».
   tagline_en: A big step on a new day, with a little friend who says "I'm with you".
   description_ar: >-
     من صباح الحقيبة الجديدة إلى حكاية القمر في آخر النهار: يعيش طفلك يومه الأول في الروضة،
@@ -93,7 +93,7 @@ blurb_en: "A new backpack, a blue gate, and a little friend who whispers: \"I'm 
 for_parents:
   lesson_ar: >-
     الخطوةُ الأولى في مكانٍ جديد تحتاج شجاعةً صغيرة ويدًا تُمسك بيدنا. {يتعلّمُ/تتعلّمُ} {name} أنّ
-    الخوف شعورٌ طبيعيّ يمرّ، وأنّ أصدقاءً جددًا ينتظروننا خلف الأبواب.
+    الخوف شعورٌ طبيعيّ يمرّ، وأنّ أصدقاءَ جددًا ينتظروننا خلف الأبواب.
   lesson_en: >-
     A first step into a new place takes a little courage and a hand to hold. {name} learns that fear is
     a normal feeling that passes, and that new friends are waiting behind new doors.
@@ -124,7 +124,7 @@ pages:
       The hero sits up in bed, stretching and smiling, eyes bright. The new backpack waits on a small
       chair by the bed; warm dawn light comes through the window.
     companion_action: peeks out from under the pillow, yawning
-    text_ar: "في صباحٍ مُشرق، {اسْتَيْقَظَ/اسْتَيْقَظَتْ} {name} باكرًا {وقلبُه/وقلبُها} يرقص فرحًا. اليوم أوّل يوم في الروضة!"
+    text_ar: "فِي صَبَاحٍ مُشْرِقٍ، {اسْتَيْقَظَ/اسْتَيْقَظَتْ} {name} بَاكِرًا {وَقَلْبُهُ/وَقَلْبُهَا} يَرْقُصُ فَرَحًا. الْيَوْمُ أَوَّلُ يَوْمٍ فِي الرَّوْضَةِ!"
     text_en: "One bright morning, {name} woke up early, heart dancing. Today was the first day of kindergarten!"
   - index: 2
     layout: split
@@ -135,7 +135,7 @@ pages:
       The hero stands in front of a round wooden mirror in the new clothes, zipping up the backpack
       with a proud smile.
     companion_action: hides inside the open backpack, only its eyes showing
-    text_ar: "{لَبِسَ/لَبِسَتْ} {name} {ملابسَه/ملابسَها} الجديدة، {وحَمَلَ/وحَمَلَتْ} {حقيبتَه/حقيبتَها}. ومن داخل الحقيبة همس {companion}: «وأنا قادمٌ {معكَ/معكِ}!»"
+    text_ar: "{لَبِسَ/لَبِسَتْ} {name} {مَلَابِسَهُ/مَلَابِسَهَا} الْجَدِيدَةَ، {وَحَمَلَ/وَحَمَلَتْ} {حَقِيبَتَهُ/حَقِيبَتَهَا}. وَمِنْ دَاخِلِ الْحَقِيبَةِ هَمَسَ {companion}: «وَأَنَا قَادِمٌ {مَعَكَ/مَعَكِ}!»"
     text_en: "{name} put on new clothes and picked up the backpack. From inside, {companion} whispered: \"I'm coming too!\""
   - index: 3
     layout: spread
@@ -150,7 +150,7 @@ pages:
     others: Mama, Baba and a kind grandmother (Teta)
     others_count: 3
     companion_action: sits on the edge of the table, nibbling a tiny olive
-    text_ar: "على الفطور، {جلسَ/جلسَتْ} {name} مع ماما وبابا وستّي. قالت ستّي: «الروضةُ {تنتظرُكَ يا بطل/تنتظرُكِ يا بطلة}!» وضحك الجميع."
+    text_ar: "عَلَى الْفُطُورِ، {جَلَسَ/جَلَسَتْ} {name} مَعَ مَامَا وَبَابَا وَسِتِّي. قَالَتْ سِتِّي: «الرَّوْضَةُ {تَنْتَظِرُكَ يَا بَطَلُ/تَنْتَظِرُكِ يَا بَطَلَةُ}!» وَضَحِكَ الْجَمِيعُ."
     text_en: "At breakfast, {name} sat with Mama, Baba and Teta. Teta smiled: \"The kindergarten is waiting for you, little hero!\" And everyone laughed."
   - index: 4
     layout: full
@@ -164,7 +164,7 @@ pages:
     others: Mama
     others_count: 1
     companion_action: rides on the hero's shoulder, pointing ahead
-    text_ar: "في الطريق، {أمسكَ/أمسكَتْ} {name} بيد ماما، {وعدَّ/وعدَّتْ} أشجار الزيتون واحدةً واحدة: واحدة، اثنتان، ثلاث!"
+    text_ar: "فِي الطَّرِيقِ، {أَمْسَكَ/أَمْسَكَتْ} {name} بِيَدِ مَامَا، {وَعَدَّ/وَعَدَّتْ} أَشْجَارَ الزَّيْتُونِ وَاحِدَةً وَاحِدَةً: وَاحِدَةٌ، اثْنَتَانِ، ثَلَاثٌ!"
     text_en: "On the way, {name} held Mama's hand and counted the olive trees one by one: one, two, three!"
   - index: 5
     layout: full
@@ -176,7 +176,7 @@ pages:
     scene: >-
       The kindergarten seen from across the quiet street: the turquoise gate, the lemon tree heavy with
       yellow lemons, colorful handprints on the limestone wall, and soft morning sun.
-    text_ar: "وهذه هي الروضة! بوّابتها زرقاء، وفي ساحتها شجرةُ ليمون، وعلى جدارها أيادٍ صغيرةٌ ملوّنة."
+    text_ar: "وَهَذِهِ هِيَ الرَّوْضَةُ! بَوَّابَتُهَا زَرْقَاءُ، وَفِي سَاحَتِهَا شَجَرَةُ لَيْمُونٍ، وَعَلَى جِدَارِهَا أَيَادٍ صَغِيرَةٌ مُلَوَّنَةٌ."
     text_en: "And here was the kindergarten! A blue gate, a lemon tree in the yard, and little colorful handprints on the wall."
   - index: 6
     layout: full
@@ -188,7 +188,7 @@ pages:
       At the open gate, the hero stands a little shy and unsure, holding the backpack straps tightly and
       looking in at the yard.
     companion_action: floats in front of the hero's face, giving an encouraging thumbs up
-    text_ar: "عند الباب {شَعَرَ/شَعَرَتْ} {name} بقليلٍ من الخوف. فقال {companion}: «{لا تخَفْ/لا تخافي}، أنا {معكَ/معكِ} دائمًا!»"
+    text_ar: "عِنْدَ الْبَابِ {شَعَرَ/شَعَرَتْ} {name} بِقَلِيلٍ مِنَ الْخَوْفِ. فَقَالَ {companion}: «{لَا تَخَفْ/لَا تَخَافِي}، أَنَا {مَعَكَ/مَعَكِ} دَائِمًا!»"
     text_en: "At the door, {name} felt a little scared. {companion} said: \"Don't worry, I'm always with you!\""
   - index: 7
     layout: full
@@ -202,7 +202,7 @@ pages:
     others: a kind young teacher
     others_count: 1
     companion_action: waves at the teacher from behind the hero
-    text_ar: "استقبلت المعلّمة {name} بابتسامةٍ كبيرة وقالت: «أهلًا {بكَ/بكِ} يا {name}، كنّا {ننتظرُكَ/ننتظرُكِ}!»"
+    text_ar: "اسْتَقْبَلَتِ الْمُعَلِّمَةُ {name} بِابْتِسَامَةٍ كَبِيرَةٍ وَقَالَتْ: «أَهْلًا {بِكَ/بِكِ} يَا {name}، كُنَّا {نَنْتَظِرُكَ/نَنْتَظِرُكِ}!»"
     text_en: "The teacher greeted {name} with a big smile: \"Welcome, {name}! We were waiting for you!\""
   - index: 8
     layout: spread
@@ -216,7 +216,7 @@ pages:
     others: about six other children of different looks and the teacher
     others_count: 7
     companion_action: bounces excitedly on a pile of colorful cushions
-    text_ar: "كان الصفّ مليئًا بالألوان والكتب والمكعّبات والأصدقاء الجدد. {فتحَ/فتحَتْ} {name} {عينيه/عينيها} على وسعهما {وقالَ/وقالَتْ}: «يا لَلروعة!»"
+    text_ar: "كَانَ الصَّفُّ مَلِيئًا بِالْأَلْوَانِ وَالْكُتُبِ وَالْمُكَعَّبَاتِ وَالْأَصْدِقَاءِ الْجُدُدِ. {فَتَحَ/فَتَحَتْ} {name} {عَيْنَيْهِ/عَيْنَيْهَا} عَلَى وُسْعِهِمَا {وَقَالَ/وَقَالَتْ}: «يَا لَلرَّوْعَةِ!»"
     text_en: "The classroom was full of colors, books, blocks and new friends. {name}'s eyes opened wide: \"Wow!\""
   - index: 9
     layout: full
@@ -230,7 +230,7 @@ pages:
     others: two other smiling children
     others_count: 2
     companion_action: carefully balances the last block on top of the tower
-    text_ar: "{جلسَ/جلسَتْ} {name} مع صديقين جديدين، وبنوا معًا برجًا عاليًا من المكعّبات. ووضعَ {companion} المكعّب الأخير… هوب!"
+    text_ar: "{جَلَسَ/جَلَسَتْ} {name} مَعَ صَدِيقَيْنِ جَدِيدَيْنِ، وَبَنَوْا مَعًا بُرْجًا عَالِيًا مِنَ الْمُكَعَّبَاتِ. وَوَضَعَ {companion} الْمُكَعَّبَ الْأَخِيرَ… هُوبْ!"
     text_en: "{name} sat with two new friends, and together they built a tall tower of blocks. {companion} added the very last block... hop!"
   - index: 10
     layout: split
@@ -241,7 +241,7 @@ pages:
       At the easel in the painting corner, the hero paints a big round yellow moon with soft stars on a
       large sheet of paper, a little paint on one cheek.
     companion_action: holds up a tiny paint brush, admiring the moon
-    text_ar: "في ركن الرسم، {رسمَ/رسمَتْ} {name} قمرًا أصفرَ كبيرًا {وقالَ/وقالَتْ}: «هذا قمرُنا يا {companion}!»"
+    text_ar: "فِي رُكْنِ الرَّسْمِ، {رَسَمَ/رَسَمَتْ} {name} قَمَرًا أَصْفَرَ كَبِيرًا {وَقَالَ/وَقَالَتْ}: «هَذَا قَمَرُنَا يَا {companion}!»"
     text_en: "In the art corner, {name} painted a big yellow moon: \"This is our moon, {companion}!\""
   - index: 11
     layout: full
@@ -255,7 +255,7 @@ pages:
     others: two other children on the swings in the background
     others_count: 2
     companion_action: chases a yellow butterfly beside the hero
-    text_ar: "في وقت اللعب، {ركضَ/ركضَتْ} {name} في الساحة كالريح، {وضحكَ/وضحكَتْ} حتى احمرّت {وجنتاه/وجنتاها}."
+    text_ar: "فِي وَقْتِ اللَّعِبِ، {رَكَضَ/رَكَضَتْ} {name} فِي السَّاحَةِ كَالرِّيحِ، {وَضَحِكَ/وَضَحِكَتْ} حَتَّى احْمَرَّتْ {وَجْنَتَاهُ/وَجْنَتَاهَا}."
     text_en: "At playtime, {name} ran across the yard like the wind, laughing until both cheeks turned pink."
   - index: 12
     layout: full
@@ -269,7 +269,7 @@ pages:
     others: two other children at the table
     others_count: 2
     companion_action: sits on the table hugging a tiny grape with both arms
-    text_ar: "في وقت الطعام، {فتحَ/فتحَتْ} {name} علبة الطعام {وشاركَ/وشاركَتْ} {صديقَه/صديقتَها} شرائح التفّاح. المشاركة تجعل الطعام أطيب!"
+    text_ar: "فِي وَقْتِ الطَّعَامِ، {فَتَحَ/فَتَحَتْ} {name} عُلْبَةَ الطَّعَامِ {وَشَارَكَ/وَشَارَكَتْ} {صَدِيقَهُ/صَدِيقَتَهَا} شَرَائِحَ التُّفَّاحِ. الْمُشَارَكَةُ تَجْعَلُ الطَّعَامَ أَطْيَبَ!"
     text_en: "At snack time, {name} opened the lunchbox and shared apple slices with a friend. Sharing makes food taste better!"
   - index: 13
     layout: full
@@ -283,7 +283,7 @@ pages:
     others: the teacher and four other children
     others_count: 5
     companion_action: sits in the hero's lap with the same dreamy face
-    text_ar: "ثمّ جلس الجميع في دائرة، وقرأت المعلّمة حكايةً عن القمر. {أحبَّ/أحبَّتْ} {name} الحكاية، وأحبّها {companion} أيضًا."
+    text_ar: "ثُمَّ جَلَسَ الْجَمِيعُ فِي دَائِرَةٍ، وَقَرَأَتِ الْمُعَلِّمَةُ حِكَايَةً عَنِ الْقَمَرِ. {أَحَبَّ/أَحَبَّتْ} {name} الْحِكَايَةَ، وَأَحَبَّهَا {companion} أَيْضًا."
     text_en: "Then everyone sat in a circle, and the teacher read a story about the moon. {name} loved it, and so did {companion}."
   - index: 14
     layout: full
@@ -297,7 +297,7 @@ pages:
     others: one other child and the teacher in the background
     others_count: 2
     companion_action: carries one tiny block on its head
-    text_ar: "قبل نهاية اليوم، {ساعدَ/ساعدَتْ} {name} الأصدقاء في ترتيب الألعاب. قالت المعلّمة: «شكرًا {يا بطل/يا بطلة}!»"
+    text_ar: "قَبْلَ نِهَايَةِ الْيَوْمِ، {سَاعَدَ/سَاعَدَتْ} {name} الْأَصْدِقَاءَ فِي تَرْتِيبِ الْأَلْعَابِ. قَالَتِ الْمُعَلِّمَةُ: «شُكْرًا {يَا بَطَلُ/يَا بَطَلَةُ}!»"
     text_en: "Before the day ended, {name} helped the friends tidy up the toys. The teacher said: \"Thank you, little helper!\""
   - index: 15
     layout: spread
@@ -311,7 +311,7 @@ pages:
     others: Mama, two friends waving and the teacher
     others_count: 4
     companion_action: flies ahead like a little golden balloon
-    text_ar: "عندما رنّ الجرس، {ركضَ/ركضَتْ} {name} إلى ماما {رافعًا/رافعةً} رسمة القمر: «كان يومًا رائعًا! هل أعود غدًا؟»"
+    text_ar: "عِنْدَمَا رَنَّ الْجَرَسُ، {رَكَضَ/رَكَضَتْ} {name} إِلَى مَامَا {رَافِعًا/رَافِعَةً} رَسْمَةَ الْقَمَرِ: «كَانَ يَوْمًا رَائِعًا! هَلْ أَعُودُ غَدًا؟»"
     text_en: "When the bell rang, {name} ran to Mama, holding up the moon painting: \"It was a wonderful day! Can I come back tomorrow?\""
   - index: 16
     layout: full
@@ -325,7 +325,7 @@ pages:
     others: Baba and the grandmother (Teta)
     others_count: 2
     companion_action: acts out the story beside the hero
-    text_ar: "في المساء، {حكى/حكَتْ} {name} لبابا وستّي عن الأصدقاء والألوان والحكاية. قال بابا: «{أنتَ شجاعٌ/أنتِ شجاعةٌ} جدًّا!»"
+    text_ar: "فِي الْمَسَاءِ، {حَكَى/حَكَتْ} {name} لِبَابَا وَسِتِّي عَنِ الْأَصْدِقَاءِ وَالْأَلْوَانِ وَالْحِكَايَةِ. قَالَ بَابَا: «{أَنْتَ شُجَاعٌ/أَنْتِ شُجَاعَةٌ} جِدًّا!»"
     text_en: "In the evening, {name} told Baba and Teta all about the friends, the colors and the story. Baba said: \"You were so brave!\""
   - index: 17
     layout: full
@@ -338,5 +338,5 @@ pages:
       The hero is tucked in bed, eyes half closed, smiling, lit by a big gentle moon through the window.
       The backpack rests ready by the door and the moon painting is pinned on the wall.
     companion_action: curls up on the pillow next to the hero, glowing softly like a night light
-    text_ar: "وفي الليل، تحت ضوء القمر، {همسَ/همسَتْ} {name} لـ{companion}: «غدًا نعود إلى الروضة معًا.» ثمّ {نامَ/نامَتْ} {مبتسمًا/مبتسمةً}."
+    text_ar: "وَفِي اللَّيْلِ، تَحْتَ ضَوْءِ الْقَمَرِ، {هَمَسَ/هَمَسَتْ} {name} لِـ{companion}: «غَدًا نَعُودُ إِلَى الرَّوْضَةِ مَعًا.» ثُمَّ {نَامَ/نَامَتْ} {مُبْتَسِمًا/مُبْتَسِمَةً}."
     text_en: "That night, under the moonlight, {name} whispered to {companion}: \"Tomorrow we go back together.\" And fell asleep smiling."

@@ -16,12 +16,12 @@ def test_classic_softcover_with_two_add_ons_to_a_cod_order(page: Page) -> None:
     page.get_by_text("غلاف ورقي", exact=True).click()  # Create9: the format
     page.get_by_role("button", name="متابعة للطلب").click()
 
-    expect(page.get_by_role("heading", name="بدك تزيد الفرحة؟")).to_be_visible()  # AddOns
+    expect(page.get_by_role("heading", name="بدكم تزيدوا الفرحة؟")).to_be_visible()  # AddOns
     page.get_by_role("button", name="علبة هدية").click()
     page.get_by_role("button", name="نسخة تلوين").click()
-    expect(page.get_by_text("الكتاب + 2 إضافات")).to_be_visible()
+    expect(page.get_by_text("الكتاب + إضافتان")).to_be_visible()
     money(page, "109 ₪")  # 69 + 15 + 25, the server's total
-    page.get_by_role("button", name="أضف للسلة").click()
+    page.get_by_role("button", name="أضيفوا للسلة").click()
 
     page.wait_for_url("**/cart")
     expect(page.get_by_text("ليان في موسم الزيتون")).to_be_visible()
@@ -43,10 +43,10 @@ def test_magic_hardcover_to_the_cart(page: Page) -> None:
     page.get_by_text("غلاف مقوّى", exact=True).click()
     page.get_by_role("button", name="متابعة للطلب").click()
 
-    expect(page.get_by_role("heading", name="بدك تزيد الفرحة؟")).to_be_visible()
+    expect(page.get_by_role("heading", name="بدكم تزيدوا الفرحة؟")).to_be_visible()
     expect(page.get_by_role("button", name="ترقية إلى غلاف مقوّى")).to_have_count(0)  # already hardcover
     money(page, "139 ₪")
-    page.get_by_role("button", name="أضف للسلة").click()
+    page.get_by_role("button", name="أضيفوا للسلة").click()
 
     page.wait_for_url("**/cart")
     expect(page.get_by_text("قمرة سحري · غلاف مقوّى")).to_be_visible()
@@ -62,14 +62,14 @@ def test_the_gift_toggle_and_card_message(page: Page) -> None:
     saved = lambda r: "/api/store/cart/gift" in r.url and r.request.method == "PUT"  # noqa: E731
     with page.expect_response(saved):
         page.get_by_role("button", name="هذا الطلب هدية").click()
-    note = page.get_by_label("رسالتك على البطاقة")
+    note = page.get_by_label("رسالتكم على البطاقة")
     expect(note).to_have_attribute("maxlength", "200")
     with page.expect_response(saved):
         note.fill("كل عام وأنتِ بطلة حكايتنا يا ليان.\nمن ماما")
         note.blur()
     page.reload()  # kept by the server, not the browser
     expect(page.get_by_role("button", name="هذا الطلب هدية")).to_have_attribute("aria-pressed", "true")
-    expect(page.get_by_label("رسالتك على البطاقة")).to_have_value(
+    expect(page.get_by_label("رسالتكم على البطاقة")).to_have_value(
         "كل عام وأنتِ بطلة حكايتنا يا ليان.\nمن ماما"
     )
     page.get_by_role("link", name="متابعة للعنوان والدفع").click()

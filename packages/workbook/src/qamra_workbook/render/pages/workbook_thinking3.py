@@ -141,7 +141,7 @@ def picture_grid(ctx: PageContext) -> Built:
                 answer.append(f"الصف {ctx.num(a + 1)} العمود {ctx.num(b + 1)}: {PICTURES[thing].word_ar}")
             else:
                 body.append(pic(thing, x + cell * 0.12, y + cell * 0.12, cell * 0.76))
-    body.append(text("كل صورة مرة واحدة في كل صف وعمود", W / 2, 196, 4.8, color=ctx.style.deep))
+    body.append(text("كُلُّ صورَةٍ مَرَّةً واحِدَةً في كُلِّ صَفٍّ وَعَمودٍ", W / 2, 196, 4.8, color=ctx.style.deep))
     answer = answer[:3]
     problems = (
         []
@@ -156,7 +156,7 @@ def picture_grid(ctx: PageContext) -> Built:
 @page_type("classify-table")
 def classify_table(ctx: PageContext) -> Built:
     """Shapes sorted by colour (rows) and shape (columns): draw each shape where it belongs."""
-    colors = (("#E5604E", "أحمر"), ("#5E86D6", "أزرق"), ("#6FAE5F", "أخضر"))
+    colors = (("#E5604E", "أَحْمَر"), ("#5E86D6", "أَزْرَق"), ("#6FAE5F", "أَخْضَر"))
     kinds = ("circle", "square", "triangle")
     r = ctx.rng("table")
     y0, cw, ch = 30.0, (W - 16 - 30) / 3, 40.0
@@ -190,7 +190,7 @@ def classify_table(ctx: PageContext) -> Built:
             )
     y = y0 + 3 * ch + 8
     body.append(
-        text("هذه الأشكال: أرسم كل شكل في مكانه بلونه", W - 8, y + 6, 4.8, anchor="end", color=ctx.style.deep)
+        text("هَذِهِ الأَشْكالُ: أَرْسُمُ كُلَّ شَكْلٍ في مَكانِهِ بِلَوْنِهِ", W - 8, y + 6, 4.8, anchor="end", color=ctx.style.deep)
     )
     items = [(kind, color) for kind in kinds for color, _ in colors]
     r.shuffle(items)
@@ -208,7 +208,7 @@ def memory_order(ctx: PageContext) -> Built:
     r = ctx.rng("order")
     seen = r.sample(POOL, count)
     body = [card(0, 0, W, 72, r=8, fill="#FFF6F2")]
-    body.append(text("أنظر إلى الترتيب وأتذكّره", W - 8, 11, 5.2, anchor="end", color=ctx.style.deep))
+    body.append(text("أَنْظُرُ إلى التَّرْتيبِ وَأَتَذَكَّرُهُ", W - 8, 11, 5.2, anchor="end", color=ctx.style.deep))
     step = (W - 16) / count
     for k, thing in enumerate(seen):
         cx = W - 8 - (k + 0.5) * step
@@ -225,7 +225,7 @@ def memory_order(ctx: PageContext) -> Built:
     )
     body.append(
         text(
-            "أغطّي الصور، ثم أكتب رقم كل صورة حسب ترتيبها", W - 8, 92, 5.2, anchor="end", color=ctx.style.deep
+            "أُغَطّي الصُّوَرَ، ثُمَّ أَكْتُبُ رَقْمَ كُلِّ صورَةٍ حَسَبَ تَرْتيبِها", W - 8, 92, 5.2, anchor="end", color=ctx.style.deep
         )
     )
     order = _deranged(r, count)
@@ -343,7 +343,7 @@ def problem_drawing(ctx: PageContext) -> Built:
     body.append(card(W - 100, 184, 96, 16, r=8, fill="#FFFFFF", stroke="none"))
     body.append(
         text(
-            "كيف تعبر البطة إلى الضفة الأخرى؟ أرسم الحلّ", W - 8, 194.2, 5, anchor="end", color=ctx.style.deep
+            "كَيْفَ تَعْبُرُ البَطَّةُ إلى الضِّفَّةِ الأُخْرى؟ أَرْسُمُ الحَلَّ", W - 8, 194.2, 5, anchor="end", color=ctx.style.deep
         )
     )
     return Built({"svg": svg(body)}, ["أي حلّ معقول: جسر، قارب، طوف من الأغصان…"], [])

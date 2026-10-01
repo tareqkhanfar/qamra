@@ -40,21 +40,22 @@ SCENE = (
     ("square", 20, 172, 16),
     ("triangle", 178, 84, 16),
 )
-STORY_ADD = ("{a} على الشجرة، جاء {b}. كم صار العدد؟", "bird")
-STORY_SUB = ("كان معنا {a}، أكلنا {b}. كم بقي؟", "apple")
-# the counted noun: (singular, nominative dual, accusative dual, plural, the word «one» that agrees with it)
+STORY_ADD = ("{a} عَلى الشَّجَرَةِ، جاءَ {b}. كَمْ صارَ العَدَدُ؟", "bird")
+STORY_SUB = ("كانَ مَعَنا {a}، أَكَلْنا {b}. كَمْ بَقِيَ؟", "apple")
+# the counted noun, vowelised: (singular, accusative singular, nominative dual, accusative dual, the plural
+# after 3–10 (genitive), the word «one» that agrees with it)
 NOUNS = {
-    "bird": ("عصفور", "عصفوران", "عصفورين", "عصافير", "واحد"),
-    "apple": ("تفاحة", "تفاحتان", "تفاحتين", "تفاحات", "واحدة"),
+    "bird": ("عُصْفورٌ", "عُصْفورًا", "عُصْفورانِ", "عُصْفورَيْنِ", "عَصافيرَ", "واحِدٌ"),
+    "apple": ("تُفّاحَةٌ", "تُفّاحَةً", "تُفّاحَتانِ", "تُفّاحَتَيْنِ", "تُفّاحاتٍ", "واحِدَةٌ"),
 }
 
 
 def counted(ctx: PageContext, n: int, thing: str, *, accusative: bool = False, subject: bool = False) -> str:
-    """«عصفور واحد، عصفوران، ٣ عصافير»: the noun agrees with its number (a lone `n` = 1 after a verb says only
-    the singular: «جاء عصفور»)."""
-    one, two, two_acc, many, word_one = NOUNS[thing]
+    """«عُصْفورٌ واحِدٌ، عُصْفورانِ، ٣ عَصافيرَ»: the noun agrees with its number (a lone `n` = 1 after a verb
+    says only the singular: «جاءَ عُصْفورٌ», «أَكَلْنا تُفّاحَةً»)."""
+    one, one_acc, two, two_acc, many, word_one = NOUNS[thing]
     if n == 1:
-        return f"{one} {word_one}" if subject else one
+        return f"{one} {word_one}" if subject else one_acc if accusative else one
     if n == 2:
         return two_acc if accusative else two
     return f"{ctx.num(n)} {many}"
@@ -336,7 +337,7 @@ def kg1_number_write(ctx: PageContext) -> Built:
         y += height + 3 + gap
     names = " ".join(ctx.num(n) for n in numbers)
     for _ in range(alone):
-        body.append(text(f"أكتب وحدي: {names}", W - 6, y + 5.4, 4.8, anchor="end", color=ctx.style.deep))
+        body.append(text(f"أَكْتُبُ وَحْدي: {names}", W - 6, y + 5.4, 4.8, anchor="end", color=ctx.style.deep))
         row, height = number_rows(ctx, numbers[0], cap, 0, y + label + 1.5)
         body.append(card(0, y + label, W, height + 3, r=6, fill="#FFFDF6"))
         body.append(row)

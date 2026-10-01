@@ -158,7 +158,7 @@ samples:
       n: 113
       section: games
       type: spot-difference
-      title: "{أوجد/أوجدي} الفروق الخمسة"
+      title: "{جِد/جِدي} الفروق الخمسة"
       instruction: "{ضع/ضعي} دائرة حول كل فرق"
       skill: "الانتباه والملاحظة: يقارن صورتين ويجد 5 فروق"
       goals: [attention, observation, visual_discrimination]

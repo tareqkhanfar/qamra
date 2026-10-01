@@ -149,7 +149,7 @@ def letter_dot_to_dot(ctx: PageContext) -> Built:
     return Built({"svg": svg(body)}, [f"الصورة: سمكة، الحروف من الألف إلى {to}"], problems)
 
 
-SHAPE_AR4 = {"circle": "دائرة", "square": "مربع", "triangle": "مثلث", "rectangle": "مستطيل"}
+SHAPE_AR4 = {"circle": "دائِرَة", "square": "مُرَبَّع", "triangle": "مُثَلَّث", "rectangle": "مُسْتَطيل"}
 SHAPE_COLORS4 = {"circle": "#EE8A6E", "square": "#7DB46C", "triangle": "#5E86D6", "rectangle": "#F2B33D"}
 
 

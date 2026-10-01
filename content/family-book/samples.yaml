@@ -33,7 +33,7 @@ samples:
     page:
       type: passport
       title: "جواز سفر {المغامر الصغير/المغامرة الصغيرة}"
-      instruction: "{الصق/الصقي} ختمًا بعد كل مغامرة"
+      instruction: "{ألصق/ألصقي} ختمًا بعد كل مغامرة"
       parent:
         - "بعد كل مغامرة، {ساعدوه/ساعدوها} على لصق الختم من ورقة الملصقات، واحتفلوا معًا."
       params:
@@ -80,7 +80,7 @@ samples:
     page:
       type: memory-page
       title: ذكرى اليوم
-      instruction: "{الصق/الصقي} صورة أو {ارسم/ارسمي} مغامرتنا"
+      instruction: "{ألصق/ألصقي} صورة أو {ارسم/ارسمي} مغامرتنا"
       parent:
         - "اكتبوا ما قاله {child}، وأضيفوا كلمة من {adult}."
       params: {adult: ستّي}
@@ -110,7 +110,7 @@ samples:
       parent:
         - "{دعوه/دعوها} {يعدّ/تعدّ} الملاعق {ويدحرج/وتدحرج} الكرات {بيديه/بيديها}."
         - "سمّوا المكوّنات معًا: لبنة، زعتر، زيت زيتون."
-        - "صوّروا الطبق مع {adult}، والصقوا الصورة في «ذكرى اليوم»."
+        - "صوّروا الطبق مع {adult}، وألصقوا الصورة في «ذكرى اليوم»."
       params:
         adult: ستّي
         ingredients:
@@ -181,7 +181,7 @@ inserts:
     page:
       type: badge-sticker-sheet
       title: ورقة الملصقات
-      instruction: "{الصق/الصقي} كل ختم في جوازك"
+      instruction: "{ألصق/ألصقي} كل ختم في جوازك"
       params:
         stamps:  # each adventure's stamp (the plan's section badges); one that is also a badge shares it
           - {section: home, label: "{مستكشف/مستكشفة} البيت"}

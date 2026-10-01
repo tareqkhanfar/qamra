@@ -21,7 +21,7 @@ cover:
 
 pages:
   # ---- البداية
-  1: {type: journey-owner, title: "هذا الكِتابُ لِـ {child}", instruction: "{ضَعْ كَفَّكَ/ضَعي كَفَّكِ} هُنا", params: {subtitle: "المحطة الأولى: أستعدّ للرحلة", lines: ["عُمْري", "بَدَأْتُ رِحْلَتي في"]}}  # draft: educator review
+  1: {type: journey-owner, title: "هَذا الكِتابُ لِـ {child}", instruction: "{ضَعْ كَفَّكَ/ضَعي كَفَّكِ} هُنا", params: {subtitle: "المَحَطَّةُ الأولى: أَسْتَعِدُّ لِلرِّحْلَةِ", lines: ["عُمْري", "بَدَأْتُ رِحْلَتي في"]}}  # draft: educator review
   2: {title: "خَريطَةُ رِحْلَةِ {child}", instruction: "{ضَعْ مُلْصَقَكَ/ضَعي مُلْصَقَكِ} عِنْدَ البِدايَةِ", params: {stops: [أفكر, ألاحظ, أسمع, "أحرّك يدي", "أمسك القلم", أتتبع, أكتب, أقرأ, "أحل وأبدع"]}}  # draft: educator review
 
   # ---- 🧠 أدرّب عقلي
@@ -56,7 +56,7 @@ pages:
   27: {type: journey-opener, title: "أَسْمَعُ: أَسْمَعُ وَأُمَيِّزُ", instruction: "{حَرِّكْ بَطَلَكَ/حَرِّكي بَطَلَتَكِ} إلى «أَسْمَعُ»", params: {stop: أسمع, inside: ["أُمَيِّزُ أَصْواتَ الحَيَواناتِ وَالأَشْياءِ", "العالي وَالمُنْخَفِضُ، السَّريعُ وَالبَطيءُ", "أَسْمَعُ الكَلِمَةَ وَأَجِدُ صورَتَها"]}}  # draft: educator review
   28:  # draft: educator review
     type: listen-rows
-    title: "مَنْ يُصْدِرُ هذا الصَّوْتَ؟"
+    title: "مَنْ يُصْدِرُ هَذا الصَّوْتَ؟"
     instruction: "{اسْتَمِعْ/اسْتَمِعي} {وَضَعْ/وَضَعي} دائِرَةً حَوْلَ الحَيَوانِ"
     params: {rows: [[cow, cat, rooster], [sheep, cat, duck], [dog, cow, rooster]], answers: [cow, cat, rooster]}
     audio: {say: "الصوت الأول: بقرة تخور. الصوت الثاني: قطة تموء. الصوت الثالث: ديك يصيح.", show: ["بَقَرَة", "قِطَّة", "دِيك"]}
@@ -163,7 +163,7 @@ pages:
   92: {title: "ماذا تَعَلَّمْتُ؟", instruction: "{اتْبَعِ/اتْبَعي} الطَّريقَ {وَارْسُمِ/وَارْسُمي} القَوارِبَ", params: {tasks: [right-to-left, boats-dots, boat-on-line], cheer: "رائِعٌ يا {child}!"}}  # draft: educator review
 
   # ---- 🔠 الإنجليزية (by ear: words heard and pointed at, no letters yet)
-  93: {type: journey-opener, title: "أَقْرَأُ: Hello", instruction: "{حَرِّكْ بَطَلَكَ/حَرِّكي بَطَلَتَكِ} إلى «أَقْرَأُ»", params: {stop: أقرأ, inside: ["أَسْمَعُ أَسْماءَ الحَيَواناتِ بِالإِنْجليزِيَّةِ", "أَسْمَعُ الأَلْوانَ وَأُلَوِّنُ"]}}  # draft: educator review
+  93: {type: journey-opener, title: "أَقْرَأُ: Hello", instruction: "{حَرِّكْ بَطَلَكَ/حَرِّكي بَطَلَتَكِ} إلى «أَقْرَأُ»", params: {stop: أقرأ, inside: ["أَسْمَعُ أَسْماءَ الحَيَواناتِ بِالإِنْجِليزِيَّةِ", "أَسْمَعُ الأَلْوانَ وَأُلَوِّنُ"]}}  # draft: educator review
   94:  # draft: educator review
     title: "Animals"
     instruction: "{اسْتَمِعْ/اسْتَمِعي} {وَأَشِرْ/وَأَشيري} إلى الحَيَوانِ"
@@ -198,7 +198,7 @@ pages:
   # ---- 🧩 ألعاب التفكير
   110: {type: journey-opener, title: "أَحُلُّ وَأُبْدِعُ: أَلْعابُ التَّفْكيرِ", instruction: "{حَرِّكْ بَطَلَكَ/حَرِّكي بَطَلَتَكِ} إلى أَلْعابِ التَّفْكيرِ", params: {stop: "أحل وأبدع", inside: ["أَجِدُ الفُروقَ", "أُطابِقُ القِطْعَةَ وَالظِّلَّ", "أَحُلُّ الحَزّورَةَ"]}}  # draft: educator review
   111: {title: "ثَلاثَةُ فُروقٍ", instruction: "{ضَعْ/ضَعي} دائِرَةً حَوْلَ الفُروقِ الثَّلاثَةِ", params: {seed: 97, count: 3}}  # draft: educator review
-  112: {title: "أَيْنَ هذِهِ القِطْعَةُ؟", instruction: "{صِلْ/صِلي} كُلَّ قِطْعَةٍ بِصورَتِها", params: {items: ["duck:beak", "house:window", "car:wheel"]}}  # draft: educator review
+  112: {title: "أَيْنَ هَذِهِ القِطْعَةُ؟", instruction: "{صِلْ/صِلي} كُلَّ قِطْعَةٍ بِصورَتِها", params: {items: ["duck:beak", "house:window", "car:wheel"]}}  # draft: educator review
   113: {title: "حَزّورَةٌ", instruction: "{اسْمَعِ/اسْمَعي} اللُّغْزَ {وَضَعْ/وَضَعي} دائِرَةً حَوْلَ الجَوابِ", params: {riddle: "أَنا صَفْراءُ وَطَويلَةٌ، يُحِبُّني القِرْدُ", answer: banana, choices: [apple, banana, carrot]}}  # draft: educator review
   114: {title: "ظِلالُ الحَيَواناتِ", instruction: "{صِلْ/صِلي} كُلَّ حَيَوانٍ بِظِلِّهِ", params: {items: [camel, giraffe, rabbit, elephant]}}  # draft: educator review
   115: {title: "ماذا تَعَلَّمْتُ؟", instruction: "{جِدِ/جِدي} الفَرْقَ {وَصِلِ/وَصِلي} الظِّلَّ", params: {tasks: [spot-difference, shadow], cheer: "رائِعٌ يا {child}!"}}  # draft: educator review

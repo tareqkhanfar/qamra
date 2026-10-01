@@ -7,7 +7,7 @@ from __future__ import annotations
 from markupsafe import Markup
 
 from qamra_workbook.render import draw
-from qamra_workbook.render.foundation_text import letter_name
+from qamra_workbook.render.foundation_text import letters_head
 from qamra_workbook.render.pages.letters import letter_extent, tracing_row
 from qamra_workbook.render.pages.workbook_arabic import empty_row, row_svg
 from qamra_workbook.render.pages.workbook_common import (
@@ -48,8 +48,8 @@ def letters_write(ctx: PageContext) -> Built:
         scale, dx, dy = fit_lines(shape, W - 40 - k * 42, 3, 34, 24)
         body.append(glyph(shape, scale, dx, dy, color=ctx.style.color, width=15))
         body.append(start_marks(shape, scale, dx, dy, 2.0, ctx.num))
-    body.append(text("الحرفان يختلفان بالنقاط فقط", 50, 13, 5, color=INK))
-    body.append(text("أكتب على النقاط، ثم وحدي", 50, 22, 4.6, color="#676B83"))
+    body.append(text("الحَرْفانِ يَخْتَلِفانِ بِالنِّقاطِ فَقَطْ", 50, 13, 5, color=INK))
+    body.append(text("أَكْتُبُ عَلى النِّقاطِ، ثُمَّ وَحْدي", 50, 22, 4.6, color="#676B83"))
     y = 35.0
     rows = len(chars) * (guided + alone)
     cap = 14.0 if rows <= 4 else 11.0
@@ -57,7 +57,7 @@ def letters_write(ctx: PageContext) -> Built:
     for char in chars:
         shape = shape_of(char)
         body.append(card(W - 30, y - 1, 28, 10, r=5, fill=ctx.style.tint, stroke="none"))
-        body.append(text(f"حرف {letter_name(char)}", W - 16, y + 6, 4.2, color=ctx.style.deep))
+        body.append(text(letters_head([char]), W - 16, y + 6, 4.2, color=ctx.style.deep))
         if len(chars) >= 3:  # three letters: one row each, two dotted then room to write alone
             row = tracing_row(shape, width=W - 10, cap=cap, count=2, number=ctx.num)
             part, height = row_svg(row, 5, y + 10)

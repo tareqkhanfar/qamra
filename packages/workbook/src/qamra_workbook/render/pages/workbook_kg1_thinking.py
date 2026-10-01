@@ -25,6 +25,7 @@ from qamra_workbook.render.pages.workbook_kg1_activity import code_shape
 from qamra_workbook.render.pages.workbook_math import group
 from qamra_workbook.render.pages.workbook_review import compact
 from qamra_workbook.render.pages.workbook_thinking import POOL
+from qamra_workbook.render.pages.workbook_thinking2 import GROUP_WORDS
 from qamra_workbook.render.registry import Built, PageContext, page_type
 
 NEED = {"umbrella": "raindrop", "coat": "snowflake", "water": "sprout", "lamp": "moon"}
@@ -161,7 +162,7 @@ def kg1_story_sequence(ctx: PageContext) -> Built:
     cut_top = 6 + rows * (fh + gap) + 14
     body.append(
         text(
-            "أقصّ على الخط المتقطّع وألصق بالترتيب", W - 6, cut_top - 4, 4.8, anchor="end", color=ctx.style.deep
+            "أَقُصُّ عَلى الخَطِّ المُتَقَطِّعِ وَأُلْصِقُ بِالتَّرْتيبِ", W - 6, cut_top - 4, 4.8, anchor="end", color=ctx.style.deep
         )
     )
     for k, i in enumerate(order):
@@ -206,9 +207,9 @@ def kg1_classify(ctx: PageContext) -> Built:
                     "path", d=basket + " Z", fill=fill, stroke=INK, stroke_width=0.8, stroke_linejoin="round"
                 )
             )
-            body.append(text(name, cx, 183, 6.4, cls="wb-title", color=ink))
+            body.append(text(GROUP_WORDS.get(name, name), cx, 183, 6.4, cls="wb-title", color=ink))
         else:
-            body.append(text(name, cx, 158, 7, cls="wb-title", color=ctx.style.deep))
+            body.append(text(GROUP_WORDS.get(name, name), cx, 158, 7, cls="wb-title", color=ctx.style.deep))
             if name in GROUPS:
                 body.append(pic(GROUPS[name][-1], cx - 14, 164, 28, "line"))
         body.append(hook(cx, 138))
@@ -235,7 +236,7 @@ def kg1_memory(ctx: PageContext) -> Built:
     step = (W - 16) / count
     size = min(30.0, step - 3)
     body = [card(0, 0, W, 66, r=8, fill="#FFF6F2")]
-    body.append(text("أنظر جيدًا وأتذكّر", W - 8, 10, 5, anchor="end", color=ctx.style.deep))
+    body.append(text("أَنْظُرُ جَيِّدًا وَأَتَذَكَّرُ", W - 8, 10, 5, anchor="end", color=ctx.style.deep))
     slots = [W - 8 - (k + 1) * step + (step - size) / 2 for k in range(count)]
     for x, thing in zip(slots, seen, strict=True):
         body.append(pic(thing, x, 22, size))
@@ -247,7 +248,7 @@ def kg1_memory(ctx: PageContext) -> Built:
             stroke_dasharray="3 2",
         )
     )
-    body.append(text("أغطّي الصور بورقة، ثم أنظر هنا", W - 8, 86, 5, anchor="end", color=ctx.style.deep))
+    body.append(text("أُغَطّي الصُّوَرَ بِوَرَقَةٍ، ثُمَّ أَنْظُرُ هُنا", W - 8, 86, 5, anchor="end", color=ctx.style.deep))
     body.append(card(0, 92, W, 50, r=8))
     for k, (x, thing) in enumerate(zip(slots, seen, strict=True)):
         if k == gone:
@@ -255,7 +256,7 @@ def kg1_memory(ctx: PageContext) -> Built:
             body.append(text("؟", x + size / 2, 124, 11, cls="wb-title", color="#B8B2A6"))
         else:
             body.append(pic(thing, x, 102, size))
-    body.append(text("أي صورة اختفت؟ أحوّطها", W - 8, 156, 5, anchor="end", color=ctx.style.deep))
+    body.append(text("أَيُّ صورَةٍ اخْتَفَتْ؟ أُحَوِّطُها", W - 8, 156, 5, anchor="end", color=ctx.style.deep))
     for k, thing in enumerate(options):
         cx = W - 36 - k * 58
         body.append(card(cx - 24, 162, 48, 40, r=6))

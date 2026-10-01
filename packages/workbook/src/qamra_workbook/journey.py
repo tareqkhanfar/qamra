@@ -96,7 +96,7 @@ STAGE_ONE_NUMERALS = range(1, 6)  # decision §3: stage 1 recognizes 1–5 and m
 SMALL_SECTION = 5
 STRUCTURE_TYPES = ("section-opener", "what-i-learned")
 # Decision §5 (and the دوسية's §7): retired words and their replacements; لسان and ضرس stay.
-RETIRED_WORDS = {"ظبي": "ظِلّ", "ذئب": "ذَيل"}
+RETIRED_WORDS = {"ظبي": "ظِلّ", "ذئب": "ذَيْل"}
 # §2: the development goals every plan must map to pages
 GOALS = (
     "attention",

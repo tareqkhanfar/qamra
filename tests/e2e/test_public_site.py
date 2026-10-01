@@ -80,7 +80,7 @@ def test_the_menu_and_the_footer_are_the_launch_structure(visitor: Page) -> None
 
 def test_the_home_shows_the_four_offers_with_prices(visitor: Page) -> None:
     visitor.goto(f"{BASE_URL}/ar", wait_until="load")
-    expect(visitor.get_by_role("heading", level=1)).to_have_text("كتب مطبوعة باسم طفلك")
+    expect(visitor.get_by_role("heading", level=1)).to_have_text("كتب مطبوعة باسم طفلكم")
     for href in ("/ar/stories?line=classic", "/ar/stories?line=magic", "/ar/workbooks", "/ar/kindergartens"):
         card = visitor.locator(f'a[data-reveal][href="{href}"]')  # the offer cards, not the menu links
         expect(card).to_be_visible()
@@ -97,7 +97,7 @@ def test_the_activity_books_hub_lists_three_books_each_orderable(visitor: Page) 
             "href", f"/ar/workbooks/{slug}"
         )
         visitor.goto(f"{BASE_URL}/ar/workbooks/{slug}", wait_until="load")
-        expect(visitor.get_by_role("button", name="أضف للسلة")).to_be_enabled()
+        expect(visitor.get_by_role("button", name="أضيفوا للسلة")).to_be_enabled()
         visitor.goto(f"{BASE_URL}/ar/workbooks", wait_until="load")
 
 

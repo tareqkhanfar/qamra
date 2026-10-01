@@ -17,7 +17,7 @@ order_placed:
     lines:
       - "Hello {{ name }},"
       - "Thank you for choosing {{ brand }}! Your order {{ code }} is in, and the amount due on delivery is {{ total }}."
-      - "We'll contact you soon to confirm the address, then we start on the book."
+      - "We'll contact you soon to confirm the address, then we'll start on the book."
     button: { label: "Track your order", link: track_url }
 
 order_confirmed:
@@ -108,10 +108,10 @@ book_ready:
 
 printer_batch:
   ar:
-    subject: "دفعة طباعة {{ code }} — {{ copies }} نسخة"
+    subject: "دفعة طباعة {{ code }} — عدد النسخ: {{ copies }}"
     lines:
       - "مرحبًا،"
-      - "هذه ملفات دفعة الطباعة {{ code }} ({{ date }}): {{ books }} كتاب، {{ copies }} نسخة."
+      - "هذه ملفات دفعة الطباعة {{ code }} ({{ date }})، عدد الكتب: {{ books }}، وعدد النسخ: {{ copies }}."
       - "كل رابط يفتح تنزيلًا مؤقتًا لعشر دقائق، والروابط صالحة حتى {{ expires }}. قائمة الدفعة كاملة في ملف CSV."
       - "الملفات لطباعة هذه الدفعة فقط؛ نرجو حذفها بعد التسليم."
     button: { label: "قائمة الدفعة (CSV)", link: manifest_url }

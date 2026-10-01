@@ -53,10 +53,10 @@ from qamra_workbook.render.registry import PageContext
 
 V2_LETTERS = ["ر", "ز", "س", "ش", "ص", "ض", "ط", "ظ", "ع", "غ"]
 PEN_LABELS_2 = {
-    "spiral": "حلزون",
-    "narrow-path": "طريق ضيّق",
-    "between-lines": "بين السطرين",
-    "dot-to-dot": "مثلث",
+    "spiral": "حَلَزونٌ",
+    "narrow-path": "طَريقٌ ضَيِّقٌ",
+    "between-lines": "بَيْنَ السَّطْرَيْنِ",
+    "dot-to-dot": "مُثَلَّثٌ",
 }
 
 
@@ -462,9 +462,9 @@ def review_sections_v2(ctx: PageContext, r: random.Random) -> Drawn | None:
         out = stack(
             ctx,
             [
-                ("أين الحرف في الكلمة؟", letter_place(chosen, words), 1.5),
+                ("أَيْنَ الحَرْفُ في الكَلِمَةِ؟", letter_place(chosen, words), 1.5),
                 (
-                    "أحوّط الصورة التي تبدأ بالحرف",
+                    "أُحَوِّطُ الصّورَةَ الَّتي تَبْدَأُ بِالحَرْفِ",
                     circle_first_letter(r.sample(letters, min(3, len(letters)))),
                     1.0,
                 ),
@@ -480,12 +480,12 @@ def review_sections_v2(ctx: PageContext, r: random.Random) -> Drawn | None:
             ctx,
             [
                 (
-                    "أعدّ وأكتب",
+                    "أَعُدُّ وَأَكْتُبُ",
                     count_write_any(numbers[:4] if len(numbers) > 2 else [*numbers, *numbers][:4]),
                     1.3,
                 ),
-                ("أتتبّع الأعداد", trace_numbers_any(numbers), 0.8),
-                ("أكتب العدد الناقص", order_numbers(list(range(max(1, top - 4), top + 1))), 0.8),
+                ("أَتَتَبَّعُ الأَعْدادَ", trace_numbers_any(numbers), 0.8),
+                ("أَكْتُبُ العَدَدَ النّاقِصَ", order_numbers(list(range(max(1, top - 4), top + 1))), 0.8),
             ],
             r,
         )
@@ -493,10 +493,10 @@ def review_sections_v2(ctx: PageContext, r: random.Random) -> Drawn | None:
         return grid(
             ctx,
             [
-                ("أحوّط المثلثات وألوّن الدوائر", shapes_task()),
-                ("أحوّط ما فوق الطاولة", positions_task("above-below")),
-                ("أحوّط ما على يمين البيت", positions_task("right-left")),
-                ("أكمل النمط", pattern_abc_task()),
+                ("أُحَوِّطُ المُثَلَّثاتِ وَأُلَوِّنُ الدَّوائِرَ", shapes_task()),
+                ("أُحَوِّطُ ما فَوْقَ الطّاوِلَةِ", positions_task("above-below")),
+                ("أُحَوِّطُ ما عَلى يَمينِ البَيْتِ", positions_task("right-left")),
+                ("أُكْمِلُ النَّمَطَ", pattern_abc_task()),
             ],
             r,
         )
@@ -514,19 +514,19 @@ def review_sections_v2(ctx: PageContext, r: random.Random) -> Drawn | None:
         return stack(ctx, rows, r)
     if subject == "thinking" and {"sequence", "problem-solving"} & set(skills):
         tasks = {
-            "memory": ("أطابق الصور", match_pairs(3)),
-            "connect": ("أصل ما يناسب", related_task()),
-            "sequence": ("أرتّب القصة", sequence_task()),
-            "problem-solving": ("أرسم ما ينقص", missing_task()),
+            "memory": ("أُطابِقُ الصُّوَرَ", match_pairs(3)),
+            "connect": ("أَصِلُ ما يُناسِبُ", related_task()),
+            "sequence": ("أُرَتِّبُ القِصَّةَ", sequence_task()),
+            "problem-solving": ("أَرْسُمُ ما يَنْقُصُ", missing_task()),
         }
         return grid(ctx, [tasks[s] for s in skills if s in tasks], r)
     if subject == "mixed" and any("ر" in str(c) for c in params.get("covers", [])):
         return stack(
             ctx,
             [
-                ("أكتب الحرف الأول من اسم كل صورة", write_first_letter(V2_LETTERS), 1.0),
-                ("أعدّ وأكتب", count_write_any([6, 9, 10, 7]), 1.0),
-                ("أصل الحرف الكبير بالصغير", match_capitals(list("IJKLMN")), 0.9),
+                ("أَكْتُبُ الحَرْفَ الأَوَّلَ مِنِ اسْمِ كُلِّ صورَةٍ", write_first_letter(V2_LETTERS), 1.0),
+                ("أَعُدُّ وَأَكْتُبُ", count_write_any([6, 9, 10, 7]), 1.0),
+                ("أَصِلُ الحَرْفَ الكَبيرَ بِالصَّغيرِ", match_capitals(list("IJKLMN")), 0.9),
             ],
             r,
         )
@@ -536,7 +536,7 @@ def review_sections_v2(ctx: PageContext, r: random.Random) -> Drawn | None:
 def pen_check2(ctx: PageContext, r: random.Random, tracing: list[str], checklist: list[str]) -> Drawn:
     out = stack(
         ctx,
-        [(f"أتتبّع: {PEN_LABELS_2.get(t, PEN_LABELS.get(t, t))}", pen_row2(t), 1.0) for t in tracing],
+        [(f"أَتَتَبَّعُ: {PEN_LABELS_2.get(t, PEN_LABELS.get(t, t))}", pen_row2(t), 1.0) for t in tracing],
         r,
         0,
         104,
@@ -617,9 +617,9 @@ def assessment_sections_v2(ctx: PageContext, r: random.Random) -> Drawn | None:
         out = stack(
             ctx,
             [
-                ("أقرأ الحروف", read_letters(letters), 0.8),
-                ("أكتب الحرف الأول من اسم كل صورة", write_first_letter(r.sample(letters, 4)), 1.1),
-                ("أين الحرف في الكلمة؟", letter_place(chosen, words), 1.2),
+                ("أَقْرَأُ الحُروفَ", read_letters(letters), 0.8),
+                ("أَكْتُبُ الحَرْفَ الأَوَّلَ مِنِ اسْمِ كُلِّ صورَةٍ", write_first_letter(r.sample(letters, 4)), 1.1),
+                ("أَيْنَ الحَرْفُ في الكَلِمَةِ؟", letter_place(chosen, words), 1.2),
             ],
             r,
             0,
@@ -629,9 +629,9 @@ def assessment_sections_v2(ctx: PageContext, r: random.Random) -> Drawn | None:
         out = stack(
             ctx,
             [
-                ("أعدّ وأكتب", count_write_any([7, 10, 6, 9]), 1.3),
-                ("أكتب الأعداد الناقصة", order_numbers(list(range(1, 11)), 3), 0.7),
-                ("أحوّط المثلثات وألوّن الدوائر", shapes_task(), 0.8),
+                ("أَعُدُّ وَأَكْتُبُ", count_write_any([7, 10, 6, 9]), 1.3),
+                ("أَكْتُبُ الأَعْدادَ النّاقِصَةَ", order_numbers(list(range(1, 11)), 3), 0.7),
+                ("أُحَوِّطُ المُثَلَّثاتِ وَأُلَوِّنُ الدَّوائِرَ", shapes_task(), 0.8),
             ],
             r,
             0,
@@ -641,10 +641,10 @@ def assessment_sections_v2(ctx: PageContext, r: random.Random) -> Drawn | None:
         out = grid(
             ctx,
             [
-                ("أصنّف بالألوان", mini_classify()),
-                ("أرتّب القصة", sequence_task()),
-                ("أطابق الصور", match_pairs(3)),
-                ("أحلّ المتاهة", mini_maze()),
+                ("أُصَنِّفُ بِالأَلْوانِ", mini_classify()),
+                ("أُرَتِّبُ القِصَّةَ", sequence_task()),
+                ("أُطابِقُ الصُّوَرَ", match_pairs(3)),
+                ("أَحُلُّ المَتاهَةَ", mini_maze()),
             ],
             r,
             0,

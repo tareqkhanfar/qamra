@@ -2,7 +2,7 @@
   "learning-journey": [
     {
       "src": "/workbooks/learning-journey/01.jpg",
-      "title_ar": "المحطة 1: الغلاف باسم طفلك وشخصيته",
+      "title_ar": "المحطة 1: الغلاف باسم طفلكم وشخصيته",
       "title_en": "Stage 1: the cover with your child's name"
     },
     {
@@ -42,7 +42,7 @@
     },
     {
       "src": "/workbooks/learning-journey/09.jpg",
-      "title_ar": "المحطة 2: الغلاف باسم طفلك",
+      "title_ar": "المحطة 2: الغلاف باسم طفلكم",
       "title_en": "Stage 2: the cover with your child's name"
     },
     {
@@ -82,7 +82,7 @@
     },
     {
       "src": "/workbooks/learning-journey/17.jpg",
-      "title_ar": "المحطة 3: الغلاف باسم طفلك",
+      "title_ar": "المحطة 3: الغلاف باسم طفلكم",
       "title_en": "Stage 3: the cover with your child's name"
     },
     {
@@ -124,7 +124,7 @@
   "foundation-workbook": [
     {
       "src": "/workbooks/foundation-workbook/01.jpg",
-      "title_ar": "هذا الكتاب لطفلك: اسمه وصورته وبصمة كفّه",
+      "title_ar": "هذا الكتاب لطفلكم: اسمه وصورته وبصمة كفّه",
       "title_en": "This book belongs to your child"
     },
     {
@@ -220,7 +220,7 @@
   "foundation-workbook-kg1": [
     {
       "src": "/workbooks/foundation-workbook-kg1/01.jpg",
-      "title_ar": "هذا الكتاب لطفلك: اسمه وصورته وبصمة كفّه",
+      "title_ar": "هذا الكتاب لطفلكم: اسمه وصورته وبصمة كفّه",
       "title_en": "This book belongs to your child"
     },
     {

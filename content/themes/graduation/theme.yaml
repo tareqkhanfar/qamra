@@ -123,7 +123,7 @@ pages:
       The hero stands in front of a round wooden mirror in the new graduation gown, smiling proudly; the
       graduation cap waits on the bed.
     companion_action: holds the graduation cap up with both arms
-    text_ar: "اليوم يومٌ مميّز! {استيقظَ/استيقظَتْ} {name} باكرًا {ولبسَ/ولبسَتْ} ثوب التخرّج، وحرسَ {companion} القبّعة على السرير."
+    text_ar: "الْيَوْمُ يَوْمٌ مُمَيَّزٌ! {اسْتَيْقَظَ/اسْتَيْقَظَتْ} {name} بَاكِرًا {وَلَبِسَ/وَلَبِسَتْ} ثَوْبَ التَّخَرُّجِ، وَحَرَسَ {companion} الْقُبَّعَةَ عَلَى السَّرِيرِ."
     text_en: "Today is a special day! {name} woke up early and put on the graduation gown, while {companion} guarded the cap."
   - index: 2
     layout: full
@@ -135,7 +135,7 @@ pages:
       The hero sits on the bed looking at an open photo album; one photo shows a much smaller version of
       the hero at a turquoise kindergarten gate. The photos have no writing.
     companion_action: peeks at the photo, amazed
-    text_ar: "{فتحَ/فتحَتْ} {name} ألبوم الصور {ورأى/ورأَتْ} صورةَ أوّل يوم في الروضة. «كم كنتُ {صغيرًا/صغيرةً}!»"
+    text_ar: "{فَتَحَ/فَتَحَتْ} {name} أَلْبُومَ الصُّوَرِ {وَرَأَى/وَرَأَتْ} صُورَةَ أَوَّلِ يَوْمٍ فِي الرَّوْضَةِ. «كَمْ كُنْتُ {صَغِيرًا/صَغِيرَةً}!»"
     text_en: "{name} opened the photo album and found a picture from the first day at kindergarten. \"I was so little!\""
   - index: 3
     layout: spread
@@ -151,7 +151,7 @@ pages:
     others: four other children and the teacher
     others_count: 5
     companion_action: juggles three colorful beads
-    text_ar: "طوال السنة، {تعلّمَ/تعلّمَتْ} {name} الحروف والأرقام، في الخريف والشتاء والربيع. كلّ يومٍ شيءٌ جديد!"
+    text_ar: "طَوَالَ السَّنَةِ، {تَعَلَّمَ/تَعَلَّمَتْ} {name} الْحُرُوفَ وَالْأَرْقَامَ، فِي الْخَرِيفِ وَالشِّتَاءِ وَالرَّبِيعِ. كُلَّ يَوْمٍ شَيْءٌ جَدِيدٌ!"
     text_en: "All year long, {name} learned letters and numbers, through autumn, winter and spring. Something new every day!"
   - index: 4
     layout: split
@@ -163,7 +163,7 @@ pages:
       At the painting table, the hero with paint on both hands mixes blue and yellow paint into green on
       a big sheet of paper, delighted.
     companion_action: has a drop of green paint on its nose and laughs
-    text_ar: "{وخلطَ/وخلطَتْ} {name} الألوان: الأزرق والأصفر صارا أخضر! وعلى أنف {companion} نقطةُ طلاءٍ خضراء."
+    text_ar: "{وَخَلَطَ/وَخَلَطَتْ} {name} الْأَلْوَانَ: الْأَزْرَقُ وَالْأَصْفَرُ صَارَا أَخْضَرَ! وَعَلَى أَنْفِ {companion} نُقْطَةُ طِلَاءٍ خَضْرَاءُ."
     text_en: "{name} mixed the colors: blue and yellow turned green! And {companion} got a green dot on its nose."
   - index: 5
     layout: full
@@ -177,7 +177,7 @@ pages:
     others: three friends of different looks
     others_count: 3
     companion_action: dances in the middle of the circle
-    text_ar: "{ووجدَ/ووجدَتْ} {name} أصدقاء {يلعبُ/تلعبُ} معهم كلّ يوم، في الشمس وفي المطر."
+    text_ar: "{وَوَجَدَ/وَوَجَدَتْ} {name} أَصْدِقَاءَ {يَلْعَبُ/تَلْعَبُ} مَعَهُمْ كُلَّ يَوْمٍ، فِي الشَّمْسِ وَفِي الْمَطَرِ."
     text_en: "{name} found friends to play with every day, in sunshine and in rain."
   - index: 6
     layout: full
@@ -191,7 +191,7 @@ pages:
     others: a kind teacher
     others_count: 1
     companion_action: claps too
-    text_ar: "وكانت المعلّمة دائمًا هناك: تشرح، وتبتسم، وتصفّق لكلّ محاولة."
+    text_ar: "وَكَانَتِ الْمُعَلِّمَةُ دَائِمًا هُنَاكَ: تَشْرَحُ، وَتَبْتَسِمُ، وَتُصَفِّقُ لِكُلِّ مُحَاوَلَةٍ."
     text_en: "And the teacher was always there: explaining, smiling, and clapping for every try."
   - index: 7
     layout: full
@@ -204,7 +204,7 @@ pages:
       The empty festive hall on graduation morning: the small stage with its sage-green curtain,
       colorful bunting and paper lanterns overhead, and neat rows of empty chairs waiting, in soft light
       from the high windows.
-    text_ar: "واليوم، تزيّنت قاعة الروضة بالأعلام الملوّنة والفوانيس، واصطفّت الكراسي تنتظر العائلات."
+    text_ar: "وَالْيَوْمَ، تَزَيَّنَتْ قَاعَةُ الرَّوْضَةِ بِالْأَعْلَامِ الْمُلَوَّنَةِ وَالْفَوَانِيسِ، وَاصْطَفَّتِ الْكَرَاسِيُّ تَنْتَظِرُ الْعَائِلَاتِ."
     text_en: "And today, the kindergarten hall was decorated with colorful flags and lanterns, and the chairs stood waiting for the families."
   - index: 8
     layout: spread
@@ -218,7 +218,7 @@ pages:
     others: six other children in graduation gowns
     others_count: 6
     companion_action: conducts the song with a tiny stick
-    text_ar: "{وقفَ/وقفَتْ} {name} مع الصفّ في صفٍّ واحد، وغنّى الجميع نشيد الروضة بصوتٍ عالٍ وجميل."
+    text_ar: "{وَقَفَ/وَقَفَتْ} {name} مَعَ الصَّفِّ فِي صَفٍّ وَاحِدٍ، وَغَنَّى الْجَمِيعُ نَشِيدَ الرَّوْضَةِ بِصَوْتٍ عَالٍ وَجَمِيلٍ."
     text_en: "{name} stood in a row with the whole class, and everyone sang the kindergarten song, loud and beautiful."
   - index: 9
     layout: full
@@ -230,7 +230,7 @@ pages:
       Backstage beside the curtain, the hero in gown and cap closes both eyes and takes a deep, calm
       breath, hands on the chest.
     companion_action: sits on the hero's shoulder and whispers encouragement
-    text_ar: "خلف الستارة {شعرَ/شعرَتْ} {name} برجفةٍ صغيرة. همس {companion}: «{تنفّسْ/تنفّسي}… {أنتَ جاهزٌ/أنتِ جاهزةٌ}!»"
+    text_ar: "خَلْفَ السِّتَارَةِ {شَعَرَ/شَعَرَتْ} {name} بِرَجْفَةٍ صَغِيرَةٍ. هَمَسَ {companion}: «{تَنَفَّسْ/تَنَفَّسِي}… {أَنْتَ جَاهِزٌ/أَنْتِ جَاهِزَةٌ}!»"
     text_en: "Behind the curtain, {name} felt a little shiver. {companion} whispered: \"Breathe... you're ready!\""
   - index: 10
     layout: full
@@ -244,7 +244,7 @@ pages:
     others: Mama, Baba and the grandmother (Teta) in the front row
     others_count: 3
     companion_action: peeks out right under the hero's chin
-    text_ar: "{أطلَّ/أطلَّتْ} {name} من طرف الستارة {فرأى/فرأَتْ} ماما وبابا وستّي يلوّحون، {فلوّحَ/فلوّحَتْ} لهم بفرح!"
+    text_ar: "{أَطَلَّ/أَطَلَّتْ} {name} مِنْ طَرَفِ السِّتَارَةِ {فَرَأَى/فَرَأَتْ} مَامَا وَبَابَا وَسِتِّي يُلَوِّحُونَ، {فَلَوَّحَ/فَلَوَّحَتْ} لَهُمْ بِفَرَحٍ!"
     text_en: "{name} peeked from behind the curtain and saw Mama, Baba and Teta waving, and waved back happily!"
   - index: 11
     layout: full
@@ -256,7 +256,7 @@ pages:
       On the stage under a warm spotlight, the hero in gown and cap raises a rolled certificate tied with
       a ribbon high above their head, beaming.
     companion_action: cheers with both arms up
-    text_ar: "نادت المعلّمة: «{name}!» {فمشى/فمشَتْ} {name} بثقة، {ورفعَ/ورفعَتْ} الشهادة عاليًا تحت الضوء."
+    text_ar: "نَادَتِ الْمُعَلِّمَةُ: «{name}!» {فَمَشَى/فَمَشَتْ} {name} بِثِقَةٍ، {وَرَفَعَ/وَرَفَعَتْ} الشَّهَادَةَ عَالِيًا تَحْتَ الضَّوْءِ."
     text_en: "The teacher called: \"{name}!\" {name} walked up proudly and held the certificate high in the light."
   - index: 12
     layout: split
@@ -269,7 +269,7 @@ pages:
     others: the teacher
     others_count: 1
     companion_action: bows politely
-    text_ar: "ثمّ {قدّمَ/قدّمَتْ} {name} للمعلّمة رسمةً صغيرة {وقالَ/وقالَتْ}: «شكرًا لأنّكِ علّمتِني.»"
+    text_ar: "ثُمَّ {قَدَّمَ/قَدَّمَتْ} {name} لِلْمُعَلِّمَةِ رَسْمَةً صَغِيرَةً {وَقَالَ/وَقَالَتْ}: «شُكْرًا لِأَنَّكِ عَلَّمْتِنِي.»"
     text_en: "Then {name} gave the teacher a little drawing: \"Thank you for teaching me.\""
   - index: 13
     layout: full
@@ -283,7 +283,7 @@ pages:
     others: five classmates in graduation gowns
     others_count: 5
     companion_action: rides on a flying cap
-    text_ar: "ثمّ رمى الأطفال قبّعاتهم في الهواء، وضحك الجميع: هيييه!"
+    text_ar: "ثُمَّ رَمَى الْأَطْفَالُ قُبَّعَاتِهِمْ فِي الْهَوَاءِ، وَضَحِكَ الْجَمِيعُ: هِيييهْ!"
     text_en: "Then the children threw their caps into the air, and everyone laughed: hooray!"
   - index: 14
     layout: full
@@ -297,7 +297,7 @@ pages:
     others: Mama and Baba
     others_count: 2
     companion_action: floats above them, glowing warmly
-    text_ar: "{ركضَ/ركضَتْ} {name} إلى ماما وبابا، {فضمّاه/فضمّاها} وقالا: «نحن فخوران {بكَ/بكِ}!»"
+    text_ar: "{رَكَضَ/رَكَضَتْ} {name} إِلَى مَامَا وَبَابَا، {فَضَمَّاهُ/فَضَمَّاهَا} وَقَالَا: «نَحْنُ فَخُورَانِ {بِكَ/بِكِ}!»"
     text_en: "{name} ran to Mama and Baba, who hugged tight and said: \"We are so proud of you!\""
   - index: 15
     layout: spread
@@ -312,7 +312,7 @@ pages:
     others: Mama, Baba and the grandmother (Teta)
     others_count: 3
     companion_action: carries the graduation cap like a little boat
-    text_ar: "في طريق العودة، تحت شمس الغروب، {حملَ/حملَتْ} {name} الشهادة كأنّها كنز، ومشت العائلة كلّها {معه/معها} فرحانة."
+    text_ar: "فِي طَرِيقِ الْعَوْدَةِ، تَحْتَ شَمْسِ الْغُرُوبِ، {حَمَلَ/حَمَلَتْ} {name} الشَّهَادَةَ كَأَنَّهَا كَنْزٌ، وَمَشَتِ الْعَائِلَةُ كُلُّهَا {مَعَهُ/مَعَهَا} فَرْحَانَةً."
     text_en: "On the way home, under the setting sun, {name} carried the certificate like a treasure, and the whole family walked along, happy."
   - index: 16
     layout: full
@@ -328,7 +328,7 @@ pages:
     others: Baba
     others_count: 1
     companion_action: holds the little hammer carefully
-    text_ar: "في المساء، {علّقَ/علّقَتْ} {name} الشهادة على الحائط مع بابا. قال بابا: «هكذا نراها كلّ صباح.»"
+    text_ar: "فِي الْمَسَاءِ، {عَلَّقَ/عَلَّقَتْ} {name} الشَّهَادَةَ عَلَى الْحَائِطِ مَعَ بَابَا. قَالَ بَابَا: «هَكَذَا نَرَاهَا كُلَّ صَبَاحٍ.»"
     text_en: "In the evening, {name} hung the certificate on the wall with Baba. \"Now we'll see it every morning,\" said Baba."
   - index: 17
     layout: full
@@ -341,5 +341,5 @@ pages:
       Night in the bedroom. The hero in pajamas kneels on the bed looking at a big gentle moon through
       the window, dreaming, with a new school bag ready on the chair.
     companion_action: curls up on the windowsill, glowing like a night light
-    text_ar: "وفي الليل، تحت ضوء القمر، {همسَ/همسَتْ} {name} لـ{companion}: «الصفّ الأول… {أنا قادمٌ/أنا قادمةٌ}!»"
+    text_ar: "وَفِي اللَّيْلِ، تَحْتَ ضَوْءِ الْقَمَرِ، {هَمَسَ/هَمَسَتْ} {name} لِـ{companion}: «الصَّفُّ الْأَوَّلُ… {أَنَا قَادِمٌ/أَنَا قَادِمَةٌ}!»"
     text_en: "That night, under the moonlight, {name} whispered to {companion}: \"First grade... here I come!\""

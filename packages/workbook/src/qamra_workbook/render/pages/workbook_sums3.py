@@ -57,16 +57,16 @@ def pairs_of(
 
 
 def counted(ctx: PageContext, n: int, thing: str) -> str:
-    """«كُرَة واحِدَة»، «كُرَتان»، «٣ كُرات»: the noun that goes with the number."""
+    """«كُرَةٌ واحِدَةٌ»، «كُرَتانِ»، «٣ كُراتٍ»: the noun that goes with the number, as the subject of «كانَ»."""
     one, two, many = FORMS[thing]
     if n == 1:
-        return f"{one} واحِدَة"
-    return two if n == 2 else f"{ctx.num(n)} {many}"
+        return f"{one}ٌ واحِدَةٌ"
+    return f"{two}ِ" if n == 2 else f"{ctx.num(n)} {many}ٍ"
 
 
 def story_text(ctx: PageContext, a: int, b: int, thing: str, subtract: bool) -> str:
-    more = "واحِدَة أُخْرى" if b == 1 else f"{ctx.num(b)} أُخْرى"
-    gave = "واحِدَة" if b == 1 else ctx.num(b)
+    more = {1: "واحِدَةً أُخْرى", 2: "اثْنَتَيْنِ أُخْرَيَيْنِ"}.get(b, f"{ctx.num(b)} أُخْرى")
+    gave = {1: "واحِدَةً", 2: "اثْنَتَيْنِ"}.get(b, ctx.num(b))
     if subtract:
         return f"كانَ عِنْدي {counted(ctx, a, thing)}، وَأَعْطَيْتُ {gave} مِنْها لِصَديقي. كَمْ بَقِيَ عِنْدي؟"
     return f"كانَ عِنْدي {counted(ctx, a, thing)}، وَأَخَذْتُ {more}. كَمْ أَصْبَحَ عِنْدي؟"

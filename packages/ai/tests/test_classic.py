@@ -262,7 +262,7 @@ def test_classic_text_fills_the_name_and_the_gender_forms() -> None:
     girl = classic_story(theme, _child(), "ar", "قَمّور")
     boy = classic_story(theme, Child(name="يوسف", gender="m", age=5), "ar", "قَمّور")
     assert girl.title.startswith("يوم تخرّج ليان") and len(girl.pages) == len(theme.pages)
-    assert "استيقظَتْ ليان" in girl.pages[0].text and "استيقظَ يوسف" in boy.pages[0].text
+    assert "اسْتَيْقَظَتْ ليان" in girl.pages[0].text and "اسْتَيْقَظَ يوسف" in boy.pages[0].text
     assert all("{" not in p.text for p in girl.pages) and "قَمّور" in girl.pages[0].text
     assert len(girl.parents_questions) == 2 and "ليان" in girl.blurb and "نحبُّكِ" in girl.dedication
     english = classic_story(theme, Child(name="Layan", gender="f", age=5), "en", "Qamour")

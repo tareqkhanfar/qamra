@@ -161,7 +161,7 @@ def test_stage_2_and_3_texts_follow_the_child(stage: int) -> None:
             "Layan" in by_n[n][0].title and "Adam" in by_n[n][1].title
         )  # the Latin name, not the Arabic one
     if stage == 3:
-        assert "أَحْسَنْتِ يا بَطَلَة" in by_n[120][0].title and "أَحْسَنْتَ يا بَطَل" in by_n[120][1].title
+        assert "أَحْسَنْتِ يا بَطَلَةُ" in by_n[120][0].title and "أَحْسَنْتَ يا بَطَلُ" in by_n[120][1].title
 
 
 @STAGES_2_3

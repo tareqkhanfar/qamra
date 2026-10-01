@@ -81,7 +81,7 @@ def muslim_passport(ctx: PageContext) -> Built:
             "sign": "تَوْقِيعِي",
             "stamps": "أَخْتَامُ وَحَدَاتِي",
             "stars": "نُجُومُ تَحَدِّيَاتِي",
-            "stick": ctx.text("{الصَقْ/الصَقِي} الْمُلْصَقَ بَعْدَ كُلِّ وَحْدَةٍ"),
+            "stick": ctx.text("{أَلْصِقِ/أَلْصِقِي} الْمُلْصَقَ بَعْدَ كُلِّ وَحْدَةٍ"),
             "colour": ctx.text("{لَوِّنْ/لَوِّنِي} نَجْمَةً بَعْدَ كُلِّ تَحَدٍّ"),
         },
     }
@@ -135,7 +135,7 @@ def surah_page(ctx: PageContext) -> Built:
         "care": rich(ctx, page.care_note, problems),
         "labels": {
             "meaning": "مَعْنَى السُّورَةِ",
-            "listen": "اسْمَعِ التِّلَاوَةَ",
+            "listen": ctx.text("{اسْمَعِ/اسْمَعِي} التِّلَاوَةَ"),
             "tracker": "جَدْوَلُ حِفْظِي",
             "ayah": "الْآيَةُ",
             "day": "الْيَوْمُ",

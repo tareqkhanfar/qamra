@@ -141,7 +141,7 @@ class Activity(BaseModel):
     skills: list[str]
     child_part: str
     parent_part: str | None = None
-    together: bool = False  # «هيا نفعلها معاً! 👨‍👩‍👧»
+    together: bool = False  # «هيا نفعلها معًا! 👨‍👩‍👧»
     where: Where = "home"
     materials: list[str] = Field(default_factory=list)  # common household items only
     minutes: int
@@ -312,7 +312,7 @@ def check_activities(plan: FamilyPlan) -> list[str]:
         if not a.pages:
             out.append(f"{tag}: no pages")
         if a.together and not (a.parent_part and any(p.parent for p in a.pages)):
-            out.append(f"{tag}: a «هيا نفعلها معاً!» mission needs a parent part and a parent box")
+            out.append(f"{tag}: a «هيا نفعلها معًا!» mission needs a parent part and a parent box")
         recipe = any(p.type == "recipe-steps" for p in a.pages)
         if (recipe or a.where == "outside") and not (a.safety or "").strip():
             out.append(f"{tag}: {'recipes' if recipe else 'outdoor activities'} need a safety note")

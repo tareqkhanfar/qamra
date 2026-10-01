@@ -18,7 +18,7 @@ The year follows the brief's path: pen skills → letters/numbers → tracing �
 
 **Letter order: alphabetical (أ ب ت ث …), confirmed by decision 1.**
 - It is the order Levantine parents know from the alphabet song and from most local KG books, so parents can follow the book and help at home.
-- It keeps the shape families together, because ب/ت/ث، ج/ح/خ، د/ذ، ر/ز، س/ش، ص/ض، ط/ظ، ع/غ and ف/ق are already neighbours. Almost every unit is one family: the child learns the base shape once, then tells the letters apart by their dots. "Count the dots" is built into the find-letter pages.
+- It keeps the shape families together, because ب/ت/ث، ج/ح/خ، د/ذ، ر/ز، س/ش، ص/ض، ط/ظ، ع/غ and ف/ق are already neighbors. Almost every unit is one family: the child learns the base shape once, then tells the letters apart by their dots. "Count the dots" is built into the find-letter pages.
 - Volume 3 pairs ك/ل (tall letters), م/ن (nasal sounds, often confused by ear) and ه/و/ي (the last three).
 - No volume boundary splits a family: Volume 1 ends at ذ and Volume 2 ends at غ.
 - A shape-first order (for example ب ت ث ن ي first) would allow reading a little earlier. But it breaks the familiar sequence for parents, and here reading starts only once all 28 letters are known.
@@ -52,7 +52,7 @@ The year follows the brief's path: pen skills → letters/numbers → tracing �
 - **Pace:** about 2 pages per school day: 9–11 pages a week in Volume 1, 11–12 in Volume 2 and 11–13 in Volume 3. Term 2 counts 11 weeks (decision 8); its extra week, week 6, is a light review week of 9 pages, so the other weeks carry about 11 pages.
 - **Rotation:** subjects rotate in short blocks of 1–3 pages; 4 pages of one subject in a row is the rare maximum. A letter's meet and trace pages sit together, and its writing page usually comes after a different subject, as a short break.
 - **Weekly mix:** every week mixes at least 3 subjects, and most weeks mix 4–5. Only Volume 1's first week has 3, because Arabic starts in week 2 and English in week 3. Arabic appears on most days (4–6 pages in a typical week), math on most days (2–3), English 2–3 times a week, and pen or thinking pages give a lighter, hands-on break between the more demanding pages.
-- **Review week:** Volume 2's week 6 introduces nothing new. The child plays with the letters ر ز س ش (a color-by-letter picture and a review of the four letters), and English, math, pen and thinking review or practise what came before.
+- **Review week:** Volume 2's week 6 introduces nothing new. The child plays with the letters ر ز س ش (a color-by-letter picture and a review of the four letters), and English, math, pen and thinking review or practice what came before.
 - **Unit reviews** come right after each unit, so review is spread through the term.
 - **Last week of each volume:** the cross-subject review, then the pen-skills check and one assessment each for Arabic, math, English and thinking. In Volume 3 the certificate follows.
 - **Cut & paste:** each cut & paste page sits on the front of a sheet, with a blank page on its back, so cutting never destroys another activity.

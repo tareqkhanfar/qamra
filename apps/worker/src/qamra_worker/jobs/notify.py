@@ -35,7 +35,7 @@ FORMATS = {
         "digital": "digital copy",
         "softcover": "softcover",
         "hardcover": "hardcover",
-        "spiral": "spiral bound",
+        "spiral": "spiral-bound",
     },
 }
 

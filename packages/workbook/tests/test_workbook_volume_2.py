@@ -116,7 +116,7 @@ def test_spirals_start_outside_and_the_pen_check_takes_the_new_skills() -> None:
             tracing=["spiral", "between-lines"],
         )
     )
-    assert problems == [] and "حلزون" in svg and "بين السطرين" in svg
+    assert problems == [] and "حَلَزونٌ" in svg and "بَيْنَ السَّطْرَيْنِ" in svg
 
 
 def test_the_whole_volume_prints_without_overflow_and_passes_preflight(tmp_path: Path) -> None:

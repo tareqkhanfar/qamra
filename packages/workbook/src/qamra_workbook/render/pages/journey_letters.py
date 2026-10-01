@@ -389,7 +389,7 @@ def journey_letter_trace(ctx: PageContext) -> Built:
         )
     )
     body.append(card(5, 5, 30, 10, r=5, fill=ctx.style.tint, stroke="none"))
-    body.append(text("كبير", 20, 12, 5, color=ctx.style.deep))
+    body.append(text("كَبيرٌ", 20, 12, 5, color=ctx.style.deep))
     y, caps = 90.0, _trace_caps(sh)
     for size in [k for k in sizes if k in caps]:
         row, height = row_svg(tracing_row(sh, width=W - 10, cap=caps[size], number=ctx.num), 5, y + 1)
@@ -428,10 +428,10 @@ def writing_review(ctx: PageContext) -> Built:
 # ---- harakat, syllables, words (§4.9) -----------------------------------------------------------------
 
 HARAKAT = {
-    "fatha": ("َ", "الفَتْحَة", "above"),
-    "damma": ("ُ", "الضَّمَّة", "above"),
-    "kasra": ("ِ", "الكَسْرَة", "below"),
-    "sukun": ("ْ", "السُّكون", "above"),
+    "fatha": ("َ", "الفَتْحَةُ", "above"),
+    "damma": ("ُ", "الضَّمَّةُ", "above"),
+    "kasra": ("ِ", "الكَسْرَةُ", "below"),
+    "sukun": ("ْ", "السُّكونُ", "above"),
 }
 
 

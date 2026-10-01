@@ -72,7 +72,7 @@ page_types:
   choose:             {form: question,  sacred: true,  note: "اختر الإجابة الصحيحة"}
   quiz:               {form: question,  sacred: true,  note: "أسئلة متنوعة من الوحدة"}
   dhikr:              {form: situation, sacred: true,  note: "صورة موقف + متى نقوله ولماذا + نصّ الذكر من المصادر"}
-  wwyd:               {form: situation, sacred: true,  note: "ماذا كنت ستفعل؟ ثلاث خيارات وتعليق لطيف"}
+  wwyd:               {form: situation, sacred: true,  note: "ماذا كنت ستفعل؟ ثلاثة خيارات وتعليق لطيف"}
   wdif:               {form: situation, sacred: true,  note: "ماذا أفعل لو…؟ خطوات هادئة وصحيحة"}
   role-play:          {form: situation, sacred: true,  note: "تمثيل موقف مع الأهل"}
   day:                {form: situation, sacred: true,  note: "يومي مع الله: خط زمني للنهار والليل"}

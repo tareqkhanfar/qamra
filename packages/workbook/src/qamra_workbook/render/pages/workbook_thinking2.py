@@ -26,6 +26,9 @@ CATEGORIES = {
     "فواكه": ("apple", "banana", "strawberry", "grapes", "orange"),
     "أدوات": ("hammer", "scissors", "broom", "spoon", "key"),
 }
+# the group names as printed on the page (the plan's words are the keys)
+GROUP_WORDS = {"حيوانات": "حَيَوانات", "فواكه": "فَواكِه", "أدوات": "أَدَوات", "البر": "البَرّ", "البحر": "البَحْر"}
+GROUP_WORDS |= {"أحمر": "أَحْمَر", "أصفر": "أَصْفَر", "أزرق": "أَزْرَق"}
 RELATED = (
     ("bee", "flower"),
     ("bird", "nest"),
@@ -57,7 +60,7 @@ def classify_category(ctx: PageContext) -> Built:
     for g, name in enumerate(groups):
         cx = W - (g + 0.5) * gw
         body.append(card(cx - gw / 2 + 4, 140, gw - 8, 60, r=8, fill=ctx.style.tint, stroke="none"))
-        body.append(text(name, cx, 158, 6.4, cls="wb-title", color=ctx.style.deep))
+        body.append(text(GROUP_WORDS.get(name, name), cx, 158, 6.4, cls="wb-title", color=ctx.style.deep))
         body.append(pic(CATEGORIES[name][-1], cx - 13, 164, 26, "line"))
         body.append(hook(cx, 140))
         anchors.append((cx, 140))
@@ -79,7 +82,7 @@ def memory_gone(ctx: PageContext) -> Built:
     seen = r.sample(POOL, count)
     gone = r.choice(seen)
     body = [card(0, 0, W, 60, r=8, fill="#FFF6F2")]
-    body.append(text("أنظر جيدًا وأتذكّر", W - 8, 10, 5, anchor="end", color=ctx.style.deep))
+    body.append(text("أَنْظُرُ جَيِّدًا وَأَتَذَكَّرُ", W - 8, 10, 5, anchor="end", color=ctx.style.deep))
     step = (W - 16) / count
     for k, thing in enumerate(seen):
         body.append(pic(thing, W - 8 - (k + 1) * step + (step - 24) / 2, 18, 24))
@@ -92,7 +95,7 @@ def memory_gone(ctx: PageContext) -> Built:
         )
     )
     body.append(
-        text("أغطّي الصور بورقة، ثم أنظر: أيّها اختفى؟", W - 8, 78, 5, anchor="end", color=ctx.style.deep)
+        text("أُغَطّي الصُّوَرَ بِوَرَقَةٍ، ثُمَّ أَنْظُرُ: أَيُّها اخْتَفى؟", W - 8, 78, 5, anchor="end", color=ctx.style.deep)
     )
     left = [t for t in seen if t != gone]
     r.shuffle(left)
@@ -100,7 +103,7 @@ def memory_gone(ctx: PageContext) -> Built:
     step = (W - 16) / count
     for k, thing in enumerate(left):
         body.append(pic(thing, W - 8 - (k + 1) * step + (step - 30) / 2, 92, 30))
-    body.append(text("أحوّط الصورة التي اختفت", W - 8, 148, 5, anchor="end", color=ctx.style.deep))
+    body.append(text("أُحَوِّطُ الصّورَةَ الَّتي اخْتَفَتْ", W - 8, 148, 5, anchor="end", color=ctx.style.deep))
     others = r.sample([p for p in POOL if p not in seen], 2)
     choices = [gone, *others]
     r.shuffle(choices)

@@ -23,7 +23,7 @@ from qamra_workbook.render.registry import Built, PageContext, page_type
 
 # draft: educator review: the story «المطر ينزل فتنبت الزهرة»
 STORY = ("cloud", "raindrop", "sprout", "flower")
-ORDER_AR = ("أولًا", "ثم", "بعد ذلك", "أخيرًا")
+ORDER_AR = ("أَوَّلًا", "ثُمَّ", "بَعْدَ ذَلِكَ", "أَخيرًا")
 # what is missing: the picture, the patch that hides a part (x, y, w, h in the 100-box), the part's name
 MISSING = (
     ("car", (14, 58, 28, 26), "العجلة"),
@@ -73,7 +73,7 @@ def story_sequence(ctx: PageContext) -> Built:
         body.append(pic(STORY[k], x + 4, 18, fw - 8, class_="key-ring"))
     body.append(
         text(
-            "أقصّ الصور على الخط المتقطّع وألصقها بالترتيب",
+            "أَقُصُّ الصُّوَرَ عَلى الخَطِّ المُتَقَطِّعِ وَأُلْصِقُها بِالتَّرْتيبِ",
             W - 8,
             fw + 34,
             4.6,
@@ -124,7 +124,7 @@ def missing_part(ctx: PageContext) -> Built:
             draw.el("rect", x=ox + px * s, y=oy + py * s, width=pw * s, height=ph * s, fill="#FFFFFF")
         )
         body.append(pic(thing, ox, oy, size, class_="key-ring"))
-        body.append(text("ماذا ينقص؟", x + W / 4 - 4, y + 90, 4.6, color=ctx.style.deep))
+        body.append(text("ماذا يَنْقُصُ؟", x + W / 4 - 4, y + 90, 4.6, color=ctx.style.deep))
         answer.append(f"{PICTURES[thing].word_ar}: {name}")
     return Built({"svg": svg(body)}, answer, [])
 
@@ -139,7 +139,7 @@ def hidden_pictures(ctx: PageContext) -> Built:
     cells = targets + r.sample(others, 20 - count)
     r.shuffle(cells)
     body = [card(0, 0, W, 34, r=7, fill=ctx.style.tint, stroke="none")]
-    body.append(text("أبحث عن هذه الأشياء وألوّنها", W - 6, 9, 4.6, anchor="end", color=ctx.style.deep))
+    body.append(text("أَبْحَثُ عَنْ هَذِهِ الأَشْياءِ وَأُلَوِّنُها", W - 6, 9, 4.6, anchor="end", color=ctx.style.deep))
     for k, thing in enumerate(targets):
         body.append(pic(thing, W - 30 - k * 30, 11, 20))
     body.append(card(0, 40, W, 164, r=8))

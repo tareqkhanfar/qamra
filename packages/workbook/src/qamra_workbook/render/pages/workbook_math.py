@@ -88,8 +88,8 @@ def number_intro(ctx: PageContext) -> Built:
         body.append(group("apple", 5, 13, 8, 40, 28))
         body.append(draw.arrow((66, 36), 0, 5, ctx.style.color))
         body.append(plate(76, 28, 46))
-        body.append(text("أكلنا التفاحات الخمس", 66, 62, 5))
-        body.append(text("فصار الصحن فارغًا: لا شيء", 66, 71, 5, color=ctx.style.deep))
+        body.append(text("أَكَلْنا التُّفّاحاتِ الخَمْسَ", 66, 62, 5))
+        body.append(text("فَصارَ الصَّحْنُ فارِغًا: لا شَيْءَ", 66, 71, 5, color=ctx.style.deep))
     else:
         body.append(card(8, 8, 90, 58, r=6, fill="#FFF6F2", stroke="none"))
         body.append(group(thing, n, 12, 10, 82, 54))
@@ -108,8 +108,8 @@ def number_intro(ctx: PageContext) -> Built:
             )
     # color n stars (none for zero)
     body.append(card(0, 106, W, 46, r=7))
-    stars = {0: "ولا نجمة: صفر!", 1: "نجمة واحدة", 2: "نجمتين"}.get(n, f"{ctx.num(n)} نجوم")
-    say = f"ألوّن {stars}"
+    stars = {1: "نَجْمَةً واحِدَةً", 2: "نَجْمَتَيْنِ"}.get(n, f"{ctx.num(n)} نُجومٍ")
+    say = f"أُلَوِّنُ {stars}" if n else "لا أُلَوِّنُ أَيَّ نَجْمَةٍ: صِفْرٌ!"
     body.append(text(say, W - 8, 118, 5.2, anchor="end", color=ctx.style.deep))
     for k in range(5):
         cx = W - 22 - k * 34
@@ -125,7 +125,7 @@ def number_intro(ctx: PageContext) -> Built:
         )
     # find the numeral
     body.append(card(0, 158, W, 46, r=7))
-    body.append(text(f"أحوّط العدد {ctx.num(n)}", W - 8, 170, 5.2, anchor="end", color=ctx.style.deep))
+    body.append(text(f"أُحَوِّطُ العَدَدَ {ctx.num(n)}", W - 8, 170, 5.2, anchor="end", color=ctx.style.deep))
     pool = [k for k in (0, 1, 2, 3, 4, 5) if k != n and (k != 0 or n == 0 or n == 5)]
     options = [n, *r.sample(pool, 4)]
     r.shuffle(options)
@@ -134,7 +134,8 @@ def number_intro(ctx: PageContext) -> Built:
         body.append(numeral(ctx, m, cx, 187, 18))
         if m == n:
             body.append(ring_at(cx, 187, 12, 12))
-    answer = [f"العدد {ctx.num(n)} في الصف الأخير", f"{ctx.num(n)} نجوم ملوّنة" if n else "لا نجوم ملوّنة"]
+    colored = {0: "لا نجوم ملوّنة", 1: "نجمة واحدة ملوّنة", 2: "نجمتان ملوّنتان"}
+    answer = [f"العدد {ctx.num(n)} في الصف الأخير", colored.get(n, f"{ctx.num(n)} نجوم ملوّنة")]
     problems = [] if options.count(n) == 1 else ["the numeral must appear exactly once"]
     return Built({"svg": svg(body)}, answer, problems)
 
@@ -174,7 +175,7 @@ def number_write(ctx: PageContext) -> Built:
             body.append(draw.start_dot((15, y + 1.5 + 5 + (shape.strokes[0].start[1] - 10) * 0.24), 1.9))
         y += height + 6
     body.append(card(0, y, W, 204 - y, r=7))
-    body.append(text("أعدّ وأكتب العدد", W - 8, y + 10, 5.2, anchor="end", color=ctx.style.deep))
+    body.append(text("أَعُدُّ وَأَكْتُبُ العَدَدَ", W - 8, y + 10, 5.2, anchor="end", color=ctx.style.deep))
     things = r.sample(GROUP_PICTURES, 2)
     counts = [n, n] if n else [0, 0]
     answer = []

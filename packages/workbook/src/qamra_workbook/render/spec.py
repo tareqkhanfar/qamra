@@ -224,7 +224,7 @@ class ActivityTags:
     """The family book's activity icons (A7 §5): at home or outside, with the family, minutes, levels."""
 
     where: Where = "home"
-    together: bool = False  # «هيا نفعلها معاً!»
+    together: bool = False  # «هيا نفعلها معًا!»
     minutes: int | None = None
     challenge: bool = False  # a ⭐⭐ version (ages 5–7) next to the ⭐ one (ages 3–4)
 

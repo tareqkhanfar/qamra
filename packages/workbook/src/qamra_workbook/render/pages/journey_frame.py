@@ -36,9 +36,9 @@ def journey_owner(ctx: PageContext) -> Built:
     data = {
         "name": ctx.book.child.name,
         "character": ctx.assets.character.resolve().as_uri() if ctx.assets.character else "",
-        "level_title": "رحلتي الأولى للتعلّم",
+        "level_title": "رِحْلَتي الأولى لِلتَّعَلُّمِ",
         "volume_title": str(ctx.page.params.get("subtitle", stage_name(stage))),
-        "lines": [str(line) for line in ctx.page.params.get("lines", ["عمري", "بدأتُ رحلتي في"])],
+        "lines": [str(line) for line in ctx.page.params.get("lines", ["عُمْري", "بَدَأْتُ رِحْلَتي في"])],
     }
     return Built(data)
 
@@ -99,7 +99,7 @@ def journey_opener(ctx: PageContext) -> Built:
         top = MAP_H * 0.8 + 6
         area.append(card(0, top, W, 204 - top, r=10, fill=SOFT, stroke="none"))
         area.append(
-            text("في هذه المحطة", W - 10, top + 11, 5.2, cls="wb-label", color="#676B83", anchor="end")
+            text("في هَذِهِ المَحَطَّةِ", W - 10, top + 11, 5.2, cls="wb-label", color="#676B83", anchor="end")
         )
         for k, line in enumerate(inside[:3]):
             y = top + 22 + k * 9

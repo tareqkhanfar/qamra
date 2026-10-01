@@ -282,7 +282,7 @@
     "waitingHint": "An order joins a batch once all its printed books are approved (approved/all).",
     "empty": "No batches yet.",
     "families": "Family orders",
-    "counts": "{orders} orders · {books} books · {copies} copies",
+    "counts": "{orders, plural, one {# order} other {# orders}} · {books, plural, one {# book} other {# books}} · {copies, plural, one {# copy} other {# copies}}",
     "status": {
       "open": "Open",
       "sent": "Sent to the printer",
@@ -336,7 +336,7 @@
     },
     "stories": {
       "title": "Stories starring your child",
-      "count": "{stories} stories · {styles} art styles",
+      "count": "{stories, plural, one {# story} other {# stories}} · {styles, plural, one {# art style} other {# art styles}}",
       "all": "All stories",
       "classic": "Carefully made illustrations, with your child's face in them",
       "magic": "Every page drawn afresh, and their drawing becomes their companion",
@@ -563,7 +563,7 @@
       "teacher": "Teacher's name",
       "year": "School year",
       "create": "Create the class",
-      "inClasses": "in {n} classes",
+      "inClasses": "{n, plural, one {in # class} other {in # classes}}",
       "of": "of {n}",
       "kpi": {
         "children": "Children",
@@ -718,10 +718,10 @@
       "crumb": "Class book",
       "title": "Page planner",
       "coverage": "Appearances",
-      "target": "Target: {n} times per child. Tap a child, then a page with a free place (or drag it there).",
+      "target": "Target: {n, plural, one {once} other {# times}} per child. Tap a child, then a page with a free place (or drag it there).",
       "low": "Children below the target: {n}",
       "allGood": "Every child reached the target.",
-      "times": "{n} times",
+      "times": "{n, plural, one {once} other {# times}}",
       "auto": "Plan automatically",
       "save": "Save the plan",
       "back": "Back to setup",
@@ -754,7 +754,7 @@
         "failed": "Couldn't draw"
       },
       "faceFlag": "Check the face",
-      "appears": "Appears {n} times (recognized {ok})",
+      "appears": "{n, plural, one {Appears once} other {Appears # times}} (recognized {ok})",
       "read": "Read the book",
       "redrawCover": "Redraw the cover",
       "pages": "Class pages: {ok} fine · {flagged} need a look",
@@ -778,7 +778,7 @@
       "noAddress": "Add the kindergarten's address so the order reaches you.",
       "deliveryNote": "Every book is wrapped with the child's name on it.",
       "history": "The kindergarten's orders",
-      "orderLine": "{n} copies · {total}",
+      "orderLine": "{n, plural, one {# copy} other {# copies}} · {total}",
       "status": {
         "new": "New",
         "confirmed": "Confirmed",
@@ -793,7 +793,7 @@
       "invoice": "Invoice {n}",
       "invoicePending": "Invoice {n} is being prepared",
       "summary": "Order summary",
-      "booksLine": "{n} copies × {unit}",
+      "booksLine": "{n, plural, one {# copy} other {# copies}} × {unit}",
       "included": "Personal cover, the child's page and the school page",
       "free": "Included",
       "discount": "Discount",
@@ -806,7 +806,7 @@
       "notes": "Notes for the order (optional)",
       "accept": "We reviewed the books and accept the order terms.",
       "acceptRequired": "Please accept the order terms to continue.",
-      "cta": "Confirm the order ({n} copies)",
+      "cta": "Confirm the order ({n, plural, one {# copy} other {# copies}})",
       "nothing": "Approve the children's books first on the review page."
     },
     "invite": {
@@ -943,7 +943,7 @@
         "printed": "Printed",
         "failed": "Stopped"
       },
-      "copiesCell": "{n} copies · approved {approved} · waiting {review}",
+      "copiesCell": "{n, plural, one {# copy} other {# copies}} · approved {approved} · waiting {review}",
       "open": "Open",
       "approveCopies": "Approve the copies for print ({n})",
       "approvedNote": "Approved {n}. Not ready: {waiting}",
@@ -1066,7 +1066,7 @@
     },
     "family": {
       "title": "Your family in the book (optional)",
-      "hint": "Their names appear in the book's missions, on the «My family» page and on the certificate. Every family is different and lovely.",
+      "hint": "Their names appear in the book's missions, on the “My family” page and on the certificate. Every family is different and lovely.",
       "name": "Family name",
       "city": "City",
       "member": "Family member {n}",
@@ -1081,7 +1081,7 @@
       "remove": "Remove",
       "privacy": "First names only, and no photos. You can skip this: the book then has one neutral grown-up.",
       "relations": {
-        "mother": "Mum",
+        "mother": "Mom",
         "father": "Dad",
         "grandmother": "Grandma",
         "grandfather": "Grandpa",
@@ -1381,7 +1381,7 @@
   },
   "studio": {
     "title": "Template studio",
-    "lead": "«Qamra Classic» templates for each theme × art style × look: status, pages, cost and texts. The studio calls no AI model unless you click generate.",
+    "lead": "“Qamra Classic” templates for each theme × art style × look: status, pages, cost and texts. The studio calls no AI model unless you click generate.",
     "empty": "No templates match these filters.",
     "liveVersion": "live v{version}",
     "versionsLink": "Theme versions",
@@ -1539,9 +1539,9 @@
       "lead": "Every change to a theme's texts is a new version: draft → review → approved → live, with history and rollback. Books already made keep their texts.",
       "done": "Done.",
       "theme": "Theme",
-      "summary": "live v{live} · {count} versions",
+      "summary": "live v{live} · {count, plural, one {# version} other {# versions}}",
       "openVersion": "open v{version}",
-      "staleTemplates": "{count} templates with old texts",
+      "staleTemplates": "{count, plural, one {# template with old texts} other {# templates with old texts}}",
       "source": {
         "file": "From content files",
         "studio": "From the studio"
@@ -1627,7 +1627,7 @@
       "until": "To",
       "apply": "Show",
       "clear": "Clear",
-      "count": "{total} entries · page {page} of {pages}",
+      "count": "{total, plural, one {# entry} other {# entries}} · page {page} of {pages}",
       "empty": "No entries match these filters.",
       "system": "System",
       "pagination": "Log pages",
@@ -1637,7 +1637,7 @@
     }
   },
   "familyQuote": {
-    "title": "«My Adventures with My Family» for your organization",
+    "title": "“My Adventures with My Family” for your organization",
     "lead": "Kindergartens, schools, associations and companies: ask for a quote for 10 copies or more, with your logo on the back cover.",
     "request": "This is a request for a quote, not an order: we send you a price, then we agree together.",
     "org": "Organization",
@@ -1659,7 +1659,7 @@
   "adminLeads": {
     "title": "Quote and demo requests",
     "empty": "No requests yet.",
-    "family": "«My Adventures with My Family»",
+    "family": "“My Adventures with My Family”",
     "demo": "Kindergarten demo",
     "copies": "copies",
     "children": "children",
@@ -1692,7 +1692,7 @@
     "approved": "Approved ✓",
     "remove": "Remove this person",
     "relations": {
-      "mother": "Mum",
+      "mother": "Mom",
       "father": "Dad",
       "grandmother": "Grandma",
       "grandfather": "Grandpa",
@@ -1720,7 +1720,7 @@
     },
     "admin": {
       "nav": "Journey audio",
-      "title": "«My First Learning Journey» audio",
+      "title": "“My First Learning Journey” audio",
       "intro": "Every printed QR plays one sound: record the script as written, upload or replace the file, then listen. Until a sound is uploaded, the player shows the words only.",
       "loading": "Loading…",
       "stage": "Stage",
@@ -1911,7 +1911,7 @@
     "realBookLead": "We made this book for an imaginary child, page by page as it prints. Your child's book looks like it, with their name and face.",
     "samplesTitle": "Pages from {name}'s story",
     "sampleLead": "Placeholder illustrations with the story's real words, as they'd be written for your child.",
-    "openStory": "Open the story «{name}»",
+    "openStory": "Open the story “{name}”",
     "viewerEndTitle": "Like it?",
     "viewerEndBody": "Open the story, choose the book type, art style and format, and we'll make it for your child.",
     "viewerEndCta": "Open the story",
@@ -2898,14 +2898,14 @@
     "title": "Self-hosted GPU",
     "self": "our own server",
     "now": "Qamra Classic edits are drawn by: {provider}.",
-    "unapproved": "The workflow «{workflow}» isn't approved in docs/licenses.md, so fal draws instead.",
+    "unapproved": "The workflow “{workflow}” isn't approved in docs/licenses.md, so fal draws instead.",
     "status": {
       "off": "Not set up",
       "up": "Up",
       "down": "Not responding"
     },
     "spend": "Classic image spend on the API (last 30 days)",
-    "images": "{n} images",
+    "images": "{n, plural, one {# image} other {# images}}",
     "gpu": "GPU server per month",
     "advice": "Recommendation",
     "recommendation": {
@@ -2918,7 +2918,7 @@
     "title": "Catalog & prices",
     "intro": "Every product and extra with its price, what it costs us and the margin. Red is under the margin floor ({floor}). USD = {usd} ₪ and JD = {jod} ₪ (from the settings).",
     "loading": "Loading the catalog…",
-    "lowCount": "{n} items are under the margin floor ({floor}). Check their price or cost.",
+    "lowCount": "{n, plural, one {# item is} other {# items are}} under the margin floor ({floor}). Check {n, plural, one {its} other {their}} price or cost.",
     "tabs": {
       "products": "Books & products",
       "addons": "Extras",
@@ -3013,7 +3013,7 @@
     "aov": "Average order",
     "margin": "Margin",
     "attach": "Extras attach rate",
-    "belowFloor": "{n} orders in this period are under the margin floor.",
+    "belowFloor": "{n, plural, one {# order in this period is} other {# orders in this period are}} under the margin floor.",
     "byLine": "By product line",
     "byProduct": "By product",
     "byTheme": "By story",

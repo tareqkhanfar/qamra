@@ -8,7 +8,15 @@ from __future__ import annotations
 from typing import Any
 
 from qamra_workbook.curriculum import Page
-from qamra_workbook.render.foundation_text import COMPARE, Texts, letter_name, math_texts
+from qamra_workbook.render.foundation_text import (
+    COMPARE,
+    Texts,
+    counted,
+    joined,
+    letters_head,
+    math_texts,
+    vowelled_letter_name,
+)
 
 NUMBER_TYPES = ("number-intro", "number-trace", "number-write", "count-and-circle", "number-quantity-match")
 
@@ -61,61 +69,66 @@ def engine_type_v2(page: Page) -> str | None:
 
 # draft: educator review: every title and instruction below is new text
 POSITION_TEXTS = {
-    "above-below": ("فوق وتحت", "{لوّن/لوّني} ما فوق بالأحمر وما تحت بالأزرق"),
-    "front-behind": ("أمام وخلف", "{حوّط/حوّطي} ما أمام الشجرة أو البيت"),
-    "right-left": ("يمين ويسار", "{لوّن/لوّني} اليمين بالأحمر واليسار بالأزرق"),
+    "above-below": ("فَوْقَ وَتَحْتَ", "{لَوِّنْ/لَوِّني} ما فَوْقُ بِالأَحْمَرِ وَما تَحْتُ بِالأَزْرَقِ"),
+    "front-behind": ("أَمامَ وَخَلْفَ", "{حَوِّطْ/حَوِّطي} ما أَمامَ الشَّجَرَةِ أَوِ البَيْتِ"),
+    "right-left": ("يَمينٌ وَيَسارٌ", "{لَوِّنِ/لَوِّني} اليَمينَ بِالأَحْمَرِ وَاليَسارَ بِالأَزْرَقِ"),
 }
+CUT = "{قُصَّ/قُصّي} الصُّوَرَ {وَأَلْصِقْها/وَأَلْصِقيها}"
 
 
 def texts_v2(subject: str, kind: str, params: dict[str, Any], unit_title: str) -> Texts | None:
     """Titles and instructions for the Volume 2 pages; None when Volume 1's texts serve."""
     letters = [str(x) for x in params.get("letters", [])]
-    names = [letter_name(x) for x in letters]
     match kind:
         case "letter-position":
-            head = (
-                f"حرفا {names[0]} و{names[1]}"
-                if len(names) == 2
-                else "حروف " + "، ".join(names[:-1]) + " و" + names[-1]
+            return (
+                f"أَيْنَ {letters_head(letters)} في الكَلِمَةِ؟",
+                "{لَوِّنِ/لَوِّني} الحَرْفَ {وَضَعْ/وَضَعي} عَلامَةً عَلى مَكانِهِ",
+                "",
             )
-            return f"أين {head} في الكلمة؟", "{لوّن/لوّني} الحرف {وضع/وضعي} علامة على مكانه", ""
         case "position-words":
             raw = params.get("concept", "above-below")
             first = str(raw[0] if isinstance(raw, list) else raw)
             title, say = POSITION_TEXTS.get(first, POSITION_TEXTS["above-below"])
-            return ("فوق وتحت، داخل وخارج" if isinstance(raw, list) else title), say, ""
+            return ("فَوْقَ وَتَحْتَ، داخِلَ وَخارِجَ" if isinstance(raw, list) else title), say, ""
         case "letter-write" if letters:
-            return f"أكتب {names[0]} و{names[1]}", "{اكتب/اكتبي} على النقاط، ثم وحدك", ""
+            names = joined([vowelled_letter_name(x, "a") for x in letters])
+            return f"أَكْتُبُ {names}", "{اكْتُبْ/اكْتُبي} عَلى النِّقاطِ، ثُمَّ {وَحْدَكَ/وَحْدَكِ}", ""
         case "pen-lines" if params.get("line") == "spiral":
-            return "حلزونات", "{ابدأ/ابدئي} من الخارج {ولفّ/ولفّي} إلى الداخل", ""
+            return "حَلَزوناتٌ", "{ابْدَأْ/ابْدَئي} مِنَ الخارِجِ {وَلُفَّ/وَلُفّي} إلى الدّاخِلِ", ""
         case "pen-lines" if params.get("line") == "between-lines":
-            return "بين السطرين", "{ارسم/ارسمي} الأشكال بين السطرين", ""
+            return "بَيْنَ السَّطْرَيْنِ", "{ارْسُمِ/ارْسُمي} الأَشْكالَ بَيْنَ السَّطْرَيْنِ", ""
         case "trace-path" if params.get("path") == "narrow":
-            return "الطريق الضيّق", "{امشِ/امشي} بالقلم دون أن {تلمس/تلمسي} الحواف", ""
+            return "الطَّريقُ الضَّيِّقُ", "{امْشِ/امْشي} بِالقَلَمِ دونَ أَنْ {تَلْمِسَ/تَلْمِسي} الحَوافَّ", ""
         case "dot-to-dot" if params.get("sequence") == "letters":
             return (
-                f"من الألف إلى {letter_name(str(params.get('to', 'ش')))[2:]}",
-                "{صِل/صِلي} الحروف بالترتيب",
+                f"مِنَ الأَلِفِ إلى {vowelled_letter_name(str(params.get('to', 'ش')))}",
+                "{صِلِ/صِلي} الحُروفَ بِالتَّرْتيبِ",
                 "",
             )
         case "coloring" if params.get("mode") == "color-by-letter":
-            return "ألوّن حسب الحرف", "لكل حرف لون: {لوّن/لوّني} السمكة", ""
+            return "أُلَوِّنُ حَسَبَ الحَرْفِ", "لِكُلِّ حَرْفٍ لَوْنٌ: {لَوِّنِ/لَوِّني} السَّمَكَةَ", ""
         case "coloring" if "hidden" in params:
-            return "أين اختبأت؟", f"{{جِد/جِدي}} {params.get('hidden', 5)} أشياء مخفية {{ولوّنها/ولوّنيها}}", ""
+            things = counted(params.get("hidden", 5), "أَشْياءَ مَخْفِيَّةٍ", "شَيْئًا مَخْفِيًّا")
+            return "أَيْنَ اخْتَبَأَتْ؟", f"{{جِدْ/جِدي}} {things} {{وَلَوِّنْها/وَلَوِّنيها}}", ""
         case "classify" if params.get("by") == "category":
-            return "أصنّف في مجموعات", "{صِل/صِلي} كل صورة بمجموعتها", ""
+            return "أُصَنِّفُ في مَجْموعاتٍ", "{صِلْ/صِلي} كُلَّ صورَةٍ بِمَجْموعَتِها", ""
         case "memory" if int(params.get("items", 4)) >= 6:
-            return "ماذا اختفى؟", "{انظر/انظري}، ثم {غطِّ/غطّي} الصور {وجِد/وجِدي} ما اختفى", ""
+            return (
+                "ماذا اخْتَفى؟",
+                "{انْظُرْ/انْظُري}، ثُمَّ {غَطِّ/غَطّي} الصُّوَرَ {وَجِدْ/وَجِدي} ما اخْتَفى",
+                "",
+            )
         case "cut-and-paste" if params.get("mode") == "sequence":
-            return "أرتّب القصة", "{قُصّ/قُصّي} الصور {والصقها/والصقيها} بالترتيب", ""
+            return "أُرَتِّبُ القِصَّةَ", f"{CUT} بِالتَّرْتيبِ", ""
         case "drawing" if params.get("mode") == "missing-part":
-            return "ماذا ينقص؟", "{ارسم/ارسمي} الجزء الناقص", ""
+            return "ماذا يَنْقُصُ؟", "{ارْسُمِ/ارْسُمي} الجُزْءَ النّاقِصَ", ""
         case "connect" if not params.get("words") and int(params.get("pairs", 4)) >= 5:
-            return "ما الذي يناسبه؟", "{صِل/صِلي} كل شيء بما يرتبط به", ""
+            return "ما الَّذي يُناسِبُهُ؟", "{صِلْ/صِلي} كُلَّ شَيْءٍ بِما يَرْتَبِطُ بِهِ", ""
         case "pattern-complete" if params.get("kind") == "number-sequence":
-            return "قطار الأعداد", "{اكتب/اكتبي} العدد الناقص في كل قطار", ""
+            return "قِطارُ الأَعْدادِ", "{اكْتُبِ/اكْتُبي} العَدَدَ النّاقِصَ في كُلِّ قِطارٍ", ""
         case "compare" if max(_numbers(params), default=0) > 5:
-            return COMPARE["more-less"][0], "{حوّط/حوّطي} الأكثر {واكتب/واكتبي} العددين", ""
+            return COMPARE["more-less"][0], "{حَوِّطِ/حَوِّطي} الأَكْثَرَ {وَاكْتُبِ/وَاكْتُبي} العَدَدَيْنِ", ""
     if kind in NUMBER_TYPES and subject == "math":
         return math_texts(kind, params)
     return None

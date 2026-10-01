@@ -26,6 +26,7 @@ OUT = ROOT / "apps/web/public/workbooks"
 MANIFEST = ROOT / "apps/web/src/lib/workbook-previews.json"
 WIDTH = 720  # A4 pages at ~2× a 360 px card
 
+
 def journey_pages(stage: int, folder: str, pages: list[tuple[str, str, str]]) -> list[tuple[str, str, str]]:
     """One stage's pages of «رحلتي الأولى»: the stem is read from the stage's folder (relative to stage 1's),
     and the stage goes in front of both captions."""
@@ -46,7 +47,7 @@ PAGES: dict[str, tuple[Path, list[tuple[str, str, str]]]] = {
                 [
                     (
                         "png-cover/journey-cover-front",
-                        "الغلاف باسم طفلك وشخصيته",
+                        "الغلاف باسم طفلكم وشخصيته",
                         "the cover with your child's name",
                     ),
                     ("png-book/p002-journey-map", "خريطة الرحلة", "the journey map"),
@@ -66,7 +67,11 @@ PAGES: dict[str, tuple[Path, list[tuple[str, str, str]]]] = {
                 2,
                 "../stage-2",
                 [
-                    ("png-cover/journey-cover-front", "الغلاف باسم طفلك", "the cover with your child's name"),
+                    (
+                        "png-cover/journey-cover-front",
+                        "الغلاف باسم طفلكم",
+                        "the cover with your child's name",
+                    ),
                     ("png-book/p014-journey-first-sound", "الصوت الأول للكلمة", "the first sound of a word"),
                     (
                         "png-book/p032-journey-finger-trace",
@@ -84,7 +89,11 @@ PAGES: dict[str, tuple[Path, list[tuple[str, str, str]]]] = {
                 3,
                 "../stage-3",
                 [
-                    ("png-cover/journey-cover-front", "الغلاف باسم طفلك", "the cover with your child's name"),
+                    (
+                        "png-cover/journey-cover-front",
+                        "الغلاف باسم طفلكم",
+                        "the cover with your child's name",
+                    ),
                     ("png-book/p065-journey-harakat", "الفتحة", "the fatha"),
                     ("png-book/p070-journey-syllables", "أركّب كلمة", "build a word"),
                     ("png-book/p071-journey-word-read", "أقرأ كلمات قصيرة", "read short words"),
@@ -103,7 +112,11 @@ PAGES: dict[str, tuple[Path, list[tuple[str, str, str]]]] = {
     "foundation-workbook": (
         ROOT / "out/workbook/png-kg2-v1",
         [
-            ("p001-owner-page", "هذا الكتاب لطفلك: اسمه وصورته وبصمة كفّه", "This book belongs to your child"),
+            (
+                "p001-owner-page",
+                "هذا الكتاب لطفلكم: اسمه وصورته وبصمة كفّه",
+                "This book belongs to your child",
+            ),
             ("p002-name-trace", "يتتبّع اسمه ويكتبه", "Tracing their own name"),
             ("p018-letter-intro", "أتعرّف على الحرف وألوّنه", "Meet a letter and color it"),
             ("p027-letter-trace", "أتتبّع الحرف من نقطة البداية", "Trace the letter from the start dot"),
@@ -158,7 +171,11 @@ PAGES: dict[str, tuple[Path, list[tuple[str, str, str]]]] = {
     "foundation-workbook-kg1": (
         ROOT / "out/workbook/png-kg1-v1",
         [
-            ("p001-owner-page", "هذا الكتاب لطفلك: اسمه وصورته وبصمة كفّه", "This book belongs to your child"),
+            (
+                "p001-owner-page",
+                "هذا الكتاب لطفلكم: اسمه وصورته وبصمة كفّه",
+                "This book belongs to your child",
+            ),
             ("p005-kg1-pen-lines", "خطوط كبيرة بالقلم من النقطة الخضراء", "Big pen lines from the green dot"),
             (
                 "p018-kg1-letter-trace",

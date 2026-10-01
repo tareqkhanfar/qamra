@@ -32,7 +32,7 @@ from qamra_workbook.render.pages.workbook_front import spell
 from qamra_workbook.render.pages.workbook_review import compact
 from qamra_workbook.render.registry import Built, PageContext, page_type
 
-POSITIONS = ("أول", "وسط", "آخر")
+POSITIONS = ("أَوَّل", "وَسَط", "آخِر")
 FORMS = ("initial", "medial", "final")
 
 
@@ -76,8 +76,8 @@ def letter_position(ctx: PageContext) -> Built:
     # the forms: each target letter at the beginning, in the middle and at the end
     head_h = 12 + 16 * len(targets)
     body.append(card(0, 0, W, head_h, r=7, fill=ctx.style.tint, stroke="none"))
-    for k, label in enumerate(POSITIONS):
-        body.append(text(f"في ال{label}", W - 50 - k * 44, 8.5, 4.6, color=ctx.style.deep))
+    for k, label in enumerate(("في الأَوَّلِ", "في الوَسَطِ", "في الآخِرِ")):
+        body.append(text(label, W - 50 - k * 44, 8.5, 4.6, color=ctx.style.deep))
     for i, t in enumerate(targets):
         y = 12.0 + i * 16
         shape = arabic_shape(t)
@@ -165,7 +165,7 @@ def _crayon_legend(x: float, y: float, first: str, second: str) -> str:
 
 def above_below(ctx: PageContext, y0: float, h: float) -> tuple[list[str], list[str]]:
     """A table with things on it and under it, to colour red (above) and blue (below)."""
-    body = [card(0, y0, W, h, r=7), _crayon_legend(W - 6, y0 + 8, "فوق", "تحت")]
+    body = [card(0, y0, W, h, r=7), _crayon_legend(W - 6, y0 + 8, "فَوْقَ", "تَحْتَ")]
     top, size = y0 + 14, min(h - 20, 74.0)
     tx = W / 2 - size * 0.7
     body.append(pic("table", tx, top, size * 1.4, "color"))
@@ -188,7 +188,7 @@ def inside_outside(ctx: PageContext, y0: float, h: float) -> tuple[list[str], li
     body = [card(0, y0, W, h, r=7)]
     body.append(
         text(
-            "أحوّط ما داخل الصندوق، وأضع خطًّا تحت ما خارجه",
+            "أُحَوِّطُ ما داخِلَ الصُّنْدوقِ، وَأَضَعُ خَطًّا تَحْتَ ما خارِجَهُ",
             W - 6,
             y0 + 8,
             4.4,
@@ -259,7 +259,7 @@ def front_behind(ctx: PageContext) -> tuple[list[str], list[str]]:
         body.append(card(0, y + 1, W, 64, r=7))
         body.append(
             text(
-                "أحوّط ما أمام " + ("الشجرة" if big == "tree" else "البيت"),
+                "أُحَوِّطُ ما أَمامَ " + ("الشَّجَرَةِ" if big == "tree" else "البَيْتِ"),
                 W - 6,
                 y + 9,
                 4.4,
@@ -282,11 +282,11 @@ def right_left(ctx: PageContext) -> tuple[list[str], list[str]]:
     """The two hands on top, then rows with something on the right and the left of a thing in the middle."""
     body = [card(0, 0, W, 44, r=7, fill=ctx.style.tint, stroke="none")]
     body.append(pic("hand", W - 44, 4, 36))
-    body.append(text("يدي اليمنى", W - 26, 43, 4.2, color=ctx.style.deep))
+    body.append(text("يَدي اليُمْنى", W - 26, 43, 4.2, color=ctx.style.deep))
     mirrored = '<g transform="translate(100 0) scale(-1 1)">' + PICTURES["hand"].inner("color") + "</g>"
     body.append(draw.el("svg", mirrored, x=8, y=4, width=36, height=36, viewBox="0 0 100 100"))
-    body.append(text("يدي اليسرى", 26, 43, 4.2, color=ctx.style.deep))
-    body.append(_crayon_legend(W - 6, 54, "يمين", "يسار"))
+    body.append(text("يَدي اليُسْرى", 26, 43, 4.2, color=ctx.style.deep))
+    body.append(_crayon_legend(W - 6, 54, "يَمين", "يَسار"))
     rows = [("house", "cat", "ball"), ("tree", "bird", "rabbit"), ("car", "duck", "flower")]
     answer = []
     for i, (mid, right, left) in enumerate(rows):

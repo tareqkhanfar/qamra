@@ -390,32 +390,32 @@ def shadow(ctx: PageContext, box: Box) -> tuple[list[str], str]:
 
 
 MINIS: dict[str, tuple[str, Mini]] = {
-    "odd-one-out": ("مَن المختلف؟", odd),
-    "big-small": ("كبير وصغير", big_small),
-    "gone": ("ماذا اختفى؟", gone),
-    "trace-path": ("أتبع الطريق", path),
-    "connect-pairs": ("أصل الصور", pairs),
-    "animal-sound": ("مَن الصوت؟", sound),
-    "loud-soft": ("عالٍ أم منخفض؟", loud_soft),
-    "word": ("أسمع الكلمة", word),
-    "beach": ("مطر وعشب وأمواج", beach),
-    "pen-lines": ("أتتبّع الخط", strokes("horizontal")),
-    "draw-shape": ("أرسم شكلًا وألوّنه", draw_shape),
-    "shapes": ("أتتبّع الأشكال", shapes),
-    "pattern": ("أكمل النمط", pattern),
-    "sequence": ("أرتّب القصة", sequence),
-    "rule-coloring": ("ألوّن حسب القاعدة", rule),
-    "like-model": ("ألوّن مثل النموذج", model),
-    "right-to-left": ("من اليمين إلى اليسار", rtl),
-    "boats-dots": ("قوارب ونقاط", boats),
-    "boat-on-line": ("قوارب على السطر", boat_line),
+    "odd-one-out": ("مَنِ المُخْتَلِفُ؟", odd),
+    "big-small": ("كَبيرٌ وَصَغيرٌ", big_small),
+    "gone": ("ماذا اخْتَفى؟", gone),
+    "trace-path": ("أَتْبَعُ الطَّريقَ", path),
+    "connect-pairs": ("أَصِلُ الصُّوَرَ", pairs),
+    "animal-sound": ("لِمَنِ الصَّوْتُ؟", sound),
+    "loud-soft": ("عالٍ أَمْ مُنْخَفِضٌ؟", loud_soft),
+    "word": ("أَسْمَعُ الكَلِمَةَ", word),
+    "beach": ("مَطَرٌ وَعُشْبٌ وَأَمْواجٌ", beach),
+    "pen-lines": ("أَتَتَبَّعُ الخَطَّ", strokes("horizontal")),
+    "draw-shape": ("أَرْسُمُ شَكْلًا وَأُلَوِّنُهُ", draw_shape),
+    "shapes": ("أَتَتَبَّعُ الأَشْكالَ", shapes),
+    "pattern": ("أُكْمِلُ النَّمَطَ", pattern),
+    "sequence": ("أُرَتِّبُ القِصَّةَ", sequence),
+    "rule-coloring": ("أُلَوِّنُ حَسَبَ القاعِدَةِ", rule),
+    "like-model": ("أُلَوِّنُ مِثْلَ النَّموذَجِ", model),
+    "right-to-left": ("مِنَ اليَمينِ إلى اليَسارِ", rtl),
+    "boats-dots": ("قَوارِبُ وَنِقاطٌ", boats),
+    "boat-on-line": ("قَوارِبُ عَلى السَّطْرِ", boat_line),
     "animals": ("Animals", animals),
     "colors": ("Colors", colors),
-    "counting": ("أعدّ", count),
-    "numerals": ("الرقم ومجموعته", numeral),
-    "above-below": ("فوق وتحت", above),
-    "spot-difference": ("أجد الفرق", difference),
-    "shadow": ("الظل", shadow),
+    "counting": ("أَعُدُّ", count),
+    "numerals": ("الرَّقْمُ وَمَجْموعَتُهُ", numeral),
+    "above-below": ("فَوْقَ وَتَحْتَ", above),
+    "spot-difference": ("أَجِدُ الفَرْقَ", difference),
+    "shadow": ("الظِّلُّ", shadow),
 }
 
 
@@ -441,7 +441,7 @@ def what_i_learned(ctx: PageContext) -> Built:
         body += drawn
         if answer:
             key.append(f"{label}: {answer}")
-    cheer = ctx.text(str(ctx.page.params.get("cheer", "رائع يا {child}!")))
+    cheer = ctx.text(str(ctx.page.params.get("cheer", "رائِعٌ يا {child}!")))
     body.append(card(0, area + 2, W, 204 - area - 2, r=10, fill=SOFT, stroke="none"))
     body.append(character_image(ctx, W - 36, 204, 36))
     body.append(
@@ -671,7 +671,7 @@ def riddle_mini(ctx: PageContext, box: Box) -> tuple[list[str], str]:
     x, y, w, h = box
     body, cells = _row(["camel", "cat", "fish"], (x, y, w * 0.6, h))
     out = [
-        text("لي سنام", x + w - 4, y + h / 2 + 2, 5.2, cls="wb-word", color="#1C2140", anchor="end"),
+        text("لي سَنامٌ", x + w - 4, y + h / 2 + 2, 5.2, cls="wb-word", color="#1C2140", anchor="end"),
         *body,
         _ring(cells[0]),
     ]
@@ -920,55 +920,55 @@ def sort_colors_mini(ctx: PageContext, box: Box) -> tuple[list[str], str]:
 
 MINIS.update(
     {
-        "sequence-4": ("أرتّب القصة", story_mini("eid", 4)),
-        "sequence-6": ("أرتّب القصة", story_mini("olive", 6)),
-        "memory": ("أتذكّر", memory_mini(5)),
-        "memory-6": ("أتذكّر", memory_mini(6)),
-        "classify": ("أصنّف", classify_mini),
-        "maze": ("المتاهة", maze_mini),
-        "same-different": ("متشابهان أم مختلفان؟", word),
-        "syllables": ("أصفّق للمقاطع", claps_mini),
-        "first-sound": ("الصوت الأول", first_sound_mini),
-        "small-waves": ("أمواج صغيرة", waves_mini),
-        "find-shapes": ("أجد الأشكال", shapes),
-        "sort-colors": ("ألوّن بالألوان", sort_colors_mini),
-        "pattern-abb": ("أكمل النمط", pattern),
-        "first-sound-coloring": ("ألوّن حسب الصوت", first_sound_mini),
-        "key-coloring": ("ألوّن حسب المفتاح", key_shapes_mini),
-        "name": ("أسمّي الحرف", letters_mini(("أ", "ب", "ت", "ث"), "hollow")),
-        "find": ("أجد الحرف", letters_mini(("ج", "ح", "خ"), "find")),
-        "write": ("أكتب الحرف", write_mini),
-        "trace": ("أتتبّع", letters_mini(("د", "ذ", "ر"), "trace")),
-        "complete": ("أكمل الحرف", complete_mini(("س", "ش"))),
-        "copy": ("أكتب بجانب النموذج", write_mini),
-        "sound": ("أقول الصوت", en_letters_mini("ABC")),
-        "match": ("أصل الحرف بصورته", en_match_mini("DEF", ("duck", "egg", "fish"))),
-        "count-write": ("أعدّ وأكتب", count_write_mini),
-        "before-after": ("قبل وبعد", before_after_mini),
-        "more-less": ("أكثر أم أقل؟", more_less_mini),
-        "hidden": ("الأشياء المخبّأة", hidden_mini),
-        "riddle": ("الحزّورة", riddle_mini),
-        "arabic-letter": ("حرف عربي", letters_mini(("ص",), "trace")),
-        "write-next-to-model": ("أكتب بجانب النموذج", write_mini),
+        "sequence-4": ("أُرَتِّبُ القِصَّةَ", story_mini("eid", 4)),
+        "sequence-6": ("أُرَتِّبُ القِصَّةَ", story_mini("olive", 6)),
+        "memory": ("أَتَذَكَّرُ", memory_mini(5)),
+        "memory-6": ("أَتَذَكَّرُ", memory_mini(6)),
+        "classify": ("أُصَنِّفُ", classify_mini),
+        "maze": ("المَتاهَةُ", maze_mini),
+        "same-different": ("مُتَشابِهانِ أَمْ مُخْتَلِفانِ؟", word),
+        "syllables": ("أُصَفِّقُ لِلْمَقاطِعِ", claps_mini),
+        "first-sound": ("الصَّوْتُ الأَوَّلُ", first_sound_mini),
+        "small-waves": ("أَمْواجٌ صَغيرَةٌ", waves_mini),
+        "find-shapes": ("أَجِدُ الأَشْكالَ", shapes),
+        "sort-colors": ("أُلَوِّنُ بِالأَلْوانِ", sort_colors_mini),
+        "pattern-abb": ("أُكْمِلُ النَّمَطَ", pattern),
+        "first-sound-coloring": ("أُلَوِّنُ حَسَبَ الصَّوْتِ", first_sound_mini),
+        "key-coloring": ("أُلَوِّنُ حَسَبَ المِفْتاحِ", key_shapes_mini),
+        "name": ("أُسَمّي الحَرْفَ", letters_mini(("أ", "ب", "ت", "ث"), "hollow")),
+        "find": ("أَجِدُ الحَرْفَ", letters_mini(("ج", "ح", "خ"), "find")),
+        "write": ("أَكْتُبُ الحَرْفَ", write_mini),
+        "trace": ("أَتَتَبَّعُ", letters_mini(("د", "ذ", "ر"), "trace")),
+        "complete": ("أُكْمِلُ الحَرْفَ", complete_mini(("س", "ش"))),
+        "copy": ("أَكْتُبُ بِجانِبِ النَّموذَجِ", write_mini),
+        "sound": ("أَقولُ الصَّوْتَ", en_letters_mini("ABC")),
+        "match": ("أَصِلُ الحَرْفَ بِصورَتِهِ", en_match_mini("DEF", ("duck", "egg", "fish"))),
+        "count-write": ("أَعُدُّ وَأَكْتُبُ", count_write_mini),
+        "before-after": ("قَبْلَ وَبَعْدَ", before_after_mini),
+        "more-less": ("أَكْثَرُ أَمْ أَقَلُّ؟", more_less_mini),
+        "hidden": ("الأَشْياءُ المُخَبَّأَةُ", hidden_mini),
+        "riddle": ("الحَزّورَةُ", riddle_mini),
+        "arabic-letter": ("حَرْفٌ عَرَبِيٌّ", letters_mini(("ص",), "trace")),
+        "write-next-to-model": ("أَكْتُبُ بِجانِبِ النَّموذَجِ", write_mini),
         "english-letter": ("English letter", en_letters_mini("N")),
-        "count-and-write": ("أعدّ وأكتب", count_write_mini),
-        "rhyme": ("القافية", rhyme_mini),
-        "joins": ("جسور صغيرة", joins_mini),
-        "build-shape": ("أبني بالأشكال", build_mini),
-        "mix-colors": ("أمزج الألوان", mix_mini),
-        "growing-pattern": ("نمط يكبر", growing_mini),
-        "number-key": ("ألوّن حسب الرقم", key_mini("number")),
-        "letter-key": ("ألوّن حسب الحرف", key_mini("letter")),
-        "position": ("مكان الحرف", position_mini),
-        "harakat": ("الحركات", harakat_mini),
-        "read": ("أقرأ", read_mini),
-        "write-on-line": ("أكتب على السطر", write_line_mini),
-        "write-alone": ("أكتب وحدي", write_alone_mini),
+        "count-and-write": ("أَعُدُّ وَأَكْتُبُ", count_write_mini),
+        "rhyme": ("القافِيَةُ", rhyme_mini),
+        "joins": ("جُسورٌ صَغيرَةٌ", joins_mini),
+        "build-shape": ("أَبْني بِالأَشْكالِ", build_mini),
+        "mix-colors": ("أَمْزُجُ الأَلْوانَ", mix_mini),
+        "growing-pattern": ("نَمَطٌ يَكْبَرُ", growing_mini),
+        "number-key": ("أُلَوِّنُ حَسَبَ الرَّقْمِ", key_mini("number")),
+        "letter-key": ("أُلَوِّنُ حَسَبَ الحَرْفِ", key_mini("letter")),
+        "position": ("مَكانُ الحَرْفِ", position_mini),
+        "harakat": ("الحَرَكاتُ", harakat_mini),
+        "read": ("أَقْرَأُ", read_mini),
+        "write-on-line": ("أَكْتُبُ عَلى السَّطْرِ", write_line_mini),
+        "write-alone": ("أَكْتُبُ وَحْدي", write_alone_mini),
         "alphabet": ("Alphabet", en_letters_mini("XYZ")),
         "vocabulary": ("Words", en_word_mini),
         "sentence": ("A sentence", sentence_mini),
-        "add": ("أجمع", sum_mini("+")),
-        "subtract": ("أطرح", sum_mini("-")),
+        "add": ("أَجْمَعُ", sum_mini("+")),
+        "subtract": ("أَطْرَحُ", sum_mini("-")),
     }
 )
 
@@ -1017,7 +1017,7 @@ def assessment(ctx: PageContext) -> Built:
     per task, and the score box for the grown-up."""
     tasks = [dict(t) for t in ctx.page.params.get("tasks", [])]
     problems = [f"no assessment task {t.get('kind')!r}" for t in tasks if str(t.get("kind")) not in ASSESS]
-    tasks = [t for t in tasks if str(t.get("kind")) in ASSESS] or [{"kind": "count", "label": "أعدّ"}]
+    tasks = [t for t in tasks if str(t.get("kind")) in ASSESS] or [{"kind": "count", "label": "أَعُدُّ"}]
     pitch = (H - 24) / len(tasks)
     body, key = [], []
     for i, t in enumerate(tasks):

@@ -73,7 +73,7 @@ pages:
     beat: opening — the hero at home on the morning the story begins
     scene: The hero wakes up smiling in a sunny room, excited about the day ahead.
     companion_action: peeks out from behind the pillow
-    text_ar: "في صباحٍ جميل، {استيقظَ/استيقظتْ} {name} {وقلبُه/وقلبُها} يرقص فرحًا."
+    text_ar: "فِي صَبَاحٍ جَمِيلٍ، {اسْتَيْقَظَ/اسْتَيْقَظَتْ} {name} {وَقَلْبُهُ/وَقَلْبُهَا} يَرْقُصُ فَرَحًا."
     text_en: "One lovely morning, {name} woke up with a happy, dancing heart."
   - index: 2
     layout: split
@@ -82,7 +82,7 @@ pages:
     beat: the occasion is announced — why today is special
     scene: The hero learns what today is about, eyes shining with excitement.
     companion_action: claps its little hands
-    text_ar: "اليوم يومٌ مميّز، {وكان/وكانت} {name} {يعرفُ/تعرفُ} ذلك."
+    text_ar: "الْيَوْمُ يَوْمٌ مُمَيَّزٌ، {وَكَانَ/وَكَانَتْ} {name} {يَعْرِفُ/تَعْرِفُ} ذَلِكَ."
     text_en: "Today was a special day, and {name} knew it."
   - index: 3
     layout: full
@@ -93,7 +93,7 @@ pages:
     beat: getting ready with the family
     scene: The hero gets ready for the day, proud and cheerful.
     companion_action: helps carry something small
-    text_ar: "{استعدَّ/استعدّتْ} {name} بكلّ حماس."
+    text_ar: "{اسْتَعَدَّ/اسْتَعَدَّتْ} {name} بِكُلِّ حَمَاسٍ."
     text_en: "{name} got ready with lots of excitement."
   - index: 4
     layout: full
@@ -104,7 +104,7 @@ pages:
     beat: arriving at the special place — the first wonder
     scene: The hero arrives at the special place and looks around in wonder.
     companion_action: floats up high to see everything
-    text_ar: "{وصلَ/وصلتْ} {name} إلى المكان، {وفتحَ/وفتحتْ} {عينيه/عينيها} على كلّ شيء جميل."
+    text_ar: "{وَصَلَ/وَصَلَتْ} {name} إِلَى الْمَكَانِ، {وَفَتَحَ/وَفَتَحَتْ} {عَيْنَيْهِ/عَيْنَيْهَا} عَلَى كُلِّ شَيْءٍ جَمِيلٍ."
     text_en: "{name} arrived and looked around at everything lovely."
   - index: 5
     layout: spread
@@ -115,7 +115,7 @@ pages:
     beat: the big wide scene of the place
     scene: A wide view of the special place with the hero in the middle of it all, full of life and color.
     companion_action: twirls happily in the air
-    text_ar: "كان المكانُ أجملَ ممّا {تخيّلَ/تخيّلتْ} {name}."
+    text_ar: "كَانَ الْمَكَانُ أَجْمَلَ مِمَّا {تَخَيَّلَ/تَخَيَّلَتْ} {name}."
     text_en: "The place was even more beautiful than {name} had imagined."
   - index: 6
     layout: full
@@ -126,7 +126,7 @@ pages:
     beat: the first thing the child loves or did
     scene: The hero enjoys the first favorite thing, laughing.
     companion_action: joins in
-    text_ar: "{وجدَ/وجدتْ} {name} أوّلَ شيءٍ {يحبُّه/تحبُّه}."
+    text_ar: "{وَجَدَ/وَجَدَتْ} {name} أَوَّلَ شَيْءٍ {يُحِبُّهُ/تُحِبُّهُ}."
     text_en: "{name} found the first thing {name} loves."
   - index: 7
     layout: split
@@ -136,7 +136,7 @@ pages:
     beat: the second thing the child loves or did
     scene: The hero enjoys the second favorite thing with a big smile.
     companion_action: cheers from close by
-    text_ar: "ثمّ {جاءَ/جاءتْ} لحظةُ الشيء الثاني الذي {يحبُّه/تحبُّه} {name}."
+    text_ar: "ثُمَّ جَاءَتْ لَحْظَةُ الشَّيْءِ الثَّانِي الَّذِي {يُحِبُّهُ/تُحِبُّهُ} {name}."
     text_en: "Then came the second thing {name} loves."
   - index: 8
     layout: full
@@ -147,7 +147,7 @@ pages:
     beat: a small, gentle challenge
     scene: The hero meets a small, gentle problem and thinks about what to do.
     companion_action: looks at the hero, ready to help
-    text_ar: "لكنّ أمرًا صغيرًا {حيّرَه/حيّرَها} قليلًا."
+    text_ar: "لَكِنَّ أَمْرًا صَغِيرًا {حَيَّرَهُ/حَيَّرَهَا} قَلِيلًا."
     text_en: "But something small puzzled {name} a little."
   - index: 9
     layout: full
@@ -158,7 +158,7 @@ pages:
     beat: the hero finds a way, with a little help
     scene: The hero solves the little problem with a clever, kind idea.
     companion_action: gives a gentle nudge of encouragement
-    text_ar: "{فكّرَ/فكّرتْ} {name} قليلًا، {ووجدَ/ووجدتْ} فكرةً رائعة."
+    text_ar: "{فَكَّرَ/فَكَّرَتْ} {name} قَلِيلًا، {وَوَجَدَ/وَوَجَدَتْ} فِكْرَةً رَائِعَةً."
     text_en: "{name} thought for a moment and found a wonderful idea."
   - index: 10
     layout: spread
@@ -169,7 +169,7 @@ pages:
     beat: the joyful peak of the day, together with loved ones
     scene: The joyful peak of the day, the hero celebrating with the people who love them.
     companion_action: spins in circles of joy
-    text_ar: "{وضحكَ/وضحكتْ} {name} مع كلّ مَن {يحبُّهم/تحبُّهم}."
+    text_ar: "{وَضَحِكَ/وَضَحِكَتْ} {name} مَعَ كُلِّ مَنْ {يُحِبُّهُمْ/تُحِبُّهُمْ}."
     text_en: "{name} laughed with everyone {name} loves."
   - index: 11
     layout: full
@@ -180,7 +180,7 @@ pages:
     beat: the third loved thing, or a sharing moment with the family
     scene: The hero shares a warm, happy moment with the family.
     companion_action: snuggles close
-    text_ar: "{وشاركَ/وشاركتْ} {name} فرحتَه مع عائلتِه."
+    text_ar: "{وَشَارَكَ/وَشَارَكَتْ} {name} {فَرْحَتَهُ/فَرْحَتَهَا} مَعَ {عَائِلَتِهِ/عَائِلَتِهَا}."
     text_en: "{name} shared the happiness with the family."
   - index: 12
     layout: split
@@ -190,7 +190,7 @@ pages:
     beat: the wish or the lesson, said simply
     scene: The hero pauses in the soft light, thinking about a warm wish.
     companion_action: listens closely
-    text_ar: "{وتمنّى/وتمنّتْ} {name} أمنيةً جميلة."
+    text_ar: "{وَتَمَنَّى/وَتَمَنَّتْ} {name} أُمْنِيَةً جَمِيلَةً."
     text_en: "{name} made a lovely wish."
   - index: 13
     layout: full
@@ -201,7 +201,7 @@ pages:
     beat: going home, tired and happy
     scene: The hero heads home with the family as the sun sets, tired and happy.
     companion_action: yawns sleepily
-    text_ar: "{وعادَ/وعادتْ} {name} إلى البيت {متعبًا وسعيدًا/متعبةً وسعيدة}."
+    text_ar: "{وَعَادَ/وَعَادَتْ} {name} إِلَى الْبَيْتِ {مُتْعَبًا وَسَعِيدًا/مُتْعَبَةً وَسَعِيدَةً}."
     text_en: "{name} went home, tired and happy."
   - index: 14
     layout: full
@@ -212,5 +212,5 @@ pages:
     beat: closing — bedtime under the moon, the day remembered
     scene: The hero lies in bed under a window with a bright crescent moon, smiling at the memories.
     companion_action: curls up at the foot of the bed, glowing softly
-    text_ar: "{ونامَ/ونامتْ} {name} تحت ضوء القمر، {يحلمُ/تحلمُ} بيومٍ جميلٍ آخر."
+    text_ar: "{وَنَامَ/وَنَامَتْ} {name} تَحْتَ ضَوْءِ الْقَمَرِ، {يَحْلُمُ/تَحْلُمُ} بِيَوْمٍ جَمِيلٍ آخَرَ."
     text_en: "{name} fell asleep in the moonlight, dreaming of another lovely day."

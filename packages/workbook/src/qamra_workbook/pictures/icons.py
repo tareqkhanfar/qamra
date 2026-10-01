@@ -680,7 +680,7 @@ _P = [
     ),
     _pic(
         "strawberry",
-        "فَراوْلَة",
+        "فَراوِلَة",
         "strawberry",
         "fruit",
         (

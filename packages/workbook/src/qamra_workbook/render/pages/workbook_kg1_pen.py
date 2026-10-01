@@ -127,7 +127,7 @@ def grid_copy(y: float, model: str) -> list[str]:
         body.append(draw.path(draw.polyline(pts), stroke=INK, width=1.6))
     first = GRID_MODELS[model][0][0]
     body.append(draw.start_dot((left + first[0] * step, top + first[1] * step), 2.4))
-    body.append(text("أرسم مثله هنا", left + 2 * step, y + 92, 4.6, color="#676B83"))
+    body.append(text("أَرْسُمُ مِثْلَهُ هُنا", left + 2 * step, y + 92, 4.6, color="#676B83"))
     return body
 
 

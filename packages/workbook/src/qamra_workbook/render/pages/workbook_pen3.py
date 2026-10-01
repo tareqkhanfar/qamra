@@ -7,7 +7,7 @@ import math
 
 from qamra_workbook.geometry import Stroke
 from qamra_workbook.render import draw
-from qamra_workbook.render.foundation_text import letter_name
+from qamra_workbook.render.foundation_text import letters_head
 from qamra_workbook.render.pages.letters import tracing_row
 from qamra_workbook.render.pages.workbook_arabic import big_track, row_svg
 from qamra_workbook.render.pages.workbook_arabic2 import alone_row
@@ -161,14 +161,14 @@ def letters_write3(ctx: PageContext) -> Built:
         scale, dx, dy = fit_lines(shape, cx - 15, 2.5, 30, 24)
         body.append(glyph(shape, scale, dx, dy, color=ctx.style.color, width=15))
         body.append(start_marks(shape, scale, dx, dy, 2.0, ctx.num))
-        body.append(text(f"حرف {letter_name(char)}", cx, 33, 4.2, color=ctx.style.deep))
+        body.append(text(letters_head([char]), cx, 33, 4.2, color=ctx.style.deep))
     cap = 14.0 if n == 2 else 24.0
     while True:  # the biggest rows that keep the page inside its work area
         y, parts = 41.0, []
         for char in chars:
             shape = shape_of(char)
             parts.append(card(W - 30, y - 1, 28, 10, r=5, fill=ctx.style.tint, stroke="none"))
-            parts.append(text(f"حرف {letter_name(char)}", W - 16, y + 6, 4.2, color=ctx.style.deep))
+            parts.append(text(letters_head([char]), W - 16, y + 6, 4.2, color=ctx.style.deep))
             if n >= 3:
                 row = tracing_row(shape, width=W - 10, cap=cap, count=3, number=ctx.num)
                 part, height = row_svg(row, 5, y + 10)

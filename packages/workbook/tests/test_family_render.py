@@ -176,8 +176,8 @@ def test_the_parent_box_is_titled_for_the_activity() -> None:
     b = book(*alone)
     html_together = book_html(book(page(8, "scavenger-hunt", "home")), together, ASSETS)
     html_alone = book_html(b, build_pages(b, ASSETS), ASSETS)
-    assert "هيا نفعلها معاً!" in html_together and "للأهل" in html_together
-    assert "هيا نفعلها معاً!" not in html_alone and "للأهل" in html_alone
+    assert "هيا نفعلها معًا!" in html_together and "للأهل" in html_together
+    assert "هيا نفعلها معًا!" not in html_alone and "للأهل" in html_alone
     for icon in ("t-home", "t-fam", "t-time", "t-level"):
         assert f"tag {icon}" in html_together
     assert "١٠ دقائق" in html_together

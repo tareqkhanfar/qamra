@@ -181,7 +181,7 @@ def toc(ctx: PageContext) -> Built:
         "map_h": _ROWS[0] + 36 * (rows - 1) + 18,
         "stops": stops,
         "extras": extras,
-        "start": "ابدأ من هنا",
+        "start": ctx.text("{ابدأ/ابدئي} من هنا"),
         "character": uri(ctx.assets.character),
     }
     return Built(data, None, problems)

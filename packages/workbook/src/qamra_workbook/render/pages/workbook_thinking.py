@@ -26,7 +26,7 @@ from qamra_workbook.render.pages.workbook_common import (
     text,
 )
 from qamra_workbook.render.pages.workbook_find import words_starting
-from qamra_workbook.render.pages.workbook_pen import COLOR_ROWS
+from qamra_workbook.render.pages.workbook_pen import COLOR_ROWS, COLOR_WORDS
 from qamra_workbook.render.registry import Built, PageContext, page_type
 
 POOL = (
@@ -161,7 +161,7 @@ def classify(ctx: PageContext) -> Built:
                     stroke_linejoin="round",
                 )
             )
-            body.append(text(name, cx, 186, 6, color=INK if name == "أصفر" else "#FFFFFF"))
+            body.append(text(COLOR_WORDS[name], cx, 186, 6, color=INK if name == "أصفر" else "#FFFFFF"))
         anchors.append((cx, 152))
         body.append(hook(cx, 150))
     for k, (_, g) in enumerate(items):
@@ -186,7 +186,7 @@ def memory(ctx: PageContext) -> Built:
     shown = seen + r.sample([p for p in POOL if p not in seen], count)
     r.shuffle(shown)
     body = [card(0, 0, W, 78, r=8, fill="#FFF6F2")]
-    body.append(text("أنظر جيدًا وأتذكّر", W - 8, 10, 5, anchor="end", color=ctx.style.deep))
+    body.append(text("أَنْظُرُ جَيِّدًا وَأَتَذَكَّرُ", W - 8, 10, 5, anchor="end", color=ctx.style.deep))
     step = (W - 20) / count
     for k, thing in enumerate(seen):
         body.append(pic(thing, W - 10 - (k + 1) * step + (step - 42) / 2, 20, 42))
@@ -198,7 +198,7 @@ def memory(ctx: PageContext) -> Built:
             stroke_dasharray="3 2",
         )
     )
-    body.append(text("أغطّي الصور بورقة، ثم أحوّط ما رأيت", W - 8, 98, 5, anchor="end", color=ctx.style.deep))
+    body.append(text("أُغَطّي الصُّوَرَ بِوَرَقَةٍ، ثُمَّ أُحَوِّطُ ما رَأَيْتُ", W - 8, 98, 5, anchor="end", color=ctx.style.deep))
     per_row = count
     step = W / per_row
     for k, thing in enumerate(shown):
@@ -272,7 +272,7 @@ def cut_and_paste(ctx: PageContext) -> Built:
         )
         body.append(mark(marks[i], x + 5, y + 5, colors[i]))
     order = _deranged(r, grid * grid)
-    body.append(text("أقصّ على الخط المتقطّع", W - 8, 124, 4.8, anchor="end", color=ctx.style.deep))
+    body.append(text("أَقُصُّ عَلى الخَطِّ المُتَقَطِّعِ", W - 8, 124, 4.8, anchor="end", color=ctx.style.deep))
     per_row = 4 if grid == 2 else 5
     pw = min(38.0, (W - 8) / per_row - 8)
     unit = 100 / grid

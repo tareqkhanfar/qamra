@@ -268,7 +268,7 @@ def test_the_replaced_words_never_appear() -> None:
     assert retired_words({"words": ["ذرة", "ذَيل", "ظِلّ", "لسان", "ضرس"]}) == []
     assert retired_words({"words": ["ظَبْي"], "title": "ذِئْب"}) == ["ذئب", "ظبي"]
     words = [page(1, "finger-trace", "think", letter="ذ", words=["ذرة", "ذئب"])]
-    assert check_words(journey(stage(words, 2))) == ["S2 p1: «ذئب» was replaced by «ذَيل»"]
+    assert check_words(journey(stage(words, 2))) == ["S2 p1: «ذئب» was replaced by «ذَيْل»"]
     notes = journey(stage([page(1, "odd-one-out")], 2)).model_copy(update={"idea": "ظبي في الغابة"})
     assert check_words(notes) == ["the plan's notes still use «ظبي»; it was replaced by «ظِلّ»"]
 

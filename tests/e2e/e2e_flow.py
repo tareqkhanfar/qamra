@@ -41,6 +41,6 @@ def checkout(page: Page, *, name: str = "أم ليان", city: str = "البير
     with page.expect_response(lambda r: "/api/store/cart/zone" in r.url):
         page.get_by_label("المدينة").select_option(city)
     page.get_by_label("الحي والشارع وأقرب معلم").fill("البالوع، قرب المسجد")
-    page.get_by_role("button", name="أكّد الطلب").click()
+    page.get_by_role("button", name="أكّدوا الطلب").click()
     page.wait_for_url("**/order/QM-*")
     return page.url.split("/order/")[1].split("?")[0]

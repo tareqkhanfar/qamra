@@ -11,7 +11,7 @@ from markupsafe import Markup, escape
 from qamra_workbook.letters.model import Letter
 from qamra_workbook.pictures.model import strip_tashkeel
 from qamra_workbook.render import draw
-from qamra_workbook.render.foundation_text import letter_name
+from qamra_workbook.render.foundation_text import letters_head
 from qamra_workbook.render.pages.letters import HARAKAT, letter_extent, start_points, tracing_row
 from qamra_workbook.render.pages.workbook_common import (
     INK,
@@ -140,7 +140,7 @@ def letter_intro(ctx: PageContext) -> Built:
     scale, dx, dy = fit_capped(shape, 30, 8, 126, 104, 10, 0.62)
     body.append(glyph(shape, scale, dx, dy, width=24, edge=INK, fill="#FFFFFF"))
     body.append(card(W - 44, 6, 38, 13, r=6.5, fill=ctx.style.tint, stroke="none"))
-    body.append(text(f"حرف {letter_name(char)}", W - 25, 15, 6.2, cls="wb-title", color=ctx.style.deep))
+    body.append(text(letters_head([char]), W - 25, 15, 6.2, cls="wb-title", color=ctx.style.deep))
     body.append(draw.el("circle", cx=16, cy=16, r=9, fill=ctx.style.tint))
     body.append(glyph(shape, *fit_lines(shape, 9, 8.5, 14, 15), color=ctx.style.deep, width=15))
     gap = 6.0
@@ -162,7 +162,7 @@ def letter_trace(ctx: PageContext) -> Built:
     body = [card(0, 0, W, 84, r=7)]
     body.append(big_track(shape, 20, 2, 146, 80, ctx.num, ctx.style.color))
     body.append(card(5, 5, 30, 10, r=5, fill=ctx.style.tint, stroke="none"))
-    body.append(text("كبير", 20, 12, 5, color=ctx.style.deep))
+    body.append(text("كَبيرٌ", 20, 12, 5, color=ctx.style.deep))
     y = 90.0
     caps = {"l": 24.0, "m": 17.0, "s": 13.0}
     rows = [s for s in sizes if s in caps]
@@ -197,8 +197,8 @@ def letter_write(ctx: PageContext) -> Built:
     scale, dx, dy = fit_lines(shape, W - 64, 2, 58, 30)
     body.append(glyph(shape, scale, dx, dy, color=ctx.style.color, width=15))
     body.append(start_marks(shape, scale, dx, dy, 2.2, ctx.num))
-    body.append(text("أبدأ من النقطة الخضراء وأتبع السهم", 64, 15, 5.2, color=INK))
-    body.append(text("ثم أكتب على النقاط، ثم وحدي", 64, 24, 4.6, color="#676B83"))
+    body.append(text("أَبْدَأُ مِنَ النُّقْطَةِ الخَضْراءِ وَأَتْبَعُ السَّهْمَ", 64, 15, 5.2, color=INK))
+    body.append(text("ثُمَّ أَكْتُبُ عَلى النِّقاطِ، ثُمَّ وَحْدي", 64, 24, 4.6, color="#676B83"))
     y = 39.0
     for k in range(guided + alone):
         if k < guided:

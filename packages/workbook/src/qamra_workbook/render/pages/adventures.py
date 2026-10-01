@@ -89,7 +89,9 @@ def drawing(ctx: PageContext) -> Built:
 
 
 def layers_ar(n: int, ctx: PageContext) -> str:
-    """«طبقتان», «٣ طبقات»."""
+    """«طبقة واحدة», «طبقتان», «٣ طبقات»."""
+    if n == 1:
+        return "طبقة واحدة"
     return "طبقتان" if n == 2 else f"{ctx.num(n)} {'طبقات' if 3 <= n <= 10 else 'طبقة'}"
 
 

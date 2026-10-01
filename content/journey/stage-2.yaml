@@ -14,8 +14,8 @@ title_ar: "المحطة الثانية: أتعرّف على الحروف وال�
 cover:
   front: {subtitle: "أتعرّف على الحروف والأعداد", kicker: "رحلة {child}"}  # draft: educator review
   back:  # draft: educator review
-    blurb: "فِي المحطة الثانية {يتعرّف/تتعرّف} {child} على أول أربعة عشر حرفًا عربيًّا، ويسمع صوت كل حرف ويتتبّعه بإصبعه ثم بقلمه، ويكتب الأعداد من 1 إِلى 10، ويتعلّم الحروف الإنجليزية من A إِلى N بكلماتها."
-    points: ["120 صفحة ملوّنة بالكامل، حرف جديد واحد فِي كل صفحة", "رموز QR لسماع كل حرف وكلمة", "اسم {child} للتتبّع بالعربية والإنجليزية، وشهادة"]
+    blurb: "في المحطة الثانية {يتعرّف/تتعرّف} {child} على أول أربعة عشر حرفًا عربيًّا، {ويسمع صوت كل حرف ويتتبّعه بإصبعه ثم بقلمه، ويكتب/وتسمع صوت كل حرف وتتتبّعه بإصبعها ثم بقلمها، وتكتب} الأعداد من 1 إلى 10، {ويتعلّم/وتتعلّم} الحروف الإنجليزية من A إلى N بكلماتها."
+    points: ["120 صفحة ملوّنة بالكامل، حرف جديد واحد في كل صفحة", "رموز QR لسماع كل حرف وكلمة", "اسم {child} للتتبّع بالعربية والإنجليزية، وشهادة"]
 
 pages:
   # ---- البداية
@@ -91,7 +91,7 @@ pages:
   36: {title: "التّاءُ بِالقَلَمِ", instruction: "{تَتَبَّعِ/تَتَبَّعي} التّاءَ ثُمَّ {ضَعْ/ضَعي} نُقْطَتَيْها", params: {letter: ت, sizes: [xl, l, m]}}  # draft: educator review
   37: {type: journey-finger-trace, title: "حَرْفُ الثّاءِ: ثَعْلَب", instruction: "{اسْتَمِعْ وَعُدَّ/اسْتَمِعي وَعُدّي} نِقاطَ الثّاءِ", params: {letter: ث, form: isolated, word: fox}, audio: {key: "letter:ar:ث", title: "حَرْفُ الثّاء", say: "ثاء. ثَعْلَب. ثَوْم.", show: ["ث", "ثَعْلَب"], tts: true}}  # draft: educator review
   38: {title: "الثّاءُ بِالقَلَمِ", instruction: "{تَتَبَّعِ/تَتَبَّعي} الثّاءَ {وَضَعِ/وَضَعي} النِّقاطَ الثَّلاثَ", params: {letter: ث, sizes: [xl, l, m]}}  # draft: educator review
-  39: {title: "عُدَّ النِّقاطَ!", instruction: "{لَوِّنْ/لَوِّني}: ب أَحْمَرُ، ت أَزْرَقُ، ث أَصْفَرُ", params: {letters: [ب, ت, ث], distractors: [ن, ي]}}  # draft: educator review
+  39: {title: "{عُدَّ/عُدّي} النِّقاطَ!", instruction: "{لَوِّنْ/لَوِّني}: ب أَحْمَرُ، ت أَزْرَقُ، ث أَصْفَرُ", params: {letters: [ب, ت, ث], distractors: [ن, ي]}}  # draft: educator review
   40: {title: "مُراجَعَةٌ: أ ب ت ث", instruction: "{اكْتُبِ/اكْتُبي} الحَرْفَ {وَحَوِّطِ/وَحَوِّطي} صورَتَهُ", params: {letters: [أ, ب, ت, ث]}}  # draft: educator review
   41: {type: journey-finger-trace, title: "حَرْفُ الجيمِ: جَمَل", instruction: "{اسْتَمِعْ وَمَرِّرْ إِصْبَعَكَ/اسْتَمِعي وَمَرِّري إِصْبَعَكِ} مِنَ النُّقْطَةِ الخَضْراءِ", params: {letter: ج, form: isolated, word: camel}, audio: {key: "letter:ar:ج", title: "حَرْفُ الجيمِ", say: "جيم. جَمَل. جَزَرَة.", show: ["ج", "جَمَل"], tts: true}}  # draft: educator review
   42: {title: "الجيمُ بِالقَلَمِ", instruction: "{تَتَبَّعِ/تَتَبَّعي} الجيمَ ثُمَّ {اكْتُبْها/اكْتُبيها} بِجانِبِ النَّموذَجِ", params: {letter: ج, sizes: [xl, l, m]}}  # draft: educator review
@@ -132,7 +132,7 @@ pages:
   75: {title: "أُكْمِلُ الحَرْفَ: ر ز س", instruction: "{أَكْمِلِ/أَكْمِلي} الحُروفَ النّاقِصَةَ", params: {level: 4, target: [ر, ز, س]}}  # draft: educator review
   76: {type: journey-writing-review, title: "مُراجَعَةٌ: قَلَمي الذَّكِيُّ", instruction: "{تَتَبَّعْ حَرْفًا وَأَكْمِلْ/تَتَبَّعي حَرْفًا وَأَكْمِلي} حَرْفًا", params: {letters: [أ, ش, ص]}}  # draft: educator review
   77: {title: "أَكْتُبُ بِجانِبِ النَّموذَجِ", instruction: "{انْظُرْ/انْظُري} إِلى الحَرْفِ {وَاكْتُبْهُ/وَاكْتُبيهِ} بِجانِبِهِ", params: {level: 5, target: [أ, ب, ت]}}  # draft: educator review
-  78: {title: "ماذا تَعَلَّمْتُ؟", instruction: "{اكْتُبِ/اكْتُبي} الحَرْفَ الأَوَّلَ مِنِ اسْمِكَ", params: {tasks: [trace, complete, copy], cheer: "رائِعٌ يا {child}!"}}  # draft: educator review
+  78: {title: "ماذا تَعَلَّمْتُ؟", instruction: "{اكْتُبِ/اكْتُبي} الحَرْفَ الأَوَّلَ مِنِ {اسْمِكَ/اسْمِكِ}", params: {tasks: [trace, complete, copy], cheer: "رائِعٌ يا {child}!"}}  # draft: educator review
 
   # ---- 🔠 الإنجليزية: A–N, two letters then a vocabulary unit (English pages read left to right)
   79: {type: journey-opener, title: "أَقْرَأُ: الحُروفُ الإِنْجِليزِيَّةُ", instruction: "{حَرِّكْ بَطَلَكَ/حَرِّكي بَطَلَتَكِ} إِلى «أَقْرَأُ»", params: {here: [أقرأ], inside: ["أَسْمَعُ الحَرْفَ وَأَتَتَبَّعُهُ كَبيرًا وَصَغيرًا", "أَتَعَلَّمُ كَلِماتٍ جَديدَةً", "أَكْتُبُ اسْمي بِالإِنْجِليزِيَّةِ"]}}  # draft: educator review
@@ -168,7 +168,7 @@ pages:
   107: {type: journey-number-intro, title: "أَتَعَرَّفُ عَلى 6 إِلى 10", instruction: "{صِلِ/صِلي} الرَّقْمَ بِإِطارِ العَشَرَةِ", params: {numbers: [6, 7, 8, 9, 10]}}  # draft: educator review
   108: {type: journey-number-trace, title: "أَتَتَبَّعُ 6 إِلى 10", instruction: "{تَتَبَّعِ/تَتَبَّعي} الرَّقْمَ ثُمَّ {عُدَّ/عُدّي} نِقاطَهُ", params: {numbers: [6, 7, 8, 9, 10]}}  # draft: educator review
   109: {type: journey-number-write, title: "أَكْتُبُ الأَرْقامَ 6–10", instruction: "{اكْتُبِ/اكْتُبي} الرَّقْمَ بِجانِبِ النَّموذَجِ", params: {numbers: [6, 7, 8, 9, 10]}}  # draft: educator review
-  110: {type: journey-before-after, title: "جيرانُ الأَرْقامِ", instruction: "{اكْتُبِ/اكْتُبي} الرَّقْمَ قَبْلَ وَالرَّقْمَ بَعْدَ", params: {numbers: [2, 5, 7, 9]}}  # draft: educator review
+  110: {type: journey-before-after, title: "جيرانُ الأَرْقامِ", instruction: "{اكْتُبِ/اكْتُبي} الرَّقْمَ قَبْلُ وَالرَّقْمَ بَعْدُ", params: {numbers: [2, 5, 7, 9]}}  # draft: educator review
   111: {title: "أَكْثَرُ أَمْ أَقَلُّ؟", instruction: "{لَوِّنِ/لَوِّني} المَجْموعَةَ الأَكْثَرَ فِي كُلِّ صَفٍّ", params: {concept: more-less}}  # draft: educator review
   112: {type: journey-front-behind, title: "أَمامَ وَخَلْفَ، يَمينٌ وَيَسارٌ", instruction: "{لَوِّنِ/لَوِّني} القِطَّةَ الَّتي أَمامَ الشَّجَرَةِ"}  # draft: educator review
   113: {title: "ماذا تَعَلَّمْتُ؟", instruction: "{عُدَّ وَاكْتُبِ/عُدّي وَاكْتُبي} الرَّقْمَ {وَقارِنْ/وَقارِني}", params: {tasks: [count-write, before-after, more-less], cheer: "رائِعٌ يا {child}!"}}  # draft: educator review

@@ -744,29 +744,29 @@ def grid(
 
 
 PEN_LABELS = {
-    "horizontal": "خط أفقي",
-    "vertical": "خطوط عمودية",
-    "diagonal": "خطوط مائلة",
-    "zigzag": "خط متعرّج",
-    "curve": "خط منحنٍ",
-    "loops": "حلقات",
-    "trace-path": "طريق",
-    "dot-to-dot": "مثلث",
-    "coloring": "ألوان",
-    "shapes": "أشكال",
-    "letter-strokes": "ضربات الحروف",
-    "circle": "دوائر",
+    "horizontal": "خَطٌّ أُفُقِيٌّ",
+    "vertical": "خُطوطٌ عَمودِيَّةٌ",
+    "diagonal": "خُطوطٌ مائِلَةٌ",
+    "zigzag": "خَطٌّ مُتَعَرِّجٌ",
+    "curve": "خَطٌّ مُنْحَنٍ",
+    "loops": "حَلَقاتٌ",
+    "trace-path": "طَريقٌ",
+    "dot-to-dot": "مُثَلَّثٌ",
+    "coloring": "أَلْوانٌ",
+    "shapes": "أَشْكالٌ",
+    "letter-strokes": "ضَرَباتُ الحُروفِ",
+    "circle": "دَوائِرُ",
 }
 THINKING: dict[str, tuple[str, Task]] = {
-    "matching": ("أطابق الصور", match_pairs(3)),
-    "odd-one-out": ("أجد المختلف", odd_row()),
-    "spot-difference": ("أجد المختلف", odd_row()),
-    "maze": ("أحلّ المتاهة", mini_maze()),
-    "classify": ("أصنّف بالألوان", mini_classify()),
-    "memory": ("أطابق الصور", match_pairs(3)),
-    "puzzle": ("أطابق الصور", match_pairs(3)),
-    "pattern": ("أكمل النمط", pattern_row()),
-    "symmetry": ("أكمل الرسم", mini_symmetry()),
+    "matching": ("أُطابِقُ الصُّوَرَ", match_pairs(3)),
+    "odd-one-out": ("أَجِدُ المُخْتَلِفَ", odd_row()),
+    "spot-difference": ("أَجِدُ المُخْتَلِفَ", odd_row()),
+    "maze": ("أَحُلُّ المَتاهَةَ", mini_maze()),
+    "classify": ("أُصَنِّفُ بِالأَلْوانِ", mini_classify()),
+    "memory": ("أُطابِقُ الصُّوَرَ", match_pairs(3)),
+    "puzzle": ("أُطابِقُ الصُّوَرَ", match_pairs(3)),
+    "pattern": ("أُكْمِلُ النَّمَطَ", pattern_row()),
+    "symmetry": ("أُكْمِلُ الرَّسْمَ", mini_symmetry()),
 }
 V1_LETTERS = ["أ", "ب", "ت", "ث", "ج", "ح", "خ", "د", "ذ"]
 
@@ -808,8 +808,8 @@ def review_sections(ctx: PageContext, r: random.Random) -> Drawn:
         return stack(
             ctx,
             [
-                ("أكتب الحرف", write_letters(letters), 1.0),
-                ("أحوّط الصورة التي تبدأ بالحرف", circle_first_letter(letters), 1.0),
+                ("أَكْتُبُ الحَرْفَ", write_letters(letters), 1.0),
+                ("أُحَوِّطُ الصّورَةَ الَّتي تَبْدَأُ بِالحَرْفِ", circle_first_letter(letters), 1.0),
             ],
             r,
         )
@@ -818,18 +818,18 @@ def review_sections(ctx: PageContext, r: random.Random) -> Drawn:
         return stack(
             ctx,
             [
-                ("أعدّ وأكتب", count_write(numbers), 1.3),
-                ("أتتبّع الأعداد", trace_numbers(numbers), 0.8),
-                (f"أحوّط المجموعة التي فيها {ctx.num(numbers[-1])}", circle_group(numbers[-1], others), 1.0),
+                ("أَعُدُّ وَأَكْتُبُ", count_write(numbers), 1.3),
+                ("أَتَتَبَّعُ الأَعْدادَ", trace_numbers(numbers), 0.8),
+                (f"أُحَوِّطُ المَجْموعَةَ الَّتي فيها {ctx.num(numbers[-1])}", circle_group(numbers[-1], others), 1.0),
             ],
             r,
         )
     if subject == "math":
         tasks = {
-            "colors": ("ألوّن كل صورة بلونها", color_names()),
-            "big-small": ("أحوّط الكبير", compare_pair("big-small")),
-            "long-short": ("أحوّط الطويل", compare_pair("long-short")),
-            "many-few": ("أحوّط الكثير", compare_pair("many-few")),
+            "colors": ("أُلَوِّنُ كُلَّ صورَةٍ بِلَوْنِها", color_names()),
+            "big-small": ("أُحَوِّطُ الكَبيرَ", compare_pair("big-small")),
+            "long-short": ("أُحَوِّطُ الطَّويلَ", compare_pair("long-short")),
+            "many-few": ("أُحَوِّطُ الكَثيرَ", compare_pair("many-few")),
         }
         return grid(ctx, [tasks[s] for s in skills if s in tasks], r)
     if subject == "pen":
@@ -840,9 +840,9 @@ def review_sections(ctx: PageContext, r: random.Random) -> Drawn:
     return stack(
         ctx,
         [
-            ("أكتب الحرف الأول من اسم كل صورة", write_first_letter(V1_LETTERS), 1.0),
-            ("أعدّ وأكتب", count_write([2, 5, 0, 4]), 1.0),
-            ("أصل الحرف الكبير بالصغير", match_capitals(list("ABCDEF")), 0.9),
+            ("أَكْتُبُ الحَرْفَ الأَوَّلَ مِنِ اسْمِ كُلِّ صورَةٍ", write_first_letter(V1_LETTERS), 1.0),
+            ("أَعُدُّ وَأَكْتُبُ", count_write([2, 5, 0, 4]), 1.0),
+            ("أَصِلُ الحَرْفَ الكَبيرَ بِالصَّغيرِ", match_capitals(list("ABCDEF")), 0.9),
         ],
         r,
     )
@@ -886,7 +886,7 @@ def pen_check(ctx: PageContext, r: random.Random) -> Drawn:
     params = ctx.page.params
     tracing = [str(t) for t in params.get("tracing", ["zigzag", "circle"])]
     checklist = [str(c) for c in params.get("checklist", ["grip", "pressure", "direction"])]
-    out = stack(ctx, [(f"أتتبّع: {PEN_LABELS.get(t, t)}", pen_row(t), 1.0) for t in tracing], r, 0, 104)
+    out = stack(ctx, [(f"أَتَتَبَّعُ: {PEN_LABELS.get(t, t)}", pen_row(t), 1.0) for t in tracing], r, 0, 104)
     y = 110.0
     out.body.append(card(0, y, W, 204 - y, r=6, fill="#FFFDF6", stroke="#D8C9AC"))
     out.body.append(
@@ -961,9 +961,9 @@ def assessment_sections(ctx: PageContext, r: random.Random) -> Drawn:
         out = stack(
             ctx,
             [
-                ("أقرأ الحروف", read_letters(letters), 0.8),
-                ("أكتب الحرف الأول من اسم كل صورة", write_first_letter(letters), 1.1),
-                ("أحوّط الصورة التي تبدأ بالحرف", circle_first_letter(r.sample(letters, 3)), 1.2),
+                ("أَقْرَأُ الحُروفَ", read_letters(letters), 0.8),
+                ("أَكْتُبُ الحَرْفَ الأَوَّلَ مِنِ اسْمِ كُلِّ صورَةٍ", write_first_letter(letters), 1.1),
+                ("أُحَوِّطُ الصّورَةَ الَّتي تَبْدَأُ بِالحَرْفِ", circle_first_letter(r.sample(letters, 3)), 1.2),
             ],
             r,
             0,
@@ -986,9 +986,9 @@ def assessment_sections(ctx: PageContext, r: random.Random) -> Drawn:
         out = stack(
             ctx,
             [
-                ("أعدّ وأكتب", count_write([3, 0, 5, 1]), 1.3),
-                ("أتتبّع الأعداد", trace_numbers([1, 2, 3, 4, 5, 0]), 0.8),
-                ("أحوّط الكثير", compare_pair("many-few"), 0.9),
+                ("أَعُدُّ وَأَكْتُبُ", count_write([3, 0, 5, 1]), 1.3),
+                ("أَتَتَبَّعُ الأَعْدادَ", trace_numbers([1, 2, 3, 4, 5, 0]), 0.8),
+                ("أُحَوِّطُ الكَثيرَ", compare_pair("many-few"), 0.9),
             ],
             r,
             0,

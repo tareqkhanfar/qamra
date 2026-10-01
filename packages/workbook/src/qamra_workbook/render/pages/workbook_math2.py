@@ -129,10 +129,10 @@ def number_intro_ten(ctx: PageContext) -> Built:
             )
         )
     body.append(card(0, 102, W, 52, r=7))
-    body.append(text(f"ألوّن {ctx.num(n)} نجوم", W - 8, 113, 5.2, anchor="end", color=ctx.style.deep))
+    body.append(text(f"أُلَوِّنُ {ctx.num(n)} نُجومٍ", W - 8, 113, 5.2, anchor="end", color=ctx.style.deep))
     body.append(stars(n, 8, 116, W - 16))
     body.append(card(0, 160, W, 44, r=7))
-    body.append(text(f"أحوّط العدد {ctx.num(n)}", W - 8, 171, 5.2, anchor="end", color=ctx.style.deep))
+    body.append(text(f"أُحَوِّطُ العَدَدَ {ctx.num(n)}", W - 8, 171, 5.2, anchor="end", color=ctx.style.deep))
     options = [n, *r.sample([m for m in range(5, 11) if m != n], 4)]
     r.shuffle(options)
     for k, m in enumerate(options):
@@ -218,7 +218,7 @@ def number_write_ten(ctx: PageContext) -> Built:
             body.append(draw.start_dot((W - 15, y + 1.5 + 5 + 2), 1.9))
         y += height + 6
     body.append(card(0, y, W, 204 - y, r=7))
-    body.append(text("أعدّ وأكتب العدد", W - 8, y + 10, 5.2, anchor="end", color=ctx.style.deep))
+    body.append(text("أَعُدُّ وَأَكْتُبُ العَدَدَ", W - 8, y + 10, 5.2, anchor="end", color=ctx.style.deep))
     things = r.sample(GROUP_PICTURES, 2)
     for k, thing in enumerate(things):
         x = W - (k + 1) * (W / 2)

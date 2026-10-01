@@ -46,7 +46,7 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "Google sign-in didn't complete. Please try again.",
     ),
     "registration_closed": (
-        "التسجيل مغلق مؤقتاً. حاولوا لاحقاً.",
+        "التسجيل مغلق مؤقتًا. حاولوا لاحقًا.",
         "Sign-up is temporarily closed. Please try again later.",
     ),
     "invalid_setting": (
@@ -55,7 +55,7 @@ MESSAGES: dict[str, tuple[str, str]] = {
     ),
     "wrong_password": ("كلمة المرور الحالية غير صحيحة.", "The current password is incorrect."),
     "common_password": (
-        "كلمة المرور هذه شائعة جداً وسهلة التخمين. اختاروا غيرها.",
+        "كلمة المرور هذه شائعة جدًّا وسهلة التخمين. اختاروا غيرها.",
         "This password is too common and easy to guess. Please choose another.",
     ),
     "mfa_required": (
