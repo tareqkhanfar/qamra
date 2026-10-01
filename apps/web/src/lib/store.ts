@@ -76,6 +76,7 @@ export type CartItem = {
   qty: number;
   addons: CartAddOn[];
   child_name: string | null;
+  child_gender: "m" | "f" | null;
   unit_price: string;
   base: string;
   addons_total: string;

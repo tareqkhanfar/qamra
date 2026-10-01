@@ -10,6 +10,7 @@ from __future__ import annotations
 from typing import Any
 
 from qamra_workbook.curriculum import Page
+from qamra_workbook.pictures.model import strip_tashkeel
 from qamra_workbook.render.foundation_text import COMPARE, Texts, counted, letters_head
 
 # the distractors of a KG1 find-the-letter page: the letters that look alike (dots, teeth, loops, tails)
@@ -341,8 +342,9 @@ def texts_kg1(subject: str, kind: str, params: dict[str, Any], unit_title: str) 
                 "{لَوِّنِ/لَوِّني} الحَرْفَ {وَضَعْ/وَضَعي} عَلامَةً عَلى مَكانِهِ",
                 "",
             )
-        case "unit-review" if subject == "arabic" and letters and len(unit_title) > 30:
+        case "unit-review" if subject == "arabic" and letters and len(strip_tashkeel(unit_title)) > 30:
             # «حرفا السين والشين، ومراجعة ر ز س ش» is too long for a title: the letters themselves do
+            # (letters counted without their marks, so a vowelized title takes the same branch)
             return "مُراجَعَةُ حُروفي: " + " ".join(letters), "هَيّا نُراجِعْ ما {تَعَلَّمْتَ/تَعَلَّمْتِ}", ""
         case "harakat" | "unit-review" if "haraka" in p or "harakat" in p:
             return _harakat_title(p), "{اسْمَعْ/اسْمَعي} {وَحَوِّطْ/وَحَوِّطي} ما {تَسْمَعُ/تَسْمَعينَ}", ""

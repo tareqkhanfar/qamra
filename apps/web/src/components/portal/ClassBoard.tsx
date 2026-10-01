@@ -42,7 +42,7 @@ export function ClassBoard({ classId }: { classId: string }) {
   if (!detail) return error ? <Alert>{error}</Alert> : <div className="h-64 animate-pulse rounded-xl bg-paper-sunk" />;
 
   const link = (c: ChildRow) => (c.invite.path ? `${window.location.origin}/ar${c.invite.path}` : "");
-  const message = (c: ChildRow) => t("message", { school: me.org.name, name: c.name, link: link(c) });
+  const message = (c: ChildRow) => t("message", { school: me.org.name, name: c.name, gender: c.gender, link: link(c) });
 
   async function sent(c: ChildRow) {
     const r = await portalApi.markSent(classId, [c.id]);

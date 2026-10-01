@@ -249,6 +249,7 @@ class CartItemOut(BaseModel):
     qty: int
     addons: list[CartAddOnOut]
     child_name: str | None
+    child_gender: Literal["m", "f"] | None  # the gift card's sample wording agrees with the child
     unit_price: Decimal
     base: Decimal
     addons_total: Decimal
@@ -356,6 +357,10 @@ async def _priced(
     return rows, missing, q, coupon
 
 
+def _gender(raw: object) -> Literal["m", "f"] | None:
+    return "m" if raw == "m" else "f" if raw == "f" else None
+
+
 def _input(
     c: Catalog,
     item: CartItem,
@@ -429,6 +434,7 @@ async def cart_out(db: SessionDep, cart: Cart | None) -> CartOut:
                     if a["slug"] in c.addons
                 ],
                 child_name=item.personalization.get("child_name"),
+                child_gender=_gender(item.personalization.get("gender")),
                 unit_price=p.unit_price,
                 base=p.base,
                 addons_total=p.addons,

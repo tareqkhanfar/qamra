@@ -14,6 +14,7 @@ from fastapi import APIRouter, Request
 from pydantic import BaseModel, Field
 from sqlalchemy import select
 
+from qamra_ai.pipeline.theme import fill_title
 from qamra_api import ratelimit
 from qamra_api.auth.router import client_ip
 from qamra_api.consent import record_consent
@@ -36,6 +37,7 @@ class InviteOut(BaseModel):
     school: str
     classroom: str
     child_name: str
+    child_gender: Literal["m", "f"]  # the page's wording agrees with the child («ابنكم»/«ابنتكم»)
     theme_ar: str | None
     theme_en: str | None
     style: str
@@ -116,14 +118,20 @@ async def _out(
     org = await db.get(Organization, invite.organization_id)
     cb = await _class_book(db, invite)
     theme = await db.get(ThemeRow, cb.theme_id) if cb and cb.theme_id else None
+    gender: Literal["m", "f"] = "f" if child.gender.value == "f" else "m"
     catalog = ((theme.definition or {}).get("catalog") or {}) if theme else {}
     return InviteOut(
         state=state,
         school=org.name if org else "",
         classroom=room.name if room else "",
         child_name=child.first_name,
-        theme_ar=str(catalog.get("name_ar") or theme.title_ar) if theme else None,
-        theme_en=str(catalog.get("name_en") or theme.title_en) if theme else None,
+        child_gender=gender,
+        theme_ar=str(catalog.get("name_ar") or fill_title(theme.title_ar, child.first_name, gender))
+        if theme
+        else None,
+        theme_en=str(catalog.get("name_en") or fill_title(theme.title_en, child.first_name, gender))
+        if theme
+        else None,
         style=cb.art_style if cb else DEFAULT_STYLE,
         consent_version=INVITE_CONSENT_VERSION,
         child=await create._child_out(db, child) if state == "mine" else None,

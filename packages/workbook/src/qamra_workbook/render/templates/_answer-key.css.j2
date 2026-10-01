@@ -19,6 +19,12 @@
 .key-folio { min-width: 7mm; height: 7mm; border-radius: 3.5mm; display: inline-flex; align-items: center;
              justify-content: center; font: 800 10pt var(--title); padding: 0 1.5mm; }
 .key-name { font: 800 11pt var(--title); color: var(--night); }
+/* the activity books (vowelized): the page title stays on one line and shrinks (data-fit) instead of wrapping,
+   in a line box tall enough for its marks; the header and the card's picture leave 3 mm more to the text, so a
+   kasra under a card's third answer line on the bottom row stays out of the safe margin (stage 3, sheet 14) */
+.key-sheet.vowelized .key-head { margin-bottom: 3mm; }
+.key-sheet.vowelized .key-card { gap: 1.5mm; }
+.key-sheet.vowelized .key-name { flex: 1; min-width: 0; line-height: 1.6; white-space: nowrap; overflow: hidden; }
 .key-meta { font: 500 8pt var(--body); color: var(--muted); margin: 0.5mm 0 1mm; }
 .key-text ul { list-style: none; display: flex; flex-wrap: wrap; gap: 0.5mm 3mm; }
 .key-text li { font: 600 9pt var(--body); }

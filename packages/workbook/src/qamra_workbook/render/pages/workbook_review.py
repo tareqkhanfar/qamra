@@ -165,7 +165,7 @@ def read_letters(letters: list[str]) -> Task:
         order = list(letters)
         r.shuffle(order)
         step = box.w / len(order)
-        size = min(step - 4, box.h - 14)
+        size = min(step - 6, box.h - 14)  # wide letters (ص ض) side by side keep a visible gap
         for k, char in enumerate(order):
             cx = box.x + box.w - (k + 0.5) * step if rtl else box.x + (k + 0.5) * step
             shape = shape_of(char)

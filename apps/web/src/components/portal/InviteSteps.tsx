@@ -197,7 +197,9 @@ export function CharacterPart({
           </Button>
           {child.redraws_left > 0 && (
             <details className="rounded-md border border-line bg-paper-raised p-3">
-              <summary className="cursor-pointer text-body font-semibold">{t("wrong")}</summary>
+              <summary className="cursor-pointer text-body font-semibold">
+                {t("wrong", { gender: child.gender })}
+              </summary>
               <div className="flex flex-wrap gap-2 pt-3">
                 {FIXES.map((f) => (
                   <button

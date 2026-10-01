@@ -74,7 +74,7 @@ export function StoryProduct({
   const name = theme.sample_name ?? "";
   const [titleName, titleRest] = example
     ? [example.title_name, example.title_rest]
-    : splitTemplate(theme.title, name || theme.name);
+    : splitTemplate(theme.title, name || theme.name, name ? theme.sample_gender : null);
 
   const storyPages = (example?.pages ?? []).filter((p) => p.beat > 0 && p.layout !== "spread");
   const linePages = { classic: storyPages[0], magic: storyPages[3] ?? storyPages[1] };

@@ -1,4 +1,6 @@
 from decimal import Decimal
+from pathlib import Path
+from typing import Any
 
 from api_helpers import make_admin
 from httpx import AsyncClient
@@ -76,3 +78,67 @@ async def test_the_family_book_is_sold_with_its_print_tiers_marked_estimated(adb
     assert wireo.print_cost_tiers[2] == {"min_qty": 50, "unit_ils": "30.00", "estimated": True}  # ⚠
     gift = (await adb.execute(select(AddOn).where(AddOn.slug == "gift-box"))).scalar_one()
     assert "family" in gift.lines
+
+
+async def test_the_language_pass_reaches_existing_rows_but_not_admin_edits(adb: AsyncSession) -> None:
+    """Migration 3f7ceee7a4df: the seed is insert-only, so the corrected text is written onto old rows."""
+    import importlib.util
+
+    import yaml
+
+    from qamra_api.seed_store import CATALOG
+    from qamra_api.store.quiz import QUIZ_KEY, seed_rules
+    from qamra_core import migrations
+    from qamra_core.db.models import AppSetting
+    from qamra_core.db.store import CatalogProduct
+
+    path = next((Path(migrations.__file__).parent / "versions").glob("*_3f7ceee7a4df_*.py"))
+    spec = importlib.util.spec_from_file_location("language_pass", path)
+    assert spec is not None and spec.loader is not None
+    mig = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mig)
+
+    # the new text is exactly what the catalog seeds today
+    catalog = yaml.safe_load(CATALOG.read_text(encoding="utf-8"))
+    by_slug = {e["slug"]: e for e in catalog["products"] + catalog["addons"]}
+    for slug, column, _old, new in mig.PRODUCTS + mig.ADDONS:
+        assert by_slug[slug][column] == new, (slug, column)
+
+    await seed_store(adb)
+    models: dict[str, Any] = {"products": CatalogProduct, "addons": AddOn}
+
+    async def row(table: str, slug: str) -> Any:
+        model = models[table]
+        return (await adb.execute(select(model).where(model.slug == slug))).scalar_one()
+
+    # a database seeded before the language pass, where an admin has since rewritten one description
+    changes = [("products", *c) for c in mig.PRODUCTS] + [("addons", *c) for c in mig.ADDONS]
+    for table, slug, column, old, _new in changes:
+        setattr(await row(table, slug), column, old)
+    poster = await row("addons", "cover-poster")
+    poster.description_ar = "بوستر بحجم A3"
+    quiz = await adb.get(AppSetting, QUIZ_KEY)
+    assert quiz is not None
+    old_quiz = seed_rules().model_dump(mode="json")
+    mig.rewrite_quiz(old_quiz, forward=False)
+    quiz.value = old_quiz
+    await adb.commit()
+
+    async def run(forward: bool) -> None:
+        await adb.run_sync(lambda s: mig.apply(s.connection(), forward=forward))
+        adb.expire_all()
+
+    await run(forward=True)
+    for table, slug, column, _old, new in changes:
+        if slug != "cover-poster":
+            assert getattr(await row(table, slug), column) == new, (slug, column)
+    assert (await row("addons", "cover-poster")).description_ar == "بوستر بحجم A3"  # the admin's edit stays
+    quiz = await adb.get(AppSetting, QUIZ_KEY)
+    assert quiz is not None and quiz.value == seed_rules().model_dump(mode="json")
+
+    await run(forward=False)
+    for table, slug, column, old, _new in changes:
+        if slug != "cover-poster":
+            assert getattr(await row(table, slug), column) == old, (slug, column)
+    quiz = await adb.get(AppSetting, QUIZ_KEY)
+    assert quiz is not None and quiz.value == old_quiz

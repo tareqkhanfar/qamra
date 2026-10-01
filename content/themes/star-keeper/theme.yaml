@@ -1,6 +1,6 @@
 slug: star-keeper
 version: 1
-title_ar: "{name} حارس النجوم"
+title_ar: "{name} {حارس/حارسة} النجوم"
 title_en: "{name} the Star Keeper"
 age_range: [3, 6]
 is_b2b: false

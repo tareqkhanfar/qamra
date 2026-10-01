@@ -43,12 +43,19 @@ def messages(root: Path = EMAILS_DIR) -> dict[str, dict[str, dict[str, Any]]]:
     return {str(k): v for k, v in data.items()}
 
 
+def plural(n: Any, one: str, other: str) -> str:
+    """English count + noun: `{{ books | plural("book", "books") }}` → "1 book", "3 books"."""
+    return f"{n} {one if str(n) == '1' else other}"
+
+
 @cache
 def _envs(root: Path = EMAILS_DIR) -> tuple[SandboxedEnvironment, SandboxedEnvironment]:
     text = SandboxedEnvironment(autoescape=False, undefined=StrictUndefined, keep_trailing_newline=False)
     html = SandboxedEnvironment(
         loader=FileSystemLoader(str(root)), autoescape=True, undefined=StrictUndefined, trim_blocks=True
     )
+    for env in (text, html):
+        env.filters["plural"] = plural
     return text, html
 
 

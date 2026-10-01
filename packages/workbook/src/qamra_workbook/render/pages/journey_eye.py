@@ -32,6 +32,15 @@ ROAD, ROAD_EDGE = "#F6E7C8", "#E5CD9E"
 OUTLINE = "#2B2E4A"
 
 
+BOAT_DOTS = {"1": "بنقطة واحدة", "2": "بنقطتين", "3": "بثلاث نقاط"}  # the answer key is for adults
+
+
+def boat_name(spec: str) -> str:
+    """The answer key's name for a boat: «1-below» → «قارب بنقطة واحدة تحته»."""
+    count, where = spec.split("-")
+    return f"قارب {BOAT_DOTS[count]} {'تحته' if where == 'below' else 'فوقه'}"
+
+
 def boat(spec: str) -> str:
     """A boat like a letter body, with dots below or above (stage 1 meets ب ت ث without letters)."""
     count, where = spec.split("-")
@@ -74,7 +83,7 @@ def connect_pairs(ctx: PageContext) -> Built:
     )
 
     def name(w: str) -> str:
-        return w[5:] if w.startswith("boat:") else PICTURES[pid(w)].word_ar
+        return boat_name(w[5:]) if w.startswith("boat:") else PICTURES[pid(w)].word_ar
 
     problems = [] if 2 <= len(pairs) <= 4 else ["join 2–4 pairs"]
     return Built({"svg": svg(body)}, [f"{name(a)} ← {name(b)}" for a, b in pairs], problems)

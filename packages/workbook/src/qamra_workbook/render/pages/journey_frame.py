@@ -14,6 +14,7 @@ from qamra_workbook.render.pages.journey import (
     _positions,
     _road,
     _stop,
+    stop_key,
     stops_of,
 )
 from qamra_workbook.render.pages.journey_kit import SOFT, W, card, svg, text
@@ -51,7 +52,7 @@ def journey_opener(ctx: PageContext) -> Built:
     stops = stops_of(ctx)
     labels = [s["label"] for s in stops]
     raw = ctx.page.params.get("here") or [ctx.page.params.get("stop", labels[0])]
-    here = [str(s) for s in (raw if isinstance(raw, list) else [raw])]
+    here = [stop_key(s) for s in (raw if isinstance(raw, list) else [raw])]
     finish = "finish" in here
     problems = [f"no stop {s!r} on the map" for s in here if s not in labels and s != "finish"]
     positions = _positions(len(stops))
@@ -89,7 +90,8 @@ def journey_opener(ctx: PageContext) -> Built:
                 stroke_dasharray="2.4 1.8",
             )
         )
-        body.append(character_image(ctx, x - 11, y - 2, 40))
+        # 32 mm tall: the head stays under the name of the stop on the row above (it hid it at 40)
+        body.append(character_image(ctx, x - 9, y - 1, 32))
     inside = [ctx.text(str(t)) for t in ctx.page.params.get("inside", [])]
     area = [
         f'<svg x="{draw.n((W - MAP_W * 0.8) / 2)}" y="0" width="{draw.n(MAP_W * 0.8)}" '

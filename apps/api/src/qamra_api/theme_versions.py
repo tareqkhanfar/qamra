@@ -15,7 +15,8 @@ from pydantic import ValidationError
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from qamra_ai.pipeline.theme import GENDERS, Theme, render_template
+from qamra_ai.pipeline.theme import GENDERS, Theme, fill_title, render_template
+from qamra_core.db.models import Book, Child, Locale
 from qamra_core.db.models import Theme as ThemeRow
 from qamra_core.db.studio import OPEN_STATUSES, ThemeVersion, ThemeVersionStatus
 
@@ -43,7 +44,21 @@ def display_titles(definition: dict[str, Any]) -> tuple[str, str]:
     catalog = definition.get("catalog") or {}
     ar = catalog.get("name_ar") or definition.get("title_ar") or ""
     en = catalog.get("name_en") or definition.get("title_en") or ""
-    return str(ar).replace("{name}", "…"), str(en).replace("{name}", "…")
+    return fill_title(str(ar), "…", None), fill_title(str(en), "…", None)
+
+
+async def book_title(db: AsyncSession, book: Book) -> str:
+    """The book's own title, else its theme's title for the child (name and {masc/fem} filled)."""
+    if book.title:
+        return book.title
+    theme = await db.get(ThemeRow, book.theme_id) if book.theme_id else None
+    if theme is None:
+        return ""
+    child = await db.get(Child, book.child_id) if book.child_id else None
+    template = theme.title_ar if book.language == Locale.ar else theme.title_en
+    if child is None:
+        return fill_title(template, "", None)
+    return fill_title(template, child.first_name, "f" if child.gender.value == "f" else "m")
 
 
 def apply_definition(row: ThemeRow, definition: dict[str, Any]) -> Theme:

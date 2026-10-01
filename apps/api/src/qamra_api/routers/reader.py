@@ -20,6 +20,7 @@ from qamra_api import ratelimit
 from qamra_api.auth.router import client_ip
 from qamra_api.deps import CurrentUser, RedisDep, SessionDep, StorageDep
 from qamra_api.errors import ApiError
+from qamra_api.theme_versions import book_title
 from qamra_core.db.models import (
     Book,
     BookPage,
@@ -30,7 +31,6 @@ from qamra_core.db.models import (
     ShareScope,
     ShareToken,
 )
-from qamra_core.db.models import Theme as ThemeRow
 from qamra_core.storage import ObjectNotFound, ObjectStorage
 
 router = APIRouter(prefix="/api", tags=["reader"])
@@ -101,11 +101,8 @@ async def _pages(db: SessionDep, book: Book) -> list[BookPage]:
     ]
 
 
-async def _title(db: SessionDep, book: Book, lang: Locale) -> str:
-    if book.title:
-        return book.title
-    theme = await db.get(ThemeRow, book.theme_id)
-    return (theme.title_ar if lang == Locale.ar else theme.title_en) if theme else ""
+async def _title(db: SessionDep, book: Book) -> str:
+    return await book_title(db, book)
 
 
 def _reader_pages(pages: list[BookPage], kind: str, base: str) -> list[ReaderPage]:
@@ -195,7 +192,7 @@ async def read_book(book_id: uuid.UUID, user: CurrentUser, db: SessionDep) -> Ow
         id=book.id,
         child_id=child.id,
         child_name=child.first_name,
-        title=await _title(db, book, book.language),
+        title=await _title(db, book),
         language=book.language,
         kind=kind,
         pages=_reader_pages(await _pages(db, book), kind, f"/api/books/{book.id}/reader"),
@@ -298,7 +295,7 @@ async def read_shared(
     book, share = await _shared_book(db, token)
     response.headers.update(NO_STORE)
     return SharedOut(
-        title=await _title(db, book, book.language),
+        title=await _title(db, book),
         language=book.language,
         kind="final",
         pages=_reader_pages(await _pages(db, book), "final", f"/api/shared/{token}"),

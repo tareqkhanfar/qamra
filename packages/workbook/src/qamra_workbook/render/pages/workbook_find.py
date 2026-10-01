@@ -155,12 +155,14 @@ def arabic_find(ctx: PageContext) -> Built:
         r.shuffle(options)
         x = 0.0 if stacked else W - (i + 1) * card_w
         top = y + 6 + (i * (card_h + 3) if stacked else 0)
-        size = min(card_h - 6, 28.0)
+        size = min(card_h - 6, 28.0 if stacked else 24.0)
+        # the three answer boxes stay inside the card (two cards side by side leave ~93 mm each)
+        pitch = min(float(params.get("box_pitch", 19.0)), (card_w - size - 31) / 2)  # journey: 18
         body.append(card(x + 2, top, card_w - 4, card_h, r=6))
         body.append(pic(word, x + card_w - size - 6, top + (card_h - size) / 2, size))
         box_h = min(card_h - 8, 20.0)
         for j, c in enumerate(options):
-            bx = x + card_w - size - 18 - j * float(params.get("box_pitch", 19.0))  # journey: 18
+            bx = x + card_w - size - 18 - j * pitch
             body.append(
                 draw.el(
                     "rect",

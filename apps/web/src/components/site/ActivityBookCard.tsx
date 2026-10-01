@@ -3,7 +3,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { productFrom } from "@/lib/shop";
 import { money, type CatalogProduct, type Currency } from "@/lib/store";
-import { PREVIEWS, soldAges, soldOptions } from "@/lib/workbook";
+import { PREVIEWS, samplePages, soldAges, soldOptions } from "@/lib/workbook";
 import { Arrow } from "./blocks";
 
 /**
@@ -29,6 +29,7 @@ export async function ActivityBookCard({
   const name = locale === "ar" ? product.name_ar : product.name_en;
   const pages = PREVIEWS[product.slug] ?? [];
   const cover = pages[0];
+  const inner = detailed ? samplePages(product) : [];
   const from = productFrom(product);
   const sold = soldOptions(product);
   const ages = soldAges(product);
@@ -99,9 +100,9 @@ export async function ActivityBookCard({
             ))}
           </ul>
         )}
-        {detailed && pages.length > 1 && (
+        {detailed && inner.length > 0 && (
           <div className="flex gap-2" aria-label={t("peek")}>
-            {pages.slice(1, 4).map((p) => (
+            {inner.map((p) => (
               <img
                 key={p.src}
                 src={p.src}

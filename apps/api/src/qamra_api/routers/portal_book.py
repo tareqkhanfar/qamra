@@ -12,6 +12,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy import select
 
 from qamra_ai.pipeline.classbook import class_template_slugs, load_class_template
+from qamra_ai.pipeline.theme import fill_title
 from qamra_api import runtime_settings
 from qamra_api.deps import SessionDep, SettingsDep, StorageDep
 from qamra_api.errors import ApiError
@@ -93,8 +94,8 @@ async def _themes(db: SessionDep) -> list[ThemeChoice]:
         out.append(
             ThemeChoice(
                 slug=row.slug,
-                name_ar=str(catalog.get("name_ar") or row.title_ar),
-                name_en=str(catalog.get("name_en") or row.title_en),
+                name_ar=str(catalog.get("name_ar") or fill_title(row.title_ar, "…", None)),
+                name_en=str(catalog.get("name_en") or fill_title(row.title_en, "…", None)),
                 pages=sum(not s.extra for s in template.scenes),
             )
         )

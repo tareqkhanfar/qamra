@@ -54,6 +54,7 @@ class ThemeDetail(ThemeCard):
     companion_slot: bool
     peek: list[PeekItem]
     sample_name: str | None
+    sample_gender: Literal["m", "f"] | None  # fills the title's {masc/fem} for the sample child
     samples: list[SamplePage]
 
 
@@ -175,6 +176,7 @@ async def get_theme(slug: str, db: SessionDep, lang: Lang = "ar") -> ThemeDetail
         companion_slot=theme.companion_slot,
         peek=_peek(theme, lang),
         sample_name=(ctx[0] if (ctx := _sample_context(theme, lang)) else None),
+        sample_gender=c.sample_child.gender if ctx and c.sample_child else None,
         samples=_samples(theme, lang),
     )
 

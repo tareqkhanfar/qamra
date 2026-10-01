@@ -471,7 +471,7 @@ def story_mini(story: str, steps: int) -> Mini:
             cx = x + w - (k + 0.5) * w / steps
             out.append(nested(_story_panel(story, step), cx - s / 2, y + 1, s))
             out.append(_box(cx - 6, y + s + 3, 12, 7))
-        return out, "الترتيب: " + "، ".join(str(order.index(i) + 1) for i in range(steps))
+        return out, "الترتيب: " + "، ".join(ctx.num(order.index(i) + 1) for i in range(steps))
 
     return mini
 
@@ -537,7 +537,7 @@ def claps_mini(ctx: PageContext, box: Box) -> tuple[list[str], str]:
         )
         for k in range(4)
     ]
-    return out, "فراشة: 3 مقاطع"
+    return out, f"فراشة: {ctx.num(3)} مقاطع"
 
 
 def waves_mini(ctx: PageContext, box: Box) -> tuple[list[str], str]:
@@ -653,7 +653,7 @@ def more_less_mini(ctx: PageContext, box: Box) -> tuple[list[str], str]:
     ]
     out += [picture("apple", x + w / 2 - (k + 1) * (s + 2) - 4, y + 2, s) for k in range(3)]
     out.append(ring_at(x + w * 0.76, y + h / 2, w * 0.22, h / 2 - 1))
-    return out, "الأكثر: 7 تفاحات"
+    return out, f"الأكثر: {ctx.num(7)} تفاحات"
 
 
 def hidden_mini(ctx: PageContext, box: Box) -> tuple[list[str], str]:
@@ -841,7 +841,7 @@ def growing_mini(ctx: PageContext, box: Box) -> tuple[list[str], str]:
                 filled("circle", cx + (j - k / 2) * 7, y + h / 2, 6, "#5E86D6", "key-ring" if k == 3 else "")
             )
     out.append(_box(x + 2, y + 3, w / 4 - 4, h - 6))
-    return out, "4 دوائر"
+    return out, f"{ctx.num(4)} دوائر"
 
 
 def key_mini(label: str) -> Mini:

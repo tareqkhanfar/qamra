@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import { Scene, fromArt, type SceneArt } from "@/components/art/Scene";
 import type { Example } from "@/lib/examples";
+import { fillTitle, type TitleGender } from "@/lib/themeTitle";
 import { ExampleImage } from "./ExampleImage";
 
 /**
@@ -69,8 +70,8 @@ export function CoverArt({
 }
 
 /** "{name} في أوّل يوم بالروضة" → ("يوسف", "في أوّل يوم بالروضة") for the placeholder cover. */
-export function splitTemplate(title: string, name: string): [string, string] {
-  const filled = title.replace("{name}", name).trim();
+export function splitTemplate(title: string, name: string, gender: TitleGender = null): [string, string] {
+  const filled = fillTitle(title, name, gender);
   if (filled.startsWith(name)) return [name, filled.slice(name.length).trim()];
   return [filled, ""];
 }

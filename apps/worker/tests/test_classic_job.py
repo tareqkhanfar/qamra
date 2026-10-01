@@ -201,7 +201,7 @@ async def test_a_classic_book_preview_then_final(db: Session, storage: ObjectSto
     theme = _theme(db)
     t = await _live_template(db, storage, theme, "girl_hijab")
     words = t.generation["texts"]["texts"]
-    words["pages"][0]["text"] = words["pages"][0]["text"].replace("اليوم", "اَلْيَوْمَ")  # as the model would
+    words["pages"][0]["text"] = words["pages"][0]["text"].replace("الْيَوْمُ", "اَلْيَوْمَ")  # as the model would
     t.generation = {**t.generation, "texts": {**t.generation["texts"], "texts": words}}
     db.commit()
     child = _child(db, storage)

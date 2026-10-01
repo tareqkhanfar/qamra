@@ -108,7 +108,9 @@ def color_journey(ctx: PageContext) -> Built:
         color, name, _ = COLORS[names[0]]
         body.append(card(0, 0, W, 64, r=10, fill=SOFT, stroke="none"))
         body.append(crayon(W - 120, 20, color, 70))
-        body.append(text(name, 50, 42, 13, cls="wb-title", color="#1C2140"))
+        # the name ends just before the crayon's tip and grows away from it: a long vowelized name
+        # («البَنَفْسَجِيُّ») never runs into the crayon
+        body.append(text(name, W - 128, 42, 13, cls="wb-title", color="#1C2140", anchor="end"))
         from qamra_workbook.render.pages.journey_think import grid
 
         for w, (x, y, size) in zip(items, grid(len(items), 2, h=H - 72), strict=True):
@@ -705,4 +707,5 @@ def key_coloring(ctx: PageContext) -> Built:
                 color="#1C2140",
             )
         )
-    return Built({"svg": svg(body)}, ["، ".join(f"{k}: {COLORS[v][1]}" for k, v in legend.items())])
+    key = "، ".join(f"{ctx.num(k) if k.isdigit() else k}: {COLORS[v][1]}" for k, v in legend.items())
+    return Built({"svg": svg(body)}, [key])

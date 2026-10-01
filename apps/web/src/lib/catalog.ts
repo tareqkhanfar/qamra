@@ -24,6 +24,8 @@ export type ThemeDetail = ThemeCard & {
   companion_slot: boolean;
   peek: { kind: "art" | "text"; art?: SceneArt; text?: string }[];
   sample_name: string | null;
+  /** The sample child's gender: fills the title's {masc/fem} (null when there is no sample child). */
+  sample_gender: "m" | "f" | null;
   samples: { index: number; text: string; art: SceneArt }[];
 };
 

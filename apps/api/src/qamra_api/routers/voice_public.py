@@ -21,6 +21,7 @@ from qamra_api import ratelimit, runtime_settings
 from qamra_api.auth.router import client_ip
 from qamra_api.deps import RedisDep, SessionDep, SettingsDep, StorageDep
 from qamra_api.errors import ApiError
+from qamra_api.theme_versions import book_title
 from qamra_api.voice_common import (
     audio_ok,
     audio_url,
@@ -33,7 +34,6 @@ from qamra_api.voice_common import (
 )
 from qamra_core import voice
 from qamra_core.db.models import Book, BookPage, Child, Locale, Recording, ShareScope, ShareToken
-from qamra_core.db.models import Theme as ThemeRow
 from qamra_core.storage import ObjectNotFound
 
 router = APIRouter(prefix="/api/voice", tags=["voice"])
@@ -60,10 +60,7 @@ async def _token(db: SessionDep, token: str, scope: ShareScope, missing: str) ->
 
 
 async def _title(db: SessionDep, book: Book) -> str:
-    if book.title:
-        return book.title
-    theme = await db.get(ThemeRow, book.theme_id)
-    return (theme.title_ar if book.language == Locale.ar else theme.title_en) if theme else ""
+    return await book_title(db, book)
 
 
 async def _limit(redis: RedisDep, request: Request, name: str, most: int) -> None:

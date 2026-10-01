@@ -63,7 +63,7 @@ def toc_entries(volume: Volume) -> list[dict[str, Any]]:
     for u in volume.units:
         if u.subject == "intro" or u.id not in first:
             continue
-        out.append({"subject": u.subject, "title": u.title_ar, "page": first[u.id]})
+        out.append({"subject": u.subject, "title": u.display_ar, "page": first[u.id]})
     return sorted(out, key=lambda e: e["page"])
 
 
@@ -75,7 +75,7 @@ def plan_params(page: Page, plan: Curriculum, volume: Volume, name_en: str) -> d
         "level": plan.level,
         "volume": volume.volume,
         "difficulty": page.difficulty,
-        "unit_title": unit.title_ar,
+        "unit_title": unit.display_ar,  # vowelized for the child (decisions 3 and 6 cover reading only)
     }
     match page.type:
         case "unit-opener":
@@ -83,9 +83,9 @@ def plan_params(page: Page, plan: Curriculum, volume: Volume, name_en: str) -> d
             extra["subject_ar"] = SUBJECT_AR[page.subject]
         case "toc":
             extra["units"] = toc_entries(volume)
-            extra["volume_title"] = volume.title_ar
+            extra["volume_title"] = volume.title_v or volume.title_ar
         case "owner-page":
-            extra["volume_title"] = volume.title_ar
+            extra["volume_title"] = volume.title_v or volume.title_ar
             extra["level_title"] = plan.title_ar
         case "name-trace":
             extra["name_en"] = name_en

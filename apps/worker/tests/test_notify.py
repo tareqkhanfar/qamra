@@ -147,6 +147,14 @@ def test_every_template_renders_in_both_languages() -> None:
     assert "{{" not in render("order_placed", "ar", values).text
 
 
+def test_the_printer_email_counts_in_good_english() -> None:
+    values = {"brand": "قمرة", "code": "B1", "date": "2026-10-01", "expires": "2026-10-13"}
+    values["manifest_url"] = BASE
+    one = render("printer_batch", "en", {**values, "books": 1, "copies": 1})
+    assert "1 book, 1 copy." in one.text and one.subject.endswith("— 1 copy")
+    assert "2 books, 3 copies." in render("printer_batch", "en", {**values, "books": 2, "copies": 3}).text
+
+
 def test_order_emails_go_once_per_status(db: Session) -> None:
     user = _parent(db)
     order = _order(db, user)

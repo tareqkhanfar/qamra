@@ -235,6 +235,15 @@ def render_template(template: str, gender: Gender, name: str, companion: str) ->
     return text.replace("{name}", name).replace("{companion}", companion)
 
 
+def fill_title(template: str, name: str, gender: Gender | None) -> str:
+    """A theme title for one child: `{masc/fem}` by gender, then `{name}`. With no child (staff lists, the
+    catalog) both forms stay, «حارس/حارسة النجوم», so a title never shows a brace or the wrong gender."""
+    if gender is None:
+        text = _VARIANT.sub(lambda m: f"{m.group(1)}/{m.group(2)}", template)
+        return text.replace("{name}", name).strip()
+    return render_template(template, gender, name, "").strip()
+
+
 def load_theme(slug: str, content_dir: Path = CONTENT_DIR) -> Theme:
     path = content_dir / "themes" / slug / "theme.yaml"
     theme = Theme.model_validate(yaml.safe_load(path.read_text(encoding="utf-8")))

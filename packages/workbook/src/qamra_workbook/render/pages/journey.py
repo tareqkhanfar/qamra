@@ -7,36 +7,46 @@ from itertools import pairwise
 
 from markupsafe import Markup, escape
 
+from qamra_workbook.pictures.model import strip_tashkeel
 from qamra_workbook.render import art, draw
 from qamra_workbook.render.pages.motor import character_image
 from qamra_workbook.render.registry import Built, PageContext, page_type
 
-# the journey map (Addendum 6 §2): think → observe → listen → hand → pen → trace → write → read → create
+# the journey map (Addendum 6 §2): think → observe → listen → hand → pen → trace → write → read → create.
+# `label` is the plain key the plans use (`stops: [أفكر, …]`, `here: [أتتبع]`; marks are ignored when they
+# are matched), `text` the vowelized name printed on the map for the child.
 STOPS: tuple[dict[str, str], ...] = (
-    {"label": "أفكر", "icon": "brain", "color": "#8C79C9"},
-    {"label": "ألاحظ", "icon": "eye", "color": "#3B9E90"},
-    {"label": "أسمع", "icon": "ear", "color": "#4A95D3"},
-    {"label": "أحرّك يدي", "icon": "hand", "color": "#E27D63"},
-    {"label": "أمسك القلم", "icon": "pencil", "color": "#EB9036"},
-    {"label": "أتتبع", "icon": "trace", "color": "#D96B93"},
-    {"label": "أكتب", "icon": "write", "color": "#A26AB6"},
-    {"label": "أقرأ", "icon": "book", "color": "#5A79CF"},
-    {"label": "أحل وأبدع", "icon": "rainbow", "color": "#5A9E6C"},
+    {"label": "أفكر", "text": "أُفَكِّرُ", "icon": "brain", "color": "#8C79C9"},
+    {"label": "ألاحظ", "text": "أُلاحِظُ", "icon": "eye", "color": "#3B9E90"},
+    {"label": "أسمع", "text": "أَسْمَعُ", "icon": "ear", "color": "#4A95D3"},
+    {"label": "أحرك يدي", "text": "أُحَرِّكُ يَدي", "icon": "hand", "color": "#E27D63"},
+    {"label": "أمسك القلم", "text": "أُمْسِكُ القَلَمَ", "icon": "pencil", "color": "#EB9036"},
+    {"label": "أتتبع", "text": "أَتَتَبَّعُ", "icon": "trace", "color": "#D96B93"},
+    {"label": "أكتب", "text": "أَكْتُبُ", "icon": "write", "color": "#A26AB6"},
+    {"label": "أقرأ", "text": "أَقْرَأُ", "icon": "book", "color": "#5A79CF"},
+    {"label": "أحل وأبدع", "text": "أَحُلُّ وَأُبْدِعُ", "icon": "rainbow", "color": "#5A9E6C"},
 )
 ROAD, ROAD_EDGE = "#F6E7C8", "#E5CD9E"
 
 
+def stop_key(label: object) -> str:
+    """A stop's lookup key: its name without marks («أحرّك يدي» and «أُحَرِّكُ يَدي» are the same stop)."""
+    return strip_tashkeel(str(label)).strip()
+
+
 def stops_of(ctx: PageContext) -> list[dict[str, str]]:
-    """The map's stops: labels as in the plan (`[أفكر, …]`) take the default icon and color; a stop can also
-    be a mapping with its own `icon` and `color`."""
+    """The map's stops: labels as in the plan (`[أفكر, …]`) take the default icon, color and vowelized
+    `text`; a stop can also be a mapping with its own `icon`, `color` and `text`."""
     defaults = {s["label"]: s for s in STOPS}
     out = []
     for raw in ctx.page.params.get("stops") or STOPS:
         stop = {"label": raw} if isinstance(raw, str) else {k: str(v) for k, v in raw.items()}
-        base = defaults.get(stop["label"], {"icon": "star", "color": "#E2A32A"})
+        key = stop_key(stop["label"])
+        base = defaults.get(key, {"icon": "star", "color": "#E2A32A", "text": stop["label"]})
         out.append(
             {
-                "label": stop["label"],
+                "label": key,
+                "text": stop.get("text", base["text"]),
                 "icon": stop.get("icon", base["icon"]),
                 "color": stop.get("color", base["color"]),
             }
@@ -105,7 +115,7 @@ def _stop(x: float, y: float, stop: dict[str, str], label: str) -> str:
                 stroke_width=0.6,
             ),
             draw.el(
-                "text", str(escape(stop["label"])), x=x, y=y + 19.2, text_anchor="middle", class_="stop-text"
+                "text", str(escape(stop["text"])), x=x, y=y + 19.2, text_anchor="middle", class_="stop-text"
             ),
             draw.el("circle", cx=x - 9, cy=y - 9, r=3.2, fill=color, stroke="#FFFFFF", stroke_width=0.8),
             draw.el(

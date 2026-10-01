@@ -232,8 +232,13 @@ class Unit(BaseModel):
 
     id: str
     subject: Subject
-    title_ar: str
+    title_ar: str  # the plain title: the lookup key, and what the generated docs show
     title_en: str = ""
+    title_v: str = ""  # the vowelized title printed on the child's pages (the plain one when empty)
+
+    @property
+    def display_ar(self) -> str:
+        return self.title_v or self.title_ar
 
 
 class Volume(BaseModel):
@@ -244,6 +249,7 @@ class Volume(BaseModel):
     weeks: int
     title_ar: str
     objectives: dict[Subject, list[str]]
+    title_v: str = ""  # the vowelized title printed on the owner and contents pages
     units: list[Unit]
     pages: list[Page]
     review_weeks: list[int] = Field(default_factory=list)  # light weeks that only review (decisions 2 and 8)
@@ -381,6 +387,11 @@ def check_fields(v: Volume) -> list[str]:
     for u in v.units:
         if not any(p.unit == u.id for p in v.pages):
             out.append(f"{tag}: unit {u.id} has no pages")
+    titled: list[tuple[str, str, str]] = [(tag, v.title_ar, v.title_v)]
+    titled += [(f"{tag} unit {u.id}", u.title_ar, u.title_v) for u in v.units]
+    for where, plain, vowelized in titled:  # the children read the vowelized title; it must say the same
+        if vowelized and strip_marks(vowelized) != strip_marks(plain):
+            out.append(f"{where}: title_v {vowelized!r} does not spell title_ar {plain!r}")
     return out
 
 

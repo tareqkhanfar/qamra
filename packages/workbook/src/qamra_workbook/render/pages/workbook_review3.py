@@ -470,12 +470,19 @@ def review_sections_v3(ctx: PageContext, r: random.Random) -> Drawn | None:
     marks = [str(h) for h in params.get("harakat", [])]
     units = [str(u) for u in params.get("units", [])]
     letters = [str(x) for x in params.get("letters", [])]
-    if subject == "arabic" and len(letters) >= 3 and not marks and not skills:
+    # three or four letters; a long list (the nine letter shapes of KG2 volume 2, p17) is the letter-position
+    # review of `review_sections_v2`: nine writing rows do not fit a page
+    if subject == "arabic" and 3 <= len(letters) <= 4 and not marks and not skills:
         return stack(  # three letters need taller writing rows than the two-letter reviews give them
             ctx,
             [
-                ("أَكْتُبُ الحَرْفَ", write_letters(letters), 1.5),
-                ("أُحَوِّطُ الصّورَةَ الَّتي تَبْدَأُ بِالحَرْفِ", circle_first_letter(letters), 0.95),
+                ("أَكْتُبُ الحَرْفَ", write_letters(letters), 1.5 if len(letters) == 3 else 1.3),
+                # four rows of pictures need more room than three, or the pictures shrink to ~7 mm
+                (
+                    "أُحَوِّطُ الصّورَةَ الَّتي تَبْدَأُ بِالحَرْفِ",
+                    circle_first_letter(letters),
+                    0.95 if len(letters) == 3 else 1.3,
+                ),
             ],
             r,
         )

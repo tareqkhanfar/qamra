@@ -253,6 +253,7 @@ export type Invite = {
   school: string;
   classroom: string;
   child_name: string;
+  child_gender: "m" | "f";
   theme_ar: string | null;
   theme_en: string | null;
   style: string;

@@ -12,6 +12,7 @@ from sqlalchemy import select
 from qamra_api import ratelimit
 from qamra_api.deps import CurrentUser, RedisDep, SessionDep, SettingsDep, StorageDep
 from qamra_api.errors import ApiError
+from qamra_api.theme_versions import book_title
 from qamra_api.voice_common import (
     audio_url,
     has_voice,
@@ -23,7 +24,6 @@ from qamra_api.voice_common import (
 )
 from qamra_core import voice
 from qamra_core.db.models import Book, Child, Locale, Recording, ShareScope, ShareToken
-from qamra_core.db.models import Theme as ThemeRow
 
 router = APIRouter(tags=["voice"])
 BOOK = "/api/books/{book_id}/voice"
@@ -115,10 +115,7 @@ async def _out(db: SessionDep, settings: SettingsDep, book: Book, child: Child) 
             .order_by(ShareToken.created_at.desc())
         )
     ).scalars()
-    theme = await db.get(ThemeRow, book.theme_id)
-    title = book.title or (
-        (theme.title_ar if book.language == Locale.ar else theme.title_en) if theme else ""
-    )
+    title = await book_title(db, book)
     now = datetime.now(UTC)
     out = VoiceBookOut(
         book_id=book.id,

@@ -118,6 +118,7 @@ volumes:
     term: 1
     weeks: 12
     title_ar: الجزء الأول — أمسك قلمي وأتعرّف على حروفي وأرقامي
+    title_v: "الجُزْءُ الأَوَّلُ — أُمْسِكُ قَلَمي وَأَتَعَرَّفُ عَلى حُروفي وَأَرْقامي"
     objectives:
       pen: ["يرسم خطوطًا أفقية وعمودية ومائلة ومتعرّجة ومنحنية على الخطوط المنقّطة دون أن يخرج عنها كثيرًا", "يرسم الدوائر والحلقات ويتتبّع مسارًا منحنيًا من البداية إلى النهاية", "يصل النقاط المرقّمة من ١ إلى ١٠ بالترتيب", "يلوّن داخل الحدود ويتتبّع الدائرة والمربع والمثلث"]
       arabic: ["يميّز الصوت الأول في الكلمة المنطوقة", "يتعرّف على الحروف من الألف إلى الذال شكلًا وصوتًا ويربط كل حرف بصورتين تبدآن به", "يتتبّع كل حرف منقّط من الحجم الكبير إلى الأصغر مبتدئًا من نقطة البداية", "يكتب الحرف مستقلًّا على السطر من اليمين إلى اليسار بعد الكتابة الموجّهة", "يجد الحرف بين حروف أخرى ويميّز الحروف المتشابهة بالنقاط (ب/ت/ث، ج/ح/خ، د/ذ)"]
@@ -125,28 +126,28 @@ volumes:
       english: ["يتعرّف على الحروف من A إلى H كبيرة وصغيرة", "يتتبّع الحروف A–H ويكتبها", "يربط كل حرف بصورة وكلمة تبدأ به (apple, ball, cat…)", "يجد الحرف بين حروف أخرى ويطابق الحرف الكبير مع الصغير"]
       thinking: ["يطابق الصور المتشابهة ويصل بين الصور المترابطة", "يجد الشيء المختلف ويصنّف الأشياء حسب اللون أو النوع", "يكمل نمطًا بسيطًا من نوع AB ويحلّ متاهة بسيطة", "يلاحظ ٣ فروق بين صورتين ويتذكّر ما رآه"]
     units:
-      - {id: v1-intro, subject: intro, title_ar: "صفحاتي الأولى", title_en: "My first pages"}
-      - {id: v1-pen-01, subject: pen, title_ar: "الخطوط المستقيمة", title_en: "Straight lines"}
-      - {id: v1-pen-02, subject: pen, title_ar: "المنحنيات والدوائر", title_en: "Curves and circles"}
-      - {id: v1-pen-03, subject: pen, title_ar: "الأشكال وضربات الحروف", title_en: "Shapes and letter strokes"}
-      - {id: v1-pen-test, subject: pen, title_ar: "تقييم مهارات القلم", title_en: "Pen skills assessment"}
-      - {id: v1-ar-01, subject: arabic, title_ar: "حرفا الألف والباء", title_en: "Alif and Ba"}
-      - {id: v1-ar-02, subject: arabic, title_ar: "حرفا التاء والثاء", title_en: "Ta and Tha"}
-      - {id: v1-ar-03, subject: arabic, title_ar: "الجيم والحاء والخاء", title_en: "Jim, Ha and Kha"}
-      - {id: v1-ar-04, subject: arabic, title_ar: "حرفا الدال والذال", title_en: "Dal and Dhal"}
-      - {id: v1-ar-test, subject: arabic, title_ar: "تقييم العربية", title_en: "Arabic assessment"}
-      - {id: v1-ma-01, subject: math, title_ar: "مفاهيم أساسية والألوان", title_en: "Basic concepts and colors"}
-      - {id: v1-ma-02, subject: math, title_ar: "الأعداد ١–٣", title_en: "Numbers 1–3"}
-      - {id: v1-ma-03, subject: math, title_ar: "الأعداد ٤ و٥ والصفر", title_en: "Numbers 4, 5 and zero"}
-      - {id: v1-ma-test, subject: math, title_ar: "تقييم الرياضيات", title_en: "Math assessment"}
-      - {id: v1-en-01, subject: english, title_ar: "الحروف A B C", title_en: "Letters A B C"}
-      - {id: v1-en-02, subject: english, title_ar: "الحروف D E F", title_en: "Letters D E F"}
-      - {id: v1-en-03, subject: english, title_ar: "الحرفان G H", title_en: "Letters G H"}
-      - {id: v1-en-test, subject: english, title_ar: "تقييم الإنجليزية", title_en: "English assessment"}
-      - {id: v1-th-01, subject: thinking, title_ar: "أنظر وأميّز", title_en: "Look and notice"}
-      - {id: v1-th-02, subject: thinking, title_ar: "أفكّر وأحلّ", title_en: "Think and solve"}
-      - {id: v1-th-test, subject: thinking, title_ar: "تقييم التفكير", title_en: "Thinking assessment"}
-      - {id: v1-mix, subject: mixed, title_ar: "مراجعة شاملة للجزء الأول", title_en: "Volume 1 review"}
+      - {id: v1-intro, subject: intro, title_ar: "صفحاتي الأولى", title_en: "My first pages", title_v: "صَفَحاتي الأُولى"}
+      - {id: v1-pen-01, subject: pen, title_ar: "الخطوط المستقيمة", title_en: "Straight lines", title_v: "الخُطوطُ المُسْتَقيمَةُ"}
+      - {id: v1-pen-02, subject: pen, title_ar: "المنحنيات والدوائر", title_en: "Curves and circles", title_v: "المُنْحَنَياتُ وَالدَّوائِرُ"}
+      - {id: v1-pen-03, subject: pen, title_ar: "الأشكال وضربات الحروف", title_en: "Shapes and letter strokes", title_v: "الأَشْكالُ وَضَرَباتُ الحُروفِ"}
+      - {id: v1-pen-test, subject: pen, title_ar: "تقييم مهارات القلم", title_en: "Pen skills assessment", title_v: "تَقْييمُ مَهاراتِ القَلَمِ"}
+      - {id: v1-ar-01, subject: arabic, title_ar: "حرفا الألف والباء", title_en: "Alif and Ba", title_v: "حَرْفا الأَلِفِ وَالباءِ"}
+      - {id: v1-ar-02, subject: arabic, title_ar: "حرفا التاء والثاء", title_en: "Ta and Tha", title_v: "حَرْفا التّاءِ وَالثّاءِ"}
+      - {id: v1-ar-03, subject: arabic, title_ar: "الجيم والحاء والخاء", title_en: "Jim, Ha and Kha", title_v: "الجيمُ وَالحاءُ وَالخاءُ"}
+      - {id: v1-ar-04, subject: arabic, title_ar: "حرفا الدال والذال", title_en: "Dal and Dhal", title_v: "حَرْفا الدّالِ وَالذّالِ"}
+      - {id: v1-ar-test, subject: arabic, title_ar: "تقييم العربية", title_en: "Arabic assessment", title_v: "تَقْييمُ العَرَبِيَّةِ"}
+      - {id: v1-ma-01, subject: math, title_ar: "مفاهيم أساسية والألوان", title_en: "Basic concepts and colors", title_v: "مَفاهيمُ أَساسِيَّةٌ وَالأَلْوانُ"}
+      - {id: v1-ma-02, subject: math, title_ar: "الأعداد ١–٣", title_en: "Numbers 1–3", title_v: "الأَعْدادُ ١–٣"}
+      - {id: v1-ma-03, subject: math, title_ar: "الأعداد ٤ و٥ والصفر", title_en: "Numbers 4, 5 and zero", title_v: "الأَعْدادُ ٤ وَ٥ وَالصِّفْرُ"}
+      - {id: v1-ma-test, subject: math, title_ar: "تقييم الرياضيات", title_en: "Math assessment", title_v: "تَقْييمُ الرِّياضِيّاتِ"}
+      - {id: v1-en-01, subject: english, title_ar: "الحروف A B C", title_en: "Letters A B C", title_v: "الحُروفُ A B C"}
+      - {id: v1-en-02, subject: english, title_ar: "الحروف D E F", title_en: "Letters D E F", title_v: "الحُروفُ D E F"}
+      - {id: v1-en-03, subject: english, title_ar: "الحرفان G H", title_en: "Letters G H", title_v: "الحَرْفانِ G H"}
+      - {id: v1-en-test, subject: english, title_ar: "تقييم الإنجليزية", title_en: "English assessment", title_v: "تَقْييمُ الإِنْجِليزِيَّةِ"}
+      - {id: v1-th-01, subject: thinking, title_ar: "أنظر وأميّز", title_en: "Look and notice", title_v: "أَنْظُرُ وَأُمَيِّزُ"}
+      - {id: v1-th-02, subject: thinking, title_ar: "أفكّر وأحلّ", title_en: "Think and solve", title_v: "أُفَكِّرُ وَأَحُلُّ"}
+      - {id: v1-th-test, subject: thinking, title_ar: "تقييم التفكير", title_en: "Thinking assessment", title_v: "تَقْييمُ التَّفْكيرِ"}
+      - {id: v1-mix, subject: mixed, title_ar: "مراجعة شاملة للجزء الأول", title_en: "Volume 1 review", title_v: "مُراجَعَةٌ شامِلَةٌ لِلجُزْءِ الأَوَّلِ"}
     pages:
       - {n: 1, week: 1, subject: intro, unit: v1-intro, type: owner-page, skill: "هذا الكتاب لـ… أكتب اسمي وأطبع كفّ يدي", difficulty: 1}
       - {n: 2, week: 1, subject: intro, unit: v1-intro, type: name-trace, skill: "أتتبّع اسمي بالعربية على الخط المنقّط", difficulty: 1, params: {script: ar, mode: trace}}
@@ -281,6 +282,7 @@ volumes:
     weeks: 11
     review_weeks: [6]
     title_ar: الجزء الثاني — حروف جديدة وأعداد حتى العشرة
+    title_v: "الجُزْءُ الثّاني — حُروفٌ جَديدَةٌ وَأَعْدادٌ حَتّى العَشَرَةِ"
     objectives:
       pen: ["يرسم الحلزونات ويتتبّع مسارًا ضيّقًا دون أن يلمس الحواف", "يرسم أشكالًا صغيرة بين سطرين استعدادًا للكتابة على السطر", "يصل النقاط بترتيب الحروف الهجائية"]
       arabic: ["يميّز شكل الحرف في أول الكلمة ووسطها وآخرها للحروف التي تعلّمها", "يتعرّف على الحروف من الراء إلى الغين شكلًا وصوتًا ويربط كل حرف بصورتين تبدآن به", "يتتبّع كل حرف ويكتبه مستقلًّا ويميّز بين الحرفين المتشابهين بالنقاط (ر/ز، س/ش، ص/ض، ط/ظ، ع/غ)", "يجد الحرف بين حروف أخرى ويصل الحرف بالصورة والكلمة"]
@@ -288,28 +290,28 @@ volumes:
       english: ["يتعرّف على الحروف من I إلى R كبيرة وصغيرة", "يتتبّع الحروف I–R ويكتبها", "يربط كل حرف بصورة وكلمة تبدأ به (insect, jar, kite…)", "يجد الحرف بين حروف أخرى ويطابقه مع صورته"]
       thinking: ["يجد الشيء المختلف ويشرح سبب اختلافه", "يصنّف الصور في مجموعات حسب النوع", "يرتّب صور قصة قصيرة حسب تسلسل أحداثها", "يحلّ متاهة متوسطة ويلاحظ ٥ فروق بين صورتين", "يتذكّر أيّ الصور اختفت من مجموعة من ٦ صور"]
     units:
-      - {id: v2-intro, subject: intro, title_ar: "صفحاتي الأولى", title_en: "My first pages"}
-      - {id: v2-pen-01, subject: pen, title_ar: "إحماء القلم", title_en: "Pen warm-ups"}
-      - {id: v2-pen-test, subject: pen, title_ar: "تقييم مهارات القلم", title_en: "Pen skills assessment"}
-      - {id: v2-ar-01, subject: arabic, title_ar: "أشكال الحروف في أول الكلمة ووسطها وآخرها", title_en: "Letter positions"}
-      - {id: v2-ar-02, subject: arabic, title_ar: "حرفا الراء والزاي", title_en: "Ra and Zay"}
-      - {id: v2-ar-03, subject: arabic, title_ar: "حرفا السين والشين، ومراجعة ر ز س ش", title_en: "Sin and Shin, then the review week"}
-      - {id: v2-ar-04, subject: arabic, title_ar: "حرفا الصاد والضاد", title_en: "Sad and Dad"}
-      - {id: v2-ar-05, subject: arabic, title_ar: "حرفا الطاء والظاء", title_en: "Ta and Dha"}
-      - {id: v2-ar-06, subject: arabic, title_ar: "حرفا العين والغين", title_en: "Ayn and Ghayn"}
-      - {id: v2-ar-test, subject: arabic, title_ar: "تقييم العربية", title_en: "Arabic assessment"}
-      - {id: v2-ma-01, subject: math, title_ar: "الأعداد ٦–٨", title_en: "Numbers 6–8"}
-      - {id: v2-ma-02, subject: math, title_ar: "الأشكال والمواقع والأنماط", title_en: "Shapes, positions and patterns"}
-      - {id: v2-ma-03, subject: math, title_ar: "الأعداد ٩–١٠ والترتيب", title_en: "Numbers 9–10 and ordering"}
-      - {id: v2-ma-test, subject: math, title_ar: "تقييم الرياضيات", title_en: "Math assessment"}
-      - {id: v2-en-01, subject: english, title_ar: "الحروف I J K", title_en: "Letters I J K"}
-      - {id: v2-en-02, subject: english, title_ar: "الحروف L M N", title_en: "Letters L M N"}
-      - {id: v2-en-03, subject: english, title_ar: "الحروف O P Q R", title_en: "Letters O P Q R"}
-      - {id: v2-en-test, subject: english, title_ar: "تقييم الإنجليزية", title_en: "English assessment"}
-      - {id: v2-th-01, subject: thinking, title_ar: "أدقّق وأصنّف", title_en: "Notice and sort"}
-      - {id: v2-th-02, subject: thinking, title_ar: "أتذكّر وأرتّب وأحلّ", title_en: "Remember, order and solve"}
-      - {id: v2-th-test, subject: thinking, title_ar: "تقييم التفكير", title_en: "Thinking assessment"}
-      - {id: v2-mix, subject: mixed, title_ar: "مراجعة شاملة للجزء الثاني", title_en: "Volume 2 review"}
+      - {id: v2-intro, subject: intro, title_ar: "صفحاتي الأولى", title_en: "My first pages", title_v: "صَفَحاتي الأُولى"}
+      - {id: v2-pen-01, subject: pen, title_ar: "إحماء القلم", title_en: "Pen warm-ups", title_v: "إِحْماءُ القَلَمِ"}
+      - {id: v2-pen-test, subject: pen, title_ar: "تقييم مهارات القلم", title_en: "Pen skills assessment", title_v: "تَقْييمُ مَهاراتِ القَلَمِ"}
+      - {id: v2-ar-01, subject: arabic, title_ar: "أشكال الحروف في أول الكلمة ووسطها وآخرها", title_en: "Letter positions", title_v: "أَشْكالُ الحُروفِ في أَوَّلِ الكَلِمَةِ وَوَسَطِها وَآخِرِها"}
+      - {id: v2-ar-02, subject: arabic, title_ar: "حرفا الراء والزاي", title_en: "Ra and Zay", title_v: "حَرْفا الرّاءِ وَالزّايِ"}
+      - {id: v2-ar-03, subject: arabic, title_ar: "حرفا السين والشين، ومراجعة ر ز س ش", title_en: "Sin and Shin, then the review week", title_v: "حَرْفا السّينِ وَالشّينِ، وَمُراجَعَةُ ر ز س ش"}
+      - {id: v2-ar-04, subject: arabic, title_ar: "حرفا الصاد والضاد", title_en: "Sad and Dad", title_v: "حَرْفا الصّادِ وَالضّادِ"}
+      - {id: v2-ar-05, subject: arabic, title_ar: "حرفا الطاء والظاء", title_en: "Ta and Dha", title_v: "حَرْفا الطّاءِ وَالظّاءِ"}
+      - {id: v2-ar-06, subject: arabic, title_ar: "حرفا العين والغين", title_en: "Ayn and Ghayn", title_v: "حَرْفا العَيْنِ وَالغَيْنِ"}
+      - {id: v2-ar-test, subject: arabic, title_ar: "تقييم العربية", title_en: "Arabic assessment", title_v: "تَقْييمُ العَرَبِيَّةِ"}
+      - {id: v2-ma-01, subject: math, title_ar: "الأعداد ٦–٨", title_en: "Numbers 6–8", title_v: "الأَعْدادُ ٦–٨"}
+      - {id: v2-ma-02, subject: math, title_ar: "الأشكال والمواقع والأنماط", title_en: "Shapes, positions and patterns", title_v: "الأَشْكالُ وَالمَواقِعُ وَالأَنْماطُ"}
+      - {id: v2-ma-03, subject: math, title_ar: "الأعداد ٩–١٠ والترتيب", title_en: "Numbers 9–10 and ordering", title_v: "الأَعْدادُ ٩–١٠ وَالتَّرْتيبُ"}
+      - {id: v2-ma-test, subject: math, title_ar: "تقييم الرياضيات", title_en: "Math assessment", title_v: "تَقْييمُ الرِّياضِيّاتِ"}
+      - {id: v2-en-01, subject: english, title_ar: "الحروف I J K", title_en: "Letters I J K", title_v: "الحُروفُ I J K"}
+      - {id: v2-en-02, subject: english, title_ar: "الحروف L M N", title_en: "Letters L M N", title_v: "الحُروفُ L M N"}
+      - {id: v2-en-03, subject: english, title_ar: "الحروف O P Q R", title_en: "Letters O P Q R", title_v: "الحُروفُ O P Q R"}
+      - {id: v2-en-test, subject: english, title_ar: "تقييم الإنجليزية", title_en: "English assessment", title_v: "تَقْييمُ الإِنْجِليزِيَّةِ"}
+      - {id: v2-th-01, subject: thinking, title_ar: "أدقّق وأصنّف", title_en: "Notice and sort", title_v: "أُدَقِّقُ وَأُصَنِّفُ"}
+      - {id: v2-th-02, subject: thinking, title_ar: "أتذكّر وأرتّب وأحلّ", title_en: "Remember, order and solve", title_v: "أَتَذَكَّرُ وَأُرَتِّبُ وَأَحُلُّ"}
+      - {id: v2-th-test, subject: thinking, title_ar: "تقييم التفكير", title_en: "Thinking assessment", title_v: "تَقْييمُ التَّفْكيرِ"}
+      - {id: v2-mix, subject: mixed, title_ar: "مراجعة شاملة للجزء الثاني", title_en: "Volume 2 review", title_v: "مُراجَعَةٌ شامِلَةٌ لِلجُزْءِ الثّاني"}
     pages:
       - {n: 1, week: 1, subject: intro, unit: v2-intro, type: owner-page, skill: "هذا الكتاب لـ… أكتب اسمي وأطبع كفّ يدي", difficulty: 1}
       - {n: 2, week: 1, subject: intro, unit: v2-intro, type: name-trace, skill: "أتتبّع اسمي بالعربية ثم أكتبه وحدي مرة واحدة", difficulty: 2, params: {script: ar, mode: trace-then-write}}
@@ -439,6 +441,7 @@ volumes:
     term: 3
     weeks: 11
     title_ar: الجزء الثالث — أكمل حروفي وأبدأ القراءة
+    title_v: "الجُزْءُ الثّالِثُ — أُكْمِلُ حُروفي وَأَبْدَأُ القِراءَةَ"
     objectives:
       pen: ["يرسم خطوط الوصل بين الحروف بخط ثابت", "يصل النقاط من ١ إلى ٢٠ بالترتيب", "يتتبّع مسارات طويلة فيها منعطفات ويلوّن الأجزاء الصغيرة بدقّة"]
       arabic: ["يتعرّف على الحروف من الفاء إلى الياء ويكتبها، فيكتمل عنده الحروف الثمانية والعشرون", "يقرأ الحرف مع الفتحة والضمة والكسرة والسكون", "يقرأ المقاطع القصيرة والطويلة (المدّ) ويركّب مقطعًا من حرف وحركة", "يقرأ كلمات بسيطة من ثلاثة أو أربعة حروف ويصلها بصورها، وكلمات قليلة مألوفة تبدأ بـ«ال» في آخر الجزء", "يكتب كلمات قصيرة على الخط المنقّط ثم وحده", "يقرأ جملة قصيرة من كلمتين ويصلها بصورتها"]
@@ -446,33 +449,33 @@ volumes:
       english: ["يتعرّف على الحروف من S إلى Z كبيرة وصغيرة ويكتبها", "يسمّي كلمات من عشر مجموعات مفردات: الأعداد، الألوان، الأشكال، العائلة، أعضاء الجسم، الحيوانات، الفواكه، الطعام، الألعاب، أدوات المدرسة", "يقرأ كلمات إنجليزية قصيرة مثل cat وsun وbus ويصلها بصورها", "يقرأ جملة قصيرة جدًّا مثل I see a cat ويصلها بصورتها"]
       thinking: ["يحلّ متاهات صعبة ويلاحظ ٧ فروق بين صورتين", "يصنّف الأشياء حسب صفتين معًا (اللون والشكل)", "يكمل نمطًا متزايدًا ويتذكّر ترتيب ٥ صور", "يربط السبب بالنتيجة ويرسم حلًّا لمشكلة بسيطة"]
     units:
-      - {id: v3-intro, subject: intro, title_ar: "صفحاتي الأولى", title_en: "My first pages"}
-      - {id: v3-pen-01, subject: pen, title_ar: "إحماء القلم للكتابة", title_en: "Pen warm-ups for writing"}
-      - {id: v3-pen-test, subject: pen, title_ar: "تقييم مهارات القلم", title_en: "Pen skills assessment"}
-      - {id: v3-ar-01, subject: arabic, title_ar: "حرفا الفاء والقاف", title_en: "Fa and Qaf"}
-      - {id: v3-ar-02, subject: arabic, title_ar: "حرفا الكاف واللام", title_en: "Kaf and Lam"}
-      - {id: v3-ar-03, subject: arabic, title_ar: "حرفا الميم والنون", title_en: "Mim and Nun"}
-      - {id: v3-ar-04, subject: arabic, title_ar: "الهاء والواو والياء", title_en: "Ha, Waw and Ya"}
-      - {id: v3-ar-05, subject: arabic, title_ar: "الحركات: الفتحة والضمة والكسرة والسكون", title_en: "Short vowels and sukun"}
-      - {id: v3-ar-06, subject: arabic, title_ar: "المقاطع القصيرة والطويلة", title_en: "Short and long syllables"}
-      - {id: v3-ar-07, subject: arabic, title_ar: "أقرأ الكلمات وأكتبها", title_en: "Reading and writing words"}
-      - {id: v3-ar-08, subject: arabic, title_ar: "أقرأ جملًا قصيرة", title_en: "Reading short sentences"}
-      - {id: v3-ar-test, subject: arabic, title_ar: "التقييم النهائي للعربية", title_en: "Final Arabic assessment"}
-      - {id: v3-ma-01, subject: math, title_ar: "الأعداد ١١–٢٠", title_en: "Numbers 11–20"}
-      - {id: v3-ma-02, subject: math, title_ar: "الجمع بالصور", title_en: "Addition with pictures"}
-      - {id: v3-ma-03, subject: math, title_ar: "الطرح بالصور", title_en: "Subtraction with pictures"}
-      - {id: v3-ma-04, subject: math, title_ar: "أحلّ مسائل مصوّرة", title_en: "Picture problems"}
-      - {id: v3-ma-test, subject: math, title_ar: "التقييم النهائي للرياضيات", title_en: "Final math assessment"}
-      - {id: v3-en-01, subject: english, title_ar: "الحروف S T U V", title_en: "Letters S T U V"}
-      - {id: v3-en-02, subject: english, title_ar: "الحروف W X Y Z", title_en: "Letters W X Y Z"}
-      - {id: v3-en-03, subject: english, title_ar: "مفرداتي ١: الأعداد والألوان والأشكال والعائلة وجسمي", title_en: "Vocabulary 1: Numbers, Colors, Shapes, Family, Body Parts"}
-      - {id: v3-en-04, subject: english, title_ar: "مفرداتي ٢ وكلماتي الأولى", title_en: "Vocabulary 2: Animals, Fruits, Food, Toys, School Objects; first words"}
-      - {id: v3-en-test, subject: english, title_ar: "التقييم النهائي للإنجليزية", title_en: "Final English assessment"}
-      - {id: v3-th-01, subject: thinking, title_ar: "أركّز وأتذكّر", title_en: "Focus and remember"}
-      - {id: v3-th-02, subject: thinking, title_ar: "أفكّر وأحلّ المشكلات", title_en: "Think and solve problems"}
-      - {id: v3-th-test, subject: thinking, title_ar: "التقييم النهائي للتفكير", title_en: "Final thinking assessment"}
-      - {id: v3-mix, subject: mixed, title_ar: "المراجعة الشاملة للسنة", title_en: "Year review"}
-      - {id: v3-cert, subject: intro, title_ar: "شهادة الإنجاز", title_en: "Certificate"}
+      - {id: v3-intro, subject: intro, title_ar: "صفحاتي الأولى", title_en: "My first pages", title_v: "صَفَحاتي الأُولى"}
+      - {id: v3-pen-01, subject: pen, title_ar: "إحماء القلم للكتابة", title_en: "Pen warm-ups for writing", title_v: "إِحْماءُ القَلَمِ لِلكِتابَةِ"}
+      - {id: v3-pen-test, subject: pen, title_ar: "تقييم مهارات القلم", title_en: "Pen skills assessment", title_v: "تَقْييمُ مَهاراتِ القَلَمِ"}
+      - {id: v3-ar-01, subject: arabic, title_ar: "حرفا الفاء والقاف", title_en: "Fa and Qaf", title_v: "حَرْفا الفاءِ وَالقافِ"}
+      - {id: v3-ar-02, subject: arabic, title_ar: "حرفا الكاف واللام", title_en: "Kaf and Lam", title_v: "حَرْفا الكافِ وَاللّامِ"}
+      - {id: v3-ar-03, subject: arabic, title_ar: "حرفا الميم والنون", title_en: "Mim and Nun", title_v: "حَرْفا الميمِ وَالنّونِ"}
+      - {id: v3-ar-04, subject: arabic, title_ar: "الهاء والواو والياء", title_en: "Ha, Waw and Ya", title_v: "الهاءُ وَالواوُ وَالياءُ"}
+      - {id: v3-ar-05, subject: arabic, title_ar: "الحركات: الفتحة والضمة والكسرة والسكون", title_en: "Short vowels and sukun", title_v: "الحَرَكاتُ: الفَتْحَةُ وَالضَّمَّةُ وَالكَسْرَةُ وَالسُّكونُ"}
+      - {id: v3-ar-06, subject: arabic, title_ar: "المقاطع القصيرة والطويلة", title_en: "Short and long syllables", title_v: "المَقاطِعُ القَصيرَةُ وَالطَّويلَةُ"}
+      - {id: v3-ar-07, subject: arabic, title_ar: "أقرأ الكلمات وأكتبها", title_en: "Reading and writing words", title_v: "أَقْرَأُ الكَلِماتِ وَأَكْتُبُها"}
+      - {id: v3-ar-08, subject: arabic, title_ar: "أقرأ جملًا قصيرة", title_en: "Reading short sentences", title_v: "أَقْرَأُ جُمَلًا قَصيرَةً"}
+      - {id: v3-ar-test, subject: arabic, title_ar: "التقييم النهائي للعربية", title_en: "Final Arabic assessment", title_v: "التَّقْييمُ النِّهائِيُّ لِلعَرَبِيَّةِ"}
+      - {id: v3-ma-01, subject: math, title_ar: "الأعداد ١١–٢٠", title_en: "Numbers 11–20", title_v: "الأَعْدادُ ١١–٢٠"}
+      - {id: v3-ma-02, subject: math, title_ar: "الجمع بالصور", title_en: "Addition with pictures", title_v: "الجَمْعُ بِالصُّوَرِ"}
+      - {id: v3-ma-03, subject: math, title_ar: "الطرح بالصور", title_en: "Subtraction with pictures", title_v: "الطَّرْحُ بِالصُّوَرِ"}
+      - {id: v3-ma-04, subject: math, title_ar: "أحلّ مسائل مصوّرة", title_en: "Picture problems", title_v: "أَحُلُّ مَسائِلَ مُصَوَّرَةً"}
+      - {id: v3-ma-test, subject: math, title_ar: "التقييم النهائي للرياضيات", title_en: "Final math assessment", title_v: "التَّقْييمُ النِّهائِيُّ لِلرِّياضِيّاتِ"}
+      - {id: v3-en-01, subject: english, title_ar: "الحروف S T U V", title_en: "Letters S T U V", title_v: "الحُروفُ S T U V"}
+      - {id: v3-en-02, subject: english, title_ar: "الحروف W X Y Z", title_en: "Letters W X Y Z", title_v: "الحُروفُ W X Y Z"}
+      - {id: v3-en-03, subject: english, title_ar: "مفرداتي ١: الأعداد والألوان والأشكال والعائلة وجسمي", title_en: "Vocabulary 1: Numbers, Colors, Shapes, Family, Body Parts", title_v: "مُفْرَداتي ١: الأَعْدادُ وَالأَلْوانُ وَالأَشْكالُ وَالعائِلَةُ وَجِسْمي"}
+      - {id: v3-en-04, subject: english, title_ar: "مفرداتي ٢ وكلماتي الأولى", title_en: "Vocabulary 2: Animals, Fruits, Food, Toys, School Objects; first words", title_v: "مُفْرَداتي ٢ وَكَلِماتي الأُولى"}
+      - {id: v3-en-test, subject: english, title_ar: "التقييم النهائي للإنجليزية", title_en: "Final English assessment", title_v: "التَّقْييمُ النِّهائِيُّ لِلإِنْجِليزِيَّةِ"}
+      - {id: v3-th-01, subject: thinking, title_ar: "أركّز وأتذكّر", title_en: "Focus and remember", title_v: "أُرَكِّزُ وَأَتَذَكَّرُ"}
+      - {id: v3-th-02, subject: thinking, title_ar: "أفكّر وأحلّ المشكلات", title_en: "Think and solve problems", title_v: "أُفَكِّرُ وَأَحُلُّ المُشْكِلاتِ"}
+      - {id: v3-th-test, subject: thinking, title_ar: "التقييم النهائي للتفكير", title_en: "Final thinking assessment", title_v: "التَّقْييمُ النِّهائِيُّ لِلتَّفْكيرِ"}
+      - {id: v3-mix, subject: mixed, title_ar: "المراجعة الشاملة للسنة", title_en: "Year review", title_v: "المُراجَعَةُ الشّامِلَةُ لِلسَّنَةِ"}
+      - {id: v3-cert, subject: intro, title_ar: "شهادة الإنجاز", title_en: "Certificate", title_v: "شَهادَةُ الإِنْجازِ"}
     pages:
       - {n: 1, week: 1, subject: intro, unit: v3-intro, type: owner-page, skill: "هذا الكتاب لـ… أكتب اسمي وأطبع كفّ يدي", difficulty: 1}
       - {n: 2, week: 1, subject: intro, unit: v3-intro, type: name-trace, skill: "أكتب اسمي بالعربية وحدي على السطر", difficulty: 3, params: {script: ar, mode: write}}

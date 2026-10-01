@@ -10,6 +10,7 @@ import type { ThemeCard } from "@/lib/catalog";
 import { createApi, type Book, type Character, type Child, type Line } from "@/lib/create";
 import { briefBody, briefReady, CUSTOM_THEME, customExtra, useCustomBrief } from "@/lib/customStory";
 import { money, type Catalog } from "@/lib/store";
+import { fillTitle } from "@/lib/themeTitle";
 import { CompanionSummary } from "./companion/CompanionSummary";
 import { CustomStoryForm } from "./CustomStoryForm";
 import { Check, Frame, Lead } from "./Frame";
@@ -146,7 +147,9 @@ export function StoryStep({
                     {t("story.suggested", { name: child.name })}
                   </span>
                 )}
-                <h2 className="text-[18px] leading-snug text-night-900">{th.title.replace("{name}", child.name)}</h2>
+                <h2 className="text-[18px] leading-snug text-night-900">
+                  {fillTitle(th.title, child.name, child.gender)}
+                </h2>
                 <p className="text-caption text-ink-muted">
                   {th.tagline} · {t("story.pages", { pages: th.pages })}
                 </p>
@@ -178,7 +181,7 @@ export function StoryStep({
           rows={2}
           maxLength={120}
           value={dedication}
-          placeholder={t("story.dedicationPlaceholder")}
+          placeholder={t("story.dedicationPlaceholder", { gender: child.gender })}
           onChange={(e) => setDedication(e.target.value)}
           className="rounded-[14px] border-[1.5px] border-line bg-white px-4 py-3 text-body outline-none placeholder:text-ink-faint focus:border-night-900 focus:ring-4 focus:ring-night-100"
         />

@@ -5,7 +5,17 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRef, useState, type ReactNode } from "react";
 import { Link } from "@/i18n/navigation";
 import { money, type CatalogProduct, type Currency } from "@/lib/store";
-import { groups, initialPicks, resolve, soldAges, soldOptions, type Picks, type Preview } from "@/lib/workbook";
+import {
+  groups,
+  initialPicks,
+  previewsFor,
+  resolve,
+  soldAges,
+  soldOptions,
+  type Picks,
+  type Preview,
+  type PreviewScope,
+} from "@/lib/workbook";
 import { AddWorkbook } from "./AddWorkbook";
 import { FamilyQuoteForm } from "./FamilyQuoteForm";
 import { WorkbookCover } from "./WorkbookCover";
@@ -28,14 +38,12 @@ const chip = (on: boolean, off: boolean) =>
 export function WorkbookProduct({
   product,
   currency,
-  previews,
   query,
   photo = null,
   familyCharacters = false,
 }: {
   product: CatalogProduct;
   currency: Currency;
-  previews: Preview[];
   query: Picks;
   photo?: ReactNode; // the book's lifestyle photo (components/site/Photo), when Tareq has added it
   familyCharacters?: boolean; // the illustrated-family add-on is switched on
@@ -53,7 +61,11 @@ export function WorkbookProduct({
   const summary = ["level", "stage", "volume"]
     .filter((g) => picks[g])
     .map((g) =>
-      g === "level" ? label(g, picks[g]!).split(" ·")[0] : t(`summary.${g}`, { value: label(g, picks[g]!) }),
+      g === "level"
+        ? label(g, picks[g]!).split(" ·")[0]
+        : picks[g] === "set"
+          ? t(`summary.${g}Set`)
+          : t(`summary.${g}`, { value: label(g, picks[g]!) }),
     )
     .join(" · ");
   const set = Object.values(picks).includes("set");
@@ -67,6 +79,18 @@ export function WorkbookProduct({
   const binding = String(product.features.binding ?? "");
   const price = variant?.price ?? null;
   const ages = soldAges(product);
+  const { pages: previews, scope } = previewsFor(product.slug, picks);
+  const peekFrom = peekCaption(scope);
+
+  /** Where the pages shown come from: "KG2, the third volume" or "the second stage" (nothing for the product). */
+  function peekCaption({ level, volume, stage }: PreviewScope): string {
+    const short = level ? label("level", level).split(" ·")[0]! : "";
+    if (level && volume) return t("peekFrom.volume", { level: short, volume: label("volume", volume), n: volume });
+    if (level) return t("peekFrom.level", { level: short });
+    if (stage === "set") return t("peekFrom.allStages");
+    if (stage) return t("peekFrom.stage", { stage: label("stage", stage), n: stage });
+    return "";
+  }
 
   function pick(group: string, value: string) {
     setState(resolve(product, { ...picks, [group]: value }, group));
@@ -130,32 +154,49 @@ export function WorkbookProduct({
           </div>
 
           <section aria-labelledby="peek-title" className="flex flex-col gap-2.5">
-            <h2 id="peek-title" className="text-[20px] text-night-900">
-              {t("peek")}
-            </h2>
-            <div className="-mx-4 flex snap-x gap-2.5 overflow-x-auto px-4 pb-1 md:mx-0 md:px-0">
+            <div className="flex flex-col gap-0.5">
+              <h2 id="peek-title" className="text-[20px] text-night-900">
+                {t("peek")}
+              </h2>
+              {peekFrom && (
+                <p className="text-caption text-ink-muted" aria-live="polite">
+                  {peekFrom}
+                </p>
+              )}
+            </div>
+            <div
+              key={previews[0]?.src ?? "none"}
+              className="-mx-4 flex snap-x gap-2.5 overflow-x-auto px-4 pb-1 md:mx-0 md:px-0"
+            >
               {previews.length > 0
-                ? previews.map((p) => (
-                    <button
-                      key={p.src}
-                      type="button"
-                      onClick={() => {
-                        setZoom(p);
-                        dialog.current?.showModal();
-                      }}
-                      aria-label={t("zoom", { title: locale === "ar" ? p.title_ar : p.title_en })}
-                      className="w-[150px] shrink-0 snap-start overflow-hidden rounded-[10px] border border-line bg-white md:w-[170px]"
-                    >
-                      <img
-                        src={p.src}
-                        alt={locale === "ar" ? p.title_ar : p.title_en}
-                        loading="lazy"
-                        width={720}
-                        height={1018}
-                        className="aspect-[1/1.414] w-full object-cover"
-                      />
-                    </button>
-                  ))
+                ? previews.map((p) => {
+                    const title = locale === "ar" ? p.title_ar : p.title_en;
+                    return (
+                      <figure key={p.src} className="flex w-[150px] shrink-0 snap-start flex-col gap-1.5 md:w-[170px]">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setZoom(p);
+                            dialog.current?.showModal();
+                          }}
+                          aria-label={t("zoom", { title })}
+                          className="overflow-hidden rounded-[10px] border border-line bg-white"
+                        >
+                          <img
+                            src={p.src}
+                            alt=""
+                            loading="lazy"
+                            width={720}
+                            height={1018}
+                            className="aspect-[1/1.414] w-full object-cover"
+                          />
+                        </button>
+                        <figcaption className="line-clamp-2 text-caption leading-[1.5] text-ink-muted">
+                          {title}
+                        </figcaption>
+                      </figure>
+                    );
+                  })
                 : (["trace", "name", "count"] as const).map((k) => (
                     <div
                       key={k}
@@ -279,8 +320,11 @@ export function WorkbookProduct({
             <img
               src={zoom.src}
               alt={locale === "ar" ? zoom.title_ar : zoom.title_en}
-              className="max-h-[82dvh] w-auto max-w-full rounded-lg bg-white object-contain"
+              className="max-h-[76dvh] w-auto max-w-full rounded-lg bg-white object-contain"
             />
+            <p className="text-center text-small font-semibold text-paper">
+              {locale === "ar" ? zoom.title_ar : zoom.title_en}
+            </p>
             <button
               type="button"
               autoFocus

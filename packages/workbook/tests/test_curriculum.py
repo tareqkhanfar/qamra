@@ -94,6 +94,21 @@ def test_curriculum_plans_keep_every_rule(path: Path) -> None:
     assert problems(load(path)) == []
 
 
+@pytest.mark.parametrize("path", sorted(CURRICULUM.glob("*.yaml")), ids=lambda p: p.stem)
+def test_every_title_the_child_sees_is_vowelized(path: Path) -> None:
+    for v in load(path).volumes:
+        assert v.title_v, f"V{v.volume} has no title_v"
+        assert not [u.id for u in v.units if not u.title_v]
+
+
+def test_a_vowelized_title_must_spell_the_plain_one() -> None:
+    from qamra_workbook.curriculum import check_fields
+
+    units = [Unit(id="u", subject="arabic", title_ar="حرفا الألف والباء", title_v="حَرْفا الأَلِفِ وَالتّاءِ")]
+    found = check_fields(volume([page(1, unit="u")], units))
+    assert any("does not spell" in p for p in found)
+
+
 def test_a_number_intro_without_a_number_is_reported_not_crashed() -> None:
     v = volume([page(1, "math", "number-intro", "m")], [Unit(id="m", subject="math", title_ar="أعداد")])
     plan = Curriculum(

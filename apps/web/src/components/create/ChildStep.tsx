@@ -6,6 +6,7 @@ import { Alert } from "@/components/ui/Alert";
 import { ArrowForward, Button } from "@/components/ui/Button";
 import { errorText } from "@/lib/api";
 import { createApi, type Child } from "@/lib/create";
+import { fillTitle } from "@/lib/themeTitle";
 import { Chip, Frame, Lead } from "./Frame";
 
 const AGES = [2, 3, 4, 5, 6, 7, 8, 9];
@@ -103,7 +104,10 @@ export function ChildStep({
         />
         {title && (
           <span className="text-caption text-ink-muted">
-            {t("child.namePreview")} <strong className="text-night-900">«{title.replace("{name}", shown)}»</strong>
+            {t("child.namePreview")}{" "}
+            <strong className="text-night-900">
+              «{fillTitle(title, shown, gender ?? (name.trim() ? null : "f"))}»
+            </strong>
           </span>
         )}
       </div>
@@ -181,7 +185,7 @@ export function ChildStep({
           id="kid-note"
           value={note}
           maxLength={60}
-          placeholder={t("child.notePlaceholder")}
+          placeholder={t("child.notePlaceholder", { gender: g })}
           onChange={(e) => setNote(e.target.value)}
           className="min-h-14 rounded-[14px] border-[1.5px] border-line bg-white px-4 text-body outline-none placeholder:text-ink-faint focus:border-night-900 focus:ring-4 focus:ring-night-100"
         />

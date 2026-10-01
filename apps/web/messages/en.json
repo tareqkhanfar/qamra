@@ -631,7 +631,7 @@
       "renew": "New link",
       "remove": "Remove",
       "removeConfirm": "Remove {name} from the class?",
-      "message": "Hello! {school} is giving {name} a class book with them as a hero! Give your consent and upload a photo here (the photo stays private; the kindergarten never sees it): {link}"
+      "message": "{gender, select, f {Hello! {school} is giving {name} a class book with her as the hero! Give your consent and upload her photo here (the photo stays private; the kindergarten never sees it): {link}} other {Hello! {school} is giving {name} a class book with him as the hero! Give your consent and upload his photo here (the photo stays private; the kindergarten never sees it): {link}}}"
     },
     "import": {
       "title": "Import the class's children",
@@ -816,8 +816,8 @@
       "expiredBody": "Ask {school} for a new link.",
       "takenTitle": "This link is used by another account",
       "takenBody": "If this is a mistake, contact {school}.",
-      "title": "{name}'s book with friends",
-      "lead": "{school} is giving {name} in {classroom} the book \"{theme}\", with them as a hero among friends.",
+      "title": "{gender, select, f {{name}'s book with her friends} other {{name}'s book with his friends}}",
+      "lead": "{gender, select, f {{school} is giving {name} in {classroom} the book \"{theme}\", with her as the hero among her friends.} other {{school} is giving {name} in {classroom} the book \"{theme}\", with him as the hero among his friends.}}",
       "classBook": "the class book",
       "promise": {
         "p1": "You consent and upload one photo yourselves: the kindergarten never sees it, nor does anyone else.",
@@ -862,7 +862,7 @@
         "title": "Is this {name}?",
         "alt": "{name}'s drawn character",
         "approve": "Yes, approve the character",
-        "wrong": "Not quite like them?",
+        "wrong": "{gender, select, f {Not quite like her?} other {Not quite like him?}}",
         "fixes": {
           "skin": "Skin tone",
           "face": "Face",
@@ -980,6 +980,12 @@
       "wire-o": "Wire-o bound · lies flat"
     },
     "peek": "A peek inside",
+    "peekFrom": {
+      "level": "Pages from {level}",
+      "volume": "Pages from {level}, volume {n}",
+      "stage": "Pages from stage {n}",
+      "allStages": "Pages from all three stages"
+    },
     "placeholder": {
       "trace": "Trace the letter",
       "name": "Write my name",
@@ -1041,7 +1047,9 @@
     },
     "summary": {
       "volume": "{value} volume",
-      "stage": "{value} stage"
+      "stage": "{value} stage",
+      "volumeSet": "All three volumes",
+      "stageSet": "All three stages"
     },
     "note": {
       "workbook": "{set, select, true {{pdf, select, true {All three volumes download right away.} other {All three volumes arrive together, or one at the start of each term if you prefer.}}} other {{many, select, true {One volume per term, about 10 pages a week.} other {A full term of learning, about 10 pages a week.}}}}",
@@ -1159,7 +1167,7 @@
       "title": "This order is a gift",
       "body": "We deliver it to another address and hide the prices",
       "label": "Your message on the card",
-      "placeholder": "Happy birthday to the hero of our story, {name}…",
+      "placeholder": "{gender, select, f {Happy birthday to the hero of our story, {name}…} m {Happy birthday to the hero of our story, {name}…} other {Many happy returns, with all our love…}}",
       "hint": "Up to {max} characters. The recipient's address is at the next step."
     },
     "code": {
@@ -2251,7 +2259,7 @@
       ],
       "note": "{gender, select, f {Something special about her?} other {Something special about him?}}",
       "optional": "(optional)",
-      "notePlaceholder": "e.g. she has a cat called Lulu",
+      "notePlaceholder": "{gender, select, f {e.g. she has a cat called Lulu} other {e.g. he has a cat called Lulu}}",
       "look": "In the pictures",
       "hijab": "Wears a hijab",
       "glasses": "Wears glasses",

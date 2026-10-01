@@ -8,6 +8,75 @@ import previews from "./workbook-previews.json";
 export type Preview = { src: string; title_ar: string; title_en: string };
 export const PREVIEWS = previews as Record<string, Preview[]>;
 
+/** What a strip of preview pages comes from, e.g. {level: "kg2", volume: "3"} or {stage: "2"}; {} = the product. */
+export type PreviewScope = Partial<Record<"level" | "volume" | "stage", string>>;
+type PreviewSet = { pages: Preview[]; scope: PreviewScope };
+
+/** «رحلتي الأولى»'s strip is one list; every caption starts with its stage («المحطة 2: …», "Stage 2: …"). */
+const STAGE = /^(?:المحطة|Stage) (\d+): /;
+
+function stagePages(pages: Preview[], stage: string): Preview[] {
+  return pages
+    .filter((p) => STAGE.exec(p.title_en)?.[1] === stage)
+    .map((p) => {
+      const en = p.title_en.replace(STAGE, "");
+      return { ...p, title_ar: p.title_ar.replace(STAGE, ""), title_en: en.charAt(0).toUpperCase() + en.slice(1) };
+    });
+}
+
+/** The preview sets of a product, one per level, volume or stage they show (in the catalog's order). */
+function previewSets(slug: string): PreviewSet[] {
+  const own = PREVIEWS[slug] ?? [];
+  if (slug === "foundation-workbook") {
+    return [
+      { pages: PREVIEWS["foundation-workbook-kg1"] ?? [], scope: { level: "kg1" } },
+      { pages: own, scope: { level: "kg2" } }, // drawn from KG2 volume 1, standing in for volumes 1 and 2
+      { pages: PREVIEWS["foundation-workbook-v3"] ?? [], scope: { level: "kg2", volume: "3" } },
+    ].filter((s) => s.pages.length > 0);
+  }
+  if (slug === "learning-journey") {
+    const stages = [...new Set(own.map((p) => STAGE.exec(p.title_en)?.[1]).filter((x): x is string => !!x))];
+    return stages.map((stage) => ({ pages: stagePages(own, stage), scope: { stage } }));
+  }
+  return own.length ? [{ pages: own, scope: {} }] : [];
+}
+
+/**
+ * The preview pages for the reader's picks: the chosen level's, volume's or stage's when there are pages of
+ * it, else the product's own set. A set ("all three") shows the pages of every part of it.
+ */
+export function previewsFor(slug: string, picks: Picks): { pages: Preview[]; scope: PreviewScope } {
+  const fallback = { pages: PREVIEWS[slug] ?? [], scope: {} };
+  const sets = previewSets(slug);
+  if (slug === "learning-journey") {
+    if (picks.stage === "set") return { ...fallback, scope: { stage: "set" } }; // every stage, captions keep theirs
+    if (!picks.stage) return fallback;
+    return sets.find((s) => s.scope.stage === picks.stage) ?? fallback;
+  }
+  if (slug === "foundation-workbook" && picks.level) {
+    const level = sets.filter((s) => s.scope.level === picks.level);
+    if (picks.volume === "set" && level.length > 1) {
+      return { pages: level.flatMap((s) => s.pages), scope: { level: picks.level } };
+    }
+    const exact = level.find((s) => s.scope.volume === picks.volume) ?? level.find((s) => !s.scope.volume);
+    if (exact) return exact;
+  }
+  return fallback;
+}
+
+/** A few inside pages for the product's card (the hub): one from each level, volume or stage it sells. */
+export function samplePages(product: CatalogProduct, count = 3): Preview[] {
+  const sold = soldOptions(product);
+  const sets = previewSets(product.slug).filter(({ scope }) =>
+    (["level", "stage"] as const).every((k) => !scope[k] || !sold[k] || sold[k].includes(scope[k])),
+  );
+  const out: Preview[] = [];
+  for (let i = 1; out.length < count && sets.some((s) => s.pages.length > i); i++) {
+    for (const s of sets) if (s.pages[i] && out.length < count) out.push(s.pages[i]!);
+  }
+  return out;
+}
+
 /** The design's order of the choices; anything else a product adds comes after. */
 const ORDER = ["level", "stage", "volume", "format", "interior"];
 

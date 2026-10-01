@@ -128,7 +128,7 @@ pages:
   71: {title: "أَتَتَبَّعُ الحُروفَ: خ د ذ", instruction: "{تَتَبَّعِ/تَتَبَّعي} الحُروفَ ثُمَّ {ضَعِ/ضَعي} النِّقاطَ", params: {level: 3, target: [خ, د, ذ], repeats: 3}}  # draft: educator review
   72: {title: "أُكْمِلُ الحَرْفَ: ب ت ث", instruction: "{أَكْمِلِ/أَكْمِلي} الجُزْءَ النّاقِصَ مِنَ الحَرْفِ", params: {level: 4, target: [ب, ت, ث]}}  # draft: educator review
   73: {type: journey-bridges, title: "أَقْواسٌ صَغيرَةٌ", instruction: "{ارْسُمِ/ارْسُمي} الأَقْواسَ الصَّغيرَةَ دونَ رَفْعِ القَلَمِ", params: {count: 10, rise: 5}}  # draft: educator review
-  74: {title: "أُكْمِلُ الحَرْفَ: ج ح خ", instruction: "{أَكْمِلْ/أَكْمِلي} كُلَّ حَرْفٍ ثُمَّ {ضَعْ/ضَعي} نُقْطَتَهُ", params: {level: 4, target: [ج, ح, خ]}}  # draft: educator review
+  74: {title: "أُكْمِلُ الحَرْفَ: ج ح خ", instruction: "{أَكْمِلِ/أَكْمِلي} الحُروفَ، ثُمَّ {ضَعْ/ضَعي} نُقْطَةَ الجيمِ وَالخاءِ", params: {level: 4, target: [ج, ح, خ]}}  # draft: educator review
   75: {title: "أُكْمِلُ الحَرْفَ: ر ز س", instruction: "{أَكْمِلِ/أَكْمِلي} الحُروفَ النّاقِصَةَ", params: {level: 4, target: [ر, ز, س]}}  # draft: educator review
   76: {type: journey-writing-review, title: "مُراجَعَةٌ: قَلَمي الذَّكِيُّ", instruction: "{تَتَبَّعْ حَرْفًا وَأَكْمِلْ/تَتَبَّعي حَرْفًا وَأَكْمِلي} حَرْفًا", params: {letters: [أ, ش, ص]}}  # draft: educator review
   77: {title: "أَكْتُبُ بِجانِبِ النَّموذَجِ", instruction: "{انْظُرْ/انْظُري} إِلى الحَرْفِ {وَاكْتُبْهُ/وَاكْتُبيهِ} بِجانِبِهِ", params: {level: 5, target: [أ, ب, ت]}}  # draft: educator review

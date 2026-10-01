@@ -16,6 +16,7 @@ from PIL import Image, ImageDraw
 from pydantic import BaseModel, Field
 from sqlalchemy import select
 
+from qamra_ai.pipeline.theme import fill_title
 from qamra_api.deps import CurrentUser, SessionDep, StorageDep
 from qamra_api.errors import ApiError
 from qamra_api.routers.create import CONSENT_VERSION
@@ -126,7 +127,7 @@ async def preview_book(body: BookIn, user: CurrentUser, db: SessionDep, storage:
         language=Locale.ar,
         art_style=character.art_style,
         status=BookStatus.preview,
-        title=theme.title_ar.replace("{name}", child.first_name),
+        title=fill_title(theme.title_ar, child.first_name, "f" if child.gender.value == "f" else "m"),
         budget_usd=Decimal("0"),
         generation={"line": body.line, "offline": "sketch", "e2e": True},
     )

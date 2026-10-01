@@ -116,10 +116,10 @@ printer_batch:
       - "الملفات لطباعة هذه الدفعة فقط؛ نرجو حذفها بعد التسليم."
     button: { label: "قائمة الدفعة (CSV)", link: manifest_url }
   en:
-    subject: "Print batch {{ code }} — {{ copies }} copies"
+    subject: "Print batch {{ code }} — {{ copies | plural('copy', 'copies') }}"
     lines:
       - "Hello,"
-      - "Here are the files for print batch {{ code }} ({{ date }}): {{ books }} books, {{ copies }} copies."
+      - "Here are the files for print batch {{ code }} ({{ date }}): {{ books | plural('book', 'books') }}, {{ copies | plural('copy', 'copies') }}."
       - "Each link opens a download that lasts ten minutes; the links work until {{ expires }}. The full list is in the CSV file."
       - "The files are for printing this batch only; please delete them after delivery."
     button: { label: "Batch list (CSV)", link: manifest_url }

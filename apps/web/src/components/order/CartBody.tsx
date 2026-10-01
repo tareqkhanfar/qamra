@@ -91,7 +91,10 @@ export function CartBody(props: {
               value={props.message}
               onChange={(e) => props.onMessage(e.target.value)}
               onBlur={props.onMessageDone}
-              placeholder={t("gift.placeholder", { name: firstName || cart.items[0]?.child_name || "" })}
+              placeholder={t("gift.placeholder", {
+                name: firstName || cart.items[0]?.child_name || "",
+                gender: (firstName ? offer?.gender : cart.items[0]?.child_gender) ?? "other",
+              })}
               className="resize-none rounded-[14px] border-[1.5px] border-line bg-white px-3.5 py-3 text-body outline-none focus:border-night-900"
             />
             <span className="flex justify-between text-xs text-ink-muted">

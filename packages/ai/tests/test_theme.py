@@ -5,6 +5,7 @@ import pytest
 from qamra_ai.pipeline.theme import (
     MAX_WORDS_YOUNG,
     Theme,
+    fill_title,
     load_style,
     load_theme,
     render_template,
@@ -92,3 +93,10 @@ def test_coming_soon_theme_needs_no_pages() -> None:
 def test_unknown_style() -> None:
     with pytest.raises(KeyError):
         load_style("superhero-comic")
+
+
+def test_theme_titles_agree_with_the_child() -> None:
+    t = load_theme("star-keeper")
+    assert t.title("ar", "f", "سلمى") == "سلمى حارسة النجوم"
+    assert t.title("ar", "m", "سليم") == "سليم حارس النجوم"
+    assert fill_title(t.title_ar, "…", None) == "… حارس/حارسة النجوم"  # staff lists: no child, both forms

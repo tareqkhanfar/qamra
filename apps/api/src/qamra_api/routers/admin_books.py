@@ -17,7 +17,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from qamra_ai.cost import fal_cost, fal_unknown_price
 from qamra_ai.pipeline.classic import edit_estimate_usd
-from qamra_ai.pipeline.theme import Theme
+from qamra_ai.pipeline.theme import Theme, fill_title
 from qamra_api import runtime_settings
 from qamra_api.deps import AdminUser, SessionDep, SettingsDep, StorageDep, require_admin, require_permission
 from qamra_api.errors import ApiError
@@ -202,14 +202,17 @@ class BookCard(BaseModel):
     progress: dict[str, Any]
 
 
-def theme_label(row: ThemeRow, lang: Locale, child_name: str) -> str:
-    """The catalog name ("أوّل يوم في الروضة"); themes without one fall back to the rendered title."""
+def theme_label(row: ThemeRow, lang: Locale, child: Child | None) -> str:
+    """The catalog name ("أوّل يوم في الروضة"); themes without one fall back to the title for the child
+    (both {masc/fem} forms when there is no child)."""
     catalog = (row.definition or {}).get("catalog") or {}
     name = catalog.get("name_ar" if lang == Locale.ar else "name_en")
     if name:
         return str(name)
     title = row.title_ar if lang == Locale.ar else row.title_en
-    return title.replace("{name}", child_name).strip()
+    if child is None:
+        return fill_title(title, "…", None)
+    return fill_title(title, child.first_name, "f" if child.gender.value == "f" else "m")
 
 
 def _likeness(summary: dict[str, Any]) -> float | None:
@@ -244,7 +247,7 @@ async def list_books(
             title=b.title,
             child_name=c.first_name,
             theme_slug=t.slug,
-            theme_title=theme_label(t, b.language, c.first_name),
+            theme_title=theme_label(t, b.language, c),
             is_sample=b.is_sample,
             created_at=b.created_at,
             updated_at=b.updated_at,
@@ -363,7 +366,7 @@ async def book_detail(book_id: uuid.UUID, db: SessionDep) -> BookDetail:
             "hijab": child.wears_hijab,
             "glasses": child.wears_glasses,
         },
-        theme={"slug": theme.slug, "title": theme_label(theme, book.language, child.first_name)},
+        theme={"slug": theme.slug, "title": theme_label(theme, book.language, child)},
         language=book.language.value,
         art_style=book.art_style,
         is_sample=book.is_sample,
@@ -679,7 +682,7 @@ async def metrics(db: SessionDep, days: int = 30) -> dict[str, Any]:
             t.slug,
             {
                 "slug": t.slug,
-                "title": theme_label(t, Locale.ar, ""),
+                "title": theme_label(t, Locale.ar, None),
                 "books": 0,
                 "cost": 0.0,
                 "pages": 0,

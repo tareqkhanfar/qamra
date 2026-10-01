@@ -87,12 +87,15 @@ export function InviteFlow({ token }: { token: string }) {
     return shell(
       <>
         <div className="flex flex-col gap-2">
-          <h1 className="text-h2 text-night-900">{t("title", { name: invite.child_name })}</h1>
+          <h1 className="text-h2 text-night-900">
+            {t("title", { name: invite.child_name, gender: invite.child_gender })}
+          </h1>
           <p className="text-body-l text-ink">
             {t("lead", {
               school: invite.school,
               classroom: invite.classroom,
               name: invite.child_name,
+              gender: invite.child_gender,
               theme: theme ?? t("classBook"),
             })}
           </p>
