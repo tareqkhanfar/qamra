@@ -1777,8 +1777,8 @@
     "privacy": "Children's photos are deleted automatically once the character is approved."
   },
   "auth": {
-    "loginTitle": "Welcome back",
-    "loginSubtitle": "Sign in to continue your children's stories.",
+    "loginTitle": "Welcome",
+    "loginSubtitle": "Sign in, or create a new account in a minute.",
     "registerTitle": "Create your account",
     "registerSubtitle": "One minute, then the story begins.",
     "email": "Email",
@@ -1789,7 +1789,8 @@
     "submitLogin": "Sign in",
     "submitRegister": "Create account",
     "working": "One moment…",
-    "noAccount": "No account yet?",
+    "noAccount": "New here?",
+    "createAccount": "Create a new account",
     "haveAccount": "Already have an account?",
     "google": "Continue with Google",
     "or": "or",

@@ -16,6 +16,9 @@ export function AuthForm({ mode, googleEnabled = false }: { mode: "login" | "reg
   const router = useRouter();
   const params = useSearchParams();
   const next = safeNext(params.get("next"), "/account");
+  // switching between sign-in and sign-up keeps where the parent was going (e.g. «أضف للسلة» → /create)
+  const keepNext = params.get("next") ? `?${new URLSearchParams({ next })}` : "";
+  const switchHref = `${mode === "login" ? "/register" : "/login"}${keepNext}`;
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(params.get("error") === "google_failed" ? t("googleFailed") : null);
   const [badFields, setBadFields] = useState<string[]>([]);
@@ -164,15 +167,21 @@ export function AuthForm({ mode, googleEnabled = false }: { mode: "login" | "reg
         </>
       )}
 
-      <p className="text-center text-small text-ink-muted">
-        {mode === "login" ? t("noAccount") : t("haveAccount")}{" "}
-        <Link
-          href={mode === "login" ? "/register" : "/login"}
-          className="font-semibold text-night-800 underline underline-offset-4"
-        >
-          {mode === "login" ? t("submitRegister") : t("submitLogin")}
-        </Link>
-      </p>
+      {mode === "login" ? (
+        <div className="flex flex-col gap-2 border-t border-line pt-4 text-center">
+          <p className="text-small text-ink-muted">{t("noAccount")}</p>
+          <Link href={switchHref} className={buttonClasses("secondary", "lg", "w-full")}>
+            {t("createAccount")}
+          </Link>
+        </div>
+      ) : (
+        <p className="text-center text-small text-ink-muted">
+          {t("haveAccount")}{" "}
+          <Link href={switchHref} className="font-semibold text-night-800 underline underline-offset-4">
+            {t("submitLogin")}
+          </Link>
+        </p>
+      )}
     </form>
   );
 }

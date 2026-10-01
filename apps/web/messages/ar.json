@@ -1765,8 +1765,8 @@
     "privacy": "صور الأطفال تُحذف تلقائيًا بعد اعتماد الشخصية."
   },
   "auth": {
-    "loginTitle": "أهلًا بعودتكم",
-    "loginSubtitle": "سجّلوا الدخول لمتابعة حكايات أطفالكم.",
+    "loginTitle": "أهلًا بكم",
+    "loginSubtitle": "سجّلوا الدخول، أو أنشئوا حسابًا جديدًا في دقيقة.",
     "registerTitle": "حساب جديد",
     "registerSubtitle": "دقيقة واحدة، ثم تبدأ الحكاية.",
     "email": "البريد الإلكتروني",
@@ -1777,7 +1777,8 @@
     "submitLogin": "دخول",
     "submitRegister": "إنشاء الحساب",
     "working": "لحظة…",
-    "noAccount": "ليس لديكم حساب؟",
+    "noAccount": "أول مرة معنا؟",
+    "createAccount": "إنشاء حساب جديد",
     "haveAccount": "لديكم حساب؟",
     "google": "المتابعة عبر Google",
     "or": "أو",
