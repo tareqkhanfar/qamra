@@ -42,7 +42,7 @@ from qamra_ai.pipeline.pages import Attempt, PageStatus, Why
 from qamra_ai.pipeline.printimg import downscale
 from qamra_ai.pipeline.qa import LIKENESS_HARD_FAIL, QAResult
 from qamra_ai.pipeline.runtime import Runtime
-from qamra_ai.pipeline.style import house_style
+from qamra_ai.pipeline.style import house_style, negatives
 from qamra_ai.pipeline.theme import ArtStyle, Theme, render_template
 from qamra_ai.pipeline.vowelize import VowelizedTexts, fill
 from qamra_ai.text.base import ImagePart, UserPart
@@ -163,7 +163,7 @@ def placeholder_request(variant: Variant, style: ArtStyle, theme: Theme, seed: i
         hijab=child.hijab,
         extras=[],
         people=h.people,
-        negative=h.negative,
+        negative=negatives(h, style.negative),
     )
     return ImageRequest(step="placeholder", prompt=prompt, aspect="3:2", resolution="1K", seed=seed)
 

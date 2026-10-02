@@ -46,6 +46,10 @@ from qamra_core.db.models import (
 from qamra_core.db.models import Theme as ThemeRow
 from qamra_core.storage import ObjectNotFound, ObjectStorage
 
+LINE_JOBS = {  # activity books are drawn by their line's job from the order item, not the story pipeline
+    "family": "qamra_worker.jobs.family_book.render_family_item",
+    "journey": "qamra_worker.jobs.journey_book.render_journey_item",
+}
 router = APIRouter(prefix="/api/admin", tags=["admin"], dependencies=[Depends(require_admin)])
 
 SAMPLE_CONSENT_VERSION = "sample-2026-09"
@@ -80,7 +84,7 @@ async def create_sample(
     hijab: Annotated[bool, Form()] = False,
     glasses: Annotated[bool, Form()] = False,
     lang: Annotated[Literal["ar", "en"], Form()] = "ar",
-    style: Annotated[Literal["watercolor", "crayon", "papercut"], Form()] = "watercolor",
+    style: Annotated[Literal["3d", "watercolor", "cartoon", "crayon", "papercut"], Form()] = "watercolor",
     message: Annotated[str | None, Form(max_length=120)] = None,
     offline: Annotated[bool, Form()] = False,
     drawing: Annotated[UploadFile | None, File()] = None,
@@ -378,7 +382,8 @@ async def book_detail(book_id: uuid.UUID, db: SessionDep) -> BookDetail:
         preflight=dict(book.preflight or {}),
         error=book.error,
         generation={
-            k: gen.get(k) for k in ("mode", "progress", "models", "outfits", "offline", "public_example")
+            k: gen.get(k)
+            for k in ("mode", "progress", "models", "outfits", "offline", "public_example", "line", "pages")
         },
         files={
             "interior": bool(book.pdf_interior_key),
@@ -600,8 +605,19 @@ async def generate(
         )
     )
     await db.commit()
-    _enqueue(queue, "qamra_worker.jobs.books.generate_book", str(book.id), body.mode)
+    line_job = LINE_JOBS.get(str((book.generation or {}).get("line")))
+    item_id = (book.generation or {}).get("order_item_id")
+    if line_job and item_id:  # an activity book: its own job draws it again from the plan (no AI cost)
+        _enqueue(queue, line_job, str(item_id))
+    else:
+        _enqueue(queue, "qamra_worker.jobs.books.generate_book", str(book.id), body.mode)
     return {"status": "queued"}
+
+
+def _passed(preflight: dict[str, Any], name: str) -> bool:
+    """A print file's preflight: story books key it `interior`, the activity books `interior.pdf`."""
+    report = preflight.get(name) or preflight.get(f"{name}.pdf") or {}
+    return bool(report.get("passed"))
 
 
 @router.post("/books/{book_id}/approve", dependencies=[Depends(require_permission("books.review"))])
@@ -613,8 +629,9 @@ async def approve(book_id: uuid.UUID, admin: AdminUser, db: SessionDep) -> dict[
         book.status == BookStatus.in_review
         and book.pdf_interior_key
         and book.pdf_cover_key
-        and preflight.get("interior", {}).get("passed")
-        and preflight.get("cover", {}).get("passed")
+        and _passed(preflight, "interior")
+        and _passed(preflight, "cover")
+        and all(bool(r.get("passed")) for r in preflight.values() if isinstance(r, dict))
         and "pages_missing" not in (book.flags or [])
     )
     if not ready:

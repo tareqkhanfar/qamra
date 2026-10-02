@@ -135,7 +135,7 @@ export function FamilyCharacters() {
               <button
                 type="button"
                 className={button}
-                onClick={() => void call(`/api/create/family/${m.id}/draw`, { style: "watercolor" })}
+                onClick={() => void call(`/api/create/family/${m.id}/draw`, {})}
               >
                 {m.status === "ready" ? t("redraw") : t("draw")} ({m.drawings_left} {t("left")})
               </button>

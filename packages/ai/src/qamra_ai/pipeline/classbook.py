@@ -29,8 +29,8 @@ from qamra_ai.pipeline.budget import BudgetExceeded
 from qamra_ai.pipeline.models import Gender, Lang
 from qamra_ai.pipeline.printimg import downscale, fit_exact
 from qamra_ai.pipeline.runtime import Runtime
-from qamra_ai.pipeline.style import house_style, style_guides
-from qamra_ai.pipeline.theme import CONTENT_DIR, TimeOfDay, load_style, render_template
+from qamra_ai.pipeline.style import house_style, negatives
+from qamra_ai.pipeline.theme import CONTENT_DIR, ArtStyle, TimeOfDay, load_style, render_template
 from qamra_ai.text.base import ImagePart, UserPart
 
 ClassLine = Literal["classic", "magic"]
@@ -168,16 +168,17 @@ def refs_per_picture(setting: str, provider: str) -> int:
     return DEFAULT_REFS
 
 
-def style_guide(slug: str) -> str:
-    """The painting-medium line for an art style: the pipeline's styles, then the store's style guides."""
+def class_style(slug: str) -> ArtStyle:
+    """A class book's art style (the store's guides and the legacy media); watercolor when it is unknown."""
     try:
-        return load_style(slug).guide
+        return load_style(slug)
     except KeyError:
-        pass
-    for guide in style_guides():
-        if guide.slug == slug:
-            return guide.look
-    return load_style("watercolor").guide
+        return load_style("watercolor")
+
+
+def style_guide(slug: str) -> str:
+    """The painting-medium line for an art style."""
+    return class_style(slug).guide
 
 
 # ---- the plan: who appears where -------------------------------------------------------------------
@@ -395,7 +396,7 @@ def picture_prompt(
         outfit=template.outfits[scene.outfit],
         composition=h.composition,
         safety=h.safety,
-        negative=h.negative,
+        negative=negatives(h, class_style(style_slug).negative),
     )
 
 

@@ -8,7 +8,7 @@ from qamra_ai.errors import ContentBlocked
 from qamra_ai.image.base import GeneratedImage, ImageRequest, RefImage, sniff_mime
 from qamra_ai.pipeline.models import CompanionFidelity, CompanionSpec, DrawingReview
 from qamra_ai.pipeline.runtime import Runtime
-from qamra_ai.pipeline.style import house_style
+from qamra_ai.pipeline.style import house_style, negatives
 from qamra_ai.pipeline.theme import ArtStyle
 from qamra_ai.text.base import ImagePart
 
@@ -64,7 +64,7 @@ def companion_request(
         traits=spec.traits,
         style=h.style,
         medium=style.guide,
-        negative=h.negative,
+        negative=negatives(h, style.negative),
     )
     ref = RefImage(cleaned_png, sniff_mime(cleaned_png), "the child's original drawing")
     return ImageRequest(

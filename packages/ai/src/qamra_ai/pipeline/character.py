@@ -11,7 +11,7 @@ from qamra_ai import prompts
 from qamra_ai.image.base import GeneratedImage, ImageRequest, RefImage, Resolution, sniff_mime
 from qamra_ai.pipeline.models import Child
 from qamra_ai.pipeline.runtime import Runtime
-from qamra_ai.pipeline.style import house_style
+from qamra_ai.pipeline.style import house_style, negatives
 from qamra_ai.pipeline.theme import ArtStyle
 
 # What the parent can tick under "what doesn't look like her?" → the line the redraw prompt gets.
@@ -58,7 +58,7 @@ def character_request(
         style=h.style,
         medium=style.guide,
         people=h.people,
-        negative=h.negative,
+        negative=negatives(h, style.negative),
     )
     refs = [RefImage(p, sniff_mime(p), f"photo of the child ({i + 1})") for i, p in enumerate(photos)]
     return ImageRequest(

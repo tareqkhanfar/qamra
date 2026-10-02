@@ -252,3 +252,35 @@ async def test_parents_cannot_reach_admin_books(client: AsyncClient) -> None:
     await register(client)
     assert (await client.get("/api/admin/books")).status_code == 403
     assert (await client.get("/api/admin/metrics")).status_code == 403
+
+
+async def test_activity_books_retry_with_their_own_job_and_approve_with_their_file_names(
+    client: AsyncClient, adb: AsyncSession, app: FastAPI
+) -> None:
+    """«مغامراتي مع عائلتي» and «رحلتي الأولى» name their print files `interior.pdf`/`cover.pdf` and are drawn
+    by their line's job: a retry must not start the story pipeline, and a passing book must be approvable."""
+    await make_admin(client, adb)
+    book = await _seed_book(adb, status=BookStatus.failed)
+    item_id = str(uuid.uuid4())
+    book.generation = {"line": "family", "order_item_id": item_id, "pages": 112}
+    await adb.commit()
+    detail = (await client.get(f"/api/admin/books/{book.id}")).json()
+    assert detail["generation"]["line"] == "family" and detail["generation"]["pages"] == 112
+
+    r = await client.post(f"/api/admin/books/{book.id}/generate", json={"mode": "final"})
+    assert r.status_code == 202
+    assert _jobs(app)[-1] == ("qamra_worker.jobs.family_book.render_family_item", (item_id,))
+
+    book.status = BookStatus.in_review
+    book.preflight = {
+        "interior.pdf": {"passed": True},
+        "cover.pdf": {"passed": True},
+        "inserts/stickers.pdf": {"passed": False},
+    }
+    await adb.commit()
+    r = await client.post(f"/api/admin/books/{book.id}/approve")
+    assert r.status_code == 409  # a failed insert sheet keeps it from print
+    book.preflight = {**book.preflight, "inserts/stickers.pdf": {"passed": True}}
+    await adb.commit()
+    r = await client.post(f"/api/admin/books/{book.id}/approve")
+    assert r.status_code == 200 and r.json()["status"] == "approved"

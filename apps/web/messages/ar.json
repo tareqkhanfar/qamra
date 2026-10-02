@@ -2519,6 +2519,7 @@
     "raiseBudget": "حفظ السقف",
     "generate": "متابعة التوليد",
     "generating": "قيد التوليد… {done} من {total}",
+    "renderingFiles": "نجهّز ملفات الطباعة… (من دقيقة إلى خمس دقائق)",
     "error": "خطأ",
     "flags": {
       "face": "وجه",

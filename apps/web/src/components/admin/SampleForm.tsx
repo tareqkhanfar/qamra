@@ -93,9 +93,9 @@ export function SampleForm() {
         <label className="flex flex-col gap-1.5">
           <span className="font-semibold">{t("style")}</span>
           <select name="style" className={field}>
-            <option value="watercolor">Watercolor</option>
-            <option value="crayon">Crayon</option>
-            <option value="papercut">Paper cut</option>
+            <option value="3d">سينمائي ثلاثي الأبعاد · 3D</option>
+            <option value="watercolor">مائي فاخر · Watercolor</option>
+            <option value="cartoon">كرتون ملوّن · Cartoon</option>
           </select>
         </label>
         <label className="flex items-center gap-3">

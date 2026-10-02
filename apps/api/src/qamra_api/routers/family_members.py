@@ -22,7 +22,7 @@ from qamra_api.routers.create import UPLOADS_PER_HOUR, _my_child
 from qamra_api.store.catalog import load_catalog
 from qamra_api.store.workbooks import FamilyMemberIn
 from qamra_api.uploads import clean_image, read_upload, require_face
-from qamra_core.db.models import AuditLog, FamilyMember, FamilyMemberStatus
+from qamra_core.db.models import AuditLog, Character, FamilyMember, FamilyMemberStatus
 
 router = APIRouter(prefix="/api/create", tags=["create"])
 CONSENT_VERSION = "family-member-2026-09"  # the text shown for each person (messages: create.familyConsent)
@@ -167,7 +167,17 @@ async def upload_photo(
 
 
 class DrawIn(BaseModel):
-    style: str = Field(max_length=40)
+    style: str | None = Field(default=None, max_length=40)  # none: the child's own character's style
+
+
+async def _child_style(db: SessionDep, child_id: uuid.UUID) -> str | None:
+    """The style of the child's approved character, so the family is drawn like the child (3D with 3D)."""
+    return await db.scalar(
+        select(Character.art_style)
+        .where(Character.child_id == child_id, Character.approved_at.is_not(None))
+        .order_by(Character.approved_at.desc())
+        .limit(1)
+    )
 
 
 @router.post("/family/{member_id}/draw", status_code=202)
@@ -181,14 +191,15 @@ async def draw_member(
 ) -> MemberOut:
     await _enabled(db, settings)
     member = await _member(db, user, member_id)
-    if body.style not in (await load_catalog(db)).styles:
+    style = body.style or await _child_style(db, member.child_id) or "3d"
+    if style not in (await load_catalog(db)).styles:
         raise ApiError("invalid_style", 422)
     if not member.photo_key:
         raise ApiError("photo_required", 409)
     if member.regen_count >= MAX_DRAWINGS:
         raise ApiError("redraws_used", 429)
     member.regen_count += 1
-    member.art_style, member.status, member.approved_at = body.style, FamilyMemberStatus.generating, None
+    member.art_style, member.status, member.approved_at = style, FamilyMemberStatus.generating, None
     await db.commit()
     enqueue(queue, JOB, str(member.id))
     return _out(member)

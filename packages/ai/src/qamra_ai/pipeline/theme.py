@@ -227,6 +227,7 @@ class ArtStyle(BaseModel):
     title_ar: str
     title_en: str
     guide: str  # the painting medium; palette/setting/people/composition come from the house style
+    negative: str = ""  # the style's own never-allowed list, added to the house's (style.negatives)
 
 
 def render_template(template: str, gender: Gender, name: str, companion: str) -> str:
@@ -258,7 +259,21 @@ def theme_dir(slug: str, content_dir: Path = CONTENT_DIR) -> Path:
 
 
 def load_style(slug: str, content_dir: Path = CONTENT_DIR) -> ArtStyle:
+    """An art style: the store's style guides first (`prompts/style/<slug>.md`, the styles parents pick:
+    watercolor, 3d, cartoon…), then the legacy media of `content/styles/styles.yaml` (crayon, papercut)."""
+    from qamra_ai.pipeline.style import style_guides
+
+    guide = next((g for g in style_guides() if g.slug == slug), None)
+    if guide is not None:
+        return ArtStyle(
+            slug=slug,
+            title_ar=guide.name_ar,
+            title_en=guide.name_en,
+            guide=guide.look,
+            negative=guide.negative,
+        )
     data = yaml.safe_load((content_dir / "styles" / "styles.yaml").read_text(encoding="utf-8"))
     if slug not in data:
-        raise KeyError(f"unknown art style {slug!r}; available: {sorted(data)}")
+        known = sorted({*data, *(g.slug for g in style_guides())})
+        raise KeyError(f"unknown art style {slug!r}; available: {known}")
     return ArtStyle(slug=slug, **data[slug])

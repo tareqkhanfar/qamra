@@ -49,6 +49,13 @@ def house_style() -> HouseStyle:
     return parse_style(STYLE_FILE.read_text(encoding="utf-8"))
 
 
+def negatives(house: HouseStyle, style_negative: str = "") -> str:
+    """The house's never-allowed list plus the art style's own (watercolor: no 3D-render look; 3D: no plastic
+    dolls). The house list is style-neutral, so a 3D book is not told to avoid 3D."""
+    extra = style_negative.strip()
+    return f"{house.negative}\n{extra}" if extra else house.negative
+
+
 _FIELD = re.compile(r"^(slug|version|lines|qa_threshold|likeness_min):\s*(.+?)\s*$", re.M)
 _TITLE = re.compile(r"^# +(.+?) — (.+?)\s*$", re.M)
 

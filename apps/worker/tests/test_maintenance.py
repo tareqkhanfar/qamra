@@ -7,6 +7,8 @@ from qamra_core.db.models import (
     AuditLog,
     Book,
     BookStatus,
+    Character,
+    CharacterStatus,
     Child,
     ChildPhoto,
     Companion,
@@ -19,7 +21,7 @@ from qamra_core.db.models import (
 )
 from qamra_core.settings import CoreSettings
 from qamra_core.storage import ObjectStorage
-from qamra_worker.jobs.maintenance import cleanup_expired_media, ping
+from qamra_worker.jobs.maintenance import cleanup_expired_media, ping, release_stalled
 
 NOW = datetime(2026, 10, 1, 12, 0, tzinfo=UTC)
 SETTINGS = CoreSettings(_env_file=None)  # type: ignore[call-arg]
@@ -117,6 +119,52 @@ def test_abandoned_drafts_deleted_after_30_days(db: Session, storage: ObjectStor
     remaining = set(db.scalars(select(Book.id)).all())
     assert remaining == {fresh.id, ordered.id}
     assert not storage.exists(f"children/{child.id}/books/{old.id}/page-1.png")
+
+
+def test_stalled_work_is_released_unless_a_job_is_still_pending(db: Session) -> None:
+    """A book or character left `generating` by a dead job becomes `failed` after 2 hours; one whose job still
+    waits in the queue (a long class batch) or whose order item has a pending job is left alone."""
+    child = _child(db)
+    theme = Theme(slug="t", title_ar="ت", title_en="T", age_min=3, age_max=7, definition={})
+    db.add(theme)
+    db.flush()
+
+    def book(**generation: str) -> Book:
+        b = Book(
+            child_id=child.id,
+            theme_id=theme.id,
+            theme_version=1,
+            language=Locale.ar,
+            art_style="3d",
+            status=BookStatus.generating,
+            generation=generation,
+        )
+        db.add(b)
+        return b
+
+    dead, queued, fresh = book(), book(), book()
+    dead_family, queued_family = (
+        book(line="family", order_item_id="4c1d5a8e-0000-4000-8000-000000000001"),
+        book(line="family", order_item_id="4c1d5a8e-0000-4000-8000-000000000002"),
+    )
+    stuck = Character(child_id=child.id, art_style="3d", status=CharacterStatus.generating)
+    db.add(stuck)
+    db.flush()
+    old = [dead.id, queued.id, dead_family.id, queued_family.id]
+    db.execute(update(Book).where(Book.id.in_(old)).values(updated_at=NOW - timedelta(hours=3)))
+    db.execute(update(Book).where(Book.id == fresh.id).values(updated_at=NOW - timedelta(minutes=30)))
+    db.execute(update(Character).where(Character.id == stuck.id).values(updated_at=NOW - timedelta(hours=3)))
+    db.commit()
+
+    pending = {str(queued.id), "4c1d5a8e-0000-4000-8000-000000000002"}
+    assert release_stalled(db, pending, now=NOW) == 3
+    for b in (dead, queued, fresh, dead_family, queued_family, stuck):
+        db.refresh(b)
+    assert dead.status == BookStatus.failed and dead.error and "stalled" in dead.error
+    assert dead_family.status == BookStatus.failed
+    assert BookStatus.generating == queued.status == fresh.status == queued_family.status
+    assert stuck.status == CharacterStatus.failed
+    assert release_stalled(db, pending, now=NOW) == 0  # idempotent
 
 
 def test_ping() -> None:

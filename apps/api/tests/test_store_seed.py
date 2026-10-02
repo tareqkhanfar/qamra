@@ -35,7 +35,8 @@ async def test_seed_builds_the_catalog_once(adb: AsyncSession) -> None:
 
     styles = {s.slug: s for s in (await adb.execute(select(ArtStyle))).scalars()}
     assert {"watercolor", "cartoon", "3d", "semi-realistic", "coloring"} <= set(styles)
-    assert styles["watercolor"].lines == ["magic", "classic"] and not styles["crayon"].active
+    assert styles["watercolor"].lines[:2] == ["magic", "classic"] and not styles["crayon"].active
+    assert "family" in styles["3d"].lines  # 3D for the activity books too (Tareq, 2026-10-02)
     for style in styles.values():  # never a studio or artist name (Addendum 4 §2)
         assert not any(name in style.prompt.lower() for name in ("pixar", "disney", "ghibli", "dreamworks"))
 

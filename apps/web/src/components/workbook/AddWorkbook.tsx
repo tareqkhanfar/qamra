@@ -11,7 +11,7 @@ import { emptyFamily, FamilyDetails, familyPayload } from "./FamilyDetails";
 
 /** Where a parent without a ready character goes: the create flow draws one, then adds this book. */
 export const createFor = (sku: string, child?: string) =>
-  `/create?${new URLSearchParams({ product: sku, line: "magic", style: "watercolor", ...(child ? { child } : {}) })}`;
+  `/create?${new URLSearchParams({ product: sku, line: "magic", ...(child ? { child } : {}) })}`;
 
 /**
  * «أضف للسلة» on an activity book: the book is drawn with the child's approved character (Addendum 9 §1.6),

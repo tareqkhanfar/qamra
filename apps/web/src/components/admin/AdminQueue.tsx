@@ -69,6 +69,8 @@ type Detail = {
   preflight: Record<string, { passed: boolean; min_dpi: number | null; checks: Check[] }>;
   error: string | null;
   generation: {
+    line?: string; // an activity book (family, journey): print files drawn from the plan, no pages to review
+    pages?: number;
     mode?: string;
     progress?: { done?: number; total?: number };
     offline?: string | boolean;
@@ -275,11 +277,14 @@ export function AdminQueue() {
                 <h2 className="text-h2 text-night-900">{detail.title ?? detail.child.name}</h2>
                 <p className="text-small text-ink-muted">
                   {detail.is_sample ? t("sample") : t("order")} · {detail.theme.title} ·{" "}
-                  {t("pages", { n: num(detail.plan.length) })} · {detail.art_style} · {t(`status.${detail.status}`)}
+                  {t("pages", { n: num(detail.generation.pages ?? detail.plan.length) })} · {detail.art_style} ·{" "}
+                  {t(`status.${detail.status}`)}
                 </p>
                 {detail.status === "generating" && (
                   <p className="text-small font-semibold text-info">
-                    {t("generating", { done: num(progress.done ?? 0), total: num(progress.total ?? 0) })}
+                    {detail.generation.line
+                      ? t("renderingFiles")
+                      : t("generating", { done: num(progress.done ?? 0), total: num(progress.total ?? 0) })}
                   </p>
                 )}
               </div>

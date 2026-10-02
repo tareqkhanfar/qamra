@@ -2541,6 +2541,7 @@
     "raiseBudget": "Save cap",
     "generate": "Continue generating",
     "generating": "Generating… {done} of {total}",
+    "renderingFiles": "Building the print files… (1 to 5 minutes)",
     "error": "Error",
     "flags": {
       "face": "face",

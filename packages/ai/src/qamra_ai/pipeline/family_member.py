@@ -7,7 +7,7 @@ from dataclasses import dataclass
 
 from qamra_ai import prompts
 from qamra_ai.image.base import ImageRequest, RefImage, Resolution, sniff_mime
-from qamra_ai.pipeline.style import house_style
+from qamra_ai.pipeline.style import house_style, negatives
 from qamra_ai.pipeline.theme import ArtStyle
 
 # the store's relations (qamra_api.store.workbooks.RELATIONS) as the prompt names them
@@ -65,7 +65,7 @@ def member_request(
         style=h.style,
         medium=style.guide,
         people=h.people,
-        negative=h.negative,
+        negative=negatives(h, style.negative),
     )
     refs = [RefImage(p, sniff_mime(p), f"photo of the family member ({i + 1})") for i, p in enumerate(photos)]
     return ImageRequest(

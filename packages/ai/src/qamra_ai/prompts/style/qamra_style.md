@@ -7,17 +7,16 @@ Composition → Safety → Negative (Addendum 3 §3).
 To tune the look, edit this file, not the code. Keep each section short and visual; image models follow
 concrete instructions best. Change the version line on every edit so books record which style drew them.
 
-version: 3
+version: 4
 
 ## Style
-Soft watercolor and gouache children's picture-book illustration, hand-painted on warm textured paper (the
-painting-medium line below can swap the medium; everything else here stays).
-The palette is warm moonlit-and-golden: deep indigo and night blue, moon gold and honey, and creamy paper
-whites, with gentle sage-green and coral accents. Light is soft with a golden glow, using gentle wet-edge
-washes and a little visible paper grain. Shapes are clean and readable, and backgrounds uncluttered.
+A premium children's picture-book illustration. The medium and rendering come from the art-style line below
+(watercolor, 3D animated film or bright 2D cartoon); everything else here is shared by every style.
+The palette is warm moonlit-and-golden: deep indigo and night blue, moon gold and honey, and creamy whites,
+with gentle sage-green and coral accents. Light is warm with a golden glow, and every scene has depth:
+foreground, midground and background. Shapes are clean and readable, and backgrounds uncluttered.
 Characters are friendly and rounded, with expressive, happy faces and warm eyes. Children have slightly
-large heads and short limbs but real faces, never chibi or doll-like. Not photorealistic, not a 3D render,
-not anime.
+large heads and short limbs but real faces, never chibi or doll-like. Not photorealistic, not anime.
 
 ## Setting
 Unless the scene says otherwise, the world is Palestinian and Levantine village and city life:
@@ -52,6 +51,6 @@ in fear, or in danger. No medicine, no weapons, and no risky behavior shown as f
 - No page numbers, captions, signatures, stamps or marks in the corners: the printed book adds its own page numbers.
 - Books, boxes, shelves and walls stay plain: book spines and covers are blocks of color, with no titles;
   no alphabet posters, charts, calendars, name labels or price tags.
-- No photorealism, no 3D-render look, no harsh black outlines, no neon colors.
+- No photorealism, no neon colors.
 - No extra or missing fingers, no extra limbs, no distorted, melted or duplicated faces.
 - No existing cartoon, film or game characters.

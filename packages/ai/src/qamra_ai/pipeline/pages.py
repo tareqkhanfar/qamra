@@ -30,7 +30,7 @@ from qamra_ai.pipeline.plates import PlateStore, plate_key
 from qamra_ai.pipeline.printimg import downscale, fit_exact
 from qamra_ai.pipeline.qa import QAResult, evaluate
 from qamra_ai.pipeline.runtime import Runtime
-from qamra_ai.pipeline.style import HouseStyle
+from qamra_ai.pipeline.style import HouseStyle, negatives
 from qamra_ai.pipeline.theme import ArtStyle, Theme, ThemeScene
 from qamra_ai.text.base import CACHE, ImagePart, UserPart
 
@@ -203,7 +203,7 @@ def page_request(rt: Runtime, ctx: BookContext, beat: int, attempt: int) -> Imag
         text_area=plan.text_area,
         composition=h.composition,
         safety=h.safety,
-        negative=h.negative,
+        negative=negatives(h, ctx.style.negative),
     )
     label = "cover" if beat == 0 else f"page:{beat}"
     return ImageRequest(
@@ -263,11 +263,12 @@ def qa_request(ctx: BookContext, beat: int, image: bytes) -> tuple[str, list[Use
     h = ctx.house
     system = prompts.render(
         "page_qa",
-        version=3,
+        version=4,
         style=h.style,
+        medium=ctx.style.guide,
         people=h.people,
         safety=h.safety,
-        negative=h.negative,
+        negative=negatives(h, ctx.style.negative),
         outfits=ctx.outfits,
     )
     return system, parts

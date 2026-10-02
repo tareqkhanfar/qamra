@@ -1,18 +1,17 @@
-# مائي ناعم — Soft watercolor (the Qamra signature)
+# مائي فاخر — Premium watercolor
 
 slug: watercolor
-version: 1
-lines: magic, classic
+version: 2
+lines: magic, classic, workbook, journey, family
 qa_threshold: 0.75
 likeness_min: 7
 
 ## Look
-Soft watercolor and gouache children's picture-book illustration, hand-painted on warm textured paper. The
-palette is warm moonlit-and-golden: deep indigo and night blue, moon gold and honey, and creamy paper whites,
-with gentle sage-green and coral accents. Light is soft with a golden glow, with gentle wet-edge washes and a
-little visible paper grain. Shapes are clean and readable; backgrounds uncluttered. Characters are friendly
-and rounded, with expressive, happy faces and warm eyes. Children have slightly large heads and short limbs
-but real faces, never chibi or doll-like.
+Premium watercolor and gouache children's picture-book painting on warm textured paper: rich,
+saturated color with real contrast, deep indigo and violet shadows, glowing honey-gold highlights, and
+golden-hour or moonlit light. Soft wet edges and visible paper grain, with crisp detail on faces and hands;
+atmospheric depth with soft foreground framing elements (leaves, arches, lanterns). Never flat or pale.
 
 ## Negative
 - No photorealism, no 3D-render look, no harsh black outlines, no neon colors, no anime.
+- No flat, pale or washed-out backgrounds.
