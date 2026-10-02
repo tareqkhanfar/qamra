@@ -32,7 +32,7 @@ def test_a_guest_adds_a_story_and_every_activity_book_in_one_tap_each(guest: Pag
 
     cart = call(guest, "GET", "/api/store/cart")
     assert cart["count"] == 4, cart["count"]
-    assert [i["sku"].split("-")[0] for i in cart["items"]][0] in ("magic", "classic")  # in the order added
+    assert cart["items"][0]["sku"].split("-")[0] in ("magic", "classic")  # in the order added
     # every line waits for the child's details, and the cart says how to finish them
     expect(guest.get_by_role("link", name="أكملوا بيانات الطفل").first).to_be_visible()
     assert guest.get_by_text("ينقصه: بيانات الطفل وصورته").count() == 4
