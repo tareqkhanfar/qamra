@@ -2522,7 +2522,9 @@
     "files": {
       "proof": "Web proof",
       "interior": "Interior PDF",
-      "cover": "Cover PDF"
+      "cover": "Cover PDF",
+      "mockup_hardcover": "Book mockup",
+      "mockup_spread": "Open-book mockup"
     },
     "character": "Character sheet",
     "page": "p {n}",

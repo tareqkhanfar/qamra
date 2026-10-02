@@ -76,7 +76,13 @@ type Detail = {
     offline?: string | boolean;
     public_example?: boolean;
   };
-  files: { interior: boolean; cover: boolean; proof: boolean };
+  files: {
+    interior: boolean;
+    cover: boolean;
+    proof: boolean;
+    mockup_hardcover?: boolean; // product mockups (Addendum 11 §2.7), rendered beside the print files
+    mockup_spread?: boolean;
+  };
   pages: Page[];
   plan: Slot[];
   costs: Record<string, number>;
@@ -403,6 +409,19 @@ export function AdminQueue() {
                           className="font-semibold text-night-800 underline underline-offset-4"
                         >
                           {t(`files.${f}`)}
+                        </a>
+                      ),
+                  )}
+                  {(["hardcover", "spread"] as const).map(
+                    (m) =>
+                      detail.files[`mockup_${m}`] && (
+                        <a
+                          key={m}
+                          href={`/api/admin/books/${detail.id}/files/mockup-${m}.png`}
+                          download
+                          className="font-semibold text-night-800 underline underline-offset-4"
+                        >
+                          {t(`files.mockup_${m}`)}
                         </a>
                       ),
                   )}

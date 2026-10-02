@@ -180,6 +180,23 @@ async def _seed_book(
     return book
 
 
+async def test_book_mockups_are_downloadable(
+    client: AsyncClient, adb: AsyncSession, storage: ObjectStorage
+) -> None:
+    await make_admin(client, adb)
+    book = await _seed_book(adb)
+    key = f"children/{book.child_id}/books/{book.id}/files/mockup-hardcover.png"
+    storage.put(key, _blank_png(), "image/png")
+    book.generation = {**book.generation, "mockups": {"hardcover": key}}
+    await adb.commit()
+    files = (await client.get(f"/api/admin/books/{book.id}")).json()["files"]
+    assert files["mockup_hardcover"] and not files["mockup_spread"]
+    r = await client.get(f"/api/admin/books/{book.id}/files/mockup-hardcover.png")
+    assert r.status_code == 200 and r.headers["content-type"] == "image/png"
+    assert r.headers["content-disposition"].endswith('mockup-hardcover.png"')
+    assert (await client.get(f"/api/admin/books/{book.id}/files/mockup-spread.png")).status_code == 404
+
+
 async def test_queue_detail_and_review_actions(client: AsyncClient, adb: AsyncSession, app: FastAPI) -> None:
     await make_admin(client, adb)
     book = await _seed_book(adb)

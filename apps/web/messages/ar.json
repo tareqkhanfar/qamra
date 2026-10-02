@@ -2500,7 +2500,9 @@
     "files": {
       "proof": "نسخة المعاينة",
       "interior": "ملف الصفحات",
-      "cover": "ملف الغلاف"
+      "cover": "ملف الغلاف",
+      "mockup_hardcover": "صورة الكتاب",
+      "mockup_spread": "الكتاب مفتوحًا"
     },
     "character": "ورقة الشخصية",
     "page": "ص {n}",

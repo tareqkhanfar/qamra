@@ -5,12 +5,14 @@ import io
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from pathlib import Path
+from types import SimpleNamespace
 
 import yaml
 from PIL import Image
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from qamra_ai.pipeline.assemble import BookFiles
 from qamra_ai.pipeline.theme import CONTENT_DIR
 from qamra_core.db.models import (
     Book,
@@ -29,7 +31,7 @@ from qamra_core.db.models import (
     User,
 )
 from qamra_core.storage import ObjectStorage
-from qamra_worker.jobs.books import _beat_of, cover_photo, page_key, redraw_pages, run_book_job
+from qamra_worker.jobs.books import _beat_of, cover_photo, page_key, redraw_pages, run_book_job, store_mockups
 
 FIXTURE = Path(__file__).resolve().parents[3] / "packages/ai/tests/fixtures/face-astronaut-public-domain.png"
 
@@ -126,6 +128,13 @@ async def test_final_book_job_end_to_end(db: Session, storage: ObjectStorage) ->
 
     for key in (book.pdf_interior_key, book.pdf_cover_key, book.proof_pdf_key):
         assert key and key.startswith(f"children/{book.child_id}/") and storage.exists(key)
+    mockups = book.generation["mockups"]  # Addendum 11 §2.7: product mockups beside the print files
+    assert mockups == {
+        "hardcover": f"children/{book.child_id}/books/{book.id}/files/mockup-hardcover.png",
+        "spread": f"children/{book.child_id}/books/{book.id}/files/mockup-spread.png",
+    }
+    with Image.open(io.BytesIO(storage.get(mockups["hardcover"]))) as hardcover:
+        assert hardcover.size == (1600, 1600)
     assert book.preflight["interior"]["passed"] and book.preflight["cover"]["passed"]
     assert book.qa_summary["pages"] == 18 and book.qa_summary["recognizable_ratio"] == 1.0
 
@@ -199,3 +208,15 @@ def test_the_cover_photo_is_used_only_while_it_is_kept(db: Session, storage: Obj
     photo.delete_after = datetime.now(UTC) - timedelta(minutes=1)  # due for deletion: never used again
     db.commit()
     assert cover_photo(db, storage, child) is None
+
+
+async def test_a_mockup_failure_never_fails_the_book(
+    db: Session, storage: ObjectStorage, tmp_path: Path
+) -> None:
+    book = _book(db, storage)
+    broken = tmp_path / "cover.pdf"
+    broken.write_bytes(b"%PDF-1.4 broken")
+    spec = SimpleNamespace(lang="ar", pages=[])
+    files = BookFiles(spec=spec, interior_pdf=broken, cover_pdf=broken, proof_pdf=None, preflight={})  # type: ignore[arg-type]
+    assert await store_mockups(storage, book, files, tmp_path) == {}
+    assert not storage.exists(f"children/{book.child_id}/books/{book.id}/files/mockup-hardcover.png")

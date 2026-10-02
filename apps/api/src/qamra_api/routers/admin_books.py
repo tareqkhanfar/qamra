@@ -389,6 +389,8 @@ async def book_detail(book_id: uuid.UUID, db: SessionDep) -> BookDetail:
             "interior": bool(book.pdf_interior_key),
             "cover": bool(book.pdf_cover_key),
             "proof": bool(book.proof_pdf_key),
+            "mockup_hardcover": bool(_mockup_key(book, "hardcover")),
+            "mockup_spread": bool(_mockup_key(book, "spread")),
         },
         pages=pages,
         plan=plan,
@@ -445,10 +447,16 @@ async def character_sheet(book_id: uuid.UUID, db: SessionDep, storage: StorageDe
     return _stream(storage, character.sheet_image_key if character else None, "image/png")
 
 
+def _mockup_key(book: Book, which: str) -> str | None:
+    """Product mockups rendered beside the print files (Addendum 11 §2.7)."""
+    key = ((book.generation or {}).get("mockups") or {}).get(which)
+    return str(key) if key else None
+
+
 @router.get("/books/{book_id}/files/{name}", dependencies=[Depends(require_permission("books.view"))])
 async def book_file(
     book_id: uuid.UUID,
-    name: Literal["interior.pdf", "cover.pdf", "proof.pdf"],
+    name: Literal["interior.pdf", "cover.pdf", "proof.pdf", "mockup-hardcover.png", "mockup-spread.png"],
     db: SessionDep,
     storage: StorageDep,
 ) -> Response:
@@ -457,8 +465,11 @@ async def book_file(
         "interior.pdf": book.pdf_interior_key,
         "cover.pdf": book.pdf_cover_key,
         "proof.pdf": book.proof_pdf_key,
+        "mockup-hardcover.png": _mockup_key(book, "hardcover"),
+        "mockup-spread.png": _mockup_key(book, "spread"),
     }[name]
-    return _stream(storage, key, "application/pdf", f"qamra-{str(book.id)[:8]}-{name}")
+    media = "image/png" if name.endswith(".png") else "application/pdf"
+    return _stream(storage, key, media, f"qamra-{str(book.id)[:8]}-{name}")
 
 
 # ---- review actions ---------------------------------------------------------------------------------

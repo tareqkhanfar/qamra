@@ -70,6 +70,7 @@ from qamra_core.db.models import Theme as ThemeRow
 from qamra_core.settings_store import Resolved, load_sync
 from qamra_core.storage import ObjectNotFound, ObjectStorage
 from qamra_pdf import Brand
+from qamra_pdf.mockups import mockups_from_pdfs, spread_from_pages
 from qamra_worker import context
 from qamra_worker.ai import ai_settings, make_runtime
 from qamra_worker.notify import queue as notify_queue
@@ -95,6 +96,37 @@ def page_key(book: Book, beat: int, kind: str) -> str:
 
 def file_key(book: Book, name: str) -> str:
     return f"{book_prefix(book)}files/{name}"
+
+
+MOCKUP_TIMEOUT_S = 180
+
+
+async def store_mockups(storage: ObjectStorage, book: Book, files: BookFiles, work: Path) -> dict[str, str]:
+    """Addendum 11 §2.7: the hardcover and open-spread product mockups, rendered from the print files and
+    stored beside them (`files/mockup-hardcover.png`, `files/mockup-spread.png`). Marketing material only:
+    any failure is logged and the book carries on without them."""
+    if files.interior_pdf is None or files.cover_pdf is None:
+        return {}
+    try:
+        made = await asyncio.wait_for(
+            mockups_from_pdfs(
+                files.cover_pdf,
+                files.interior_pdf,
+                files.spec.lang,
+                work / "mockups",
+                spread=spread_from_pages(files.spec.pages, files.spec.lang),
+            ),
+            MOCKUP_TIMEOUT_S,
+        )
+        keys: dict[str, str] = {}
+        for name, path in (("hardcover", made.hardcover), ("spread", made.spread)):
+            if path is not None and path.is_file():
+                keys[name] = file_key(book, f"mockup-{name}.png")
+                storage.put(keys[name], path.read_bytes(), "image/png")
+        return keys
+    except Exception as e:  # never fail a book over its mockups
+        log.warning("book.mockups_failed", book=str(book.id), error=f"{type(e).__name__}: {str(e)[:200]}")
+        return {}
 
 
 class S3PlateStore:
@@ -685,6 +717,9 @@ async def render_files(
             storage.put(book.pdf_interior_key, files.interior_pdf.read_bytes(), "application/pdf")
             book.pdf_cover_key = file_key(book, "cover.pdf")
             storage.put(book.pdf_cover_key, files.cover_pdf.read_bytes(), "application/pdf")
+            mockups = await store_mockups(storage, book, files, Path(tmp))
+            gen = {k: v for k, v in (book.generation or {}).items() if k != "mockups"}
+            book.generation = {**gen, "mockups": mockups} if mockups else gen
         book.preflight = {k: v.to_dict() for k, v in files.preflight.items()}
         layout_flags = {str(k): v for k, v in files.flags.items() if v}
     rows = job.pages_by_beat()
