@@ -132,6 +132,7 @@ def preflight(
                     outside_trim.append(i)
                 elif x0 < margin or top < margin or x1 > pw - margin or bottom > ph - margin:
                     in_margin.append(i)
+            pl_page.close()  # free the parsed page now: a 112-page book otherwise holds every page (1.5 GB)
     report.min_dpi = round(min(dpis), 1) if dpis else None
     report.checks.append(
         Check(
