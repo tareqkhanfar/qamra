@@ -96,7 +96,7 @@ def fal_key() -> str:
 def spent() -> float:
     if not LEDGER.exists():
         return 0.0
-    return sum(json.loads(line)["usd"] for line in LEDGER.read_text().splitlines() if line.strip())
+    return float(sum(json.loads(line)["usd"] for line in LEDGER.read_text().splitlines() if line.strip()))
 
 
 class Budget:
@@ -128,9 +128,12 @@ async def draw(provider: FalImageProvider, item: Item, budget: Budget, sem: asyn
     async with sem:
         t = time.time()
         req = ImageRequest(
-            step=f"design:{item.id}", prompt=item.prompt, refs=refs, resolution=item.resolution
+            step=f"design:{item.id}",
+            prompt=item.prompt,
+            refs=refs,
+            aspect=item.ratio,  # type: ignore[arg-type]  # fal takes any of its ratios (verified 2026-10-02)
+            resolution=item.resolution,  # type: ignore[arg-type]
         )
-        req.aspect = item.ratio  # type: ignore[assignment]  # fal takes any of its ratios (verified 2026-10-02)
         try:
             image = await provider.generate(req)
         except Exception as e:  # one failure never stops the run; the ledger keeps the reserved price honest

@@ -37,12 +37,16 @@ def upgrade() -> None:
         )
     # Only the three styles in the story books: coloring stays for the coloring book; semi-realistic is retired
     op.execute("""UPDATE art_styles SET lines = '["coloring"]'::jsonb, sort = 10 WHERE slug = 'coloring'""")
-    op.execute("UPDATE art_styles SET lines = '[]'::jsonb, active = false, sort = 11 WHERE slug = 'semi-realistic'")
+    op.execute(
+        "UPDATE art_styles SET lines = '[]'::jsonb, active = false, sort = 11 WHERE slug = 'semi-realistic'"
+    )
 
 
 def downgrade() -> None:
     op.execute("""UPDATE art_styles SET lines = '["coloring", "magic"]'::jsonb WHERE slug = 'coloring'""")
-    op.execute("""UPDATE art_styles SET lines = '["magic"]'::jsonb, active = true WHERE slug = 'semi-realistic'""")
+    op.execute(
+        """UPDATE art_styles SET lines = '["magic"]'::jsonb, active = true WHERE slug = 'semi-realistic'"""
+    )
     for slug, (ar, en, lines) in BEFORE.items():
         op.execute(
             f"UPDATE art_styles SET name_ar = '{ar}', name_en = '{en}', lines = '{lines}'::jsonb, "  # nosec B608

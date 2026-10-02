@@ -176,7 +176,7 @@ def context() -> dict[str, Any]:
                     "lessons": lessons,
                 }
             )
-        first = {}
+        first: dict[str, int] = {}
         for p in pages:
             for c in p.concepts:
                 first.setdefault(c, p.n)

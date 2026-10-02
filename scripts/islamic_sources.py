@@ -391,12 +391,13 @@ def planned(resolver: Resolver) -> dict[str, list[str]]:
     plan = islamic.load()
     for vid, pages in plan.pages.items():
         volume = plan.volumes[vid].get("title_ar", vid)
-        for page in pages:
-            unit = plan.units.get(page.unit or "", {}).get("title_ar", "")
-            for source_id in page.sources:
+        for plan_page in pages:
+            unit = plan.units.get(plan_page.unit or "", {}).get("title_ar", "")
+            for source_id in plan_page.sources:
                 label = (
-                    f"{volume} · ص {ar(page.n)} · {unit} {('— ' + page.title) if page.title else ''}".strip()
-                )
+                    f"{volume} · ص {ar(plan_page.n)} · {unit} "
+                    f"{('— ' + plan_page.title) if plan_page.title else ''}"
+                ).strip()
                 add(source_id, label)
     return out
 
