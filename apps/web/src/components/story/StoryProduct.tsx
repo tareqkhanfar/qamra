@@ -4,10 +4,11 @@ import { useLocale, useTranslations } from "next-intl";
 import { useState, useSyncExternalStore } from "react";
 import { BookViewer } from "@/components/book/BookViewer";
 import { CoverArt, splitTemplate } from "@/components/book/CoverArt";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
+import { errorText } from "@/lib/api";
 import type { ThemeDetail } from "@/lib/catalog";
 import { rememberedVariant, type Example, type ExampleVariant } from "@/lib/examples";
-import { money, type Catalog } from "@/lib/store";
+import { cartApi, money, type Catalog } from "@/lib/store";
 import { LINES, createHref, freeDigitalCopy, num, offer, styleChoices, type Line, type Offer } from "@/lib/story";
 import { FormatCards, LineCards, LineChecklist, STYLE_LOOK, StyleCards } from "./Choices";
 
@@ -19,7 +20,8 @@ const subscribe = (cb: () => void) => {
 /**
  * The story product page (Addendum 9, design StoryProduct): the real book first (cover, then a compact
  * flip-through), then three numbered choices (book type, art style, format) with the live price in a sticky
- * bar. «اصنع الحكاية» carries the choices to the create flow in the URL.
+ * bar. «أضيفوا للسلة» puts the book in the cart in one tap (the child's details come from the cart);
+ * «جرّبوا المعاينة أولًا» carries the choices to the create flow in the URL.
  */
 export function StoryProduct({
   theme,
@@ -34,7 +36,11 @@ export function StoryProduct({
 }) {
   const t = useTranslations("themeDetail");
   const tc = useTranslations("common");
+  const te = useTranslations("errors");
   const locale = useLocale();
+  const router = useRouter();
+  const [adding, setAdding] = useState(false);
+  const [addError, setAddError] = useState<string | null>(null);
   const currency = catalog?.currency ?? "ILS";
   const offers = LINES.map((l) => offer(catalog, l, theme)).filter((o): o is Offer => o !== null);
   const firstLine = offers.find((o) => o.available)?.line ?? "magic";
@@ -85,6 +91,18 @@ export function StoryProduct({
   const summary = [t(`lines.${line}.short`), variant ? t(`formats.name.${variant.options.format}`) : ""]
     .filter(Boolean)
     .join(" · ");
+
+  /** The chosen book, format and story into the cart; the style only when the parent picked one. */
+  async function addToCart() {
+    if (!variant) return;
+    setAdding(true);
+    setAddError(null);
+    const picked = pickedStyle && style?.slug === pickedStyle ? { style: pickedStyle } : {};
+    const r = await cartApi.add({ sku: variant.sku, theme: theme.slug, ...picked });
+    if (r.ok) return router.push("/cart");
+    setAdding(false);
+    setAddError(errorText(r.error, locale, r.status === 0 ? te("network") : te("unknown")));
+  }
 
   return (
     <>
@@ -196,6 +214,13 @@ export function StoryProduct({
             </p>
           </section>
 
+          <Link
+            href={createHref(theme.slug, line, style?.slug, variant?.options.format)}
+            className="flex min-h-12 items-center justify-center rounded-full border-[1.5px] border-night-900 px-6 text-body font-bold text-night-900 hover:bg-paper-sunk"
+          >
+            {t("tryPreview")}
+          </Link>
+
           <div className="flex items-center gap-3 rounded-md bg-paper-sunk p-3.5">
             <svg
               className="size-6 shrink-0"
@@ -216,6 +241,11 @@ export function StoryProduct({
       </div>
 
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-paper/97 pt-3 pb-[max(16px,env(safe-area-inset-bottom))] backdrop-blur">
+        {addError && (
+          <p role="alert" className="mx-auto mb-2 max-w-[1200px] px-4 text-small font-semibold text-danger lg:px-10">
+            {addError}
+          </p>
+        )}
         <div className="mx-auto flex max-w-[1200px] items-center gap-3 px-4 lg:px-10">
           <div className="flex flex-col">
             <span className="text-xs text-ink-muted">{summary}</span>
@@ -223,12 +253,14 @@ export function StoryProduct({
               {price === null ? tc("priceTbd") : money(price, currency, locale)}
             </strong>
           </div>
-          <Link
-            href={createHref(theme.slug, line, style?.slug, variant?.options.format)}
-            className="flex min-h-14 grow items-center justify-center rounded-full bg-amber-500 px-6 text-[17px] font-bold text-night-950 hover:shadow-lamp lg:max-w-[360px] lg:grow-0 lg:px-12 ltr:lg:ml-auto rtl:lg:mr-auto"
+          <button
+            type="button"
+            onClick={() => void addToCart()}
+            disabled={adding || !variant}
+            className="flex min-h-14 grow items-center justify-center rounded-full bg-amber-500 px-6 text-[17px] font-bold text-night-950 hover:shadow-lamp disabled:opacity-60 lg:max-w-[360px] lg:grow-0 lg:px-12 ltr:lg:ml-auto rtl:lg:mr-auto"
           >
-            {t("make")}
-          </Link>
+            {t("addToCart")}
+          </button>
         </div>
       </div>
     </>

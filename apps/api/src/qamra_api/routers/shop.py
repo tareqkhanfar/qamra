@@ -28,7 +28,7 @@ from qamra_api.store.quiz import (
     load_rules,
     match,
 )
-from qamra_api.store.router import CartOut, cart_out, check_copies, check_item
+from qamra_api.store.router import CartOut, _own_item, cart_out, check_copies, check_item
 from qamra_api.store.workbooks import ACTIVITY, FamilyIn, family_personalization, orderable
 from qamra_core.db.models import AppSetting, AuditLog, Character, Child, Currency
 from qamra_core.db.store import CartItem, CatalogProduct
@@ -208,6 +208,7 @@ class WorkbookItemIn(BaseModel):
     child_id: uuid.UUID
     qty: int = Field(default=1, ge=1, le=50)
     family: FamilyIn | None = None  # «مغامراتي مع عائلتي»: the family's name, city and members (optional)
+    item_id: uuid.UUID | None = None  # the cart line added in one tap, which this child completes
 
 
 @router.post("/workbooks/cart", status_code=201)
@@ -220,7 +221,8 @@ async def add_workbook(
     settings: SettingsDep,
 ) -> CartOut:
     """An activity book for one of the parent's children, drawn with the child's approved character (no new
-    AI cost). The order item carries the child, the variant (its options) and the character used."""
+    AI cost). The order item carries the child, the variant (its options) and the character used. With
+    `item_id`, the line added in one tap from the product page gets this child instead of a new line."""
     child = await db.get(Child, body.child_id)
     if child is None or child.guardian_user_id != user.id:
         raise ApiError("not_found", 404)
@@ -236,32 +238,42 @@ async def add_workbook(
         raise ApiError("character_not_approved", 409)
     c = await load_catalog(db)
     variant = check_item(c, c.variants.get(body.sku), None, [])  # unknown, off sale or not orderable yet
-    if c.product_of(variant).line.value not in ACTIVITY:
+    line = c.product_of(variant).line.value
+    if line not in ACTIVITY:
         raise ApiError("unknown_product", 404)
-    cart = await ensure_cart(db, request, response, user, settings)
-    await check_copies(db, cart, variant, body.qty)  # 10+ family books wait for the printer's prices
-    db.add(
-        CartItem(
-            cart_id=cart.id,
-            variant_id=variant.id,
-            child_id=child.id,
-            qty=body.qty,
-            addons=[],
-            personalization={
-                "child_name": child.first_name,
-                "gender": child.gender.value,
-                "age": max(2, min(12, date.today().year - child.birth_year)),
-                "hijab": child.wears_hijab,
-                "glasses": child.wears_glasses,
-                "character_id": str(character.id),
-                **(
-                    {"family": family_personalization(body.family)}
-                    if body.family is not None and c.product_of(variant).line.value == "family"
-                    else {}
-                ),
-            },
+    item = None
+    if body.item_id is not None:
+        cart, item = await _own_item(db, request, user, body.item_id)  # 404 unless it is in the caller's cart
+        if item.variant_id != variant.id:
+            raise ApiError("item_mismatch", 409)
+    else:
+        cart = await ensure_cart(db, request, response, user, settings)
+        await check_copies(db, cart, variant, body.qty)  # 10+ family books wait for the printer's prices
+    family = family_personalization(body.family) if body.family is not None else None
+    if family is None and item is not None:
+        family = item.personalization.get("family")  # given on the product page
+    personalization = {
+        "child_name": child.first_name,
+        "gender": child.gender.value,
+        "age": max(2, min(12, date.today().year - child.birth_year)),
+        "hijab": child.wears_hijab,
+        "glasses": child.wears_glasses,
+        "character_id": str(character.id),
+        **({"family": family} if family and line == "family" else {}),
+    }
+    if item is not None:
+        item.child_id, item.personalization = child.id, personalization
+    else:
+        db.add(
+            CartItem(
+                cart_id=cart.id,
+                variant_id=variant.id,
+                child_id=child.id,
+                qty=body.qty,
+                addons=[],
+                personalization=personalization,
+            )
         )
-    )
     cart.updated_at = datetime.now(UTC)
     await db.commit()
     return await cart_out(db, cart)

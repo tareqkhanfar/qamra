@@ -23,6 +23,7 @@ from qamra_api.store.cart import (
     coupon_rule,
     ensure_cart,
     find_cart,
+    needs_details,
     same_phone,
 )
 from qamra_api.store.catalog import (
@@ -40,7 +41,7 @@ from qamra_api.store.catalog import (
     zone_rule,
 )
 from qamra_api.store.payments import provider_for
-from qamra_api.store.workbooks import orderable
+from qamra_api.store.workbooks import FamilyIn, family_personalization, orderable
 from qamra_api.validation import PHONE
 from qamra_core import settings_store
 from qamra_core.db.models import AuditLog, Book, Currency, Order, OrderItem, OrderStatus
@@ -218,6 +219,7 @@ class ItemIn(BaseModel):
     theme: str | None = Field(default=None, max_length=64)
     addons: list[AddOnIn] = Field(default_factory=list, max_length=20)
     personalization: dict[str, Any] = Field(default_factory=dict)
+    family: FamilyIn | None = None  # «مغامراتي مع عائلتي»: the family the product page asks for (optional)
 
 
 class ItemPatch(BaseModel):
@@ -261,6 +263,7 @@ class CartItemOut(BaseModel):
     child_id: uuid.UUID | None = None
     book_title: str | None = None
     book_status: str | None = None
+    needs_details: bool = False  # added in one tap: the child (and a story's book) come from the create flow
 
 
 class CartOut(BaseModel):
@@ -445,6 +448,7 @@ async def cart_out(db: SessionDep, cart: Cart | None) -> CartOut:
                 child_id=item.child_id,
                 book_title=book.title if book else None,
                 book_status=book.status.value if book else None,
+                needs_details=needs_details(product.line.value, item),
             )
         )
     zone = next((z.slug for z in c.zones.values() if z.id == cart.zone_id), None)
@@ -525,6 +529,8 @@ async def add_item(
         personalization = clean_personalization(body.personalization)
     except (ValueError, TypeError) as e:
         raise ApiError("invalid_input", 422, details={"field": str(e)}) from e
+    if body.family is not None and c.product_of(variant).line.value == "family":
+        personalization["family"] = family_personalization(body.family)
     cart = await ensure_cart(db, request, response, user, settings)
     await check_copies(db, cart, variant, body.qty)
     db.add(
@@ -723,6 +729,14 @@ async def checkout(
         raise ApiError("cart_empty", 409)
     if missing:
         raise ApiError("items_unavailable", 409, details={"items": missing})
+    waiting = [
+        (item, c.product_of(variant))
+        for item, variant in rows
+        if needs_details(c.product_of(variant).line.value, item)
+    ]
+    if waiting:  # «أكملوا بيانات الطفل» in the cart: nothing can be made without the child
+        items = [{"id": str(i.id), "name_ar": p.name_ar, "name_en": p.name_en} for i, p in waiting]
+        raise ApiError("details_missing", 409, details={"items": items})
     per_product: dict[uuid.UUID, int] = {}
     copies = Counter[uuid.UUID]()
     for item, variant in rows:

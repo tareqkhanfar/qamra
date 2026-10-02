@@ -48,3 +48,52 @@ async def make_admin(
     r = await client.post("/api/auth/mfa/verify", json={"code": pyotp.TOTP(secret).now()})
     assert r.status_code == 200 and r.json()["mfa_verified"], r.text
     return secret
+
+
+async def complete_cart(adb) -> None:  # type: ignore[no-untyped-def]
+    """Every open cart line gets a child and, for a story, a book: what «أكملوا بيانات الطفل» does through the
+    create flow. For tests about prices and orders rather than the create flow (checkout refuses lines that
+    wait for the child)."""
+    from datetime import date
+
+    from sqlalchemy import select
+
+    from qamra_api.seed import upsert_themes
+    from qamra_api.store.cart import STORY_LINES
+    from qamra_core.db.models import Book, Child, Gender, Locale, Theme
+    from qamra_core.db.store import Cart, CartItem, CartStatus, CatalogProduct, Variant
+
+    rows = await adb.execute(
+        select(CartItem, CatalogProduct.line)
+        .join(Cart, Cart.id == CartItem.cart_id)
+        .join(Variant, Variant.id == CartItem.variant_id)
+        .join(CatalogProduct, CatalogProduct.id == Variant.product_id)
+        .where(Cart.status == CartStatus.open)
+    )
+    for item, line in rows.all():
+        if item.child_id is None:
+            child = Child(
+                first_name=item.personalization.get("child_name", "ليان"),
+                gender=Gender.f,
+                birth_year=date.today().year - 5,
+            )
+            adb.add(child)
+            await adb.flush()
+            item.child_id = child.id
+        if line.value in STORY_LINES and item.book_id is None:
+            theme = (await adb.execute(select(Theme).limit(1))).scalar_one_or_none()
+            if theme is None:
+                await upsert_themes(adb)
+                theme = (await adb.execute(select(Theme).limit(1))).scalar_one()
+            book = Book(
+                child_id=item.child_id,
+                theme_id=theme.id,
+                theme_version=theme.version,
+                language=Locale.ar,
+                art_style=item.style_slug or "watercolor",
+                generation={"line": line.value},
+            )
+            adb.add(book)
+            await adb.flush()
+            item.book_id = book.id
+    await adb.commit()

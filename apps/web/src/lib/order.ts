@@ -114,10 +114,30 @@ export function bundleLabel(name: string): string {
   return name.replace(/\s*[−-]\s*\d+(\.\d+)?\s*%\s*$/u, "").trim();
 }
 
+const ACTIVITY = ["workbook", "journey", "family"];
+
+/**
+ * «أكملوا بيانات الطفل»: the create flow for a line added in one tap, with what the product page chose. When
+ * the flow ends it fills this line (`item`), and a child's approved character is reused.
+ */
+export function completeHref(item: OrderItem): string {
+  const q = new URLSearchParams({ item: item.id });
+  if (ACTIVITY.includes(item.line)) {
+    q.set("product", item.sku);
+    q.set("line", "magic");
+  } else {
+    if (item.line === "classic" || item.line === "magic") q.set("line", item.line);
+    if (item.theme) q.set("theme", item.theme);
+    if (item.style) q.set("style", item.style);
+    if (item.options.format) q.set("format", item.options.format);
+  }
+  return `/create?${q.toString()}`;
+}
+
 /** Where "edit" goes for a line: the add-ons step for a book, the product page for an activity book. */
 export function editHref(item: OrderItem): string {
   if (item.book_id && item.child_id) {
     return `/create?step=addons&child=${item.child_id}&book=${item.book_id}`;
   }
-  return ["workbook", "journey", "family"].includes(item.line) ? `/workbooks/${item.product}` : "/shop";
+  return ACTIVITY.includes(item.line) ? `/workbooks/${item.product}` : "/shop";
 }

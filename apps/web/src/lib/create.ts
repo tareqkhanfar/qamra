@@ -77,8 +77,9 @@ export const createApi = {
   book: (id: string) => api<Book>(`/api/create/books/${id}`),
   editPage: (id: string, beat: number, text: string) =>
     api<Book>(`/api/create/books/${id}/pages/${beat}`, { method: "PATCH", json: { text } }),
-  toCart: (id: string, sku: string, addons: { slug: string; qty?: number }[]) =>
-    api<Cart>(`/api/create/books/${id}/cart`, { json: { sku, addons } }),
+  // item: the cart line added in one tap on the story page, which this book fills
+  toCart: (id: string, sku: string, addons: { slug: string; qty?: number }[], item?: string | null) =>
+    api<Cart>(`/api/create/books/${id}/cart`, { json: { sku, addons, ...(item ? { item_id: item } : {}) } }),
   deleteChild: (id: string) => api<void>(`/api/create/children/${id}`, { method: "DELETE" }),
 };
 

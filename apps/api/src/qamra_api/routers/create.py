@@ -28,7 +28,7 @@ from qamra_api.portal.privacy import forget_in_class_book
 from qamra_api.store.addons import fits
 from qamra_api.store.cart import clean_personalization, ensure_cart
 from qamra_api.store.catalog import addon_problems, load_catalog
-from qamra_api.store.router import AddOnIn, CartOut, cart_out, check_item
+from qamra_api.store.router import AddOnIn, CartOut, _own_item, cart_out, check_item
 from qamra_api.uploads import clean_image, read_upload, require_face
 from qamra_core.db.models import (
     AuditLog,
@@ -641,6 +641,7 @@ async def edit_text(
 class ToCartIn(BaseModel):
     sku: str = Field(max_length=64)
     addons: list[AddOnIn] = Field(default_factory=list, max_length=20)
+    item_id: uuid.UUID | None = None  # the line added in one tap on the story page, which this book fills
 
 
 @router.post("/books/{book_id}/cart", status_code=201)
@@ -678,12 +679,36 @@ async def add_to_cart(
     ):
         addons.append({"slug": "drawing-companion", "qty": 1})  # chosen on the companion step; free in Magic
     check_item(catalog, variant, book.art_style, addons)
-    cart = await ensure_cart(db, request, response, user, settings)
-    same = (
-        (await db.execute(select(CartItem).where(CartItem.cart_id == cart.id, CartItem.book_id == book.id)))
-        .scalars()
-        .first()
+    personalization = clean_personalization(
+        {
+            "child_name": child.first_name,
+            "gender": child.gender.value,
+            "age": max(2, min(12, date.today().year - child.birth_year)),
+            "hijab": child.wears_hijab,
+            "glasses": child.wears_glasses,
+            "dedication": book.parent_message,
+        }
     )
+    same: CartItem | None
+    if body.item_id is not None:  # «أكملوا بيانات الطفل»: the story page's line gets this book
+        cart, held = await _own_item(db, request, user, body.item_id)  # 404 unless in the caller's cart
+        sold = next((v for v in catalog.variants.values() if v.id == held.variant_id), None)
+        if sold is None or catalog.product_of(sold).slug not in LINE_PRODUCTS[line]:
+            raise ApiError("item_mismatch", 409)
+        held.child_id, held.book_id, held.personalization = child.id, book.id, personalization
+        held.style_slug, held.theme_slug = book.art_style, theme.slug
+        same = held
+    else:
+        cart = await ensure_cart(db, request, response, user, settings)
+        same = (
+            (
+                await db.execute(
+                    select(CartItem).where(CartItem.cart_id == cart.id, CartItem.book_id == book.id)
+                )
+            )
+            .scalars()
+            .first()
+        )
     if same is not None:  # Addendum 9: back from the add-ons step to the format, still one line per book
         chosen = {a["slug"] for a in addons}
         kept = [  # the add-ons chosen after the preview that still fit the (maybe new) format
@@ -706,16 +731,7 @@ async def add_to_cart(
             theme_slug=theme.slug,
             qty=1,
             addons=addons,
-            personalization=clean_personalization(
-                {
-                    "child_name": child.first_name,
-                    "gender": child.gender.value,
-                    "age": date.today().year - child.birth_year,
-                    "hijab": child.wears_hijab,
-                    "glasses": child.wears_glasses,
-                    "dedication": book.parent_message,
-                }
-            ),
+            personalization=personalization,
             child_id=child.id,
             book_id=book.id,
         )

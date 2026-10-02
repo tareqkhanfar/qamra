@@ -154,6 +154,15 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "للطلبات من 10 نسخ فأكثر من هذا الكتاب، تواصلوا معنا لعرض سعر خاص.",
         "For 10 copies or more of this book, contact us for a special quote.",
     ),
+    "details_missing": (
+        "بعض الكتب في السلة تنقصها بيانات الطفل وصورته. أكملوها من السلة، ثم أكّدوا الطلب.",
+        "Some books in your cart still need your child's details and photo. Complete them from the cart, "
+        "then place the order.",
+    ),
+    "item_mismatch": (
+        "هذا الكتاب لا يطابق الكتاب الذي في السلة. ارجعوا إلى السلة وحاولوا مرة أخرى.",
+        "This book doesn't match the one in your cart. Go back to the cart and try again.",
+    ),
     # ---- the create flow
     "consent_outdated": (
         "تغيّر نصّ الموافقة. حدّثوا الصفحة واقرؤوه من جديد.",

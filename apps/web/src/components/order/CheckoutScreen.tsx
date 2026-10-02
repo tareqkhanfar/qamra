@@ -7,7 +7,7 @@ import { Spinner } from "@/components/ui/Button";
 import { Link, useRouter } from "@/i18n/navigation";
 import { api, errorText } from "@/lib/api";
 import { TOTAL_STEPS } from "@/lib/create";
-import { bundleLabel, orderApi, type OrderCart } from "@/lib/order";
+import { bundleLabel, completeHref, orderApi, type OrderCart } from "@/lib/order";
 import { cartApi, money, orderPhone, type Catalog, type CatalogZone } from "@/lib/store";
 import { BottomBar, ctaClass, FlowHeader } from "./parts";
 
@@ -74,7 +74,7 @@ export function CheckoutScreen() {
     }
     setBusy(false);
     setError(errorText(r.error, locale, r.status === 0 ? te("network") : te("unknown")));
-    if (r.error?.code === "gift_card_changed") {
+    if (r.error?.code === "gift_card_changed" || r.error?.code === "details_missing") {
       const fresh = await orderApi.cart(); // show the new total before the parent confirms again
       if (fresh.ok) setCart(fresh.data);
     }
@@ -111,10 +111,21 @@ export function CheckoutScreen() {
   const amount = (v: string | number) => money(v, cart.currency, locale);
   const name = (x: { name_ar: string; name_en: string }) => (locale === "ar" ? x.name_ar : x.name_en);
   const discount = Number(cart.sale_discount) + Number(cart.coupon_discount);
+  const waiting = cart.items.find((i) => i.needs_details); // checkout refuses it until the child is added
   return (
     <form onSubmit={submit} className="mx-auto flex min-h-dvh w-full max-w-[640px] flex-col bg-paper">
       {header}
       <main className="flex flex-col gap-5 px-4 pt-5 pb-[130px]">
+        {waiting && (
+          <Alert tone="info">
+            <span className="flex flex-col items-start gap-2">
+              {t("cart.completeFirst", { name: name(waiting) })}
+              <Link href={completeHref(waiting)} className="font-bold underline">
+                {t("cart.complete")}
+              </Link>
+            </span>
+          </Alert>
+        )}
         <section className="flex flex-col gap-3.5">
           <h2 className="text-[20px] text-night-900">{cart.gift ? t("checkout.whereGift") : t("checkout.where")}</h2>
           {cart.gift && <p className="-mt-2 text-small text-ink-muted">{t("checkout.giftNote")}</p>}
@@ -262,7 +273,7 @@ export function CheckoutScreen() {
       </main>
 
       <BottomBar column>
-        <button type="submit" disabled={busy || zoning || !chosen || !cart.zone} className={ctaClass}>
+        <button type="submit" disabled={busy || zoning || !chosen || !cart.zone || !!waiting} className={ctaClass}>
           {busy ? <Spinner /> : t("checkout.confirm", { total: amount(cart.total) })}
         </button>
         <span className="text-center text-xs text-ink-muted">

@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 import pytest
+from api_helpers import complete_cart
 from httpx import AsyncClient
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -93,6 +94,7 @@ async def test_checkout_freezes_prices_and_costs(client: AsyncClient, adb: Async
     await _add(client, "classic-soft-21", personalization={"child_name": "ليان"})
     cart = (await client.put("/api/store/cart/coupon", json={"code": "eid10"})).json()
     assert cart["coupon"] == "EID10" and Decimal(cart["coupon_discount"]) == Decimal("6.90")
+    await complete_cart(adb)
     r = await client.post("/api/store/checkout", json=CHECKOUT)
     assert r.status_code == 201, r.text
     placed = r.json()
@@ -116,12 +118,14 @@ async def test_checkout_freezes_prices_and_costs(client: AsyncClient, adb: Async
     # the same phone can't use a first-order coupon twice
     await _add(client, "classic-soft-21")
     cart = (await client.put("/api/store/cart/coupon", json={"code": "EID10"})).json()
+    await complete_cart(adb)
     r = await client.post("/api/store/checkout", json=CHECKOUT)
     assert r.status_code == 422 and r.json()["error"]["details"]["problem"] == "first_order_only"
 
 
-async def test_tracking_needs_the_code_and_the_phone(client: AsyncClient) -> None:
+async def test_tracking_needs_the_code_and_the_phone(client: AsyncClient, adb: AsyncSession) -> None:
     await _add(client, "classic-soft-21", personalization={"child_name": "ليان"})
+    await complete_cart(adb)
     code = (await client.post("/api/store/checkout", json=CHECKOUT)).json()["code"]
     ok = await client.get(f"/api/store/orders/{code}", params={"phone": "0591234567"})
     assert (
@@ -138,6 +142,7 @@ async def test_express_production_is_capacity_limited(client: AsyncClient, adb: 
     express.daily_capacity = 0
     await adb.commit()
     await _add(client, "classic-soft-21", addons=[{"slug": "express"}])
+    await complete_cart(adb)
     r = await client.post("/api/store/checkout", json=CHECKOUT)
     assert r.status_code == 409 and r.json()["error"]["code"] == "express_full"
 

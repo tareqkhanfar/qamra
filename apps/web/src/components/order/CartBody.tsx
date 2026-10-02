@@ -6,7 +6,7 @@ import { Alert } from "@/components/ui/Alert";
 import { Link } from "@/i18n/navigation";
 import type { ThemeCard } from "@/lib/catalog";
 import type { Child } from "@/lib/create";
-import { bundleLabel, editHref, type CrossSell, type OrderCart, type OrderItem } from "@/lib/order";
+import { bundleLabel, completeHref, editHref, type CrossSell, type OrderCart, type OrderItem } from "@/lib/order";
 import { money, type Catalog } from "@/lib/store";
 import { BookThumb, CheckBox } from "./parts";
 
@@ -241,13 +241,14 @@ function Line({
   const style = catalog?.styles.find((s) => s.slug === item.style);
   const theme = themes.find((th) => th.slug === item.theme);
   const kid = kids.find((k) => k.id === item.child_id);
-  const title = item.book_title ?? (item.child_name ? t("bookFor", { name: item.child_name }) : name(item));
+  const title =
+    item.book_title ?? (item.child_name ? t("bookFor", { name: item.child_name }) : (theme?.name ?? name(item)));
   const details = [name(item), tf(item.options.format ?? "digital"), style ? name(style) : null];
   const lines = item.addons;
   return (
     <article className="flex flex-col gap-3 rounded-[20px] border border-line bg-paper-raised p-3.5">
       <div className="flex gap-3">
-        {item.book_id ? (
+        {item.book_id || theme ? (
           <BookThumb art={theme?.art ?? null} hijab={kid?.hijab} size={80} />
         ) : (
           <ActivityThumb name={item.child_name} />
@@ -260,6 +261,9 @@ function Line({
           <span className="text-caption text-ink-muted">{details.filter(Boolean).join(" · ")}</span>
           {item.book_status === "preview" && (
             <span className="text-caption font-semibold text-success">{t("cart.previewReady")}</span>
+          )}
+          {item.needs_details && (
+            <span className="text-caption font-semibold text-amber-700">{t("cart.needsDetails")}</span>
           )}
         </div>
         <strong className="text-body whitespace-nowrap text-ink">{amount(item.base)}</strong>
@@ -281,9 +285,18 @@ function Line({
         </div>
       )}
       <div className="flex gap-2">
-        <Link href={editHref(item)} className={pill}>
-          {item.book_id ? t("cart.editAddons") : t("cart.edit")}
-        </Link>
+        {item.needs_details ? (
+          <Link
+            href={completeHref(item)}
+            className="flex min-h-11 items-center rounded-full bg-night-900 px-3.5 text-small font-bold text-paper"
+          >
+            {t("cart.complete")}
+          </Link>
+        ) : (
+          <Link href={editHref(item)} className={pill}>
+            {item.book_id ? t("cart.editAddons") : t("cart.edit")}
+          </Link>
+        )}
         <button
           type="button"
           onClick={() => onRemove(item.id)}

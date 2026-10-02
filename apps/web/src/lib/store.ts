@@ -82,6 +82,7 @@ export type CartItem = {
   addons_total: string;
   discount: string;
   total: string;
+  needs_details: boolean; // added in one tap: the child (and a story's book) come from the create flow
 };
 export type Cart = {
   currency: Currency;
@@ -103,6 +104,8 @@ export type Cart = {
   notes: string[];
 };
 export type AddOnChoice = { slug: string; qty?: number };
+/** One tap on a product page: the variant, plus the story and its style, or the family the page asked for. */
+export type NewItem = { sku: string; theme?: string; style?: string; family?: Record<string, unknown> };
 export type CheckoutInput = {
   name: string;
   phone: string;
@@ -128,6 +131,7 @@ export const ORDER_STEPS = ["new", "confirmed", "generating", "review", "printin
 
 export const cartApi = {
   get: () => api<Cart>("/api/store/cart"),
+  add: (item: NewItem) => api<Cart>("/api/store/cart/items", { json: item }),
   update: (id: string, patch: { qty?: number; addons?: AddOnChoice[] }) =>
     api<Cart>(`/api/store/cart/items/${id}`, { method: "PATCH", json: patch }),
   remove: (id: string) => api<Cart>(`/api/store/cart/items/${id}`, { method: "DELETE" }),

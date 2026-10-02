@@ -1,4 +1,4 @@
-from api_helpers import make_admin
+from api_helpers import complete_cart, make_admin
 from fastapi import FastAPI
 from httpx import AsyncClient
 from rq import Queue
@@ -19,11 +19,12 @@ CHECKOUT = {
 }
 
 
-async def _place(client: AsyncClient) -> str:
+async def _place(client: AsyncClient, adb: AsyncSession) -> str:
     r = await client.post(
         "/api/store/cart/items", json={"sku": "classic-soft-21", "personalization": {"child_name": "ليان"}}
     )
     assert r.status_code == 201, r.text
+    await complete_cart(adb)
     r = await client.post("/api/store/checkout", json=CHECKOUT)
     assert r.status_code == 201, r.text
     return str(r.json()["code"])
@@ -31,7 +32,7 @@ async def _place(client: AsyncClient) -> str:
 
 async def test_order_lifecycle(client: AsyncClient, adb: AsyncSession, app: FastAPI) -> None:
     await seed_store(adb)
-    codes = [await _place(client), await _place(client)]
+    codes = [await _place(client, adb), await _place(client, adb)]
     await make_admin(client, adb)
     listed = (await client.get("/api/admin/orders")).json()
     assert listed["total"] == 2 and listed["counts"] == {"new": 2}
@@ -50,7 +51,11 @@ async def test_order_lifecycle(client: AsyncClient, adb: AsyncSession, app: Fast
         await client.post(f"/api/admin/orders/{first['id']}/status", json={"to": "confirmed"})
     ).json()
     assert confirmed["status"] == "confirmed" and confirmed["invoice"]["number"].endswith("-00001")
-    assert queue.jobs[-1].func_name == "qamra_worker.jobs.invoices.render_invoice"
+    jobs = [j.func_name for j in queue.jobs]  # the invoice, then the Classic book's final drawing
+    assert jobs == [
+        "qamra_worker.jobs.invoices.render_invoice",
+        "qamra_worker.jobs.classic.generate_classic_book",
+    ]
     second = next(o for o in listed["orders"] if o["code"] == codes[1])
     other = (await client.post(f"/api/admin/orders/{second['id']}/status", json={"to": "confirmed"})).json()
     assert other["invoice"]["number"].endswith("-00002")  # numbered per year, without gaps
@@ -79,7 +84,7 @@ async def test_order_lifecycle(client: AsyncClient, adb: AsyncSession, app: Fast
 
 async def test_production_staff_can_view_but_not_change(client: AsyncClient, adb: AsyncSession) -> None:
     await seed_store(adb)
-    await _place(client)
+    await _place(client, adb)
     await make_admin(client, adb, email="print@example.com", roles=("production",))
     listed = (await client.get("/api/admin/orders")).json()
     order = listed["orders"][0]["id"]

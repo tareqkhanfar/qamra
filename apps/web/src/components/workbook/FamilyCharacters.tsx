@@ -132,11 +132,7 @@ export function FamilyCharacters() {
           )}
           <div className="flex flex-wrap gap-2">
             {m.has_photo && !m.approved && m.status !== "generating" && m.drawings_left > 0 && (
-              <button
-                type="button"
-                className={button}
-                onClick={() => void call(`/api/create/family/${m.id}/draw`, {})}
-              >
+              <button type="button" className={button} onClick={() => void call(`/api/create/family/${m.id}/draw`, {})}>
                 {m.status === "ready" ? t("redraw") : t("draw")} ({m.drawings_left} {t("left")})
               </button>
             )}

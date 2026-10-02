@@ -17,6 +17,7 @@ import {
   type PreviewScope,
 } from "@/lib/workbook";
 import { AddWorkbook } from "./AddWorkbook";
+import { emptyFamily, FamilyDetails } from "./FamilyDetails";
 import { FamilyQuoteForm } from "./FamilyQuoteForm";
 import { WorkbookCover } from "./WorkbookCover";
 
@@ -52,6 +53,7 @@ export function WorkbookProduct({
   const locale = useLocale();
   const [state, setState] = useState(() => resolve(product, initialPicks(product, query)));
   const [zoom, setZoom] = useState<Preview | null>(null);
+  const [family, setFamily] = useState(emptyFamily); // «مغامراتي مع عائلتي»: optional, goes into the cart
   const dialog = useRef<HTMLDialogElement>(null);
   const { variant, picks } = state;
   const line = product.line;
@@ -255,6 +257,8 @@ export function WorkbookProduct({
             {note && <p className="text-caption leading-[1.6] text-ink-muted">{note}</p>}
           </section>
 
+          {line === "family" && <FamilyDetails value={family} onChange={setFamily} />}
+
           {line === "family" && (
             <a href="#family-quote" className="text-small font-semibold text-amber-700 underline">
               {t("bulk")}
@@ -299,7 +303,7 @@ export function WorkbookProduct({
               {price === null ? "—" : money(price, currency, locale)}
             </strong>
           </div>
-          <AddWorkbook sku={variant?.sku ?? null} family={line === "family"} />
+          <AddWorkbook sku={variant?.sku ?? null} family={line === "family" ? family : undefined} />
         </div>
       </div>
       {line === "family" && (

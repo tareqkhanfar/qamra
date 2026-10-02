@@ -1,7 +1,7 @@
 """Payments: cash on delivery unchanged, the card gateway a disabled stub. Emails: checkout and the order's
 status changes enqueue one email job each, on the worker's default queue; a Redis outage never breaks them."""
 
-from api_helpers import make_admin, register
+from api_helpers import complete_cart, make_admin, register
 from fastapi import FastAPI
 from httpx import AsyncClient
 from rq import Queue
@@ -23,11 +23,12 @@ CHECKOUT = {
 EMAIL = "qamra_worker.jobs.notify.send_order_email"
 
 
-async def _place(client: AsyncClient, **extra: object) -> AsyncClient:
+async def _place(client: AsyncClient, adb: AsyncSession, **extra: object) -> AsyncClient:
     r = await client.post(
         "/api/store/cart/items", json={"sku": "classic-soft-21", "personalization": {"child_name": "ليان"}}
     )
     assert r.status_code == 201, r.text
+    await complete_cart(adb)
     return await client.post("/api/store/checkout", json={**CHECKOUT, **extra})  # type: ignore[return-value]
 
 
@@ -51,13 +52,13 @@ async def test_cash_on_delivery_is_unchanged_and_emails_the_customer(
 ) -> None:
     await seed_store(adb)
     me = await register(client)
-    r = await _place(client)  # no `payment` field, exactly as the checkout form sends it today
+    r = await _place(client, adb)  # no `payment` field, exactly as the checkout form sends it today
     assert r.status_code == 201, r.text
     order = (await adb.execute(select(Order).where(Order.code == r.json()["code"]))).scalar_one()
     assert order.payment_method == PaymentMethod.cod and order.payment_status == PaymentStatus.unpaid
     assert order.user_id is not None and str(order.user_id) == me["id"]
     assert _emails(app) == [(str(order.id), "placed")]
-    r = await _place(client, payment="cod")
+    r = await _place(client, adb, payment="cod")
     assert r.status_code == 201 and len(_emails(app)) == 2
 
 
@@ -65,13 +66,13 @@ async def test_the_card_stub_is_refused_before_any_order(
     client: AsyncClient, adb: AsyncSession, app: FastAPI
 ) -> None:
     await seed_store(adb)
-    r = await _place(client, payment="card")
+    r = await _place(client, adb, payment="card")
     assert r.status_code == 409 and r.json()["error"]["code"] == "payment_unavailable"
     assert "البطاقة" in r.json()["error"]["message"]["ar"]
     assert (await adb.execute(select(func.count()).select_from(Order))).scalar_one() == 0 and _emails(
         app
     ) == []
-    assert (await _place(client, payment="bitcoin")).status_code == 422
+    assert (await _place(client, adb, payment="bitcoin")).status_code == 422
 
 
 async def test_status_changes_enqueue_the_customer_emails(
@@ -79,7 +80,7 @@ async def test_status_changes_enqueue_the_customer_emails(
 ) -> None:
     await seed_store(adb)
     await register(client, email="lian.mom@example.com")
-    code = (await _place(client)).json()["code"]
+    code = (await _place(client, adb)).json()["code"]
     order = (await adb.execute(select(Order).where(Order.code == code))).scalar_one()
     await make_admin(client, adb)
     for step in ("confirmed", "generating", "review", "printing", "shipped", "delivered"):
@@ -98,5 +99,5 @@ async def test_a_queue_outage_never_breaks_checkout(
             raise ConnectionError("redis is down")
 
     app.state.rq_redis = Down()
-    r = await _place(client)
+    r = await _place(client, adb)
     assert r.status_code == 201, r.text

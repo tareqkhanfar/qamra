@@ -1066,12 +1066,6 @@
     },
     "add": "Add to cart",
     "familyCharacters": "Draw your family in the book (add-on)",
-    "chooser": {
-      "title": "Who is the book for?",
-      "ready": "{name}'s character is ready",
-      "other": "Another child (we draw their character first)",
-      "close": "Close"
-    },
     "family": {
       "title": "Your family in the book (optional)",
       "hint": "Their names appear in the book's missions, on the “My family” page and on the certificate. Every family is different and lovely.",
@@ -1141,6 +1135,9 @@
       "backToShop": "Back to the shop",
       "toShop": "Browse the books",
       "previewReady": "Preview ready",
+      "needsDetails": "Missing: your child's details and photo",
+      "complete": "Add your child's details",
+      "completeFirst": "Before you continue, add your child's details and photo for “{name}”.",
       "editAddons": "Edit extras",
       "edit": "Edit",
       "remove": "Remove",
@@ -2034,7 +2031,8 @@
     "unavailable": "We couldn't load the stories right now. Please try again shortly."
   },
   "themeDetail": {
-    "make": "Make the story",
+    "addToCart": "Add to cart",
+    "tryPreview": "Try the preview first",
     "coverAlt": "A real cover: {title}",
     "placeholderCoverAlt": "An illustration of the story's cover",
     "realExample": "Real example · {style}",
@@ -2219,6 +2217,7 @@
     "back": "Back",
     "continue": "Continue",
     "retry": "Try again",
+    "toCart": "Back to cart",
     "loading": "One moment…",
     "steps": {
       "child": "Your child",

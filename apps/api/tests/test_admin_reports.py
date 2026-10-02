@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from api_helpers import make_admin
+from api_helpers import complete_cart, make_admin
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -24,6 +24,7 @@ async def test_reports_count_the_period_and_export_csv(client: AsyncClient, adb:
         "personalization": {"child_name": "ليان"},
     }
     assert (await client.post("/api/store/cart/items", json=item)).status_code == 201
+    await complete_cart(adb)
     assert (await client.post("/api/store/checkout", json=CHECKOUT)).status_code == 201
     await make_admin(client, adb)
     r = (await client.get("/api/admin/reports", params={"days": 30})).json()

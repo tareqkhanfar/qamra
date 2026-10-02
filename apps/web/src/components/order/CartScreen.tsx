@@ -7,7 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { api, errorText, type ApiResult } from "@/lib/api";
 import type { ThemeCard } from "@/lib/catalog";
 import { createApi, type Child } from "@/lib/create";
-import { GIFT_MESSAGE_MAX, orderApi, type CrossSell, type OrderCart } from "@/lib/order";
+import { completeHref, GIFT_MESSAGE_MAX, orderApi, type CrossSell, type OrderCart } from "@/lib/order";
 import type { Catalog } from "@/lib/store";
 import { CartBody } from "./CartBody";
 import { BottomBar, ctaClass, FlowHeader } from "./parts";
@@ -107,6 +107,12 @@ export function CartScreen() {
     );
   }
 
+  // a line added in one tap waits for the child: the bar leads there before the address and payment
+  const waiting = cart.items.find((i) => i.needs_details);
+  const waitingName = waiting
+    ? (themes.find((th) => th.slug === waiting.theme)?.name ?? (locale === "ar" ? waiting.name_ar : waiting.name_en))
+    : "";
+
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-[640px] flex-col bg-paper">
       {header(cart.count)}
@@ -135,9 +141,20 @@ export function CartScreen() {
         onClearCard={() => void apply(orderApi.clearGiftCard())}
       />
       <BottomBar column>
-        <Link href="/checkout" className={ctaClass}>
-          {t("cart.next")}
-        </Link>
+        {waiting ? (
+          <>
+            <span className="text-center text-small font-semibold text-ink">
+              {t("cart.completeFirst", { name: waitingName })}
+            </span>
+            <Link href={completeHref(waiting)} className={ctaClass}>
+              {t("cart.complete")}
+            </Link>
+          </>
+        ) : (
+          <Link href="/checkout" className={ctaClass}>
+            {t("cart.next")}
+          </Link>
+        )}
         <span className="text-center text-xs text-ink-muted">{t("cart.codNote")}</span>
       </BottomBar>
     </div>

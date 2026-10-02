@@ -6,7 +6,8 @@ import { useCallback, useEffect, useState } from "react";
 import { MoonPhase } from "@/components/art/MoonPhase";
 import { AddOnsStep } from "@/components/order/AddOnsStep";
 import { Alert } from "@/components/ui/Alert";
-import { useRouter } from "@/i18n/navigation";
+import { Button } from "@/components/ui/Button";
+import { Link, useRouter } from "@/i18n/navigation";
 import { api, errorText, type User } from "@/lib/api";
 import type { ThemeCard } from "@/lib/catalog";
 import { classicStyles, classicVariant } from "@/lib/classic";
@@ -27,7 +28,7 @@ import { CompanionStep } from "./companion/CompanionStep";
 
 type Query = Partial<
   Record<
-    "step" | "child" | "character" | "book" | "line" | "theme" | "style" | "product" | "companion" | "cstep",
+    "step" | "child" | "character" | "book" | "line" | "theme" | "style" | "product" | "companion" | "cstep" | "item",
     string | null
   >
 >;
@@ -101,13 +102,15 @@ export function CreateWizard() {
     product: params.get("product"),
     companion: params.get("companion"), // the drawn companion for this book, and the companion sub-step
     cstep: params.get("cstep"),
+    item: params.get("item"), // «أكملوا بيانات الطفل»: the cart line added in one tap that this flow fills
   };
   const [children, setChildren] = useState<Child[] | null>(null);
   const [catalog, setCatalog] = useState<Catalog | null>(null);
   const [themes, setThemes] = useState<ThemeCard[]>([]);
   const [character, setCharacter] = useState<Loaded<Character> | null>(null);
   const [book, setBook] = useState<Loaded<Book> | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  // a failed load or a failed add: the error with a way to try again and a way back to the cart
+  const [failure, setFailure] = useState<{ message: string; retry: () => void } | null>(null);
 
   const go = useCallback(
     (patch: Query) => {
@@ -131,7 +134,10 @@ export function CreateWizard() {
         if (me.status === 401) {
           const here = `/create${window.location.search}`;
           router.replace(`/login?next=${encodeURIComponent(here)}`);
-        } else setError(errorText(me.error, locale, me.status === 0 ? te("network") : te("unknown")));
+        } else {
+          const message = errorText(me.error, locale, me.status === 0 ? te("network") : te("unknown"));
+          setFailure({ message, retry: () => window.location.reload() });
+        }
         return;
       }
       const [kids, store, worlds] = await Promise.all([
@@ -143,7 +149,10 @@ export function CreateWizard() {
       if (store.ok) setCatalog(store.data);
       if (worlds.ok) setThemes(worlds.data);
       if (kids.ok) setChildren(kids.data);
-      else setError(errorText(kids.error, locale, te("unknown")));
+      else {
+        const message = errorText(kids.error, locale, kids.status === 0 ? te("network") : te("unknown"));
+        setFailure({ message, retry: () => window.location.reload() });
+      }
     })();
     return () => {
       alive = false;
@@ -197,10 +206,16 @@ export function CreateWizard() {
   );
   const onBook = useCallback((b: Book) => setBook({ id: b.id, value: b }), []);
 
-  if (error) {
+  if (failure) {
     return (
       <div className="mx-auto flex min-h-dvh max-w-[640px] flex-col justify-center gap-4 px-4">
-        <Alert>{error}</Alert>
+        <Alert>{failure.message}</Alert>
+        <Button variant="primary" size="lg" onClick={failure.retry}>
+          {t("retry")}
+        </Button>
+        <Link href="/cart" className="min-h-11 content-center text-center font-semibold text-night-900 underline">
+          {t("toCart")}
+        </Link>
       </div>
     );
   }
@@ -270,11 +285,22 @@ export function CreateWizard() {
     else void styleOrDraw(c, value);
   }
 
-  /** An activity book (Addendum 9): drawn with this child's approved character, straight into the cart. */
+  /**
+   * An activity book (Addendum 9): drawn with this child's approved character, straight into the cart. From
+   * the cart's «أكملوا بيانات الطفل» it fills that line (with the family details given on the product page).
+   */
   async function addProduct(c: Child) {
-    const r = await api<Cart>("/api/shop/workbooks/cart", { json: { sku: q.product, child_id: c.id } });
-    if (r.ok) router.push("/cart");
-    else setError(errorText(r.error, locale, r.status === 0 ? te("network") : te("unknown")));
+    const json = { sku: q.product, child_id: c.id, ...(q.item ? { item_id: q.item } : {}) };
+    const r = await api<Cart>("/api/shop/workbooks/cart", { json });
+    if (r.ok) return router.push("/cart");
+    const message = errorText(r.error, locale, r.status === 0 ? te("network") : te("unknown"));
+    setFailure({
+      message,
+      retry: () => {
+        setFailure(null);
+        void addProduct(c);
+      },
+    });
   }
 
   function afterLine(value: Line) {

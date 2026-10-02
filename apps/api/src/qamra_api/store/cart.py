@@ -1,8 +1,8 @@
 """Server-side carts (Addendum 4 §5).
 
 Guests hold their cart through an httpOnly cookie, and the database keeps only the token's hash. A signed-in
-parent's cart is theirs across devices, and a guest cart is adopted when they sign in. The cart's currency
-follows the shipping zone (Palestine → ILS, Jordan → JOD).
+parent's cart is theirs across devices, and a guest cart's lines join it when they sign in. The cart's
+currency follows the shipping zone (Palestine → ILS, Jordan → JOD).
 """
 
 import hashlib
@@ -23,6 +23,7 @@ from qamra_core.pricing import CouponRule
 COOKIE = "qamra_cart"
 TTL = timedelta(days=30)
 GENDERS = ("m", "f")
+STORY_LINES = ("classic", "magic", "coloring")  # made from a book the parent previews in the create flow
 
 
 def token_hash(token: str) -> str:
@@ -30,26 +31,47 @@ def token_hash(token: str) -> str:
 
 
 async def find_cart(db: AsyncSession, request: Request, user: User | None) -> Cart | None:
-    cart = None
-    if user is not None:
-        cart = (
-            await db.execute(
-                select(Cart)
-                .where(Cart.user_id == user.id, Cart.status == CartStatus.open)
-                .order_by(Cart.updated_at.desc())
-                .limit(1)
-            )
-        ).scalar_one_or_none()
+    """The caller's open cart. A guest's comes from the cookie, and a signed-out request never reads a cart
+    that belongs to a parent. Signing in brings the guest cart's lines into the parent's cart."""
     token = request.cookies.get(COOKIE)
-    if cart is None and token:
-        cart = (
+    guest = None
+    if token:
+        guest = (
             await db.execute(
                 select(Cart).where(Cart.token_hash == token_hash(token), Cart.status == CartStatus.open)
             )
         ).scalar_one_or_none()
-        if cart is not None and cart.user_id is None and user is not None:
-            cart.user_id = user.id  # signing in adopts the guest cart
-    return cart
+    if user is None:
+        return guest if guest is not None and guest.user_id is None else None
+    mine = (
+        await db.execute(
+            select(Cart)
+            .where(Cart.user_id == user.id, Cart.status == CartStatus.open)
+            .order_by(Cart.updated_at.desc())
+            .limit(1)
+        )
+    ).scalar_one_or_none()
+    if guest is None or guest.user_id is not None:
+        return mine
+    if mine is None:
+        guest.user_id = user.id  # signing in adopts the guest cart
+        return guest
+    await _merge(db, guest, mine)
+    return mine
+
+
+async def _merge(db: AsyncSession, guest: Cart, mine: Cart) -> None:
+    """The guest cart's lines join the parent's cart (it lists lines in the order they were added), with its
+    codes and gift choice when the parent's cart has none; the guest cart is closed."""
+    for item in await cart_items(db, guest):
+        item.cart_id = mine.id
+    mine.coupon_code = mine.coupon_code or guest.coupon_code
+    mine.gift_card_code = mine.gift_card_code or guest.gift_card_code
+    if guest.gift and not mine.gift:
+        mine.gift, mine.gift_message = True, guest.gift_message
+    guest.status = CartStatus.abandoned
+    mine.updated_at = datetime.now(UTC)
+    await db.flush()
 
 
 async def ensure_cart(
@@ -83,6 +105,11 @@ async def ensure_cart(
 async def cart_items(db: AsyncSession, cart: Cart) -> list[CartItem]:
     rows = await db.execute(select(CartItem).where(CartItem.cart_id == cart.id).order_by(CartItem.created_at))
     return list(rows.scalars())
+
+
+def needs_details(line: str, item: CartItem) -> bool:
+    """A line added in one tap waits for the child (and a story for its book): the create flow fills it."""
+    return item.child_id is None or (line in STORY_LINES and item.book_id is None)
 
 
 def clean_personalization(raw: dict[str, Any]) -> dict[str, Any]:

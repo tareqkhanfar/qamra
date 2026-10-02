@@ -50,7 +50,9 @@ export function FormatStep({
   const variants = [...(product?.variants ?? [])]
     .filter((v) => v.price !== null)
     .sort((a, b) => ORDER.indexOf(a.options.format) - ORDER.indexOf(b.options.format));
-  const wanted = useSearchParams().get("format");
+  const search = useSearchParams();
+  const wanted = search.get("format");
+  const item = search.get("item"); // the story page's line in the cart, which this book fills
   const [sku, setSku] = useState(variants.find((v) => v.options.format === wanted)?.sku ?? variants[0]?.sku ?? "");
   const [examples, setExamples] = useState<Example[]>([]);
   useEffect(() => {
@@ -91,6 +93,7 @@ export function FormatStep({
       book.id,
       sku,
       chosen.map((a) => ({ slug: a.slug })),
+      item,
     );
     setBusy(false);
     if (r.ok) onAdded();
