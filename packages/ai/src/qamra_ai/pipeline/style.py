@@ -56,7 +56,8 @@ def negatives(house: HouseStyle, style_negative: str = "") -> str:
     return f"{house.negative}\n{extra}" if extra else house.negative
 
 
-_FIELD = re.compile(r"^(slug|version|lines|qa_threshold|likeness_min):\s*(.+?)\s*$", re.M)
+# one line each: an empty value (`lines:`) must not swallow the next line
+_FIELD = re.compile(r"^(slug|version|lines|qa_threshold|likeness_min):[ \t]*(.*?)[ \t]*$", re.M)
 _TITLE = re.compile(r"^# +(.+?) — (.+?)\s*$", re.M)
 
 

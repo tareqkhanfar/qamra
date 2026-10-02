@@ -77,12 +77,16 @@ async def _existing(db: AsyncSession, column: Any) -> dict[Any, Any]:
     return {getattr(row, column.key): row for row in rows}
 
 
+STYLE_ORDER = ("3d", "watercolor", "cartoon")  # Addendum 11 §1: the three styles, 3D first
+
+
 async def _styles(db: AsyncSession) -> list[str]:
     added = []
     have = await _existing(db, ArtStyle.slug)
-    for sort, g in enumerate(style_guides()):
+    for g in style_guides():
         if g.slug in have:
             continue
+        sort = STYLE_ORDER.index(g.slug) if g.slug in STYLE_ORDER else 10 + len(added)
         db.add(
             ArtStyle(
                 slug=g.slug,
@@ -95,6 +99,7 @@ async def _styles(db: AsyncSession) -> list[str]:
                 qa_threshold=Decimal(str(g.qa_threshold)),
                 likeness_min=g.likeness_min,
                 sort=sort,
+                active=bool(g.lines),  # a guide sold in no line (semi-realistic) is kept, not offered
             )
         )
         added.append(f"+style:{g.slug}")

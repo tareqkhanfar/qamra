@@ -51,6 +51,7 @@ products:
   # ---- coloring books -----------------------------------------------------------------------------------
   - slug: coloring-book
     line: coloring
+    active: false  # out of the store until something can make it (Tareq, 2026-10-02)
     name_ar: كتاب تلوين باسم طفلكم
     name_en: Personalized coloring book
     description_ar: حكاية طفلكم بالخطوط فقط ليلوّنها بنفسه.

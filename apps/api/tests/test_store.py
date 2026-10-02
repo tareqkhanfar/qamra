@@ -40,7 +40,13 @@ async def test_catalog_lists_public_products_with_prices(client: AsyncClient) ->
     assert Decimal(classic["from_price"]) == 19
     jod = (await client.get("/api/store/catalog", params={"currency": "JOD"})).json()
     assert Decimal(next(p for p in jod["products"] if p["slug"] == "classic-book")["from_price"]) == 4
-    assert {s["slug"] for s in ils["styles"]} == {"watercolor", "cartoon", "3d", "semi-realistic", "coloring"}
+    assert {s["slug"] for s in ils["styles"]} == {
+        "watercolor",
+        "cartoon",
+        "3d",
+        "coloring",
+    }  # semi-realistic retired
+    assert [s["slug"] for s in ils["styles"]][:3] == ["3d", "watercolor", "cartoon"]  # Addendum 11 §1
 
 
 async def test_guest_cart_prices_add_ons_bundles_and_shipping(client: AsyncClient) -> None:
