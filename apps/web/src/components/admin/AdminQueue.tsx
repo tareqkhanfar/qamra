@@ -603,6 +603,8 @@ function PageDrawer({
     "anatomy_ok",
     "text_in_image",
     "outfit_ok",
+    "hijab_ok",
+    "cropped",
     "text_space_ok",
     "companion_ok",
     "style_ok",
@@ -643,7 +645,14 @@ function PageDrawer({
                   .filter((k) => k in page.qa)
                   .map((k) => {
                     const v = page.qa[k];
-                    const good = k === "likeness" ? Number(v) >= 7 : k === "text_in_image" ? v === false : v === true;
+                    const good =
+                      k === "likeness"
+                        ? Number(v) >= 7
+                        : k === "text_in_image"
+                          ? v === false
+                          : k === "cropped" // the characters cut by the trim: none is good
+                            ? Array.isArray(v) && v.length === 0
+                            : v === true;
                     return (
                       <li key={k} className="flex justify-between gap-2">
                         <span>{t(`questions.${k}`)}</span>

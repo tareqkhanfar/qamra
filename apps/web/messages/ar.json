@@ -2547,7 +2547,11 @@
       "pages_missing": "صفحات ناقصة",
       "render_failed": "فشل الإخراج",
       "generation_failed": "فشل التوليد",
-      "missing_image": "صورة ناقصة"
+      "missing_image": "صورة ناقصة",
+      "hijab": "لون الحجاب",
+      "crop": "البطل مقصوص عند الحافة",
+      "crop_other": "شخصية مقصوصة عند الحافة",
+      "text_missing": "نص ناقص"
     },
     "status": {
       "draft": "مسودة",
@@ -2565,6 +2569,8 @@
       "anatomy_ok": "التشريح",
       "text_in_image": "نص في الصورة",
       "outfit_ok": "الملابس",
+      "hijab_ok": "لون الحجاب",
+      "cropped": "القصّ عند الحافة",
       "text_space_ok": "مساحة النص",
       "companion_ok": "الرفيق",
       "style_ok": "الأسلوب",

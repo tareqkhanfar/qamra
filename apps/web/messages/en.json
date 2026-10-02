@@ -2569,7 +2569,11 @@
       "pages_missing": "pages missing",
       "render_failed": "render failed",
       "generation_failed": "generation failed",
-      "missing_image": "missing image"
+      "missing_image": "missing image",
+      "hijab": "Hijab color",
+      "crop": "Hero cut at the edge",
+      "crop_other": "A character cut at the edge",
+      "text_missing": "Missing text"
     },
     "status": {
       "draft": "Draft",
@@ -2587,6 +2591,8 @@
       "anatomy_ok": "Anatomy",
       "text_in_image": "Text in image",
       "outfit_ok": "Outfit",
+      "hijab_ok": "Hijab color",
+      "cropped": "Cut at the edge",
       "text_space_ok": "Text space",
       "companion_ok": "Companion",
       "style_ok": "Style",
