@@ -36,11 +36,12 @@
   {% if b.placeholder %}
   <div class="sacred-hole"><i>{{ icon('alert', 'ico', 2) }}</i><p>{{ b.notice }}</p><small>{{ b.title }}{% if b.reference %} · <bdi dir="ltr">{{ b.reference }}</bdi>{% endif %}</small></div>
   {% elif b.quran %}
-  <div class="sacred-text{{ ' stacked' if stacked }}"{% if fit %} data-fit="14"{% endif %}>{% for l in b.lines %}<span class="ayah">{{ l.text }}<span class="ay-no">{{ l.n }}</span></span> {% endfor %}</div>
+  <div class="sacred-text{{ ' stacked' if stacked }}"{% if fit %} data-fit="14"{% endif %}>{% for l in b.lines %}<span class="ayah{{ ' basmala' if l.n == '' }}">{{ l.text }}{% if l.n != '' %}<span class="ay-no">{{ l.n }}</span>{% endif %}</span> {% endfor %}</div>
   {% else %}
   <div class="sacred-text">{{ b.text }}</div>
   {% endif %}
   {% if not b.placeholder and b.reference %}<div class="sacred-ref"><bdi dir="ltr">{{ b.reference }}</bdi></div>{% endif %}
+  {% if b.quran and not b.placeholder %}<div class="sacred-credit">نص القرآن الكريم من مشروع تنزيل · <bdi dir="ltr">tanzil.net</bdi></div>{% endif %}
 </figure>
 {%- endmacro %}
 

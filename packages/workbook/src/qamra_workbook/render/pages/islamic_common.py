@@ -145,7 +145,7 @@ def sacred(ctx: PageContext, quote: Quote, kind: str, problems: list[str]) -> di
         "title": src.title_ar if src else quote.source,
         "text": text,
         "lines": [
-            {"n": ctx.num(n), "text": t} for n, t in (got.lines if got and got.kind == "quran" else ())
+            {"n": ctx.num(n) if n else "", "text": t} for n, t in (got.lines if got and got.kind == "quran" else ())
         ],
         "reference": ctx.num(got.reference) if got and got.reference else "",
         "quran": bool(got and got.kind == "quran"),

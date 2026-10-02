@@ -58,6 +58,7 @@
 .sacred-label { font: 700 11pt/1.5 var(--kitab); color: var(--green); margin-bottom: 1.4mm; }
 .sacred-text { font: 400 20pt/2.05 var(--kitab); color: #14181F; }
 .sacred-ref { margin-top: 1mm; font: 600 8.5pt var(--ui); color: var(--muted); direction: rtl; }
+.sacred-credit { margin-top: .6mm; font: 500 7pt var(--ui); color: var(--muted); direction: rtl; opacity: .85; }
 .sacred-tag { position: absolute; top: -2.6mm; inset-inline-end: 6mm; padding: 0.4mm 2.4mm; border-radius: 2mm; background: #FCEFD2; color: #9A620A; font: 700 7pt/1.4 var(--ui); }
 .sacred.quran { background: #FFFBEE; border: 0.9mm solid var(--green); border-radius: 3.4mm; padding: 5.4mm 10mm 4.6mm;
                 box-shadow: inset 0 0 0 1.5mm #FFFBEE, inset 0 0 0 2.1mm var(--gold); }
@@ -327,6 +328,7 @@
 .su { gap: 3.4mm; padding-top: 4mm; --vh: 92mm; --th: 76mm; }
 .su-verse { flex: none; padding: 3mm 3mm 1mm; }
 .sacred-text.stacked .ayah { display: block; }
+.sacred-text .ayah.basmala { display: block; font-size: 0.82em; }
 .su-verse .sacred.is-placeholder .sacred-hole { min-height: 70mm; justify-content: center; }
 .su-meaning { flex: none; padding: 2.6mm 5mm 2.8mm; }
 .su-meaning h2 { display: flex; align-items: center; gap: 1.8mm; font: 700 11.5pt/1.4 var(--kitab); color: var(--deep); }
@@ -350,7 +352,10 @@
 .su-care { margin-top: 0; }
 /* a verse block of fixed height: its text shrinks to fit (down to 14 pt), so the page does not move when the verified text replaces the placeholder */
 .sacred.fixed { height: var(--vh, 46mm); display: flex; flex-direction: column; justify-content: center; align-items: center; }
-.sacred.fixed .sacred-text { max-height: var(--th, 28mm); overflow: hidden; }
+.sacred.fixed .sacred-text { max-height: var(--th, 28mm); overflow: hidden; flex: none; }
+.sacred.fixed.quran { padding-block: 3.2mm 2.6mm; }
+.sacred.fixed .sacred-ref, .sacred.fixed .sacred-credit { margin-top: 0.4mm; line-height: 1.3; }
+.sacred.fixed.quran .sacred-text { line-height: 2.1; }
 .sacred.fixed .sacred-hole { width: 100%; }
 .pp-how, .pp-h { padding-inline: 1.4mm; }
 .pp-how { font: 600 11pt/1.6 var(--kitab); color: var(--ink-2); }

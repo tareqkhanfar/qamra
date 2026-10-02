@@ -403,3 +403,22 @@ def test_the_sample_pages_use_a_register_with_no_error() -> None:
     res = Resolver.load()
     found = checks.errors(checks.check_pages(checks.load_pages(SAMPLES), res, checks.PageRules.load()))
     assert found == []
+
+
+def test_basmala_is_split_off_the_first_ayah_not_numbered():
+    from qamra_workbook.islamic_sources import parse_quran
+
+    q = parse_quran("1|1|بسم الله\n112|1|بسم الله قل هو الله أحد\n112|2|الله الصمد\n2|1|بسم الله الم\n")
+    assert q.lines(112, 1, 2) == ((0, "بسم الله"), (1, "قل هو الله أحد"), (2, "الله الصمد"))
+    assert q.lines(1, 1, 1) == ((1, "بسم الله"),)  # al-Fatiha: the basmala IS ayah 1
+    assert q.lines(112, 2, 2) == ((2, "الله الصمد"),)  # only a range that starts at ayah 1 is split
+
+
+def test_real_tanzil_file_is_complete_and_keeps_its_licence_header():
+    from pathlib import Path
+
+    from qamra_workbook.islamic_sources import read_quran
+
+    q = read_quran(Path(__file__).parents[3] / "content/islamic/quran/quran-uthmani.txt")
+    assert q is not None and len(q.ayat) == 6236 and len({s for s, _ in q.ayat}) == 114
+    assert any("Tanzil" in h for h in q.header) and any("tanzil.net" in h for h in q.header)

@@ -14,8 +14,8 @@
 #
 # Where the wording comes from:
 #   quran   the official Tanzil Uthmani file (see `corpus.quran`), copied verbatim, never from memory.
-#           The file is NOT in the repo yet: tanzil.net does not answer from the build server, so Tareq places
-#           it at content/islamic/quran/quran-uthmani.txt. Until then pages print a marked placeholder.
+#           The file is in the repo (content/islamic/quran/quran-uthmani.txt, unchanged, its header kept);
+#           changing it is not allowed by the Tanzil terms, and every page showing it credits Tanzil + tanzil.net.
 #   hadith  the collection's own text by (collection, number). Candidates come from an open dataset only to
 #           sanity-check the reference; the final wording and numbering edition are the scholar's decision.
 #   dua     a span cut out of a hadith's verified text between two search markers (`start`, `end`, inclusive,
@@ -29,10 +29,10 @@ version: 1
 
 corpus:
   quran:
-    file: content/islamic/quran/quran-uthmani.txt   # Tanzil, lines "surah|ayah|text"; absent until Tareq adds it
+    file: content/islamic/quran/quran-uthmani.txt   # Tanzil, lines "surah|ayah|text"
     license_note: >-
       Tanzil text: verbatim copies may be distributed, changing the text is not allowed, and the copyright
-      header must be kept. Read the header of the downloaded file and record it in docs/licenses.md.
+      header must be kept. Recorded in docs/licenses.md (CC BY 3.0, credit Tanzil Project + link tanzil.net).
   hadith:
     dataset: fawazahmed0/hadith-api   # Unlicense (code); candidates only. The texts' own status is the scholar's call
     editions: {bukhari: ara-bukhari, muslim: ara-muslim, abudawud: ara-abudawud, tirmidhi: ara-tirmidhi}

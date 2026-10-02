@@ -347,7 +347,19 @@ class QuranFile:
             if text is None:
                 raise SourceError(f"{surah}:{n} is not in {self.name}")
             out.append((n, text))
-        return tuple(out)
+        return self._basmala_apart(tuple(out), surah)
+
+    def _basmala_apart(self, lines: tuple[tuple[int, str], ...], surah: int) -> tuple[tuple[int, str], ...]:
+        """Tanzil prints the basmala inside the first ayah of every surah but al-Fatiha; it is not an ayah
+        there, so it is split off as its own unnumbered line (number 0). Only the exact basmala text of 1:1
+        is split off; nothing is rewritten."""
+        basmala = self.ayat.get((1, 1))
+        if not basmala or surah == 1 or not lines or lines[0][0] != 1:
+            return lines
+        first = lines[0][1]
+        if first.startswith(basmala + " ") and len(first) > len(basmala) + 1:
+            return ((0, basmala), (1, first[len(basmala) :].strip()), *lines[1:])
+        return lines
 
 
 def parse_quran(raw: str, name: str = "quran-uthmani.txt") -> QuranFile:
