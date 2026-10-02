@@ -80,6 +80,19 @@ uv run scripts/sample_book.py --photo kid.jpg --name "سلمى" --gender f --age
 
 Each run writes `interior.pdf`, `cover.pdf` (RTL wrap with spine), `proof.pdf`, `report.md` (preflight, QA per page, regeneration rate, cost), `story.json` and `cost.json`.
 
+## Design images, mockups and the social kit
+
+```bash
+uv run python scripts/design_images.py --budget 9 --dry-run   # the 77 images of docs/image-prompts.md
+uv run python scripts/design_images.py --budget 9             # draws them on fal (FAL_KEY), within the cap
+uv run python scripts/install_design_images.py                # → site photos, content/cast, cover plates
+uv run python scripts/theme_mockups.py                        # hardcover + open-book mockups per theme
+uv run python scripts/social_kit.py                           # Instagram/Facebook designs → out/social/
+```
+
+Every final book also gets `mockup-hardcover.png` and `mockup-spread.png` next to its print files (Admin →
+approval queue). Spend on design images is recorded in `out/design-images/ledger.jsonl`, shared by all runs.
+
 ## Layout
 
 ```
