@@ -1,0 +1,18 @@
+{#- full-bleed-cloud: the whole illustration; the text in an organic cloud that sits in the reserved calm
+    area (top / bottom / outer side). The cloud fits its text: no fixed-size box. -#}
+{% import "_macros.html.j2" as m %}
+{% macro page(p) -%}
+{% set area = p.panel.area if p.panel else 'top' %}
+<section class="page lay-cloud{{ ' qr-' ~ p.side if p.qr_url and qr }}" data-kind="story" data-layout="full-bleed-cloud" data-number="{{ p.number }}">
+  <img class="bleed-img" src="{{ img(p.image) }}" alt="">
+  {% if p.text %}
+  <div class="cloud-box {{ area }}" data-panel="{{ p.number }}">
+    <div class="cloud-shape" style="opacity: {{ p.panel.opacity if p.panel else 0.9 }}">{% for i in range(8) %}<i class="puff p{{ i }}"></i>{% endfor %}</div>
+    {{ m.story_body(p, s, hero) }}
+  </div>
+  {% endif %}
+  {{ m.badge(spec, p, t, orn) }}
+  {{ m.voice_qr(spec, s, p, qr) }}
+  {{ m.watermark(spec, s) }}
+</section>
+{%- endmacro %}

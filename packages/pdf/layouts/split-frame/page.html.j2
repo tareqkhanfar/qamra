@@ -1,0 +1,19 @@
+{#- split-frame: the (3:2) illustration in a decorative frame — tatreez cross-stitch, or a moon border for
+    night books — with the text on the paper below. -#}
+{% import "_macros.html.j2" as m %}
+{% macro page(p) -%}
+<section class="page paper lay-split{{ ' qr-' ~ p.side if p.qr_url and qr }}" data-kind="story" data-layout="split-frame" data-number="{{ p.number }}">
+  <div class="paper-wash"></div>
+  <div class="split-frame-box">
+    <div class="split-shadow"></div>
+    <div class="split-window"><img src="{{ img(p.image) }}" alt=""></div>
+    {% if t.slug == 'night-glow' %}{{ orn.moon_border(168, 116, 6, t.ink) }}{% else %}{{ orn.tatreez_frame(168, 116, 6, '#B3262F', '#3F7F4F') }}{% endif %}
+  </div>
+  {% if p.text %}
+  <div class="split-region"><div class="split-text" data-panel="{{ p.number }}">{{ m.story_body(p, s, hero) }}</div></div>
+  {% endif %}
+  {{ m.badge(spec, p, t, orn) }}
+  {{ m.voice_qr(spec, s, p, qr) }}
+  {{ m.watermark(spec, s) }}
+</section>
+{%- endmacro %}

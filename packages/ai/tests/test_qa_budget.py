@@ -32,7 +32,8 @@ def test_soft_problems_lower_the_score() -> None:
     qa = good_page_qa().model_copy(update={"likeness": 6, "outfit_ok": False, "text_space_ok": False})
     v = evaluate(qa, expect_hero=True, expect_companion=True, threshold=0.75)
     assert not v.passed and {"face", "outfit", "text_space"} <= set(v.flags)
-    assert v.score == pytest.approx(0.45 * 0.6 + 0.10 + 0.10 + 0.05, abs=1e-3)
+    # likeness .40, hijab .05, count .08, companion .10, framing .07, style .05 (outfit + text space lost)
+    assert v.score == pytest.approx(0.40 * 0.6 + 0.05 + 0.08 + 0.10 + 0.07 + 0.05, abs=1e-3)
 
 
 def test_plate_has_no_likeness_or_outfit() -> None:

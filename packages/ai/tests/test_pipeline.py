@@ -98,10 +98,13 @@ async def test_final_book_cover_first_and_print_sizes(
 ) -> None:
     run = await run_book(rt, book_inputs, mode="final")
     assert len(run.pages) == 18 and run.status_counts() == {"ok": 18} and run.flags == []
-    first = fake_image.requests[0]
+    # no fixed sheet for «قمّور» in watercolor: drawn once from its locked description, before the cover
+    sheet, first = fake_image.requests[0], fake_image.requests[1]
+    assert sheet.step == "companion:sheet" and "plump crescent" in sheet.prompt
     assert first.step == "cover:a1"
-    later = [r for r in fake_image.requests[1:] if not r.step.startswith("page:5")]
+    later = [r for r in fake_image.requests[2:] if not r.step.startswith("page:5")]
     assert all(any(ref.label.startswith("the book's front cover") for ref in r.refs) for r in later)
+    assert all(any(ref.label.startswith("THE COMPANION") for ref in r.refs) for r in [first, *later])
     assert _size(run.pages[0].print_image) == (2551, 2551)
     assert _size(run.pages[3].print_image) == (5031, 2551)  # spread
     assert _size(run.pages[2].print_image) == (2551, 1524)  # split
@@ -116,7 +119,8 @@ async def test_preview_draws_cover_and_first_pages_small(
 ) -> None:
     run = await run_book(rt, book_inputs, mode="preview")
     assert sorted(run.pages) == [0, 1, 2, 3]
-    assert {r.resolution for r in fake_image.requests} == {"0.5K"}
+    pages = [r for r in fake_image.requests if r.step != "companion:sheet"]  # the sheet is kept for finals
+    assert {r.resolution for r in pages} == {"0.5K"}
     assert all(p.print_image is None for p in run.pages.values())
 
 
@@ -126,7 +130,7 @@ async def test_final_after_preview_reuses_the_approved_preview(
     book_inputs.previews = {1: png("pink")}
     book_inputs.cover = png("gold")
     await run_book(rt, book_inputs, mode="final", beats=[1])
-    req = fake_image.requests[0]
+    req = next(r for r in fake_image.requests if r.step.startswith("page:1"))
     assert any(ref.label.startswith("approved preview") for ref in req.refs)
     assert "parent-approved preview of THIS page" in req.prompt
 
@@ -289,7 +293,8 @@ async def test_qa_prefix_is_cached(rt: Runtime, book_inputs: BookInputs) -> None
     qa_calls = [c for c in rt.text.calls if c["schema"] == "PageQA"]  # type: ignore[attr-defined]
     page_call = qa_calls[1]["user"]
     marker = next(i for i, p in enumerate(page_call) if isinstance(p, CacheBreak))
-    assert sum(not isinstance(p, str) for p in page_call[:marker]) == 2  # sheet + cover before the marker
+    # sheet + cover + companion sheet before the marker
+    assert sum(not isinstance(p, str) for p in page_call[:marker]) == 3
     assert "Brief:" in page_call[-1]
 
 

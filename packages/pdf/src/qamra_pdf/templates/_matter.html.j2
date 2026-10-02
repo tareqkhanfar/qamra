@@ -1,0 +1,111 @@
+{#- Front and back matter (Addendum 11 §5). Imported "with context": uses spec, s, img, t, orn, hero, assets. -#}
+{% import "_macros.html.j2" as m %}
+
+{#- The child's portrait in an ornate moon frame (E3 image when present, else the code-drawn frame). -#}
+{% macro moon_portrait(portrait, cls='') -%}
+<div class="moon-portrait {{ cls }}">
+  <div class="mp-photo">{% if portrait %}<img src="{{ img(portrait) }}" alt="">{% endif %}</div>
+  {% if assets.decor.moon_frame %}<img class="mp-frame-img" src="{{ img(assets.decor.moon_frame) }}" alt="">{% else %}{{ orn.moon_frame() }}{% endif %}
+</div>
+{%- endmacro %}
+
+{% macro title_page() -%}{% set tp = spec.title_page %}
+<section class="page paper title-page" data-kind="title" data-number="1">
+  <div class="paper-wash"></div>
+  <div class="tp-stars">{{ orn.scattered_stars(216, 216, 22, 11, '#E9A92B', (40, 30, 176, 190)) }}</div>
+  <div class="tp-frame"></div>
+  {% for c in ['tl', 'tr', 'bl', 'br'] %}<div class="orn-corner {{ c }}">{{ orn.corner_flourish('#D59A2A', t.accent) }}</div>{% endfor %}
+  <div class="tp-content">
+    <h1 class="tp-name">{{ tp.name }}</h1>
+    {% if tp.subtitle %}<div class="tp-subtitle">{{ tp.subtitle }}</div>{% endif %}
+    <div class="tp-made-for">{{ tp.made_for }}</div>
+    {{ moon_portrait(tp.portrait) }}
+    <div class="tp-label"><span></span>{{ s.dedication_label }}<span></span></div>
+    <p class="tp-dedication">{{ tp.dedication }}</p>
+  </div>
+</section>
+{%- endmacro %}
+
+{% macro keepsake_page(p) -%}{% set k = spec.keepsake %}
+<section class="page paper keepsake" data-kind="companion" data-number="{{ p.number }}">
+  <div class="paper-wash"></div>
+  <div class="frame-border">
+    <h2 class="display">{{ s.keepsake_title }}</h2>
+    <div class="pair">
+      <figure class="drawing"><div class="paper-sheet">{{ orn.tape('#E9826B', 'dots') }}<img src="{{ img(k.drawing) }}" alt=""></div><figcaption>{{ s.drawing_label }}</figcaption></figure>
+      <div class="arrow">{{ orn_arrow() }}</div>
+      <figure class="final"><div class="circle"><img src="{{ img(k.companion) }}" alt=""></div><figcaption>{{ s.companion_label.format(companion=k.companion_name) }}</figcaption></figure>
+    </div>
+    <p class="note">{{ (s.keepsake_note_f if spec.gender == 'f' else s.keepsake_note).format(name=k.child_name) }}</p>
+    <div class="date">{{ k.date_text }}</div>
+  </div>
+  {{ m.badge(spec, p, t, orn) }}
+</section>
+{%- endmacro %}
+
+{% macro orn_arrow() -%}
+<svg viewBox="0 0 40 16" aria-hidden="true" style="width:14mm;height:6mm;{{ 'transform:scaleX(-1)' if spec.dir == 'rtl' else '' }}"><path d="M2 8 C 12 2 24 14 34 8" fill="none" stroke="#E9A92B" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="2.4 2.6"/><path d="M30 3.5 L 37 8 L 30 12.5" fill="none" stroke="#E9A92B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+{%- endmacro %}
+
+{% macro parents_page(p) -%}{% set fp = spec.parents %}
+<section class="page paper parents" data-kind="parents" data-number="{{ p.number }}">
+  <div class="pa-blob b1"></div><div class="pa-blob b2"></div><div class="pa-blob b3"></div>
+  <div class="pa-head">{{ m.moon_mark('15mm', '#E9A92B', t.ink) }}<h2>{{ s.parents_title }}</h2></div>
+  <div class="pa-cards">
+    <div class="pa-card lesson">
+      <div class="pa-icon">{{ orn.icon('seed', '#FFFDF8', '#7FA38A') }}</div>
+      <div class="pa-label">{{ s.parents_lesson_label }}</div>
+      <p class="pa-lesson">{{ fp.lesson }}</p>
+    </div>
+    <div class="pa-card questions">
+      <div class="pa-icon">{{ orn.icon('talk', '#FFFDF8', t.accent) }}</div>
+      <div class="pa-label">{{ s.parents_questions_label }}</div>
+      <ol>{% for q in fp.questions %}<li><span class="q-num">{{ spec.folio(loop.index) }}</span><span>{{ q }}</span></li>{% endfor %}</ol>
+    </div>
+  </div>
+  <div class="pa-hero">{{ moon_portrait(spec.title_page.portrait, 'small') }}</div>
+  <div class="pa-made-by">{{ m.moon_mark('4.4mm', '#E9A92B', t.ink) }}<span>{{ s.made_by.format(brand=spec.brand.name_ar if spec.lang == 'ar' else spec.brand.name_en) }} · {{ spec.brand.domain }}</span></div>
+  {{ m.badge(spec, p, t, orn) }}
+</section>
+{%- endmacro %}
+
+{% macro activity_page(p) -%}
+<section class="page paper activity" data-kind="activity" data-number="{{ p.number }}">
+  <div class="paper-wash"></div>
+  <div class="ac-doodles">{% if assets.decor.doodles %}<img src="{{ img(assets.decor.doodles) }}" alt="">{% else %}{{ orn.crayon_doodles(216, 216, (23, 62, 193, 194), p.number, 44) }}{% endif %}</div>
+  <h2 class="ac-title">{{ s.activity_title_f if spec.gender == 'f' else s.activity_title_m }}</h2>
+  <div class="ac-frame">
+    {{ orn.wavy_frame(170, 132, t.accent) }}
+    <div class="ac-peek">{% if assets.companion %}<img src="{{ img(assets.companion) }}" alt="">{% else %}{{ orn.peek_creature() }}{% endif %}</div>
+    <div class="ac-bubble">{{ s.activity_bubble_f if spec.gender == 'f' else s.activity_bubble_m }}</div>
+  </div>
+  {{ m.badge(spec, p, t, orn) }}
+</section>
+{%- endmacro %}
+
+{% macro polaroid(caption, tilt, tape_color, tape_pattern) -%}
+<figure class="polaroid" style="transform: rotate({{ tilt }}deg)">
+  {% if assets.decor.polaroid %}<img class="pol-img" src="{{ img(assets.decor.polaroid) }}" alt="">{% else %}<div class="pol-photo">{{ m.moon_mark('12mm', 'rgba(185,122,18,.25)', 'rgba(185,122,18,.25)') }}</div>{{ orn.tape(tape_color, tape_pattern) }}{% endif %}
+  <figcaption><span class="pol-caption">{{ caption }}</span><span class="pol-date">{{ s.memories_date }} <i></i></span></figcaption>
+</figure>
+{%- endmacro %}
+
+{% macro memories_page(p) -%}
+<section class="page paper memories" data-kind="memories" data-number="{{ p.number }}">
+  <div class="paper-wash"></div>
+  <div class="me-stars">{{ orn.scattered_stars(216, 216, 12, p.number + 3, '#E9A92B', (14, 40, 202, 200)) }}</div>
+  <h2 class="me-title">{{ s.memories_title }}</h2>
+  <div class="me-row">
+    {% if spec.memories == 'school' %}
+    {{ polaroid(s.memories_first_day, -4, '#E9826B', 'dots') }}{{ polaroid(s.memories_last_day, 3.5, '#7FA38A', 'stripes') }}
+    {% else %}
+    {{ polaroid(s.memories_photo, -4, '#E9826B', 'dots') }}{{ polaroid(s.memories_with_love, 3.5, '#F2B33D', 'moons') }}
+    {% endif %}
+  </div>
+  <div class="me-note">
+    <div class="me-prompt">{{ s.memories_prompt }}</div>
+    <div class="me-lines">{% for _ in range(3) %}<span></span>{% endfor %}</div>
+  </div>
+  {{ m.badge(spec, p, t, orn) }}
+</section>
+{%- endmacro %}

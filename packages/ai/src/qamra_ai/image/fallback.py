@@ -49,6 +49,13 @@ class FallbackImageProvider:
         self._sleep = sleep
         self.switches = 0  # requests that ended up on the fallback (reported per book)
 
+    @property
+    def max_refs(self) -> int:
+        """Reference images a request may carry: what both the primary and the fallback accept."""
+        limits = [getattr(p, "max_refs", None) for p in (self.primary, self.fallback) if p is not None]
+        known = [int(n) for n in limits if n is not None]
+        return min(known) if known else 8
+
     async def generate(self, req: ImageRequest) -> GeneratedImage:
         errors: list[str] = []
         last: Exception = ProviderError("no attempt made")

@@ -1,0 +1,42 @@
+/* Story book cover (Addendum 11 §2). Class books keep _cover.css.j2. */
+.front, .back { position: absolute; top: 0; width: {{ spec.trim_mm + spec.bleed_mm }}mm; height: var(--page); overflow: hidden; }
+.front .cover-shade { position: absolute; inset: 0; }
+.front .cover-title { position: absolute; top: calc(var(--bleed) + 6mm); width: 194mm; display: flex; flex-direction: column; align-items: center; z-index: 2; }
+.front.outer-left .cover-title { left: calc(var(--bleed) + 8mm); } .front.outer-right .cover-title { left: 8mm; }
+.front svg.title-art { display: block; width: 194mm; height: 54mm; overflow: visible; }
+.ribbon { position: relative; display: inline-flex; align-items: center; gap: 3mm; margin-top: 1.5mm; padding: .8mm 13mm 1.4mm;
+  background: linear-gradient(to bottom, {{ t.ribbon[0] }}, {{ t.ribbon[1] }});
+  clip-path: polygon(0 0, 100% 0, calc(100% - 4.6mm) 50%, 100% 100%, 0 100%, 4.6mm 50%); }
+.ribbon::before { content: ""; position: absolute; inset: .8mm 3.6mm; border-top: .35mm solid {{ t.ribbon_edge }}; border-bottom: .35mm solid {{ t.ribbon_edge }}; opacity: .85; }
+.ribbon .r-label { position: relative; font: 800 15pt/1.7 "Baloo Bhaijaan 2", sans-serif; color: {{ t.ribbon_label }}; }
+.ribbon .r-name { position: relative; font: 400 30pt/1.35 "Lalezar", "Baloo Bhaijaan 2", sans-serif; color: {{ t.ribbon_name }};
+  text-shadow: .35mm 0 0 {{ t.ribbon_name_outline }}, -.35mm 0 0 {{ t.ribbon_name_outline }}, 0 .35mm 0 {{ t.ribbon_name_outline }}, 0 -.35mm 0 {{ t.ribbon_name_outline }},
+    .25mm .25mm 0 {{ t.ribbon_name_outline }}, -.25mm .25mm 0 {{ t.ribbon_name_outline }}, .25mm -.25mm 0 {{ t.ribbon_name_outline }}, -.25mm -.25mm 0 {{ t.ribbon_name_outline }}; }
+.front .front-moon { position: absolute; bottom: calc(var(--bleed) + 8mm); width: 15mm; height: 15mm; display: flex; align-items: center; justify-content: center; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,253,248,.55) 0%, rgba(255,253,248,.25) 45%, rgba(255,253,248,0) 70%); }
+.front.outer-left .front-moon { left: calc(var(--bleed) + 7mm); } .front.outer-right .front-moon { right: calc(var(--bleed) + 7mm); }
+
+.back { background: {{ t.ink }}; color: var(--cream); }
+.back .back-tint { position: absolute; inset: 0; }
+.back .back-stars svg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .7; }
+.back .back-content { position: absolute; top: calc(var(--bleed) + 30mm); width: 170mm; display: flex; flex-direction: column; align-items: center; gap: 7mm; text-align: center; }
+.back.outer-right .back-content { left: 20mm; } .back.outer-left .back-content { left: calc(var(--bleed) + 20mm); }
+.back .moon-portrait.on-back { width: 46mm; height: 46mm; }
+.back .blurb { font-size: 16pt; line-height: 1.95; color: var(--cream); max-width: 150mm; }
+.back .blurb .hero-name { color: #FFD36B; }
+[dir="ltr"] .back .blurb { font-family: "IBM Plex Sans Arabic", sans-serif; font-size: 15pt; }
+.back .back-foot { position: absolute; bottom: calc(var(--safe) + 2mm); width: 170mm; display: flex; align-items: flex-end; justify-content: space-between; gap: 6mm; }
+.back.outer-right .back-foot { left: 20mm; } .back.outer-left .back-foot { left: calc(var(--bleed) + 20mm); }
+.back .back-foot:not(:has(.qr-card)) { justify-content: center; }
+.back .back-brand { display: flex; align-items: center; gap: 3mm; }
+.back .back-name { font: 400 17pt/1.3 "Lalezar", "Baloo Bhaijaan 2", sans-serif; color: var(--moon-glow); }
+.back .back-domain { font: 600 10pt "IBM Plex Sans Arabic", sans-serif; letter-spacing: .5mm; color: #D7DBF0; direction: ltr; text-align: start; }
+.back .qr-card { display: flex; align-items: center; gap: 3mm; background: rgba(255,253,248,.1); border: .3mm solid rgba(255,253,248,.35); border-radius: 4mm; padding: 2.5mm 3.5mm; }
+.back .qr { width: 22mm; height: 22mm; background: var(--paper-raised); border-radius: 2mm; padding: 1.6mm; }
+.back .qr svg { width: 100%; height: 100%; display: block; }
+.back .qr-caption { font: 500 9.5pt "IBM Plex Sans Arabic", sans-serif; color: #E3E6F5; max-width: 48mm; text-align: start; line-height: 1.6; }
+
+.spine { position: absolute; top: 0; height: var(--page); width: {{ spec.spine_mm }}mm; left: {{ spec.trim_mm + spec.bleed_mm }}mm; overflow: hidden; }
+.spine .spine-moon { position: absolute; left: 1.2mm; right: 1.2mm; bottom: calc(var(--bleed) + 10mm); display: flex; justify-content: center; }
+.spine .spine-text { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) rotate(90deg); white-space: nowrap;
+  font: 700 {{ [((spec.spine_mm - 2.6) / 1.5 / 0.3528) | round(1), 13] | min }}pt/1 "Baloo Bhaijaan 2", sans-serif; color: var(--moon-glow); }

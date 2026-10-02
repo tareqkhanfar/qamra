@@ -2,6 +2,8 @@ slug: moon-trip
 version: 1
 title_ar: "{name} في رحلة إلى القمر"
 title_en: "{name}'s Trip to the Moon"
+# Cover lettering (Addendum 11 §2.3): gold-magic, candy-bright, night-glow, nature-fresh, heritage-tatreez
+cover_title_style: night-glow
 age_range: [4, 7]
 is_b2b: false
 active: true

@@ -19,6 +19,10 @@ fal:
   # Nano Banana 2: $0.08 per image at 1K; 0.5K ×0.75, 2K ×1.5, 4K ×2 (fal.ai/models/fal-ai/nano-banana-2)
   fal-ai/nano-banana-2: {per_image: 0.08, resolution: {"0.5K": 0.75, "1K": 1.0, "2K": 1.5, "4K": 2.0}}
   fal-ai/nano-banana-2/edit: {per_image: 0.08, resolution: {"0.5K": 0.75, "1K": 1.0, "2K": 1.5, "4K": 2.0}}
+  # Nano Banana Pro (covers, Addendum 11 §6.4): $0.15 per image, 4K double; no 0.5K tier (billed as 1K)
+  # (fal.ai/models/fal-ai/nano-banana-pro/edit, checked 2026-10-02)
+  fal-ai/nano-banana-pro: {per_image: 0.15, resolution: {"0.5K": 1.0, "1K": 1.0, "2K": 1.0, "4K": 2.0}}
+  fal-ai/nano-banana-pro/edit: {per_image: 0.15, resolution: {"0.5K": 1.0, "1K": 1.0, "2K": 1.0, "4K": 2.0}}
   # FLUX.2: first output megapixel, then per extra megapixel of input and output, rounded up
   fal-ai/flux-2-pro/edit: {first_mp: 0.03, extra_mp: 0.015, bill_inputs: true}
   fal-ai/flux-2-pro: {first_mp: 0.03, extra_mp: 0.015, bill_inputs: false}

@@ -2,6 +2,8 @@ slug: graduation
 version: 3
 title_ar: "يوم تخرّج {name}"
 title_en: "{name}'s Graduation Day"
+# Cover lettering (Addendum 11 §2.3): gold-magic, candy-bright, night-glow, nature-fresh, heritage-tatreez
+cover_title_style: gold-magic
 age_range: [5, 6]
 is_b2b: false
 active: true
@@ -35,9 +37,16 @@ companion_slot: true
 default_companion:
   name_ar: قَمّور
   name_en: Qamour
+  id: qamour  # shared sheet images: content/cast/qamour-<style>.png
+  # Locked design (Addendum 11 §4.2): always this plump crescent, never a ball. Same text as the sheets in
+  # docs/image-prompts.md (C1, C2, C7).
   description_en: >-
-    a tiny round glowing moon creature, soft pale-gold body shaped like a plump crescent,
-    two small dot eyes, rosy cheeks, stubby little arms, floats a few centimeters above the ground
+    a tiny friendly moon creature: a soft, plump crescent-moon body (a thick C shape opening to the
+    right), pale honey-gold, softly glowing from inside, about the size of a house cat. Its face sits on
+    the thick middle of the crescent: two small shiny black dot eyes, a tiny happy smile, round rosy
+    cheeks, and a small five-pointed star-shaped golden freckle on its left cheek. Two stubby little
+    arms, no legs. It floats a few centimeters above the ground with a faint trail of golden sparkles.
+    The crescent shape never changes
 
 # Template syntax: {name}, {companion}; gender variants {masculine/feminine}. See first-day for layouts.
 locations:
@@ -71,21 +80,56 @@ outfits:
       en: >-
         a night-blue graduation gown with a moon-gold collar sash over a white shirt, and a night-blue
         graduation cap with a golden tassel
-      hijab_en: a soft white hijab under the cap
+      hijab_en: a soft white hijab
     - key: gown_green
       en: >-
         a sage-green graduation gown with a cream collar sash over a white shirt, and a sage-green
         graduation cap with a golden tassel
-      hijab_en: a soft cream hijab under the cap
-  school:
-    - key: school
-      en: a coral-red long-sleeved t-shirt with a small gold star patch and navy trousers
-      en_f: a coral-red long-sleeved dress with a small gold star patch over navy leggings
       hijab_en: a soft cream hijab
+  school:  # teal: never the classmates' colors, so the hero is never mistaken for one of them
+    - key: school
+      en: a teal long-sleeved t-shirt with a small gold star patch and beige trousers
+      en_f: a teal long-sleeved dress with a small gold star patch over beige leggings
   sleep:
     - key: moons
       en: light-blue pajamas with tiny golden moons
-      hijab_en: a soft light-blue hijab matching the pajamas
+
+# Recurring side characters (Addendum 11 §4.3): one locked look per book. Scenes name them in `others`
+# as {id}; sheet images: cast/<id>-<style>.png here, or the shared content/cast/<id>-<style>.png.
+# The same id has the same description in every theme (tests check it).
+cast:
+  - id: teacher
+    role: the teacher
+    description_en: >-
+      a kind woman in her early thirties, warm light-olive skin, a gentle round face, warm brown
+      eyes and a soft smile, a sage-green hijab wrapped neatly, a long cream knitted cardigan over a
+      dusty-rose ankle-length dress, a short wooden-bead necklace, flat brown shoes
+  - id: classmates
+    role: the four classmates
+    description_en: >-
+      four kindergarten classmates aged 5–6, each always drawn the same: (1) a boy with short
+      curly black hair and round tortoiseshell glasses, mustard-yellow t-shirt and navy trousers; (2) a
+      girl with a neat lavender hijab, coral long-sleeved dress and white sneakers; (3) a boy with
+      straight light-brown hair and a cowlick, navy hoodie and gray trousers; (4) a girl with two puffy
+      black pigtails tied with yellow ribbons, sky-blue pinafore dress over a white shirt. Skin tones
+      vary within the Levantine range
+  - id: mom
+    role: the mother
+    description_en: >-
+      a woman in her early thirties, warm light-olive skin, kind almond-shaped brown eyes, a
+      dusty-rose hijab, a long navy cardigan over a cream ankle-length dress, comfortable flat shoes
+  - id: dad
+    role: the father
+    description_en: >-
+      a man in his mid-thirties, warm olive skin, short black hair, a short neat black beard,
+      warm brown eyes and laugh lines, a light-blue button-up shirt with the sleeves rolled up, beige
+      trousers, brown leather shoes, a simple wristwatch
+  - id: grandma
+    role: the grandmother
+    description_en: >-
+      a woman in her late sixties with gentle wrinkles and a warm smile, a white embroidered
+      headscarf, a traditional black Palestinian thobe with red cross-stitch tatreez on the chest panel
+      and sleeves, a string of olive-wood prayer beads in her hand
 
 blurb_ar: "من ذكرى أوّل يوم إلى لحظة رفع الشهادة عاليًا: حكاية {name} في يوم التخرّج، وحلمٌ صغير اسمه الصفّ الأول."
 blurb_en: "From the memory of the very first day to the moment the certificate goes up high: {name}'s graduation day, and a little dream called first grade."
@@ -148,7 +192,7 @@ pages:
       A dreamy panorama of the kindergarten year in the classroom: the hero and friends at low tables
       building shapes, threading beads and sorting colored stones, while the big arched windows show the
       seasons passing from autumn leaves on one side, to winter rain, to spring blossoms on the other.
-    others: four other children and the teacher
+    others: "{classmates} and {teacher}"
     others_count: 5
     companion_action: juggles three colorful beads
     text_ar: "طَوَالَ السَّنَةِ، {تَعَلَّمَ/تَعَلَّمَتْ} {name} الْحُرُوفَ وَالْأَرْقَامَ، فِي الْخَرِيفِ وَالشِّتَاءِ وَالرَّبِيعِ. كُلَّ يَوْمٍ شَيْءٌ جَدِيدٌ!"
@@ -173,9 +217,9 @@ pages:
     outfit: school
     beat: friends
     scene: >-
-      The hero and three friends of different looks hold hands in a circle in the sunny yard, laughing.
-    others: three friends of different looks
-    others_count: 3
+      The hero and the four classmates hold hands in a circle in the sunny yard, laughing.
+    others: "{classmates}"
+    others_count: 4
     companion_action: dances in the middle of the circle
     text_ar: "{وَوَجَدَ/وَوَجَدَتْ} {name} أَصْدِقَاءَ {يَلْعَبُ/تَلْعَبُ} مَعَهُمْ كُلَّ يَوْمٍ، فِي الشَّمْسِ وَفِي الْمَطَرِ."
     text_en: "{name} found friends to play with every day, in sunshine and in rain."
@@ -188,7 +232,7 @@ pages:
     beat: the teacher
     scene: >-
       A kind teacher kneels and claps for the hero, who proudly shows a finished wooden animal puzzle.
-    others: a kind teacher
+    others: "{teacher}"
     others_count: 1
     companion_action: claps too
     text_ar: "وَكَانَتِ الْمُعَلِّمَةُ دَائِمًا هُنَاكَ: تَشْرَحُ، وَتَبْتَسِمُ، وَتُصَفِّقُ لِكُلِّ مُحَاوَلَةٍ."
@@ -215,7 +259,7 @@ pages:
     scene: >-
       On the stage, the whole class in graduation gowns stands in a row singing with open mouths; the
       hero stands in the middle, singing proudly.
-    others: six other children in graduation gowns
+    others: "{classmates} and two more children, all in graduation gowns"
     others_count: 6
     companion_action: conducts the song with a tiny stick
     text_ar: "{وَقَفَ/وَقَفَتْ} {name} مَعَ الصَّفِّ فِي صَفٍّ وَاحِدٍ، وَغَنَّى الْجَمِيعُ نَشِيدَ الرَّوْضَةِ بِصَوْتٍ عَالٍ وَجَمِيلٍ."
@@ -229,7 +273,7 @@ pages:
     scene: >-
       Backstage beside the curtain, the hero in gown and cap closes both eyes and takes a deep, calm
       breath, hands on the chest.
-    companion_action: sits on the hero's shoulder and whispers encouragement
+    companion_action: floats at the hero's shoulder and whispers encouragement
     text_ar: "خَلْفَ السِّتَارَةِ {شَعَرَ/شَعَرَتْ} {name} بِرَجْفَةٍ صَغِيرَةٍ. هَمَسَ {companion}: «{تَنَفَّسْ/تَنَفَّسِي}… {أَنْتَ جَاهِزٌ/أَنْتِ جَاهِزَةٌ}!»"
     text_en: "Behind the curtain, {name} felt a little shiver. {companion} whispered: \"Breathe... you're ready!\""
   - index: 10
@@ -241,7 +285,7 @@ pages:
     scene: >-
       The hero peeks out from the edge of the sage-green curtain and waves at Mama, Baba and the
       grandmother, who wave back happily from the front row of chairs.
-    others: Mama, Baba and the grandmother (Teta) in the front row
+    others: "{mom}, {dad} and {grandma} in the front row"
     others_count: 3
     companion_action: peeks out right under the hero's chin
     text_ar: "{أَطَلَّ/أَطَلَّتْ} {name} مِنْ طَرَفِ السِّتَارَةِ {فَرَأَى/فَرَأَتْ} مَامَا وَبَابَا وَسِتِّي يُلَوِّحُونَ، {فَلَوَّحَ/فَلَوَّحَتْ} لَهُمْ بِفَرَحٍ!"
@@ -266,7 +310,7 @@ pages:
     scene: >-
       Beside the stage, the hero gives the smiling teacher a small rolled drawing tied with a ribbon; the
       teacher places a hand on her heart, touched.
-    others: the teacher
+    others: "{teacher}"
     others_count: 1
     companion_action: bows politely
     text_ar: "ثُمَّ {قَدَّمَ/قَدَّمَتْ} {name} لِلْمُعَلِّمَةِ رَسْمَةً صَغِيرَةً {وَقَالَ/وَقَالَتْ}: «شُكْرًا لِأَنَّكِ عَلَّمْتِنِي.»"
@@ -280,7 +324,7 @@ pages:
     scene: >-
       In the sunny yard, the hero and classmates in gowns throw their graduation caps into the air among
       paper confetti, laughing with joy.
-    others: five classmates in graduation gowns
+    others: "{classmates} and one more child, all in graduation gowns"
     others_count: 5
     companion_action: rides on a flying cap
     text_ar: "ثُمَّ رَمَى الْأَطْفَالُ قُبَّعَاتِهِمْ فِي الْهَوَاءِ، وَضَحِكَ الْجَمِيعُ: هِيييهْ!"
@@ -294,7 +338,7 @@ pages:
     scene: >-
       In the yard, the hero in the graduation gown runs into the arms of Mama and Baba, all smiling with
       closed eyes in a big warm hug.
-    others: Mama and Baba
+    others: "{mom} and {dad}"
     others_count: 2
     companion_action: floats above them, glowing warmly
     text_ar: "{رَكَضَ/رَكَضَتْ} {name} إِلَى مَامَا وَبَابَا، {فَضَمَّاهُ/فَضَمَّاهَا} وَقَالَا: «نَحْنُ فَخُورَانِ {بِكَ/بِكِ}!»"
@@ -309,7 +353,7 @@ pages:
       Walking home along the sloping limestone street at sunset: the hero in the gown holds the
       certificate to the chest like a treasure, walking between Mama, Baba and the grandmother; long
       golden shadows and olive trees.
-    others: Mama, Baba and the grandmother (Teta)
+    others: "{mom}, {dad} and {grandma}"
     others_count: 3
     companion_action: carries the graduation cap like a little boat
     text_ar: "فِي طَرِيقِ الْعَوْدَةِ، تَحْتَ شَمْسِ الْغُرُوبِ، {حَمَلَ/حَمَلَتْ} {name} الشَّهَادَةَ كَأَنَّهَا كَنْزٌ، وَمَشَتِ الْعَائِلَةُ كُلُّهَا {مَعَهُ/مَعَهَا} فَرْحَانَةً."
@@ -325,7 +369,7 @@ pages:
       Evening in the living room lit by warm lamps. The hero in pajamas and Baba hang the framed
       certificate on the plain wall together, the hero on tiptoes. The certificate shows no readable
       writing, only a gold seal.
-    others: Baba
+    others: "{dad}"
     others_count: 1
     companion_action: holds the little hammer carefully
     text_ar: "فِي الْمَسَاءِ، {عَلَّقَ/عَلَّقَتْ} {name} الشَّهَادَةَ عَلَى الْحَائِطِ مَعَ بَابَا. قَالَ بَابَا: «هَكَذَا نَرَاهَا كُلَّ صَبَاحٍ.»"

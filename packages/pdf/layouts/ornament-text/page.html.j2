@@ -1,0 +1,21 @@
+{#- ornament-text: a text-led page. Corner ornaments, the first word set large as an Arabic "drop word" (a
+    single drop letter would break the joining), and the picture in an arched window on the calm side. -#}
+{% import "_macros.html.j2" as m %}
+{% macro page(p) -%}
+{% set area = 'bottom' if p.panel and p.panel.area == 'bottom' else 'top' %}
+{% set words = drop_word(p.text or '') %}
+<section class="page paper lay-ornament text-{{ area }}{{ ' qr-' ~ p.side if p.qr_url and qr }}" data-kind="story" data-layout="ornament-text" data-number="{{ p.number }}">
+  <div class="paper-wash"></div>
+  {% for c in ['tl', 'tr', 'bl', 'br'] %}<div class="orn-corner {{ c }}">{{ orn.corner_flourish('#D59A2A', t.accent) }}</div>{% endfor %}
+  <div class="orn-arch"><img src="{{ img(p.image) }}" alt=""></div>
+  {% if p.text %}
+  <div class="orn-text" data-panel="{{ p.number }}">
+    <p class="story-text"><span class="drop">{{ hero(words[0]) }}</span> {{ hero(words[1] if words | length > 1 else '') }}{% if p.is_last_story %}<span class="the-end">— {{ s.the_end }} —</span>{% endif %}</p>
+    <div class="orn-divider"><span></span>{{ m.sparkle('4.2mm', '#D59A2A') }}<span></span></div>
+  </div>
+  {% endif %}
+  {{ m.badge(spec, p, t, orn) }}
+  {{ m.voice_qr(spec, s, p, qr) }}
+  {{ m.watermark(spec, s) }}
+</section>
+{%- endmacro %}

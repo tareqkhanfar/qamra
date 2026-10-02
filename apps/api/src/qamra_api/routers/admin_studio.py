@@ -27,6 +27,7 @@ from qamra_core.db.classic import ClassicTemplate, ClassicTemplatePage, Template
 from qamra_core.db.models import AuditLog
 from qamra_core.db.models import Theme as ThemeRow
 from qamra_core.db.store import ArtStyle
+from qamra_pdf.spec import STORY_PT
 
 router = APIRouter(prefix="/api/admin/studio", tags=["admin"], dependencies=[Depends(require_admin)])
 
@@ -268,7 +269,7 @@ async def schedule_many(body: ScheduleIn, admin: AdminUser, db: SessionDep) -> B
 
 # ---- the page editor's words ------------------------------------------------------------------------------
 
-TEXT_PT = {"young": (20.0, 18.0), "older": (16.0, 15.0)}  # qamra_pdf BookSpec: ages ≤ 5 / 6–8 (size, min)
+TEXT_PT = STORY_PT  # qamra_pdf BookSpec: ages ≤ 5 / 6–8 (size, min)
 SAMPLE = {"m": ("يوسف", "Yousef"), "f": ("ليان", "Layan")}
 
 

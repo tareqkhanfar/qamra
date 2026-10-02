@@ -1,0 +1,20 @@
+{#- spread-panorama: one illustration across two facing pages (each page carries its half, cut with bleed;
+    Arabic books read the right page first). The short text sits on the calm side of the page read first, on
+    a soft mist that fades into the art; the other half is art only. -#}
+{% import "_macros.html.j2" as m %}
+{% macro page(p) -%}
+{% set area = p.panel.area if p.panel else 'top' %}
+{% set vertical = 'bottom' if area == 'bottom' else 'top' %}
+<section class="page lay-pano{{ ' qr-' ~ p.side if p.qr_url and qr }}" data-kind="story" data-layout="spread-panorama" data-number="{{ p.number }}">
+  <img class="bleed-img" src="{{ img(p.image) }}" alt="">
+  {% if p.text %}
+  <div class="pano-box {{ vertical }} {{ p.side }}" style="--o: {{ p.panel.opacity if p.panel else 0.9 }}" data-panel="{{ p.number }}">
+    <div class="pano-mist"></div>
+    {{ m.story_body(p, s, hero) }}
+  </div>
+  {% endif %}
+  {{ m.badge(spec, p, t, orn) }}
+  {{ m.voice_qr(spec, s, p, qr) }}
+  {{ m.watermark(spec, s) }}
+</section>
+{%- endmacro %}

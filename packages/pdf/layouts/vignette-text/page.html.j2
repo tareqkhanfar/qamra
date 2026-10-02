@@ -1,0 +1,17 @@
+{#- vignette-text: a rest page. Cream paper, the illustration as a soft-edged spot (its calm side faded away),
+    and larger text on the paper. -#}
+{% import "_macros.html.j2" as m %}
+{% macro page(p) -%}
+{% set area = 'bottom' if p.panel and p.panel.area == 'bottom' else 'top' %}
+<section class="page paper lay-vignette text-{{ area }}{{ ' qr-' ~ p.side if p.qr_url and qr }}" data-kind="story" data-layout="vignette-text" data-number="{{ p.number }}">
+  <div class="paper-wash"></div>
+  <div class="vignette-art"><img src="{{ img(p.image) }}" alt=""></div>
+  <div class="vignette-stars">{{ orn.scattered_stars(216, 216, 9, p.number, '#E9A92B', (20, 20, 196, 196)) }}</div>
+  {% if p.text %}
+  <div class="vignette-text" data-panel="{{ p.number }}">{{ m.story_body(p, s, hero, 'large') }}</div>
+  {% endif %}
+  {{ m.badge(spec, p, t, orn) }}
+  {{ m.voice_qr(spec, s, p, qr) }}
+  {{ m.watermark(spec, s) }}
+</section>
+{%- endmacro %}

@@ -9,7 +9,12 @@ from decimal import Decimal
 from pydantic import SecretStr
 
 from qamra_ai.config import Settings as AISettings
-from qamra_ai.image import make_classic_image_provider, make_image_provider, make_upscaler
+from qamra_ai.image import (
+    make_classic_image_provider,
+    make_cover_image_provider,
+    make_image_provider,
+    make_upscaler,
+)
 from qamra_ai.pipeline.runtime import Runtime
 from qamra_ai.text import make_text_provider
 from qamra_core.settings import CoreSettings
@@ -38,6 +43,7 @@ def ai_settings(resolved: Resolved, core: CoreSettings, *, offline: bool | str =
         image_provider=v["image_provider"],
         fal_image_model=v["fal_image_model"],
         fal_fallback_model=v["fal_fallback_model"],
+        cover_image_model=str(v.get("cover_image_model") or ""),
         fal_upscale_model=v["fal_upscale_model"],
         fallback_after_failures=int(v["fallback_after_failures"]),
         gemini_image_model=v["gemini_image_model"],
@@ -56,6 +62,8 @@ def ai_settings(resolved: Resolved, core: CoreSettings, *, offline: bool | str =
         qa_threshold=int(v["qa_threshold"]) / 100,
         book_budget_usd=float(Decimal(str(v["book_budget_usd"]))),
         print_spine_mm=float(Decimal(str(v["print_spine_mm"]))),
+        print_paper_caliper_mm=int(v["print_paper_caliper_um"]) / 1000,
+        print_board_allowance_mm=float(Decimal(str(v["print_board_allowance_mm"]))),
         print_signature=int(v["print_signature"]),
     )
     if offline:
@@ -79,4 +87,5 @@ def make_runtime(settings: AISettings) -> Runtime:
         text=make_text_provider(settings),
         image=make_image_provider(settings),
         upscaler=make_upscaler(settings),
+        cover_image=make_cover_image_provider(settings),
     )

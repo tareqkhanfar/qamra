@@ -1,0 +1,10 @@
+/* split-frame: frame 168 × 116 mm with a 6 mm band → a 156 × 104 mm (3:2) window. The shadow is its own
+   layer: a filter on the picture would rasterize it. */
+.lay-split .split-frame-box { position: absolute; top: calc(var(--bleed) + 11mm); left: 0; right: 0; margin: 0 auto; width: 168mm; height: 116mm; }
+.lay-split .split-shadow { position: absolute; inset: 1mm; box-shadow: 0 1.4mm 3mm rgba(22,32,74,.28); }
+.lay-split .split-frame-box svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.lay-split .split-window { position: absolute; inset: 6mm; overflow: hidden; background: var(--paper); }
+.lay-split .split-window img { width: 100%; height: 100%; object-fit: cover; }
+.lay-split .split-region { position: absolute; top: calc(var(--bleed) + 132mm); bottom: calc(var(--safe) + 12mm); left: calc(var(--safe) + 4mm); right: calc(var(--safe) + 4mm);
+  display: flex; flex-direction: column; justify-content: center; }
+.lay-split .split-text { max-height: 100%; }

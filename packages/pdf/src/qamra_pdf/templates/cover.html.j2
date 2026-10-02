@@ -1,3 +1,4 @@
+{% import "_cover_parts.html.j2" as cv with context %}
 {% import "_macros.html.j2" as m %}
 <!doctype html>
 <html lang="{{ spec.lang }}" dir="ltr">
@@ -6,21 +7,20 @@
 <head><meta charset="utf-8"><title>{{ spec.title }} — cover</title>
 <style>
 {% include "_base.css.j2" %}
-{% include "_cover.css.j2" %}
+{% include "_shared.css.j2" %}
+{% include "_book_cover.css.j2" %}
 @page { size: {{ spec.wrap_width_mm }}mm {{ spec.page_mm }}mm; margin: 0; }
-.wrap { position: relative; width: {{ spec.wrap_width_mm }}mm; height: var(--page); overflow: hidden; background: var(--night-900); }
-.spine { position: absolute; top: 0; height: var(--page); width: {{ spec.spine_mm }}mm; left: {{ spec.trim_mm + spec.bleed_mm }}mm; background: var(--night-950); display: flex; align-items: center; justify-content: center; }
-.spine .spine-text { transform: rotate(90deg); white-space: nowrap; font: 700 {{ [spec.spine_mm * 1.1, 11] | min }}pt "Baloo Bhaijaan 2", sans-serif; color: var(--moon-glow); }
+.wrap { position: relative; width: {{ spec.wrap_width_mm }}mm; height: var(--page); overflow: hidden; background: {{ t.ink }}; }
 .left-panel { left: 0; } .right-panel { left: {{ spec.trim_mm + spec.bleed_mm + spec.spine_mm }}mm; }
 </style></head>
 <body>
 <section class="page wrap" data-kind="cover-wrap" style="width: {{ spec.wrap_width_mm }}mm">
   {% set front_left = spec.lang == 'ar' %}
   <div dir="{{ spec.dir }}" style="position:absolute;inset:0">
-    <div class="{{ 'left-panel' if front_left else 'right-panel' }}" style="position:absolute;top:0;width:{{ spec.trim_mm + spec.bleed_mm }}mm;height:100%">{{ m.front_panel(spec, s, img) }}</div>
-    <div class="{{ 'right-panel' if front_left else 'left-panel' }}" style="position:absolute;top:0;width:{{ spec.trim_mm + spec.bleed_mm }}mm;height:100%">{{ m.back_panel(spec, s, qr_svg) }}</div>
+    <div class="{{ 'left-panel' if front_left else 'right-panel' }}" style="position:absolute;top:0;width:{{ spec.trim_mm + spec.bleed_mm }}mm;height:100%">{{ cv.front_panel('left' if front_left else 'right') }}</div>
+    <div class="{{ 'right-panel' if front_left else 'left-panel' }}" style="position:absolute;top:0;width:{{ spec.trim_mm + spec.bleed_mm }}mm;height:100%">{{ cv.back_panel('right' if front_left else 'left') }}</div>
   </div>
-  <div class="spine">{% if spec.spine_mm >= 6 %}<span class="spine-text" dir="{{ spec.dir }}">{{ spec.title }} · {{ spec.brand.name_ar if spec.lang == 'ar' else spec.brand.name_en }}</span>{% endif %}</div>
+  {{ cv.spine_strip() }}
   {{ m.watermark(spec, s) }}
 </section>
 </body></html>

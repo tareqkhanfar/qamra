@@ -1,0 +1,137 @@
+{#- Addendum 3 page prompt, with the Addendum 11 consistency locks. Order: style → setting → scene → characters →
+    outfit → composition → fixes → safety → negatives.
+    v4: the outfit follows the page's scene group (the cover's clothes only on the cover's group; other groups
+    match their first accepted page), one head covering for the whole book, the hair lock, locked side
+    characters with their sheets, the companion's fixed body shape, the cover drawn into a background plate
+    (plus the child's photo for likeness), no character cut by the trim, and redraws told what the last review
+    found. v3 stays for books drawn before. -#}
+{%- set light = {
+  'dawn': 'soft pink-and-gold dawn light with long gentle shadows',
+  'morning': 'fresh golden morning light',
+  'noon': 'bright, even midday light with soft shadows',
+  'afternoon': 'warm late-afternoon light',
+  'sunset': 'glowing golden-orange sunset light',
+  'evening': 'calm blue evening light with warm lamps glowing inside',
+  'night': 'quiet moonlit night: deep blue sky, silver-gold moonlight and a warm lamp glow',
+} -%}
+{%- set areas = {
+  'top': 'the TOP 30% of the image',
+  'bottom': 'the BOTTOM 30% of the image',
+  'right': 'the RIGHT 38% of the image',
+  'left': 'the LEFT 38% of the image',
+  'top-right': 'the TOP-RIGHT quarter of the image',
+  'top-left': 'the TOP-LEFT quarter of the image',
+  'bottom-right': 'the BOTTOM-RIGHT quarter of the image',
+  'bottom-left': 'the BOTTOM-LEFT quarter of the image',
+} -%}
+{%- set fix_lines = {
+  'face': "Make the hero's face match the character sheet more closely: face shape, eyes, skin tone and hair.",
+  'hero_count': 'Draw the hero exactly once.',
+  'count': 'Show exactly the people listed under CHARACTERS: nobody missing and no extra children.',
+  'anatomy': 'Clean, natural hands with five fingers each, natural limbs, and clear faces.',
+  'text_in_image': 'No letters, numbers, writing or signs anywhere, including the corners.',
+  'outfit': "Dress the hero exactly as the OUTFIT section says, matching the outfit reference image when there is one.",
+  'hijab': "The hero's head covering must be exactly the one in the OUTFIT section, in exactly that color.",
+  'companion': 'Draw the companion exactly like its reference: the same body shape, colors, face and size.',
+  'crop': "Keep the hero completely inside the picture: head, hands and feet well away from every edge.",
+  'crop_other': 'Keep every character completely inside the picture, away from the edges.',
+  'text_space': 'Leave the text area completely calm: no faces, hands, objects, patterns or busy detail there.',
+  'style': "Keep exactly this book's art style and medium.",
+} -%}
+STYLE
+{{ style }}
+Painting medium: {{ medium }}
+
+SETTING
+{{ setting }}
+
+SCENE — {% if kind == 'cover' %}the FRONT COVER of the book{% elif layout == 'spread' %}one illustration across two facing pages{% else %}one picture-book page{% endif %}
+{%- if plate_ref %}
+Image {{ plate_ref }} is this cover's finished background. Keep its place, composition, light and colors exactly, and add nothing to it except the characters below.
+The hero's pose, expression and props (the background image decides the place): {{ scene }}
+Light: the background's own light; the hero is lit by the same warm light that falls on the empty spot, with a soft rim light.
+{%- else %}
+{{ scene }}
+{%- if location %}
+Location (it looks exactly like this on every page set here): {{ location }}
+{%- endif %}
+Light: {{ light[time] }}. Keep this light and time of day consistent with the rest of this scene.
+{%- endif %}
+
+CHARACTERS
+{%- if kind == 'plate' %}
+- No children and no main characters in this picture: it shows the place itself. Any people are tiny, far away and unimportant.
+{%- else %}
+- THE HERO is the child in Image {{ hero.ref }} (the character reference sheet). Keep exactly the same face, skin tone, hair color and hairstyle, eye shape{% if hero.glasses %}, the same glasses{% endif %}, age and body proportions. {{ 'He is a boy' if hero.gender == 'm' else 'She is a girl' }}, about {{ hero.age }} years old. Draw the hero exactly once.
+{%- if hero.hair == 'sheet' %}
+- The hero's hair is the same on every page: the same color, length, texture and style as on the sheet, never tied, braided or cut differently, and no hats or hair accessories unless the OUTFIT lists them.
+{%- endif %}
+{%- if photo_ref %}
+- Image {{ photo_ref }} is a photo of the hero: use it only to make the face even more like the real child (it is the strongest likeness reference). Never copy its clothes, background, lighting or photographic look: the hero is painted in this book's style.
+{%- endif %}
+{%- if style_ref %}
+- Image {{ style_ref }} is this book's front cover: match its painting style, palette and the hero's face and proportions.
+{%- endif %}
+{%- if preview_ref %}
+- Image {{ preview_ref }} is the parent-approved preview of THIS page: keep its composition, poses and colors, and redraw it cleanly at full quality.
+{%- endif %}
+{%- if companion %}
+- THE COMPANION{% if companion.ref %} is the character in Image {{ companion.ref }}: exactly the same body shape, colors, face, number of eyes and limbs, and size.{% endif %} Locked look (it never changes): {{ companion.description | trim('. ') }}. In this picture it {{ companion.action or 'stays close to the hero' }}. Draw it exactly once.
+{%- endif %}
+{%- for m in cast %}
+- {{ m.role | capitalize }}{% if m.ref %} (character sheet: Image {{ m.ref }}){% endif %}: {{ m.description | trim('. ') }}.
+{%- endfor %}
+{%- if cast %}
+- These recurring characters look the same on every page of the book: the same faces, hair, head coverings, glasses and body shapes; their clothes stay as described unless the scene says otherwise.
+{%- endif %}
+{%- if others %}
+- Also in the picture: {{ others }}. They look clearly different from the hero.
+{%- else %}
+- No other children in the picture.
+{%- endif %}
+{%- endif %}
+{%- if outfit %}
+
+OUTFIT (locked for this part of the story: identical on every page of it)
+The hero wears {{ outfit }}.
+{%- if outfit_ref %} It must match the hero's clothing in Image {{ outfit_ref }} exactly.
+{%- elif style_ref and cover_outfit %} It must match the hero's clothing on the cover (Image {{ style_ref }}) exactly.
+{%- elif style_ref %} This page is in a different part of the story from the cover: do not copy the cover's clothes.
+{%- endif %}
+{%- if hijab %}
+Head covering (the same on every page of the book): {{ hijab }}, in exactly this color and wrapped the same way, with the face fully visible.
+{%- else %}
+No hijab or head covering on the hero, except a hat or cap that the outfit lists.
+{%- endif %}
+{%- endif %}
+
+COMPOSITION
+{%- if kind == 'cover' and plate_ref %}
+Square front cover. Place the hero in the empty, lit spot in the lower middle of the background, standing on the ground there, about 45% of the image height, in a confident, joyful, dynamic pose, looking toward the reader. Keep the TOP 30% calm and empty for the book title, which is added later. Keep the hero, the companion and every important detail away from the outer 5% of the image.
+{%- elif kind == 'cover' %}
+Square front cover with the impact of a film poster. Keep the TOP 30% calm and simple (soft sky or a gentle gradient) for the book title, which is added later. The hero is large (about 45% of the image height) in the lower middle, in a confident, joyful, dynamic pose, looking toward the reader, lit by a warm key light with a soft rim light and a gentle glow behind. Rich depth: foreground framing in the bottom corners, the hero in the midground, a glowing background. Keep everything important away from the outer 5% of the image.
+{%- elif layout == 'spread' %}
+A wide panorama that spans two facing pages of an open book. Keep faces and key details away from the vertical center line (the fold) and out of the top and bottom 8% (those strips are trimmed off in print). Keep {{ areas[text_area] }} calm for the story text.
+{%- elif layout == 'split' %}
+A wide illustration for the upper part of a page. Its lower edge fades into the paper, so keep the ground simple along the bottom edge. No text area is needed inside the image.
+{%- else %}
+Square picture-book page. Keep {{ areas[text_area] }} calm and simple for the story text panel, with no faces, hands, key objects or busy detail there; place the main action in the rest of the image.
+{%- endif %}
+{%- if kind == 'page' %}
+Every character stays whole inside the picture: no head, face, hand or foot is cut by the edge or placed in the outer 6% (print trims it).
+{%- endif %}
+{{ composition }}
+{%- set wanted = fixes | select('in', fix_lines) | list %}
+{%- if wanted %}
+
+THE LAST ATTEMPT FAILED REVIEW — fix this
+{%- for f in wanted %}
+- {{ fix_lines[f] }}
+{%- endfor %}
+{%- endif %}
+
+SAFETY
+{{ safety }}
+
+NEGATIVE
+{{ negative }}

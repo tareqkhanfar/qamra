@@ -24,6 +24,7 @@ from qamra_ai.cost import CostEntry
 from qamra_ai.errors import QamraError
 from qamra_ai.image.base import GeneratedImage, sniff_mime
 from qamra_ai.pipeline.assemble import AssemblyInputs, BookFiles, assemble_book, plan_pages
+from qamra_ai.pipeline.bible import StyleBible, build_bible
 from qamra_ai.pipeline.book import BookRun, choose_outfits, default_companion, new_seed
 from qamra_ai.pipeline.budget import Budget, BudgetExceeded
 from qamra_ai.pipeline.character import generate_character_sheet
@@ -33,12 +34,21 @@ from qamra_ai.pipeline.drawing import clean_drawing
 from qamra_ai.pipeline.layout import BookPlan, PrintSpec, plan_book
 from qamra_ai.pipeline.models import Child as AIChild
 from qamra_ai.pipeline.models import CompanionSpec, Lang, StoryOut
-from qamra_ai.pipeline.pages import BookContext, Mode, PageResult, beats_for, generate_beat, generate_pages
+from qamra_ai.pipeline.pages import (
+    BookContext,
+    Mode,
+    PageResult,
+    beats_for,
+    generate_beat,
+    generate_pages,
+    prepare_book,
+    theme_companion_sheet,
+)
 from qamra_ai.pipeline.printimg import downscale
 from qamra_ai.pipeline.runtime import Runtime
-from qamra_ai.pipeline.story import write_story
+from qamra_ai.pipeline.story import missing_text, write_story
 from qamra_ai.pipeline.style import house_style
-from qamra_ai.pipeline.theme import Theme, load_style
+from qamra_ai.pipeline.theme import ArtStyle, Theme, load_style
 from qamra_core.crypto import cipher_for
 from qamra_core.db.models import (
     AuditLog,
@@ -369,6 +379,57 @@ def _qa_summary(rows: dict[int, BookPage], plan: BookPlan) -> dict[str, Any]:
     }
 
 
+def book_bible(
+    book: Book, theme: Theme, child: Child, style: ArtStyle, companion: CompanionSpec | None
+) -> StyleBible:
+    """The book's style bible (Addendum 11 §4.1): stored on its first run, reused unchanged afterwards."""
+    stored = (book.generation or {}).get("bible")
+    if stored:
+        return StyleBible.model_validate(stored)
+    bible = build_bible(
+        theme, ai_child(child), int(book.generation["seed"]), style=style.slug, companion=companion
+    )
+    book.generation = {**book.generation, "bible": bible.model_dump(mode="json")}
+    return bible
+
+
+def cover_photo(db: Session, storage: ObjectStorage, child: Child) -> bytes | None:
+    """The child's first accepted photo while it is still kept (Addendum 11 §1: the cover's likeness
+    reference). It goes to the image model only, like the character sheet's photos, never to QA."""
+    now = datetime.now(UTC)
+    for photo in db.scalars(
+        select(ChildPhoto)
+        .where(
+            ChildPhoto.child_id == child.id,
+            ChildPhoto.status == PhotoStatus.accepted,
+            ChildPhoto.storage_key.is_not(None),
+            ChildPhoto.deleted_at.is_(None),
+        )
+        .order_by(ChildPhoto.created_at)
+    ).all():
+        if photo.storage_key and (photo.delete_after is None or photo.delete_after > now):
+            try:
+                return storage.get(photo.storage_key)
+            except ObjectNotFound:
+                continue
+    return None
+
+
+def load_group_refs(job: "BookJob", ctx: BookContext, rows: dict[int, BookPage]) -> None:
+    """Outfit references of a resumed book: each scene group's first accepted page (Addendum 11 §4.1)."""
+    for beat in sorted(rows):
+        row = rows[beat]
+        plan = job.plan.beats.get(beat)
+        if beat == 0 or plan is None or plan.no_child or row.status != PageStatus.ok:
+            continue
+        group = ctx.group(beat)
+        if group == ctx.locks.main_group or group in ctx.group_refs:
+            continue
+        data = job.image_bytes(row.image_key)
+        if data is not None:
+            ctx.group_refs[group] = (beat, data)
+
+
 async def _setup(db: Session, storage: ObjectStorage, book: Book) -> BookJob:
     core = get_settings()
     resolved = resolved_settings(db)
@@ -379,9 +440,7 @@ async def _setup(db: Session, storage: ObjectStorage, book: Book) -> BookJob:
     if child is None:
         raise ValueError("child not found")
     theme = book_theme(db, book)
-    spec = PrintSpec(
-        spine_mm=settings.print_spine_mm, signature=settings.print_signature, dpi=settings.print_dpi
-    )
+    spec = PrintSpec.from_settings(settings)
     has_companion_page = bool(book.companion_id)
     plan = plan_book(theme, book_lang(book), companion_page=has_companion_page, spec=spec)
     gen = dict(book.generation)
@@ -393,6 +452,7 @@ async def _setup(db: Session, storage: ObjectStorage, book: Book) -> BookJob:
         if offline
         else f"{settings.image_provider}:{settings.fal_image_model}",
         "fallback": settings.fal_fallback_model,
+        "cover": settings.cover_image_model or None,
         "upscale": settings.fal_upscale_model,
         "text": settings.text_model,
         "text_fast": settings.text_model_fast,
@@ -490,11 +550,18 @@ async def run_book_job(db: Session, storage: ObjectStorage, book: Book, mode: st
         if mode == "final"
         else {}
     )
+    empty = missing_text(theme, story_out)
+    if empty:  # Addendum 11 §4.4: a page the theme expects text on is empty — never draw or print it
+        _set_flags(book, ["text_missing"])
+        book.status, book.error = BookStatus.failed, f"story pages without text: {empty}"
+        db.commit()
+        return {"status": "text_missing"}
+    style = load_style(book.art_style)
     ctx = BookContext(
         child=ai_child(child),
         lang=lang,
         theme=theme,
-        style=load_style(book.art_style),
+        style=style,
         house=house_style(),
         plan=job.plan,
         character_sheet=sheet,
@@ -508,8 +575,12 @@ async def run_book_job(db: Session, storage: ObjectStorage, book: Book, mode: st
         previews=previews,
         plates=S3PlateStore(storage),
         on_page=lambda r: job.save_page(r, mode),
+        bible=book_bible(book, theme, child, style, companion),
     )
+    load_group_refs(job, ctx, rows)
     wanted = [b for b in beats_for(ctx, rt.settings.preview_pages) if b not in done]
+    if 0 in wanted:
+        ctx.photo = cover_photo(db, storage, child)
     book.generation = {
         **book.generation,
         "mode": mode,
@@ -520,7 +591,18 @@ async def run_book_job(db: Session, storage: ObjectStorage, book: Book, mode: st
     if rt.budget.exceeded:
         _set_flags(book, ["budget_exceeded"])
     db.refresh(book)
-    return await render_files(job, mode, story_out, sheet, companion, companion_sheet, drawing)
+    sheet_for_print = await print_companion_sheet(rt, ctx, companion_sheet)
+    return await render_files(job, mode, story_out, sheet, companion, sheet_for_print, drawing)
+
+
+async def print_companion_sheet(rt: Runtime, ctx: BookContext, drawn: bytes | None) -> bytes | None:
+    """The companion's sheet for the printed pages (its cut-out peeks on «ارسم أجمل لحظة»): the child's own
+    companion, else the theme's fixed «قمّور» (a content file, or drawn once and kept in the plate store)."""
+    if drawn is not None or ctx.companion is None or ctx.companion.from_drawing:
+        return drawn
+    if ctx.companion_sheet is None:
+        ctx.companion_sheet = await theme_companion_sheet(rt, ctx)
+    return ctx.companion_sheet
 
 
 async def render_files(
@@ -539,6 +621,12 @@ async def render_files(
     story = story.model_copy(
         update={"pages": [p.model_copy(update={"text": texts.get(p.index, p.text)}) for p in story.pages]}
     )
+    empty = missing_text(job.theme, story)
+    if empty:  # Addendum 11 §4.4: the build fails rather than print a page without its text
+        _set_flags(book, ["text_missing"])
+        book.status, book.error = BookStatus.failed, f"story pages without text: {empty}"
+        db.commit()
+        return {"status": "text_missing"}
     run = BookRun(
         plan=job.plan,
         seed=int(book.generation["seed"]),
@@ -651,11 +739,12 @@ async def redraw_pages(db: Session, storage: ObjectStorage, book: Book, beats: l
     mode = str(book.generation.get("mode", "final"))
     cover = job.image_bytes(rows[0].image_key) if 0 in rows else None
     cover_qa = job.image_bytes(rows[0].print_image_key) if 0 in rows and mode == "final" else None
+    style = load_style(book.art_style)
     ctx = BookContext(
         child=ai_child(child),
         lang=book_lang(book),
         theme=theme,
-        style=load_style(book.art_style),
+        style=style,
         house=house_style(),
         plan=job.plan,
         character_sheet=sheet,
@@ -666,7 +755,13 @@ async def redraw_pages(db: Session, storage: ObjectStorage, book: Book, beats: l
         companion_sheet=companion_sheet,
         cover=cover,
         cover_qa=cover_qa,  # the same QA prefix as the book's run, so its cache is reused
+        plates=S3PlateStore(storage),
+        bible=book_bible(book, theme, child, style, companion),
     )
+    load_group_refs(job, ctx, rows)
+    if 0 in beats:
+        ctx.photo = cover_photo(db, storage, child)
+    await prepare_book(rt, ctx, beats)
     done: list[int] = []
     for beat in beats:
         if beat not in job.plan.beats:
@@ -692,7 +787,8 @@ async def redraw_pages(db: Session, storage: ObjectStorage, book: Book, beats: l
         if beat == 0:
             ctx.cover = res.image.data
     story = StoryOut.model_validate(book.story)
-    result = await render_files(job, mode, story, sheet, companion, companion_sheet, drawing)
+    sheet_for_print = await print_companion_sheet(rt, ctx, companion_sheet)
+    result = await render_files(job, mode, story, sheet, companion, sheet_for_print, drawing)
     return {**result, "redrawn": done}
 
 

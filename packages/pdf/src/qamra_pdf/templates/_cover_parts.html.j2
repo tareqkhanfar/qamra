@@ -1,0 +1,47 @@
+{#- The story book cover (Addendum 11 §2): art layer, coded title lettering + «بطولة» ribbon, a small moon mark
+    on the front; the back continues the front art (mirrored, blurred) with the blurb, the child's portrait,
+    the logo and the domain. A QR only when family voice exists. Imported "with context". -#}
+{% import "_macros.html.j2" as m %}
+{% import "_matter.html.j2" as mt with context %}
+
+{% macro cover_title(c) -%}
+<div class="cover-title">
+  {{ title_svg((c.name ~ ' ' ~ c.subtitle) | trim, t.slug, width_mm=194, height_mm=54, uid='ct', rtl=spec.dir == 'rtl', keep=spec.child_name) }}
+  <div class="ribbon"><span class="r-label">{{ s.ribbon_f if spec.gender == 'f' else s.ribbon_m }}</span><span class="r-name">{{ spec.child_name }}</span></div>
+</div>
+{%- endmacro %}
+
+{% macro front_panel(outer='left') -%}{% set c = spec.cover %}
+<div class="front outer-{{ outer }} style-{{ t.slug }}">
+  <img class="bleed-img" src="{{ img(c.front_image) }}" alt="">
+  <div class="cover-shade" style="background: {{ t.shade }}"></div>
+  {{ cover_title(c) }}
+  <div class="front-moon">{{ m.moon_mark('11mm', '#F6C14E', t.ink) }}</div>
+</div>
+{%- endmacro %}
+
+{% macro back_panel(outer='right') -%}{% set c = spec.cover %}
+<div class="back outer-{{ outer }} style-{{ t.slug }}">
+  {% if assets.back %}<img class="bleed-img" src="{{ img(assets.back) }}" alt="">{% endif %}
+  <div class="back-tint" style="background: linear-gradient(to bottom, {{ rgba(t.ink, 0.58) }}, {{ rgba(t.ink, 0.72) }} 55%, {{ rgba(t.ink, 0.84) }})"></div>
+  <div class="back-stars">{{ orn.scattered_stars(213, 216, 16, 5, '#FCEFD2', (40, 30, 173, 150)) }}</div>
+  <div class="back-content">
+    {{ mt.moon_portrait(spec.title_page.portrait, 'on-back') }}
+    <p class="blurb">{{ hero(c.blurb) }}</p>
+  </div>
+  <div class="back-foot">
+    {% if qr_svg %}<div class="qr-card"><div class="qr">{{ qr_svg }}</div><div class="qr-caption">{{ s.back_voice }}</div></div>{% endif %}
+    <div class="back-brand">{{ m.moon_mark('13mm', '#F6C14E', '#FFFDF8') }}<div><div class="back-name">{{ spec.brand.name_ar if spec.lang == 'ar' else spec.brand.name_en }}</div><div class="back-domain">{{ spec.brand.domain }}</div></div></div>
+  </div>
+</div>
+{%- endmacro %}
+
+{% macro spine_strip() -%}
+{% set title = spec.title %}
+<div class="spine" style="background: {{ t.ink }}">
+  {% if spec.spine_mm >= 6 %}
+  <div class="spine-moon">{{ m.moon_mark(((spec.spine_mm - 2.4) | round(1)) ~ 'mm', '#F6C14E', '#FFFDF8') }}</div>
+  <span class="spine-text" dir="{{ spec.dir }}">{{ title }}{% if spec.child_name not in title %} · {{ spec.child_name }}{% endif %}</span>
+  {% endif %}
+</div>
+{%- endmacro %}

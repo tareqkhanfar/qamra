@@ -2,6 +2,7 @@
 objects, cost rows, print files, preflight, manual redraw and the budget stop."""
 
 import io
+from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from pathlib import Path
 
@@ -28,7 +29,7 @@ from qamra_core.db.models import (
     User,
 )
 from qamra_core.storage import ObjectStorage
-from qamra_worker.jobs.books import _beat_of, page_key, redraw_pages, run_book_job
+from qamra_worker.jobs.books import _beat_of, cover_photo, page_key, redraw_pages, run_book_job
 
 FIXTURE = Path(__file__).resolve().parents[3] / "packages/ai/tests/fixtures/face-astronaut-public-domain.png"
 
@@ -109,6 +110,10 @@ async def test_final_book_job_end_to_end(db: Session, storage: ObjectStorage) ->
         book.generation["seed"] and book.generation["outfits"]["day"] and len(book.generation["plan"]) == 24
     )
     assert "hijab" in book.generation["outfits"]["day"]
+    bible = book.generation["bible"]  # Addendum 11 §4.1: locked once, reused on resume and redraw
+    assert bible["main_group"] == "day" and bible["hijab"] and bible["hair"] == "hijab"
+    assert {"teacher", "classmates", "mom"} <= set(bible["cast"]) and "plump crescent" in bible["companion"]
+    assert all(line.endswith(bible["hijab"]) for line in book.generation["outfits"].values())
     assert book.generation["theme_def"]["slug"] == "first-day"  # pinned: later content edits can't move it
 
     pages = {p.index: p for p in db.scalars(select(BookPage).where(BookPage.book_id == book.id))}
@@ -140,6 +145,7 @@ async def test_final_book_job_end_to_end(db: Session, storage: ObjectStorage) ->
     )
 
     # one manual redraw adds an attempt with a new seed and re-renders the files
+    stored_bible = dict(book.generation["bible"])
     old_attempts = len(pages[4].attempts)
     redone = await redraw_pages(db, storage, book, [4])
     assert redone["redrawn"] == [4]
@@ -147,6 +153,8 @@ async def test_final_book_job_end_to_end(db: Session, storage: ObjectStorage) ->
     assert page4 is not None and page4.regen_count == 1 and len(page4.attempts) == old_attempts + 1
     assert page4.attempts[-1]["seed"] != page4.attempts[0]["seed"]
     assert page4.attempts[-1]["why"] == "manual"
+    db.refresh(book)
+    assert book.generation["bible"] == stored_bible
 
 
 async def test_book_gets_the_default_budget_cap(db: Session, storage: ObjectStorage) -> None:
@@ -168,3 +176,26 @@ async def test_book_gets_the_default_budget_cap(db: Session, storage: ObjectStor
     page1 = db.scalar(select(BookPage).where(BookPage.book_id == book.id, BookPage.index == 1))
     assert page1 is not None and len(page1.attempts) == 2
     assert book.qa_summary["redraws"] == 0 and book.qa_summary["manual_redraws"] == 0
+
+
+async def test_a_story_page_without_text_fails_the_build(db: Session, storage: ObjectStorage) -> None:
+    """Addendum 11 §4.4: a page the theme expects text on is never drawn or printed empty."""
+    book = _book(db, storage)
+    pages = [{"index": i, "text": "" if i == 5 else f"نصّ {i}"} for i in range(1, 18)]
+    book.story = {"title": "t", "dedication": "d", "pages": pages, "parents_questions": ["a", "b"]}
+    db.commit()
+    result = await run_book_job(db, storage, book, "preview")
+    db.refresh(book)
+    assert result == {"status": "text_missing"} and book.status == BookStatus.failed
+    assert "text_missing" in book.flags and "[5]" in (book.error or "")
+    assert not db.scalars(select(BookPage).where(BookPage.book_id == book.id)).all()  # nothing drawn
+
+
+def test_the_cover_photo_is_used_only_while_it_is_kept(db: Session, storage: ObjectStorage) -> None:
+    book = _book(db, storage)
+    child = db.get(Child, book.child_id)
+    assert child is not None and cover_photo(db, storage, child) == FIXTURE.read_bytes()
+    photo = db.scalars(select(ChildPhoto).where(ChildPhoto.child_id == child.id)).one()
+    photo.delete_after = datetime.now(UTC) - timedelta(minutes=1)  # due for deletion: never used again
+    db.commit()
+    assert cover_photo(db, storage, child) is None

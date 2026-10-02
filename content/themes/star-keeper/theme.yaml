@@ -2,6 +2,8 @@ slug: star-keeper
 version: 1
 title_ar: "{name} {حارس/حارسة} النجوم"
 title_en: "{name} the Star Keeper"
+# Cover lettering (Addendum 11 §2.3): gold-magic, candy-bright, night-glow, nature-fresh, heritage-tatreez
+cover_title_style: night-glow
 age_range: [3, 6]
 is_b2b: false
 active: true

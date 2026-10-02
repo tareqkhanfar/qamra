@@ -2,6 +2,8 @@ slug: first-day
 version: 3
 title_ar: "{name} في أوّل يوم بالروضة"
 title_en: "{name}'s First Day at Kindergarten"
+# Cover lettering (Addendum 11 §2.3): gold-magic, candy-bright, night-glow, nature-fresh, heritage-tatreez
+cover_title_style: nature-fresh
 age_range: [3, 7]
 is_b2b: false
 active: true
@@ -33,9 +35,16 @@ companion_slot: true
 default_companion:
   name_ar: قَمّور
   name_en: Qamour
+  id: qamour  # shared sheet images: content/cast/qamour-<style>.png
+  # Locked design (Addendum 11 §4.2): always this plump crescent, never a ball. Same text as the sheets in
+  # docs/image-prompts.md (C1, C2, C7).
   description_en: >-
-    a tiny round glowing moon creature, soft pale-gold body shaped like a plump crescent,
-    two small dot eyes, rosy cheeks, stubby little arms, floats a few centimeters above the ground
+    a tiny friendly moon creature: a soft, plump crescent-moon body (a thick C shape opening to the
+    right), pale honey-gold, softly glowing from inside, about the size of a house cat. Its face sits on
+    the thick middle of the crescent: two small shiny black dot eyes, a tiny happy smile, round rosy
+    cheeks, and a small five-pointed star-shaped golden freckle on its left cheek. Two stubby little
+    arms, no legs. It floats a few centimeters above the ground with a faint trail of golden sparkles.
+    The crescent shape never changes
   image: default-companion.png
 
 # Template syntax: {name}, {companion}; gender variants {masculine/feminine}.
@@ -66,12 +75,12 @@ locations:
 
 outfits:
   day:
-    - key: coral
+    - key: plum  # not coral: a classmate wears coral
       en: >-
-        a coral-red long-sleeved t-shirt with a small gold crescent-moon patch, navy trousers and
+        a plum-purple long-sleeved t-shirt with a small gold crescent-moon patch, navy trousers and
         white sneakers, with a small mustard-yellow backpack
       en_f: >-
-        a coral-red long-sleeved dress with a small gold crescent-moon patch over navy leggings, white
+        a plum-purple long-sleeved dress with a small gold crescent-moon patch over navy leggings, white
         sneakers, with a small mustard-yellow backpack
       hijab_en: a soft cream hijab
     - key: sage
@@ -85,7 +94,43 @@ outfits:
   sleep:
     - key: moons
       en: light-blue pajamas with tiny golden moons
-      hijab_en: a soft light-blue hijab matching the pajamas
+
+# Recurring side characters (Addendum 11 §4.3): one locked look per book. Scenes name them in `others`
+# as {id}; sheet images: cast/<id>-<style>.png here, or the shared content/cast/<id>-<style>.png.
+# The same id has the same description in every theme (tests check it).
+cast:
+  - id: teacher
+    role: the teacher
+    description_en: >-
+      a kind woman in her early thirties, warm light-olive skin, a gentle round face, warm brown
+      eyes and a soft smile, a sage-green hijab wrapped neatly, a long cream knitted cardigan over a
+      dusty-rose ankle-length dress, a short wooden-bead necklace, flat brown shoes
+  - id: classmates
+    role: the four classmates
+    description_en: >-
+      four kindergarten classmates aged 5–6, each always drawn the same: (1) a boy with short
+      curly black hair and round tortoiseshell glasses, mustard-yellow t-shirt and navy trousers; (2) a
+      girl with a neat lavender hijab, coral long-sleeved dress and white sneakers; (3) a boy with
+      straight light-brown hair and a cowlick, navy hoodie and gray trousers; (4) a girl with two puffy
+      black pigtails tied with yellow ribbons, sky-blue pinafore dress over a white shirt. Skin tones
+      vary within the Levantine range
+  - id: mom
+    role: the mother
+    description_en: >-
+      a woman in her early thirties, warm light-olive skin, kind almond-shaped brown eyes, a
+      dusty-rose hijab, a long navy cardigan over a cream ankle-length dress, comfortable flat shoes
+  - id: dad
+    role: the father
+    description_en: >-
+      a man in his mid-thirties, warm olive skin, short black hair, a short neat black beard,
+      warm brown eyes and laugh lines, a light-blue button-up shirt with the sleeves rolled up, beige
+      trousers, brown leather shoes, a simple wristwatch
+  - id: grandma
+    role: the grandmother
+    description_en: >-
+      a woman in her late sixties with gentle wrinkles and a warm smile, a white embroidered
+      headscarf, a traditional black Palestinian thobe with red cross-stitch tatreez on the chest panel
+      and sleeves, a string of olive-wood prayer beads in her hand
 
 blurb_ar: "حقيبةٌ جديدة، وبوّابةٌ زرقاء، وصاحبٌ صغير يهمس: «أنا {معكَ/معكِ}». حكاية {name} في أوّل يوم في الروضة."
 blurb_en: "A new backpack, a blue gate, and a little friend who whispers: \"I'm with you.\" This is {name}'s first day at kindergarten."
@@ -147,7 +192,7 @@ pages:
       A family breakfast on floor cushions around the low table: bread, za'atar with olive oil,
       labneh, olives and tea. The hero sits between Mama and Baba while the grandmother raises her tea
       glass in a cheerful toast; everyone is smiling at the hero.
-    others: Mama, Baba and a kind grandmother (Teta)
+    others: "{mom}, {dad} and {grandma}"
     others_count: 3
     companion_action: sits on the edge of the table, nibbling a tiny olive
     text_ar: "عَلَى الْفُطُورِ، {جَلَسَ/جَلَسَتْ} {name} مَعَ مَامَا وَبَابَا وَسِتِّي. قَالَتْ سِتِّي: «الرَّوْضَةُ {تَنْتَظِرُكَ يَا بَطَلُ/تَنْتَظِرُكِ يَا بَطَلَةُ}!» وَضَحِكَ الْجَمِيعُ."
@@ -161,9 +206,9 @@ pages:
     scene: >-
       The hero walks down the street holding Mama's hand, skipping happily and pointing at the olive
       trees along the way.
-    others: Mama
+    others: "{mom}"
     others_count: 1
-    companion_action: rides on the hero's shoulder, pointing ahead
+    companion_action: floats at the hero's shoulder, pointing ahead
     text_ar: "فِي الطَّرِيقِ، {أَمْسَكَ/أَمْسَكَتْ} {name} بِيَدِ مَامَا، {وَعَدَّ/وَعَدَّتْ} أَشْجَارَ الزَّيْتُونِ وَاحِدَةً وَاحِدَةً: وَاحِدَةٌ، اثْنَتَانِ، ثَلَاثٌ!"
     text_en: "On the way, {name} held Mama's hand and counted the olive trees one by one: one, two, three!"
   - index: 5
@@ -199,7 +244,7 @@ pages:
     scene: >-
       Just inside the classroom door, a kind smiling teacher kneels down to greet the hero at eye level;
       the hero smiles back shyly.
-    others: a kind young teacher
+    others: "{teacher}"
     others_count: 1
     companion_action: waves at the teacher from behind the hero
     text_ar: "اسْتَقْبَلَتِ الْمُعَلِّمَةُ {name} بِابْتِسَامَةٍ كَبِيرَةٍ وَقَالَتْ: «أَهْلًا {بِكَ/بِكِ} يَا {name}، كُنَّا {نَنْتَظِرُكَ/نَنْتَظِرُكِ}!»"
@@ -213,7 +258,7 @@ pages:
     scene: >-
       A wide view of the cheerful classroom: children busy at the painting corner, the reading corner
       and the block corner. The hero stands in the middle with wide, amazed eyes, taking it all in.
-    others: about six other children of different looks and the teacher
+    others: "{classmates}, two more children of different looks and {teacher}"
     others_count: 7
     companion_action: bounces excitedly on a pile of colorful cushions
     text_ar: "كَانَ الصَّفُّ مَلِيئًا بِالْأَلْوَانِ وَالْكُتُبِ وَالْمُكَعَّبَاتِ وَالْأَصْدِقَاءِ الْجُدُدِ. {فَتَحَ/فَتَحَتْ} {name} {عَيْنَيْهِ/عَيْنَيْهَا} عَلَى وُسْعِهِمَا {وَقَالَ/وَقَالَتْ}: «يَا لَلرَّوْعَةِ!»"
@@ -227,7 +272,7 @@ pages:
     scene: >-
       The hero sits on a soft rug building a tall tower of wooden blocks together with two other smiling
       children of different looks.
-    others: two other smiling children
+    others: "two of {classmates}, smiling"
     others_count: 2
     companion_action: carefully balances the last block on top of the tower
     text_ar: "{جَلَسَ/جَلَسَتْ} {name} مَعَ صَدِيقَيْنِ جَدِيدَيْنِ، وَبَنَوْا مَعًا بُرْجًا عَالِيًا مِنَ الْمُكَعَّبَاتِ. وَوَضَعَ {companion} الْمُكَعَّبَ الْأَخِيرَ… هُوبْ!"
@@ -252,7 +297,7 @@ pages:
     scene: >-
       The hero runs happily across the sunny yard with arms wide open; two children play on the swings
       in the background.
-    others: two other children on the swings in the background
+    others: "two of {classmates} on the swings in the background"
     others_count: 2
     companion_action: chases a yellow butterfly beside the hero
     text_ar: "فِي وَقْتِ اللَّعِبِ، {رَكَضَ/رَكَضَتْ} {name} فِي السَّاحَةِ كَالرِّيحِ، {وَضَحِكَ/وَضَحِكَتْ} حَتَّى احْمَرَّتْ {وَجْنَتَاهُ/وَجْنَتَاهَا}."
@@ -266,7 +311,7 @@ pages:
     scene: >-
       Children sit around a low table at snack time. The hero opens a lunchbox and offers apple slices
       to the smiling child sitting next to them.
-    others: two other children at the table
+    others: "two of {classmates} at the table"
     others_count: 2
     companion_action: sits on the table hugging a tiny grape with both arms
     text_ar: "فِي وَقْتِ الطَّعَامِ، {فَتَحَ/فَتَحَتْ} {name} عُلْبَةَ الطَّعَامِ {وَشَارَكَ/وَشَارَكَتْ} {صَدِيقَهُ/صَدِيقَتَهَا} شَرَائِحَ التُّفَّاحِ. الْمُشَارَكَةُ تَجْعَلُ الطَّعَامَ أَطْيَبَ!"
@@ -280,7 +325,7 @@ pages:
     scene: >-
       Children sit in a circle on a big rug while the teacher reads a picture book whose cover shows only
       a big painted moon and no title. The hero listens with chin in hands, dreamy and happy.
-    others: the teacher and four other children
+    others: "{teacher} and {classmates}"
     others_count: 5
     companion_action: sits in the hero's lap with the same dreamy face
     text_ar: "ثُمَّ جَلَسَ الْجَمِيعُ فِي دَائِرَةٍ، وَقَرَأَتِ الْمُعَلِّمَةُ حِكَايَةً عَنِ الْقَمَرِ. {أَحَبَّ/أَحَبَّتْ} {name} الْحِكَايَةَ، وَأَحَبَّهَا {companion} أَيْضًا."
@@ -294,7 +339,7 @@ pages:
     scene: >-
       The hero and a friend carry colorful wooden blocks together into a big woven basket, smiling; the
       teacher gives a thumbs up in the background.
-    others: one other child and the teacher in the background
+    others: "one of {classmates} and {teacher} in the background"
     others_count: 2
     companion_action: carries one tiny block on its head
     text_ar: "قَبْلَ نِهَايَةِ الْيَوْمِ، {سَاعَدَ/سَاعَدَتْ} {name} الْأَصْدِقَاءَ فِي تَرْتِيبِ الْأَلْعَابِ. قَالَتِ الْمُعَلِّمَةُ: «شُكْرًا {يَا بَطَلُ/يَا بَطَلَةُ}!»"
@@ -308,7 +353,7 @@ pages:
     scene: >-
       Afternoon at the turquoise gate. The hero runs toward Mama with open arms, holding up the moon
       painting; two friends wave goodbye and the teacher smiles from the yard.
-    others: Mama, two friends waving and the teacher
+    others: "{mom}, two of {classmates} waving, and {teacher}"
     others_count: 4
     companion_action: flies ahead like a little golden balloon
     text_ar: "عِنْدَمَا رَنَّ الْجَرَسُ، {رَكَضَ/رَكَضَتْ} {name} إِلَى مَامَا {رَافِعًا/رَافِعَةً} رَسْمَةَ الْقَمَرِ: «كَانَ يَوْمًا رَائِعًا! هَلْ أَعُودُ غَدًا؟»"
@@ -322,7 +367,7 @@ pages:
     scene: >-
       Evening in the living room lit by warm lamps. The hero stands on a cushion telling the story of the
       day with big excited gestures, while Baba and the grandmother listen and smile.
-    others: Baba and the grandmother (Teta)
+    others: "{dad} and {grandma}"
     others_count: 2
     companion_action: acts out the story beside the hero
     text_ar: "فِي الْمَسَاءِ، {حَكَى/حَكَتْ} {name} لِبَابَا وَسِتِّي عَنِ الْأَصْدِقَاءِ وَالْأَلْوَانِ وَالْحِكَايَةِ. قَالَ بَابَا: «{أَنْتَ شُجَاعٌ/أَنْتِ شُجَاعَةٌ} جِدًّا!»"

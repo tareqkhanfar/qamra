@@ -1,10 +1,16 @@
-"""Text-panel checks (Addendum 3 §4): never set text over busy art, and keep contrast high.
+"""Text-area checks (Addendum 3 §4, Addendum 11 §3): never set text over busy art, and keep contrast high.
 
-The panel is cream at 88% opacity by default. Over busy or dark art it goes to 96% and the page is flagged
-when the area is still busy (the image prompt asked for calm space there; QA also scores it).
+Layouts that set text on the art (cloud, fade, panorama, big moment, dialogue) back it with cream at 88%
+opacity by default. Over busy or low-contrast art it goes to 96% and the page is flagged when the area is
+still busy (the image prompt asked for calm space there; QA also scores it). Dark text areas (night scenes)
+get `tone="dark"`, so a fade can turn deep blue with light text instead of a cream fog.
+
+`AREAS` are the text areas the planner (`qamra_ai.pipeline.layout`) names and the image prompt keeps calm:
+every layout of the library sets its text inside one of them.
 """
 
 from pathlib import Path
+from typing import Literal
 
 from PIL import Image, ImageFilter, ImageStat
 
@@ -16,11 +22,13 @@ BASE_OPACITY = 0.88
 SOLID_OPACITY = 0.96
 MIN_CONTRAST = 7.0  # WCAG AAA for body text
 BUSY_EDGES = 0.075  # mean edge strength (0..1) above which the area is "busy"
+DARK_LUMINANCE = 0.16  # relative luminance below which the text area counts as dark
 
-# Where the panel sits, as fractions of the page image (x0, y0, x1, y1). Matches _base.css.j2.
+# Where the panel sits, as fractions of the page image (x0, y0, x1, y1). Matches _base.css.j2 and the layout
+# library (packages/pdf/layouts): a bottom text box ends 191 mm down a 216 mm page.
 AREAS: dict[PanelArea, tuple[float, float, float, float]] = {
     "top": (0.06, 0.06, 0.94, 0.40),
-    "bottom": (0.06, 0.52, 0.94, 0.86),
+    "bottom": (0.06, 0.52, 0.94, 0.89),
     "left": (0.06, 0.06, 0.46, 0.86),
     "right": (0.54, 0.06, 0.94, 0.86),
 }
@@ -71,4 +79,5 @@ def panel_for(image: Path, area: PanelArea) -> Panel:
     if busy or c < MIN_CONTRAST:
         opacity = SOLID_OPACITY
         c = contrast(INK, blend(CREAM, mean, opacity))
-    return Panel(area=area, opacity=opacity, busy=busy, contrast=round(c, 2))
+    tone: Literal["light", "dark"] = "dark" if _luminance(mean) < DARK_LUMINANCE else "light"
+    return Panel(area=area, opacity=opacity, busy=busy, contrast=round(c, 2), tone=tone)

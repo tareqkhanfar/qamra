@@ -1,0 +1,15 @@
+/* full-bleed-fade */
+.fade-box { position: absolute; z-index: 2; --rgb: var(--cream-rgb); display: flex; flex-direction: column; justify-content: center; }
+.fade-box.tone-dark { --rgb: var(--night-rgb); }
+.fade-box.tone-dark .story-text { color: var(--cream); }
+.fade-box.tone-dark .hero-name { color: #FFD36B; }
+.fade-box.tone-dark .the-end { color: #FFD36B; }
+.fade-box.top { top: 0; left: 0; right: 0; padding: calc(var(--safe) + 2mm) 22mm 22mm; max-height: 104mm;
+  background: linear-gradient(to bottom, rgba(var(--rgb), .97) 0%, rgba(var(--rgb), calc(max(var(--o), .9))) calc(100% - 24mm), rgba(var(--rgb), .5) calc(100% - 11mm), rgba(var(--rgb), 0) 100%); }
+.fade-box.bottom { bottom: 0; left: 0; right: 0; padding: 22mm 22mm calc(var(--safe) + 13mm); max-height: 112mm;
+  background: linear-gradient(to top, rgba(var(--rgb), .97) 0%, rgba(var(--rgb), calc(max(var(--o), .9))) calc(100% - 24mm), rgba(var(--rgb), .5) calc(100% - 11mm), rgba(var(--rgb), 0) 100%); }
+.fade-box.left, .fade-box.right { top: calc(var(--safe) - 2mm); width: max-content; max-width: 98mm; max-height: 176mm; padding: 9mm 12mm; }
+.fade-box.left { left: calc(var(--bleed) + 4mm); } .fade-box.right { right: calc(var(--bleed) + 4mm); }
+.fade-box.left::before, .fade-box.right::before { content: ""; position: absolute; inset: -6mm -8mm; z-index: -1; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(var(--rgb), var(--o)) 72%, rgba(var(--rgb), calc(var(--o) * .6)) 86%, rgba(var(--rgb), 0) 100%); }
+.fade-box.left, .fade-box.right { isolation: isolate; }

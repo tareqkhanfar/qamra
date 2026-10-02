@@ -6,6 +6,7 @@ the same theme reuse it.
 """
 
 import json
+from collections.abc import Collection
 from dataclasses import dataclass, field
 
 from qamra_ai import prompts
@@ -32,6 +33,7 @@ def base_pages(theme: Theme, child: Child, lang: Lang, companion_name: str) -> l
             "index": p.index,
             "beat": p.beat,
             "text": theme.base_text(p, lang, child.gender, child.name, companion_name),
+            **({"wordless": True} if p.wordless else {}),  # a silent picture page: its text stays empty
         }
         for p in theme.pages
     ]
@@ -48,15 +50,31 @@ def theme_bible(theme: Theme, lang: Lang) -> str:
     return "\n".join(lines)
 
 
-def validate_story(story: StoryOut, n_pages: int) -> StoryOut:
+def validate_story(story: StoryOut, n_pages: int, wordless: Collection[int] = ()) -> StoryOut:
+    """Pages 1..n, text on every page except the theme's wordless ones (Addendum 11 §4.4), which are
+    emptied, and the two questions for parents."""
     indices = [p.index for p in story.pages]
     if indices != list(range(1, n_pages + 1)):
         raise InvalidOutput(f"story must have pages 1..{n_pages}, got {indices}")
-    if any(not p.text.strip() for p in story.pages):
-        raise InvalidOutput("story has an empty page")
+    empty = [p.index for p in story.pages if p.index not in wordless and not p.text.strip()]
+    if empty:
+        raise InvalidOutput(f"story pages without text: {empty}")
     if len(story.parents_questions) != 2:
         raise InvalidOutput("story must have exactly 2 questions for parents")
+    if any(p.index in wordless and p.text for p in story.pages):
+        pages = [p.model_copy(update={"text": ""}) if p.index in wordless else p for p in story.pages]
+        story = story.model_copy(update={"pages": pages})
     return story
+
+
+def wordless_pages(theme: Theme) -> set[int]:
+    return {p.index for p in theme.pages if p.wordless}
+
+
+def missing_text(theme: Theme, story: StoryOut) -> list[int]:
+    """Story pages the theme expects text on that have none: the book must not be drawn or printed."""
+    texts = {p.index: p.text for p in story.pages}
+    return [p.index for p in theme.pages if not p.wordless and not texts.get(p.index, "").strip()]
 
 
 def clean_parent_message(message: str | None) -> str | None:
@@ -130,6 +148,7 @@ async def write_story(
             max_tokens=16000,
         ),
         len(theme.pages),
+        wordless_pages(theme),
     )
     message = clean_parent_message(parent_message)
     review = out.model_dump()

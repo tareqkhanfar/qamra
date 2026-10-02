@@ -94,6 +94,25 @@ async def generate_companion_options(
     return CompanionOptions(spec=spec, review=review, options=list(options))
 
 
+DEFAULT_SHEET_PROMPT = ("companion_default_sheet", 1)
+
+
+def default_companion_request(description: str, style: ArtStyle) -> ImageRequest:
+    """A theme's own companion («قمّور») from its locked description, when no fixed sheet image exists
+    (Addendum 11 §4.2). No names in the prompt: a written name invites lettering in the picture."""
+    h = house_style()
+    name, version = DEFAULT_SHEET_PROMPT
+    prompt = prompts.render(
+        name,
+        version=version,
+        description=description,
+        style=h.style,
+        medium=style.guide,
+        negative=negatives(h, style.negative),
+    )
+    return ImageRequest(step="companion:sheet", prompt=prompt, aspect="1:1", seed=4242)
+
+
 async def score_fidelity(rt: Runtime, drawing_png: bytes, sheet: GeneratedImage) -> CompanionFidelity:
     return await rt.ask(
         step="companion:fidelity",

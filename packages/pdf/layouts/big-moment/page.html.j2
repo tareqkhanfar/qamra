@@ -1,0 +1,16 @@
+{#- big-moment: a climax page. One short line in huge display type, outlined, over the full-bleed scene, with
+    a soft veil from the edge for drama and legibility. -#}
+{% import "_macros.html.j2" as m %}
+{% macro page(p) -%}
+{% set area = 'bottom' if p.panel and p.panel.area == 'bottom' else 'top' %}
+<section class="page lay-big{{ ' qr-' ~ p.side if p.qr_url and qr }}" data-kind="story" data-layout="big-moment" data-number="{{ p.number }}">
+  <img class="bleed-img" src="{{ img(p.image) }}" alt="">
+  <div class="big-veil {{ area }}"></div>
+  {% if p.text %}
+  <div class="big-box {{ area }}" data-panel="{{ p.number }}">{{ m.story_body(p, s, hero, 'big') }}</div>
+  {% endif %}
+  {{ m.badge(spec, p, t, orn) }}
+  {{ m.voice_qr(spec, s, p, qr) }}
+  {{ m.watermark(spec, s) }}
+</section>
+{%- endmacro %}

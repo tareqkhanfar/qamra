@@ -2,6 +2,8 @@ slug: dream-boat
 version: 1
 title_ar: "{name} وقارب الأحلام"
 title_en: "{name} and the Dream Boat"
+# Cover lettering (Addendum 11 §2.3): gold-magic, candy-bright, night-glow, nature-fresh, heritage-tatreez
+cover_title_style: night-glow
 age_range: [4, 8]
 is_b2b: false
 active: true

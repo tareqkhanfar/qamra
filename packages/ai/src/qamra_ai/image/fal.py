@@ -162,6 +162,10 @@ class FalImageProvider:
         self.model = model
         self.family = family_of(model)
 
+    @property
+    def max_refs(self) -> int:
+        return MAX_REFS[self.family]
+
     def build(self, req: ImageRequest) -> tuple[str, dict[str, Any], float]:
         """(endpoint, arguments, input megapixels) for this request."""
         refs = req.refs[: MAX_REFS[self.family]]
@@ -177,9 +181,11 @@ class FalImageProvider:
         if req.seed is not None:
             args["seed"] = req.seed
         if self.family == "nano-banana":
+            # Nano Banana Pro has no 0.5K tier (1K/2K/4K, fal schema checked 2026-10-02)
+            pro_floor = "nano-banana-pro" in endpoint and req.resolution == "0.5K"
             args |= {
                 "aspect_ratio": req.aspect,
-                "resolution": req.resolution,
+                "resolution": "1K" if pro_floor else req.resolution,
                 "num_images": 1,
                 "output_format": "png",
                 "limit_generations": True,

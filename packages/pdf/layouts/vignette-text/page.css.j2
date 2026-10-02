@@ -1,0 +1,18 @@
+/* vignette-text: the picture's calm band (where the prompt kept space for text) faces the text and fades out */
+/* The soft edge is a paper-colored radial gradient laid over the picture (vector), not a CSS mask: Chromium
+   flattens masked images onto white in PDFs. The page washes are drawn above it, so they run across. */
+.lay-vignette .vignette-art { position: absolute; left: 0; right: 0; margin: 0 auto; width: 186mm; height: 134mm; }
+.lay-vignette .vignette-art img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.lay-vignette .vignette-art::after { content: ""; position: absolute; inset: -1px;
+  background: radial-gradient(ellipse 50% 50% at 50% 50%, rgba(251,246,236,0) 56%, rgba(251,246,236,.55) 74%, rgba(251,246,236,.93) 88%, #FBF6EC 97%); }
+.lay-vignette .paper-wash { z-index: 1; }
+.lay-vignette .vignette-stars, .lay-vignette .vignette-text { z-index: 2; }
+.lay-vignette.text-top .vignette-art { bottom: calc(var(--bleed) + 8mm); }
+.lay-vignette.text-top .vignette-art img { object-position: 50% 100%; }
+.lay-vignette.text-bottom .vignette-art { top: calc(var(--bleed) + 6mm); }
+.lay-vignette.text-bottom .vignette-art img { object-position: 50% 0%; }
+.lay-vignette .vignette-stars svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.lay-vignette .vignette-text { position: absolute; left: calc(var(--safe) + 6mm); right: calc(var(--safe) + 6mm); max-height: 70mm; display: flex; flex-direction: column; justify-content: center; }
+.lay-vignette.text-top .vignette-text { top: calc(var(--safe) + 2mm); }
+.lay-vignette.text-bottom .vignette-text { bottom: calc(var(--safe) + 13mm); }
+.lay-vignette .story-text.large { font-size: calc(var(--story-pt) + 2pt); }

@@ -1,0 +1,8 @@
+{
+  "_about": "Optional finished decor images (docs/image-prompts.md section E). Put the PNG here (or in design/incoming/ while testing); missing files fall back to the code-drawn SVG. crop = [x0, y0, x1, y1] as fractions of the source image; key_white makes the white background transparent; px = longest side after processing.",
+  "paper": {"file": "E1-paper-cream.png", "px": 1400},
+  "wash": {"file": "E2-watercolor-washes.png", "crop": [0.0, 0.0, 0.34, 0.5], "key_white": true, "px": 1400},
+  "moon_frame": {"file": "E3-moon-portrait-frame.png", "key_white": true, "px": 1400},
+  "polaroid": {"file": "E4-polaroid-tape.png", "crop": [0.0, 0.0, 0.34, 1.0], "key_white": true, "px": 1400},
+  "doodles": {"file": "E5-crayon-doodles.png", "key_white": true, "px": 2400}
+}

@@ -41,6 +41,7 @@ class Runtime:
     text: TextProvider
     image: ImageProvider
     upscaler: Upscaler = field(default_factory=LocalUpscaler)
+    cover_image: ImageProvider | None = None  # the cover's own model (Addendum 11 §6.4); None = `image`
     ledger: CostLedger = field(default_factory=CostLedger)
     budget: Budget | None = None  # None: no cap (per-child steps, scripts)
     on_cost: Callable[[CostEntry], None] | None = None  # e.g. write a GenerationCost row right away
@@ -54,17 +55,18 @@ class Runtime:
 
     # ---- estimates --------------------------------------------------------------------------
 
-    def image_estimate(self, req: ImageRequest) -> float:
-        if self.image.name in ("fake", "sketch"):
+    def image_estimate(self, req: ImageRequest, provider: ImageProvider | None = None) -> float:
+        image = provider or self.image
+        if image.name in ("fake", "sketch"):
             return 0.0
-        model = self.image.model
-        if self.image.name == "self_hosted":
+        model = image.model
+        if image.name == "self_hosted":
             # our own GPU costs nothing per image; budget for the fal fallback in case it has to draw
-            fallback = getattr(self.image, "fallback", None)
+            fallback = getattr(image, "fallback", None)
             if fallback is None or fallback.name != "fal":
                 return 0.0
             model = fallback.model
-        if self.image.name in ("fal", "self_hosted"):
+        if image.name in ("fal", "self_hosted"):
             from qamra_ai.image.fal import endpoint_for
 
             model = endpoint_for(model, bool(req.refs))
@@ -91,13 +93,15 @@ class Runtime:
 
     # ---- calls ------------------------------------------------------------------------------
 
-    async def draw(self, req: ImageRequest) -> GeneratedImage:
-        """Image call (retries + fallback live in the provider); cost recorded and budgeted."""
+    async def draw(self, req: ImageRequest, *, cover: bool = False) -> GeneratedImage:
+        """Image call (retries + fallback live in the provider); cost recorded and budgeted. `cover` uses
+        the cover's own model when one is configured."""
+        image = (self.cover_image or self.image) if cover else self.image
         if self.budget is None:
-            result = await self.image.generate(req)
+            result = await image.generate(req)
         else:
-            async with self.budget.reserve(self.image_estimate(req), req.step):
-                result = await self.image.generate(req)
+            async with self.budget.reserve(self.image_estimate(req, image), req.step):
+                result = await image.generate(req)
         self._record(result.cost)
         return result
 

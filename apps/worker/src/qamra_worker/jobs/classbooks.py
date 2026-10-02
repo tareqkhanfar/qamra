@@ -195,9 +195,7 @@ def _setup(db: Session, storage: Any, cb: ClassBook) -> ClassJob:
     )
     rt = make_runtime(settings)
     install_fakes(rt)
-    spec = PrintSpec(
-        spine_mm=settings.print_spine_mm, signature=settings.print_signature, dpi=settings.print_dpi
-    )
+    spec = PrintSpec.from_settings(settings)
     ready = ready_characters(db, cb)
     included = [c for c in (cb.plan or {}).get("children", []) if c in ready]
     pictures = len((cb.plan or {}).get("pages", [])) + len(included)
@@ -583,6 +581,7 @@ async def render_files(job: ClassJob) -> dict[str, Any]:
             signature=spec.signature,
             dpi=spec.dpi,
         )
+        book_spec = dataclasses.replace(book_spec, spine_mm=spec.spine_for(book_spec.interior_pages))
         job.progress(stage="files", files={"done": 0, "total": len(copies)})
         files = await render_class_book(
             book_spec,

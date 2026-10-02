@@ -1,0 +1,15 @@
+/* big-moment: the outline is a ring of hard text-shadows (vector, embedded font), never a text stroke */
+.lay-big .big-veil { position: absolute; left: 0; right: 0; height: 46%; z-index: 1; }
+.lay-big .big-veil.top { top: 0; background: linear-gradient(to bottom, rgba(var(--night-rgb), .5), rgba(var(--night-rgb), .18) 60%, rgba(var(--night-rgb), 0)); }
+.lay-big .big-veil.bottom { bottom: 0; background: linear-gradient(to top, rgba(var(--night-rgb), .5), rgba(var(--night-rgb), .18) 60%, rgba(var(--night-rgb), 0)); }
+.lay-big .big-box { position: absolute; z-index: 2; left: calc(var(--safe) + 2mm); right: calc(var(--safe) + 2mm); max-height: 80mm; display: flex; flex-direction: column; justify-content: center; }
+.lay-big .big-box.top { top: calc(var(--safe) + 3mm); } .lay-big .big-box.bottom { bottom: calc(var(--bleed) + 25mm); }
+.story-text.big { font-family: "Lalezar", "Baloo Bhaijaan 2", sans-serif; font-size: calc(var(--story-pt) * 1.7); line-height: 1.75; color: #FFF8E6;
+  text-shadow:
+    .55mm 0 0 #1B1230, -.55mm 0 0 #1B1230, 0 .55mm 0 #1B1230, 0 -.55mm 0 #1B1230,
+    .39mm .39mm 0 #1B1230, -.39mm .39mm 0 #1B1230, .39mm -.39mm 0 #1B1230, -.39mm -.39mm 0 #1B1230,
+    .5mm .22mm 0 #1B1230, -.5mm .22mm 0 #1B1230, .5mm -.22mm 0 #1B1230, -.5mm -.22mm 0 #1B1230,
+    .22mm .5mm 0 #1B1230, -.22mm .5mm 0 #1B1230, .22mm -.5mm 0 #1B1230, -.22mm -.5mm 0 #1B1230,
+    0 1.5mm 0 rgba(27,18,48,.55); }
+.story-text.big .hero-name { color: #FFD75E; font-family: inherit; }
+.story-text.big .the-end { color: #FFD75E; font-size: 16pt; }

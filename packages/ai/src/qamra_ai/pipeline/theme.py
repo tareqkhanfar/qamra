@@ -14,6 +14,8 @@ import yaml
 from pydantic import BaseModel, Field, model_validator
 
 from qamra_ai.pipeline.models import Gender, Lang
+from qamra_pdf.lettering import DEFAULT_TITLE_STYLE, TitleStyle
+from qamra_pdf.page_layouts import GEOMETRY, PageLayout
 
 CONTENT_DIR = Path(os.environ.get("QAMRA_CONTENT_DIR") or Path(__file__).resolve().parents[5] / "content")
 
@@ -35,6 +37,18 @@ class DefaultCompanion(BaseModel):
     name_en: str
     description_en: str
     image: str | None = None
+    # Shared sheet id (Addendum 11 §4.2): `content/cast/<id>-<style>.png` when the theme has no
+    # `cast/companion-<style>.png` of its own. Several themes share «قمّور».
+    id: str | None = Field(default=None, pattern=r"^[a-z][a-z0-9_]*$")
+
+
+class CastMember(BaseModel):
+    """A recurring side character (Addendum 11 §4.3): one locked look for the whole book. Scenes name it in
+    `others` as `{id}`; its sheet image is `cast/<id>-<style>.png` in the theme folder or `content/cast/`."""
+
+    id: str = Field(pattern=r"^[a-z][a-z0-9_]*$")
+    role: str  # how scenes say it, e.g. "the teacher"; replaces `{id}` in `others`
+    description_en: str  # the locked look, repeated verbatim on every page it is in
 
 
 class Outfit(BaseModel):
@@ -66,12 +80,23 @@ class ThemeScene(BaseModel):
 
 class ThemePage(ThemeScene):
     index: int
+    # `layout` accepts the image geometry (full/split/spread) or a library layout (Addendum 11 §3, e.g.
+    # `full-bleed-cloud`): a library name is kept in `design` and `layout` becomes its geometry.
     layout: Layout = "full"
+    design: PageLayout | None = None  # None: the planner rotates layouts (qamra_pdf.page_layouts)
     text_pos: TextPos = "top"
     no_child: bool = False  # background plate: no hero, no companion → generated once per theme and cached
+    wordless: bool = False  # a page meant to have no text (Addendum 11 §4.4); every other page needs text
     beat: str
     text_ar: str
     text_en: str
+
+    @model_validator(mode="before")
+    @classmethod
+    def _library_layout(cls, data: object) -> object:
+        if isinstance(data, dict) and data.get("layout") in GEOMETRY:
+            data = {**data, "design": data["layout"], "layout": GEOMETRY[data["layout"]]}
+        return data
 
     @property
     def physical_pages(self) -> int:
@@ -140,9 +165,11 @@ class Theme(BaseModel):
     companion_slot: bool
     default_companion: DefaultCompanion | None = None
     catalog: ThemeCatalog | None = None
+    cover_title_style: TitleStyle = DEFAULT_TITLE_STYLE  # cover lettering treatment (Addendum 11 §2.3)
     setting: str | None = None  # overrides the house style's local setting cues when the story needs it
     locations: dict[str, str] = {}
     outfits: dict[str, list[Outfit]] = {}
+    cast: list[CastMember] = []  # recurring side characters (teacher, classmates, family)
     blurb_ar: str | None = None
     blurb_en: str | None = None
     for_parents: ForParents | None = None
@@ -178,6 +205,14 @@ class Theme(BaseModel):
         return self.locations.get(scene.location) if scene.location else None
 
 
+_CAST_REF = re.compile(r"\{([a-z][a-z0-9_]*)\}")
+
+
+def cast_ids(others: str | None) -> list[str]:
+    """The cast members a scene names in `others` as `{id}`, in order, once each."""
+    return list(dict.fromkeys(_CAST_REF.findall(others or "")))
+
+
 def word_count(text: str) -> int:
     return len([w for w in re.split(r"\s+", text) if re.search(r"\w", w)])
 
@@ -201,14 +236,22 @@ def theme_problems(theme: Theme) -> list[str]:
             out.append(f"page {p.index}: a spread must start on an even page (starts on {page_no})")
         page_no += p.physical_pages
     scenes: list[ThemeScene] = [*theme.pages, *([theme.cover] if theme.cover else [])]
+    cast = [m.id for m in theme.cast]
+    out += [f"cast member {c!r} defined twice" for c in cast if cast.count(c) > 1]
     for s in scenes:
         if s.outfit not in theme.outfits:
             out.append(f"unknown outfit {s.outfit!r}")
         if s.location and s.location not in theme.locations:
             out.append(f"unknown location {s.location!r}")
+        out += [f"unknown cast member {{{c}}} in others" for c in cast_ids(s.others) if c not in cast]
     for p in theme.pages:
         if p.no_child and p.companion_action:
             out.append(f"page {p.index}: a child-free plate cannot show the companion")
+        texts = (p.text_ar.strip(), p.text_en.strip())
+        if not p.wordless and not all(texts):
+            out.append(f"page {p.index}: no text (mark it `wordless: true` if it is meant to be silent)")
+        if p.wordless and any(texts):
+            out.append(f"page {p.index}: a wordless page has text")
         limit = max_words_for(theme.age_range[0])
         for lang_text in (p.text_ar, p.text_en):
             for gender in GENDERS:

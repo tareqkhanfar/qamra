@@ -42,6 +42,17 @@ The provider's terms cover commercial use of outputs. Each is used only with ter
 | IBM Plex Sans Arabic | SIL Open Font License 1.1 |
 | Amiri Quran 1.003 | SIL Open Font License 1.1 (the Quran text of «قلبي يعرف الله», Addendum 10) |
 
+### Display and handwriting fonts (Addendum 11: cover lettering, dedication)
+
+All SIL OFL 1.1: embedding in print PDFs and selling the printed books is allowed; the fonts must not be sold on their own. Fetched on 2026-10-02 from `github.com/google/fonts` (`https://raw.githubusercontent.com/google/fonts/main/ofl/<family>/…`); the licence text sits beside each file in `packages/pdf/src/qamra_pdf/fonts/OFL-<Family>.txt`. Chromium embeds variable fonts as Type 3, so the variable sources were cut to static instances with fontTools `varLib.instancer` (allowed by the OFL as a Modified Version; none of these reserves the family name). The test suite checks that every font embeds as TrueType (`Type0`), never Type 3.
+
+| Font | File(s) | Source URL | Licence | Fetched | Use |
+|---|---|---|---|---|---|
+| Lalezar | `Lalezar-Regular.ttf` (static) | https://raw.githubusercontent.com/google/fonts/main/ofl/lalezar/Lalezar-Regular.ttf | SIL OFL 1.1, © 2015 The Lalezar Project Authors | 2026-10-02 | Cover titles (gold-magic, night-glow), big-moment pages, the first word on ornament pages |
+| Marhey | `Marhey-Bold.ttf` (static wght 700 instance of `Marhey[wght].ttf`) | https://raw.githubusercontent.com/google/fonts/main/ofl/marhey/Marhey%5Bwght%5D.ttf | SIL OFL 1.1, © 2022 The Marhey Project Authors | 2026-10-02 | Cover titles (candy-bright, nature-fresh), playful page titles |
+| Aref Ruqaa | `ArefRuqaa-Regular.ttf`, `ArefRuqaa-Bold.ttf` (static) | https://raw.githubusercontent.com/google/fonts/main/ofl/arefruqaa/ | SIL OFL 1.1, © 2015-2020 The Aref Ruqaa Project Authors | 2026-10-02 | Handwritten-style dedication, polaroid captions, heritage-tatreez cover title |
+| Noto Naskh Arabic SemiBold | `NotoNaskhArabic-SemiBold.ttf` (static wght 600 instance of `NotoNaskhArabic[wght].ttf`) | https://raw.githubusercontent.com/google/fonts/main/ofl/notonaskharabic/NotoNaskhArabic%5Bwght%5D.ttf | SIL OFL 1.1, © 2022 The Noto Project Authors (same family and licence as the row above) | 2026-10-02 | The child's name inside the story text (semi-bold) |
+
 ## «قلبي يعرف الله»: the Quran font and the religious texts (Addendum 10 §3)
 
 | Item | License / status | Note |

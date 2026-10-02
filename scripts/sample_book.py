@@ -60,6 +60,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--companion-name")
     p.add_argument("--companion-type", choices=["creature", "animal", "robot", "other"], default="creature")
     p.add_argument("--qr-url", help="URL for the back-cover QR code (family voice)")
+    p.add_argument(
+        "--cover-thumbs",
+        action="store_true",
+        help="also write cover-thumbs.png: the front in every title treatment at 300 × 300 px",
+    )
     p.add_argument("--seed", type=int, default=None)
     p.add_argument("--out", type=Path, default=ROOT / "out")
     return p.parse_args(argv)
@@ -254,6 +259,10 @@ async def run(args: argparse.Namespace) -> int:
             out,
             print_files=args.mode == "final",
         )
+        if args.cover_thumbs:
+            from qamra_pdf.thumbs import cover_thumbs
+
+            await cover_thumbs(files.spec, out / "cover-thumbs.png")
     except QamraError as e:
         print(f"✗ {type(e).__name__}: {e}")
         return 1

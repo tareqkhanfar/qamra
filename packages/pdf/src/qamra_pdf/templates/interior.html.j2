@@ -1,20 +1,11 @@
-{% import "_macros.html.j2" as m %}
+{% import "_book.html.j2" as book with context %}
 <!doctype html>
 <html lang="{{ spec.lang }}" dir="{{ spec.dir }}">
 <head><meta charset="utf-8"><title>{{ spec.title }}</title>
 <style>
 {% include "_base.css.j2" %}
-{% include "_pages.css.j2" %}
+{{ book.styles() }}
 </style></head>
 <body>
-{% for p in spec.pages %}
-{% if p.kind == 'title' %}{{ m.title_page(spec, s, img) }}
-{% elif p.kind == 'story' %}{{ m.story_page(spec, s, p, img, qr) }}
-{% elif p.kind == 'companion' and spec.keepsake %}{{ m.keepsake_page(spec, s, p, img) }}
-{% elif p.kind == 'parents' and spec.parents %}{{ m.parents_page(spec, s, p) }}
-{% elif p.kind == 'activity' %}{{ m.activity_page(spec, s, p) }}
-{% elif p.kind == 'memories' %}{{ m.memories_page(spec, s, p) }}
-{% else %}<section class="page" data-kind="blank" data-number="{{ p.number }}"></section>
-{% endif %}
-{% endfor %}
+{{ book.pages() }}
 </body></html>

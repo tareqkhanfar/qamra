@@ -1,0 +1,35 @@
+{#- The story book's interior pages in reading order; shared by interior.html.j2 and proof.html.j2.
+    Story pages dispatch to the layout library (packages/pdf/layouts/<name>/page.html.j2). -#}
+{% import "_matter.html.j2" as mt with context %}
+{% import "full-bleed-cloud/page.html.j2" as l_cloud with context %}
+{% import "full-bleed-fade/page.html.j2" as l_fade with context %}
+{% import "spread-panorama/page.html.j2" as l_pano with context %}
+{% import "vignette-text/page.html.j2" as l_vignette with context %}
+{% import "split-frame/page.html.j2" as l_split with context %}
+{% import "big-moment/page.html.j2" as l_big with context %}
+{% import "dialogue/page.html.j2" as l_dialogue with context %}
+{% import "ornament-text/page.html.j2" as l_ornament with context %}
+{% set LAYOUT = {
+  'full-bleed-cloud': l_cloud, 'full-bleed-fade': l_fade, 'spread-panorama': l_pano, 'vignette-text': l_vignette,
+  'split-frame': l_split, 'big-moment': l_big, 'dialogue': l_dialogue, 'ornament-text': l_ornament,
+} %}
+
+{% macro styles() -%}
+{% include "_shared.css.j2" %}
+{% for name in layouts %}{% include name ~ "/page.css.j2" %}
+{% endfor %}
+{% include "_pages.css.j2" %}
+{%- endmacro %}
+
+{% macro pages() -%}
+{% for p in spec.pages %}
+{% if p.kind == 'title' %}{{ mt.title_page() }}
+{% elif p.kind == 'story' %}{{ LAYOUT[layout_of(p.layout)].page(p) }}
+{% elif p.kind == 'companion' and spec.keepsake %}{{ mt.keepsake_page(p) }}
+{% elif p.kind == 'parents' and spec.parents %}{{ mt.parents_page(p) }}
+{% elif p.kind == 'activity' %}{{ mt.activity_page(p) }}
+{% elif p.kind == 'memories' %}{{ mt.memories_page(p) }}
+{% else %}<section class="page paper" data-kind="blank" data-number="{{ p.number }}"></section>
+{% endif %}
+{% endfor %}
+{%- endmacro %}

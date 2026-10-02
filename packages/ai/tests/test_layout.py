@@ -1,10 +1,12 @@
 import io
+import itertools
 
 import pytest
 from PIL import Image
 from tests_helpers import png
 
 from qamra_ai.pipeline.layout import PrintSpec, plan_book, side_of
+from qamra_ai.pipeline.models import Lang
 from qamra_ai.pipeline.printimg import fit_exact, split_spread
 from qamra_ai.pipeline.theme import load_theme
 
@@ -72,3 +74,87 @@ def test_fit_exact_and_spread_halves() -> None:
     left, right = split_spread(data, 2551)
     assert Image.open(io.BytesIO(left)).size == (2551, 2551)
     assert Image.open(io.BytesIO(right)).size == (2551, 2551)
+
+
+# ---- Addendum 11: spine from the page count, the layout library and its rotation
+
+
+def test_spine_from_the_page_count_with_admin_override() -> None:
+    spec = PrintSpec()
+    assert spec.spine_for(24) == pytest.approx(0.15 * 12 + 6.0)  # caliper × sheets + board allowance
+    assert spec.spine_for(25) == spec.spine_for(26)  # a half sheet is still a sheet
+    assert spec.spine_for(40) > spec.spine_for(24)
+    thick = PrintSpec(paper_caliper_mm=0.2, board_allowance_mm=5.0)
+    assert thick.spine_for(32) == pytest.approx(0.2 * 16 + 5.0)
+    assert PrintSpec(spine_mm=9.5).spine_for(24) == 9.5  # the admin's fixed width wins
+    plan = plan_book(load_theme("graduation"), "ar", companion_page=True)
+    assert plan.spine_mm == spec.spine_for(plan.page_count)
+
+
+@pytest.mark.parametrize("slug", ["first-day", "graduation", "new-sibling"])
+@pytest.mark.parametrize("lang", ["ar", "en"])
+def test_layouts_rotate_and_keep_the_text_area(slug: str, lang: Lang) -> None:
+    from qamra_pdf.page_layouts import GEOMETRY, LAYOUTS, has_dialogue
+
+    theme = load_theme(slug)
+    plan = plan_book(theme, lang, companion_page=False)
+    designs = [plan.beats[p.index].design for p in theme.pages]
+    assert all(d in LAYOUTS for d in designs)
+    assert all(a != b for a, b in itertools.pairwise(designs)), designs  # no repeats
+    assert len(set(designs)) >= 5  # a designed book, not one template
+    for page in theme.pages:
+        beat = plan.beats[page.index]
+        assert beat.design is not None and GEOMETRY[beat.design] == page.layout  # same image geometry
+        # the calm area the prompt asks for does not depend on the rotation
+        if page.layout == "full":
+            expected = side_of(beat.pages[0], lang == "ar") if page.text_pos == "side" else page.text_pos
+            assert beat.text_area == expected
+        if beat.design == "dialogue":
+            assert has_dialogue(page.text_ar if lang == "ar" else page.text_en)
+
+
+def test_theme_layout_names_and_legacy_values() -> None:
+    from qamra_ai.pipeline.theme import ThemePage
+
+    base = {"index": 1, "scene": "s", "beat": "b", "text_ar": "نص", "text_en": "text"}
+    fade = ThemePage.model_validate({**base, "layout": "full-bleed-fade", "text_pos": "bottom"})
+    assert (fade.layout, fade.design) == ("full", "full-bleed-fade")
+    pano = ThemePage.model_validate({**base, "layout": "spread-panorama"})
+    assert (pano.layout, pano.design, pano.physical_pages) == ("spread", "spread-panorama", 2)
+    legacy = ThemePage.model_validate({**base, "layout": "split"})
+    assert (legacy.layout, legacy.design) == ("split", None)
+    with pytest.raises(ValueError):
+        ThemePage.model_validate({**base, "layout": "white-box"})
+
+
+def test_theme_layout_choice_is_kept_unless_it_repeats() -> None:
+    theme = load_theme("graduation")
+    pages = [
+        p.model_copy(update={"design": "ornament-text"}) if p.index in (1, 2) else p for p in theme.pages
+    ]
+    plan = plan_book(theme.model_copy(update={"pages": pages}), "ar", companion_page=False)
+    assert plan.beats[1].design == "ornament-text"  # the theme's choice
+    assert plan.beats[2].design != "ornament-text"  # the same layout twice in a row is rotated away
+    assert plan.title_style == "gold-magic" and plan.memories == "school"
+
+
+def test_dialogue_and_big_moment_rules() -> None:
+    from qamra_pdf.page_layouts import PageLayout, choose, split_dialogue
+
+    quote_end = "هَمَسَ قَمّور: «أَنْتِ جَاهِزَةٌ!»"
+    quote_mid = "نَادَتِ الْمُعَلِّمَةُ: «سلمى!» فَمَشَتْ سلمى بِثِقَةٍ وَرَفَعَتِ الشَّهَادَةَ."
+    assert split_dialogue(quote_end) == ("هَمَسَ قَمّور:", ["أَنْتِ جَاهِزَةٌ!"])
+    assert split_dialogue(quote_mid) == (quote_mid, [])  # a bubble would be read out of order
+    used: dict[PageLayout, int] = {"full-bleed-cloud": 1, "full-bleed-fade": 1}
+    assert (
+        choose("full", "top", quote_end, wanted=None, previous=["full-bleed-cloud"], used=used) == "dialogue"
+    )
+    long_text = " ".join(["كَلِمَةٌ"] * 20)
+    for _ in range(3):
+        got = choose("full", "top", long_text, wanted=None, previous=[], used={})
+        assert got not in ("big-moment", "dialogue")
+    # a side text area only takes layouts that can sit on a side
+    assert (
+        choose("full", "left", long_text, wanted=None, previous=["full-bleed-cloud"], used={})
+        == "full-bleed-fade"
+    )

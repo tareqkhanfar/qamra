@@ -1,0 +1,6 @@
+/* spread-panorama: the text keeps away from the fold (the inner edge) */
+.pano-box { position: absolute; z-index: 2; isolation: isolate; width: max-content; max-width: 150mm; max-height: 74mm; padding: 6mm 10mm; display: flex; flex-direction: column; justify-content: center; }
+.pano-box.top { top: calc(var(--safe) + 3mm); } .pano-box.bottom { bottom: calc(var(--bleed) + 25mm); }
+.pano-box.right { right: calc(var(--safe) + 4mm); } .pano-box.left { left: calc(var(--safe) + 4mm); }
+.pano-mist { position: absolute; inset: 0; z-index: -1; border-radius: 14mm; background: rgba(var(--cream-rgb), var(--o));
+  box-shadow: 0 0 7mm 5mm rgba(var(--cream-rgb), calc(var(--o) * .85)); }

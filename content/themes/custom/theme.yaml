@@ -10,6 +10,8 @@ slug: custom
 version: 1
 title_ar: "حكاية {name} الخاصة"
 title_en: "{name}'s Very Own Story"
+# Cover lettering (Addendum 11 §2.3): gold-magic, candy-bright, night-glow, nature-fresh, heritage-tatreez
+cover_title_style: gold-magic
 age_range: [3, 8]
 is_b2b: false
 active: true
@@ -17,9 +19,16 @@ companion_slot: true
 default_companion:
   name_ar: قَمّور
   name_en: Qamour
+  id: qamour  # shared sheet images: content/cast/qamour-<style>.png
+  # Locked design (Addendum 11 §4.2): always this plump crescent, never a ball. Same text as the sheets in
+  # docs/image-prompts.md (C1, C2, C7).
   description_en: >-
-    a tiny round glowing moon creature, soft pale-gold body shaped like a plump crescent,
-    two small dot eyes, rosy cheeks, stubby little arms, floats a few centimeters above the ground
+    a tiny friendly moon creature: a soft, plump crescent-moon body (a thick C shape opening to the
+    right), pale honey-gold, softly glowing from inside, about the size of a house cat. Its face sits on
+    the thick middle of the crescent: two small shiny black dot eyes, a tiny happy smile, round rosy
+    cheeks, and a small five-pointed star-shaped golden freckle on its left cheek. Two stubby little
+    arms, no legs. It floats a few centimeters above the ground with a faint trail of golden sparkles.
+    The crescent shape never changes
 
 locations:
   home: >-

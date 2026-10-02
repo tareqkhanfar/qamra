@@ -18,3 +18,7 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/qamra_pdf"]
+
+# The page layout library (Addendum 11 §3) lives beside src/; wheels carry it inside the package.
+[tool.hatch.build.targets.wheel.force-include]
+"layouts" = "qamra_pdf/layouts"

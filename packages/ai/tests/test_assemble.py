@@ -1,4 +1,5 @@
 import io
+import itertools
 from pathlib import Path
 
 import pytest
@@ -68,8 +69,14 @@ async def test_generated_book_assembles_and_passes_preflight(
     }
     kinds = [p.kind for p in files.spec.pages]
     assert len(kinds) == 24 and kinds[0] == "title" and kinds[-3:] == ["parents", "activity", "memories"]
-    spread = [p for p in files.spec.pages if p.layout == "spread"]
+    spread = [p for p in files.spec.pages if p.layout == "spread-panorama"]
     assert len(spread) == 6 and all(p.image is not None for p in spread)
+    # Addendum 11 §3: designed layouts, never the same layout on two story beats in a row
+    beats = [p.layout for p in files.spec.pages if p.kind == "story" and p.text]
+    assert all(a != b for a, b in itertools.pairwise(beats)), beats
+    assert len(set(beats)) >= 5
+    assert not any("empty_text_box" in f for f in files.flags.values()), files.flags
+    assert files.spec.spine_mm == pytest.approx(0.15 * 12 + 6.0)  # 24 pages = 12 sheets
     first_half = [p for p in spread if p.panel is not None]
     assert len(first_half) == 3 and all(p.side == "right" for p in first_half)  # RTL: text on the right page
     assert files.spec.title_page.dedication.startswith("إلى سلمى… نحبّكِ")

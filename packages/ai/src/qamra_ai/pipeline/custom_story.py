@@ -20,7 +20,13 @@ from qamra_ai.errors import ContentBlocked, InvalidOutput
 from qamra_ai.pipeline.companion import type_label
 from qamra_ai.pipeline.models import Child, CompanionSpec, Lang, SafetyVerdict, StoryOut, StoryPageOut
 from qamra_ai.pipeline.runtime import Runtime
-from qamra_ai.pipeline.story import VOWELIZE_MAX_AGE, Story, clean_parent_message, validate_story
+from qamra_ai.pipeline.story import (
+    VOWELIZE_MAX_AGE,
+    Story,
+    clean_parent_message,
+    validate_story,
+    wordless_pages,
+)
 from qamra_ai.pipeline.theme import Theme, TimeOfDay, max_words_for, word_count
 from qamra_ai.text.base import SystemPart
 
@@ -276,7 +282,7 @@ async def write_custom_story(
         effort=s.story_effort,
         max_tokens=16000,
     )
-    story = validate_story(out.story(), len(base.pages))
+    story = validate_story(out.story(), len(base.pages), wordless_pages(base))
     if [p.index for p in out.pages] != [p.index for p in base.pages]:
         raise InvalidOutput("custom story pages do not follow the plan")
     review = out.model_dump()

@@ -1,0 +1,10 @@
+The LAST image is the page to inspect: {{ page_label }}.
+Brief:
+- Scene: {{ scene }}
+- Hero expected: {{ 'yes, exactly once' if expect_hero else 'no (a place without the hero)' }}
+- Other people: {{ others or 'none' }}
+{% for m in cast %}- {{ m.role | capitalize }}: {{ m.description }}
+{% endfor %}- Companion: {% if companion %}«{{ companion.name }}» ({% if companion.ref %}compare with its character sheet, Image {{ companion.ref }}{% else %}{{ companion.description }}{% endif %}){% else %}none{% endif %}
+- Hero's outfit: {% if outfit %}{{ outfit }}{% if outfit_ref %} (outfit reference: the hero in Image {{ outfit_ref }}){% endif %}{% else %}not applicable{% endif %}
+- Hero's head covering: {% if not expect_hero %}not applicable{% elif hijab %}{{ hijab }}{% else %}none{% endif %}
+- Text area that must stay calm: {{ text_area_label }}

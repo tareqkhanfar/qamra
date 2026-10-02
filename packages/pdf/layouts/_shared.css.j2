@@ -1,0 +1,49 @@
+/* Layout library, shared parts (Addendum 11 §3). Static font instances only: Chromium embeds variable fonts
+   as Type 3. Lalezar / Marhey: display; Aref Ruqaa: handwriting; the child's name in Noto Naskh SemiBold. */
+@font-face { font-family: "Lalezar"; src: url("{{ fonts }}/Lalezar-Regular.ttf") format("truetype"); }
+@font-face { font-family: "Marhey"; src: url("{{ fonts }}/Marhey-Bold.ttf") format("truetype"); }
+@font-face { font-family: "Aref Ruqaa"; src: url("{{ fonts }}/ArefRuqaa-Regular.ttf") format("truetype"); font-weight: 400 600; }
+@font-face { font-family: "Aref Ruqaa"; src: url("{{ fonts }}/ArefRuqaa-Bold.ttf") format("truetype"); font-weight: 700 900; }
+@font-face { font-family: "Naskh SemiBold"; src: url("{{ fonts }}/NotoNaskhArabic-SemiBold.ttf") format("truetype"); }
+
+:root {
+  --accent: {{ t.accent }}; --title-ink: {{ t.ink }}; --soft: {{ t.soft }};
+  --gold: #E9A92B; --gold-deep: #B97A12; --cream: #FFFDF8; --cream-rgb: 255,253,248; --night-rgb: 14,21,48;
+  --story-lh: 1.85;
+}
+.story-text { line-height: var(--story-lh); }
+.hero-name { color: var(--accent); font-family: "Naskh SemiBold", "Noto Naskh Arabic", serif; }
+[dir="ltr"] .hero-name { font-family: inherit; font-weight: 600; }
+.the-end { font-family: "Lalezar", "Baloo Bhaijaan 2", sans-serif; font-weight: 400; font-size: 14pt; color: var(--accent); }
+
+/* Paper pages: cream with soft watercolor washes in two corners (E1 paper texture when present). */
+.paper { background-color: var(--paper);
+  {% if assets.decor.paper %}background-image: url("{{ img(assets.decor.paper) }}"); background-size: 108mm 108mm;{% endif %} }
+.paper-wash { position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(70mm 52mm at 6% 4%, {{ t.soft }} 0%, rgba(255,255,255,0) 100%),
+    radial-gradient(84mm 60mm at 96% 98%, rgba(127,163,138,.20) 0%, rgba(127,163,138,0) 100%),
+    radial-gradient(40mm 30mm at 92% 6%, rgba(242,179,61,.16) 0%, rgba(242,179,61,0) 100%); }
+
+/* Page number badge: eight-point star, outer bottom corner, inside the safe area. */
+.badge { position: absolute; bottom: var(--safe); width: 12.5mm; height: 12.5mm; display: flex; align-items: center; justify-content: center; z-index: 5; }
+.badge.left { left: var(--safe); } .badge.right { right: var(--safe); }
+.badge .badge-star { position: absolute; inset: 0; width: 100%; height: 100%; }
+.badge span { position: relative; font: 700 10.5pt/1 "IBM Plex Sans Arabic", sans-serif; color: var(--title-ink); }
+.qr-left .badge.left { left: calc(var(--safe) + 25mm); } .qr-right .badge.right { right: calc(var(--safe) + 25mm); }
+
+/* Shared: corner flourishes and the moon portrait frame */
+.orn-corner { position: absolute; width: 24mm; height: 24mm; }
+.orn-corner svg { width: 100%; height: 100%; }
+.orn-corner.tl { top: calc(var(--bleed) + 6mm); left: calc(var(--bleed) + 6mm); }
+.orn-corner.tr { top: calc(var(--bleed) + 6mm); right: calc(var(--bleed) + 6mm); transform: scaleX(-1); }
+.orn-corner.bl { bottom: calc(var(--bleed) + 6mm); left: calc(var(--bleed) + 6mm); transform: scaleY(-1); }
+.orn-corner.br { bottom: calc(var(--bleed) + 6mm); right: calc(var(--bleed) + 6mm); transform: scale(-1, -1); }
+.moon-portrait { position: relative; width: 64mm; height: 64mm; }
+.moon-portrait .mp-photo { position: absolute; left: 18.5%; top: 25.4%; width: 64%; height: 64%; border-radius: 50%; overflow: hidden; background: var(--moon-glow); }
+.moon-portrait .mp-photo img { width: 100%; height: 100%; object-fit: cover; }
+.moon-portrait .moon-frame { position: absolute; left: 0; top: 0; width: 100%; height: 109.3%; overflow: visible; }
+.moon-portrait .mp-frame-img { position: absolute; inset: -6%; width: 112%; height: 112%; object-fit: contain; }
+.moon-portrait.small { width: 40mm; height: 40mm; }
+.parents .moon-portrait.small { width: 60mm; height: 60mm; }
+

@@ -1,0 +1,25 @@
+{#- dialogue: the narration in a small caption, the spoken line in a speech bubble whose tail points into
+    the scene. Only for pages whose text ends with a quote (the planner checks); otherwise the whole text
+    sits in the caption. -#}
+{% import "_macros.html.j2" as m %}
+{% macro page(p) -%}
+{% set area = p.panel.area if p.panel else 'top' %}
+{% set parts = dialogue(p.text or '') %}
+<section class="page lay-dialogue{{ ' qr-' ~ p.side if p.qr_url and qr }}" data-kind="story" data-layout="dialogue" data-number="{{ p.number }}">
+  <img class="bleed-img" src="{{ img(p.image) }}" alt="">
+  {% if p.text %}
+  <div class="dlg-box {{ area }} side-{{ p.side }}" style="--o: {{ p.panel.opacity if p.panel else 0.9 }}" data-panel="{{ p.number }}">
+    {% if parts[0] %}<div class="dlg-caption"><p class="story-text">{{ hero(parts[0]) }}{% if p.is_last_story and not parts[1] %}<span class="the-end">— {{ s.the_end }} —</span>{% endif %}</p></div>{% endif %}
+    {% for line in parts[1] %}
+    <div class="bubble">
+      <p class="story-text">{{ hero(line) }}{% if p.is_last_story and loop.last %}<span class="the-end">— {{ s.the_end }} —</span>{% endif %}</p>
+      <svg class="tail" viewBox="0 0 22 16" aria-hidden="true"><path d="M2 0 C 6 4 8 9 3 16 C 12 12 17 7 20 0 Z" fill="#FFFFFF"/><path d="M2 0 C 6 4 8 9 3 16 C 12 12 17 7 20 0" fill="none" stroke="#1C2140" stroke-width=".9" stroke-linejoin="round"/></svg>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {{ m.badge(spec, p, t, orn) }}
+  {{ m.voice_qr(spec, s, p, qr) }}
+  {{ m.watermark(spec, s) }}
+</section>
+{%- endmacro %}

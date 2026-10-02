@@ -64,6 +64,23 @@ def make_image_provider(settings: Settings, name: ImageProviderName | None = Non
     return FallbackImageProvider(primary, fallback, switch_after=settings.fallback_after_failures)
 
 
+def make_cover_image_provider(settings: Settings) -> FallbackImageProvider | None:
+    """The cover's own model (Addendum 11 §6.4: covers may use a higher-quality model), on fal only, with
+    the page model as its fallback. None when unset, equal to the page model, or offline: the cover then
+    uses the page provider."""
+    model = settings.cover_image_model.strip()
+    if settings.image_provider != "fal" or not model or model == settings.fal_image_model:
+        return None
+    from qamra_ai.image.fal import FalImageProvider
+
+    key = _secret(settings.fal_key)
+    return FallbackImageProvider(
+        FalImageProvider(key, model),
+        FalImageProvider(key, settings.fal_image_model),
+        switch_after=settings.fallback_after_failures,
+    )
+
+
 def make_classic_image_provider(settings: Settings) -> FallbackImageProvider:
     """The Classic hero-edit provider (Addendum 4 §1A, §8), through the same factory and fallback.
 
@@ -101,6 +118,7 @@ __all__ = [
     "RefImage",
     "Upscaler",
     "make_classic_image_provider",
+    "make_cover_image_provider",
     "make_image_provider",
     "make_upscaler",
 ]

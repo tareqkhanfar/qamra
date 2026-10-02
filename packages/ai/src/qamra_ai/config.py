@@ -44,6 +44,8 @@ class Settings(BaseSettings):
     image_provider: ImageProviderName = "fal"
     fal_image_model: str = "fal-ai/nano-banana-2"  # /edit is used automatically with references
     fal_fallback_model: str = "fal-ai/flux-2-pro/edit"
+    # The cover's own fal model (Addendum 11 §6.4, e.g. "fal-ai/nano-banana-pro"); empty = the page model.
+    cover_image_model: str = ""
     fal_upscale_model: str = "fal-ai/seedvr/upscale/image"
     fallback_after_failures: int = 2
     gemini_image_model: str = "gemini-3.1-flash-image"
@@ -76,7 +78,9 @@ class Settings(BaseSettings):
     print_bleed_mm: float = 3.0
     print_safe_mm: float = 10.0
     print_signature: int = 4
-    print_spine_mm: float = 8.0
+    print_spine_mm: float = 0.0  # fixed spine from the printer's template; 0 = from the page count
+    print_paper_caliper_mm: float = 0.15  # one interior leaf (2 pages)
+    print_board_allowance_mm: float = 6.0  # hardcover boards + hinge
 
     @property
     def final_resolution(self) -> ResolutionName:

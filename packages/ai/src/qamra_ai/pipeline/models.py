@@ -58,7 +58,7 @@ class DrawingReview(BaseModel):
 
 
 class PageQA(BaseModel):
-    """Haiku vision check of one page (Addendum 3 §2.3). Scoring lives in `pipeline.qa`."""
+    """Haiku vision check of one page (Addendum 3 §2.3, Addendum 11 §4.5). Scoring lives in `pipeline.qa`."""
 
     # First on purpose: listing every child before the counts is what catches a duplicated hero
     # (a look-alike pair hugging passed a plain "how many heroes?" question).
@@ -66,11 +66,14 @@ class PageQA(BaseModel):
     likeness: int  # 0–10 vs the character sheet
     hero_count: int
     people_count_ok: bool
+    # Characters cut by the picture's edge or inside the trimmed border: "hero", "companion" or a short name.
+    cropped: list[str]
     anatomy_ok: bool
     text_in_image: bool
-    outfit_ok: bool
-    text_space_ok: bool
-    companion_ok: bool
+    outfit_ok: bool  # the outfit of this page's scene group (cover, or the group's first accepted page)
+    hijab_ok: bool  # the book's one head covering (or none), in its locked color
+    text_space_ok: bool  # the text area is calm and free of busy detail
+    companion_ok: bool  # once, and the same shape and colors as its sheet
     style_ok: bool
     safe: bool
     notes: str

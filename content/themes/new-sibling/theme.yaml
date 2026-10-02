@@ -2,6 +2,8 @@ slug: new-sibling
 version: 2
 title_ar: "{name} وضيفنا الصغير"
 title_en: "{name} and Our Little Guest"
+# Cover lettering (Addendum 11 §2.3): gold-magic, candy-bright, night-glow, nature-fresh, heritage-tatreez
+cover_title_style: candy-bright
 age_range: [3, 6]
 is_b2b: false
 active: true
@@ -34,9 +36,16 @@ companion_slot: true
 default_companion:
   name_ar: قَمّور
   name_en: Qamour
+  id: qamour  # shared sheet images: content/cast/qamour-<style>.png
+  # Locked design (Addendum 11 §4.2): always this plump crescent, never a ball. Same text as the sheets in
+  # docs/image-prompts.md (C1, C2, C7).
   description_en: >-
-    a tiny round glowing moon creature, soft pale-gold body shaped like a plump crescent,
-    two small dot eyes, rosy cheeks, stubby little arms, floats a few centimeters above the ground
+    a tiny friendly moon creature: a soft, plump crescent-moon body (a thick C shape opening to the
+    right), pale honey-gold, softly glowing from inside, about the size of a house cat. Its face sits on
+    the thick middle of the crescent: two small shiny black dot eyes, a tiny happy smile, round rosy
+    cheeks, and a small five-pointed star-shaped golden freckle on its left cheek. Two stubby little
+    arms, no legs. It floats a few centimeters above the ground with a faint trail of golden sparkles.
+    The crescent shape never changes
 
 # Template syntax: {name}, {companion}; gender variants {masculine/feminine}. See first-day for layouts.
 # The baby is "the little guest" (الضيف الصغير) throughout: the book never needs its gender.
@@ -78,7 +87,34 @@ outfits:
   sleep:
     - key: moons
       en: light-blue pajamas with tiny golden moons
-      hijab_en: a soft light-blue hijab matching the pajamas
+
+# Recurring side characters (Addendum 11 §4.3): one locked look per book. Scenes name them in `others`
+# as {id}; sheet images: cast/<id>-<style>.png here, or the shared content/cast/<id>-<style>.png.
+# The same id has the same description in every theme (tests check it).
+cast:
+  - id: mom
+    role: the mother
+    description_en: >-
+      a woman in her early thirties, warm light-olive skin, kind almond-shaped brown eyes, a
+      dusty-rose hijab, a long navy cardigan over a cream ankle-length dress, comfortable flat shoes
+  - id: dad
+    role: the father
+    description_en: >-
+      a man in his mid-thirties, warm olive skin, short black hair, a short neat black beard,
+      warm brown eyes and laugh lines, a light-blue button-up shirt with the sleeves rolled up, beige
+      trousers, brown leather shoes, a simple wristwatch
+  - id: grandma
+    role: the grandmother
+    description_en: >-
+      a woman in her late sixties with gentle wrinkles and a warm smile, a white embroidered
+      headscarf, a traditional black Palestinian thobe with red cross-stitch tatreez on the chest panel
+      and sleeves, a string of olive-wood prayer beads in her hand
+  - id: baby
+    role: the baby
+    description_en: >-
+      a three-month-old baby, gender-neutral, round rosy cheeks, a tiny tuft of dark hair,
+      swaddled in a soft cream blanket with a thin blue-and-red tatreez border (a cream onesie with the
+      same border when awake on a mat or in a bouncer)
 
 blurb_ar: "خبرٌ سعيد، وانتظارٌ طويل، ثمّ ضيفٌ صغير يغيّر كلّ شيء. حكاية {name} {الأخِ الكبير/الأختِ الكبيرة}، وقلبٍ يتّسع للجميع."
 blurb_en: "Happy news, a long wait, and then a little guest who changes everything. The story of {name}, the proud big one, and a heart with room for everyone."
@@ -103,7 +139,7 @@ cover:
     supporting from the side; a crescent moon glows through the window behind them.
   location: living_room
   time: evening
-  others: a newborn baby wrapped in a soft blanket, and a parent's supporting hand
+  others: "{baby}, and a parent's supporting hand"
   others_count: 1
   companion_action: peeks over the sofa, smiling at the baby
 
@@ -117,7 +153,7 @@ pages:
     scene: >-
       The hero jumps for joy, arms high, next to Mama and Baba, who sit smiling on the sofa holding
       hands.
-    others: Mama and Baba
+    others: "{mom} and {dad}"
     others_count: 2
     companion_action: jumps along, arms in the air
     text_ar: "فِي الْبَيْتِ خَبَرٌ سَعِيدٌ: مَامَا تَنْتَظِرُ ضَيْفًا صَغِيرًا! {فَرِحَ/فَرِحَتْ} {name} {وَقَفَزَ/وَقَفَزَتْ} عَالِيًا حَتَّى {كَادَ/كَادَتْ} {يَلْمِسُ/تَلْمِسُ} السَّقْفَ!"
@@ -142,7 +178,7 @@ pages:
     scene: >-
       The hero and Baba put together the white wooden crib; the hero carefully places a soft teddy bear
       inside while the moon-and-stars drawing already hangs above the crib.
-    others: Baba
+    others: "{dad}"
     others_count: 1
     companion_action: tests the tiny pillow by lying on it
     text_ar: "{سَاعَدَ/سَاعَدَتْ} {name} بَابَا فِي تَجْهِيزِ سَرِيرٍ صَغِيرٍ، {وَاخْتَارَ/وَاخْتَارَتْ} لَهُ دَبْدُوبًا نَاعِمًا. وَجَرَّبَ {companion} الْوِسَادَةَ… مُرِيحَةٌ جِدًّا!"
@@ -180,7 +216,7 @@ pages:
     scene: >-
       The front door opens: Mama comes in holding a newborn baby wrapped in a soft blanket, Baba beside
       her with a small bag. The hero runs toward them with open arms, overjoyed.
-    others: Mama holding a newborn baby, and Baba
+    others: "{mom} holding {baby}, and {dad}"
     others_count: 3
     companion_action: zooms ahead like a little golden comet
     text_ar: "وَأَخِيرًا فُتِحَ الْبَابُ، وَدَخَلَتْ مَامَا وَبَابَا وَمَعَهُمَا الضَّيْفُ الصَّغِيرُ! {رَكَضَ/رَكَضَتْ} {name} إِلَى الْبَابِ بِسُرْعَةِ الْبَرْقِ."
@@ -194,7 +230,7 @@ pages:
     scene: >-
       The hero leans over a bassinet and looks at the sleeping newborn wrapped in a soft blanket, full of
       wonder, one finger gently touching the baby's tiny hand.
-    others: a sleeping newborn baby
+    others: "{baby}, asleep"
     others_count: 1
     companion_action: peeks over the edge of the bassinet
     text_ar: "كَانَ صَغِيرًا جِدًّا، وَأَصَابِعُهُ مِثْلُ حَبَّاتِ الْحِمَّصِ. {هَمَسَ/هَمَسَتْ} {name}: «مَرْحَبًا يَا ضَيْفَنَا الصَّغِيرَ.»"
@@ -209,7 +245,7 @@ pages:
       The living room full of visiting relatives with wrapped presents, all gathered around Mama and the
       baby on the sofa. On the far side of the room, the hero stands a little apart, hugging a teddy bear,
       watching quietly.
-    others: Mama holding the baby, the grandmother, an aunt, an uncle and a cousin
+    others: "{mom} holding {baby}, {grandma}, an aunt, an uncle and a cousin"
     others_count: 6
     companion_action: sits on the hero's foot, looking up at the hero
     text_ar: "جَاءَ الْأَقَارِبُ بِالْهَدَايَا، وَتَجَمَّعَ الْجَمِيعُ حَوْلَ الضَّيْفِ الصَّغِيرِ. {وَوَقَفَ/وَوَقَفَتْ} {name} بَعِيدًا {يَحْضُنُ/تَحْضُنُ} الدَّبْدُوبَ."
@@ -247,7 +283,7 @@ pages:
     scene: >-
       Mama hugs the hero tightly on the sofa; both smile with closed eyes. The baby sleeps peacefully in
       the bassinet beside them.
-    others: Mama and the sleeping baby in the bassinet
+    others: "{mom} and {baby} asleep in the bassinet"
     others_count: 2
     companion_action: floats nearby, glowing warmly
     text_ar: "ثُمَّ جَاءَتْ مَامَا وَضَمَّتْ {name} طَوِيلًا وَقَالَتْ: «{أَنْتَ بَطَلِي الْكَبِيرُ/أَنْتِ بَطَلَتِي الْكَبِيرَةُ}!»"
@@ -260,7 +296,7 @@ pages:
     scene: >-
       The hero carries a small stack of soft diapers toward the baby, who lies in a bouncer, and sings
       with an open, happy mouth.
-    others: the baby in a bouncer
+    others: "{baby} in a bouncer"
     others_count: 1
     companion_action: plays a tiny drum to the song
     text_ar: "{صَارَ/صَارَتْ} {name} {يُسَاعِدُ/تُسَاعِدُ}: {يُحْضِرُ/تُحْضِرُ} الْحَفَّاضَاتِ، {وَيُغَنِّي/وَتُغَنِّي} لِلضَّيْفِ الصَّغِيرِ أُغْنِيَةَ الْقَمَرِ."
@@ -274,7 +310,7 @@ pages:
     scene: >-
       The baby in the bouncer smiles up at the hero for the first time; the hero's face lights up with
       surprise and joy, both hands on the cheeks.
-    others: the baby in a bouncer
+    others: "{baby} in a bouncer"
     others_count: 1
     companion_action: gasps with delight, hands on its cheeks
     text_ar: "وَذَاتَ صَبَاحٍ، نَظَرَ الضَّيْفُ الصَّغِيرُ إِلَى {name}… وَابْتَسَمَ! وَكَانَتْ أَجْمَلَ ابْتِسَامَةٍ فِي الدُّنْيَا."
@@ -288,7 +324,7 @@ pages:
     scene: >-
       On a colorful play mat, the hero claps in front of the baby, who lies on the mat and waves tiny
       hands.
-    others: the baby on the play mat
+    others: "{baby} on the play mat"
     others_count: 1
     companion_action: claps along
     text_ar: "{عَلَّمَ/عَلَّمَتْ} {name} الضَّيْفَ الصَّغِيرَ كَيْفَ يُصَفِّقُ: تَكْ، تَكْ، تَكْ! وَصَفَّقَ {companion} مَعَهُمَا."
@@ -303,7 +339,7 @@ pages:
       The family walks in the home garden at sunset under the grapevine pergola: Baba pushes a small
       stroller with the baby, Mama walks beside him, and the hero points up at the lemon tree, showing it
       to the baby.
-    others: Mama, Baba, and the baby in a stroller
+    others: "{mom}, {dad}, and {baby} in a stroller"
     others_count: 3
     companion_action: picks a tiny lemon leaf for the baby
     text_ar: "فِي الْمَسَاءِ {خَرَجَ/خَرَجَتْ} {name} مَعَ الْعَائِلَةِ إِلَى الْحَدِيقَةِ، {وَأَرَى/وَأَرَتْ} الضَّيْفَ الصَّغِيرَ شَجَرَةَ اللَّيْمُونِ وَالْعَرِيشَةَ."
@@ -317,7 +353,7 @@ pages:
     scene: >-
       A family photo pose on the sofa: the hero sits in the middle holding the baby's tiny hand, Mama and
       Baba on each side, all smiling at the viewer.
-    others: Mama, Baba and the baby
+    others: "{mom}, {dad} and {baby}"
     others_count: 3
     companion_action: pops into the corner of the photo
     text_ar: "وَفِي صُورَةِ الْعَائِلَةِ الْجَدِيدَةِ، {جَلَسَ/جَلَسَتْ} {name} فِي الْوَسَطِ، {مُمْسِكًا/مُمْسِكَةً} بِيَدِ الضَّيْفِ الصَّغِيرِ، {فَخُورًا/فَخُورَةً} {وَسَعِيدًا/وَسَعِيدَةً}."
@@ -332,7 +368,7 @@ pages:
     scene: >-
       The nursery at night. The hero in pajamas gently tucks a blanket over the baby in the crib; silver
       moonlight falls through the window and the star mobile glows softly.
-    others: the baby sleeping in the crib
+    others: "{baby} sleeping in the crib"
     others_count: 1
     companion_action: glows softly beside the crib like a night light
     text_ar: "وَفِي اللَّيْلِ، تَحْتَ ضَوْءِ الْقَمَرِ، {هَمَسَ/هَمَسَتْ} {name}: «تُصْبِحُ عَلَى خَيْرٍ يَا ضَيْفَنَا الصَّغِيرَ… أَنَا هُنَا دَائِمًا.»"

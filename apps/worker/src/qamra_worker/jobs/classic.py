@@ -159,9 +159,7 @@ def template_theme(template: ClassicTemplate) -> Theme:
 
 
 def print_spec(settings: Any) -> PrintSpec:
-    return PrintSpec(
-        spine_mm=settings.print_spine_mm, signature=settings.print_signature, dpi=settings.print_dpi
-    )
+    return PrintSpec.from_settings(settings)
 
 
 def get_bytes(storage: ObjectStorage, key: str | None) -> bytes | None:

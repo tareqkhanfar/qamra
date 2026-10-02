@@ -30,11 +30,13 @@ from qamra_pdf import (
     preflight,
     render_book,
 )
+from qamra_pdf.page_layouts import ON_ART, normalize
 from qamra_pdf.spec import PanelArea
 from qamra_pdf.strings import STRINGS
 
 _TASHKEEL = re.compile(r"[ؐ-ًؚ-ٰٟۖ-ۭـ]")
 PORTRAIT_PX = 700  # 52 mm circle at ≥ 300 DPI needs 614 px
+MIN_BOX_FILL = 0.6  # text must fill at least this share of its container
 KEEPSAKE_PX = 800  # 62 mm frame at ≥ 300 DPI needs 733 px
 
 
@@ -212,17 +214,20 @@ async def assemble_book(
         else:
             path = _save(images / f"p{slot.number:02d}.jpg", as_jpeg(data))
         first = slot.spread_half in (None, "first")
+        design = beat.design or normalize(beat.layout)
         panel: Panel | None = None
-        if first and beat.layout in ("full", "spread"):
+        if first and design in ON_ART:  # text on the art: the calm area must be calm (Addendum 3 §4)
             panel = panel_for(path, _panel_area(beat.text_area))
             if panel.busy:
                 flags.setdefault(slot.number, []).append("busy_text_area")
+        elif first:  # text on paper beside the framed / vignetted picture
+            panel = Panel(area=_panel_area(beat.text_area), opacity=1.0)
         pages.append(
             PageSpec(
                 number=slot.number,
                 kind="story",
                 side=slot.side,
-                layout=beat.layout,  # type: ignore[arg-type]
+                layout=design,
                 image=path,
                 text=texts.get(slot.beat) if first else None,
                 panel=panel,
@@ -249,6 +254,11 @@ async def assemble_book(
     if cover_data is None:
         raise ValueError("the cover image is missing")
     cover_path = _save(images / "cover.jpg", as_jpeg(cover_data))
+    companion_front = (
+        _save(images / "companion-front.jpg", front_view(inp.companion_sheet))
+        if inp.companion_sheet is not None
+        else None
+    )
     keepsake = None
     if (
         inp.drawing is not None
@@ -286,11 +296,17 @@ async def assemble_book(
         trim_mm=plan.spec.trim_mm,
         bleed_mm=plan.spec.bleed_mm,
         safe_mm=plan.spec.safe_mm,
-        spine_mm=plan.spec.spine_mm,
+        spine_mm=plan.spine_mm,
+        title_style=plan.title_style,
+        companion=companion_front,
+        memories=plan.memories,
     )
     rendered = await render_book(spec, out_dir, proof=proof, print_files=print_files)
     for f in rendered.fit:
         flags.setdefault(f.page, []).append("text_overflow" if f.overflow else "text_shrunk")
+    for b in rendered.boxes:
+        if b.fill < MIN_BOX_FILL:  # a text container that is mostly empty (Addendum 11 §3)
+            flags.setdefault(b.page, []).append("empty_text_box")
     if not print_files:
         return BookFiles(spec, None, None, rendered.proof_pdf, {}, flags)
     assert rendered.interior_pdf is not None and rendered.cover_pdf is not None  # nosec B101 (typing)

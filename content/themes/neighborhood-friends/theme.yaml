@@ -2,6 +2,8 @@ slug: neighborhood-friends
 version: 1
 title_ar: "{name} وأصدقاء الحارة"
 title_en: "{name} and the Neighborhood Friends"
+# Cover lettering (Addendum 11 §2.3): gold-magic, candy-bright, night-glow, nature-fresh, heritage-tatreez
+cover_title_style: candy-bright
 age_range: [3, 5]
 is_b2b: false
 active: true
