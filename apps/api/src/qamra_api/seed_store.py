@@ -81,7 +81,7 @@ STYLE_ORDER = ("3d", "watercolor", "cartoon")  # Addendum 11 §1: the three styl
 
 
 async def _styles(db: AsyncSession) -> list[str]:
-    added = []
+    added: list[str] = []
     have = await _existing(db, ArtStyle.slug)
     for g in style_guides():
         if g.slug in have:
