@@ -1,0 +1,170 @@
+{# ---------------------------------------------------------------- brand #}
+{% macro moon_mark(ink='#16204A', moon='#F2B33D') -%}
+<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M21.32 5.01 A17 17 0 1 0 38.12 27.41 A14 14 0 0 1 21.32 5.01 Z" fill="{{ moon }}"/><path d="M34 8 C34.6 11.2 35.8 12.4 39 13 C35.8 13.6 34.6 14.8 34 18 C33.4 14.8 32.2 13.6 29 13 C32.2 12.4 33.4 11.2 34 8 Z" fill="{{ ink }}"/><path d="M6 44 Q15 39.5 24 43.5 Q33 39.5 42 44" fill="none" stroke="{{ ink }}" stroke-width="3" stroke-linecap="round"/></svg>
+{%- endmacro %}
+
+{% macro logo(dark=false) -%}
+<div class="logo" data-qa="logo">{{ moon_mark('#FFFDF8' if dark else '#16204A') }}<span class="word">{{ brand.name }}</span></div>
+{%- endmacro %}
+
+{% macro pill(text) -%}
+<div class="pill" data-qa="pill"><i></i>{{ text }}</div>
+{%- endmacro %}
+
+{% macro arrow(color='currentColor', width=2.4) -%}
+{# "forward" in RTL points left #}
+<svg viewBox="0 0 24 24" fill="none" stroke="{{ color }}" stroke-width="{{ width }}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
+{%- endmacro %}
+
+{% macro cta_row(kind) -%}
+<div class="cta-row">
+  <div class="cta" data-qa="cta">{{ copy.cta[kind] }}{{ arrow() }}</div>
+  <div class="domain" data-qa="domain">{{ brand.domain }}</div>
+</div>
+{%- endmacro %}
+
+{% macro sparkle(x, y, r, fill='#F2B33D', o=1) -%}
+<path transform="translate({{ x }} {{ y }}) scale({{ r / 12 }})" opacity="{{ o }}" fill="{{ fill }}" d="M0 -12 C1 -4 4 -1 12 0 C4 1 1 4 0 12 C-1 4 -4 1 -12 0 C-4 -1 -1 -4 0 -12 Z"/>
+{%- endmacro %}
+
+{# a field of stars over a w×h box (absolute, behind everything) #}
+{% macro starfield(w, h, seed=1, n=40, keep_out=none, dot='#FCEFD2', spark='#F2B33D') -%}
+<svg class="layer" width="{{ w }}" height="{{ h }}" viewBox="0 0 {{ w }} {{ h }}" aria-hidden="true">
+{% for s in stars(seed, w, h, n, keep_out) %}
+{% if s.sparkle %}{{ sparkle(s.x, s.y, s.r, spark, s.o) }}{% else %}<circle cx="{{ s.x }}" cy="{{ s.y }}" r="{{ s.r }}" fill="{{ dot }}" opacity="{{ s.o * 0.8 }}"/>{% endif %}
+{% endfor %}
+</svg>
+{%- endmacro %}
+
+{# a crescent moon with its glow, centred on (x, y), radius r #}
+{% macro moon(x, y, r, glow=true, fill='#F2B33D', rot=-18) -%}
+<div style="position:absolute;left:{{ x - r * 3 }}px;top:{{ y - r * 3 }}px;width:{{ r * 6 }}px;height:{{ r * 6 }}px;pointer-events:none">
+  {% if glow %}<div style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(closest-side, rgba(252,239,210,.22), rgba(91,111,192,.16) 45%, rgba(91,111,192,0) 100%)"></div>{% endif %}
+  <svg viewBox="-24 -24 48 48" style="position:absolute;left:{{ r * 2 }}px;top:{{ r * 2 }}px;width:{{ r * 2 }}px;height:{{ r * 2 }}px;transform:rotate({{ rot }}deg)">
+    <path d="M-2.68 -18.99 A19 19 0 1 0 14.12 3.41 A15.5 15.5 0 0 1 -2.68 -18.99 Z" fill="{{ fill }}"/>
+  </svg>
+</div>
+{%- endmacro %}
+
+{# ---------------------------------------------------------------- book covers (600 × 600 design units) #}
+{% macro cap_icon(fill='#F2B33D', ink='#0E1530') -%}
+<svg viewBox="0 0 64 44" aria-hidden="true"><path d="M32 2 L62 15 L32 28 L2 15 Z" fill="{{ fill }}"/><path d="M14 21 V31 C14 36 22 40 32 40 C42 40 50 36 50 31 V21 L32 29 L14 21 Z" fill="{{ fill }}" opacity=".85"/><path d="M57 17 V31" stroke="{{ fill }}" stroke-width="2.5" stroke-linecap="round"/><circle cx="57" cy="33" r="3.2" fill="{{ fill }}"/><path d="M32 2 L62 15 L32 28 L2 15 Z" fill="none" stroke="{{ ink }}" stroke-opacity=".15" stroke-width="1"/></svg>
+{%- endmacro %}
+
+{% macro ribbon() -%}
+<div style="position:absolute;left:44px;top:0;bottom:0;width:48px;z-index:4;background:linear-gradient(90deg,#B9492F,#F29A84 42%,#E9826B 62%,#B04530);box-shadow:0 0 8px rgba(0,0,0,.25)"></div>
+<div style="position:absolute;top:500px;left:0;right:0;height:48px;z-index:4;background:linear-gradient(180deg,#B9492F,#F29A84 42%,#E9826B 62%,#B04530);box-shadow:0 0 8px rgba(0,0,0,.25)"></div>
+<svg class="layer" viewBox="0 0 600 600" style="z-index:5" aria-hidden="true"><g transform="translate(-97 28)">
+  <defs><linearGradient id="bow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6A893"/><stop offset=".55" stop-color="#E9826B"/><stop offset="1" stop-color="#B9492F"/></linearGradient></defs>
+  <path d="M158 502 L120 590 L141 581 L152 600 L172 506 Z" fill="#C8553F"/>
+  <path d="M172 502 L214 586 L192 579 L183 600 L160 506 Z" fill="#B04530"/>
+  <path d="M165 496 C118 432 60 440 74 492 C86 536 140 528 165 496 Z" fill="url(#bow)"/>
+  <path d="M165 496 C212 432 270 440 256 492 C244 536 190 528 165 496 Z" fill="url(#bow)"/>
+  <path d="M165 496 C130 470 100 470 96 490" fill="none" stroke="#A7432D" stroke-width="3" opacity=".5"/>
+  <path d="M165 496 C200 470 230 470 234 490" fill="none" stroke="#A7432D" stroke-width="3" opacity=".5"/>
+  <ellipse cx="165" cy="497" rx="20" ry="24" fill="#D9694F"/><ellipse cx="160" cy="489" rx="7" ry="9" fill="#F6A893" opacity=".7"/>
+</g></svg>
+{%- endmacro %}
+
+{% macro cover(key, kid=true, with_ribbon=false) -%}{% set c = copy.covers[key] %}
+<div class="cover {{ c.sky }}" style="width:600px;height:600px">
+  <div class="sky"></div>
+  {% if c.sky == 'night' %}
+    {{ starfield(600, 600, seed=7, n=26, keep_out=[(120, 20, 480, 250)]) }}
+    {% if c.moon == 'right' %}{{ moon(500, 296, 34, rot=10) }}{% else %}{{ moon(96, 300, 34) }}{% endif %}
+    <svg class="layer" viewBox="0 0 600 600" aria-hidden="true">
+      <path d="M0 470 C120 430 230 452 330 440 S520 410 600 430 L600 600 L0 600 Z" fill="#22306A"/>
+      <path d="M0 520 C140 492 260 512 380 500 S540 486 600 498 L600 600 L0 600 Z" fill="#2B3B80"/>
+    </svg>
+  {% else %}
+    <div class="layer" style="background:radial-gradient(60% 38% at 50% 100%, rgba(252,239,210,.95), rgba(252,239,210,0) 70%)"></div>
+    {{ moon(500, 300, 28, glow=false, fill='#FFFDF8', rot=-30) }}
+    <svg class="layer" viewBox="0 0 600 600" aria-hidden="true">
+      <path d="M0 468 C140 430 250 456 360 444 S530 418 600 436 L600 600 L0 600 Z" fill="#A9C7B1"/>
+      <path d="M0 520 C150 494 270 514 390 502 S540 488 600 500 L600 600 L0 600 Z" fill="#7FA38A"/>
+    </svg>
+  {% endif %}
+  {% if c.cap %}<div style="position:absolute;top:30px;left:50%;width:70px;transform:translateX(-50%);z-index:3">{{ cap_icon() }}</div>{% endif %}
+  <div class="title{{ ' with-cap' if c.cap }}">
+    {% for ln in c.lines %}<span class="{{ 'big' if ln.big else 'small' }}">{{ ln.t }}</span>{% endfor %}
+  </div>
+  {% if kid %}<img class="kid" src="{{ public('workbooks/character.webp') }}" alt="" style="{% if c.cap %}height:270px{% endif %}">{% endif %}
+  {% if with_ribbon %}{{ ribbon() }}{% else %}<div class="brand">{{ moon_mark('#FFFDF8' if c.sky == 'night' else '#16204A') }}{{ brand.name }}</div>{% endif %}
+</div>
+{%- endmacro %}
+
+{# square hardcover, spine on the RIGHT (Arabic book). x, y = top-left of the front face in stage px. #}
+{% macro hardcover(key, s=460, d=30, ry=-26, rx=-6, rz=0, x=0, y=0, board='#16204A', dark=false, ribbon=false) -%}
+<div class="hc{{ ' on-dark' if dark }}" style="left:{{ x }}px;top:{{ y }}px;width:{{ s }}px;height:{{ s }}px;--s:{{ s }}px;--d:{{ d }}px;--board:{{ board }};--board-dark:#101838;--board-light:#4A5DAE">
+  <div class="hc-shadow"></div>
+  <div class="hc-body" style="transform:rotateZ({{ rz }}deg) rotateY({{ ry }}deg) rotateX({{ rx }}deg)">
+    <div class="hc-face hc-back"></div>
+    <div class="hc-face hc-top"></div>
+    <div class="hc-face hc-left"></div>
+    <div class="hc-face hc-spine"></div>
+    <div class="hc-face hc-front">{{ cover(key, with_ribbon=ribbon) }}</div>
+  </div>
+</div>
+{%- endmacro %}
+
+{# wire-o binding along the right edge of a w×h book #}
+{% macro wire(h, pitch=22) -%}{% set n = ((h - 20) / pitch) | int %}
+<svg class="wire" viewBox="0 0 40 {{ h }}" style="height:{{ h }}px" aria-hidden="true">
+  <defs><linearGradient id="wg" x1="0" x2="1"><stop offset="0" stop-color="#7E8497"/><stop offset=".5" stop-color="#F4F5F8"/><stop offset="1" stop-color="#8C92A5"/></linearGradient></defs>
+  {% for i in range(n) %}{% set cy = 10 + pitch / 2 + i * pitch %}
+  <ellipse cx="12" cy="{{ cy + 1 }}" rx="3.2" ry="4" fill="#1C2140" opacity=".45"/>
+  <path d="M12 {{ cy - 2 }} C12 {{ cy - 10 }}, 32 {{ cy - 10 }}, 32 {{ cy - 1 }} C32 {{ cy + 5 }}, 28 {{ cy + 7 }}, 24 {{ cy + 7 }}" fill="none" stroke="#565C70" stroke-width="4.2" stroke-linecap="round"/>
+  <path d="M12 {{ cy - 2 }} C12 {{ cy - 10 }}, 32 {{ cy - 10 }}, 32 {{ cy - 1 }} C32 {{ cy + 5 }}, 28 {{ cy + 7 }}, 24 {{ cy + 7 }}" fill="none" stroke="url(#wg)" stroke-width="2.6" stroke-linecap="round"/>
+  {% endfor %}
+</svg>
+{%- endmacro %}
+
+{# portrait spiral activity book; `src` is a public page image shown as its top sheet #}
+{% macro spiral_book(src, w=380, h=506, x=0, y=0, rot=0, inner='') -%}
+<div class="spiral" style="left:{{ x }}px;top:{{ y }}px;width:{{ w }}px;height:{{ h }}px;transform:rotate({{ rot }}deg)">
+  <div class="sheet s3"></div><div class="sheet s2"></div>
+  <div class="front">{% if src %}<img src="{{ public(src) }}" alt="">{% else %}{{ inner }}{% endif %}</div>
+  {{ wire(h) }}
+</div>
+{%- endmacro %}
+
+{% macro page_card(src, w, h, x, y, rot=0, z=1) -%}
+<div class="page-card" style="left:{{ x }}px;top:{{ y }}px;width:{{ w }}px;height:{{ h }}px;transform:rotate({{ rot }}deg);z-index:{{ z }}"><img src="{{ public(src) }}" alt=""></div>
+{%- endmacro %}
+
+{# A delivered image in a .visual box. kind photo: fills the box (cropped, `focus` = object-position).
+   kind mockup: the whole product photo, fitted, with our cover laid onto its blank cover (cover_quad). #}
+{% macro slot_image(img, cover_key=none, cover_src=none) -%}
+{% if img.kind == 'photo' %}
+<div class="photo-frame"><img src="{{ img.src }}" alt="" style="object-position:{{ img.focus }}"></div>
+{% else %}
+<div class="stage" data-w="{{ img.w }}" data-h="{{ img.h }}" data-max="10">
+  <div class="photo-frame" style="border-radius:{{ (img.w / 30) | round }}px">
+    <img src="{{ img.src }}" alt="" style="width:{{ img.w }}px;height:{{ img.h }}px">
+    <div class="mock-cover" style="width:{{ img.cover_w }}px;height:{{ img.cover_h }}px;transform:{{ img.cover_transform }}">
+      {% if cover_src %}<img src="{{ public(cover_src) }}" alt="" style="width:100%;height:100%;object-fit:cover">
+      {% else %}<div style="transform:scale({{ img.cover_w / 600 }});transform-origin:0 0">{{ cover(cover_key) }}</div>{% endif %}
+    </div>
+  </div>
+</div>
+{% endif %}
+{%- endmacro %}
+
+{# scale every .stage to fit its .visual box (art is drawn at a fixed size, then fitted) #}
+{% macro fit_script() -%}
+<script>
+for (const v of document.querySelectorAll('.visual')) {
+  const st = v.querySelector('.stage'); if (!st) continue;
+  const sw = +st.dataset.w, sh = +st.dataset.h, max = +(st.dataset.max || 1.3);
+  const k = Math.min(v.clientWidth / sw, v.clientHeight / sh, max);
+  st.style.width = sw + 'px'; st.style.height = sh + 'px';
+  st.style.transform = `translate(-50%, -50%) scale(${k})`;
+}
+</script>
+{%- endmacro %}
+
+{% macro page(title) -%}
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>{{ title }}</title>
+<style>{% include "_base.css.j2" %}</style></head>
+{%- endmacro %}

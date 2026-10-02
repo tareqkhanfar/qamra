@@ -1,0 +1,55 @@
+{# «كيف نعمل» carousel, 1080×1350 per slide, same grid as the feed ads. #}
+{% import "_macros.html.j2" as m with context %}
+{% import "_visuals.html.j2" as v with context %}
+{% set c = copy.carousel %}
+{{ m.page(design) }}
+<style>
+  .steps { display: flex; align-items: flex-start; margin-top: 56px; flex: none; }
+  .step { position: relative; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .step .dot { position: relative; z-index: 2; width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font: 800 28px/1 "Baloo", sans-serif; padding-top: 5px; border: 3px solid #D2C4A6; color: #6E7186; background: var(--paper); }
+  .step.done .dot { background: var(--night-900); border-color: var(--night-900); color: var(--paper-raised); padding-top: 0; }
+  .step.now .dot { background: var(--amber-500); border-color: var(--amber-500); color: var(--night-950); box-shadow: 0 0 0 8px rgba(242,179,61,.22); }
+  .step .lbl { font: 600 24px/1.2 "Plex", sans-serif; color: #6E7186; white-space: nowrap; }
+  .step.done .lbl { color: var(--night-900); }
+  .step.now .lbl { color: var(--night-900); }
+  .step:not(:last-child)::after { content: ""; position: absolute; top: 25px; right: calc(50% + 34px); left: calc(-50% + 34px); height: 3px; border-radius: 2px; background: #E1D5BC; }
+  .step.done::after { background: var(--night-900) !important; }
+  .copy { margin-top: 48px; }
+  .headline { font-size: 84px; }
+  .sub { font-size: 34px; line-height: 1.58; margin-top: 18px; }
+  .visual { margin: 28px 0 32px; }
+  .swipe { display: flex; align-items: center; justify-content: space-between; height: 96px; }
+  .swipe .hint { display: flex; align-items: center; gap: 14px; font: 600 30px/1 "Plex", sans-serif; color: var(--night-700); }
+  .swipe .hint svg { width: 34px; height: 34px; }
+</style>
+<body>
+<div class="canvas bg-paper paper-tex">
+  <div class="frame">
+    <div class="top">{{ m.logo(false) }}{{ m.pill(c.pill) }}</div>
+    <div class="steps">
+      {% for s in c.steps %}
+      <div class="step {{ 'done' if loop.index < index else ('now' if loop.index == index else '') }}">
+        <div class="dot">{% if loop.index < index %}<svg viewBox="0 0 24 24" style="width:26px;height:26px" fill="none" stroke="#FFFDF8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 12.5l4 4 9-9"/></svg>{% else %}{{ loop.index | string | ar }}{% endif %}</div>
+        <div class="lbl">{{ s }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="copy">
+      <h1 class="headline" data-qa="headline">{% for l in slide.title %}<span class="line">{{ l }}</span>{% endfor %}</h1>
+      <p class="sub" data-qa="sub" data-qa-orphans>{{ slide.body }}</p>
+    </div>
+    <div class="visual">{{ v.slide(slide) }}</div>
+    <div class="foot">
+      {% if slide.cta %}{{ m.cta_row(slide.cta) }}
+      {% else %}
+      <div class="swipe">
+        <div class="domain" data-qa="domain" style="visibility:hidden">{{ brand.domain }}</div>
+        <div class="hint" data-qa="hint">{{ copy.cta.swipe }}{{ m.arrow('#33458F', 2.4) }}</div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{{ m.fit_script() }}
+</body></html>

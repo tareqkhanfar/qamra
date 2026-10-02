@@ -1,0 +1,35 @@
+{# Facebook page cover 1640×624. Phones show only the centre ~1110 px, so everything that matters sits in
+   x 285–1355; the bottom corners stay free for the profile photo and the page buttons. #}
+{% import "_macros.html.j2" as m with context %}
+{% import "_visuals.html.j2" as v with context %}
+{{ m.page(design) }}
+<style>
+  .fb .text { position: absolute; right: 285px; top: 60px; bottom: 0; width: 600px; display: flex; flex-direction: column; justify-content: center; padding-bottom: 70px; z-index: 3; }
+  .fb .logo svg { width: 56px; height: 56px; }
+  .fb .logo .word { font-size: 46px; }
+  .fb .headline { font-size: 78px; line-height: 1.22; margin-top: 34px; }
+  .fb .sub { font-size: 29px; line-height: 1.6; margin-top: 18px; max-width: 560px; text-wrap: wrap; }
+  .fb .domain { margin-top: 24px; font-size: 30px; align-self: flex-start; }
+  .fb .art { position: absolute; left: 300px; top: 0; width: 500px; height: 624px; z-index: 2; }
+</style>
+<body>
+<div class="canvas bg-night dark fb">
+  {{ m.starfield(W, H, seed=11, n=52, keep_out=[(740, 60, 1370, 520)]) }}
+  {{ m.moon(150, 150, 54) }}
+  <svg class="layer" viewBox="0 0 {{ W }} {{ H }}" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 560 C300 520 600 548 900 556 S1400 530 1640 546 L1640 624 L0 624 Z" fill="#22306A" opacity=".65"/>
+  </svg>
+  <div class="art">
+    <div style="position:absolute;left:-40px;top:20px;width:580px;height:580px;border-radius:50%;background:radial-gradient(closest-side, rgba(120,140,220,.32), rgba(91,111,192,0))"></div>
+    {{ m.spiral_book('workbooks/learning-journey/01.jpg', 230, 325, 4, 176, -9) }}
+    <div style="position:absolute;left:150px;top:150px;width:330px;height:330px;box-shadow:-24px 18px 40px rgba(5,8,25,.55);border-radius:8px;transform:perspective(2400px) rotateY(-30deg) rotateX(-4deg)"></div>
+    {{ m.hardcover('first-day', s=340, d=24, ry=-30, rx=-4, x=160, y=118, board='#22306A', dark=true) }}
+  </div>
+  <div class="text">
+    {{ m.logo(true) }}
+    <h1 class="headline" data-qa="headline">{% for l in copy.fb_cover.headline %}<span class="line">{{ l }}</span>{% endfor %}</h1>
+    <p class="sub" data-qa="sub" data-qa-orphans>{{ copy.fb_cover.sub }}</p>
+    <div class="domain" data-qa="domain">{{ brand.domain }}</div>
+  </div>
+</div>
+</body></html>

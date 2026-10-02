@@ -1,0 +1,153 @@
+# Every word in the Qamra social kit. The templates read only this file (captions are in captions.yaml).
+#
+# A ~ glues two words so a line never breaks between them (e.g. أولياء~أمره); it prints as a space.
+#
+# Rules (Tareq, 2026-10-02): modern standard Arabic, warm and short; parents are addressed in the plural
+# (أنتم); no testimonials, ratings, counts, awards, invented prices, discounts or delivery times; real product
+# and story names only (content/store/catalog.yaml, content/themes/*/theme.yaml); Arabic-Indic digits in
+# Arabic copy. Headlines are lists of lines: each line is set on its own line and must not wrap (the renderer
+# checks), so a headline never ends with a lone word.
+
+brand:
+  name: قمرة
+  latin: QAMRA
+  domain: qamra.app
+
+cta:
+  order: اطلبوا الآن
+  quote: اطلبوا عرض سعر للروضة
+  swipe: اسحبوا للخطوة التالية
+
+profile:
+  wordmark: قمرة
+
+fb_cover:
+  headline: ["كتب مطبوعة،", "وطفلكم بطلها"]
+  sub: حكايات وكتب أنشطة باسم طفلكم وشخصيته، نطبعها ونوصلها إلى بابكم.
+
+# Instagram highlight covers: icon (templates/_icons.html.j2) + label
+highlights:
+  - {slug: stories, icon: book, label: كتب القصص}
+  - {slug: workbooks, icon: spiral, label: الدوسيات}
+  - {slug: kindergartens, icon: cap, label: الروضات}
+  - {slug: how-to-order, icon: steps, label: طريقة الطلب}
+  - {slug: delivery, icon: truck, label: التوصيل}
+  - {slug: offers, icon: tag, label: العروض}
+
+# Book covers drawn in code. Titles follow the theme title templates in content/themes/*/theme.yaml
+# (only stories with catalog status «available»); ليان، يوسف، سلمى are the site's invented sample children.
+covers:
+  first-day: {sky: dawn, lines: [{t: ليان, big: true}, {t: في أوّل يوم بالروضة}]}
+  graduation: {sky: night, lines: [{t: يوم تخرّج}, {t: ليان, big: true}], cap: true}
+  new-sibling: {sky: night, moon: right, lines: [{t: ليان, big: true}, {t: وضيفنا الصغير}]}
+  # spines in the kindergarten stack: the same story, a different child on each book
+  class_spines: [يوم تخرّج يوسف, يوم تخرّج سلمى, يوم تخرّج آدم, يوم تخرّج جنى, يوم تخرّج كريم]
+
+# Feed ads (1080×1350). The same copy drives the stories (1080×1920) listed under `stories`.
+# bg: night | paper | sage | sky | glow | blush   ·   cta: order | quote   ·   visual: see templates/_visuals.html.j2
+ads:
+  - slug: a-launch
+    bg: night
+    pill: كتاب حكاية مطبوع
+    headline: ["طفلكم بطل حكايته"]
+    sub: نرسمه من صورته في صفحات حكاية مطبوعة، ونوصل الكتاب إلى بابكم.
+    note: معاينة مجانية، والدفع عند الاستلام
+    visual: launch
+    slot: launch
+    cta: order
+
+  - slug: b-kindergarten
+    bg: paper
+    pill: للروضات
+    headline: ["كتاب تخرّج", "لكل طفل في الصف"]
+    sub: كل طفل بطل حكاية «يوم تخرّجي» باسمه وملامحه، ومعها~صفحة لروضتكم فيها الشعار وصورة الصف وكلمة المعلّمة.
+    note: كل ولي أمر يوافق ويرفع صورة طفله بنفسه
+    visual: kindergarten
+    slot: kindergarten
+    cta: quote
+
+  - slug: c-family
+    bg: sage
+    pill: مغامراتي مع عائلتي
+    headline: ["مغامرات حقيقية", "مع العائلة"]
+    sub: ١٢ مغامرة في البيت والسوق والمطبخ والطبيعة، يعيشها طفلكم معكم في كتاب باسمه وشخصيته.
+    note: ومع الكتاب جواز سفر المغامر وملصقات المكافآت
+    visual: family
+    slot: family
+    cta: order
+
+  - slug: d-journey
+    bg: deep
+    pill: رحلتي الأولى للتعلّم
+    headline: ["يرى الحرف", "ويسمع صوته"]
+    sub: كتاب مغامرة من التفكير حتى القراءة، فيه~رموز~QR تمسحونها بالجوال ليسمع طفلكم الأصوات والكلمات.
+    note: ثلاث محطات متدرّجة لعمر ٣–٦ سنوات
+    visual: journey
+    slot: journey
+    cta: order
+
+  - slug: e-foundation
+    bg: glow
+    pill: دوسية التأسيس
+    headline: ["منهج متكامل للروضة،", "باسم طفلكم"]
+    sub: العربية والإنجليزية والرياضيات ومهارات القلم في~ثلاثة~أجزاء، باسمه وشخصيته من الغلاف حتى شهادة الإنجاز.
+    note: لعمر ٤–٦ سنوات، بتجليد حلزوني ينفتح مسطّحًا
+    visual: foundation
+    slot: foundation
+    cta: order
+
+  - slug: f-gifts
+    bg: blush
+    pill: هدايا المناسبات
+    headline: ["هدية يكون", "طفلكم بطلها"]
+    sub: حكاية مطبوعة لعيد ميلاده أو للعيد، و«ضيفنا الصغير» حين ينتظر أخًا أو أختًا.
+    note: ومعها علبة هدية وبطاقة برسالتكم، إن أحببتم
+    tag: إلى ليان
+    visual: gifts
+    slot: gifts
+    cta: order
+
+  - slug: g-trust
+    bg: night
+    pill: خصوصية طفلكم
+    headline: ["صورة طفلكم", "أمانة عندنا"]
+    sub: نستخدمها لرسم شخصيته فقط، ثم نحذفها.
+    points:
+      - {icon: clock, text: تُحذف الصورة تلقائيًا خلال ٢٤ ساعة من اعتماد الشخصية}
+      - {icon: shield, text: لا نستخدمها لتدريب أي نموذج ذكاء اصطناعي}
+      - {icon: cash, text: الدفع نقدًا عند الاستلام، دون أي مبلغ مسبق}
+    visual: trust
+    cta: order
+
+stories: [a-launch, b-kindergarten, f-gifts]
+
+# «كيف نعمل» carousel: the story-book flow of apps/web/src/app/[locale]/how-it-works (messages howPage, landing.how)
+carousel:
+  pill: كيف نصنع كتاب طفلكم؟
+  steps: [الصورة, الشخصية, الحكاية, الكتاب المطبوع]
+  slides:
+    - slug: photo
+      title: [صورة من جوالكم]
+      body: صورة واضحة لوجه طفلكم، واسمه~وعمره، وموافقتكم بصفتكم أولياء~أمره.
+      visual: photo
+      phone_title: فحص الصورة
+      checks: [وجه واحد فقط في الصورة, الوجه ظاهر من الأمام, إضاءة جيدة ووضوح كافٍ]
+    - slug: character
+      title: [نرسم شخصيته, وتوافقون عليها]
+      body: نرسمه بالأسلوب الذي تختارونه للكتاب، ولا نكمل حتى تقولوا «يشبه~طفلي».
+      visual: character
+      card_title: بطاقة الشخصية
+      approve: يشبه طفلي
+    - slug: story
+      title: [تتصفّحون الحكاية مجانًا]
+      body: تقرؤون كل الصفحات على الجوال، وتعدّلون الكلمات أو تعيدون رسم صفحة، قبل أن تدفعوا شيئًا.
+      visual: story
+      slot: spread
+      # the first page of «أوّل يوم في الروضة» (content/themes/first-day/theme.yaml), for the sample girl ليان
+      page_text: فِي صَبَاحٍ مُشْرِقٍ، اسْتَيْقَظَتْ لَيَانُ بَاكِرًا وَقَلْبُهَا يَرْقُصُ فَرَحًا. الْيَوْمُ أَوَّلُ يَوْمٍ فِي الرَّوْضَةِ!
+    - slug: book
+      title: [نطبع الكتاب ونوصله إليكم]
+      body: طباعة ملوّنة على ورق سميك، بغلاف~مقوّى~أو~ورقي، والدفع نقدًا عند الاستلام.
+      visual: book
+      slot: hardcover
+      cta: order

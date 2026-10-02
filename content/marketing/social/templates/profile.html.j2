@@ -1,0 +1,20 @@
+{# Profile picture 1080×1080: the moon mark + wordmark, centred well inside the circle crop. #}
+{% import "_macros.html.j2" as m with context %}
+{{ m.page(design) }}
+<style>
+  .pp { display: flex; align-items: center; justify-content: center; background: radial-gradient(70% 70% at 50% 42%, #22306A 0%, #16204A 70%); }
+  .pp .glow { position: absolute; left: 240px; top: 110px; width: 600px; height: 600px; border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(91,111,192,.38), rgba(91,111,192,0)); }
+  .pp .lockup { position: relative; display: flex; flex-direction: column; align-items: center; gap: 0; margin-top: 10px; }
+  .pp .lockup svg { width: 430px; height: 430px; }
+  .pp .word { font: 800 220px/1 "Baloo", sans-serif; color: var(--paper-raised); margin-top: -6px; padding-top: 40px; }
+</style>
+<body>
+<div class="canvas pp">
+  <div class="glow"></div>
+  <div class="lockup">
+    {{ m.moon_mark('#FFFDF8') }}
+    <div class="word" data-qa="wordmark">{{ copy.profile.wordmark }}</div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,22 @@
+{# Instagram highlight cover 1080×1920: icon + label inside the centre circle (Instagram shows a circle crop). #}
+{% import "_macros.html.j2" as m with context %}
+{% import "_icons.html.j2" as i with context %}
+{{ m.page(design) }}
+<style>
+  .hl { display: flex; align-items: center; justify-content: center; }
+  .hl { background: #16204A; }
+  .glow { position: absolute; left: 140px; top: 560px; width: 800px; height: 800px; border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(91,111,192,.40), rgba(91,111,192,0)); }
+  .mark { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 44px; margin-top: -10px; }
+  .mark .ico { width: 300px; height: 300px; }
+  .mark .label { font: 800 104px/1.1 "Baloo", sans-serif; color: var(--paper-raised); white-space: nowrap; }
+</style>
+<body>
+<div class="canvas hl">
+  <div class="glow"></div>
+  <div class="mark">
+    <div class="ico">{{ i.icon(hl.icon, '#F2B33D', 1.35) }}</div>
+    <div class="label" data-qa="label">{{ hl.label }}</div>
+  </div>
+</div>
+</body></html>

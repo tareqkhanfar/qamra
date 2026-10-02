@@ -1,0 +1,38 @@
+{# Feed ads (1080×1350, fmt=feed) and stories (1080×1920, fmt=story): one grid for all. #}
+{% import "_macros.html.j2" as m with context %}
+{% import "_visuals.html.j2" as v with context %}
+{% set dark = ad.bg in ['night', 'deep'] %}
+{{ m.page(design) }}
+<style>
+  .story .frame { padding: 240px var(--m) 250px; }
+  .story .copy { margin-top: 88px; }
+  .story .headline { font-size: 104px; }
+  .story .sub { font-size: 40px; margin-top: 32px; }
+  .story .visual { margin: 56px 0; }
+  .story .foot { gap: 32px; }
+  .feed .copy { margin-top: 56px; }
+  .feed .sub { font-size: 34px; line-height: 1.58; margin-top: 20px; }
+  .feed .visual { margin: 28px 0 32px; }
+  .feed .foot { gap: 22px; }
+</style>
+<body>
+<div class="canvas bg-{{ ad.bg }} {{ fmt }}{{ ' dark' if dark else ' paper-tex' }}">
+  {% if dark %}{{ m.starfield(W, H, seed=(ad.slug | length) * 7, n=46 if fmt == 'feed' else 64, keep_out=[(70, 70, 1010, 600 if fmt == 'feed' else 900), (70, H - 300, 1010, H - 60)] + ([(70, 560, 1010, H - 60)] if ad.visual == 'trust' else [])) }}{% endif %}
+  {% if ad.bg == 'paper' %}
+  <svg class="layer" style="top:auto;bottom:0;height:40px" width="{{ W }}" height="40" viewBox="0 0 {{ W }} 40" aria-hidden="true">{{ tatreez(W, 40) | safe }}</svg>
+  {% endif %}
+  <div class="frame">
+    <div class="top">{{ m.logo(dark) }}{{ m.pill(ad.pill) }}</div>
+    <div class="copy">
+      <h1 class="headline" data-qa="headline">{% for l in ad.headline %}<span class="line">{{ l }}</span>{% endfor %}</h1>
+      <p class="sub" data-qa="sub" data-qa-orphans>{{ ad.sub }}</p>
+    </div>
+    <div class="visual">{{ v.render(ad, fmt) }}</div>
+    <div class="foot">
+      {% if ad.note %}<div class="note" data-qa="note"><svg viewBox="0 0 24 24" fill="none" stroke="{{ '#F5C465' if dark else '#9A620A' }}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.2l2.7 2.7L16 9.6"/></svg><span>{{ ad.note }}</span></div>{% endif %}
+      {{ m.cta_row(ad.cta) }}
+    </div>
+  </div>
+</div>
+{{ m.fit_script() }}
+</body></html>

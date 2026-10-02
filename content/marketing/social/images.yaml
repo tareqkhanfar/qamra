@@ -1,0 +1,49 @@
+# Image slots of the social kit. Each slot lists files from design/incoming/ in priority order (names as in
+# docs/image-prompts.md, sections A and B). The renderer uses the first file that exists; when none exists it
+# draws the slot in code (books, sky, moon, public workbook pages). Nothing from out/ and no real child's photo.
+#
+# kind: photo   → shown in a rounded frame, cropped to fill it; `focus` is the CSS object-position.
+# kind: mockup  → a product photo with a blank white cover. Our cover is laid onto it, so it is used only
+#                 when `cover_quad` is filled: the cover's four corners in the image's own pixels, in the
+#                 order top-left, top-right, bottom-right, bottom-left of the cover as printed (the spine is on
+#                 the right). Read them off the photo in any image viewer. `cover_size` is the cover art box.
+
+files:
+  A1-hero-reading.png: {kind: photo, focus: "62% 45%"}
+  A3-graduation-class.png: {kind: photo, focus: "50% 40%"}
+  A4-family-book-table.png: {kind: photo, focus: "50% 55%"}
+  A5-workbook-tracing.png: {kind: photo, focus: "50% 50%"}
+  A6-journey-qr.png: {kind: photo, focus: "50% 50%"}
+  A8-gift-box.png: {kind: photo, focus: "50% 55%"}
+  B1-mockup-hardcover-angle.png: {kind: mockup, cover_size: [600, 600], cover_quad: null}
+  B2-mockup-open-spread.png: {kind: mockup, cover_size: [1200, 600], cover_quad: null}  # the quad spans both pages
+  B4-mockup-spiral.png: {kind: mockup, cover_size: [600, 800], cover_quad: null}
+
+slots:
+  launch:        # ad-a-launch, story-a-launch
+    candidates: [A1-hero-reading.png, B1-mockup-hardcover-angle.png]
+    cover: first-day
+    fallback: hardcover «ليان في أوّل يوم بالروضة» drawn in code
+  kindergarten:  # ad-b-kindergarten, story-b-kindergarten
+    candidates: [A3-graduation-class.png]
+    fallback: a stack of «يوم تخرّج» books with a different child's name on each spine
+  family:        # ad-c-family
+    candidates: [A4-family-book-table.png]
+    fallback: spiral book + real pages of «مغامراتي مع عائلتي» (apps/web/public/workbooks/family-adventures)
+  journey:       # ad-d-journey
+    candidates: [A6-journey-qr.png, B4-mockup-spiral.png]
+    cover_image: workbooks/learning-journey/01.jpg
+    fallback: the real cover and QR page of «رحلتي الأولى للتعلّم» + a phone drawn in code
+  foundation:    # ad-e-foundation
+    candidates: [A5-workbook-tracing.png]
+    fallback: real pages of «دوسية التأسيس» (apps/web/public/workbooks/foundation-workbook)
+  gifts:         # ad-f-gifts, story-f-gifts
+    candidates: [A8-gift-box.png]
+    fallback: hardcover «ليان وضيفنا الصغير» with a ribbon and a gift tag, drawn in code
+  spread:        # carousel-3-story
+    candidates: [B2-mockup-open-spread.png]
+    fallback: an open book drawn in code (picture page + vowelized text page)
+  hardcover:     # carousel-4-book
+    candidates: [B1-mockup-hardcover-angle.png]
+    cover: graduation
+    fallback: hardcover «يوم تخرّج ليان» drawn in code
