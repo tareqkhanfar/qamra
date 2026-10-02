@@ -2,7 +2,7 @@
 
 slug: coloring
 version: 1
-lines: coloring, magic
+lines: coloring
 qa_threshold: 0.7
 likeness_min: 6
 

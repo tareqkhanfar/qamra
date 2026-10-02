@@ -2,7 +2,7 @@
 
 slug: semi-realistic
 version: 1
-lines: magic
+lines:
 qa_threshold: 0.8
 likeness_min: 8
 
