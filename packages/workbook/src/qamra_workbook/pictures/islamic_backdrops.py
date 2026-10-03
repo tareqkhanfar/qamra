@@ -33,7 +33,7 @@ from qamra_workbook.pictures.islamic_scenes import (
 )
 
 W, H = 180.0, 104.0
-# A scene fills its box from the bottom (slice, YMax): the widest box (54 mm high on a 180 mm line, about 3.4:1)
+# A scene fills its box from the bottom (slice, YMax): the widest box (54 mm high, 180 mm wide, ~3.4:1)
 # shows only y ≥ ~51 of the 104 units, so the tallest figure's head must stay below this line.
 HEAD_ROOM_TOP = 54.0
 # library pictures that draw a person: never a prop (people are only the cast, drawn by the Kit)
