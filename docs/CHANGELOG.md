@@ -1,5 +1,11 @@
 # Changelog
 
+## Design images drawn, the graduation proof in 3D and watercolor, a framing check (2026-10-03)
+- **Images (fal, $8.76 for 81 calls):** the 10 site photos (`apps/web/public/photos`), the fixed character sheets (`content/cast`: «قمّور», the teacher, the classmates, the family; 3D and watercolor), cover backgrounds for graduation, first day and the new sibling (`content/themes/*/plates`), the moon portrait frame and the cloud wash (`packages/pdf/layouts/decor`), and the activity-book and «قلبي يعرف الله» art (`content/assets`). Every image was looked at; prompts were tightened where the first drawings missed (Levantine classmates, no white paper borders, one continuous scene under the title).
+- **Proof (Addendum 11 §6):** «يوم تخرّج ليان» for an invented child, in cinematic 3D and premium watercolor, with real images and the theme's own text (`sample_book.py --text-provider fake`, no Claude key here): about $1.65 of images per book, ~$1.9 with the story and QA calls. `out/redesign/graduation-before-after.pdf` puts the old proof next to both, with the five title treatments at phone size and the mockups.
+- **Framing check:** 3 of the first 3D proof's 18 pictures were two images stacked behind a white line or carried a pasted band; `framing.py` finds them from the pixels and the page is redrawn (the next 3D run: one redraw, none left). Watercolor fades to the paper stay allowed.
+- **Store:** the coloring book is out of the store (migration `e5b9c3d71a20`); fresh installs seed the three styles in order.
+
 ## Addendum 11 redesign, three styles that draw, one-tap cart, social kit (2026-10-02)
 - **Styles:** «سينمائي ثلاثي الأبعاد» (first), «مائي فاخر» and «كرتون ملوّن» for the story books and the activity books. Choosing 3D or cartoon used to fail every character drawing (generation only knew watercolor, crayon and paper-cut); styles now come from `prompts/style/*.md` with their own negatives, the house style (v4) no longer says "watercolor, no 3D", and page QA (v4/v5) judges the book's own style. Migration `c4e8a1f20b37` renames and orders the styles and retires semi-realistic from the stories.
 - **Covers:** title lettering drawn in code in five treatments (`cover_title_style`), the «بطولة» ribbon, the moon mark; a back cover without the «قريباً» QR; the spine from the page count.
