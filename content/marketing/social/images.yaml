@@ -25,7 +25,8 @@ slots:
     cover: first-day
     fallback: hardcover «ليان في أوّل يوم بالروضة» drawn in code
   kindergarten:  # ad-b-kindergarten, story-b-kindergarten
-    candidates: [A3-graduation-class.png]
+    # public: = a file under apps/web/public (the 2026-10-03 photo, no child in a hijab); A3 only as a fallback
+    candidates: [public:photos/graduation-class.jpg, A3-graduation-class.png]
     fallback: a stack of «يوم تخرّج» books with a different child's name on each spine
   family:        # ad-c-family
     candidates: [A4-family-book-table.png]
@@ -47,3 +48,31 @@ slots:
     candidates: [B1-mockup-hardcover-angle.png]
     cover: graduation
     fallback: hardcover «يوم تخرّج ليان» drawn in code
+
+# ------------------------------------------------------------------------------------------------ media
+# Every other bitmap the posts, ads and video end cards use (copy.yaml `media:` keys), path from the repo root.
+# All are AI-made (no real child) and were checked by eye on 2026-10-03 for Tareq's rule: no little girl in a
+# hijab in our marketing (adults in a hijab are fine). Never add content/cast/classmates-* (a girl in a hijab)
+# or an old copy of graduation-class (the 2026-10-03 file is the one without hijabs).
+# out/video/ is the brand film's folder (gitignored): its stills and mockups exist only on the machine that built
+# the film, so the posts that use them need it (the renderer says which file is missing).
+# focus = the CSS object-position used when the picture is cropped to its frame.
+media:
+  hero-reading: {src: apps/web/public/photos/hero-reading.jpg, focus: "60% 50%"}
+  first-day: {src: apps/web/public/photos/first-day.jpg, focus: "64% 50%"}
+  graduation-class: {src: apps/web/public/photos/graduation-class.jpg, focus: "57% 40%"}
+  family-book-table: {src: apps/web/public/photos/family-book-table.jpg, focus: "52% 50%"}
+  journey-qr: {src: apps/web/public/photos/journey-qr.jpg, focus: "50% 45%"}
+  grandma-voice: {src: apps/web/public/photos/grandma-voice.jpg, focus: "58% 45%"}
+  gift-box: {src: apps/web/public/photos/gift-box.jpg, focus: "50% 58%"}
+  kindergarten-teacher: {src: apps/web/public/photos/kindergarten-teacher.jpg, focus: "48% 60%"}
+  workbook-tracing: {src: apps/web/public/photos/workbook-tracing.jpg, focus: "50% 55%"}
+  plate-new-sibling: {src: content/themes/new-sibling/plates/3d-1.jpg, focus: "50% 60%"}
+  film-qamour: {src: out/video/shot1-start.png, focus: "62% 30%"}        # «قمّور» over the town at night
+  film-photo: {src: out/video/shot2-start.png, focus: "50% 32%"}         # the sample photo (AI-made girl)
+  film-character: {src: out/video/shot2-end.png, focus: "50% 32%"}       # the same girl drawn in 3D
+  character-sheet: {src: out/video/sample-character-3d.png, focus: "50% 50%"}
+  mock-hardcover: {src: out/video/mock/hardcover.png, focus: "50% 52%"}  # «يوم تخرّج ليان», square
+  mock-hardcover-wide: {src: out/video/mock3x2/hardcover.png, focus: "50% 50%"}
+  mock-spread: {src: out/video/mock/spread.png, focus: "40% 62%"}
+  cover-graduation: {src: out/video/front-lettered.png, focus: "50% 50%"}  # the flat cover art

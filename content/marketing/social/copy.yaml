@@ -40,6 +40,8 @@ covers:
   first-day: {sky: dawn, lines: [{t: ليان, big: true}, {t: في أوّل يوم بالروضة}]}
   graduation: {sky: night, lines: [{t: يوم تخرّج}, {t: ليان, big: true}], cap: true}
   new-sibling: {sky: night, moon: right, lines: [{t: ليان, big: true}, {t: وضيفنا الصغير}]}
+  # «حكاية {name} الخاصة» (content/themes/custom): the custom story, the gift for a birthday or Eid
+  custom: {sky: night, moon: right, kid_h: 232, lines: [{t: حكاية}, {t: ليان, big: true}, {t: الخاصة}]}
   # spines in the kindergarten stack: the same story, a different child on each book
   class_spines: [يوم تخرّج يوسف, يوم تخرّج سلمى, يوم تخرّج آدم, يوم تخرّج جنى, يوم تخرّج كريم]
 
@@ -101,7 +103,7 @@ ads:
     pill: هدايا المناسبات
     headline: ["هدية يكون", "طفلكم بطلها"]
     sub: حكاية مطبوعة لعيد ميلاده أو للعيد، و«ضيفنا الصغير» حين ينتظر أخًا أو أختًا.
-    note: ومعها علبة هدية وبطاقة برسالتكم، إن أحببتم
+    note: ويمكنكم إضافة علبة هدية وبطاقة برسالتكم
     tag: إلى ليان
     visual: gifts
     slot: gifts
@@ -115,7 +117,7 @@ ads:
     points:
       - {icon: clock, text: تُحذف الصورة تلقائيًا خلال ٢٤ ساعة من اعتماد الشخصية}
       - {icon: shield, text: لا نستخدمها لتدريب أي نموذج ذكاء اصطناعي}
-      - {icon: cash, text: الدفع نقدًا عند الاستلام، دون أي مبلغ مسبق}
+      - {icon: cash, text: الدفع نقدًا عند الاستلام، دون أي دفع مسبق}
     visual: trust
     cta: order
 
@@ -151,3 +153,416 @@ carousel:
       visual: book
       slot: hardcover
       cta: order
+
+# =============================================================================================================
+# October 2026: a month of posts, two carousels, the Meta ad sets and the video pieces (Tareq, 2026-10-03).
+# Same rules as above. Pictures are images.yaml `media:` keys; every one was checked by eye (no little girl in a
+# hijab). Facts come from the site (apps/web/messages/ar.json), content/store/catalog.yaml, the theme files and
+# content/journey/*.yaml. Never mention the Islamic series here: it is not on sale yet.
+# visual: photo (media, focus?, badge?, badge_kind: approve|tag) · pair (two media + labels) · fan (pages:
+# [middle, left, right] under apps/web/public, phone?) · scene_book (media + code cover) · points · faq ·
+# kg_stack. faq takes `qa:` (q, a). hl_size overrides the headline size (px) when a line is long.
+# =============================================================================================================
+
+# Feed posts (1080×1350), in posting order: post-01-… is the first post of the month (calendar.md).
+posts:
+  - slug: qamour
+    bg: night
+    pill: صديقنا قمّور
+    headline: ["هذا قمّور،", "صديق الأبطال"]
+    sub: هلال صغير يطير من القمر ليرافق طفلكم في~حكاياتنا، ويقول له حين يتردّد~«أنا~معك».
+    visual: photo
+    media: film-qamour
+    note: رفيق طفلكم في حكايات «قمرة»
+    cta: order
+
+  - slug: magic-hero
+    bg: glow
+    pill: قمرة سحري
+    headline: ["طفلكم بطل", "كل صفحة"]
+    sub: في «قمرة سحري» تُرسم كل صفحة لطفلكم خصّيصًا باسمه وملامحه، وإن أرسلتم رسمة من رسوماته، تصير صاحبه في~المغامرة.
+    visual: photo
+    media: mock-hardcover-wide
+    note: معاينة مجانية قبل الطلب، والدفع عند الاستلام
+    cta: order
+
+  - slug: photo-to-character
+    bg: sky
+    pill: من الصورة إلى الشخصية
+    headline: ["من صورة واحدة", "إلى شخصية تشبهه"]
+    sub: صورة واضحة لوجه طفلكم من جوالكم، فنرسم شخصيته ونعرضها عليكم، ولا نكمل حتى تقولوا «يشبه~طفلي».
+    visual: pair
+    pair: [{media: film-photo, label: الصورة}, {media: film-character, label: الشخصية}]
+    note: "مثال توضيحي: الطفلة في الصورة متخيَّلة"
+    cta: order
+
+  - slug: first-day
+    bg: sky
+    pill: أوّل يوم في الروضة
+    headline: ["خطوة كبيرة", "في يوم جديد"]
+    sub: في حكاية «أوّل يوم في الروضة» يتغلّب طفلكم على خوفه الصغير، ويكسب أصدقاء جددًا، ويعود إلى البيت متحمّسًا~للغد.
+    visual: photo
+    media: first-day
+    note: حكاية مطبوعة باسمه وملامحه، لعمر ٣–٧ سنوات
+    cta: order
+
+  - slug: journey-qr
+    bg: deep
+    pill: رحلتي الأولى للتعلّم
+    headline: ["امسحوا الرمز،", "فيسمع طفلكم الحرف"]
+    sub: في صفحات «رحلتي الأولى للتعلّم» رموز~QR تمسحونها بالجوال، فيسمع طفلكم الأصوات والحروف~والكلمات.
+    visual: photo
+    media: journey-qr
+    note: لعمر ٣–٦ سنوات، في ثلاث محطات متدرّجة
+    cta: order
+
+  - slug: graduation-kg
+    bg: paper
+    pill: للروضات
+    headline: ["هدية التخرّج", "يحتفظ بها كل طفل"]
+    sub: كتاب لكل طفل في الصف، هو بطل حكاية «يوم تخرّجي» باسمه وملامحه، ومعه صفحة لروضتكم فيها الشعار وصورة الصف وكلمة~المعلّمة.
+    visual: photo
+    media: graduation-class
+    note: كل ولي أمر يوافق ويرفع صورة طفله بنفسه
+    cta: quote
+
+  - slug: cod-delivery
+    bg: sage
+    pill: الدفع والتوصيل
+    headline: ["لا تدفعون شيئًا", "قبل أن يصلكم"]
+    visual: points
+    points:
+      - {icon: cash, title: الدفع نقدًا عند الباب, text: لا نطلب بطاقة ولا أي دفع مسبق.}
+      - {icon: truck, title: توصيل إلى بابكم, text: في مدن الضفة الغربية والقدس، والرسوم حسب المنطقة.}
+      - {icon: track, title: تتابعون طلبكم, text: خطوة بخطوة من حسابكم حتى يصلكم الكتاب.}
+      - {icon: reprint, title: إعادة طباعة مجانية, text: إذا وصل الكتاب بعيب طباعة أو كان الخطأ منّا.}
+    cta: order
+
+  - slug: foundation
+    bg: glow
+    pill: دوسية التأسيس
+    headline: ["منهج متكامل", "في دوسية باسمه"]
+    sub: العربية والإنجليزية والرياضيات ومهارات القلم، متدرّجة أسبوعًا بأسبوع، وشخصية طفلكم من الغلاف حتى شهادة~الإنجاز.
+    visual: fan
+    pages: [workbooks/foundation-workbook/01.jpg, workbooks/foundation-workbook/02.jpg, workbooks/foundation-workbook/09.jpg]
+    note: لعمر ٤–٦ سنوات، في ثلاثة أجزاء بتجليد حلزوني
+    cta: order
+
+  - slug: new-baby
+    bg: blush
+    pill: ضيفنا الصغير
+    headline: ["مولود جديد في البيت؟", "طفلكم هو البطل"]
+    sub: حكاية «ضيفنا الصغير» تطمئن طفلكم أنّ مكانه في قلب العائلة لا يتغيّر، وتعلّمه كيف يكون الأخ الكبير أو الأخت~الكبيرة.
+    visual: scene_book
+    media: plate-new-sibling
+    cover: new-sibling
+    note: لعمر ٣–٦ سنوات، ويمكنكم إضافة علبة هدية
+    cta: order
+
+  - slug: privacy
+    bg: night
+    pill: خصوصية طفلكم
+    headline: ["تُحذف الصورة،", "وتبقى الحكاية"]
+    sub: نستخدم صورة طفلكم لرسم شخصيته فقط، ثم تُحذف تلقائيًا خلال ٢٤ ساعة من اعتمادكم~للشخصية.
+    visual: points
+    points:
+      - {icon: consent, text: لا نبدأ دون موافقة صريحة منكم بصفتكم أولياء~أمره}
+      - {icon: shield, text: لا نستخدم صور أطفالكم لتدريب أي نموذج ذكاء~اصطناعي}
+      - {icon: trash, text: تحذفون بيانات طفلكم وكتبه من حسابكم متى~شئتم}
+    cta: order
+
+  - slug: family
+    bg: sage
+    pill: مغامراتي مع عائلتي
+    headline: ["١٢ مغامرة", "يعيشها معكم"]
+    sub: في البيت والسوق والمطبخ والطبيعة، وطفلكم بطل كل مغامرة باسمه وشخصيته، وأسماؤكم في~المهمّات.
+    visual: photo
+    media: family-book-table
+    note: ومع الكتاب جواز سفر المغامر وملصقات المكافآت
+    cta: order
+
+  - slug: faq-1
+    bg: paper
+    pill: أسئلة شائعة
+    headline: ["هل يشبه الرسم طفلي؟", "وأسئلة أخرى"]
+    visual: faq
+    qa:
+      - {q: هل يشبه الرسم طفلي فعلًا؟, a: نعرض عليكم «بطاقة الشخصية» أولًا، ولا نكمل حتى تقولوا «يشبه~طفلي».}
+      - {q: ماذا لو لم تعجبني الصفحات؟, a: تتصفّحون الكتاب كاملًا مجانًا، وتعدّلون الكلمات أو تعيدون رسم أي~صفحة.}
+      - {q: كيف أدفع؟, a: نقدًا للمندوب عند الاستلام، دون بطاقة ولا دفع~مسبق.}
+    cta: order
+
+  - slug: gifts
+    bg: blush
+    pill: عيد ميلاد أو عيد
+    headline: ["هدية عيد ميلاده:", "حكاية هو بطلها"]
+    sub: اختاروا حكاية من حكاياتنا، أو اكتبوا لنا فكرتكم فنكتب ونرسم «حكاية خاصة» لطفلكم وحده، لعيد ميلاده أو~للعيد.
+    visual: scene_book
+    media: gift-box
+    cover: custom
+    ribbon: true
+    note: ويمكنكم إضافة علبة هدية وبطاقة برسالتكم
+    cta: order
+
+  - slug: journey-stages
+    bg: paper
+    pill: رحلتي الأولى للتعلّم
+    headline: ["ثلاث محطات", "حتى يقرأ ويكتب"]
+    sub: يستعدّ في الأولى بالتفكير وتدريب اليد، ويتعرّف في الثانية على الحروف والأعداد، ويقرأ ويكتب ويجمع ويطرح في~الثالثة.
+    visual: fan
+    pages: [workbooks/learning-journey/09.jpg, workbooks/learning-journey/01.jpg, workbooks/learning-journey/17.jpg]
+    note: الأولى لعمر ٣–٤، والثانية ٤–٥، والثالثة ٥–٦ سنوات
+    cta: order
+
+  - slug: family-voice
+    bg: night
+    pill: صوت أهلي
+    headline: ["الحكاية نفسها،", "بصوت جدّته"]
+    sub: سجّلوا الحكاية بأصواتكم من الجوال، ونطبع في الكتاب رمز~QR، فيسمعها طفلكم بصوتكم متى~شاء.
+    visual: photo
+    media: grandma-voice
+    note: إضافة اختيارية إلى كتب الحكايات
+    cta: order
+
+  - slug: how-it-works
+    bg: paper
+    pill: كيف نعمل؟
+    headline: ["من جوالكم", "إلى باب بيتكم"]
+    sub: أربع خطوات، ثلاث منها عليكم ولا تستغرق عشر~دقائق.
+    visual: points
+    points_size: 32
+    points:
+      - {n: 1, title: صورة من جوالكم, text: صورة واضحة لوجه طفلكم، واسمه وعمره.}
+      - {n: 2, title: نرسم شخصيته وتوافقون عليها, text: لا نكمل حتى تقولوا «يشبه طفلي».}
+      - {n: 3, title: معاينة مجانية, text: تتصفّحون الصفحات وتعدّلون الكلمات قبل أن تدفعوا شيئًا.}
+      - {n: 4, title: نطبع ونوصّل إلى بابكم, text: طباعة محلية على ورق سميك، والدفع عند الاستلام.}
+    cta: order
+
+  - slug: foundation-name
+    bg: paper
+    pill: دوسية التأسيس
+    headline: ["يكتب اسمه", "بيده الصغيرة"]
+    sub: يتتبّع طفلكم اسمه ويكتبه بالعربية والإنجليزية، ويتدرّب على إمساك القلم خطوة خطوة، وفي آخر الدوسية شهادة إنجاز~باسمه.
+    visual: photo
+    media: workbook-tracing
+    note: ملوّنة أو بالأبيض والأسود، أو PDF تطبعونه في البيت
+    cta: order
+
+  - slug: faq-2
+    bg: sky
+    pill: أسئلة شائعة
+    headline: ["قبل أن تطلبوا"]
+    visual: faq
+    qa:
+      - {q: هل يمكنني تعديل نص القصة؟, a: نعم، تعدّلون نص كل صفحة في خطوة المراجعة، أو تعيدونه كما كان~بضغطة.}
+      - {q: كيف تكون كتب الأنشطة باسم طفلي؟, a: غلاف بشخصيته واسمه، واسمه داخل التمارين وعلى~الشهادة.}
+      - {q: إلى أين توصّلون؟, a: إلى بابكم في مدن الضفة الغربية والقدس، والرسوم في صفحة~الأسعار.}
+      - {q: ماذا لو وصل الكتاب بعيب طباعة؟, a: نعيد طباعته مجانًا إذا كان الخطأ منّا.}
+    cta: order
+
+# Carousels (1080×1350, 5 slides). A slide with `step` lights that step on the tracker; the first slide is a cover.
+carousels:
+  - slug: photo-to-book
+    pill: من الصورة إلى الكتاب
+    steps: [الصورة, الشخصية, المعاينة, الكتاب]
+    slides:
+      - title: ["من صورة على جوالكم", "إلى كتاب بين يديه"]
+        body: هكذا نصنع كتاب حكاية مطبوعًا، يكون طفلكم بطل كل صفحة~فيه.
+        visual: photo
+        media: hero-reading
+      - step: 1
+        title: [صورة واضحة لوجهه]
+        body: من جوالكم، في ضوء النهار والوجه ظاهر كاملًا، مع اسمه وعمره وموافقتكم بصفتكم أولياء~أمره.
+        visual: photo
+        media: film-photo
+        badge: "مثال: طفلة متخيَّلة"
+        badge_kind: tag
+      - step: 2
+        title: [نرسم شخصيته, وتوافقون عليها]
+        body: نعرض عليكم «بطاقة الشخصية»، طفلكم من الأمام وبوضعيتين، ولا نكمل حتى تقولوا~«يشبه~طفلي».
+        visual: photo
+        media: character-sheet
+        focus: "50% 12%"
+        badge: يشبه طفلي
+      - step: 3
+        title: [تتصفّحون الكتاب مجانًا]
+        body: تقرؤون كل الصفحات على الجوال، وتعدّلون الكلمات أو تعيدون رسم صفحة، قبل أن تدفعوا~شيئًا.
+        visual: photo
+        media: mock-spread
+      - step: 4
+        title: [نطبعه ونوصله إليكم]
+        body: طباعة ملوّنة على ورق سميك، بغلاف~مقوّى~أو~ورقي، والدفع نقدًا عند~الاستلام.
+        visual: photo
+        media: mock-hardcover-wide
+        cta: order
+
+  - slug: kindergartens
+    pill: للروضات
+    steps: [قائمة الصف, الأهالي, صفحة الروضة, التسليم]
+    slides:
+      - title: [كتب التخرّج, لروضتكم]
+        body: كتاب لكل طفل في الصف، هو بطله باسمه وملامحه. أنتم ترفعون القائمة، ونحن نتولّى~الباقي.
+        visual: photo
+        media: graduation-class
+      - step: 1
+        title: [ترفعون قائمة الصف]
+        body: ملف Excel بأسماء الأطفال وأرقام أولياء~الأمور، ونتولّى نحن التواصل مع~الأهالي.
+        visual: kg_list
+        file: قائمة صف القمر
+        cols: [اسم الطفل, واتساب ولي الأمر]
+        names: [ليان, يوسف, سلمى, آدم, جنى, كريم]
+      - step: 2
+        title: [كل ولي أمر يوافق, ويرفع الصورة بنفسه]
+        body: نرسل لكل ولي أمر رابطًا خاصًا بطفله على واتساب. الروضة لا ترفع صور الأطفال، وترى الرسومات~فقط.
+        visual: kg_link
+        message: "رابط خاص بكتاب تخرّج ليان: وافقوا، ثم ارفعوا صورة واضحة لوجهها."
+        button: افتحوا الرابط
+        checks: [موافقة ولي الأمر, صورة واضحة للوجه, اعتماد شخصية الطفل]
+      - step: 3
+        title: [صفحة خاصة بروضتكم]
+        body: الشعار وصورة الصف وكلمة المعلّمة، وصفحة «أصدقائي في الصف» بأسماء كل~الأطفال.
+        visual: kg_page
+        media: graduation-class
+        logo: شعار الروضة
+        school: [روضة الفراشات, صف القمر]
+        note: «كنتم نجوم صفّنا هذا العام… نحبّكم!»
+      - step: 4
+        title: [نطبع ونسلّمكم الكتب]
+        body: نراجع الكتب معكم، ثم نطبعها ونسلّمها للروضة مغلّفة باسم كل طفل، بفاتورة~واحدة.
+        visual: kg_stack
+        cta: quote
+
+# Meta ads: four ad sets, each as 1080×1080 (fmt square) and 1080×1350 (fmt feed); the 9:16 video is in `video`.
+# Their texts for Ads Manager are in ads.md. sub_square: the shorter sub of the square.
+ad_sets:
+  - slug: parents
+    bg: night
+    pill: كتاب حكاية مطبوع
+    headline: ["حكاية مطبوعة", "بطلها طفلكم"]
+    sub: نرسمه من صورته باسمه وملامحه، وتتصفّحون الكتاب كاملًا مجانًا قبل~الطلب.
+    visual: photo
+    media: mock-spread
+    note: الدفع عند الاستلام، دون أي دفع مسبق
+    cta: order
+
+  - slug: kindergartens
+    bg: paper
+    pill: للروضات
+    headline: ["كتاب تخرّج", "لكل طفل في الصف"]
+    sub: كل طفل بطل حكايته باسمه وملامحه، ومعها صفحة لروضتكم بالشعار وصورة~الصف.
+    visual: photo
+    media: graduation-class
+    note: كل ولي أمر يوافق ويرفع صورة طفله بنفسه
+    cta: quote
+
+  - slug: activity-books
+    bg: glow
+    pill: كتب الأنشطة
+    headline: ["يتعلّم ويلعب،", "وهو بطل الصفحات"]
+    sub: «دوسية التأسيس» و«رحلتي الأولى للتعلّم» و«مغامراتي مع عائلتي»، باسم طفلكم~وشخصيته.
+    visual: fan
+    pages: [workbooks/learning-journey/01.jpg, workbooks/foundation-workbook/01.jpg, workbooks/family-adventures/01.jpg]
+    note: صفحات حقيقية تتصفّحونها قبل الطلب
+    cta: order
+
+  - slug: gifts
+    bg: blush
+    pill: هدية مختلفة
+    headline: ["هدية باسمه", "يحتفظ بها سنوات"]
+    sub: حكاية مطبوعة يكون طفلكم بطلها، لعيد ميلاده أو~للعيد، ويمكنكم إضافة علبة هدية وبطاقة~برسالتكم.
+    visual: scene_book
+    media: gift-box
+    cover: custom
+    ribbon: true
+    note: معاينة مجانية، والدفع عند الاستلام
+    cta: order
+
+# The videos (social_kit.py --videos). Overlays are transparent PNGs laid over the film (templates/overlay.html.j2);
+# end cards and frames are 1080×1920 stills shown with a slow push-in (fmt reel: nothing under y 1560).
+video:
+  overlays:
+    - {slug: film-reel, box: reel-film, line: حكايات وكتب أنشطة بطلها طفلكم}
+    - {slug: film-feed, box: feed-film, line: حكايات وكتب أنشطة بطلها طفلكم}
+    # small: a line under the headline. The photo in c2 is AI-made, so the videos that show it say so.
+    - {slug: cut-photo, box: reel-cut, headline: ["من صورة واحدة", "إلى شخصية تشبهه"], hl_size: 72, small: "مثال توضيحي: الطفلة في الصورة متخيَّلة"}
+    - {slug: cut-book, box: reel-cut, headline: ["كتاب مطبوع،", "وطفلكم بطله"]}
+    - {slug: cut-kg, box: reel-cut, headline: ["كتاب تخرّج", "لكل طفل في الصف"], cta: quote}
+    - {slug: ad-parents, box: reel-cut, headline: ["حكاية مطبوعة", "بطلها طفلكم"], hl_size: 72, small: "مثال توضيحي: الطفلة في الصورة متخيَّلة"}
+    - {slug: ad-gifts, box: reel-cut, headline: ["هدية باسمه", "يحتفظ بها سنوات"]}
+  endcards:
+    - slug: cut-photo
+      bg: night
+      pill: من الصورة إلى الشخصية
+      headline: ["نرسم شخصيته،", "وتوافقون عليها"]
+      sub: ولا نكمل حتى تقولوا «يشبه طفلي»، ثم تتصفّحون الكتاب كاملًا~مجانًا.
+      visual: photo
+      media: character-sheet
+      badge: يشبه طفلي
+      cta: order
+    - slug: cut-book
+      bg: glow
+      pill: قمرة سحري
+      headline: ["كل صفحة", "مرسومة لطفلكم"]
+      sub: طباعة ملوّنة على ورق سميك بغلاف مقوّى، والدفع عند~الاستلام.
+      visual: photo
+      media: mock-hardcover-wide
+      cta: order
+    - slug: cut-kg
+      bg: paper
+      pill: للروضات
+      headline: ["هدية التخرّج", "لكل طفل في الصف"]
+      sub: صفحة لروضتكم فيها الشعار وصورة الصف وكلمة المعلّمة، وفاتورة~واحدة.
+      visual: kg_stack
+      cta: quote
+    - slug: ad-parents
+      bg: night
+      pill: معاينة مجانية
+      headline: ["تتصفّحون الكتاب", "قبل أن تدفعوا"]
+      sub: صورة واضحة لوجه طفلكم تكفي لنبدأ، والدفع عند~الاستلام.
+      visual: photo
+      media: mock-spread
+      cta: order
+    - slug: ad-activity-books
+      bg: glow
+      pill: كتب الأنشطة
+      headline: ["يتعلّم ويلعب،", "وهو بطل الصفحات"]
+      sub: صفحات حقيقية تتصفّحونها قبل الطلب، وتجليد حلزوني ينفتح~مسطّحًا.
+      visual: fan
+      pages: [workbooks/learning-journey/01.jpg, workbooks/foundation-workbook/01.jpg, workbooks/family-adventures/01.jpg]
+      cta: order
+    - slug: ad-gifts
+      bg: blush
+      pill: هدية مختلفة
+      headline: ["هدية باسمه", "يحتفظ بها سنوات"]
+      sub: ويمكنكم إضافة علبة هدية وبطاقة نكتب عليها~رسالتكم.
+      visual: scene_book
+      media: gift-box
+      cover: custom
+      ribbon: true
+      cta: order
+  frames:  # the activity-books video: one frame per book, then its end card
+    - slug: frame-journey
+      bg: deep
+      pill: رحلتي الأولى للتعلّم
+      headline: ["امسحوا الرمز،", "فيسمع طفلكم الحرف"]
+      sub: ثلاث محطات متدرّجة لعمر ٣–٦~سنوات.
+      visual: fan
+      pages: [workbooks/learning-journey/01.jpg, workbooks/learning-journey/11.jpg, workbooks/learning-journey/04.jpg]
+      phone: true
+      cta: none
+    - slug: frame-foundation
+      bg: paper
+      pill: دوسية التأسيس
+      headline: ["يكتب اسمه", "بيده الصغيرة"]
+      sub: العربية والإنجليزية والرياضيات ومهارات القلم، لعمر ٤–٦~سنوات.
+      visual: photo
+      media: workbook-tracing
+      cta: none
+    - slug: frame-family
+      bg: sage
+      pill: مغامراتي مع عائلتي
+      headline: ["١٢ مغامرة", "يعيشها معكم"]
+      sub: في البيت والسوق والمطبخ والطبيعة، باسمه~وشخصيته.
+      visual: photo
+      media: family-book-table
+      cta: none

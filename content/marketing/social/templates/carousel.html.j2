@@ -1,7 +1,8 @@
-{# «كيف نعمل» carousel, 1080×1350 per slide, same grid as the feed ads. #}
+{# Carousels, 1080×1350 per slide, same grid as the feed ads. `car` is the carousel's copy; `step` is the slide's
+   place on the step tracker (none = a cover slide: no tracker, a bigger headline). #}
 {% import "_macros.html.j2" as m with context %}
 {% import "_visuals.html.j2" as v with context %}
-{% set c = copy.carousel %}
+{% set c = car %}
 {{ m.page(design) }}
 <style>
   .steps { display: flex; align-items: flex-start; margin-top: 56px; flex: none; }
@@ -22,22 +23,26 @@
   .swipe { display: flex; align-items: center; justify-content: space-between; height: 96px; }
   .swipe .hint { display: flex; align-items: center; gap: 14px; font: 600 30px/1 "Plex", sans-serif; color: var(--night-700); }
   .swipe .hint svg { width: 34px; height: 34px; }
+  .cover-slide .copy { margin-top: 64px; }
+  .cover-slide .headline { font-size: 92px; }
 </style>
 <body>
-<div class="canvas bg-paper paper-tex">
+<div class="canvas bg-paper paper-tex{{ ' cover-slide' if not step }}">
   <div class="frame">
     <div class="top">{{ m.logo(false) }}{{ m.pill(c.pill) }}</div>
+    {% if step %}
     <div class="steps">
       {% for s in c.steps %}
-      <div class="step {{ 'done' if loop.index < index else ('now' if loop.index == index else '') }}">
-        <div class="dot">{% if loop.index < index %}<svg viewBox="0 0 24 24" style="width:26px;height:26px" fill="none" stroke="#FFFDF8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 12.5l4 4 9-9"/></svg>{% else %}{{ loop.index | string | ar }}{% endif %}</div>
+      <div class="step {{ 'done' if loop.index < step else ('now' if loop.index == step else '') }}">
+        <div class="dot">{% if loop.index < step %}<svg viewBox="0 0 24 24" style="width:26px;height:26px" fill="none" stroke="#FFFDF8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 12.5l4 4 9-9"/></svg>{% else %}{{ loop.index | string | ar }}{% endif %}</div>
         <div class="lbl">{{ s }}</div>
       </div>
       {% endfor %}
     </div>
+    {% endif %}
     <div class="copy">
       <h1 class="headline" data-qa="headline">{% for l in slide.title %}<span class="line">{{ l }}</span>{% endfor %}</h1>
-      <p class="sub" data-qa="sub" data-qa-orphans>{{ slide.body }}</p>
+      {% if slide.body %}<p class="sub" data-qa="sub" data-qa-orphans>{{ slide.body }}</p>{% endif %}
     </div>
     <div class="visual">{{ v.slide(slide) }}</div>
     <div class="foot">

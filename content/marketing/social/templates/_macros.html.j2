@@ -88,7 +88,7 @@
   <div class="title{{ ' with-cap' if c.cap }}">
     {% for ln in c.lines %}<span class="{{ 'big' if ln.big else 'small' }}">{{ ln.t }}</span>{% endfor %}
   </div>
-  {% if kid %}<img class="kid" src="{{ public('workbooks/character.webp') }}" alt="" style="{% if c.cap %}height:270px{% endif %}">{% endif %}
+  {% if kid %}<img class="kid" src="{{ public('workbooks/character.webp') }}" alt="" style="{% if c.kid_h %}height:{{ c.kid_h }}px{% elif c.cap %}height:270px{% endif %}">{% endif %}
   {% if with_ribbon %}{{ ribbon() }}{% else %}<div class="brand">{{ moon_mark('#FFFDF8' if c.sky == 'night' else '#16204A') }}{{ brand.name }}</div>{% endif %}
 </div>
 {%- endmacro %}

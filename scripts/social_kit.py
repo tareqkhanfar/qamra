@@ -3,11 +3,15 @@
     uv run python scripts/social_kit.py                     # all → out/social/<name>.png + contact sheet
     uv run python scripts/social_kit.py --only ad-a-launch  # one design (repeatable; prefix match)
     uv run python scripts/social_kit.py --incoming DIR      # look for delivered photos in DIR
+    uv run python scripts/social_kit.py --videos            # also cut the reels and ad videos (ffmpeg)
+    uv run python scripts/social_kit.py --package           # collect everything into out/social/package/
 
 Everything lives in content/marketing/social/: copy.yaml (all words), captions.yaml (post captions),
-images.yaml (photo/mockup slots), templates/ (Jinja2). Art is drawn in code; the only bitmaps are pages
-already public on the site (apps/web/public/workbooks/**) and, once Tareq delivers them, files in
-design/incoming/. After each render a layout check (templates/qa.js) reports text that leaves its box or the
+images.yaml (photo/mockup slots and the `media:` registry), templates/ (Jinja2), ads.md and calendar.md (Meta
+ads and the posting plan). Art is drawn in code; the bitmaps are pages and photos already public on the site
+(apps/web/public/**), the theme plates and cast sheets (content/), the brand film's stills and mockups
+(out/video/) and, once Tareq delivers them, files in design/incoming/.
+After each render a layout check (templates/qa.js) reports text that leaves its box or the
 safe zone, headline lines that wrap, and paragraphs that end with a lone word.
 """
 
@@ -16,7 +20,10 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+import os
 import random
+import shutil
+import subprocess
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -46,6 +53,7 @@ class Design:
     ctx: dict[str, Any] = field(default_factory=dict)
     # (left, top, right, bottom) in px: every [data-qa] text box must stay inside
     safe: tuple[int, int, int, int] | None = None
+    transparent: bool = False  # a video overlay: rendered with an alpha channel
 
 
 # ---------------------------------------------------------------------------------------------- images
@@ -105,7 +113,8 @@ class Slots:
         if spec is None:
             raise KeyError(f"images.yaml has no slot {slot!r}")
         for fname in spec.get("candidates", []):
-            path = self.incoming / fname
+            # `public:photos/x.jpg` is a file already public on the site; anything else is in incoming/
+            path = PUBLIC / fname[7:] if fname.startswith("public:") else self.incoming / fname
             if not path.exists():
                 continue
             meta = dict(self.files.get(fname, {}))
@@ -133,6 +142,25 @@ class Slots:
             self.used[slot] = fname
             return info
         return None
+
+
+class Media:
+    """images.yaml `media:`: named bitmaps (site photos, theme plates, the film's stills and mockups)."""
+
+    def __init__(self, manifest: dict[str, Any]) -> None:
+        self.items: dict[str, dict[str, Any]] = manifest.get("media", {})
+        self.used: set[str] = set()
+
+    def get(self, key: str) -> dict[str, Any]:
+        spec = self.items.get(key)
+        if spec is None:
+            raise KeyError(f"images.yaml has no media {key!r}")
+        path = ROOT / spec["src"]
+        if not path.exists():
+            hint = " (out/video/ is made by the brand film build)" if spec["src"].startswith("out/") else ""
+            raise FileNotFoundError(f"media {key!r} is missing: {path}{hint}")
+        self.used.add(key)
+        return {"src": path.resolve().as_uri(), "focus": spec.get("focus", "50% 50%"), "path": path}
 
 
 # ---------------------------------------------------------------------------------------------- sky helpers
@@ -273,7 +301,7 @@ def build_designs(copy: dict[str, Any]) -> list[Design]:
                 1080,
                 1350,
                 "carousel",
-                {"slide": slide, "index": i, "total": len(copy["carousel"]["slides"])},
+                {"car": copy["carousel"], "slide": slide, "step": i},
                 (80, 80, 1000, 1270),
             )
         )
@@ -290,7 +318,103 @@ def build_designs(copy: dict[str, Any]) -> list[Design]:
                 (80, 220, 1000, 1670),
             )
         )
+    designs += build_month(copy)
     return designs
+
+
+# The October 2026 set: feed posts, two carousels, the Meta ad sets and the pieces of the videos.
+FEED_SAFE = (80, 80, 1000, 1270)
+SQUARE_SAFE = (64, 64, 1016, 1016)
+# Reels: Instagram covers the top ~220 px (header) and the bottom ~380 px (caption, buttons), so nothing that
+# matters goes below 1560; the like/comment column sits on the right edge, outside x 1000.
+REEL_SAFE = (80, 220, 1000, 1560)
+# Where the film sits in each video format (px). The overlays leave this box clear; videos() uses it too.
+VIDEO_BOX: dict[str, dict[str, int]] = {
+    "reel-film": {"W": 1080, "H": 1920, "w": 1080, "h": 720, "y": 600},  # the whole 3:2 film
+    "reel-cut": {"W": 1080, "H": 1920, "w": 1080, "h": 864, "y": 560},  # one shot, cropped to 5:4
+    "feed-film": {"W": 1080, "H": 1350, "w": 1080, "h": 720, "y": 315},  # 4:5 feed
+}
+
+
+def build_month(copy: dict[str, Any]) -> list[Design]:
+    out: list[Design] = []
+    for i, post in enumerate(copy["posts"], start=1):
+        out.append(
+            Design(
+                f"post-{i:02d}-{post['slug']}",
+                "ad.html.j2",
+                1080,
+                1350,
+                "posts",
+                {"ad": post, "fmt": "feed"},
+                FEED_SAFE,
+            )
+        )
+    for car in copy["carousels"]:
+        for i, slide in enumerate(car["slides"], start=1):
+            out.append(
+                Design(
+                    f"carousel-{car['slug']}-{i}",
+                    "carousel.html.j2",
+                    1080,
+                    1350,
+                    "carousels",
+                    {"car": car, "slide": slide, "step": slide.get("step")},
+                    FEED_SAFE,
+                )
+            )
+    for ad in copy["ad_sets"]:
+        out.append(
+            Design(
+                f"meta-{ad['slug']}-1x1",
+                "ad.html.j2",
+                1080,
+                1080,
+                "meta",
+                {"ad": ad, "fmt": "square"},
+                SQUARE_SAFE,
+            )
+        )
+        out.append(
+            Design(
+                f"meta-{ad['slug']}-4x5",
+                "ad.html.j2",
+                1080,
+                1350,
+                "meta",
+                {"ad": ad, "fmt": "feed"},
+                FEED_SAFE,
+            )
+        )
+    video = copy["video"]
+    for card in video["endcards"] + video["frames"]:
+        out.append(
+            Design(
+                f"end-{card['slug']}",
+                "ad.html.j2",
+                1080,
+                1920,
+                "video",
+                {"ad": card, "fmt": "reel"},
+                REEL_SAFE,
+            )
+        )
+    for ov in video["overlays"]:
+        box = VIDEO_BOX[ov["box"]]
+        safe = REEL_SAFE if box["H"] == 1920 else (60, 60, 1020, 1290)
+        out.append(
+            Design(
+                f"overlay-{ov['slug']}",
+                "overlay.html.j2",
+                box["W"],
+                box["H"],
+                "overlays",
+                {"ov": ov, "box": box},
+                safe,
+                transparent=True,
+            )
+        )
+    return out
 
 
 QA_JS = (KIT / "templates/qa.js").read_text(encoding="utf-8")
@@ -319,7 +443,9 @@ def make_env() -> Environment:
     return env
 
 
-async def render(designs: list[Design], copy: dict[str, Any], slots: Slots, out: Path) -> list[str]:
+async def render(
+    designs: list[Design], copy: dict[str, Any], slots: Slots, media: Media, out: Path
+) -> list[str]:
     env = make_env()
     html_dir = out / "html"
     html_dir.mkdir(parents=True, exist_ok=True)
@@ -333,6 +459,7 @@ async def render(designs: list[Design], copy: dict[str, Any], slots: Slots, out:
                 "W": d.width,
                 "H": d.height,
                 "slot": slots.get,
+                "media": media.get,
                 "design": d.name,
                 **d.ctx,
             }
@@ -353,7 +480,11 @@ async def render(designs: list[Design], copy: dict[str, Any], slots: Slots, out:
             issues = await page.evaluate(QA_JS, list(d.safe) if d.safe else None)
             problems.extend(f"{d.name}: {msg}" for msg in issues)
             png = out / f"{d.name}.png"
-            await page.screenshot(path=str(png), clip={"x": 0, "y": 0, "width": d.width, "height": d.height})
+            await page.screenshot(
+                path=str(png),
+                clip={"x": 0, "y": 0, "width": d.width, "height": d.height},
+                omit_background=d.transparent,
+            )
             await page.close()
             print(f"  {png}  {d.width}×{d.height}")
         await browser.close()
@@ -372,9 +503,38 @@ def contact_sheet(designs: list[Design], out: Path) -> Path:
         "feed": "Feed ads 1080×1350",
         "carousel": "How-it-works carousel 1080×1350",
         "stories": "Stories 1080×1920",
+        "posts": "October posts 1080×1350",
+        "carousels": "October carousels 1080×1350 (5 slides each)",
+        "meta": "Meta ad sets: 1080×1080 and 1080×1350",
+        "video": "Reel end cards and activity frames 1080×1920",
+        "overlays": "Video overlays (transparent, shown on grey)",
     }
-    row_h = {"profile": 420, "facebook": 420, "highlights": 560, "feed": 520, "carousel": 520, "stories": 640}
-    order = ["profile", "facebook", "feed", "carousel", "stories", "highlights"]
+    row_h = {
+        "profile": 420,
+        "facebook": 420,
+        "highlights": 560,
+        "feed": 520,
+        "carousel": 520,
+        "stories": 640,
+        "posts": 520,
+        "carousels": 520,
+        "meta": 520,
+        "video": 640,
+        "overlays": 640,
+    }
+    order = [
+        "profile",
+        "facebook",
+        "feed",
+        "carousel",
+        "stories",
+        "highlights",
+        "posts",
+        "carousels",
+        "meta",
+        "video",
+        "overlays",
+    ]
     pad, label_h, head_h, sheet_w = 40, 34, 64, 3000
     font_path = FONTS / "IBMPlexSansArabic-SemiBold.ttf"
     font = ImageFont.truetype(str(font_path), 22)
@@ -386,7 +546,10 @@ def contact_sheet(designs: list[Design], out: Path) -> Path:
             continue
         items = []
         for d in groups[g]:
-            im = Image.open(out / f"{d.name}.png").convert("RGB")
+            im: Image.Image = Image.open(out / f"{d.name}.png")
+            if im.mode == "RGBA":  # an overlay: show it on grey so its scrims and text read
+                im = Image.alpha_composite(Image.new("RGBA", im.size, "#7A7F94"), im)
+            im = im.convert("RGB")
             h = row_h[g]
             im = im.resize((round(im.width * h / im.height), h), Image.Resampling.LANCZOS)
             items.append((im, d.name))
@@ -424,6 +587,322 @@ def contact_sheet(designs: list[Design], out: Path) -> Path:
     return path
 
 
+# ---------------------------------------------------------------------------------------------- videos
+
+FILM = ROOT / "out/video"  # the brand film and its shots (out/video/build_film.py)
+FPS = 24
+XFADE = 0.4  # seconds of cross-fade between two parts
+MAX_MB = 8.0
+
+
+@dataclass
+class Clip:
+    """A shot of the film, fitted into a VIDEO_BOX over a blurred, enlarged copy of itself, + an overlay."""
+
+    src: str  # file in out/video/
+    box: str  # VIDEO_BOX key
+    overlay: str  # name of the overlay design (transparent PNG)
+    cx: float = 0.5  # horizontal centre of the crop, 0–1 of the shot's width
+
+
+@dataclass
+class Still:
+    """A kit render (end card or frame) shown for `dur` seconds with a slow push-in."""
+
+    design: str
+    dur: float
+    zoom: float = 1.035
+
+
+# Every video: its parts in order. Names are the files in out/social/video/.
+VIDEOS: dict[str, list[Clip | Still]] = {
+    "reel-film-9x16": [Clip("qamra-film.mp4", "reel-film", "overlay-film-reel")],
+    "feed-film-4x5": [Clip("qamra-film.mp4", "feed-film", "overlay-film-feed")],
+    "cut-1-photo-to-character-9x16": [
+        Clip("c2.mp4", "reel-cut", "overlay-cut-photo"),
+        Still("end-cut-photo", 2.4),
+    ],
+    "cut-2-printed-book-9x16": [Clip("c3.mp4", "reel-cut", "overlay-cut-book"), Still("end-cut-book", 2.4)],
+    "cut-3-kindergartens-9x16": [Clip("c4.mp4", "reel-cut", "overlay-cut-kg"), Still("end-cut-kg", 2.4)],
+    "ad-parents-9x16": [
+        Clip("c2.mp4", "reel-cut", "overlay-ad-parents"),
+        Clip("c3.mp4", "reel-cut", "overlay-ad-parents"),
+        Still("end-ad-parents", 2.6),
+    ],
+    "ad-kindergartens-9x16": [
+        Clip("c4.mp4", "reel-cut", "overlay-cut-kg"),
+        Clip("c3.mp4", "reel-cut", "overlay-cut-kg"),
+        Still("end-cut-kg", 2.6),
+    ],
+    "ad-activity-books-9x16": [
+        Still("end-frame-journey", 2.8),
+        Still("end-frame-foundation", 2.8),
+        Still("end-frame-family", 2.8),
+        Still("end-ad-activity-books", 2.8),
+    ],
+    "ad-gifts-9x16": [Clip("c3.mp4", "reel-cut", "overlay-ad-gifts"), Still("end-ad-gifts", 2.6)],
+}
+
+
+def find_ffmpeg(arg: str | None) -> str:
+    """--ffmpeg, else $FFMPEG, else ffmpeg on PATH, else the binary that ships with imageio-ffmpeg."""
+    for cand in (arg, os.environ.get("FFMPEG"), shutil.which("ffmpeg")):
+        if cand:
+            return cand
+    try:
+        import imageio_ffmpeg
+
+        return str(imageio_ffmpeg.get_ffmpeg_exe())
+    except ImportError as exc:
+        raise SystemExit("no ffmpeg: pass --ffmpeg PATH or set FFMPEG") from exc
+
+
+def probe(ff: str, path: Path) -> tuple[float, int, int]:
+    """(seconds, width, height) of a video, read from ffmpeg's banner."""
+    err = subprocess.run([ff, "-hide_banner", "-i", str(path)], capture_output=True, text=True).stderr
+    import re
+
+    d = re.search(r"Duration: (\d+):(\d+):([\d.]+)", err)
+    v = re.search(r"Video: .*?, (\d{2,5})x(\d{2,5})", err)
+    if not d or not v:
+        raise RuntimeError(f"cannot read {path}")
+    secs = int(d.group(1)) * 3600 + int(d.group(2)) * 60 + float(d.group(3))
+    return secs, int(v.group(1)), int(v.group(2))
+
+
+def compose(ff: str, name: str, parts: list[Clip | Still], rendered: Path, out: Path) -> Path:
+    """One MP4 (H.264, no audio): every part is brought to the same size, then the parts cross-fade."""
+    first = next((p for p in parts if isinstance(p, Clip)), None)
+    W, H = (VIDEO_BOX[first.box]["W"], VIDEO_BOX[first.box]["H"]) if first else (1080, 1920)
+    args: list[str] = []
+    chains: list[str] = []
+    durs: list[float] = []
+    n = 0
+    for k, part in enumerate(parts):
+        if isinstance(part, Clip):
+            src = FILM / part.src
+            if not src.exists():
+                raise FileNotFoundError(f"{src} is missing (made by out/video/build_film.py)")
+            dur, sw, sh = probe(ff, src)
+            box = VIDEO_BOX[part.box]
+            aspect = box["w"] / box["h"]
+            cw, ch = (
+                (round(sh * aspect / 2) * 2, sh) if aspect < sw / sh else (sw, round(sw / aspect / 2) * 2)
+            )
+            x0 = round(min(max(part.cx * sw - cw / 2, 0), sw - cw))
+            y0 = (sh - ch) // 2
+            args += [
+                "-i",
+                str(src),
+                "-loop",
+                "1",
+                "-framerate",
+                str(FPS),
+                "-t",
+                f"{dur:.3f}",
+                "-i",
+                str(rendered / f"{part.overlay}.png"),
+            ]
+            vi, oi = n, n + 1
+            n += 2
+            chains.append(
+                f"[{vi}:v]fps={FPS},setpts=PTS-STARTPTS,split=2[b{k}][f{k}];"
+                f"[b{k}]scale=-2:{H},crop={W}:{H},gblur=sigma=40,eq=brightness=-0.09:saturation=1.08[bb{k}];"
+                f"[f{k}]crop={cw}:{ch}:{x0}:{y0},scale={box['w']}:{box['h']}:flags=lanczos[ff{k}];"
+                f"[bb{k}][ff{k}]overlay=0:{box['y']}[m{k}];"
+                f"[{oi}:v]format=rgba[o{k}];[m{k}][o{k}]overlay=0:0:shortest=1,"
+                f"format=yuv420p,setsar=1,settb=AVTB,fps={FPS}[s{k}]"
+            )
+        else:
+            frames = round(part.dur * FPS)
+            args += [
+                "-loop",
+                "1",
+                "-framerate",
+                str(FPS),
+                "-t",
+                f"{part.dur:.3f}",
+                "-i",
+                str(rendered / f"{part.design}.png"),
+            ]
+            chains.append(
+                f"[{n}:v]scale={W * 2}:{H * 2},zoompan=z='1+({part.zoom}-1)*on/{frames}'"
+                f":x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s={W}x{H}:fps={FPS},"
+                f"format=yuv420p,setsar=1,settb=AVTB,fps={FPS}[s{k}]"
+            )
+            n += 1
+            dur = part.dur
+        durs.append(dur)
+    last, t = "[s0]", 0.0
+    for k in range(1, len(parts)):
+        t += durs[k - 1] - XFADE
+        chains.append(f"{last}[s{k}]xfade=transition=fade:duration={XFADE}:offset={t:.3f}[x{k}]")
+        last = f"[x{k}]"
+    path = out / f"{name}.mp4"
+    for crf in (22, 24, 26, 28, 30):
+        subprocess.run(
+            [
+                ff,
+                "-v",
+                "error",
+                "-y",
+                *args,
+                "-filter_complex",
+                ";".join(chains),
+                "-map",
+                last,
+                "-an",
+                "-c:v",
+                "libx264",
+                "-preset",
+                "slow",
+                "-crf",
+                str(crf),
+                "-maxrate",
+                "3000k",
+                "-bufsize",
+                "6000k",
+                "-pix_fmt",
+                "yuv420p",
+                "-r",
+                str(FPS),
+                "-movflags",
+                "+faststart",
+                str(path),
+            ],
+            check=True,
+        )
+        if path.stat().st_size <= MAX_MB * 1024 * 1024:
+            break
+    return path
+
+
+def videos(ff: str, rendered: Path, only: list[str]) -> list[str]:
+    """Cut every video in VIDEOS into out/social/video/, and 3 review frames of each into video/frames/."""
+    out = rendered / "video"
+    frames = out / "frames"
+    frames.mkdir(parents=True, exist_ok=True)
+    problems: list[str] = []
+    for name, parts in VIDEOS.items():
+        if only and not any(name.startswith(p) for p in only):
+            continue
+        path = compose(ff, name, parts, rendered, out)
+        secs, w, h = probe(ff, path)
+        mb = path.stat().st_size / 1024 / 1024
+        print(f"  {path}  {w}×{h}  {secs:.1f} s  {mb:.1f} MB")
+        if mb > MAX_MB:
+            problems.append(f"{name}: {mb:.1f} MB is over {MAX_MB} MB")
+        for i, at in enumerate((0.12, 0.5, 0.9), start=1):
+            subprocess.run(
+                [
+                    ff,
+                    "-v",
+                    "error",
+                    "-y",
+                    "-ss",
+                    f"{secs * at:.2f}",
+                    "-i",
+                    str(path),
+                    "-frames:v",
+                    "1",
+                    "-q:v",
+                    "3",
+                    str(frames / f"{name}-{i}.jpg"),
+                ],
+                check=True,
+            )
+    return problems
+
+
+# ---------------------------------------------------------------------------------------------- package
+
+AD_FOLDERS = {
+    "parents": "1-parents-story-books",
+    "kindergartens": "2-kindergartens",
+    "activity-books": "3-activity-books",
+    "gifts": "4-gifts",
+}
+
+
+def package(copy: dict[str, Any], rendered: Path) -> Path:
+    """out/social/package/: what Tareq uploads: posts, reels, ads/<set>, stories, profile, the .md sheets."""
+    pkg = rendered / "package"
+    if pkg.exists():
+        shutil.rmtree(pkg)
+    (pkg / "posts").mkdir(parents=True)
+
+    def put(src: Path, dst: Path) -> None:
+        if not src.exists():
+            raise FileNotFoundError(f"{src} is missing: render it first (and --videos for the MP4s)")
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(src, dst)
+
+    for i, post in enumerate(copy["posts"], start=1):
+        name = f"post-{i:02d}-{post['slug']}"
+        put(rendered / f"{name}.png", pkg / "posts" / f"{name}.png")
+    for car in copy["carousels"]:
+        for i in range(1, len(car["slides"]) + 1):
+            put(
+                rendered / f"carousel-{car['slug']}-{i}.png",
+                pkg / "posts" / f"carousel-{car['slug']}" / f"{i}.png",
+            )
+    for name in VIDEOS:
+        if not name.startswith("ad-"):
+            put(rendered / "video" / f"{name}.mp4", pkg / "reels" / f"{name}.mp4")
+    for slug, folder in AD_FOLDERS.items():
+        put(rendered / f"meta-{slug}-1x1.png", pkg / "ads" / folder / f"{slug}-1080x1080.png")
+        put(rendered / f"meta-{slug}-4x5.png", pkg / "ads" / folder / f"{slug}-1080x1350.png")
+        put(rendered / "video" / f"ad-{slug}-9x16.mp4", pkg / "ads" / folder / f"{slug}-1080x1920.mp4")
+    for slug in copy["stories"]:
+        put(rendered / f"story-{slug}.png", pkg / "stories" / f"story-{slug}.png")
+    profile = ["profile", "fb-cover"] + [
+        f"highlight-{i}-{h['slug']}" for i, h in enumerate(copy["highlights"], 1)
+    ]
+    for name in profile:
+        put(rendered / f"{name}.png", pkg / "profile" / f"{name}.png")
+    for sheet in ("ads.md", "calendar.md"):
+        put(KIT / sheet, pkg / sheet)
+    (pkg / "captions.md").write_text(captions_md(copy), encoding="utf-8")
+    return pkg
+
+
+def captions_md(copy: dict[str, Any]) -> str:
+    """captions.yaml as a sheet to copy from: one section per file, the caption, then its hashtags."""
+    caps = load_yaml("captions.yaml")
+    lines = [
+        "# نصوص المنشورات — قمرة",
+        "",
+        "انسخوا كل نص مع وسومه كما هو من المربّع تحت اسم الملف. الملفات في مجلدَي `posts/` و`reels/`،"
+        " وموعد كل منشور في `calendar.md`.",
+        "",
+    ]
+    keys = [f"post-{i:02d}-{p['slug']}" for i, p in enumerate(copy["posts"], start=1)]
+    keys += [f"carousel-{c['slug']}" for c in copy["carousels"]]
+    keys += [n for n in VIDEOS if not n.startswith("ad-")]
+    for key in keys:
+        cap = caps.get(key)
+        if cap is None:
+            raise KeyError(f"captions.yaml has no caption for {key}")
+        files = (
+            f"`posts/{key}.png`"
+            if key.startswith("post-")
+            else (f"`posts/{key}/` (١–٥)" if key.startswith("carousel-") else f"`reels/{key}.mp4`")
+        )
+        lines += [
+            f"## {key}",
+            "",
+            f"الملف: {files}",
+            "",
+            "```text",  # a fenced block keeps the line breaks and gets a copy button
+            cap["text"].strip(),
+            "",
+            " ".join("#" + h for h in cap["hashtags"]),
+            "```",
+            "",
+        ]
+    return "\n".join(lines)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
@@ -437,22 +916,38 @@ def main() -> int:
     parser.add_argument("--no-sheet", action="store_true", help="skip the contact sheet")
     parser.add_argument("--images", default=str(KIT / "images.yaml"), help="image-slot manifest (for tests)")
     parser.add_argument("--out", default=str(OUT), help="output folder")
+    parser.add_argument(
+        "--videos", action="store_true", help="also cut the videos (needs ffmpeg and out/video/)"
+    )
+    parser.add_argument(
+        "--ffmpeg", default=None, help="ffmpeg binary (default: $FFMPEG, PATH, imageio-ffmpeg)"
+    )
+    parser.add_argument("--package", action="store_true", help="collect the deliverables into OUT/package/")
     args = parser.parse_args()
 
     copy = glue(load_yaml("copy.yaml"))
     with Path(args.images).open(encoding="utf-8") as fh:
-        slots = Slots(yaml.safe_load(fh), Path(args.incoming))
+        manifest = yaml.safe_load(fh)
+    slots = Slots(manifest, Path(args.incoming))
+    media = Media(manifest)
     out = Path(args.out).resolve()
     designs = build_designs(copy)
     chosen = [d for d in designs if not args.only or any(d.name.startswith(p) for p in args.only)]
-    if not chosen:
+    if not chosen and not (args.videos and any(v.startswith(p) for v in VIDEOS for p in args.only)):
         print("no design matches --only", file=sys.stderr)
         return 2
     out.mkdir(parents=True, exist_ok=True)
-    print(f"rendering {len(chosen)} designs → {out}/")
-    problems = asyncio.run(render(chosen, copy, slots, out))
+    problems: list[str] = []
+    if chosen:  # `--videos --only cut-1` cuts one video from the renders already in OUT
+        print(f"rendering {len(chosen)} designs → {out}/")
+        problems = asyncio.run(render(chosen, copy, slots, media, out))
     if not args.only and not args.no_sheet:
         print(f"  {contact_sheet(designs, out)}")
+    if args.videos:
+        print(f"cutting videos → {out}/video/")
+        problems += videos(find_ffmpeg(args.ffmpeg), out, args.only)
+    if args.package and not problems:
+        print(f"package → {package(copy, out)}/")
     if slots.used:
         print("incoming images used: " + json.dumps(slots.used, ensure_ascii=False))
     for w in dict.fromkeys(slots.warnings):

@@ -8,7 +8,13 @@ book mockups and icons. The only bitmaps are images that are already public on t
 uv run python scripts/social_kit.py                     # everything → out/social/*.png + out/social/contact-sheet.png
 uv run python scripts/social_kit.py --only ad-b         # one design or a group (prefix match, repeatable)
 uv run python scripts/social_kit.py --incoming DIR      # read delivered photos from DIR instead of design/incoming/
+uv run python scripts/social_kit.py --videos --package  # + the MP4s (out/social/video/) + out/social/package/
+uv run python scripts/social_kit.py --videos --only cut-1   # one video, from the PNGs already in out/social/
 ```
+
+`--videos` needs ffmpeg (`--ffmpeg PATH`, `$FFMPEG`, ffmpeg on PATH, or the `imageio-ffmpeg` binary) and the brand
+film's folder `out/video/` (made by `out/video/build_film.py`). Every video is H.264, no audio, at most 8 MB (the
+cutter raises the CRF until it fits), and gets three review frames in `out/social/video/frames/`.
 
 `out/` is gitignored. Each render also runs a layout check (`templates/qa.js`). It fails the run if text leaves
 its box or the safe zone, a headline line wraps, text boxes overlap, or a paragraph ends with a lone word.
@@ -26,6 +32,29 @@ its box or the safe zone, a headline line wraps, text boxes overlap, or a paragr
 
 Grid: 88 px margins, 8 px spacing steps, Baloo Bhaijaan 2 for headlines and IBM Plex Sans Arabic for text.
 Noto Naskh appears only inside a book page (the vowelized story line in carousel 3), as in the printed books.
+
+### October 2026 set (posts, carousels, Meta ads, videos)
+
+| Files | Size | Notes |
+|---|---|---|
+| `post-01-qamour` … `post-18-faq-2.png` | 1080×1350 | A month of feed posts, numbered in posting order (`calendar.md`) |
+| `carousel-photo-to-book-1…5`, `carousel-kindergartens-1…5.png` | 1080×1350 | Slide 1 is a cover (no step tracker) |
+| `meta-<set>-1x1.png`, `meta-<set>-4x5.png` | 1080×1080, 1080×1350 | Four ad sets: parents, kindergartens, activity-books, gifts. Texts in `ads.md` |
+| `end-*.png` | 1080×1920 | Video end cards and the frames of the activity-books video; nothing under y 1560 |
+| `overlay-*.png` | 1080×1920, 1080×1350 | Transparent: logo + line above the film, CTA bar «اطلبوا الآن · qamra.app» below |
+| `video/reel-film-9x16`, `video/feed-film-4x5.mp4` | 1080×1920, 1080×1350 | The 20-second film centred over a blurred, enlarged copy of itself |
+| `video/cut-1…3-*-9x16.mp4` | 1080×1920 | 6–8 s cut-downs: photo → character, the printed book, kindergartens |
+| `video/ad-<set>-9x16.mp4` | 1080×1920 | The 9:16 variant of each Meta ad set |
+
+`--package` collects what Tareq uploads into `out/social/package/`: `posts/`, `reels/`, `ads/<set>/`, `stories/`,
+`profile/` (profile picture, Facebook cover, highlight covers),
+`ads.md`, `calendar.md` and `captions.md` (captions.yaml as a sheet to copy from).
+
+Their pictures come from the `media:` registry at the end of `images.yaml` (site photos, theme plates, the film's
+stills and mockups), each checked by eye: **no little girl in a hijab in our marketing** (adults in a hijab are
+fine). `content/cast/classmates-*` breaks that rule and is never used; `photos/graduation-class.jpg` is the
+2026-10-03 file without hijabs. The film's sample girl is AI-made, so every post or video that shows her as "the
+photo" says «مثال توضيحي». Never mention «قلبي يعرف الله» here: it is not on sale yet.
 
 ## Pictures in each design
 
@@ -66,4 +95,5 @@ A2, A7, A9, A10 and B3 are not used here. Nothing comes from `out/`, and no real
 - `~` glues two words so a line never breaks between them (`أولياء~أمره`). It prints as a space.
 - Book covers (`covers:`) follow the theme title templates in `content/themes/*/theme.yaml`. They use only
   stories that are «available».
-- No prices appear anywhere, so nothing goes stale when the admin changes prices.
+- No prices appear on the images or in the captions, so nothing goes stale when the admin changes prices. Only
+  `ads.md` quotes «يبدأ من» prices from `content/store/catalog.yaml`; check them against the admin before a campaign.

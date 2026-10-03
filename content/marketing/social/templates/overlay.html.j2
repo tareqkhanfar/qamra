@@ -1,0 +1,53 @@
+{# A transparent overlay for a video (social_kit.py videos()): the film sits in `box` (x 0, y box.y, box.w × box.h)
+   over a blurred copy of itself. Above it: the logo and a brand line (ov.line) or a headline (ov.headline);
+   below it: the CTA bar «اطلبوا الآن · qamra.app». Soft night scrims keep the text readable on any frame. #}
+{% import "_macros.html.j2" as m with context %}
+{{ m.page(design) }}
+{% set tall = H == 1920 %}
+{% set top_start = 220 if tall else 56 %}
+{% set top_end = box.y - (28 if tall else 20) %}
+{% set bot_start = box.y + box.h + (28 if tall else 22) %}
+{% set bot_end = 1560 if tall else H - 56 %}
+<style>
+  html, body { background: transparent; }
+  .scrim-top { position: absolute; left: 0; right: 0; top: 0; height: {{ box.y + 36 }}px;
+    background: linear-gradient(180deg, rgba(11,17,40,.82) 0%, rgba(11,17,40,.66) 72%, rgba(11,17,40,0) 100%); }
+  .scrim-bot { position: absolute; left: 0; right: 0; top: {{ box.y + box.h - 36 }}px; bottom: 0;
+    background: linear-gradient(0deg, rgba(11,17,40,.82) 0%, rgba(11,17,40,.66) 72%, rgba(11,17,40,0) 100%); }
+  .band { position: absolute; left: 80px; right: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .band.top { top: {{ top_start }}px; height: {{ top_end - top_start }}px; gap: {{ (14 if ov.small else 26) if tall else 14 }}px; }
+  .band.bot { top: {{ bot_start }}px; height: {{ bot_end - bot_start }}px; }
+  .ov .logo svg { width: {{ 66 if tall else 52 }}px; height: {{ 66 if tall else 52 }}px; }
+  .ov .logo .word { font-size: {{ 54 if tall else 42 }}px; color: var(--paper-raised); }
+  .ov .headline { font: 800 {{ ov.hl_size or 78 }}px/1.2 "Baloo", sans-serif; color: var(--paper-raised); text-shadow: 0 3px 18px rgba(5,8,25,.55); }
+  .ov .headline .line { display: block; white-space: nowrap; }
+  .ov .brandline { font: 600 {{ 42 if tall else 34 }}px/1.35 "Plex", sans-serif; color: var(--amber-100); text-shadow: 0 2px 12px rgba(5,8,25,.6); }
+  .ov .brandline .line { display: block; white-space: nowrap; }
+  .ov .small { font: 400 {{ 28 if tall else 24 }}px/1.3 "Plex", sans-serif; color: var(--ink-dark-muted); margin-top: -8px; }
+  .ov .small .line { display: block; white-space: nowrap; }
+  .bar { display: inline-flex; align-items: center; gap: 22px; height: {{ 104 if tall else 90 }}px; padding: 0 50px; border-radius: 52px;
+    background: var(--amber-500); color: var(--night-950); white-space: nowrap;
+    box-shadow: 0 12px 36px rgba(242,179,61,.35), inset 0 -3px 0 rgba(154,98,10,.25); }
+  .bar .act { font: 600 {{ 40 if tall else 34 }}px/1 "Plex", sans-serif; }
+  .bar .sep { width: 9px; height: 9px; border-radius: 50%; background: var(--night-950); opacity: .5; display: block; }
+  .bar .dom { direction: ltr; unicode-bidi: isolate; font: 600 {{ 38 if tall else 32 }}px/1 "Plex", sans-serif; letter-spacing: .5px; }
+  .bar svg { width: 34px; height: 34px; }
+</style>
+<body>
+<div class="canvas ov" style="background:transparent">
+  <div class="scrim-top"></div>
+  <div class="scrim-bot"></div>
+  <div class="band top">
+    {{ m.logo(true) }}
+    {% if ov.headline %}
+    <h1 class="headline" data-qa="headline">{% for l in ov.headline %}<span class="line">{{ l }}</span>{% endfor %}</h1>
+    {% if ov.small %}<div class="small" data-qa="small"><span class="line">{{ ov.small }}</span></div>{% endif %}
+    {% else %}
+    <div class="brandline" data-qa="line"><span class="line">{{ ov.line }}</span></div>
+    {% endif %}
+  </div>
+  <div class="band bot">
+    <div class="bar" data-qa="cta-bar"><span class="act">{{ copy.cta[ov.cta or 'order'] }}</span>{{ m.arrow() }}<i class="sep"></i><span class="dom">{{ brand.domain }}</span></div>
+  </div>
+</div>
+</body></html>

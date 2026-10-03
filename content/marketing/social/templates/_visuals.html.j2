@@ -144,8 +144,209 @@
 </div>
 {%- endmacro %}
 
+{# ================================================================ October 2026 posts, ads and video cards #}
+{# Pictures come from images.yaml `media:` (media(key) → {src, focus}). #}
+
+{# a pill over the bottom of a picture (e.g. «يشبه طفلي»), or a small caption chip at its top corner #}
+{% macro over_badge(text, kind='approve') -%}
+{% if kind == 'approve' %}
+<div style="position:absolute;left:50%;bottom:28px;transform:translateX(-50%);z-index:5;display:flex;align-items:center;gap:14px;height:76px;padding:0 34px 0 30px;border-radius:38px;background:#F2B33D;box-shadow:0 10px 26px rgba(14,21,48,.30);white-space:nowrap">
+  {{ check_dot(40, '#0E1530') }}<span data-qa="badge" style="font:600 30px/1 'Plex',sans-serif;color:#0E1530">«{{ text }}»</span>
+</div>
+{% else %}
+<div style="position:absolute;right:22px;top:22px;z-index:5;height:52px;padding:0 22px;border-radius:26px;background:rgba(14,21,48,.66);display:flex;align-items:center;white-space:nowrap">
+  <span data-qa="badge" style="font:600 23px/1 'Plex',sans-serif;color:#FFFDF8">{{ text }}</span>
+</div>
+{% endif %}
+{%- endmacro %}
+
+{# one picture filling the visual box #}
+{% macro photo(ad, fmt) -%}{% set img = media(ad.media) %}
+<div class="photo-frame"><img src="{{ img.src }}" alt="" style="object-position:{{ ad.focus or img.focus }}"></div>
+{% if ad.badge %}{{ over_badge(ad.badge, ad.badge_kind or 'approve') }}{% endif %}
+{%- endmacro %}
+
+{# before → after, right to left: the photo, an arrow, the drawn character #}
+{% macro pair(ad, fmt) -%}{% set a = media(ad.pair[0].media) %}{% set b = media(ad.pair[1].media) %}
+<div class="stage" data-w="900" data-h="560" data-max="1.6">
+  {% for card in [{'img': a, 'x': 498, 'rot': 3, 'label': ad.pair[0].label, 'dim': true}, {'img': b, 'x': 22, 'rot': -2, 'label': ad.pair[1].label, 'dim': false}] %}
+  <div style="position:absolute;left:{{ card.x }}px;top:14px;width:380px;height:500px;border-radius:28px;overflow:hidden;transform:rotate({{ card.rot }}deg);box-shadow:0 20px 44px rgba(22,32,74,.24);border:8px solid #FFFDF8;background:#FFFDF8">
+    <img src="{{ card.img.src }}" alt="" style="width:100%;height:100%;object-fit:cover;object-position:{{ card.img.focus }}">
+    <div style="position:absolute;left:50%;bottom:20px;transform:translateX(-50%);height:54px;padding:0 26px;border-radius:27px;background:{{ 'rgba(14,21,48,.70)' if card.dim else '#F2B33D' }};display:flex;align-items:center;white-space:nowrap">
+      <span data-qa="pair-label-{{ loop.index }}" style="font:600 26px/1 'Plex',sans-serif;color:{{ '#FFFDF8' if card.dim else '#0E1530' }}">{{ card.label }}</span>
+    </div>
+  </div>
+  {% endfor %}
+  <div style="position:absolute;left:404px;top:214px;width:92px;height:92px;border-radius:50%;background:#FFFDF8;box-shadow:0 10px 24px rgba(22,32,74,.22);display:flex;align-items:center;justify-content:center;z-index:4">
+    <div style="width:46px;height:46px">{{ m.arrow('#9A620A', 2.6) }}</div>
+  </div>
+  <svg class="layer" viewBox="0 0 900 560" style="z-index:5" aria-hidden="true">{{ m.sparkle(436, 120, 16) }}{{ m.sparkle(470, 430, 11, '#DB9A1F') }}</svg>
+</div>
+{%- endmacro %}
+
+{# real pages: a spiral book in the middle and two loose pages; ad.pages = [middle, left, right] #}
+{% macro fan(ad, fmt) -%}
+<div class="stage" data-w="900" data-h="560" data-max="1.35">
+  {% if ad.bg in ['night', 'deep'] %}<div style="position:absolute;left:160px;top:-40px;width:600px;height:640px;border-radius:50%;background:radial-gradient(closest-side, rgba(91,111,192,.35), rgba(91,111,192,0))"></div>{% endif %}
+  {{ m.page_card(ad.pages[2], 300, 424, 560, 96, 7, 1) }}
+  {{ m.page_card(ad.pages[1], 300, 424, 44, 104, -7, 1) }}
+  <div style="position:absolute;left:262px;top:14px;z-index:3">{{ m.spiral_book(ad.pages[0], 356, 504, 0, 0, -1.5) }}</div>
+  {% if ad.phone %}{{ phone(52, 262, 150, -9) }}{% endif %}
+</div>
+{%- endmacro %}
+
+{# a scene (theme plate or photo) with a code-drawn hardcover standing in front of it #}
+{% macro scene_book(ad, fmt) -%}{% set img = media(ad.media) %}
+<div class="photo-frame"><img src="{{ img.src }}" alt="" style="object-position:{{ ad.focus or img.focus }}"></div>
+<div class="stage" data-w="900" data-h="560" data-max="1.3">
+  {{ m.hardcover(ad.cover, s=400, d=30, ry=-28, rx=-4, x=250, y=70, ribbon=ad.ribbon or false) }}
+</div>
+{%- endmacro %}
+
+{# icons for the lists (24-unit grid, one stroke) #}
+{% macro list_icon(kind, color) -%}
+<svg viewBox="0 0 24 24" fill="none" stroke="{{ color }}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+{% if kind == 'clock' %}<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>
+{% elif kind == 'shield' %}<path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/>
+{% elif kind == 'cash' %}<rect x="3" y="6.5" width="18" height="11" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6.5 9.5v5M17.5 9.5v5"/>
+{% elif kind == 'truck' %}<path d="M9.5 16.5V6.5h11v10"/><path d="M9.5 9.5H5.8L3 13v3.5h2"/><path d="M9.5 16.5h5.5M20.5 16.5h-1"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>
+{% elif kind == 'reprint' %}<path d="M19.5 12a7.5 7.5 0 0 1-13 5.1"/><path d="M4.5 12a7.5 7.5 0 0 1 13-5.1"/><path d="M17.5 3.5v3.6h-3.6"/><path d="M6.5 20.5v-3.6h3.6"/>
+{% elif kind == 'track' %}<path d="M12 21s6.5-5.6 6.5-11a6.5 6.5 0 0 0-13 0c0 5.4 6.5 11 6.5 11z"/><circle cx="12" cy="10" r="2.4"/>
+{% elif kind == 'consent' %}<rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M8.5 8h7M8.5 11.5h4.5"/><path d="M9 16l2 2 4-4"/>
+{% elif kind == 'trash' %}<path d="M4.5 7h15"/><path d="M9.5 7V4.5h5V7"/><path d="M6.5 7l1 13h9l1-13"/><path d="M10.5 11v5.5M13.5 11v5.5"/>
+{% elif kind == 'eye' %}<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>
+{% elif kind == 'qr' %}<rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1"/><rect x="14" y="3.5" width="6.5" height="6.5" rx="1"/><rect x="3.5" y="14" width="6.5" height="6.5" rx="1"/><path d="M14 14h2.5v2.5H14zM18 18h2.5v2.5H18zM14 18.5v2M18.5 14h2"/>
+{% elif kind == 'phone' %}<rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10.5 18.5h3"/>
+{% elif kind == 'edit' %}<path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/>
+{% elif kind == 'star' %}<path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z"/>
+{% elif kind == 'gift' %}<rect x="3.5" y="8" width="17" height="4" rx="1"/><path d="M5 12v8.5h14V12"/><path d="M12 8v12.5"/><path d="M12 8C10.5 4 6.5 4.5 7.5 7c.5 1 2.5 1 4.5 1zM12 8c1.5-4 5.5-3.5 4.5-1-.5 1-2.5 1-4.5 1z"/>
+{% else %}<circle cx="12" cy="12" r="8.5"/><path d="M8 12.2l2.7 2.7L16 9.6"/>{% endif %}
+</svg>
+{%- endmacro %}
+
+{# a list of points: icon (or a step number) + text, on light or dark; p.title is set bold above p.text #}
+{% macro points(ad, fmt) -%}{% set dark = ad.bg in ['night', 'deep'] %}
+{% set n = ad.points | length %}
+{% set size = ad.points_size or (33 if n > 3 else 35) %}
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center">
+  {% for p in ad.points %}
+  <div style="display:flex;align-items:center;gap:30px;padding:{{ 22 if n > 3 else 28 }}px 0;{% if not loop.last %}border-bottom:2px solid {{ 'rgba(185,190,218,.16)' if dark else 'rgba(22,32,74,.09)' }};{% endif %}">
+    <div style="width:84px;height:84px;flex:none;border-radius:24px;background:{{ 'rgba(127,163,138,.16)' if dark else ('#F2B33D' if p.n else 'rgba(127,163,138,.20)') }};display:flex;align-items:center;justify-content:center">
+      {% if p.n %}<span style="font:800 44px/1 'Baloo',sans-serif;color:{{ '#F2B33D' if dark else '#0E1530' }};padding-top:8px">{{ p.n | string | ar }}</span>
+      {% else %}<div style="width:48px;height:48px">{{ list_icon(p.icon, '#A9C7B1' if dark else '#3E6B4D') }}</div>{% endif %}
+    </div>
+    <div data-qa="point-{{ loop.index }}" style="flex:1;min-width:0">
+      {% if p.title %}<div style="font:700 {{ size + 2 }}px/1.3 'Plex',sans-serif;color:{{ '#FFFDF8' if dark else '#16204A' }}">{{ p.title }}</div>{% endif %}
+      <div style="font:{{ 400 if p.title else 600 }} {{ size - (4 if p.title else 0) }}px/1.45 'Plex',sans-serif;color:{{ ('#B9BEDA' if p.title else '#F6EFDF') if dark else ('#585C72' if p.title else '#1C2140') }};{% if p.title %}margin-top:4px{% endif %}">{{ p.text }}</div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{%- endmacro %}
+
+{# questions and answers: cards with the question bold and the answer below #}
+{% macro faq(ad, fmt) -%}
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;gap:22px">
+  {% for item in ad.qa %}
+  <div data-qa="qa-{{ loop.index }}" style="background:#FFFDF8;border:2px solid #E4D6BC;border-radius:28px;padding:24px 32px 26px;box-shadow:0 8px 20px rgba(22,32,74,.06)">
+    <div style="display:flex;align-items:flex-start;gap:16px">
+      <span style="flex:none;width:44px;height:44px;border-radius:50%;background:#F2B33D;color:#0E1530;font:800 28px/44px 'Baloo',sans-serif;text-align:center;padding-top:3px">؟</span>
+      <div style="font:700 33px/1.35 'Plex',sans-serif;color:#16204A;padding-top:2px">{{ item.q }}</div>
+    </div>
+    <div style="font:400 30px/1.5 'Plex',sans-serif;color:#585C72;margin-top:10px;padding-right:60px;text-wrap:balance">{{ item.a }}</div>
+  </div>
+  {% endfor %}
+</div>
+{%- endmacro %}
+
+{# ---------------------------------------------------------------- kindergarten carousel art #}
+{# the class list as a spreadsheet (invented sample names; no phone numbers shown) #}
+{% macro kg_list(s) -%}
+<div class="stage" data-w="900" data-h="540" data-max="1.25">
+  <div style="position:absolute;left:110px;top:10px;width:680px;height:520px;border-radius:26px;background:#FFFDF8;border:2px solid #E4D6BC;box-shadow:0 24px 48px rgba(22,32,74,.16);overflow:hidden;direction:rtl">
+    <div style="height:74px;background:#3E6B4D;display:flex;align-items:center;justify-content:space-between;padding:0 30px">
+      <span data-qa="sheet-file" style="font:600 27px/1 'Plex',sans-serif;color:#FFFDF8">{{ s.file }}</span>
+      <svg viewBox="0 0 24 24" style="width:36px;height:36px" fill="none" stroke="#FFFDF8" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M4 15h16M11 3v18"/></svg>
+    </div>
+    <div style="display:flex;height:60px;align-items:center;background:#EDF2EA;border-bottom:2px solid #D7E2D4;font:600 25px/1 'Plex',sans-serif;color:#3E6B4D">
+      <div style="width:70px;text-align:center">#</div><div style="flex:1;padding-right:14px">{{ s.cols[0] }}</div><div style="width:270px;padding-right:14px">{{ s.cols[1] }}</div>
+    </div>
+    {% for name in s.names %}
+    <div style="display:flex;height:64px;align-items:center;border-bottom:1px solid #EFE6D2;font:400 28px/1 'Plex',sans-serif;color:#1C2140">
+      <div style="width:70px;text-align:center;color:#8A8DA0">{{ loop.index | string | ar }}</div>
+      <div style="flex:1;padding-right:14px">{{ name }}</div>
+      <div style="width:270px;padding-right:14px;display:flex;gap:7px">{% for i in range(9) %}<i style="display:block;width:13px;height:13px;border-radius:50%;background:#D2C4A6"></i>{% endfor %}</div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{%- endmacro %}
+
+{# a phone with the parent's private link, and the three things each parent does #}
+{% macro kg_link(s) -%}
+<div class="stage" data-w="900" data-h="540" data-max="1.25">
+  <div style="position:absolute;right:60px;top:4px;width:270px;height:532px;border-radius:44px;background:#16204A;padding:12px;box-shadow:0 24px 48px rgba(22,32,74,.28), inset 0 0 0 2px #33458F">
+    <div style="position:relative;width:100%;height:100%;border-radius:34px;background:#EFE9DD;overflow:hidden;direction:rtl">
+      <div style="height:84px;background:#22306A;display:flex;align-items:flex-end;padding:0 20px 14px;gap:10px">
+        <span style="width:38px;height:38px;border-radius:50%;background:#F2B33D;display:block;flex:none;padding:7px">{{ m.moon_mark('#0E1530', '#FFFDF8') }}</span>
+        <span style="font:600 19px/1.2 'Plex',sans-serif;color:#FFFDF8">{{ brand.name }}</span>
+      </div>
+      <div style="margin:22px 14px 0 30px;background:#FFFDF8;border-radius:18px 4px 18px 18px;padding:16px 16px 14px;box-shadow:0 2px 4px rgba(0,0,0,.06)">
+        <div style="font:400 18px/1.55 'Plex',sans-serif;color:#1C2140">{{ s.message }}</div>
+        <div style="margin-top:12px;height:46px;border-radius:12px;background:#F2B33D;display:flex;align-items:center;justify-content:center;font:600 18px/1 'Plex',sans-serif;color:#0E1530">{{ s.button }}</div>
+      </div>
+    </div>
+  </div>
+  <div style="position:absolute;left:30px;top:0;bottom:0;width:500px;display:flex;flex-direction:column;justify-content:center;gap:24px">
+    {% for t in s.checks %}
+    <div style="display:flex;align-items:center;gap:20px;background:#FFFDF8;border:2px solid #E4D6BC;border-radius:24px;padding:20px 24px">
+      {{ check_dot(48) }}<div data-qa="check-{{ loop.index }}" style="font:600 30px/1.35 'Plex',sans-serif;color:#1C2140">{{ t }}</div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{%- endmacro %}
+
+{# the kindergarten's own page: logo, class photo, the teacher's words (labels from the site's kg.* mock) #}
+{% macro kg_page(s) -%}{% set img = media(s.media) %}
+<div class="stage" data-w="900" data-h="540" data-max="1.25">
+  <div style="position:absolute;left:30px;top:24px;width:840px;height:470px;border-radius:14px;background:#22306A;box-shadow:0 26px 50px rgba(22,32,74,.28)"></div>
+  <div style="position:absolute;left:40px;top:34px;width:820px;height:450px;border-radius:6px;background:#FBF6EC;overflow:hidden;display:flex;direction:rtl">
+    <div style="width:410px;padding:40px 36px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;text-align:center">
+      <div style="width:104px;height:104px;border-radius:50%;border:3px dashed #DB9A1F;display:flex;align-items:center;justify-content:center;font:600 18px/1.3 'Plex',sans-serif;color:#9A620A;padding:10px">{{ s.logo }}</div>
+      <div data-qa="kg-name" style="font:800 36px/1.25 'Baloo',sans-serif;color:#16204A"><span class="line" style="display:block;white-space:nowrap">{{ s.school[0] }}</span><span class="line" style="display:block;white-space:nowrap;font-size:28px;color:#9A620A">{{ s.school[1] }}</span></div>
+      <div data-qa="kg-note" style="font:400 27px/1.6 'Naskh',serif;color:#1C2140;text-wrap:balance">{{ s.note }}</div>
+    </div>
+    <div style="width:410px;position:relative;padding:28px 28px 28px 0">
+      <div style="width:100%;height:100%;border-radius:10px;overflow:hidden;border:8px solid #FFFDF8;box-shadow:0 6px 16px rgba(22,32,74,.18);transform:rotate(-2deg)">
+        <img src="{{ img.src }}" alt="" style="width:100%;height:100%;object-fit:cover;object-position:{{ img.focus }}">
+      </div>
+    </div>
+  </div>
+  <div style="position:absolute;left:449px;top:34px;width:2px;height:450px;background:rgba(14,21,48,.22)"></div>
+</div>
+{%- endmacro %}
+
+{# the finished class: a stack of books, a different child's name on each spine #}
+{% macro kg_stack(s) -%}
+{% set names = copy.covers.class_spines %}
+{% set colors = ['#22306A', '#3E6B4D', '#A7432D', '#5A4A9C', '#9A620A'] %}
+<div class="stage" data-w="900" data-h="540" data-max="1.25">
+  <div style="position:absolute;left:400px;right:0;bottom:20px;height:22px;background:radial-gradient(closest-side, rgba(22,32,74,.28), rgba(22,32,74,0));filter:blur(4px)"></div>
+  {% for i in range(5) %}{{ spine(names[i], colors[i], [410, 426, 402, 420, 408][i], 458 - i * 64, [474, 456, 470, 452, 462][i], [0, -1.2, 0.8, -0.6, 0.5][i]) }}{% endfor %}
+  {{ m.hardcover('graduation', s=400, d=28, ry=-26, rx=-4, x=34, y=110) }}
+</div>
+{%- endmacro %}
+
 {% macro render(ad, fmt) -%}
-{% if ad.visual == 'launch' %}{{ launch(ad, fmt) }}
+{% if ad.visual == 'photo' %}{{ photo(ad, fmt) }}
+{% elif ad.visual == 'pair' %}{{ pair(ad, fmt) }}
+{% elif ad.visual == 'fan' %}{{ fan(ad, fmt) }}
+{% elif ad.visual == 'scene_book' %}{{ scene_book(ad, fmt) }}
+{% elif ad.visual == 'points' %}{{ points(ad, fmt) }}
+{% elif ad.visual == 'faq' %}{{ faq(ad, fmt) }}
+{% elif ad.visual == 'kg_stack' %}{{ kg_stack(ad) }}
+{% elif ad.visual == 'launch' %}{{ launch(ad, fmt) }}
 {% elif ad.visual == 'kindergarten' %}{{ kindergarten(ad, fmt) }}
 {% elif ad.visual == 'family' %}{{ family(ad, fmt) }}
 {% elif ad.visual == 'journey' %}{{ journey(ad, fmt) }}
@@ -265,7 +466,12 @@
 {%- endmacro %}
 
 {% macro slide(s) -%}
-{% if s.visual == 'photo' %}{{ slide_photo(s) }}
+{% if s.visual in ['photo', 'pair', 'fan', 'points'] and s.media is defined or s.visual in ['pair', 'fan', 'points'] %}{{ render(s, 'feed') }}
+{% elif s.visual == 'kg_list' %}{{ kg_list(s) }}
+{% elif s.visual == 'kg_link' %}{{ kg_link(s) }}
+{% elif s.visual == 'kg_page' %}{{ kg_page(s) }}
+{% elif s.visual == 'kg_stack' %}{{ kg_stack(s) }}
+{% elif s.visual == 'photo' %}{{ slide_photo(s) }}
 {% elif s.visual == 'character' %}{{ slide_character(s) }}
 {% elif s.visual == 'story' %}{{ slide_story(s) }}
 {% elif s.visual == 'book' %}{{ slide_book(s) }}
