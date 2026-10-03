@@ -22,6 +22,7 @@ import re
 import subprocess
 import sys
 from pathlib import Path
+from typing import Any
 
 import fal_client
 import httpx
@@ -154,7 +155,7 @@ async def transcribe(client: fal_client.AsyncClient, data: bytes, lang: str) -> 
 
 def ffmpeg() -> str:
     try:
-        import imageio_ffmpeg  # type: ignore[import-not-found]
+        import imageio_ffmpeg  # type: ignore[import-not-found,unused-ignore]
 
         return str(imageio_ffmpeg.get_ffmpeg_exe())
     except ImportError:
@@ -197,8 +198,8 @@ def duration_ms(path: Path) -> int:
 
 
 async def one(
-    client: fal_client.AsyncClient, item: dict, voice: str, sem: asyncio.Semaphore, words: bool
-) -> dict:
+    client: fal_client.AsyncClient, item: dict[str, Any], voice: str, sem: asyncio.Semaphore, words: bool
+) -> dict[str, Any]:
     code, lang = item["code"], item["lang"]
     out = OUT / f"{code}.mp3"
     async with sem:
@@ -272,9 +273,9 @@ async def main() -> None:
     results = await asyncio.gather(
         *(one(client, i, a.voice, sem, a.words) for i in items), return_exceptions=True
     )
-    report = []
+    report: list[dict[str, Any]] = []
     for item, r in zip(items, results, strict=True):
-        if isinstance(r, Exception):
+        if isinstance(r, BaseException):
             report.append({"code": item["code"], "error": f"{type(r).__name__}: {str(r)[:200]}"})
         else:
             report.append(r)
