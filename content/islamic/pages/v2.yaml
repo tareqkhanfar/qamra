@@ -1,0 +1,1383 @@
+# «قلبي يعرف الله» · المجلد ٢ «أُصَلِّي وَأَتَعَلَّمُ»: the content of the volume's pages, one entry per place.
+#
+# AI-DRAFTED — PENDING THE SCHOLAR. Nothing in this file is final: every page, line and explanation below was
+# drafted by the AI drafter and waits for the scholar's page-by-page review (Addendum 10 §3). Nothing prints or
+# sells before that.
+#
+# The writers' guide is docs/islamic/content-guide.md (every page type, the rules, the length limits). `key` names
+# the page's place (front/<k>, <unit>/opener, <unit>/l<lesson>-<page>, <unit>/closing-<k>, <unit>/parent,
+# <unit>/review-<k>, end/<k>); the engine derives id, unit and volume, and the title when there is none.
+#
+#   uv run python -m qamra_workbook.render.islamic_volume --volume v2 --keys    # the places (✓ = written here)
+#   uv run python -m qamra_workbook.render.islamic_volume --volume v2 --check   # what is missing or wrong
+#
+# No verse, hadith or dhikr is typed here: a block names a source id of content/islamic/sources.yaml (and
+# sources.d/), and the engine prints the verified wording. The samples placed in V2 (u-wudu/l2-1,
+# u-whatif1/l3-1, u-surahs1/l2-1) are copied from the guide with the language review's corrections.
+#
+# Visual notes: Reem and the reader are kept out of scenes of prayer itself (the engine has no prayer outfit or
+# headscarf for them yet; s-prayer-clothing); Sitti Huda and Salem stand in those scenes.
+
+pages:
+  # ================================================================== front pages
+  - key: front/1
+    type: front-title
+
+  - key: front/2
+    type: front-characters
+    ai_drafted: true
+    intros:
+      - {who: huda, t: "سِتِّي هُدَى تَحْكِي لَنَا أَجْمَلَ الْحِكَايَاتِ، وَتُجِيبُ عَنْ أَسْئِلَتِنَا بِحُبٍّ."}
+      - {who: reem, t: "رِيمُ أُخْتٌ كَبِيرَةٌ تُحِبُّ أَنْ تَسْأَلَ: لِمَاذَا؟"}
+      - {who: salem, t: "سَالِمٌ أَخُوهَا الصَّغِيرُ، يَلْعَبُ وَيُخْطِئُ وَيَتَعَلَّمُ."}
+      - {who: naanaa, t: "نَعْنَاعُ قِطَّتُهُمُ الْكَسُولُ، تُحِبُّ النَّوْمَ فِي الشَّمْسِ."}
+      - {who: reader, t: "وَ{أَنْتَ/أَنْتِ} يَا {child} {بَطَلُ/بَطَلَةُ} هَذَا الْكِتَابِ!"}
+
+  - key: front/3
+    type: front-how-to-use
+    ai_drafted: true
+    steps:
+      - {icon: book, t: "أَقْرَأُ صَفْحَةً أَوْ صَفْحَتَيْنِ كُلَّ يَوْمٍ مَعَ أُمِّي أَوْ أَبِي."}
+      - {icon: pencil, t: "أُلَوِّنُ وَأَرْسُمُ وَأَصِلُ وَأَخْتَارُ بِنَفْسِي."}
+      - {icon: speaker, t: "أَسْتَمِعُ مَعَ أَهْلِي إِلَى السُّوَرِ وَالْأَذْكَارِ مِنْ رَمْزِ الصَّوْتِ."}
+      - {icon: star, t: "أُلَوِّنُ نَجْمَةً كُلَّمَا أَنْهَيْتُ تَحَدِّيًا."}
+      - {icon: stamp, t: "أُلْصِقُ خَتْمَ الْوَحْدَةِ فِي جَوَازِي حِينَ أُنْهِيهَا."}
+    care_note: "في هذا الكتاب آيات من القرآن الكريم وأحاديث وأذكار؛ نرجو حفظه في مكان نظيف مرتفع، وعدم رميه أو وضع شيء فوقه، وأن يلمس الطفل صفحاته بيدين نظيفتين."
+
+  - key: front/4
+    type: passport
+    ai_drafted: true
+    gendered_title: "{جَوَازُ الْمُسْلِمِ الصَّغِيرِ/جَوَازُ الْمُسْلِمَةِ الصَّغِيرَةِ}"
+    photo_slot: reader
+    stamps_from: units.yaml
+    challenge_stars: 8
+
+  - key: front/5
+    type: front-this-is-me
+    ai_drafted: true
+    prompts: ["اسْمِي:", "عُمْرِي:", "أُحِبُّ:", "مَسْجِدُ حَيِّنَا:"]
+    draw_box: "{ارْسُمْ أُسْرَتَكَ/ارْسُمِي أُسْرَتَكِ} هُنَا"
+
+  # ================================================================== لِمَاذَا نُصَلِّي؟
+  - key: u-why-pray/opener
+    type: unit-opener
+    ai_drafted: true
+    hello: {who: salem, t: "لِمَاذَا يُصَلِّي أَبِي خَمْسَ مَرَّاتٍ كُلَّ يَوْمٍ؟ {تَعَالَ نَسْأَلْ/تَعَالَيْ نَسْأَلْ} سِتِّي!"}
+    question: "{هَلْ تَعْرِفُ/هَلْ تَعْرِفِينَ} مَتَى نُصَلِّي فِي يَوْمِنَا؟"
+
+  # lesson 1 «أُصَلِّي لِأَنِّي أُحِبُّ اللهَ»: story, choose
+  - key: u-why-pray/l1-1
+    type: story
+    ai_drafted: true
+    scene: {backdrop: home, props: ["isl:prayer-mat", lamp], figures: [huda, reem, salem]}
+    lines:
+      - {who: salem, t: "سِتِّي، لِمَاذَا نُصَلِّي؟"}
+      - {who: huda, t: "نُصَلِّي لِأَنَّ اللهَ أَمَرَنَا بِالصَّلَاةِ، وَلِنَذْكُرَهُ دَائِمًا.", sources: [q-20-14], ai_drafted: true}
+      - {who: reem, t: "وَأَنَا أُحِبُّ اللهَ، فَأُحِبُّ أَنْ أُصَلِّيَ لَهُ."}
+      - {who: huda, t: "شَبَّهَ نَبِيُّنَا ﷺ الصَّلَوَاتِ الْخَمْسَ بِنَهْرٍ عِنْدَ الْبَابِ، نَغْتَسِلُ فِيهِ كُلَّ يَوْمٍ خَمْسَ مَرَّاتٍ.", sources: [h-bukhari-528], ai_drafted: true}
+    quote: {source: q-20-14, span: {start: "وأقم", end: "لذكري"}}
+    lesson: {text: "نُصَلِّي لِأَنَّنَا نُحِبُّ اللهَ، وَبِالصَّلَاةِ يَمْحُو اللهُ أَخْطَاءَنَا كَمَا يُنَظِّفُ الْمَاءُ أَجْسَامَنَا.", sources: [q-20-14, h-bukhari-528], ai_drafted: true}
+
+  - key: u-why-pray/l1-2
+    type: choose
+    ai_drafted: true
+    instruction: "{اخْتَرِ/اخْتَارِي} الْجَوَابَ الصَّحِيحَ"
+    questions:
+      - text: "لِمَاذَا نُصَلِّي؟"
+        pic: "isl:prayer-mat"
+        choices: [{t: "لِنَذْكُرَ اللهَ", ok: true}, {t: "لِيَرَانَا النَّاسُ"}]
+        sources: [q-20-14]
+      - text: "بِمَاذَا شَبَّهَ نَبِيُّنَا ﷺ الصَّلَوَاتِ الْخَمْسَ؟"
+        pic: water
+        choices: [{t: "بِنَهْرٍ نَغْتَسِلُ فِيهِ", ok: true}, {t: "بِجَبَلٍ عَالٍ"}]
+        sources: [h-bukhari-528]
+      - text: "لِمَنْ نُصَلِّي؟"
+        choices: [{t: "لِلَّهِ وَحْدَهُ", ok: true}, {t: "لِأَصْدِقَائِنَا"}]
+        sources: [q-20-14]
+
+  # lesson 2 «خَمْسُ صَلَوَاتٍ فِي الْيَوْمِ»: order-steps, match, true-false
+  - key: u-why-pray/l2-1
+    type: prayer-steps
+    ai_drafted: true
+    title: أُرَتِّبُ صَلَوَاتِ يَوْمِي
+    instruction: "{رَتِّبِ/رَتِّبِي} الصَّلَوَاتِ مِنْ ١ إِلَى ٥"
+    steps:
+      - {n: 1, t: "الْفَجْرُ: قَبْلَ شُرُوقِ الشَّمْسِ.", sources: [h-bukhari-46, q-4-103]}
+      - {n: 2, t: "الظُّهْرُ: فِي وَسَطِ النَّهَارِ.", sources: [h-bukhari-46, q-4-103]}
+      - {n: 3, t: "الْعَصْرُ: بَعْدَ الظُّهْرِ، قَبْلَ أَنْ تَغِيبَ الشَّمْسُ.", sources: [h-bukhari-46, q-4-103]}
+      - {n: 4, t: "الْمَغْرِبُ: حِينَ تَغِيبُ الشَّمْسُ.", sources: [h-bukhari-46, q-4-103]}
+      - {n: 5, t: "الْعِشَاءُ: حِينَ يَأْتِي اللَّيْلُ.", sources: [h-bukhari-46, q-4-103]}
+    parent_line: "صَلُّوا مَعَ طِفْلِكُمْ فِي أَوْقَاتِ الصَّلَاةِ، وَقُولُوا لَهُ اسْمَ كُلِّ صَلَاةٍ وَوَقْتَهَا."
+
+  - key: u-why-pray/l2-2
+    type: match
+    ai_drafted: true
+    instruction: "{صِلْ/صِلِي} كُلَّ صَلَاةٍ بِوَقْتِهَا"
+    pairs:
+      - {a: {t: "الْفَجْرُ"}, b: {pic: rooster, t: "قَبْلَ شُرُوقِ الشَّمْسِ"}, sources: [q-4-103]}
+      - {a: {t: "الظُّهْرُ"}, b: {pic: sun, t: "وَسَطَ النَّهَارِ"}, sources: [q-4-103]}
+      - {a: {t: "الْعَصْرُ"}, b: {pic: shadow, t: "بَعْدَ الظُّهْرِ"}, sources: [q-4-103]}
+      - {a: {t: "الْمَغْرِبُ"}, b: {pic: "isl:sun-moon", t: "حِينَ تَغِيبُ الشَّمْسُ"}, sources: [q-4-103]}
+      - {a: {t: "الْعِشَاءُ"}, b: {pic: moon, t: "فِي اللَّيْلِ"}, sources: [q-4-103]}
+
+  - key: u-why-pray/l2-3
+    type: true-false
+    ai_drafted: true
+    instruction: "{ضَعْ/ضَعِي} دَائِرَةً حَوْلَ الْجَوَابِ"
+    statements:
+      - {t: "نُصَلِّي خَمْسَ صَلَوَاتٍ فِي الْيَوْمِ وَاللَّيْلَةِ.", ok: true, sources: [h-bukhari-46]}
+      - {t: "لِكُلِّ صَلَاةٍ وَقْتُهَا.", ok: true, sources: [q-4-103]}
+      - {t: "نُصَلِّي الْمَغْرِبَ فِي الصَّبَاحِ.", ok: false, sources: [q-4-103]}
+      - {t: "يُحِبُّ اللهُ الصَّلَاةَ فِي وَقْتِهَا.", ok: true, sources: [h-bukhari-527]}
+      - {t: "الْفَجْرُ أَوَّلُ صَلَاةٍ فِي يَوْمِنَا.", ok: true, sources: [h-bukhari-46]}
+
+  # lesson 3 «أُحِبُّ الْمَسْجِدَ»: story, dhikr, coloring
+  - key: u-why-pray/l3-1
+    type: story
+    ai_drafted: true
+    scene: {backdrop: mosque, props: ["isl:lantern", palm], figures: [huda, salem]}
+    lines:
+      - {who: narrator, t: "ذَهَبَ سَالِمٌ مَعَ سِتِّي هُدَى إِلَى مَسْجِدِ الْحَيِّ."}
+      - {who: salem, t: "سِتِّي، مَا أَجْمَلَ الْمَسْجِدَ! إِنَّهُ هَادِئٌ وَنَظِيفٌ."}
+      - {who: huda, t: "الْمَسَاجِدُ أَحَبُّ الْأَمَاكِنِ إِلَى اللهِ يَا سَالِمُ.", sources: [h-muslim-671], ai_drafted: true}
+      - {who: huda, t: "نَدْخُلُ الْمَسْجِدَ بِهُدُوءٍ، وَنَدْعُو بِدُعَاءِ الدُّخُولِ.", sources: [d-mosque-in], ai_drafted: true}
+    quote: {source: h-muslim-671, span: {start: "أحب البلاد", end: "مساجدها"}}
+    lesson: {text: "الْمَسْجِدُ بَيْتٌ نُصَلِّي فِيهِ وَنَذْكُرُ اللهَ، وَنُحَافِظُ عَلَى هُدُوئِهِ وَنَظَافَتِهِ.", sources: [h-muslim-671], ai_drafted: true}
+
+  - key: u-why-pray/l3-2
+    type: dhikr
+    ai_drafted: true
+    title: حِينَ أَدْخُلُ الْمَسْجِدَ
+    when: حِينَ أَدْخُلُ الْمَسْجِدَ
+    dhikr: {source: d-mosque-in}
+    why: {text: "نَدْخُلُ بَيْتًا يُحِبُّهُ اللهُ، فَنَسْأَلُهُ أَنْ يَفْتَحَ لَنَا أَبْوَابَ رَحْمَتِهِ.", sources: [d-mosque-in, h-muslim-671], ai_drafted: true}
+    manner: {text: "وَحِينَ أَخْرُجُ مِنَ الْمَسْجِدِ أَقُولُ: {src:d-mosque-out}", sources: [d-mosque-out], ai_drafted: true}
+    scene: {backdrop: mosque, props: ["isl:lantern", shoe], figures: [salem, huda]}
+    home: "نَقُولُهُ مَعًا كُلَّمَا ذَهَبْنَا إِلَى الْمَسْجِدِ، وَنُلَوِّنُ نَجْمَةً كُلَّ مَرَّةٍ."
+    audio: {kind: human-voice, note: "بصوت بشري مسجّل؛ لا TTS لنص ديني"}
+
+  - key: u-why-pray/l3-3
+    type: coloring
+    ai_drafted: true
+    sacred_text: none
+    title: أُلَوِّنُ الْمَسْجِدَ
+    instruction: "{لَوِّنْ/لَوِّنِي} الْمَسْجِدَ وَمَا حَوْلَهُ"
+    pics: ["isl:dome", "isl:lantern", "isl:prayer-mat", palm]
+
+  - key: u-why-pray/closing-1
+    type: unit-closing
+    ai_drafted: true
+    learned:
+      - "أُصَلِّي لِأَنِّي أُحِبُّ اللهَ، وَلِأَذْكُرَهُ."
+      - "صَلَوَاتِي خَمْسٌ: الْفَجْرُ وَالظُّهْرُ وَالْعَصْرُ وَالْمَغْرِبُ وَالْعِشَاءُ."
+      - "الْمَسْجِدُ بَيْتُ اللهِ، أَدْخُلُهُ بِهُدُوءٍ وَأَدْعُو اللهَ."
+    apply: "أَخْتَارُ مَا سَأَفْعَلُهُ هَذَا الْأُسْبُوعَ:"
+    apply_choices: ["أُصَلِّي مَعَ أَهْلِي صَلَاةً كُلَّ يَوْمٍ.", "أَتَعَرَّفُ إِلَى أَوْقَاتِ الصَّلَوَاتِ.", "أَزُورُ الْمَسْجِدَ مَعَ أَهْلِي."]
+
+  - key: u-why-pray/closing-2
+    type: unit-closing
+    ai_drafted: true
+    dhikr: {source: d-mosque-in, label: "دُعَاءُ دُخُولِ الْمَسْجِدِ"}
+    dhikr_when: "أَقُولُهُ حِينَ أَدْخُلُ الْمَسْجِدَ."
+    challenge: "أُصَلِّي مَعَ أَهْلِي، وَأُلَوِّنُ نَجْمَةً كُلَّمَا صَلَّيْتُ مَعَهُمْ."
+
+  - key: u-why-pray/parent
+    type: parent-guide
+    ai_drafted: true
+    lang: modern-standard
+    learned: {text: "تعلّم طفلكم أنّنا نصلّي حبًّا لله وذكرًا له، وأنّ الصلوات خمس لكلّ منها وقتها، وأنّ المساجد أحبّ الأماكن إلى الله.", sources: [q-20-14, h-bukhari-46, h-muslim-671], ai_drafted: true}
+    explain: {text: "اربطوا الصلاة بالحبّ: «نصلّي لأنّنا نحبّ الله». واحكوا له تشبيه النبي ﷺ الصلوات الخمس بنهر نغتسل فيه كل يوم.", sources: [h-bukhari-528], ai_drafted: true}
+    ask: "متى صلّينا اليوم؟ وما الصلاة التي تأتي بعدها؟"
+    together: "ارسموا معًا ساعة عليها أسماء الصلوات الخمس، وحرّكوا السهم مع كل أذان."
+    habit: {text: "اجعلوا للطفل سجّادة صغيرة، وادعوه ليقف بجانبكم في صلاة واحدة كل يوم، بلا إلزام.", sources: [s-prayer-age], ai_drafted: true}
+    care_note: "في الكتاب صفحات فيها كلام الله تعالى وأذكار ودعوات؛ نرجو حفظ الكتاب في مكان نظيف مرتفع، وعدم رميه أو وضع شيء فوقه."
+
+  # ================================================================== أَتَوَضَّأُ
+  - key: u-wudu/opener
+    type: unit-opener
+    ai_drafted: true
+    hello: {who: reem, t: "قَبْلَ الصَّلَاةِ نَتَوَضَّأُ. {تَعَالَ نَتَعَلَّمِ/تَعَالَيْ نَتَعَلَّمِ} الْوُضُوءَ مَعًا!"}
+    question: "{هَلْ تَعْرِفُ/هَلْ تَعْرِفِينَ} مَاذَا نَغْسِلُ فِي الْوُضُوءِ؟"
+
+  # lesson 1 «لِمَاذَا نَتَوَضَّأُ؟»: story, find-objects, choose
+  - key: u-wudu/l1-1
+    type: story
+    ai_drafted: true
+    scene: {backdrop: kitchen, props: [faucet, soap, jug], figures: [huda, reem, salem]}
+    lines:
+      - {who: salem, t: "سِتِّي، يَدَايَ نَظِيفَتَانِ، فَلِمَاذَا أَتَوَضَّأُ؟"}
+      - {who: huda, t: "اللهُ أَمَرَنَا أَنْ نَتَوَضَّأَ قَبْلَ الصَّلَاةِ يَا سَالِمُ.", sources: [q-5-6], ai_drafted: true}
+      - {who: huda, t: "وَالطَّهَارَةُ مِنْ إِيمَانِنَا، فَنَقِفُ لِلصَّلَاةِ طَاهِرِينَ.", sources: [h-muslim-223], ai_drafted: true}
+      - {who: reem, t: "وَأَنَا أُحِبُّ أَنْ أَكُونَ طَاهِرَةً حِينَ أُصَلِّي."}
+    quote: {source: h-muslim-223, span: {start: "الطهور", end: "الإيمان"}}
+    lesson: {text: "نَتَوَضَّأُ لِأَنَّ اللهَ أَمَرَنَا، وَالطَّهَارَةُ مِنَ الْإِيمَانِ.", sources: [q-5-6, h-muslim-223], ai_drafted: true}
+
+  - key: u-wudu/l1-2
+    type: find-objects
+    ai_drafted: true
+    instruction: "{ابْحَثْ/ابْحَثِي} عَنْ أَدَوَاتِ الطَّهَارَةِ وَالنَّظَافَةِ"
+    find:
+      - {pic: water, word: الْمَاءُ}
+      - {pic: faucet, word: الْحَنَفِيَّةُ}
+      - {pic: jug, word: الْإِبْرِيقُ}
+      - {pic: soap, word: الصَّابُونُ}
+      - {pic: toothbrush, word: فُرْشَاةُ الْأَسْنَانِ}
+    others: [ball, car, kite, drum, teddy, banana]
+    closing: {text: "نَتَطَهَّرُ بِالْمَاءِ لِلصَّلَاةِ، وَالطَّهَارَةُ مِنَ الْإِيمَانِ.", sources: [q-5-6, h-muslim-223], ai_drafted: true}
+
+  - key: u-wudu/l1-3
+    type: choose
+    ai_drafted: true
+    instruction: "{اخْتَرِ/اخْتَارِي} الْجَوَابَ الصَّحِيحَ"
+    questions:
+      - text: "مَتَى نَتَوَضَّأُ؟"
+        pic: "isl:water-drop"
+        choices: [{t: "قَبْلَ الصَّلَاةِ", ok: true}, {t: "بَعْدَ الطَّعَامِ فَقَطْ"}]
+        sources: [q-5-6]
+      - text: "بِمَاذَا نَتَوَضَّأُ؟"
+        pic: water
+        choices: [{t: "بِالْمَاءِ الطَّاهِرِ", ok: true}, {t: "بِالْعَصِيرِ"}]
+        sources: [q-5-6]
+      - text: "يَدَايَ نَظِيفَتَانِ، فَهَلْ أَتَوَضَّأُ لِلصَّلَاةِ؟"
+        choices: [{t: "نَعَمْ، أَتَوَضَّأُ لِلصَّلَاةِ", ok: true}, {t: "لَا، لَا أَحْتَاجُ إِلَيْهِ"}]
+        sources: [q-5-6]
+
+  # lesson 2 «خُطُوَاتُ الْوُضُوءِ»: order-steps (the sample s02), order-steps, match
+  - key: u-wudu/l2-1
+    type: order-steps
+    ai_drafted: true
+    title: أَتَوَضَّأُ كَمَا عَلَّمَنَا نَبِيُّنَا ﷺ
+    instruction: "{رَتِّبِ/رَتِّبِي} الْخُطُوَاتِ مِنْ ١ إِلَى ٨"
+    steps:
+      - {n: 1, t: "أَبْدَأُ بِذِكْرِ اسْمِ اللهِ", art: speech-bubble, sources: [h-abudawud-101], scholar_decision: true}
+      - {n: 2, t: "أَغْسِلُ كَفَّيَّ", times: 3, art: hands, sources: [h-bukhari-159]}
+      - {n: 3, t: "أَتَمَضْمَضُ", art: mouth, sources: [h-bukhari-159]}
+      - {n: 4, t: "أَسْتَنْشِقُ الْمَاءَ وَأُخْرِجُهُ", art: nose, sources: [h-bukhari-159]}
+      - {n: 5, t: "أَغْسِلُ وَجْهِي", times: 3, art: face, sources: [q-5-6, h-bukhari-159]}
+      - {n: 6, t: "أَغْسِلُ يَدَيَّ إِلَى الْمِرْفَقَيْنِ", times: 3, art: arms, sources: [q-5-6, h-bukhari-159]}
+      - {n: 7, t: "أَمْسَحُ رَأْسِي وَأُذُنَيَّ", art: head, sources: [q-5-6, h-bukhari-159], scholar_decision: true}
+      - {n: 8, t: "أَغْسِلُ قَدَمَيَّ إِلَى الْكَعْبَيْنِ", times: 3, art: feet, sources: [q-5-6, h-bukhari-159]}
+    scholar_points: [h-abudawud-101, h-bukhari-159]
+    parent_line: "رَاجِعُوا الْخُطُوَاتِ مَعًا أَمَامَ الْحَوْضِ، ثُمَّ يُجَرِّبُ الطِّفْلُ بِنَفْسِهِ وَأَنْتُمْ بِجَانِبِهِ."
+
+  - key: u-wudu/l2-2
+    type: order-steps
+    ai_drafted: true
+    title: أَرْبَعُ خُطُوَاتٍ فِي آيَةِ الْوُضُوءِ
+    instruction: "{رَتِّبِ/رَتِّبِي} الْخُطُوَاتِ مِنْ ١ إِلَى ٤"
+    steps:
+      - {n: 1, t: "أَغْسِلُ وَجْهِي", art: face, sources: [q-5-6]}
+      - {n: 2, t: "أَغْسِلُ يَدَيَّ إِلَى الْمِرْفَقَيْنِ", art: arms, sources: [q-5-6]}
+      - {n: 3, t: "أَمْسَحُ رَأْسِي", art: head, sources: [q-5-6]}
+      - {n: 4, t: "أَغْسِلُ قَدَمَيَّ إِلَى الْكَعْبَيْنِ", art: feet, sources: [q-5-6]}
+    parent_line: "هَذِهِ الْخُطُوَاتُ الْأَرْبَعُ ذَكَرَهَا اللهُ فِي آيَةِ الْوُضُوءِ؛ اقْرَؤُوا الْآيَةَ مِنَ الْمُصْحَفِ مَعَ طِفْلِكُمْ."
+
+  - key: u-wudu/l2-3
+    type: match
+    ai_drafted: true
+    instruction: "{صِلْ/صِلِي} كُلَّ خُطْوَةٍ بِصُورَتِهَا"
+    pairs:
+      - {a: {t: "أَتَمَضْمَضُ"}, b: {pic: mouth}, sources: [h-bukhari-159]}
+      - {a: {t: "أَسْتَنْشِقُ"}, b: {pic: nose}, sources: [h-bukhari-159]}
+      - {a: {t: "أَغْسِلُ وَجْهِي"}, b: {pic: face}, sources: [q-5-6]}
+      - {a: {t: "أَمْسَحُ رَأْسِي"}, b: {pic: head}, sources: [q-5-6]}
+      - {a: {t: "أَغْسِلُ قَدَمَيَّ"}, b: {pic: foot}, sources: [q-5-6]}
+
+  # lesson 3 «أَقُولُ بَعْدَ الْوُضُوءِ»: dhikr, true-false
+  - key: u-wudu/l3-1
+    type: dhikr
+    ai_drafted: true
+    title: بَعْدَ الْوُضُوءِ
+    when: حِينَ أُنْهِي وُضُوئِي
+    dhikr: {source: d-wudu-end}
+    why: {text: "نَشْهَدُ أَنَّ اللهَ وَاحِدٌ، وَأَنَّ مُحَمَّدًا ﷺ رَسُولُهُ، وَأَخْبَرَنَا نَبِيُّنَا ﷺ أَنَّ لِهَذَا الذِّكْرِ أَجْرًا عَظِيمًا.", sources: [h-muslim-234], ai_drafted: true}
+    manner: {text: "أَتَوَضَّأُ وُضُوءًا حَسَنًا كَامِلًا، ثُمَّ أَقُولُهُ.", sources: [h-muslim-234], ai_drafted: true}
+    scene: {backdrop: home, props: ["isl:prayer-mat", "isl:water-drop"], figures: [salem, huda]}
+    home: "نَقُولُهُ بَعْدَ كُلِّ وُضُوءٍ هَذَا الْأُسْبُوعَ، وَنُلَوِّنُ نَجْمَةً فِي آخِرِ كُلِّ يَوْمٍ."
+    audio: {kind: human-voice, note: "بصوت بشري مسجّل؛ لا TTS لنص ديني"}
+
+  - key: u-wudu/l3-2
+    type: true-false
+    ai_drafted: true
+    instruction: "{ضَعْ/ضَعِي} دَائِرَةً حَوْلَ الْجَوَابِ"
+    statements:
+      - {t: "نَتَوَضَّأُ قَبْلَ الصَّلَاةِ.", ok: true, sources: [q-5-6]}
+      - {t: "نَغْسِلُ وُجُوهَنَا فِي الْوُضُوءِ.", ok: true, sources: [q-5-6]}
+      - {t: "نَبْدَأُ الْوُضُوءَ بِغَسْلِ الْقَدَمَيْنِ.", ok: false, sources: [q-5-6, h-bukhari-159]}
+      - {t: "نَمْسَحُ رُؤُوسَنَا بِالْمَاءِ.", ok: true, sources: [q-5-6]}
+      - {t: "بَعْدَ الْوُضُوءِ نَشْهَدُ أَنَّ اللهَ وَاحِدٌ، وَأَنَّ مُحَمَّدًا ﷺ رَسُولُهُ.", ok: true, sources: [h-muslim-234]}
+
+  - key: u-wudu/closing-1
+    type: unit-closing
+    ai_drafted: true
+    learned:
+      - "نَتَوَضَّأُ قَبْلَ الصَّلَاةِ لِأَنَّ اللهَ أَمَرَنَا."
+      - "أَغْسِلُ وَجْهِي وَيَدَيَّ، وَأَمْسَحُ رَأْسِي، وَأَغْسِلُ قَدَمَيَّ."
+      - "بَعْدَ الْوُضُوءِ أَقُولُ الشَّهَادَتَيْنِ."
+    apply: "أَخْتَارُ مَا سَأَفْعَلُهُ هَذَا الْأُسْبُوعَ:"
+    apply_choices: ["أَتَوَضَّأُ بِنَفْسِي وَأَهْلِي بِجَانِبِي.", "لَا أُسْرِفُ فِي الْمَاءِ حِينَ أَتَوَضَّأُ.", "أَقُولُ الذِّكْرَ بَعْدَ كُلِّ وُضُوءٍ."]
+
+  - key: u-wudu/closing-2
+    type: unit-closing
+    ai_drafted: true
+    dhikr: {source: d-wudu-end, label: "الذِّكْرُ بَعْدَ الْوُضُوءِ"}
+    dhikr_when: "أَقُولُهُ بَعْدَ كُلِّ وُضُوءٍ."
+    challenge: "أَتَوَضَّأُ أَمَامَ أَهْلِي مَرَّةً كُلَّ يَوْمٍ، وَأُلَوِّنُ نَجْمَةً إِذَا رَتَّبْتُ الْخُطُوَاتِ."
+
+  - key: u-wudu/parent
+    type: parent-guide
+    ai_drafted: true
+    lang: modern-standard
+    learned: {text: "تعلّم طفلكم أنّ الوضوء طهارة أمر الله بها قبل الصلاة، وتعلّم خطواته بالترتيب، وما يقوله بعده.", sources: [q-5-6, h-bukhari-159, h-muslim-234], ai_drafted: true}
+    explain: {text: "علّموه بالقدوة: توضّؤوا أمامه ببطء وسمّوا كل خطوة، ثم دعوه يجرّب وأنتم بجانبه، وصحّحوا الترتيب بلطف.", ai_drafted: true}
+    ask: "ماذا نقول بعد أن ننتهي من الوضوء؟"
+    together: "ضعوا قرب المغسلة ورقة فيها صور خطوات الوضوء بالترتيب، وتوضّؤوا معًا قبل صلاة كل يوم."
+    habit: {text: "اجعلوا الوضوء لحظة هادئة: نشمّر الأكمام، ونقتصد في الماء، ونختم بالذكر.", sources: [q-5-6, h-muslim-234], ai_drafted: true}
+    care_note: "في الكتاب صفحات فيها كلام الله تعالى وأذكار ودعوات؛ نرجو حفظ الكتاب في مكان نظيف مرتفع، وعدم رميه أو وضع شيء فوقه."
+
+  # ================================================================== أُصَلِّي
+  - key: u-prayer/opener
+    type: unit-opener
+    ai_drafted: true
+    hello: {who: salem, t: "أَنَا أَتَعَلَّمُ الصَّلَاةَ! {تَعَالَ نُصَلِّ/تَعَالَيْ نُصَلِّ} مَعًا كَمَا صَلَّى نَبِيُّنَا ﷺ."}
+    question: "{هَلْ تَعْرِفُ/هَلْ تَعْرِفِينَ} مَاذَا نَقُولُ فِي السُّجُودِ؟"
+
+  # lesson 1 «أَقِفُ بَيْنَ يَدَيِ اللهِ»: story, order-steps, find-objects
+  - key: u-prayer/l1-1
+    type: story
+    ai_drafted: true
+    scene: {backdrop: mosque-inside, props: ["isl:prayer-mat"], figures: [huda, salem]}
+    lines:
+      - {who: salem, t: "سِتِّي، كَيْفَ أُصَلِّي؟"}
+      - {who: huda, t: "نُصَلِّي كَمَا كَانَ نَبِيُّنَا ﷺ يُصَلِّي، فَهُوَ الَّذِي عَلَّمَنَا.", sources: [h-bukhari-631], ai_drafted: true}
+      - {who: huda, t: "نَلْبَسُ ثِيَابًا نَظِيفَةً سَاتِرَةً، وَنَقِفُ مُتَّجِهِينَ إِلَى الْقِبْلَةِ.", sources: [s-prayer-clothing, h-bukhari-631], ai_drafted: true}
+      - {who: salem, t: "ثُمَّ أُكَبِّرُ، وَأَبْدَأُ صَلَاتِي بِهُدُوءٍ!", sources: [h-bukhari-631], ai_drafted: true}
+    quote: {source: h-bukhari-631, span: {start: "وصلوا", end: "أصلي"}}
+    lesson: {text: "فِي الصَّلَاةِ أَقِفُ بَيْنَ يَدَيِ اللهِ بِهُدُوءٍ وَحُبٍّ.", sources: [h-bukhari-631], ai_drafted: true}
+
+  - key: u-prayer/l1-2
+    type: prayer-steps
+    ai_drafted: true
+    instruction: "{رَتِّبِ/رَتِّبِي} الْخُطُوَاتِ مِنْ ١ إِلَى ٤"
+    steps:
+      - {n: 1, t: "أَتَوَضَّأُ.", sources: [q-5-6]}
+      - {n: 2, t: "أَلْبَسُ ثِيَابًا نَظِيفَةً سَاتِرَةً.", sources: [s-prayer-clothing]}
+      - {n: 3, t: "أَقِفُ عَلَى سَجَّادَتِي {مُتَّجِهًا/مُتَّجِهَةً} إِلَى الْقِبْلَةِ.", sources: [h-bukhari-631]}
+      - {n: 4, t: "أُكَبِّرُ وَأَبْدَأُ صَلَاتِي.", sources: [h-bukhari-631]}
+
+  - key: u-prayer/l1-3
+    type: find-objects
+    ai_drafted: true
+    instruction: "{ابْحَثْ/ابْحَثِي} عَنْ أَشْيَاءَ تُسَاعِدُنَا عَلَى الصَّلَاةِ"
+    find:
+      - {pic: "isl:prayer-mat", word: السَّجَّادَةُ}
+      - {pic: water, word: مَاءُ الْوُضُوءِ}
+      - {pic: clock, word: السَّاعَةُ}
+      - {pic: "isl:dome", word: الْمَسْجِدُ}
+    others: [ball, kite, candy, car, drum, toy]
+    closing: {text: "نَتَوَضَّأُ بِالْمَاءِ، وَنَعْرِفُ الْوَقْتَ، وَنُصَلِّي فِي مَكَانٍ نَظِيفٍ.", sources: [q-5-6, q-4-103], ai_drafted: true}
+
+  # lesson 2 «أَرْكَعُ وَأَسْجُدُ»: order-steps, dhikr, match
+  - key: u-prayer/l2-1
+    type: prayer-steps
+    ai_drafted: true
+    instruction: "{رَتِّبِ/رَتِّبِي} الْخُطُوَاتِ مِنْ ١ إِلَى ٦"
+    steps:
+      - {n: 1, t: "أَقِفُ وَأَقْرَأُ الْفَاتِحَةَ.", sources: [h-bukhari-631]}
+      - {n: 2, t: "أَرْكَعُ وَأَقُولُ: {src:d-ruku}", sources: [d-ruku]}
+      - {n: 3, t: "أَرْفَعُ رَأْسِي مِنَ الرُّكُوعِ وَأَقُولُ: {src:d-rising}", sources: [d-rising], scholar_decision: true}
+      - {n: 4, t: "أَسْجُدُ وَأَقُولُ: {src:d-sujud}", sources: [d-sujud]}
+      - {n: 5, t: "أَجْلِسُ بَيْنَ السَّجْدَتَيْنِ وَأَقُولُ: {src:d-between-sujud}", sources: [d-between-sujud]}
+      - {n: 6, t: "أَسْجُدُ السَّجْدَةَ الثَّانِيَةَ.", sources: [h-bukhari-631]}
+    scholar_points: [d-rising]
+
+  - key: u-prayer/l2-2
+    type: dhikr
+    ai_drafted: true
+    title: فِي الرُّكُوعِ وَالسُّجُودِ
+    when: حِينَ أَرْكَعُ
+    dhikr: {source: d-ruku}
+    why: {text: "نُسَبِّحُ اللهَ وَنُعَظِّمُهُ، فَهُوَ الْعَظِيمُ الْأَعْلَى، وَنَحْنُ نُحِبُّهُ.", sources: [d-ruku, d-sujud], ai_drafted: true}
+    manner: {text: "وَحِينَ أَسْجُدُ أَقُولُ: {src:d-sujud}", sources: [d-sujud], ai_drafted: true}
+    scene: {backdrop: mosque-inside, props: ["isl:prayer-mat", "isl:lantern"], figures: [salem, huda]}
+    home: "نُرَدِّدُهُمَا مَعًا فِي صَلَاتِنَا هَذَا الْأُسْبُوعَ، وَنُلَوِّنُ نَجْمَةً فِي آخِرِ كُلِّ يَوْمٍ."
+    audio: {kind: human-voice, note: "بصوت بشري مسجّل؛ لا TTS لنص ديني"}
+
+  - key: u-prayer/l2-3
+    type: match
+    ai_drafted: true
+    instruction: "{صِلْ/صِلِي} كُلَّ حَرَكَةٍ بِمَا نَقُولُهُ فِيهَا"
+    pairs:
+      - {a: {t: "فِي الرُّكُوعِ"}, b: {source: d-ruku}, sources: [d-ruku]}
+      - {a: {t: "فِي السُّجُودِ"}, b: {source: d-sujud}, sources: [d-sujud]}
+      - {a: {t: "حِينَ أَرْفَعُ رَأْسِي مِنَ الرُّكُوعِ"}, b: {source: d-rising}, sources: [d-rising]}
+      - {a: {t: "بَيْنَ السَّجْدَتَيْنِ"}, b: {source: d-between-sujud}, sources: [d-between-sujud]}
+
+  # lesson 3 «أَجْلِسُ وَأُسَلِّمُ»: order-steps, dhikr, true-false
+  - key: u-prayer/l3-1
+    type: prayer-steps
+    ai_drafted: true
+    instruction: "{رَتِّبِ/رَتِّبِي} الْخُطُوَاتِ مِنْ ١ إِلَى ٤"
+    steps:
+      - {n: 1, t: "أُصَلِّي الرَّكْعَةَ الثَّانِيَةَ كَالْأُولَى.", sources: [h-bukhari-631]}
+      - {n: 2, t: "أَجْلِسُ لِلتَّشَهُّدِ وَأَقْرَؤُهُ بِهُدُوءٍ.", sources: [d-tashahhud]}
+      - {n: 3, t: "أُصَلِّي عَلَى نَبِيِّي ﷺ.", sources: [q-33-56]}
+      - {n: 4, t: "أُسَلِّمُ عَنْ يَمِينِي، ثُمَّ عَنْ يَسَارِي.", sources: [h-bukhari-631], scholar_decision: true}
+    scholar_points: [s-prayer-rakaat, d-tashahhud]
+    parent_line: "صَلَاةُ الْفَجْرِ رَكْعَتَانِ، وَالْمَغْرِبُ ثَلَاثٌ، وَالظُّهْرُ وَالْعَصْرُ وَالْعِشَاءُ أَرْبَعٌ أَرْبَعٌ."
+
+  - key: u-prayer/l3-2
+    type: dhikr
+    ai_drafted: true
+    title: التَّشَهُّدُ
+    when: حِينَ أَجْلِسُ لِلتَّشَهُّدِ
+    dhikr: {source: d-tashahhud}
+    why: {text: "نُثْنِي عَلَى اللهِ، وَنُسَلِّمُ عَلَى نَبِيِّنَا ﷺ.", sources: [d-tashahhud], ai_drafted: true}
+    manner: {text: "أَجْلِسُ بِهُدُوءٍ، وَأَقْرَؤُهُ بِتَمَهُّلٍ.", sources: [d-tashahhud], ai_drafted: true}
+    scene: {backdrop: mosque-inside, props: ["isl:prayer-mat", "isl:lantern"], figures: [huda, salem]}
+    home: "نَحْفَظُهُ جُمْلَةً جُمْلَةً، وَنُلَوِّنُ نَجْمَةً كُلَّ يَوْمٍ."
+    audio: {kind: human-voice, note: "بصوت بشري مسجّل؛ لا TTS لنص ديني"}
+
+  - key: u-prayer/l3-3
+    type: true-false
+    ai_drafted: true
+    instruction: "{ضَعْ/ضَعِي} دَائِرَةً حَوْلَ الْجَوَابِ"
+    statements:
+      - {t: "نَجْلِسُ فِي الصَّلَاةِ وَنَقْرَأُ التَّشَهُّدَ.", ok: true, sources: [d-tashahhud]}
+      - {t: "نَخْتِمُ الصَّلَاةَ بِالتَّسْلِيمِ.", ok: true, sources: [h-bukhari-631]}
+      - {t: "صَلَاةُ الْفَجْرِ رَكْعَتَانِ.", ok: true, sources: [s-prayer-rakaat]}
+      - {t: "نَتَكَلَّمُ وَنَضْحَكُ وَنَحْنُ نُصَلِّي.", ok: false, sources: [h-bukhari-631]}
+      - {t: "صَلَاةُ الْمَغْرِبِ ثَلَاثُ رَكَعَاتٍ.", ok: true, sources: [s-prayer-rakaat]}
+
+  # lesson 4 «أُصَلِّي مَعَ أَهْلِي»: story, role-play
+  - key: u-prayer/l4-1
+    type: story
+    ai_drafted: true
+    scene: {backdrop: home, props: ["isl:prayer-mat", lamp], figures: [huda, salem, naanaa]}
+    lines:
+      - {who: narrator, t: "حَانَ وَقْتُ الْمَغْرِبِ، فَفَرَشَتْ سِتِّي هُدَى السَّجَّادَاتِ."}
+      - {who: salem, t: "سَأَقِفُ بِجَانِبِ أَبِي، وَأُصَلِّي مِثْلَهُ!"}
+      - {who: reem, t: "وَأَنَا أَلْبَسُ ثَوْبَ الصَّلَاةِ، وَأَقِفُ بِجَانِبِ أُمِّي."}
+      - {who: huda, t: "مَا أَجْمَلَ أَنْ نُصَلِّيَ مَعًا! وَنَقْرَأُ فِي صَلَاتِنَا السُّوَرَ الَّتِي نَحْفَظُهَا.", sources: [h-bukhari-631], ai_drafted: true}
+    lesson: {text: "أُصَلِّي مَعَ أَهْلِي وَأَتَعَلَّمُ مِنْهُمْ، خُطْوَةً خُطْوَةً وَبِحُبٍّ.", sources: [s-prayer-age, h-abudawud-495], ai_drafted: true}
+
+  - key: u-prayer/l4-2
+    type: role-play
+    ai_drafted: true
+    instruction: "{مَثِّلِ الْمَوْقِفَ مَعَ أَهْلِكَ/مَثِّلِي الْمَوْقِفَ مَعَ أَهْلِكِ}"
+    scenario: "حَانَ وَقْتُ الصَّلَاةِ، {وَأَنْتَ تَلْعَبُ بِلُعْبَتِكَ الْمُفَضَّلَةِ/وَأَنْتِ تَلْعَبِينَ بِلُعْبَتِكِ الْمُفَضَّلَةِ}."
+    scene: {backdrop: home, props: [blocks, "isl:prayer-mat"], figures: [reader]}
+    roles:
+      - {role: "مَنْ يُنَادِي", by: "{أَبُوكَ أَوْ أُمُّكَ/أَبُوكِ أَوْ أُمُّكِ}"}
+      - {role: "مَنْ يَلْعَبُ", by: "{أَنْتَ/أَنْتِ}"}
+    script:
+      - {role: "مَنْ يُنَادِي", t: "حَانَ وَقْتُ الصَّلَاةِ يَا {حَبِيبِي/حَبِيبَتِي}! هَيَّا نَتَوَضَّأْ.", sources: [h-bukhari-527]}
+      - {role: "مَنْ يَلْعَبُ", t: "أُرَتِّبُ لُعْبَتِي وَأَقُولُ: {أَنَا قَادِمٌ/أَنَا قَادِمَةٌ}! أُكْمِلُ اللَّعِبَ بَعْدَ الصَّلَاةِ."}
+      - {role: "مَنْ يُنَادِي", t: "{أَحْسَنْتَ/أَحْسَنْتِ}! نُصَلِّي مَعًا، ثُمَّ نَلْعَبُ مَعًا."}
+      - {role: "مَنْ يَلْعَبُ", t: "أَتَوَضَّأُ، ثُمَّ أَقِفُ عَلَى سَجَّادَتِي لِأُصَلِّيَ مَعَكُمْ."}
+    tip: "مثّلوا الموقف مرّتين: مرّة يسرع الطفل، ومرّة يتأخّر ثم يعتذر. امدحوا الإسراع، ولا توبّخوا على التأخّر."
+    stars: "كَمْ نَجْمَةً نَسْتَحِقُّ؟"
+
+  - key: u-prayer/closing-1
+    type: unit-closing
+    ai_drafted: true
+    learned:
+      - "أُصَلِّي كَمَا عَلَّمَنَا نَبِيُّنَا ﷺ."
+      - "أَرْكَعُ وَأَسْجُدُ، وَأُسَبِّحُ اللهَ فِي رُكُوعِي وَسُجُودِي."
+      - "أَجْلِسُ لِلتَّشَهُّدِ، ثُمَّ أُسَلِّمُ."
+      - "أُصَلِّي مَعَ أَهْلِي وَأَتَعَلَّمُ مِنْهُمْ."
+    apply: "أَخْتَارُ مَا سَأَفْعَلُهُ هَذَا الْأُسْبُوعَ:"
+    apply_choices: ["أُصَلِّي صَلَاةً كَامِلَةً مَعَ أَهْلِي.", "أَحْفَظُ ذِكْرَ الرُّكُوعِ وَالسُّجُودِ.", "أَتْرُكُ اللَّعِبَ حِينَ يَحِينُ وَقْتُ الصَّلَاةِ."]
+
+  - key: u-prayer/closing-2
+    type: unit-closing
+    ai_drafted: true
+    dhikr: {source: d-sujud, label: "ذِكْرُ السُّجُودِ"}
+    dhikr_when: "أَقُولُهُ فِي كُلِّ سَجْدَةٍ."
+    challenge: "أُصَلِّي مَعَ أَهْلِي صَلَاةً وَاحِدَةً كُلَّ يَوْمٍ، وَنُلَوِّنُ نَجْمَةً بَعْدَهَا."
+
+  - key: u-prayer/parent
+    type: parent-guide
+    ai_drafted: true
+    lang: modern-standard
+    learned: {text: "تعلّم طفلكم صورة الصلاة: الوقوف والتكبير، والركوع والسجود وذكرهما، والجلوس للتشهّد ثم التسليم، وأنّنا نصلّي كما صلّى النبي ﷺ.", sources: [h-bukhari-631, h-muslim-772, h-bukhari-831], ai_drafted: true}
+    explain: {text: "في هذا العمر يتعلّم الطفل بالتقليد: دعوه يصلّي بجانبكم، ولا تنتظروا منه الإتقان. صحّحوا خطوة واحدة في كل مرة، وامدحوا ما أحسن فيه.", ai_drafted: true}
+    ask: "ماذا تقول في السجود؟ ولمن نسجد؟"
+    together: "صلّوا مع طفلكم صلاة المغرب جماعة في البيت، واجعلوه يحمل السجّادات ويفرشها بنفسه."
+    habit: {text: "نشجّع ولا نُلزم: يبدأ أمر الطفل بالصلاة في السابعة، وقبلها نصلّي معه بقدر ما يحبّ ويستطيع.", sources: [s-prayer-age, h-abudawud-495], ai_drafted: true}
+    care_note: "في الكتاب صفحات فيها كلام الله تعالى وأذكار ودعوات؛ نرجو حفظ الكتاب في مكان نظيف مرتفع، وعدم رميه أو وضع شيء فوقه."
+
+  # ================================================================== الْقُرْآنُ كِتَابُ اللهِ
+  - key: u-quran1/opener
+    type: unit-opener
+    ai_drafted: true
+    hello: {who: reem, t: "{تَعَالَ نَتَعَرَّفْ/تَعَالَيْ نَتَعَرَّفْ} إِلَى أَعْظَمِ كِتَابٍ: الْقُرْآنِ الْكَرِيمِ، كَلَامِ اللهِ!"}
+    question: "{مَاذَا تَحْفَظُ/مَاذَا تَحْفَظِينَ} مِنَ الْقُرْآنِ الْكَرِيمِ؟"
+
+  # lesson 1 «الْقُرْآنُ كَلَامُ اللهِ»: story, find-objects, choose
+  - key: u-quran1/l1-1
+    type: story
+    ai_drafted: true
+    scene: {backdrop: home, props: ["isl:book-stand", lamp], figures: [huda, reem, salem]}
+    lines:
+      - {who: salem, t: "سِتِّي، مَا هَذَا الْكِتَابُ الْجَمِيلُ؟"}
+      - {who: huda, t: "هَذَا هُوَ الْمُصْحَفُ يَا سَالِمُ، وَفِيهِ الْقُرْآنُ الْكَرِيمُ، كَلَامُ اللهِ.", sources: [q-2-185], ai_drafted: true}
+      - {who: huda, t: "أَنْزَلَهُ اللهُ عَلَى نَبِيِّنَا مُحَمَّدٍ ﷺ فِي شَهْرِ رَمَضَانَ.", sources: [q-2-185], ai_drafted: true}
+      - {who: reem, t: "وَأَوَّلُ مَا نَزَلَ مِنْهُ يَأْمُرُنَا بِالْقِرَاءَةِ!", sources: [q-96-1-5], ai_drafted: true}
+    quote: {source: q-96-1-5, span: {start: "اقرأ", end: "خلق"}}
+    lesson: {text: "الْقُرْآنُ كَلَامُ اللهِ، أَنْزَلَهُ عَلَى نَبِيِّنَا مُحَمَّدٍ ﷺ لِيَهْدِيَ النَّاسَ.", sources: [q-2-185], ai_drafted: true}
+
+  - key: u-quran1/l1-2
+    type: find-objects
+    ai_drafted: true
+    instruction: "{ابْحَثْ/ابْحَثِي} عَنْ هَذِهِ الْأَشْيَاءِ فِي الصُّورَةِ"
+    find:
+      - {pic: "isl:book-stand", word: الْمُصْحَفُ}
+      - {pic: "isl:crescent", word: هِلَالُ رَمَضَانَ}
+      - {pic: "isl:dome", word: الْمَسْجِدُ}
+      - {pic: lamp, word: الْمِصْبَاحُ}
+      - {pic: "isl:prayer-mat", word: السَّجَّادَةُ}
+    others: [ball, car, kite, cat, apple, shoe]
+    closing: {text: "نَزَلَ الْقُرْآنُ فِي رَمَضَانَ، وَنَقْرَؤُهُ فِي بُيُوتِنَا وَمَسَاجِدِنَا.", sources: [q-2-185], ai_drafted: true}
+
+  - key: u-quran1/l1-3
+    type: choose
+    ai_drafted: true
+    instruction: "{اخْتَرِ/اخْتَارِي} الْجَوَابَ الصَّحِيحَ"
+    questions:
+      - text: "مَا الْقُرْآنُ الْكَرِيمُ؟"
+        pic: "isl:book-stand"
+        choices: [{t: "كَلَامُ اللهِ", ok: true}, {t: "قِصَّةٌ كَتَبَهَا النَّاسُ"}]
+        sources: [q-2-185]
+      - text: "عَلَى مَنْ أَنْزَلَ اللهُ الْقُرْآنَ؟"
+        choices: [{t: "عَلَى نَبِيِّنَا مُحَمَّدٍ ﷺ", ok: true}, {t: "عَلَى مُعَلِّمِ الرَّوْضَةِ"}]
+        sources: [q-96-1-5, q-2-185]
+      - text: "فِي أَيِّ شَهْرٍ نَزَلَ الْقُرْآنُ؟"
+        pic: "isl:crescent"
+        choices: [{t: "فِي شَهْرِ رَمَضَانَ", ok: true}, {t: "فِي يَوْمِ الْعِيدِ"}]
+        sources: [q-2-185]
+
+  # lesson 2 «أُحَافِظُ عَلَى الْمُصْحَفِ»: story, wwyd, true-false
+  - key: u-quran1/l2-1
+    type: story
+    ai_drafted: true
+    scene: {backdrop: home, props: ["isl:book-stand", chair], figures: [reem, salem, naanaa]}
+    lines:
+      - {who: narrator, t: "تَرَكَ سَالِمٌ الْمُصْحَفَ عَلَى الْأَرْضِ، وَذَهَبَ لِيَلْعَبَ."}
+      - {who: reem, t: "سَالِمُ، تَعَالَ! نَعْنَاعُ تَقْتَرِبُ مِنَ الْمُصْحَفِ!"}
+      - {who: salem, t: "آسِفٌ! سَأَرْفَعُهُ وَأَضَعُهُ فِي مَكَانٍ عَالٍ نَظِيفٍ."}
+      - {who: reem, t: "أَحْسَنْتَ يَا سَالِمُ! فَالْقُرْآنُ كِتَابٌ كَرِيمٌ نُكْرِمُهُ.", sources: [q-56-77-79], ai_drafted: true}
+    quote: {source: q-56-77-79, span: {start: "إنه لقرآن", end: "مكنون"}}
+    lesson: {text: "نُكْرِمُ الْمُصْحَفَ: نَحْمِلُهُ بِيَدَيْنِ نَظِيفَتَيْنِ، وَنَضَعُهُ فِي مَكَانٍ عَالٍ نَظِيفٍ.", sources: [q-56-77-79, s-quran-respect], ai_drafted: true}
+
+  - key: u-quran1/l2-2
+    type: wwyd
+    ai_drafted: true
+    title: "{مَاذَا كُنْتَ سَتَفْعَلُ؟/مَاذَا كُنْتِ سَتَفْعَلِينَ؟}"
+    scenario: "{رَأَيْتَ/رَأَيْتِ} مُصْحَفًا عَلَى الْكُرْسِيِّ، وَ{أَخُوكَ/أَخُوكِ} الصَّغِيرُ يُرِيدُ أَنْ يَجْلِسَ عَلَيْهِ."
+    scene: {backdrop: home, props: [chair, "isl:book-stand"], figures: [reader, salem]}
+    choices:
+      - {t: "أَرْفَعُ الْمُصْحَفَ بِلُطْفٍ وَأَضَعُهُ فِي مَكَانِهِ الْعَالِي", ok: true, feedback: "{أَحْسَنْتَ يَا بَطَلُ/أَحْسَنْتِ يَا بَطَلَةُ}! هَكَذَا نُكْرِمُ كِتَابَ اللهِ."}
+      - {t: "أَتْرُكُهُ مَكَانَهُ، فَلَيْسَ هَذَا شَأْنِي", feedback: "لَيْسَ هَذَا أَجْمَلَ اخْتِيَارٍ. {جَرِّبْ/جَرِّبِي} مَرَّةً أُخْرَى!"}
+      - {t: "أَضَعُهُ عَلَى الْأَرْضِ لِيَجْلِسَ أَخِي", feedback: "لَيْسَ هَذَا أَجْمَلَ اخْتِيَارٍ. {جَرِّبْ/جَرِّبِي} مَرَّةً أُخْرَى!"}
+    quote: {source: q-56-77-79, span: {start: "إنه لقرآن", end: "كريم"}}
+    sources: [q-56-77-79, s-quran-respect]
+    role_play: "{مَثِّلِ الْمَوْقِفَ مَعَ أَهْلِكَ/مَثِّلِي الْمَوْقِفَ مَعَ أَهْلِكِ}"
+
+  - key: u-quran1/l2-3
+    type: true-false
+    ai_drafted: true
+    instruction: "{ضَعْ/ضَعِي} دَائِرَةً حَوْلَ الْجَوَابِ"
+    statements:
+      - {t: "نَضَعُ الْمُصْحَفَ فِي مَكَانٍ عَالٍ نَظِيفٍ.", ok: true, sources: [s-quran-respect]}
+      - {t: "نَحْمِلُ الْمُصْحَفَ بِيَدَيْنِ نَظِيفَتَيْنِ.", ok: true, sources: [s-quran-respect]}
+      - {t: "نَتْرُكُ الْمُصْحَفَ عَلَى الْأَرْضِ حِينَ نَنْتَهِي.", ok: false, sources: [s-quran-respect]}
+      - {t: "الْقُرْآنُ كِتَابٌ كَرِيمٌ.", ok: true, sources: [q-56-77-79]}
+      - {t: "نَضَعُ أَلْعَابَنَا فَوْقَ الْمُصْحَفِ.", ok: false, sources: [s-quran-respect]}
+
+  # lesson 3 «أَقْرَأُ وَأَسْتَمِعُ»: story, draw, choose
+  - key: u-quran1/l3-1
+    type: story
+    ai_drafted: true
+    scene: {backdrop: home, props: ["isl:book-stand", pillow], figures: [huda, reem, salem]}
+    lines:
+      - {who: reem, t: "سِتِّي، لَا أَسْتَطِيعُ أَنْ أَقْرَأَ مِنَ الْمُصْحَفِ وَحْدِي بَعْدُ."}
+      - {who: huda, t: "لَا بَأْسَ يَا رِيمُ، نَسْتَمِعُ أَوَّلًا، ثُمَّ نُرَدِّدُ آيَةً آيَةً."}
+      - {who: huda, t: "جَعَلَ اللهُ الْقُرْآنَ سَهْلًا لِلْحِفْظِ وَالذِّكْرِ.", sources: [q-54-17], ai_drafted: true}
+      - {who: salem, t: "وَحِينَ نَسْمَعُهُ نَجْلِسُ بِهُدُوءٍ وَنُنْصِتُ!"}
+    quote: {source: q-20-114, span: {start: "رب زدني", end: "علما"}, label: "دُعَاءُ طَلَبِ الْعِلْمِ"}
+    lesson: {text: "نَسْتَمِعُ إِلَى الْقُرْآنِ بِإِنْصَاتٍ، وَنَقْرَؤُهُ كُلَّ يَوْمٍ، وَنَدْعُو اللهَ أَنْ يَزِيدَنَا عِلْمًا.", sources: [q-54-17, q-20-114], ai_drafted: true}
+
+  - key: u-quran1/l3-2
+    type: draw
+    ai_drafted: true
+    instruction: "{ارْسُمْ وَلَوِّنْ/ارْسُمِي وَلَوِّنِي}"
+    prompt: "{ارْسُمْ رُكْنَ الْقُرْآنِ فِي بَيْتِكَ/ارْسُمِي رُكْنَ الْقُرْآنِ فِي بَيْتِكِ}: مَكَانٌ عَالٍ نَظِيفٌ لِلْمُصْحَفِ."
+    hints: ["isl:book-stand", lamp, pillow]
+
+  - key: u-quran1/l3-3
+    type: choose
+    ai_drafted: true
+    instruction: "{اخْتَرِ/اخْتَارِي} الْجَوَابَ الصَّحِيحَ"
+    questions:
+      - text: "مَاذَا نَفْعَلُ حِينَ نَسْمَعُ الْقُرْآنَ؟"
+        pic: ear
+        choices: [{t: "نَسْكُتُ وَنَسْتَمِعُ", ok: true}, {t: "نَرْفَعُ أَصْوَاتَنَا"}]
+        sources: [s-quran-respect]
+      - text: "كَيْفَ جَعَلَ اللهُ الْقُرْآنَ لِلْحِفْظِ؟"
+        choices: [{t: "سَهْلًا", ok: true}, {t: "صَعْبًا جِدًّا"}]
+        sources: [q-54-17]
+      - text: "مَاذَا نَسْأَلُ اللهَ قَبْلَ أَنْ نَتَعَلَّمَ؟"
+        choices: [{t: "أَنْ يَزِيدَنَا عِلْمًا", ok: true}, {t: "أَنْ نَنَامَ كَثِيرًا"}]
+        sources: [q-20-114]
+
+  - key: u-quran1/closing-1
+    type: unit-closing
+    ai_drafted: true
+    learned:
+      - "الْقُرْآنُ كَلَامُ اللهِ، أَنْزَلَهُ عَلَى نَبِيِّنَا ﷺ."
+      - "أُكْرِمُ الْمُصْحَفَ، وَأَضَعُهُ فِي مَكَانٍ عَالٍ نَظِيفٍ."
+      - "أَسْتَمِعُ إِلَى الْقُرْآنِ بِهُدُوءٍ، وَأَقْرَؤُهُ كُلَّ يَوْمٍ."
+    apply: "أَخْتَارُ مَا سَأَفْعَلُهُ هَذَا الْأُسْبُوعَ:"
+    apply_choices: ["أَسْتَمِعُ إِلَى سُورَةٍ كُلَّ يَوْمٍ.", "أُرَتِّبُ رُكْنًا نَظِيفًا لِلْمُصْحَفِ.", "أُرَدِّدُ آيَةً مَعَ أَهْلِي كُلَّ يَوْمٍ."]
+
+  - key: u-quran1/closing-2
+    type: unit-closing
+    ai_drafted: true
+    dhikr: {source: q-20-114, span: {start: "رب زدني", end: "علما"}, label: "دُعَاءُ طَلَبِ الْعِلْمِ"}
+    dhikr_when: "أَقُولُهُ قَبْلَ أَنْ أَتَعَلَّمَ وَأَقْرَأَ."
+    challenge: "أَسْتَمِعُ مَعَ أَهْلِي إِلَى سُورَةٍ قَصِيرَةٍ كُلَّ يَوْمٍ، وَأُرَدِّدُهَا مَعَهُمْ."
+
+  - key: u-quran1/parent
+    type: parent-guide
+    ai_drafted: true
+    lang: modern-standard
+    learned: {text: "تعلّم طفلكم أنّ القرآن كلام الله أنزله على نبيّنا محمد ﷺ في رمضان، وأنّنا نكرم المصحف، ونستمع إليه بإنصات، ونقرؤه كل يوم.", sources: [q-2-185, q-56-77-79, q-54-17], ai_drafted: true}
+    explain: {text: "اجعلوا للقرآن وقتًا ثابتًا قصيرًا محبوبًا، وعلّموا الطفل أن يغسل يديه ويحمل المصحف بلطف؛ فالمقصود التوقير والمحبة لا الخوف.", ai_drafted: true}
+    ask: "أين نضع المصحف بعد القراءة؟ ولماذا؟"
+    together: "رتّبوا معًا «ركن القرآن» في البيت: رفّ عالٍ نظيف، وحامل للمصحف، ووسادة صغيرة للجلوس."
+    habit: {text: "استمعوا كل يوم إلى آيات قليلة بصوت قارئ متقن، ثم ردّدوها معًا.", sources: [q-54-17], ai_drafted: true}
+    care_note: "في الكتاب صفحات فيها كلام الله تعالى وأذكار ودعوات؛ نرجو حفظ الكتاب في مكان نظيف مرتفع، وعدم رميه أو وضع شيء فوقه."
+
+  # the cumulative review after الْقُرْآنُ كِتَابُ اللهِ (two pages: prayer, wudu, the steps of the prayer)
+  - key: u-quran1/review-1
+    type: self-test
+    ai_drafted: true
+    instruction: "{أَجِبْ ثُمَّ لَوِّنِ/أَجِيبِي ثُمَّ لَوِّنِي} النُّجُومَ"
+    true_false:
+      - {t: "نُصَلِّي لِأَنَّنَا نُحِبُّ اللهَ وَنَذْكُرُهُ.", ok: true, sources: [q-20-14]}
+      - {t: "الصَّلَوَاتُ فِي الْيَوْمِ ثَلَاثٌ.", ok: false, sources: [h-bukhari-46]}
+      - {t: "نَتَوَضَّأُ قَبْلَ الصَّلَاةِ.", ok: true, sources: [q-5-6]}
+      - {t: "نُصَلِّي الْعِشَاءَ فِي الصَّبَاحِ.", ok: false, sources: [q-4-103]}
+    questions:
+      - text: "أَيُّ صَلَاةٍ نُصَلِّيهَا حِينَ تَغِيبُ الشَّمْسُ؟"
+        choices: [{t: "الْمَغْرِبُ", ok: true}, {t: "الْفَجْرُ"}, {t: "الظُّهْرُ"}]
+        sources: [q-4-103]
+    stars: "كَمْ نَجْمَةً {تَسْتَحِقُّ/تَسْتَحِقِّينَ}؟"
+
+  - key: u-quran1/review-2
+    type: self-test
+    ai_drafted: true
+    instruction: "{أَجِبْ ثُمَّ لَوِّنِ/أَجِيبِي ثُمَّ لَوِّنِي} النُّجُومَ"
+    true_false:
+      - {t: "فِي الْوُضُوءِ نَغْسِلُ الْوَجْهَ، ثُمَّ الْيَدَيْنِ إِلَى الْمِرْفَقَيْنِ.", ok: true, sources: [q-5-6]}
+      - {t: "نَقُولُ فِي السُّجُودِ: {src:d-sujud}", ok: true, sources: [d-sujud]}
+      - {t: "نَرْكَعُ قَبْلَ أَنْ نُكَبِّرَ.", ok: false, sources: [h-bukhari-631]}
+    questions:
+      - text: "مَاذَا نَقُولُ فِي الرُّكُوعِ؟"
+        choices: [{source: d-ruku, ok: true}, {source: d-sujud}]
+        sources: [h-muslim-772]
+      - text: "مَاذَا نَقُولُ بَعْدَ الْوُضُوءِ؟"
+        choices: [{source: d-wudu-end, ok: true}, {source: d-mosque-in}]
+        sources: [h-muslim-234]
+    stars: "كَمْ نَجْمَةً {تَسْتَحِقُّ/تَسْتَحِقِّينَ}؟"
+
+  # ================================================================== سُوَرٌ أَحْفَظُهَا
+  - key: u-surahs1/opener
+    type: unit-opener
+    ai_drafted: true
+    hello: {who: huda, t: "سَنَحْفَظُ مَعًا ثَلَاثَ سُوَرٍ قَصِيرَةٍ، وَنَقْرَؤُهَا فِي صَلَاتِنَا!"}
+    question: "{أَيُّ سُورَةٍ تَحْفَظُ/أَيُّ سُورَةٍ تَحْفَظِينَ} الْآنَ؟"
+
+  # lesson 1 «سُورَةُ الْفَاتِحَةِ»: surah, story, match, true-false
+  - key: u-surahs1/l1-1
+    type: surah
+    ai_drafted: true
+    title: سُورَةُ الْفَاتِحَةِ
+    verse: {source: q-1, frame: dignified}
+    meaning: {text: "فِي هَذِهِ السُّورَةِ نَحْمَدُ اللهَ وَنُثْنِي عَلَيْهِ، وَنَعْبُدُهُ وَحْدَهُ، وَنَسْأَلُهُ أَنْ يَهْدِيَنَا إِلَى الطَّرِيقِ الْمُسْتَقِيمِ.", sources: [q-1], ai_drafted: true}
+    audio_qr: {kind: licensed-recitation, note: "تسجيل بصوت قارئ مجاز أو بتسجيلنا مع قارئ مؤهَّل؛ لا TTS للقرآن أبدًا"}
+    tracker: {ayahs: 7, days: 7}
+    care_note: "هَذِهِ الصَّفْحَةُ فِيهَا كَلَامُ اللهِ تَعَالَى. نَحْفَظُهَا فِي مَكَانٍ نَظِيفٍ، وَلَا نَرْمِيهَا."
+    flags: [never_cut, never_colored]
+
+  - key: u-surahs1/l1-2
+    type: story
+    ai_drafted: true
+    scene: {backdrop: home, props: ["isl:prayer-mat", "isl:book-stand"], figures: [huda, reem, salem]}
+    lines:
+      - {who: reem, t: "سِتِّي، أَسْمَعُ أَبِي يَقْرَأُ الْفَاتِحَةَ فِي صَلَاتِهِ."}
+      - {who: huda, t: "نَعَمْ يَا رِيمُ، نَقْرَؤُهَا فِي كُلِّ صَلَاةٍ، وَهِيَ أَوَّلُ سُورَةٍ فِي الْمُصْحَفِ.", sources: [q-1, h-bukhari-631], ai_drafted: true}
+      - {who: salem, t: "وَفِيهَا نَحْمَدُ اللهَ وَنَدْعُوهُ!", sources: [q-1], ai_drafted: true}
+      - {who: huda, t: "وَتُعَلِّمُنَا أَنَّ رَحْمَةَ اللهِ وَاسِعَةٌ.", sources: [q-1-3], ai_drafted: true}
+    lesson: {text: "الْفَاتِحَةُ سُورَةٌ عَظِيمَةٌ نَقْرَؤُهَا فِي صَلَاتِنَا، نَحْمَدُ فِيهَا اللهَ وَنَدْعُوهُ.", sources: [q-1], ai_drafted: true}
+    question:
+      text: "أَيْنَ نَقْرَأُ الْفَاتِحَةَ؟"
+      choices: [{t: "فِي صَلَاتِنَا", ok: true}, {t: "فِي الْعِيدِ فَقَطْ"}]
+      sources: [q-1, h-bukhari-631]
+
+  - key: u-surahs1/l1-3
+    type: match
+    ai_drafted: true
+    instruction: "{صِلْ/صِلِي} كُلَّ جُمْلَةٍ بِمَعْنَاهَا"
+    pairs:
+      - {a: {t: "نَحْمَدُ اللهَ"}, b: {pic: heart, t: "نَشْكُرُهُ وَنُثْنِي عَلَيْهِ"}, sources: [q-1]}
+      - {a: {t: "اللهُ رَبُّ كُلِّ شَيْءٍ"}, b: {pic: "isl:earth-leaf", t: "خَلَقَ كُلَّ شَيْءٍ وَيَرْعَاهُ"}, sources: [q-1]}
+      - {a: {t: "نَعْبُدُ اللهَ وَحْدَهُ"}, b: {pic: "isl:prayer-mat", t: "نُصَلِّي لَهُ وَحْدَهُ"}, sources: [q-1]}
+      - {a: {t: "نَدْعُو اللهَ"}, b: {pic: "isl:footprints", t: "أَنْ يَهْدِيَنَا إِلَى الطَّرِيقِ الْمُسْتَقِيمِ"}, sources: [q-1]}
+
+  - key: u-surahs1/l1-4
+    type: true-false
+    ai_drafted: true
+    instruction: "{ضَعْ/ضَعِي} دَائِرَةً حَوْلَ الْجَوَابِ"
+    statements:
+      - {t: "الْفَاتِحَةُ أَوَّلُ سُورَةٍ فِي الْمُصْحَفِ.", ok: true, sources: [q-1]}
+      - {t: "نَقْرَأُ الْفَاتِحَةَ فِي صَلَاتِنَا.", ok: true, sources: [q-1, h-bukhari-631]}
+      - {t: "فِي الْفَاتِحَةِ نَحْمَدُ اللهَ وَنَدْعُوهُ.", ok: true, sources: [q-1]}
+      - {t: "الْفَاتِحَةُ سُورَةٌ طَوِيلَةٌ جِدًّا.", ok: false, sources: [q-1]}
+      - {t: "رَحْمَةُ اللهِ وَاسِعَةٌ.", ok: true, sources: [q-1-3]}
+
+  # lesson 2 «سُورَةُ الْإِخْلَاصِ»: surah (the sample s12), story, find-objects, choose
+  - key: u-surahs1/l2-1
+    type: surah
+    ai_drafted: true
+    title: سُورَةُ الْإِخْلَاصِ
+    verse: {source: q-112, frame: dignified}
+    meaning: {text: "تُعَلِّمُنَا هَذِهِ السُّورَةُ أَنَّ اللهَ وَاحِدٌ، وَهُوَ الَّذِي نَقْصِدُهُ فِي كُلِّ حَاجَاتِنَا.", sources: [q-112], ai_drafted: true}
+    audio_qr: {kind: licensed-recitation, note: "تسجيل بصوت قارئ مجاز أو بتسجيلنا مع قارئ مؤهَّل؛ لا TTS للقرآن أبدًا"}
+    tracker: {ayahs: 4, days: 7}
+    care_note: "هَذِهِ الصَّفْحَةُ فِيهَا كَلَامُ اللهِ تَعَالَى. نَحْفَظُهَا فِي مَكَانٍ نَظِيفٍ، وَلَا نَرْمِيهَا."
+    flags: [never_cut, never_colored]
+
+  - key: u-surahs1/l2-2
+    type: story
+    ai_drafted: true
+    scene: {backdrop: night-sky, props: [star, moon], figures: [huda, salem]}
+    lines:
+      - {who: salem, t: "سِتِّي، هَلْ لِلَّهِ أَبٌ أَوِ ابْنٌ مِثْلَنَا؟"}
+      - {who: huda, t: "لَا يَا سَالِمُ، اللهُ وَاحِدٌ، لَيْسَ لَهُ أَبٌ وَلَا ابْنٌ، وَلَا يُشْبِهُهُ شَيْءٌ.", sources: [q-112], ai_drafted: true}
+      - {who: salem, t: "وَهُوَ الَّذِي نَطْلُبُ مِنْهُ كُلَّ مَا نَحْتَاجُ!", sources: [q-112], ai_drafted: true}
+      - {who: huda, t: "أَحْسَنْتَ! هَكَذَا تُعَلِّمُنَا سُورَةُ الْإِخْلَاصِ، فَلْنَحْفَظْهَا مَعًا.", sources: [q-112], ai_drafted: true}
+    lesson: {text: "اللهُ وَاحِدٌ لَا شَرِيكَ لَهُ، وَلَا يُشْبِهُهُ شَيْءٌ، وَنَحْنُ نَدْعُوهُ فِي كُلِّ حَاجَاتِنَا.", sources: [q-112], ai_drafted: true}
+    question:
+      text: "هَلْ يُشْبِهُ اللهَ شَيْءٌ؟"
+      choices: [{t: "لَا، لَا يُشْبِهُهُ شَيْءٌ", ok: true}, {t: "نَعَمْ"}]
+      sources: [q-112]
+
+  - key: u-surahs1/l2-3
+    type: find-objects
+    ai_drafted: true
+    instruction: "{ابْحَثْ/ابْحَثِي} عَنِ الْمَخْلُوقَاتِ الْحَيَّةِ"
+    find:
+      - {pic: bird, word: الْعُصْفُورُ}
+      - {pic: fish, word: السَّمَكَةُ}
+      - {pic: cat, word: الْقِطَّةُ}
+      - {pic: flower, word: الزَّهْرَةُ}
+      - {pic: tree, word: الشَّجَرَةُ}
+      - {pic: bee, word: النَّحْلَةُ}
+    others: [car, chair, ball, plate, lamp, cup]
+    closing: {text: "كُلُّ الْمَخْلُوقَاتِ تَحْتَاجُ إِلَى اللهِ، وَاللهُ لَا يَحْتَاجُ إِلَى أَحَدٍ.", sources: [q-112], ai_drafted: true}
+
+  - key: u-surahs1/l2-4
+    type: choose
+    ai_drafted: true
+    instruction: "{اخْتَرِ/اخْتَارِي} الْجَوَابَ الصَّحِيحَ"
+    questions:
+      - text: "مَاذَا تُعَلِّمُنَا سُورَةُ الْإِخْلَاصِ؟"
+        pic: "isl:ribbon"
+        choices: [{t: "أَنَّ اللهَ وَاحِدٌ", ok: true}, {t: "أَنْ نَأْكُلَ بِالْيَمِينِ"}]
+        sources: [q-112]
+      - text: "مِمَّنْ نَطْلُبُ حَاجَاتِنَا كُلَّهَا؟"
+        choices: [{t: "مِنَ اللهِ", ok: true}, {t: "مِنْ لُعْبَتِي"}]
+        sources: [q-112]
+      - text: "كَمْ آيَةً فِي سُورَةِ الْإِخْلَاصِ؟"
+        pic: four
+        choices: [{t: "أَرْبَعُ آيَاتٍ", ok: true}, {t: "عَشْرُ آيَاتٍ"}]
+        sources: [q-112]
+
+  # lesson 3 «سُورَةُ الْكَوْثَرِ»: surah, story, match, true-false
+  - key: u-surahs1/l3-1
+    type: surah
+    ai_drafted: true
+    title: سُورَةُ الْكَوْثَرِ
+    verse: {source: q-108, frame: dignified}
+    meaning: {text: "أَعْطَى اللهُ نَبِيَّنَا ﷺ خَيْرًا كَثِيرًا، فَنَشْكُرُ اللهَ بِالصَّلَاةِ لَهُ وَحْدَهُ.", sources: [q-108], ai_drafted: true}
+    audio_qr: {kind: licensed-recitation, note: "تسجيل بصوت قارئ مجاز أو بتسجيلنا مع قارئ مؤهَّل؛ لا TTS للقرآن أبدًا"}
+    tracker: {ayahs: 3, days: 7}
+    care_note: "هَذِهِ الصَّفْحَةُ فِيهَا كَلَامُ اللهِ تَعَالَى. نَحْفَظُهَا فِي مَكَانٍ نَظِيفٍ، وَلَا نَرْمِيهَا."
+    flags: [never_cut, never_colored]
+
+  - key: u-surahs1/l3-2
+    type: story
+    ai_drafted: true
+    scene: {backdrop: garden, props: [flower, water, palm], figures: [huda, reem, salem]}
+    lines:
+      - {who: reem, t: "سِتِّي، مَا مَعْنَى الْكَوْثَرِ؟"}
+      - {who: huda, t: "الْكَوْثَرُ خَيْرٌ كَثِيرٌ أَعْطَاهُ اللهُ لِنَبِيِّنَا ﷺ.", sources: [q-108], ai_drafted: true}
+      - {who: salem, t: "وَمَاذَا نَفْعَلُ نَحْنُ حِينَ يُعْطِينَا اللهُ الْخَيْرَ؟"}
+      - {who: huda, t: "نَشْكُرُهُ وَنُصَلِّي لَهُ، كَمَا تُعَلِّمُنَا السُّورَةُ.", sources: [q-108], ai_drafted: true}
+    lesson: {text: "حِينَ يُعْطِينَا اللهُ نِعْمَةً، نَشْكُرُهُ وَنُصَلِّي لَهُ.", sources: [q-108], ai_drafted: true}
+    question:
+      text: "كَمْ آيَةً فِي سُورَةِ الْكَوْثَرِ؟"
+      choices: [{t: "ثَلَاثُ آيَاتٍ", ok: true}, {t: "سَبْعُ آيَاتٍ"}]
+      sources: [q-108]
+
+  - key: u-surahs1/l3-3
+    type: match
+    ai_drafted: true
+    instruction: "{صِلْ/صِلِي} كُلَّ سُورَةٍ بِعَدَدِ آيَاتِهَا"
+    pairs:
+      - {a: {t: "سُورَةُ الْفَاتِحَةِ"}, b: {pic: seven, t: "سَبْعُ آيَاتٍ"}, sources: [q-1]}
+      - {a: {t: "سُورَةُ الْإِخْلَاصِ"}, b: {pic: four, t: "أَرْبَعُ آيَاتٍ"}, sources: [q-112]}
+      - {a: {t: "سُورَةُ الْكَوْثَرِ"}, b: {pic: three, t: "ثَلَاثُ آيَاتٍ"}, sources: [q-108]}
+
+  - key: u-surahs1/l3-4
+    type: true-false
+    ai_drafted: true
+    instruction: "{ضَعْ/ضَعِي} دَائِرَةً حَوْلَ الْجَوَابِ"
+    statements:
+      - {t: "سُورَةُ الْكَوْثَرِ ثَلَاثُ آيَاتٍ.", ok: true, sources: [q-108]}
+      - {t: "الْكَوْثَرُ خَيْرٌ كَثِيرٌ أَعْطَاهُ اللهُ لِنَبِيِّنَا ﷺ.", ok: true, sources: [q-108]}
+      - {t: "نَشْكُرُ اللهَ بِالصَّلَاةِ لَهُ.", ok: true, sources: [q-108]}
+      - {t: "سُورَةُ الْكَوْثَرِ أَطْوَلُ سُورَةٍ فِي الْقُرْآنِ.", ok: false, sources: [q-108]}
+
+  - key: u-surahs1/closing-1
+    type: unit-closing
+    ai_drafted: true
+    learned:
+      - "الْفَاتِحَةُ نَقْرَؤُهَا فِي صَلَاتِنَا، وَنَحْمَدُ فِيهَا اللهَ."
+      - "سُورَةُ الْإِخْلَاصِ تُعَلِّمُنَا أَنَّ اللهَ وَاحِدٌ."
+      - "سُورَةُ الْكَوْثَرِ تُعَلِّمُنَا أَنْ نَشْكُرَ اللهَ وَنُصَلِّيَ لَهُ."
+    apply: "أَخْتَارُ مَا سَأَفْعَلُهُ هَذَا الْأُسْبُوعَ:"
+    apply_choices: ["أُرَدِّدُ سُورَةً كُلَّ يَوْمٍ مَعَ أَهْلِي.", "أَقْرَأُ سُورَةً حَفِظْتُهَا فِي صَلَاتِي.", "أَسْتَمِعُ إِلَى قَارِئٍ وَأُرَدِّدُ مَعَهُ."]
+
+  - key: u-surahs1/closing-2
+    type: unit-closing
+    ai_drafted: true
+    dhikr: {source: q-108, label: "سُورَةُ الْكَوْثَرِ"}
+    dhikr_when: "أَقْرَؤُهَا فِي صَلَاتِي بَعْدَ الْفَاتِحَةِ."
+    challenge: "أُسَمِّعُ أَهْلِي السُّوَرَ الثَّلَاثَ كُلَّ مَسَاءٍ، وَأُلَوِّنُ نَجْمَةً."
+
+  - key: u-surahs1/parent
+    type: parent-guide
+    ai_drafted: true
+    lang: modern-standard
+    learned: {text: "بدأ طفلكم يحفظ الفاتحة والإخلاص والكوثر، وعرف معانيها البسيطة: حمد الله ودعاءه، وأنّ الله واحد، وشكر النعمة بالصلاة.", sources: [q-1, q-112, q-108], ai_drafted: true}
+    explain: {text: "الحفظ في هذا العمر بالسماع والتكرار: آية واحدة كل يوم، تُسمع من قارئ متقن ثم تُردَّد معًا. صحّحوا النطق بلطف، واحتفلوا بكل آية يحفظها.", ai_drafted: true}
+    ask: "أيّ سورة تحبّ أن تقرأها في صلاتك؟ ولماذا؟"
+    together: "اجعلوا لكل سورة «حفلة صغيرة» حين يتمّها الطفل: يسمّعها للعائلة، ويلوّن نجوم جدول الحفظ."
+    habit: {text: "استمعوا إليها بصوت قارئ متقن بعد الفجر، وليقرأها الطفل في صلاته.", sources: [q-54-17, q-1], ai_drafted: true}
+    care_note: "في الكتاب صفحات فيها كلام الله تعالى وأذكار ودعوات؛ نرجو حفظ الكتاب في مكان نظيف مرتفع، وعدم رميه أو وضع شيء فوقه."
+
+  # ================================================================== أَدْعِيَتِي
+  - key: u-adhkar2/opener
+    type: unit-opener
+    ai_drafted: true
+    hello: {who: reem, t: "فِي يَوْمِنَا مَوَاقِفُ كَثِيرَةٌ لَهَا أَدْعِيَةٌ جَمِيلَةٌ. {تَعَالَ نَتَعَلَّمْ/تَعَالَيْ نَتَعَلَّمْ} أَدْعِيَةً جَدِيدَةً!"}
+    question: "{لِمَنْ تُحِبُّ أَنْ تَدْعُوَ/لِمَنْ تُحِبِّينَ أَنْ تَدْعِي}؟"
+
+  # lesson 1 «أَدْعُو لِأُمِّي وَأَبِي»: dhikr, story
+  - key: u-adhkar2/l1-1
+    type: dhikr
+    ai_drafted: true
+    title: دُعَاءٌ لِأُمِّي وَأَبِي
+    when: بَعْدَ صَلَاتِي وَقَبْلَ نَوْمِي
+    dhikr: {source: q-17-24, span: {start: "رب ارحمهما", end: "صغيرا"}}
+    why: {text: "أُمِّي وَأَبِي اعْتَنَيَا بِي مُنْذُ كُنْتُ {صَغِيرًا/صَغِيرَةً}، فَأَدْعُو اللهَ أَنْ يَرْحَمَهُمَا.", sources: [q-17-24], ai_drafted: true}
+    manner: {text: "وَأَدْعُو لَهُمَا بِدُعَاءِ إِبْرَاهِيمَ عَلَيْهِ السَّلَامُ: {src:q-14-41}", sources: [q-14-41], ai_drafted: true}
+    scene: {backdrop: bedroom-night, props: [pillow, lamp], figures: [reader]}
+    home: "أَدْعُو لِأُمِّي وَأَبِي كُلَّ يَوْمٍ هَذَا الْأُسْبُوعَ، وَأُلَوِّنُ نَجْمَةً فِي آخِرِ كُلِّ يَوْمٍ."
+    audio: {kind: human-voice, note: "بصوت بشري مسجّل؛ لا TTS لنص ديني"}
+
+  - key: u-adhkar2/l1-2
+    type: story
+    ai_drafted: true
+    scene: {backdrop: home, props: [lamp, cup], figures: [huda, reem, salem]}
+    lines:
+      - {who: narrator, t: "كَانَتْ أُمُّ رِيمَ وَسَالِمٍ مُتْعَبَةً بَعْدَ يَوْمٍ طَوِيلٍ."}
+      - {who: salem, t: "سِتِّي، كَيْفَ نُسَاعِدُ أُمِّي؟"}
+      - {who: huda, t: "نُرَتِّبُ الْبَيْتَ بِهُدُوءٍ، وَنَدْعُو لَهَا؛ فَاللهُ عَلَّمَنَا أَنْ نَدْعُوَ لِوَالِدِينَا.", sources: [q-17-24], ai_drafted: true}
+      - {who: reem, t: "سَأَدْعُو لَهَا وَلِأَبِي فِي صَلَاتِي كُلَّ يَوْمٍ."}
+    lesson: {text: "مِنْ حُبِّي لِأُمِّي وَأَبِي أَنْ أَدْعُوَ لَهُمَا، وَأُسَاعِدَهُمَا.", sources: [q-17-24, q-17-23], ai_drafted: true}
+    question:
+      text: "مَاذَا نَفْعَلُ لِنُظْهِرَ حُبَّنَا لِوَالِدِينَا؟"
+      choices: [{t: "نَدْعُو لَهُمَا وَنُسَاعِدُهُمَا", ok: true}, {t: "نَرْفَعُ أَصْوَاتَنَا عَلَيْهِمَا"}]
+      sources: [q-17-23, q-17-24]
+
+  # lesson 2 «أَقُولُ إِذَا عَطَسْتُ»: dhikr, dhikr, match
+  - key: u-adhkar2/l2-1
+    type: dhikr
+    ai_drafted: true
+    title: إِذَا عَطَسْتُ
+    when: حِينَ أَعْطِسُ
+    dhikr: {source: d-sneeze-1}
+    why: {text: "أَحْمَدُ اللهَ عَلَى نِعَمِهِ، وَهَكَذَا عَلَّمَنَا نَبِيُّنَا ﷺ.", sources: [d-sneeze-1], ai_drafted: true}
+    manner: {text: "فَيَقُولُ لِي مَنْ سَمِعَنِي: {src:d-sneeze-2}", sources: [d-sneeze-2], ai_drafted: true}
+    scene: {backdrop: garden, props: [flower, butterfly], figures: [salem, reem]}
+    home: "نَتَدَرَّبُ مَعًا: يَعْطِسُ أَحَدُنَا عَطْسَةً مُضْحِكَةً، ثُمَّ يَقُولُ الذِّكْرَ، وَنُلَوِّنُ نَجْمَةً."
+    audio: {kind: human-voice, note: "بصوت بشري مسجّل؛ لا TTS لنص ديني"}
+
+  - key: u-adhkar2/l2-2
+    type: dhikr
+    ai_drafted: true
+    title: إِذَا عَطَسَ غَيْرِي
+    when: حِينَ يَعْطِسُ أَحَدٌ وَيَحْمَدُ اللهَ
+    dhikr: {source: d-sneeze-2}
+    why: {text: "نَدْعُو لَهُ أَنْ يَرْحَمَهُ اللهُ، فَالْمُسْلِمُونَ يُحِبُّ بَعْضُهُمْ بَعْضًا.", sources: [d-sneeze-2, h-muslim-54], ai_drafted: true}
+    manner: {text: "فَيَرُدُّ عَلَيَّ وَيَدْعُو لِي: {src:d-sneeze-3}", sources: [d-sneeze-3], ai_drafted: true}
+    scene: {backdrop: classroom, props: [book, pencil], figures: [reader, salem]}
+    home: "نَتَدَرَّبُ مَعًا هَذَا الْأُسْبُوعَ: يَعْطِسُ وَاحِدٌ، وَيَرُدُّ الْآخَرُ، ثُمَّ نَتَبَادَلُ الْأَدْوَارَ."
+    audio: {kind: human-voice, note: "بصوت بشري مسجّل؛ لا TTS لنص ديني"}
+
+  - key: u-adhkar2/l2-3
+    type: match
+    ai_drafted: true
+    instruction: "{صِلْ/صِلِي} كُلَّ مَوْقِفٍ بِمَا نَقُولُهُ فِيهِ"
+    pairs:
+      - {a: {t: "حِينَ أَعْطِسُ"}, b: {source: d-sneeze-1}, sources: [d-sneeze-1]}
+      - {a: {t: "حِينَ يَعْطِسُ أَخِي وَيَحْمَدُ اللهَ"}, b: {source: d-sneeze-2}, sources: [d-sneeze-2]}
+      - {a: {t: "حِينَ يَدْعُو لِي مَنْ سَمِعَنِي"}, b: {source: d-sneeze-3}, sources: [d-sneeze-3]}
+      - {a: {pic: door, t: "حِينَ أَخْرُجُ مِنَ الْبَيْتِ"}, b: {source: d-leave-home}, sources: [h-abudawud-5095]}
+      - {a: {t: "حِينَ أَخْرُجُ مِنَ الْخَلَاءِ"}, b: {source: d-bath-out}, sources: [h-abudawud-30]}
+
+  # lesson 3 «أُصَلِّي عَلَى نَبِيِّي ﷺ»: dhikr, coloring
+  - key: u-adhkar2/l3-1
+    type: dhikr
+    ai_drafted: true
+    title: أُصَلِّي عَلَى نَبِيِّي ﷺ
+    when: حِينَ أَسْمَعُ اسْمَ نَبِيِّي ﷺ
+    dhikr: {source: q-33-56, span: {start: "يأيها الذين", end: "تسليما"}}
+    why: {text: "أَمَرَنَا اللهُ أَنْ نُصَلِّيَ عَلَى نَبِيِّنَا ﷺ.", sources: [q-33-56], ai_drafted: true}
+    manner: {text: "كُلَّمَا سَمِعْتُ اسْمَهُ صَلَّيْتُ عَلَيْهِ.", sources: [q-33-56], ai_drafted: true}
+    scene: {backdrop: home, props: ["isl:beads", lamp], figures: [huda, reem]}
+    home: "نُصَلِّي عَلَيْهِ ﷺ كُلَّ يَوْمٍ، وَنُلَوِّنُ نَجْمَةً."
+    audio: {kind: human-voice, note: "بصوت بشري مسجّل؛ لا TTS لنص ديني"}
+
+  - key: u-adhkar2/l3-2
+    type: coloring
+    ai_drafted: true
+    sacred_text: none
+    title: أُلَوِّنُ وَأَفْرَحُ
+    instruction: "{لَوِّنْ/لَوِّنِي} النَّخْلَةَ وَالْقُبَّةَ وَالْفَانُوسَ وَالتَّمْرَ"
+    pics: [palm, "isl:dome", "isl:lantern", dates]
+
+  - key: u-adhkar2/closing-1
+    type: unit-closing
+    ai_drafted: true
+    learned:
+      - "أَدْعُو لِأُمِّي وَأَبِي أَنْ يَرْحَمَهُمَا اللهُ."
+      - "إِذَا عَطَسْتُ حَمِدْتُ اللهَ، وَإِذَا عَطَسَ غَيْرِي وَحَمِدَ اللهَ دَعَوْتُ لَهُ."
+      - "أُصَلِّي عَلَى نَبِيِّي ﷺ كُلَّمَا سَمِعْتُ اسْمَهُ."
+    apply: "أَخْتَارُ مَا سَأَفْعَلُهُ هَذَا الْأُسْبُوعَ:"
+    apply_choices: ["أَدْعُو لِوَالِدَيَّ بَعْدَ كُلِّ صَلَاةٍ.", "أَرُدُّ عَلَى مَنْ يَعْطِسُ وَيَحْمَدُ اللهَ.", "أُصَلِّي عَلَى نَبِيِّي ﷺ كُلَّ يَوْمٍ."]
+
+  - key: u-adhkar2/closing-2
+    type: unit-closing
+    ai_drafted: true
+    dhikr: {source: q-17-24, span: {start: "رب ارحمهما", end: "صغيرا"}, label: "دُعَاءٌ لِوَالِدَيَّ"}
+    dhikr_when: "أَدْعُو بِهِ لِأُمِّي وَأَبِي كُلَّ يَوْمٍ."
+    challenge: "أَدْعُو لِأُمِّي وَأَبِي أَمَامَهُمَا كُلَّ يَوْمٍ، فَيَفْرَحَانِ، وَأُلَوِّنُ نَجْمَةً."
+
+  - key: u-adhkar2/parent
+    type: parent-guide
+    ai_drafted: true
+    lang: modern-standard
+    learned: {text: "تعلّم طفلكم الدعاء لوالديه، وآداب العطاس: ما يقوله العاطس وما يقوله من يسمعه، والصلاة على النبي ﷺ كلما ذُكر.", sources: [q-17-24, h-bukhari-6224, q-33-56], ai_drafted: true}
+    explain: {text: "الدعاء حديث محبّة مع الله؛ علّموا الطفل أنه يستطيع أن يدعو بكلماته أيضًا، وأن الأدعية الواردة أجمل ما نبدأ به ونحفظه.", ai_drafted: true}
+    ask: "ماذا تحبّ أن تطلب من الله لأمّك وأبيك؟"
+    together: "لعبة العطسة: يتظاهر أحدكم بالعطاس، ويتسابق الباقون إلى الردّ الصحيح، ثم تتبادلون الأدوار."
+    habit: {text: "ادعوا لوالديكم أمام الطفل بعد الصلاة، فيتعلّم البرّ بالقدوة، ويحفظ الدعاء من كثرة سماعه.", sources: [q-17-24, q-14-41], ai_drafted: true}
+    care_note: "في الكتاب صفحات فيها كلام الله تعالى وأذكار ودعوات؛ نرجو حفظ الكتاب في مكان نظيف مرتفع، وعدم رميه أو وضع شيء فوقه."
+
+  # ================================================================== أُحِبُّ أَهْلِي
+  - key: u-family1/opener
+    type: unit-opener
+    ai_drafted: true
+    hello: {who: salem, t: "أُحِبُّ أُمِّي وَأَبِي كَثِيرًا! {وَأَنْتَ، كَيْفَ تُظْهِرُ حُبَّكَ لِوَالِدَيْكَ؟/وَأَنْتِ، كَيْفَ تُظْهِرِينَ حُبَّكِ لِوَالِدَيْكِ؟}"}
+    question: "{هَلْ سَاعَدْتَ أَهْلَكَ/هَلْ سَاعَدْتِ أَهْلَكِ} الْيَوْمَ؟"
+
+  # lesson 1 «أُحِبُّ أُمِّي وَأَبِي»: story, draw, wwyd
+  - key: u-family1/l1-1
+    type: story
+    ai_drafted: true
+    scene: {backdrop: home, props: [rose, envelope], figures: [huda, reem, salem]}
+    lines:
+      - {who: reem, t: "سِتِّي، لِمَنْ أُقَدِّمُ هَذِهِ الْوَرْدَةَ أَوَّلًا؟"}
+      - {who: huda, t: "سَأَلَ رَجُلٌ نَبِيَّنَا ﷺ: مَنْ أَوْلَى النَّاسِ بِأَنْ أُحْسِنَ إِلَيْهِ؟", sources: [h-bukhari-5971], ai_drafted: true}
+      - {who: huda, t: "فَأَوْصَاهُ بِأُمِّهِ ثَلَاثَ مَرَّاتٍ، ثُمَّ بِأَبِيهِ.", sources: [h-bukhari-5971], ai_drafted: true}
+      - {who: salem, t: "إِذَنْ نُعْطِي الْوَرْدَةَ لِأُمِّي، وَنَرْسُمُ لِأَبِي رَسْمًا جَمِيلًا!"}
+    quote: {source: q-17-23, span: {start: "وبالولدين", end: "إحسنا"}}
+    lesson: {text: "أُحِبُّ أُمِّي وَأَبِي وَأُحْسِنُ إِلَيْهِمَا، وَهَذَا يُرْضِي اللهَ.", sources: [q-17-23, h-tirmidhi-1899], ai_drafted: true}
+
+  - key: u-family1/l1-2
+    type: draw
+    ai_drafted: true
+    instruction: "{ارْسُمْ وَلَوِّنْ/ارْسُمِي وَلَوِّنِي}"
+    prompt: "{ارْسُمْ هَدِيَّةً لِأُمِّكَ وَأَبِيكَ، وَاكْتُبْ/ارْسُمِي هَدِيَّةً لِأُمِّكِ وَأَبِيكِ، وَاكْتُبِي} لَهُمَا كَلِمَةَ حُبٍّ."
+    hints: [rose, heart, gift]
+    lines: 1
+
+  - key: u-family1/l1-3
+    type: wwyd
+    ai_drafted: true
+    title: "{مَاذَا كُنْتَ سَتَفْعَلُ؟/مَاذَا كُنْتِ سَتَفْعَلِينَ؟}"
+    scenario: "{نَادَتْكَ أُمُّكَ وَأَنْتَ تَلْعَبُ بِالْمُكَعَّبَاتِ/نَادَتْكِ أُمُّكِ وَأَنْتِ تَلْعَبِينَ بِالْمُكَعَّبَاتِ}."
+    scene: {backdrop: home, props: [blocks, ball], figures: [reader]}
+    choices:
+      - {t: "أَقُولُ: نَعَمْ يَا أُمِّي، وَأَذْهَبُ إِلَيْهَا فَوْرًا", ok: true, feedback: "{أَحْسَنْتَ يَا بَطَلُ/أَحْسَنْتِ يَا بَطَلَةُ}! هَذَا بِرٌّ يُحِبُّهُ اللهُ."}
+      - {t: "أَتَظَاهَرُ بِأَنِّي لَمْ أَسْمَعْهَا", feedback: "لَيْسَ هَذَا أَجْمَلَ اخْتِيَارٍ. {جَرِّبْ/جَرِّبِي} مَرَّةً أُخْرَى!"}
+      - {t: "أَصْرُخُ: لَيْسَ الْآنَ!", feedback: "لَيْسَ هَذَا أَجْمَلَ اخْتِيَارٍ. {جَرِّبْ/جَرِّبِي} مَرَّةً أُخْرَى!"}
+    quote: {source: q-17-23, span: {start: "وقل لهما", end: "كريما"}}
+    sources: [q-17-23, h-bukhari-527]
+    role_play: "{مَثِّلِ/مَثِّلِي} الْمَوْقِفَ مَعَ {أُمِّكَ/أُمِّكِ}."
+
+  # lesson 2 «أُسَاعِدُ فِي الْبَيْتِ»: story, find-objects, true-false
+  - key: u-family1/l2-1
+    type: story
+    ai_drafted: true
+    scene: {backdrop: kitchen, props: [plate, cup, broom], figures: [reem, salem, huda]}
+    lines:
+      - {who: narrator, t: "بَعْدَ الْغَدَاءِ بَقِيَتِ الصُّحُونُ عَلَى الطَّاوِلَةِ."}
+      - {who: reem, t: "سَأَجْمَعُ الصُّحُونَ، وَأَضَعُهَا فِي الْمَطْبَخِ."}
+      - {who: salem, t: "وَأَنَا سَأَمْسَحُ الطَّاوِلَةَ، وَأُرَتِّبُ الْكَرَاسِيَّ!"}
+      - {who: huda, t: "أَحْسَنْتُمَا! كَانَ نَبِيُّنَا ﷺ يُسَاعِدُ أَهْلَهُ فِي الْبَيْتِ.", sources: [h-bukhari-676], ai_drafted: true}
+    quote: {source: h-bukhari-676, span: {start: "كان يكون", end: "أهله"}}
+    lesson: {text: "أُسَاعِدُ أَهْلِي فِي الْبَيْتِ كَمَا كَانَ نَبِيُّنَا ﷺ يَفْعَلُ، وَاللهُ يُعِينُ مَنْ يُعِينُ غَيْرَهُ.", sources: [h-bukhari-676, h-muslim-2699], ai_drafted: true}
+
+  - key: u-family1/l2-2
+    type: find-objects
+    ai_drafted: true
+    instruction: "{ابْحَثْ/ابْحَثِي} عَنْ أَدَوَاتٍ نُسَاعِدُ بِهَا"
+    find:
+      - {pic: broom, word: الْمِكْنَسَةُ}
+      - {pic: plate, word: الصَّحْنُ}
+      - {pic: watering-can, word: إِبْرِيقُ السِّقَايَةِ}
+      - {pic: basket, word: السَّلَّةُ}
+      - {pic: bucket, word: الدَّلْوُ}
+    others: [ball, kite, teddy, candy, drum, car]
+    closing: {text: "حِينَ أُعِينُ أَهْلِي، يَكُونُ اللهُ فِي عَوْنِي.", sources: [h-muslim-2699], ai_drafted: true}
+
+  - key: u-family1/l2-3
+    type: true-false
+    ai_drafted: true
+    instruction: "{ضَعْ/ضَعِي} دَائِرَةً حَوْلَ الْجَوَابِ"
+    statements:
+      - {t: "كَانَ نَبِيُّنَا ﷺ يُسَاعِدُ أَهْلَهُ فِي الْبَيْتِ.", ok: true, sources: [h-bukhari-676]}
+      - {t: "اللهُ يُعِينُ مَنْ يُعِينُ غَيْرَهُ.", ok: true, sources: [h-muslim-2699]}
+      - {t: "الْمُسَاعَدَةُ فِي الْبَيْتِ عَمَلُ الْكِبَارِ فَقَطْ.", ok: false, sources: [h-bukhari-676]}
+      - {t: "أُسَاعِدُ أُمِّي وَأَبِي دُونَ أَنْ يَطْلُبَا مِنِّي.", ok: true, sources: [h-muslim-2699, q-17-23]}
+
+  # lesson 3 «أَتَكَلَّمُ بِأَدَبٍ»: story, wwyd, match
+  - key: u-family1/l3-1
+    type: story
+    ai_drafted: true
+    scene: {backdrop: home, props: [cup, jug], figures: [huda, salem, reem]}
+    lines:
+      - {who: narrator, t: "طَلَبَ سَالِمٌ الْمَاءَ مِنْ سِتِّي بِصَوْتٍ عَالٍ: «أَعْطِينِي الْمَاءَ!»"}
+      - {who: reem, t: "سَالِمُ، قُلْ: «مِنْ فَضْلِكِ يَا سِتِّي»!"}
+      - {who: salem, t: "آسِفٌ يَا سِتِّي. مِنْ فَضْلِكِ، أُرِيدُ كُوبَ مَاءٍ."}
+      - {who: huda, t: "شُكْرًا يَا سَالِمُ! نَبِيُّنَا ﷺ عَلَّمَنَا أَنْ نَقُولَ خَيْرًا.", sources: [h-bukhari-6018], ai_drafted: true}
+    quote: {source: h-bukhari-6018, span: {start: "فليقل خيرا", end: "ليصمت"}}
+    lesson: {text: "أَتَكَلَّمُ مَعَ الْكِبَارِ بِأَدَبٍ وَلُطْفٍ، وَأَقُولُ: مِنْ فَضْلِكَ، وَشُكْرًا.", sources: [q-17-23, h-tirmidhi-1919], ai_drafted: true}
+
+  - key: u-family1/l3-2
+    type: wwyd
+    ai_drafted: true
+    title: "{مَاذَا كُنْتَ سَتَفْعَلُ؟/مَاذَا كُنْتِ سَتَفْعَلِينَ؟}"
+    scenario: "{دَخَلَ جَدُّكَ الْغُرْفَةَ، وَلَيْسَ فِيهَا كُرْسِيٌّ فَارِغٌ إِلَّا كُرْسِيُّكَ/دَخَلَ جَدُّكِ الْغُرْفَةَ، وَلَيْسَ فِيهَا كُرْسِيٌّ فَارِغٌ إِلَّا كُرْسِيُّكِ}."
+    scene: {backdrop: home, props: [chair, lamp], figures: [reader]}
+    choices:
+      - {t: "أَقُومُ وَأُجْلِسُهُ مَكَانِي بِابْتِسَامَةٍ", ok: true, feedback: "{أَحْسَنْتَ يَا بَطَلُ/أَحْسَنْتِ يَا بَطَلَةُ}! احْتِرَامُ الْكِبَارِ خُلُقٌ جَمِيلٌ."}
+      - {t: "{أَبْقَى جَالِسًا/أَبْقَى جَالِسَةً} وَأُكْمِلُ لَعِبِي", feedback: "لَيْسَ هَذَا أَجْمَلَ اخْتِيَارٍ. {جَرِّبْ/جَرِّبِي} مَرَّةً أُخْرَى!"}
+      - {t: "أَقُولُ لَهُ: اجْلِسْ عَلَى الْأَرْضِ", feedback: "لَيْسَ هَذَا أَجْمَلَ اخْتِيَارٍ. {جَرِّبْ/جَرِّبِي} مَرَّةً أُخْرَى!"}
+    quote: {source: h-tirmidhi-1919, span: {start: "ليس منا", end: "كبيرنا"}}
+    sources: [h-tirmidhi-1919, q-17-23]
+    role_play: "{مَثِّلِ الْمَوْقِفَ مَعَ أَهْلِكَ/مَثِّلِي الْمَوْقِفَ مَعَ أَهْلِكِ}"
+
+  - key: u-family1/l3-3
+    type: match
+    ai_drafted: true
+    instruction: "{صِلْ/صِلِي} كُلَّ مَوْقِفٍ بِالْكَلِمَةِ الْمُنَاسِبَةِ"
+    pairs:
+      - {a: {pic: cup, t: "حِينَ أَطْلُبُ شَيْئًا"}, b: {t: "مِنْ فَضْلِكَ"}}
+      - {a: {pic: gift, t: "حِينَ يُعْطِينِي أَحَدٌ شَيْئًا"}, b: {t: "شُكْرًا"}}
+      - {a: {pic: door, t: "حِينَ أَدْخُلُ الْبَيْتَ"}, b: {t: "أُلْقِي السَّلَامَ"}, sources: [h-muslim-54]}
+      - {a: {pic: glass, t: "حِينَ أُخْطِئُ"}, b: {t: "{أَنَا آسِفٌ/أَنَا آسِفَةٌ}"}}
+      - {a: {t: "حِينَ يَتَكَلَّمُ الْكَبِيرُ"}, b: {t: "أُنْصِتُ وَلَا أُقَاطِعُ"}, sources: [h-tirmidhi-1919]}
+
+  - key: u-family1/closing-1
+    type: unit-closing
+    ai_drafted: true
+    learned:
+      - "أُحِبُّ أُمِّي وَأَبِي، وَأُحْسِنُ إِلَيْهِمَا."
+      - "أُسَاعِدُ أَهْلِي فِي الْبَيْتِ كَمَا كَانَ نَبِيُّنَا ﷺ يَفْعَلُ."
+      - "أَتَكَلَّمُ بِأَدَبٍ، وَأَحْتَرِمُ الْكِبَارَ."
+    apply: "أَخْتَارُ مَا سَأَفْعَلُهُ هَذَا الْأُسْبُوعَ:"
+    apply_choices: ["أُجِيبُ أُمِّي وَأَبِي حِينَ يُنَادِيَانِنِي.", "أُسَاعِدُ فِي عَمَلٍ وَاحِدٍ كُلَّ يَوْمٍ.", "أَقُولُ: مِنْ فَضْلِكَ، وَشُكْرًا."]
+
+  - key: u-family1/closing-2
+    type: unit-closing
+    ai_drafted: true
+    dhikr: {source: q-14-41, label: "دُعَاءٌ لِوَالِدَيَّ"}
+    dhikr_when: "أَدْعُو بِهِ لِأُمِّي وَأَبِي بَعْدَ صَلَاتِي."
+    challenge: "أُسَاعِدُ أَهْلِي فِي عَمَلٍ وَاحِدٍ كُلَّ يَوْمٍ، وَأُلَوِّنُ نَجْمَةً بَعْدَهُ."
+
+  - key: u-family1/parent
+    type: parent-guide
+    ai_drafted: true
+    lang: modern-standard
+    learned: {text: "تعلّم طفلكم أنّ برّ الوالدين يرضي الله، وأنّ الأمّ أحقّ الناس بحسن الصحبة ثم الأب، وأنّ النبي ﷺ كان يساعد أهله.", sources: [q-17-23, h-bukhari-5971, h-bukhari-676], ai_drafted: true}
+    explain: {text: "البرّ يُتعلَّم بالقدوة: حين يرى الطفل احترامكم لأجداده ومساعدتكم في البيت يقلّدكم. امدحوا كل مبادرة صغيرة باسمها: «شكرًا لأنك رتّبت الصحون».", ai_drafted: true}
+    ask: "كيف ساعدت أهلك اليوم؟ وبماذا شعرت بعد ذلك؟"
+    together: "اصنعوا معًا «لوحة المساعدة»: عمل صغير لكل يوم، يختاره الطفل ويلصق نجمة بعد إنجازه."
+    habit: {text: "علّموه «من فضلك» و«شكرًا» و«آسف»، وقولوها له أنتم أيضًا.", sources: [q-17-23, h-bukhari-6018], ai_drafted: true}
+    care_note: "في الكتاب صفحات فيها كلام الله تعالى وأذكار ودعوات؛ نرجو حفظ الكتاب في مكان نظيف مرتفع، وعدم رميه أو وضع شيء فوقه."
+
+  # ================================================================== مَاذَا أَفْعَلُ لَوْ…؟
+  - key: u-whatif1/opener
+    type: unit-opener
+    ai_drafted: true
+    hello: {who: salem, t: "أَحْيَانًا أُخْطِئُ وَلَا أَعْرِفُ مَاذَا أَفْعَلُ. {تَعَالَ نَتَعَلَّمْ/تَعَالَيْ نَتَعَلَّمْ} مَعًا!"}
+    question: "{مَاذَا تَفْعَلُ إِذَا أَخْطَأْتَ/مَاذَا تَفْعَلِينَ إِذَا أَخْطَأْتِ}؟"
+
+  # lesson 1 «لَوْ كَذَبْتُ»: wdif, story, true-false
+  - key: u-whatif1/l1-1
+    type: wdif
+    ai_drafted: true
+    title: مَاذَا أَفْعَلُ لَوْ كَذَبْتُ؟
+    intro: {text: "كُلُّنَا نُخْطِئُ أَحْيَانًا، وَالْمُهِمُّ أَنْ نَرْجِعَ إِلَى الصِّدْقِ بِسُرْعَةٍ.", ai_drafted: true}
+    steps:
+      - {n: 1, t: "أَتَوَقَّفُ، وَآخُذُ نَفَسًا، وَأَتَذَكَّرُ أَنَّ الصِّدْقَ أَجْمَلُ."}
+      - {n: 2, t: "أَقُولُ الصِّدْقَ لِمَنْ كَذَبْتُ عَلَيْهِ، وَأَعْتَذِرُ.", sources: [h-bukhari-6094]}
+      - {n: 3, t: "أَجْلِسُ بِهُدُوءٍ، وَأَسْتَغْفِرُ اللهَ، فَهُوَ يُحِبُّ مَنْ يَتُوبُ إِلَيْهِ.", sources: [q-2-222]}
+      - {n: 4, t: "أَعْزِمُ عَلَى أَنْ أَقُولَ الصِّدْقَ دَائِمًا.", sources: [h-bukhari-6094]}
+    quote: {source: h-bukhari-6094, span: {start: "إن الصدق", end: "البر"}}
+    meaning: {text: "الصِّدْقُ يَقُودُنَا إِلَى كُلِّ خَيْرٍ، وَمَنْ أَخْطَأَ ثُمَّ تَابَ أَحَبَّهُ اللهُ.", sources: [h-bukhari-6094, q-2-222, h-tirmidhi-2499], ai_drafted: true}
+    tracker: "هَلْ {صَدَقْتَ/صَدَقْتِ} هَذَا الْأُسْبُوعَ؟ {لَوِّنْ/لَوِّنِي} نَجْمَةً"
+
+  - key: u-whatif1/l1-2
+    type: story
+    ai_drafted: true
+    scene: {backdrop: bedroom-night, props: [toothbrush, bed], figures: [salem, huda]}
+    lines:
+      - {who: narrator, t: "قَالَ سَالِمٌ لِسِتِّي: نَظَّفْتُ أَسْنَانِي، وَهُوَ لَمْ يُنَظِّفْهَا."}
+      - {who: salem, t: "سِتِّي… قَلْبِي لَيْسَ مُرْتَاحًا. أَنَا لَمْ أَقُلِ الصِّدْقَ."}
+      - {who: huda, t: "شُكْرًا لِأَنَّكَ صَدَقْتَ الْآنَ يَا سَالِمُ. كُلُّنَا نُخْطِئُ، وَخَيْرُنَا مَنْ يَتُوبُ.", sources: [h-tirmidhi-2499], ai_drafted: true}
+      - {who: salem, t: "سَأَسْتَغْفِرُ اللهَ، وَأُنَظِّفُ أَسْنَانِي الْآنَ!"}
+    quote: {source: h-tirmidhi-2499, span: {start: "كل ابن آدم", end: "التوابون"}}
+    lesson: {text: "إِذَا كَذَبْتُ، أَرْجِعُ إِلَى الصِّدْقِ وَأَعْتَذِرُ، وَاللهُ يُحِبُّ مَنْ يَتُوبُ.", sources: [h-bukhari-6094, q-2-222], ai_drafted: true}
+
+  - key: u-whatif1/l1-3
+    type: true-false
+    ai_drafted: true
+    instruction: "{ضَعْ/ضَعِي} دَائِرَةً حَوْلَ الْجَوَابِ"
+    statements:
+      - {t: "إِذَا كَذَبْتُ، أَعْتَذِرُ وَأَقُولُ الصِّدْقَ.", ok: true, sources: [h-bukhari-6094]}
+      - {t: "اللهُ يُحِبُّ مَنْ يَتُوبُ إِلَيْهِ.", ok: true, sources: [q-2-222]}
+      - {t: "الْكَذِبَةُ الصَّغِيرَةُ لَا تَضُرُّ أَحَدًا.", ok: false, sources: [h-bukhari-6094]}
+      - {t: "كُلُّ النَّاسِ يُخْطِئُونَ، وَخَيْرُهُمْ مَنْ يَتُوبُ.", ok: true, sources: [h-tirmidhi-2499]}
+      - {t: "إِذَا أَخْطَأْتُ أُخْفِي خَطَئِي.", ok: false, sources: [h-bukhari-6094]}
+
+  # lesson 2 «لَوْ ظَلَمْتُ صَدِيقِي»: wdif, story, wwyd, choose
+  - key: u-whatif1/l2-1
+    type: wdif
+    ai_drafted: true
+    title: مَاذَا أَفْعَلُ لَوْ ظَلَمْتُ صَدِيقِي؟
+    intro: {text: "أَحْيَانًا نَأْخُذُ شَيْئًا مِنْ صَدِيقِنَا، أَوْ نُحْزِنُهُ دُونَ أَنْ نَنْتَبِهَ. هَكَذَا نُصْلِحُ مَا حَدَثَ:", ai_drafted: true}
+    steps:
+      - {n: 1, t: "أَتَوَقَّفُ، وَأَعْتَرِفُ بِخَطَئِي، وَلَا أَلُومُ غَيْرِي."}
+      - {n: 2, t: "أَعْتَذِرُ لِصَدِيقِي بِكَلِمَةٍ طَيِّبَةٍ.", sources: [q-49-10]}
+      - {n: 3, t: "أُعِيدُ إِلَيْهِ مَا أَخَذْتُهُ، أَوْ أُصْلِحُ مَا أَفْسَدْتُهُ.", sources: [q-49-10]}
+      - {n: 4, t: "نَتَصَافَحُ، وَنَعُودُ أَصْدِقَاءَ كَمَا كُنَّا.", sources: [h-bukhari-6064]}
+    quote: {source: q-49-10, span: {start: "إنما المؤمنون", end: "أخويكم"}}
+    meaning: {text: "الْمُسْلِمُونَ إِخْوَةٌ، وَإِذَا أَخْطَأْنَا فِي حَقِّ أَخِينَا أَصْلَحْنَا مَا بَيْنَنَا.", sources: [q-49-10, h-bukhari-6064], ai_drafted: true}
+    tracker: "هَلْ {أَصْلَحْتَ/أَصْلَحْتِ} خَطَأً هَذَا الْأُسْبُوعَ؟ {لَوِّنْ/لَوِّنِي} نَجْمَةً"
+
+  - key: u-whatif1/l2-2
+    type: story
+    ai_drafted: true
+    scene: {backdrop: garden, props: [ball, tree], figures: [salem, reem]}
+    lines:
+      - {who: narrator, t: "خَطِفَ سَالِمٌ الْكُرَةَ مِنْ صَدِيقِهِ زَيْدٍ، فَحَزِنَ زَيْدٌ وَذَهَبَ."}
+      - {who: reem, t: "سَالِمُ، لَقَدْ أَحْزَنْتَ صَدِيقَكَ!"}
+      - {who: salem, t: "صَحِيحٌ… أَخْطَأْتُ. سَأَذْهَبُ إِلَيْهِ وَأَعْتَذِرُ، وَأُعِيدُ إِلَيْهِ الْكُرَةَ."}
+      - {who: narrator, t: "اعْتَذَرَ سَالِمٌ، فَابْتَسَمَ زَيْدٌ، وَلَعِبَا مَعًا مِنْ جَدِيدٍ."}
+    quote: {source: h-bukhari-6064, span: {start: "وكونوا", end: "إخوانا"}}
+    lesson: {text: "إِذَا ظَلَمْتُ صَدِيقِي، أَعْتَذِرُ إِلَيْهِ وَأُصْلِحُ خَطَئِي، فَنَحْنُ إِخْوَةٌ.", sources: [q-49-10, h-bukhari-6064], ai_drafted: true}
+
+  - key: u-whatif1/l2-3
+    type: wwyd
+    ai_drafted: true
+    title: "{مَاذَا كُنْتَ سَتَفْعَلُ؟/مَاذَا كُنْتِ سَتَفْعَلِينَ؟}"
+    scenario: "{دَفَعْتَ صَدِيقَكَ فِي الطَّابُورِ لِتَسْبِقَهُ، فَوَقَعَ/دَفَعْتِ صَدِيقَتَكِ فِي الطَّابُورِ لِتَسْبِقِيهَا، فَوَقَعَتْ}."
+    scene: {backdrop: classroom, props: [backpack, book], figures: [reader, salem]}
+    choices:
+      - {t: "{أُسَاعِدُهُ عَلَى الْقِيَامِ، وَأَعْتَذِرُ إِلَيْهِ/أُسَاعِدُهَا عَلَى الْقِيَامِ، وَأَعْتَذِرُ إِلَيْهَا}", ok: true, feedback: "{أَحْسَنْتَ يَا بَطَلُ/أَحْسَنْتِ يَا بَطَلَةُ}! الِاعْتِذَارُ شَجَاعَةٌ."}
+      - {t: "أَضْحَكُ وَأَبْقَى فِي مَكَانِي", feedback: "لَيْسَ هَذَا أَجْمَلَ اخْتِيَارٍ. {جَرِّبْ/جَرِّبِي} مَرَّةً أُخْرَى!"}
+      - {t: "{أَقُولُ: هُوَ الَّذِي وَقَعَ وَحْدَهُ/أَقُولُ: هِيَ الَّتِي وَقَعَتْ وَحْدَهَا}", feedback: "لَيْسَ هَذَا أَجْمَلَ اخْتِيَارٍ. {جَرِّبْ/جَرِّبِي} مَرَّةً أُخْرَى!"}
+    quote: {source: h-bukhari-10, span: {start: "المسلم من سلم", end: "ويده"}}
+    sources: [q-49-10, h-bukhari-10]
+    role_play: "{مَثِّلِ الْمَوْقِفَ مَعَ أَهْلِكَ/مَثِّلِي الْمَوْقِفَ مَعَ أَهْلِكِ}"
+
+  - key: u-whatif1/l2-4
+    type: choose
+    ai_drafted: true
+    instruction: "{اخْتَرِ/اخْتَارِي} الْجَوَابَ الصَّحِيحَ"
+    questions:
+      - text: "أَخَذْتُ قَلَمَ صَدِيقِي دُونَ إِذْنِهِ. مَاذَا أَفْعَلُ؟"
+        pic: pencil
+        choices: [{t: "أُعِيدُهُ إِلَيْهِ وَأَعْتَذِرُ", ok: true}, {t: "أُخَبِّئُهُ فِي حَقِيبَتِي"}]
+        sources: [q-49-10]
+      - text: "كَيْفَ يَكُونُ الْمُسْلِمُونَ بَعْضُهُمْ مَعَ بَعْضٍ؟"
+        choices: [{t: "إِخْوَةً يَتَحَابُّونَ", ok: true}, {t: "مُتَخَاصِمِينَ"}]
+        sources: [q-49-10, h-bukhari-6064]
+      - text: "{اعْتَذَرَ إِلَيْكَ صَدِيقُكَ، فَمَاذَا تَفْعَلُ؟/اعْتَذَرَتْ إِلَيْكِ صَدِيقَتُكِ، فَمَاذَا تَفْعَلِينَ؟}"
+        choices: [{t: "أُسَامِحُ وَأَبْتَسِمُ", ok: true}, {t: "{أَبْقَى غَاضِبًا/أَبْقَى غَاضِبَةً} أُسْبُوعًا"}]
+        sources: [q-3-134]
+
+  # lesson 3 «لَوْ غَضِبْتُ»: wdif (the sample s05), story, true-false
+  - key: u-whatif1/l3-1
+    type: wdif
+    ai_drafted: true
+    title: مَاذَا أَفْعَلُ لَوْ غَضِبْتُ؟
+    intro: {text: "الْغَضَبُ شُعُورٌ يَمُرُّ بِكُلِّ النَّاسِ، وَنَتَعَلَّمُ مَعًا كَيْفَ نَهْدَأُ.", ai_drafted: true}
+    steps:
+      - {n: 1, t: "أَتَوَقَّفُ وَآخُذُ نَفَسًا عَمِيقًا."}
+      - {n: 2, t: "أَقُولُ دُعَاءَ الِاسْتِعَاذَةِ.", dua: d-anger-refuge, sources: [h-bukhari-3282]}
+      - {n: 3, t: "أَجْلِسُ حَتَّى أَهْدَأَ.", sources: [h-abudawud-4782]}
+      - {n: 4, t: "أَتَكَلَّمُ بِلُطْفٍ، وَأَعْتَذِرُ إِنْ أَخْطَأْتُ.", sources: [q-41-34]}
+    quote: {source: h-bukhari-6114, span: {start: "ليس الشديد", end: "الغضب"}}
+    meaning: {text: "الْقَوِيُّ حَقًّا هُوَ مَنْ يَهْدَأُ حِينَ يَغْضَبُ، وَلَا يُؤْذِي أَحَدًا.", sources: [h-bukhari-6114], ai_drafted: true}
+    tracker: "هَلْ {جَرَّبْتَهَا/جَرَّبْتِهَا} هَذَا الْأُسْبُوعَ؟ {لَوِّنْ/لَوِّنِي} نَجْمَةً"
+
+  - key: u-whatif1/l3-2
+    type: story
+    ai_drafted: true
+    scene: {backdrop: home, props: [blocks, pillow], figures: [salem, reem, huda]}
+    lines:
+      - {who: narrator, t: "هَدَمَتْ رِيمُ بُرْجَ سَالِمٍ دُونَ قَصْدٍ، فَغَضِبَ سَالِمٌ كَثِيرًا."}
+      - {who: salem, t: "أُرِيدُ أَنْ أَصْرُخَ… لَكِنِّي سَأَجْلِسُ وَأَتَنَفَّسُ بِهُدُوءٍ.", sources: [h-abudawud-4782], ai_drafted: true}
+      - {who: reem, t: "آسِفَةٌ يَا سَالِمُ، لَمْ أَقْصِدْ. سَأُسَاعِدُكَ فِي بِنَائِهِ مِنْ جَدِيدٍ."}
+      - {who: huda, t: "أَحْسَنْتَ يَا سَالِمُ! الْقَوِيُّ مَنْ يَمْلِكُ نَفْسَهُ حِينَ يَغْضَبُ.", sources: [h-bukhari-6114], ai_drafted: true}
+    quote: {source: q-41-34, span: {start: "ادفع بالتي", end: "أحسن"}}
+    lesson: {text: "إِذَا غَضِبْتُ، أَهْدَأُ وَأَجْلِسُ، وَأَرُدُّ بِالْكَلِمَةِ الْحَسَنَةِ.", sources: [h-abudawud-4782, q-41-34], ai_drafted: true}
+
+  - key: u-whatif1/l3-3
+    type: true-false
+    ai_drafted: true
+    instruction: "{ضَعْ/ضَعِي} دَائِرَةً حَوْلَ الْجَوَابِ"
+    statements:
+      - {t: "حِينَ أَغْضَبُ، أَجْلِسُ وَأَتَنَفَّسُ بِهُدُوءٍ.", ok: true, sources: [h-abudawud-4782]}
+      - {t: "الْقَوِيُّ هُوَ الَّذِي يَضْرِبُ غَيْرَهُ.", ok: false, sources: [h-bukhari-6114]}
+      - {t: "أَسْتَعِيذُ بِاللهِ حِينَ أَغْضَبُ.", ok: true, sources: [d-anger-refuge]}
+      - {t: "إِذَا غَضِبْتُ، أَرْمِي أَلْعَابِي.", ok: false, sources: [h-bukhari-6114]}
+      - {t: "الْكَلِمَةُ الْحَسَنَةُ تُطْفِئُ الْغَضَبَ.", ok: true, sources: [q-41-34]}
+
+  - key: u-whatif1/closing-1
+    type: unit-closing
+    ai_drafted: true
+    learned:
+      - "إِذَا كَذَبْتُ، أَرْجِعُ إِلَى الصِّدْقِ وَأَعْتَذِرُ."
+      - "إِذَا ظَلَمْتُ صَدِيقِي، أَعْتَذِرُ وَأُصْلِحُ خَطَئِي."
+      - "إِذَا غَضِبْتُ، أَسْتَعِيذُ بِاللهِ وَأَجْلِسُ حَتَّى أَهْدَأَ."
+      - "اللهُ يُحِبُّ مَنْ يَتُوبُ إِلَيْهِ."
+    apply: "أَخْتَارُ مَا سَأَفْعَلُهُ هَذَا الْأُسْبُوعَ:"
+    apply_choices: ["أَعْتَذِرُ حِينَ أُخْطِئُ.", "أَقُولُ الصِّدْقَ وَلَوْ كَانَ صَعْبًا.", "أَجْلِسُ وَأَتَنَفَّسُ حِينَ أَغْضَبُ."]
+
+  - key: u-whatif1/closing-2
+    type: unit-closing
+    ai_drafted: true
+    dhikr: {source: d-anger-refuge, label: "حِينَ أَغْضَبُ"}
+    dhikr_when: "أَقُولُهُ حِينَ أَشْعُرُ بِالْغَضَبِ."
+    challenge: "كُلَّ مَسَاءٍ نَتَحَدَّثُ مَعَ أَهْلِي: هَلْ أَخْطَأْتُ الْيَوْمَ؟ وَكَيْفَ أَصْلَحْتُ خَطَئِي؟"
+
+  - key: u-whatif1/parent
+    type: parent-guide
+    ai_drafted: true
+    lang: modern-standard
+    learned: {text: "تعلّم طفلكم ماذا يفعل إذا كذب أو ظلم صديقه أو غضب: يرجع إلى الصدق، ويعتذر ويُصلح، ويستعيذ بالله ويجلس حتى يهدأ.", sources: [h-bukhari-6094, q-49-10, h-abudawud-4782], ai_drafted: true}
+    explain: {text: "الأهم أن يشعر الطفل بالأمان حين يعترف بخطئه: اشكروه على صدقه أولًا، ثم ساعدوه على الإصلاح. إذا عوقب على الصدق تعلّم الإخفاء.", ai_drafted: true}
+    ask: "ماذا تفعل لو أخطأت في حقّ أخيك أو صديقك؟"
+    together: "مثّلوا المواقف الثلاثة بالدمى أو بتبادل الأدوار، واتركوا الطفل يقترح الحلّ بنفسه."
+    habit: {text: "اعتذروا أنتم للطفل حين تخطئون في حقّه، فيتعلّم أنّ الاعتذار قوّة لا ضعف.", sources: [h-tirmidhi-2499, q-41-34], ai_drafted: true}
+    care_note: "في الكتاب صفحات فيها كلام الله تعالى وأذكار ودعوات؛ نرجو حفظ الكتاب في مكان نظيف مرتفع، وعدم رميه أو وضع شيء فوقه."
+
+  # the cumulative review after مَاذَا أَفْعَلُ لَوْ…؟ (respecting the Quran, al-Fatiha, the parents' dua, honesty)
+  - key: u-whatif1/review-1
+    type: self-test
+    ai_drafted: true
+    instruction: "{أَجِبْ ثُمَّ لَوِّنِ/أَجِيبِي ثُمَّ لَوِّنِي} النُّجُومَ"
+    true_false:
+      - {t: "نَضَعُ الْمُصْحَفَ فِي مَكَانٍ عَالٍ نَظِيفٍ.", ok: true, sources: [s-quran-respect]}
+      - {t: "نَدْعُو لِأُمِّنَا وَأَبِينَا.", ok: true, sources: [q-17-24]}
+      - {t: "إِذَا كَذَبْتُ أُخْفِي الْحَقِيقَةَ.", ok: false, sources: [h-bukhari-6094]}
+    questions:
+      - text: "بِمَاذَا نَدْعُو لِأُمِّنَا وَأَبِينَا؟"
+        choices: [{t: "أَنْ يَرْحَمَهُمَا اللهُ", ok: true}, {t: "أَنْ يَشْتَرِيَا لَنَا الْحَلْوَى"}]
+        sources: [q-17-24]
+      - text: "إِلَى أَيْنَ يَقُودُنَا الصِّدْقُ؟"
+        choices: [{t: "إِلَى الْخَيْرِ", ok: true}, {t: "إِلَى الْحُزْنِ"}]
+        sources: [h-bukhari-6094]
+    stars: "كَمْ نَجْمَةً {تَسْتَحِقُّ/تَسْتَحِقِّينَ}؟"
+
+  # ================================================================== the final pages
+  - key: end/1
+    type: assessment
+    ai_drafted: true
+    instruction: "{الْعَبْ وَأَجِبْ/الْعَبِي وَأَجِيبِي}"
+    intro: "هَذِهِ لُعْبَةٌ وَلَيْسَتِ امْتِحَانًا، {أَجِبْ مَعَ أُمِّكَ أَوْ أَبِيكَ/أَجِيبِي مَعَ أُمِّكِ أَوْ أَبِيكِ}."
+    true_false:
+      - {t: "نَتَوَضَّأُ قَبْلَ الصَّلَاةِ.", ok: true, sources: [q-5-6]}
+      - {t: "نُصَلِّي خَمْسَ صَلَوَاتٍ فِي الْيَوْمِ وَاللَّيْلَةِ.", ok: true, sources: [h-bukhari-46]}
+      - {t: "سُورَةُ الْإِخْلَاصِ تُعَلِّمُنَا أَنَّ اللهَ وَاحِدٌ.", ok: true, sources: [q-112]}
+    questions:
+      - text: "مَاذَا نَقُولُ فِي السُّجُودِ؟"
+        choices: [{source: d-sujud, ok: true}, {source: d-mosque-out}]
+        sources: [h-muslim-772]
+    situations:
+      - t: "عَطَسَ سَالِمٌ وَحَمِدَ اللهَ. مَاذَا تَقُولُ لَهُ رِيمُ؟"
+        choices: [{source: d-sneeze-2, ok: true}, {source: d-mosque-in}]
+        sources: [h-bukhari-6224]
+
+  - key: end/2
+    type: assessment
+    ai_drafted: true
+    instruction: "لَاحِظُوا طِفْلَكُمْ وَلَوِّنُوا النُّجُومَ"
+    skills:
+      - {skill: "الْوُضُوءُ", t: "{يَتَوَضَّأُ بِالتَّرْتِيبِ وَأَهْلُهُ بِجَانِبِهِ/تَتَوَضَّأُ بِالتَّرْتِيبِ وَأَهْلُهَا بِجَانِبِهَا}."}
+      - {skill: "الصَّلَاةُ", t: "{يُصَلِّي مَعَ أَهْلِهِ، وَيَعْرِفُ الرُّكُوعَ وَالسُّجُودَ/تُصَلِّي مَعَ أَهْلِهَا، وَتَعْرِفُ الرُّكُوعَ وَالسُّجُودَ}."}
+      - {skill: "حِفْظُ السُّوَرِ", t: "{يَقْرَأُ/تَقْرَأُ} الْفَاتِحَةَ وَالْإِخْلَاصَ وَالْكَوْثَرَ."}
+      - {skill: "الدُّعَاءُ", t: "{يَدْعُو لِوَالِدَيْهِ، وَيَرُدُّ عَلَى الْعَاطِسِ/تَدْعُو لِوَالِدَيْهَا، وَتَرُدُّ عَلَى الْعَاطِسِ}."}
+      - {skill: "بِرُّ الْوَالِدَيْنِ", t: "{يُسَاعِدُ فِي الْبَيْتِ، وَيَتَكَلَّمُ بِأَدَبٍ/تُسَاعِدُ فِي الْبَيْتِ، وَتَتَكَلَّمُ بِأَدَبٍ}."}
+      - {skill: "إِصْلَاحُ الْخَطَأِ", t: "{يَعْتَذِرُ وَيَقُولُ الصِّدْقَ إِذَا أَخْطَأَ/تَعْتَذِرُ وَتَقُولُ الصِّدْقَ إِذَا أَخْطَأَتْ}."}
+    note: "نَجْمَةٌ: بِدَايَةٌ، نَجْمَتَانِ: تَقَدُّمٌ، ثَلَاثُ نَجَمَاتٍ: عَادَةٌ ثَابِتَةٌ."
+
+  - key: end/3
+    type: passport
+    ai_drafted: true
+    title: بِطَاقَةُ رِحْلَةِ الْإِيمَانِ
+    layout: journey-card
+    challenge_stars: 8
+
+  - key: end/4
+    type: certificate
+    ai_drafted: true
+    statement: "{أَنَا مُسْلِمٌ صَغِيرٌ/أَنَا مُسْلِمَةٌ صَغِيرَةٌ} أُحِبُّ اللهَ وَأَقْتَدِي بِنَبِيِّي مُحَمَّدٍ ﷺ"
+    fields: [name, character, date, parent_signature]
+    reviewed_by_line: false
+
+  - key: end/5
+    type: back-page
+    ai_drafted: true
+    message: "{أَحْسَنْتَ/أَحْسَنْتِ} يَا {child}! {أَنْهَيْتَ رِحْلَتَكَ/أَنْهَيْتِ رِحْلَتَكِ} الثَّانِيَةَ مَعَنَا، وَنَلْتَقِي فِي الْكِتَابِ الْقَادِمِ إِنْ شَاءَ اللهُ."
+    next: "الْكِتَابُ الثَّالِثُ: أَرْكَانُ الْإِسْلَامِ وَأَرْكَانُ الْإِيمَانِ"

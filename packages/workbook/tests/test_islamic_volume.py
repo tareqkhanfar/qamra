@@ -143,25 +143,19 @@ def test_every_guide_example_is_placed_checked_and_built(
 # ---- the V1 seed --------------------------------------------------------------------------------------------
 
 
-def test_the_v1_seed_holds_the_samples_in_their_places_and_passes_check(
+def test_every_volume_is_written_in_full_and_v1_keeps_the_samples_in_their_places(
     plan: islamic.Plan, resolver: Any
 ) -> None:
-    content = iv.check_volume(plan, "V1", resolver)
-    assert content.errors == [], content.errors
-    assert set(content.pages) == {
-        "front/1",
-        "front/4",
-        "u-blessings/l1-2",
-        "u-blessings/l1-3",
-        "u-blessings/parent",
-        "u-follow/review-1",
-        "u-adhkar1/l1-1",
-        "u-manners1/l1-2",
-        "end/4",
-    }
-    assert content.raw["u-adhkar1/l1-1"]["id"] == "v1-u-adhkar1-l1-1"
-    assert content.raw["u-blessings/l1-3"]["unit"] == "u-blessings"
-    assert len(content.missing) == len(content.slots) - 9
+    """All six volumes are drafted (pending the scholar): every place has content and no check fails; V1 still
+    holds the proposal's sample pages where they belong."""
+    for vid in ("V1", "V2", "V3", "V4", "V5", "R"):
+        content = iv.check_volume(plan, vid, resolver)
+        assert content.errors == [], (vid, content.errors[:3])
+        assert content.missing == [], (vid, content.missing[:3])
+    v1 = iv.check_volume(plan, "V1", resolver)
+    assert {"front/1", "front/4", "u-blessings/l1-2", "u-adhkar1/l1-1", "u-manners1/l1-2"} <= set(v1.pages)
+    assert v1.raw["u-adhkar1/l1-1"]["id"] == "v1-u-adhkar1-l1-1"
+    assert v1.raw["u-blessings/l1-3"]["unit"] == "u-blessings"
 
 
 # ---- matching content to places -----------------------------------------------------------------------------
@@ -362,7 +356,7 @@ def test_a_print_build_refuses_unapproved_sources_missing_pages_and_writes_nothi
 ) -> None:
     content = iv.check_volume(plan, "V1", resolver, print_build=True, review=approved_review(plan, "V1"))
     codes = {p.code for p in content.errors}
-    assert {"missing", "not-approved"} <= codes and "not-reviewed" not in codes
+    assert "not-approved" in codes and "not-reviewed" not in codes  # the sources wait for the scholar
     out = tmp_path / "v1"
     with pytest.raises(iv.VolumeRefused, match="not scholar_approved"):
         asyncio.run(

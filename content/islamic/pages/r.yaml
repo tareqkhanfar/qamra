@@ -1,0 +1,829 @@
+# «قلبي يعرف الله» · الكتاب الموسمي «رَمَضَانُ وَالْعِيدُ» (R, ages 4–8): the content of the volume's pages, one entry
+# per place.
+#
+# AI-DRAFTED, PENDING THE SCHOLAR. Nothing here is final: every page and every line is a draft by the AI drafter and
+# waits for the scholar's page-by-page review (Addendum 10 §3). Nothing prints or sells before that approval.
+#
+# The writers' guide is docs/islamic/content-guide.md (every page type, the rules, the length limits). `key` names
+# the page's place (front/<k>, <unit>/opener, <unit>/l<lesson>-<page>, <unit>/closing-<k>, <unit>/parent,
+# <unit>/review-<k>, end/<k>); the engine derives id, unit and volume, and the title when there is none.
+#
+#   uv run python -m qamra_workbook.render.islamic_volume --volume r --keys    # the places (✓ = written here)
+#   uv run python -m qamra_workbook.render.islamic_volume --volume r --check   # what is missing or wrong
+#
+# No verse, hadith, dua or dhikr is typed here: a block names a source id of content/islamic/sources.yaml (+
+# sources.d/), and the engine prints the verified wording. The takbir of Eid and the Eid greeting have no wording in
+# the register yet (s-eid-takbir, s-eid-greeting are rulings without text), so the pages describe them and never
+# type them.
+
+pages:
+  # ---- the front pages (R has 4: no passport at the front; the passport is at the end)
+  - key: front/1
+    type: front-title
+    ai_drafted: true
+    subtitle: "أُحِبُّ رَمَضَانَ، وَأَفْرَحُ بِالْعِيدِ"
+
+  - key: front/2
+    type: front-characters
+    ai_drafted: true
+    intros:
+      - {who: huda, t: "سِتِّي هُدَى تَحْكِي لَنَا حِكَايَاتِ رَمَضَانَ وَالْعِيدِ، وَتُجِيبُ عَنْ أَسْئِلَتِنَا بِحُبٍّ."}
+      - {who: reem, t: "رِيمُ أُخْتٌ كَبِيرَةٌ تُحِبُّ أَنْ تَسْأَلَ: لِمَاذَا؟ وَتُحِبُّ فَانُوسَ رَمَضَانَ."}
+      - {who: salem, t: "سَالِمٌ أَخُوهَا الصَّغِيرُ، يَلْعَبُ وَيُخْطِئُ وَيَتَعَلَّمُ، وَيَنْتَظِرُ الْعِيدَ بِشَوْقٍ."}
+      - {who: naanaa, t: "نَعْنَاعُ قِطَّتُهُمُ الْكَسُولُ، تُحِبُّ النَّوْمَ قُرْبَ الْفَانُوسِ."}
+      - {who: reader, t: "وَ{أَنْتَ/أَنْتِ} يَا {child} {بَطَلُ/بَطَلَةُ} هَذَا الْكِتَابِ!"}
+
+  - key: front/3
+    type: front-how-to-use
+    ai_drafted: true
+    steps:
+      - {icon: clock, t: "نَبْدَأُ الْكِتَابَ قَبْلَ رَمَضَانَ، وَنَقْرَأُ صَفَحَاتِ الْعِيدِ فِي آخِرِهِ."}
+      - {icon: book, t: "أَقْرَأُ صَفْحَةً أَوْ صَفْحَتَيْنِ كُلَّ يَوْمٍ مَعَ أُمِّي أَوْ أَبِي."}
+      - {icon: pencil, t: "أُلَوِّنُ وَأَرْسُمُ وَأَصِلُ وَأَخْتَارُ بِنَفْسِي."}
+      - {icon: star, t: "أُلَوِّنُ نَجْمَةً كُلَّمَا أَنْهَيْتُ تَحَدِّيًا."}
+      - {icon: stamp, t: "أُلْصِقُ خَتْمَ كُلِّ وَحْدَةٍ أُنْهِيهَا فِي جَوَازِي، فِي آخِرِ الْكِتَابِ."}
+    care_note: "في هذا الكتاب آيات من القرآن الكريم وأحاديث وأذكار؛ نرجو حفظه في مكان نظيف مرتفع، وعدم رميه أو وضع شيء فوقه، وأن يلمس الطفل صفحاته بيدين نظيفتين."
+
+  - key: front/4
+    type: front-this-is-me
+    ai_drafted: true
+    prompts: ["اسْمِي:", "عُمْرِي:", "أُحِبُّ فِي رَمَضَانَ:", "أُحِبُّ فِي الْعِيدِ:"]
+    draw_box: "{ارْسُمْ أُسْرَتَكَ/ارْسُمِي أُسْرَتَكِ} عَلَى مَائِدَةِ الْإِفْطَارِ"
+
+  # ==== u-ram1 «مَا هُوَ رَمَضَانُ؟» ===================================================================================
+  - key: u-ram1/opener
+    type: unit-opener
+    ai_drafted: true
+    hello: {who: reem, t: "{تَعَالَ/تَعَالَيْ} نَسْتَقْبِلْ شَهْرَ رَمَضَانَ مَعًا!"}
+    question: "{هَلْ تَعْرِفُ/هَلْ تَعْرِفِينَ} لِمَاذَا نَفْرَحُ بِرَمَضَانَ؟"
+
+  # lesson 1 «شَهْرُ الْقُرْآنِ»: story, find-objects, choose
+  - key: u-ram1/l1-1
+    type: story
+    ai_drafted: true
+    scene: {backdrop: night-sky, props: ["isl:lantern"], figures: [huda, reem, salem]}
+    lines:
+      - {who: salem, t: "سِتِّي، لِمَاذَا أَضَأْنَا الْفَانُوسَ اللَّيْلَةَ؟"}
+      - {who: huda, t: "لِأَنَّ النَّاسَ رَأَوْا هِلَالَ رَمَضَانَ يَا سَالِمُ، فَجَاءَ شَهْرُ الصِّيَامِ!", sources: [q-2-185], ai_drafted: true}
+      - {who: reem, t: "لِمَاذَا نُحِبُّ رَمَضَانَ كَثِيرًا يَا سِتِّي؟"}
+      - {who: huda, t: "لِأَنَّ اللهَ أَنْزَلَ فِيهِ الْقُرْآنَ، وَأَمَرَنَا بِصِيَامِهِ.", sources: [q-2-185, q-2-183], ai_drafted: true}
+    quote: {source: q-2-185, span: {start: "شهر رمضان", end: "هدى للناس"}}
+    lesson: {text: "رَمَضَانُ شَهْرُ الْقُرْآنِ وَالصِّيَامِ، نَسْتَقْبِلُهُ بِفَرَحٍ.", sources: [q-2-185, q-2-183], ai_drafted: true}
+
+  - key: u-ram1/l1-2
+    type: find-objects
+    ai_drafted: true
+    instruction: "{ابْحَثْ/ابْحَثِي} عَنْ أَشْيَاءِ رَمَضَانَ"
+    find:
+      - {pic: crescent, word: الْهِلَالُ}
+      - {pic: "isl:lantern", word: الْفَانُوسُ}
+      - {pic: "isl:book-stand", word: الْمُصْحَفُ}
+      - {pic: dates, word: التَّمْرُ}
+      - {pic: water, word: الْمَاءُ}
+      - {pic: "isl:dome", word: الْمَسْجِدُ}
+    others: [car, ball, kite, umbrella, snowflake, rocket]
+    closing: {text: "فِي رَمَضَانَ نَصُومُ، وَنَقْرَأُ الْقُرْآنَ، وَنُصَلِّي، وَنُفْطِرُ مَعًا.", sources: [q-2-185, q-2-183], ai_drafted: true}
+
+  - key: u-ram1/l1-3
+    type: choose
+    ai_drafted: true
+    instruction: "{اخْتَرِ/اخْتَارِي} الْجَوَابَ الصَّحِيحَ"
+    questions:
+      - text: "فِي أَيِّ شَهْرٍ نَصُومُ؟"
+        pic: crescent
+        choices: [{t: "فِي رَمَضَانَ", ok: true}, {t: "فِي يَوْمِ الْعِيدِ"}]
+        sources: [q-2-185]
+      - text: "مَاذَا نَفْعَلُ فِي رَمَضَانَ؟"
+        pic: "isl:book-stand"
+        choices: [{t: "نَصُومُ وَنَقْرَأُ الْقُرْآنَ", ok: true}, {t: "نَنَامُ طُولَ النَّهَارِ"}]
+        sources: [q-2-183, q-2-185]
+      - text: "مَنْ أَمَرَنَا بِصِيَامِ رَمَضَانَ؟"
+        choices: [{t: "اللهُ", ok: true}, {t: "صَدِيقِي"}]
+        sources: [q-2-183]
+
+  # lesson 2 «أَجْوَاءُ رَمَضَانَ»: story, coloring, match
+  - key: u-ram1/l2-1
+    type: story
+    ai_drafted: true
+    scene: {backdrop: table, props: [dates, water, loaf, "isl:lantern"], figures: [huda, reem, salem, naanaa]}
+    lines:
+      - {who: narrator, t: "قَبْلَ الْفَجْرِ، اسْتَيْقَظَتِ الْأُسْرَةُ لِلسَّحُورِ."}
+      - {who: salem, t: "مَا زِلْنَا فِي اللَّيْلِ يَا سِتِّي! لِمَاذَا نَأْكُلُ الْآنَ؟"}
+      - {who: huda, t: "هَذَا السَّحُورُ يَا سَالِمُ، وَفِيهِ بَرَكَةٌ كَمَا أَخْبَرَنَا نَبِيُّنَا ﷺ.", sources: [h-bukhari-1923], ai_drafted: true}
+      - {who: reem, t: "وَفِي الْمَسَاءِ نُفْطِرُ مَعًا، وَنُضِيءُ الْفَانُوسَ!"}
+    quote: {source: h-bukhari-1923, span: {start: "تسحروا", end: "بركة"}}
+    lesson: {text: "مِنْ أَجْوَاءِ رَمَضَانَ الْجَمِيلَةِ: السَّحُورُ، وَالْإِفْطَارُ مَعَ الْأُسْرَةِ.", sources: [h-bukhari-1923], ai_drafted: true}
+
+  - key: u-ram1/l2-2
+    type: coloring
+    ai_drafted: true
+    sacred_text: none
+    title: أُلَوِّنُ زِينَةَ رَمَضَانَ
+    instruction: "{لَوِّنْ/لَوِّنِي} زِينَةَ رَمَضَانَ"
+    pics: ["isl:lantern", crescent, star, dates, "isl:dome"]
+
+  - key: u-ram1/l2-3
+    type: match
+    ai_drafted: true
+    instruction: "{صِلْ/صِلِي} كُلَّ وَقْتٍ بِمَا نَفْعَلُهُ فِيهِ"
+    pairs:
+      - {a: {pic: moon, t: "قَبْلَ الْفَجْرِ"}, b: {t: "نَتَسَحَّرُ"}, sources: [h-bukhari-1923]}
+      - {a: {pic: sun, t: "فِي النَّهَارِ"}, b: {t: "نَصُومُ"}, sources: [q-2-183]}
+      - {a: {pic: dates, t: "عِنْدَ الْمَغْرِبِ"}, b: {t: "نُفْطِرُ"}}
+      - {a: {pic: "isl:dome", t: "فِي اللَّيْلِ"}, b: {t: "نُصَلِّي التَّرَاوِيحَ"}}
+
+  - key: u-ram1/closing-1
+    type: unit-closing
+    ai_drafted: true
+    learned:
+      - "رَمَضَانُ شَهْرٌ أَنْزَلَ اللهُ فِيهِ الْقُرْآنَ."
+      - "فِي رَمَضَانَ نَصُومُ وَنَقْرَأُ الْقُرْآنَ وَنُصَلِّي."
+      - "فِي السَّحُورِ بَرَكَةٌ، وَنُفْطِرُ مَعَ أُسْرَتِنَا."
+    apply: "أَخْتَارُ مَا سَأَفْعَلُهُ هَذَا الْأُسْبُوعَ:"
+    apply_choices: ["أُسَاعِدُ فِي تَزْيِينِ الْبَيْتِ لِرَمَضَانَ.", "أَسْتَيْقِظُ لِلسَّحُورِ مَعَ أُسْرَتِي.", "أَسْتَمِعُ إِلَى الْقُرْآنِ كُلَّ يَوْمٍ."]
+
+  - key: u-ram1/closing-2
+    type: unit-closing
+    ai_drafted: true
+    dhikr: {source: q-2-183, label: "آيَةُ الصِّيَامِ"}
+    dhikr_when: "نَقْرَؤُهَا مَعًا فِي أَوَّلِ رَمَضَانَ."
+    challenge: "نُزَيِّنُ الْبَيْتَ مَعًا لِاسْتِقْبَالِ رَمَضَانَ، وَنَصْنَعُ فَانُوسًا مِنَ الْوَرَقِ."
+
+  - key: u-ram1/parent
+    type: parent-guide
+    ai_drafted: true
+    lang: modern-standard
+    learned: {text: "تعرّف طفلكم إلى رمضان: شهر أنزل الله فيه القرآن وأمرنا بصيامه، وعرف شيئًا من أجوائه الجميلة: السحور وفيه بركة، والإفطار مع الأسرة.", sources: [q-2-185, q-2-183, h-bukhari-1923], ai_drafted: true}
+    explain: {text: "اربطوا رمضان بالفرح لا بالجوع: زينة البيت، واجتماع العائلة على الإفطار، وصوت القرآن. وقولوا له: «رمضان ضيف عزيز نستقبله بحبّ».", ai_drafted: true}
+    ask: "ما أحبّ شيء إليك في رمضان؟ ولماذا؟"
+    together: "اصنعوا معًا فانوسًا من الورق أو زينة للبيت، وعلّقوا تقويمًا لأيام الشهر يلوّن فيه الطفل يومًا كل مساء."
+    habit: {text: "أيقظوا الطفل للسحور في أيام العطلة إن أحبّ، وذكّروه بأن في السحور بركة كما أخبرنا النبي ﷺ.", sources: [h-bukhari-1923], ai_drafted: true}
+    care_note: "في الكتاب صفحات فيها كلام الله تعالى وأحاديث وأذكار؛ نرجو حفظه في مكان نظيف مرتفع، وعدم رميه أو وضع شيء فوقه."
+
+  # ==== u-ram2 «أَصُومُ بِحُبٍّ» ======================================================================================
+  - key: u-ram2/opener
+    type: unit-opener
+    ai_drafted: true
+    hello: {who: salem, t: "أَنَا أَيْضًا أُرِيدُ أَنْ أَصُومَ مِثْلَ الْكِبَارِ!"}
+    question: "{هَلْ جَرَّبْتَ أَنْ تَصُومَ/هَلْ جَرَّبْتِ أَنْ تَصُومِي} بَعْضَ الْيَوْمِ؟"
+
+  # lesson 1 «صِيَامٌ يُنَاسِبُ عُمْرِي»: story, wwyd, true-false
+  - key: u-ram2/l1-1
+    type: story
+    ai_drafted: true
+    scene: {backdrop: home, props: [clock, "isl:crescent"], figures: [huda, reem, salem]}
+    lines:
+      - {who: salem, t: "سِتِّي، سَأَصُومُ الْيَوْمَ كُلَّهُ مِثْلَ أَبِي!"}
+      - {who: huda, t: "أَحْسَنْتَ يَا سَالِمُ! الصَّغِيرُ يَصُومُ بِقَدْرِ مَا يَسْتَطِيعُ، وَيَزِيدُ قَلِيلًا كُلَّ يَوْمٍ.", sources: [s-fasting-kids], ai_drafted: true}
+      - {who: reem, t: "أَنَا صُمْتُ أَمْسِ إِلَى الظُّهْرِ، وَالْيَوْمَ سَأَصُومُ إِلَى الْعَصْرِ!"}
+      - {who: huda, t: "وَكَانَ الصَّحَابَةُ رَضِيَ اللهُ عَنْهُمْ يُعَوِّدُونَ أَطْفَالَهُمْ عَلَى الصِّيَامِ، وَيُعْطُونَهُمْ لُعَبًا تُسَلِّيهِمْ.", sources: [h-bukhari-1960], ai_drafted: true}
+    lesson: {text: "أَصُومُ بِقَدْرِ مَا أَسْتَطِيعُ، وَأَتَدَرَّبُ قَلِيلًا قَلِيلًا.", sources: [s-fasting-kids, h-bukhari-1960], ai_drafted: true}
+    question:
+      text: "كَيْفَ يَصُومُ الطِّفْلُ الصَّغِيرُ؟"
+      choices: [{t: "بِقَدْرِ مَا يَسْتَطِيعُ", ok: true}, {t: "حَتَّى لَوْ تَعِبَ كَثِيرًا"}]
+      sources: [s-fasting-kids]
+
+  - key: u-ram2/l1-2
+    type: wwyd
+    ai_drafted: true
+    title: "{مَاذَا كُنْتَ سَتَفْعَلُ؟/مَاذَا كُنْتِ سَتَفْعَلِينَ؟}"
+    scenario: "{صُمْتَ إِلَى الظُّهْرِ، ثُمَّ شَعَرْتَ/صُمْتِ إِلَى الظُّهْرِ، ثُمَّ شَعَرْتِ} بِتَعَبٍ شَدِيدٍ وَعَطَشٍ."
+    scene: {backdrop: kitchen, props: [water, cup, clock], figures: [reader]}
+    choices:
+      - {t: "أُخْبِرُ أُمِّي، وَأُحَاوِلُ غَدًا مَرَّةً أُخْرَى", ok: true, feedback: "{أَحْسَنْتَ يَا بَطَلُ/أَحْسَنْتِ يَا بَطَلَةُ}! نَصُومُ بِقَدْرِ مَا نَسْتَطِيعُ."}
+      - {t: "أَشْرَبُ سِرًّا، وَأَقُولُ: مَا زِلْتُ {صَائِمًا/صَائِمَةً}", feedback: "لَيْسَ هَذَا أَجْمَلَ اخْتِيَارٍ. {جَرِّبْ/جَرِّبِي} مَرَّةً أُخْرَى!"}
+      - {t: "أَبْكِي وَأَغْضَبُ مِنْ كُلِّ مَنْ حَوْلِي", feedback: "لَيْسَ هَذَا أَجْمَلَ اخْتِيَارٍ. {جَرِّبْ/جَرِّبِي} مَرَّةً أُخْرَى!"}
+    quote: {source: h-bukhari-1960, span: {start: "ونصوم صبياننا", end: "الإفطار"}}
+    sources: [h-bukhari-1960, s-fasting-kids]
+    role_play: "{مَثِّلِ/مَثِّلِي} الْمَوْقِفَ مَعَ {أُمِّكَ/أُمِّكِ}."
+
+  - key: u-ram2/l1-3
+    type: true-false
+    ai_drafted: true
+    instruction: "{ضَعْ/ضَعِي} دَائِرَةً حَوْلَ الْجَوَابِ"
+    statements:
+      - {t: "الطِّفْلُ الصَّغِيرُ يَصُومُ بِقَدْرِ مَا يَسْتَطِيعُ.", ok: true, sources: [s-fasting-kids]}
+      - {t: "إِذَا تَعِبْتُ {وَأَنَا صَائِمٌ/وَأَنَا صَائِمَةٌ} أُخْبِرُ أَهْلِي.", ok: true, sources: [s-fasting-kids]}
+      - {t: "الصَّائِمُ يَأْكُلُ وَيَشْرَبُ فِي النَّهَارِ.", ok: false, sources: [h-bukhari-1894]}
+      - {t: "كَانَ الصَّحَابَةُ رَضِيَ اللهُ عَنْهُمْ يُعَوِّدُونَ أَطْفَالَهُمْ عَلَى الصِّيَامِ.", ok: true, sources: [h-bukhari-1960]}
+      - {t: "نَصُومُ رَمَضَانَ لِأَنَّ اللهَ أَمَرَنَا بِذَلِكَ.", ok: true, sources: [q-2-183]}
+
+  # lesson 2 «أُفْطِرُ وَأَذْكُرُ»: dhikr, match
+  - key: u-ram2/l2-1
+    type: dhikr
+    ai_drafted: true
+    title: عِنْدَ الْإِفْطَارِ
+    when: حِينَ أُفْطِرُ مِنْ صِيَامِي
+    dhikr: {source: d-iftar}
+    why: {text: "لِأَنَّ نَبِيَّنَا ﷺ كَانَ يَقُولُهُ إِذَا أَفْطَرَ. وَمَعْنَاهُ: ذَهَبَ الْعَطَشُ، وَارْتَوَى جِسْمُنَا، وَنَرْجُو الْأَجْرَ مِنَ اللهِ.", sources: [h-abudawud-2357], ai_drafted: true}
+    manner: {text: "وَأُسَمِّي اللهَ قَبْلَ أَنْ آكُلَ، وَآكُلُ بِيَدِي الْيُمْنَى.", sources: [h-bukhari-5376], ai_drafted: true}
+    scene: {backdrop: table, props: [dates, water, soup, "isl:lantern"], figures: [huda, reem, salem, reader]}
+    home: "نَقُولُهُ مَعًا عِنْدَ كُلِّ إِفْطَارٍ هَذَا الْأُسْبُوعَ، وَنُلَوِّنُ نَجْمَةً كُلَّ مَسَاءٍ."
+    audio: {kind: human-voice, note: "بصوت بشري مسجّل؛ لا TTS لنص ديني"}
+
+  - key: u-ram2/l2-2
+    type: match
+    ai_drafted: true
+    instruction: "{صِلْ/صِلِي} كُلَّ وَقْتٍ بِمَا نَقُولُهُ فِيهِ"
+    pairs:
+      - {a: {pic: dates, t: "حِينَ أُفْطِرُ"}, b: {source: d-iftar}}
+      - {a: {pic: plate, t: "قَبْلَ الطَّعَامِ"}, b: {source: d-eat-start}}
+      - {a: {pic: fruit-bowl, t: "بَعْدَ الطَّعَامِ"}, b: {source: d-after-eat}}
+      - {a: {pic: bed, t: "حِينَ أَسْتَيْقِظُ لِلسَّحُورِ"}, b: {source: d-wake}}
+
+  # lesson 3 «صَوْمُ اللِّسَانِ وَالْيَدِ»: story, wwyd
+  - key: u-ram2/l3-1
+    type: story
+    ai_drafted: true
+    scene: {backdrop: home, props: [ball, blocks], figures: [huda, reem, salem]}
+    lines:
+      - {who: narrator, t: "كَانَ سَالِمٌ صَائِمًا، فَأَخَذَتْ رِيمُ كُرَتَهُ دُونَ أَنْ تَسْتَأْذِنَ."}
+      - {who: salem, t: "أَرَدْتُ أَنْ أَصْرُخَ، ثُمَّ تَذَكَّرْتُ أَنِّي صَائِمٌ، فَقُلْتُ بِهُدُوءٍ: أَعِيدِيهَا مِنْ فَضْلِكِ."}
+      - {who: reem, t: "آسِفَةٌ يَا سَالِمُ، تَفَضَّلْ كُرَتَكَ."}
+      - {who: huda, t: "أَحْسَنْتُمَا! الصَّائِمُ يَحْفَظُ لِسَانَهُ عَنِ الْكَلَامِ السَّيِّئِ، وَيَدَهُ عَنِ الْأَذَى.", sources: [h-bukhari-1894, h-bukhari-6018], ai_drafted: true}
+    quote: {source: h-bukhari-6018, span: {start: "من كان يؤمن بالله واليوم الآخر فليقل", end: "ليصمت"}}
+    lesson: {text: "نَصُومُ عَنِ الطَّعَامِ وَالشَّرَابِ، وَنَحْفَظُ أَلْسِنَتَنَا وَأَيْدِيَنَا عَنِ الْأَذَى.", sources: [h-bukhari-1894, h-bukhari-6018], ai_drafted: true}
+
+  - key: u-ram2/l3-2
+    type: wwyd
+    ai_drafted: true
+    title: "{مَاذَا كُنْتَ سَتَفْعَلُ؟/مَاذَا كُنْتِ سَتَفْعَلِينَ؟}"
+    scenario: "{كُنْتَ صَائِمًا، فَأَزْعَجَكَ صَدِيقُكَ/كُنْتِ صَائِمَةً، فَأَزْعَجَتْكِ صَدِيقَتُكِ} بِكَلِمَةٍ غَيْرِ لَطِيفَةٍ."
+    scene: {backdrop: garden, props: [ball], figures: [reader]}
+    choices:
+      - {t: "{أَهْدَأُ، وَأَقُولُ لَهُ بِلُطْفٍ: أَنَا صَائِمٌ/أَهْدَأُ، وَأَقُولُ لَهَا بِلُطْفٍ: أَنَا صَائِمَةٌ}", ok: true, feedback: "{أَحْسَنْتَ يَا بَطَلُ/أَحْسَنْتِ يَا بَطَلَةُ}! الصَّائِمُ يَحْفَظُ لِسَانَهُ."}
+      - {t: "{أَصْرُخُ عَلَيْهِ، وَأَقُولُ لَهُ/أَصْرُخُ عَلَيْهَا، وَأَقُولُ لَهَا} كَلِمَةً أَسْوَأَ", feedback: "لَيْسَ هَذَا أَجْمَلَ اخْتِيَارٍ. {جَرِّبْ/جَرِّبِي} مَرَّةً أُخْرَى!"}
+      - {t: "{أَدْفَعُهُ/أَدْفَعُهَا} بِيَدِي بِقُوَّةٍ", feedback: "لَيْسَ هَذَا أَجْمَلَ اخْتِيَارٍ. {جَرِّبْ/جَرِّبِي} مَرَّةً أُخْرَى!"}
+    quote: {source: h-bukhari-1894, span: {start: "وإن امرؤ قاتله", end: "إني صائم"}}
+    sources: [h-bukhari-1894, h-bukhari-6018]
+    role_play: "{مَثِّلِ الْمَوْقِفَ مَعَ أَهْلِكَ/مَثِّلِي الْمَوْقِفَ مَعَ أَهْلِكِ} بِهُدُوءٍ."
+
+  - key: u-ram2/closing-1
+    type: unit-closing
+    ai_drafted: true
+    learned:
+      - "أَصُومُ بِقَدْرِ مَا أَسْتَطِيعُ، وَأَتَدَرَّبُ قَلِيلًا قَلِيلًا."
+      - "إِذَا تَعِبْتُ أُخْبِرُ أَهْلِي بِصِدْقٍ."
+      - "أَذْكُرُ اللهَ حِينَ أُفْطِرُ."
+      - "الصَّائِمُ يَحْفَظُ لِسَانَهُ وَيَدَهُ."
+    apply: "أَخْتَارُ مَا سَأَفْعَلُهُ هَذَا الْأُسْبُوعَ:"
+    apply_choices: ["أَصُومُ إِلَى الظُّهْرِ يَوْمًا أَوْ يَوْمَيْنِ.", "أَقُولُ ذِكْرَ الْإِفْطَارِ مَعَ أُسْرَتِي.", "أَتَكَلَّمُ بِلُطْفٍ {وَأَنَا صَائِمٌ/وَأَنَا صَائِمَةٌ}."]
+
+  - key: u-ram2/closing-2
+    type: unit-closing
+    ai_drafted: true
+    dhikr: {source: d-iftar, label: "ذِكْرُ الْإِفْطَارِ"}
+    dhikr_when: "أَقُولُهُ كُلَّ يَوْمٍ حِينَ أُفْطِرُ."
+    challenge: "نَصْنَعُ جَدْوَلَ صِيَامِي: أُلَوِّنُ نَجْمَةً كُلَّمَا صُمْتُ سَاعَاتٍ، وَنَحْتَفِلُ مَعًا فِي آخِرِ الْأُسْبُوعِ."
+
+  - key: u-ram2/parent
+    type: parent-guide
+    ai_drafted: true
+    lang: modern-standard
+    learned: {text: "تعلّم طفلكم أن الصغير يصوم بقدر طاقته ويتدرّج، كما كان الصحابة رضي الله عنهم يعوّدون أطفالهم، وتعلّم ذكر الإفطار، وأن الصائم يحفظ لسانه ويده.", sources: [s-fasting-kids, h-bukhari-1960, h-abudawud-2357, h-bukhari-1894], ai_drafted: true}
+    explain: {text: "الصيام للطفل تدريب لا امتحان. ابدؤوا بساعات قليلة، وامدحوا المحاولة لا النتيجة، وإن تعب ففطّروه بلطف وقولوا: «غدًا نحاول من جديد».", ai_drafted: true}
+    ask: "ما أصعب شيء في الصيام؟ وما الذي ساعدك؟"
+    together: "اصنعوا «جدول صيامي»: يلوّن الطفل نجمة عن كل يوم حاول فيه الصيام، ثم أفطروا معًا وقولوا ذكر الإفطار."
+    habit: {text: "عند الإفطار يقول أحدكم ذكر الإفطار بصوت مسموع، ويردّده الطفل بعده، حتى يحفظه دون ضغط.", sources: [h-abudawud-2357], ai_drafted: true}
+    care_note: "في الكتاب صفحات فيها كلام الله تعالى وأحاديث وأذكار؛ نرجو حفظه في مكان نظيف مرتفع، وعدم رميه أو وضع شيء فوقه."
+
+  # ==== u-ram3 «قُرْآنِي وَصَدَقَتِي» (a sira unit: its colouring and drawing pages show objects only) ===================
+  - key: u-ram3/opener
+    type: unit-opener
+    ai_drafted: true
+    hello: {who: reem, t: "فِي رَمَضَانَ نَقْرَأُ الْقُرْآنَ، وَنُعْطِي مَنْ يَحْتَاجُ!"}
+    question: "{مَاذَا تُحِبُّ أَنْ تُعْطِيَ غَيْرَكَ/مَاذَا تُحِبِّينَ أَنْ تُعْطِي غَيْرَكِ} فِي رَمَضَانَ؟"
+
+  # lesson 1 «أَقْرَأُ فِي رَمَضَانَ»: story, draw, choose
+  - key: u-ram3/l1-1
+    type: story
+    ai_drafted: true
+    scene: {backdrop: home, props: ["isl:book-stand", lamp], figures: [huda, reem, salem]}
+    lines:
+      - {who: reem, t: "سِتِّي، أُرِيدُ أَنْ أَقْرَأَ الْقُرْآنَ كُلَّ يَوْمٍ فِي رَمَضَانَ."}
+      - {who: salem, t: "وَأَنَا لَا أَعْرِفُ الْقِرَاءَةَ جَيِّدًا بَعْدُ!"}
+      - {who: huda, t: "اللهُ يَسَّرَ الْقُرْآنَ لَنَا يَا سَالِمُ: تَسْمَعُهُ، وَتُرَدِّدُ مَعَنَا، وَتَحْفَظُ آيَةً آيَةً.", sources: [q-54-17], ai_drafted: true}
+      - {who: reem, t: "وَرَمَضَانُ شَهْرُ الْقُرْآنِ، فَلْنَقْرَأْ مَعًا!", sources: [q-2-185], ai_drafted: true}
+    quote: {source: q-54-17}
+    lesson: {text: "أَقْرَأُ الْقُرْآنَ أَوْ أَسْتَمِعُ إِلَيْهِ كُلَّ يَوْمٍ، وَاللهُ يُيَسِّرُهُ لِي.", sources: [q-54-17, q-2-185], ai_drafted: true}
+
+  - key: u-ram3/l1-2
+    type: draw
+    ai_drafted: true
+    instruction: "{ارْسُمْ وَلَوِّنْ/ارْسُمِي وَلَوِّنِي}"
+    prompt: "{ارْسُمْ رُكْنًا نَظِيفًا هَادِئًا فِي بَيْتِكَ/ارْسُمِي رُكْنًا نَظِيفًا هَادِئًا فِي بَيْتِكِ} نَقْرَأُ فِيهِ الْقُرْآنَ."
+    hints: [lamp, pillow, "isl:book-stand"]
+
+  - key: u-ram3/l1-3
+    type: choose
+    ai_drafted: true
+    instruction: "{اخْتَرِ/اخْتَارِي} الْجَوَابَ الصَّحِيحَ"
+    questions:
+      - text: "فِي أَيِّ شَهْرٍ أُنْزِلَ الْقُرْآنُ؟"
+        pic: "isl:book-stand"
+        choices: [{t: "فِي شَهْرِ رَمَضَانَ", ok: true}, {t: "فِي شَهْرِ شَوَّالٍ"}]
+        sources: [q-2-185]
+      - text: "كَيْفَ أُعَامِلُ الْمُصْحَفَ؟"
+        choices: [{t: "أَحْمِلُهُ بِيَدَيْنِ نَظِيفَتَيْنِ", ok: true}, {t: "أَتْرُكُهُ عَلَى الْأَرْضِ مَعَ أَلْعَابِي"}]
+        sources: [s-quran-respect]
+      - text: "مَتَى أَقْرَأُ الْقُرْآنَ؟"
+        choices: [{t: "كُلَّ يَوْمٍ، وَلَوْ قَلِيلًا", ok: true}, {t: "مَرَّةً وَاحِدَةً فِي السَّنَةِ"}]
+        sources: [q-54-17]
+
+  # lesson 2 «أَجُودُ كَمَا جَادَ نَبِيِّي ﷺ»: sira-story, wwyd, coloring
+  - key: u-ram3/l2-1
+    type: sira-story
+    ai_drafted: true
+    narrator:
+      figures: [huda, reem, salem]
+      intro: "قَالَتْ سِتِّي هُدَى: كَانَ نَبِيُّنَا ﷺ يُحِبُّ الْعَطَاءَ، فَاسْمَعَا مَاذَا كَانَ يَفْعَلُ فِي رَمَضَانَ."
+    scenes:
+      - {backdrop: market, props: [dates, loaf, basket], text: "كَانَ نَبِيُّنَا ﷺ كَرِيمًا جِدًّا، يُعْطِي النَّاسَ الْخَيْرَ بِسَخَاءٍ.", sources: [h-bukhari-6], ai_drafted: true}
+      - {backdrop: night-sky, text: "وَفِي لَيَالِي رَمَضَانَ، كَانَ يَقْرَأُ الْقُرْآنَ مَعَ جِبْرِيلَ عَلَيْهِ السَّلَامُ.", sources: [h-bukhari-6], ai_drafted: true}
+      - {backdrop: garden, props: [wind, cloud], text: "وَكَانَ فِي رَمَضَانَ أَكْرَمَ مِنَ الرِّيحِ الَّتِي تَحْمِلُ الْخَيْرَ إِلَى كُلِّ مَكَانٍ.", sources: [h-bukhari-6], ai_drafted: true}
+      - {backdrop: street, props: [basket, "isl:gift"], text: "وَعَلَّمَنَا ﷺ أَنَّ كُلَّ عَمَلٍ طَيِّبٍ نُقَدِّمُهُ لِغَيْرِنَا صَدَقَةٌ.", sources: [h-bukhari-6021], ai_drafted: true}
+    quote: {source: h-bukhari-6021, span: {start: "كل معروف", end: "صدقة"}}
+    lesson: {text: "أَتَصَدَّقُ فِي رَمَضَانَ مِنْ مَصْرُوفِي، وَأُسَاعِدُ غَيْرِي كَمَا عَلَّمَنَا نَبِيُّنَا ﷺ.", sources: [s-charity-kids, h-bukhari-6021, h-bukhari-6], ai_drafted: true}
+    question:
+      text: "مَتَى كَانَ نَبِيُّنَا ﷺ أَكْثَرَ عَطَاءً؟"
+      choices: [{t: "فِي رَمَضَانَ", ok: true}, {t: "فِي يَوْمِ الْعِيدِ فَقَطْ"}]
+      sources: [h-bukhari-6]
+
+  - key: u-ram3/l2-2
+    type: wwyd
+    ai_drafted: true
+    title: "{مَاذَا كُنْتَ سَتَفْعَلُ؟/مَاذَا كُنْتِ سَتَفْعَلِينَ؟}"
+    scenario: "{مَعَكَ مَصْرُوفُكَ، وَرَأَيْتَ/مَعَكِ مَصْرُوفُكِ، وَرَأَيْتِ} صُنْدُوقَ الصَّدَقَةِ فِي الْمَسْجِدِ."
+    scene: {backdrop: mosque, props: [box], figures: [reader]}
+    choices:
+      - {t: "أَضَعُ جُزْءًا مِنْ مَصْرُوفِي فِي الصُّنْدُوقِ", ok: true, feedback: "{أَحْسَنْتَ يَا بَطَلُ! صَدَقَتُكَ/أَحْسَنْتِ يَا بَطَلَةُ! صَدَقَتُكِ} تُفْرِحُ الْمُحْتَاجِينَ."}
+      - {t: "أَشْتَرِي بِكُلِّ مَصْرُوفِي حَلْوَى لِنَفْسِي", feedback: "لَيْسَ هَذَا أَجْمَلَ اخْتِيَارٍ. {جَرِّبْ/جَرِّبِي} مَرَّةً أُخْرَى!"}
+      - {t: "أَقُولُ: الصَّدَقَةُ لِلْكِبَارِ فَقَطْ", feedback: "لَيْسَ هَذَا أَجْمَلَ اخْتِيَارٍ. {جَرِّبْ/جَرِّبِي} مَرَّةً أُخْرَى!"}
+    quote: {source: h-bukhari-6021, span: {start: "كل معروف", end: "صدقة"}}
+    sources: [h-bukhari-6021, s-charity-kids]
+    role_play: "{مَثِّلِ/مَثِّلِي} الْمَوْقِفَ مَعَ {أَبِيكَ/أَبِيكِ}."
+
+  - key: u-ram3/l2-3
+    type: coloring
+    ai_drafted: true
+    sacred_text: none
+    title: أُلَوِّنُ سَلَّةَ الْخَيْرِ
+    instruction: "{لَوِّنْ/لَوِّنِي} سَلَّةَ الْخَيْرِ لِجِيرَانِنَا"
+    pics: [basket, dates, rice, olive-oil, loaf, milk]
+
+  - key: u-ram3/closing-1
+    type: unit-closing
+    ai_drafted: true
+    learned:
+      - "رَمَضَانُ شَهْرُ الْقُرْآنِ، وَاللهُ يَسَّرَ الْقُرْآنَ لَنَا."
+      - "كَانَ نَبِيُّنَا ﷺ كَرِيمًا، وَفِي رَمَضَانَ كَانَ أَكْثَرَ عَطَاءً."
+      - "كُلُّ عَمَلٍ طَيِّبٍ نُقَدِّمُهُ لِغَيْرِنَا صَدَقَةٌ."
+    apply: "أَخْتَارُ مَا سَأَفْعَلُهُ هَذَا الْأُسْبُوعَ:"
+    apply_choices: ["أَقْرَأُ أَوْ أَسْمَعُ آيَاتٍ مِنَ الْقُرْآنِ كُلَّ يَوْمٍ.", "أَضَعُ شَيْئًا مِنْ مَصْرُوفِي فِي حَصَّالَةِ الْخَيْرِ.", "أُسَاعِدُ أَهْلِي فِي تَحْضِيرِ الْإِفْطَارِ."]
+
+  - key: u-ram3/closing-2
+    type: unit-closing
+    ai_drafted: true
+    dhikr: {source: q-54-17, label: "آيَةٌ أَحْفَظُهَا"}
+    dhikr_when: "أَحْفَظُهَا مَعَ أَهْلِي هَذَا الْأُسْبُوعَ."
+    challenge: "نَمْلَأُ مَعًا حَصَّالَةَ الْخَيْرِ: نَضَعُ فِيهَا شَيْئًا كُلَّ يَوْمٍ، وَنُعْطِيهَا لِمَنْ يَحْتَاجُ قَبْلَ الْعِيدِ."
+
+  - key: u-ram3/parent
+    type: parent-guide
+    ai_drafted: true
+    lang: modern-standard
+    learned: {text: "تعلّم طفلكم أن رمضان شهر القرآن وأن الله يسّره لنا، وأن نبينا ﷺ كان كريمًا وأكثر ما يكون عطاءً في رمضان، وأن كل عمل طيب نقدّمه لغيرنا صدقة.", sources: [q-2-185, q-54-17, h-bukhari-6, h-bukhari-6021], ai_drafted: true}
+    explain: {text: "لا يُطلب من الطفل ختم القرآن؛ يكفيه أن يسمع ويردّد آيات قصيرة. وفي الصدقة دعوه يعطي بيده، ولو قليلًا، ليشعر بفرحة العطاء.", ai_drafted: true}
+    ask: "لمن نعطي صدقتنا هذا العام؟ ولماذا؟"
+    together: "ضعوا «حصّالة الخير» في مكان ظاهر، يضع فيها الطفل من مصروفه، ثم اذهبوا معًا ليعطيها بنفسه لمن يحتاج قبل العيد."
+    habit: {text: "خصّصوا وقتًا قصيرًا ثابتًا للقرآن كل يوم، بعد الإفطار أو قبل النوم: آية أو آيتان تكفيان للبداية.", sources: [q-54-17], ai_drafted: true}
+    care_note: "في الكتاب صفحات فيها كلام الله تعالى وأحاديث وأذكار؛ نرجو حفظه في مكان نظيف مرتفع، وعدم رميه أو وضع شيء فوقه."
+
+  # ==== u-ram4 «لَيْلَةُ الْقَدْرِ» ===================================================================================
+  - key: u-ram4/opener
+    type: unit-opener
+    ai_drafted: true
+    hello: {who: huda, t: "فِي رَمَضَانَ لَيْلَةٌ مُبَارَكَةٌ، {تَعَالَ/تَعَالَيْ} نَتَعَرَّفْ إِلَيْهَا!", sources: [q-97], ai_drafted: true}
+    question: "{هَلْ سَمِعْتَ/هَلْ سَمِعْتِ} عَنْ لَيْلَةِ الْقَدْرِ؟"
+
+  # lesson 1 «لَيْلَةٌ مُبَارَكَةٌ»: story, find-objects, choose
+  - key: u-ram4/l1-1
+    type: story
+    ai_drafted: true
+    scene: {backdrop: night-sky, props: ["isl:dome", "isl:lantern"], figures: [huda, reem, salem]}
+    lines:
+      - {who: reem, t: "سِتِّي، لِمَاذَا يُصَلِّي النَّاسُ أَكْثَرَ فِي آخِرِ لَيَالِي رَمَضَانَ؟"}
+      - {who: huda, t: "لِأَنَّ فِيهَا لَيْلَةَ الْقَدْرِ، وَهِيَ أَفْضَلُ مِنْ أَلْفِ شَهْرٍ!", sources: [q-97, h-bukhari-2017], ai_drafted: true}
+      - {who: salem, t: "وَمَتَى تَكُونُ هَذِهِ اللَّيْلَةُ؟"}
+      - {who: huda, t: "نَبْحَثُ عَنْهَا فِي اللَّيَالِي الْعَشْرِ الْأَخِيرَةِ مِنْ رَمَضَانَ.", sources: [h-bukhari-2017], ai_drafted: true}
+    quote: {source: q-97, span: {start: "ليلة القدر خير", end: "ألف شهر"}}
+    lesson: {text: "فِي لَيْلَةِ الْقَدْرِ أَنْزَلَ اللهُ الْقُرْآنَ، وَنَحْنُ نَطْلُبُهَا بِالصَّلَاةِ وَالدُّعَاءِ وَقِرَاءَةِ الْقُرْآنِ.", sources: [q-97, h-bukhari-2017], ai_drafted: true}
+
+  - key: u-ram4/l1-2
+    type: find-objects
+    ai_drafted: true
+    instruction: "{ابْحَثْ/ابْحَثِي} عَمَّا نَرَاهُ فِي لَيَالِي رَمَضَانَ"
+    find:
+      - {pic: crescent, word: الْهِلَالُ}
+      - {pic: star, word: النُّجُومُ}
+      - {pic: "isl:lantern", word: الْفَانُوسُ}
+      - {pic: "isl:book-stand", word: الْمُصْحَفُ}
+      - {pic: "isl:prayer-mat", word: السَّجَّادَةُ}
+      - {pic: "isl:dome", word: الْمَسْجِدُ}
+    others: [sun, sun-hat, ball, ice-cream, car, kite]
+    closing: {text: "فِي آخِرِ لَيَالِي رَمَضَانَ نُصَلِّي وَنَدْعُو وَنَقْرَأُ الْقُرْآنَ، وَنَرْجُو أَنْ نُدْرِكَ لَيْلَةَ الْقَدْرِ.", sources: [h-bukhari-2017], ai_drafted: true}
+
+  - key: u-ram4/l1-3
+    type: choose
+    ai_drafted: true
+    instruction: "{اخْتَرِ/اخْتَارِي} الْجَوَابَ الصَّحِيحَ"
+    questions:
+      - text: "مَاذَا أَنْزَلَ اللهُ فِي لَيْلَةِ الْقَدْرِ؟"
+        pic: "isl:book-stand"
+        choices: [{t: "الْقُرْآنَ الْكَرِيمَ", ok: true}, {t: "الْأَلْعَابَ"}]
+        sources: [q-97]
+      - text: "فِي أَيِّ لَيَالٍ نَطْلُبُ لَيْلَةَ الْقَدْرِ؟"
+        pic: "isl:night-stars"
+        choices: [{t: "فِي الْعَشْرِ الْأَخِيرَةِ مِنْ رَمَضَانَ", ok: true}, {t: "فِي لَيْلَةِ الْعِيدِ"}]
+        sources: [h-bukhari-2017]
+      - text: "مَاذَا نَفْعَلُ فِي هَذِهِ اللَّيَالِي؟"
+        choices: [{t: "نُصَلِّي وَنَدْعُو اللهَ", ok: true}, {t: "نَتَشَاجَرُ وَنَصْرُخُ"}]
+        sources: [h-bukhari-2017]
+
+  - key: u-ram4/closing-1
+    type: unit-closing
+    ai_drafted: true
+    learned:
+      - "لَيْلَةُ الْقَدْرِ لَيْلَةٌ مُبَارَكَةٌ، أَنْزَلَ اللهُ فِيهَا الْقُرْآنَ."
+      - "لَيْلَةُ الْقَدْرِ أَفْضَلُ مِنْ أَلْفِ شَهْرٍ."
+      - "نَطْلُبُهَا فِي الْعَشْرِ الْأَخِيرَةِ مِنْ رَمَضَانَ."
+    apply: "أَخْتَارُ مَا سَأَفْعَلُهُ فِي الْعَشْرِ الْأَخِيرَةِ:"
+    apply_choices: ["أَدْعُو اللهَ لِي وَلِأَهْلِي كُلَّ لَيْلَةٍ.", "أُصَلِّي مَعَ أَهْلِي رَكْعَتَيْنِ قَبْلَ النَّوْمِ.", "أَقْرَأُ سُورَةَ الْقَدْرِ مَعَ أُسْرَتِي."]
+
+  - key: u-ram4/closing-2
+    type: unit-closing
+    ai_drafted: true
+    dhikr: {source: q-97, label: "سُورَةُ الْقَدْرِ"}
+    dhikr_when: "أَحْفَظُهَا، وَأَقْرَؤُهَا فِي لَيَالِي رَمَضَانَ."
+    challenge: "نَسْهَرُ قَلِيلًا فِي لَيْلَةٍ مِنَ الْعَشْرِ: نَقْرَأُ سُورَةَ الْقَدْرِ، وَنَدْعُو اللهَ لِلنَّاسِ جَمِيعًا."
+
+  - key: u-ram4/parent
+    type: parent-guide
+    ai_drafted: true
+    lang: modern-standard
+    learned: {text: "تعرّف طفلكم إلى ليلة القدر: ليلة أنزل الله فيها القرآن، وهي أفضل من ألف شهر، ونلتمسها في العشر الأخيرة من رمضان بالصلاة والدعاء وقراءة القرآن.", sources: [q-97, h-bukhari-2017], ai_drafted: true}
+    explain: {text: "لا داعي لتحديد ليلة بعينها للطفل؛ قولوا له: «هي ليلة مخفيّة في العشر الأخيرة، فنجتهد فيها كلها». واجعلوا الاجتهاد فرحًا قصيرًا يناسب عمره، لا سهرًا متعبًا.", ai_drafted: true}
+    ask: "لو كانت الليلة ليلة القدر، بماذا تدعو الله؟"
+    together: "اختاروا ليلة من العشر الأخيرة: صلّوا ركعتين معًا، واقرؤوا سورة القدر، وليكتب كل فرد دعوة لأحبابه ويقرأها."
+    habit: {text: "في كل ليلة من العشر الأخيرة، ادعوا الله مع الطفل دعوة قصيرة قبل النوم، ليتعلّم أن الله قريب يسمع الدعاء.", sources: [h-bukhari-2017, q-2-186], ai_drafted: true}
+    care_note: "في الكتاب صفحات فيها كلام الله تعالى وأحاديث وأذكار؛ نرجو حفظه في مكان نظيف مرتفع، وعدم رميه أو وضع شيء فوقه."
+
+  # the cumulative review after u-ram4 (two self-test pages)
+  - key: u-ram4/review-1
+    type: self-test
+    ai_drafted: true
+    instruction: "{أَجِبْ ثُمَّ لَوِّنِ/أَجِيبِي ثُمَّ لَوِّنِي} النُّجُومَ"
+    true_false:
+      - {t: "أَنْزَلَ اللهُ الْقُرْآنَ فِي رَمَضَانَ.", ok: true, sources: [q-2-185]}
+      - {t: "فِي السَّحُورِ بَرَكَةٌ.", ok: true, sources: [h-bukhari-1923]}
+      - {t: "الطِّفْلُ يَصُومُ حَتَّى لَوْ تَعِبَ كَثِيرًا.", ok: false, sources: [s-fasting-kids]}
+      - {t: "الصَّائِمُ يَحْفَظُ لِسَانَهُ عَنِ الْكَلَامِ السَّيِّئِ.", ok: true, sources: [h-bukhari-1894]}
+    questions:
+      - text: "مَاذَا نَقُولُ حِينَ نُفْطِرُ؟"
+        choices: [{source: d-iftar, ok: true}, {source: d-wake}]
+        sources: [h-abudawud-2357]
+    stars: "كَمْ نَجْمَةً {تَسْتَحِقُّ/تَسْتَحِقِّينَ}؟"
+
+  - key: u-ram4/review-2
+    type: self-test
+    ai_drafted: true
+    instruction: "{أَجِبْ ثُمَّ لَوِّنِ/أَجِيبِي ثُمَّ لَوِّنِي} النُّجُومَ"
+    true_false:
+      - {t: "لَيْلَةُ الْقَدْرِ فِي الْعَشْرِ الْأَخِيرَةِ مِنْ رَمَضَانَ.", ok: true, sources: [h-bukhari-2017]}
+      - {t: "كَانَ نَبِيُّنَا ﷺ يُعْطِي كَثِيرًا فِي رَمَضَانَ.", ok: true, sources: [h-bukhari-6]}
+      - {t: "الصَّدَقَةُ لِلْكِبَارِ فَقَطْ.", ok: false, sources: [s-charity-kids]}
+      - {t: "بَعْدَ أَنْ يَنْتَهِيَ رَمَضَانُ يَأْتِي عِيدُ الْفِطْرِ.", ok: true, sources: [q-2-185]}
+    questions:
+      - text: "أَيُّ هَذَيْنِ صَدَقَةٌ؟"
+        choices: [{t: "مُسَاعَدَةُ غَيْرِي بِابْتِسَامَةٍ", ok: true}, {t: "أَخْذُ لُعْبَةِ أَخِي"}]
+        sources: [h-bukhari-6021]
+    stars: "كَمْ نَجْمَةً {تَسْتَحِقُّ/تَسْتَحِقِّينَ}؟"
+
+  # ==== u-eid1 «صَبَاحُ الْعِيدِ» =====================================================================================
+  - key: u-eid1/opener
+    type: unit-opener
+    ai_drafted: true
+    hello: {who: salem, t: "غَدًا الْعِيدُ! {هَلْ أَنْتَ مُسْتَعِدٌّ/هَلْ أَنْتِ مُسْتَعِدَّةٌ}؟"}
+    question: "مَاذَا {تَفْعَلُ/تَفْعَلِينَ} فِي صَبَاحِ الْعِيدِ؟"
+
+  # lesson 1 «أَسْتَعِدُّ لِلْعِيدِ»: story, find-objects, choose
+  - key: u-eid1/l1-1
+    type: story
+    ai_drafted: true
+    scene: {backdrop: bedroom-night, props: [dress, shoe, "isl:gift"], figures: [huda, reem, salem]}
+    lines:
+      - {who: narrator, t: "لَيْلَةَ الْعِيدِ، رَتَّبَتْ رِيمُ ثِيَابَهَا الْجَدِيدَةَ بِفَرَحٍ."}
+      - {who: salem, t: "سِتِّي، هَلْ يَذْهَبُ الصِّغَارُ إِلَى صَلَاةِ الْعِيدِ؟"}
+      - {who: huda, t: "نَعَمْ! كَانَ ابْنُ عَبَّاسٍ رَضِيَ اللهُ عَنْهُمَا صَغِيرًا، وَشَهِدَ الْعِيدَ مَعَ نَبِيِّنَا ﷺ.", sources: [h-bukhari-977], ai_drafted: true}
+      - {who: reem, t: "إِذَنْ سَنَسْتَيْقِظُ بَاكِرًا، وَنَلْبَسُ أَجْمَلَ ثِيَابِنَا، وَنَذْهَبُ مَعًا!"}
+    lesson: {text: "نَسْتَعِدُّ لِلْعِيدِ بِفَرَحٍ، وَنَخْرُجُ إِلَى صَلَاةِ الْعِيدِ كِبَارًا وَصِغَارًا.", sources: [h-bukhari-977], ai_drafted: true}
+    question:
+      text: "هَلْ يَذْهَبُ الصِّغَارُ إِلَى صَلَاةِ الْعِيدِ؟"
+      choices: [{t: "نَعَمْ، مَعَ أَهْلِهِمْ", ok: true}, {t: "لَا، أَبَدًا"}]
+      sources: [h-bukhari-977]
+
+  - key: u-eid1/l1-2
+    type: find-objects
+    ai_drafted: true
+    instruction: "{ابْحَثْ/ابْحَثِي} عَنْ أَشْيَاءِ الْعِيدِ"
+    find:
+      - {pic: balloon, word: الْبَالُونُ}
+      - {pic: gift, word: الْهَدِيَّةُ}
+      - {pic: dress, word: الْفُسْتَانُ}
+      - {pic: shoe, word: الْحِذَاءُ}
+      - {pic: candy, word: الْحَلْوَى}
+      - {pic: "isl:dome", word: الْمَسْجِدُ}
+    others: [snowflake, umbrella, toothbrush, broom, pencil, bus]
+    closing: {text: "فِي الْعِيدِ نَفْرَحُ، وَنَلْبَسُ الْجَدِيدَ، وَنُصَلِّي، وَنَزُورُ أَهْلَنَا.", sources: [h-bukhari-977], ai_drafted: true}
+
+  - key: u-eid1/l1-3
+    type: choose
+    ai_drafted: true
+    instruction: "{اخْتَرِ/اخْتَارِي} الْجَوَابَ الصَّحِيحَ"
+    questions:
+      - text: "مَتَى يَأْتِي عِيدُ الْفِطْرِ؟"
+        pic: crescent
+        choices: [{t: "بَعْدَ رَمَضَانَ", ok: true}, {t: "قَبْلَ رَمَضَانَ"}]
+        sources: [q-2-185]
+      - text: "مَنْ يَذْهَبُ إِلَى صَلَاةِ الْعِيدِ؟"
+        pic: "isl:dome"
+        choices: [{t: "الْكِبَارُ وَالصِّغَارُ", ok: true}, {t: "الْكِبَارُ فَقَطْ"}]
+        sources: [h-bukhari-977]
+      - text: "مَاذَا نَفْعَلُ صَبَاحَ الْعِيدِ؟"
+        choices: [{t: "نُصَلِّي صَلَاةَ الْعِيدِ", ok: true}, {t: "نَنَامُ حَتَّى الظُّهْرِ"}]
+        sources: [h-bukhari-977]
+
+  # lesson 2 «التَّكْبِيرُ»: story, match, choose
+  - key: u-eid1/l2-1
+    type: story
+    ai_drafted: true
+    scene: {backdrop: mosque, props: [balloon], figures: [huda, reem, salem, reader]}
+    lines:
+      - {who: salem, t: "مَا هَذَا الصَّوْتُ الْجَمِيلُ يَا سِتِّي؟"}
+      - {who: huda, t: "هَذَا تَكْبِيرُ الْعِيدِ يَا سَالِمُ: نُكَبِّرُ اللهَ وَنَشْكُرُهُ بَعْدَ أَنْ أَتْمَمْنَا الصِّيَامَ.", sources: [q-2-185, s-eid-takbir], ai_drafted: true}
+      - {who: reem, t: "وَأَنَا أُحِبُّ أَنْ أُكَبِّرَ مَعَ النَّاسِ فِي الْعِيدِ!"}
+      - {who: salem, t: "سَأُكَبِّرُ أَنَا أَيْضًا بِصَوْتٍ جَمِيلٍ!"}
+    quote: {source: q-2-185, span: {start: "ولتكملوا العدة", end: "تشكرون"}}
+    lesson: {text: "نُكَبِّرُ فِي الْعِيدِ: نُعَظِّمُ اللهَ، فَهُوَ أَعْظَمُ مِنْ كُلِّ شَيْءٍ، وَنَشْكُرُهُ عَلَى نِعَمِهِ.", sources: [q-2-185, s-eid-takbir], ai_drafted: true}
+
+  - key: u-eid1/l2-2
+    type: match
+    ai_drafted: true
+    instruction: "{صِلْ/صِلِي} كُلَّ صُورَةٍ بِمَا نَفْعَلُهُ"
+    pairs:
+      - {a: {pic: crescent, t: "هِلَالُ شَوَّالٍ"}, b: {t: "انْتَهَى رَمَضَانُ، وَجَاءَ الْعِيدُ"}, sources: [q-2-185]}
+      - {a: {pic: "isl:dome", t: "الْمُصَلَّى"}, b: {t: "نُكَبِّرُ وَنُصَلِّي صَلَاةَ الْعِيدِ"}, sources: [h-bukhari-977, s-eid-takbir]}
+      - {a: {pic: house, t: "بَيْتُ سِتِّي"}, b: {t: "نَزُورُ وَنُهَنِّئُ بِالْعِيدِ"}, sources: [s-eid-greeting]}
+      - {a: {pic: gift, t: "الْهَدِيَّةُ"}, b: {t: "نُفْرِحُ الصِّغَارَ"}}
+
+  - key: u-eid1/l2-3
+    type: choose
+    ai_drafted: true
+    instruction: "{اخْتَرِ/اخْتَارِي} الْجَوَابَ الصَّحِيحَ"
+    questions:
+      - text: "مَاذَا نَفْعَلُ حِينَ نُكَبِّرُ؟"
+        choices: [{t: "نُعَظِّمُ اللهَ وَنَشْكُرُهُ", ok: true}, {t: "نَلْعَبُ لُعْبَةً"}]
+        sources: [q-2-185, s-eid-takbir]
+      - text: "مَتَى نُكَبِّرُ تَكْبِيرَ عِيدِ الْفِطْرِ؟"
+        pic: crescent
+        choices: [{t: "بَعْدَ أَنْ يَنْتَهِيَ رَمَضَانُ", ok: true}, {t: "فِي أَوَّلِ رَمَضَانَ"}]
+        sources: [q-2-185, s-eid-takbir]
+      - text: "لِمَاذَا نُكَبِّرُ فِي الْعِيدِ؟"
+        choices: [{t: "لِأَنَّ اللهَ أَعَانَنَا عَلَى الصِّيَامِ", ok: true}, {t: "لِنُخِيفَ الْقِطَّةَ"}]
+        sources: [q-2-185]
+
+  # lesson 3 «صَلَاةُ الْعِيدِ مَعَ أَهْلِي»: story, order-steps
+  - key: u-eid1/l3-1
+    type: story
+    ai_drafted: true
+    scene: {backdrop: mosque, props: ["isl:prayer-mat"], figures: [huda, reem, salem, reader]}
+    lines:
+      - {who: narrator, t: "خَرَجَتِ الْأُسْرَةُ صَبَاحَ الْعِيدِ إِلَى الصَّلَاةِ، وَالنَّاسُ يُكَبِّرُونَ.", sources: [s-eid-takbir], ai_drafted: true}
+      - {who: salem, t: "سِتِّي، مَاذَا نَفْعَلُ هُنَا؟"}
+      - {who: huda, t: "نُصَلِّي صَلَاةَ الْعِيدِ مَعَ الْإِمَامِ، ثُمَّ نَسْتَمِعُ إِلَى الْخُطْبَةِ.", sources: [h-bukhari-977], ai_drafted: true}
+      - {who: reem, t: "وَبَعْدَ الصَّلَاةِ نُسَلِّمُ عَلَى النَّاسِ، وَنُهَنِّئُهُمْ بِالْعِيدِ.", sources: [s-eid-greeting, h-muslim-54], ai_drafted: true}
+    lesson: {text: "نُصَلِّي صَلَاةَ الْعِيدِ مَعَ أَهْلِنَا، ثُمَّ نَسْتَمِعُ إِلَى الْخُطْبَةِ.", sources: [h-bukhari-977], ai_drafted: true}
+    question:
+      text: "مَاذَا يَأْتِي بَعْدَ صَلَاةِ الْعِيدِ؟"
+      choices: [{t: "الْخُطْبَةُ", ok: true}, {t: "السَّحُورُ"}]
+      sources: [h-bukhari-977]
+
+  - key: u-eid1/l3-2
+    type: prayer-steps
+    ai_drafted: true
+    title: صَبَاحُ الْعِيدِ خُطْوَةً خُطْوَةً
+    instruction: "{رَتِّبِ/رَتِّبِي} الْخُطُوَاتِ مِنْ ١ إِلَى ٥"
+    steps:
+      - {n: 1, t: "نُعْطِي زَكَاةَ الْفِطْرِ لِلْمُحْتَاجِينَ قَبْلَ الصَّلَاةِ.", sources: [h-abudawud-1609]}
+      - {n: 2, t: "أَخْرُجُ مَعَ أَهْلِي إِلَى صَلَاةِ الْعِيدِ، وَأَنَا أُكَبِّرُ.", sources: [h-bukhari-977, s-eid-takbir], scholar_decision: true}
+      - {n: 3, t: "أُصَلِّي صَلَاةَ الْعِيدِ مَعَ النَّاسِ.", sources: [h-bukhari-977]}
+      - {n: 4, t: "أَسْتَمِعُ إِلَى الْخُطْبَةِ بِهُدُوءٍ.", sources: [h-bukhari-977]}
+      - {n: 5, t: "أُسَلِّمُ عَلَى النَّاسِ، وَأُهَنِّئُهُمْ بِالْعِيدِ.", sources: [s-eid-greeting, h-muslim-54]}
+    scholar_points: [s-eid-takbir, h-abudawud-1609]
+    parent_line: "رَتِّبُوا الْخُطُوَاتِ مَعًا لَيْلَةَ الْعِيدِ، ثُمَّ طَبِّقُوهَا فِي الصَّبَاحِ وَالطِّفْلُ مَعَكُمْ."
+
+  - key: u-eid1/closing-1
+    type: unit-closing
+    ai_drafted: true
+    learned:
+      - "نَسْتَعِدُّ لِلْعِيدِ بِفَرَحٍ، وَنَخْرُجُ إِلَى الصَّلَاةِ كِبَارًا وَصِغَارًا."
+      - "نُكَبِّرُ اللهَ وَنَشْكُرُهُ بَعْدَ أَنْ أَتْمَمْنَا الصِّيَامَ."
+      - "نُصَلِّي صَلَاةَ الْعِيدِ، ثُمَّ نَسْتَمِعُ إِلَى الْخُطْبَةِ."
+    apply: "أَخْتَارُ مَا سَأَفْعَلُهُ فِي صَبَاحِ الْعِيدِ:"
+    apply_choices: ["أَسْتَيْقِظُ بَاكِرًا لِصَلَاةِ الْعِيدِ.", "أُكَبِّرُ مَعَ أَهْلِي بِصَوْتٍ جَمِيلٍ.", "أَسْتَمِعُ إِلَى الْخُطْبَةِ بِهُدُوءٍ."]
+
+  - key: u-eid1/closing-2
+    type: unit-closing
+    ai_drafted: true
+    dhikr: {source: q-2-185, label: "آيَةُ التَّكْبِيرِ", span: {start: "ولتكملوا العدة", end: "تشكرون"}}
+    dhikr_when: "نَقْرَؤُهَا مَعًا لَيْلَةَ الْعِيدِ."
+    challenge: "نُجَهِّزُ ثِيَابَ الْعِيدِ مَعًا، وَنَسْتَيْقِظُ بَاكِرًا، وَنَذْهَبُ إِلَى الصَّلَاةِ مَعًا."
+
+  - key: u-eid1/parent
+    type: parent-guide
+    ai_drafted: true
+    lang: modern-standard
+    learned: {text: "تعلّم طفلكم أن العيد يأتي بعد إتمام رمضان، وأننا نكبّر الله ونشكره، وأن الصغار يخرجون إلى صلاة العيد مع أهلهم كما شهدها ابن عباس رضي الله عنهما صغيرًا.", sources: [q-2-185, s-eid-takbir, h-bukhari-977], ai_drafted: true}
+    explain: {text: "اشرحوا التكبير بأنه تعظيم لله الذي هو أعظم من كل شيء، ودرّبوا الطفل على صيغة التكبير المعتمدة في مسجدكم، وكبّروا معًا بفرح.", ai_drafted: true}
+    ask: "ما أجمل شيء رأيته في صلاة العيد؟"
+    together: "جهّزوا ليلة العيد معًا: الثياب، والعيديّات، وأكياس حلوى صغيرة يوزّعها الطفل على الأطفال في المصلّى."
+    habit: {text: "اصطحبوا الطفل إلى صلاة العيد كل عام، ولو لم يُتمّ الصلاة كلها؛ فحضوره مع الناس فرح وتعليم.", sources: [h-bukhari-977], ai_drafted: true}
+    care_note: "في الكتاب صفحات فيها كلام الله تعالى وأحاديث وأذكار؛ نرجو حفظه في مكان نظيف مرتفع، وعدم رميه أو وضع شيء فوقه."
+
+  # ==== u-eid2 «أَفْرَحُ وَأُفْرِحُ» ===================================================================================
+  - key: u-eid2/opener
+    type: unit-opener
+    ai_drafted: true
+    hello: {who: reem, t: "الْيَوْمَ نَزُورُ أَهْلَنَا، وَنُفْرِحُ كُلَّ مَنْ نَلْقَاهُ!"}
+    question: "مَنْ {سَتَزُورُ/سَتَزُورِينَ} فِي الْعِيدِ؟"
+
+  # lesson 1 «أَزُورُ وَأُهَنِّئُ»: story, role-play, match
+  - key: u-eid2/l1-1
+    type: story
+    ai_drafted: true
+    scene: {backdrop: home, props: [door, candy, "isl:gift"], figures: [huda, reem, salem, naanaa]}
+    lines:
+      - {who: narrator, t: "فِي الْعِيدِ، زَارَتْ رِيمُ وَسَالِمٌ بَيْتَ سِتِّي هُدَى."}
+      - {who: salem, t: "طَرَقْنَا الْبَابَ بِلُطْفٍ، وَسَلَّمْنَا عَلَى سِتِّي.", sources: [h-muslim-54], ai_drafted: true}
+      - {who: reem, t: "وَهَنَّأْنَاهَا بِالْعِيدِ، وَدَعَوْنَا لَهَا بِالْخَيْرِ.", sources: [s-eid-greeting], ai_drafted: true}
+      - {who: huda, t: "أَهْلًا بِأَحْبَابِي! السَّلَامُ يَنْشُرُ الْمَحَبَّةَ بَيْنَ النَّاسِ.", sources: [h-muslim-54], ai_drafted: true}
+    quote: {source: h-muslim-54, span: {start: "أولا أدلكم", end: "بينكم"}}
+    lesson: {text: "فِي الْعِيدِ نَزُورُ أَهْلَنَا، وَنُسَلِّمُ عَلَيْهِمْ، وَنُهَنِّئُهُمْ، فَتَكْبُرُ الْمَحَبَّةُ.", sources: [h-muslim-54, s-eid-greeting], ai_drafted: true}
+
+  - key: u-eid2/l1-2
+    type: role-play
+    ai_drafted: true
+    instruction: "{مَثِّلِ الْمَوْقِفَ مَعَ أَهْلِكَ/مَثِّلِي الْمَوْقِفَ مَعَ أَهْلِكِ}"
+    scenario: "{تَزُورُ أَقَارِبَكَ مَعَ أَهْلِكَ/تَزُورِينَ أَقَارِبَكِ مَعَ أَهْلِكِ} فِي صَبَاحِ الْعِيدِ."
+    scene: {backdrop: home, props: [door, candy], figures: [reader, huda]}
+    roles:
+      - {role: "الضَّيْفُ", by: "{أَنْتَ/أَنْتِ}"}
+      - {role: "صَاحِبُ الْبَيْتِ", by: "{أَبُوكَ أَوْ أُمُّكَ/أَبُوكِ أَوْ أُمُّكِ}"}
+    script:
+      - {role: "الضَّيْفُ", t: "أَطْرُقُ الْبَابَ بِلُطْفٍ، ثُمَّ أُسَلِّمُ بِابْتِسَامَةٍ.", sources: [h-muslim-54]}
+      - {role: "صَاحِبُ الْبَيْتِ", t: "أَرُدُّ السَّلَامَ، وَأَقُولُ: أَهْلًا وَسَهْلًا، تَفَضَّلُوا!"}
+      - {role: "الضَّيْفُ", t: "أُهَنِّئُ أَهْلَ الْبَيْتِ بِالْعِيدِ، وَأَدْعُو لَهُمْ بِالْخَيْرِ.", sources: [s-eid-greeting]}
+      - {role: "صَاحِبُ الْبَيْتِ", t: "{أَشْكُرُ ضَيْفِي، وَأُقَدِّمُ لَهُ/أَشْكُرُ ضَيْفَتِي، وَأُقَدِّمُ لَهَا} الْحَلْوَى."}
+      - {role: "الضَّيْفُ", t: "آكُلُ بِيَمِينِي، وَأَشْكُرُ، وَلَا أُطِيلُ الزِّيَارَةَ.", sources: [h-bukhari-5376]}
+    tip: "تبادلوا الأدوار: يكون الطفل صاحب البيت مرة والضيف مرة، وعلّموه أن يردّ السلام ويُكرم ضيفه بابتسامة."
+    stars: "كَمْ نَجْمَةً نَسْتَحِقُّ؟"
+
+  - key: u-eid2/l1-3
+    type: match
+    ai_drafted: true
+    instruction: "{صِلْ/صِلِي} كُلَّ مَوْقِفٍ بِالتَّصَرُّفِ الْجَمِيلِ"
+    pairs:
+      - {a: {pic: door, t: "قَبْلَ أَنْ أَدْخُلَ"}, b: {t: "أَطْرُقُ الْبَابَ وَأَسْتَأْذِنُ"}, sources: [q-24-27]}
+      - {a: {pic: house, t: "حِينَ أَدْخُلُ"}, b: {t: "أُسَلِّمُ عَلَى أَهْلِ الْبَيْتِ"}, sources: [h-muslim-54]}
+      - {a: {pic: candy, t: "حِينَ يُقَدِّمُونَ لِي الْحَلْوَى"}, b: {t: "آكُلُ بِيَمِينِي وَأَشْكُرُهُمْ"}, sources: [h-bukhari-5376]}
+      - {a: {pic: gift, t: "حِينَ آخُذُ الْعِيدِيَّةَ"}, b: {t: "أَشْكُرُ، وَأَدْعُو لِمَنْ أَعْطَانِي"}}
+
+  # lesson 2 «عِيدِيَّتِي وَصَدَقَتِي»: story, wwyd
+  - key: u-eid2/l2-1
+    type: story
+    ai_drafted: true
+    scene: {backdrop: home, props: [envelope, "isl:gift", balloon], figures: [huda, reem, salem]}
+    lines:
+      - {who: narrator, t: "أَعْطَتْ سِتِّي هُدَى رِيمَ وَسَالِمًا عِيدِيَّةً، فَفَرِحَا كَثِيرًا."}
+      - {who: salem, t: "سَأَشْتَرِي لُعْبَةً كَبِيرَةً بِكُلِّ عِيدِيَّتِي!"}
+      - {who: reem, t: "وَأَنَا سَأَشْتَرِي هَدِيَّةً، وَأُعْطِي جُزْءًا لِطِفْلٍ مُحْتَاجٍ.", sources: [h-bukhari-6021], ai_drafted: true}
+      - {who: huda, t: "جَمِيلٌ يَا رِيمُ! وَقَبْلَ صَلَاةِ الْعِيدِ أَعْطَيْنَا زَكَاةَ الْفِطْرِ لِلْمُحْتَاجِينَ.", sources: [h-abudawud-1609], ai_drafted: true}
+    lesson: {text: "أَفْرَحُ بِعِيدِيَّتِي، وَأُعْطِي مِنْهَا شَيْئًا لِمَنْ يَحْتَاجُ.", sources: [h-bukhari-6021, s-charity-kids], ai_drafted: true}
+    question:
+      text: "مَتَى نُعْطِي زَكَاةَ الْفِطْرِ؟"
+      choices: [{t: "قَبْلَ صَلَاةِ الْعِيدِ", ok: true}, {t: "بَعْدَ الْعِيدِ بِشَهْرٍ"}]
+      sources: [h-abudawud-1609]
+
+  - key: u-eid2/l2-2
+    type: wwyd
+    ai_drafted: true
+    title: "{مَاذَا كُنْتَ سَتَفْعَلُ؟/مَاذَا كُنْتِ سَتَفْعَلِينَ؟}"
+    scenario: "{مَعَكَ عِيدِيَّةٌ كَثِيرَةٌ، وَرَأَيْتَ/مَعَكِ عِيدِيَّةٌ كَثِيرَةٌ، وَرَأَيْتِ} طِفْلًا حَزِينًا لَيْسَ مَعَهُ شَيْءٌ."
+    scene: {backdrop: street, props: [balloon, candy], figures: [reader]}
+    choices:
+      - {t: "أُشَارِكُهُ، فَأَشْتَرِي لَهُ بَالُونًا أَوْ حَلْوَى", ok: true, feedback: "{أَحْسَنْتَ يَا بَطَلُ! أَفْرَحْتَ/أَحْسَنْتِ يَا بَطَلَةُ! أَفْرَحْتِ} قَلْبَهُ فِي الْعِيدِ."}
+      - {t: "أُرِيهِ عِيدِيَّتِي لِأَتَبَاهَى بِهَا", feedback: "لَيْسَ هَذَا أَجْمَلَ اخْتِيَارٍ. {جَرِّبْ/جَرِّبِي} مَرَّةً أُخْرَى!"}
+      - {t: "أَمْشِي وَلَا أَهْتَمُّ بِهِ", feedback: "لَيْسَ هَذَا أَجْمَلَ اخْتِيَارٍ. {جَرِّبْ/جَرِّبِي} مَرَّةً أُخْرَى!"}
+    quote: {source: h-bukhari-6021, span: {start: "كل معروف", end: "صدقة"}}
+    sources: [h-bukhari-6021]
+    role_play: "{مَثِّلِ/مَثِّلِي} الْمَوْقِفَ مَعَ {أُمِّكَ/أُمِّكِ}."
+
+  # lesson 3 «أَلْعَابُ الْعِيدِ»: maze, coloring, draw
+  - key: u-eid2/l3-1
+    type: maze
+    ai_drafted: true
+    instruction: "{اذْهَبْ/اذْهَبِي} إِلَى بَيْتِ سِتِّي هُدَى"
+    runner: reader
+    goal: house
+    goal_word: "بَيْتُ سِتِّي"
+    size: medium
+    collect: [gift, balloon, candy]
+
+  - key: u-eid2/l3-2
+    type: coloring
+    ai_drafted: true
+    sacred_text: none
+    title: أُلَوِّنُ فَرْحَةَ الْعِيدِ
+    instruction: "{لَوِّنْ/لَوِّنِي} أَلْعَابَ الْعِيدِ"
+    pics: [balloon, kite, gift, candy, ball, star]
+
+  - key: u-eid2/l3-3
+    type: draw
+    ai_drafted: true
+    instruction: "{ارْسُمْ وَلَوِّنْ/ارْسُمِي وَلَوِّنِي}"
+    prompt: "{ارْسُمْ أَجْمَلَ لَحْظَةٍ عِشْتَهَا/ارْسُمِي أَجْمَلَ لَحْظَةٍ عِشْتِهَا} فِي الْعِيدِ."
+    hints: [balloon, gift, house, candy]
+    lines: 1
+
+  - key: u-eid2/closing-1
+    type: unit-closing
+    ai_drafted: true
+    learned:
+      - "فِي الْعِيدِ نَزُورُ أَهْلَنَا، وَنُسَلِّمُ عَلَيْهِمْ، وَنُهَنِّئُهُمْ."
+      - "السَّلَامُ يَنْشُرُ الْمَحَبَّةَ بَيْنَ النَّاسِ."
+      - "نُعْطِي زَكَاةَ الْفِطْرِ قَبْلَ صَلَاةِ الْعِيدِ."
+      - "أُعْطِي مِنْ عِيدِيَّتِي لِمَنْ يَحْتَاجُ."
+    apply: "أَخْتَارُ مَا سَأَفْعَلُهُ فِي أَيَّامِ الْعِيدِ:"
+    apply_choices: ["أَزُورُ أَقَارِبِي مَعَ أَهْلِي وَأُهَنِّئُهُمْ.", "أُعْطِي جُزْءًا مِنْ عِيدِيَّتِي لِمُحْتَاجٍ.", "أُشَارِكُ أَلْعَابِي مَعَ الْأَطْفَالِ."]
+
+  - key: u-eid2/closing-2
+    type: unit-closing
+    ai_drafted: true
+    dhikr: {source: q-1-2, label: "آيَةُ الْحَمْدِ"}
+    dhikr_when: "نَحْمَدُ اللهَ بِهَا عَلَى فَرْحَةِ الْعِيدِ."
+    challenge: "نَصْنَعُ مَعًا بِطَاقَاتِ تَهْنِئَةٍ بِالْعِيدِ، وَنُعْطِيهَا لِجِيرَانِنَا وَأَقَارِبِنَا مَعَ قِطْعَةِ حَلْوَى."
+
+  - key: u-eid2/parent
+    type: parent-guide
+    ai_drafted: true
+    lang: modern-standard
+    learned: {text: "تعلّم طفلكم آداب الزيارة والتهنئة في العيد، وأن إفشاء السلام ينشر المحبة، وأن زكاة الفطر تُعطى قبل صلاة العيد، وأن يشارك غيره من عيديّته.", sources: [h-muslim-54, s-eid-greeting, h-abudawud-1609, h-bukhari-6021], ai_drafted: true}
+    explain: {text: "قبل الزيارة اتفقوا مع الطفل على ثلاث خطوات: يطرق الباب ويسلّم، ويهنّئ بالعيد، ويشكر من يعطيه. وامدحوه أمام الآخرين حين يفعلها.", ai_drafted: true}
+    ask: "من الذي فرح بزيارتنا أكثر؟ وكيف عرفت؟"
+    together: "اقترحوا على الطفل أن يقسم عيديّته ثلاثة أقسام: قسم يشتري به ما يحب، وقسم يدّخره، وقسم يعطيه بنفسه لمن يحتاج."
+    habit: {text: "عوّدوا الطفل أن يبدأ بالسلام كلما دخل بيتًا أو لقي أحدًا، في العيد وبعده.", sources: [h-muslim-54], ai_drafted: true}
+    care_note: "في الكتاب صفحات فيها كلام الله تعالى وأحاديث وأذكار؛ نرجو حفظه في مكان نظيف مرتفع، وعدم رميه أو وضع شيء فوقه."
+
+  # ==== the final pages: assessment, passport, certificate ============================================================
+  - key: end/1
+    type: assessment
+    ai_drafted: true
+    instruction: "{الْعَبْ وَأَجِبْ/الْعَبِي وَأَجِيبِي}"
+    intro: "هَذِهِ لُعْبَةٌ وَلَيْسَتِ امْتِحَانًا، {أَجِبْ مَعَ أُمِّكَ أَوْ أَبِيكَ/أَجِيبِي مَعَ أُمِّكِ أَوْ أَبِيكِ}."
+    true_false:
+      - {t: "رَمَضَانُ شَهْرُ الْقُرْآنِ وَالصِّيَامِ.", ok: true, sources: [q-2-185, q-2-183]}
+      - {t: "لَيْلَةُ الْقَدْرِ فِي أَوَّلِ يَوْمٍ مِنْ رَمَضَانَ.", ok: false, sources: [h-bukhari-2017]}
+    situations:
+      - t: "مَعَ رِيمَ عِيدِيَّةٌ، وَرَأَتْ طِفْلًا حَزِينًا. مَاذَا تَفْعَلُ؟"
+        choices: [{t: "تُشَارِكُهُ وَتُفْرِحُهُ", ok: true}, {t: "تَتْرُكُهُ وَتَذْهَبُ"}]
+        sources: [h-bukhari-6021]
+    skills:
+      - {skill: "الصِّيَامُ", t: "{يَصُومُ بِقَدْرِ طَاقَتِهِ، وَيَفْرَحُ بِصِيَامِهِ/تَصُومُ بِقَدْرِ طَاقَتِهَا، وَتَفْرَحُ بِصِيَامِهَا}."}
+      - {skill: "الْعَطَاءُ", t: "{يُعْطِي مِنْ مَصْرُوفِهِ، وَيُشَارِكُ غَيْرَهُ/تُعْطِي مِنْ مَصْرُوفِهَا، وَتُشَارِكُ غَيْرَهَا}."}
+      - {skill: "آدَابُ الْعِيدِ", t: "{يُسَلِّمُ وَيُهَنِّئُ، وَيَزُورُ أَهْلَهُ بِأَدَبٍ/تُسَلِّمُ وَتُهَنِّئُ، وَتَزُورُ أَهْلَهَا بِأَدَبٍ}."}
+    note: "نَجْمَةٌ: بِدَايَةٌ، نَجْمَتَانِ: تَقَدُّمٌ، ثَلَاثُ نَجَمَاتٍ: عَادَةٌ ثَابِتَةٌ."
+
+  - key: end/2
+    type: passport
+    ai_drafted: true
+    gendered_title: "{جَوَازُ الْمُسْلِمِ الصَّغِيرِ/جَوَازُ الْمُسْلِمَةِ الصَّغِيرَةِ}"
+    photo_slot: reader
+    stamps_from: units.yaml
+    challenge_stars: 6
+
+  - key: end/3
+    type: certificate
+    ai_drafted: true
+    statement: "{أَنَا مُسْلِمٌ صَغِيرٌ/أَنَا مُسْلِمَةٌ صَغِيرَةٌ} أُحِبُّ رَمَضَانَ، وَأَصُومُ بِقَدْرِ طَاقَتِي، وَأَفْرَحُ بِالْعِيدِ"
+    fields: [name, character, date, parent_signature]
+    reviewed_by_line: false
