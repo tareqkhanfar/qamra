@@ -33,6 +33,9 @@ from qamra_workbook.pictures.islamic_scenes import (
 )
 
 W, H = 180.0, 104.0
+# A scene fills its box from the bottom (slice, YMax): the widest box (54 mm high on a 180 mm line, about 3.4:1)
+# shows only y ≥ ~51 of the 104 units, so the tallest figure's head must stay below this line.
+HEAD_ROOM_TOP = 54.0
 # library pictures that draw a person: never a prop (people are only the cast, drawn by the Kit)
 PERSON_CATEGORIES = frozenset({"person", "people", "family", "action"})
 PERSON_PICTURES = frozenset(k for k, p in PICTURES.items() if p.category in PERSON_CATEGORIES)
@@ -422,9 +425,10 @@ def compose(backdrop: str, props: Sequence[str], figures: Sequence[str], uid: st
         out.append(prop_svg(prop, x, y, size, i))
     if figures and kit is None:
         raise ValueError(f"backdrop {backdrop!r} with figures needs a kit")
+    fit = min(1.0, (back.floor - HEAD_ROOM_TOP) / back.figure_h)  # every head inside the widest box
     for who, x in zip(figures, back.people_x, strict=False):
         assert kit is not None
-        out.append(kit.figure(who, x, back.floor, back.figure_h * HEIGHTS.get(who, 0.85)))
+        out.append(kit.figure(who, x, back.floor, back.figure_h * fit * HEIGHTS.get(who, 0.85)))
     if back.front is not None:
         out.append(back.front(uid))
     return "".join(out)
