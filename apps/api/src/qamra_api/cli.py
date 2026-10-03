@@ -1,9 +1,11 @@
-"""Admin CLI: `qamra create-user …`, `qamra seed-themes`, `qamra seed-store`, `qamra reset-2fa --email …`."""
+"""Admin CLI: `qamra create-user …`, `qamra seed-themes`, `qamra seed-store`, `qamra reset-2fa --email …`,
+`qamra islamic-review-export [--out PATH]`."""
 
 import argparse
 import asyncio
 import getpass
 from datetime import UTC, datetime
+from pathlib import Path
 
 from qamra_api.auth import service as auth
 from qamra_api.seed import upsert_themes
@@ -12,6 +14,7 @@ from qamra_api.settings import get_settings
 from qamra_core.db.models import Locale, UserRole
 from qamra_core.db.session import make_async_engine, make_async_sessionmaker
 from qamra_core.db.store import StaffRole, UserStaffRole
+from qamra_core.islamic_review import EXPORT_DEFAULT, build_export, load_state, write_export
 
 
 async def create_user(email: str, name: str, role: UserRole, password: str, staff_roles: list[str]) -> None:
@@ -86,6 +89,20 @@ async def reset_2fa(email: str) -> None:
         await engine.dispose()
 
 
+async def islamic_review_export(out: Path) -> None:
+    """«قلبي يعرف الله»: the scholar's review as the page engine reads it, for renders outside the worker (the
+    worker writes its own before every render). The file is not committed: the database is the record."""
+    settings = get_settings()
+    engine = make_async_engine(settings.database_url, 1)
+    try:
+        async with make_async_sessionmaker(engine)() as db:
+            data = build_export(await load_state(db))
+        approved = [v for v, info in data["volumes"].items() if info["approved"]]
+        print(f"wrote {write_export(data, out)}; approved volumes: {', '.join(approved) or 'none'}")
+    finally:
+        await engine.dispose()
+
+
 def main() -> None:
     p = argparse.ArgumentParser(prog="qamra")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -103,6 +120,8 @@ def main() -> None:
     sub.add_parser("seed-store")
     r2 = sub.add_parser("reset-2fa")
     r2.add_argument("--email", required=True)
+    ie = sub.add_parser("islamic-review-export")
+    ie.add_argument("--out", type=Path, default=EXPORT_DEFAULT)
     args = p.parse_args()
     if args.cmd == "create-user":
         password = args.password or getpass.getpass("password: ")
@@ -114,6 +133,8 @@ def main() -> None:
         asyncio.run(seed_store_cmd())
     elif args.cmd == "reset-2fa":
         asyncio.run(reset_2fa(args.email))
+    elif args.cmd == "islamic-review-export":
+        asyncio.run(islamic_review_export(args.out))
 
 
 if __name__ == "__main__":

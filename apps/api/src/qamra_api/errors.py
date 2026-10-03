@@ -225,6 +225,27 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "بعض الإجابات لا تصل إلى أي اقتراح. أضيفوا قاعدة تغطيها ثم احفظوا.",
         "Some answers lead to no recommendation. Add a rule that covers them, then save.",
     ),
+    "review_transition": (
+        "لا يمكن نقل الوحدة إلى هذه الحالة من حالتها الحالية.",
+        "The unit can't move to that status from where it is.",
+    ),
+    "decisions_pending": (
+        "في هذه الوحدة نقاط تنتظر قرار المشرف العلمي. سجّلوا القرار في كل نقطة، ثم اعتمدوا الوحدة.",
+        "This unit has points waiting for the scholar's decision. Record a decision on each, then approve "
+        "it.",
+    ),
+    "scholar_only": (
+        "هذا الإجراء للمشرف العلمي وحده.",
+        "Only the scholar can do this.",
+    ),
+    "scholar_not_approved": (
+        "لم يعتمد المشرف العلمي كل وحدات هذا المجلد بعد، فلا يُعتمد للطباعة.",
+        "The scholar hasn't approved every unit of this volume yet, so it can't be approved for print.",
+    ),
+    "previews_busy": (
+        "صفحات المعاينة قيد التحضير الآن. انتظروا حتى تجهز.",
+        "The preview pages are being prepared. Please wait until they're ready.",
+    ),
     "not_orderable": (
         "هذا الكتاب غير متاح للطلب. تصفّحوا بقية كتبنا.",
         "This book isn't available to order. Have a look at our other books.",

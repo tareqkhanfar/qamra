@@ -25,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-const ORDER = ["workbook", "journey", "family"];
+const ORDER = ["workbook", "journey", "family", "islamic"];
 
 /** The activity books hub: the three books side by side, how one is made, and the kindergarten offer. */
 export default async function WorkbooksPage() {

@@ -15,7 +15,7 @@ type Ref = {
   why_en: string;
 };
 type Rule = {
-  goal: "gift" | "learn" | "family";
+  goal: "gift" | "learn" | "family" | "faith";
   age_min: number | null;
   age_max: number | null;
   pen: "yes" | "no" | null;
@@ -148,7 +148,7 @@ export function QuizRules({ products }: { products: { slug: string; name: string
                   onChange={(e) => update(i, { goal: e.target.value as Rule["goal"] })}
                   className={field}
                 >
-                  {(["gift", "learn", "family"] as const).map((g) => (
+                  {(["gift", "learn", "family", "faith"] as const).map((g) => (
                     <option key={g} value={g}>
                       {t(`goals.${g}`)}
                     </option>

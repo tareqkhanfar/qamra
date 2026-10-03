@@ -404,6 +404,10 @@
       "family": {
         "label": "Good time with the family",
         "hint": "Activities and adventures to do together"
+      },
+      "faith": {
+        "label": "Faith education",
+        "hint": "Knowing Allah and His Prophet ﷺ through stories and play"
       }
     },
     "pen": {
@@ -427,7 +431,8 @@
       "goals": {
         "gift": "Gift",
         "learn": "Learning",
-        "family": "Family time"
+        "family": "Family time",
+        "faith": "Faith education"
       },
       "ageMin": "From age",
       "ageMax": "To age",
@@ -959,25 +964,30 @@
     "cover": {
       "workbook": "{name}'s workbook",
       "journey": "{name}'s first journey",
-      "family": "{name}'s adventures"
+      "family": "{name}'s adventures",
+      "islamic": "My Heart Knows Allah"
     },
     "ages": {
       "workbook": "Ages 4–6",
       "journey": "Ages 3–6",
-      "family": "Ages 3–7"
+      "family": "Ages 3–7",
+      "islamic": "Ages 4–8"
     },
     "pages": {
       "workbook": "About 120 pages a volume",
-      "family": "112 pages and stickers"
+      "family": "112 pages and stickers",
+      "islamic": "Up to 120 pages per volume"
     },
     "desc": {
       "workbook": "Arabic, English, math and pen skills in one workbook, step by step every week, instead of buying several.",
       "journey": "A learning journey that starts with thinking, hand skills and colors, then letters and numbers, mission by mission.",
-      "family": "12 adventures at home, at the market, in the kitchen and outdoors, done with the family, with a passport and stickers."
+      "family": "12 adventures at home, at the market, in the kitchen and outdoors, done with the family, with a passport and stickers.",
+      "islamic": "A journey in which your child comes to know Allah and His Prophet ﷺ and lives their faith every day, through stories, play and activities. A scholar reviews every volume before it is printed."
     },
     "binding": {
       "spiral": "Spiral bound · lies flat",
-      "wire-o": "Wire-o bound · lies flat"
+      "wire-o": "Wire-o bound · lies flat",
+      "perfect": "Perfect-bound softcover · pages stay in"
     },
     "peek": "A peek inside",
     "peekFrom": {
@@ -1038,7 +1048,8 @@
       },
       "format": {
         "spiral": "Printed",
-        "digital": "PDF to print at home"
+        "digital": "PDF to print at home",
+        "softcover": "Printed"
       },
       "interior": {
         "color": "Color",
@@ -1054,7 +1065,8 @@
     "note": {
       "workbook": "{set, select, true {{pdf, select, true {All three volumes download right away.} other {All three volumes arrive together, or one at the start of each term if you prefer.}}} other {{many, select, true {One volume per term, about 10 pages a week.} other {A full term of learning, about 10 pages a week.}}}}",
       "journey": "{set, select, true {All three stages together; each builds on the one before.} other {{many, select, true {Each stage builds on the one before, with short daily missions.} other {Short daily missions that build your child's skills step by step.}}}}",
-      "family": "{pdf, select, true {A PDF to print at home, with the cut-outs and stickers.} other {A printed book with wire-o binding, a sticker sheet and cut-out pages.}}"
+      "family": "{pdf, select, true {A PDF to print at home, with the cut-outs and stickers.} other {A printed book with wire-o binding, a sticker sheet and cut-out pages.}}",
+      "islamic": "{pdf, select, true {A PDF to print at home, with your child's name and character.} other {A printed perfect-bound book, with your child's name and character.}}"
     },
     "bulk": "10 copies or more? Ask for a quote",
     "quiz": "Not sure which book fits your child? Answer 3 questions",
@@ -1102,7 +1114,40 @@
       "journey": "A child scanning a QR code in My First Learning Journey",
       "family": "A family around the table with My Adventures with My Family"
     },
-    "ageRange": "Ages {min}–{max}"
+    "ageRange": "Ages {min}–{max}",
+    "optionsOf": {
+      "islamic": {
+        "volume": "Volume"
+      }
+    },
+    "valuesOf": {
+      "islamic": {
+        "volume": {
+          "V1": "1",
+          "V2": "2",
+          "V3": "3",
+          "V4": "4",
+          "V5": "5",
+          "R": "Ramadan and Eid",
+          "L1": "Level 1 (1–2)",
+          "L2": "Level 2 (3–5)",
+          "set": "All five volumes"
+        }
+      }
+    },
+    "summaryOf": {
+      "islamic": {
+        "V1": "Volume 1",
+        "V2": "Volume 2",
+        "V3": "Volume 3",
+        "V4": "Volume 4",
+        "V5": "Volume 5",
+        "R": "The Ramadan and Eid book",
+        "L1": "Level 1 set",
+        "L2": "Level 2 set",
+        "set": "All five volumes"
+      }
+    }
   },
   "orderPath": {
     "back": "Back",
@@ -1609,7 +1654,8 @@
         "editor": "Editor",
         "reviewer": "Reviewer",
         "production": "Production",
-        "support": "Support"
+        "support": "Support",
+        "scholar": "Scholar"
       },
       "everything": "everything",
       "you": "you",
@@ -1964,7 +2010,7 @@
     ],
     "activityEyebrow": "Activity books",
     "activityTitle": "Learning and playing, as the hero of the pages",
-    "activityLead": "Three printed books in your child's name and with their character, with real pages to flip through.",
+    "activityLead": "Printed books in your child's name and with their character, with real pages to flip through.",
     "activityAll": "All activity books",
     "order": "Order",
     "faqTitle": "Common questions",
@@ -2949,7 +2995,8 @@
       "coloring": "Coloring",
       "workbook": "KG workbook",
       "journey": "First journey",
-      "family": "Family adventures"
+      "family": "Family adventures",
+      "islamic": "My Heart Knows Allah"
     },
     "fields": {
       "price_ils": "Price ₪",
@@ -3047,7 +3094,7 @@
   },
   "workbooksHub": {
     "title": "Activity books",
-    "lead": "Three printed books in your child's name, with their drawn character: learning letters and numbers, solving missions, and going on adventures with the family. Real pages to flip through before you order.",
+    "lead": "Printed books in your child's name, with their drawn character: learning letters and numbers, solving missions, and going on adventures with the family. Real pages to flip through before you order.",
     "photoAlt": "Qamra activity books stacked on a table",
     "from": "From {price}",
     "order": "Order",
@@ -3257,5 +3304,113 @@
     "closingBody": "Choose a story or an activity book, and leave the rest to us.",
     "ctaStories": "Browse the stories",
     "ctaWorkbooks": "Activity books"
+  },
+  "islamicReview": {
+    "nav": "Scholar review",
+    "title": "Scholar review: «My Heart Knows Allah»",
+    "intro": "The scholar reviews every unit page by page and answers the points where scholars differ or the child's age needs care. A volume is neither sold nor printed until all its units are approved.",
+    "export": "Download the review status file (JSON)",
+    "loading": "Loading…",
+    "volumes": "Volumes",
+    "allApproved": "All units approved",
+    "progress": "Approved: {approved} of {units}",
+    "onSale": "Every unit of this volume is approved, so it can be sold and printed unless an admin stops its sale in the catalog.",
+    "notOnSale": "This volume is neither sold nor printed until the scholar approves all its units.",
+    "matter": "Front and back pages (including the young Muslim's passport, the final assessment and the certificate)",
+    "pagesCount": "{n, plural, one {# page} other {# pages}}",
+    "pendingPoints": "{n, plural, one {# point awaiting a decision} other {# points awaiting a decision}}",
+    "approvedBy": "Approved by {name} on {date}",
+    "pageN": "Page {n}",
+    "noPreview": "No preview yet",
+    "zoom": "Enlarged page",
+    "close": "Close",
+    "points": "Points for the scholar's decision",
+    "question": "Question",
+    "decision": "Decision",
+    "noDecision": "No decision recorded yet.",
+    "history": "Review history",
+    "status": {
+      "draft": "Draft",
+      "scholar_review": "With the scholar",
+      "changes_requested": "Changes requested",
+      "approved": "Approved"
+    },
+    "events": {
+      "submitted": "Sent to the scholar",
+      "approved": "Approved",
+      "changes_requested": "Changes requested",
+      "reopened": "Sent back for review",
+      "note": "Note"
+    },
+    "kinds": {
+      "front": "Front page",
+      "opener": "Unit opener",
+      "lesson": "Lesson",
+      "closing": "Unit closing",
+      "parent": "Parent page",
+      "cumulative": "Cumulative review",
+      "back": "Back page"
+    },
+    "kindsOfSource": {
+      "quran": "Quran",
+      "hadith": "Hadith",
+      "dua": "Dhikr or dua",
+      "sira": "Sira",
+      "ruling": "Religious ruling"
+    },
+    "sourceStatus": {
+      "proposed": "Proposed",
+      "text_candidate": "Candidate text",
+      "text_verified": "Verified text",
+      "scholar_approved": "Approved by the scholar"
+    },
+    "sources": {
+      "title": "Sources cited by the unit's pages"
+    },
+    "previews": {
+      "title": "Preview pages",
+      "none": "Not prepared yet.",
+      "queued": "Being prepared…",
+      "failed": "Could not be prepared.",
+      "ready": "Pages: {pages} · prepared on {date}",
+      "render": "Prepare preview pages",
+      "again": "Prepare again",
+      "mismatch": "The number of preview pages does not match the volume's plan."
+    },
+    "form": {
+      "note": "Note (required when requesting changes)",
+      "whatChanged": "What changed in the unit?",
+      "page": "Page number (optional)",
+      "pointsFirst": "Record a decision on each point above before approving the unit."
+    },
+    "actions": {
+      "submit": "Send to the scholar",
+      "reopen": "Send back for review",
+      "approve": "Approve the unit",
+      "requestChanges": "Request changes",
+      "note": "Add a note",
+      "decide": "Save the decision"
+    },
+    "done": {
+      "submitted": "The unit was sent to the scholar.",
+      "reopened": "The unit is back in review, and the volume is off the store until it is approved again.",
+      "approved": "The unit is approved.",
+      "changesRequested": "The unit was sent back with the requested changes.",
+      "noted": "The note was saved.",
+      "decided": "The decision was saved.",
+      "previewsQueued": "The pages are being prepared and will appear here when ready."
+    },
+    "general": {
+      "title": "General questions for the scholar",
+      "intro": "Points that are not about one page and apply to the whole series."
+    },
+    "profile": {
+      "title": "Your name in the book",
+      "name": "Your name as printed",
+      "yourName": "your name",
+      "consent": "I agree that the book prints: «راجعه علميًّا: {name}» (reviewed by)",
+      "save": "Save",
+      "saved": "Your details were saved."
+    }
   }
 }

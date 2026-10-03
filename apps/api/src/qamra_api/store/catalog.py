@@ -24,11 +24,13 @@ from qamra_core.db.store import (
     Audience,
     Bundle,
     CatalogProduct,
+    ProductLine,
     Sale,
     ShippingZone,
     Variant,
     VariantPrice,
 )
+from qamra_core.islamic_review import load_state, sellable_volumes
 from qamra_core.pricing import (
     AddOnLine,
     BundleRule,
@@ -99,6 +101,8 @@ async def load_catalog(
         for v in (await db.execute(variant_rows.order_by(Variant.sort))).scalars()
         if v.product_id in products
     }
+    if not include_inactive:
+        products, variants = await scholar_gate(db, products, variants)
     prices = {
         (p.variant_id, p.currency): p.amount for p in (await db.execute(select(VariantPrice))).scalars()
     }
@@ -119,6 +123,27 @@ async def load_catalog(
         if _live(s.starts_at, s.ends_at, now)
     ]
     return Catalog(products, variants, prices, styles, addons, addon_prices, zones, bundles, sales)
+
+
+async def scholar_gate(
+    db: AsyncSession, products: dict[uuid.UUID, CatalogProduct], variants: dict[str, Variant]
+) -> tuple[dict[uuid.UUID, CatalogProduct], dict[str, Variant]]:
+    """«قلبي يعرف الله» (Addendum 10 §3.3, P0): a volume is listed and sold only while the scholar has
+    approved every unit of it (a set: every unit of all its volumes). A product with nothing approved is not
+    listed at all. The admin's switches (`active`, `orderable`) still close what is approved; approval never
+    opens them.
+    """
+    if not any(p.line == ProductLine.islamic for p in products.values()):
+        return products, variants
+    approved = (await load_state(db)).approved_volumes()
+    kept = {
+        sku: v
+        for sku, v in variants.items()
+        if products[v.product_id].line != ProductLine.islamic
+        or sellable_volumes(v.options.get("volume"), approved)
+    }
+    listed = {v.product_id for v in kept.values()}
+    return {pid: p for pid, p in products.items() if p.line != ProductLine.islamic or pid in listed}, kept
 
 
 # ---- add-on rules ------------------------------------------------------------------------------------------

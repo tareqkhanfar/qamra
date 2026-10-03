@@ -21,7 +21,12 @@ import { emptyFamily, FamilyDetails } from "./FamilyDetails";
 import { FamilyQuoteForm } from "./FamilyQuoteForm";
 import { WorkbookCover } from "./WorkbookCover";
 
-const TONE: Record<string, string> = { workbook: "bg-night-100", journey: "bg-success-bg", family: "bg-amber-100" };
+const TONE: Record<string, string> = {
+  workbook: "bg-night-100",
+  journey: "bg-success-bg",
+  family: "bg-amber-100",
+  islamic: "bg-success-bg",
+};
 
 const chip = (on: boolean, off: boolean) =>
   `min-h-12 rounded-full px-4 text-[15px] font-semibold transition ${
@@ -58,16 +63,25 @@ export function WorkbookProduct({
   const { variant, picks } = state;
   const line = product.line;
   const name = locale === "ar" ? product.name_ar : product.name_en;
+  // a line may name its own options (`valuesOf.<line>…`, e.g. «قلبي يعرف الله»'s volumes and sets)
   const label = (group: string, value: string) =>
-    t.has(`values.${group}.${value}`) ? t(`values.${group}.${value}`) : value.toUpperCase();
+    t.has(`valuesOf.${line}.${group}.${value}`)
+      ? t(`valuesOf.${line}.${group}.${value}`)
+      : t.has(`values.${group}.${value}`)
+        ? t(`values.${group}.${value}`)
+        : value.toUpperCase();
+  const optionName = (group: string) =>
+    t.has(`optionsOf.${line}.${group}`) ? t(`optionsOf.${line}.${group}`) : t(`options.${group}`);
   const summary = ["level", "stage", "volume"]
     .filter((g) => picks[g])
     .map((g) =>
-      g === "level"
-        ? label(g, picks[g]!).split(" ·")[0]
-        : picks[g] === "set"
-          ? t(`summary.${g}Set`)
-          : t(`summary.${g}`, { value: label(g, picks[g]!) }),
+      t.has(`summaryOf.${line}.${picks[g]}`)
+        ? t(`summaryOf.${line}.${picks[g]}`)
+        : g === "level"
+          ? label(g, picks[g]!).split(" ·")[0]
+          : picks[g] === "set"
+            ? t(`summary.${g}Set`)
+            : t(`summary.${g}`, { value: label(g, picks[g]!) }),
     )
     .join(" · ");
   const set = Object.values(picks).includes("set");
@@ -235,8 +249,8 @@ export function WorkbookProduct({
 
           <section className="flex flex-col gap-3.5">
             {groups(product, picks).map((g) => (
-              <div key={g.name} role="radiogroup" aria-label={t(`options.${g.name}`)} className="flex flex-col gap-2">
-                <h2 className="text-[17px] text-night-900">{t(`options.${g.name}`)}</h2>
+              <div key={g.name} role="radiogroup" aria-label={optionName(g.name)} className="flex flex-col gap-2">
+                <h2 className="text-[17px] text-night-900">{optionName(g.name)}</h2>
                 <div className="flex flex-wrap gap-2">
                   {g.values.map(({ value, available }) => (
                     <button

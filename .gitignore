@@ -13,3 +13,6 @@ samples/private/
 
 # design images drawn by scripts/design_images.py (staging; the chosen ones are installed into the product)
 design/incoming/
+
+# «قلبي يعرف الله»: the scholar review export (`qamra islamic-review-export`); the database is the record
+content/islamic/review-status.json

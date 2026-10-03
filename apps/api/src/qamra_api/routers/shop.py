@@ -131,9 +131,22 @@ async def quiz(
     catalog = await load_catalog(db)
     response.headers.update(PUBLIC_CACHE)
     cur = Currency(currency)
-    return QuizAnswer(
-        product=pick(catalog, rule.product, cur), alternative=pick(catalog, rule.alternative, cur)
-    )
+    product, alternative = pick(catalog, rule.product, cur), pick(catalog, rule.alternative, cur)
+    if goal == "faith":  # «قلبي يعرف الله» is recommended only while a volume is on sale (Addendum 10 §3.3)
+        product, alternative = _on_sale(catalog, [product, alternative], cur)
+    return QuizAnswer(product=product, alternative=alternative)
+
+
+def _on_sale(catalog: Catalog, picks: list[Pick], currency: Currency) -> tuple[Pick, Pick]:
+    """The picks that can be ordered, in order and without repeating one, then the story books."""
+    out: list[Pick] = []
+    for p in picks:
+        if p.available and all((p.slug, p.options) != (o.slug, o.options) for o in out):
+            out.append(p)
+    stories = pick(catalog, ProductRef(slug=STORIES), currency)
+    if len(out) > 1:
+        return out[0], out[1]
+    return (out[0], stories) if out else (stories, stories)  # the site doesn't offer the goal then
 
 
 class ShopSummary(BaseModel):

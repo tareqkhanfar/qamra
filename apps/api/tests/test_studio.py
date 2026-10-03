@@ -272,8 +272,17 @@ async def test_only_admins_change_staff_roles(client: AsyncClient, adb: AsyncSes
     }
     assert {
         "role": "editor",
-        "permissions": ["books.view", "journey", "templates", "themes", "workbook"],
+        "permissions": [
+            "books.view",
+            "islamic.edit",
+            "islamic.view",
+            "journey",
+            "templates",
+            "themes",
+            "workbook",
+        ],
     } in r.json()["roles"]
+    assert {"role": "scholar", "permissions": ["islamic.scholar", "islamic.view"]} in r.json()["roles"]
     r = await client.post("/api/admin/staff", json=body)
     assert r.status_code == 201 and r.json()["roles"] == ["editor"] and r.json()["mfa"] is False, r.text
     sara = uuid.UUID(r.json()["id"])

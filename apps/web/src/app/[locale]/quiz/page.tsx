@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { QuizFlow } from "@/components/shop/QuizFlow";
+import { getShopSummary } from "@/lib/catalog";
 import { pageMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -9,6 +10,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /** Addendum 9 Quiz: «أي كتاب يناسب طفلي؟». */
-export default function QuizPage() {
-  return <QuizFlow />;
+export default async function QuizPage() {
+  const summary = await getShopSummary();
+  // «قلبي يعرف الله» is in the summary only while a volume the scholar approved is on sale (Addendum 10 §9)
+  return <QuizFlow faith={summary?.orderable?.["islamic-series"] === true} />;
 }

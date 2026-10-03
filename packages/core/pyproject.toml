@@ -12,6 +12,7 @@ dependencies = [
     "boto3>=1.38",
     "structlog>=25",
     "cryptography>=45",
+    "pyyaml>=6",  # the Islamic series' unit list (content/islamic/units.yaml)
 ]
 
 [project.scripts]

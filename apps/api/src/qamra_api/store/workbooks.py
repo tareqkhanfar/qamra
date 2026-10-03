@@ -12,7 +12,7 @@ from pydantic import AfterValidator, BaseModel, ConfigDict, Field
 
 from qamra_core.db.store import CatalogProduct
 
-ACTIVITY = ("workbook", "journey", "family")
+ACTIVITY = ("workbook", "journey", "family", "islamic")  # islamic: «قلبي يعرف الله» (Addendum 10)
 
 
 def orderable(product: CatalogProduct) -> bool:

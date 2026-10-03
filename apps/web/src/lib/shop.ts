@@ -2,8 +2,11 @@
 import { api } from "@/lib/api";
 import type { CatalogProduct, Currency } from "@/lib/store";
 
-/** The activity-book lines the shop lists; each has its product page at /workbooks/[product]. */
-export const ACTIVITY_LINES = ["workbook", "journey", "family"] as const;
+/**
+ * The activity-book lines the shop lists; each has its product page at /workbooks/[product]. «قلبي يعرف الله»
+ * (islamic) is listed only while the catalog has a volume the scholar approved (the API omits it otherwise).
+ */
+export const ACTIVITY_LINES = ["workbook", "journey", "family", "islamic"] as const;
 
 /** The activity books have their product pages (/workbooks/[product]); the cards and the quiz link there. */
 export const WORKBOOK_PAGES = true;

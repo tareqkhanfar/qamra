@@ -86,3 +86,32 @@ rules:
       title_en: My First Learning Journey — stage 3
       why_ar: نفس المهارات بأسلوب ألعاب ومهمات
       why_en: The same skills through games and missions
+
+  # «تعليم ديني» (Addendum 10 §9): «قلبي يعرف الله». The site offers this goal only while the series has a
+  # volume on sale (the scholar approved it); the API never recommends a volume that can't be ordered.
+  - goal: faith
+    age_max: 5
+    product:
+      slug: islamic-series
+      options: {volume: V1}
+      title_ar: قلبي يعرف الله — المجلد الأول
+      title_en: My Heart Knows Allah — volume 1
+      why_ar: يتعرّف إلى ربّه ونعمه ونبيّه ﷺ بالقصة واللعب، بالحب لا بالتخويف.
+      why_en: Meets Allah, His blessings and His Prophet ﷺ through stories and play, with love, never fear.
+    alternative: &ramadan
+      slug: islamic-series
+      options: {volume: R}
+      title_ar: كتاب رمضان والعيد
+      title_en: The Ramadan and Eid book
+      why_ar: أجواء رمضان والعيد بالقصة واللعب والأنشطة.
+      why_en: The spirit of Ramadan and Eid through stories, play and activities
+
+  - goal: faith
+    product:
+      slug: islamic-series
+      options: {volume: V3}
+      title_ar: قلبي يعرف الله — المجلد الثالث
+      title_en: My Heart Knows Allah — volume 3
+      why_ar: أركان الإسلام والإيمان بأمثلة من عالمه، والصلاة كاملة.
+      why_en: The pillars of Islam and of faith through examples from their world, and the full prayer.
+    alternative: *ramadan

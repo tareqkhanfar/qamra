@@ -58,12 +58,14 @@ export default async function PricingPage({ searchParams }: Props) {
         : value.toUpperCase();
   // activity books: one row per volume or stage (with its level), its formats side by side
   const WHICH = ["level", "stage", "volume"];
-  const whichLabel = (v: CatalogVariant) =>
+  const whichLabel = (v: CatalogVariant, line: string) =>
     WHICH.filter((g) => v.options[g])
       .map((g) =>
-        g === "level"
-          ? optionLabel(g, v.options[g]!).split(" ·")[0]
-          : `${tw(`options.${g}`)} ${optionLabel(g, v.options[g]!)}`,
+        tw.has(`summaryOf.${line}.${v.options[g]}`) // a line's own names (e.g. «قلبي يعرف الله»'s volumes and sets)
+          ? tw(`summaryOf.${line}.${v.options[g]}`)
+          : g === "level"
+            ? optionLabel(g, v.options[g]!).split(" ·")[0]
+            : `${tw(`options.${g}`)} ${optionLabel(g, v.options[g]!)}`,
       )
       .join(" · ");
   const formatLabel = (v: CatalogVariant) =>
@@ -75,7 +77,7 @@ export default async function PricingPage({ searchParams }: Props) {
       .join(" · ");
   const rows = (p: CatalogProduct) => {
     const out = new Map<string, CatalogVariant[]>();
-    for (const v of priced(p)) out.set(whichLabel(v), [...(out.get(whichLabel(v)) ?? []), v]);
+    for (const v of priced(p)) out.set(whichLabel(v, p.line), [...(out.get(whichLabel(v, p.line)) ?? []), v]);
     return [...out.entries()];
   };
   const row = "flex items-baseline justify-between gap-3 border-b border-dashed border-line py-2.5 last:border-0";

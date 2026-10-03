@@ -44,11 +44,13 @@ from qamra_core.db.models import (
     PhotoStatus,
 )
 from qamra_core.db.models import Theme as ThemeRow
+from qamra_core.islamic_review import load_state
 from qamra_core.storage import ObjectNotFound, ObjectStorage
 
 LINE_JOBS = {  # activity books are drawn by their line's job from the order item, not the story pipeline
     "family": "qamra_worker.jobs.family_book.render_family_item",
     "journey": "qamra_worker.jobs.journey_book.render_journey_item",
+    "islamic": "qamra_worker.jobs.islamic_book.render_islamic_item",  # «قلبي يعرف الله» (Addendum 10)
 }
 router = APIRouter(prefix="/api/admin", tags=["admin"], dependencies=[Depends(require_admin)])
 
@@ -647,6 +649,11 @@ async def approve(book_id: uuid.UUID, admin: AdminUser, db: SessionDep) -> dict[
     )
     if not ready:
         raise ApiError("not_ready", 409)
+    volume = str((book.generation or {}).get("volume") or "")
+    if (book.generation or {}).get("line") == "islamic" and volume not in (
+        await load_state(db)
+    ).approved_volumes():  # P0 (Addendum 10 §3.3): nothing prints before the scholar approves every unit
+        raise ApiError("scholar_not_approved", 409, {"volume": volume})
     book.status = BookStatus.approved
     book.approved_at = datetime.now(UTC)
     book.approved_by_user_id = admin.id

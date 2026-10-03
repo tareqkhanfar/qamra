@@ -18,6 +18,7 @@ type Section =
   | "leads"
   | "themes"
   | "journeyAudio"
+  | "islamicReview"
   | "staff"
   | "audit";
 
@@ -28,6 +29,7 @@ export async function AdminShell({ active, children }: { active: Section; childr
   const tk = await getTranslations("portal.admin"); // kindergartens (Phase 4 portal)
   const ts = await getTranslations("studio.nav"); // the template studio: staff roles and the audit log
   const tj = await getTranslations("journeyAudio.admin"); // «رحلتي الأولى»: the audio QR recordings
+  const ti = await getTranslations("islamicReview"); // «قلبي يعرف الله»: the scholar's review
   const items = [
     { id: "queue", href: "/admin/queue", ready: true },
     { id: "samples", href: "/admin/samples", ready: true },
@@ -45,6 +47,7 @@ export async function AdminShell({ active, children }: { active: Section; childr
     { id: "reports", href: "/admin/reports", ready: true },
     { id: "themes", href: "/admin/studio", ready: true },
     { id: "journeyAudio", href: "/admin/journey-audio", ready: true, label: tj("nav") },
+    { id: "islamicReview", href: "/admin/islamic-review", ready: true, label: ti("nav") },
     { id: "metrics", href: "/admin/metrics", ready: true },
     { id: "settings", href: "/admin/settings", ready: true },
     { id: "staff", href: "/admin/staff", ready: true, label: ts("staff") },

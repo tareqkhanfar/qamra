@@ -11,15 +11,16 @@ import { money } from "@/lib/store";
 
 type Step = "age" | "goal" | "pen" | "result";
 const AGES = [3, 4, 5, 6] as const; // 3 = "3 or younger", 6 = "6–7"
-const GOALS = ["gift", "learn", "family"] as const;
+const GOALS = ["gift", "learn", "family", "faith"] as const;
 const PENS = ["yes", "no"] as const;
 const STEP_N: Record<Step, number> = { age: 0, goal: 1, pen: 2, result: 3 };
 
 /**
  * «أي كتاب يناسب طفلي؟» (Addendum 9, design Quiz): age → goal → (for learning) holding a pen → the
  * recommendation and an alternative. The rules live in the database (Admin → الكتالوج); the API applies them.
+ * The goal «تعليم ديني» shows only while «قلبي يعرف الله» has a volume on sale (`faith`, Addendum 10 §9).
  */
-export function QuizFlow() {
+export function QuizFlow({ faith = false }: { faith?: boolean }) {
   const t = useTranslations("quiz");
   const te = useTranslations("errors");
   const locale = useLocale();
@@ -124,7 +125,7 @@ export function QuizFlow() {
         {step === "goal" && (
           <>
             <h1 className="text-[28px] text-night-900">{t("goal.title")}</h1>
-            {GOALS.map((g) => (
+            {GOALS.filter((g) => g !== "faith" || faith).map((g) => (
               <button
                 key={g}
                 type="button"

@@ -12,13 +12,29 @@ from qamra_core.db.store import StaffRole
 PERMISSIONS: dict[StaffRole, frozenset[str]] = {
     StaffRole.owner: frozenset({"*"}),
     StaffRole.admin: frozenset(
-        {"settings", "prices", "catalog", "users", "reports", "orders.view", "books.view", "organizations"}
+        {
+            "settings",
+            "prices",
+            "catalog",
+            "users",
+            "reports",
+            "orders.view",
+            "books.view",
+            "organizations",
+            "islamic.view",
+        }
     ),
-    StaffRole.editor: frozenset({"themes", "templates", "workbook", "journey", "books.view"}),
-    StaffRole.reviewer: frozenset({"books", "content", "themes.view", "templates.view"}),
+    StaffRole.editor: frozenset(
+        {"themes", "templates", "workbook", "journey", "books.view", "islamic.view", "islamic.edit"}
+    ),
+    StaffRole.reviewer: frozenset({"books", "content", "themes.view", "templates.view", "islamic.view"}),
     StaffRole.production: frozenset({"print", "shipping", "orders.view", "books.view"}),
     StaffRole.support: frozenset({"orders", "customers", "refunds", "reprints", "books.view"}),
+    # «قلبي يعرف الله» (Addendum 10 §3.3): the scholar reads every unit and decides. A decision also needs the
+    # role itself (`SCHOLAR_ROLE`): the owner's "*" does not stand in for the scholar.
+    StaffRole.scholar: frozenset({"islamic.view", "islamic.scholar"}),
 }
+SCHOLAR_ROLE = StaffRole.scholar
 
 
 def allowed(roles: Iterable[StaffRole], permission: str) -> bool:

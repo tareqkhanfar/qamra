@@ -39,6 +39,7 @@ class ProductLine(enum.StrEnum):
     workbook = "workbook"  # «دوسية التأسيس» (Addendum 5)
     journey = "journey"  # «رحلتي الأولى للتعلّم» (Addendum 6)
     family = "family"  # «مغامراتي مع عائلتي» (Addendum 7)
+    islamic = "islamic"  # «قلبي يعرف الله» (Addendum 10): a volume sells only once the scholar approved it
 
 
 class Audience(enum.StrEnum):
@@ -76,6 +77,9 @@ class StaffRole(enum.StrEnum):
     reviewer = "reviewer"  # approves content and books
     production = "production"  # print batches, shipping
     support = "support"  # orders, customers, refunds and reprints
+    scholar = (
+        "scholar"  # «قلبي يعرف الله»: approves units and answers the scholar's points (Addendum 10 §3.3)
+    )
 
 
 # ---- catalog --------------------------------------------------------------------------------------------

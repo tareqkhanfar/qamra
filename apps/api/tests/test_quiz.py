@@ -31,6 +31,9 @@ def _pick(age: int, goal: str, pen: str | None = None) -> tuple[str, dict[str, s
         (4, "learn", "yes", ("learning-journey", {"stage": "2"}, "foundation-workbook", {"level": "kg1"})),
         (5, "learn", "yes", ("foundation-workbook", {"level": "kg2"}, "learning-journey", {"stage": "3"})),
         (6, "learn", "yes", ("foundation-workbook", {"level": "kg2"}, "learning-journey", {"stage": "3"})),
+        # «تعليم ديني» (Addendum 10 §9): offered by the site only while a volume is on sale
+        (4, "faith", None, ("islamic-series", {"volume": "V1"}, "islamic-series", {"volume": "R"})),
+        (6, "faith", None, ("islamic-series", {"volume": "V3"}, "islamic-series", {"volume": "R"})),
     ],
 )
 def test_the_default_table(age: int, goal: str, pen: str | None, expected: tuple[object, ...]) -> None:
@@ -44,6 +47,7 @@ def test_every_answer_has_a_recommendation_and_the_first_rule_wins() -> None:
         ("learn", "yes"),
         ("learn", "no"),
         ("family", None),
+        ("faith", None),
     }
     first = QuizRule.model_validate(
         {"goal": "learn", "product": {"slug": "stories"}, "alternative": {"slug": "stories"}}

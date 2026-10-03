@@ -21,7 +21,8 @@ QUIZ_KEY = "quiz_rules"
 QUIZ_SEED = CONTENT_DIR / "store" / "quiz.yaml"
 STORIES = "stories"  # a rule's product: the personalized story books (Classic and Magic)
 AGES = (3, 4, 5, 6)  # the quiz's answers: 3 = "3 or younger", 6 = "6–7"
-Goal = Literal["gift", "learn", "family"]
+Goal = Literal["gift", "learn", "family", "faith"]  # faith: «تعليم ديني» (Addendum 10 §9)
+GOALS: tuple[Goal, ...] = ("gift", "learn", "family", "faith")
 Pen = Literal["yes", "no"]
 
 
@@ -65,10 +66,10 @@ def match(rules: list[QuizRule], age: int, goal: Goal, pen: Pen | None) -> QuizR
 def gaps(rules: list[QuizRule]) -> list[dict[str, Any]]:
     """Answers that no rule covers (the quiz asks about the pen only for learning)."""
     out = []
-    for age, goal in itertools.product(AGES, ("gift", "learn", "family")):
+    for age, goal in itertools.product(AGES, GOALS):
         pens: tuple[Pen | None, ...] = ("yes", "no") if goal == "learn" else (None,)
         for pen in pens:
-            if match(rules, age, goal, pen) is None:  # type: ignore[arg-type]
+            if match(rules, age, goal, pen) is None:
                 out.append({"age": age, "goal": goal, "pen": pen})
     return out
 

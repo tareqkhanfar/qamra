@@ -16,6 +16,7 @@ from qamra_api.routers.admin_books import router as admin_books_router
 from qamra_api.routers.admin_catalog import router as admin_catalog_router
 from qamra_api.routers.admin_classic import router as admin_classic_router
 from qamra_api.routers.admin_gift_cards import router as admin_gift_cards_router
+from qamra_api.routers.admin_islamic import router as admin_islamic_router
 from qamra_api.routers.admin_orders import router as admin_orders_router
 from qamra_api.routers.admin_packing import router as admin_packing_router
 from qamra_api.routers.admin_portal import router as admin_portal_router
@@ -154,6 +155,7 @@ def create_app(settings: ApiSettings | None = None, *, manage_resources: bool = 
     app.include_router(voice_public_router)
     app.include_router(journey_audio_router)  # W5: «رحلتي الأولى» audio QR player (/api/a/{code})
     app.include_router(journey_audio_admin_router)
+    app.include_router(admin_islamic_router)  # «قلبي يعرف الله»: the scholar's review (Addendum 10 §3.3)
     if settings.e2e_fixtures and settings.env != "prod":  # test-only fixtures (tests/e2e), never in prod
         app.include_router(e2e_router)
     return app
