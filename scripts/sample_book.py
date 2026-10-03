@@ -14,6 +14,7 @@ Examples:
 import argparse
 import asyncio
 import json
+import pickle  # nosec B403: our own spec, read back by our scripts only
 import sys
 import time
 from datetime import date
@@ -268,6 +269,7 @@ async def run(args: argparse.Namespace) -> int:
             from qamra_pdf.thumbs import cover_thumbs
 
             await cover_thumbs(files.spec, out / "cover-thumbs.png")
+            (out / "spec.pickle").write_bytes(pickle.dumps(files.spec))  # to re-letter other cover art
     except QamraError as e:
         print(f"✗ {type(e).__name__}: {e}")
         return 1
