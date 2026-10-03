@@ -1,16 +1,16 @@
-"""The cast of «قلبي يعرف الله» on a page (Addendum 10 §4.6, §8): the recurring characters, drawn the same
-on every
-page from `render.people` (huda the storytelling grandmother in a headscarf, reem the big sister, salem the
-little
-brother), and the reader: the child's character cut out of the character sheet. None of them is a prophet,
-an angel or a Companion, and the narrator panel is the only place a
-prophet's story shows them.
-"""
+"""The cast of «قلبي يعرف الله» on a page (Addendum 10 §4.6, §8): the recurring characters, drawn the same on
+every page from `render.people` (huda the storytelling grandmother in a headscarf, reem the big sister, salem
+the little brother), Naanaa the family's cat (the library's cat picture), and the reader: the child's
+character cut out of the character sheet. None of them is a prophet, an angel or a Companion, and the narrator
+panel is the only place a prophet's story shows them."""
 
 from __future__ import annotations
 
 from pathlib import Path
 
+import yaml
+
+from qamra_workbook.pictures import get as picture
 from qamra_workbook.render import draw, people
 from qamra_workbook.render.character import aspect, front_view
 from qamra_workbook.render.spec import Figure
@@ -22,6 +22,14 @@ CAST: dict[str, tuple[Figure, str, str | None]] = {
     "salem": ("boy", "#6E95DB", None),
 }
 EDGE = 0.9  # the white sticker edge round a figure, in the scene's own units
+CAT = "naanaa"  # the family's cat: the library's cat picture, as big as a figure's `height`
+PLAN_FILE = Path(__file__).resolve().parents[5] / "content/islamic/plan.yaml"
+
+
+def cast_names() -> dict[str, str]:
+    """Each character's name as printed (plan.yaml `characters`); the reader's is `{child}`."""
+    rows = yaml.safe_load(PLAN_FILE.read_text(encoding="utf-8"))["characters"]
+    return {str(r["id"]): str(r["ar"]) for r in rows}
 
 
 class Kit:
@@ -35,8 +43,19 @@ class Kit:
         if who in CAST:
             kind, outfit, scarf = CAST[who]
             return people.place(people.person(kind, outfit, scarf=scarf), x, y_feet, height, EDGE)
+        if who == CAT:
+            inner = picture("cat").inner("color")
+            return draw.el(
+                "svg",
+                inner,
+                x=x - height / 2,
+                y=y_feet - height,
+                width=height,
+                height=height,
+                viewBox="0 0 100 100",
+            )
         if who != "reader":
-            raise KeyError(f"no character {who!r} in the cast (huda, reem, salem, reader)")
+            raise KeyError(f"no character {who!r} in the cast (huda, reem, salem, naanaa, reader)")
         path = self.character
         if path is None:
             return ""  # no character sheet yet: the scene is drawn without the reader
@@ -53,8 +72,8 @@ class Kit:
 
 
 def kit_for(sheet: Path | None, out_dir: Path) -> Kit:
-    """The cast with the reader taken from a character sheet (front view); without a sheet, the reader is
-    left out."""
+    """The cast with the reader taken from a character sheet (front view); without a sheet, the reader is left
+    out."""
     if sheet is None:
         return Kit()
     cut = front_view(sheet, out_dir)
@@ -72,11 +91,9 @@ def sample_kit(out_dir: Path | None = None) -> Kit:
 
 def listeners(kit: Kit, who: list[str], width: float = 64.0, height: float = 30.0) -> str:
     """The narrator panel's cast on a rug, as SVG elements in a `width` × `height` box: the grandmother a
-    little
-    taller than the children, all standing close together. Only the recurring characters appear here, never
-    in the
-    scenes of a prophet's story."""
-    heights = {"huda": 0.98, "reem": 0.84, "salem": 0.72, "reader": 0.9}
+    little taller than the children, all standing close together. Only the recurring characters appear here,
+    never in the scenes of a prophet's story."""
+    heights = {"huda": 0.98, "reem": 0.84, "salem": 0.72, "reader": 0.9, CAT: 0.4}
     count = max(len(who), 1)
     step = (width - 14) / count
     parts = [

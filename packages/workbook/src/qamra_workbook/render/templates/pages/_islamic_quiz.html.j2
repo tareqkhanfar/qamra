@@ -1,0 +1,14 @@
+{# the shared blocks of the review pages: true-or-false rows and questions with options to tick #}
+{% macro tf_rows(rows, d) -%}
+{% for r in rows %}
+<div class="tf-row card"><span class="tf-n">{{ r.n }}</span><p class="tf-text">{{ r.text }}</p>
+  <span class="tf-btns"><span class="tf-btn yes">{{ icon('check', 'ico', 2.6) }}{{ d.labels.true }}</span><span class="tf-btn no">{{ icon('cross', 'ico', 2.6) }}{{ d.labels.false }}</span></span></div>
+{% endfor %}
+{%- endmacro %}
+
+{% macro questions(items) -%}
+{% for q in items %}
+<div class="card ur-choose"><p class="ur-q"><span class="tf-n sm">{{ q.n }}</span>{{ q.text }}</p>
+  <div class="ur-choices k{{ q.choices|length }}">{% for ch in q.choices %}<div class="ur-choice"><span class="tick"></span><span class="ur-ct">{% if ch.placeholder %}<span class="hole">{{ ch.notice }}</span>{% else %}{{ ch.text }}{% endif %}</span>{% if ch.tag %}<i class="opt-tag">{{ ch.tag }}</i>{% endif %}</div>{% endfor %}</div></div>
+{% endfor %}
+{%- endmacro %}

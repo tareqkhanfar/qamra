@@ -1,0 +1,18 @@
+{% import "pages/_islamic.html.j2" as isl with context %}
+{% import "pages/_islamic_quiz.html.j2" as qz with context %}
+{% set c = d.chrome %}
+<div class="isl" {{ isl.container(c) }}>
+  {{ isl.start(p, g, c) }}
+  {{ isl.head(p, c, true, true) }}
+  <div class="isl-body ur as">
+    <p class="as-play"><span class="pill">{{ icon('dice', 'ico', 2.2) }}{{ d.labels.play }}</span>{% if d.intro %}<span class="as-intro">{{ d.intro }}</span>{% endif %}</p>
+    {% if d.rows %}<section class="ur-block"><h2 class="ur-label">{{ icon('check-list', 'ico', 2.2) }}{{ d.labels.tf }}</h2>{{ qz.tf_rows(d.rows, d) }}</section>{% endif %}
+    {% if d.questions %}<section class="ur-block"><h2 class="ur-label">{{ icon('target', 'ico', 2.2) }}{{ d.labels.choose }}</h2>{{ qz.questions(d.questions) }}</section>{% endif %}
+    {% if d.situations %}<section class="ur-block"><h2 class="ur-label">{{ icon('mask', 'ico', 2.2) }}{{ d.labels.situations }}</h2>{{ qz.questions(d.situations) }}</section>{% endif %}
+    {% if d.skills %}<section class="ur-block"><h2 class="ur-label">{{ icon('heart', 'ico', 2.2) }}{{ d.labels.parent }}</h2>
+      {% for s in d.skills %}<div class="card fa-row"><div class="fa-t"><b>{{ s.skill }}</b><p>{{ s.text }}</p></div><div class="fa-stars">{{ isl.outline_stars(d.stars, 'star-outline') }}</div></div>{% endfor %}</section>{% endif %}
+    {% if d.note %}<p class="as-note">{{ d.note }}</p>{% endif %}
+    {{ isl.refs(c, d.refs) }}
+  </div>
+  {{ isl.foot(p, c) }}
+</div>

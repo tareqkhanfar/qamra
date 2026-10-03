@@ -54,13 +54,13 @@ def unit_review(ctx: PageContext) -> Built:
         "star_count": STARS_IN_REVIEW,
         "refs": references(ctx, ids),
         "labels": {
-            "tf": "صَحٌّ أَمْ خَطَأٌ؟",
-            "true": "صَحٌّ",
+            "tf": "صَحِيحٌ أَمْ خَطَأٌ؟",
+            "true": "صَحِيحٌ",
             "false": "خَطَأٌ",
             "choose": ctx.text("{اخْتَرِ/اخْتَارِي} الْجَوَابَ الصَّحِيحَ"),
         },
     }
-    answer = [f"{r['n']}: {'صح' if r['ok'] else 'خطأ'}" for r in rows]
+    answer = [f"{r['n']}: {'صحيح' if r['ok'] else 'خطأ'}" for r in rows]
     answer.append("الاختيار: " + "، ".join(c["text"] for c in choose["choices"] if c["ok"]))
     return Built(data, answer, problems)
 

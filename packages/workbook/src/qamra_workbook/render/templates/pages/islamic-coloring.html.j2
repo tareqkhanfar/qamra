@@ -3,6 +3,7 @@
 <div class="isl" {{ isl.container(c) }}>
   {{ isl.start(p, g, c) }}
   {{ isl.head(p, c, true, true) }}
-  <div class="isl-body col"><figure class="col-frame">{{ d.art }}</figure></div>
+  <div class="isl-body col">{% if d.art %}<figure class="col-frame">{{ d.art }}</figure>{% else %}
+    <div class="col-grid n{{ d.grid }}">{% for pic in d.pics %}<figure class="col-cell">{{ pic }}</figure>{% endfor %}</div>{% endif %}</div>
   {{ isl.foot(p, c) }}
 </div>

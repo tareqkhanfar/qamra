@@ -1,0 +1,18 @@
+{% import "pages/_islamic.html.j2" as isl with context %}
+{% import "pages/_islamic_side.html.j2" as ms with context %}
+{% set c = d.chrome %}
+<div class="isl" {{ isl.container(c) }}>
+  {{ isl.start(p, g, c) }}
+  {{ isl.head(p, c, true, true) }}
+  <div class="isl-body mt n{{ d.rows|length }}">
+    {% for r in d.rows %}
+    <div class="mt-row">
+      <div class="mt-cell card a"><span class="mt-n">{{ r.a.n }}</span>{{ ms.side(r.a, c) }}<i class="mt-dot"></i></div>
+      <div class="mt-gap"></div>
+      <div class="mt-cell card b"><i class="mt-dot"></i>{{ ms.side(r.b, c) }}<span class="mt-n">{{ r.b.n }}</span></div>
+    </div>
+    {% endfor %}
+    {{ isl.refs(c, d.refs) }}
+  </div>
+  {{ isl.foot(p, c) }}
+</div>

@@ -1,0 +1,13 @@
+{% import "pages/_islamic.html.j2" as isl with context %}
+{% set c = d.chrome %}
+<div class="isl" {{ isl.container(c) }}>
+  {{ isl.start(p, g, c) }}
+  {{ isl.head(p, c, true, true) }}
+  <div class="isl-body cp" style="--cols: {{ d.cols }}">
+    <section class="cp-board"><span class="pill">{{ icon('sticker', 'ico', 2.2) }}{{ d.labels.paste }}</span>
+      <div class="cp-slots">{% for s in d.slots %}<div class="cp-slot"><span class="cp-label">{{ s }}</span></div>{% endfor %}</div></section>
+    <section class="cp-strip"><span class="cp-scissors">{{ icon('scissors', 'ico', 2.2) }}{{ d.labels.cut }}</span>
+      <div class="cp-pieces">{% for pc in d.pieces %}<div class="cp-piece">{{ pc.pic }}{% if pc.text %}<span>{{ pc.text }}</span>{% endif %}</div>{% endfor %}</div></section>
+  </div>
+  {{ isl.foot(p, c) }}
+</div>

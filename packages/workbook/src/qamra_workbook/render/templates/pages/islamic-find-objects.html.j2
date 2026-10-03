@@ -3,10 +3,9 @@
 <div class="isl" {{ isl.container(c) }}>
   {{ isl.start(p, g, c) }}
   {{ isl.head(p, c, true, true) }}
-  <div class="isl-body dy{{ ' dense' if d.dense }}">
-    {% for m in d.moments %}
-    <article class="dy-row"><span class="dy-n">{{ m.n }}</span><div class="dy-pic-box">{{ m.pic }}</div><div class="dy-t"><b>{{ m.when }}</b><p>{{ m.text }}</p></div>{% if d.tick %}<span class="tick"></span>{% endif %}</article>
-    {% endfor %}
+  <div class="isl-body fo">
+    <figure class="fo-board">{{ d.board }}{% if solved %}{{ d.rings }}{% endif %}</figure>
+    <section class="fo-list">{% for it in d.finds %}<div class="fo-item card">{{ it.art }}<span>{{ it.word }}</span><i class="tick"></i></div>{% endfor %}</section>
     {% if d.closing %}<section class="hn-close card"><p{{ ' class=ai' if d.closing.ai }}>{{ d.closing.text }}</p></section>{% endif %}
     {{ isl.refs(c, d.refs) }}
   </div>

@@ -1,0 +1,6 @@
+{# one side of a match: a picture, a word, or a source's wording (marked while it is not approved) #}
+{% macro side(x, c) -%}
+{% if x.pic %}<span class="mt-art">{{ x.pic }}</span>{% endif %}
+{% if x.sacred %}{% if x.sacred.placeholder %}<span class="hole">{{ x.sacred.notice }}</span>{% else %}<span class="mt-say">{{ x.sacred.text }}</span>{% if x.sacred.short_tag %}<i class="opt-tag">{{ x.sacred.short_tag }}</i>{% endif %}{% endif %}{% endif %}
+{% if x.text %}<span class="mt-t">{{ x.text }}</span>{% endif %}
+{%- endmacro %}

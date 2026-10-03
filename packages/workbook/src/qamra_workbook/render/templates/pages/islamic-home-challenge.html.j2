@@ -1,0 +1,15 @@
+{% import "pages/_islamic.html.j2" as isl with context %}
+{% set c = d.chrome %}
+<div class="isl" {{ isl.container(c) }}>
+  {{ isl.start(p, g, c) }}
+  {{ isl.head(p, c, true, true) }}
+  <div class="isl-body hc">
+    <section class="wy-scenario"><p>{{ d.challenge }}</p></section>
+    {% if d.steps %}<section class="hc-steps"><h2 class="ur-label">{{ icon('bulb', 'ico', 2.2) }}{{ d.labels.steps }}</h2>
+      {% for s in d.steps %}<div class="ur-choice"><span class="tick"></span><span class="ur-ct">{{ s }}</span></div>{% endfor %}</section>{% endif %}
+    <section class="card hc-week"><h2 class="ur-label">{{ icon('star', 'ico', 2.2) }}{{ d.labels.week }}</h2>
+      <div class="hc-days">{% for n in d.days %}<span class="pp-star">{{ icon('star', 'star-outline big', 1.5) }}<i>{{ n }}</i></span>{% endfor %}</div></section>
+    {% if d.reward %}<p class="hc-reward"><span class="pill">{{ icon('trophy', 'ico', 2.2) }}{{ d.reward }}</span></p>{% endif %}
+  </div>
+  {{ isl.foot(p, c) }}
+</div>

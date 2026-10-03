@@ -1,0 +1,11 @@
+{% import "pages/_islamic.html.j2" as isl with context %}
+{% set c = d.chrome %}
+<div class="isl" {{ isl.container(c) }}>
+  {{ isl.start(p, g, c) }}
+  {{ isl.head(p, c, true, true) }}
+  <div class="isl-body mz">
+    <figure class="mz-frame">{{ d.svg_solved if solved else d.svg }}</figure>
+    {% if d.goal_word %}<p class="mz-goal"><span class="pill">{{ icon('flag', 'ico', 2.2) }}{{ d.goal_word }}</span></p>{% endif %}
+  </div>
+  {{ isl.foot(p, c) }}
+</div>

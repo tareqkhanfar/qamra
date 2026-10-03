@@ -1,0 +1,16 @@
+{% import "pages/_islamic.html.j2" as isl with context %}
+{% set c = d.chrome %}
+<div class="isl" {{ isl.container(c) }}>
+  {{ isl.start(p, g, c) }}
+  {{ isl.head(p, c, false, true) }}
+  <div class="isl-body ms">
+    <section class="ms-box"><i>{{ icon('alert', 'ico', 2) }}</i>
+      <p class="ms-h">صفحة لم يُكتب محتواها بعد</p>
+      <p class="ms-k"><bdi dir="ltr">{{ d.key }}</bdi> · <bdi dir="ltr">{{ d.planned }}</bdi></p>
+      {% if d.lesson %}<p class="ms-l">{{ d.lesson }}</p>{% endif %}
+      {% if d.concepts %}<p class="ms-m">المفاهيم: <bdi dir="ltr">{{ d.concepts|join(', ') }}</bdi></p>{% endif %}
+      {% if d.sources %}<p class="ms-m">المصادر المخطَّط لها: <bdi dir="ltr">{{ d.sources|join(', ') }}</bdi></p>{% endif %}
+    </section>
+  </div>
+  {{ isl.foot(p, c) }}
+</div>

@@ -1,0 +1,15 @@
+{% import "pages/_islamic.html.j2" as isl with context %}
+{% import "pages/_islamic_quiz.html.j2" as qz with context %}
+{% set c = d.chrome %}
+<div class="isl" {{ isl.container(c) }}>
+  {{ isl.start(p, g, c) }}
+  {{ isl.head(p, c, true, true) }}
+  {% if d.subtitle %}<p class="ur-sub">{{ d.subtitle }}</p>{% endif %}
+  <div class="isl-body ur">
+    {% if d.rows %}<section class="ur-block"><h2 class="ur-label">{{ icon('check-list', 'ico', 2.2) }}{{ d.labels.tf }}</h2>{{ qz.tf_rows(d.rows, d) }}</section>{% endif %}
+    {% if d.questions %}<section class="ur-block"><h2 class="ur-label">{{ icon('target', 'ico', 2.2) }}{{ d.labels.choose }}</h2>{{ qz.questions(d.questions) }}</section>{% endif %}
+    {% if d.stars_text %}<section class="ur-stars card"><p>{{ d.stars_text }}</p>{{ isl.outline_stars(d.star_count, 'star-outline big') }}</section>{% endif %}
+    {{ isl.refs(c, d.refs) }}
+  </div>
+  {{ isl.foot(p, c) }}
+</div>

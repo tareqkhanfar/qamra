@@ -1,0 +1,14 @@
+{% import "pages/_islamic.html.j2" as isl with context %}
+{% set c = d.chrome %}
+<div class="isl" {{ isl.container(c) }}>
+  {{ isl.start(p, g, c) }}
+  {{ isl.head(p, c, false, true) }}
+  <div class="isl-body me">
+    <div class="me-top">
+      <div class="pp-photo me-photo">{% if d.reader %}<img src="{{ d.reader }}" alt="">{% endif %}</div>
+      <dl class="me-fields">{% for t in d.prompts %}<div class="me-f"><dt>{{ t }}</dt><dd>{% if loop.first %}<span data-fit="12">{{ d.name }}</span>{% endif %}</dd></div>{% endfor %}</dl>
+    </div>
+    <section class="dr-boxes n1">{% if d.draw_box %}<div class="dr-box"><span class="pill">{{ icon('crayon', 'ico', 2.2) }}{{ d.draw_box }}</span></div>{% else %}<div class="dr-box"></div>{% endif %}</section>
+  </div>
+  {{ isl.foot(p, c) }}
+</div>

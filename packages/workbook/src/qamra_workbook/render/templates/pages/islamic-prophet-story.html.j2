@@ -8,12 +8,12 @@
       {{ d.cast }}
       <div class="st-bubble"><p>{{ d.intro }}</p></div>
     </section>
-    <section class="st-grid">
+    <section class="st-grid n{{ d.scenes|length }}">
       {% for s in d.scenes %}
       <figure class="st-cell"><div class="st-img"><span class="st-n">{{ s.n }}</span>{{ s.svg }}</div><figcaption class="st-cap{{ ' ai' if s.ai }}">{{ s.text }}</figcaption></figure>
       {% endfor %}
     </section>
-    {{ isl.sacred(d.verse, c, false, true) }}
+    {% if d.verse %}{{ isl.sacred(d.verse, c, false, true) }}{% endif %}
     <section class="st-lesson card"><i>{{ icon('bulb', 'ico', 2.2) }}</i><div><b>{{ d.labels.lesson }}</b><p{{ ' class=ai' if d.lesson.ai }}>{{ d.lesson.text }}</p></div></section>
     <section class="st-q card"><p class="st-qt"><i>{{ icon('target', 'ico', 2.2) }}</i><span>{{ d.question.text }}</span></p>
       <div class="st-choices">{% for ch in d.question.choices %}<div class="st-choice"><span class="tick"></span><span>{% if ch.placeholder %}<span class="hole">{{ ch.notice }}</span>{% else %}{{ ch.text }}{% endif %}</span></div>{% endfor %}</div></section>

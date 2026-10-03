@@ -1,0 +1,20 @@
+{% import "pages/_islamic.html.j2" as isl with context %}
+{% set c = d.chrome %}
+<div class="isl" {{ isl.container(c) }}>
+  {{ isl.start(p, g, c) }}
+  {{ isl.head(p, c, true, true) }}
+  <div class="isl-body rp">
+    <section class="wy-scenario"><p>{{ d.scenario }}</p></section>
+    <div class="rp-top">
+      <figure class="rp-scene">{{ d.scene }}</figure>
+      <section class="rp-roles"><h2 class="ur-label">{{ icon('mask', 'ico', 2.2) }}{{ d.labels.roles }}</h2>
+        {% for r in d.roles %}<div class="rp-role card"><span class="rp-n">{{ r.n }}</span><b>{{ r.role }}</b><span class="rp-by">{{ r.by }}</span></div>{% endfor %}</section>
+    </div>
+    <section class="rp-script"><h2 class="ur-label">{{ icon('talk', 'ico', 2.2) }}{{ d.labels.script }}</h2>
+      {% for s in d.script %}<div class="rp-say"><span class="rp-tag r{{ s.n }}">{{ s.role }}</span><p>{{ s.text }}</p></div>{% endfor %}</section>
+    <aside class="wu-parent"><b>{{ icon('heart', 'ico', 2.2) }}{{ d.labels.parent }}</b><p>{{ d.tip }}</p></aside>
+    {% if d.stars %}<section class="ur-stars card"><p>{{ d.stars }}</p>{{ isl.outline_stars(3, 'star-outline big') }}</section>{% endif %}
+    {{ isl.refs(c, d.refs) }}
+  </div>
+  {{ isl.foot(p, c) }}
+</div>

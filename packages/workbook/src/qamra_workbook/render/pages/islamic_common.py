@@ -1,17 +1,11 @@
 """What every page of «قلبي يعرف الله» shares: the page's content and context, the unit's ribbon, the framed
-block that
-prints a source's wording (or a marked placeholder), the drafter's short texts, and the registration of a
-page type
-with its `islamic-*` template.
+block that prints a source's wording (or a marked placeholder), the drafter's short texts, and the
+registration of a page type with its `islamic-*` template.
 
 A page prints religious wording only through the register: `sacred(...)` for a verse, a quotation or a dhikr
-block, a
-`Choice` that names a `source`, and the inline token `{src:ID}` inside a text. Each asks the resolver for a
-source id and
-gets the verified text, a candidate (preview builds only) or a placeholder. In a print build a placeholder,
-or a source
-that is not `scholar_approved`, is a problem: the page is never rendered.
-"""
+block, a `Choice` that names a `source`, and the inline token `{src:ID}` inside a text. Each asks the resolver
+for a source id and gets the verified text, a candidate (preview builds only) or a placeholder. In a print
+build a placeholder, or a source that is not `scholar_approved`, is a problem: the page is never rendered."""
 
 from __future__ import annotations
 
@@ -23,8 +17,10 @@ from typing import Any
 from markupsafe import Markup, escape
 
 from qamra_workbook.islamic_sources import NOTICE, Resolved, SourceError, Span
-from qamra_workbook.pictures.islamic import ribbon_svg, scene_svg, star8_svg
-from qamra_workbook.render.islamic_content import Choice, Claim, IslamicContext, Page, Quote
+from qamra_workbook.pictures.islamic import SCENES, ribbon_svg, scene_svg, star8_svg
+from qamra_workbook.pictures.islamic_backdrops import composed_problems, composed_svg, prop_known, prop_svg
+from qamra_workbook.render.islamic_content import AnyPage, Choice, Claim, IslamicContext, Quote, Scene
+from qamra_workbook.render.islamic_figures import CAST
 from qamra_workbook.render.islamic_units import UNITS
 from qamra_workbook.render.registry import REGISTRY, Builder, Frame, PageContext, PageType
 
@@ -39,8 +35,7 @@ TOKEN = re.compile(r"\{src:([a-z0-9-]+)\}")  # a source's wording inside a text:
 
 @dataclass(frozen=True)
 class IslamicPageType(PageType):
-    """A page type whose template is `islamic-<name>.html.j2` (the series' pages share the `islamic-`
-    prefix)."""
+    """A page type whose template is `islamic-<name>.html.j2` (the series' `islamic-` prefix)."""
 
     shared: str = ""  # a page type that shares another's template (`prayer-steps` uses the wudu cards)
 
@@ -70,7 +65,7 @@ def context_of(ctx: PageContext) -> IslamicContext:
     return isl
 
 
-def page_of(ctx: PageContext) -> Page:
+def page_of(ctx: PageContext) -> AnyPage:
     return ctx.page.params["page"]  # type: ignore[no-any-return]
 
 
@@ -95,9 +90,58 @@ def chrome(ctx: PageContext, problems: list[str]) -> dict[str, Any]:
     }
 
 
-def scene(ctx: PageContext, name: str, css_class: str = "scene", fit: str = "slice") -> Markup:
-    """A scene of the series, with the cast (the reader and the recurring characters) when it has people."""
-    return scene_svg(name, f"{ctx.page.id}-{css_class}", context_of(ctx).kit, css_class, fit)
+def scene(
+    ctx: PageContext, name: str | Scene, css_class: str = "scene", fit: str = "slice", n: int = 0
+) -> Markup:
+    """A scene of the series, drawn (`art`) or composed (`backdrop` + `props` + `figures`), with the cast (the
+    reader and the recurring characters) when it has people. Check it first with `scene_problems`. `n` tells
+    apart two scenes of one page (their gradients' ids)."""
+    uid = f"{ctx.page.id}-{css_class}" + (f"-{n}" if n else "")
+    kit = context_of(ctx).kit
+    if isinstance(name, str):
+        return scene_svg(name, uid, kit, css_class, fit)
+    if name.art:
+        return scene_svg(name.art, uid, kit, css_class, fit)
+    return composed_svg(name.backdrop, name.props, name.figures, uid, kit, css_class, fit)
+
+
+def scene_problems(value: Scene, *, people: bool = True, where: str = "scene") -> list[str]:
+    """What stops a scene from being drawn: an unknown art or backdrop, a prop that is not in the library or
+    draws a person, and (`people=False`, a prophet's or a sira story) any person at all."""
+    if value.art:
+        art = SCENES.get(value.art)
+        if art is None:
+            return [f"{where}: no scene art {value.art!r}"]
+        if not people and (art.figures or value.figures):
+            return [f"{where}: {value.art!r} draws people, and this page shows none"]
+        return []
+    return [
+        f"{where}: {p}" for p in composed_problems(value.backdrop, value.props, value.figures, people=people)
+    ]
+
+
+def picture_problems(names: list[str], where: str) -> list[str]:
+    """Pictures a page names (library ids or isl:<icon>) that do not exist or draw a person."""
+    from qamra_workbook.pictures.islamic_backdrops import PERSON_PICTURES
+
+    out = []
+    for name in names:
+        if not prop_known(name):
+            out.append(f"{where}: no picture {name!r} in the library (or isl:<icon>)")
+        elif name in PERSON_PICTURES:
+            out.append(f"{where}: {name!r} draws a person; people appear only as the recurring characters")
+    return out
+
+
+def picture(name: str, size: float = 100.0, css_class: str = "pic", i: int = 0) -> Markup:
+    """A library picture or a series icon as its own SVG (checked with `picture_problems` first)."""
+    return Markup(  # nosec B704 (static art)
+        f'<svg class="{css_class}" viewBox="0 0 {size:g} {size:g}" aria-hidden="true">'
+        f"{prop_svg(name, 0, 0, size, i)}</svg>"
+    )
+
+
+SPEAKERS = frozenset({*CAST, "reader", "naanaa"})
 
 
 # ---- the register's wording on a page -------------------------------------------------------------------
@@ -128,8 +172,7 @@ def _print_gate(
 
 def sacred(ctx: PageContext, quote: Quote, kind: str, problems: list[str]) -> dict[str, Any]:
     """The block for a verse, a quotation or a dhikr: the source's wording and where it comes from, or a
-    marked
-    placeholder. Never any wording of this module's own."""
+    marked placeholder. Never any wording of this module's own."""
     isl = context_of(ctx)
     span = Span(quote.span.start, quote.span.end) if quote.span else None
     got, reason = _resolve(ctx, quote.source, span)
@@ -162,10 +205,9 @@ def sacred(ctx: PageContext, quote: Quote, kind: str, problems: list[str]) -> di
 
 def rich(ctx: PageContext, text: str, problems: list[str]) -> str | Markup:
     """A text as printed for this child, with each `{src:ID}` replaced by that source's wording from the
-    register
-    (a candidate is underlined in a preview build; a placeholder shows its notice; a print build refuses
-    both). The
-    tokens are cut out before the text is personalized, so no digit of an id is turned into a numeral."""
+    register (a candidate is underlined in a preview build; a placeholder shows its notice; a print build
+    refuses both). The tokens are cut out before the text is personalized, so no digit of an id is turned into
+    a numeral."""
     if "{src:" not in text:
         return ctx.text(text)
     isl = context_of(ctx)
@@ -187,9 +229,7 @@ def rich(ctx: PageContext, text: str, problems: list[str]) -> str | Markup:
 
 
 def claim(ctx: PageContext, value: Claim | str, problems: list[str]) -> dict[str, Any]:
-    """A short text: personalized (`{child}`, `{masc/fem}`, `{src:ID}`) and marked when the drafter wrote
-    it.
-    """
+    """A short text: personalized (`{child}`, `{masc/fem}`, `{src:ID}`) marked when drafted."""
     if isinstance(value, str):
         return {"text": rich(ctx, value, problems), "ai": False, "sources": []}
     return {"text": rich(ctx, value.text, problems), "ai": value.ai_drafted, "sources": value.sources}
@@ -217,9 +257,7 @@ def choice(ctx: PageContext, option: Choice, problems: list[str]) -> dict[str, A
 
 
 def references(ctx: PageContext, ids: list[str]) -> list[str]:
-    """The citations under a page («21:87», «صحيح البخاري 6094»), in order of appearance and without
-    repeats.
-    """
+    """The citations under a page («21:87», «صحيح البخاري 6094»), in order, without repeats."""
     isl = context_of(ctx)
     out: dict[str, None] = {}
     for source_id in ids:

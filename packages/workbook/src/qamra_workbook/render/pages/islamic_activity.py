@@ -15,8 +15,11 @@ from typing import Any
 from markupsafe import Markup
 
 from qamra_workbook.islamic_sources import letters
+from qamra_workbook.pictures import get as library_picture
 from qamra_workbook.pictures.islamic import BLESSING_SPOTS, SCENES, WUDU_ICONS, body_icon, glyph_svg
+from qamra_workbook.pictures.islamic_backdrops import GLYPH_PREFIX
 from qamra_workbook.pictures.islamic_scenes import crescent, sun_disc
+from qamra_workbook.pictures.model import OUTLINE
 from qamra_workbook.render.islamic_content import Coloring, Hunt, OrderSteps, PrayerSteps
 from qamra_workbook.render.pages.islamic_common import (
     chrome,
@@ -24,6 +27,7 @@ from qamra_workbook.render.pages.islamic_common import (
     context_of,
     islamic_page,
     page_of,
+    picture_problems,
     references,
     rich,
     scene,
@@ -170,16 +174,35 @@ def blessings_hunt(ctx: PageContext) -> Built:
     return Built(data, [ctx.text(w) for w in page.find], problems)
 
 
+def line_art(name: str, css_class: str = "col-pic") -> Markup:
+    """A picture to colour: the library's line art, or a series icon in outline."""
+    if name.startswith(GLYPH_PREFIX):
+        glyph = glyph_svg(name[len(GLYPH_PREFIX) :], OUTLINE, 1.1)
+        inner = f'<g transform="translate(8 8) scale(3.5)">{glyph}</g>'
+    else:
+        inner = library_picture(name).inner("line")
+    return Markup(  # nosec B704 (static art)
+        f'<svg class="{css_class}" viewBox="0 0 100 100" aria-hidden="true">{inner}</svg>'
+    )
+
+
 @islamic_page("islamic-coloring")
 def coloring(ctx: PageContext) -> Built:
+    """A line-art scene, or one to six pictures laid out big on the page, to colour."""
     page = page_of(ctx)
     assert isinstance(page, Coloring)
     problems: list[str] = []
-    if page.art not in SCENES:
+    if page.art and page.art not in SCENES:
         problems.append(f"no scene art {page.art!r}")
+    problems += picture_problems(page.pics, "pics")
     if page.sacred_text != "none":
         problems.append(
             "a colouring page must say `sacred_text: none` (it carries no verse, hadith or dhikr)"
         )
-    data: dict[str, Any] = {"chrome": chrome(ctx, problems), "art": scene(ctx, page.art, "col-art", "meet")}
+    data: dict[str, Any] = {
+        "chrome": chrome(ctx, problems),
+        "art": scene(ctx, page.art, "col-art", "meet") if page.art and not problems else "",
+        "pics": [line_art(p) for p in page.pics] if not problems else [],
+        "grid": len(page.pics),
+    }
     return Built(data, None, problems)

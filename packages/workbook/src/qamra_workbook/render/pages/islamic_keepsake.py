@@ -24,6 +24,7 @@ from qamra_workbook.render.pages.family import uri
 from qamra_workbook.render.pages.islamic_common import (
     chrome,
     claim,
+    context_of,
     islamic_page,
     page_of,
     references,
@@ -68,6 +69,7 @@ def muslim_passport(ctx: PageContext) -> Built:
     child = ctx.book.child
     data: dict[str, Any] = {
         "chrome": chrome(ctx, problems),
+        "card": page.layout == "journey-card",
         "photo": uri(ctx.assets.character),
         "name": child.name,
         "date": ctx.book.date_ar(),
@@ -82,6 +84,7 @@ def muslim_passport(ctx: PageContext) -> Built:
             "stamps": "أَخْتَامُ وَحَدَاتِي",
             "stars": "نُجُومُ تَحَدِّيَاتِي",
             "stick": ctx.text("{أَلْصِقِ/أَلْصِقِي} الْمُلْصَقَ بَعْدَ كُلِّ وَحْدَةٍ"),
+            "steps": "رِحْلَتِي خُطْوَةً خُطْوَةً",
             "colour": ctx.text("{لَوِّنْ/لَوِّنِي} نَجْمَةً بَعْدَ كُلِّ تَحَدٍّ"),
         },
     }
@@ -93,7 +96,8 @@ def muslim_certificate(ctx: PageContext) -> Built:
     page = page_of(ctx)
     assert isinstance(page, Certificate)
     problems: list[str] = []
-    if page.reviewed_by_line:
+    credit = context_of(ctx).credit
+    if page.reviewed_by_line and not credit:
         problems.append(
             "the «راجعه علميًا» line needs the scholar's name from the review workflow (Addendum 10 §3.3)"
         )
@@ -106,6 +110,7 @@ def muslim_certificate(ctx: PageContext) -> Built:
         "date": ctx.book.date_ar(),
         "star": star8_svg(GOLD, 11.0, "#FFFBEE"),
         "fields": page.fields,
+        "credit": f"راجعه علميًّا: {credit}" if page.reviewed_by_line and credit else "",
         "labels": {
             "series": "قلبي يعرف الله",
             "date": "التَّارِيخُ",

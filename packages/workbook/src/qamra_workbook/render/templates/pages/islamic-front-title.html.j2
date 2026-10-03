@@ -1,0 +1,17 @@
+{% import "pages/_islamic.html.j2" as isl with context %}
+{% set c = d.chrome %}
+<div class="isl ft" {{ isl.container(c) }}>
+  <div class="ic-frame" aria-hidden="true"><i class="ic-line a"></i><i class="ic-line b"></i>
+    <span class="ic-corner tl">{{ d.star }}</span><span class="ic-corner tr">{{ d.star }}</span><span class="ic-corner bl">{{ d.star }}</span><span class="ic-corner br">{{ d.star }}</span></div>
+  <div class="ft-body">
+    <div class="ic-top"><span>{{ d.star }}</span><b>{{ d.series }}</b><span>{{ d.star }}</span></div>
+    <h1 class="ft-title" data-fit="22">{{ p.title }}</h1>
+    {% if d.subtitle %}<p class="ft-sub">{{ d.subtitle }}</p>{% endif %}
+    <p class="ft-level">{{ d.level }}{% if d.level and d.ages %} · {% endif %}{{ d.ages }}</p>
+    <div class="ft-units">{% for u in d.units %}<span style="background: {{ u.color }}">{{ u.glyph }}</span>{% endfor %}</div>
+    <div class="ic-hero ft-hero"><i class="ic-ring"></i>{% if d.reader %}<img src="{{ d.reader }}" alt="">{% endif %}</div>
+    <p class="ic-give">{{ d.owner }}</p>
+    <div class="ic-name"><span data-fit="20">{{ d.name }}</span></div>
+    {% if d.credit %}<p class="ic-credit">{{ d.credit }}</p>{% endif %}
+  </div>
+</div>

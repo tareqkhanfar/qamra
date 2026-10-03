@@ -1,0 +1,12 @@
+{% import "pages/_islamic.html.j2" as isl with context %}
+{% set c = d.chrome %}
+<div class="isl" {{ isl.container(c) }}>
+  {{ isl.start(p, g, c) }}
+  {{ isl.head(p, c, false, true) }}
+  <div class="isl-body fc n{{ d.cards|length }}">
+    {% for k in d.cards %}
+    <article class="fc-card card{{ ' me' if k.me }}"><div class="fc-art">{{ k.art }}</div><div class="fc-t"><h2 data-fit="12">{{ k.name }}</h2><p>{{ k.text }}</p></div></article>
+    {% endfor %}
+  </div>
+  {{ isl.foot(p, c) }}
+</div>

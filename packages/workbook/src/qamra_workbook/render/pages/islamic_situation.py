@@ -11,7 +11,6 @@ from __future__ import annotations
 
 from typing import Any
 
-from qamra_workbook.pictures.islamic import SCENES
 from qamra_workbook.render.islamic_content import Quote, Wdif, Wwyd
 from qamra_workbook.render.pages.islamic_common import (
     choice,
@@ -23,6 +22,7 @@ from qamra_workbook.render.pages.islamic_common import (
     rich,
     sacred,
     scene,
+    scene_problems,
     source_ids,
 )
 from qamra_workbook.render.registry import Built, PageContext
@@ -37,15 +37,14 @@ def what_would_you_do(ctx: PageContext) -> Built:
     page = page_of(ctx)
     assert isinstance(page, Wwyd)
     problems: list[str] = []
-    if page.scene.art not in SCENES:
-        problems.append(f"no scene art {page.scene.art!r}")
+    problems += scene_problems(page.scene)
     if len(page.choices) != 3 or sum(c.ok for c in page.choices) != 1:
         problems.append("three choices with exactly one right answer")
     choices = [{"n": ctx.num(i), **choice(ctx, c, problems)} for i, c in enumerate(page.choices, start=1)]
     data: dict[str, Any] = {
         "chrome": chrome(ctx, problems),
         "scenario": rich(ctx, page.scenario, problems),
-        "scene": scene(ctx, page.scene.art, "wy-art"),
+        "scene": scene(ctx, page.scene, "wy-art") if not problems else "",
         "choices": choices,
         "quote": sacred(ctx, page.quote, "quote", problems),
         "role_play": rich(ctx, page.role_play, problems),

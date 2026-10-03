@@ -1,0 +1,19 @@
+{% import "pages/_islamic.html.j2" as isl with context %}
+{% set c = d.chrome %}
+<div class="isl uo-page" {{ isl.container(c) }}>
+  {{ isl.start(p, g, c) }}
+  <div class="isl-body uo">
+    <header class="uo-head">
+      <div class="uo-badge"><span class="uo-disc">{{ d.glyph }}</span>{% if d.number %}<span class="uo-no">{{ d.labels.unit }} {{ d.number }}</span>{% endif %}</div>
+      <h1 class="uo-title" data-fit="20">{{ p.title }}</h1>
+      <div class="uo-motif">{{ d.motif }}</div>
+    </header>
+    <figure class="uo-art">{% if d.art %}<img src="{{ d.art }}" style="width: {{ d.art_mm }}mm" alt="">{% else %}<span class="uo-big">{{ d.glyph }}</span>{% endif %}
+      {% if d.reader %}<img class="uo-reader" src="{{ d.reader }}" alt="">{% endif %}</figure>
+    {% if d.hello %}<section class="uo-hello"><div class="tl-who">{{ d.hello.face }}<span>{{ d.hello.name }}</span></div><p class="tl-t">{{ d.hello.text }}</p></section>{% endif %}
+    {% if d.question %}<section class="uo-q card"><span class="pill">{{ icon('bulb', 'ico', 2.2) }}{{ d.labels.think }}</span><p>{{ d.question }}</p></section>{% endif %}
+    {% if d.lessons %}<section class="uo-inside"><h2 class="ur-label">{{ icon('check-list', 'ico', 2.2) }}{{ d.labels.inside }}</h2>
+      <ol>{% for l in d.lessons %}<li><span class="tf-n">{{ book.num(loop.index) }}</span><span>{{ l }}</span></li>{% endfor %}</ol></section>{% endif %}
+  </div>
+  {{ isl.foot(p, c) }}
+</div>

@@ -1,23 +1,23 @@
-"""The build checks of «قلبي يعرف الله» (Addendum 10 §3, §7, §10), over pages given as plain dicts (the
-sample pages of content/islamic/samples.yaml, later the volumes' pages) and the source register.
+"""The build checks of «قلبي يعرف الله» (Addendum 10 §3, §7, §10), over pages given as plain dicts (the sample
+pages of content/islamic/samples.yaml, later the volumes' pages) and the source register.
 
 Every check returns a list of `Problem`; an `error` fails the build. What they enforce:
 
-  * every religious block (a verse, a quotation, a dhikr, a dua, and the statements of a page's sourced
+* every religious block (a verse, a quotation, a dhikr, a dua, and the statements of a page's sourced
     fields) has at least one source id, and every id exists and is of the right kind;
-  * a page that gets coloured, cut, stuck or thrown away (`sacred: false` in plan.yaml, or `sacred_text:
-  none`)
+* a page that gets coloured, cut, stuck or thrown away (`sacred: false` in plan.yaml, or `sacred_text: none`)
     carries no source, verse, quotation or dhikr at all (§3.6);
-  * the no-depiction rule (§3.5): a page tagged `prophet_story` or `angels` declares no person in its scene
-    region (the narrator panel may show the recurring characters), and its scene art draws none;
-  * a print build fails while any placeholder or any source below `scholar_approved` is used (`check_print`);
-  * religious wording is never typed: a text that contains a register dhikr or verse (matched on the letters
-  only) must
+* the no-depiction rule (§3.5): a page tagged `prophet_story` or `angels` (a prophet's or a sira story is
+    tagged by its type) declares no person in its scene region (the narrator panel may show the recurring
+    characters), its scene art draws none, and no picture on it is a person, a body part or the reader;
+    on every page, a library picture of a person is never a prop (people appear only as the cast);
+* a print build fails while any placeholder or any source below `scholar_approved` is used (`check_print`);
+* religious wording is never typed: a text that contains a register dhikr or verse (matched on the letters
+only) must
     use `{src:ID}`, and a quiz option that is wording names a `source` (`typed-wording`; on a page that must
     carry no
     sacred text at all it is a `sacred-page` problem); plain non-religious options stay typed;
-  * the scholar's open decisions are collected for the review queue (`scholar_queue`).
-"""
+* the scholar's open decisions are collected for the review queue (`scholar_queue`)."""
 
 from __future__ import annotations
 
@@ -72,10 +72,28 @@ ALLOWED_KINDS: dict[str, frozenset[str]] = {
     "inline": frozenset({"dua", "quran"}),  # {src:ID} inside a text
 }
 TOKEN = re.compile(r"\{src:([a-z0-9-]+)\}")
+# a quiz option or a side of a match whose `source` prints that source's wording
+WORDING_OPTION = re.compile(r"(^|\.)(choices\[\d+\]|pairs\[\d+\]\.[ab])$")
 # keys whose strings are not prose: ids, art names, and the search markers of a span (never printed)
 NOT_PROSE = frozenset(
     {
         "id",
+        "key",
+        "pic",
+        "pics",
+        "backdrop",
+        "props",
+        "who",
+        "runner",
+        "goal",
+        "collect",
+        "others",
+        "hints",
+        "picture",
+        "icon",
+        "layout",
+        "size",
+        "planned",
         "type",
         "unit",
         "volume",
@@ -104,6 +122,7 @@ NOT_PROSE = frozenset(
 SOURCED_FIELDS: dict[str, tuple[str, ...]] = {
     "prophet-story": ("scenes", "lesson", "question"),
     "order-steps": ("steps",),
+    "prayer-steps": ("steps",),
     "dhikr": ("dhikr", "why", "manner"),
     "wwyd": ("quote", "sources"),
     "wdif": ("quote", "meaning"),
@@ -111,9 +130,19 @@ SOURCED_FIELDS: dict[str, tuple[str, ...]] = {
     "unit-review": ("true_false", "choose"),
     "parent-guide": ("learned", "habit"),
     "surah": ("verse", "meaning"),
+    "sira-story": ("scenes", "lesson", "question"),
+    "pillar-card": ("idea",),
+    "true-false": ("statements",),
+    "choose": ("questions",),
+    "self-test": ("true_false", "questions"),
+    "quiz": ("true_false", "questions"),
+    "assessment": ("true_false", "questions", "situations"),
 }
 DEPICTION_TAGS = frozenset({"prophet_story", "angels"})
-IMPLIED_TAGS = {"prophet-story": "prophet_story"}  # a page of this type is tagged even if the file forgot
+# a page of this type is tagged even if the file forgot
+IMPLIED_TAGS = {"prophet-story": "prophet_story", "sira-story": "prophet_story"}
+# the keys that name a picture (a library id, `isl:<icon>`, a scene, or `reader` for the maze's runner)
+PICTURE_KEYS = ("pic", "pics", "props", "others", "goal", "runner", "collect", "hints", "art", "picture")
 SCENE_KEYS = ("scenes", "scene")  # the scene region of a page
 FIGURE_KEYS = ("figures", "figure", "people", "person", "characters")
 NARRATORS = frozenset({"huda", "reem", "salem", "reader", "naanaa"})  # the recurring characters only
@@ -133,7 +162,12 @@ class PageRules:
     def may_carry_sacred(self, page: Mapping[str, Any]) -> bool:
         if page.get("sacred_text") == "none":
             return False
-        return self.sacred.get(str(page.get("type", "")), True)
+        ptype = str(page.get("type", ""))
+        if ptype not in self.sacred:  # a content type that fills a plan type (front-title fills front)
+            from qamra_workbook.render.islamic_content import plan_type
+
+            ptype = plan_type(ptype)
+        return self.sacred.get(ptype, True)
 
 
 @dataclass(frozen=True)
@@ -194,8 +228,7 @@ def page_ids(page: Mapping[str, Any]) -> list[str]:
 
 @dataclass(frozen=True)
 class WordingRequest:
-    """A block that prints a source's wording (a verse, a quotation, a dhikr, a dua), as the page asks for
-    it."""
+    """A block that prints a source's wording (a verse, a quotation, a dhikr, a dua) as the page asks."""
 
     path: str
     block: str  # verse | quote | dhikr | dua
@@ -213,7 +246,7 @@ def wording_requests(page: Mapping[str, Any]) -> list[WordingRequest]:
                 out.append(WordingRequest(f"{path}.{block}" if path else block, block, value["source"], span))
         if isinstance(node.get("dua"), str):
             out.append(WordingRequest(f"{path}.dua" if path else "dua", "dua", node["dua"]))
-        if re.search(r"(^|\.)choices\[\d+\]$", path) and isinstance(node.get("source"), str):
+        if WORDING_OPTION.search(path) and isinstance(node.get("source"), str):
             span = Span.of(node["span"]) if isinstance(node.get("span"), Mapping) else None
             out.append(WordingRequest(path, "choice", node["source"], span))
     for path, key, text in _strings(page):
@@ -332,15 +365,38 @@ def check_page(page: Mapping[str, Any], resolver: Resolver, rules: PageRules) ->
     return out
 
 
+def _pictures(page: Mapping[str, Any]) -> Iterator[tuple[str, str]]:
+    """(path, picture name) of every picture the page names."""
+    for path, node in _walk(page):
+        for key in PICTURE_KEYS:
+            value = node.get(key)
+            where = f"{path}.{key}" if path else key
+            if isinstance(value, str) and value:
+                yield where, value
+            elif isinstance(value, list):
+                yield from ((f"{where}[{i}]", v) for i, v in enumerate(value) if isinstance(v, str))
+
+
 def _depiction(page: Mapping[str, Any], pid: str) -> list[Problem]:
     from qamra_workbook.pictures.islamic import SCENES  # (the art says which scenes draw people)
+    from qamra_workbook.pictures.islamic_backdrops import BACKDROPS, BODY_PICTURES, PERSON_PICTURES
 
+    out: list[Problem] = []
+    for path, name in _pictures(page):  # on every page: people are only the cast, never a library picture
+        if name in PERSON_PICTURES:
+            out.append(
+                Problem("depiction", pid, f"{path}: {name!r} draws a person; people appear only as the cast")
+            )
     tags = set(page.get("tags") or ()) | {
         IMPLIED_TAGS[t] for t in [str(page.get("type", ""))] if t in IMPLIED_TAGS
     }
     if not tags & DEPICTION_TAGS:
-        return []
-    out: list[Problem] = []
+        return out
+    shown = "/".join(sorted(tags & DEPICTION_TAGS))
+    for path, name in _pictures(page):
+        scene = SCENES.get(name)
+        if name in BODY_PICTURES or name == "reader" or name in NARRATORS or (scene and scene.figures):
+            out.append(Problem("depiction", pid, f"{path}: {name!r} shows a person on a {shown} page"))
     for name in SCENE_KEYS:
         for path, scene in _fields(page, name):
             if not isinstance(scene, Mapping):
@@ -356,10 +412,13 @@ def _depiction(page: Mapping[str, Any], pid: str) -> list[Problem]:
                         )
                     )
             art = scene.get("art")
-            if art is not None and art not in SCENES:
+            backdrop = scene.get("backdrop")
+            if art and art not in SCENES:
                 out.append(Problem("unknown-art", pid, f"{path}: no scene art {art!r}"))
-            elif art is not None and SCENES[art].figures:
+            elif art and SCENES[art].figures:
                 out.append(Problem("depiction", pid, f"{path}: the scene art {art!r} draws people"))
+            if backdrop and backdrop not in BACKDROPS:
+                out.append(Problem("unknown-art", pid, f"{path}: no backdrop {backdrop!r}"))
     narrator = page.get("narrator")
     if isinstance(narrator, Mapping):
         for who in narrator.get("figures") or ():

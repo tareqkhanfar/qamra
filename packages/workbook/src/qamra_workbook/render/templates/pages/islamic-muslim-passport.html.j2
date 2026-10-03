@@ -3,7 +3,8 @@
 <div class="isl" {{ isl.container(c) }}>
   {{ isl.start(p, g, c) }}
   {{ isl.head(p, c, false, true) }}
-  <div class="isl-body pp">
+  <div class="isl-body pp{{ ' pp-journey' if d.card }}">
+    {% if not d.card %}
     <section class="pp-card">
       <div class="pp-band"><span class="pp-emblem">{{ d.star }}</span><div class="pp-band-t"><b>{{ d.labels.series }}</b><small>قمرة</small></div></div>
       <div class="pp-body">
@@ -16,6 +17,9 @@
       </div>
       <div class="pp-strip" aria-hidden="true">{% for i in range(17) %}{{ icon('star', 'ico', 2) }}{% endfor %}</div>
     </section>
+    {% else %}
+    <section class="pp-hero"><div class="pp-photo sm">{% if d.photo %}<img src="{{ d.photo }}" alt="">{% endif %}</div><div><b class="pp-steps">{{ d.labels.steps }}</b><span class="pp-who" data-fit="12">{{ d.name }}</span></div></section>
+    {% endif %}
     <section class="pp-block"><h2 class="pp-h">{{ icon('stamp', 'ico', 2.2) }}{{ d.labels.stamps }}</h2><p class="pp-how">{{ d.labels.stick }}</p>
       <div class="pp-grid">{% for st in d.stamps %}<div class="pp-stamp"><span class="pp-stn" style="background: {{ st.color }}; color: {{ st.ink }}">{{ st.n }}</span>{{ st.art }}<span class="pp-stt">{{ st.title }}</span></div>{% endfor %}</div></section>
     <section class="pp-block"><h2 class="pp-h">{{ icon('trophy', 'ico', 2.2) }}{{ d.labels.stars }}</h2><p class="pp-how">{{ d.labels.colour }}</p>

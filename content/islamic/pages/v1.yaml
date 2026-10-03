@@ -1,0 +1,109 @@
+# «قلبي يعرف الله» · المجلد ١ «أَعْرِفُ رَبِّي وَأُحِبُّهُ»: the content of the volume's pages, one entry per place.
+#
+# The writers' guide is docs/islamic/content-guide.md (every page type, the rules, the length limits). `key` names
+# the page's place (front/<k>, <unit>/opener, <unit>/l<lesson>-<page>, <unit>/closing-<k>, <unit>/parent,
+# <unit>/review-<k>, end/<k>); the engine derives id, unit and volume, and the title when there is none.
+#
+#   uv run python -m qamra_workbook.render.islamic_volume --volume v1 --keys    # the places (✓ = written here)
+#   uv run python -m qamra_workbook.render.islamic_volume --volume v1 --check   # what is missing or wrong
+#
+# No verse, hadith or dhikr is typed here: a block names a source id of content/islamic/sources.yaml. Everything
+# below is AI-drafted and waits for the scholar (Addendum 10 §3). Seeded from the proposal's sample pages
+# (content/islamic/samples.yaml), with the language review's corrections.
+
+pages:
+  - key: front/1
+    type: front-title
+
+  # the passport (sample s10)
+  - key: front/4
+    type: passport
+    ai_drafted: true
+    gendered_title: "{جَوَازُ الْمُسْلِمِ الصَّغِيرِ/جَوَازُ الْمُسْلِمَةِ الصَّغِيرَةِ}"
+    photo_slot: reader
+    stamps_from: units.yaml
+    challenge_stars: 8
+
+  # نِعَمُ رَبِّي · lesson 1 «أَنْظُرُ حَوْلِي»: story, blessings-hunt, coloring (samples s07, s06)
+  - key: u-blessings/l1-2
+    type: blessings-hunt
+    ai_drafted: true
+    title: أَبْحَثُ عَنْ نِعَمِ اللهِ
+    instruction: "{ضَعْ/ضَعِي} دَائِرَةً حَوْلَ كُلِّ نِعْمَةٍ"
+    art: blessings-scene
+    find: [الشَّمْسُ, الْمَاءُ, الشَّجَرَةُ, الثَّمَرَةُ, الطَّائِرُ, الْخُبْزُ, الْقَمَرُ, الْأُسْرَةُ]
+    closing: {text: "وَهَذِهِ بَعْضُ نِعَمِ اللهِ عَلَيْنَا، وَهِيَ أَكْثَرُ مِنْ أَنْ نَعُدَّهَا!", sources: [q-16-18], ai_drafted: true}
+    draw_box: "هَلْ {تَرَى/تَرَيْنَ} نِعْمَةً أُخْرَى؟ {ارْسُمْهَا/ارْسُمِيهَا} هُنَا"
+
+  - key: u-blessings/l1-3
+    type: coloring
+    ai_drafted: true
+    sacred_text: none
+    title: أُلَوِّنُ نِعَمَ رَبِّي
+    instruction: "{لَوِّنْ/لَوِّنِي} مَا {تُحِبُّ/تُحِبِّينَ}"
+    art: blessings-garden
+
+  # the unit's parent page (sample s09)
+  - key: u-blessings/parent
+    type: parent-guide
+    ai_drafted: true
+    title: "لِلْأَهْلِ: نِعَمُ اللهِ حَوْلَنَا"
+    lang: modern-standard
+    learned: {text: "تعلّم طفلكم في هذه الوحدة أنّ الله هو الخالق المنعم، وأنّ نعمه كثيرة حولنا، وأنّ شكره يكون بالقول والعمل.", sources: [q-39-62, q-16-18, q-2-172], ai_drafted: true}
+    explain: {text: "ابدؤوا ممّا يراه: «من خلق الشمس؟ ومن أعطانا الماء؟»، ثم قولوا: «هذا من حبّ الله لنا». اجعلوا الشرح قصيرًا ودافئًا، واتركوا للطفل أن يسأل.", ai_drafted: true}
+    ask: "ما أجمل شيء أعطاك الله إيّاه اليوم؟"
+    together: "جولة امتنان: قبل النوم يذكر كل فرد من الأسرة ثلاث نِعَم، ونرسم واحدة منها في دفتر العائلة."
+    habit: {text: "قولوا «{src:d-sneeze-1}» بعد الوجبات وعند ذكر أيّ نعمة، وكرّروها أمام الطفل ليقلّدكم.", sources: [q-1-2, q-14-7], ai_drafted: true}
+    care_note: "في الكتاب صفحات فيها كلام الله تعالى وأذكار ودعوات؛ نرجو حفظ الكتاب في مكان نظيف مرتفع، وعدم رميه أو وضع شيء فوقه."
+
+  # the cumulative review after أَقْتَدِي بِنَبِيِّي ﷺ (sample s08)
+  - key: u-follow/review-1
+    type: unit-review
+    ai_drafted: true
+    title: مَاذَا أَتَذَكَّرُ؟
+    true_false:
+      - {t: "اللهُ هُوَ الَّذِي خَلَقَنَا وَخَلَقَ كُلَّ شَيْءٍ.", ok: true, sources: [q-39-62]}
+      - {t: "الشَّمْسُ وَالْمَاءُ مِنْ نِعَمِ اللهِ.", ok: true, sources: [q-16-18]}
+      - {t: "نَشْكُرُ اللهَ حِينَ نَقُولُ: {src:d-sneeze-1}.", ok: true, sources: [q-1-2, q-14-7]}
+      - {t: "الْجِبَالُ خَلَقَهَا إِنْسَانٌ.", ok: false, sources: [q-39-62]}
+    choose:
+      text: مَاذَا نَقُولُ لِنَشْكُرَ اللهَ؟
+      choices: [{source: d-sneeze-1, ok: true}, {source: d-eat-start}, {source: d-sneeze-2}]
+      sources: [q-1-2, q-14-7]
+    stars: "كَمْ نَجْمَةً {تَسْتَحِقُّ/تَسْتَحِقِّينَ}؟"
+
+  # أَقُولُ وَأَذْكُرُ · lesson 1 «قَبْلَ الطَّعَامِ وَبَعْدَهُ»: dhikr, dhikr, match, true-false (sample s03)
+  - key: u-adhkar1/l1-1
+    type: dhikr
+    ai_drafted: true
+    title: قَبْلَ الطَّعَامِ
+    when: حِينَ أَبْدَأُ الْأَكْلَ
+    dhikr: {source: d-eat-start}
+    why: {text: "لِأَنَّ اللهَ هُوَ الَّذِي رَزَقَنَا هَذَا الطَّعَامَ، فَنَذْكُرُ اسْمَهُ وَنَشْكُرُهُ.", sources: [q-2-172], ai_drafted: true}
+    manner: {text: "وَآكُلُ بِيَدِي الْيُمْنَى مِمَّا يَلِينِي.", sources: [h-bukhari-5376], ai_drafted: true}
+    scene: {art: family-meal, figures: [reader, reem, salem, huda]}
+    home: "نَقُولُهَا مَعًا قَبْلَ كُلِّ وَجْبَةٍ هَذَا الْأُسْبُوعَ، وَنُلَوِّنُ نَجْمَةً فِي آخِرِ كُلِّ يَوْمٍ."
+    audio: {kind: human-voice, note: "بصوت بشري مسجّل؛ لا TTS لنص ديني"}
+
+  # أَخْلَاقِي الْجَمِيلَةُ · lesson 1 «أَصْدُقُ»: story, wwyd, true-false (sample s04)
+  - key: u-manners1/l1-2
+    type: wwyd
+    ai_drafted: true
+    title: "{مَاذَا كُنْتَ سَتَفْعَلُ؟/مَاذَا كُنْتِ سَتَفْعَلِينَ؟}"
+    scenario: "{كَسَرْتَ/كَسَرْتِ} كَأْسًا فِي الْمَطْبَخِ دُونَ قَصْدٍ، وَلَيْسَ فِي الْمَطْبَخِ أَحَدٌ."
+    scene: {art: kitchen-broken-cup, figures: [reader]}
+    choices:
+      - {t: "أُخْبِرُ أُمِّي بِالصِّدْقِ وَأَعْتَذِرُ", ok: true, feedback: "{أَحْسَنْتَ يَا بَطَلُ/أَحْسَنْتِ يَا بَطَلَةُ}! الصِّدْقُ شَجَاعَةٌ جَمِيلَةٌ."}
+      - {t: "أُخَبِّئُ الْقِطَعَ حَتَّى لَا يَرَاهَا أَحَدٌ", feedback: "لَيْسَ هَذَا أَجْمَلَ اخْتِيَارٍ. {جَرِّبْ/جَرِّبِي} مَرَّةً أُخْرَى!"}
+      - {t: "أَقُولُ إِنَّ الْقِطَّةَ هِيَ الَّتِي كَسَرَتْهَا", feedback: "لَيْسَ هَذَا أَجْمَلَ اخْتِيَارٍ. {جَرِّبْ/جَرِّبِي} مَرَّةً أُخْرَى!"}
+    quote: {source: h-bukhari-6094, span: {start: "الصدق يهدي", end: "البر"}}
+    sources: [h-bukhari-6094]
+    role_play: "{مَثِّلِ/مَثِّلِي} الْمَوْقِفَ مَعَ {أُمِّكَ/أُمِّكِ} بِصَوْتٍ هَادِئٍ."
+
+  # the certificate (sample s11)
+  - key: end/4
+    type: certificate
+    ai_drafted: true
+    statement: "{أَنَا مُسْلِمٌ صَغِيرٌ/أَنَا مُسْلِمَةٌ صَغِيرَةٌ} أُحِبُّ اللهَ وَأَقْتَدِي بِنَبِيِّي مُحَمَّدٍ ﷺ"
+    fields: [name, character, date, parent_signature]
+    reviewed_by_line: false

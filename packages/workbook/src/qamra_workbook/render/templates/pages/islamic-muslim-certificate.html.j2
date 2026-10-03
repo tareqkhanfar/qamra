@@ -10,6 +10,7 @@
     <div class="ic-name"><span data-fit="22">{{ d.name }}</span></div>
     <div class="ic-hero"><i class="ic-ring"></i>{% if d.character %}<img src="{{ d.character }}" alt="">{% endif %}</div>
     <p class="ic-statement" data-fit="14">{{ d.statement }}</p>
+    {% if d.credit %}<p class="ic-credit">{{ d.credit }}</p>{% endif %}
     <div class="ic-sign">
       <div><span class="ic-label">{{ d.labels.date }}</span><span class="ic-value">{{ d.date }}</span></div>
       <div><span class="ic-label">{{ d.labels.sign }}</span><span class="ic-value blank"></span></div>

@@ -1,0 +1,20 @@
+{% import "pages/_islamic.html.j2" as isl with context %}
+{% set c = d.chrome %}
+<div class="isl" {{ isl.container(c) }}>
+  {{ isl.start(p, g, c) }}
+  {{ isl.head(p, c, true, true) }}
+  <div class="isl-body tl{{ ' tl-compact' if d.compact }}">
+    <figure class="tl-scene">{{ d.scene }}</figure>
+    <section class="tl-lines">
+      {% for l in d.lines %}
+      <div class="tl-line{{ ' narr' if l.who == 'narrator' }}">{% if l.who != 'narrator' %}<div class="tl-who">{{ l.face }}<span>{{ l.name }}</span></div>{% endif %}<p class="tl-t{{ ' ai' if l.ai }}">{{ l.text }}</p></div>
+      {% endfor %}
+    </section>
+    {% if d.quote %}{{ isl.sacred(d.quote, c) }}{% endif %}
+    {% if d.lesson %}<section class="st-lesson card"><i>{{ icon('bulb', 'ico', 2.2) }}</i><div><b>{{ d.labels.lesson }}</b><p{{ ' class=ai' if d.lesson.ai }}>{{ d.lesson.text }}</p></div></section>{% endif %}
+    {% if d.question %}<section class="st-q card"><p class="st-qt"><i>{{ icon('target', 'ico', 2.2) }}</i><span>{{ d.question.text }}</span></p>
+      <div class="st-choices">{% for ch in d.question.choices %}<div class="st-choice"><span class="tick"></span><span>{% if ch.placeholder %}<span class="hole">{{ ch.notice }}</span>{% else %}{{ ch.text }}{% endif %}</span></div>{% endfor %}</div></section>{% endif %}
+    {{ isl.refs(c, d.refs) }}
+  </div>
+  {{ isl.foot(p, c) }}
+</div>

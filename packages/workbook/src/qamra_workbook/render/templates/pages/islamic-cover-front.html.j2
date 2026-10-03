@@ -1,0 +1,13 @@
+<div class="icv">
+  <div class="icv-bg" aria-hidden="true">{% if d.art %}<img src="{{ d.art }}" alt="">{% else %}<svg viewBox="0 0 {{ g.page_w }} {{ g.page_h }}" preserveAspectRatio="none"><defs><linearGradient id="icv-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#16204A"/><stop offset="1" stop-color="#33458F"/></linearGradient></defs><rect width="{{ g.page_w }}" height="{{ g.page_h }}" fill="url(#icv-sky)"/></svg>{% endif %}</div>
+  <div class="icv-body">
+    <div class="icv-series"><span>{{ d.star }}</span><b>{{ d.series }}</b><span>{{ d.star }}</span></div>
+    <h1 class="icv-title" data-fit="24">{{ d.title }}</h1>
+    {% if d.level or d.ages %}<p class="icv-level">{{ d.level }}{% if d.level and d.ages %} · {% endif %}{{ d.ages }}</p>{% endif %}
+    <div class="icv-hero">{% if d.reader %}<img src="{{ d.reader }}" alt="">{% endif %}</div>
+    <p class="icv-kicker">{{ d.kicker }}</p>
+    <div class="icv-name"><span data-fit="18">{{ d.name }}</span></div>
+    <div class="icv-units">{% for u in d.units %}<span style="background: {{ u.color }}">{{ u.glyph }}</span>{% endfor %}</div>
+    <div class="icv-brand">{{ mascot('mascot') }}<span>قمرة</span></div>
+  </div>
+</div>

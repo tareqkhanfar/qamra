@@ -1,9 +1,7 @@
-"""«قلبي يعرف الله»: the thin page types the series lists (Addendum 10 §7) that the samples do not need:
-true or false, a
-pillar card, «يومي مع الله» (a day's timeline), the four endings of a unit, and the final assessment (stars
-the parent gives
-for what they observe, not an exam). Each is a small working builder on the shared chrome and blocks.
-"""
+"""«قلبي يعرف الله»: the thin page types the series lists (Addendum 10 §7) that the samples do not need: true
+or false, a pillar card, «يومي مع الله» (a day's timeline), the four endings of a unit, and the final
+assessment (stars the parent gives for what they observe, not an exam). Each is a small working builder on the
+shared chrome and blocks."""
 
 from __future__ import annotations
 
@@ -22,6 +20,8 @@ from qamra_workbook.render.pages.islamic_common import (
     claim,
     islamic_page,
     page_of,
+    picture,
+    picture_problems,
     references,
     rich,
     sacred,
@@ -45,10 +45,10 @@ def true_false(ctx: PageContext) -> Built:
     data: dict[str, Any] = {
         "chrome": chrome(ctx, problems),
         "rows": rows,
-        "labels": {"true": "صَحٌّ", "false": "خَطَأٌ"},
+        "labels": {"true": "صَحِيحٌ", "false": "خَطَأٌ"},
         "refs": references(ctx, [s for t in page.statements for s in [*t.sources, *source_ids(t.t)]]),
     }
-    return Built(data, [f"{r['n']}: {'صح' if r['ok'] else 'خطأ'}" for r in rows], problems)
+    return Built(data, [f"{r['n']}: {'صحيح' if r['ok'] else 'خطأ'}" for r in rows], problems)
 
 
 @islamic_page("pillar-card")
@@ -73,54 +73,65 @@ def pillar_card(ctx: PageContext) -> Built:
 
 @islamic_page("my-day-with-allah")
 def my_day_with_allah(ctx: PageContext) -> Built:
+    """«يومي مع الله»: the moments of a day in order, each with its picture and a circle the child ticks."""
     page = page_of(ctx)
     assert isinstance(page, DayWithAllah)
     problems: list[str] = []
     if not 2 <= len(page.moments) <= MAX_MOMENTS:
         problems.append(f"a day shows 2–{MAX_MOMENTS} moments, not {len(page.moments)}")
+    problems += picture_problems([m.picture for m in page.moments], "moments")
     moments = [
         {
             "n": ctx.num(i),
             "when": ctx.text(m.when),
             "text": rich(ctx, m.t, problems),
-            "pic": ctx.pic(m.picture, "color", "dy-pic"),
+            "pic": picture(m.picture, css_class="dy-pic", i=i) if not problems else "",
         }
         for i, m in enumerate(page.moments, start=1)
     ]
     ids = [s for m in page.moments for s in [*m.sources, *source_ids(m.t)]]
-    return Built(
-        {"chrome": chrome(ctx, problems), "moments": moments, "refs": references(ctx, ids)}, None, problems
-    )
+    if page.closing:
+        ids += source_ids(page.closing)
+    data: dict[str, Any] = {
+        "chrome": chrome(ctx, problems),
+        "moments": moments,
+        "tick": page.tick,
+        "closing": claim(ctx, page.closing, problems) if page.closing else None,
+        "dense": len(moments) > 6,
+        "refs": references(ctx, ids),
+    }
+    return Built(data, None, problems)
 
 
 @islamic_page("unit-closing")
 def unit_closing(ctx: PageContext) -> Built:
-    """The four endings of a unit: what I learned, what I will do this week, the unit's dhikr (from the
-    register), a
-    small challenge with mum and dad."""
+    """The endings of a unit (Addendum 10 §5): what I learned (a star to colour by each), what I will do this
+    week (options to tick), the unit's dhikr (from the register) and a small challenge with mum and dad (a
+    week of stars). A closing page shows the endings it carries; the unit's two closing pages carry all four.
+    """
     page = page_of(ctx)
     assert isinstance(page, UnitClosing)
     problems: list[str] = []
+    ids = [s for t in [*page.learned, page.apply, *page.apply_choices, page.challenge] for s in source_ids(t)]
+    if page.dhikr is not None:
+        ids.append(page.dhikr.source)
     data: dict[str, Any] = {
         "chrome": chrome(ctx, problems),
         "learned": [rich(ctx, t, problems) for t in page.learned],
-        "apply": rich(ctx, page.apply, problems),
-        "dhikr": sacred(ctx, page.dhikr, "dhikr", problems),
-        "challenge": rich(ctx, page.challenge, problems),
+        "apply": rich(ctx, page.apply, problems) if page.apply else "",
+        "apply_choices": [rich(ctx, t, problems) for t in page.apply_choices],
+        "dhikr": sacred(ctx, page.dhikr, "dhikr", problems) if page.dhikr is not None else None,
+        "dhikr_when": rich(ctx, page.dhikr_when, problems) if page.dhikr_when else "",
+        "challenge": rich(ctx, page.challenge, problems) if page.challenge else "",
         "days": [ctx.num(i) for i in range(1, 8)],
+        "parts": sum(bool(x) for x in (page.learned, page.apply, page.dhikr, page.challenge)),
         "labels": {
             "learned": "مَاذَا تَعَلَّمْتُ؟",
             "apply": "مَاذَا سَأُطَبِّقُ هَذَا الْأُسْبُوعَ؟",
             "dhikr": "ذِكْرُ الْوَحْدَةِ",
             "challenge": "تَحَدٍّ صَغِيرٌ مَعَ أُمِّي وَأَبِي",
         },
-        "refs": references(
-            ctx,
-            [
-                page.dhikr.source,
-                *(s for t in [*page.learned, page.apply, page.challenge] for s in source_ids(t)),
-            ],
-        ),
+        "refs": references(ctx, ids),
     }
     return Built(data, None, problems)
 
@@ -136,7 +147,7 @@ def final_assessment(ctx: PageContext) -> Built:
         "skills": skills,
         "stars": SKILL_STARS,
         "note": rich(ctx, page.note, problems),
-        "labels": {"parent": "نُجُومُ مُلَاحَظَةِ الْأَهْلِ", "play": "لُعْبَةٌ لَا امْتِحَانٌ"},
+        "labels": {"parent": "نُجُومٌ يُلَوِّنُهَا الْأَهْلُ", "play": "لُعْبَةٌ لَا امْتِحَانٌ"},
         "refs": references(ctx, [s for k in page.skills for s in [*k.sources, *source_ids(k.t)]]),
     }
     return Built(data, None, problems)

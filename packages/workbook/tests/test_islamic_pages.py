@@ -209,7 +209,11 @@ THIN: list[dict[str, Any]] = [
         "unit": "u-prayer",
         "title": "أُصَلِّي",
         "instruction": "رَتِّبِ الْخُطُوَاتِ",
-        "steps": [{"n": 1, "t": "أَقِفُ"}, {"n": 2, "t": "أَرْكَعُ"}, {"n": 3, "t": "أَسْجُدُ"}],
+        "steps": [
+            {"n": 1, "t": "أَقِفُ", "sources": ["h-bukhari-631"]},
+            {"n": 2, "t": "أَرْكَعُ", "sources": ["h-bukhari-631"]},
+            {"n": 3, "t": "أَسْجُدُ", "sources": ["h-bukhari-631"]},
+        ],
     },
     {
         "id": "t2",
@@ -217,7 +221,10 @@ THIN: list[dict[str, Any]] = [
         "unit": "u-allah",
         "title": "صَحٌّ أَمْ خَطَأٌ؟",
         "instruction": "حَوِّطْ الْجَوَابَ",
-        "statements": [{"t": "جُمْلَةٌ أُولَى", "ok": True}, {"t": "جُمْلَةٌ ثَانِيَةٌ", "ok": False}],
+        "statements": [
+            {"t": "جُمْلَةٌ أُولَى", "ok": True, "sources": ["q-39-62"]},
+            {"t": "جُمْلَةٌ ثَانِيَةٌ", "ok": False, "sources": ["q-39-62"]},
+        ],
     },
     {
         "id": "t3",
