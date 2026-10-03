@@ -94,8 +94,11 @@ def test_cover_prompt_reserves_title_space(rt: Runtime, book_inputs: BookInputs)
 
 
 async def test_final_book_cover_first_and_print_sizes(
-    rt: Runtime, fake_image: FakeImageProvider, book_inputs: BookInputs
+    rt: Runtime, fake_image: FakeImageProvider, book_inputs: BookInputs, monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    monkeypatch.setattr(
+        "qamra_ai.pipeline.pages.sheet_file", lambda *a, **k: None
+    )  # as if content/cast were empty
     run = await run_book(rt, book_inputs, mode="final")
     assert len(run.pages) == 18 and run.status_counts() == {"ok": 18} and run.flags == []
     # no fixed sheet for «قمّور» in watercolor: drawn once from its locked description, before the cover

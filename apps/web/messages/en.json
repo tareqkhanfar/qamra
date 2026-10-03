@@ -2575,7 +2575,8 @@
       "hijab": "Hijab color",
       "crop": "Hero cut at the edge",
       "crop_other": "A character cut at the edge",
-      "text_missing": "Missing text"
+      "text_missing": "Missing text",
+      "frame": "Split or bordered picture"
     },
     "status": {
       "draft": "Draft",

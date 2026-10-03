@@ -22,7 +22,7 @@
 
 import asyncio
 from collections.abc import Callable, Sequence
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Any, Literal
 
@@ -41,6 +41,7 @@ from qamra_ai.pipeline.bible import (
 )
 from qamra_ai.pipeline.budget import BudgetExceeded
 from qamra_ai.pipeline.companion import DEFAULT_SHEET_PROMPT, default_companion_request
+from qamra_ai.pipeline.framing import framing_problem
 from qamra_ai.pipeline.layout import BeatPlan, BookPlan
 from qamra_ai.pipeline.models import Child, CompanionSpec, Lang, PageQA
 from qamra_ai.pipeline.plates import PlateStore, plate_key
@@ -583,6 +584,10 @@ async def generate_beat(
             expect_companion=ctx.companion_in(beat),
             threshold=rt.settings.qa_threshold,
         )
+        if (
+            framing_problem(image.data, light_edges_ok=ctx.style.slug == "watercolor") is not None
+        ):  # not one picture
+            verdict = replace(verdict, passed=False, flags=tuple(dict.fromkeys((*verdict.flags, "frame"))))
         record.score, record.passed, record.flags = verdict.score, verdict.passed, verdict.flags
         record.qa = qa.model_dump()
         candidate = (image, qa, verdict)

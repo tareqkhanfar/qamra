@@ -37,6 +37,7 @@
   'crop_other': 'Keep every character completely inside the picture, away from the edges.',
   'text_space': 'Leave the text area completely calm: no faces, hands, objects, patterns or busy detail there.',
   'style': "Keep exactly this book's art style and medium.",
+  'frame': 'The last picture was split into separate bands or kept a white margin: draw one single continuous scene that fills the whole canvas edge to edge.',
 } -%}
 STYLE
 {{ style }}
@@ -120,6 +121,7 @@ Square picture-book page. Keep {{ areas[text_area] }} calm and simple for the st
 {%- if kind == 'page' %}
 Every character stays whole inside the picture: no head, face, hand or foot is cut by the edge or placed in the outer 6% (print trims it).
 {%- endif %}
+One single continuous picture that fills the whole canvas edge to edge: never a separate band, strip, panel, inset, frame, border, dividing line or white margin. A calm area is simply a quiet part of the same scene (sky, wall, floor or soft out-of-focus depth).
 {{ composition }}
 {%- set wanted = fixes | select('in', fix_lines) | list %}
 {%- if wanted %}
