@@ -25,4 +25,4 @@ catalog:
   values_en: [Courage, Teamwork, Kindness]
   rank: 60
   planned_pages: 24
-  art: {scene: sea, outfit: "#E9826B", skin: "#F3CFAE", hijab: true, hijab_color: "#A99BD6", pose: front}
+  art: {scene: sea, outfit: "#E9826B", skin: "#F3CFAE", pose: front}

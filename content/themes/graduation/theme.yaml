@@ -26,11 +26,11 @@ catalog:
   values_en: [Pride, Gratitude, Friendship]
   tag: kindergarten
   rank: 20
-  art: {scene: grad, outfit: "#7FA38A", hijab: true, cap: true, pose: wave}
+  art: {scene: grad, outfit: "#7FA38A", cap: true, pose: wave}
   peek:
-    - {scene: grad, outfit: "#7FA38A", hijab: true, cap: true, pose: front, kid_scale: 0.6}
-    - {scene: grad, outfit: "#7FA38A", hijab: true, cap: true, pose: wave, kid_scale: 0.55, companion: blob}
-    - {scene: night, outfit: "#7FA38A", hijab: true, pose: tilt, kid_scale: 0.55}
+    - {scene: grad, outfit: "#7FA38A", cap: true, pose: front, kid_scale: 0.6}
+    - {scene: grad, outfit: "#7FA38A", cap: true, pose: wave, kid_scale: 0.55, companion: blob}
+    - {scene: night, outfit: "#7FA38A", pose: tilt, kid_scale: 0.55}
   sample_child: {name_ar: ليان, name_en: Layan, gender: f}
 
 companion_slot: true
@@ -109,7 +109,7 @@ cast:
     description_en: >-
       four kindergarten classmates aged 5–6, each always drawn the same: (1) a boy with short
       wavy black hair and round tortoiseshell glasses, mustard-yellow t-shirt and navy trousers; (2) a
-      girl with a neat lavender hijab, coral long-sleeved dress and white sneakers; (3) a boy with
+      girl with a short dark bob and a lavender headband, coral long-sleeved dress and white sneakers; (3) a boy with
       straight light-brown hair and a cowlick, navy hoodie and gray trousers; (4) a girl with two neat
       low dark-brown braids tied with yellow ribbons, sky-blue pinafore dress over a white shirt. Skin tones
       vary within the Levantine range
