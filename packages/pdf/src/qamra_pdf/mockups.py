@@ -9,7 +9,7 @@
 Both are HTML/CSS 3D scenes screenshotted with Chromium, like the rest of this package. The textures come
 from the cover wrap (front, spine, back) and two facing interior pages, rasterized from the PDFs with pdfium.
 
-Photo mode: when a real product photo with a blank white cover exists (`design/assets/B1-mockup-hardcover-
+Photo mode: when a real product photo with a blank white cover exists (`content/assets/B1-mockup-hardcover-
 angle.*`, `B2-mockup-open-spread.*`, docs/image-prompts.md §B), the blank quadrilateral is found (largest
 near-white region that is clearly a quadrilateral) and the art is warped onto it in perspective, multiplied by
 the photo's own shading. When the detection is unsure the CSS scene is used.
@@ -39,7 +39,7 @@ HARDCOVER_PX = (1600, 1600)
 SPREAD_PX = (2000, 1250)
 _HERE = Path(__file__).resolve().parents
 # the repo's design assets (docs/image-prompts.md §B); an installed package simply has none
-PHOTOS_DIR: Path | None = _HERE[4] / "design" / "assets" if len(_HERE) > 4 else None
+PHOTOS_DIR: Path | None = _HERE[4] / "content" / "assets" if len(_HERE) > 4 else None
 PHOTO_NAMES = {"hardcover": "B1-mockup-hardcover-angle", "spread": "B2-mockup-open-spread"}
 TRIM_MM = 210.0
 BOARD_MM = 2.6  # hardcover board thickness

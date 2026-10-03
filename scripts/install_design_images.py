@@ -7,7 +7,7 @@ character sheets and cover plates of the story pipeline, docs/decisions.md 2026-
 - A1–A10 → apps/web/public/photos/<slot>.jpg (public/photos/README.md), 2400 px on the long side
 - C-sheets → content/cast/<id>-<style>.jpg (shared by every theme)
 - D-plates → content/themes/<theme>/plates/<style>-<n>.jpg
-- B, E, F, G → design/assets/<file>.jpg (mockups, page decor, the Islamic series, activity covers), read by
+- B, E, F, G → content/assets/<file>.jpg (mockups, page decor, the Islamic series, activity covers), read by
   the social kit, the page decor manifest and the Islamic renderer once they use them
 """
 
@@ -47,11 +47,42 @@ def target(image_id: str, rest: str) -> tuple[Path, int | None]:
     if image_id in PLATES:
         theme, name = PLATES[image_id]
         return ROOT / "content/themes" / theme / "plates" / f"{name}.jpg", None
-    return ROOT / "design/assets" / f"{image_id}-{rest}.jpg", None
+    return ROOT / "content/assets" / f"{image_id}-{rest}.jpg", None
 
 
-def install(src: Path, dst: Path, long_side: int | None) -> None:
+def trim_paper_margin(img: Image.Image, limit: float = 0.08) -> Image.Image:
+    """Cut the light paper border paintings tend to keep (a cover background is full-bleed): from each edge,
+    the rows/columns that are near-white and flat, up to `limit` of the side; the original shape after."""
+    import numpy as np
+
+    a = np.asarray(img.convert("L"), dtype=float)
+    h, w = a.shape
+
+    def edge(lines: np.ndarray, n: int) -> int:
+        k = 0
+        while k < int(n * limit) and lines[k].mean() > 215 and lines[k].std() < 22:
+            k += 1
+        return k + (3 if k else 0)  # and the soft edge of the paint
+
+    top, bottom = edge(a, h), edge(a[::-1], h)
+    left, right = edge(a.T, w), edge(a.T[::-1], w)
+    if not (top or bottom or left or right):
+        return img
+    img = img.crop((left, top, w - right, h - bottom))
+    cw, ch = img.size  # back to the original shape (square plates, 3:4 covers), centred, then its size
+    if cw / ch > w / h:
+        nw = round(ch * w / h)
+        img = img.crop(((cw - nw) // 2, 0, (cw - nw) // 2 + nw, ch))
+    else:
+        nh = round(cw * h / w)
+        img = img.crop((0, (ch - nh) // 2, cw, (ch - nh) // 2 + nh))
+    return img.resize((w, h), Image.Resampling.LANCZOS)
+
+
+def install(src: Path, dst: Path, long_side: int | None, trim: bool = False) -> None:
     img = Image.open(src).convert("RGB")
+    if trim:
+        img = trim_paper_margin(img)
     if long_side and max(img.size) > long_side:
         img.thumbnail((long_side, long_side), Image.Resampling.LANCZOS)
     dst.parent.mkdir(parents=True, exist_ok=True)
@@ -70,7 +101,7 @@ def main() -> None:
         dst, long_side = target(m.group(1), m.group(2))
         print(f"{src.name} → {dst.relative_to(ROOT)}")
         if not a.dry_run:
-            install(src, dst, long_side)
+            install(src, dst, long_side, trim=m.group(1) in PLATES or m.group(1)[0] == "G")
 
 
 if __name__ == "__main__":
