@@ -54,6 +54,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--style", default="watercolor")
     p.add_argument("--lang", choices=["ar", "en"], default="ar")
     p.add_argument("--provider", choices=["fal", "gemini", "openai", "sketch", "fake"], default=None)
+    p.add_argument(
+        "--text-provider",
+        choices=["anthropic", "fake"],
+        default=None,
+        help="fake: the theme's own text and no QA calls, with real images (a proof without a Claude key)",
+    )
     p.add_argument("--mode", choices=["final", "preview"], default="final")
     p.add_argument("--message", help="the parent's dedication message (≤ 120 characters)")
     p.add_argument("--drawing", type=Path, help="photo of the child's drawing (companion)")
@@ -167,9 +173,8 @@ async def run(args: argparse.Namespace) -> int:
     settings = Settings()
     provider = args.provider or settings.image_provider
     offline = provider in ("sketch", "fake")
-    settings = settings.model_copy(
-        update={"image_provider": provider, **({"text_provider": "fake"} if offline else {})}
-    )
+    text_provider = "fake" if offline else (args.text_provider or settings.text_provider)
+    settings = settings.model_copy(update={"image_provider": provider, "text_provider": text_provider})
     photos = [p.read_bytes() for p in (args.photo or ([DEFAULT_PHOTO] if offline else []))]
     if not photos:
         print("--photo is required with a real provider")
