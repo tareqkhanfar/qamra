@@ -168,38 +168,6 @@
       "title_en": "A certificate in their name"
     }
   ],
-  "family-adventures": [
-    {
-      "src": "/workbooks/family-adventures/01.jpg",
-      "title_ar": "جواز سفر المغامر",
-      "title_en": "The adventurer's passport"
-    },
-    {
-      "src": "/workbooks/family-adventures/02.jpg",
-      "title_ar": "مغامرة البحث في البيت",
-      "title_en": "A treasure hunt at home"
-    },
-    {
-      "src": "/workbooks/family-adventures/03.jpg",
-      "title_ar": "قائمة مشتريات السوق",
-      "title_en": "The market shopping list"
-    },
-    {
-      "src": "/workbooks/family-adventures/04.jpg",
-      "title_ar": "الشيف الصغير: خطوات الوصفة",
-      "title_en": "Little chef: the recipe steps"
-    },
-    {
-      "src": "/workbooks/family-adventures/05.jpg",
-      "title_ar": "ميزان المشاعر",
-      "title_en": "The feelings thermometer"
-    },
-    {
-      "src": "/workbooks/family-adventures/06.jpg",
-      "title_ar": "نقود قمرة للّعب",
-      "title_en": "Qamra play money"
-    }
-  ],
   "foundation-workbook-v3": [
     {
       "src": "/workbooks/foundation-workbook-v3/01.jpg",
@@ -262,6 +230,38 @@
       "src": "/workbooks/foundation-workbook-kg1/06.jpg",
       "title_ar": "أسمع الفتحة وأحوّط ما أسمع",
       "title_en": "Listening to the fatha"
+    }
+  ],
+  "family-adventures": [
+    {
+      "src": "/workbooks/family-adventures/01.jpg",
+      "title_ar": "جواز سفر المغامر",
+      "title_en": "The adventurer's passport"
+    },
+    {
+      "src": "/workbooks/family-adventures/02.jpg",
+      "title_ar": "مغامرة البحث في البيت",
+      "title_en": "A treasure hunt at home"
+    },
+    {
+      "src": "/workbooks/family-adventures/03.jpg",
+      "title_ar": "قائمة مشتريات السوق",
+      "title_en": "The market shopping list"
+    },
+    {
+      "src": "/workbooks/family-adventures/04.jpg",
+      "title_ar": "الشيف الصغير: خطوات الوصفة",
+      "title_en": "Little chef: the recipe steps"
+    },
+    {
+      "src": "/workbooks/family-adventures/05.jpg",
+      "title_ar": "ميزان المشاعر",
+      "title_en": "The feelings thermometer"
+    },
+    {
+      "src": "/workbooks/family-adventures/06.jpg",
+      "title_ar": "نقود قمرة للّعب",
+      "title_en": "Qamra play money"
     }
   ]
 }

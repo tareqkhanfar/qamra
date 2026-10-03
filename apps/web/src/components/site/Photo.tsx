@@ -24,12 +24,31 @@ export type PhotoName = keyof typeof PHOTOS;
 
 const DIR = path.join(process.cwd(), "public", "photos");
 
-export function hasPhoto(name: PhotoName): boolean {
+function has(file: string): boolean {
   try {
-    return existsSync(path.join(DIR, `${name}.jpg`));
+    return existsSync(path.join(DIR, file));
   } catch {
     return false;
   }
+}
+
+export function hasPhoto(name: PhotoName): boolean {
+  return has(`${name}.jpg`);
+}
+
+/**
+ * A short silent loop over the photo when `<name>.mp4` (and optionally `.webm`) exists, e.g. the home hero. The
+ * photo stays underneath as the poster and for reduced motion. Written as HTML because React's server render
+ * does not emit `muted`, and browsers only autoplay muted video. `name` is one of the fixed slot names.
+ */
+function loop(name: PhotoName): string | null {
+  if (!has(`${name}.mp4`)) return null;
+  const webm = has(`${name}.webm`) ? `<source src="/photos/${name}.webm" type="video/webm">` : "";
+  const poster = has(`${name}-poster.jpg`) ? `/photos/${name}-poster.jpg` : `/photos/${name}.jpg`; // the film's first frame
+  return (
+    `<video class="h-full w-full object-cover" autoplay muted loop playsinline preload="auto" ` +
+    `poster="${poster}">${webm}<source src="/photos/${name}.mp4" type="video/mp4"></video>`
+  );
 }
 
 export function Photo({
@@ -48,10 +67,18 @@ export function Photo({
   fallback?: ReactNode;
 }) {
   if (!hasPhoto(name)) return <>{fallback}</>;
+  const video = loop(name);
   const ratio = PHOTOS[name] === "1:1" ? "1 / 1" : "3 / 2";
   return (
     <div className={`relative overflow-hidden ${className}`} style={{ aspectRatio: ratio }}>
       <Image src={`/photos/${name}.jpg`} alt={alt} fill sizes={sizes} priority={priority} className="object-cover" />
+      {video && (
+        <div
+          aria-hidden
+          className="absolute inset-0 motion-reduce:hidden"
+          dangerouslySetInnerHTML={{ __html: video }}
+        />
+      )}
     </div>
   );
 }
