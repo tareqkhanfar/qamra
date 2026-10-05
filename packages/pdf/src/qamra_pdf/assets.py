@@ -15,6 +15,9 @@ from pathlib import Path
 
 from PIL import Image, ImageChops, ImageFilter, ImageOps
 
+from qamra_pdf.cutout import VERSION as CUTOUT_VERSION
+from qamra_pdf.cutout import cut_out_figure
+
 PKG_DIR = Path(__file__).parent
 
 
@@ -146,30 +149,20 @@ def back_background(front: Path, dest: Path) -> Path:
     return dest
 
 
-def cutout(src: Path, dest: Path, *, threshold: int = 30, feather: float = 1.6) -> Path:
-    """A figure on a plain background (character/companion sheets) as a transparent PNG, trimmed."""
+def cutout(src: Path, dest: Path) -> Path:
+    """A figure on a plain background (character/companion sheets) as a transparent PNG, trimmed.
+
+    The paper and the floor shadow go; light clothes and anything the figure encloses stay (qamra_pdf.cutout).
+    """
     if dest.exists() and dest.stat().st_mtime >= src.stat().st_mtime:
         return dest
     dest.parent.mkdir(parents=True, exist_ok=True)
     with Image.open(src) as original:
-        im = original.convert("RGB")
-        w, h = im.size
-        corners = [
-            im.getpixel((2, 2)),
-            im.getpixel((w - 3, 2)),
-            im.getpixel((2, h - 3)),
-            im.getpixel((w - 3, h - 3)),
-        ]
-        bg = tuple(sorted(c[i] for c in corners)[1] for i in range(3))  # type: ignore[index]
-        diff = ImageChops.difference(im, Image.new("RGB", im.size, bg)).convert("L")
-        mask = diff.point(lambda v: 255 if v > threshold else 0).filter(ImageFilter.MaxFilter(3))
-        mask = mask.filter(ImageFilter.GaussianBlur(feather))
-        out = im.convert("RGBA")
-        out.putalpha(mask)
-        box = mask.point(lambda v: 255 if v > 40 else 0).getbbox()
-        if box:
-            out = out.crop(box)
-        out.save(dest, format="PNG", optimize=True)
+        out = cut_out_figure(original.convert("RGB"))
+    box = out.getchannel("A").point(lambda v: 255 if v > 40 else 0).getbbox()
+    if box:
+        out = out.crop(box)
+    out.save(dest, format="PNG", optimize=True)
     return dest
 
 
@@ -186,6 +179,8 @@ def prepare(front: Path | None, companion: Path | None, out_dir: Path) -> Assets
     work = out_dir / "derived"
     return Assets(
         back=back_background(front, work / "back.jpg") if front and front.is_file() else None,
-        companion=cutout(companion, work / "companion.png") if companion and companion.is_file() else None,
+        companion=cutout(companion, work / f"companion-v{CUTOUT_VERSION}.png")
+        if companion and companion.is_file()
+        else None,
         decor=prepare_decor(work / "decor"),
     )

@@ -236,7 +236,8 @@ def main(only: str | None = None) -> None:
         listing[slug] = manifest
         print(f"{slug}: {len(manifest)} pages")
     MANIFEST.write_text(json.dumps(listing, ensure_ascii=False, indent=2) + "\n")
-    pose = next(CHARACTER.glob("character-*-pose1.png"), None)
+    # the newest cut-out (older ones are kept by the cache under their own content digest)
+    pose = max(CHARACTER.glob("character-*-pose1.png"), key=lambda p: p.stat().st_mtime, default=None)
     if pose is not None and only is None:
         with Image.open(pose) as img:
             rgba = img.convert("RGBA")

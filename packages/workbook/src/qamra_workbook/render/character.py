@@ -1,9 +1,9 @@
 """The child's character on workbook pages: figures cut out of the character sheet.
 
 A sheet is a front view plus two poses on plain paper (qamra_ai character sheets). The first figure from
-the left is the front view, the second a pose (waving, on the sample sheets); a figure's paper background is
-removed by flood-filling from the border, a thin white "sticker" edge is added, and the result is scaled
-for 300 DPI at the largest printed size.
+the left is the front view, the second a pose (waving, on the sample sheets); a figure's paper background and
+floor shadow are removed by qamra_pdf.cutout (light clothes stay whole), a thin white "sticker" edge that
+follows the cut silhouette is added, and the result is scaled for 300 DPI at the largest printed size.
 """
 
 from __future__ import annotations
@@ -11,7 +11,10 @@ from __future__ import annotations
 import hashlib
 from pathlib import Path
 
-from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageStat
+from PIL import Image, ImageChops, ImageFilter, ImageStat
+
+from qamra_pdf.cutout import VERSION as CUTOUT_VERSION
+from qamra_pdf.cutout import cut_out_figure
 
 DIFF = 22  # how far (0–255, per channel) a pixel must be from the paper to count as drawing
 GAP = 12  # px of empty paper that separates two figures
@@ -73,16 +76,10 @@ def front_view_box(img: Image.Image, paper: tuple[int, int, int]) -> tuple[int, 
 
 
 def cut_out(img: Image.Image, paper: tuple[int, int, int]) -> Image.Image:
-    """RGBA figure: paper connected to the border becomes transparent; enclosed light areas stay."""
+    """RGBA figure: paper and floor shadow transparent; light clothes and enclosed areas stay opaque."""
     padded = Image.new("RGB", (img.width + 2 * PAD, img.height + 2 * PAD), paper)
     padded.paste(img, (PAD, PAD))
-    ink = _ink_mask(padded, paper).filter(ImageFilter.MaxFilter(5))  # close hairline gaps in the outline
-    ImageDraw.floodfill(ink, (0, 0), 128)
-    background = ink.point(lambda v: 255 if v == 128 else 0).filter(ImageFilter.MaxFilter(3))
-    alpha = ImageChops.invert(background).filter(ImageFilter.GaussianBlur(1.0))
-    out = padded.convert("RGBA")
-    out.putalpha(alpha)
-    return out
+    return cut_out_figure(padded, paper)
 
 
 def sticker_edge(figure: Image.Image, width: int) -> Image.Image:
@@ -102,7 +99,7 @@ def front_view(sheet: Path, out_dir: Path, max_print_mm: float = MAX_PRINT_MM) -
 
 def pose(sheet: Path, out_dir: Path, index: int, max_print_mm: float = MAX_PRINT_MM) -> Path:
     """The cut-out figure `index` (0: front view, 1: the first pose) as a print PNG; cached by content."""
-    digest = hashlib.sha256(sheet.read_bytes()).hexdigest()[:12]
+    digest = hashlib.sha256(sheet.read_bytes() + f"cutout-v{CUTOUT_VERSION}".encode()).hexdigest()[:12]
     out = out_dir / (f"character-{digest}.png" if index == 0 else f"character-{digest}-pose{index}.png")
     if out.exists():
         return out
