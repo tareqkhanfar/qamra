@@ -6,7 +6,7 @@ import { Alert } from "@/components/ui/Alert";
 import { buttonClasses, Spinner } from "@/components/ui/Button";
 import { Link, useRouter } from "@/i18n/navigation";
 import { api, errorText } from "@/lib/api";
-import { cartApi, money, orderPhone, type Cart, type Catalog, type CatalogZone } from "@/lib/store";
+import { cartApi, deliveryCountries, money, orderPhone, type Cart, type Catalog, type CatalogZone } from "@/lib/store";
 
 const field = "min-h-12 w-full rounded-md border border-line bg-paper-raised px-3 text-body focus:border-night-900";
 
@@ -18,7 +18,7 @@ export function CheckoutForm() {
   const router = useRouter();
   const [cart, setCart] = useState<Cart | null>(null);
   const [zones, setZones] = useState<CatalogZone[]>([]);
-  const [country, setCountry] = useState("PS");
+  const [picked, setPicked] = useState("PS");
   const [zone, setZone] = useState("");
   const [city, setCity] = useState("");
   const [form, setForm] = useState({ name: "", phone: "", address: "", notes: "" });
@@ -31,6 +31,9 @@ export function CheckoutForm() {
     void api<Catalog>("/api/store/catalog").then((r) => r.ok && setZones(r.data.zones));
   }, []);
 
+  // the country choice shows only while we deliver to more than one country (West Bank + Jerusalem only now)
+  const countries = useMemo(() => deliveryCountries(zones), [zones]);
+  const country = countries.includes(picked) ? picked : (countries[0] ?? picked);
   const countryZones = useMemo(() => zones.filter((z) => z.country === country), [zones, country]);
   const chosen = zones.find((z) => z.slug === zone);
   const name = (x: { name_ar: string; name_en: string }) => (locale === "ar" ? x.name_ar : x.name_en);
@@ -103,21 +106,26 @@ export function CheckoutForm() {
             />
             <span className="text-caption text-ink-muted">{t("phoneHint")}</span>
           </label>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <label className="flex flex-col gap-1.5">
-              <span className="font-semibold">{t("country")}</span>
-              <select
-                className={field}
-                value={country}
-                onChange={(e) => {
-                  setCountry(e.target.value);
-                  void pickZone("");
-                }}
-              >
-                <option value="PS">{t("PS")}</option>
-                <option value="JO">{t("JO")}</option>
-              </select>
-            </label>
+          <div className={countries.length > 1 ? "grid gap-4 sm:grid-cols-2" : "flex flex-col"}>
+            {countries.length > 1 && (
+              <label className="flex flex-col gap-1.5">
+                <span className="font-semibold">{t("country")}</span>
+                <select
+                  className={field}
+                  value={country}
+                  onChange={(e) => {
+                    setPicked(e.target.value);
+                    void pickZone("");
+                  }}
+                >
+                  {countries.map((c) => (
+                    <option key={c} value={c}>
+                      {t.has(c) ? t(c) : c}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
             <label className="flex flex-col gap-1.5">
               <span className="font-semibold">{t("zone")}</span>
               <select className={field} value={zone} onChange={(e) => void pickZone(e.target.value)} required>

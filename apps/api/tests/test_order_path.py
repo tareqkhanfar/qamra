@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from api_helpers import make_admin, register
+from api_helpers import make_admin, open_jordan, register
 from fastapi import FastAPI
 from httpx import AsyncClient
 from rq import Queue
@@ -81,7 +81,8 @@ def _line(cart: dict[str, Any], book_id: str) -> dict[str, Any]:
     return next(i for i in cart["items"] if i["book_id"] == book_id)
 
 
-async def test_two_books_with_add_ons_match_the_db_rules(client: AsyncClient) -> None:
+async def test_two_books_with_add_ons_match_the_db_rules(client: AsyncClient, adb: AsyncSession) -> None:
+    await open_jordan(adb)  # the JD path, kept while Jordan is switched off
     await register(client)
     olive = await _book(client, name="ليان", line="classic", theme="olive-season", hijab=True)
     moon = await _book(client, child_id=olive["child_id"], line="magic", theme="moon-trip")
@@ -207,6 +208,7 @@ async def test_a_gift_order_hides_prices_and_prints_the_message(
 async def test_gift_cards_are_issued_by_staff_and_pay_after_the_coupon(
     client: AsyncClient, adb: AsyncSession
 ) -> None:
+    await open_jordan(adb)  # a JD cart refuses a ₪ card
     await make_admin(client, adb)
     issued = await client.post("/api/admin/gift-cards", json={"amount": "50", "note": "لعائلة ليان"})
     assert issued.status_code == 201, issued.text

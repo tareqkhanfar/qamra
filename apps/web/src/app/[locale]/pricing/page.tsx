@@ -8,7 +8,7 @@ import { Link } from "@/i18n/navigation";
 import { getShopSummary, getStoreCatalog } from "@/lib/catalog";
 import { pageMetadata } from "@/lib/seo";
 import { ACTIVITY_LINES } from "@/lib/shop";
-import { money, type CatalogProduct, type CatalogVariant } from "@/lib/store";
+import { deliveryCountries, money, type CatalogProduct, type CatalogVariant } from "@/lib/store";
 
 export async function generateMetadata(): Promise<Metadata> {
   const [t, locale] = await Promise.all([getTranslations("pricingPage"), getLocale()]);
@@ -22,21 +22,26 @@ type Props = { searchParams: Promise<{ country?: string }> };
 
 /**
  * Every price on one page, all from the catalog API: story formats, add-ons, activity books, class books,
- * delivery. `?country=jo` shows the same page in Jordanian dinars (the cart's currency follows the zone).
+ * delivery. `?country=jo` shows the same page in Jordanian dinars (the cart's currency follows the zone), but
+ * only while a Jordan zone is active: since 2026-10-05 we deliver to the West Bank and Jerusalem only, so the
+ * page stays in shekels and shows no country choice.
  */
 export default async function PricingPage({ searchParams }: Props) {
   const [query, locale] = await Promise.all([searchParams, getLocale()]);
-  const wanted = query.country === "jo" ? "JOD" : "ILS";
-  const [t, tw, tn, te, catalog, summary] = await Promise.all([
+  const prices = (currency: "ILS" | "JOD") => Promise.all([getStoreCatalog(currency), getShopSummary(currency)]);
+  const [t, tw, tn, te, inWanted] = await Promise.all([
     getTranslations("pricingPage"),
     getTranslations("workbook"),
     getTranslations("nav"),
     getTranslations("errors"),
-    getStoreCatalog(wanted),
-    getShopSummary(wanted),
+    prices(query.country === "jo" ? "JOD" : "ILS"),
   ]);
+  let [catalog, summary] = inWanted;
+  if (catalog?.currency === "JOD" && !catalog.zones.some((z) => z.currency === "JOD")) {
+    [catalog, summary] = await prices("ILS"); // no active Jordan zone: nobody can pay in dinars
+  }
   const currency = catalog?.currency ?? "ILS";
-  const countries = [...new Set((catalog?.zones ?? []).map((z) => z.country))].sort().reverse(); // PS, JO
+  const countries = deliveryCountries(catalog?.zones ?? []); // PS, JO
   const amount = (n: string | number) => money(n, currency, locale);
   const name = (p: { name_ar: string; name_en: string }) => (locale === "ar" ? p.name_ar : p.name_en);
   const desc = (p: { description_ar: string; description_en: string }) =>

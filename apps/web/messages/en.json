@@ -2236,17 +2236,7 @@
       "date": "Graduation date",
       "notes": "Notes (optional)"
     },
-    "cities": [
-      "Ramallah & Al-Bireh",
-      "Nablus",
-      "Hebron",
-      "Bethlehem",
-      "Jenin",
-      "Tulkarm",
-      "Jerusalem",
-      "Amman",
-      "Other"
-    ],
+    "cities": ["Ramallah & Al-Bireh", "Nablus", "Hebron", "Bethlehem", "Jenin", "Tulkarm", "Jerusalem", "Other"],
     "submit": "Send request",
     "sending": "Sending…",
     "done": "Request received! We'll contact you within one working day.",
@@ -3273,7 +3263,7 @@
       },
       {
         "q": "Where do you deliver?",
-        "a": "We deliver to your door across the West Bank, Jerusalem and Jordan. The zones, fees and delivery times are on the pricing page."
+        "a": "We deliver to your door in West Bank cities and in Jerusalem. The zones, fees and delivery times are on the pricing page."
       },
       {
         "q": "How do I pay?",

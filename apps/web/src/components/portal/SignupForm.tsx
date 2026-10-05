@@ -1,13 +1,14 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
 import { Link, useRouter } from "@/i18n/navigation";
-import { errorText } from "@/lib/api";
+import { api, errorText } from "@/lib/api";
 import { portalApi } from "@/lib/portal";
+import { deliveryCountries, type Catalog } from "@/lib/store";
 
 /** A kindergarten asks to join the portal: the account works at once, the school waits for our approval. */
 export function SignupForm() {
@@ -27,6 +28,11 @@ export function SignupForm() {
   });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // the country choice shows only while we deliver to more than one country (West Bank + Jerusalem only now)
+  const [countries, setCountries] = useState<string[]>([]);
+  useEffect(() => {
+    void api<Catalog>("/api/store/catalog").then((r) => r.ok && setCountries(deliveryCountries(r.data.zones)));
+  }, []);
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
 
@@ -71,22 +77,27 @@ export function SignupForm() {
         maxLength={120}
         autoComplete="name"
       />
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className={countries.length > 1 ? "grid gap-4 md:grid-cols-2" : "flex flex-col"}>
         <TextField label={t("city")} value={form.city} onChange={set("city")} required minLength={2} maxLength={100} />
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="country" className="text-small font-semibold text-ink">
-            {t("country")}
-          </label>
-          <select
-            id="country"
-            value={form.country}
-            onChange={set("country")}
-            className="min-h-[52px] rounded-sm border border-line bg-paper-raised px-4 text-body"
-          >
-            <option value="PS">{t("countries.PS")}</option>
-            <option value="JO">{t("countries.JO")}</option>
-          </select>
-        </div>
+        {countries.length > 1 && (
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="country" className="text-small font-semibold text-ink">
+              {t("country")}
+            </label>
+            <select
+              id="country"
+              value={form.country}
+              onChange={set("country")}
+              className="min-h-[52px] rounded-sm border border-line bg-paper-raised px-4 text-body"
+            >
+              {countries.map((c) => (
+                <option key={c} value={c}>
+                  {t.has(`countries.${c}`) ? t(`countries.${c}`) : c}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
       <TextField
         label={t("address")}

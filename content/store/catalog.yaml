@@ -230,10 +230,13 @@ coupons:
   - {code: WELCOME10, kind: percent, value: 10, first_order_only: true, active: false}  # an example; switched off
 
 shipping_zones:
+  # We deliver to the West Bank and Jerusalem only (Tareq, 2026-10-05). The Jordan zones are kept inactive, not
+  # deleted (Jordan may come back): the site, including the checkout, does not offer them, and their JOD prices
+  # are kept. Switch them on again in Admin → الكتالوج والأسعار → التوصيل (migration 9d4f2b7c1e60 switched them off).
   - {slug: west-bank, name_ar: مدن الضفة الغربية, name_en: West Bank cities, country: PS, currency: ILS, fee: 20, free_over: 200, cost_ils: 15, eta: [2, 4], cities: [رام الله, البيرة, نابلس, الخليل, بيت لحم, جنين, طولكرم, قلقيلية, أريحا, سلفيت, طوباس]}  # placeholder cost
   - {slug: jerusalem, name_ar: القدس, name_en: Jerusalem, country: PS, currency: ILS, fee: 30, free_over: 250, cost_ils: 22, eta: [2, 5], cities: [القدس]}  # placeholder cost
-  - {slug: amman, name_ar: عمّان, name_en: Amman, country: JO, currency: JOD, fee: 3, free_over: 40, cost_ils: 12, eta: [3, 6], cities: [عمّان]}  # placeholder cost
-  - {slug: jordan-other, name_ar: باقي محافظات الأردن, name_en: Other Jordanian governorates, country: JO, currency: JOD, fee: 4, free_over: 50, cost_ils: 14, eta: [3, 7], cities: [إربد, الزرقاء, العقبة, السلط, مادبا, جرش, الكرك, المفرق]}  # placeholder cost
+  - {slug: amman, name_ar: عمّان, name_en: Amman, country: JO, currency: JOD, fee: 3, free_over: 40, cost_ils: 12, eta: [3, 6], cities: [عمّان], active: false}  # placeholder cost
+  - {slug: jordan-other, name_ar: باقي محافظات الأردن, name_en: Other Jordanian governorates, country: JO, currency: JOD, fee: 4, free_over: 50, cost_ils: 14, eta: [3, 7], cities: [إربد, الزرقاء, العقبة, السلط, مادبا, جرش, الكرك, المفرق], active: false}  # placeholder cost
 
 price_lists:
   - name: قائمة الروضات الافتراضية

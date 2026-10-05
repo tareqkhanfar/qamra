@@ -54,6 +54,15 @@ export type CatalogZone = {
   cod_fee: string;
   eta_days: [number, number];
 };
+/**
+ * The countries we deliver to, from the active zones only: Palestine first ("PS", then "JO"). Since 2026-10-05
+ * that is Palestine alone (the West Bank and Jerusalem; the Jordan zones are switched off, not deleted), so the
+ * forms hide their country choice; it comes back by itself when the admin switches a Jordan zone on again.
+ */
+export function deliveryCountries(zones: Pick<CatalogZone, "country">[]): string[] {
+  return [...new Set(zones.map((z) => z.country))].sort().reverse();
+}
+
 export type Catalog = {
   currency: Currency;
   products: CatalogProduct[];

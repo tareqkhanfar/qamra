@@ -1,7 +1,7 @@
 from decimal import Decimal
 
 import pytest
-from api_helpers import complete_cart
+from api_helpers import complete_cart, open_jordan
 from httpx import AsyncClient
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -153,7 +153,20 @@ async def test_express_production_is_capacity_limited(client: AsyncClient, adb: 
     assert r.status_code == 409 and r.json()["error"]["code"] == "express_full"
 
 
-async def test_jordan_pays_in_dinars(client: AsyncClient) -> None:
+async def test_we_deliver_to_the_west_bank_and_jerusalem_only(client: AsyncClient) -> None:
+    """Tareq, 2026-10-05: the Jordan zones are seeded inactive, so no Jordanian city and no JOD is offered."""
+    zones = (await client.get("/api/store/catalog")).json()["zones"]
+    assert {z["slug"] for z in zones} == {"west-bank", "jerusalem"}
+    assert {z["country"] for z in zones} == {"PS"} and {z["currency"] for z in zones} == {"ILS"}
+    await _add(client, "classic-soft-21")
+    r = await client.put("/api/store/cart/zone", json={"zone": "amman"})
+    assert r.status_code == 404 and r.json()["error"]["code"] == "unknown_zone"
+    r = await client.post("/api/store/checkout", json={**CHECKOUT, "zone": "amman", "city": "عمّان"})
+    assert r.status_code == 404 and r.json()["error"]["code"] == "unknown_zone"
+
+
+async def test_jordan_pays_in_dinars_when_switched_on(client: AsyncClient, adb: AsyncSession) -> None:
+    await open_jordan(adb)  # kept, not deleted: the admin can switch Jordan back on
     await _add(client, "classic-soft-21")
     cart = (await client.put("/api/store/cart/zone", json={"zone": "amman"})).json()
     assert cart["currency"] == "JOD" and Decimal(cart["items"][0]["unit_price"]) == 13

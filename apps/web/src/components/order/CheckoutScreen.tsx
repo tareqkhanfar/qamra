@@ -8,7 +8,7 @@ import { Link, useRouter } from "@/i18n/navigation";
 import { api, errorText } from "@/lib/api";
 import { TOTAL_STEPS } from "@/lib/create";
 import { bundleLabel, completeHref, orderApi, type OrderCart } from "@/lib/order";
-import { cartApi, money, orderPhone, type Catalog, type CatalogZone } from "@/lib/store";
+import { cartApi, deliveryCountries, money, orderPhone, type Catalog, type CatalogZone } from "@/lib/store";
 import { BottomBar, ctaClass, FlowHeader } from "./parts";
 
 const field =
@@ -23,7 +23,7 @@ export function CheckoutScreen() {
   const router = useRouter();
   const [cart, setCart] = useState<OrderCart | null>(null);
   const [zones, setZones] = useState<CatalogZone[]>([]);
-  const [country, setCountry] = useState("PS");
+  const [picked, setPicked] = useState("PS");
   const [city, setCity] = useState("");
   const [form, setForm] = useState({ name: "", phone: "", address: "" });
   const [busy, setBusy] = useState(false);
@@ -43,6 +43,9 @@ export function CheckoutScreen() {
     };
   }, []);
 
+  // the country choice shows only while we deliver to more than one country (West Bank + Jerusalem only now)
+  const countries = useMemo(() => deliveryCountries(zones), [zones]);
+  const country = countries.includes(picked) ? picked : (countries[0] ?? picked);
   /** Every city of the country with its delivery zone (the zone sets the fee and the currency). */
   const cities = useMemo(
     () => zones.filter((z) => z.country === country).flatMap((z) => z.cities.map((c) => ({ city: c, zone: z }))),
@@ -153,21 +156,26 @@ export function CheckoutScreen() {
               required
             />
           </Field>
-          <div className="grid grid-cols-2 gap-2.5">
-            <Field id="o-country" label={t("checkout.country")}>
-              <select
-                id="o-country"
-                className={`${field} px-3`}
-                value={country}
-                onChange={(e) => {
-                  setCountry(e.target.value);
-                  setCity("");
-                }}
-              >
-                <option value="PS">{t("checkout.PS")}</option>
-                <option value="JO">{t("checkout.JO")}</option>
-              </select>
-            </Field>
+          <div className={countries.length > 1 ? "grid grid-cols-2 gap-2.5" : "flex flex-col"}>
+            {countries.length > 1 && (
+              <Field id="o-country" label={t("checkout.country")}>
+                <select
+                  id="o-country"
+                  className={`${field} px-3`}
+                  value={country}
+                  onChange={(e) => {
+                    setPicked(e.target.value);
+                    setCity("");
+                  }}
+                >
+                  {countries.map((c) => (
+                    <option key={c} value={c}>
+                      {t.has(`checkout.${c}`) ? t(`checkout.${c}`) : c}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+            )}
             <Field id="o-city" label={t("checkout.city")}>
               <select
                 id="o-city"

@@ -263,6 +263,7 @@ async def _rules(db: AsyncSession, data: dict[str, Any]) -> list[str]:
                     eta_days_min=eta[0],
                     eta_days_max=eta[1],
                     sort=sort,
+                    active=z.get("active", True),  # Jordan: kept, switched off (2026-10-05)
                 )
             )
             added.append(f"+zone:{z['slug']}")

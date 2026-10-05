@@ -97,3 +97,14 @@ async def complete_cart(adb) -> None:  # type: ignore[no-untyped-def]
             await adb.flush()
             item.book_id = book.id
     await adb.commit()
+
+
+async def open_jordan(adb) -> None:  # type: ignore[no-untyped-def]
+    """Switch the Jordan delivery zones back on, as the admin would: they are seeded inactive (we deliver to
+    the West Bank and Jerusalem only since 2026-10-05), and their JOD path is kept for when Jordan returns."""
+    from sqlalchemy import update
+
+    from qamra_core.db.store import ShippingZone
+
+    await adb.execute(update(ShippingZone).where(ShippingZone.country == "JO").values(active=True))
+    await adb.commit()
