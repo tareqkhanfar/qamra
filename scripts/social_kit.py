@@ -3,14 +3,15 @@
     uv run python scripts/social_kit.py                     # all → out/social/<name>.png + contact sheet
     uv run python scripts/social_kit.py --only ad-a-launch  # one design (repeatable; prefix match)
     uv run python scripts/social_kit.py --incoming DIR      # look for delivered photos in DIR
-    uv run python scripts/social_kit.py --videos            # also cut the reels and ad videos (ffmpeg)
+    uv run python scripts/social_kit.py --videos            # also cut the reels and ad videos (with sound)
     uv run python scripts/social_kit.py --package           # collect everything into out/social/package/
 
 Everything lives in content/marketing/social/: copy.yaml (all words), captions.yaml (post captions),
 images.yaml (photo/mockup slots and the `media:` registry), templates/ (Jinja2), ads.md and calendar.md (Meta
 ads and the posting plan). Art is drawn in code; the bitmaps are pages and photos already public on the site
 (apps/web/public/**), the theme plates and cast sheets (content/), the brand film's stills and mockups
-(out/video/) and, once Tareq delivers them, files in design/incoming/.
+(out/video/, made by scripts/build_film.py) and, once Tareq delivers them, files in design/incoming/. Every
+video gets the brand soundtrack (scripts/film_audio.py): a voice version and a music-only one (*-music.mp4).
 After each render a layout check (templates/qa.js) reports text that leaves its box or the
 safe zone, headline lines that wrap, and paragraphs that end with a lone word.
 """
@@ -29,6 +30,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+import film_audio
 import yaml
 from jinja2 import Environment, FileSystemLoader, Undefined
 from PIL import Image, ImageDraw, ImageFont
@@ -157,7 +159,7 @@ class Media:
             raise KeyError(f"images.yaml has no media {key!r}")
         path = ROOT / spec["src"]
         if not path.exists():
-            hint = " (out/video/ is made by the brand film build)" if spec["src"].startswith("out/") else ""
+            hint = " (out/video/ is made by scripts/build_film.py)" if spec["src"].startswith("out/") else ""
             raise FileNotFoundError(f"media {key!r} is missing: {path}{hint}")
         self.used.add(key)
         return {"src": path.resolve().as_uri(), "focus": spec.get("focus", "50% 50%"), "path": path}
@@ -589,10 +591,11 @@ def contact_sheet(designs: list[Design], out: Path) -> Path:
 
 # ---------------------------------------------------------------------------------------------- videos
 
-FILM = ROOT / "out/video"  # the brand film and its shots (out/video/build_film.py)
+FILM = ROOT / "out/video"  # the brand film and its shots (scripts/build_film.py)
 FPS = 24
 XFADE = 0.4  # seconds of cross-fade between two parts
 MAX_MB = 8.0
+AUDIO_MB_PER_S = 0.021  # the soundtrack (AAC 160 kb/s) that film_audio adds to the picture
 
 
 @dataclass
@@ -614,20 +617,21 @@ class Still:
     zoom: float = 1.035
 
 
-# Every video: its parts in order. Names are the files in out/social/video/.
+# Every video: its parts in order. Names are the files in out/social/video/. The stills are long enough for
+# the voice line read over them (content/marketing/film-audio/soundtrack.yaml; the cutter warns otherwise).
 VIDEOS: dict[str, list[Clip | Still]] = {
     "reel-film-9x16": [Clip("qamra-film.mp4", "reel-film", "overlay-film-reel")],
     "feed-film-4x5": [Clip("qamra-film.mp4", "feed-film", "overlay-film-feed")],
     "cut-1-photo-to-character-9x16": [
         Clip("c2.mp4", "reel-cut", "overlay-cut-photo"),
-        Still("end-cut-photo", 2.4),
+        Still("end-cut-photo", 3.6),
     ],
-    "cut-2-printed-book-9x16": [Clip("c3.mp4", "reel-cut", "overlay-cut-book"), Still("end-cut-book", 2.4)],
-    "cut-3-kindergartens-9x16": [Clip("c4.mp4", "reel-cut", "overlay-cut-kg"), Still("end-cut-kg", 2.4)],
+    "cut-2-printed-book-9x16": [Clip("c3.mp4", "reel-cut", "overlay-cut-book"), Still("end-cut-book", 3.2)],
+    "cut-3-kindergartens-9x16": [Clip("c4.mp4", "reel-cut", "overlay-cut-kg"), Still("end-cut-kg", 2.8)],
     "ad-parents-9x16": [
         Clip("c2.mp4", "reel-cut", "overlay-ad-parents"),
         Clip("c3.mp4", "reel-cut", "overlay-ad-parents"),
-        Still("end-ad-parents", 2.6),
+        Still("end-ad-parents", 3.4),
     ],
     "ad-kindergartens-9x16": [
         Clip("c4.mp4", "reel-cut", "overlay-cut-kg"),
@@ -635,12 +639,12 @@ VIDEOS: dict[str, list[Clip | Still]] = {
         Still("end-cut-kg", 2.6),
     ],
     "ad-activity-books-9x16": [
-        Still("end-frame-journey", 2.8),
+        Still("end-frame-journey", 3.9),
         Still("end-frame-foundation", 2.8),
-        Still("end-frame-family", 2.8),
-        Still("end-ad-activity-books", 2.8),
+        Still("end-frame-family", 3.9),
+        Still("end-ad-activity-books", 3.7),
     ],
-    "ad-gifts-9x16": [Clip("c3.mp4", "reel-cut", "overlay-ad-gifts"), Still("end-ad-gifts", 2.6)],
+    "ad-gifts-9x16": [Clip("c3.mp4", "reel-cut", "overlay-ad-gifts"), Still("end-ad-gifts", 3.2)],
 }
 
 
@@ -670,8 +674,11 @@ def probe(ff: str, path: Path) -> tuple[float, int, int]:
     return secs, int(v.group(1)), int(v.group(2))
 
 
-def compose(ff: str, name: str, parts: list[Clip | Still], rendered: Path, out: Path) -> Path:
-    """One MP4 (H.264, no audio): every part is brought to the same size, then the parts cross-fade."""
+def compose(
+    ff: str, name: str, parts: list[Clip | Still], rendered: Path, out: Path
+) -> tuple[Path, list[float]]:
+    """One silent MP4 (H.264): every part is brought to the same size, then the parts cross-fade. Returns the
+    file and where each part starts (s), for the soundtrack's cues."""
     first = next((p for p in parts if isinstance(p, Clip)), None)
     W, H = (VIDEO_BOX[first.box]["W"], VIDEO_BOX[first.box]["H"]) if first else (1080, 1920)
     args: list[str] = []
@@ -682,7 +689,7 @@ def compose(ff: str, name: str, parts: list[Clip | Still], rendered: Path, out: 
         if isinstance(part, Clip):
             src = FILM / part.src
             if not src.exists():
-                raise FileNotFoundError(f"{src} is missing (made by out/video/build_film.py)")
+                raise FileNotFoundError(f"{src} is missing (made by scripts/build_film.py)")
             dur, sw, sh = probe(ff, src)
             box = VIDEO_BOX[part.box]
             aspect = box["w"] / box["h"]
@@ -733,12 +740,15 @@ def compose(ff: str, name: str, parts: list[Clip | Still], rendered: Path, out: 
             n += 1
             dur = part.dur
         durs.append(dur)
-    last, t = "[s0]", 0.0
+    last, t, starts = "[s0]", 0.0, [0.0]
     for k in range(1, len(parts)):
         t += durs[k - 1] - XFADE
+        starts.append(t)
         chains.append(f"{last}[s{k}]xfade=transition=fade:duration={XFADE}:offset={t:.3f}[x{k}]")
         last = f"[x{k}]"
-    path = out / f"{name}.mp4"
+    path = out / "silent" / f"{name}.mp4"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    budget = MAX_MB - AUDIO_MB_PER_S * (sum(durs) - XFADE * (len(durs) - 1))
     for crf in (22, 24, 26, 28, 30):
         subprocess.run(
             [
@@ -772,13 +782,15 @@ def compose(ff: str, name: str, parts: list[Clip | Still], rendered: Path, out: 
             ],
             check=True,
         )
-        if path.stat().st_size <= MAX_MB * 1024 * 1024:
+        if path.stat().st_size <= budget * 1024 * 1024:
             break
-    return path
+    return path, starts
 
 
 def videos(ff: str, rendered: Path, only: list[str]) -> list[str]:
-    """Cut every video in VIDEOS into out/social/video/, and 3 review frames of each into video/frames/."""
+    """Cut every video in VIDEOS into out/social/video/: <name>.mp4 with the voice and the music,
+    <name>-music.mp4 with the music only (soundtrack.yaml has a cue sheet per video); 3 review frames of each
+    into video/frames/."""
     out = rendered / "video"
     frames = out / "frames"
     frames.mkdir(parents=True, exist_ok=True)
@@ -786,12 +798,16 @@ def videos(ff: str, rendered: Path, only: list[str]) -> list[str]:
     for name, parts in VIDEOS.items():
         if only and not any(name.startswith(p) for p in only):
             continue
-        path = compose(ff, name, parts, rendered, out)
-        secs, w, h = probe(ff, path)
-        mb = path.stat().st_size / 1024 / 1024
-        print(f"  {path}  {w}×{h}  {secs:.1f} s  {mb:.1f} MB")
-        if mb > MAX_MB:
-            problems.append(f"{name}: {mb:.1f} MB is over {MAX_MB} MB")
+        silent, starts = compose(ff, name, parts, rendered, out)
+        path = out / f"{name}.mp4"
+        for voice, dest in ((True, path), (False, out / f"{name}-music.mp4")):
+            sound = film_audio.mux(ff, name, silent, dest, starts, voice=voice)
+            problems += sound["warnings"] if voice else []
+            secs, w, h = probe(ff, dest)
+            mb = dest.stat().st_size / 1024 / 1024
+            print(f"  {dest}  {w}×{h}  {secs:.1f} s  {mb:.1f} MB  {sound['lufs']:.1f} LUFS")
+            if mb > MAX_MB:
+                problems.append(f"{dest.name}: {mb:.1f} MB is over {MAX_MB} MB")
         for i, at in enumerate((0.12, 0.5, 0.9), start=1):
             subprocess.run(
                 [
@@ -848,11 +864,16 @@ def package(copy: dict[str, Any], rendered: Path) -> Path:
             )
     for name in VIDEOS:
         if not name.startswith("ad-"):
-            put(rendered / "video" / f"{name}.mp4", pkg / "reels" / f"{name}.mp4")
+            for v in (name, f"{name}-music"):
+                put(rendered / "video" / f"{v}.mp4", pkg / "reels" / f"{v}.mp4")
     for slug, folder in AD_FOLDERS.items():
         put(rendered / f"meta-{slug}-1x1.png", pkg / "ads" / folder / f"{slug}-1080x1080.png")
         put(rendered / f"meta-{slug}-4x5.png", pkg / "ads" / folder / f"{slug}-1080x1350.png")
-        put(rendered / "video" / f"ad-{slug}-9x16.mp4", pkg / "ads" / folder / f"{slug}-1080x1920.mp4")
+        for end in ("", "-music"):
+            put(
+                rendered / "video" / f"ad-{slug}-9x16{end}.mp4",
+                pkg / "ads" / folder / f"{slug}-1080x1920{end}.mp4",
+            )
     for slug in copy["stories"]:
         put(rendered / f"story-{slug}.png", pkg / "stories" / f"story-{slug}.png")
     profile = ["profile", "fb-cover"] + [
@@ -917,7 +938,7 @@ def main() -> int:
     parser.add_argument("--images", default=str(KIT / "images.yaml"), help="image-slot manifest (for tests)")
     parser.add_argument("--out", default=str(OUT), help="output folder")
     parser.add_argument(
-        "--videos", action="store_true", help="also cut the videos (needs ffmpeg and out/video/)"
+        "--videos", action="store_true", help="also cut the videos, with sound (needs ffmpeg and out/video/)"
     )
     parser.add_argument(
         "--ffmpeg", default=None, help="ffmpeg binary (default: $FFMPEG, PATH, imageio-ffmpeg)"

@@ -1,0 +1,186 @@
+# The brand films' soundtrack (scripts/film_audio.py): one music bed, two sound effects and a short Arabic
+# voiceover, mixed per film. The sounds are made once on fal (commercial-use models) and kept in this folder;
+# every build mixes them again, so a film's length can change without new spend.
+#
+# Design: a warm, gentle bedtime lullaby (music box, celesta, felt piano, soft strings; no drums, no vocals)
+# under one calm female voice that reads what the film shows. A light sparkle chime when the moon appears or the
+# magic happens (the photo turning into the character), a soft page-turn whoosh on every scene change.
+# Mix: the voice on top (−6 dB); the music at −12 dB alone and −18 dB under the voice (all on one loudness
+# scale); the whole film at −14 LUFS (true peak ≤ −1.5 dB), AAC 48 kHz stereo. Each film also gets a music-only
+# version (no voice).
+#
+# Voice lines: `screen` is the text the film shows (content/marketing/social/copy.yaml and the film's captions),
+# `say` is what the voice reads: the same words, vowelized for the text-to-speech, the last word of each phrase in
+# pause form (no case ending). Every line was checked by a language review before it was synthesized.
+
+bed:
+  file: bed.m4a
+  model: fal-ai/lyria2  # Google Lyria 2 via fal: instrumental, 48 kHz, 30 s, commercial use, $0.10 a clip
+  seed: 2026
+  prompt: >-
+    A gentle, warm and magical lullaby for a children's bedtime storybook. A soft music box and celesta carry a
+    simple tender melody over warm felt piano, light pizzicato and soft string pads, with delicate glockenspiel
+    sparkles. Slow and calm, about 70 BPM, major key, dreamy, cozy and hopeful. Instrumental.
+  negative_prompt: >-
+    vocals, singing, voice, choir, humming, lyrics, drums, percussion, beat, bass drop, electric guitar,
+    distortion, synth lead, loud, fast, dark, sad, scary, low quality
+
+sfx:  # ElevenLabs sound effects v2 via fal: commercial use, $0.002 a second
+  sparkle:
+    file: sparkle.mp3
+    seconds: 2.5
+    prompt: >-
+      a soft magical sparkle chime: gentle twinkling glockenspiel and fairy-dust shimmer rising and fading,
+      warm and delicate, children's storybook magic, no voice
+  whoosh:
+    file: page-turn.mp3
+    seconds: 1.2
+    prompt: >-
+      a soft page turn of a thick storybook page with a gentle airy whoosh, close and warm, quiet, no voice
+
+voice:  # ElevenLabs Multilingual v2 via fal: commercial use, $0.10 per 1000 characters
+  model: fal-ai/elevenlabs/tts/multilingual-v2
+  voice: Charlotte  # the voice of the activity books' QR clips (scripts/journey_voices.py)
+  language_code: ar
+  speed: 0.9
+  stability: 0.6
+  similarity_boost: 0.75
+  style: 0.15
+
+lines:
+  film-open:
+    screen: قمرة · حكايات بطلُها طفلُكم
+    say: قَمْرَة... حِكاياتٌ بَطَلُها طِفْلُكُم.
+  film-photo:
+    screen: من صورة واحدة… · شخصية تشبه طفلكم
+    say: مِنْ صورَةٍ واحِدَة... شَخْصِيَّةٌ تُشْبِهُ طِفْلَكُم.
+  film-book:
+    screen: كتاب مطبوع · طفلكم بطل كل صفحة
+    say: كِتابٌ مَطْبوع... طِفْلُكُم بَطَلُ كُلِّ صَفْحَة.
+  film-kg:
+    screen: وللروضات · كتاب تخرّج لكل طفل
+    say: وَلِلرَّوْضات... كِتابُ تَخَرُّجٍ لِكُلِّ طِفْل.
+  film-end:  # the home film's end card: the logo «قمرة» over three cards (their words don't fit in 3 s)
+    screen: قمرة
+    say: قَمْرَة.
+  cta-order:
+    screen: اطلبوا الآن · qamra.app
+    say: اُطْلُبُوا الآن... قَمْرَة دوت آب.
+  cta-quote:
+    screen: اطلبوا عرض سعر للروضة
+    say: اُطْلُبُوا عَرْضَ سِعْرٍ لِلرَّوْضَة.
+  cut-photo:
+    screen: من صورة واحدة · إلى شخصية تشبهه
+    say: مِنْ صورَةٍ واحِدَة، إِلى شَخْصِيَّةٍ تُشْبِهُه.
+  cut-photo-end:
+    screen: نرسم شخصيته، وتوافقون عليها
+    say: نَرْسُمُ شَخْصِيَّتَه، وَتُوافِقونَ عَلَيْها.
+  cut-book:
+    screen: كتاب مطبوع، وطفلكم بطله
+    say: كِتابٌ مَطْبوع، وَطِفْلُكُم بَطَلُهُ.  # the full «ـهُ»: in pause form the voice said «بطلة»
+  cut-book-end:
+    screen: كل صفحة مرسومة لطفلكم
+    say: كُلُّ صَفْحَةٍ مَرْسومَةٌ لِطِفْلِكُم.
+  cut-kg:
+    screen: كتاب تخرّج لكل طفل في الصف
+    say: كِتابُ تَخَرُّجٍ لِكُلِّ طِفْلٍ في الصَّفّ.
+  ad-parents:
+    screen: حكاية مطبوعة بطلها طفلكم
+    say: حِكايَةٌ مَطْبوعَة، بَطَلُها طِفْلُكُم.
+  ad-parents-end:
+    screen: تتصفّحون الكتاب قبل أن تدفعوا
+    say: تَتَصَفَّحونَ الكِتابَ قَبْلَ أَنْ تَدْفَعوا.
+  ad-journey:
+    screen: امسحوا الرمز، فيسمع طفلكم الحرف
+    say: اِمْسَحوا الرَّمْز، فَيَسْمَعَ طِفْلُكُمُ الحَرْف.
+  ad-foundation:
+    screen: يكتب اسمه بيده الصغيرة
+    say: يَكْتُبُ اسْمَهُ بِيَدِهِ الصَّغيرَة.
+  ad-family:
+    screen: ١٢ مغامرة يعيشها معكم
+    say: اِثْنَتا عَشْرَةَ مُغامَرَةً يَعيشُها مَعَكُم.
+  ad-activity-end:
+    screen: يتعلّم ويلعب، وهو بطل الصفحات
+    say: يَتَعَلَّمُ وَيَلْعَب، وَهُوَ بَطَلُ الصَّفَحات.
+  ad-gifts:
+    screen: هدية باسمه يحتفظ بها سنوات
+    say: هَدِيَّةٌ بِاسْمِه، يَحْتَفِظُ بِها سَنَوات.
+
+mix:
+  reference_lufs: -16  # every sound is first brought to this loudness; the levels below are dB on that scale
+  bed_window: 3.0  # the bed's loud and quiet passages are evened out (a 3 s moving level, at most ±9 dB)
+  bed_max_db: 9
+  voice_db: -6
+  voice_tempo: 1.1  # the lines were read at 0.9 speed: played 10 % faster (pitch kept) they fit the shots
+  voice_max_pause: 0.35  # seconds: a longer pause inside a line is shortened to this
+  music_alone_db: -12  # the music between lines: 6 dB under the voice
+  music_under_voice_db: -18  # the music while the voice speaks: 12 dB under it
+  duck_attack: 0.25  # seconds for the music to dip before a line …
+  duck_release: 0.6  # … and to come back after it
+  sparkle_db: -14
+  whoosh_db: -18
+  fade_in: 0.4
+  fade_out: 1.4
+  target_lufs: -14
+  true_peak_db: -1.5
+
+# Cues per film. `at` is in seconds from the start of part `part` (default 0) of the film: for the social videos
+# the parts are those of scripts/social_kit.py VIDEOS (the cutter passes their start times); the 20 s brand film
+# (the home hero and the two film reels) is one part. A scene change between two parts gets a page-turn whoosh
+# by itself; `whoosh` cues add one inside a part (e.g. the book opening in shot 3).
+film: &film  # out/video/qamra-film.mp4: moon (0–3.5), photo → character (3.5–8.5), book (8–13), kindergarten
+  # (12.5–17.1), end card (16.6–20)
+  - {at: 0.1, sfx: sparkle}
+  - {at: 0.7, line: film-open}  # the shot's caption (the reels' top line is longer: it would not fit)
+  - {at: 3.35, sfx: whoosh}
+  - {at: 4.45, line: film-photo}
+  - {at: 4.5, sfx: sparkle}
+  - {at: 7.85, sfx: whoosh}
+  - {at: 8.7, line: film-book}
+  - {at: 10.05, sfx: whoosh}
+  - {at: 12.35, sfx: whoosh}
+  - {at: 12.9, sfx: sparkle, db: -20}
+  - {at: 13.0, line: film-kg}
+  - {at: 16.45, sfx: whoosh}
+  - {at: 16.8, sfx: sparkle}
+
+films:
+  hero: [*film, {at: 17.1, line: film-end}]
+  reel-film-9x16: &film-social [*film, {at: 17.1, line: cta-order}]
+  feed-film-4x5: *film-social
+  cut-1-photo-to-character-9x16:
+    - {at: 0.1, sfx: sparkle, db: -20}
+    - {at: 0.4, line: cut-photo}
+    - {at: 0.8, sfx: sparkle}
+    - {part: 1, at: 0.25, line: cut-photo-end}
+  cut-2-printed-book-9x16:
+    - {at: 0.1, sfx: sparkle, db: -20}
+    - {at: 0.4, line: cut-book}
+    - {at: 2.05, sfx: whoosh}
+    - {part: 1, at: 0.35, line: cut-book-end}
+  cut-3-kindergartens-9x16:
+    - {at: 0.1, sfx: sparkle}
+    - {at: 0.4, line: cut-kg}
+    - {part: 1, at: 0.35, line: cta-quote}
+  ad-parents-9x16:
+    - {at: 0.1, sfx: sparkle, db: -20}
+    - {at: 0.4, line: ad-parents}
+    - {at: 0.8, sfx: sparkle}
+    - {part: 1, at: 2.05, sfx: whoosh}
+    - {part: 2, at: 0.35, line: ad-parents-end}
+  ad-kindergartens-9x16:
+    - {at: 0.1, sfx: sparkle}
+    - {at: 0.4, line: cut-kg}
+    - {part: 1, at: 2.05, sfx: whoosh}
+    - {part: 2, at: 0.35, line: cta-quote}
+  ad-activity-books-9x16:
+    - {at: 0.1, sfx: sparkle, db: -20}
+    - {at: 0.3, line: ad-journey}
+    - {part: 1, at: 0.3, line: ad-foundation}
+    - {part: 2, at: 0.3, line: ad-family}
+    - {part: 3, at: 0.3, line: ad-activity-end}
+  ad-gifts-9x16:
+    - {at: 0.1, sfx: sparkle, db: -20}
+    - {at: 0.4, line: ad-gifts}
+    - {at: 2.05, sfx: whoosh}
+    - {part: 1, at: 0.35, line: cta-order}

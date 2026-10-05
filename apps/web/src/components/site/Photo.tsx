@@ -37,7 +37,8 @@ export function hasPhoto(name: PhotoName): boolean {
 }
 
 /**
- * A short silent loop over the photo when `<name>.mp4` (and optionally `.webm`) exists, e.g. the home hero. The
+ * A short loop over the photo when `<name>.mp4` (and optionally `.webm`) exists, e.g. the home hero. It always
+ * plays muted (the hero film carries the brand soundtrack for sharing; the site's own music is MusicPlayer). The
  * photo stays underneath as the poster and for reduced motion. Written as HTML because React's server render
  * does not emit `muted`, and browsers only autoplay muted video. `name` is one of the fixed slot names.
  */

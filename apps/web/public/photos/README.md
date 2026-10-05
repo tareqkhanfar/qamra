@@ -19,6 +19,10 @@ the site never says these are customers.
 | `books-stack.jpg`          | 1:1   | Activity books hub header and the band on the home (desktop), and the activity-books card on the home |
 | `kindergarten-teacher.jpg` | 3:2   | Kindergartens page, next to the quote form                                                            |
 
+`hero-reading.mp4`/`.webm` (with `hero-reading-poster.jpg`) is the 20-second brand film over the hero photo,
+made by `scripts/build_film.py`. The files carry the brand soundtrack (music and an Arabic voice, for sharing),
+but the site always plays them muted; the site's music is the lullaby (`MusicPlayer`).
+
 Slots are declared in `src/components/site/Photo.tsx` (`PHOTOS`); adding a slot means adding a row here and
 a name there. Files in this folder are public and cached for a week (`next.config.ts`), so replacing a photo
 may take up to a week to show for returning visitors unless its name changes.

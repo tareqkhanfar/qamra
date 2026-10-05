@@ -13,8 +13,16 @@ uv run python scripts/social_kit.py --videos --only cut-1   # one video, from th
 ```
 
 `--videos` needs ffmpeg (`--ffmpeg PATH`, `$FFMPEG`, ffmpeg on PATH, or the `imageio-ffmpeg` binary) and the brand
-film's folder `out/video/` (made by `out/video/build_film.py`). Every video is H.264, no audio, at most 8 MB (the
-cutter raises the CRF until it fits), and gets three review frames in `out/social/video/frames/`.
+film's folder `out/video/` (made by `scripts/build_film.py`). Every video is H.264 with the brand soundtrack (AAC
+48 kHz stereo, −14 LUFS), at most 8 MB (the cutter raises the CRF until it fits), and gets three review frames in
+`out/social/video/frames/`. Each video comes twice: `<name>.mp4` with the Arabic voiceover over the music, and
+`<name>-music.mp4` with the music and sound effects only (for ads that run muted or need no voice).
+
+The soundtrack (`scripts/film_audio.py`, design and cue sheets in `content/marketing/film-audio/soundtrack.yaml`):
+one gentle lullaby bed (Google Lyria 2), a sparkle chime when the moon or the magic appears, a page-turn whoosh on
+each scene change (ElevenLabs sound effects), and one calm female voice (ElevenLabs Multilingual v2) reading the
+words the video shows. The sounds are made once on fal and kept in that folder, so cutting costs nothing; the
+cutter warns when a line would not fit its shot.
 
 `out/` is gitignored. Each render also runs a layout check (`templates/qa.js`). It fails the run if text leaves
 its box or the safe zone, a headline line wraps, text boxes overlap, or a paragraph ends with a lone word.
@@ -43,8 +51,9 @@ Noto Naskh appears only inside a book page (the vowelized story line in carousel
 | `end-*.png` | 1080×1920 | Video end cards and the frames of the activity-books video; nothing under y 1560 |
 | `overlay-*.png` | 1080×1920, 1080×1350 | Transparent: logo + line above the film, CTA bar «اطلبوا الآن · qamra.app» below |
 | `video/reel-film-9x16`, `video/feed-film-4x5.mp4` | 1080×1920, 1080×1350 | The 20-second film centred over a blurred, enlarged copy of itself |
-| `video/cut-1…3-*-9x16.mp4` | 1080×1920 | 6–8 s cut-downs: photo → character, the printed book, kindergartens |
-| `video/ad-<set>-9x16.mp4` | 1080×1920 | The 9:16 variant of each Meta ad set |
+| `video/cut-1…3-*-9x16.mp4` | 1080×1920 | 7–8 s cut-downs: photo → character, the printed book, kindergartens |
+| `video/ad-<set>-9x16.mp4` | 1080×1920 | The 9:16 variant of each Meta ad set (11–13 s) |
+| `video/*-music.mp4` | as above | The same videos with the music only (no voice) |
 
 `--package` collects what Tareq uploads into `out/social/package/`: `posts/`, `reels/`, `ads/<set>/`, `stories/`,
 `profile/` (profile picture, Facebook cover, highlight covers),
