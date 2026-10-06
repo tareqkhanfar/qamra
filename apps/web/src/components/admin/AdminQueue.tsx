@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
+import { BookTextReview, type StoryField, type TextEdit } from "./BookTextReview";
 import { ExamplePublish } from "./ExamplePublish";
 import { api, errorText } from "@/lib/api";
 
@@ -22,6 +23,7 @@ type Card = {
   avg_likeness: number | null;
   needs_review: number;
   progress: { done?: number; total?: number };
+  text_review: "waiting" | "confirmed" | null; // story books: «بانتظار مراجعة النص» until «تأكيد»
 };
 type Slot = {
   number: number;
@@ -87,6 +89,20 @@ type Detail = {
   plan: Slot[];
   costs: Record<string, number>;
   approved_at: string | null;
+  approved_by: string | null;
+  parent_message: string | null;
+  story: {
+    title?: string | null;
+    dedication?: string | null;
+    parents_lesson?: string | null;
+    parents_questions?: string[] | null;
+    blurb?: string | null;
+  };
+  text_review: "waiting" | "confirmed" | null;
+  text_editable: boolean;
+  text_originals: Partial<Record<StoryField, string | null>>;
+  text_edits: TextEdit[];
+  class_pages: { index: number; text: string | null }[];
 };
 type Filter = "review" | "flagged" | "generating" | "approved" | "all";
 
@@ -206,6 +222,7 @@ export function AdminQueue() {
   };
 
   const inReview = detail?.status === "in_review";
+  const textChanged = detail?.flags.includes("text_changed") ?? false; // saved words not in the PDFs yet
   const progress = detail?.generation.progress ?? {};
   const preflightPassed = detail
     ? Object.values(detail.preflight).length > 0 && Object.values(detail.preflight).every((r) => r.passed)
@@ -261,10 +278,16 @@ export function AdminQueue() {
                     {c.avg_likeness.toFixed(2)}
                   </span>
                 )}
-                {c.flags.length > 0 && (
-                  <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-bold text-amber-700">
-                    {flagLabel(c.flags[0]!)}
+                {c.text_review === "waiting" ? (
+                  <span className="rounded-full bg-info-bg px-2 py-0.5 text-[11px] font-bold text-info">
+                    {t("textReview.waiting")}
                   </span>
+                ) : (
+                  c.flags.length > 0 && (
+                    <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-bold text-amber-700">
+                      {flagLabel(c.flags[0]!)}
+                    </span>
+                  )
                 )}
               </button>
             </li>
@@ -286,6 +309,20 @@ export function AdminQueue() {
                   {t("pages", { n: num(detail.generation.pages ?? detail.plan.length) })} · {detail.art_style} ·{" "}
                   {t(`status.${detail.status}`)}
                 </p>
+                {detail.text_review === "waiting" && (
+                  <p className="text-small font-semibold text-info">{t("textReview.waiting")}</p>
+                )}
+                {detail.text_review === "confirmed" && detail.approved_at && (
+                  <p className="text-small font-semibold text-success">
+                    {t("confirmedBy", {
+                      name: detail.approved_by ?? "—",
+                      date: new Date(detail.approved_at).toLocaleString(locale === "ar" ? "ar-EG" : "en-GB", {
+                        dateStyle: "medium",
+                        timeStyle: "short",
+                      }),
+                    })}
+                  </p>
+                )}
                 {detail.status === "generating" && (
                   <p className="text-small font-semibold text-info">
                     {detail.generation.line
@@ -313,7 +350,7 @@ export function AdminQueue() {
                   <Button
                     size="sm"
                     className="bg-success text-white hover:brightness-110"
-                    disabled={!inReview || !preflightPassed || busy}
+                    disabled={!inReview || !preflightPassed || textChanged || busy}
                     onClick={() => {
                       if (window.confirm(t("confirmApprove"))) void act("/approve");
                     }}
@@ -379,6 +416,24 @@ export function AdminQueue() {
                   </span>
                 ))}
               </div>
+            )}
+
+            {(detail.text_editable || detail.class_pages.length > 0) && (
+              <BookTextReview
+                key={detail.id}
+                book={detail}
+                thumb={thumb}
+                busy={busy}
+                onSaved={async () => {
+                  setMessage({ tone: "success", text: t("words.saved") });
+                  await loadDetail(detail.id);
+                  await loadList();
+                }}
+                onRerender={async () => {
+                  await act("/rerender");
+                }}
+                onError={(text) => setMessage({ tone: "error", text })}
+              />
             )}
 
             <div className="grid gap-3 md:grid-cols-[1fr_1fr]">
@@ -495,9 +550,6 @@ export function AdminQueue() {
           bookId={detail.id}
           cacheKey={cacheKey}
           onClose={() => setOpen(null)}
-          onSaveText={async (text) => {
-            if (await act(`/pages/${open.beat}`, { text }, "PATCH")) setOpen(null);
-          }}
           onRedraw={async () => {
             if (await act("/redraw", { beats: [open.beat] })) setOpen(null);
           }}
@@ -597,7 +649,6 @@ function PageDrawer({
   bookId,
   cacheKey,
   onClose,
-  onSaveText,
   onRedraw,
   busy,
 }: {
@@ -605,12 +656,10 @@ function PageDrawer({
   bookId: string;
   cacheKey: number;
   onClose: () => void;
-  onSaveText: (text: string) => Promise<void>;
   onRedraw: () => Promise<void>;
   busy: boolean;
 }) {
   const t = useTranslations("queue");
-  const [text, setText] = useState(page.text ?? "");
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
@@ -685,34 +734,14 @@ function PageDrawer({
               {typeof page.qa.notes === "string" && <p className="mt-2 text-caption text-ink-muted">{page.qa.notes}</p>}
             </div>
           )}
-          {page.beat > 0 && (
-            <label className="flex flex-col gap-1 text-small">
+          {page.beat > 0 && page.text && (
+            <div className="flex flex-col gap-1 text-small">
               <span className="font-semibold text-night-900">{t("text")}</span>
-              <textarea
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                rows={5}
-                maxLength={600}
-                className="rounded-sm border border-line bg-paper p-3 text-body-l leading-[1.9]"
-              />
-            </label>
+              <p className="rounded-sm bg-paper-sunk p-3 text-body-l leading-[1.9]">{page.text}</p>
+              <span className="text-caption text-ink-muted">{t("textInPanel")}</span>
+            </div>
           )}
           <div className="flex flex-wrap gap-2">
-            {page.beat > 0 && (
-              <Button
-                size="sm"
-                variant="solid"
-                disabled={busy || !text.trim() || text === page.text}
-                onClick={() => void onSaveText(text)}
-              >
-                {t("saveText")}
-              </Button>
-            )}
-            {page.beat > 0 && page.original_text && text !== page.original_text && (
-              <Button size="sm" variant="ghost" onClick={() => setText(page.original_text ?? "")}>
-                {t("restore")}
-              </Button>
-            )}
             <Button size="sm" variant="secondary" disabled={busy} onClick={() => void onRedraw()}>
               {t("redrawOne")}
             </Button>

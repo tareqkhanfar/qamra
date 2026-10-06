@@ -326,7 +326,7 @@ async def approve_copies(class_book_id: uuid.UUID, admin: AdminUser, db: Session
         if book.status != BookStatus.in_review:
             continue
         try:
-            await admin_books.approve(book.id, admin, db)
+            await admin_books.approve_book(book.id, admin, db)
             approved += 1
         except ApiError:
             waiting.append(child.first_name)

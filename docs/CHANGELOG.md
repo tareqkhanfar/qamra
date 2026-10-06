@@ -1,5 +1,12 @@
 # Changelog
 
+## Staff review and confirm every story's text (2026-10-06)
+- **Where:** Admin → `/ar/admin/queue`. Story books whose final files are ready show «بانتظار مراجعة النص»; the book's screen has a new «نصوص الكتاب» section: the child's name, gender and age with a grammar reminder, then the title (also the cover), the dedication, the family's message, every story page beside its picture, the «للأهل» page and the back-cover blurb, each in an RTL box in the books' Naskh font (tashkeel kept).
+- **Each text saves on its own, at once,** with «استرجاع النص المولَّد» and its history (who, when, before → after, `book_text_edits`, migration `e5dd2afbd62c`). Words with a link, a phone number or an unsafe word ask for a note before they are kept. «إعادة إخراج الملفات» rebuilds the PDFs once (no AI cost); «تأكيد النص واعتماد الكتاب» waits for it, records who and when, and releases the book.
+- **Nothing reaches the family before «تأكيد»:** the reader and share links open only for confirmed books (a book back in review closes its link), the "book ready" email goes out at «تأكيد», and parents can no longer change page text once the final files are being made. Print was already gated.
+- **Optional alert:** setting «بريد تنبيهات مراجعة النص» gets one email per story waiting for review.
+- **Class copies** show their shared class text read-only; per-page AI text regeneration is not offered (the pipeline writes the whole story at once).
+
 ## Sound for the brand films: music, sparkles, page turns and an Arabic voice (2026-10-05)
 - **One soundtrack design** (`content/marketing/film-audio/soundtrack.yaml`, `scripts/film_audio.py`): a gentle bedtime lullaby (Google Lyria 2: music box, celesta, felt piano, soft strings; no drums, no vocals), a sparkle chime when the moon or the photo-to-character magic appears and a soft page-turn whoosh on each scene change (ElevenLabs sound effects), and one calm female voice (ElevenLabs Multilingual v2, «Charlotte», the voice of the activity books' QR clips) reading the words each film shows. All through fal, all licensed for commercial use. A language review checked every line before it was read; ElevenLabs Scribe heard all 19 back as written.
 - **Mix:** voice on top, the music 6 dB under it between lines and 12 dB under it while she speaks, the bed evened out, fades at both ends, every film at −14 LUFS with true peaks under −1.5 dBTP, AAC 48 kHz stereo (Opus in the WebM).

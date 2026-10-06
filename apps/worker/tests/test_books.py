@@ -7,12 +7,14 @@ from decimal import Decimal
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
 import yaml
 from PIL import Image
+from pypdf import PdfReader
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from qamra_ai.pipeline.assemble import BookFiles
+from qamra_ai.pipeline.assemble import AssemblyInputs, BookFiles
 from qamra_ai.pipeline.theme import CONTENT_DIR
 from qamra_core.db.models import (
     Book,
@@ -31,7 +33,16 @@ from qamra_core.db.models import (
     User,
 )
 from qamra_core.storage import ObjectStorage
-from qamra_worker.jobs.books import _beat_of, cover_photo, page_key, redraw_pages, run_book_job, store_mockups
+from qamra_worker.jobs import books as books_job
+from qamra_worker.jobs.books import (
+    _beat_of,
+    cover_photo,
+    page_key,
+    redraw_pages,
+    rerender_book,
+    run_book_job,
+    store_mockups,
+)
 
 FIXTURE = Path(__file__).resolve().parents[3] / "packages/ai/tests/fixtures/face-astronaut-public-domain.png"
 
@@ -185,6 +196,49 @@ async def test_book_gets_the_default_budget_cap(db: Session, storage: ObjectStor
     page1 = db.scalar(select(BookPage).where(BookPage.book_id == book.id, BookPage.index == 1))
     assert page1 is not None and len(page1.attempts) == 2
     assert book.qa_summary["redraws"] == 0 and book.qa_summary["manual_redraws"] == 0
+
+
+async def test_staff_text_edits_reach_the_files(
+    db: Session, storage: ObjectStorage, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The admin review saves the words in `BookPage.text` and `Book.story` (no render); «إعادة إخراج الملفات»
+    prints exactly those words, never a cached copy of the generated story, and clears `text_changed`."""
+    book = _book(db, storage)
+    book.language = Locale.en  # Latin words read back reliably from the PDF
+    db.commit()
+    await run_book_job(db, storage, book, "preview")
+    db.refresh(book)
+    rows = {p.index: p for p in db.scalars(select(BookPage).where(BookPage.book_id == book.id))}
+    generated = rows[1].text
+    rows[1].text = "Salma waves to the Moon Gardener"  # what PATCH …/pages/1 saves
+    title = "Salma and the Lantern Keeper"  # PATCH …/story {"field": "title"}: story, column and cover
+    book.story = {**book.story, "title": title, "dedication": "For Salma, from Grandma Huda"}
+    book.title, rows[0].text = title, title
+    book.parent_message = "We love you, Salma"
+    book.flags = [*book.flags, "text_changed"]
+    db.commit()
+    seen: list[AssemblyInputs] = []
+    real = books_job.assemble_book
+
+    async def spy(inputs: AssemblyInputs, out: Path, **kw: object) -> BookFiles:
+        seen.append(inputs)
+        return await real(inputs, out, **kw)  # type: ignore[arg-type]
+
+    monkeypatch.setattr(books_job, "assemble_book", spy)
+    result = await rerender_book(db, storage, book)
+    db.refresh(book)
+    assert result["status"] == "preview" and "text_changed" not in book.flags, (result, book.flags)
+    [inputs] = seen
+    assert inputs.story.title == title and inputs.story.dedication == "For Salma, from Grandma Huda"
+    assert inputs.parent_message == "We love you, Salma"
+    page1 = next(p.text for p in inputs.story.pages if p.index == 1)
+    assert page1 == "Salma waves to the Moon Gardener" != generated
+    assert book.proof_pdf_key
+    printed = " ".join(
+        p.extract_text() or "" for p in PdfReader(io.BytesIO(storage.get(book.proof_pdf_key))).pages
+    )
+    printed = " ".join(printed.split())
+    assert "Moon Gardener" in printed and "Lantern Keeper" in printed, printed[:400]  # the page, the title
 
 
 async def test_a_story_page_without_text_fails_the_build(db: Session, storage: ObjectStorage) -> None:

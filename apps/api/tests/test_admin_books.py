@@ -118,6 +118,14 @@ async def _seed_book(
         cost_usd=Decimal(cost),
         budget_usd=Decimal("3.00"),
         title="ليان",
+        story={
+            "title": "ليان",
+            "dedication": "إلى ليان",
+            "pages": [{"index": 1, "text": "نص"}],
+            "parents_lesson": "درس",
+            "parents_questions": ["سؤال؟"],
+            "blurb": "حكاية",
+        },
         generation={
             "plan": [
                 {"number": 1, "kind": "title", "side": "left", "beat": None, "half": None},
@@ -214,11 +222,16 @@ async def test_queue_detail_and_review_actions(client: AsyncClient, adb: AsyncSe
     assert detail["costs"]["page"] == 0.08 and detail["files"]["interior"]
 
     r = await client.patch(f"/api/admin/books/{book.id}/pages/1", json={"text": "  نصٌّ   جديد "})
-    assert r.status_code == 200 and r.json()["text"] == "نصٌّ جديد"
+    assert r.status_code == 200 and r.json()["text"] == "نصٌّ جديد" and r.json()["status"] == "in_review"
+    assert _jobs(app) == []  # saved at once; the files follow with «إعادة إخراج الملفات»
+    r = await client.post(f"/api/admin/books/{book.id}/approve")
+    assert r.status_code == 409 and r.json()["error"]["code"] == "text_not_rendered"
+    assert (await client.post(f"/api/admin/books/{book.id}/rerender")).status_code == 202
     assert _jobs(app)[-1] == ("qamra_worker.jobs.books.rerender", (str(book.id),))
     assert (await client.post(f"/api/admin/books/{book.id}/approve")).status_code == 409  # busy re-rendering
 
-    book.status = BookStatus.in_review
+    await adb.refresh(book)
+    book.status, book.flags = BookStatus.in_review, []  # what the re-render leaves
     await adb.commit()
     r = await client.post(f"/api/admin/books/{book.id}/redraw", json={"beats": [1, 1]})
     assert r.status_code == 202 and r.json()["queued"] == [1]

@@ -68,7 +68,7 @@ Written from the addenda, because Addendum 2 (the original matrix) is not in the
 
 | Feature | Status |
 |---|---|
-| Approval queue with page redraw, cost per line, settings, staff 2FA | ✅ |
+| Approval queue with page redraw, text review and edit of every story before «تأكيد» (history, re-render, alert email), cost per line, settings, staff 2FA | ✅ |
 | Template studio: theme versions, page editor, bulk actions, scheduling; staff roles; audit-log viewer | ✅ |
 | Classic templates: sample → template, hero boxes, vowelized texts, publish | ✅ |
 | Organizations, leads and quotes, journey audio uploads, print batches, gift cards | ✅ |

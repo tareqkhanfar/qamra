@@ -101,6 +101,21 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "الكتاب غير جاهز للاعتماد بعد (ملفات الطباعة أو الفحص).",
         "The book isn't ready for approval yet (print files or preflight).",
     ),
+    "text_not_rendered": (
+        "تغيّر النص بعد آخر إخراج للملفات. أعيدوا إخراج الملفات، ثم أكّدوا.",
+        "The text changed after the files were last built. Rebuild the files, then confirm.",
+    ),
+    "text_unsafe": (
+        "في النص ما قد لا يناسب كتاب أطفال (رابط أو عنوان بريد إلكتروني أو رقم هاتف أو كلمة غير مناسبة). "
+        "عدّلوه، أو احفظوه مع ملاحظة تشرح السبب.",
+        "The text contains something that may not suit a children's book (a link, an email address, a phone "
+        "number or an unsuitable word). Edit it, or save it with a note explaining why.",
+    ),
+    "text_locked": (
+        "كتابكم الآن عند فريقنا للمراجعة الأخيرة، فلا يمكن تعديل نصّه. تواصلوا معنا إن احتجتم إلى تغيير.",
+        "Your book is with our team for its final review, so its text can't be changed now. "
+        "Contact us if you need a change.",
+    ),
     "service_unavailable": (
         "الخدمة غير متاحة مؤقتًا. حاولوا بعد قليل.",
         "The service is temporarily unavailable. Try again shortly.",

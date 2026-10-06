@@ -1,8 +1,9 @@
 """Customer emails from the API: enqueued on the worker's default queue, sent by `qamra_worker.jobs.notify`.
 
 Only these order moments email the customer (the rest stay in the order history): placed, confirmed,
-printing, shipped, delivered. An email is never worth failing a checkout or a status change, so a queue
-error is logged and swallowed. The job itself makes sure each order and status is emailed once.
+printing, shipped, delivered; and a book's "ready to read" once staff confirm its words («تأكيد»). An email
+is never worth failing a checkout or a status change, so a queue error is logged and swallowed. The job
+itself makes sure each order and status (and each book) is emailed once.
 """
 
 import uuid
@@ -40,6 +41,11 @@ def order_statuses(connection: Redis, order_id: uuid.UUID, statuses: Iterable[Or
     for status in statuses:
         if status in ORDER_EMAIL_STATUSES:
             _enqueue(connection, "qamra_worker.jobs.notify.send_order_email", str(order_id), status.value)
+
+
+def book_ready(connection: Redis, book_id: uuid.UUID) -> None:
+    """Staff confirmed the book's words («تأكيد»): the family can read it now (once per book)."""
+    _enqueue(connection, "qamra_worker.jobs.notify.send_book_email", str(book_id), "book_ready")
 
 
 def print_batch_sent(connection: Redis, batch_id: uuid.UUID) -> None:

@@ -1,6 +1,7 @@
 """The web reader (CLAUDE.md §8) and share links: a finished book (or its preview), page by page.
 
-- The owner (the child's guardian) reads with their session: GET /api/books/{id}/reader.
+- The owner (the child's guardian) reads with their session: GET /api/books/{id}/reader. The finished book
+  opens once staff confirmed its words (docs/plans/admin-story-text-review.md); until then it is not readable.
 - A share link (ShareToken, scope read) opens the finished book without an account: GET /api/shared/{token}.
   It carries the book only (title, page texts, pictures): never the child's id, the parent or the order.
 - Pictures stream through the API, so the bucket stays private. Shared views are rate-limited per IP.
@@ -34,7 +35,9 @@ from qamra_core.db.models import (
 from qamra_core.storage import ObjectNotFound, ObjectStorage
 
 router = APIRouter(prefix="/api", tags=["reader"])
-FINAL = (BookStatus.in_review, BookStatus.approved, BookStatus.ordered, BookStatus.printed)
+# Final = staff confirmed the words («تأكيد» in the admin review). A book whose files wait in review
+# (`in_review`) is neither readable nor shareable yet: its words may still change.
+FINAL = (BookStatus.approved, BookStatus.ordered, BookStatus.printed)
 READABLE = (BookStatus.preview, *FINAL)
 SHARE_DAYS = (7, 30, 90)
 SHARES_PER_USER_PER_HOUR = 20

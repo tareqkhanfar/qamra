@@ -4,7 +4,8 @@
 - Jobs are resumable: pages already drawn stay drawn, so an RQ retry after a crash only draws what is missing.
 - Every paid call is written to `generation_costs` as it happens and added to the book's running cost; the
   book's budget cap stops a run early with a flag instead of overspending.
-- Final books end in `in_review`: nothing reaches print without an admin's approval (Addendum 3 §5).
+- Final books end in `in_review`: nothing reaches print or the parent's reader without an admin's approval
+  (Addendum 3 §5), which is also the review of the story's words (docs/plans/admin-story-text-review.md).
 All objects live under the child's storage prefix, so "delete my child's data" removes them in one call.
 """
 
@@ -733,10 +734,17 @@ async def render_files(
         flags.append("preflight_failed")
     if any("text_overflow" in v for v in layout_flags.values()):
         flags.append("text_overflow")
-    _set_flags(
+    _set_flags(  # `text_changed` (staff edited the words): these files now carry them
         book,
         flags,
-        remove=("pages_need_review", "pages_missing", "preflight_failed", "text_overflow", "render_failed"),
+        remove=(
+            "pages_need_review",
+            "pages_missing",
+            "preflight_failed",
+            "text_overflow",
+            "render_failed",
+            "text_changed",
+        ),
     )
     book.status = BookStatus.in_review if mode == "final" else BookStatus.preview
     book.error = None
@@ -928,26 +936,27 @@ def rerender(book_id: str) -> dict[str, Any]:
         if book is None:
             return {"status": "missing"}
 
-        async def go() -> dict[str, Any]:
-            job = await _setup(db, storage, book)
-            character = db.get(Character, book.character_id) if book.character_id else None
-            if character is None or not character.sheet_image_key:
-                raise ValueError("character sheet missing")
-            companion: CompanionSpec | None = default_companion(job.theme, book_lang(book))
-            companion_sheet = drawing = None
-            comp_row = db.get(Companion, book.companion_id) if book.companion_id else None
-            if comp_row is not None and comp_row.sheet_key and comp_row.cleaned_key:
-                companion, companion_sheet, drawing = await _companion(
-                    db, storage, job.rt, comp_row, book.art_style
-                )
-            return await render_files(
-                job,
-                str(book.generation.get("mode", "final")),
-                StoryOut.model_validate(book.story),
-                storage.get(character.sheet_image_key),
-                companion,
-                companion_sheet,
-                drawing,
-            )
+        return _run(lambda: rerender_book(db, storage, book))  # type: ignore[no-any-return]
 
-        return _run(go)  # type: ignore[no-any-return]
+
+async def rerender_book(db: Session, storage: ObjectStorage, book: Book) -> dict[str, Any]:
+    """The PDFs again from what is stored: the pictures, `BookPage.text` and `Book.story` as staff left them
+    in the review (no AI calls). The book returns to review (`in_review`) or to its preview."""
+    job = await _setup(db, storage, book)
+    character = db.get(Character, book.character_id) if book.character_id else None
+    if character is None or not character.sheet_image_key:
+        raise ValueError("character sheet missing")
+    companion: CompanionSpec | None = default_companion(job.theme, book_lang(book))
+    companion_sheet = drawing = None
+    comp_row = db.get(Companion, book.companion_id) if book.companion_id else None
+    if comp_row is not None and comp_row.sheet_key and comp_row.cleaned_key:
+        companion, companion_sheet, drawing = await _companion(db, storage, job.rt, comp_row, book.art_style)
+    return await render_files(
+        job,
+        str(book.generation.get("mode", "final")),
+        StoryOut.model_validate(book.story),
+        storage.get(character.sheet_image_key),
+        companion,
+        companion_sheet,
+        drawing,
+    )

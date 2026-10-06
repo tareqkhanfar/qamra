@@ -9,7 +9,7 @@ Specs: [CLAUDE.md](CLAUDE.md) + addenda [01](docs/ADDENDUM-01.md), [03](docs/ADD
 - **Store (Addendum 9):** shop, quiz, the story page with a live price, add-ons after the preview, the cart (second book −15%, coupons, gift cards, gift orders), cash on delivery, email notifications, print batches with the printer's links.
 - **Kindergartens:** sign-up with approval, classes, CSV import, parent invite links, «كتاب الصف» drawn in one batch with bulk approval, price lists, one invoice.
 - **Activity books:** «مغامراتي مع عائلتي» (112 pages, both sizes, inserts with die lines, rendered per order), «رحلتي الأولى» stage 1 (118 pages, audio QR), «دوسية التأسيس» KG2 volume 1 (128 pages, answer key). The educational books stay «قريبًا» until the educator signs.
-- **Admin:** approval queue, the template studio (theme versions, page editor, bulk actions), staff roles, the audit log, catalog and prices, reports, cost per line, print costs, organizations, leads, journey audio, settings with 2FA.
+- **Admin:** approval queue (every story's text is reviewed, edited if needed and confirmed there before it reaches the family or the printer), the template studio (theme versions, page editor, bulk actions), staff roles, the audit log, catalog and prices, reports, cost per line, print costs, organizations, leads, journey audio, settings with 2FA.
 - **Operations:** the production overlay, encrypted backups with a restore drill, monitoring and runbooks (`docs/runbooks/`).
 
 ## Run the stack

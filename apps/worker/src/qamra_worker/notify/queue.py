@@ -45,8 +45,12 @@ def enqueue(func_path: str, *args: Any) -> bool:
 
 
 def book_ready(book: Book, mode: str) -> None:
-    """After a book's files are rendered: "preview ready" or "book ready" to the parent (never samples)."""
+    """After a book's files are rendered (never for samples). A preview: "preview ready" to the parent. The
+    final files wait for staff to review the words: the review alert goes to staff (once per book), and the
+    parent's "book ready" is sent by the API when staff press «تأكيد» (plans/admin-story-text-review.md)."""
     if book.is_sample:
         return
-    event = "book_ready" if mode == "final" else "preview_ready"
-    enqueue("qamra_worker.jobs.notify.send_book_email", str(book.id), event)
+    if mode == "final":
+        enqueue("qamra_worker.jobs.notify.send_review_alert", str(book.id))
+        return
+    enqueue("qamra_worker.jobs.notify.send_book_email", str(book.id), "preview_ready")

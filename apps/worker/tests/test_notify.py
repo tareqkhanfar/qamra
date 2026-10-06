@@ -29,7 +29,7 @@ from qamra_core.db.models import (
     Theme,
     User,
 )
-from qamra_worker.jobs.notify import BOOK_EVENTS, ORDER_EVENTS, book_email, order_email
+from qamra_worker.jobs.notify import BOOK_EVENTS, ORDER_EVENTS, book_email, order_email, review_alert
 from qamra_worker.notify import queue as notify_queue
 from qamra_worker.notify.email import (
     EmailMessage,
@@ -131,6 +131,7 @@ def test_every_template_renders_in_both_languages() -> None:
         "reader_url": f"{BASE}/ar/books/1",
         "create_url": f"{BASE}/ar/create?child=1&book=1",
         "manifest_url": f"{BASE}/api/printer/t/manifest.csv",
+        "queue_url": f"{BASE}/ar/admin/queue",
         "date": "2026-09-29",
         "books": 2,
         "copies": 3,
@@ -245,10 +246,26 @@ def test_a_ready_book_enqueues_its_email(db: Session) -> None:
     notify_queue.book_ready(book, "final")
     notify_queue.book_ready(sample, "final")
     jobs = Queue("default", connection=redis).jobs
-    assert [(j.func_name, j.args) for j in jobs] == [
+    assert [(j.func_name, j.args) for j in jobs] == [  # the final files: staff review the words first
         ("qamra_worker.jobs.notify.send_book_email", (str(book.id), "preview_ready")),
-        ("qamra_worker.jobs.notify.send_book_email", (str(book.id), "book_ready")),
+        ("qamra_worker.jobs.notify.send_review_alert", (str(book.id),)),
     ]
+
+
+def test_staff_hear_once_that_a_story_waits_for_its_text_review(db: Session) -> None:
+    book = _book(db, _parent(db))
+    sender = FakeEmailSender()
+    staff = {**VALUES, "review_alert_email": "review@qamra.test"}
+    assert review_alert(db, sender, str(book.id), BASE, staff) == "sent"
+    assert review_alert(db, sender, str(book.id), BASE, staff) == "duplicate"  # a re-render: no second email
+    [mail] = sender.outbox
+    assert mail.to == "review@qamra.test" and "سلمى ويومها الأول" in mail.subject
+    assert f"{BASE}/ar/admin/queue" in mail.text and "تأكيد" in mail.text
+    other = _book(db, _parent(db, "dad@example.com"))
+    assert review_alert(db, sender, str(other.id), BASE, VALUES) == "skipped"  # no address set: nothing
+    sample = _book(db, _parent(db, "admin@example.com"), sample=True)
+    assert review_alert(db, sender, str(sample.id), BASE, staff) == "missing"
+    assert len(sender.outbox) == 1
 
 
 class _FakeSMTP:

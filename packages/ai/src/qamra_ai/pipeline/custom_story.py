@@ -102,6 +102,20 @@ def _unsafe_word(token: str) -> bool:
     return any(token.startswith(p) and token[len(p) :] in UNSAFE_WORDS for p in _PREFIXES)
 
 
+def screen_text(text: str) -> list[str]:
+    """The instant screen of one text: "link" (a web address, an e-mail, a handle), "phone" (six digits or
+    more) and "unsafe_word" (the short list above). Empty when nothing was found; the AI review does the rest.
+    Used for the custom-story brief and for the words staff edit in the admin review."""
+    reasons = []
+    if _LINK.search(text):
+        reasons.append("link")
+    if len(_DIGITS.findall(text)) >= 6:
+        reasons.append("phone")
+    if any(_unsafe_word(t) for t in _tokens(text)):
+        reasons.append("unsafe_word")
+    return reasons
+
+
 def screen_brief(brief: CustomBrief) -> list[str]:
     """The fields that carry personal data (links, e-mails, phone numbers) or plainly unsafe words."""
     fields: dict[str, list[str]] = {
@@ -111,14 +125,7 @@ def screen_brief(brief: CustomBrief) -> list[str]:
         "wish": [brief.wish],
         "family": [f"{m.role} {m.name or ''}" for m in brief.family],
     }
-    bad = []
-    for field, texts in fields.items():
-        for text in texts:
-            phone = len(_DIGITS.findall(text)) >= 6
-            if _LINK.search(text) or phone or any(_unsafe_word(t) for t in _tokens(text)):
-                bad.append(field)
-                break
-    return bad
+    return [field for field, texts in fields.items() if any(screen_text(text) for text in texts)]
 
 
 class BriefRejected(ContentBlocked):

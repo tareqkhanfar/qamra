@@ -27,7 +27,7 @@ const STATUS_CHIP: Record<Book["status"], string> = {
   draft: "bg-paper-sunk text-ink",
   generating: "bg-night-100 text-night-900",
   preview: "bg-amber-100 text-amber-700",
-  in_review: "bg-success-bg text-success", // final files ready: readable (reader namespace: shelfReady)
+  in_review: "bg-info-bg text-info", // final files wait for our text review: not readable yet (shelfInReview)
   approved: "bg-success-bg text-success",
   ordered: "bg-paper-sunk text-ink",
   printed: "bg-success-bg text-success",
@@ -280,7 +280,7 @@ export function AccountView() {
                   </div>
                   <strong className="text-[15px] leading-snug">{b.title ?? "—"}</strong>
                   <span className={`self-start rounded-full px-2.5 py-1 text-xs font-bold ${STATUS_CHIP[b.status]}`}>
-                    {b.status === "in_review" ? tr("shelfReady") : t(`status.${b.status}`)}
+                    {b.status === "in_review" ? tr("shelfInReview") : t(`status.${b.status}`)}
                   </span>
                 </>
               );

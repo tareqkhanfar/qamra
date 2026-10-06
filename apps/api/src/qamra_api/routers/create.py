@@ -621,12 +621,20 @@ class TextIn(BaseModel):
     text: str = Field(min_length=1, max_length=280)
 
 
+TEXT_LOCKED = (BookStatus.in_review, BookStatus.approved, BookStatus.ordered, BookStatus.printed)
+
+
 @router.patch("/books/{book_id}/pages/{beat}")
 async def edit_text(
     book_id: uuid.UUID, beat: int, body: TextIn, user: CurrentUser, db: SessionDep
 ) -> BookOut:
-    """Step 8 of the design: the parent may reword a page before the final drawing."""
+    """Step 8 of the design: the parent may reword a page before the final drawing. Once the final files are
+    being made or wait for our review, the words are staff's to check (`text_locked`)."""
     book = await _my_book(db, user, book_id)
+    if book.status in TEXT_LOCKED or (
+        book.status == BookStatus.generating and book.generation.get("mode") == "final"
+    ):
+        raise ApiError("text_locked", 409)
     page = (
         await db.execute(select(BookPage).where(BookPage.book_id == book.id, BookPage.index == beat))
     ).scalar_one_or_none()

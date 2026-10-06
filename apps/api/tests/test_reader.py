@@ -34,7 +34,7 @@ def _png(color: str) -> bytes:
 
 
 async def _book(
-    adb: AsyncSession, storage: ObjectStorage, user_id: str, status: BookStatus = BookStatus.in_review
+    adb: AsyncSession, storage: ObjectStorage, user_id: str, status: BookStatus = BookStatus.approved
 ) -> Book:
     child = Child(guardian_user_id=uuid.UUID(user_id), first_name="ليان", gender=Gender.f, birth_year=2021)
     theme = Theme(
@@ -123,6 +123,30 @@ async def test_unready_and_other_peoples_books(
         assert (await client.get(path)).status_code == 404  # someone else's book looks like no book
     r = await client.post(f"/api/books/{book.id}/share", json={"days": 30})
     assert r.status_code == 404
+
+
+async def test_a_book_waiting_for_the_text_review_is_not_delivered_yet(
+    client: AsyncClient, adb: AsyncSession, storage: ObjectStorage
+) -> None:
+    """The final files exist, but staff haven't confirmed the words («تأكيد»): no reader, no share link, and
+    a link made before the book went back to review stops working until it is confirmed again."""
+    me = await register(client)
+    book = await _book(adb, storage, me["id"], BookStatus.in_review)
+    r = await client.get(f"/api/books/{book.id}/reader")
+    assert r.status_code == 409 and r.json()["error"]["code"] == "book_not_ready"
+    assert (await client.get(f"/api/books/{book.id}/reader/pages/1")).status_code == 404
+    r = await client.post(f"/api/books/{book.id}/share", json={"days": 7})
+    assert r.status_code == 409 and r.json()["error"]["code"] == "book_not_ready"
+
+    book.status = BookStatus.approved  # confirmed: the family reads and shares it
+    await adb.commit()
+    token = (await client.post(f"/api/books/{book.id}/share", json={"days": 7})).json()["token"]
+    assert (await client.get(f"/api/shared/{token}")).status_code == 200
+    book.status = BookStatus.in_review  # staff edited the words after confirming: back in review
+    await adb.commit()
+    r = await client.get(f"/api/shared/{token}")
+    assert r.status_code == 404 and r.json()["error"]["code"] == "share_unavailable"
+    assert (await client.get(f"/api/shared/{token}/pages/1")).status_code == 404
 
 
 async def test_share_links_show_the_book_only_until_revoked(

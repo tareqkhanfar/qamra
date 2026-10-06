@@ -17,8 +17,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from qamra_ai.cost import fal_cost, fal_unknown_price
 from qamra_ai.pipeline.classic import edit_estimate_usd
+from qamra_ai.pipeline.custom_story import screen_text
 from qamra_ai.pipeline.theme import Theme, fill_title
-from qamra_api import runtime_settings
+from qamra_api import notify, runtime_settings
 from qamra_api.deps import AdminUser, SessionDep, SettingsDep, StorageDep, require_admin, require_permission
 from qamra_api.errors import ApiError
 from qamra_api.jobs import QueueDep, enqueue
@@ -42,8 +43,11 @@ from qamra_core.db.models import (
     OrderStatus,
     PageStatus,
     PhotoStatus,
+    User,
 )
 from qamra_core.db.models import Theme as ThemeRow
+from qamra_core.db.portal import ClassBook, ClassBookPage
+from qamra_core.db.text_review import PAGE, STORY_FIELDS, BookTextEdit
 from qamra_core.islamic_review import load_state
 from qamra_core.storage import ObjectNotFound, ObjectStorage
 
@@ -56,6 +60,10 @@ router = APIRouter(prefix="/api/admin", tags=["admin"], dependencies=[Depends(re
 
 SAMPLE_CONSENT_VERSION = "sample-2026-09"
 FINAL_STATUSES = (BookStatus.in_review, BookStatus.approved, BookStatus.ordered, BookStatus.printed)
+CONFIRMED = (BookStatus.approved, BookStatus.ordered, BookStatus.printed)
+CLASS_LINE = "class"  # a child's copy of a «كتاب الصف»: its story words are the class's, shown read-only
+EMAILED_LINES = (None, "magic", "classic")  # the parent's "book ready" goes out at «تأكيد»
+StoryField = Literal["title", "dedication", "parent_message", "parents_lesson", "parents_questions", "blurb"]
 _enqueue = enqueue
 
 
@@ -206,6 +214,7 @@ class BookCard(BaseModel):
     avg_likeness: float | None
     needs_review: int
     progress: dict[str, Any]
+    text_review: Literal["waiting", "confirmed"] | None  # «بانتظار مراجعة النص» for story books
 
 
 def theme_label(row: ThemeRow, lang: Locale, child: Child | None) -> str:
@@ -224,6 +233,31 @@ def theme_label(row: ThemeRow, lang: Locale, child: Child | None) -> str:
 def _likeness(summary: dict[str, Any]) -> float | None:
     value = summary.get("avg_likeness")
     return float(value) if value is not None else None
+
+
+def _line(book: Book) -> str | None:
+    line = (book.generation or {}).get("line")
+    return str(line) if line else None
+
+
+def reviews_text(book: Book) -> bool:
+    """Story books (Magic and custom stories, Classic, class copies) wait for staff to review their words
+    before «تأكيد»; the activity books (LINE_JOBS) have no story words and keep their own gates."""
+    return _line(book) not in LINE_JOBS
+
+
+def text_review(book: Book) -> Literal["waiting", "confirmed"] | None:
+    """`waiting` («بانتظار مراجعة النص») while a story book's final files are in review, then `confirmed`."""
+    if not reviews_text(book):
+        return None
+    if book.status == BookStatus.in_review:
+        return "waiting"
+    return "confirmed" if book.status in CONFIRMED else None
+
+
+def text_editable(book: Book) -> bool:
+    """Staff edit the words of Magic, custom and Classic books; a class copy's words belong to its class."""
+    return reviews_text(book) and _line(book) != CLASS_LINE and bool(book.story)
 
 
 @router.get("/books", dependencies=[Depends(require_permission("books.view"))])
@@ -263,6 +297,7 @@ async def list_books(
             avg_likeness=_likeness(b.qa_summary or {}),
             needs_review=int((b.qa_summary or {}).get("needs_review", 0)),
             progress=dict((b.generation or {}).get("progress", {})),
+            text_review=text_review(b),
         )
         for b, c, t in rows
     ]
@@ -283,6 +318,24 @@ class PageView(BaseModel):
     original_text: str | None
     has_image: bool
     qa: dict[str, Any]
+
+
+class TextEditOut(BaseModel):
+    id: uuid.UUID
+    field: str  # "page" or a story field
+    beat: int | None
+    kind: str  # edit | revert
+    old_text: str | None
+    new_text: str | None
+    note: str | None
+    screen: list[str]
+    actor: str | None
+    created_at: datetime
+
+
+class ClassPageOut(BaseModel):
+    index: int
+    text: str | None
 
 
 class BookDetail(BaseModel):
@@ -309,6 +362,12 @@ class BookDetail(BaseModel):
     parent_message: str | None
     story: dict[str, Any]
     approved_at: datetime | None
+    approved_by: str | None
+    text_review: Literal["waiting", "confirmed"] | None
+    text_editable: bool
+    text_originals: dict[str, str | None]  # the generated words of each story field, for «استرجاع»
+    text_edits: list[TextEditOut]  # newest first
+    class_pages: list[ClassPageOut]  # a class copy's shared story words (read-only)
 
 
 async def _book(db: AsyncSession, book_id: uuid.UUID) -> Book:
@@ -403,7 +462,62 @@ async def book_detail(book_id: uuid.UUID, db: SessionDep) -> BookDetail:
             for k in ("title", "dedication", "parents_lesson", "parents_questions", "blurb")
         },
         approved_at=book.approved_at,
+        approved_by=await _name(db, book.approved_by_user_id),
+        text_review=text_review(book),
+        text_editable=text_editable(book),
+        text_originals={f: _original(book, f) for f in STORY_FIELDS},
+        text_edits=await _text_edits(db, book.id),
+        class_pages=await _class_pages(db, book),
     )
+
+
+async def _name(db: AsyncSession, user_id: uuid.UUID | None) -> str | None:
+    user = await db.get(User, user_id) if user_id else None
+    return user.full_name or user.email if user else None
+
+
+async def _text_edits(db: AsyncSession, book_id: uuid.UUID) -> list[TextEditOut]:
+    rows = (
+        await db.execute(
+            select(BookTextEdit, User)
+            .outerjoin(User, User.id == BookTextEdit.actor_user_id)
+            .where(BookTextEdit.book_id == book_id)
+            .order_by(BookTextEdit.created_at.desc())
+            .limit(200)
+        )
+    ).all()
+    return [
+        TextEditOut(
+            id=e.id,
+            field=e.field,
+            beat=e.beat,
+            kind=e.kind,
+            old_text=e.old_text,
+            new_text=e.new_text,
+            note=e.note,
+            screen=list(e.screen or []),
+            actor=(u.full_name or u.email) if u else None,
+            created_at=e.created_at,
+        )
+        for e, u in rows
+    ]
+
+
+async def _class_pages(db: AsyncSession, book: Book) -> list[ClassPageOut]:
+    """The class's story pages as the copy prints them (the same words in every child's copy)."""
+    class_book_id = (book.generation or {}).get("class_book_id")
+    if _line(book) != CLASS_LINE or not class_book_id:
+        return []
+    cb = await db.get(ClassBook, uuid.UUID(str(class_book_id)))
+    if cb is None:
+        return []
+    planned = {int(p["index"]) for p in (cb.plan or {}).get("pages", [])}
+    rows = (
+        await db.execute(
+            select(ClassBookPage).where(ClassBookPage.class_book_id == cb.id).order_by(ClassBookPage.index)
+        )
+    ).scalars()
+    return [ClassPageOut(index=r.index, text=r.text) for r in rows if r.index in planned]
 
 
 def _stream(
@@ -531,36 +645,251 @@ async def redraw(
     return {"queued": sorted(set(body.beats)), "estimate_usd": estimate}
 
 
+# ---- the words: staff review and edit them before «تأكيد» (docs/plans/admin-story-text-review.md) ------
+
+
 class TextIn(BaseModel):
     text: str = Field(min_length=1, max_length=600)
+    note: str | None = Field(default=None, max_length=300)  # keeps words the instant screen flagged
+
+
+class StoryTextIn(BaseModel):
+    field: StoryField
+    text: str = Field(max_length=1200)
+    note: str | None = Field(default=None, max_length=300)
+
+
+class TextSaved(BaseModel):
+    status: BookStatus
+    flags: list[str]
+    beat: int | None = None
+    text: str | None  # the page's words, or the story field's (questions one per line)
+
+
+STORY_LIMITS = {"title": 200, "parent_message": 120}  # the columns' lengths; the other fields up to 1200
+OPTIONAL_FIELDS = ("parent_message",)  # may be emptied: the book then prints no message from the family
+
+
+def _set_flags(book: Book, add: list[str], remove: tuple[str, ...] = ()) -> None:
+    kept = [f for f in (book.flags or []) if f not in remove]
+    book.flags = list(dict.fromkeys([*kept, *add]))
+
+
+def _editable(book: Book) -> None:
+    if book.status == BookStatus.generating:
+        raise ApiError("busy", 409)
+    if not text_editable(book):
+        raise ApiError("not_found", 404)
+
+
+async def _story_page(db: AsyncSession, book: Book, beat: int) -> BookPage:
+    page = (
+        await db.execute(select(BookPage).where(BookPage.book_id == book.id, BookPage.index == beat))
+    ).scalar_one_or_none()
+    if page is None or beat == 0:  # the cover's words are the title (PATCH …/story)
+        raise ApiError("not_found", 404)
+    return page
+
+
+def _record(
+    db: AsyncSession,
+    book: Book,
+    admin: User,
+    *,
+    field: str,
+    beat: int | None,
+    old: str | None,
+    new: str,
+    kind: Literal["edit", "revert"],
+    note: str | None,
+) -> bool:
+    """Keep one change of the words: the history row (old and new text, who, when), an id-only audit entry
+    and the flag `text_changed` (the PDFs are older than the words until «إعادة إخراج الملفات»). A confirmed
+    book goes back to review. Words the instant screen flags need the editor's note (`text_unsafe`)."""
+    if new == (old or ""):
+        return False
+    screen = screen_text(new) if kind == "edit" else []
+    reason = " ".join((note or "").split()) or None
+    if screen and not reason:
+        raise ApiError("text_unsafe", 422, {"reasons": screen})
+    db.add(
+        BookTextEdit(
+            book_id=book.id,
+            field=field,
+            beat=beat,
+            old_text=old,
+            new_text=new,
+            kind=kind,
+            actor_user_id=admin.id,
+            note=reason,
+            screen=screen,
+            created_at=datetime.now(UTC),  # not the transaction's start: several edits keep their order
+        )
+    )
+    db.add(
+        AuditLog(
+            actor_user_id=admin.id,
+            action="admin.page_text_edited" if field == PAGE else "admin.story_text_edited",
+            entity_type="book",
+            entity_id=str(book.id),
+            data={"field": field, "beat": beat, "kind": kind, "screen_override": screen},
+        )
+    )
+    _set_flags(book, ["text_changed"])
+    if book.status in CONFIRMED:
+        book.status = BookStatus.in_review  # the confirmed words changed: they need «تأكيد» again
+    return True
+
+
+def _mark_page(page: BookPage) -> None:
+    others = [f for f in (page.flags or []) if f != "admin_edited"]
+    page.flags = others if page.text == page.original_text else sorted([*others, "admin_edited"])
 
 
 @router.patch("/books/{book_id}/pages/{beat}", dependencies=[Depends(require_permission("books.review"))])
 async def edit_text(
-    book_id: uuid.UUID, beat: int, body: TextIn, admin: AdminUser, db: SessionDep, queue: QueueDep
-) -> dict[str, Any]:
+    book_id: uuid.UUID, beat: int, body: TextIn, admin: AdminUser, db: SessionDep
+) -> TextSaved:
+    """Save one page's words at once (no render): the PDFs follow with «إعادة إخراج الملفات»."""
+    book = await _book(db, book_id)
+    _editable(book)
+    page = await _story_page(db, book, beat)
+    text = " ".join(body.text.split())  # tashkeel stays: only runs of spaces and line breaks fold
+    if _record(db, book, admin, field=PAGE, beat=beat, old=page.text, new=text, kind="edit", note=body.note):
+        page.text = text
+        _mark_page(page)
+    await db.commit()
+    return TextSaved(status=book.status, flags=list(book.flags or []), beat=beat, text=page.text)
+
+
+@router.post(
+    "/books/{book_id}/pages/{beat}/revert", dependencies=[Depends(require_permission("books.review"))]
+)
+async def revert_text(book_id: uuid.UUID, beat: int, admin: AdminUser, db: SessionDep) -> TextSaved:
+    """«استرجاع النص المولَّد»: the page's words as the story was written (before any edit)."""
+    book = await _book(db, book_id)
+    _editable(book)
+    page = await _story_page(db, book, beat)
+    if not page.original_text:
+        raise ApiError("not_found", 404)
+    original = page.original_text
+    if _record(db, book, admin, field=PAGE, beat=beat, old=page.text, new=original, kind="revert", note=None):
+        page.text = original
+        _mark_page(page)
+    await db.commit()
+    return TextSaved(status=book.status, flags=list(book.flags or []), beat=beat, text=page.text)
+
+
+def _clean(field: str, text: str) -> str:
+    if field == "parents_questions":  # one question per line
+        return "\n".join(line for line in (" ".join(raw.split()) for raw in text.splitlines()) if line)
+    return " ".join(text.split())
+
+
+def _story_value(book: Book, field: str) -> str:
+    if field == "parent_message":
+        return book.parent_message or ""
+    value = (book.story or {}).get(field)
+    if field == "parents_questions":
+        return "\n".join(str(q) for q in value or [])
+    return str(value or "")
+
+
+def _original(book: Book, field: str) -> str | None:
+    """The field's words before staff first changed them (kept at the first edit)."""
+    originals = (book.generation or {}).get("text_originals") or {}
+    return str(originals[field]) if field in originals else _story_value(book, field) or None
+
+
+async def _apply_story(db: AsyncSession, book: Book, field: str, text: str) -> None:
+    """Where each field lives: the story (what the PDF prints), and the title and dedication columns."""
+    if field == "parent_message":
+        book.parent_message = text or None
+        return
+    book.story = {**book.story, field: text.split("\n") if field == "parents_questions" else text}
+    if field == "dedication":
+        book.dedication = text
+    if field == "title":
+        book.title = text[:200]
+        cover = (
+            await db.execute(select(BookPage).where(BookPage.book_id == book.id, BookPage.index == 0))
+        ).scalar_one_or_none()
+        if cover is not None:
+            cover.text = text
+
+
+async def _save_story(
+    db: AsyncSession,
+    book: Book,
+    admin: User,
+    field: str,
+    text: str,
+    kind: Literal["edit", "revert"],
+    note: str | None,
+) -> TextSaved:
+    old = _story_value(book, field)
+    if _record(db, book, admin, field=field, beat=None, old=old, new=text, kind=kind, note=note):
+        originals = dict((book.generation or {}).get("text_originals") or {})
+        originals.setdefault(field, old)
+        book.generation = {**book.generation, "text_originals": originals}
+        await _apply_story(db, book, field, text)
+    await db.commit()
+    return TextSaved(status=book.status, flags=list(book.flags or []), text=_story_value(book, field))
+
+
+@router.patch("/books/{book_id}/story", dependencies=[Depends(require_permission("books.review"))])
+async def edit_story_text(
+    book_id: uuid.UUID, body: StoryTextIn, admin: AdminUser, db: SessionDep
+) -> TextSaved:
+    """The title (also on the cover), the dedication, the family's message, «للأهل» and the back blurb."""
+    book = await _book(db, book_id)
+    _editable(book)
+    text = _clean(body.field, body.text)
+    if (not text and body.field not in OPTIONAL_FIELDS) or len(text) > STORY_LIMITS.get(body.field, 1200):
+        raise ApiError("invalid_input", 422, {"fields": ["text"]})
+    return await _save_story(db, book, admin, body.field, text, "edit", body.note)
+
+
+@router.post(
+    "/books/{book_id}/story/{field}/revert", dependencies=[Depends(require_permission("books.review"))]
+)
+async def revert_story_text(
+    book_id: uuid.UUID, field: StoryField, admin: AdminUser, db: SessionDep
+) -> TextSaved:
+    book = await _book(db, book_id)
+    _editable(book)
+    originals = (book.generation or {}).get("text_originals") or {}
+    if field not in originals:
+        raise ApiError("not_found", 404)  # never edited: nothing to restore
+    return await _save_story(db, book, admin, field, str(originals[field] or ""), "revert", None)
+
+
+@router.post(
+    "/books/{book_id}/rerender", status_code=202, dependencies=[Depends(require_permission("books.review"))]
+)
+async def rerender(book_id: uuid.UUID, admin: AdminUser, db: SessionDep, queue: QueueDep) -> dict[str, str]:
+    """«إعادة إخراج الملفات»: the PDFs again from the stored pictures and the current words (no AI cost).
+    The book comes back to review (`in_review`, or `preview` for a preview) and needs «تأكيد» again."""
     book = await _book(db, book_id)
     if book.status == BookStatus.generating:
         raise ApiError("busy", 409)
-    page = (
-        await db.execute(select(BookPage).where(BookPage.book_id == book.id, BookPage.index == beat))
-    ).scalar_one_or_none()
-    if page is None or beat == 0:
+    if not text_editable(book):
         raise ApiError("not_found", 404)
-    page.text = " ".join(body.text.split())
+    if book.status not in (BookStatus.preview, BookStatus.in_review, *CONFIRMED):
+        raise ApiError("not_ready", 409)  # a stopped book continues with «متابعة التوليد»
     book.status = BookStatus.generating
     db.add(
         AuditLog(
             actor_user_id=admin.id,
-            action="admin.page_text_edited",
+            action="admin.book_rerender",
             entity_type="book",
             entity_id=str(book.id),
-            data={"beat": beat},
+            data={"text_changed": "text_changed" in (book.flags or [])},
         )
     )
     await db.commit()
     _enqueue(queue, "qamra_worker.jobs.books.rerender", str(book.id))
-    return {"beat": beat, "text": page.text}
+    return {"status": "queued"}
 
 
 class BudgetIn(BaseModel):
@@ -633,9 +962,10 @@ def _passed(preflight: dict[str, Any], name: str) -> bool:
     return bool(report.get("passed"))
 
 
-@router.post("/books/{book_id}/approve", dependencies=[Depends(require_permission("books.review"))])
-async def approve(book_id: uuid.UUID, admin: AdminUser, db: SessionDep) -> dict[str, Any]:
-    """The last gate (Addendum 3 §5): only a reviewed book with print files that pass preflight."""
+async def approve_book(book_id: uuid.UUID, admin: User, db: AsyncSession) -> Book:
+    """The last gate (Addendum 3 §5), which is also the review of the story's words: only a reviewed book
+    whose print files pass preflight and carry its current words (`text_not_rendered` after an unrendered
+    edit). Records who and when; print batches and the parent's reader and share link open only after it."""
     book = await _book(db, book_id)
     preflight = book.preflight or {}
     ready = (
@@ -649,11 +979,16 @@ async def approve(book_id: uuid.UUID, admin: AdminUser, db: SessionDep) -> dict[
     )
     if not ready:
         raise ApiError("not_ready", 409)
+    if "text_changed" in (book.flags or []):
+        raise ApiError("text_not_rendered", 409)
     volume = str((book.generation or {}).get("volume") or "")
     if (book.generation or {}).get("line") == "islamic" and volume not in (
         await load_state(db)
     ).approved_volumes():  # P0 (Addendum 10 §3.3): nothing prints before the scholar approves every unit
         raise ApiError("scholar_not_approved", 409, {"volume": volume})
+    edits = await db.scalar(
+        select(func.count()).select_from(BookTextEdit).where(BookTextEdit.book_id == book.id)
+    )
     book.status = BookStatus.approved
     book.approved_at = datetime.now(UTC)
     book.approved_by_user_id = admin.id
@@ -663,10 +998,25 @@ async def approve(book_id: uuid.UUID, admin: AdminUser, db: SessionDep) -> dict[
             action="admin.book_approved",
             entity_type="book",
             entity_id=str(book.id),
-            data={"flags": list(book.flags or []), "cost_usd": float(book.cost_usd or 0)},
+            data={
+                "flags": list(book.flags or []),
+                "cost_usd": float(book.cost_usd or 0),
+                "text_reviewed": reviews_text(book),
+                "text_edits": int(edits or 0),
+            },
         )
     )
     await db.commit()
+    return book
+
+
+@router.post("/books/{book_id}/approve", dependencies=[Depends(require_permission("books.review"))])
+async def approve(book_id: uuid.UUID, admin: AdminUser, db: SessionDep, queue: QueueDep) -> dict[str, Any]:
+    """«تأكيد النص واعتماد الكتاب». The family hears "book ready" now (not when the files were rendered)."""
+    book = await approve_book(book_id, admin, db)
+    if not book.is_sample and _line(book) in EMAILED_LINES:
+        notify.book_ready(queue.connection, book.id)
+    assert book.approved_at is not None  # nosec B101 (set just above)
     return {"status": book.status.value, "approved_at": book.approved_at.isoformat()}
 
 

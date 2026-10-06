@@ -1,5 +1,6 @@
 """Customer emails (Phase 2): the order placed, its status changes (confirmed, printing, shipped, delivered),
-a book's preview and its finished files with the reader link.
+a book's preview and its finished files with the reader link (once staff confirmed its words); and the staff
+alert that a story waits for its text review.
 
 Enqueued by the API (checkout, the order status change, print batches) and by the book job. The recipient is
 the account that owns the order or the book; guest orders have no email address, so nothing is sent.
@@ -133,6 +134,35 @@ def book_email(
     return deliver(db, sender, note, user.email, rendered).value
 
 
+def review_alert(
+    db: Session, sender: EmailSender, book_id: str, base_url: str, values: dict[str, Any]
+) -> str:
+    """Staff: a story's final files are ready and its words wait for review and «تأكيد». Once per book (a
+    re-render after an edit does not repeat it), to `review_alert_email`; nothing when that is empty."""
+    book = db.get(Book, uuid.UUID(book_id))
+    if book is None or book.is_sample:
+        return "missing"
+    note = claim(db, f"book:{book.id}:text_review", "text_review_waiting", book_id=book.id)
+    if note is None:
+        return "duplicate"
+    to = str(values.get("review_alert_email") or "").strip()
+    if not to:
+        finish(db, note, NotificationStatus.skipped, "no_review_email")
+        return NotificationStatus.skipped.value
+    lang = "ar"  # staff read Arabic; the admin opens in Arabic
+    child = db.get(Child, book.child_id)
+    rendered = render(
+        "text_review_waiting",
+        lang,
+        {
+            **base_values(values, lang),
+            "title": book.title or (child.first_name if child else ""),
+            "queue_url": f"{base_url}/{lang}/admin/queue",
+        },
+    )
+    return deliver(db, sender, note, to, rendered).value
+
+
 # ---- RQ entry points ------------------------------------------------------------------------------------
 
 
@@ -153,3 +183,10 @@ def send_book_email(book_id: str, event: str) -> str:
     with context.db_session() as db:
         sender, values = sender_and_values(db)
         return book_email(db, sender, book_id, event, get_settings().web_base_url.rstrip("/"), values)
+
+
+def send_review_alert(book_id: str) -> str:
+    context.init_process()
+    with context.db_session() as db:
+        sender, values = sender_and_values(db)
+        return review_alert(db, sender, book_id, get_settings().web_base_url.rstrip("/"), values)

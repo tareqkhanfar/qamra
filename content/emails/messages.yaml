@@ -106,6 +106,20 @@ book_ready:
       - "The link opens after you sign in; from there you can share the book with family through a private link."
     button: { label: "Read the book", link: reader_url }
 
+text_review_waiting:
+  ar:
+    subject: "قصة جديدة بانتظار مراجعة النص: «{{ title }}»"
+    lines:
+      - "اكتملت ملفات «{{ title }}»، ونصّ القصة الآن بانتظار مراجعتكم."
+      - "راجعوا النصوص وعدّلوها إن لزم الأمر، ثم اضغطوا «تأكيد النص واعتماد الكتاب». لن يصل الكتاب إلى الأهل ولا إلى المطبعة قبل التأكيد."
+    button: { label: "افتحوا قائمة المراجعة", link: queue_url }
+  en:
+    subject: "A new story is waiting for text review: “{{ title }}”"
+    lines:
+      - "The files for “{{ title }}” are ready, and the story's text is waiting for your review."
+      - "Review the text, edit it if needed, then press “Confirm text & approve book”. The book won't reach the family or the printer until you confirm."
+    button: { label: "Open the review queue", link: queue_url }
+
 printer_batch:
   ar:
     subject: "دفعة طباعة {{ code }} — عدد النسخ: {{ copies }}"

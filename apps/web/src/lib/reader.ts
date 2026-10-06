@@ -40,5 +40,6 @@ export function shareUrl(token: string, locale: string): string {
   return `${origin}/${locale}/s/${token}`;
 }
 
-/** Books a parent can open in the reader (the rest continue in the create flow or wait). */
-export const READABLE = new Set(["preview", "in_review", "approved", "ordered", "printed"]);
+/** Books a parent can open in the reader (the rest continue in the create flow or wait). A finished book opens
+ * once our team confirmed its text (`in_review` waits for that: API routers/reader.py). */
+export const READABLE = new Set(["preview", "approved", "ordered", "printed"]);

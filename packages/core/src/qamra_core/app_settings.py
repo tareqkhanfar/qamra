@@ -790,6 +790,17 @@ _DEFS: list[SettingDef] = [
         "Order placed, status changes, preview and book ready. Without an SMTP server they are only logged.",
     ),
     SettingDef(
+        "review_alert_email",
+        "notifications",
+        Kind.email,
+        "",
+        "بريد تنبيهات مراجعة النص",
+        "Text review alert email",
+        "تصله رسالة عندما تصبح قصة جديدة جاهزة وتنتظر مراجعة نصّها وتأكيده. فارغ = لا رسائل.",
+        "Gets an email when a new story is ready and its text is waiting to be reviewed and confirmed. "
+        "Empty = no emails.",
+    ),
+    SettingDef(
         "printer_email",
         "print",
         Kind.email,

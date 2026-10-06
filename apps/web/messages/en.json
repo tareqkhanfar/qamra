@@ -240,7 +240,7 @@
     "previewEnd": "These are the preview pages of {name}'s book. The rest of the story is drawn after you order.",
     "continueOrder": "Continue your order",
     "ownerEnd": "{name}'s whole book is here. Share it with grandparents and family through a private link.",
-    "shelfReady": "Ready to read",
+    "shelfInReview": "In final review",
     "share": {
       "open": "Share",
       "title": "Share the book with family",
@@ -2549,9 +2549,9 @@
     "ofBudget": "of {cap} cap",
     "redraws": "Redraws",
     "regenerate": "Redraw selected ({n})",
-    "approve": "Approve & send to print",
-    "approved": "Approved for print",
-    "confirmApprove": "After approval the book joins the print batch. Sure?",
+    "approve": "Confirm text & approve book",
+    "approved": "Text confirmed, book approved",
+    "confirmApprove": "Have you reviewed all of the book's text? Once confirmed, the family can read it, and if a printed copy was ordered, it joins the print batch.",
     "preflight": "Print-file preflight",
     "pass": "Pass",
     "fail": "Fail",
@@ -2567,8 +2567,6 @@
     "cover": "Cover",
     "select": "Select",
     "text": "Page text",
-    "saveText": "Save text & re-render",
-    "restore": "Restore original text",
     "redrawOne": "Redraw this page",
     "close": "Close",
     "qa": "Automatic QA",
@@ -2612,7 +2610,11 @@
       "crop": "Hero cut at the edge",
       "crop_other": "A character cut at the edge",
       "text_missing": "Missing text",
-      "frame": "Split or bordered picture"
+      "frame": "Split or bordered picture",
+      "text_changed": "Edit not in the files yet",
+      "admin_edited": "Edited by a reviewer",
+      "parent_edited": "Edited by the family",
+      "text_unsafe": "Flagged by the text check"
     },
     "status": {
       "draft": "Draft",
@@ -2645,6 +2647,55 @@
       "memories": "Our memories",
       "blank": "Blank page",
       "story": "Story page"
+    },
+    "rerender": "Rebuild the files",
+    "confirmedBy": "Confirmed by {name} on {date}",
+    "beat": "Scene {n}",
+    "textInPanel": "Edit the text in the “Book text” section.",
+    "textReview": {
+      "waiting": "Waiting for text review",
+      "confirmed": "Text confirmed"
+    },
+    "words": {
+      "title": "Book text",
+      "intro": "Review every part of the text before confirming. Each part saves on its own right away; when you're done, rebuild the files once.",
+      "gender": {
+        "m": "Boy",
+        "f": "Girl"
+      },
+      "age": "{age, plural, one {# year old} other {# years old}}",
+      "grammar": "Check that every verb and pronoun fits {gender, select, f {a girl} other {a boy}}.",
+      "changed": "You changed the text after the files were last built. Rebuild the files, then confirm.",
+      "locked": "The book is being generated right now; you can edit the text once that's finished.",
+      "classReadOnly": "A class book's text is shared by every copy in the class and comes from the story template, so it is shown here read-only.",
+      "fields": {
+        "title": "Title (shown on the cover)",
+        "dedication": "Dedication",
+        "parent_message": "Message from the family (optional)",
+        "parents_lesson": "“For parents” page: the idea behind the story",
+        "parents_questions": "“For parents” page: questions (one per line)",
+        "blurb": "Back-cover blurb"
+      },
+      "save": "Save",
+      "saved": "Text saved.",
+      "revert": "Restore the generated text",
+      "edited": "Edited",
+      "history": "History ({n})",
+      "kind": {
+        "edit": "Edit",
+        "revert": "Restore"
+      },
+      "before": "Before",
+      "after": "After",
+      "flagged": "The text check flagged: {reasons}.",
+      "reasons": {
+        "link": "a link or an email address",
+        "phone": "a phone number",
+        "unsafe_word": "a word unsuitable for a children's book"
+      },
+      "note": "A note explaining why the text stays as it is",
+      "saveAnyway": "Save with the note",
+      "noteKept": "Note: {note}"
     }
   },
   "metrics": {
