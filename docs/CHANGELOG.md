@@ -1,5 +1,11 @@
 # Changelog
 
+## Activity books: every instruction rewritten in «رحلتي الأولى للتعلّم» and «مغامراتي مع عائلتي» (2026-10-06)
+- **What:** the line at the start of each exercise is clear and ordered (one action or two short steps), keeps the page's idea, goal and answer action, and no two neighbouring pages open the same way. «رحلتي الأولى»: 352 Arabic lines and 43 English lines across the three stages (the 26 English letter pages rotate four wordings instead of one; map openers, Arabic letter pages and reviews each vary). «مغامراتي مع عائلتي»: 94 lines, including the insert sheets; the twelve «ذكرى اليوم» pages each ask their own question.
+- **Language:** full tashkeel in each book's own convention, both gender forms written out, ≤ 7 words (journey) / ≤ 10 (family). An independent linguist + early-childhood reviewer passed every line after three rounds (40+ fixes applied).
+- **Before/after tables:** `docs/review/journey-instructions.md`, `docs/review/family-instructions.md`. The plan's brief (`content/journey/plan.yaml`, `docs/journey/plan.md`) and the family samples follow the printed lines.
+- **Audio:** no QR clip reads these instructions, so none needs re-recording (`audio.yaml` unchanged). Books re-rendered (preflight passed) and web previews re-exported.
+
 ## «دوسية التأسيس»: every exercise instruction rewritten (2026-10-06)
 - **All 732 pages of KG1 and KG2 (six volumes)**: the moon's one-line instruction now gives one clear step or two ordered ones («…، ثُمَّ …») in easy, fully vowelized Arabic, for a boy and a girl, at most 7 words; English pages keep a matching English line. Titles, skill lines and in-page labels are unchanged.
 - **Varied, not repeated:** a recurring exercise turns through 2–5 wordings page by page (`foundation_text.pick` with the page's `turn`); pages that come once a volume change by volume; a new test keeps neighbouring pages from opening with the same word and caps any wording at 3 uses a volume.
