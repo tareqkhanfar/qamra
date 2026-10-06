@@ -8,7 +8,14 @@ from __future__ import annotations
 from typing import Any
 
 from qamra_workbook.curriculum import Page
-from qamra_workbook.render.foundation_text import Texts, joined, vowelled_letter_name
+from qamra_workbook.render.foundation_text import (
+    Texts,
+    joined,
+    letter_trace_say,
+    pick,
+    turn,
+    vowelled_letter_name,
+)
 
 
 def _numbers(params: dict[str, Any]) -> list[int]:
@@ -73,20 +80,50 @@ def engine_type_v3(page: Page) -> str | None:
 
 
 HARAKA_TITLE = {"فتحة": "الفَتْحَةُ", "ضمة": "الضَّمَّةُ", "كسرة": "الكَسْرَةُ", "سكون": "السُّكونُ"}
-# the English unit as the child's instruction names it: «{اقْرَأِ/اقْرَئي} الأَلْوانَ بِالإِنْجِليزِيَّةِ»
-UNIT_READ = {
-    "Numbers": "الأَعْدادَ",
-    "Colors": "الأَلْوانَ",
-    "Shapes": "الأَشْكالَ",
-    "Family": "العائِلَةَ",
-    "Body Parts": "أَعْضاءَ الجِسْمِ",
-    "Animals": "الحَيَواناتِ",
-    "Fruits": "الفَواكِهَ",
-    "Food": "الطَّعامَ",
-    "Toys": "الأَلْعابَ",
-    "School Objects": "أَدَواتِ المَدْرَسَةِ",
+# draft: educator review: the titles and instructions below have not been through the educator yet
+# as the page explains each mark: we open our mouth, round our lips, see the line under, stop the sound
+HARAKA_SAY = {
+    "فتحة": "{افْتَحْ فَمَكَ/افْتَحي فَمَكِ}، {وَاقْرَأِ/وَاقْرَئي} الحُروفَ بِالفَتْحَةِ",
+    "ضمة": "{ضُمَّ شَفَتَيْكَ/ضُمّي شَفَتَيْكِ}، {وَاقْرَأِ/وَاقْرَئي} الحُروفَ بِالضَّمَّةِ",
+    "كسرة": "{انْتَبِهْ/انْتَبِهي} لِلخَطِّ تَحْتَ الحَرْفِ، {وَاقْرَأْ/وَاقْرَئي} بِالكَسْرَةِ",
+    "سكون": "عِنْدَ السُّكونِ يَقِفُ الصَّوْتُ: {اقْرَأْ/اقْرَئي} {وَتَوَقَّفْ/وَتَوَقَّفي}",
 }
-CUT = "{قُصَّ/قُصّي} المَقاطِعَ {وَأَلْصِقْها/وَأَلْصِقيها}"
+# the English vocabulary units (cards with the English word and the Arabic under it): Arabic, English
+VOCAB_SAY = {
+    "Numbers": ("{عُدَّ/عُدّي} {وَقُلِ/وَقولي} الأَعْدادَ بِالإِنْجِليزِيَّةِ", "Count and say the numbers."),
+    "Colors": (
+        "{اقْرَأِ/اقْرَئي} الأَلْوانَ، ثُمَّ {لَوِّنْ/لَوِّني} كُلَّ صورَةٍ بِلَوْنِها",
+        "Read the colors, then color the pictures.",
+    ),
+    "Shapes": ("{أَشِرْ/أَشيري} إلى كُلِّ شَكْلٍ {وَقُلِ/وَقولي} اسْمَهُ", "Point to each shape and say it."),
+    "Family": ("{اقْرَأْ/اقْرَئي} أَسْماءَ أَفْرادِ العائِلَةِ بِصَوْتٍ عالٍ", "Read the family words aloud."),
+    "Body Parts": (
+        "{اقْرَأِ/اقْرَئي} الاسْمَ، {وَأَشِرْ/وَأَشيري} إِلَيْهِ في {جِسْمِكَ/جِسْمِكِ}",
+        "Read each word and point to it.",
+    ),
+    "Animals": ("{رَدِّدِ/رَدِّدي} اسْمَ كُلِّ حَيَوانٍ بِالإِنْجِليزِيَّةِ", "Say each animal's name in English."),
+    "Fruits": ("{قُلْ/قولي} أَسْماءَ الفَواكِهِ واحِدًا واحِدًا", "Say the fruit names one by one."),
+    "Food": ("{اسْمَعْ/اسْمَعي}، ثُمَّ {رَدِّدْ/رَدِّدي} أَسْماءَ الطَّعامِ", "Listen, then repeat the food words."),
+    "Toys": (
+        "ما اسْمُ كُلِّ لُعْبَةٍ؟ {اقْرَأْهُ/اقْرَئيهِ} بِالإِنْجِليزِيَّةِ",
+        "Read the name of each toy.",
+    ),
+    "School Objects": ("{سَمِّ/سَمّي} كُلَّ أَداةٍ مَدْرَسِيَّةٍ بِالإِنْجِليزِيَّةِ", "Name each school object in English."),
+}
+VOCAB_DEFAULT = ("{اقْرَأِ/اقْرَئي} الكَلِماتِ بِالإِنْجِليزِيَّةِ", "Read the words in English.")
+CUT = "{قُصَّ/قُصّي} البِطاقاتِ"
+PICTURE_ADD = (
+    "{اجْمَعِ/اجْمَعي} الصُّوَرَ، ثُمَّ {اكْتُبِ/اكْتُبي} الجَوابَ في المُرَبَّعِ",
+    "{عُدَّ/عُدّي} المَجْموعَتَيْنِ مَعًا، {وَاكْتُبْ/وَاكْتُبي} كَمْ صارَ العَدَدُ",
+)
+PICTURE_SUBTRACT = (  # some pictures are crossed out: what is left?
+    "{عُدَّ/عُدّي} الصُّوَرَ الباقِيَةَ، {وَاكْتُبْ/وَاكْتُبي} عَدَدَها",
+    "كَمْ بَقِيَ بَعْدَ الشَّطْبِ؟ {اكْتُبْهُ/اكْتُبيهِ} في المُرَبَّعِ",
+)
+WORD_READ = (
+    "{اقْرَأِ/اقْرَئي} الكَلِمَةَ حَرْفًا حَرْفًا، ثُمَّ {حَوِّطْ/حَوِّطي} صورَتَها",
+    "{اقْرَأِ/اقْرَئي} الكَلِمَةَ، {وَابْحَثْ/وَابْحَثي} عَنْ صورَتِها {وَحَوِّطْها/وَحَوِّطيها}",
+)
 
 
 def texts_v3(subject: str, kind: str, params: dict[str, Any], unit_title: str) -> Texts | None:
@@ -95,109 +132,160 @@ def texts_v3(subject: str, kind: str, params: dict[str, Any], unit_title: str) -
     match kind:
         case "harakat":
             h = str(params.get("haraka", "فتحة"))
-            return HARAKA_TITLE.get(h, h), "{اقْرَأِ/اقْرَئي} الحَرْفَ مَعَ حَرَكَتِهِ", ""
+            return HARAKA_TITLE.get(h, h), HARAKA_SAY.get(h, HARAKA_SAY["فتحة"]), ""
         case "syllables" if params.get("mode") == "build":
-            return "أُرَكِّبُ مَقْطَعًا", "{رَكِّبِ/رَكِّبي} الحَرْفَ مَعَ الحَرَكَةِ {وَاقْرَأْ/وَاقْرَئي}", ""
+            return (
+                "أُرَكِّبُ مَقْطَعًا",
+                "{اجْمَعِ/اجْمَعي} الحَرْفَ وَالحَرَكَةَ، ثُمَّ {اكْتُبِ/اكْتُبي} المَقْطَعَ {وَاقْرَأْهُ/وَاقْرَئيهِ}",
+                "",
+            )
         case "syllables" if params.get("mode") == "long":
-            return "مَقاطِعُ طَويلَةٌ", "{اقْرَأْ/اقْرَئي} كُلَّ صَفٍّ: بَا بُو بِي", ""
+            return (
+                "مَقاطِعُ طَويلَةٌ",
+                "{مُدَّ صَوْتَكَ وَأَنْتَ تَقْرَأُ/مُدّي صَوْتَكِ وَأَنْتِ تَقْرَئينَ}: با، بو، بي",
+                "",
+            )
         case "syllables":
-            return "مَقاطِعُ قَصيرَةٌ", "{اقْرَأْ/اقْرَئي} كُلَّ صَفٍّ مِنَ اليَمينِ", ""
+            return "مَقاطِعُ قَصيرَةٌ", "مِنَ اليَمينِ إلى اليَسارِ: {اقْرَأْ/اقْرَئي} كُلَّ صَفٍّ", ""
         case "word-read" if subject == "english":
             return (
                 "I can read",
-                "{اقْرَأِ/اقْرَئي} الكَلِمَةَ {وَحَوِّطْ/وَحَوِّطي} صورَتَها",
-                "Read the word and circle its picture.",
+                "{اقْرَأِ/اقْرَئي} الكَلِمَةَ الإِنْجِليزِيَّةَ، ثُمَّ {حَوِّطْ/حَوِّطي} صورَتَها",
+                "Read each word, then circle its picture.",
             )
         case "word-read" if params.get("mode") == "al":
-            return "أَقْرَأُ مَعَ «ال»", "{اقْرَأِ/اقْرَئي} الكَلِمَةَ {وَحَوِّطْ/وَحَوِّطي} صورَتَها", ""
+            return (
+                "أَقْرَأُ مَعَ «ال»",
+                "{اقْرَأِ/اقْرَئي} الكَلِمَةَ مَعَ «ال»، ثُمَّ {حَوِّطْ/حَوِّطي} صورَتَها",
+                "",
+            )
         case "word-read":
-            return "أَقْرَأُ كَلِماتٍ", "{اقْرَأِ/اقْرَئي} الكَلِمَةَ {وَحَوِّطْ/وَحَوِّطي} صورَتَها", ""
+            return "أَقْرَأُ كَلِماتٍ", pick(WORD_READ, turn(params)), ""
         case "word-write" if params.get("mode") == "independent":
-            return "أَكْتُبُ وَحْدي", "{انْظُرْ/انْظُري} إلى الصّورَةِ {وَاكْتُبِ/وَاكْتُبي} اسْمَها", ""
+            return (
+                "أَكْتُبُ وَحْدي",
+                "{قُلِ/قولي} اسْمَ الصّورَةِ، ثُمَّ {اكْتُبْهُ/اكْتُبيهِ} عَلى السَّطْرِ",
+                "",
+            )
         case "word-write":
             return (
                 "أَكْتُبُ كَلِماتٍ",
-                "{اكْتُبِ/اكْتُبي} الكَلِمَةَ عَلى النِّقاطِ، ثُمَّ {وَحْدَكَ/وَحْدَكِ}",
+                "{تَتَبَّعِ/تَتَبَّعي} الكَلِمَةَ، ثُمَّ {اكْتُبْها وَحْدَكَ/اكْتُبيها وَحْدَكِ}",
                 "",
             )
         case "sentence-read" if subject == "english":
-            return "I can read", "{صِلْ/صِلي} كُلَّ جُمْلَةٍ بِصورَتِها", "Match each sentence to its picture."
+            return (
+                "I can read",
+                "{اقْرَأْ/اقْرَئي} كُلَّ جُمْلَةٍ، ثُمَّ {صِلْها/صِليها} بِصورَتِها",
+                "Read each sentence, then match its picture.",
+            )
         case "sentence-read" if params.get("personal"):
-            return "أَنا أَقْرَأُ", "{صِلْ/صِلي} كُلَّ جُمْلَةٍ {بِصورَتِكَ/بِصورَتِكِ}", ""
+            return (
+                "أَنا أَقْرَأُ",
+                "ماذا {تَفْعَلُ/تَفْعَلينَ}؟ {اقْرَأْ/اقْرَئي}، ثُمَّ {صِلْ/صِلي} {بِصورَتِكَ/بِصورَتِكِ}",
+                "",
+            )
         case "sentence-read":
-            return "أَقْرَأُ جُمَلًا", "{صِلْ/صِلي} كُلَّ جُمْلَةٍ بِصورَتِها", ""
+            return (
+                "أَقْرَأُ جُمَلًا",
+                "بَعْدَ أَنْ {تَقْرَأَ/تَقْرَئي}، {صِلْ/صِلي} كُلَّ جُمْلَةٍ بِصورَتِها",
+                "",
+            )
         case "vocab-unit":
             unit = str(params.get("unit", ""))
-            what = UNIT_READ.get(unit, "الكَلِماتِ")
-            read = "{اقْرَأِ/اقْرَئي}" if what.startswith("ال") else "{اقْرَأْ/اقْرَئي}"
-            return f"{unit}", f"{read} {what} بِالإِنْجِليزِيَّةِ", f"Say the {unit.lower()}."
+            return f"{unit}", *VOCAB_SAY.get(unit, VOCAB_DEFAULT)
         case "picture-add" if params.get("mode") == "story":
-            return "مَسْأَلَةُ جَمْعٍ", "{اقْرَأِ/اقْرَئي} القِصَّةَ {وَاحْسُبْ/وَاحْسُبي}", ""
+            return (
+                "مَسْأَلَةُ جَمْعٍ",
+                "{اقْرَأِ/اقْرَئي} المَسْأَلَةَ، ثُمَّ {اجْمَعْ/اجْمَعي} {وَاكْتُبِ/وَاكْتُبي} الجَوابَ",
+                "",
+            )
         case "picture-add" if params.get("mode") == "number-line":
             return (
                 "أَجْمَعُ عَلى خَطِّ الأَعْدادِ",
-                "{اقْفِزْ/اقْفِزي} عَلى الخَطِّ {وَاكْتُبِ/وَاكْتُبي} النّاتِجَ",
+                "{اقْفِزْ/اقْفِزي} عَلى خَطِّ الأَعْدادِ {لِتَصِلَ/لِتَصِلي} إلى الجَوابِ",
                 "",
             )
         case "picture-add" if params.get("mode") == "make-ten":
-            return "أُكَوِّنُ العَشَرَةَ", "{أَكْمِلْ/أَكْمِلي} جُمْلَةَ الجَمْعِ لِتَصيرَ عَشَرَةً", ""
+            return "أُكَوِّنُ العَشَرَةَ", "{أَكْمِلْ/أَكْمِلي} كُلَّ جُمْلَةٍ لِيَصيرَ المَجْموعُ عَشَرَةً", ""
         case "picture-add" if params.get("mode") == "choose-operation":
             return (
                 "أَجْمَعُ أَمْ أَطْرَحُ؟",
-                "{حَوِّطِ/حَوِّطي} الإِشارَةَ الصَّحيحَةَ {وَاكْتُبِ/وَاكْتُبي} النّاتِجَ",
+                "جَمْعٌ أَمْ طَرْحٌ؟ {حَوِّطِ/حَوِّطي} الإِشارَةَ، ثُمَّ {احْسُبْ/احْسُبي}",
                 "",
             )
         case "picture-add":
-            return "أَجْمَعُ بِالصُّوَرِ", "{عُدَّ/عُدّي} الكُلَّ {وَاكْتُبِ/وَاكْتُبي} النّاتِجَ", ""
+            return "أَجْمَعُ بِالصُّوَرِ", pick(PICTURE_ADD, turn(params)), ""
         case "picture-subtract" if params.get("mode") == "story":
-            return "مَسْأَلَةُ طَرْحٍ", "{اقْرَأِ/اقْرَئي} القِصَّةَ {وَاحْسُبْ/وَاحْسُبي}", ""
-        case "picture-subtract":
-            return "أَطْرَحُ بِالصُّوَرِ", "{عُدَّ/عُدّي} الباقِيَ {وَاكْتُبِ/وَاكْتُبي} النّاتِجَ", ""
-        case "number-quantity-match" if max(_numbers(params), default=0) > 10:
-            return "عَشَرَةٌ وَآحادٌ", "{صِلْ/صِلي} كُلَّ عَدَدٍ بِعَشَرَتِهِ وَآحادِهِ", ""
-        case "number-trace" if max(_numbers(params), default=0) > 10:
-            return "أَتَتَبَّعُ الأَعْدادَ", "{تَتَبَّعِ/تَتَبَّعي} العَدَدَ ثُمَّ {اكْتُبْهُ/اكْتُبيهِ}", ""
-        case "count-and-circle" if max(_numbers(params), default=0) > 10:
-            return "أَعُدُّ حَتّى عِشْرينَ", "{عُدَّ/عُدّي} {وَحَوِّطِ/وَحَوِّطي} العَدَدَ الصَّحيحَ", ""
-        case "compare" if params.get("concept") == "bigger-smaller":
-            return "الأَكْبَرُ", "{حَوِّطِ/حَوِّطي} العَدَدَ الأَكْبَرَ", ""
-        case "pattern-complete" if params.get("kind") == "number-line":
-            return "خَطُّ الأَعْدادِ", "{اكْتُبِ/اكْتُبي} الأَعْدادَ النّاقِصَةَ", ""
-        case "pattern-complete" if params.get("kind") == "picture-grid":
-            return "جَدْوَلُ الصُّوَرِ", "{ارْسُمِ/ارْسُمي} الصّورَةَ النّاقِصَةَ في كُلِّ مُرَبَّعٍ", ""
-        case "pattern-complete" if params.get("pattern") == "growing":
-            return "النَّمَطُ المُتَزايِدُ", "{ارْسُمِ/ارْسُمي} الخُطْوَتَيْنِ التّالِيَتَيْنِ", ""
-        case "pen-lines" if params.get("line") == "joins":
-            return "خُطوطُ الوَصْلِ", "{تَتَبَّعِ/تَتَبَّعي} الحُروفَ المُتَّصِلَةَ عَلى السَّطْرِ", ""
-        case "trace-path" if params.get("path") == "complex":
-            return "الطَّريقُ الطَّويلُ", "{تَتَبَّعِ/تَتَبَّعي} الطَّريقَ بِمُنْعَطَفاتِهِ", ""
-        case "letter-trace" if letters:
-            names = joined([vowelled_letter_name(x, "a") for x in letters])
             return (
-                f"أَتَتَبَّعُ {names}",
-                "{ابْدَأْ/ابْدَئي} مِنَ النُّقْطَةِ الخَضْراءِ {وَاتْبَعِ/وَاتْبَعي} الأَسْهُمَ",
+                "مَسْأَلَةُ طَرْحٍ",
+                "{اقْرَأِ/اقْرَئي} المَسْأَلَةَ، ثُمَّ {اطْرَحْ/اطْرَحي} {وَاكْتُبْ/وَاكْتُبي} كَمْ بَقِيَ",
                 "",
             )
+        case "picture-subtract":
+            return "أَطْرَحُ بِالصُّوَرِ", pick(PICTURE_SUBTRACT, turn(params)), ""
+        case "number-quantity-match" if max(_numbers(params), default=0) > 10:
+            return (
+                "عَشَرَةٌ وَآحادٌ",
+                "{اقْرَأِ/اقْرَئي} العَدَدَ، ثُمَّ {صِلْهُ/صِليهِ} بِعَشَرَتِهِ وَآحادِهِ",
+                "",
+            )
+        case "number-trace" if max(_numbers(params), default=0) > 10:
+            return (
+                "أَتَتَبَّعُ الأَعْدادَ",
+                "{مَرِّرِ/مَرِّري} القَلَمَ عَلى كُلِّ عَدَدٍ، ثُمَّ {اكْتُبْهُ/اكْتُبيهِ}",
+                "",
+            )
+        case "count-and-circle" if max(_numbers(params), default=0) > 10:
+            return (
+                "أَعُدُّ حَتّى عِشْرينَ",
+                "{عُدَّ/عُدّي} العَشَرَةَ ثُمَّ الآحادَ، {وَحَوِّطِ/وَحَوِّطي} العَدَدَ",
+                "",
+            )
+        case "compare" if params.get("concept") == "bigger-smaller":
+            return "الأَكْبَرُ", "{اقْرَأِ/اقْرَئي} العَدَدَيْنِ، ثُمَّ {حَوِّطِ/حَوِّطي} الأَكْبَرَ", ""
+        case "pattern-complete" if params.get("kind") == "number-line":
+            top = params.get("range", 20)
+            return (
+                "خَطُّ الأَعْدادِ",
+                f"{{عُدَّ/عُدّي}} حَتّى {top}، {{وَاكْتُبِ/وَاكْتُبي}} الأَعْدادَ النّاقِصَةَ",
+                "",
+            )
+        case "pattern-complete" if params.get("kind") == "picture-grid":
+            return "جَدْوَلُ الصُّوَرِ", "{ارْسُمْ/ارْسُمي} في كُلِّ مُرَبَّعٍ فارِغٍ الصّورَةَ النّاقِصَةَ", ""
+        case "pattern-complete" if params.get("pattern") == "growing":
+            return (
+                "النَّمَطُ المُتَزايِدُ",
+                "كُلُّ خُطْوَةٍ تَزيدُ واحِدًا: {ارْسُمِ/ارْسُمي} الخُطْوَتَيْنِ التّالِيَتَيْنِ",
+                "",
+            )
+        case "pen-lines" if params.get("line") == "joins":
+            return "خُطوطُ الوَصْلِ", "{تَتَبَّعْ/تَتَبَّعي} خُطوطَ الوَصْلِ بَيْنَ الحُروفِ", ""
+        case "trace-path" if params.get("path") == "complex":
+            return "الطَّريقُ الطَّويلُ", "{اتْبَعِ/اتْبَعي} الطَّريقَ الطَّويلَ حَتّى آخِرِهِ", ""
+        case "letter-trace" if letters:
+            names = joined([vowelled_letter_name(x, "a") for x in letters])
+            return f"أَتَتَبَّعُ {names}", letter_trace_say(params, len(letters)), ""
         case "classify" if isinstance(params.get("by"), list):
-            return "أُصَنِّفُ بِصِفَتَيْنِ", "{ارْسُمْ/ارْسُمي} كُلَّ شَكْلٍ في مَكانِهِ", ""
+            return "أُصَنِّفُ بِصِفَتَيْنِ", "{ارْسُمْ/ارْسُمي} كُلَّ شَكْلٍ في خانَةِ شَكْلِهِ وَلَوْنِهِ", ""
         case "memory" if params.get("mode") == "order":
             return (
                 "أَتَذَكَّرُ التَّرْتيبَ",
-                "{انْظُرْ/انْظُري}، ثُمَّ {غَطِّ/غَطّي} الصُّوَرَ {وَرَتِّبْ/وَرَتِّبي}",
+                "{احْفَظِ/احْفَظي} التَّرْتيبَ، ثُمَّ {غَطِّ/غَطّي} الصُّوَرَ {وَرَقِّمْها/وَرَقِّميها}",
                 "",
             )
         case "connect" if params.get("mode") == "cause-effect":
-            return "السَّبَبُ وَالنَّتيجَةُ", "{صِلْ/صِلي} كُلَّ سَبَبٍ بِنَتيجَتِهِ", ""
+            return "السَّبَبُ وَالنَّتيجَةُ", "{صِلْ/صِلي} كُلَّ سَبَبٍ بِما يَحْدُثُ بَعْدَهُ", ""
         case "connect" if subject == "mixed":
-            return "أَصِلُ ما تَعَلَّمْتُ", "{صِلْ/صِلي} كُلَّ شَيْءٍ بِما يُناسِبُهُ", ""
+            return "أَصِلُ ما تَعَلَّمْتُ", "{صِلِ/صِلي} الحَرْفَ وَالعَدَدَ وَالكَلِمَةَ بِما يُناسِبُها", ""
         case "drawing" if params.get("mode") == "problem-solving":
-            return "أُفَكِّرُ وَأَرْسُمُ حَلًّا", "{ارْسُمْ/ارْسُمي} كَيْفَ تَعْبُرُ البَطَّةُ النَّهْرَ", ""
+            return "أُفَكِّرُ وَأَرْسُمُ حَلًّا", "كَيْفَ تَعْبُرُ البَطَّةُ النَّهْرَ؟ {فَكِّرْ/فَكِّري}، ثُمَّ {ارْسُمْ/ارْسُمي}", ""
         case "cut-and-paste" if params.get("mode") == "build-words":
-            return "أَبْني الكَلِمَةَ", f"{CUT} {{لِتَبْنِيَ/لِتَبْني}} الكَلِمَةَ", ""
+            return "أَبْني الكَلِمَةَ", f"{CUT}، {{وَأَلْصِقْها/وَأَلْصِقيها}} {{لِتَبْنِيَ/لِتَبْني}} اسْمَ كُلِّ صورَةٍ", ""
         case "certificate":
             return (
                 "{أَحْسَنْتَ يا بَطَلُ/أَحْسَنْتِ يا بَطَلَةُ}!",
-                "{لَوِّنِ/لَوِّني} النُّجومَ {وَاحْتَفِلْ/وَاحْتَفِلي}",
+                "{لَوِّنِ/لَوِّني} النُّجومَ، ثُمَّ {احْتَفِلْ/احْتَفِلي} مَعَ {أَهْلِكَ/أَهْلِكِ}",
                 "",
             )
     return None

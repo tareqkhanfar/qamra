@@ -107,6 +107,17 @@ def plan_params(page: Page, plan: Curriculum, volume: Volume, name_en: str) -> d
     return {**extra, **page.params}
 
 
+def turn_of(page: Page, volume: Volume, level: str) -> int:
+    """How many pages with the same builder and subject come before `page` in its volume: a recurring exercise
+    turns through its instruction's wordings with it (`foundation_text.pick`)."""
+    kind = engine_type(page, level)
+    return sum(
+        1
+        for q in volume.pages
+        if q.n < page.n and q.subject == page.subject and engine_type(q, level) == kind
+    )
+
+
 def from_curriculum(page: Page, plan: Curriculum, volume: Volume, name_en: str = "") -> PageSpec:
     params = plan_params(page, plan, volume, name_en)
     lang: Lang = "en" if page.subject == "english" and page.type in ENGLISH_PAGES else "ar"
@@ -117,11 +128,15 @@ def from_curriculum(page: Page, plan: Curriculum, volume: Volume, name_en: str =
     kg1 = plan.level == "kg1"
     if kg1:
         params = params_kg1(page, params)
+    said = {
+        **params,
+        "turn": turn_of(page, volume, plan.level),
+    }  # the texts' params (the builders' stay as they are)
     title, instruction, instruction_en = (
-        (texts_kg1(page.subject, page.type, params, params["unit_title"]) if kg1 else None)
-        or texts_v3(page.subject, page.type, params, params["unit_title"])
-        or texts_v2(page.subject, page.type, params, params["unit_title"])
-        or page_texts(page.subject, page.type, params, params["unit_title"])
+        (texts_kg1(page.subject, page.type, said, params["unit_title"]) if kg1 else None)
+        or texts_v3(page.subject, page.type, said, params["unit_title"])
+        or texts_v2(page.subject, page.type, said, params["unit_title"])
+        or page_texts(page.subject, page.type, said, params["unit_title"])
     )
     if page.type == "unit-opener" and ":" in page.skill:  # «أنا وعالم الأرقام: أتعرّف على ما سأتعلّمه»
         title = page.skill.split(":")[0].strip()

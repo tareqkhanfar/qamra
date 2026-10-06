@@ -1,5 +1,11 @@
 # Changelog
 
+## «دوسية التأسيس»: every exercise instruction rewritten (2026-10-06)
+- **All 732 pages of KG1 and KG2 (six volumes)**: the moon's one-line instruction now gives one clear step or two ordered ones («…، ثُمَّ …») in easy, fully vowelized Arabic, for a boy and a girl, at most 7 words; English pages keep a matching English line. Titles, skill lines and in-page labels are unchanged.
+- **Varied, not repeated:** a recurring exercise turns through 2–5 wordings page by page (`foundation_text.pick` with the page's `turn`); pages that come once a volume change by volume; a new test keeps neighbouring pages from opening with the same word and caps any wording at 3 uses a volume.
+- **Matched to the page:** big/small circles (as the answer key), KG1 V1 English letters are traced only, single-picture letters say «الصّورَةَ», equal rows are two, paths and mazes name their walker.
+- **Language review:** two reviewer passes (linguist + early-childhood educator); all fixes applied. Before/after table: `docs/review/foundation-instructions.md`. Volumes re-rendered locally (preflight passed) and the web previews re-exported.
+
 ## Staff review and confirm every story's text (2026-10-06)
 - **Where:** Admin → `/ar/admin/queue`. Story books whose final files are ready show «بانتظار مراجعة النص»; the book's screen has a new «نصوص الكتاب» section: the child's name, gender and age with a grammar reminder, then the title (also the cover), the dedication, the family's message, every story page beside its picture, the «للأهل» page and the back-cover blurb, each in an RTL box in the books' Naskh font (tashkeel kept).
 - **Each text saves on its own, at once,** with «استرجاع النص المولَّد» and its history (who, when, before → after, `book_text_edits`, migration `e5dd2afbd62c`). Words with a link, a phone number or an unsafe word ask for a note before they are kept. «إعادة إخراج الملفات» rebuilds the PDFs once (no AI cost); «تأكيد النص واعتماد الكتاب» waits for it, records who and when, and releases the book.
