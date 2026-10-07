@@ -2264,7 +2264,7 @@
     "toCart": "Back to cart",
     "loading": "One moment…",
     "steps": {
-      "child": "Your child",
+      "child": "The hero",
       "consent": "Parent's consent",
       "photo": "Photo",
       "line": "Book type",
@@ -2273,16 +2273,19 @@
       "story": "Story",
       "writing": "Writing and drawing",
       "review": "Review the pages",
-      "format": "Preview and format"
+      "format": "Preview and format",
+      "family": "Family",
+      "summary": "Review",
+      "who": "Who it's for"
     },
     "child": {
-      "title": "Who is the hero of our story?",
-      "body": "We use this only to write the story.",
+      "title": "Who is the hero of the story?",
+      "body": "We write your child's name into the story, tell it correctly for a girl or a boy, and suggest stories that suit their age.",
       "mine": "For one of your children?",
       "newChild": "New child",
-      "name": "Child's name",
-      "namePreview": "It will appear in the story like this:",
-      "gender": "Your child is a",
+      "name": "The hero's name",
+      "namePreview": "The title will read:",
+      "gender": "Girl or boy?",
       "girl": "Girl",
       "boy": "Boy",
       "age": "Age",
@@ -2306,7 +2309,12 @@
       "look": "In the pictures",
       "hijab": "Wears a hijab",
       "glasses": "Wears glasses",
-      "invalid": "Please write the child's name and choose girl or boy, and the age."
+      "invalid": "Please write the child's name and choose girl or boy, and the age.",
+      "ageHint": "So we can suggest stories for this age and choose the right text size.",
+      "drawAs": "How should we draw {name}?",
+      "genderHint": "So we can write the story for a girl or a boy.",
+      "lookHint": "Details the photo may not show.",
+      "nameHint": "The name you call your child, as it will be written in the story."
     },
     "consent": {
       "version": "parent-2026-09",
@@ -2462,6 +2470,88 @@
       "button": "{gender, select, f {Delete {name} and all her data} other {Delete {name} and all his data}}",
       "confirm": "{gender, select, f {We will permanently delete {name}'s photos, character and books now. This can't be undone. Are you sure?} other {We will permanently delete {name}'s photos, character and books now. This can't be undone. Are you sure?}}",
       "done": "All the data was deleted."
+    },
+    "activity": {
+      "family": {
+        "body": "We write their names in the missions, on the “My family” page and on the certificate. Add only the people you want: every family is different and lovely.",
+        "city": "City",
+        "cityHint": "It appears in the market and nature adventures.",
+        "members": "Family members",
+        "name": "Family name",
+        "nameHint": "Printed on the cover and in the passport as <ar>«عائلة …»</ar> (the … family). If you leave it empty, we print <ar>«عائلة {name}»</ar> ({name}'s family).",
+        "skip": "Skip this step",
+        "skipHint": "The missions then say <ar>«أحد الكبار»</ar> (a grown-up) instead of names.",
+        "title": "Who is in {name}'s family?"
+      },
+      "summary": {
+        "add": "Add to cart",
+        "addons": "Optional extras",
+        "address": "How the book speaks to {name}",
+        "ages": "This book is made for ages {min}–{max}, and {name} is {age}. You can still continue, or <link>go back to the book's page</link>.",
+        "body": "This is what we'll print. Check the name and details before going to the cart.",
+        "bodyDigital": "This is what goes into the PDF. Check the name and details before going to the cart.",
+        "book": "Book",
+        "certificate": "On the certificate",
+        "change": "Change",
+        "character": "Character",
+        "characterAlt": "{name}'s character in the book",
+        "family": "Family",
+        "familyName": "<ar>«عائلة {family}»</ar>",
+        "members": "{count, plural, one {# member} other {# members}}",
+        "muslim": "{gender, select, f {<ar>«أنا مسلمة صغيرة»</ar> (I'm a little Muslim girl)} other {<ar>«أنا مسلم صغير»</ar> (I'm a little Muslim boy)}}",
+        "name": "Name on the book",
+        "nameEn": "In English",
+        "newCharacter": "Draw a new character",
+        "noFamily": "No names: the missions say <ar>«أحد الكبار»</ar> (a grown-up)",
+        "praise": "{gender, select, f {<ar>«أحسنتِ يا {name}!»</ar> (Well done, {name}!)} other {<ar>«أحسنتَ يا {name}!»</ar> (Well done, {name}!)}}",
+        "price": "Price",
+        "save": "Save to cart",
+        "title": "Review {name}'s book"
+      },
+      "unknown": "We can't find this book in the shop right now; it may no longer be available. Go back to your cart and continue from there."
+    },
+    "titles": {
+      "family": "{name}'s adventures",
+      "islamic": "My Heart Knows Allah · {name}",
+      "journey": "{name}'s first journey",
+      "story": "{name}'s book",
+      "workbook": "{name}'s workbook"
+    },
+    "who": {
+      "ageHint": "So we can check that the book suits your child's age.",
+      "arabicInvalid": "Please write the name in Arabic letters: that is how your child will trace it.",
+      "body": "We print your child's name on the cover and inside the book, and word the instructions correctly for a girl or a boy.",
+      "coverPreview": "The cover will read:",
+      "edit": {
+        "cancel": "Cancel",
+        "note": "Changing these details won't change the character we drew.",
+        "save": "Save changes",
+        "title": "Edit {name}'s details"
+      },
+      "genderHint": {
+        "islamic": "So the certificate says <ar>«أنا مسلمة صغيرة»</ar> (I'm a little Muslim girl) or <ar>«أنا مسلم صغير»</ar> (I'm a little Muslim boy).",
+        "other": "So the book speaks to your child correctly: <ar>«أحسنتِ»</ar> to a girl, <ar>«أحسنتَ»</ar> to a boy (both mean “well done”)."
+      },
+      "known": {
+        "about": "{name} · {gender, select, f {girl} other {boy}} · {age, plural, one {# year old} other {# years old}}",
+        "alt": "{name}'s character",
+        "confirm": "Yes, the book is for {name}",
+        "edit": "Edit details",
+        "notDrawn": "{gender, select, f {We haven't drawn her character yet} other {We haven't drawn his character yet}}",
+        "ready": "{gender, select, f {Her character is ready} other {His character is ready}}"
+      },
+      "name": "The name as it will be printed",
+      "nameEn": "The name in English letters",
+      "nameEnHint": "The book has a page where your child traces their name in English. Write it the way you'd like them to learn it.",
+      "nameEnInvalid": "Please write the name in English letters only, with no numbers or symbols.",
+      "nameEnPlaceholder": "e.g. Duha",
+      "nameHint": {
+        "family": "It appears on the cover, in the adventure titles, in the passport and on the certificate.",
+        "islamic": "It appears on the cover, on the “This is me” page and on the certificate.",
+        "journey": "In Arabic letters: your child will trace it and write it on the “My name” pages.",
+        "workbook": "In Arabic letters: your child will trace it and write it on the “My name” pages."
+      },
+      "title": "Who is this book for?"
     }
   },
   "admin": {
@@ -3600,96 +3690,5 @@
     "plus": "+{price}",
     "percentOf": "{n}% of the book's price",
     "islamicEdition": "{count, plural, one {# volume} other {# volumes}}{ramadan, select, true { and the Ramadan and Eid book} other {}}"
-  },
-  "storyShowcase": {
-    "title": "See the art before you choose",
-    "lead": "Real pages from books we made for imaginary children. Pick a style to see its pages, and tap any page to enlarge it.",
-    "tabsLabel": "Art style",
-    "galleryLabel": "Pages in the “{style}” style",
-    "stepGallery": "Here’s how the pages look in the “{style}” style",
-    "styles": {
-      "3d": "Warm cinematic light, expressive eyes and magical depth in every scene, as if your child were the hero of an animated film.",
-      "watercolor": "The warmth of watercolor on textured paper, with golden light and deep shadows. This is Qamra’s signature look.",
-      "cartoon": "Clean outlines, bright cheerful colors and simple shapes that little ones love at first sight."
-    },
-    "soldIn": "Available in {lines}",
-    "realPages": "{count, plural, one {# real page} other {# real pages}}",
-    "styleCount": "{count, plural, one {# art style} other {# art styles}}",
-    "caption": {
-      "companion": "Qamour, the hero’s companion in our stories",
-      "from": "From “{story}”",
-      "story": "“{story}”"
-    },
-    "note": {
-      "otherStories": "These pages come from other stories in the same style. You’ll see your child’s story drawn this way in the free preview, before you pay.",
-      "companionOnly": "This is how Qamour looks in this style. You’ll see your child’s story drawn this way in the free preview, before you pay."
-    },
-    "gallery": {
-      "zoom": "Enlarge: {page}",
-      "cover": "Cover",
-      "prev": "Previous pictures",
-      "next": "Next pictures"
-    },
-    "lightbox": {
-      "title": "Enlarged page",
-      "prev": "Previous page",
-      "next": "Next page",
-      "count": "{n} of {total}",
-      "close": "Close"
-    },
-    "values": "Values in the story:",
-    "related": {
-      "title": "You may also like",
-      "lead": "More stories with your child as the hero, in the same art styles."
-    },
-    "extras": {
-      "title": "Optional extras",
-      "lead": "Choose any you like after the preview.",
-      "later": "Choose any you like after the preview.",
-      "plus": "+{price}",
-      "percent": "{percent}% of the book’s price",
-      "free": "Free",
-      "includedIn": "Included in {line}",
-      "onlyIn": "Only with {line}",
-      "showAll": "Show all extras ({count})"
-    },
-    "lines": {
-      "title": "Which book is right for you?",
-      "lead": "Both are printed books starring your child, with their name and features. The main difference is the art: pick a style to see a page from each.",
-      "switchLabel": "See both books in:",
-      "from": "From <b>{price}</b>",
-      "best": "Our finest",
-      "popular": "Most popular",
-      "styleChip": "“{style}” style",
-      "zoom": "Enlarge: {page}",
-      "onlyIn": "The “{style}” style is available in {line} only; this page is in the “{own}” style.",
-      "stylesOne": "Art style: {styles}",
-      "stylesMany": "Art styles: {styles}",
-      "included": "Included in the price",
-      "classic": {
-        "tagline": "Beautiful ready-made art, with your child drawn in as the hero",
-        "points": [
-          "The story’s pictures are ready-made and reviewed, and we draw your child’s features into every page where they appear",
-          "Their name on every page, with the right “he” or “she” throughout",
-          "Ready to preview within minutes, at a lower price"
-        ]
-      },
-      "magic": {
-        "tagline": "Every page is drawn anew for your child alone",
-        "points": [
-          "One-of-a-kind pictures no other child has",
-          "The story text suits your child’s age, with a touch of their interests"
-        ]
-      },
-      "facts": {
-        "title": "In both books",
-        "pages": "{count, plural, one {# page} other {# pages}} in every story",
-        "preview": "A free preview before you pay",
-        "cod": "Cash on delivery",
-        "delivery": "Delivery to {zones} in {min}–{max} working days"
-      },
-      "browse": "Choose a story",
-      "start": "Start with a free preview"
-    }
   }
 }

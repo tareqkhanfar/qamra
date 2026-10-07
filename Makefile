@@ -22,7 +22,7 @@ test:
 	uv run pytest -q
 
 web-check:
-	cd apps/web && npx prettier --check "src/**/*.{ts,tsx,css}" "messages/*.json" && npx eslint . && npx tsc --noEmit
+	cd apps/web && npx prettier --check "src/**/*.{ts,tsx,css}" "messages/*.json" && npx eslint . && npx tsc --noEmit && npm test
 
 check: lint typecheck test web-check
 

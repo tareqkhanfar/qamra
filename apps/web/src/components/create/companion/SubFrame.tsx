@@ -2,11 +2,13 @@
 
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { MoonPhase } from "@/components/art/MoonPhase";
-import { TOTAL_STEPS } from "@/lib/create";
+import { StepCount, useFlowFrame } from "../Frame";
 
-/** The companion step's own screens are sub-steps of step 6 (design CompCrop, CompName, CompChoose): a compact
- * header with back, the screen's title and the step count, then a sticky footer. */
+/**
+ * The companion step's own screens are sub-steps of one step (design CompCrop, CompName, CompChoose): a compact
+ * header with back, the screen's title and the companion step's count in this flow, then a sticky footer.
+ */
+/** @deprecated The count comes from the flow (`FlowFrameContext`); kept for CompanionIntro's `n` prop. */
 export const COMPANION_STEP = 6;
 
 export function SubFrame({
@@ -21,6 +23,7 @@ export function SubFrame({
   children: ReactNode;
 }) {
   const t = useTranslations("create");
+  const flow = useFlowFrame();
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-[640px] flex-col bg-paper">
       <header className="flex h-[60px] items-center gap-2 border-b border-line px-2">
@@ -38,10 +41,11 @@ export function SubFrame({
           </svg>
         </button>
         <h1 className="grow text-[20px] leading-tight text-night-900">{title}</h1>
-        <span className="flex shrink-0 items-center gap-1.5 pe-2 text-caption text-ink-muted">
-          <MoonPhase p={COMPANION_STEP / TOTAL_STEPS} className="size-[18px]" />
-          {t("stepOf", { n: COMPANION_STEP, total: TOTAL_STEPS })}
-        </span>
+        {flow && (
+          <span className="pe-2 text-caption">
+            <StepCount n={flow.n} total={flow.total} />
+          </span>
+        )}
       </header>
       <main className="flex flex-1 flex-col gap-4 px-4 pt-4 pb-40">{children}</main>
       {footer && (

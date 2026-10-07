@@ -1,57 +1,89 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import type { ReactNode } from "react";
+import { createContext, useContext, type ReactNode } from "react";
 import { MoonPhase } from "@/components/art/MoonPhase";
 import { Link } from "@/i18n/navigation";
-import { TOTAL_STEPS } from "@/lib/create";
 
-/** One step of the create flow (design Create1–Create9): the header with the step count, then a sticky footer. */
+/**
+ * What the wizard tells every step's header: the product's title («دوسية ضحى», «كتاب ضحى») and the real
+ * «الخطوة n من N» of this product's flow for this child (lib/flows.ts). The steps never count themselves.
+ */
+export type FlowFrame = { title: string; n: number; total: number; close?: string };
+export const FlowFrameContext = createContext<FlowFrame | null>(null);
+export const useFlowFrame = () => useContext(FlowFrameContext);
+
+/** «الخطوة n من N» with its moon (the header of Frame and the companion's SubFrame). */
+export function StepCount({ n, total }: { n: number; total: number }) {
+  const t = useTranslations("create");
+  return (
+    <span className="flex shrink-0 items-center gap-1.5 text-ink-muted">
+      <MoonPhase p={total ? n / total : 0} className="size-[18px]" />
+      {t("stepOf", { n, total })}
+    </span>
+  );
+}
+
+/**
+ * One step of the create flow (design Create1–Create9): the header with the step count, then a sticky footer.
+ * Inside the wizard the title and the count come from the flow (`FlowFrameContext`); `title`, `n` and `total`
+ * are used only outside it.
+ */
 export function Frame({
   title,
   label,
   n,
+  total,
   back,
   footer,
   children,
 }: {
   title: string;
   label: string;
-  n: number;
+  n?: number;
+  total?: number;
   back?: () => void;
   footer?: ReactNode;
   children: ReactNode;
 }) {
   const t = useTranslations("create");
+  const flow = useFlowFrame();
+  const count = flow ?? (n && total ? { n, total } : null);
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-[640px] flex-col bg-paper">
       <header className="flex flex-col gap-2.5 border-b border-line px-4 pt-1 pb-3.5">
         <div className="flex h-[52px] items-center justify-between">
-          <Link href="/account" aria-label={t("close")} className="flex size-11 items-center justify-center">
+          <Link
+            href={flow?.close ?? "/account"}
+            aria-label={t("close")}
+            className="flex size-11 items-center justify-center"
+          >
             <svg className="size-[22px]" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
             </svg>
           </Link>
-          <strong className="text-body text-night-900">{title}</strong>
-          <span className="w-11" />
+          <strong className="truncate px-2 text-body text-night-900">{flow?.title ?? title}</strong>
+          <span className="w-11 shrink-0" />
         </div>
-        <div className="flex justify-between text-caption">
+        <div className="flex justify-between gap-3 text-caption">
           <strong className="text-night-900">{label}</strong>
-          <span className="flex items-center gap-1.5 text-ink-muted">
-            <MoonPhase p={n / TOTAL_STEPS} className="size-[18px]" />
-            {t("stepOf", { n, total: TOTAL_STEPS })}
-          </span>
+          {count && <StepCount n={count.n} total={count.total} />}
         </div>
-        <div
-          className="flex h-1.5 rounded-full bg-paper-sunk"
-          role="progressbar"
-          aria-valuemin={0}
-          aria-valuemax={TOTAL_STEPS}
-          aria-valuenow={n}
-          aria-label={t("stepOf", { n, total: TOTAL_STEPS })}
-        >
-          <div className="rounded-full bg-night-900" style={{ width: `${Math.round((n / TOTAL_STEPS) * 100)}%` }} />
-        </div>
+        {count && (
+          <div
+            className="flex h-1.5 rounded-full bg-paper-sunk"
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={count.total}
+            aria-valuenow={count.n}
+            aria-label={t("stepOf", count)}
+          >
+            <div
+              className="rounded-full bg-night-900 transition-[width]"
+              style={{ width: `${Math.round((count.n / count.total) * 100)}%` }}
+            />
+          </div>
+        )}
       </header>
       <main className="flex flex-1 flex-col gap-6 px-4 pt-6 pb-36">{children}</main>
       {(back || footer) && (

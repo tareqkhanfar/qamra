@@ -44,6 +44,7 @@ jobs:
       - run: npx prettier --check "src/**/*.{ts,tsx,css}" "messages/*.json"
       - run: npx eslint .
       - run: npx next typegen && npx tsc --noEmit
+      - run: npm test
       - run: npm run build
         env:
           NEXT_TELEMETRY_DISABLED: "1"

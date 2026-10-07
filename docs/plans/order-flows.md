@@ -640,6 +640,35 @@ Language chips «لغة الحكاية: العربية · English» appear only 
   - tests
 - See Q1 for what to do with the B&W variants until then.
 
+### Chunks 1, 2, 3 and 5: the interface as built (2026-10-08)
+
+**The flow model** (`web/lib/flows.ts`, no `@/` imports; `npm test` runs `web/lib/*.test.ts` with `node --test`):
+- As specified: `Kind`, `StepId`, `FlowState`, `ACTIVITY_LINES` (the test checks it equals `lib/shop.ts`), `kindOf`, `stepsFor`, `resumeAt`, `canShow`, `progress`.
+- `FlowState.plan`: the optional steps the flow pinned, kept in the URL as **`plan`** (`line`, `consent`, `photo`, `style`, `character`, or `reuse`). The wizard writes it when it leaves the child step (or, for a story, the type step), so giving the consent or approving the character never drops a step from «n من N». `planFor(state, lineAsked)`, `parsePlan`, `formatPlan`.
+- The mirror of the server's needs rules, used for the first paint and as the fallback: `asksNameEn(line, options)`, `agesFor(line, options)`, `outsideAges`, `tracesName(line)`, `isArabicName` (Arabic letters; spaces or hyphens between words; tashkeel ignored) and `isLatinName` (`^[A-Za-z][A-Za-z' -]{0,39}$`).
+
+**The wizard** (`CreateWizard.tsx`):
+- Activity books: `/create?product=<sku>[&item=<line>][&child=<id>][&step=summary]`. A `line` in the URL is ignored. The steps are child → [consent → photo → character] → [family] → summary. A new character is drawn in `needs.character.draw_style` (3D) as soon as a photo is saved; there is no style step.
+- Stories: child → [line] → [consent] → [photo] → [style] → [character] → [companion] → story → writing → [review] → format → add-ons. The type step now comes right after the child.
+- Back on every drawing step goes to the previous step of this flow.
+- **Frame titles and counts come from the flow:** `FlowFrameContext` in `Frame.tsx` gives `{ title, n, total, close }`, and `Frame` and the companion `SubFrame` read it, so the steps' own `n` props are ignored. Other headers can call `useFlowFrame()` (chunk 7: `AddOnsStep`'s `FlowHeader` could show «n من N»). `TOTAL_STEPS` stays exported, deprecated, only for `CheckoutScreen` until §c.9 drops "n of 12".
+- ✕ goes to `/cart` when the flow fills a cart line, else to `/account`.
+
+**API calls** (`web/lib/create.ts`, as specified): `updateChild`, `needs`, `addWorkbook`, plus `missingEndpoint(r)` (a bare 404 or 405 with no error body).
+- **Marked fallbacks, used only while chunk 8 is not deployed:**
+  - `needs`: the same rules locally (styles from the catalog; `islamic` gets 3d, watercolor and cartoon; `coloring` is never reused).
+  - `PATCH /children/{id}`: the English name is kept for the visit and sent as `name_en` with the cart line.
+- **`addWorkbook` sends:** `character_id` (the reused or newly approved one), `name_en` when the book asks it, and `item_id`.
+  - It sends `family` for the family book. An empty family is sent only when the line's own `family` could be read from `GET /api/store/cart`, so a family given on the product page is never erased by an older API.
+  - The family step keeps its form in `sessionStorage` (`qamra-family:<item or sku>`), so a reload does not lose it. It is cleared after the line is saved.
+- **`ChildStep` props:** `kind`, `productLine`, `known`, `initial`, `preview(name, gender)`, `asksNameEn`, `traces`, `ready(child)`, `nameEnOf(child)`, `onSelect`, `onEdited`, `onDone(child, { nameEn }) → error | null`.
+  - A known child is a confirmation card (`KnownChild`): the English name (editable), the look when a new character will be drawn, and «تعديل البيانات» (`EditChild`, a `PATCH`).
+- **Review step** (`activity/SummaryStep.tsx`):
+  - The add-ons of the line come from chunk 7's `ItemAddOns`, shown only when the flow fills an existing line (`item`). A new line gets its add-ons in the cart.
+  - The age check (`AgeCheck`) links back to the product page with the same picks.
+- **Messages:** `create.steps` (`child`, `who`, `family`, `summary`), `create.titles.*`, `create.child.*` (the story copy; `likes`, `likesList`, `note` and `notePlaceholder` are kept for the story step), `create.who.*` and `create.activity.*`.
+  - The English strings put the Arabic text the book prints inside `<ar>…</ar>`, rendered as `<bdi dir="rtl">` so it stays in order.
+
 ### Chunk 11: product page (after the activity-showcase agent finishes)
 
 - **Files:**

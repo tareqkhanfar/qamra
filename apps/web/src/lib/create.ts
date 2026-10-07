@@ -1,6 +1,7 @@
 /** The parent create flow (design Create1–Create11): the child, consent, photo, character, story, preview. */
-import { api, upload } from "@/lib/api";
+import { api, upload, type ApiResult } from "@/lib/api";
 import type { CustomBriefBody } from "@/lib/customStory";
+import { ALL_STEPS, type StepId } from "@/lib/flows";
 import type { Cart } from "@/lib/store";
 
 export type Line = "classic" | "magic";
@@ -22,7 +23,21 @@ export type Child = {
   photos: number;
   characters: Character[];
   redraws_left: number;
+  // optional until the API sends them (docs/plans/order-flows.md §d chunk 8)
+  interests?: string[]; // what the child likes and the «شيء مميز» note (Magic's story step)
+  name_latin?: string | null; // the name in English letters, as the activity books print it
 };
+/** What `PATCH /api/create/children/{id}` can change (the guardian only; the drawn character is untouched). */
+export type ChildPatch = Partial<{
+  name: string;
+  gender: "m" | "f";
+  age: number;
+  interests: string[];
+  note: string;
+  hijab: boolean;
+  glasses: boolean;
+  name_latin: string;
+}>;
 export type ChildInput = {
   name: string;
   gender: "m" | "f";
@@ -54,6 +69,7 @@ export type StartBook = {
   character_id: string;
   theme: string;
   line: Line;
+  language?: "ar" | "en"; // the book's language (Magic: the site's by default; Classic: Arabic)
   dedication?: string;
   companion_id?: string;
   custom?: CustomBriefBody;
@@ -81,26 +97,72 @@ export const createApi = {
   toCart: (id: string, sku: string, addons: { slug: string; qty?: number }[], item?: string | null) =>
     api<Cart>(`/api/create/books/${id}/cart`, { json: { sku, addons, ...(item ? { item_id: item } : {}) } }),
   deleteChild: (id: string) => api<void>(`/api/create/children/${id}`, { method: "DELETE" }),
+  updateChild: (id: string, patch: ChildPatch) =>
+    api<Child>(`/api/create/children/${id}`, { method: "PATCH", json: patch }),
+  needs: (sku: string, childId?: string) =>
+    api<Needs>(
+      `/api/shop/workbooks/needs?sku=${encodeURIComponent(sku)}${childId ? `&child_id=${encodeURIComponent(childId)}` : ""}`,
+    ),
+  addWorkbook: (body: AddWorkbook) => api<Cart>("/api/shop/workbooks/cart", { json: body }),
 };
+
+/**
+ * What an activity book needs from this child (`GET /api/shop/workbooks/needs?sku&child_id`, §d chunk 8): its
+ * ages, whether it asks the English name and the family, the character it reuses (or the style a new one is
+ * drawn in), and whether the child's name can be traced.
+ */
+export type Needs = {
+  line: string;
+  product: string;
+  ages: [number, number] | null;
+  traces_name?: boolean; // the Arabic name is traced, so it must be in Arabic letters
+  asks: { name_en: boolean; family: boolean };
+  // draw_style: a new character is drawn in it, without asking (3D); styles: the ones the book reuses
+  character: { reuse_id: string | null; draw_style: string | null; styles?: string[] };
+  child: {
+    name_traceable: boolean;
+    name_problem?: "not_arabic" | "not_traceable" | null;
+    name_latin: string | null;
+  } | null;
+};
+
+/** «مغامراتي مع عائلتي»: the family as the book prints it (components/workbook/FamilyDetails `familyPayload`). */
+export type FamilyPayload = {
+  name: string;
+  city: string;
+  members: { relation: string; name: string; adult?: boolean; scarf: boolean }[];
+};
+
+/** An activity book for one child: a new cart line, or the line added in one tap (`item_id`) filled. */
+export type AddWorkbook = {
+  sku: string;
+  child_id: string;
+  item_id?: string;
+  character_id?: string;
+  name_en?: string;
+  family?: FamilyPayload;
+};
+
+/**
+ * Whether a call failed only because the API doesn't have the endpoint yet (a bare 404 or 405, without our
+ * error body): the callers then use their marked fallback. A real refusal always carries an error code.
+ */
+export function missingEndpoint(r: ApiResult<unknown>): boolean {
+  return !r.ok && (r.status === 404 || r.status === 405) && !r.error;
+}
 
 /** Private images come through the API with the parent's cookies (never a public URL). */
 export const characterImage = (id: string) => `/api/create/characters/${id}/image`;
 export const pageImage = (bookId: string, beat: number) => `/api/create/books/${bookId}/pages/${beat}/image`;
 
-/** The 12 steps of the design; checkout (11) and the order page (12) are the store's own pages. */
-export const STEPS = [
-  "child",
-  "consent",
-  "photo",
-  "line",
-  "style",
-  "character",
-  "companion", // «ارسم صاحبك»: optional sub-steps of step 6 (design CompIntro…CompChoose)
-  "story",
-  "writing",
-  "review",
-  "format",
-  "addons", // Addendum 9 (design AddOns), then the cart and the checkout (Create10)
-] as const;
-export type Step = (typeof STEPS)[number];
+/**
+ * Every step id the URL can name (lib/flows.ts decides which ones a product's flow has, and their count):
+ * the story steps, plus `family` and `summary` for the activity books.
+ */
+export const STEPS: readonly StepId[] = ALL_STEPS;
+export type Step = StepId;
+/**
+ * @deprecated The flow's count is per product now (lib/flows.ts `progress`, shown by Frame); kept only until
+ * the checkout header stops saying "n of 12" (§c.9, chunk 7).
+ */
 export const TOTAL_STEPS = 12;
