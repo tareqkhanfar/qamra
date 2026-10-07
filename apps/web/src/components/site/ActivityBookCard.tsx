@@ -3,13 +3,17 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { productFrom } from "@/lib/shop";
 import { money, type CatalogProduct, type Currency } from "@/lib/store";
-import { PREVIEWS, samplePages, soldAges, soldOptions } from "@/lib/workbook";
+import { isSetValue, PREVIEWS, samplePages, soldAges, soldOptions, type Preview } from "@/lib/workbook";
 import { Arrow } from "./blocks";
+
+/** The small copy of an exported page with its full size as the 2× source (scripts/export_workbook_previews.py). */
+const sources = (p: Preview) => (p.sm ? { src: p.sm, srcSet: `${p.sm} 360w, ${p.src} 720w` } : { src: p.src });
 
 /**
  * One activity book as a card: its real cover, age, pages, what it contains, the price it starts from, and a
- * button to its page. `detailed` (the hub) adds the list of what's inside and a strip of real pages. Everything
- * the card says about volumes and stages comes from what the catalog sells today, never from a fixed list.
+ * button to its page. `detailed` (the hub) adds the list of what's inside and a strip of real pages from parts
+ * it sells (KG1 and KG2, the stages, the volumes). Everything the card says about volumes and stages comes from
+ * what the catalog sells today, never from a fixed list.
  */
 export async function ActivityBookCard({
   product,
@@ -20,12 +24,13 @@ export async function ActivityBookCard({
   currency: Currency;
   detailed?: boolean;
 }) {
-  const [t, tw, locale] = await Promise.all([
+  const [t, tw, ts, locale] = await Promise.all([
     getTranslations("workbooksHub"),
     getTranslations("workbook"),
+    getTranslations("workbookShowcase"),
     getLocale(),
   ]);
-  const line = product.line;
+  const line: string = product.line; // the catalog also sells «قلبي يعرف الله» (islamic)
   const name = locale === "ar" ? product.name_ar : product.name_en;
   const pages = PREVIEWS[product.slug] ?? [];
   const cover = pages[0];
@@ -36,7 +41,12 @@ export async function ActivityBookCard({
   const comma = locale === "ar" ? "، " : ", ";
   const level = (sold.level ?? []).map((l) => (tw.has(`values.level.${l}`) ? tw(`values.level.${l}`) : l));
   const unit = (group: "volume" | "stage") => {
-    const values = (sold[group] ?? []).filter((v) => v !== "set");
+    const values = (sold[group] ?? []).filter((v) => !isSetValue(v));
+    if (line === "islamic" && values.length) {
+      // «5 مجلدات وكتاب رمضان والعيد» rather than the catalog's codes (V1 … V5, R)
+      const numbered = values.filter((v) => /^V\d+$/.test(v)).length;
+      return ts("islamicEdition", { count: numbered, ramadan: String(values.includes("R")) });
+    }
     return values.length ? t(values.length > 1 ? `${group}s` : group, { list: values.join(comma) }) : null;
   };
   const edition = [level.map((l) => l.split(" ·")[0]).join(comma), unit("volume"), unit("stage")]
@@ -53,10 +63,11 @@ export async function ActivityBookCard({
       >
         {cover ? (
           <img
-            src={cover.src}
+            {...sources(cover)}
+            sizes="(min-width: 768px) 220px, 150px"
             alt={t("coverAlt", { name })}
-            width={720}
-            height={1018}
+            width={cover.w ?? 720}
+            height={cover.h ?? 1018}
             loading="lazy"
             className="aspect-[1/1.3] w-full max-w-[150px] rounded-t-[8px] object-cover object-top shadow-[0_-8px_24px_rgba(22,32,74,0.15)] md:max-w-[220px]"
           />
@@ -106,10 +117,11 @@ export async function ActivityBookCard({
             {inner.map((p) => (
               <img
                 key={p.src}
-                src={p.src}
+                {...sources(p)}
+                sizes="(min-width: 768px) 120px, 30vw"
                 alt={locale === "ar" ? p.title_ar : p.title_en}
-                width={720}
-                height={1018}
+                width={p.w ?? 720}
+                height={p.h ?? 1018}
                 loading="lazy"
                 className="aspect-[1/1.414] w-1/3 rounded-[8px] border border-line object-cover"
               />

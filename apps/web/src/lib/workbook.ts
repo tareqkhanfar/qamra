@@ -1,78 +1,99 @@
 /**
  * Activity-book product page (Addendum 9, WorkbookProduct): one template for «دوسية التأسيس», «رحلتي الأولى
- * للتعلّم» and «مغامراتي مع عائلتي». Option groups come from the product's variants (never hard-coded).
+ * للتعلّم», «مغامراتي مع عائلتي» and «قلبي يعرف الله». Option groups come from the product's variants (never
+ * hard-coded); the pages shown come from scripts/export_workbook_previews.py, per part the store sells.
  */
 import type { CatalogProduct, CatalogVariant } from "@/lib/store";
 import previews from "./workbook-previews.json";
 
-export type Preview = { src: string; title_ar: string; title_en: string };
-export const PREVIEWS = previews as Record<string, Preview[]>;
+/** One exported page: the 720 px image (`src`), its 360 px copy (`sm`), its size and its captions. */
+export type Preview = { src: string; sm?: string; w?: number; h?: number; title_ar: string; title_en: string };
+/** A part the store sells (a level's volume, a stage, a volume, the family book): its cover and chosen pages. */
+export type Part = { key: string; cover: Preview; pages: Preview[] };
+type ProductPreviews = { default: string; scopes: Record<string, { cover: Preview; pages: Preview[] }> };
 
-/** What a strip of preview pages comes from, e.g. {level: "kg2", volume: "3"} or {stage: "2"}; {} = the product. */
-export type PreviewScope = Partial<Record<"level" | "volume" | "stage", string>>;
-type PreviewSet = { pages: Preview[]; scope: PreviewScope };
+export const SHOWCASE = previews as Record<string, ProductPreviews>;
 
-/** «رحلتي الأولى»'s strip is one list; every caption starts with its stage («المحطة 2: …», "Stage 2: …"). */
-const STAGE = /^(?:المحطة|Stage) (\d+): /;
+/** Product → [cover, …pages] of the part it shows first (cards, link previews, JSON-LD). */
+export const PREVIEWS: Record<string, Preview[]> = Object.fromEntries(
+  Object.entries(SHOWCASE).map(([slug, p]) => {
+    const first = p.scopes[p.default] ?? Object.values(p.scopes)[0];
+    return [slug, first ? [first.cover, ...first.pages] : []];
+  }),
+);
 
-function stagePages(pages: Preview[], stage: string): Preview[] {
-  return pages
-    .filter((p) => STAGE.exec(p.title_en)?.[1] === stage)
-    .map((p) => {
-      const en = p.title_en.replace(STAGE, "");
-      return { ...p, title_ar: p.title_ar.replace(STAGE, ""), title_en: en.charAt(0).toUpperCase() + en.slice(1) };
-    });
+/** «قلبي يعرف الله»'s sets and the volumes in each (content/store/catalog.yaml). */
+const ISLAMIC_SETS: Record<string, string[]> = {
+  L1: ["V1", "V2"],
+  L2: ["V3", "V4", "V5"],
+  set: ["V1", "V2", "V3", "V4", "V5"],
+};
+
+/**
+ * The keys of the parts the picks show (the export's scope keys): «دوسية التأسيس» `kg1-2` (level-volume), a
+ * stage `2`, a volume `V3`, the family book `book`; a set gives all of its parts. A part the export doesn't have
+ * is dropped, and nothing left falls back to the product's first part.
+ */
+export function partKeys(slug: string, line: string, picks: Picks): string[] {
+  const own = SHOWCASE[slug];
+  if (!own) return [];
+  let keys: string[] = [];
+  if (line === "workbook") {
+    const level = picks.level ?? own.default.split("-")[0]!;
+    const volume = picks.volume ?? "1";
+    keys = volume === "set" ? ["1", "2", "3"].map((v) => `${level}-${v}`) : [`${level}-${volume}`];
+  } else if (line === "journey") {
+    keys = picks.stage === "set" ? ["1", "2", "3"] : [picks.stage ?? own.default];
+  } else if (line === "islamic") {
+    const volume = picks.volume ?? own.default;
+    keys = ISLAMIC_SETS[volume] ?? [volume];
+  } else {
+    keys = [own.default];
+  }
+  const known = keys.filter((k) => own.scopes[k]);
+  return known.length ? known : [own.default].filter((k) => own.scopes[k]);
 }
 
-/** The preview sets of a product, one per level, volume or stage they show (in the catalog's order). */
-function previewSets(slug: string): PreviewSet[] {
-  const own = PREVIEWS[slug] ?? [];
-  if (slug === "foundation-workbook") {
-    return [
-      { pages: PREVIEWS["foundation-workbook-kg1"] ?? [], scope: { level: "kg1" } },
-      { pages: own, scope: { level: "kg2" } }, // drawn from KG2 volume 1, standing in for volumes 1 and 2
-      { pages: PREVIEWS["foundation-workbook-v3"] ?? [], scope: { level: "kg2", volume: "3" } },
-    ].filter((s) => s.pages.length > 0);
-  }
-  if (slug === "learning-journey") {
-    const stages = [...new Set(own.map((p) => STAGE.exec(p.title_en)?.[1]).filter((x): x is string => !!x))];
-    return stages.map((stage) => ({ pages: stagePages(own, stage), scope: { stage } }));
-  }
-  return own.length ? [{ pages: own, scope: {} }] : [];
+/** The parts the picks show, each with its cover and pages (several for a set). */
+export function partsFor(slug: string, line: string, picks: Picks): Part[] {
+  const own = SHOWCASE[slug];
+  return own ? partKeys(slug, line, picks).map((key) => ({ key, ...own.scopes[key]! })) : [];
+}
+
+/** Whether an option value is a set (all three, «المستوى الأول», the five volumes) rather than one book. */
+export const isSetValue = (value: string) => value === "set" || value in ISLAMIC_SETS;
+
+/** Whether the picks are a set (several volumes or stages in one order). */
+export function isSet(picks: Picks): boolean {
+  return Object.values(picks).some(isSetValue);
 }
 
 /**
- * The preview pages for the reader's picks: the chosen level's, volume's or stage's when there are pages of
- * it, else the product's own set. A set ("all three") shows the pages of every part of it.
+ * A few inside pages for the product's card (the hub): from parts spread over what the store sells (KG1 and
+ * KG2, stages 1–3, volumes 1, 3 and 5), a different kind of page from each.
  */
-export function previewsFor(slug: string, picks: Picks): { pages: Preview[]; scope: PreviewScope } {
-  const fallback = { pages: PREVIEWS[slug] ?? [], scope: {} };
-  const sets = previewSets(slug);
-  if (slug === "learning-journey") {
-    if (picks.stage === "set") return { ...fallback, scope: { stage: "set" } }; // every stage, captions keep theirs
-    if (!picks.stage) return fallback;
-    return sets.find((s) => s.scope.stage === picks.stage) ?? fallback;
-  }
-  if (slug === "foundation-workbook" && picks.level) {
-    const level = sets.filter((s) => s.scope.level === picks.level);
-    if (picks.volume === "set" && level.length > 1) {
-      return { pages: level.flatMap((s) => s.pages), scope: { level: picks.level } };
-    }
-    const exact = level.find((s) => s.scope.volume === picks.volume) ?? level.find((s) => !s.scope.volume);
-    if (exact) return exact;
-  }
-  return fallback;
-}
-
-/** A few inside pages for the product's card (the hub): one from each level, volume or stage it sells. */
 export function samplePages(product: CatalogProduct, count = 3): Preview[] {
+  const own = SHOWCASE[product.slug];
+  if (!own) return [];
   const sold = soldOptions(product);
-  const sets = previewSets(product.slug).filter(({ scope }) =>
-    (["level", "stage"] as const).every((k) => !scope[k] || !sold[k] || sold[k].includes(scope[k])),
-  );
+  const line: string = product.line; // the catalog's lines include «قلبي يعرف الله» (islamic)
+  const isSold = (key: string) => {
+    if (line === "workbook") {
+      const [level, volume] = key.split("-");
+      return (sold.level ?? [level]).includes(level!) && (sold.volume ?? [volume]).includes(volume!);
+    }
+    if (line === "journey") return (sold.stage ?? [key]).includes(key);
+    if (line === "islamic") return (sold.volume ?? [key]).includes(key);
+    return true;
+  };
+  const keys = Object.keys(own.scopes).filter(isSold);
+  if (!keys.length) return [];
   const out: Preview[] = [];
-  for (let i = 1; out.length < count && sets.some((s) => s.pages.length > i); i++) {
-    for (const s of sets) if (s.pages[i] && out.length < count) out.push(s.pages[i]!);
+  for (let i = 0; i < count; i++) {
+    const part = own.scopes[keys[Math.floor((i * keys.length) / count)]!]!;
+    // «قلبي يعرف الله»: each volume's first page is its illustrated unit opener; elsewhere a different kind each
+    const page = part.pages[line === "islamic" ? 0 : i % Math.max(part.pages.length, 1)];
+    if (page && !out.includes(page)) out.push(page);
   }
   return out;
 }

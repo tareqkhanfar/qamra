@@ -3557,5 +3557,139 @@
       "browse": "Choose a story",
       "start": "Start with a free preview"
     }
+  },
+  "workbookShowcase": {
+    "peek": "Pages from inside the book",
+    "from": "Selected pages from {part}. Tap any page to enlarge it.",
+    "fromSet": "Pick a book from the set to browse its pages, and tap any page to enlarge it.",
+    "fromBook": "Selected pages from the book. Tap any page to enlarge it.",
+    "part": {
+      "workbook": "{level}, Volume {n}",
+      "journey": "Stage {n}"
+    },
+    "open": "Enlarge the page: {title}",
+    "openCover": "Enlarge the cover of {part}",
+    "viewer": "Pages of {part}",
+    "counter": "{n} of {total}",
+    "previous": "Previous page",
+    "next": "Next page",
+    "close": "Close",
+    "earlierPages": "Earlier pages",
+    "morePages": "More pages",
+    "partsLabel": "Books in the set",
+    "parts": "{count, plural, one {# book} other {# books}}",
+    "bwBadge": "Black and white",
+    "pdfBadge": "PDF file",
+    "bwNote": "This is how the pages look in the black-and-white printed copy.",
+    "pdfNote": "You get the same pages as a PDF file to print at home.",
+    "about": "About {part}",
+    "aboutBook": "About the book",
+    "aboutSet": "About this set",
+    "topics": "What your child learns",
+    "skills": "What they gain",
+    "personal": "Made for your child",
+    "included": "Also in the book",
+    "inEach": "What's in each book",
+    "pages": "{count, plural, one {# page} other {# pages}}",
+    "weeks": "{count, plural, one {# week} other {# weeks}}",
+    "includedTitle": "Comes with the book",
+    "includedPdf": "With the PDF version, these pages and sheets come in the files for you to print at home.",
+    "extrasTitle": "Optional extras",
+    "extrasLead": "Choose them in your cart after adding the book.",
+    "free": "Free",
+    "plus": "+{price}",
+    "percentOf": "{n}% of the book's price",
+    "islamicEdition": "{count, plural, one {# volume} other {# volumes}}{ramadan, select, true { and the Ramadan and Eid book} other {}}"
+  },
+  "storyShowcase": {
+    "title": "See the art before you choose",
+    "lead": "Real pages from books we made for imaginary children. Pick a style to see its pages, and tap any page to enlarge it.",
+    "tabsLabel": "Art style",
+    "galleryLabel": "Pages in the “{style}” style",
+    "stepGallery": "Here’s how the pages look in the “{style}” style",
+    "styles": {
+      "3d": "Warm cinematic light, expressive eyes and magical depth in every scene, as if your child were the hero of an animated film.",
+      "watercolor": "The warmth of watercolor on textured paper, with golden light and deep shadows. This is Qamra’s signature look.",
+      "cartoon": "Clean outlines, bright cheerful colors and simple shapes that little ones love at first sight."
+    },
+    "soldIn": "Available in {lines}",
+    "realPages": "{count, plural, one {# real page} other {# real pages}}",
+    "styleCount": "{count, plural, one {# art style} other {# art styles}}",
+    "caption": {
+      "companion": "Qamour, the hero’s companion in our stories",
+      "from": "From “{story}”",
+      "story": "“{story}”"
+    },
+    "note": {
+      "otherStories": "These pages come from other stories in the same style. You’ll see your child’s story drawn this way in the free preview, before you pay.",
+      "companionOnly": "This is how Qamour looks in this style. You’ll see your child’s story drawn this way in the free preview, before you pay."
+    },
+    "gallery": {
+      "zoom": "Enlarge: {page}",
+      "cover": "Cover",
+      "prev": "Previous pictures",
+      "next": "Next pictures"
+    },
+    "lightbox": {
+      "title": "Enlarged page",
+      "prev": "Previous page",
+      "next": "Next page",
+      "count": "{n} of {total}",
+      "close": "Close"
+    },
+    "values": "Values in the story:",
+    "related": {
+      "title": "You may also like",
+      "lead": "More stories with your child as the hero, in the same art styles."
+    },
+    "extras": {
+      "title": "Optional extras",
+      "lead": "Choose any you like after the preview.",
+      "later": "Choose any you like after the preview.",
+      "plus": "+{price}",
+      "percent": "{percent}% of the book’s price",
+      "free": "Free",
+      "includedIn": "Included in {line}",
+      "onlyIn": "Only with {line}",
+      "showAll": "Show all extras ({count})"
+    },
+    "lines": {
+      "title": "Which book is right for you?",
+      "lead": "Both are printed books starring your child, with their name and features. The main difference is the art: pick a style to see a page from each.",
+      "switchLabel": "See both books in:",
+      "from": "From <b>{price}</b>",
+      "best": "Our finest",
+      "popular": "Most popular",
+      "styleChip": "“{style}” style",
+      "zoom": "Enlarge: {page}",
+      "onlyIn": "The “{style}” style is available in {line} only; this page is in the “{own}” style.",
+      "stylesOne": "Art style: {styles}",
+      "stylesMany": "Art styles: {styles}",
+      "included": "Included in the price",
+      "classic": {
+        "tagline": "Beautiful ready-made art, with your child drawn in as the hero",
+        "points": [
+          "The story’s pictures are ready-made and reviewed, and we draw your child’s features into every page where they appear",
+          "Their name on every page, with the right “he” or “she” throughout",
+          "Ready to preview within minutes, at a lower price"
+        ]
+      },
+      "magic": {
+        "tagline": "Every page is drawn anew for your child alone",
+        "points": [
+          "One-of-a-kind pictures no other child has",
+          "The story text suits your child’s age, with a touch of their interests"
+        ]
+      },
+      "facts": {
+        "title": "In both books",
+        "pages": "{count, plural, one {# page} other {# pages}} in every story",
+        "preview": "A free preview before you pay",
+        "cod": "Cash on delivery",
+        "delivery": "Delivery to {zones} in {min}–{max} working days"
+      },
+      "browse": "Choose a story",
+      "start": "Start with a free preview"
+    }
   }
 }

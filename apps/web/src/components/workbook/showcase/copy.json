@@ -1,0 +1,1815 @@
+{
+  "foundation-workbook": {
+    "parts": {
+      "kg1-1": {
+        "short": {
+          "ar": "إمساك القلم، والحروف أ–ذ، والأعداد 1–5 والصفر",
+          "en": "Holding a pencil, letters أ–ذ, numbers 1–5 and zero"
+        },
+        "pitch": {
+          "ar": "في الفصل الأول يدرّب طفلكم يده على القلم، ثم يتعرّف على حروفه وأعداده الأولى، في كتاب يحمل اسمه وشخصيته.",
+          "en": "In the first term, your child builds pencil control, then meets their first letters and numbers, in a book with their name and character."
+        },
+        "topics": [
+          {
+            "ar": "خطوط وأقواس ودوائر ومتاهات لتدريب اليد",
+            "en": "Lines, curves, circles and mazes to train the hand"
+          },
+          {
+            "ar": "تسعة حروف عربية من أ إلى ذ",
+            "en": "Nine Arabic letters, أ to ذ"
+          },
+          {
+            "ar": "الألوان والمقارنة: كبير وصغير، طويل وقصير",
+            "en": "Colors and comparing: big and small, long and short"
+          },
+          {
+            "ar": "الأعداد من 1 إلى 5، ثم الصفر",
+            "en": "Numbers 1 to 5, then zero"
+          },
+          {
+            "ar": "الحروف الإنجليزية من A إلى H",
+            "en": "English letters A to H"
+          },
+          {
+            "ar": "المطابقة والتصنيف والأنماط والتذكّر",
+            "en": "Matching, sorting, patterns and memory"
+          }
+        ],
+        "skills": [
+          {
+            "ar": "يمسك القلم ويرسم خطوطًا فوق النقاط",
+            "en": "Holds the pencil and draws over dotted lines"
+          },
+          {
+            "ar": "يتتبّع الحروف التسعة في الاتجاه الصحيح",
+            "en": "Traces the nine letters in the right direction"
+          },
+          {
+            "ar": "يكتب وحده ستة حروف بسيطة الشكل",
+            "en": "Writes six simple letters on their own"
+          },
+          {
+            "ar": "يعدّ حتى 5 ويربط العدد بكمّيته",
+            "en": "Counts to 5 and matches numbers to amounts"
+          },
+          {
+            "ar": "يميّز الحروف المتشابهة بعدد النقاط ومكانها",
+            "en": "Tells similar letters apart by their dots"
+          }
+        ],
+        "age": {
+          "ar": "4–5 سنوات",
+          "en": "Ages 4–5"
+        },
+        "pages": 120,
+        "weeks": 12,
+        "personal": [
+          {
+            "ar": "صفحة «هذا الكتاب لـ…» باسمه وشخصيته وبصمة كفّه",
+            "en": "An owner page with their name, character and handprint"
+          },
+          {
+            "ar": "تتبّع اسمه وكتابته بالعربية والإنجليزية",
+            "en": "Tracing and writing their name in Arabic and English"
+          },
+          {
+            "ar": "شخصيته المرسومة بين صفحات الكتاب",
+            "en": "Their illustrated character inside the book"
+          },
+          {
+            "ar": "تعليمات تخاطب طفلكم بصيغة الولد أو البنت",
+            "en": "Instructions worded for a boy or a girl"
+          }
+        ],
+        "included": [
+          {
+            "ar": "مراجعة بعد كل وحدة، وأسبوع خفيف للمراجعة",
+            "en": "Unit reviews and a light review week"
+          },
+          {
+            "ar": "خمسة تقييمات ختامية يدوّن نتائجها الأهل أو المعلّمة",
+            "en": "Five end-of-volume assessments scored by a parent or teacher"
+          },
+          {
+            "ar": "قائمة لملاحظة مسكة القلم والضغط والاتجاه",
+            "en": "A checklist for pencil grip, pressure and direction"
+          },
+          {
+            "ar": "فهرس الوحدات، ورقم الأسبوع على كل صفحة",
+            "en": "A contents page and the week number on every page"
+          }
+        ]
+      },
+      "kg1-2": {
+        "short": {
+          "ar": "الحروف ر–غ، والأعداد 6–10، والأشكال وكلمات المكان",
+          "en": "Letters ر–غ, numbers 6–10, shapes and position words"
+        },
+        "pitch": {
+          "ar": "في الفصل الثاني يتعلّم طفلكم عشرة حروف جديدة ويعدّ حتى 10، ويكتشف الأشكال وكلمات المكان باللعب والتلوين.",
+          "en": "In the second term, your child learns ten new letters, counts to 10, and discovers shapes and position words through play and coloring."
+        },
+        "topics": [
+          {
+            "ar": "حلقات متصلة وأسنان صغيرة ومتاهات أضيق",
+            "en": "Joined loops, small zigzags and narrower mazes"
+          },
+          {
+            "ar": "عشرة حروف عربية من ر إلى غ",
+            "en": "Ten Arabic letters, ر to غ"
+          },
+          {
+            "ar": "موضع الباء والتاء في أول الكلمة ووسطها وآخرها",
+            "en": "ب and ت at the start, middle and end of a word"
+          },
+          {
+            "ar": "الأعداد من 6 إلى 10",
+            "en": "Numbers 6 to 10"
+          },
+          {
+            "ar": "الأشكال وكلمات المكان والترتيب من الأصغر إلى الأكبر",
+            "en": "Shapes, position words and ordering by size"
+          },
+          {
+            "ar": "الحروف الإنجليزية من I إلى R",
+            "en": "English letters I to R"
+          }
+        ],
+        "skills": [
+          {
+            "ar": "يتتبّع الحروف الجديدة ويكتب وحده الراء والزاي",
+            "en": "Traces the new letters and writes ر and ز on their own"
+          },
+          {
+            "ar": "يميّز أزواج الحروف المتشابهة بنقاطها",
+            "en": "Tells letter pairs apart by their dots"
+          },
+          {
+            "ar": "يعدّ حتى 10 ويقارن بين مجموعتين",
+            "en": "Counts to 10 and compares two groups"
+          },
+          {
+            "ar": "يستعمل كلمات المكان: فوق وتحت وداخل وخارج",
+            "en": "Uses position words: above, below, inside, outside"
+          },
+          {
+            "ar": "يرتّب ثلاث صور حسب تسلسل حدوثها",
+            "en": "Puts three pictures in the order they happen"
+          }
+        ],
+        "age": {
+          "ar": "4–5 سنوات",
+          "en": "Ages 4–5"
+        },
+        "pages": 116,
+        "weeks": 11,
+        "personal": [
+          {
+            "ar": "صفحة «هذا الكتاب لـ…» باسمه وشخصيته وبصمة كفّه",
+            "en": "An owner page with their name, character and handprint"
+          },
+          {
+            "ar": "تتبّع اسمه وكتابته بالعربية والإنجليزية",
+            "en": "Tracing and writing their name in Arabic and English"
+          },
+          {
+            "ar": "شخصيته المرسومة بين صفحات الكتاب",
+            "en": "Their illustrated character inside the book"
+          },
+          {
+            "ar": "تعليمات تخاطب طفلكم بصيغة الولد أو البنت",
+            "en": "Instructions worded for a boy or a girl"
+          }
+        ],
+        "included": [
+          {
+            "ar": "مراجعة بعد كل وحدة، وأسبوعان خفيفان للمراجعة",
+            "en": "Unit reviews and two light review weeks"
+          },
+          {
+            "ar": "خمسة تقييمات ختامية يدوّن نتائجها الأهل أو المعلّمة",
+            "en": "Five end-of-volume assessments scored by a parent or teacher"
+          },
+          {
+            "ar": "قائمة لملاحظة مسكة القلم والضغط والاتجاه",
+            "en": "A checklist for pencil grip, pressure and direction"
+          },
+          {
+            "ar": "فهرس الوحدات، ورقم الأسبوع على كل صفحة",
+            "en": "A contents page and the week number on every page"
+          }
+        ]
+      },
+      "kg1-3": {
+        "short": {
+          "ar": "الحروف ف–ي، وسماع الحركات، والجمع والطرح بالصور",
+          "en": "Letters ف–ي, hearing short vowels, adding and subtracting"
+        },
+        "pitch": {
+          "ar": "في الفصل الثالث يُكمل طفلكم الحروف الثمانية والعشرين، ويسمع الحركات الثلاث، ويجمع ويطرح بالصور، ثم ينال شهادة إنجاز باسمه.",
+          "en": "In the third term, your child completes all 28 letters, listens for the three short vowels, adds and subtracts with pictures, and earns a certificate in their name."
+        },
+        "topics": [
+          {
+            "ar": "آخر تسعة حروف عربية من ف إلى ي",
+            "en": "The last nine Arabic letters, ف to ي"
+          },
+          {
+            "ar": "الفتحة والضمة والكسرة بالاستماع",
+            "en": "Fatha, damma and kasra, by ear"
+          },
+          {
+            "ar": "الحرف الأول في أسماء الصور",
+            "en": "The first letter of picture words"
+          },
+          {
+            "ar": "العدّ حتى 10، والجمع والطرح بالصور حتى 5",
+            "en": "Counting to 10, adding and subtracting within 5"
+          },
+          {
+            "ar": "الحروف الإنجليزية من S إلى Z، وعشر وحدات مفردات",
+            "en": "English letters S to Z and ten vocabulary units"
+          },
+          {
+            "ar": "التصنيف والأنماط والتذكّر وتركيب الصور",
+            "en": "Sorting, patterns, memory and picture puzzles"
+          }
+        ],
+        "skills": [
+          {
+            "ar": "يتعرّف على الحروف العربية الثمانية والعشرين",
+            "en": "Recognizes all 28 Arabic letters"
+          },
+          {
+            "ar": "يكتب وحده اللام والنون بعد التتبّع",
+            "en": "Writes ل and ن on their own after tracing"
+          },
+          {
+            "ar": "يميّز بالسمع الفتحة والضمة والكسرة",
+            "en": "Hears the difference between the three short vowels"
+          },
+          {
+            "ar": "يجمع ويطرح بالصور حتى 5",
+            "en": "Adds and subtracts with pictures within 5"
+          },
+          {
+            "ar": "يتعرّف على كلمات إنجليزية يومية بالصور",
+            "en": "Recognizes everyday English words from pictures"
+          }
+        ],
+        "age": {
+          "ar": "4–5 سنوات",
+          "en": "Ages 4–5"
+        },
+        "pages": 114,
+        "weeks": 11,
+        "personal": [
+          {
+            "ar": "صفحة «هذا الكتاب لـ…» باسمه وشخصيته وبصمة كفّه",
+            "en": "An owner page with their name, character and handprint"
+          },
+          {
+            "ar": "تتبّع اسمه وكتابته بالعربية والإنجليزية",
+            "en": "Tracing and writing their name in Arabic and English"
+          },
+          {
+            "ar": "شخصيته المرسومة بين صفحات الكتاب",
+            "en": "Their illustrated character inside the book"
+          },
+          {
+            "ar": "تعليمات تخاطب طفلكم بصيغة الولد أو البنت",
+            "en": "Instructions worded for a boy or a girl"
+          }
+        ],
+        "included": [
+          {
+            "ar": "مراجعة بعد كل وحدة، وأسبوعان خفيفان للمراجعة",
+            "en": "Unit reviews and two light review weeks"
+          },
+          {
+            "ar": "خمسة تقييمات ختامية يدوّن نتائجها الأهل أو المعلّمة",
+            "en": "Five end-of-volume assessments scored by a parent or teacher"
+          },
+          {
+            "ar": "قائمة لملاحظة مسكة القلم والضغط والاتجاه",
+            "en": "A checklist for pencil grip, pressure and direction"
+          },
+          {
+            "ar": "شهادة إنجاز باسمه وشخصيته في آخر الجزء",
+            "en": "A certificate with their name and character"
+          }
+        ]
+      },
+      "kg2-1": {
+        "short": {
+          "ar": "إمساك القلم، وكتابة الحروف أ–ذ، والأعداد 1–5 والصفر",
+          "en": "Holding a pencil, writing letters أ–ذ, numbers 1–5 and zero"
+        },
+        "pitch": {
+          "ar": "في الفصل الأول يدرّب طفلكم يده على القلم، ثم يكتب حروفه الأولى وحده ويعدّ حتى 5، أسبوعًا بعد أسبوع.",
+          "en": "In the first term, your child builds pencil control, then writes their first letters on their own and counts to 5, week by week."
+        },
+        "topics": [
+          {
+            "ar": "خطوط ومنحنيات ودوائر ومتاهات وتوصيل النقاط",
+            "en": "Lines, curves, circles, mazes and dot-to-dot"
+          },
+          {
+            "ar": "الصوت الأول في الكلمة",
+            "en": "The first sound in a word"
+          },
+          {
+            "ar": "تسعة حروف عربية من أ إلى ذ",
+            "en": "Nine Arabic letters, أ to ذ"
+          },
+          {
+            "ar": "الأعداد من 1 إلى 5، ثم الصفر",
+            "en": "Numbers 1 to 5, then zero"
+          },
+          {
+            "ar": "الحروف الإنجليزية من A إلى H",
+            "en": "English letters A to H"
+          },
+          {
+            "ar": "المطابقة والتصنيف والأنماط وإيجاد الفروق",
+            "en": "Matching, sorting, patterns and spotting differences"
+          }
+        ],
+        "skills": [
+          {
+            "ar": "يرسم خطوطًا ومنحنيات ودوائر بيد ثابتة",
+            "en": "Draws lines, curves and circles with a steady hand"
+          },
+          {
+            "ar": "يكتب كل حرف من أ إلى ذ وحده",
+            "en": "Writes each letter from أ to ذ on their own"
+          },
+          {
+            "ar": "يميّز الحروف المتشابهة بعدد النقاط",
+            "en": "Tells similar letters apart by their dots"
+          },
+          {
+            "ar": "يقرأ الأعداد حتى 5 ويكتبها ويطابقها بكمّيتها",
+            "en": "Reads, writes and matches numbers up to 5"
+          },
+          {
+            "ar": "يتتبّع الحروف الإنجليزية من A إلى H ويكتبها",
+            "en": "Traces and writes English letters A to H"
+          }
+        ],
+        "age": {
+          "ar": "5–6 سنوات",
+          "en": "Ages 5–6"
+        },
+        "pages": 128,
+        "weeks": 12,
+        "personal": [
+          {
+            "ar": "صفحة «هذا الكتاب لـ…» باسمه وشخصيته وبصمة كفّه",
+            "en": "An owner page with their name, character and handprint"
+          },
+          {
+            "ar": "تتبّع اسمه وكتابته بالعربية والإنجليزية",
+            "en": "Tracing and writing their name in Arabic and English"
+          },
+          {
+            "ar": "شخصيته المرسومة بين صفحات الكتاب",
+            "en": "Their illustrated character inside the book"
+          },
+          {
+            "ar": "تعليمات تخاطب طفلكم بصيغة الولد أو البنت",
+            "en": "Instructions worded for a boy or a girl"
+          }
+        ],
+        "included": [
+          {
+            "ar": "مراجعة بعد كل وحدة، ومراجعة شاملة للجزء",
+            "en": "Unit reviews and a whole-volume review"
+          },
+          {
+            "ar": "خمسة تقييمات ختامية يدوّن نتائجها الأهل أو المعلّمة",
+            "en": "Five end-of-volume assessments scored by a parent or teacher"
+          },
+          {
+            "ar": "قائمة لملاحظة مسكة القلم والضغط والاتجاه",
+            "en": "A checklist for pencil grip, pressure and direction"
+          },
+          {
+            "ar": "فهرس الوحدات، ورقم الأسبوع على كل صفحة",
+            "en": "A contents page and the week number on every page"
+          }
+        ]
+      },
+      "kg2-2": {
+        "short": {
+          "ar": "أشكال الحروف في الكلمة، والحروف ر–غ، والأعداد 6–10",
+          "en": "Letter forms in words, letters ر–غ, numbers 6–10"
+        },
+        "pitch": {
+          "ar": "في الفصل الثاني يميّز طفلكم أشكال الحروف داخل الكلمة، ويكتب عشرة حروف جديدة، ويعدّ حتى 10، ويتعرّف على الأشكال وكلمات المكان.",
+          "en": "In the second term, your child recognizes letter forms inside words, writes ten new letters, counts to 10, and learns shapes and position words."
+        },
+        "topics": [
+          {
+            "ar": "أشكال الحروف في أول الكلمة ووسطها وآخرها",
+            "en": "Letter forms at a word's start, middle and end"
+          },
+          {
+            "ar": "عشرة حروف عربية من ر إلى غ",
+            "en": "Ten Arabic letters, ر to غ"
+          },
+          {
+            "ar": "الأعداد من 6 إلى 10، وترتيب الأعداد حتى 10",
+            "en": "Numbers 6 to 10, and ordering numbers to 10"
+          },
+          {
+            "ar": "الأشكال وكلمات المكان والأنماط",
+            "en": "Shapes, position words and patterns"
+          },
+          {
+            "ar": "الحروف الإنجليزية من I إلى R",
+            "en": "English letters I to R"
+          },
+          {
+            "ar": "التصنيف وترتيب القصة والتذكّر والمتاهات",
+            "en": "Sorting, story order, memory and mazes"
+          }
+        ],
+        "skills": [
+          {
+            "ar": "يكتب الحروف الجديدة وحده على السطر",
+            "en": "Writes the new letters on their own, on the line"
+          },
+          {
+            "ar": "يميّز بين كل حرفين متشابهين بالنقاط",
+            "en": "Tells look-alike letter pairs apart by their dots"
+          },
+          {
+            "ar": "يعدّ حتى 10 ويرتّب الأعداد ويقارنها",
+            "en": "Counts to 10, orders numbers and compares them"
+          },
+          {
+            "ar": "يستعمل كلمات المكان: فوق وتحت، يمين ويسار",
+            "en": "Uses position words: above, below, right, left"
+          },
+          {
+            "ar": "يرتّب صور قصة قصيرة حسب تسلسل أحداثها",
+            "en": "Puts a short story's pictures in order"
+          }
+        ],
+        "age": {
+          "ar": "5–6 سنوات",
+          "en": "Ages 5–6"
+        },
+        "pages": 124,
+        "weeks": 11,
+        "personal": [
+          {
+            "ar": "صفحة «هذا الكتاب لـ…» باسمه وشخصيته وبصمة كفّه",
+            "en": "An owner page with their name, character and handprint"
+          },
+          {
+            "ar": "تتبّع اسمه وكتابته بالعربية والإنجليزية",
+            "en": "Tracing and writing their name in Arabic and English"
+          },
+          {
+            "ar": "شخصيته المرسومة بين صفحات الكتاب",
+            "en": "Their illustrated character inside the book"
+          },
+          {
+            "ar": "تعليمات تخاطب طفلكم بصيغة الولد أو البنت",
+            "en": "Instructions worded for a boy or a girl"
+          }
+        ],
+        "included": [
+          {
+            "ar": "مراجعة بعد كل وحدة، وأسبوع خفيف للمراجعة",
+            "en": "Unit reviews and a light review week"
+          },
+          {
+            "ar": "خمسة تقييمات ختامية يدوّن نتائجها الأهل أو المعلّمة",
+            "en": "Five end-of-volume assessments scored by a parent or teacher"
+          },
+          {
+            "ar": "قائمة لملاحظة مسكة القلم والضغط والاتجاه",
+            "en": "A checklist for pencil grip, pressure and direction"
+          },
+          {
+            "ar": "فهرس الوحدات، ورقم الأسبوع على كل صفحة",
+            "en": "A contents page and the week number on every page"
+          }
+        ]
+      },
+      "kg2-3": {
+        "short": {
+          "ar": "الحروف ف–ي، والحركات، وبداية القراءة، والأعداد حتى 20",
+          "en": "Letters ف–ي, vowel marks, early reading, numbers to 20"
+        },
+        "pitch": {
+          "ar": "في الفصل الثالث يُكمل طفلكم الحروف، ثم يقرأ أولى كلماته وجملًا قصيرة، ويعدّ حتى 20، وينال شهادة إنجاز باسمه.",
+          "en": "In the third term, your child completes the alphabet, reads their first words and short sentences, counts to 20, and earns a certificate in their name."
+        },
+        "topics": [
+          {
+            "ar": "آخر تسعة حروف عربية من ف إلى ي",
+            "en": "The last nine Arabic letters, ف to ي"
+          },
+          {
+            "ar": "الفتحة والضمة والكسرة والسكون",
+            "en": "Fatha, damma, kasra and sukun"
+          },
+          {
+            "ar": "المقاطع القصيرة والطويلة، ثم الكلمات والجمل",
+            "en": "Short and long syllables, then words and sentences"
+          },
+          {
+            "ar": "الأعداد من 11 إلى 20 بالعشرات والآحاد المصوّرة",
+            "en": "Numbers 11 to 20, with tens and ones pictured"
+          },
+          {
+            "ar": "الجمع والطرح بالصور حتى 10",
+            "en": "Adding and subtracting with pictures within 10"
+          },
+          {
+            "ar": "الحروف الإنجليزية من S إلى Z، وعشر وحدات مفردات",
+            "en": "English letters S to Z and ten vocabulary units"
+          }
+        ],
+        "skills": [
+          {
+            "ar": "يقرأ الحرف مع الحركات الأربع",
+            "en": "Reads letters with fatha, damma, kasra and sukun"
+          },
+          {
+            "ar": "يقرأ كلمات قصيرة وجملًا من كلمتين",
+            "en": "Reads short words and two-word sentences"
+          },
+          {
+            "ar": "يكتب كلمات قصيرة وحده على السطر",
+            "en": "Writes short words on their own, on the line"
+          },
+          {
+            "ar": "يجمع ويطرح بالصور ويكتب جملة الجمع أو الطرح",
+            "en": "Adds and subtracts with pictures and writes the number sentence"
+          },
+          {
+            "ar": "يقرأ كلمات إنجليزية قصيرة مثل cat وsun",
+            "en": "Reads short English words like cat and sun"
+          }
+        ],
+        "age": {
+          "ar": "5–6 سنوات",
+          "en": "Ages 5–6"
+        },
+        "pages": 130,
+        "weeks": 11,
+        "personal": [
+          {
+            "ar": "صفحة «هذا الكتاب لـ…» باسمه وشخصيته وبصمة كفّه",
+            "en": "An owner page with their name, character and handprint"
+          },
+          {
+            "ar": "تتبّع اسمه وكتابته بالعربية والإنجليزية",
+            "en": "Tracing and writing their name in Arabic and English"
+          },
+          {
+            "ar": "جمل «أنا أقرأ، أنا أكتب» بصور شخصيته",
+            "en": "“I read, I write” sentences with their character"
+          },
+          {
+            "ar": "تعليمات تخاطب طفلكم بصيغة الولد أو البنت",
+            "en": "Instructions worded for a boy or a girl"
+          }
+        ],
+        "included": [
+          {
+            "ar": "مراجعة بعد كل وحدة، ومراجعة شاملة للسنة",
+            "en": "Unit reviews and a whole-year review"
+          },
+          {
+            "ar": "خمسة تقييمات ختامية يدوّن نتائجها الأهل أو المعلّمة",
+            "en": "Five end-of-volume assessments scored by a parent or teacher"
+          },
+          {
+            "ar": "قائمة لملاحظة مسكة القلم والضغط والاتجاه",
+            "en": "A checklist for pencil grip, pressure and direction"
+          },
+          {
+            "ar": "شهادة إنجاز باسمه وشخصيته في آخر الجزء",
+            "en": "A certificate with their name and character"
+          }
+        ]
+      }
+    },
+    "sets": {
+      "kg1-set": {
+        "pitch": {
+          "ar": "سنة كاملة يتدرّج فيها طفلكم من إمساك القلم إلى التعرّف على الحروف الثمانية والعشرين، وتنتهي بشهادة إنجاز باسمه.",
+          "en": "Over a full year, your child goes from holding a pencil to knowing all 28 letters, and earns a certificate in their name."
+        },
+        "age": {
+          "ar": "4–5 سنوات",
+          "en": "Ages 4–5"
+        },
+        "included": [
+          {
+            "ar": "الأجزاء الثلاثة، جزء لكل فصل دراسي",
+            "en": "All three volumes, one for each term"
+          },
+          {
+            "ar": "34 أسبوعًا من التعلّم المتدرّج",
+            "en": "34 weeks of step-by-step learning"
+          },
+          {
+            "ar": "صفحة «هذا الكتاب لـ…» وصفحتا الاسم في كل جزء",
+            "en": "An owner page and name pages in every volume"
+          },
+          {
+            "ar": "مراجعات وخمسة تقييمات ختامية في كل جزء",
+            "en": "Reviews and five assessments in every volume"
+          },
+          {
+            "ar": "شهادة إنجاز باسمه وشخصيته في آخر الجزء الثالث",
+            "en": "A certificate with their name and character in volume 3"
+          }
+        ]
+      },
+      "kg2-set": {
+        "pitch": {
+          "ar": "سنة كاملة يكتب فيها طفلكم الحروف الثمانية والعشرين، ويبدأ القراءة، ويعدّ حتى 20، وتنتهي بشهادة إنجاز باسمه.",
+          "en": "Over a full year, your child writes all 28 letters, starts reading, counts to 20, and earns a certificate in their name."
+        },
+        "age": {
+          "ar": "5–6 سنوات",
+          "en": "Ages 5–6"
+        },
+        "included": [
+          {
+            "ar": "الأجزاء الثلاثة، جزء لكل فصل دراسي",
+            "en": "All three volumes, one for each term"
+          },
+          {
+            "ar": "34 أسبوعًا من التعلّم المتدرّج",
+            "en": "34 weeks of step-by-step learning"
+          },
+          {
+            "ar": "صفحة «هذا الكتاب لـ…» وصفحتا الاسم في كل جزء",
+            "en": "An owner page and name pages in every volume"
+          },
+          {
+            "ar": "مراجعات وخمسة تقييمات ختامية في كل جزء",
+            "en": "Reviews and five assessments in every volume"
+          },
+          {
+            "ar": "شهادة إنجاز باسمه وشخصيته في آخر الجزء الثالث",
+            "en": "A certificate with their name and character in volume 3"
+          }
+        ]
+      }
+    }
+  },
+  "learning-journey": {
+    "parts": {
+      "1": {
+        "short": {
+          "ar": "التفكير وتدريب اليد والألوان قبل الحروف",
+          "en": "Thinking, hand skills and colors before letters"
+        },
+        "pitch": {
+          "ar": "يستعدّ طفلكم للتعلّم باللعب: يفكّر ويلاحظ ويسمع، ثم يدرّب يده ويمسك القلم، قبل أن يتعلّم الحروف.",
+          "en": "Your child gets ready to learn through play: thinking, noticing and listening, then training their hand and holding a pencil, before any letters."
+        },
+        "topics": [
+          {
+            "ar": "ألعاب التفكير والملاحظة والذاكرة",
+            "en": "Thinking, observation and memory games"
+          },
+          {
+            "ar": "متاهات ومسارات لتنسيق العين واليد",
+            "en": "Mazes and paths for hand-eye coordination"
+          },
+          {
+            "ar": "تمييز الأصوات والكلمات بالاستماع",
+            "en": "Telling sounds and words apart by ear"
+          },
+          {
+            "ar": "خطوط ما قبل الكتابة والأشكال والألوان",
+            "en": "Pre-writing lines, shapes and colors"
+          },
+          {
+            "ar": "الأنماط والتلوين الذكي",
+            "en": "Patterns and smart coloring"
+          },
+          {
+            "ar": "الكمّيات من 1 إلى 5 وأرقامها",
+            "en": "Quantities from 1 to 5 and their numerals"
+          }
+        ],
+        "skills": [
+          {
+            "ar": "يركّز ويلاحظ الفروق ويتذكّر ما رآه",
+            "en": "Focuses, spots differences and remembers what they saw"
+          },
+          {
+            "ar": "يميّز الأصوات ويربط الكلمة المسموعة بصورتها",
+            "en": "Tells sounds apart and matches heard words to pictures"
+          },
+          {
+            "ar": "يمسك القلم ويتتبّع الخطوط والأشكال",
+            "en": "Holds a pencil and traces lines and shapes"
+          },
+          {
+            "ar": "يُكمل الأنماط ويلوّن حسب قاعدة",
+            "en": "Completes patterns and colors following a rule"
+          },
+          {
+            "ar": "يعدّ حتى 5 ويطابق كل رقم بكمّيته",
+            "en": "Counts to 5 and matches numerals to amounts"
+          }
+        ],
+        "age": {
+          "ar": "3–4 سنوات",
+          "en": "Ages 3–4"
+        },
+        "pages": 118,
+        "personal": [
+          {
+            "ar": "غلاف وخريطة رحلة بشخصيته واسمه",
+            "en": "A cover and journey map with their character and name"
+          },
+          {
+            "ar": "اسمه في المهمّات وعبارات التشجيع",
+            "en": "Their name in missions and words of praise"
+          },
+          {
+            "ar": "شهادة المحطة باسمه وشخصيته",
+            "en": "A stage certificate with their name and character"
+          },
+          {
+            "ar": "تعليمات بصيغة المذكّر أو المؤنّث",
+            "en": "Instructions worded for a boy or girl"
+          }
+        ],
+        "included": [
+          {
+            "ar": "رموز QR لسماع الأصوات والكلمات",
+            "en": "QR codes to hear the sounds and words"
+          },
+          {
+            "ar": "مهمّة واحدة واضحة في كل صفحة",
+            "en": "One clear mission on every page"
+          },
+          {
+            "ar": "مثال محلول عند كل نوع جديد من المهمّات",
+            "en": "A solved example for every new kind of task"
+          },
+          {
+            "ar": "مراجعة «ماذا تعلّمت؟» بعد كل قسم",
+            "en": "A “What did I learn?” review after each section"
+          }
+        ]
+      },
+      "2": {
+        "short": {
+          "ar": "أول الحروف العربية والإنجليزية والأعداد حتى 10",
+          "en": "First Arabic and English letters, and numbers to 10"
+        },
+        "pitch": {
+          "ar": "يتعلّم طفلكم أول أربعة عشر حرفًا عربيًّا، حرفًا بعد حرف: يسمع كل حرف ويتتبّعه بإصبعه ثم بقلمه.",
+          "en": "Your child learns the first 14 Arabic letters one at a time, hearing each one and tracing it with a finger, then a pencil."
+        },
+        "topics": [
+          {
+            "ar": "ألعاب تفكير ومتاهات أصعب",
+            "en": "Harder thinking games and mazes"
+          },
+          {
+            "ar": "الصوت الأول في الكلمة وتقسيمها إلى مقاطع",
+            "en": "First sounds in words and clapping syllables"
+          },
+          {
+            "ar": "أول 14 حرفًا عربيًّا، من الألف إلى الصاد",
+            "en": "The first 14 Arabic letters, أ to ص"
+          },
+          {
+            "ar": "تتبّع الحروف وإكمالها وكتابتها بجانب النموذج",
+            "en": "Tracing, completing and copying letters from a model"
+          },
+          {
+            "ar": "الحروف الإنجليزية من A إلى N وكلمات مصوّرة",
+            "en": "English letters A to N with picture words"
+          },
+          {
+            "ar": "الأعداد من 1 إلى 10 وكتابة أرقامها",
+            "en": "Numbers 1 to 10 and writing their numerals"
+          }
+        ],
+        "skills": [
+          {
+            "ar": "يسمع الصوت الأول في الكلمة ويقسّمها إلى مقاطع",
+            "en": "Hears first sounds and claps out syllables"
+          },
+          {
+            "ar": "يميّز الحروف المتشابهة بنقاطها وشكلها",
+            "en": "Tells look-alike letters apart by dots and shape"
+          },
+          {
+            "ar": "يكتب كل حرف بجانب النموذج",
+            "en": "Writes each letter next to a model"
+          },
+          {
+            "ar": "يعرف الحروف الإنجليزية من A إلى N ويكتبها",
+            "en": "Knows and writes English letters A to N"
+          },
+          {
+            "ar": "يعدّ حتى 10 ويكتب الأرقام",
+            "en": "Counts to 10 and writes the numerals"
+          }
+        ],
+        "age": {
+          "ar": "4–5 سنوات",
+          "en": "Ages 4–5"
+        },
+        "pages": 120,
+        "personal": [
+          {
+            "ar": "غلاف وخريطة رحلة بشخصيته واسمه",
+            "en": "A cover and journey map with their character and name"
+          },
+          {
+            "ar": "تتبّع اسمه بالعربية والإنجليزية",
+            "en": "Tracing their name in Arabic and English"
+          },
+          {
+            "ar": "شهادة المحطة باسمه وشخصيته",
+            "en": "A stage certificate with their name and character"
+          },
+          {
+            "ar": "تعليمات بصيغة المذكّر أو المؤنّث",
+            "en": "Instructions worded for a boy or girl"
+          }
+        ],
+        "included": [
+          {
+            "ar": "رموز QR لسماع الحروف والأصوات والكلمات",
+            "en": "QR codes to hear letters, sounds and words"
+          },
+          {
+            "ar": "حرف جديد واحد فقط في كل صفحة",
+            "en": "Only one new letter on each page"
+          },
+          {
+            "ar": "مثال محلول عند كل نوع جديد من المهمّات",
+            "en": "A solved example for every new kind of task"
+          },
+          {
+            "ar": "مراجعة بعد كل أربعة أو خمسة حروف",
+            "en": "A review after every four or five letters"
+          }
+        ]
+      },
+      "3": {
+        "short": {
+          "ar": "من الحرف إلى الكلمة، والجمع والطرح بالصور",
+          "en": "From letters to words, with adding and subtracting"
+        },
+        "pitch": {
+          "ar": "يتعلّم طفلكم آخر أربعة عشر حرفًا عربيًّا، ويقرأ بالحركات، ويكتب أولى كلماته وحده، ثم ينال شهادة إتمام الرحلة.",
+          "en": "Your child learns the last 14 Arabic letters, reads with vowel marks, writes their first words on their own, and earns the journey certificate."
+        },
+        "topics": [
+          {
+            "ar": "آخر 14 حرفًا عربيًّا، من الضاد إلى الياء",
+            "en": "The last 14 Arabic letters, ض to ي"
+          },
+          {
+            "ar": "مواقع الحرف في الكلمة والحركات والمقاطع",
+            "en": "Letter positions, vowel marks and syllables"
+          },
+          {
+            "ar": "قراءة كلمات مصوّرة وكتابتها",
+            "en": "Reading and writing picture words"
+          },
+          {
+            "ar": "الكتابة على السطر ثم دون نموذج",
+            "en": "Writing on the line, then without a model"
+          },
+          {
+            "ar": "الحروف الإنجليزية من O إلى Z وجمل قصيرة",
+            "en": "English letters O to Z and short sentences"
+          },
+          {
+            "ar": "الجمع والطرح بالصور حتى 10",
+            "en": "Adding and subtracting with pictures up to 10"
+          }
+        ],
+        "skills": [
+          {
+            "ar": "يقرأ الحرف بالفتحة والضمة والكسرة والسكون",
+            "en": "Reads letters with fatha, damma, kasra and sukun"
+          },
+          {
+            "ar": "يركّب الكلمات من مقاطعها ويقرأ كلمات مصوّرة",
+            "en": "Builds words from syllables and reads picture words"
+          },
+          {
+            "ar": "يكتب الحروف والكلمات دون نموذج",
+            "en": "Writes letters and words without a model"
+          },
+          {
+            "ar": "يقرأ كلمات وجملًا إنجليزية قصيرة",
+            "en": "Reads short English words and sentences"
+          },
+          {
+            "ar": "يجمع ويطرح بالصور حتى 10",
+            "en": "Adds and subtracts with pictures up to 10"
+          }
+        ],
+        "age": {
+          "ar": "5–6 سنوات",
+          "en": "Ages 5–6"
+        },
+        "pages": 120,
+        "personal": [
+          {
+            "ar": "غلاف وخريطة رحلة بشخصيته واسمه",
+            "en": "A cover and journey map with their character and name"
+          },
+          {
+            "ar": "تتبّع اسمه بالعربية والإنجليزية",
+            "en": "Tracing their name in Arabic and English"
+          },
+          {
+            "ar": "شهادة إتمام الرحلة باسمه وشخصيته",
+            "en": "A journey certificate with their name and character"
+          },
+          {
+            "ar": "تعليمات بصيغة المذكّر أو المؤنّث",
+            "en": "Instructions worded for a boy or girl"
+          }
+        ],
+        "included": [
+          {
+            "ar": "رموز QR لسماع الحروف والحركات والكلمات",
+            "en": "QR codes to hear letters, vowel marks and words"
+          },
+          {
+            "ar": "مثال محلول عند كل نوع جديد من المهمّات",
+            "en": "A solved example for every new kind of task"
+          },
+          {
+            "ar": "تقييم ختامي ينجزه الطفل وحده",
+            "en": "A final assessment the child does on their own"
+          },
+          {
+            "ar": "بطاقة ملاحظة للأهل أو المعلّمة",
+            "en": "An observation card for parents or teachers"
+          }
+        ]
+      }
+    },
+    "sets": {
+      "set": {
+        "pitch": {
+          "ar": "في ثلاث محطات يسير طفلكم على الخريطة نفسها، في كل مرة بمستوى أعلى، من أول خطوط القلم إلى القراءة.",
+          "en": "Across three stages, your child walks the same map, a level higher each time, from first pencil lines to reading."
+        },
+        "age": {
+          "ar": "3–6 سنوات",
+          "en": "Ages 3–6"
+        },
+        "included": [
+          {
+            "ar": "ثلاثة كتب، لكل محطة غلافها وشهادتها",
+            "en": "Three books, each with its own cover and certificate"
+          },
+          {
+            "ar": "رموز QR للأصوات والحروف والكلمات",
+            "en": "QR codes for sounds, letters and words"
+          },
+          {
+            "ar": "خريطة الرحلة في أول كل محطة",
+            "en": "The journey map at the start of each stage"
+          },
+          {
+            "ar": "تقييم ختامي وبطاقة ملاحظة للأهل",
+            "en": "A final assessment and an observation card for parents"
+          }
+        ]
+      }
+    }
+  },
+  "family-adventures": {
+    "parts": {
+      "book": {
+        "short": {
+          "ar": "12 مغامرة حقيقية يعيشها طفلكم مع عائلته",
+          "en": "12 real adventures your child shares with the family"
+        },
+        "pitch": {
+          "ar": "وقت عائلي لا واجب مدرسي: يعيش طفلكم مع عائلته مغامرات حقيقية في البيت والمطبخ والسوق والطبيعة.",
+          "en": "Family time, not homework: your child shares real adventures with the family at home, in the kitchen, at the market and in nature."
+        },
+        "topics": [
+          {
+            "ar": "البيت والسوق: صيد الأشكال وقائمة المشتريات",
+            "en": "Home and market: shape hunts and a shopping list"
+          },
+          {
+            "ar": "المطبخ والطبيعة: وصفات آمنة وبنغو الطبيعة",
+            "en": "Kitchen and nature: safe recipes and nature bingo"
+          },
+          {
+            "ar": "الروتين والمسؤولية: جدول اليوم ومهمّات البيت",
+            "en": "Routines and responsibility: a daily chart and home jobs"
+          },
+          {
+            "ar": "المشاعر والحكايات: وجوه المشاعر وحكايات الكبار",
+            "en": "Feelings and stories: feeling faces and grown-ups' stories"
+          },
+          {
+            "ar": "المهن والمتجر: مقابلة عائلية ونقود اللعب",
+            "en": "Jobs and shops: a family interview and play money"
+          },
+          {
+            "ar": "الألعاب والتمثيل: لعبة الذاكرة ودمى الأصابع",
+            "en": "Games and acting: a memory game and finger puppets"
+          }
+        ],
+        "skills": [
+          {
+            "ar": "يلاحظ ويعدّ ويتذكّر",
+            "en": "Observes, counts and remembers"
+          },
+          {
+            "ar": "يعبّر عن مشاعره ويحكي بكلماته",
+            "en": "Names feelings and tells stories in their own words"
+          },
+          {
+            "ar": "يحلّ مشكلات صغيرة ويبتكر أفكارًا",
+            "en": "Solves small problems and comes up with ideas"
+          },
+          {
+            "ar": "يتولّى مهمّات صغيرة في البيت",
+            "en": "Takes on small chores at home"
+          },
+          {
+            "ar": "يتعاون مع عائلته في كل مغامرة",
+            "en": "Works together with the family on every adventure"
+          }
+        ],
+        "age": {
+          "ar": "3–7 سنوات",
+          "en": "Ages 3–7"
+        },
+        "pages": 112,
+        "personal": [
+          {
+            "ar": "شخصيته على الغلاف وفي الجواز والشهادة",
+            "en": "Their character on the cover, passport and certificate"
+          },
+          {
+            "ar": "اسمه في العناوين والمهمّات",
+            "en": "Their name in titles and missions"
+          },
+          {
+            "ar": "اسم العائلة وأسماء أفرادها ومدينتها",
+            "en": "Your family's name, first names and city"
+          },
+          {
+            "ar": "عناوين وأختام بصيغة المذكّر أو المؤنّث",
+            "en": "Titles and stamps worded for a boy or girl"
+          }
+        ],
+        "included": [
+          {
+            "ar": "ورقة ملصقات: أختام الجواز والشارات والنجوم",
+            "en": "A sticker sheet: passport stamps, badges and stars"
+          },
+          {
+            "ar": "ورقتا كرتون للقصّ: نقود اللعب والبطاقات والدمى",
+            "en": "Two cut-out card sheets: play money, cards and puppets"
+          },
+          {
+            "ar": "نصائح للأهل في صندوق «هيا نفعلها معًا!»",
+            "en": "“Let's do it together!” tips for grown-ups"
+          },
+          {
+            "ar": "مستويان للصغار والكبار في أغلب الأنشطة",
+            "en": "Two levels, younger and older, in most activities"
+          },
+          {
+            "ar": "صفحات «ذكرى اليوم» وتحدّي الأيام السبعة",
+            "en": "“Memory of the day” pages and a 7-day challenge"
+          }
+        ]
+      }
+    },
+    "sets": {}
+  },
+  "islamic-series": {
+    "parts": {
+      "V1": {
+        "short": {
+          "ar": "الله ونعمه، والنبي محمد ﷺ، وأول الأذكار والأخلاق",
+          "en": "Allah, His blessings, the Prophet ﷺ, first duas and manners"
+        },
+        "pitch": {
+          "ar": "يعرف طفلكم الله ويحبّه، ويتعرّف إلى النبي محمد ﷺ، بقصص وأنشطة تجعل الشكر والذكر جزءًا من يومه.",
+          "en": "Your child comes to know and love Allah and the Prophet ﷺ, with stories and activities that make thanks and remembrance part of every day."
+        },
+        "topics": [
+          {
+            "ar": "الله الخالق القريب، وبعض أسمائه الحسنى",
+            "en": "Allah the Creator, who is near us, and some of His beautiful names"
+          },
+          {
+            "ar": "نعم الله حولنا، وشكره عليها",
+            "en": "Allah's blessings around us, and thanking Him"
+          },
+          {
+            "ar": "النبي محمد ﷺ: رحمته وصدقه، والاقتداء به",
+            "en": "The Prophet ﷺ: his mercy, his honesty, his example"
+          },
+          {
+            "ar": "بيت الإسلام: الأركان الخمسة بلغة سهلة",
+            "en": "The house of Islam: the five pillars, made easy"
+          },
+          {
+            "ar": "من الصباح إلى المساء مع الله، وأذكار الطعام والنوم",
+            "en": "Morning to night with Allah; mealtime and bedtime duas"
+          },
+          {
+            "ar": "الأخلاق: الصدق وبرّ الوالدين والمشاركة والاعتذار",
+            "en": "Manners: honesty, honoring parents, sharing, saying sorry"
+          }
+        ],
+        "skills": [
+          {
+            "ar": "يذكر الله قبل الطعام وعند النوم والاستيقاظ",
+            "en": "Remembers Allah before meals, at bedtime and on waking"
+          },
+          {
+            "ar": "يحمد الله على نعمه، ويشكر الناس",
+            "en": "Thanks Allah for His blessings, and thanks people"
+          },
+          {
+            "ar": "يصلّي على النبي ﷺ ويقتدي به",
+            "en": "Sends blessings on the Prophet ﷺ and follows his example"
+          },
+          {
+            "ar": "يقول الحق ولو أخطأ",
+            "en": "Tells the truth, even after a mistake"
+          },
+          {
+            "ar": "يساعد أهله ويشارك غيره",
+            "en": "Helps at home and shares with others"
+          }
+        ],
+        "age": {
+          "ar": "4–5 سنوات",
+          "en": "Ages 4–5"
+        },
+        "pages": 120,
+        "personal": [
+          {
+            "ar": "غلاف بشخصيته واسمه",
+            "en": "A cover with their character and name"
+          },
+          {
+            "ar": "شخصيته في الجواز وفي بداية كل وحدة",
+            "en": "Their character in the passport and every unit opener"
+          },
+          {
+            "ar": "شهادة باسمه وشخصيته في آخر الكتاب",
+            "en": "A certificate with their name and character"
+          },
+          {
+            "ar": "نصوص بالصيغة الصحيحة للولد أو للبنت",
+            "en": "Text in the right form for a boy or a girl"
+          }
+        ],
+        "included": [
+          {
+            "ar": "صفحة للأهل في كل وحدة: شرح وسؤال ونشاط",
+            "en": "A parents' page per unit: tips, a question, an activity"
+          },
+          {
+            "ar": "خاتمة لكل وحدة: مراجعة وتحدٍّ مع الأهل",
+            "en": "A wrap-up for every unit: a review and a family challenge"
+          },
+          {
+            "ar": "صفحات مراجعة، وتقييم ختامي على شكل لعبة لا امتحان",
+            "en": "Review pages, and a final assessment that is a game, not an exam"
+          },
+          {
+            "ar": "جواز فيه أختام الوحدات ونجوم التحدّيات",
+            "en": "A passport with unit stamps and challenge stars"
+          },
+          {
+            "ar": "مراجع الآيات والأحاديث مذكورة أسفل صفحاتها",
+            "en": "Verse and hadith references at the foot of their pages"
+          }
+        ]
+      },
+      "V2": {
+        "short": {
+          "ar": "الوضوء والصلاة والقرآن، وثلاث سور، وأدعية وأدب مع الأهل",
+          "en": "Wudu, prayer, the Quran, three surahs, duas and family manners"
+        },
+        "pitch": {
+          "ar": "يتعلّم طفلكم أن يصلّي حبًّا لله: يتوضّأ ويصلّي خطوة خطوة، ويحفظ سورًا قصيرة، ويصلح خطأه بهدوء.",
+          "en": "Your child learns to pray out of love for Allah: wudu and prayer step by step, short surahs, and calm ways to put mistakes right."
+        },
+        "topics": [
+          {
+            "ar": "لماذا نصلّي، والصلوات الخمس، وحبّ المسجد",
+            "en": "Why we pray, the five prayers and loving the mosque"
+          },
+          {
+            "ar": "الوضوء والصلاة خطوة خطوة",
+            "en": "Wudu and prayer, step by step"
+          },
+          {
+            "ar": "القرآن كلام الله، والمحافظة على المصحف",
+            "en": "The Quran as the word of Allah, and caring for the mushaf"
+          },
+          {
+            "ar": "سور الفاتحة والإخلاص والكوثر، مع جدول حفظ",
+            "en": "Al-Fatiha, al-Ikhlas and al-Kawthar, with a memorization chart"
+          },
+          {
+            "ar": "أدعية يومية، وحبّ الأهل ومساعدتهم",
+            "en": "Everyday duas, and loving and helping family"
+          },
+          {
+            "ar": "الكذب وظلم الصديق والغضب: ماذا أفعل؟",
+            "en": "Lying, wronging a friend, anger: what do I do?"
+          }
+        ],
+        "skills": [
+          {
+            "ar": "يتوضّأ بالترتيب وأهله بجانبه",
+            "en": "Does wudu in order, with family nearby"
+          },
+          {
+            "ar": "يصلّي مع أهله، ويعرف الركوع والسجود",
+            "en": "Prays with family and knows how to bow and prostrate"
+          },
+          {
+            "ar": "يقرأ الفاتحة والإخلاص والكوثر",
+            "en": "Recites al-Fatiha, al-Ikhlas and al-Kawthar"
+          },
+          {
+            "ar": "يدعو لوالديه، ويتكلّم معهما بأدب",
+            "en": "Makes dua for their parents and speaks to them politely"
+          },
+          {
+            "ar": "يعتذر ويقول الصدق إذا أخطأ",
+            "en": "Apologizes and tells the truth after a mistake"
+          }
+        ],
+        "age": {
+          "ar": "5–6 سنوات",
+          "en": "Ages 5–6"
+        },
+        "pages": 119,
+        "personal": [
+          {
+            "ar": "غلاف بشخصيته واسمه",
+            "en": "A cover with their character and name"
+          },
+          {
+            "ar": "شخصيته في الجواز وفي بداية كل وحدة",
+            "en": "Their character in the passport and every unit opener"
+          },
+          {
+            "ar": "شهادة باسمه وشخصيته في آخر الكتاب",
+            "en": "A certificate with their name and character"
+          },
+          {
+            "ar": "نصوص بالصيغة الصحيحة للولد أو للبنت",
+            "en": "Text in the right form for a boy or a girl"
+          }
+        ],
+        "included": [
+          {
+            "ar": "صفحة للأهل في كل وحدة: شرح وسؤال ونشاط",
+            "en": "A parents' page per unit: tips, a question, an activity"
+          },
+          {
+            "ar": "خاتمة لكل وحدة: مراجعة وتحدٍّ مع الأهل",
+            "en": "A wrap-up for every unit: a review and a family challenge"
+          },
+          {
+            "ar": "صفحات مراجعة، وتقييم ختامي على شكل لعبة لا امتحان",
+            "en": "Review pages, and a final assessment that is a game, not an exam"
+          },
+          {
+            "ar": "جواز فيه أختام الوحدات ونجوم التحدّيات",
+            "en": "A passport with unit stamps and challenge stars"
+          },
+          {
+            "ar": "مراجع الآيات والأحاديث مذكورة أسفل صفحاتها",
+            "en": "Verse and hadith references at the foot of their pages"
+          }
+        ]
+      },
+      "V3": {
+        "short": {
+          "ar": "أركان الإسلام الخمسة وأركان الإيمان الستة",
+          "en": "The five pillars of Islam and the six pillars of faith"
+        },
+        "pitch": {
+          "ar": "يتعرّف طفلكم إلى أركان الإسلام والإيمان بأمثلة من عالمه، ويتعلّم الصلاة كاملة، ويُقبل على الصيام والصدقة حبًّا لا خوفًا، ويشتاق إلى الحج.",
+          "en": "Through examples from their own world, your child gets to know the pillars of Islam and faith, learns the prayer in full, embraces fasting and giving out of love, not fear, and longs for Hajj."
+        },
+        "topics": [
+          {
+            "ar": "الشهادتان، وكيف نعمل بهما",
+            "en": "The two testimonies, and living by them"
+          },
+          {
+            "ar": "الصلوات الخمس كاملة بركعاتها وأذكارها",
+            "en": "The five prayers in full, with their rak'ahs and words"
+          },
+          {
+            "ar": "الزكاة والصدقة: لماذا نعطي؟",
+            "en": "Zakat and charity: why do we give?"
+          },
+          {
+            "ar": "الصيام بقدر الطاقة، والشوق إلى الحج",
+            "en": "Fasting at their own pace, and longing for Hajj"
+          },
+          {
+            "ar": "الإيمان بالله والملائكة والكتب",
+            "en": "Belief in Allah, His angels and His books"
+          },
+          {
+            "ar": "الرسل، ويوم لقاء الله، والرضا بقدره",
+            "en": "The messengers, the Day we meet Allah, and accepting His decree"
+          }
+        ],
+        "skills": [
+          {
+            "ar": "يصلّي ويعرف ركعات كل صلاة وأذكارها",
+            "en": "Prays, knowing each prayer's rak'ahs and words"
+          },
+          {
+            "ar": "يتصدّق ويشارك غيره فيما يحبّ",
+            "en": "Gives charity and shares what they love"
+          },
+          {
+            "ar": "يتكلّم بلطف حتى حين يغضب",
+            "en": "Speaks kindly, even when angry"
+          },
+          {
+            "ar": "يعدّد أركان الإيمان الستة",
+            "en": "Names the six pillars of faith"
+          },
+          {
+            "ar": "يحاول ويرضى إذا لم يحدث ما يريد",
+            "en": "Keeps trying and stays content when things don't go their way"
+          }
+        ],
+        "age": {
+          "ar": "6–7 سنوات",
+          "en": "Ages 6–7"
+        },
+        "pages": 111,
+        "personal": [
+          {
+            "ar": "غلاف بشخصيته واسمه",
+            "en": "A cover with their character and name"
+          },
+          {
+            "ar": "شخصيته في الجواز وفي بداية كل وحدة",
+            "en": "Their character in the passport and every unit opener"
+          },
+          {
+            "ar": "شهادة باسمه وشخصيته في آخر الكتاب",
+            "en": "A certificate with their name and character"
+          },
+          {
+            "ar": "نصوص بالصيغة الصحيحة للولد أو للبنت",
+            "en": "Text in the right form for a boy or a girl"
+          }
+        ],
+        "included": [
+          {
+            "ar": "صفحة للأهل في كل وحدة: شرح وسؤال ونشاط",
+            "en": "A parents' page per unit: tips, a question, an activity"
+          },
+          {
+            "ar": "خاتمة لكل وحدة: مراجعة وتحدٍّ مع الأهل",
+            "en": "A wrap-up for every unit: a review and a family challenge"
+          },
+          {
+            "ar": "صفحات مراجعة، وتقييم ختامي على شكل لعبة لا امتحان",
+            "en": "Review pages, and a final assessment that is a game, not an exam"
+          },
+          {
+            "ar": "جواز فيه أختام الوحدات ونجوم التحدّيات",
+            "en": "A passport with unit stamps and challenge stars"
+          },
+          {
+            "ar": "مراجع الآيات والأحاديث مذكورة أسفل صفحاتها",
+            "en": "Verse and hadith references at the foot of their pages"
+          }
+        ]
+      },
+      "V4": {
+        "short": {
+          "ar": "قصص ستة أنبياء، وسيرة النبي محمد ﷺ",
+          "en": "Six prophets' stories and the life of the Prophet ﷺ"
+        },
+        "pitch": {
+          "ar": "يسمع طفلكم قصص الأنبياء عليهم السلام فيتعلّم من كل قصة درسًا، ويقترب من النبي محمد ﷺ بمواقف من حياته.",
+          "en": "Your child hears the stories of the prophets, peace be upon them, learns a lesson from each, and grows closer to the Prophet ﷺ through moments from his life."
+        },
+        "topics": [
+          {
+            "ar": "آدم عليه السلام: الخطأ والتوبة",
+            "en": "Adam, peace be upon him: mistakes and repentance"
+          },
+          {
+            "ar": "نوح عليه السلام: الصبر والعمل",
+            "en": "Nuh, peace be upon him: patience and hard work"
+          },
+          {
+            "ar": "إبراهيم عليه السلام: التفكّر والثقة بالله",
+            "en": "Ibrahim, peace be upon him: reflection and trust in Allah"
+          },
+          {
+            "ar": "يوسف عليه السلام: الصبر والعفو",
+            "en": "Yusuf, peace be upon him: patience and forgiveness"
+          },
+          {
+            "ar": "موسى ويونس عليهما السلام: الله يحفظنا ويسمع دعاءنا",
+            "en": "Musa and Yunus, peace be upon them: Allah protects us and hears our duas"
+          },
+          {
+            "ar": "النبي محمد ﷺ: صدقه وصبره وعيادته المريض",
+            "en": "The Prophet ﷺ: his honesty, his patience and his visits to the sick"
+          }
+        ],
+        "skills": [
+          {
+            "ar": "يعتذر إذا أخطأ، ويصلح خطأه",
+            "en": "Apologizes and puts things right after a mistake"
+          },
+          {
+            "ar": "يُكمل عمله ولو كان صعبًا",
+            "en": "Finishes a task, even when it is hard"
+          },
+          {
+            "ar": "يسامح من يعتذر إليه",
+            "en": "Forgives someone who says sorry"
+          },
+          {
+            "ar": "يدعو الله في كل حاجة",
+            "en": "Turns to Allah in dua for every need"
+          },
+          {
+            "ar": "يقول الحق، ويتكلّم بلطف",
+            "en": "Tells the truth and speaks kindly"
+          }
+        ],
+        "age": {
+          "ar": "6–8 سنوات",
+          "en": "Ages 6–8"
+        },
+        "pages": 98,
+        "personal": [
+          {
+            "ar": "غلاف بشخصيته واسمه",
+            "en": "A cover with their character and name"
+          },
+          {
+            "ar": "شخصيته في الجواز وفي بداية كل وحدة",
+            "en": "Their character in the passport and every unit opener"
+          },
+          {
+            "ar": "شهادة باسمه وشخصيته في آخر الكتاب",
+            "en": "A certificate with their name and character"
+          },
+          {
+            "ar": "نصوص بالصيغة الصحيحة للولد أو للبنت",
+            "en": "Text in the right form for a boy or a girl"
+          }
+        ],
+        "included": [
+          {
+            "ar": "صفحة للأهل في كل وحدة: شرح وسؤال ونشاط",
+            "en": "A parents' page per unit: tips, a question, an activity"
+          },
+          {
+            "ar": "خاتمة لكل وحدة: مراجعة وتحدٍّ مع الأهل",
+            "en": "A wrap-up for every unit: a review and a family challenge"
+          },
+          {
+            "ar": "جواز فيه أختام الوحدات ونجوم التحدّيات",
+            "en": "A passport with unit stamps and challenge stars"
+          },
+          {
+            "ar": "مشاهد من الطبيعة والأماكن، بلا رسم لنبي أو صحابي",
+            "en": "Scenes of nature and places; no prophet or Companion is drawn"
+          },
+          {
+            "ar": "مراجع الآيات والأحاديث مذكورة أسفل صفحاتها",
+            "en": "Verse and hadith references at the foot of their pages"
+          }
+        ]
+      },
+      "V5": {
+        "short": {
+          "ar": "الأخلاق والآداب اليومية، وبرّ الوالدين، والحلال والحرام، وسور جديدة",
+          "en": "Character, daily manners, honoring parents, halal and haram, and new surahs"
+        },
+        "pitch": {
+          "ar": "تتحوّل القيم إلى عادات: يتكلّم طفلكم بلطف، ويبرّ والديه، ويختار ما يرضي الله حبًّا لا خوفًا، ويذكره طوال يومه.",
+          "en": "Values become habits: your child speaks kindly, honors their parents, chooses what pleases Allah out of love, not fear, and remembers Him all day long."
+        },
+        "topics": [
+          {
+            "ar": "حفظ اللسان، والأمانة، والاستئذان، والرحمة بالجميع",
+            "en": "Kind speech, trustworthiness, asking permission and mercy to all"
+          },
+          {
+            "ar": "آداب الطعام والنوم والسلام والمسجد",
+            "en": "Manners for meals, sleep, greetings and the mosque"
+          },
+          {
+            "ar": "برّ الوالدين والدعاء لهما",
+            "en": "Honoring parents and making dua for them"
+          },
+          {
+            "ar": "الحلال والحرام: اختيار ما يرضي الله",
+            "en": "Halal and haram: choosing what pleases Allah"
+          },
+          {
+            "ar": "ماذا أفعل لو…؟ خمسة مواقف بخطوات هادئة",
+            "en": "What do I do if…? Five situations, with calm steps"
+          },
+          {
+            "ar": "سور الفلق والناس والعصر، مع جدول حفظ",
+            "en": "Al-Falaq, an-Nas and al-Asr, with a memorization chart"
+          }
+        ],
+        "skills": [
+          {
+            "ar": "يقول كلامًا طيبًا، ولا يسخر من أحد",
+            "en": "Says kind words and doesn't make fun of anyone"
+          },
+          {
+            "ar": "يردّ ما ليس له إلى صاحبه",
+            "en": "Returns what isn't theirs to its owner"
+          },
+          {
+            "ar": "يستأذن ويسلّم، ويأكل بأدب",
+            "en": "Asks permission, greets others and eats politely"
+          },
+          {
+            "ar": "يساعد أهله، ويقبل «لا» بأدب",
+            "en": "Helps the family and accepts “no” politely"
+          },
+          {
+            "ar": "يصلّي الصلاة في وقتها، ويذكر الله صباحًا ومساءً",
+            "en": "Prays on time and remembers Allah morning and evening"
+          }
+        ],
+        "age": {
+          "ar": "6–8 سنوات",
+          "en": "Ages 6–8"
+        },
+        "pages": 120,
+        "personal": [
+          {
+            "ar": "غلاف بشخصيته واسمه",
+            "en": "A cover with their character and name"
+          },
+          {
+            "ar": "شخصيته في الجواز وفي بداية كل وحدة",
+            "en": "Their character in the passport and every unit opener"
+          },
+          {
+            "ar": "شهادة باسمه وشخصيته في آخر الكتاب",
+            "en": "A certificate with their name and character"
+          },
+          {
+            "ar": "نصوص بالصيغة الصحيحة للولد أو للبنت",
+            "en": "Text in the right form for a boy or a girl"
+          }
+        ],
+        "included": [
+          {
+            "ar": "صفحة للأهل في كل وحدة: شرح وسؤال ونشاط",
+            "en": "A parents' page per unit: tips, a question, an activity"
+          },
+          {
+            "ar": "خاتمة لكل وحدة: مراجعة وتحدٍّ مع الأهل",
+            "en": "A wrap-up for every unit: a review and a family challenge"
+          },
+          {
+            "ar": "صفحات مراجعة، وتقييم ختامي على شكل لعبة لا امتحان",
+            "en": "Review pages, and a final assessment that is a game, not an exam"
+          },
+          {
+            "ar": "جواز فيه أختام الوحدات ونجوم التحدّيات",
+            "en": "A passport with unit stamps and challenge stars"
+          },
+          {
+            "ar": "مراجع الآيات والأحاديث مذكورة أسفل صفحاتها",
+            "en": "Verse and hadith references at the foot of their pages"
+          }
+        ]
+      },
+      "R": {
+        "short": {
+          "ar": "رمضان وصيام يناسب عمره، وليلة القدر، وفرحة العيد",
+          "en": "Ramadan, fasting at their own pace, Laylat al-Qadr and the joy of Eid"
+        },
+        "pitch": {
+          "ar": "يستقبل طفلكم رمضان بفرح: يصوم بقدر طاقته، ويقرأ القرآن ويتصدّق، ويتعرّف إلى ليلة القدر، ثم يفرح بالعيد ويُفرح غيره.",
+          "en": "Your child welcomes Ramadan with joy: fasting at their own pace, reading the Quran, giving, learning about Laylat al-Qadr, then sharing the happiness of Eid."
+        },
+        "topics": [
+          {
+            "ar": "رمضان: شهر القرآن وأجواؤه الجميلة",
+            "en": "Ramadan: the month of the Quran, and its lovely spirit"
+          },
+          {
+            "ar": "الصيام بحبّ وبقدر الطاقة",
+            "en": "Fasting with love, at their own pace"
+          },
+          {
+            "ar": "القرآن والصدقة في رمضان",
+            "en": "The Quran and charity in Ramadan"
+          },
+          {
+            "ar": "ليلة القدر، الليلة المباركة",
+            "en": "Laylat al-Qadr, the blessed night"
+          },
+          {
+            "ar": "صباح العيد: التكبير وصلاة العيد مع الأهل",
+            "en": "Eid morning: the takbir and the Eid prayer with family"
+          },
+          {
+            "ar": "فرحة العيد: الزيارة والعيدية والصدقة والألعاب",
+            "en": "The joy of Eid: visits, Eid money, charity and games"
+          }
+        ],
+        "skills": [
+          {
+            "ar": "يصوم بقدر طاقته، ويفرح بصيامه",
+            "en": "Fasts at their own pace and enjoys it"
+          },
+          {
+            "ar": "يحفظ لسانه ويده وهو صائم",
+            "en": "Keeps their words and hands kind while fasting"
+          },
+          {
+            "ar": "يعطي من مصروفه، ويشارك غيره",
+            "en": "Gives from their pocket money and shares with others"
+          },
+          {
+            "ar": "يهنّئ بالعيد، ويزور أهله بأدب",
+            "en": "Gives Eid greetings and visits family politely"
+          }
+        ],
+        "age": {
+          "ar": "4–8 سنوات",
+          "en": "Ages 4–8"
+        },
+        "pages": 71,
+        "personal": [
+          {
+            "ar": "غلاف بشخصيته واسمه",
+            "en": "A cover with their character and name"
+          },
+          {
+            "ar": "شخصيته في الجواز وفي بداية كل وحدة",
+            "en": "Their character in the passport and every unit opener"
+          },
+          {
+            "ar": "شهادة باسمه وشخصيته في آخر الكتاب",
+            "en": "A certificate with their name and character"
+          },
+          {
+            "ar": "نصوص بالصيغة الصحيحة للولد أو للبنت",
+            "en": "Text in the right form for a boy or a girl"
+          }
+        ],
+        "included": [
+          {
+            "ar": "صفحة للأهل في كل وحدة: شرح وسؤال ونشاط",
+            "en": "A parents' page per unit: tips, a question, an activity"
+          },
+          {
+            "ar": "خاتمة لكل وحدة: مراجعة وتحدٍّ مع الأهل",
+            "en": "A wrap-up for every unit: a review and a family challenge"
+          },
+          {
+            "ar": "صفحات مراجعة، وتقييم ختامي على شكل لعبة لا امتحان",
+            "en": "Review pages, and a final assessment that is a game, not an exam"
+          },
+          {
+            "ar": "جواز فيه أختام الوحدات ونجوم التحدّيات",
+            "en": "A passport with unit stamps and challenge stars"
+          },
+          {
+            "ar": "مراجع الآيات والأحاديث مذكورة أسفل صفحاتها",
+            "en": "Verse and hadith references at the foot of their pages"
+          }
+        ]
+      }
+    },
+    "sets": {
+      "L1": {
+        "pitch": {
+          "ar": "تبدأ رحلة طفلكم مع الله: يعرفه ويحبّه، ويتعرّف إلى النبي محمد ﷺ، ثم يتعلّم الوضوء والصلاة وسورًا قصيرة.",
+          "en": "Your child's journey with Allah begins: knowing and loving Him, meeting the Prophet ﷺ, then learning wudu, prayer and short surahs."
+        },
+        "age": {
+          "ar": "4–6 سنوات",
+          "en": "Ages 4–6"
+        },
+        "included": [
+          {
+            "ar": "مجلدان مطبوعان بغلاف ورقي ملصوق، 21×28 سم",
+            "en": "Two printed perfect-bound volumes, 21×28 cm"
+          },
+          {
+            "ar": "غلاف وشهادة باسم طفلكم في كل مجلد",
+            "en": "A cover and certificate in your child's name in each volume"
+          },
+          {
+            "ar": "صفحة للأهل وخاتمة في كل وحدة",
+            "en": "A parents' page and a wrap-up in every unit"
+          },
+          {
+            "ar": "جواز وتقييم ختامي في كل مجلد",
+            "en": "A passport and a final assessment in each volume"
+          }
+        ]
+      },
+      "L2": {
+        "pitch": {
+          "ar": "يُكمل طفلكم رحلته: أركان الإسلام والإيمان، وقصص الأنبياء عليهم السلام وسيرة النبي محمد ﷺ، وأخلاق كل يوم وآدابه.",
+          "en": "Your child's journey continues: the pillars of Islam and faith, the stories of the prophets, peace be upon them, the life of the Prophet ﷺ, and everyday character and manners."
+        },
+        "age": {
+          "ar": "6–8 سنوات",
+          "en": "Ages 6–8"
+        },
+        "included": [
+          {
+            "ar": "ثلاثة مجلدات مطبوعة بغلاف ورقي ملصوق، 21×28 سم",
+            "en": "Three printed perfect-bound volumes, 21×28 cm"
+          },
+          {
+            "ar": "غلاف وشهادة باسم طفلكم في كل مجلد",
+            "en": "A cover and certificate in your child's name in each volume"
+          },
+          {
+            "ar": "صفحة للأهل وخاتمة في كل وحدة",
+            "en": "A parents' page and a wrap-up in every unit"
+          },
+          {
+            "ar": "جواز وتقييم ختامي في كل مجلد",
+            "en": "A passport and a final assessment in each volume"
+          }
+        ]
+      },
+      "set": {
+        "pitch": {
+          "ar": "الرحلة كلها في خمسة مجلدات: من معرفة الله وحبّه في الرابعة، إلى الأركان وقصص الأنبياء عليهم السلام والأخلاق في الثامنة.",
+          "en": "The whole journey in five volumes: from knowing and loving Allah at four to the pillars, the stories of the prophets, peace be upon them, and good character by eight."
+        },
+        "age": {
+          "ar": "4–8 سنوات",
+          "en": "Ages 4–8"
+        },
+        "included": [
+          {
+            "ar": "خمسة مجلدات مطبوعة بغلاف ورقي ملصوق، 21×28 سم",
+            "en": "Five printed perfect-bound volumes, 21×28 cm"
+          },
+          {
+            "ar": "غلاف وشهادة باسم طفلكم في كل مجلد",
+            "en": "A cover and certificate in your child's name in each volume"
+          },
+          {
+            "ar": "صفحة للأهل وخاتمة في كل وحدة",
+            "en": "A parents' page and a wrap-up in every unit"
+          },
+          {
+            "ar": "جواز وتقييم ختامي في كل مجلد",
+            "en": "A passport and a final assessment in each volume"
+          }
+        ]
+      }
+    }
+  }
+}

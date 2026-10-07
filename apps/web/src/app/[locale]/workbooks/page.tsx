@@ -59,7 +59,7 @@ export default async function WorkbooksPage() {
         </header>
 
         {catalog === null && <Alert>{te("unknown")}</Alert>}
-        <div className="grid gap-4 md:grid-cols-3 md:gap-6">
+        <div className="grid gap-4 md:grid-cols-2 md:gap-6">
           {books.map((p) => (
             <ActivityBookCard key={p.slug} product={p} currency={currency} detailed />
           ))}

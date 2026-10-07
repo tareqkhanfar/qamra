@@ -85,6 +85,7 @@ export default async function WorkbookPage({ params, searchParams }: Props) {
           ) : null
         }
         familyCharacters={site?.family_characters_enabled ?? false}
+        addons={catalog?.addons ?? []}
       />
     </PageShell>
   );

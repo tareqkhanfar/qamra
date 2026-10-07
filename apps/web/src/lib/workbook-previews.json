@@ -1,267 +1,1494 @@
 {
-  "learning-journey": [
-    {
-      "src": "/workbooks/learning-journey/01.jpg",
-      "title_ar": "المحطة 1: الغلاف باسم طفلكم وشخصيته",
-      "title_en": "Stage 1: the cover with your child's name"
-    },
-    {
-      "src": "/workbooks/learning-journey/02.jpg",
-      "title_ar": "المحطة 1: خريطة الرحلة",
-      "title_en": "Stage 1: the journey map"
-    },
-    {
-      "src": "/workbooks/learning-journey/03.jpg",
-      "title_ar": "المحطة 1: متاهة، ساعدي ليان للوصول إلى الحديقة",
-      "title_en": "Stage 1: a maze to the garden"
-    },
-    {
-      "src": "/workbooks/learning-journey/04.jpg",
-      "title_ar": "المحطة 1: أسمع وأميّز مع رمز QR",
-      "title_en": "Stage 1: listen and choose, with a QR code"
-    },
-    {
-      "src": "/workbooks/learning-journey/05.jpg",
-      "title_ar": "المحطة 1: رحلة الدائرة",
-      "title_en": "Stage 1: meet the circle"
-    },
-    {
-      "src": "/workbooks/learning-journey/06.jpg",
-      "title_ar": "المحطة 1: تلوين ذكي",
-      "title_en": "Stage 1: smart coloring"
-    },
-    {
-      "src": "/workbooks/learning-journey/07.jpg",
-      "title_ar": "المحطة 1: كم تفاحة؟",
-      "title_en": "Stage 1: how many apples?"
-    },
-    {
-      "src": "/workbooks/learning-journey/08.jpg",
-      "title_ar": "المحطة 1: شهادة المحطة الأولى",
-      "title_en": "Stage 1: the certificate"
-    },
-    {
-      "src": "/workbooks/learning-journey/09.jpg",
-      "title_ar": "المحطة 2: الغلاف باسم طفلكم",
-      "title_en": "Stage 2: the cover with your child's name"
-    },
-    {
-      "src": "/workbooks/learning-journey/10.jpg",
-      "title_ar": "المحطة 2: الصوت الأول للكلمة",
-      "title_en": "Stage 2: the first sound of a word"
-    },
-    {
-      "src": "/workbooks/learning-journey/11.jpg",
-      "title_ar": "المحطة 2: حرف الباء بإصبعي وصوته",
-      "title_en": "Stage 2: the letter ب, with its sound"
-    },
-    {
-      "src": "/workbooks/learning-journey/12.jpg",
-      "title_ar": "المحطة 2: الباء بالقلم",
-      "title_en": "Stage 2: the letter ب with a pen"
-    },
-    {
-      "src": "/workbooks/learning-journey/13.jpg",
-      "title_ar": "المحطة 2: A a، Apple",
-      "title_en": "Stage 2: A a, Apple"
-    },
-    {
-      "src": "/workbooks/learning-journey/14.jpg",
-      "title_ar": "المحطة 2: أتتبّع الأرقام 1–5",
-      "title_en": "Stage 2: tracing the numbers 1–5"
-    },
-    {
-      "src": "/workbooks/learning-journey/15.jpg",
-      "title_ar": "المحطة 2: ابحث في السوق",
-      "title_en": "Stage 2: search the market"
-    },
-    {
-      "src": "/workbooks/learning-journey/16.jpg",
-      "title_ar": "المحطة 2: شهادة المحطة الثانية",
-      "title_en": "Stage 2: the certificate"
-    },
-    {
-      "src": "/workbooks/learning-journey/17.jpg",
-      "title_ar": "المحطة 3: الغلاف باسم طفلكم",
-      "title_en": "Stage 3: the cover with your child's name"
-    },
-    {
-      "src": "/workbooks/learning-journey/18.jpg",
-      "title_ar": "المحطة 3: الفتحة",
-      "title_en": "Stage 3: the fatha"
-    },
-    {
-      "src": "/workbooks/learning-journey/19.jpg",
-      "title_ar": "المحطة 3: أركّب كلمة",
-      "title_en": "Stage 3: build a word"
-    },
-    {
-      "src": "/workbooks/learning-journey/20.jpg",
-      "title_ar": "المحطة 3: أقرأ كلمات قصيرة",
-      "title_en": "Stage 3: read short words"
-    },
-    {
-      "src": "/workbooks/learning-journey/21.jpg",
-      "title_ar": "المحطة 3: أكتب الكلمة على السطر",
-      "title_en": "Stage 3: write the word on the line"
-    },
-    {
-      "src": "/workbooks/learning-journey/22.jpg",
-      "title_ar": "المحطة 3: I see a cat.",
-      "title_en": "Stage 3: I see a cat."
-    },
-    {
-      "src": "/workbooks/learning-journey/23.jpg",
-      "title_ar": "المحطة 3: أجمع بالصور",
-      "title_en": "Stage 3: add with pictures"
-    },
-    {
-      "src": "/workbooks/learning-journey/24.jpg",
-      "title_ar": "المحطة 3: شهادة إتمام الرحلة",
-      "title_en": "Stage 3: the journey certificate"
+  "foundation-workbook": {
+    "default": "kg2-1",
+    "scopes": {
+      "kg1-1": {
+        "cover": {
+          "src": "/workbooks/foundation-workbook/kg1-1/cover.webp?v=457afa5b",
+          "sm": "/workbooks/foundation-workbook/kg1-1/cover-sm.webp?v=457afa5b",
+          "w": 720,
+          "h": 1018,
+          "title_ar": "الصفحة الأولى: «هذا الكتاب لـ…» باسم طفلكم، المستوى الأول",
+          "title_en": "The first page: “This book belongs to…” with your child's name (KG1)"
+        },
+        "pages": [
+          {
+            "src": "/workbooks/foundation-workbook/kg1-1/01.webp?v=e3e7146c",
+            "sm": "/workbooks/foundation-workbook/kg1-1/01-sm.webp?v=e3e7146c",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "اسمي: أتتبّعه بحروف منقّطة كبيرة",
+            "title_en": "My name: tracing it in big dotted letters"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg1-1/02.webp?v=d46887f4",
+            "sm": "/workbooks/foundation-workbook/kg1-1/02-sm.webp?v=d46887f4",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أبدأ رحلة الحروف مع شخصيتي",
+            "title_en": "Starting the letters' journey with my character"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg1-1/03.webp?v=fdbe0dc4",
+            "sm": "/workbooks/foundation-workbook/kg1-1/03-sm.webp?v=fdbe0dc4",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أتتبّع حرف الألف من النقطة الخضراء",
+            "title_en": "Tracing alif from the green dot"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg1-1/04.webp?v=97fa68b2",
+            "sm": "/workbooks/foundation-workbook/kg1-1/04-sm.webp?v=97fa68b2",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "العدد واحد: رقمه وكمّيته",
+            "title_en": "The number one: numeral and amount"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg1-1/05.webp?v=3d33c23a",
+            "sm": "/workbooks/foundation-workbook/kg1-1/05-sm.webp?v=3d33c23a",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "A a مع كلمة apple",
+            "title_en": "A a, with the word apple"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg1-1/06.webp?v=7894b56b",
+            "sm": "/workbooks/foundation-workbook/kg1-1/06-sm.webp?v=7894b56b",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أقصّ كل صورة وألصقها فوق ظلّها",
+            "title_en": "Cutting out each picture and pasting it on its shadow"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg1-1/07.webp?v=0a68e6da",
+            "sm": "/workbooks/foundation-workbook/kg1-1/07-sm.webp?v=0a68e6da",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أين اختبأت النجوم؟",
+            "title_en": "Where are the stars hiding?"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg1-1/08.webp?v=cef02595",
+            "sm": "/workbooks/foundation-workbook/kg1-1/08-sm.webp?v=cef02595",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "متاهة سهلة إلى الحديقة",
+            "title_en": "An easy maze to the garden"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg1-1/09.webp?v=293af3c8",
+            "sm": "/workbooks/foundation-workbook/kg1-1/09-sm.webp?v=293af3c8",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "ألوّن حسب الرمز: حروف وأعداد",
+            "title_en": "Coloring by code: letters and numbers"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg1-1/10.webp?v=2d69066a",
+            "sm": "/workbooks/foundation-workbook/kg1-1/10-sm.webp?v=2d69066a",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "تقييم مهارات القلم مع الأهل أو المعلّمة",
+            "title_en": "The pencil-skills check, with a parent or teacher"
+          }
+        ]
+      },
+      "kg1-2": {
+        "cover": {
+          "src": "/workbooks/foundation-workbook/kg1-2/cover.webp?v=b9377140",
+          "sm": "/workbooks/foundation-workbook/kg1-2/cover-sm.webp?v=b9377140",
+          "w": 720,
+          "h": 1018,
+          "title_ar": "الصفحة الأولى: «هذا الكتاب لـ…» باسم طفلكم، المستوى الأول",
+          "title_en": "The first page: “This book belongs to…” with your child's name (KG1)"
+        },
+        "pages": [
+          {
+            "src": "/workbooks/foundation-workbook/kg1-2/01.webp?v=34fb3c0e",
+            "sm": "/workbooks/foundation-workbook/kg1-2/01-sm.webp?v=34fb3c0e",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أتابع رحلة الحروف مع شخصيتي",
+            "title_en": "Continuing the letters' journey with my character"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg1-2/02.webp?v=d7f4a68c",
+            "sm": "/workbooks/foundation-workbook/kg1-2/02-sm.webp?v=d7f4a68c",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أتتبّع حرف الراء",
+            "title_en": "Tracing the letter raa"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg1-2/03.webp?v=a94d4b2d",
+            "sm": "/workbooks/foundation-workbook/kg1-2/03-sm.webp?v=a94d4b2d",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "العدد ستة: رقمه وكمّيته",
+            "title_en": "The number six: numeral and amount"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg1-2/04.webp?v=3f9dd359",
+            "sm": "/workbooks/foundation-workbook/kg1-2/04-sm.webp?v=3f9dd359",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أين الباء في الكلمة: في أولها أم وسطها أم آخرها؟",
+            "title_en": "Where is baa in the word: start, middle or end?"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg1-2/05.webp?v=f9344cb5",
+            "sm": "/workbooks/foundation-workbook/kg1-2/05-sm.webp?v=f9344cb5",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أرتّب القصة: بذرة ثم نبتة ثم زهرة",
+            "title_en": "Putting the story in order: seed, sprout, flower"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg1-2/06.webp?v=a333ffe1",
+            "sm": "/workbooks/foundation-workbook/kg1-2/06-sm.webp?v=a333ffe1",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "داخل الصندوق أم خارجه؟",
+            "title_en": "Inside the box or outside?"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg1-2/07.webp?v=140fa98e",
+            "sm": "/workbooks/foundation-workbook/kg1-2/07-sm.webp?v=140fa98e",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أبحث عن خمسة أشياء مختبئة في الصورة",
+            "title_en": "Finding five things hiding in the picture"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg1-2/08.webp?v=0f28c781",
+            "sm": "/workbooks/foundation-workbook/kg1-2/08-sm.webp?v=0f28c781",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أصل النقاط من 1 إلى 10",
+            "title_en": "Joining the dots from 1 to 10"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg1-2/09.webp?v=683b1fac",
+            "sm": "/workbooks/foundation-workbook/kg1-2/09-sm.webp?v=683b1fac",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "Color and say: P وQ وR",
+            "title_en": "Color and say: P, Q and R"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg1-2/10.webp?v=2f554f8b",
+            "sm": "/workbooks/foundation-workbook/kg1-2/10-sm.webp?v=2f554f8b",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "تقييم مهارات القلم مع الأهل أو المعلّمة",
+            "title_en": "The pencil-skills check, with a parent or teacher"
+          }
+        ]
+      },
+      "kg1-3": {
+        "cover": {
+          "src": "/workbooks/foundation-workbook/kg1-3/cover.webp?v=578ab813",
+          "sm": "/workbooks/foundation-workbook/kg1-3/cover-sm.webp?v=578ab813",
+          "w": 720,
+          "h": 1018,
+          "title_ar": "الصفحة الأولى: «هذا الكتاب لـ…» باسم طفلكم، المستوى الأول",
+          "title_en": "The first page: “This book belongs to…” with your child's name (KG1)"
+        },
+        "pages": [
+          {
+            "src": "/workbooks/foundation-workbook/kg1-3/01.webp?v=1c17feac",
+            "sm": "/workbooks/foundation-workbook/kg1-3/01-sm.webp?v=1c17feac",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "Numbers: من one إلى five",
+            "title_en": "Numbers: one to five"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg1-3/02.webp?v=be2ca986",
+            "sm": "/workbooks/foundation-workbook/kg1-3/02-sm.webp?v=be2ca986",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "قطار الأعداد: أكمل العدد الناقص",
+            "title_en": "The number train: filling in the missing number"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg1-3/03.webp?v=639340e6",
+            "sm": "/workbooks/foundation-workbook/kg1-3/03-sm.webp?v=639340e6",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أجمع بالصور",
+            "title_en": "Adding with pictures"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg1-3/04.webp?v=e77eac99",
+            "sm": "/workbooks/foundation-workbook/kg1-3/04-sm.webp?v=e77eac99",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أقصّ القطع وأركّب الصورة",
+            "title_en": "Cutting out the pieces and building the picture"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg1-3/05.webp?v=4dfaee40",
+            "sm": "/workbooks/foundation-workbook/kg1-3/05-sm.webp?v=4dfaee40",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أرسم نفسي وأصدقائي في الروضة",
+            "title_en": "Drawing myself and my friends at kindergarten"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg1-3/06.webp?v=d26655c0",
+            "sm": "/workbooks/foundation-workbook/kg1-3/06-sm.webp?v=d26655c0",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أبدأ مع شخصيتي: أسمع حركات الحروف",
+            "title_en": "Starting with my character: hearing the short vowels"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg1-3/07.webp?v=b8334d1d",
+            "sm": "/workbooks/foundation-workbook/kg1-3/07-sm.webp?v=b8334d1d",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أسمع الفتحة وأراها فوق الحرف",
+            "title_en": "Hearing the fatha and seeing it on a letter"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg1-3/08.webp?v=c1290ad0",
+            "sm": "/workbooks/foundation-workbook/kg1-3/08-sm.webp?v=c1290ad0",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أتتبّع كلمتين قصيرتين",
+            "title_en": "Tracing two short words"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg1-3/09.webp?v=9691f6ba",
+            "sm": "/workbooks/foundation-workbook/kg1-3/09-sm.webp?v=9691f6ba",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "تقييم مهارات القلم مع الأهل أو المعلّمة",
+            "title_en": "The pencil-skills check, with a parent or teacher"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg1-3/10.webp?v=4cdbdf16",
+            "sm": "/workbooks/foundation-workbook/kg1-3/10-sm.webp?v=4cdbdf16",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "شهادة إنجاز باسم طفلكم وصورة شخصيته",
+            "title_en": "A certificate with your child's name and character"
+          }
+        ]
+      },
+      "kg2-1": {
+        "cover": {
+          "src": "/workbooks/foundation-workbook/kg2-1/cover.webp?v=cd563d42",
+          "sm": "/workbooks/foundation-workbook/kg2-1/cover-sm.webp?v=cd563d42",
+          "w": 720,
+          "h": 1018,
+          "title_ar": "الصفحة الأولى: «هذا الكتاب لـ…» باسم طفلكم، المستوى الثاني",
+          "title_en": "The first page: “This book belongs to…” with your child's name (KG2)"
+        },
+        "pages": [
+          {
+            "src": "/workbooks/foundation-workbook/kg2-1/01.webp?v=e76de788",
+            "sm": "/workbooks/foundation-workbook/kg2-1/01-sm.webp?v=e76de788",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "اسمي: أتتبّعه ثم أكتبه وحدي",
+            "title_en": "My name: tracing it, then writing it on my own"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg2-1/02.webp?v=35f2deba",
+            "sm": "/workbooks/foundation-workbook/kg2-1/02-sm.webp?v=35f2deba",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أنا وعالم الأرقام",
+            "title_en": "Me and the world of numbers"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg2-1/03.webp?v=ebd60006",
+            "sm": "/workbooks/foundation-workbook/kg2-1/03-sm.webp?v=ebd60006",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أتتبّع حرف الألف: الكبير ثم الأصغر",
+            "title_en": "Tracing alif: big, then smaller"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg2-1/04.webp?v=740f09f2",
+            "sm": "/workbooks/foundation-workbook/kg2-1/04-sm.webp?v=740f09f2",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "A a: أتتبّعه وأكتبه وألوّن صورة apple",
+            "title_en": "A a: tracing it, writing it, coloring the apple"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg2-1/05.webp?v=816660de",
+            "sm": "/workbooks/foundation-workbook/kg2-1/05-sm.webp?v=816660de",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "العدد واحد: رقمه وكمّيته واسمه",
+            "title_en": "The number one: numeral, amount and name"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg2-1/06.webp?v=51c4d200",
+            "sm": "/workbooks/foundation-workbook/kg2-1/06-sm.webp?v=51c4d200",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أصل النقاط من 1 إلى 10",
+            "title_en": "Joining the dots from 1 to 10"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg2-1/07.webp?v=f17f6d17",
+            "sm": "/workbooks/foundation-workbook/kg2-1/07-sm.webp?v=f17f6d17",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أقصّ القطع وألصقها لأكمل الصورة",
+            "title_en": "Cutting and pasting the pieces to finish the picture"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg2-1/08.webp?v=1b9e51ae",
+            "sm": "/workbooks/foundation-workbook/kg2-1/08-sm.webp?v=1b9e51ae",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "متاهة: أوصل القطة إلى الكرة",
+            "title_en": "A maze: getting the cat to the ball"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg2-1/09.webp?v=87ff24fe",
+            "sm": "/workbooks/foundation-workbook/kg2-1/09-sm.webp?v=87ff24fe",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أكمل النصف الناقص من الرسم",
+            "title_en": "Finishing the missing half of the drawing"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg2-1/10.webp?v=a135358d",
+            "sm": "/workbooks/foundation-workbook/kg2-1/10-sm.webp?v=a135358d",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "تقييم مهارات القلم مع الأهل أو المعلّمة",
+            "title_en": "The pencil-skills check, with a parent or teacher"
+          }
+        ]
+      },
+      "kg2-2": {
+        "cover": {
+          "src": "/workbooks/foundation-workbook/kg2-2/cover.webp?v=7b06ea6b",
+          "sm": "/workbooks/foundation-workbook/kg2-2/cover-sm.webp?v=7b06ea6b",
+          "w": 720,
+          "h": 1018,
+          "title_ar": "الصفحة الأولى: «هذا الكتاب لـ…» باسم طفلكم، المستوى الثاني",
+          "title_en": "The first page: “This book belongs to…” with your child's name (KG2)"
+        },
+        "pages": [
+          {
+            "src": "/workbooks/foundation-workbook/kg2-2/01.webp?v=5435d744",
+            "sm": "/workbooks/foundation-workbook/kg2-2/01-sm.webp?v=5435d744",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أنا والحروف من جديد",
+            "title_en": "Me and the letters, once more"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg2-2/02.webp?v=f40b6ede",
+            "sm": "/workbooks/foundation-workbook/kg2-2/02-sm.webp?v=f40b6ede",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "الباء والتاء والثاء في أول الكلمة ووسطها وآخرها",
+            "title_en": "Baa, taa and thaa at the start, middle and end"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg2-2/03.webp?v=a7dfd042",
+            "sm": "/workbooks/foundation-workbook/kg2-2/03-sm.webp?v=a7dfd042",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "العدد ستة: رقمه وكمّيته واسمه",
+            "title_en": "The number six: numeral, amount and name"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg2-2/04.webp?v=fb2e3fae",
+            "sm": "/workbooks/foundation-workbook/kg2-2/04-sm.webp?v=fb2e3fae",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أصنّف الصور في ثلاث مجموعات",
+            "title_en": "Sorting pictures into three groups"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg2-2/05.webp?v=88be7e3b",
+            "sm": "/workbooks/foundation-workbook/kg2-2/05-sm.webp?v=88be7e3b",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أصل النقاط بترتيب الحروف",
+            "title_en": "Joining the dots in alphabet order"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg2-2/06.webp?v=1d336ce3",
+            "sm": "/workbooks/foundation-workbook/kg2-2/06-sm.webp?v=1d336ce3",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أبحث عن خمسة أشياء مخفية",
+            "title_en": "Finding five hidden things"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg2-2/07.webp?v=7f0e0e6e",
+            "sm": "/workbooks/foundation-workbook/kg2-2/07-sm.webp?v=7f0e0e6e",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "فوق وتحت، داخل وخارج",
+            "title_en": "Above and below, inside and outside"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg2-2/08.webp?v=36d61a9d",
+            "sm": "/workbooks/foundation-workbook/kg2-2/08-sm.webp?v=36d61a9d",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أرتّب القصة وألصقها",
+            "title_en": "Putting the story in order and pasting it"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg2-2/09.webp?v=e5ba0f0f",
+            "sm": "/workbooks/foundation-workbook/kg2-2/09-sm.webp?v=e5ba0f0f",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "قطار الأعداد من 1 إلى 10",
+            "title_en": "The number train from 1 to 10"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg2-2/10.webp?v=574d9fa0",
+            "sm": "/workbooks/foundation-workbook/kg2-2/10-sm.webp?v=574d9fa0",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "تقييم مهارات القلم مع الأهل أو المعلّمة",
+            "title_en": "The pencil-skills check, with a parent or teacher"
+          }
+        ]
+      },
+      "kg2-3": {
+        "cover": {
+          "src": "/workbooks/foundation-workbook/kg2-3/cover.webp?v=2b123e77",
+          "sm": "/workbooks/foundation-workbook/kg2-3/cover-sm.webp?v=2b123e77",
+          "w": 720,
+          "h": 1018,
+          "title_ar": "الصفحة الأولى: «هذا الكتاب لـ…» باسم طفلكم، المستوى الثاني",
+          "title_en": "The first page: “This book belongs to…” with your child's name (KG2)"
+        },
+        "pages": [
+          {
+            "src": "/workbooks/foundation-workbook/kg2-3/01.webp?v=e7de765c",
+            "sm": "/workbooks/foundation-workbook/kg2-3/01-sm.webp?v=e7de765c",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "عشرة وآحاد: الأعداد 11–15 بالصور",
+            "title_en": "Tens and ones: 11–15 in pictures"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg2-3/02.webp?v=35080ce3",
+            "sm": "/workbooks/foundation-workbook/kg2-3/02-sm.webp?v=35080ce3",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أجمع بالصور وأكتب جملة الجمع",
+            "title_en": "Adding with pictures and writing the number sentence"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg2-3/03.webp?v=0a9ec897",
+            "sm": "/workbooks/foundation-workbook/kg2-3/03-sm.webp?v=0a9ec897",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "Numbers: من one إلى ten",
+            "title_en": "Numbers: one to ten"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg2-3/04.webp?v=4425aaa5",
+            "sm": "/workbooks/foundation-workbook/kg2-3/04-sm.webp?v=4425aaa5",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "الفتحة: أقرأ الحروف بالفتحة",
+            "title_en": "The fatha: reading letters with it"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg2-3/05.webp?v=5cae1f85",
+            "sm": "/workbooks/foundation-workbook/kg2-3/05-sm.webp?v=5cae1f85",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "مقاطع قصيرة: بَ بُ بِ",
+            "title_en": "Short syllables: ba, bu, bi"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg2-3/06.webp?v=e0fce4ca",
+            "sm": "/workbooks/foundation-workbook/kg2-3/06-sm.webp?v=e0fce4ca",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "السبب والنتيجة",
+            "title_en": "Cause and effect"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg2-3/07.webp?v=3af36866",
+            "sm": "/workbooks/foundation-workbook/kg2-3/07-sm.webp?v=3af36866",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أقرأ كلمات وأصلها بصورها",
+            "title_en": "Reading words and matching them to their pictures"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg2-3/08.webp?v=916f241e",
+            "sm": "/workbooks/foundation-workbook/kg2-3/08-sm.webp?v=916f241e",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أبني الكلمة من المقاطع",
+            "title_en": "Building the word from syllables"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg2-3/09.webp?v=ae5ec6d1",
+            "sm": "/workbooks/foundation-workbook/kg2-3/09-sm.webp?v=ae5ec6d1",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أنا أقرأ: جمل عن نفسي",
+            "title_en": "I can read: sentences about me"
+          },
+          {
+            "src": "/workbooks/foundation-workbook/kg2-3/10.webp?v=95305664",
+            "sm": "/workbooks/foundation-workbook/kg2-3/10-sm.webp?v=95305664",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "شهادة إنجاز باسم طفلكم وصورة شخصيته",
+            "title_en": "A certificate with your child's name and character"
+          }
+        ]
+      }
     }
-  ],
-  "foundation-workbook": [
-    {
-      "src": "/workbooks/foundation-workbook/01.jpg",
-      "title_ar": "هذا الكتاب لطفلكم: اسمه وصورته وبصمة كفّه",
-      "title_en": "This book belongs to your child"
-    },
-    {
-      "src": "/workbooks/foundation-workbook/02.jpg",
-      "title_ar": "يتتبّع اسمه ويكتبه",
-      "title_en": "Tracing their own name"
-    },
-    {
-      "src": "/workbooks/foundation-workbook/03.jpg",
-      "title_ar": "أتعرّف على الحرف وألوّنه",
-      "title_en": "Meet a letter and color it"
-    },
-    {
-      "src": "/workbooks/foundation-workbook/04.jpg",
-      "title_ar": "أتتبّع الحرف من نقطة البداية",
-      "title_en": "Trace the letter from the start dot"
-    },
-    {
-      "src": "/workbooks/foundation-workbook/05.jpg",
-      "title_ar": "العدد: رقمه وكميّته واسمه",
-      "title_en": "A number: numeral, amount and name"
-    },
-    {
-      "src": "/workbooks/foundation-workbook/06.jpg",
-      "title_ar": "تقييم مهارات القلم للأهل والمعلّمة",
-      "title_en": "The pen-skills check for grown-ups"
-    },
-    {
-      "src": "/workbooks/foundation-workbook/07.jpg",
-      "title_ar": "الجزء الثالث: الحركات، أقرأ الحرف مع الفتحة",
-      "title_en": "Volume 3: the vowel marks"
-    },
-    {
-      "src": "/workbooks/foundation-workbook/08.jpg",
-      "title_ar": "الجزء الثالث: أقرأ كلمات وأصلها بصورها",
-      "title_en": "Volume 3: reading words"
-    },
-    {
-      "src": "/workbooks/foundation-workbook/09.jpg",
-      "title_ar": "شهادة إنجاز باسمه وصورته",
-      "title_en": "A certificate in their name"
+  },
+  "learning-journey": {
+    "default": "1",
+    "scopes": {
+      "1": {
+        "cover": {
+          "src": "/workbooks/learning-journey/1/cover.webp?v=c9af0d8c",
+          "sm": "/workbooks/learning-journey/1/cover-sm.webp?v=c9af0d8c",
+          "w": 720,
+          "h": 1018,
+          "title_ar": "الغلاف باسم طفلكم وشخصيته",
+          "title_en": "The cover, with your child's name and character"
+        },
+        "pages": [
+          {
+            "src": "/workbooks/learning-journey/1/01.webp?v=0b05237d",
+            "sm": "/workbooks/learning-journey/1/01-sm.webp?v=0b05237d",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "خريطة الرحلة باسم طفلكم",
+            "title_en": "The journey map, with your child's name"
+          },
+          {
+            "src": "/workbooks/learning-journey/1/02.webp?v=1b78e6fc",
+            "sm": "/workbooks/learning-journey/1/02-sm.webp?v=1b78e6fc",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أفكّر: أدرّب عقلي",
+            "title_en": "Thinking: training my mind"
+          },
+          {
+            "src": "/workbooks/learning-journey/1/03.webp?v=b69a15a0",
+            "sm": "/workbooks/learning-journey/1/03-sm.webp?v=b69a15a0",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "متاهة: الأرنب الجائع",
+            "title_en": "A maze: the hungry rabbit"
+          },
+          {
+            "src": "/workbooks/learning-journey/1/04.webp?v=ce381817",
+            "sm": "/workbooks/learning-journey/1/04-sm.webp?v=ce381817",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "من يصدر هذا الصوت؟ مع رمز QR",
+            "title_en": "Who makes this sound? With a QR code"
+          },
+          {
+            "src": "/workbooks/learning-journey/1/05.webp?v=809ecb90",
+            "sm": "/workbooks/learning-journey/1/05-sm.webp?v=809ecb90",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "الدائرة: أراها وأتتبّعها وأرسمها",
+            "title_en": "The circle: seeing it, tracing it, drawing it"
+          },
+          {
+            "src": "/workbooks/learning-journey/1/06.webp?v=aeafc773",
+            "sm": "/workbooks/learning-journey/1/06-sm.webp?v=aeafc773",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "تلوين ذكي: ألوّن الدوائر فقط",
+            "title_en": "Smart coloring: only the circles"
+          },
+          {
+            "src": "/workbooks/learning-journey/1/07.webp?v=a462f918",
+            "sm": "/workbooks/learning-journey/1/07-sm.webp?v=a462f918",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أرسم نفسي",
+            "title_en": "Drawing myself"
+          },
+          {
+            "src": "/workbooks/learning-journey/1/08.webp?v=89e403f6",
+            "sm": "/workbooks/learning-journey/1/08-sm.webp?v=89e403f6",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "كم تفاحة؟",
+            "title_en": "How many apples?"
+          },
+          {
+            "src": "/workbooks/learning-journey/1/09.webp?v=37417610",
+            "sm": "/workbooks/learning-journey/1/09-sm.webp?v=37417610",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "ثلاثة فروق",
+            "title_en": "Three differences"
+          },
+          {
+            "src": "/workbooks/learning-journey/1/10.webp?v=d0e709ea",
+            "sm": "/workbooks/learning-journey/1/10-sm.webp?v=d0e709ea",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "شهادة المحطة الأولى",
+            "title_en": "The stage one certificate"
+          }
+        ]
+      },
+      "2": {
+        "cover": {
+          "src": "/workbooks/learning-journey/2/cover.webp?v=15366088",
+          "sm": "/workbooks/learning-journey/2/cover-sm.webp?v=15366088",
+          "w": 720,
+          "h": 1018,
+          "title_ar": "الغلاف باسم طفلكم وشخصيته",
+          "title_en": "The cover, with your child's name and character"
+        },
+        "pages": [
+          {
+            "src": "/workbooks/learning-journey/2/01.webp?v=9cf42830",
+            "sm": "/workbooks/learning-journey/2/01-sm.webp?v=9cf42830",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "خريطة الرحلة: المحطة الثانية",
+            "title_en": "The journey map: stage two"
+          },
+          {
+            "src": "/workbooks/learning-journey/2/02.webp?v=c2de1138",
+            "sm": "/workbooks/learning-journey/2/02-sm.webp?v=c2de1138",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "كعك العيد: أرتّب القصة",
+            "title_en": "Eid cookies: putting the story in order"
+          },
+          {
+            "src": "/workbooks/learning-journey/2/03.webp?v=01bc2692",
+            "sm": "/workbooks/learning-journey/2/03-sm.webp?v=01bc2692",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "الصوت الأول: أسد",
+            "title_en": "The first sound: asad (lion)"
+          },
+          {
+            "src": "/workbooks/learning-journey/2/04.webp?v=9c85a7ba",
+            "sm": "/workbooks/learning-journey/2/04-sm.webp?v=9c85a7ba",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "حرف الألف: أسمع صوته وأتتبّعه بإصبعي",
+            "title_en": "Alif: hearing its sound and tracing it with my finger"
+          },
+          {
+            "src": "/workbooks/learning-journey/2/05.webp?v=7980ccf3",
+            "sm": "/workbooks/learning-journey/2/05-sm.webp?v=7980ccf3",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "الألف بالقلم",
+            "title_en": "Alif with a pencil"
+          },
+          {
+            "src": "/workbooks/learning-journey/2/06.webp?v=5d5230d0",
+            "sm": "/workbooks/learning-journey/2/06-sm.webp?v=5d5230d0",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "اسمي: أتتبّعه حرفًا حرفًا",
+            "title_en": "My name: tracing it letter by letter"
+          },
+          {
+            "src": "/workbooks/learning-journey/2/07.webp?v=43c170ac",
+            "sm": "/workbooks/learning-journey/2/07-sm.webp?v=43c170ac",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "A a: الصوت والصورة",
+            "title_en": "A a: its sound and a picture"
+          },
+          {
+            "src": "/workbooks/learning-journey/2/08.webp?v=892aa03d",
+            "sm": "/workbooks/learning-journey/2/08-sm.webp?v=892aa03d",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أتتبّع الأرقام 1–5",
+            "title_en": "Tracing the numbers 1–5"
+          },
+          {
+            "src": "/workbooks/learning-journey/2/09.webp?v=d6971e87",
+            "sm": "/workbooks/learning-journey/2/09-sm.webp?v=d6971e87",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أبحث في السوق",
+            "title_en": "Searching the market"
+          },
+          {
+            "src": "/workbooks/learning-journey/2/10.webp?v=fd79dc75",
+            "sm": "/workbooks/learning-journey/2/10-sm.webp?v=fd79dc75",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "شهادة المحطة الثانية",
+            "title_en": "The stage two certificate"
+          }
+        ]
+      },
+      "3": {
+        "cover": {
+          "src": "/workbooks/learning-journey/3/cover.webp?v=4c7e83d7",
+          "sm": "/workbooks/learning-journey/3/cover-sm.webp?v=4c7e83d7",
+          "w": 720,
+          "h": 1018,
+          "title_ar": "الغلاف باسم طفلكم وشخصيته",
+          "title_en": "The cover, with your child's name and character"
+        },
+        "pages": [
+          {
+            "src": "/workbooks/learning-journey/3/01.webp?v=19184a71",
+            "sm": "/workbooks/learning-journey/3/01-sm.webp?v=19184a71",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "خريطة الرحلة: المحطة الثالثة",
+            "title_en": "The journey map: stage three"
+          },
+          {
+            "src": "/workbooks/learning-journey/3/02.webp?v=df63cf73",
+            "sm": "/workbooks/learning-journey/3/02-sm.webp?v=df63cf73",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "كلمات تتشابه في آخرها",
+            "title_en": "Words that rhyme"
+          },
+          {
+            "src": "/workbooks/learning-journey/3/03.webp?v=c9719155",
+            "sm": "/workbooks/learning-journey/3/03-sm.webp?v=c9719155",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "ألوان تمتزج",
+            "title_en": "Mixing colors"
+          },
+          {
+            "src": "/workbooks/learning-journey/3/04.webp?v=d04c06cf",
+            "sm": "/workbooks/learning-journey/3/04-sm.webp?v=d04c06cf",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "الفتحة",
+            "title_en": "The fatha"
+          },
+          {
+            "src": "/workbooks/learning-journey/3/05.webp?v=6931c1f4",
+            "sm": "/workbooks/learning-journey/3/05-sm.webp?v=6931c1f4",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أركّب كلمة من مقاطعها",
+            "title_en": "Building a word from its syllables"
+          },
+          {
+            "src": "/workbooks/learning-journey/3/06.webp?v=f90c7054",
+            "sm": "/workbooks/learning-journey/3/06-sm.webp?v=f90c7054",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أقرأ كلمات قصيرة",
+            "title_en": "Reading short words"
+          },
+          {
+            "src": "/workbooks/learning-journey/3/07.webp?v=ad3e3e41",
+            "sm": "/workbooks/learning-journey/3/07-sm.webp?v=ad3e3e41",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أكتب الكلمة على السطر",
+            "title_en": "Writing the word on the line"
+          },
+          {
+            "src": "/workbooks/learning-journey/3/08.webp?v=06ae8304",
+            "sm": "/workbooks/learning-journey/3/08-sm.webp?v=06ae8304",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "My first sentences",
+            "title_en": "My first sentences"
+          },
+          {
+            "src": "/workbooks/learning-journey/3/09.webp?v=d6b93e17",
+            "sm": "/workbooks/learning-journey/3/09-sm.webp?v=d6b93e17",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "أجمع بالصور",
+            "title_en": "Adding with pictures"
+          },
+          {
+            "src": "/workbooks/learning-journey/3/10.webp?v=4a186978",
+            "sm": "/workbooks/learning-journey/3/10-sm.webp?v=4a186978",
+            "w": 720,
+            "h": 1018,
+            "title_ar": "شهادة إتمام الرحلة",
+            "title_en": "The certificate for completing the journey"
+          }
+        ]
+      }
     }
-  ],
-  "foundation-workbook-v3": [
-    {
-      "src": "/workbooks/foundation-workbook-v3/01.jpg",
-      "title_ar": "عشرة وآحاد: أصل العدد بكميّته",
-      "title_en": "Tens and ones: match a number to its amount"
-    },
-    {
-      "src": "/workbooks/foundation-workbook-v3/02.jpg",
-      "title_ar": "الحركات: أقرأ الحرف مع الفتحة",
-      "title_en": "The vowel marks: read a letter with its fatha"
-    },
-    {
-      "src": "/workbooks/foundation-workbook-v3/03.jpg",
-      "title_ar": "أقرأ كلمات وأصلها بصورها",
-      "title_en": "Read words and match their pictures"
-    },
-    {
-      "src": "/workbooks/foundation-workbook-v3/04.jpg",
-      "title_ar": "أجمع بالصور وأكتب جملة الجمع",
-      "title_en": "Add with pictures and write the sum"
-    },
-    {
-      "src": "/workbooks/foundation-workbook-v3/05.jpg",
-      "title_ar": "أنا أقرأ: أصل الجملة بصورتي",
-      "title_en": "I can read: match each sentence to my picture"
-    },
-    {
-      "src": "/workbooks/foundation-workbook-v3/06.jpg",
-      "title_ar": "شهادة إنجاز باسمه وصورته",
-      "title_en": "A certificate in their name and picture"
+  },
+  "family-adventures": {
+    "default": "book",
+    "scopes": {
+      "book": {
+        "cover": {
+          "src": "/workbooks/family-adventures/book/cover.webp?v=32a42250",
+          "sm": "/workbooks/family-adventures/book/cover-sm.webp?v=32a42250",
+          "w": 720,
+          "h": 959,
+          "title_ar": "الغلاف باسم طفلكم وشخصيته",
+          "title_en": "The cover, with your child's name and character"
+        },
+        "pages": [
+          {
+            "src": "/workbooks/family-adventures/book/01.webp?v=2695e6b0",
+            "sm": "/workbooks/family-adventures/book/01-sm.webp?v=2695e6b0",
+            "w": 720,
+            "h": 959,
+            "title_ar": "جواز سفر المغامر الصغير",
+            "title_en": "The little adventurer's passport"
+          },
+          {
+            "src": "/workbooks/family-adventures/book/02.webp?v=35ce69b5",
+            "sm": "/workbooks/family-adventures/book/02-sm.webp?v=35ce69b5",
+            "w": 720,
+            "h": 959,
+            "title_ar": "عائلتي",
+            "title_en": "My family"
+          },
+          {
+            "src": "/workbooks/family-adventures/book/03.webp?v=bbf9da03",
+            "sm": "/workbooks/family-adventures/book/03-sm.webp?v=bbf9da03",
+            "w": 720,
+            "h": 959,
+            "title_ar": "صيد الدوائر في المطبخ",
+            "title_en": "A circle hunt in the kitchen"
+          },
+          {
+            "src": "/workbooks/family-adventures/book/04.webp?v=507e2d31",
+            "sm": "/workbooks/family-adventures/book/04-sm.webp?v=507e2d31",
+            "w": 720,
+            "h": 959,
+            "title_ar": "قائمة مشترياتي",
+            "title_en": "My shopping list"
+          },
+          {
+            "src": "/workbooks/family-adventures/book/05.webp?v=44ae4577",
+            "sm": "/workbooks/family-adventures/book/05-sm.webp?v=44ae4577",
+            "w": 720,
+            "h": 959,
+            "title_ar": "ساندويش زعتر وزيت: أرتّب الخطوات",
+            "title_en": "A za'atar and oil sandwich: putting the steps in order"
+          },
+          {
+            "src": "/workbooks/family-adventures/book/06.webp?v=18cc0273",
+            "sm": "/workbooks/family-adventures/book/06-sm.webp?v=18cc0273",
+            "w": 720,
+            "h": 959,
+            "title_ar": "بنغو الطبيعة",
+            "title_en": "Nature bingo"
+          },
+          {
+            "src": "/workbooks/family-adventures/book/07.webp?v=af8265ff",
+            "sm": "/workbooks/family-adventures/book/07-sm.webp?v=af8265ff",
+            "w": 720,
+            "h": 959,
+            "title_ar": "جدول إنجازاتي",
+            "title_en": "My chore chart"
+          },
+          {
+            "src": "/workbooks/family-adventures/book/08.webp?v=ba503524",
+            "sm": "/workbooks/family-adventures/book/08-sm.webp?v=ba503524",
+            "w": 720,
+            "h": 959,
+            "title_ar": "ميزان مشاعري",
+            "title_en": "My feelings meter"
+          },
+          {
+            "src": "/workbooks/family-adventures/book/09.webp?v=a47e4225",
+            "sm": "/workbooks/family-adventures/book/09-sm.webp?v=a47e4225",
+            "w": 720,
+            "h": 959,
+            "title_ar": "لعبة الذاكرة مع العائلة",
+            "title_en": "A memory game with the family"
+          },
+          {
+            "src": "/workbooks/family-adventures/book/10.webp?v=73389563",
+            "sm": "/workbooks/family-adventures/book/10-sm.webp?v=73389563",
+            "w": 720,
+            "h": 959,
+            "title_ar": "شهادة المغامر باسم طفلكم",
+            "title_en": "The adventurer's certificate, in your child's name"
+          }
+        ]
+      }
     }
-  ],
-  "foundation-workbook-kg1": [
-    {
-      "src": "/workbooks/foundation-workbook-kg1/01.jpg",
-      "title_ar": "هذا الكتاب لطفلكم: اسمه وصورته وبصمة كفّه",
-      "title_en": "This book belongs to your child"
-    },
-    {
-      "src": "/workbooks/foundation-workbook-kg1/02.jpg",
-      "title_ar": "خطوط كبيرة بالقلم من النقطة الخضراء",
-      "title_en": "Big pen lines from the green dot"
-    },
-    {
-      "src": "/workbooks/foundation-workbook-kg1/03.jpg",
-      "title_ar": "أتتبّع الألف الكبيرة بإصبعي ثم بقلمي",
-      "title_en": "Trace a big letter, then a smaller one"
-    },
-    {
-      "src": "/workbooks/foundation-workbook-kg1/04.jpg",
-      "title_ar": "العدد واحد: رقمه وكميّته",
-      "title_en": "Meet the number one"
-    },
-    {
-      "src": "/workbooks/foundation-workbook-kg1/05.jpg",
-      "title_ar": "أقصّ الصورة وألصقها فوق ظلّها",
-      "title_en": "Cut each picture and paste it on its shadow"
-    },
-    {
-      "src": "/workbooks/foundation-workbook-kg1/06.jpg",
-      "title_ar": "أسمع الفتحة وأحوّط ما أسمع",
-      "title_en": "Listening to the fatha"
+  },
+  "islamic-series": {
+    "default": "V1",
+    "scopes": {
+      "V1": {
+        "cover": {
+          "src": "/workbooks/islamic-series/V1/cover.webp?v=2e8435de",
+          "sm": "/workbooks/islamic-series/V1/cover-sm.webp?v=2e8435de",
+          "w": 720,
+          "h": 960,
+          "title_ar": "الغلاف باسم طفلكم وشخصيته",
+          "title_en": "The cover, with your child's name and character"
+        },
+        "pages": [
+          {
+            "src": "/workbooks/islamic-series/V1/01.webp?v=e8cef403",
+            "sm": "/workbooks/islamic-series/V1/01-sm.webp?v=e8cef403",
+            "w": 720,
+            "h": 960,
+            "title_ar": "بداية وحدة «الله خلقني»",
+            "title_en": "Unit opener: Allah created me"
+          },
+          {
+            "src": "/workbooks/islamic-series/V1/02.webp?v=031d3e31",
+            "sm": "/workbooks/islamic-series/V1/02-sm.webp?v=031d3e31",
+            "w": 720,
+            "h": 960,
+            "title_ar": "قصة مع ستّي هدى وريم وسالم",
+            "title_en": "A story with Grandma Huda, Reem and Salem"
+          },
+          {
+            "src": "/workbooks/islamic-series/V1/03.webp?v=31efc296",
+            "sm": "/workbooks/islamic-series/V1/03-sm.webp?v=31efc296",
+            "w": 720,
+            "h": 960,
+            "title_ar": "أبحث عن نعم الله",
+            "title_en": "Looking for Allah's blessings"
+          },
+          {
+            "src": "/workbooks/islamic-series/V1/04.webp?v=003f9c6b",
+            "sm": "/workbooks/islamic-series/V1/04-sm.webp?v=003f9c6b",
+            "w": 720,
+            "h": 960,
+            "title_ar": "بداية وحدة «نبيّنا محمد ﷺ»",
+            "title_en": "Unit opener: our Prophet Muhammad ﷺ"
+          },
+          {
+            "src": "/workbooks/islamic-series/V1/05.webp?v=41f7e509",
+            "sm": "/workbooks/islamic-series/V1/05-sm.webp?v=41f7e509",
+            "w": 720,
+            "h": 960,
+            "title_ar": "ذكر في موقف: حين أستيقظ",
+            "title_en": "A dhikr for the moment: when I wake up"
+          },
+          {
+            "src": "/workbooks/islamic-series/V1/06.webp?v=a84f04ed",
+            "sm": "/workbooks/islamic-series/V1/06-sm.webp?v=a84f04ed",
+            "w": 720,
+            "h": 960,
+            "title_ar": "ماذا كنت ستفعل؟",
+            "title_en": "What would you do?"
+          },
+          {
+            "src": "/workbooks/islamic-series/V1/07.webp?v=0b03930c",
+            "sm": "/workbooks/islamic-series/V1/07-sm.webp?v=0b03930c",
+            "w": 720,
+            "h": 960,
+            "title_ar": "ألوّن: هدية لأمّي وأبي",
+            "title_en": "Coloring: a gift for Mom and Dad"
+          },
+          {
+            "src": "/workbooks/islamic-series/V1/08.webp?v=ac1688c2",
+            "sm": "/workbooks/islamic-series/V1/08-sm.webp?v=ac1688c2",
+            "w": 720,
+            "h": 960,
+            "title_ar": "صفحة للأهل في آخر الوحدة",
+            "title_en": "A page for parents at the end of the unit"
+          },
+          {
+            "src": "/workbooks/islamic-series/V1/09.webp?v=4aedf89f",
+            "sm": "/workbooks/islamic-series/V1/09-sm.webp?v=4aedf89f",
+            "w": 720,
+            "h": 960,
+            "title_ar": "بطاقة رحلة الإيمان",
+            "title_en": "The faith journey card"
+          },
+          {
+            "src": "/workbooks/islamic-series/V1/10.webp?v=d9fe8c81",
+            "sm": "/workbooks/islamic-series/V1/10-sm.webp?v=d9fe8c81",
+            "w": 720,
+            "h": 960,
+            "title_ar": "شهادة باسم طفلكم",
+            "title_en": "A certificate in your child's name"
+          }
+        ]
+      },
+      "V2": {
+        "cover": {
+          "src": "/workbooks/islamic-series/V2/cover.webp?v=96544241",
+          "sm": "/workbooks/islamic-series/V2/cover-sm.webp?v=96544241",
+          "w": 720,
+          "h": 960,
+          "title_ar": "الغلاف باسم طفلكم وشخصيته",
+          "title_en": "The cover, with your child's name and character"
+        },
+        "pages": [
+          {
+            "src": "/workbooks/islamic-series/V2/01.webp?v=a85d36ea",
+            "sm": "/workbooks/islamic-series/V2/01-sm.webp?v=a85d36ea",
+            "w": 720,
+            "h": 960,
+            "title_ar": "بداية وحدة «لماذا نصلّي؟»",
+            "title_en": "Unit opener: why do we pray?"
+          },
+          {
+            "src": "/workbooks/islamic-series/V2/02.webp?v=f30aff20",
+            "sm": "/workbooks/islamic-series/V2/02-sm.webp?v=f30aff20",
+            "w": 720,
+            "h": 960,
+            "title_ar": "أرتّب صلوات يومي",
+            "title_en": "Putting my day's prayers in order"
+          },
+          {
+            "src": "/workbooks/islamic-series/V2/03.webp?v=4a5d1fd3",
+            "sm": "/workbooks/islamic-series/V2/03-sm.webp?v=4a5d1fd3",
+            "w": 720,
+            "h": 960,
+            "title_ar": "أتوضّأ كما علّمنا النبي ﷺ: أرتّب الخطوات",
+            "title_en": "Wudu as the Prophet ﷺ taught: putting the steps in order"
+          },
+          {
+            "src": "/workbooks/islamic-series/V2/04.webp?v=803997f7",
+            "sm": "/workbooks/islamic-series/V2/04-sm.webp?v=803997f7",
+            "w": 720,
+            "h": 960,
+            "title_ar": "قصة: أتعلّم الصلاة",
+            "title_en": "A story: learning to pray"
+          },
+          {
+            "src": "/workbooks/islamic-series/V2/05.webp?v=89605644",
+            "sm": "/workbooks/islamic-series/V2/05-sm.webp?v=89605644",
+            "w": 720,
+            "h": 960,
+            "title_ar": "ألعب الدور",
+            "title_en": "Role play"
+          },
+          {
+            "src": "/workbooks/islamic-series/V2/06.webp?v=3fbf90c5",
+            "sm": "/workbooks/islamic-series/V2/06-sm.webp?v=3fbf90c5",
+            "w": 720,
+            "h": 960,
+            "title_ar": "دعاء لأمّي وأبي",
+            "title_en": "A dua for Mom and Dad"
+          },
+          {
+            "src": "/workbooks/islamic-series/V2/07.webp?v=c3012204",
+            "sm": "/workbooks/islamic-series/V2/07-sm.webp?v=c3012204",
+            "w": 720,
+            "h": 960,
+            "title_ar": "أبحث وأجد",
+            "title_en": "Search and find"
+          },
+          {
+            "src": "/workbooks/islamic-series/V2/08.webp?v=a91e7a52",
+            "sm": "/workbooks/islamic-series/V2/08-sm.webp?v=a91e7a52",
+            "w": 720,
+            "h": 960,
+            "title_ar": "ماذا أفعل لو كذبت؟",
+            "title_en": "What do I do if I tell a lie?"
+          },
+          {
+            "src": "/workbooks/islamic-series/V2/09.webp?v=52fbd1b3",
+            "sm": "/workbooks/islamic-series/V2/09-sm.webp?v=52fbd1b3",
+            "w": 720,
+            "h": 960,
+            "title_ar": "صفحة للأهل في آخر الوحدة",
+            "title_en": "A page for parents at the end of the unit"
+          },
+          {
+            "src": "/workbooks/islamic-series/V2/10.webp?v=51a2a8ab",
+            "sm": "/workbooks/islamic-series/V2/10-sm.webp?v=51a2a8ab",
+            "w": 720,
+            "h": 960,
+            "title_ar": "شهادة باسم طفلكم",
+            "title_en": "A certificate in your child's name"
+          }
+        ]
+      },
+      "V3": {
+        "cover": {
+          "src": "/workbooks/islamic-series/V3/cover.webp?v=11e8f0c1",
+          "sm": "/workbooks/islamic-series/V3/cover-sm.webp?v=11e8f0c1",
+          "w": 720,
+          "h": 960,
+          "title_ar": "الغلاف باسم طفلكم وشخصيته",
+          "title_en": "The cover, with your child's name and character"
+        },
+        "pages": [
+          {
+            "src": "/workbooks/islamic-series/V3/01.webp?v=1437910a",
+            "sm": "/workbooks/islamic-series/V3/01-sm.webp?v=1437910a",
+            "w": 720,
+            "h": 960,
+            "title_ar": "بداية وحدة «الشهادتان»",
+            "title_en": "Unit opener: the two testimonies"
+          },
+          {
+            "src": "/workbooks/islamic-series/V3/02.webp?v=126f3cc4",
+            "sm": "/workbooks/islamic-series/V3/02-sm.webp?v=126f3cc4",
+            "w": 720,
+            "h": 960,
+            "title_ar": "بطاقة الركن",
+            "title_en": "A pillar card"
+          },
+          {
+            "src": "/workbooks/islamic-series/V3/03.webp?v=2438c89c",
+            "sm": "/workbooks/islamic-series/V3/03-sm.webp?v=2438c89c",
+            "w": 720,
+            "h": 960,
+            "title_ar": "صلاة الفجر خطوة خطوة",
+            "title_en": "The Fajr prayer, step by step"
+          },
+          {
+            "src": "/workbooks/islamic-series/V3/04.webp?v=7e758aa0",
+            "sm": "/workbooks/islamic-series/V3/04-sm.webp?v=7e758aa0",
+            "w": 720,
+            "h": 960,
+            "title_ar": "ماذا أفعل لو نسيت الصلاة؟",
+            "title_en": "What do I do if I forget a prayer?"
+          },
+          {
+            "src": "/workbooks/islamic-series/V3/05.webp?v=58e14d02",
+            "sm": "/workbooks/islamic-series/V3/05-sm.webp?v=58e14d02",
+            "w": 720,
+            "h": 960,
+            "title_ar": "ماذا كنت ستفعل؟ في وحدة الزكاة",
+            "title_en": "What would you do? From the zakat unit"
+          },
+          {
+            "src": "/workbooks/islamic-series/V3/06.webp?v=0af06453",
+            "sm": "/workbooks/islamic-series/V3/06-sm.webp?v=0af06453",
+            "w": 720,
+            "h": 960,
+            "title_ar": "بداية وحدة «الصيام»",
+            "title_en": "Unit opener: fasting"
+          },
+          {
+            "src": "/workbooks/islamic-series/V3/07.webp?v=f2cdd0cb",
+            "sm": "/workbooks/islamic-series/V3/07-sm.webp?v=f2cdd0cb",
+            "w": 720,
+            "h": 960,
+            "title_ar": "أبحث وأجد: الحج",
+            "title_en": "Search and find: Hajj"
+          },
+          {
+            "src": "/workbooks/islamic-series/V3/08.webp?v=66d196e6",
+            "sm": "/workbooks/islamic-series/V3/08-sm.webp?v=66d196e6",
+            "w": 720,
+            "h": 960,
+            "title_ar": "أركان الإيمان: بطاقة الركن",
+            "title_en": "Pillars of faith: a pillar card"
+          },
+          {
+            "src": "/workbooks/islamic-series/V3/09.webp?v=acd0b27b",
+            "sm": "/workbooks/islamic-series/V3/09-sm.webp?v=acd0b27b",
+            "w": 720,
+            "h": 960,
+            "title_ar": "ألوّن وأفرح",
+            "title_en": "Coloring with joy"
+          },
+          {
+            "src": "/workbooks/islamic-series/V3/10.webp?v=0b98bfe1",
+            "sm": "/workbooks/islamic-series/V3/10-sm.webp?v=0b98bfe1",
+            "w": 720,
+            "h": 960,
+            "title_ar": "شهادة باسم طفلكم",
+            "title_en": "A certificate in your child's name"
+          }
+        ]
+      },
+      "V4": {
+        "cover": {
+          "src": "/workbooks/islamic-series/V4/cover.webp?v=77ba685d",
+          "sm": "/workbooks/islamic-series/V4/cover-sm.webp?v=77ba685d",
+          "w": 720,
+          "h": 960,
+          "title_ar": "الغلاف باسم طفلكم وشخصيته",
+          "title_en": "The cover, with your child's name and character"
+        },
+        "pages": [
+          {
+            "src": "/workbooks/islamic-series/V4/01.webp?v=1bba883c",
+            "sm": "/workbooks/islamic-series/V4/01-sm.webp?v=1bba883c",
+            "w": 720,
+            "h": 960,
+            "title_ar": "بداية وحدة «آدم عليه السلام»",
+            "title_en": "Unit opener: Adam, peace be upon him"
+          },
+          {
+            "src": "/workbooks/islamic-series/V4/02.webp?v=93d303cc",
+            "sm": "/workbooks/islamic-series/V4/02-sm.webp?v=93d303cc",
+            "w": 720,
+            "h": 960,
+            "title_ar": "قصة نبي تحكيها ستّي هدى",
+            "title_en": "A prophet's story told by Grandma Huda"
+          },
+          {
+            "src": "/workbooks/islamic-series/V4/03.webp?v=80eaaefa",
+            "sm": "/workbooks/islamic-series/V4/03-sm.webp?v=80eaaefa",
+            "w": 720,
+            "h": 960,
+            "title_ar": "متاهة في قصة نوح عليه السلام",
+            "title_en": "A maze from the story of Nuh, peace be upon him"
+          },
+          {
+            "src": "/workbooks/islamic-series/V4/04.webp?v=53e4634d",
+            "sm": "/workbooks/islamic-series/V4/04-sm.webp?v=53e4634d",
+            "w": 720,
+            "h": 960,
+            "title_ar": "صفحة تلوين",
+            "title_en": "A coloring page"
+          },
+          {
+            "src": "/workbooks/islamic-series/V4/05.webp?v=fadd3ec3",
+            "sm": "/workbooks/islamic-series/V4/05-sm.webp?v=fadd3ec3",
+            "w": 720,
+            "h": 960,
+            "title_ar": "من قصة يوسف عليه السلام",
+            "title_en": "From the story of Yusuf, peace be upon him"
+          },
+          {
+            "src": "/workbooks/islamic-series/V4/06.webp?v=0518dbd3",
+            "sm": "/workbooks/islamic-series/V4/06-sm.webp?v=0518dbd3",
+            "w": 720,
+            "h": 960,
+            "title_ar": "أبحث وأجد: قصة موسى عليه السلام",
+            "title_en": "Search and find: the story of Musa, peace be upon him"
+          },
+          {
+            "src": "/workbooks/islamic-series/V4/07.webp?v=0d02e706",
+            "sm": "/workbooks/islamic-series/V4/07-sm.webp?v=0d02e706",
+            "w": 720,
+            "h": 960,
+            "title_ar": "قصة يونس عليه السلام",
+            "title_en": "The story of Yunus, peace be upon him"
+          },
+          {
+            "src": "/workbooks/islamic-series/V4/08.webp?v=0e4e948a",
+            "sm": "/workbooks/islamic-series/V4/08-sm.webp?v=0e4e948a",
+            "w": 720,
+            "h": 960,
+            "title_ar": "من حياة نبيّنا ﷺ",
+            "title_en": "From the life of our Prophet ﷺ"
+          },
+          {
+            "src": "/workbooks/islamic-series/V4/09.webp?v=ccb6e2f3",
+            "sm": "/workbooks/islamic-series/V4/09-sm.webp?v=ccb6e2f3",
+            "w": 720,
+            "h": 960,
+            "title_ar": "ماذا كنت ستفعل؟",
+            "title_en": "What would you do?"
+          },
+          {
+            "src": "/workbooks/islamic-series/V4/10.webp?v=620c701f",
+            "sm": "/workbooks/islamic-series/V4/10-sm.webp?v=620c701f",
+            "w": 720,
+            "h": 960,
+            "title_ar": "شهادة باسم طفلكم",
+            "title_en": "A certificate in your child's name"
+          }
+        ]
+      },
+      "V5": {
+        "cover": {
+          "src": "/workbooks/islamic-series/V5/cover.webp?v=fd2126ea",
+          "sm": "/workbooks/islamic-series/V5/cover-sm.webp?v=fd2126ea",
+          "w": 720,
+          "h": 960,
+          "title_ar": "الغلاف باسم طفلكم وشخصيته",
+          "title_en": "The cover, with your child's name and character"
+        },
+        "pages": [
+          {
+            "src": "/workbooks/islamic-series/V5/01.webp?v=0336e637",
+            "sm": "/workbooks/islamic-series/V5/01-sm.webp?v=0336e637",
+            "w": 720,
+            "h": 960,
+            "title_ar": "بداية وحدة «أخلاقي أكبر»",
+            "title_en": "Unit opener: my manners grow"
+          },
+          {
+            "src": "/workbooks/islamic-series/V5/02.webp?v=8c0e8161",
+            "sm": "/workbooks/islamic-series/V5/02-sm.webp?v=8c0e8161",
+            "w": 720,
+            "h": 960,
+            "title_ar": "ألوّن: أرفق بالحيوان",
+            "title_en": "Coloring: being kind to animals"
+          },
+          {
+            "src": "/workbooks/islamic-series/V5/03.webp?v=8dbbe3ef",
+            "sm": "/workbooks/islamic-series/V5/03-sm.webp?v=8dbbe3ef",
+            "w": 720,
+            "h": 960,
+            "title_ar": "أرتّب آداب الطعام",
+            "title_en": "Putting mealtime manners in order"
+          },
+          {
+            "src": "/workbooks/islamic-series/V5/04.webp?v=3d8b561d",
+            "sm": "/workbooks/islamic-series/V5/04-sm.webp?v=3d8b561d",
+            "w": 720,
+            "h": 960,
+            "title_ar": "ألعب الدور",
+            "title_en": "Role play"
+          },
+          {
+            "src": "/workbooks/islamic-series/V5/05.webp?v=54d0f30a",
+            "sm": "/workbooks/islamic-series/V5/05-sm.webp?v=54d0f30a",
+            "w": 720,
+            "h": 960,
+            "title_ar": "دعاء لوالديّ",
+            "title_en": "A dua for my parents"
+          },
+          {
+            "src": "/workbooks/islamic-series/V5/06.webp?v=772e2b04",
+            "sm": "/workbooks/islamic-series/V5/06-sm.webp?v=772e2b04",
+            "w": 720,
+            "h": 960,
+            "title_ar": "ماذا أفعل لو قالت أمّي: لا؟",
+            "title_en": "What do I do if Mom says no?"
+          },
+          {
+            "src": "/workbooks/islamic-series/V5/07.webp?v=7fc18db7",
+            "sm": "/workbooks/islamic-series/V5/07-sm.webp?v=7fc18db7",
+            "w": 720,
+            "h": 960,
+            "title_ar": "قصة من وحدة «حلال وحرام»",
+            "title_en": "A story from the halal and haram unit"
+          },
+          {
+            "src": "/workbooks/islamic-series/V5/08.webp?v=e4957e05",
+            "sm": "/workbooks/islamic-series/V5/08-sm.webp?v=e4957e05",
+            "w": 720,
+            "h": 960,
+            "title_ar": "ماذا أفعل لو وجدت شيئًا ليس لي؟",
+            "title_en": "What do I do if I find something that isn't mine?"
+          },
+          {
+            "src": "/workbooks/islamic-series/V5/09.webp?v=cd9bd6bd",
+            "sm": "/workbooks/islamic-series/V5/09-sm.webp?v=cd9bd6bd",
+            "w": 720,
+            "h": 960,
+            "title_ar": "صباحي مع الله",
+            "title_en": "My morning with Allah"
+          },
+          {
+            "src": "/workbooks/islamic-series/V5/10.webp?v=d9fe8c81",
+            "sm": "/workbooks/islamic-series/V5/10-sm.webp?v=d9fe8c81",
+            "w": 720,
+            "h": 960,
+            "title_ar": "شهادة باسم طفلكم",
+            "title_en": "A certificate in your child's name"
+          }
+        ]
+      },
+      "R": {
+        "cover": {
+          "src": "/workbooks/islamic-series/R/cover.webp?v=a91dae41",
+          "sm": "/workbooks/islamic-series/R/cover-sm.webp?v=a91dae41",
+          "w": 720,
+          "h": 960,
+          "title_ar": "الغلاف باسم طفلكم وشخصيته",
+          "title_en": "The cover, with your child's name and character"
+        },
+        "pages": [
+          {
+            "src": "/workbooks/islamic-series/R/01.webp?v=880683d7",
+            "sm": "/workbooks/islamic-series/R/01-sm.webp?v=880683d7",
+            "w": 720,
+            "h": 960,
+            "title_ar": "بداية وحدة «ما هو رمضان؟»",
+            "title_en": "Unit opener: what is Ramadan?"
+          },
+          {
+            "src": "/workbooks/islamic-series/R/02.webp?v=6199d37f",
+            "sm": "/workbooks/islamic-series/R/02-sm.webp?v=6199d37f",
+            "w": 720,
+            "h": 960,
+            "title_ar": "قصة رمضانية",
+            "title_en": "A Ramadan story"
+          },
+          {
+            "src": "/workbooks/islamic-series/R/03.webp?v=449c302b",
+            "sm": "/workbooks/islamic-series/R/03-sm.webp?v=449c302b",
+            "w": 720,
+            "h": 960,
+            "title_ar": "ألوّن زينة رمضان",
+            "title_en": "Coloring Ramadan decorations"
+          },
+          {
+            "src": "/workbooks/islamic-series/R/04.webp?v=6614d62d",
+            "sm": "/workbooks/islamic-series/R/04-sm.webp?v=6614d62d",
+            "w": 720,
+            "h": 960,
+            "title_ar": "ذكر في موقف: عند الإفطار",
+            "title_en": "A dhikr for the moment: breaking the fast"
+          },
+          {
+            "src": "/workbooks/islamic-series/R/05.webp?v=67ffe354",
+            "sm": "/workbooks/islamic-series/R/05-sm.webp?v=67ffe354",
+            "w": 720,
+            "h": 960,
+            "title_ar": "ألوّن سلّة الخير",
+            "title_en": "Coloring the basket of giving"
+          },
+          {
+            "src": "/workbooks/islamic-series/R/06.webp?v=3d4af456",
+            "sm": "/workbooks/islamic-series/R/06-sm.webp?v=3d4af456",
+            "w": 720,
+            "h": 960,
+            "title_ar": "بداية وحدة «ليلة القدر»",
+            "title_en": "Unit opener: Laylat al-Qadr"
+          },
+          {
+            "src": "/workbooks/islamic-series/R/07.webp?v=701fd90b",
+            "sm": "/workbooks/islamic-series/R/07-sm.webp?v=701fd90b",
+            "w": 720,
+            "h": 960,
+            "title_ar": "بداية وحدة «صباح العيد»",
+            "title_en": "Unit opener: Eid morning"
+          },
+          {
+            "src": "/workbooks/islamic-series/R/08.webp?v=5b25d456",
+            "sm": "/workbooks/islamic-series/R/08-sm.webp?v=5b25d456",
+            "w": 720,
+            "h": 960,
+            "title_ar": "صباح العيد خطوة خطوة",
+            "title_en": "Eid morning, step by step"
+          },
+          {
+            "src": "/workbooks/islamic-series/R/09.webp?v=36d7e2df",
+            "sm": "/workbooks/islamic-series/R/09-sm.webp?v=36d7e2df",
+            "w": 720,
+            "h": 960,
+            "title_ar": "متاهة العيد",
+            "title_en": "An Eid maze"
+          },
+          {
+            "src": "/workbooks/islamic-series/R/10.webp?v=bceb5896",
+            "sm": "/workbooks/islamic-series/R/10-sm.webp?v=bceb5896",
+            "w": 720,
+            "h": 960,
+            "title_ar": "شهادة باسم طفلكم",
+            "title_en": "A certificate in your child's name"
+          }
+        ]
+      }
     }
-  ],
-  "family-adventures": [
-    {
-      "src": "/workbooks/family-adventures/01.jpg",
-      "title_ar": "جواز سفر المغامر",
-      "title_en": "The adventurer's passport"
-    },
-    {
-      "src": "/workbooks/family-adventures/02.jpg",
-      "title_ar": "مغامرة البحث في البيت",
-      "title_en": "A treasure hunt at home"
-    },
-    {
-      "src": "/workbooks/family-adventures/03.jpg",
-      "title_ar": "قائمة مشتريات السوق",
-      "title_en": "The market shopping list"
-    },
-    {
-      "src": "/workbooks/family-adventures/04.jpg",
-      "title_ar": "الشيف الصغير: خطوات الوصفة",
-      "title_en": "Little chef: the recipe steps"
-    },
-    {
-      "src": "/workbooks/family-adventures/05.jpg",
-      "title_ar": "ميزان المشاعر",
-      "title_en": "The feelings thermometer"
-    },
-    {
-      "src": "/workbooks/family-adventures/06.jpg",
-      "title_ar": "نقود قمرة للّعب",
-      "title_en": "Qamra play money"
-    }
-  ]
+  }
 }
