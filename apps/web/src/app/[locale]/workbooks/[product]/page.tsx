@@ -5,6 +5,7 @@ import { JsonLd } from "@/components/site/JsonLd";
 import { PageShell } from "@/components/site/PageShell";
 import { Photo, type PhotoName } from "@/components/site/Photo";
 import { WorkbookProduct } from "@/components/workbook/WorkbookProduct";
+import { addonMedia, includedItems } from "@/lib/addonsMedia";
 import { getPublicSettings, getStoreCatalog } from "@/lib/catalog";
 import { workbookJsonLd } from "@/lib/pageSeo";
 import { pageMetadata } from "@/lib/seo";
@@ -86,6 +87,8 @@ export default async function WorkbookPage({ params, searchParams }: Props) {
         }
         familyCharacters={site?.family_characters_enabled ?? false}
         addons={catalog?.addons ?? []}
+        included={includedItems[slug] ?? []}
+        addonMedia={addonMedia}
       />
     </PageShell>
   );

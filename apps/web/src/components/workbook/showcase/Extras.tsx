@@ -2,12 +2,8 @@
 
 /* eslint-disable @next/next/no-img-element -- small static photos from /public (public/included, public/addons) */
 import { useLocale, useTranslations } from "next-intl";
+import type { AddonMedia, IncludedItem } from "@/lib/addonsMedia";
 import { money, type CatalogAddOn, type Currency } from "@/lib/store";
-
-/** A photo of an add-on (lib/addonsMedia `addonMedia[slug]`). */
-export type AddOnMedia = { src: string; alt_ar: string; alt_en: string };
-/** Something every copy of the book comes with (lib/addonsMedia `includedItems[productSlug]`). */
-export type IncludedItem = { src: string; title_ar: string; title_en: string; desc_ar: string; desc_en: string };
 
 /** The cart offers add-ons of its own step (components/store/CartView); a free digital copy is added by itself. */
 const CART_STEPS = new Set(["checkout"]);
@@ -40,9 +36,9 @@ export function Extras({
   currency,
   className = "",
 }: {
-  included: IncludedItem[];
+  included: readonly IncludedItem[]; // lib/addonsMedia `includedItems[productSlug]`
   addons: CatalogAddOn[];
-  media: Record<string, AddOnMedia>;
+  media: Readonly<Record<string, AddonMedia | undefined>>; // lib/addonsMedia `addonMedia`
   line: string;
   options: Record<string, string>;
   pdf: boolean;

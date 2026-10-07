@@ -3,6 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useState, type ReactNode } from "react";
 import { Link } from "@/i18n/navigation";
+import type { AddonMedia, IncludedItem } from "@/lib/addonsMedia";
 import { money, type CatalogAddOn, type CatalogProduct, type Currency } from "@/lib/store";
 import { groups, initialPicks, isSet, partsFor, resolve, soldAges, soldOptions, type Picks } from "@/lib/workbook";
 import { AddWorkbook } from "./AddWorkbook";
@@ -10,7 +11,7 @@ import { emptyFamily, FamilyDetails } from "./FamilyDetails";
 import { FamilyQuoteForm } from "./FamilyQuoteForm";
 import { WorkbookCover } from "./WorkbookCover";
 import { showcaseCopy } from "./showcase/copy";
-import { Extras, type AddOnMedia, type IncludedItem } from "./showcase/Extras";
+import { Extras } from "./showcase/Extras";
 import { Showcase } from "./showcase/Showcase";
 import { ShowcaseDetails } from "./showcase/ShowcaseDetails";
 
@@ -53,8 +54,8 @@ export function WorkbookProduct({
   photo?: ReactNode; // the book's lifestyle photo (components/site/Photo), when Tareq has added it
   familyCharacters?: boolean; // the illustrated-family add-on is switched on
   addons?: CatalogAddOn[]; // the catalog's active add-ons (the extras the cart offers come from these)
-  included?: IncludedItem[]; // what every copy comes with, with photos (lib/addonsMedia)
-  addonMedia?: Record<string, AddOnMedia>; // add-on photos (lib/addonsMedia)
+  included?: readonly IncludedItem[]; // what every copy comes with, with photos (lib/addonsMedia)
+  addonMedia?: Readonly<Record<string, AddonMedia | undefined>>; // add-on photos (lib/addonsMedia)
 }) {
   const t = useTranslations("workbook");
   const ts = useTranslations("workbookShowcase");
