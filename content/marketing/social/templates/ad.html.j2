@@ -27,8 +27,54 @@
   .square .cta-row, .square .cta { height: 88px; }
   .square .cta { font-size: 33px; }
   {% if ad.hl_size %}.{{ fmt }} .headline { font-size: {{ ad.hl_size }}px; }{% endif %}
+  /* layout: hero — the photo full-bleed on top (it stops the scroll), the logo on a scrim over it, the words below */
+  .hero-l .hero-photo { position: absolute; left: 0; top: 0; width: {{ W }}px; height: var(--ph); overflow: hidden; z-index: 1; }
+  .hero-l .hero-photo img { width: 100%; height: 100%; object-fit: cover; }
+  .hero-l .hero-photo::before { content: ""; position: absolute; inset: 0 0 auto 0; height: var(--scrim); z-index: 2;
+    background: linear-gradient(180deg, rgba(14,21,48,.62) 0%, rgba(14,21,48,.28) 55%, rgba(14,21,48,0) 100%); }
+  .hero-l .hero-photo::after { content: ""; position: absolute; inset: auto 0 0 0; height: 3px; z-index: 2; background: var(--amber-500); }
+  .hero-l .frame { padding-top: var(--top); }
+  .hero-l .top .logo .word { color: var(--paper-raised); }
+  .hero-l .top .pill { color: #FFFDF8; background: rgba(14,21,48,.42); box-shadow: inset 0 0 0 2px rgba(255,253,248,.28); }
+  /* the words live in the band under the photo: from the photo's edge (+ gap) down to the button */
+  .hero-l .hero-body { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; justify-content: flex-start;
+    margin-top: calc(var(--ph) - var(--top) - 72px); padding: var(--gap) 0 24px; }
+  .hero-l .copy { margin-top: 0; }
+  .feed.hero-l { --ph: 650px; --scrim: 240px; --top: 88px; --gap: 50px; }
+  .feed.hero-l .headline { font-size: 86px; line-height: 1.22; }
+  .feed.hero-l .sub { font-size: 32px; line-height: 1.56; margin-top: 14px; }
+  .feed.hero-l .note { margin-top: 16px; }
+  .square.hero-l { --ph: 520px; --scrim: 200px; --top: 66px; --gap: 38px; --m: 80px; }
+  .square.hero-l .frame { padding-bottom: 66px; }
+  .square.hero-l .headline { font-size: 70px; line-height: 1.2; }
+  .square.hero-l .sub { font-size: 30px; line-height: 1.5; margin-top: 10px; }
+  .story.hero-l { --ph: 1060px; --scrim: 470px; --top: 240px; --gap: 40px; }
+  .story.hero-l .frame { padding-bottom: 250px; }
+  .story.hero-l .hero-body { justify-content: center; }
+  .story.hero-l .headline { font-size: 96px; line-height: 1.2; }
+  .story.hero-l .sub { font-size: 36px; line-height: 1.55; margin-top: 20px; }
 </style>
 <body>
+{% set hero = ad.layout == 'hero' and ad.media and fmt in ['feed', 'square', 'story'] %}
+{% if hero %}{% set img = media(ad.media) %}
+<div class="canvas bg-{{ ad.bg }} {{ fmt }} hero-l{{ ' dark' if dark else ' paper-tex' }}">
+  <div class="hero-photo"><img src="{{ img.src }}" alt="" style="object-position:{{ ad.focus or img.focus }}"></div>
+  {% if ad.bg == 'paper' %}
+  <svg class="layer" style="top:auto;bottom:0;height:40px" width="{{ W }}" height="40" viewBox="0 0 {{ W }} 40" aria-hidden="true">{{ tatreez(W, 40) | safe }}</svg>
+  {% endif %}
+  <div class="frame">
+    <div class="top">{{ m.logo(true) }}{{ m.pill(ad.pill) }}</div>
+    <div class="hero-body"><div class="copy">
+      <h1 class="headline" data-qa="headline">{% for l in ad.headline %}<span class="line">{{ l }}</span>{% endfor %}</h1>
+      {% if sub %}<p class="sub" data-qa="sub" data-qa-orphans>{{ sub }}</p>{% endif %}
+      {% if ad.note and fmt == 'feed' %}<div class="note" data-qa="note"><svg viewBox="0 0 24 24" fill="none" stroke="{{ '#F5C465' if dark else '#9A620A' }}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.2l2.7 2.7L16 9.6"/></svg><span>{{ ad.note }}</span></div>{% endif %}
+    </div></div>
+    <div class="foot">{% if ad.cta != 'none' %}{{ m.cta_row(ad.cta) }}{% endif %}</div>
+  </div>
+</div>
+{{ m.fit_script() }}
+</body></html>
+{% else %}
 <div class="canvas bg-{{ ad.bg }} {{ fmt }}{{ ' dark' if dark else ' paper-tex' }}">
   {% if dark %}{% set copy_bottom = {'feed': 600, 'square': 480, 'story': 900, 'reel': 900}[fmt] %}{{ m.starfield(W, H, seed=(ad.slug | length) * 7, n={'feed': 46, 'square': 38}.get(fmt, 64), keep_out=[(70, 70, 1010, copy_bottom), (70, H - 300, 1010, H - 60)] + ([(70, 560, 1010, H - 60)] if ad.visual in ['trust', 'points', 'faq'] else [])) }}{% endif %}
   {% if ad.bg == 'paper' %}
@@ -49,3 +95,4 @@
 </div>
 {{ m.fit_script() }}
 </body></html>
+{% endif %}

@@ -56,6 +56,8 @@ ads:
     note: معاينة مجانية، والدفع عند الاستلام
     visual: launch
     slot: launch
+    layout: hero
+    media: hero-reading
     cta: order
 
   - slug: b-kindergarten
@@ -66,6 +68,8 @@ ads:
     note: كل ولي أمر يوافق ويرفع صورة طفله بنفسه
     visual: kindergarten
     slot: kindergarten
+    layout: hero
+    media: graduation-class
     cta: quote
 
   - slug: c-family
@@ -107,6 +111,8 @@ ads:
     tag: إلى ليان
     visual: gifts
     slot: gifts
+    layout: hero
+    media: gift-box
     cta: order
 
   - slug: g-trust
@@ -203,6 +209,7 @@ posts:
     sub: في حكاية «أوّل يوم في الروضة» يتغلّب طفلكم على خوفه الصغير، ويكسب أصدقاء جددًا، ويعود إلى البيت متحمّسًا~للغد.
     visual: photo
     media: first-day
+    layout: hero
     note: حكاية مطبوعة باسمه وملامحه، لعمر ٣–٧ سنوات
     cta: order
 
@@ -213,6 +220,7 @@ posts:
     sub: في صفحات «رحلتي الأولى للتعلّم» رموز~QR تمسحونها بالجوال، فيسمع طفلكم الأصوات والحروف~والكلمات.
     visual: photo
     media: journey-qr
+    layout: hero
     note: لعمر ٣–٦ سنوات، في ثلاث محطات متدرّجة
     cta: order
 
@@ -223,6 +231,7 @@ posts:
     sub: كتاب لكل طفل في الصف، هو بطل حكاية «يوم تخرّجي» باسمه وملامحه، ومعه صفحة لروضتكم فيها الشعار وصورة الصف وكلمة~المعلّمة.
     visual: photo
     media: graduation-class
+    layout: hero
     note: كل ولي أمر يوافق ويرفع صورة طفله بنفسه
     cta: quote
 
@@ -278,6 +287,7 @@ posts:
     sub: في البيت والسوق والمطبخ والطبيعة، وطفلكم بطل كل مغامرة باسمه وشخصيته، وأسماؤكم في~المهمّات.
     visual: photo
     media: family-book-table
+    layout: hero
     note: ومع الكتاب جواز سفر المغامر وملصقات المكافآت
     cta: order
 
@@ -297,10 +307,9 @@ posts:
     pill: عيد ميلاد أو عيد
     headline: ["هدية عيد ميلاده:", "حكاية هو بطلها"]
     sub: اختاروا حكاية من حكاياتنا، أو اكتبوا لنا فكرتكم فنكتب ونرسم «حكاية خاصة» لطفلكم وحده، لعيد ميلاده أو~للعيد.
-    visual: scene_book
+    visual: photo
     media: gift-box
-    cover: custom
-    ribbon: true
+    layout: hero
     note: ويمكنكم إضافة علبة هدية وبطاقة برسالتكم
     cta: order
 
@@ -321,6 +330,7 @@ posts:
     sub: سجّلوا الحكاية بأصواتكم من الجوال، ونطبع في الكتاب رمز~QR، فيسمعها طفلكم بصوتكم متى~شاء.
     visual: photo
     media: grandma-voice
+    layout: hero
     note: إضافة اختيارية إلى كتب الحكايات
     cta: order
 
@@ -345,6 +355,7 @@ posts:
     sub: يتتبّع طفلكم اسمه ويكتبه بالعربية والإنجليزية، ويتدرّب على إمساك القلم خطوة خطوة، وفي آخر الدوسية شهادة إنجاز~باسمه.
     visual: photo
     media: workbook-tracing
+    layout: hero
     note: ملوّنة أو بالأبيض والأسود، أو PDF تطبعونه في البيت
     cta: order
 
@@ -452,6 +463,7 @@ ad_sets:
     sub: كل طفل بطل حكايته باسمه وملامحه، ومعها صفحة لروضتكم بالشعار وصورة~الصف.
     visual: photo
     media: graduation-class
+    layout: hero
     note: كل ولي أمر يوافق ويرفع صورة طفله بنفسه
     cta: quote
 
@@ -470,10 +482,9 @@ ad_sets:
     pill: هدية مختلفة
     headline: ["هدية باسمه", "يحتفظ بها سنوات"]
     sub: حكاية مطبوعة يكون طفلكم بطلها، لعيد ميلاده أو~للعيد، ويمكنكم إضافة علبة هدية وبطاقة~برسالتكم.
-    visual: scene_book
+    visual: photo
     media: gift-box
-    cover: custom
-    ribbon: true
+    layout: hero
     note: معاينة مجانية، والدفع عند الاستلام
     cta: order
 
@@ -535,10 +546,8 @@ video:
       pill: هدية مختلفة
       headline: ["هدية باسمه", "يحتفظ بها سنوات"]
       sub: ويمكنكم إضافة علبة هدية وبطاقة نكتب عليها~رسالتكم.
-      visual: scene_book
+      visual: photo
       media: gift-box
-      cover: custom
-      ribbon: true
       cta: order
   frames:  # the activity-books video: one frame per book, then its end card
     - slug: frame-journey

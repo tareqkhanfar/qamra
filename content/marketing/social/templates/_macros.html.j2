@@ -93,8 +93,9 @@
 </div>
 {%- endmacro %}
 
-{# square hardcover, spine on the RIGHT (Arabic book). x, y = top-left of the front face in stage px. #}
-{% macro hardcover(key, s=460, d=30, ry=-26, rx=-6, rz=0, x=0, y=0, board='#16204A', dark=false, ribbon=false) -%}
+{# square hardcover, spine on the RIGHT (Arabic book). x, y = top-left of the front face in stage px. `art` = a
+   finished cover image (a real book's front) instead of the cover drawn in code. #}
+{% macro hardcover(key, s=460, d=30, ry=-26, rx=-6, rz=0, x=0, y=0, board='#16204A', dark=false, ribbon=false, art=none) -%}
 <div class="hc{{ ' on-dark' if dark }}" style="left:{{ x }}px;top:{{ y }}px;width:{{ s }}px;height:{{ s }}px;--s:{{ s }}px;--d:{{ d }}px;--board:{{ board }};--board-dark:#101838;--board-light:#4A5DAE">
   <div class="hc-shadow"></div>
   <div class="hc-body" style="transform:rotateZ({{ rz }}deg) rotateY({{ ry }}deg) rotateX({{ rx }}deg)">
@@ -102,7 +103,7 @@
     <div class="hc-face hc-top"></div>
     <div class="hc-face hc-left"></div>
     <div class="hc-face hc-spine"></div>
-    <div class="hc-face hc-front">{{ cover(key, with_ribbon=ribbon) }}</div>
+    <div class="hc-face hc-front">{% if art %}<img src="{{ art }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">{% else %}{{ cover(key, with_ribbon=ribbon) }}{% endif %}</div>
   </div>
 </div>
 {%- endmacro %}

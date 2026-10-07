@@ -19,6 +19,10 @@ the site never says these are customers.
 | `books-stack.jpg`          | 1:1   | Activity books hub header and the band on the home (desktop), and the activity-books card on the home |
 | `kindergarten-teacher.jpg` | 3:2   | Kindergartens page, next to the quote form                                                            |
 
+The photos were drawn on fal with blank books; `scripts/retouch_site_photos.py` lays our real covers and pages on
+those books and adds one film grain to all ten (2026-10-07). Re-run it after replacing a photo (from the original,
+not from a retouched copy), and trace the new book's corners first.
+
 `hero-reading.mp4`/`.webm` (with `hero-reading-poster.jpg`) is the 20-second brand film over the hero photo,
 made by `scripts/build_film.py`. The files carry the brand soundtrack (music and an Arabic voice, for sharing),
 but the site always plays them muted; the site's music is the lullaby (`MusicPlayer`).

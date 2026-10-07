@@ -62,11 +62,13 @@ class Design:
 
 
 def public(rel: str) -> str:
-    """A file URI for an image that is already public on the website (apps/web/public/...)."""
-    path = PUBLIC / rel
-    if not path.exists():
-        raise FileNotFoundError(f"public image missing: {path}")
-    return path.as_uri()
+    """A file URI for an image that is already public on the website (apps/web/public/...). `a|b` lists
+    alternatives, the first that exists wins (pages move when a workbook's previews are re-exported)."""
+    for alt in rel.split("|"):
+        path = PUBLIC / alt
+        if path.exists():
+            return path.as_uri()
+    raise FileNotFoundError(f"public image missing: {PUBLIC / rel.split('|')[0]}")
 
 
 def homography(src: list[tuple[float, float]], dst: list[tuple[float, float]]) -> list[float]:
