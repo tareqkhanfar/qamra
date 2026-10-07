@@ -11,6 +11,7 @@ from typing import Any
 
 from qamra_workbook.curriculum import Page
 from qamra_workbook.pictures.model import strip_tashkeel
+from qamra_workbook.puzzles.odd import BASIC_GROUPS
 from qamra_workbook.render.foundation_text import (
     COLORING_SAY,
     COMPARE,
@@ -248,6 +249,7 @@ def params_kg1(page: Page, params: dict[str, Any]) -> dict[str, Any]:
             rules = (["same"] * 3, ["same", "same", "category"], ["same", "category", "category"])
             out["rules"] = ["same", *rules[level - 1]]
             out["sizes"] = [4] * 4
+            out["groups"] = list(BASIC_GROUPS)  # KG1: fruit, animals, clothes, what we ride
         case "pattern-complete" if p.get("kind") == "numbers":
             out["numbers"] = list(range(int(p.get("start", 1)), int(p.get("end", 10)) + 1))
     return out

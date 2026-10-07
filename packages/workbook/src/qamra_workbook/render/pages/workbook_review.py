@@ -528,15 +528,34 @@ def match_pairs(count: int = 3) -> Task:
     return task
 
 
+def odd_level(ctx: PageContext) -> tuple[str, int]:
+    """The book's level and volume from the page id («kg1-v2-p116»); KG2 when the id does not say."""
+    parts = ctx.page.id.split("-")
+    if len(parts) >= 2 and parts[0] in ("kg1", "kg2") and parts[1][1:].isdigit():
+        return parts[0], int(parts[1][1:])
+    return "kg2", 1
+
+
 def odd_row() -> Task:
     def task(ctx: PageContext, box: Box, r: random.Random) -> Drawn:
         from qamra_workbook.puzzles import generate_odd_rows
+        from qamra_workbook.puzzles.odd import BASIC_GROUPS
 
         out = Drawn()
-        row = generate_odd_rows(ctx.page.seed, ["same", "category"], [4, 4])[1]
+        level, volume = odd_level(ctx)
+        if level == "kg1" and volume == 1:  # KG1's first volume: the difference is seen (3 alike, 1 not)
+            row = generate_odd_rows(ctx.page.seed, ["same", "same"], [4, 4])[1]
+        else:  # a named group, asked as a question under the pictures
+            groups = BASIC_GROUPS if level == "kg1" else None
+            row = generate_odd_rows(ctx.page.seed, ["same", "category"], [4, 4], groups)[1]
+        question = 9.0 if row.question else 0.0
+        if question:
+            out.body.append(
+                text(row.question, box.x + box.w / 2, box.y + box.h - 2.2, 4.6, color=ctx.style.deep)
+            )
         square = box.h > box.w * 0.6  # a 2 × 2 block when the box is not a strip
         cols = 2 if square else 4
-        step, rows_h = box.w / cols, box.h / (2 if square else 1)
+        step, rows_h = box.w / cols, (box.h - question) / (2 if square else 1)
         size = min(step - 8, rows_h - 6)
         for k, thing in enumerate(row.items):
             cx = box.x + box.w - (k % cols + 0.5) * step

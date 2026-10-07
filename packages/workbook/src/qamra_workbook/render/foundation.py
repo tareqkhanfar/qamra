@@ -92,9 +92,12 @@ def plan_params(page: Page, plan: Curriculum, volume: Volume, name_en: str) -> d
         case "maze":  # levels 1–5 (Addendum 5 §8): a bigger grid each level
             level = int(page.params.get("level", 1))
             extra["cols"] = extra["rows"] = 4 + level
-        case "odd-one-out":  # a solved example row, then the child's rows
+        case "odd-one-out":  # a solved example row (seen), then the rows: named groups come in by level
             rows = int(page.params.get("rows", 3))
-            extra["rules"] = ["same", *(["same", "same", "category", "category"][-rows:])]
+            level = min(max(int(page.params.get("level", 1)), 1), 3)
+            ladders = (["same"] * 2 + ["category"] * 3, ["same"] + ["category"] * 4, ["category"] * 5)
+            ladder = ladders[level - 1]
+            extra["rules"] = ["same", *ladder[:rows]]
             extra["sizes"] = [4] * (rows + 1)
         case "pattern-complete":
             pattern = str(page.params.get("pattern", "AB"))

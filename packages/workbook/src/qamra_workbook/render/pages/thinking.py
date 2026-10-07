@@ -43,9 +43,16 @@ def _word(picture_id: str) -> str:
 def odd_one_out(ctx: PageContext) -> Built:
     rules = list(ctx.page.params.get("rules", ["same", "same", "category"]))
     sizes = list(ctx.page.params.get("sizes", [4] * len(rules)))
-    rows = generate_odd_rows(ctx.page.seed, rules, sizes)
+    groups = ctx.page.params.get("groups")
+    rows = generate_odd_rows(ctx.page.seed, rules, sizes, tuple(groups) if groups else None)
     data = [
-        {"pics": [ctx.pic(i) for i in row.items], "odd": row.odd, "example": row.example, "n": k}
+        {
+            "pics": [ctx.pic(i) for i in row.items],
+            "odd": row.odd,
+            "example": row.example,
+            "n": k,
+            "hint": row.hint,
+        }
         for k, row in enumerate(rows)
     ]
     answer = [f"الصف {ctx.num(k)}: {row.answer}" for k, row in enumerate(rows) if not row.example]

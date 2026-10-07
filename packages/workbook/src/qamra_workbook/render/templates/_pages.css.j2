@@ -11,6 +11,11 @@
 .odd-cell { position: relative; width: 34mm; height: 34mm; }
 .odd-row.five .odd-cell { width: 29mm; height: 29mm; }
 .is-example .odd-cell { width: 24mm; height: 24mm; }
+/* a category row names its group on a chip over the card's top edge, on the reading side */
+.odd-row.has-hint { position: relative; padding-top: 5mm; }
+.odd-hint { position: absolute; top: -3.6mm; inset-inline-start: 5mm; padding: 1mm 4mm 0.6mm; border-radius: 4mm;
+            background: var(--tint); color: var(--deep); border: 0.45mm solid var(--c);
+            font: 800 13pt/1.35 var(--title); white-space: nowrap; }
 .ring { position: absolute; left: -3.5mm; top: -3.5mm; width: calc(100% + 7mm); height: calc(100% + 7mm); }
 
 /* ---- full-work-area drawings (mazes, drills, maps): scale to the space left, keep the aspect */

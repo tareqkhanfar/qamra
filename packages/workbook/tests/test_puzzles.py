@@ -93,7 +93,11 @@ def test_odd_one_out_catches_two_odd_pictures_and_a_wrong_key() -> None:
     assert OddRow(("apple", "apple", "apple", "car"), 0, "same").problems() == [
         "the answer key points at the wrong picture"
     ]
-    assert OddRow(("cat", "dog", "cow", "apple"), 3, "category").problems() == []
+    assert OddRow(("cat", "cow", "elephant", "car"), 3, "category", group="animal").problems() == []
+    assert OddRow(("cat", "dog", "cow", "apple"), 3, "category").problems()  # no named group
+    two_reds = OddRow(("apple", "banana", "strawberry", "car"), 3, "category", group="fruit")
+    assert any("share a colour" in p for p in two_reds.problems())  # apple and strawberry: two reds
+    assert OddRow(("cat", "cow", "lion", "teddy"), 3, "category", group="animal").problems()  # a teddy
 
 
 # ---- quantity first

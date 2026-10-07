@@ -466,6 +466,11 @@ ODD_ONE_OUT = (
     "{حَوِّطِ الصّورَةَ المُخْتَلِفَةَ، وَقُلْ لِماذا اخْتَرْتَها/حَوِّطي الصّورَةَ المُخْتَلِفَةَ، وَقولي لِماذا اخْتَرْتِها}",
     "أَيُّ صورَةٍ مُخْتَلِفَةٌ؟ {حَوِّطْها، وَقُلْ لِماذا/حَوِّطيها، وَقولي لِماذا}",
 )
+ODD_ONE_OUT_GROUPS = (  # pages with named-group rows (each row's chip names it); fits seen rows too
+    "ثَلاثُ صُوَرٍ تَتَشابَهُ: {حَوِّطِ/حَوِّطي} المُخْتَلِفَةَ",
+    "أَيُّ صورَةٍ لا تُشْبِهُ البَقِيَّةَ؟ {حَوِّطْها/حَوِّطيها}",
+    "في كُلِّ صَفٍّ صورَةٌ مُخْتَلِفَةٌ: {حَوِّطْها/حَوِّطيها}",
+)
 MAZE_RUNNERS = {  # a maze's walker when it is not the child (the plan's runner and goal)
     ("bird", "nest"): "{ساعِدِ/ساعِدي} العُصْفورَ لِيَصِلَ إلى عُشِّهِ",
     ("cat", "ball"): "{ساعِدِ/ساعِدي} القِطَّةَ لِتَصِلَ إلى الكُرَةِ",
@@ -610,7 +615,8 @@ def general_texts(kind: str, params: dict[str, Any], unit_title: str, subject: s
         case "classify":
             return "لِكُلِّ لَوْنٍ سَلَّةٌ", "ما لَوْنُ كُلِّ شَيْءٍ؟ {صِلْهُ/صِليهِ} بِسَلَّةِ لَوْنِهِ", ""
         case "odd-one-out":
-            return "مَنِ المُخْتَلِفُ؟", pick(ODD_ONE_OUT, turn(params)), ""
+            pool = ODD_ONE_OUT_GROUPS if "category" in params.get("rules", ()) else ODD_ONE_OUT
+            return "مَنِ المُخْتَلِفُ؟", pick(pool, turn(params)), ""
         case "maze":
             return "مَتاهَةٌ", maze_say(params), ""
         case "spot-difference":

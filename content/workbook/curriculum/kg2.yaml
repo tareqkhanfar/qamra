@@ -506,7 +506,7 @@ volumes:
       - {n: 27, week: 3, subject: math, unit: v3-ma-01, type: count-and-circle, skill: "أعدّ الأشياء حتى ٢٠ بالصور (عشرة وآحاد) وأحوّط العدد الصحيح", difficulty: 4, params: {numbers: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20], tens_ones: pictures}}
       - {n: 28, week: 3, subject: english, unit: v3-en-01, type: match-letter-picture, skill: "أصل الحروف S وT وU وV بصور تبدأ بها", difficulty: 3, params: {letters: [S, T, U, V], words: [sock, tiger, uniform, vase]}}
       - {n: 29, week: 3, subject: arabic, unit: v3-ar-02, type: letter-trace, skill: "أتتبّع حرفي الكاف واللام، الكبير ثم الأصغر، وأنتبه إلى طول كل منهما", difficulty: 3, params: {letters: [ك, ل], sizes: [l, m]}}
-      - {n: 30, week: 3, subject: thinking, unit: v3-th-01, type: odd-one-out, skill: "أجد المختلف في صفتين معًا: اللون والشكل", difficulty: 4, params: {level: 3}}
+      - {n: 30, week: 3, subject: thinking, unit: v3-th-01, type: odd-one-out, skill: "أعرف اسم المجموعة وأجد ما لا ينتمي إليها", difficulty: 4, params: {level: 3}}
       - {n: 31, week: 3, subject: math, unit: v3-ma-01, type: compare, skill: "أقارن بين عددين حتى ٢٠ وأحوّط الأكبر", difficulty: 4, params: {concept: bigger-smaller, range: 20}}
       - {n: 32, week: 3, subject: arabic, unit: v3-ar-02, type: letter-write, skill: "أكتب الكاف واللام: سطر موجّه ثم سطر مستقل لكل حرف", difficulty: 3, params: {letters: [ك, ل], guided: 1, independent: 1}}
       - {n: 33, week: 3, subject: english, unit: v3-en-01, type: unit-review, skill: "أراجع الحروف S T U V: أقرأ وأكتب وأطابق", difficulty: 3, params: {letters: [S, T, U, V]}}
