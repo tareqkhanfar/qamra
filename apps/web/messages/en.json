@@ -349,12 +349,14 @@
       "chip": {
         "workbook": "{ages} · kindergarten",
         "journey": "{ages} · at home",
-        "family": "{ages} · a family gift"
+        "family": "{ages} · a family gift",
+        "islamic": "{ages} · at home"
       },
       "unit": {
         "workbook": "From {price} a volume",
         "journey": "{price} a stage",
-        "family": "{price}"
+        "family": "{price}",
+        "islamic": "From {price} a volume"
       }
     },
     "b2b": {
@@ -1020,6 +1022,11 @@
         "Their character is the hero of every adventure",
         "Family names in the missions",
         "A passport with their picture and an adventurer's certificate"
+      ],
+      "islamic": [
+        "A cover with their character and name",
+        "Their name in the stories and activities",
+        "A certificate in their name at the end of the book"
       ]
     },
     "options": {
@@ -2044,6 +2051,7 @@
     "foundation": "Foundation workbook",
     "journey": "My First Learning Journey",
     "family": "My Adventures with My Family",
+    "islamic": "My Heart Knows Allah",
     "allBooks": "All books",
     "forKg": "Kindergartens",
     "gradBooks": "Graduation books",
@@ -3156,6 +3164,11 @@
         "The family's names in the missions and the “My family” page",
         "A passport with their drawn picture and reward stickers",
         "An adventurer's certificate in their name"
+      ],
+      "islamic": [
+        "Stories and activities to live their faith every day",
+        "“For parents” pages at the end of every unit",
+        "A faith-journey card and a certificate in their name"
       ]
     },
     "howTitle": "How an activity book is made",

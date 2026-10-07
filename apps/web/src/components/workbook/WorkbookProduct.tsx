@@ -232,7 +232,7 @@ export function WorkbookProduct({
 
           <section className="flex flex-col gap-2.5 rounded-[20px] border border-line bg-paper-raised p-4">
             <h2 className="text-[18px] text-night-900">{t("mine.title")}</h2>
-            {(t.raw(`mine.${line}`) as string[]).map((item) => (
+            {((t.has(`mine.${line}`) ? t.raw(`mine.${line}`) : []) as string[]).map((item) => (
               <div key={item} className="flex items-center gap-2.5 text-[15px]">
                 <span
                   aria-hidden="true"

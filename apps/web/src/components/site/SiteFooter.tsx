@@ -15,6 +15,7 @@ export async function SiteFooter() {
     { href: "/workbooks/foundation-workbook", label: t("foundation") },
     { href: "/workbooks/learning-journey", label: t("journey") },
     { href: "/workbooks/family-adventures", label: t("family") },
+    { href: "/workbooks/islamic-series", label: t("islamic") },
     { href: "/shop", label: t("allBooks") },
   ];
   const kg = [

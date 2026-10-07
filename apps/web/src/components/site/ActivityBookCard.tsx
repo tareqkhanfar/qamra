@@ -42,7 +42,8 @@ export async function ActivityBookCard({
   const edition = [level.map((l) => l.split(" ·")[0]).join(comma), unit("volume"), unit("stage")]
     .filter(Boolean)
     .join(" · ");
-  const inside = detailed ? (t.raw(`insideList.${line}`) as string[]) : [];
+  // a line without its list (a product just switched on) shows no list rather than breaking the page
+  const inside = detailed && t.has(`insideList.${line}`) ? (t.raw(`insideList.${line}`) as string[]) : [];
   const chip = "rounded-full px-2.5 py-1";
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-[20px] border border-line bg-paper-raised">
