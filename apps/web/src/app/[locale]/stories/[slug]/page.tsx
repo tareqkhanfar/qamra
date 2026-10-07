@@ -4,6 +4,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { PageShell } from "@/components/site/PageShell";
 import { StoryCard } from "@/components/site/StoryCard";
 import { StoryProduct } from "@/components/story/StoryProduct";
+import { addonMedia } from "@/lib/addonsMedia";
 import { examplesFor, getStoreCatalog, getTheme, getThemes, type ThemeCard } from "@/lib/catalog";
 import { pickExample } from "@/lib/examples";
 import { LINES, coversOf, storyFrom, type Line } from "@/lib/story";
@@ -59,6 +60,7 @@ export default async function StoryPage({ params, searchParams }: Props) {
         examples={examples}
         initialLine={line}
         themeNames={names}
+        media={addonMedia}
         related={
           related.length > 0 && (
             <section aria-labelledby="related-title" className="flex flex-col gap-3 border-t border-line pt-8">

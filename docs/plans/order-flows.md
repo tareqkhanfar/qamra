@@ -900,3 +900,15 @@ const items = includedItems[product.slug] ?? []; // IncludedItem[]: {src, title_
     `family-adventures`, `islamic-series`, `foundation-workbook`).
 - The texts are short and language-reviewed. They describe the printed thing, never a delivery time or stock.
 - The module has no other imports, so a `node --test` file can load it.
+- The story pages (`stories/page.tsx`, `stories/[slug]/page.tsx`) already pass `media={addonMedia}` to
+  `LineCompare` and `StoryProduct`.
+
+**What the pictures are made from** (all local, no paid calls):
+
+| Pictures | Source |
+|---|---|
+| `addons/hardcover-upgrade`, `extra-copy`, `dedication-page`, `family-voice`, `digital-copy` | «ليلى في أوّل يوم بالروضة»: the published example's pictures (with their «نموذج» mark) laid out by the story pipeline as a final book (dedication text, family-voice QR), then the `qamra_pdf.mockups` CSS book scenes. The QR in the picture opens `/how-it-works`. The phone in `family-voice` is the real listening page (`out/samples/phase-5/voice-listen.png`). |
+| `addons/drawing-companion` | A test drawing (`packages/ai/tests/fixtures`) beside the book. It shows the drawing, **not** a drawn companion: no companion drawn from a child's drawing exists yet, and making one needs a paid image call. |
+| `addons/printed-answer-key`, `printed-parent-guide` | The cover and `answer-key.pdf` of journey stage 1 and of Islamic V1 (a print build, so there is no draft mark) |
+| `included/classic-book/*` | Page 1 (default dedication) and the «للأهل» page of the same book. Magic and the custom story reuse the add-on pictures and this «للأهل» picture. |
+| `included/learning-journey/*`, `family-adventures/*`, `islamic-series/*`, `foundation-workbook/*` | The engines' renders for the sample child «ليان»: the journey stages, the family book and its insert PDFs, Islamic V1 (print build), and KG1 volumes 1 and 3 |

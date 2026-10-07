@@ -6,6 +6,7 @@ import { LineCompare } from "@/components/store/LineCompare";
 import { StyleShowcase } from "@/components/story/StyleShowcase";
 import { Alert } from "@/components/ui/Alert";
 import { Link } from "@/i18n/navigation";
+import { addonMedia } from "@/lib/addonsMedia";
 import { examplesFor, getStoreCatalog, getThemes } from "@/lib/catalog";
 import { pageMetadata } from "@/lib/seo";
 import { money } from "@/lib/store";
@@ -105,7 +106,7 @@ export default async function StoriesPage({ searchParams }: Props) {
         )}
         {catalog && !line && (
           <div className="mt-12 md:mt-16">
-            <LineCompare catalog={catalog} pages={pageCounts.length === 1 ? pageCounts[0] : null} />
+            <LineCompare catalog={catalog} pages={pageCounts.length === 1 ? pageCounts[0] : null} media={addonMedia} />
           </div>
         )}
       </div>
