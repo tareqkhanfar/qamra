@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { PageShell } from "@/components/site/PageShell";
 import { ThemesGrid } from "@/components/site/ThemesGrid";
+import { LineCompare } from "@/components/store/LineCompare";
+import { StyleShowcase } from "@/components/story/StyleShowcase";
 import { Alert } from "@/components/ui/Alert";
 import { Link } from "@/i18n/navigation";
 import { examplesFor, getStoreCatalog, getThemes } from "@/lib/catalog";
@@ -19,9 +21,10 @@ export async function generateMetadata(): Promise<Metadata> {
 /** The stories (Addendum 9: /stories; /themes redirects here), with real covers where an example exists. */
 export default async function StoriesPage({ searchParams }: Props) {
   const [query, locale] = await Promise.all([searchParams, getLocale()]);
-  const [t, tc, themes, catalog, examples] = await Promise.all([
+  const [t, tc, ts, themes, catalog, examples] = await Promise.all([
     getTranslations("themes"),
     getTranslations("common"),
+    getTranslations("storyShowcase"),
     getThemes(locale),
     getStoreCatalog(),
     examplesFor(locale),
@@ -32,6 +35,20 @@ export default async function StoriesPage({ searchParams }: Props) {
   const covers = coversOf(examples);
   const prices = Object.fromEntries((themes ?? []).map((th) => [th.slug, storyFrom(catalog, th, line)]));
   const occasionLabels = tc.raw("occasions") as Record<string, string>;
+  const ar = locale === "ar";
+  // the story books' art styles (catalog order), only those of the chosen line when there is one
+  const styles = (catalog?.styles ?? [])
+    .filter((s) => (line ? s.lines.includes(line) : s.lines.includes("classic") || s.lines.includes("magic")))
+    .map((s) => ({ slug: s.slug, name: ar ? s.name_ar : s.name_en, lines: s.lines }));
+  const live = (themes ?? []).filter((th) => th.status === "available");
+  const themeNames = Object.fromEntries(live.map((th) => [th.slug, th.name]));
+  const lineNames = Object.fromEntries(
+    (catalog?.products ?? [])
+      .filter((p) => p.line === "classic" || p.line === "magic")
+      .filter((p, i, all) => all.findIndex((q) => q.line === p.line) === i)
+      .map((p) => [p.line, ar ? p.name_ar : p.name_en]),
+  );
+  const pageCounts = [...new Set(live.map((th) => th.pages))];
   return (
     <PageShell>
       <div className="mx-auto max-w-[1440px] px-4 pb-16 md:px-10 md:pb-24 xl:px-24">
@@ -60,6 +77,7 @@ export default async function StoriesPage({ searchParams }: Props) {
             currency={currency}
             line={line}
             occasionLabels={occasionLabels}
+            styles={styles}
             labels={{
               age: t("age"),
               all: t("all"),
@@ -73,6 +91,22 @@ export default async function StoriesPage({ searchParams }: Props) {
           />
         ) : (
           <Alert>{t("unavailable")}</Alert>
+        )}
+        {styles.length > 0 && (
+          <section aria-labelledby="styles-title" className="mt-12 flex flex-col gap-4 md:mt-16">
+            <div className="flex flex-col gap-1.5">
+              <h2 id="styles-title" className="text-[26px] text-night-900 md:text-h2">
+                {ts("title")}
+              </h2>
+              <p className="max-w-[680px] text-body leading-[1.7] text-ink-muted">{ts("lead")}</p>
+            </div>
+            <StyleShowcase styles={styles} themeNames={themeNames} lineNames={lineNames} />
+          </section>
+        )}
+        {catalog && !line && (
+          <div className="mt-12 md:mt-16">
+            <LineCompare catalog={catalog} pages={pageCounts.length === 1 ? pageCounts[0] : null} />
+          </div>
         )}
       </div>
     </PageShell>

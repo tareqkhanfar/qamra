@@ -5,6 +5,7 @@ import { Arrow } from "./blocks";
 import type { ThemeCard } from "@/lib/catalog";
 import type { Example } from "@/lib/examples";
 import { money, type Currency } from "@/lib/store";
+import { styleThumb } from "@/lib/styleSamples";
 
 /**
  * A story in the shop's card style (Addendum 9): its real cover when an example is published (else the
@@ -18,6 +19,7 @@ export function StoryCard({
   currency = "ILS",
   line,
   priority = false,
+  styles = [],
 }: {
   theme: ThemeCard;
   example: Example | null;
@@ -25,8 +27,11 @@ export function StoryCard({
   currency?: Currency;
   line?: string | null;
   priority?: boolean;
+  /** The art styles this story can be drawn in (catalog order): a small real sample of each. */
+  styles?: { slug: string; name: string }[];
 }) {
   const t = useTranslations("themes");
+  const ts = useTranslations("storyShowcase");
   const tc = useTranslations("common");
   const locale = useLocale();
   // the placeholder cover carries the story's name; a real cover the example's own title
@@ -55,6 +60,30 @@ export function StoryCard({
         </span>
         <h3 className="text-[18px] leading-tight text-night-900 md:text-[21px]">{theme.name}</h3>
         <p className="line-clamp-2 text-caption leading-[1.5] text-ink-muted md:text-small">{theme.tagline}</p>
+        {styles.length > 1 && (
+          <span className="flex items-center gap-2 pt-0.5" title={styles.map((s) => s.name).join(" · ")}>
+            <span className="flex -space-x-2 rtl:space-x-reverse" aria-hidden="true">
+              {styles.map((s) => {
+                const thumb = styleThumb(s.slug, theme.slug);
+                return thumb ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- a 480 px static sample as a swatch
+                  <img
+                    key={s.slug}
+                    src={thumb.thumb}
+                    alt=""
+                    width={24}
+                    height={24}
+                    loading="lazy"
+                    className="size-6 rounded-full border-2 border-paper-raised bg-paper object-cover"
+                  />
+                ) : null;
+              })}
+            </span>
+            <span className="text-caption font-semibold text-ink-muted">
+              {ts("styleCount", { count: styles.length })}
+            </span>
+          </span>
+        )}
         <div className="mt-auto flex flex-wrap items-baseline justify-between gap-x-2 pt-1">
           {from !== null && (
             <strong className="font-display text-[18px] text-night-900">

@@ -4,10 +4,11 @@ import { useLocale, useTranslations } from "next-intl";
 import type { CSSProperties } from "react";
 import { Kid } from "@/components/art/Kid";
 import { ExampleImage } from "@/components/book/ExampleImage";
-import type { ExamplePage } from "@/lib/examples";
+import type { ExamplePage, ExampleVariant } from "@/lib/examples";
 import { money, type Currency } from "@/lib/store";
 import { addonFor, num, type Line, type Offer, type StyleChoice } from "@/lib/story";
 import type { Catalog, CatalogVariant } from "@/lib/store";
+import { styleThumb } from "@/lib/styleSamples";
 
 /** Design StoryProduct: each style's swatch look (a real sample image replaces it when the admin adds one). */
 export const STYLE_LOOK: Record<string, { bg: string; fx: CSSProperties }> = {
@@ -107,19 +108,26 @@ export function LineFeatures({ items }: { items: { ok: boolean; text: string }[]
   );
 }
 
-/** Step 2: the art styles. A style the line can't sell yet is disabled («متوفر في سحري»). */
+/**
+ * Step 2: the art styles, each with a real sample page (a page of this story in that style when there is one,
+ * public/samples via lib/styleSamples). A style the line can't sell yet is disabled («متوفر في سحري»).
+ */
 export function StyleCards({
   choices,
   value,
   onChange,
   line,
   currency,
+  theme,
+  look,
 }: {
   choices: StyleChoice[];
   value: string | null;
   onChange: (slug: string) => void;
   line: Line;
   currency: Currency;
+  theme?: string | null;
+  look?: ExampleVariant | null;
 }) {
   const t = useTranslations("themeDetail.styles");
   const tv = useTranslations("examples.variant");
@@ -128,7 +136,8 @@ export function StyleCards({
     <div role="radiogroup" aria-label={t("label")} className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
       {choices.map(({ style, available, looks, modifier }) => {
         const on = available && style.slug === value;
-        const look = STYLE_LOOK[style.slug] ?? STYLE_LOOK.watercolor!;
+        const swatch = STYLE_LOOK[style.slug] ?? STYLE_LOOK.watercolor!;
+        const sample = style.sample_images[0] ?? styleThumb(style.slug, theme, look, "page")?.thumb;
         const partial = line === "classic" && available && looks && looks.length < 3;
         const note = !available
           ? t(line === "classic" && style.lines.includes("magic") ? "onlyMagic" : "unavailable")
@@ -150,13 +159,13 @@ export function StyleCards({
             className={`flex flex-col items-center gap-1.5 rounded-[18px] bg-paper-raised p-2.5 transition ${available ? card(on) : "cursor-not-allowed border-[1.5px] border-dashed border-line opacity-50"}`}
           >
             <span
-              className={`flex h-[84px] w-full items-end justify-center overflow-hidden rounded-xl ${style.sample_images[0] ? "" : look.bg}`}
+              className={`flex h-[84px] w-full items-end justify-center overflow-hidden rounded-xl ${sample ? "" : swatch.bg}`}
             >
-              {style.sample_images[0] ? (
-                // eslint-disable-next-line @next/next/no-img-element -- admin-provided style sample
-                <img src={style.sample_images[0]} alt="" loading="lazy" className="size-full object-cover" />
+              {sample ? (
+                // eslint-disable-next-line @next/next/no-img-element -- admin-provided or static style sample
+                <img src={sample} alt="" loading="lazy" className="size-full object-cover" />
               ) : (
-                <span style={look.fx} className="w-16">
+                <span style={swatch.fx} className="w-16">
                   <Kid skin="#C98F63" hairStyle="curly" outfit="#5B6FC0" className="block h-auto w-full" />
                 </span>
               )}

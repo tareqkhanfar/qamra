@@ -32,6 +32,7 @@ export function ThemesGrid({
   line,
   labels,
   occasionLabels,
+  styles,
 }: {
   themes: ThemeCard[];
   covers: Record<string, Example | null>;
@@ -40,6 +41,8 @@ export function ThemesGrid({
   line: string | null;
   labels: Labels;
   occasionLabels: Record<string, string>;
+  /** The art styles to show on each card (see StoryCard). */
+  styles?: { slug: string; name: string }[];
 }) {
   const [band, setBand] = useState<number | null>(null);
   const [occasion, setOccasion] = useState<string | null>(null);
@@ -129,6 +132,7 @@ export function ThemesGrid({
                 currency={currency}
                 line={line}
                 priority={i < 2}
+                styles={styles}
               />
             </div>
           ))}

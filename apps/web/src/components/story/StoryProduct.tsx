@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useState, useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore, type ReactNode } from "react";
 import { BookViewer } from "@/components/book/BookViewer";
 import { CoverArt, splitTemplate } from "@/components/book/CoverArt";
 import { Link, useRouter } from "@/i18n/navigation";
@@ -10,7 +10,9 @@ import type { ThemeDetail } from "@/lib/catalog";
 import { rememberedVariant, type Example, type ExampleVariant } from "@/lib/examples";
 import { cartApi, money, type Catalog } from "@/lib/store";
 import { LINES, createHref, freeDigitalCopy, num, offer, styleChoices, type Line, type Offer } from "@/lib/story";
+import { AddonList, extraAddons, type AddonMedia } from "./AddonList";
 import { FormatCards, LineCards, LineChecklist, STYLE_LOOK, StyleCards } from "./Choices";
+import { StyleShowcase } from "./StyleShowcase";
 
 const subscribe = (cb: () => void) => {
   window.addEventListener("storage", cb);
@@ -28,13 +30,23 @@ export function StoryProduct({
   catalog,
   examples,
   initialLine,
+  themeNames = {},
+  media,
+  related,
 }: {
   theme: ThemeDetail;
   catalog: Catalog | null;
   examples: Example[];
   initialLine: Line | null;
+  /** Story names by slug, to label sample pages borrowed from other stories. */
+  themeNames?: Record<string, string>;
+  /** Pictures for the add-ons (the shared media list). */
+  media?: AddonMedia;
+  /** «قد يعجبكم أيضًا»: shown after the choices. */
+  related?: ReactNode;
 }) {
   const t = useTranslations("themeDetail");
+  const ts = useTranslations("storyShowcase");
   const tc = useTranslations("common");
   const te = useTranslations("errors");
   const locale = useLocale();
@@ -92,6 +104,14 @@ export function StoryProduct({
     .filter(Boolean)
     .join(" · ");
 
+  const extras = extraAddons(catalog, line).filter((a) => {
+    const formats = a.requires.format; // e.g. the hardcover upgrade only for a softcover
+    return !formats || !variant?.options.format || formats.includes(variant.options.format);
+  });
+  const lineNames = Object.fromEntries(
+    offers.map((o) => [o.line, locale === "ar" ? o.product.name_ar : o.product.name_en]),
+  );
+
   /** The chosen book, format and story into the cart; the style only when the parent picked one. */
   async function addToCart() {
     if (!variant) return;
@@ -106,7 +126,9 @@ export function StoryProduct({
 
   return (
     <>
-      <div className="mx-auto max-w-[1200px] pb-36 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-12 lg:px-10 lg:pt-10">
+      <div
+        className={`mx-auto max-w-[1200px] lg:grid ${related ? "pb-12" : "pb-36"} lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-12 lg:px-10 lg:pt-10`}
+      >
         {/* hero: the real cover when an example is published, else the theme's art in the chosen style */}
         <div className="relative lg:sticky lg:top-28 lg:self-start">
           <CoverArt
@@ -161,6 +183,16 @@ export function StoryProduct({
             </div>
             <h1 className="text-[32px] leading-tight text-night-900 md:text-[40px]">{theme.name}</h1>
             <p className="text-body leading-[1.75] text-ink-muted">{theme.description}</p>
+            {theme.values.length > 0 && (
+              <p className="flex flex-wrap items-center gap-1.5 text-caption">
+                <span className="font-semibold text-ink-muted">{ts("values")}</span>
+                {theme.values.map((v) => (
+                  <span key={v} className="rounded-full bg-amber-100 px-2.5 py-1 font-semibold text-amber-700">
+                    {v}
+                  </span>
+                ))}
+              </p>
+            )}
           </div>
 
           <section aria-labelledby="browse-title" className="flex flex-col gap-2.5">
@@ -196,7 +228,30 @@ export function StoryProduct({
               onChange={setPickedStyle}
               line={line}
               currency={currency}
+              theme={theme.slug}
+              look={example?.variant ?? null}
             />
+            {style && (
+              <div className="flex flex-col gap-2 rounded-[20px] bg-paper-sunk p-3.5 md:p-4">
+                <h3 className="text-[17px] text-night-900">
+                  {ts("stepGallery", { style: locale === "ar" ? style.name_ar : style.name_en })}
+                </h3>
+                <StyleShowcase
+                  tabs={false}
+                  size="sm"
+                  styles={choices.map((c) => ({
+                    slug: c.style.slug,
+                    name: locale === "ar" ? c.style.name_ar : c.style.name_en,
+                    lines: c.style.lines,
+                  }))}
+                  value={style.slug}
+                  theme={theme.slug}
+                  themeNames={{ ...themeNames, [theme.slug]: theme.name }}
+                  lineNames={lineNames}
+                  look={example?.variant ?? null}
+                />
+              </div>
+            )}
           </section>
 
           <section className="flex flex-col gap-2.5">
@@ -209,10 +264,22 @@ export function StoryProduct({
               currency={currency}
               freeDigital={!!freeDigitalCopy(catalog, line)}
             />
-            <p className="text-caption leading-[1.6] text-ink-muted">
-              {freeDigitalCopy(catalog, line) ? t("formatsNoteDigital") : ""} {t("formatsNoteExtras")}
-            </p>
+            {freeDigitalCopy(catalog, line) && (
+              <p className="text-caption leading-[1.6] text-ink-muted">{t("formatsNoteDigital")}</p>
+            )}
           </section>
+
+          {extras.length > 0 && (
+            <section aria-labelledby="extras-title" className="flex flex-col gap-2.5">
+              <div className="flex flex-col gap-0.5">
+                <h2 id="extras-title" className="text-[20px] text-night-900">
+                  {ts("extras.title")}
+                </h2>
+                <p className="text-small text-ink-muted">{ts("extras.later")}</p>
+              </div>
+              <AddonList addons={extras} catalog={catalog} media={media} initial={3} wide={false} />
+            </section>
+          )}
 
           <Link
             href={createHref(theme.slug, line, style?.slug, variant?.options.format)}
@@ -239,6 +306,7 @@ export function StoryProduct({
           </div>
         </main>
       </div>
+      {related && <div className="mx-auto max-w-[1200px] px-4 pb-36 lg:px-10">{related}</div>}
 
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-paper/97 pt-3 pb-[max(16px,env(safe-area-inset-bottom))] backdrop-blur">
         {addError && (
