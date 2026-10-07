@@ -576,3 +576,11 @@ Verified prices and parameters are listed in `docs/plans/addendum-03.md` §1, wi
 - **«استرجاع النص المولَّد»:** pages go back to `BookPage.original_text` (the generated words, before the parent's or staff's edits; the parent's wording stays in the history's "before"). Story fields keep their first value in `generation.text_originals` at the first edit.
 - **Not built:** per-page AI text regeneration (the pipeline writes the whole story in one call; there is no per-page text step to call), and editing a class copy's words (they are the class's shared pages, rewritten from the class template on every render: shown read-only).
 - **Optional staff alert:** setting `review_alert_email` (البريد والواتساب; empty = off). When a story's final files are ready the worker emails it once per book (`text_review_waiting`), instead of emailing the parent.
+
+## «قلبي يعرف الله»: the owner's review replaces the scholar gate for this release (2026-10-07)
+
+- **Decision (owner, 2026-10-07):** the six volumes (V1–V5 and R) go on sale on the owner's own page-by-page review on the review site (2026-10-03..07, 639 pages; the V1 notes were applied in ef3548f), without waiting for a scholar's sign-off.
+- **How:** migration `0c695b89fde0` marks every review unit of the six volumes (49 units) `approved` with the note «owner decision 2026-10-07» in each unit's history (`islamic_review_events`). No reviewer is named: `reviewer_name` stays empty, so the review export gives no name and no book prints a «راجعه علميًّا» line. Downgrade puts the units back to `draft`.
+- **Nothing public says who reviewed the books.** The sentence «كل مجلد يراجعه مشرف علمي قبل طباعته» / "A scholar reviews every volume before it is printed" is removed from the product description (catalog, live row, site text), and nothing replaces it.
+- **The scholar workflow stays in the code** (roles, review page, `scholar_decision` points, the consent-based credit line) for later use. The 31 open `scholar_decision` points are not answered; the store gate does not read them.
+- **Still open:** the page engine's print gate (every source in `content/islamic/sources*.yaml` at `scholar_approved`, no placeholder) is unchanged, so an order's volume cannot be rendered until that is settled.

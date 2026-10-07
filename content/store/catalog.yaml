@@ -161,6 +161,8 @@ products:
   # workflow (Admin → «المراجعة العلمية»; `qamra_core.islamic_review`); a set needs all of its volumes. Until
   # then the product is simply absent (never "coming"). The admin can still close a volume (the variant's
   # «active») or the whole line (Admin → الكتالوج → orderable); approval never reopens what the admin closed.
+  # 2026-10-07: the owner's decision approved every unit of V1–V5 and R (migration 0c695b89fde0, docs/decisions.md);
+  # the description makes no claim about who reviewed the books.
   # `volume`: V1…V5, R (the Ramadan and Eid book), L1 (V1+V2), L2 (V3–V5), set (the five volumes).
   # Binding: perfect-bound softcover (proposal §10: pages with the Quran must not tear out), size 21×28.
   # PRICES ARE PLACEHOLDERS (Addendum 10 §9: printed volume 79 ₪, PDF 35 ₪; sets from the proposal; the
@@ -172,10 +174,10 @@ products:
     line: islamic
     name_ar: قلبي يعرف الله
     name_en: My Heart Knows Allah
-    description_ar: رحلة يتعرّف فيها طفلكم إلى الله ونبيّه ﷺ، ويعيش دينه في يومه بالقصة واللعب والأنشطة، باسمه وشخصيته. كل مجلد يراجعه مشرف علمي قبل طباعته.
-    description_en: A journey in which your child comes to know Allah and His Prophet ﷺ and lives their faith every day, through stories, play and activities, with their own name and character. A scholar reviews every volume before it is printed.
+    description_ar: رحلة يتعرّف فيها طفلكم إلى الله ونبيّه ﷺ، ويعيش دينه في يومه بالقصة واللعب والأنشطة، باسمه وشخصيته.
+    description_en: A journey in which your child comes to know Allah and His Prophet ﷺ and lives their faith every day, through stories, play and activities, with their own name and character.
     option_names: [volume, format]
-    features: {size: "21x28", binding: perfect, interior: color, scholar_review: true}
+    features: {size: "21x28", binding: perfect, interior: color}
     variants:
       - {sku: islamic-v1-softcover, options: {volume: V1, format: softcover}, price: {ILS: 79, JOD: 15}, cost: {print: 40, packaging: 3, ai_usd: 0.30}, print_cost_tiers: &islamic_volume_tiers [{min_qty: 1, unit_ils: 40, estimated: true}, {min_qty: 10, unit_ils: 35, estimated: true}, {min_qty: 50, unit_ils: 29, estimated: true}, {min_qty: 100, unit_ils: 25, estimated: true}, {min_qty: 500, unit_ils: 18, estimated: true}]}  # placeholder
       - {sku: islamic-v2-softcover, options: {volume: V2, format: softcover}, price: {ILS: 79, JOD: 15}, cost: {print: 40, packaging: 3, ai_usd: 0.30}, print_cost_tiers: *islamic_volume_tiers}  # placeholder

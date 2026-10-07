@@ -16,9 +16,10 @@ from typing import Any
 
 import pytest
 from pypdf import PdfWriter
+from sqlalchemy import delete
 from sqlalchemy.orm import Session
 
-from qamra_core.db.islamic import IslamicReviewPreview, IslamicUnitReview, ReviewStatus
+from qamra_core.db.islamic import IslamicReviewEvent, IslamicReviewPreview, IslamicUnitReview, ReviewStatus
 from qamra_core.db.models import (
     Book,
     BookStatus,
@@ -60,6 +61,15 @@ class VolumeFiles:  # the engine's `islamic_volume.VolumeFiles`
     @property
     def passed(self) -> bool:
         return all(r.get("passed") for r in self.preflight.values())
+
+
+@pytest.fixture(autouse=True)
+def _before_the_owner_decision(db: Session) -> None:
+    """Start from a review with nothing decided: migration 0c695b89fde0 (the owner's decision of 2026-10-07)
+    approves every unit; its rows are removed inside the test's rolled-back transaction."""
+    db.execute(delete(IslamicReviewEvent))
+    db.execute(delete(IslamicUnitReview))
+    db.flush()
 
 
 @pytest.fixture

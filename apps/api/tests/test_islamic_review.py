@@ -9,17 +9,20 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime
 from decimal import Decimal
+from typing import Any
 
+import pytest
 from api_helpers import make_admin, register
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 from rq import Queue
-from sqlalchemy import select, update
+from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from qamra_api.seed_store import seed_store
 from qamra_core.db.islamic import (
     IslamicReviewer,
+    IslamicReviewEvent,
     IslamicReviewPreview,
     IslamicScholarDecision,
     IslamicUnitReview,
@@ -54,6 +57,15 @@ from qamra_core.islamic_review import (
 from qamra_core.storage import ObjectStorage
 
 REVIEW = "/api/admin/islamic/review"
+
+
+@pytest.fixture(autouse=True)
+async def _before_the_owner_decision(adb: AsyncSession) -> None:
+    """These tests start from a review with nothing decided: migration 0c695b89fde0 (the owner's decision of
+    2026-10-07) approves every unit, so its rows are removed inside the test's rolled-back transaction."""
+    await adb.execute(delete(IslamicReviewEvent))
+    await adb.execute(delete(IslamicUnitReview))
+    await adb.flush()
 
 
 @asynccontextmanager
@@ -483,3 +495,85 @@ async def test_a_parent_adds_an_approved_volume_for_their_child(
         "/api/shop/workbooks/cart", json={"sku": "islamic-v2-digital", "child_id": str(child.id)}
     )
     assert r.status_code == 404  # not approved: not sold
+
+
+# ---- the owner's decision of 2026-10-07 (migration 0c695b89fde0) ----------------------------------------
+
+
+def _owner_decision() -> Any:
+    import importlib.util
+    from pathlib import Path
+
+    from qamra_core import migrations
+
+    path = next((Path(migrations.__file__).parent / "versions").glob("*_0c695b89fde0_*.py"))
+    spec = importlib.util.spec_from_file_location("owner_decision", path)
+    assert spec is not None and spec.loader is not None
+    mig = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mig)
+    return mig
+
+
+def test_the_owner_decision_covers_every_review_unit() -> None:
+    """The migration's unit list is exactly the review workflow's (units.yaml + each volume's matter)."""
+    mig = _owner_decision()
+    want: dict[str, list[str]] = {}
+    for u in content_units():
+        want.setdefault(u.volume, []).append(u.id)
+    assert {v: list(ids) for v, ids in mig.UNITS.items()} == want
+
+
+async def test_the_owner_decision_opens_the_series_without_naming_anyone(
+    client: AsyncClient, adb: AsyncSession
+) -> None:
+    import yaml
+
+    from qamra_api.seed_store import CATALOG
+    from qamra_core.islamic_review import load_state
+
+    mig = _owner_decision()
+    await seed_store(adb)
+    assert await _skus(client) == set()
+
+    async def run(step: Any) -> None:
+        await adb.run_sync(lambda s: step(s.connection()))
+        adb.expire_all()
+
+    await run(mig.approve)
+    await run(mig.approve)  # idempotent
+    every = {f"islamic-{v}-softcover" for v in ("v1", "v2", "v3", "v4", "v5", "r", "l1", "l2", "set")} | {
+        f"islamic-{v}-digital" for v in ("v1", "v2", "v3", "v4", "v5", "r")
+    }
+    assert await _skus(client) == every
+    rows = (await adb.execute(select(IslamicUnitReview))).scalars().all()
+    assert len(rows) == len(mig.unit_ids()) and all(r.status == ReviewStatus.approved for r in rows)
+    assert all(r.reviewer_name is None and r.reviewer_user_id is None and r.approved_at for r in rows)
+    events = (await adb.execute(select(IslamicReviewEvent))).scalars().all()
+    assert len(events) == len(rows)
+    assert all(e.text == mig.NOTE and e.author_name == "—" and not e.scholar for e in events)
+    export = build_export(await load_state(adb))
+    assert all(v["approved"] and v["credit_name"] is None for v in export["volumes"].values())
+    assert all(u["reviewer"] is None for u in export["units"].values())  # no name reaches a book
+
+    # the public description: the seeded sentence about a scholar goes, nothing replaces it
+    catalog = yaml.safe_load(CATALOG.read_text(encoding="utf-8"))
+    entry = next(p for p in catalog["products"] if p["slug"] == mig.PRODUCT)
+    product = (
+        await adb.execute(select(CatalogProduct).where(CatalogProduct.slug == mig.PRODUCT))
+    ).scalar_one()
+    for column, seeded, now in mig.DESCRIPTIONS:
+        assert entry[column] == now
+        setattr(product, column, seeded)
+    product.features = {**product.features, "scholar_review": True}
+    pid = product.id
+    await adb.commit()
+    await run(lambda c: mig.descriptions(c, forward=True))
+    after = await adb.get(CatalogProduct, pid)
+    assert after is not None and "scholar_review" not in after.features
+    assert [getattr(after, c) for c, _, _ in mig.DESCRIPTIONS] == [n for _, _, n in mig.DESCRIPTIONS]
+
+    await run(mig.revert)
+    assert await _skus(client) == set()
+    rows = (await adb.execute(select(IslamicUnitReview))).scalars().all()
+    assert all(r.status == ReviewStatus.draft and r.approved_at is None for r in rows)
+    assert (await adb.execute(select(IslamicReviewEvent))).scalars().all() == []
