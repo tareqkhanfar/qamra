@@ -1,7 +1,6 @@
 """«أضيفوا للسلة» puts every product in the cart with one tap, for a guest too (Tareq, 2026-10-02: "I choose a
 book and it is not added to the cart"); the child's details are completed from the cart line."""
 
-import re
 from collections.abc import Iterator
 from urllib.parse import parse_qs, urlsplit
 
@@ -46,9 +45,10 @@ def test_a_guest_adds_a_story_and_every_activity_book_in_one_tap_each(guest: Pag
     cart = call(guest, "GET", "/api/store/cart")
     assert cart["count"] == 1 + len(WORKBOOKS), cart["count"]
     assert cart["items"][0]["sku"].split("-")[0] in ("magic", "classic")  # in the order added
-    # every line waits for the child's details, and the cart says how to finish them
+    # every line waits for the child's details, and the cart says what each kind of book still needs
     expect(guest.get_by_role("link", name=COMPLETE).first).to_be_visible()
-    assert guest.get_by_text("ينقصه: بيانات الطفل وصورته").count() == 1 + len(WORKBOOKS)
+    expect(guest.get_by_text("ينقصه: بيانات الطفل والمعاينة")).to_have_count(1)  # the story
+    expect(guest.get_by_text("ينقصه: اسم الطفل وشخصيته")).to_have_count(len(WORKBOOKS))  # no photo for these
 
 
 def test_every_activity_line_completes_through_its_product(guest: Page) -> None:
@@ -64,7 +64,8 @@ def test_every_activity_line_completes_through_its_product(guest: Page) -> None:
     for item in items:
         query = links[item["id"]]
         assert query["product"] == [item["sku"]], (item["product"], query)
-        assert not {"format", "theme", "style"} & query.keys(), (item["product"], query)
+        # its own flow: never a story line (no `line=magic` any more), story, style or format
+        assert not {"line", "format", "theme", "style"} & query.keys(), (item["product"], query)
 
 
 def test_completing_a_line_opens_the_create_flow_for_that_line(guest: Page) -> None:
@@ -95,7 +96,10 @@ def test_a_known_child_completes_an_islamic_line_without_the_story_flow(page: Pa
     assert filled["child_id"] == child and filled["sku"] == line["sku"] and not filled["needs_details"]
     assert filled["book_id"] is None  # no story book was started for it
     expect(page.get_by_role("link", name=COMPLETE)).to_have_count(0)
-    # «تعديل» goes back to the product page (it went to /shop)
-    expect(page.get_by_role("link", name="تعديل", exact=True)).to_have_attribute(
-        "href", re.compile(r"/workbooks/islamic-series$")
+    # «تعديل» opens this line's review step (it went to /shop, then to the product page)
+    edit = page.get_by_role("link", name="تعديل", exact=True).get_attribute("href") or ""
+    query = parse_qs(urlsplit(edit).query)
+    assert urlsplit(edit).path.endswith("/create"), edit
+    assert (
+        query["step"] == ["summary"] and query["item"] == [line["id"]] and query["product"] == [line["sku"]]
     )

@@ -7,9 +7,10 @@ import { Link } from "@/i18n/navigation";
 import { api, errorText, type ApiResult } from "@/lib/api";
 import type { ThemeCard } from "@/lib/catalog";
 import { createApi, type Child } from "@/lib/create";
-import { completeHref, GIFT_MESSAGE_MAX, orderApi, type CrossSell, type OrderCart } from "@/lib/order";
+import { completeHref, GIFT_MESSAGE_MAX, lineSummary, orderApi, type CrossSell, type OrderCart } from "@/lib/order";
 import type { Catalog } from "@/lib/store";
 import { CartBody } from "./CartBody";
+import { useSummaryText } from "./LineSummary";
 import { BottomBar, ctaClass, FlowHeader } from "./parts";
 
 /** «السلة» (design Cart): the books with their add-on lines, the gift and its card message, one field for a
@@ -29,6 +30,7 @@ export function CartScreen() {
   const [error, setError] = useState<string | null>(null);
   const [codeError, setCodeError] = useState<string | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const text = useSummaryText();
 
   const refreshOffers = useCallback(async () => {
     const r = await orderApi.crossSell();
@@ -110,7 +112,12 @@ export function CartScreen() {
   // a line added in one tap waits for the child: the bar leads there before the address and payment
   const waiting = cart.items.find((i) => i.needs_details);
   const waitingName = waiting
-    ? (themes.find((th) => th.slug === waiting.theme)?.name ?? (locale === "ar" ? waiting.name_ar : waiting.name_en))
+    ? text(
+        lineSummary(waiting, {
+          product: locale === "ar" ? waiting.name_ar : waiting.name_en,
+          theme: themes.find((th) => th.slug === waiting.theme)?.name,
+        }).title,
+      )
     : "";
 
   return (
@@ -129,6 +136,10 @@ export function CartScreen() {
         maxMessage={GIFT_MESSAGE_MAX}
         onRemove={async (id) => {
           if (await apply(orderApi.remove(id))) void refreshOffers();
+        }}
+        onAddOns={async () => {
+          const r = await orderApi.cart(); // the line's add-ons are saved: the totals, discounts and delivery again
+          if (r.ok) setCart(r.data);
         }}
         onGift={(on) => void apply(orderApi.gift(on, on ? message : undefined))}
         onMessage={typeMessage}

@@ -1180,17 +1180,17 @@
       "lockedNeeds": "Needs {names}, which isn't available for this book",
       "lockedExcludes": "Can't be combined with {names}",
       "missing": "This book isn't in your cart yet. Go back and choose its format first.",
-      "backToFormat": "Choose the format"
+      "backToFormat": "Choose the format",
+      "none": "No extras for this book right now.",
+      "withBook": "Included with the book: {items}"
     },
     "cart": {
       "title": "Cart ({n})",
       "backToShop": "Back to the shop",
       "toShop": "Browse the books",
       "previewReady": "Preview ready",
-      "needsDetails": "Missing: your child's details and photo",
       "complete": "Add your child's details",
-      "completeFirst": "Before you continue, add your child's details and photo for “{name}”.",
-      "editAddons": "Edit extras",
+      "completeFirst": "Before you continue, add your child's details for “{name}”.",
       "edit": "Edit",
       "remove": "Remove",
       "summary": "Cart summary",
@@ -1205,7 +1205,19 @@
       "codFee": "Cash on delivery fee",
       "total": "Total",
       "next": "Continue to address and payment",
-      "codNote": "Cash on delivery · Free reprint if the mistake is ours"
+      "codNote": "Cash on delivery · Free reprint if the mistake is ours",
+      "needs": {
+        "activity": "Missing: your child's name and character",
+        "story": "Missing: your child's details and the preview"
+      },
+      "missing": {
+        "name_en": "Missing: your child's name in English letters",
+        "name": "Missing: the name in Arabic letters, for your child to trace"
+      },
+      "extras": {
+        "title": "Extras for this book",
+        "optional": "(optional)"
+      }
     },
     "cross": {
       "title": "{name}'s character is ready",
@@ -1260,7 +1272,9 @@
       "eta": "Arrives in {min}–{max} working days",
       "confirm": "Place order · {total} on delivery",
       "terms": "By placing the order you accept the",
-      "termsLink": "order terms"
+      "termsLink": "order terms",
+      "lastStep": "Last step: address and payment",
+      "books": "{n, plural, one {1 book} other {# books}}"
     },
     "admin": {
       "tab": "Gift cards",
@@ -1326,6 +1340,89 @@
     "orders": {
       "gift": "Gift",
       "slip": "Packing slip (print)"
+    },
+    "order": {
+      "addons": "Extras: {names}"
+    },
+    "line": {
+      "title": {
+        "story": "{name}'s book",
+        "workbook": "{name}'s workbook",
+        "journey": "{name}'s first journey",
+        "family": "{name}'s adventures",
+        "islamic": "My Heart Knows Allah · {name}"
+      },
+      "workbook": {
+        "level": {
+          "kg1": "KG1",
+          "kg2": "KG2"
+        },
+        "volume": {
+          "1": "Volume 1",
+          "2": "Volume 2",
+          "3": "Volume 3",
+          "set": "All three volumes"
+        },
+        "interior": {
+          "color": "Full color",
+          "bw": "Black and white"
+        }
+      },
+      "journey": {
+        "stage": {
+          "1": "Stage 1",
+          "2": "Stage 2",
+          "3": "Stage 3",
+          "set": "All three stages"
+        }
+      },
+      "islamic": {
+        "volume": {
+          "V1": "Volume 1",
+          "V2": "Volume 2",
+          "V3": "Volume 3",
+          "V4": "Volume 4",
+          "V5": "Volume 5",
+          "R": "The Ramadan and Eid book",
+          "L1": "Level 1 (volumes 1 and 2)",
+          "L2": "Level 2 (volumes 3–5)",
+          "set": "All five volumes"
+        }
+      },
+      "activityFormat": {
+        "spiral": "Printed",
+        "softcover": "Printed",
+        "digital": "PDF file"
+      },
+      "format": {
+        "softcover": "Softcover",
+        "hardcover": "Hardcover",
+        "digital": "Digital copy",
+        "spiral": "Printed, spiral-bound"
+      },
+      "nameEn": "Name in English: {name}",
+      "story": "Story: {name}",
+      "dedication": "Dedication ✓",
+      "family": {
+        "with": "The {name} family: {members}",
+        "alone": "The {name} family, no names: the missions say «أحد الكبار» (a grown-up)",
+        "city": "City: {city}",
+        "member": "{relation} ({name})",
+        "relation": {
+          "mother": "Mom",
+          "father": "Dad",
+          "grandmother": "Grandma",
+          "grandfather": "Grandpa",
+          "maternal-aunt": "Aunt",
+          "paternal-aunt": "Aunt",
+          "maternal-uncle": "Uncle",
+          "paternal-uncle": "Uncle",
+          "brother": "Brother",
+          "sister": "Sister",
+          "baby": "Baby",
+          "other": "Family member"
+        }
+      }
     }
   },
   "voice": {

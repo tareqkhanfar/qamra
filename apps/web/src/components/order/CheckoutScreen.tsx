@@ -6,9 +6,18 @@ import { Alert } from "@/components/ui/Alert";
 import { Spinner } from "@/components/ui/Button";
 import { Link, useRouter } from "@/i18n/navigation";
 import { api, errorText } from "@/lib/api";
-import { TOTAL_STEPS } from "@/lib/create";
-import { bundleLabel, completeHref, orderApi, type OrderCart } from "@/lib/order";
-import { cartApi, deliveryCountries, money, orderPhone, type Catalog, type CatalogZone } from "@/lib/store";
+import type { ThemeCard } from "@/lib/catalog";
+import { bundleLabel, completeHref, lineSummary, orderApi, type OrderCart, type OrderItem } from "@/lib/order";
+import {
+  cartApi,
+  deliveryCountries,
+  money,
+  orderPhone,
+  type Catalog,
+  type CatalogStyle,
+  type CatalogZone,
+} from "@/lib/store";
+import { LineText, useSummaryText } from "./LineSummary";
 import { BottomBar, ctaClass, FlowHeader } from "./parts";
 
 const field =
@@ -17,12 +26,14 @@ const field =
 /** «إتمام الطلب» (design Create10): where to deliver, cash on delivery, and the server's order summary. */
 export function CheckoutScreen() {
   const t = useTranslations("orderPath");
-  const tf = useTranslations("store.formats");
   const te = useTranslations("errors");
+  const text = useSummaryText();
   const locale = useLocale();
   const router = useRouter();
   const [cart, setCart] = useState<OrderCart | null>(null);
   const [zones, setZones] = useState<CatalogZone[]>([]);
+  const [styles, setStyles] = useState<CatalogStyle[]>([]);
+  const [themes, setThemes] = useState<ThemeCard[]>([]);
   const [picked, setPicked] = useState("PS");
   const [city, setCity] = useState("");
   const [form, setForm] = useState({ name: "", phone: "", address: "" });
@@ -33,15 +44,23 @@ export function CheckoutScreen() {
   useEffect(() => {
     let alive = true;
     void (async () => {
-      const [c, store] = await Promise.all([orderApi.cart(), api<Catalog>("/api/store/catalog")]);
+      const [c, store, worlds] = await Promise.all([
+        orderApi.cart(),
+        api<Catalog>("/api/store/catalog"),
+        api<ThemeCard[]>(`/api/themes?lang=${locale}`), // the stories' names in the order summary
+      ]);
       if (!alive) return;
       if (c.ok) setCart((newer) => newer ?? c.data); // never over a cart a city choice already updated
-      if (store.ok) setZones(store.data.zones);
+      if (store.ok) {
+        setZones(store.data.zones);
+        setStyles(store.data.styles);
+      }
+      if (worlds.ok) setThemes(worlds.data);
     })();
     return () => {
       alive = false;
     };
-  }, []);
+  }, [locale]);
 
   // the country choice shows only while we deliver to more than one country (West Bank + Jerusalem only now)
   const countries = useMemo(() => deliveryCountries(zones), [zones]);
@@ -85,14 +104,14 @@ export function CheckoutScreen() {
 
   const set = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm({ ...form, [key]: e.target.value });
+  // the last step of every order, whatever its books: no "n of N" (a cart can hold several books, §c.9)
   const header = (
     <FlowHeader
       title={t("checkout.title")}
       back={{ label: t("back"), href: "/cart" }}
-      label={t("checkout.label")}
-      note={t("stepOf", { n: TOTAL_STEPS - 1, total: TOTAL_STEPS })}
+      label={t("checkout.lastStep")}
+      note={cart?.count ? t("checkout.books", { n: cart.count }) : undefined}
       moon={0.92}
-      progress={(TOTAL_STEPS - 1) / TOTAL_STEPS}
     />
   );
   if (!cart || cart.items.length === 0) {
@@ -113,6 +132,11 @@ export function CheckoutScreen() {
   }
   const amount = (v: string | number) => money(v, cart.currency, locale);
   const name = (x: { name_ar: string; name_en: string }) => (locale === "ar" ? x.name_ar : x.name_en);
+  const summary = (item: OrderItem) => {
+    const style = styles.find((s) => s.slug === item.style);
+    const theme = themes.find((th) => th.slug === item.theme);
+    return lineSummary(item, { product: name(item), theme: theme?.name, style: style ? name(style) : null });
+  };
   const discount = Number(cart.sale_discount) + Number(cart.coupon_discount);
   const waiting = cart.items.find((i) => i.needs_details); // checkout refuses it until the child is added
   return (
@@ -122,7 +146,7 @@ export function CheckoutScreen() {
         {waiting && (
           <Alert tone="info">
             <span className="flex flex-col items-start gap-2">
-              {t("cart.completeFirst", { name: name(waiting) })}
+              {t("cart.completeFirst", { name: text(summary(waiting).title) })}
               <Link href={completeHref(waiting)} className="font-bold underline">
                 {t("cart.complete")}
               </Link>
@@ -223,22 +247,19 @@ export function CheckoutScreen() {
           aria-label={t("cart.summary")}
           className="flex flex-col gap-3 rounded-[20px] border border-line bg-paper-raised p-4"
         >
-          {cart.items.map((item) => (
-            <div key={item.id} className="flex items-center justify-between gap-3">
-              <span className="flex flex-col">
-                <strong className="text-[15px] text-ink">
-                  {item.book_title ?? (item.child_name ? t("bookFor", { name: item.child_name }) : name(item))}
-                </strong>
-                <span className="text-caption text-ink-muted">
-                  {name(item)} · {tf(item.options.format ?? "digital")}
-                  {item.addons.some((a) => !a.included && Number(a.amount) > 0)
-                    ? ` · ${t("checkout.withAddons", { n: item.addons.filter((a) => Number(a.amount) > 0).length })}`
-                    : ""}
-                </span>
-              </span>
-              <span className="text-[15px] whitespace-nowrap">{amount(item.subtotal)}</span>
-            </div>
-          ))}
+          {cart.items.map((item) => {
+            const paid = item.addons.filter((a) => !a.included && Number(a.amount) > 0).length;
+            return (
+              <div key={item.id} className="flex items-start justify-between gap-3">
+                <LineText
+                  summary={summary(item)}
+                  qty={item.qty}
+                  extra={[paid ? t("checkout.withAddons", { n: paid }) : null]}
+                />
+                <span className="text-[15px] whitespace-nowrap">{amount(item.subtotal)}</span>
+              </div>
+            );
+          })}
           <div className="flex flex-col gap-2 border-t border-dashed border-line pt-3 text-[15px]">
             {cart.bundle && Number(cart.bundle_discount) > 0 && (
               <Row

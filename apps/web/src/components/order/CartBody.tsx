@@ -6,8 +6,20 @@ import { Alert } from "@/components/ui/Alert";
 import { Link } from "@/i18n/navigation";
 import type { ThemeCard } from "@/lib/catalog";
 import type { Child } from "@/lib/create";
-import { bundleLabel, completeHref, editHref, type CrossSell, type OrderCart, type OrderItem } from "@/lib/order";
+import {
+  bundleLabel,
+  completeHref,
+  editHref,
+  isActivity,
+  lineSummary,
+  offeredAddOns,
+  type CrossSell,
+  type OrderCart,
+  type OrderItem,
+} from "@/lib/order";
 import { money, type Catalog } from "@/lib/store";
+import { ItemAddOns } from "./AddOnsStep";
+import { LineText } from "./LineSummary";
 import { BookThumb, CheckBox } from "./parts";
 
 const pill =
@@ -25,6 +37,7 @@ export function CartBody(props: {
   message: string;
   maxMessage: number;
   onRemove: (id: string) => void;
+  onAddOns: () => void; // a line's add-ons changed: the cart's totals come again from the server
   onGift: (on: boolean) => void;
   onMessage: (text: string) => void;
   onMessageDone: () => void;
@@ -224,6 +237,7 @@ function Line({
   kids,
   busy,
   onRemove,
+  onAddOns,
   amount,
 }: {
   item: OrderItem;
@@ -232,19 +246,20 @@ function Line({
   kids: Child[];
   busy: boolean;
   onRemove: (id: string) => void;
+  onAddOns: () => void;
   amount: (v: string | number) => string;
 }) {
   const t = useTranslations("orderPath");
-  const tf = useTranslations("store.formats");
   const locale = useLocale();
   const name = (x: { name_ar: string; name_en: string }) => (locale === "ar" ? x.name_ar : x.name_en);
   const style = catalog?.styles.find((s) => s.slug === item.style);
   const theme = themes.find((th) => th.slug === item.theme);
   const kid = kids.find((k) => k.id === item.child_id);
-  const title =
-    item.book_title ?? (item.child_name ? t("bookFor", { name: item.child_name }) : (theme?.name ?? name(item)));
-  const details = [name(item), tf(item.options.format ?? "digital"), style ? name(style) : null];
-  const lines = item.addons;
+  const activity = isActivity(item);
+  const summary = lineSummary(item, { product: name(item), theme: theme?.name, style: style ? name(style) : null });
+  const extras = catalog ? offeredAddOns(catalog.addons, item).length : 0;
+  const missing = (item.missing ?? []).filter((m) => t.has(`cart.missing.${m}`));
+  const [open, setOpen] = useState(false); // the add-ons are asked from the server only once opened
   return (
     <article className="flex flex-col gap-3 rounded-[20px] border border-line bg-paper-raised p-3.5">
       <div className="flex gap-3">
@@ -253,24 +268,28 @@ function Line({
         ) : (
           <ActivityThumb name={item.child_name} />
         )}
-        <div className="flex grow flex-col gap-0.5">
-          <strong className="text-body text-ink">
-            {title}
-            {item.qty > 1 && <span className="text-ink-muted"> × {item.qty}</span>}
-          </strong>
-          <span className="text-caption text-ink-muted">{details.filter(Boolean).join(" · ")}</span>
+        <LineText summary={summary} qty={item.qty} className="grow">
           {item.book_status === "preview" && (
             <span className="text-caption font-semibold text-success">{t("cart.previewReady")}</span>
           )}
-          {item.needs_details && (
-            <span className="text-caption font-semibold text-amber-700">{t("cart.needsDetails")}</span>
-          )}
-        </div>
+          {item.needs_details &&
+            (missing.length ? (
+              missing.map((m) => (
+                <span key={m} className="text-caption font-semibold text-amber-700">
+                  {t(`cart.missing.${m}`)}
+                </span>
+              ))
+            ) : (
+              <span className="text-caption font-semibold text-amber-700">
+                {t(activity ? "cart.needs.activity" : "cart.needs.story")}
+              </span>
+            ))}
+        </LineText>
         <strong className="text-body whitespace-nowrap text-ink">{amount(item.base)}</strong>
       </div>
-      {lines.length > 0 && (
+      {item.addons.length > 0 && (
         <div className="flex flex-col gap-1.5 border-t border-dashed border-line pt-2.5 text-small">
-          {lines.map((a) => {
+          {item.addons.map((a) => {
             const free = a.included || Number(a.amount) === 0;
             return (
               <div key={a.slug} className={`flex justify-between gap-3 ${free ? "text-success" : ""}`}>
@@ -284,6 +303,27 @@ function Line({
           })}
         </div>
       )}
+      {extras > 0 && (
+        <details className="group rounded-2xl bg-paper-sunk px-3.5" onToggle={(e) => setOpen(e.currentTarget.open)}>
+          <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 text-small font-bold text-night-900 [&::-webkit-details-marker]:hidden">
+            <span>
+              {t("cart.extras.title")} <span className="font-normal text-ink-muted">{t("cart.extras.optional")}</span>
+            </span>
+            <svg
+              className="size-5 shrink-0 transition group-open:rotate-180"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              aria-hidden="true"
+            >
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </summary>
+          {open && <ItemAddOns itemId={item.id} onSaved={onAddOns} className="pb-3.5" />}
+        </details>
+      )}
       <div className="flex gap-2">
         {item.needs_details ? (
           <Link
@@ -293,9 +333,11 @@ function Line({
             {t("cart.complete")}
           </Link>
         ) : (
-          <Link href={editHref(item)} className={pill}>
-            {item.book_id ? t("cart.editAddons") : t("cart.edit")}
-          </Link>
+          activity && (
+            <Link href={editHref(item)} className={pill}>
+              {t("cart.edit")}
+            </Link>
+          )
         )}
         <button
           type="button"

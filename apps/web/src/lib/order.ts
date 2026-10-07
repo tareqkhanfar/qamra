@@ -1,7 +1,8 @@
 /** The order path of Addendum 9 (designs AddOns, Cart, Create10): types and calls. Every amount is the server's. */
 import { api } from "@/lib/api";
 import { ACTIVITY_LINES } from "@/lib/shop";
-import type { Cart, CartItem } from "@/lib/store";
+import type { Cart, CartItem, CatalogAddOn } from "@/lib/store";
+import { summarize, type FamilyHeld, type Names, type Summary } from "@/lib/variantSummary";
 
 export type OrderAddOn = CartItem["addons"][number] & { amount: string };
 export type OrderItem = Omit<CartItem, "addons"> & {
@@ -11,6 +12,11 @@ export type OrderItem = Omit<CartItem, "addons"> & {
   child_id: string | null;
   book_title: string | null;
   book_status: string | null;
+  // what an activity line prints for the child (docs/plans/order-flows.md chunk 8; optional until the API sends them)
+  missing?: string[]; // the line has its child but still lacks "name_en" | "name" (a name its tracing pages can write)
+  child_name_en?: string | null; // the name in English letters, where the book prints it
+  family?: FamilyHeld | null; // «مغامراتي مع عائلتي»: {name, city, members}
+  character_id?: string | null;
 };
 
 export type OrderCart = Omit<Cart, "items"> & {
@@ -120,19 +126,27 @@ export function bundleLabel(name: string): string {
  * site keeps (the API's is `store/workbooks.py` ACTIVITY): a copy here once left «قلبي يعرف الله» out, and its
  * «أكملوا بيانات الطفل» ran the story flow, which the API then refused.
  */
-function isActivity(item: Pick<OrderItem, "line">): boolean {
-  return (ACTIVITY_LINES as readonly string[]).includes(item.line);
+export function isActivity(item: { line?: string | null }): boolean {
+  return (ACTIVITY_LINES as readonly string[]).includes(item.line ?? "");
+}
+
+/** What a line will print, the same in the cart, the checkout and the order page (lib/variantSummary.ts). */
+export function lineSummary(item: Parameters<typeof summarize>[0], names: Names): Summary {
+  return summarize(item, isActivity(item) ? "activity" : "story", names);
 }
 
 /**
- * «أكملوا بيانات الطفل»: the create flow for a line added in one tap, with what the product page chose. When
- * the flow ends it fills this line (`item`), and a child's approved character is reused.
+ * «أكملوا بيانات الطفل»: the create flow for a line that still waits, with what the product page chose. When the
+ * flow ends it fills this line (`item`), and a child's approved character is reused.
+ * - An activity book opens its own flow by its product (`product=<sku>`): never a story line, theme or style.
+ *   A line that has its child but lacks something the book prints (the English name) opens on that child.
+ * - A story keeps its line, story, style and format from the story page.
  */
 export function completeHref(item: OrderItem): string {
   const q = new URLSearchParams({ item: item.id });
   if (isActivity(item)) {
     q.set("product", item.sku);
-    q.set("line", "magic");
+    if (item.child_id) q.set("child", item.child_id);
   } else {
     if (item.line === "classic" || item.line === "magic") q.set("line", item.line);
     if (item.theme) q.set("theme", item.theme);
@@ -142,10 +156,37 @@ export function completeHref(item: OrderItem): string {
   return `/create?${q.toString()}`;
 }
 
-/** Where "edit" goes for a line: the add-ons step for a book, the product page for an activity book. */
+/**
+ * «تعديل» on a line: an activity book opens its review step for this very line (name as printed, English name,
+ * family, character), which saves back into the same line, so nothing given before is lost; a story book opens
+ * its add-ons step.
+ */
 export function editHref(item: OrderItem): string {
+  if (isActivity(item)) {
+    const q = new URLSearchParams({ step: "summary", product: item.sku, item: item.id });
+    if (item.child_id) q.set("child", item.child_id);
+    return `/create?${q.toString()}`;
+  }
   if (item.book_id && item.child_id) {
     return `/create?step=addons&child=${item.child_id}&book=${item.book_id}`;
   }
-  return isActivity(item) ? `/workbooks/${item.product}` : "/shop";
+  return "/stories";
+}
+
+const AFTER_PREVIEW = ["format", "checkout"]; // the steps whose add-ons a line's add-ons step offers (API store/addons.py)
+const AUTOMATIC = ["digital-copy"]; // added by the server to every printed book
+
+/**
+ * The add-ons the line's add-ons step will offer, from the catalog (active add-ons only) and the same rules as
+ * the API (`store/addons.py` `managed`): the line and its format (`lines`, `requires`). The cart uses it to know
+ * whether a line has any before it asks the server for the offers themselves.
+ */
+export function offeredAddOns(addons: CatalogAddOn[], item: Pick<OrderItem, "line" | "options">): CatalogAddOn[] {
+  return addons.filter(
+    (a) =>
+      AFTER_PREVIEW.includes(a.step) &&
+      !AUTOMATIC.includes(a.slug) &&
+      (a.lines.includes(item.line) || a.included_lines.includes(item.line)) &&
+      Object.entries(a.requires).every(([option, allowed]) => allowed.includes(item.options[option] ?? "")),
+  );
 }

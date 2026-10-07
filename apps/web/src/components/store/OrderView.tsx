@@ -3,12 +3,34 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { MoonPhase } from "@/components/art/MoonPhase";
+import { LineText } from "@/components/order/LineSummary";
 import { Alert } from "@/components/ui/Alert";
 import { buttonClasses, Spinner } from "@/components/ui/Button";
 import { Link, useRouter } from "@/i18n/navigation";
-import { ORDER_STEPS, cartApi, money, orderPhone, type Tracked } from "@/lib/store";
+import { api } from "@/lib/api";
+import type { ThemeCard } from "@/lib/catalog";
+import { lineSummary } from "@/lib/order";
+import { ORDER_STEPS, cartApi, money, orderPhone, type Catalog, type CatalogStyle, type Tracked } from "@/lib/store";
+import type { FamilyHeld } from "@/lib/variantSummary";
 
 const field = "min-h-12 w-full rounded-md border border-line bg-paper-raised px-3 text-body";
+
+/**
+ * An order's line as the order page reads it: what the cart showed for it (docs/plans/order-flows.md §c.9), once
+ * the API's order tracking sends it; until then the line is its product and the child's name, as before.
+ */
+type TrackedItem = Tracked["items"][number] &
+  Partial<{
+    line: string;
+    product: string;
+    options: Record<string, string>;
+    theme: string | null;
+    style: string | null;
+    book_title: string | null;
+    child_name_en: string | null;
+    family: FamilyHeld | null;
+    addons: { slug: string; name_ar: string; name_en: string; qty?: number }[];
+  }>;
 
 /** Order placed (design: Create11) and tracking (design: Tracking). */
 export function OrderView({ code, placed }: { code: string; placed: boolean }) {
@@ -18,6 +40,8 @@ export function OrderView({ code, placed }: { code: string; placed: boolean }) {
   const locale = useLocale();
   const [order, setOrder] = useState<Tracked | null>(null);
   const [missing, setMissing] = useState(false);
+  const [styles, setStyles] = useState<CatalogStyle[]>([]);
+  const [themes, setThemes] = useState<ThemeCard[]>([]);
 
   useEffect(() => {
     let live = true;
@@ -25,14 +49,23 @@ export function OrderView({ code, placed }: { code: string; placed: boolean }) {
       const phone = orderPhone.get(code);
       const r = phone ? await cartApi.track(code, phone) : null;
       if (!live) return;
-      if (r?.ok) setOrder(r.data);
-      else setMissing(true);
+      if (!r?.ok) return setMissing(true);
+      setOrder(r.data);
+      const items = r.data.items as TrackedItem[];
+      // the names of the stories and art styles its story books were made in
+      const [store, worlds] = await Promise.all([
+        items.some((i) => i.style) ? api<Catalog>("/api/store/catalog") : null,
+        items.some((i) => i.theme) ? api<ThemeCard[]>(`/api/themes?lang=${locale}`) : null,
+      ]);
+      if (!live) return;
+      if (store?.ok) setStyles(store.data.styles);
+      if (worlds?.ok) setThemes(worlds.data);
     };
     void load();
     return () => {
       live = false;
     };
-  }, [code]);
+  }, [code, locale]);
 
   if (missing) return <TrackForm initialCode={code} />;
   if (!order) return <p className="py-10 text-center text-ink-muted">…</p>;
@@ -80,12 +113,20 @@ export function OrderView({ code, placed }: { code: string; placed: boolean }) {
       </section>
       <section className="flex flex-col gap-2 rounded-lg bg-paper-sunk p-4 text-body">
         <h2 className="text-[17px] text-night-900">{t("items")}</h2>
-        {order.items.map((item, i) => (
-          <p key={i}>
-            {item.child_name ? tc("bookFor", { name: item.child_name }) : locale === "ar" ? item.name_ar : item.name_en}
-            {item.qty > 1 && ` ×${item.qty}`}
-          </p>
-        ))}
+        {(order.items as TrackedItem[]).map((item, i) =>
+          item.line ? (
+            <Item key={i} item={item} styles={styles} themes={themes} />
+          ) : (
+            <p key={i}>
+              {item.child_name
+                ? tc("bookFor", { name: item.child_name })
+                : locale === "ar"
+                  ? item.name_ar
+                  : item.name_en}
+              {item.qty > 1 && ` ×${item.qty}`}
+            </p>
+          ),
+        )}
         <p className="flex justify-between border-t border-line pt-2 font-bold">
           <span>{t("total")}</span>
           <span>{money(order.total, order.currency, locale)}</span>
@@ -95,6 +136,28 @@ export function OrderView({ code, placed }: { code: string; placed: boolean }) {
         {tp("home")}
       </Link>
     </div>
+  );
+}
+
+/** One line of the order, said as the cart said it, with its add-ons. */
+function Item({ item, styles, themes }: { item: TrackedItem; styles: CatalogStyle[]; themes: ThemeCard[] }) {
+  const t = useTranslations("orderPath.order");
+  const locale = useLocale();
+  const name = (x: { name_ar: string; name_en: string }) => (locale === "ar" ? x.name_ar : x.name_en);
+  const style = styles.find((s) => s.slug === item.style);
+  const summary = lineSummary(
+    { ...item, options: item.options ?? {} },
+    { product: name(item), theme: themes.find((th) => th.slug === item.theme)?.name, style: style && name(style) },
+  );
+  const addons = (item.addons ?? []).map((a) => name(a) + ((a.qty ?? 1) > 1 ? ` × ${a.qty}` : ""));
+  return (
+    <LineText summary={summary} qty={item.qty} className="border-b border-line/60 pb-2 last:border-0">
+      {addons.length > 0 && (
+        <span className="text-caption text-ink-muted">
+          {t("addons", { names: addons.join(locale === "ar" ? "، " : ", ") })}
+        </span>
+      )}
+    </LineText>
   );
 }
 
