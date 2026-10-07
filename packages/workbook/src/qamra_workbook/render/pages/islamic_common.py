@@ -16,7 +16,7 @@ from typing import Any
 
 from markupsafe import Markup, escape
 
-from qamra_workbook.islamic_sources import NOTICE, Resolved, SourceError, Span
+from qamra_workbook.islamic_sources import APPROVED, NOTICE, Resolved, SourceError, Span
 from qamra_workbook.pictures.islamic import SCENES, ribbon_svg, scene_svg, star8_svg
 from qamra_workbook.pictures.islamic_backdrops import composed_problems, composed_svg, prop_known, prop_svg
 from qamra_workbook.render.islamic_content import AnyPage, Choice, Claim, IslamicContext, Quote, Scene
@@ -164,10 +164,8 @@ def _print_gate(
         return
     if got is None or got.text is None:
         problems.append(f"{source_id}: a placeholder in a print build ({reason})")
-    elif got.status != "scholar_approved":
-        problems.append(
-            f"{source_id}: {got.status}, not scholar_approved (a print build needs the scholar's approval)"
-        )
+    elif got.status not in APPROVED:
+        problems.append(f"{source_id}: {got.status}, not approved (a print build needs an approved source)")
 
 
 def sacred(ctx: PageContext, quote: Quote, kind: str, problems: list[str]) -> dict[str, Any]:
@@ -221,7 +219,7 @@ def rich(ctx: PageContext, text: str, problems: list[str]) -> str | Markup:
         if got is None or got.text is None:
             notice = got.notice if got and got.notice else NOTICE["dua"]
             parts.append(Markup('<span class="hole">{}</span>').format(notice))
-        elif isl.mode == "preview" and got.status != "scholar_approved":
+        elif isl.mode == "preview" and got.status not in APPROVED:
             parts.append(Markup('<span class="cand">{}</span>').format(got.text))
         else:
             parts.append(escape(got.text))

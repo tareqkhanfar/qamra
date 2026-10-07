@@ -2,71 +2,71 @@
 # verified Tanzil file, never typed). See content/islamic/sources.yaml for the schema and the rules. All `proposed`.
 sources:
   # ---- التعرّف إلى الله والنِّعَم والشكر
-  - {id: q-1, kind: quran, title_ar: "سورة الفاتحة", quran: {surah: 1, from: 1, to: 7}, topic: surah}
-  - {id: q-1-3, kind: quran, title_ar: "الرحمن الرحيم", quran: {surah: 1, from: 3, to: 3}, topic: names}
-  - {id: q-59-24, kind: quran, title_ar: "الخالق البارئ المصوّر وله الأسماء الحسنى", quran: {surah: 59, from: 24, to: 24}, topic: names}
-  - {id: q-51-58, kind: quran, title_ar: "إن الله هو الرزّاق", quran: {surah: 51, from: 58, to: 58}, topic: names}
-  - {id: q-6-75-79, kind: quran, title_ar: "إبراهيم عليه السلام يتأمل النجوم والقمر والشمس", quran: {surah: 6, from: 75, to: 79}, topic: prophet-ibrahim, scholar_decision: "فهم الآيات: بحثٌ أم مناظرة؟ نعرضها للطفل تأمّلًا في خلق الله، والقرار للمشرف"}
-  - {id: q-14-34, kind: quran, title_ar: "نِعَم الله لا تُحصى", quran: {surah: 14, from: 34, to: 34}, topic: blessings}
-  - {id: q-2-152, kind: quran, title_ar: "اذكروني أذكركم واشكروا لي", quran: {surah: 2, from: 152, to: 152}, topic: gratitude}
-  - {id: q-57-4, kind: quran, title_ar: "وهو معكم أينما كنتم", quran: {surah: 57, from: 4, to: 4}, topic: allah-near, scholar_decision: "نقدّمها للطفل «الله معنا» حبًّا وطمأنينة لا رقابة وتخويفًا؛ المشرف يقرّر الاستشهاد بها لهذا العمر"}
+  - {id: q-1, kind: quran, title_ar: "سورة الفاتحة", quran: {surah: 1, from: 1, to: 7}, topic: surah, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-1-3, kind: quran, title_ar: "الرحمن الرحيم", quran: {surah: 1, from: 3, to: 3}, topic: names, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-59-24, kind: quran, title_ar: "الخالق البارئ المصوّر وله الأسماء الحسنى", quran: {surah: 59, from: 24, to: 24}, topic: names, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-51-58, kind: quran, title_ar: "إن الله هو الرزّاق", quran: {surah: 51, from: 58, to: 58}, topic: names, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-6-75-79, kind: quran, title_ar: "إبراهيم عليه السلام يتأمل النجوم والقمر والشمس", quran: {surah: 6, from: 75, to: 79}, topic: prophet-ibrahim, scholar_decision: "فهم الآيات: بحثٌ أم مناظرة؟ نعرضها للطفل تأمّلًا في خلق الله، والقرار للمشرف", status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-14-34, kind: quran, title_ar: "نِعَم الله لا تُحصى", quran: {surah: 14, from: 34, to: 34}, topic: blessings, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-2-152, kind: quran, title_ar: "اذكروني أذكركم واشكروا لي", quran: {surah: 2, from: 152, to: 152}, topic: gratitude, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-57-4, kind: quran, title_ar: "وهو معكم أينما كنتم", quran: {surah: 57, from: 4, to: 4}, topic: allah-near, scholar_decision: "نقدّمها للطفل «الله معنا» حبًّا وطمأنينة لا رقابة وتخويفًا؛ المشرف يقرّر الاستشهاد بها لهذا العمر", status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
   # ---- نبينا محمد ﷺ
-  - {id: q-33-21, kind: quran, title_ar: "لقد كان لكم في رسول الله أسوة حسنة", quran: {surah: 33, from: 21, to: 21}, topic: prophet}
-  - {id: q-68-4, kind: quran, title_ar: "وإنك لعلى خلق عظيم", quran: {surah: 68, from: 4, to: 4}, topic: prophet}
-  - {id: q-21-107, kind: quran, title_ar: "وما أرسلناك إلا رحمة للعالمين", quran: {surah: 21, from: 107, to: 107}, topic: prophet-mercy}
-  - {id: q-9-128, kind: quran, title_ar: "رؤوف رحيم بالمؤمنين", quran: {surah: 9, from: 128, to: 128}, topic: prophet-mercy}
-  - {id: q-3-31, kind: quran, title_ar: "إن كنتم تحبون الله فاتبعوني يحببكم الله", quran: {surah: 3, from: 31, to: 31}, topic: love-follow}
-  - {id: q-33-56, kind: quran, title_ar: "الصلاة على النبي ﷺ", quran: {surah: 33, from: 56, to: 56}, topic: salawat}
-  - {id: q-9-40, kind: quran, title_ar: "لا تحزن إن الله معنا (الغار)", quran: {surah: 9, from: 40, to: 40}, topic: hijra}
+  - {id: q-33-21, kind: quran, title_ar: "لقد كان لكم في رسول الله أسوة حسنة", quran: {surah: 33, from: 21, to: 21}, topic: prophet, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-68-4, kind: quran, title_ar: "وإنك لعلى خلق عظيم", quran: {surah: 68, from: 4, to: 4}, topic: prophet, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-21-107, kind: quran, title_ar: "وما أرسلناك إلا رحمة للعالمين", quran: {surah: 21, from: 107, to: 107}, topic: prophet-mercy, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-9-128, kind: quran, title_ar: "رؤوف رحيم بالمؤمنين", quran: {surah: 9, from: 128, to: 128}, topic: prophet-mercy, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-3-31, kind: quran, title_ar: "إن كنتم تحبون الله فاتبعوني يحببكم الله", quran: {surah: 3, from: 31, to: 31}, topic: love-follow, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-33-56, kind: quran, title_ar: "الصلاة على النبي ﷺ", quran: {surah: 33, from: 56, to: 56}, topic: salawat, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-9-40, kind: quran, title_ar: "لا تحزن إن الله معنا (الغار)", quran: {surah: 9, from: 40, to: 40}, topic: hijra, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
   # ---- أركان الإسلام والإيمان
-  - {id: q-47-19, kind: quran, title_ar: "فاعلم أنه لا إله إلا الله", quran: {surah: 47, from: 19, to: 19}, topic: shahada}
-  - {id: q-2-285, kind: quran, title_ar: "آمن الرسول بما أنزل إليه من ربه", quran: {surah: 2, from: 285, to: 285}, topic: iman}
-  - {id: q-4-136, kind: quran, title_ar: "آمنوا بالله ورسوله والكتاب", quran: {surah: 4, from: 136, to: 136}, topic: iman}
-  - {id: q-10-9, kind: quran, title_ar: "وعد المؤمنين بجنات النعيم", quran: {surah: 10, from: 9, to: 9}, topic: last-day, scholar_decision: "الحديث عن اليوم الآخر في هذا العمر: بشارة وفرح فقط، بلا عقاب ولا نار؛ المشرف يقرّر الصيغة"}
-  - {id: q-20-14, kind: quran, title_ar: "وأقم الصلاة لذكري", quran: {surah: 20, from: 14, to: 14}, topic: prayer}
-  - {id: q-4-103, kind: quran, title_ar: "الصلاة كتابًا موقوتًا", quran: {surah: 4, from: 103, to: 103}, topic: prayer-times}
-  - {id: q-29-45, kind: quran, title_ar: "إن الصلاة تنهى عن الفحشاء والمنكر", quran: {surah: 29, from: 45, to: 45}, topic: prayer, scholar_decision: "الاستشهاد بها لعمر 7–8 فقط وبلغة مبسّطة"}
-  - {id: q-2-43, kind: quran, title_ar: "وأقيموا الصلاة وآتوا الزكاة", quran: {surah: 2, from: 43, to: 43}, topic: zakat}
-  - {id: q-2-183, kind: quran, title_ar: "فرض الصيام", quran: {surah: 2, from: 183, to: 183}, topic: fasting}
-  - {id: q-2-185, kind: quran, title_ar: "شهر رمضان الذي أنزل فيه القرآن (وتكبير العيد)", quran: {surah: 2, from: 185, to: 185}, topic: ramadan}
-  - {id: q-97, kind: quran, title_ar: "سورة القدر", quran: {surah: 97, from: 1, to: 5}, topic: laylat-alqadr}
-  - {id: q-3-97, kind: quran, title_ar: "وجوب الحج على المستطيع", quran: {surah: 3, from: 97, to: 97}, topic: hajj}
-  - {id: q-22-27, kind: quran, title_ar: "وأذّن في الناس بالحج", quran: {surah: 22, from: 27, to: 27}, topic: hajj}
+  - {id: q-47-19, kind: quran, title_ar: "فاعلم أنه لا إله إلا الله", quran: {surah: 47, from: 19, to: 19}, topic: shahada, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-2-285, kind: quran, title_ar: "آمن الرسول بما أنزل إليه من ربه", quran: {surah: 2, from: 285, to: 285}, topic: iman, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-4-136, kind: quran, title_ar: "آمنوا بالله ورسوله والكتاب", quran: {surah: 4, from: 136, to: 136}, topic: iman, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-10-9, kind: quran, title_ar: "وعد المؤمنين بجنات النعيم", quran: {surah: 10, from: 9, to: 9}, topic: last-day, scholar_decision: "الحديث عن اليوم الآخر في هذا العمر: بشارة وفرح فقط، بلا عقاب ولا نار؛ المشرف يقرّر الصيغة", status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-20-14, kind: quran, title_ar: "وأقم الصلاة لذكري", quran: {surah: 20, from: 14, to: 14}, topic: prayer, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-4-103, kind: quran, title_ar: "الصلاة كتابًا موقوتًا", quran: {surah: 4, from: 103, to: 103}, topic: prayer-times, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-29-45, kind: quran, title_ar: "إن الصلاة تنهى عن الفحشاء والمنكر", quran: {surah: 29, from: 45, to: 45}, topic: prayer, scholar_decision: "الاستشهاد بها لعمر 7–8 فقط وبلغة مبسّطة", status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-2-43, kind: quran, title_ar: "وأقيموا الصلاة وآتوا الزكاة", quran: {surah: 2, from: 43, to: 43}, topic: zakat, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-2-183, kind: quran, title_ar: "فرض الصيام", quran: {surah: 2, from: 183, to: 183}, topic: fasting, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-2-185, kind: quran, title_ar: "شهر رمضان الذي أنزل فيه القرآن (وتكبير العيد)", quran: {surah: 2, from: 185, to: 185}, topic: ramadan, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-97, kind: quran, title_ar: "سورة القدر", quran: {surah: 97, from: 1, to: 5}, topic: laylat-alqadr, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-3-97, kind: quran, title_ar: "وجوب الحج على المستطيع", quran: {surah: 3, from: 97, to: 97}, topic: hajj, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-22-27, kind: quran, title_ar: "وأذّن في الناس بالحج", quran: {surah: 22, from: 27, to: 27}, topic: hajj, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
   # ---- القرآن الكريم والسور
-  - {id: q-96-1-5, kind: quran, title_ar: "أول ما نزل من القرآن", quran: {surah: 96, from: 1, to: 5}, topic: quran-revelation}
-  - {id: q-54-17, kind: quran, title_ar: "ولقد يسّرنا القرآن للذكر", quran: {surah: 54, from: 17, to: 17}, topic: quran-read}
-  - {id: q-56-77-79, kind: quran, title_ar: "إنه لقرآن كريم في كتاب مكنون", quran: {surah: 56, from: 77, to: 79}, topic: quran-respect, scholar_decision: "ما نقوله للطفل عن لمس المصحف بغير وضوء (خلاف بين العلماء): نكتفي بالتوقير والنظافة"}
-  - {id: q-108, kind: quran, title_ar: "سورة الكوثر", quran: {surah: 108, from: 1, to: 3}, topic: surah}
-  - {id: q-113, kind: quran, title_ar: "سورة الفلق", quran: {surah: 113, from: 1, to: 5}, topic: surah}
-  - {id: q-114, kind: quran, title_ar: "سورة الناس", quran: {surah: 114, from: 1, to: 6}, topic: surah}
-  - {id: q-103, kind: quran, title_ar: "سورة العصر", quran: {surah: 103, from: 1, to: 3}, topic: surah}
-  - {id: q-106, kind: quran, title_ar: "سورة قريش", quran: {surah: 106, from: 1, to: 4}, topic: surah}
-  - {id: q-110, kind: quran, title_ar: "سورة النصر", quran: {surah: 110, from: 1, to: 3}, topic: surah}
+  - {id: q-96-1-5, kind: quran, title_ar: "أول ما نزل من القرآن", quran: {surah: 96, from: 1, to: 5}, topic: quran-revelation, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-54-17, kind: quran, title_ar: "ولقد يسّرنا القرآن للذكر", quran: {surah: 54, from: 17, to: 17}, topic: quran-read, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-56-77-79, kind: quran, title_ar: "إنه لقرآن كريم في كتاب مكنون", quran: {surah: 56, from: 77, to: 79}, topic: quran-respect, scholar_decision: "ما نقوله للطفل عن لمس المصحف بغير وضوء (خلاف بين العلماء): نكتفي بالتوقير والنظافة", status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-108, kind: quran, title_ar: "سورة الكوثر", quran: {surah: 108, from: 1, to: 3}, topic: surah, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-113, kind: quran, title_ar: "سورة الفلق", quran: {surah: 113, from: 1, to: 5}, topic: surah, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-114, kind: quran, title_ar: "سورة الناس", quran: {surah: 114, from: 1, to: 6}, topic: surah, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-103, kind: quran, title_ar: "سورة العصر", quran: {surah: 103, from: 1, to: 3}, topic: surah, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-106, kind: quran, title_ar: "سورة قريش", quran: {surah: 106, from: 1, to: 4}, topic: surah, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-110, kind: quran, title_ar: "سورة النصر", quran: {surah: 110, from: 1, to: 3}, topic: surah, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
   # ---- الأذكار والأدعية من القرآن
-  - {id: q-17-24, kind: quran, title_ar: "رب ارحمهما كما ربياني صغيرًا", quran: {surah: 17, from: 24, to: 24}, topic: dua-parents}
-  - {id: q-14-41, kind: quran, title_ar: "ربنا اغفر لي ولوالدي وللمؤمنين", quran: {surah: 14, from: 41, to: 41}, topic: dua-parents}
-  - {id: q-71-28, kind: quran, title_ar: "رب اغفر لي ولوالدي", quran: {surah: 71, from: 28, to: 28}, topic: dua-parents}
-  - {id: q-20-114, kind: quran, title_ar: "رب زدني علمًا", quran: {surah: 20, from: 114, to: 114}, topic: dua-knowledge}
-  - {id: q-7-23, kind: quran, title_ar: "دعاء آدم وحواء بعد الخطأ", quran: {surah: 7, from: 23, to: 23}, topic: repentance}
+  - {id: q-17-24, kind: quran, title_ar: "رب ارحمهما كما ربياني صغيرًا", quran: {surah: 17, from: 24, to: 24}, topic: dua-parents, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-14-41, kind: quran, title_ar: "ربنا اغفر لي ولوالدي وللمؤمنين", quran: {surah: 14, from: 41, to: 41}, topic: dua-parents, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-71-28, kind: quran, title_ar: "رب اغفر لي ولوالدي", quran: {surah: 71, from: 28, to: 28}, topic: dua-parents, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-20-114, kind: quran, title_ar: "رب زدني علمًا", quran: {surah: 20, from: 114, to: 114}, topic: dua-knowledge, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-7-23, kind: quran, title_ar: "دعاء آدم وحواء بعد الخطأ", quran: {surah: 7, from: 23, to: 23}, topic: repentance, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
   # ---- الأخلاق والآداب والأحكام
-  - {id: q-4-58, kind: quran, title_ar: "أداء الأمانات إلى أهلها", quran: {surah: 4, from: 58, to: 58}, topic: trust}
-  - {id: q-17-23, kind: quran, title_ar: "الإحسان إلى الوالدين وقول الكلمة الكريمة", quran: {surah: 17, from: 23, to: 23}, topic: parents}
-  - {id: q-3-134, kind: quran, title_ar: "الكاظمين الغيظ والعافين عن الناس", quran: {surah: 3, from: 134, to: 134}, topic: forgiveness}
-  - {id: q-49-10, kind: quran, title_ar: "إنما المؤمنون إخوة فأصلحوا بين أخويكم", quran: {surah: 49, from: 10, to: 10}, topic: friends}
-  - {id: q-49-11, kind: quran, title_ar: "النهي عن السخرية", quran: {surah: 49, from: 11, to: 11}, topic: tongue}
-  - {id: q-24-27, kind: quran, title_ar: "الاستئذان قبل دخول البيوت", quran: {surah: 24, from: 27, to: 27}, topic: permission}
-  - {id: q-7-31, kind: quran, title_ar: "كلوا واشربوا ولا تسرفوا", quran: {surah: 7, from: 31, to: 31}, topic: blessings-respect}
-  - {id: q-2-168, kind: quran, title_ar: "كلوا مما في الأرض حلالًا طيّبًا", quran: {surah: 2, from: 168, to: 168}, topic: halal}
-  - {id: q-7-157, kind: quran, title_ar: "ويحل لهم الطيبات ويحرّم عليهم الخبائث", quran: {surah: 7, from: 157, to: 157}, topic: halal}
-  - {id: q-4-29, kind: quran, title_ar: "لا تأكلوا أموالكم بينكم بالباطل", quran: {surah: 4, from: 29, to: 29}, topic: haram}
-  - {id: q-2-216, kind: quran, title_ar: "وعسى أن تكرهوا شيئًا وهو خير لكم", quran: {surah: 2, from: 216, to: 216}, topic: patience}
-  - {id: q-18-23-24, kind: quran, title_ar: "قول إن شاء الله", quran: {surah: 18, from: 23, to: 24}, topic: insha-allah}
+  - {id: q-4-58, kind: quran, title_ar: "أداء الأمانات إلى أهلها", quran: {surah: 4, from: 58, to: 58}, topic: trust, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-17-23, kind: quran, title_ar: "الإحسان إلى الوالدين وقول الكلمة الكريمة", quran: {surah: 17, from: 23, to: 23}, topic: parents, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-3-134, kind: quran, title_ar: "الكاظمين الغيظ والعافين عن الناس", quran: {surah: 3, from: 134, to: 134}, topic: forgiveness, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-49-10, kind: quran, title_ar: "إنما المؤمنون إخوة فأصلحوا بين أخويكم", quran: {surah: 49, from: 10, to: 10}, topic: friends, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-49-11, kind: quran, title_ar: "النهي عن السخرية", quran: {surah: 49, from: 11, to: 11}, topic: tongue, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-24-27, kind: quran, title_ar: "الاستئذان قبل دخول البيوت", quran: {surah: 24, from: 27, to: 27}, topic: permission, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-7-31, kind: quran, title_ar: "كلوا واشربوا ولا تسرفوا", quran: {surah: 7, from: 31, to: 31}, topic: blessings-respect, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-2-168, kind: quran, title_ar: "كلوا مما في الأرض حلالًا طيّبًا", quran: {surah: 2, from: 168, to: 168}, topic: halal, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-7-157, kind: quran, title_ar: "ويحل لهم الطيبات ويحرّم عليهم الخبائث", quran: {surah: 7, from: 157, to: 157}, topic: halal, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-4-29, kind: quran, title_ar: "لا تأكلوا أموالكم بينكم بالباطل", quran: {surah: 4, from: 29, to: 29}, topic: haram, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-2-216, kind: quran, title_ar: "وعسى أن تكرهوا شيئًا وهو خير لكم", quran: {surah: 2, from: 216, to: 216}, topic: patience, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-18-23-24, kind: quran, title_ar: "قول إن شاء الله", quran: {surah: 18, from: 23, to: 24}, topic: insha-allah, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
   # ---- قصص الأنبياء
-  - {id: q-2-30-37, kind: quran, title_ar: "آدم عليه السلام: خلقه والتوبة", quran: {surah: 2, from: 30, to: 37}, topic: prophet-adam, scholar_decision: "قصة آدم للأطفال: نقتصر على ما في الآيات (الخلق والتعليم والتوبة)، ولا نذكر تفاصيل الجنة والشجرة بما لم يثبت"}
-  - {id: q-11-37-44, kind: quran, title_ar: "نوح عليه السلام وصناعة السفينة", quran: {surah: 11, from: 37, to: 44}, topic: prophet-nuh, scholar_decision: "قصة نوح للأطفال: التركيز على الصبر والعمل والنجاة بأمر الله؛ المشرف يقرّر مقدار ذكر الطوفان وبأي لغة"}
-  - {id: q-21-51-70, kind: quran, title_ar: "إبراهيم عليه السلام وقومه والنار بردًا وسلامًا", quran: {surah: 21, from: 51, to: 70}, topic: prophet-ibrahim, scholar_decision: "هل نذكر النار (بردًا وسلامًا) لهذا العمر؟ القرار للمشرف"}
-  - {id: q-37-99-111, kind: quran, title_ar: "إبراهيم وإسماعيل عليهما السلام والفداء", quran: {surah: 37, from: 99, to: 111}, topic: prophet-ibrahim, scholar_decision: "قصة الذبح: حسّاسة لبعض الأطفال، فإن كانت فبصياغة الفداء والثقة بالله فقط؛ المشرف يقرّر"}
-  - {id: q-12-4-6, kind: quran, title_ar: "رؤيا يوسف عليه السلام", quran: {surah: 12, from: 4, to: 6}, topic: prophet-yusuf}
-  - {id: q-12-92, kind: quran, title_ar: "لا تثريب عليكم اليوم يغفر الله لكم", quran: {surah: 12, from: 92, to: 92}, topic: forgiveness}
-  - {id: q-28-7-13, kind: quran, title_ar: "موسى عليه السلام وأمه", quran: {surah: 28, from: 7, to: 13}, topic: prophet-musa}
-  - {id: q-26-61-67, kind: quran, title_ar: "موسى عليه السلام وعبور البحر", quran: {surah: 26, from: 61, to: 67}, topic: prophet-musa}
+  - {id: q-2-30-37, kind: quran, title_ar: "آدم عليه السلام: خلقه والتوبة", quran: {surah: 2, from: 30, to: 37}, topic: prophet-adam, scholar_decision: "قصة آدم للأطفال: نقتصر على ما في الآيات (الخلق والتعليم والتوبة)، ولا نذكر تفاصيل الجنة والشجرة بما لم يثبت", status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-11-37-44, kind: quran, title_ar: "نوح عليه السلام وصناعة السفينة", quran: {surah: 11, from: 37, to: 44}, topic: prophet-nuh, scholar_decision: "قصة نوح للأطفال: التركيز على الصبر والعمل والنجاة بأمر الله؛ المشرف يقرّر مقدار ذكر الطوفان وبأي لغة", status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-21-51-70, kind: quran, title_ar: "إبراهيم عليه السلام وقومه والنار بردًا وسلامًا", quran: {surah: 21, from: 51, to: 70}, topic: prophet-ibrahim, scholar_decision: "هل نذكر النار (بردًا وسلامًا) لهذا العمر؟ القرار للمشرف", status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-37-99-111, kind: quran, title_ar: "إبراهيم وإسماعيل عليهما السلام والفداء", quran: {surah: 37, from: 99, to: 111}, topic: prophet-ibrahim, scholar_decision: "قصة الذبح: حسّاسة لبعض الأطفال، فإن كانت فبصياغة الفداء والثقة بالله فقط؛ المشرف يقرّر", status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-12-4-6, kind: quran, title_ar: "رؤيا يوسف عليه السلام", quran: {surah: 12, from: 4, to: 6}, topic: prophet-yusuf, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-12-92, kind: quran, title_ar: "لا تثريب عليكم اليوم يغفر الله لكم", quran: {surah: 12, from: 92, to: 92}, topic: forgiveness, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-28-7-13, kind: quran, title_ar: "موسى عليه السلام وأمه", quran: {surah: 28, from: 7, to: 13}, topic: prophet-musa, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-26-61-67, kind: quran, title_ar: "موسى عليه السلام وعبور البحر", quran: {surah: 26, from: 61, to: 67}, topic: prophet-musa, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}

@@ -20,6 +20,7 @@ DIFF = 22  # how far (0–255, per channel) a pixel must be from the paper to co
 GAP = 12  # px of empty paper that separates two figures
 PAD = 16  # px of paper kept around the figure while cutting it out
 MAX_PRINT_MM = 125.0  # tallest printed size the cut-out must cover at 300 DPI
+MIN_PRINT_W_MM = 66.0  # widest printed size (a portrait frame crops by width), also at 300 DPI
 DPI = 300
 
 
@@ -97,9 +98,16 @@ def front_view(sheet: Path, out_dir: Path, max_print_mm: float = MAX_PRINT_MM) -
     return pose(sheet, out_dir, 0, max_print_mm)
 
 
-def pose(sheet: Path, out_dir: Path, index: int, max_print_mm: float = MAX_PRINT_MM) -> Path:
+def pose(
+    sheet: Path,
+    out_dir: Path,
+    index: int,
+    max_print_mm: float = MAX_PRINT_MM,
+    min_print_w_mm: float = MIN_PRINT_W_MM,
+) -> Path:
     """The cut-out figure `index` (0: front view, 1: the first pose) as a print PNG; cached by content."""
-    digest = hashlib.sha256(sheet.read_bytes() + f"cutout-v{CUTOUT_VERSION}".encode()).hexdigest()[:12]
+    key = f"cutout-v{CUTOUT_VERSION}-w{min_print_w_mm:g}"
+    digest = hashlib.sha256(sheet.read_bytes() + key.encode()).hexdigest()[:12]
     out = out_dir / (f"character-{digest}.png" if index == 0 else f"character-{digest}-pose{index}.png")
     if out.exists():
         return out
@@ -113,6 +121,9 @@ def pose(sheet: Path, out_dir: Path, index: int, max_print_mm: float = MAX_PRINT
     if figure.height < target_h:
         target_w = round(figure.width * target_h / figure.height)
         figure = figure.resize((target_w, target_h), Image.Resampling.LANCZOS)
+    min_w = round(min_print_w_mm / 25.4 * DPI)
+    if figure.width < min_w:  # a narrow figure: the width, not the height, sets the print size
+        figure = figure.resize((min_w, round(figure.height * min_w / figure.width)), Image.Resampling.LANCZOS)
     out_dir.mkdir(parents=True, exist_ok=True)
     figure.save(out, format="PNG", dpi=(DPI, DPI), optimize=True)
     return out

@@ -20,9 +20,11 @@ REFERENCES; a page asks for wording by a source id and `Resolver.resolve` copies
   sira / ruling   reference only: the scholar supplies the source; there is never any text to print.
 
 Status ladder (`STATUSES`, advancing only forward): proposed → text_candidate → text_verified →
-scholar_approved.
-A preview build may print candidates and marked placeholders; a print build needs every source it uses at
-`scholar_approved` and no placeholder (`islamic_checks.check_print`).
+owner_approved → scholar_approved.
+A preview build may print candidates and marked placeholders; a print build needs every source it uses
+approved (`APPROVED`: `owner_approved` — the owner's own page-by-page review, decision 2026-10-07 — or
+`scholar_approved`) and no placeholder (`islamic_checks.check_print`). `owner_approved` never counts as a
+scholar's decision (`Source.decided`).
 """
 
 from __future__ import annotations
@@ -49,8 +51,16 @@ SAMPLES = REPO / "content/islamic/samples.yaml"
 PLAN = REPO / "content/islamic/plan.yaml"
 VOLUMES = REPO / "content/islamic/volumes"
 
-Status = Literal["proposed", "text_candidate", "text_verified", "scholar_approved"]
-STATUSES: tuple[Status, ...] = ("proposed", "text_candidate", "text_verified", "scholar_approved")
+Status = Literal["proposed", "text_candidate", "text_verified", "owner_approved", "scholar_approved"]
+STATUSES: tuple[Status, ...] = (
+    "proposed",
+    "text_candidate",
+    "text_verified",
+    "owner_approved",
+    "scholar_approved",
+)
+# the statuses a print build accepts (the owner's decision of 2026-10-07 added `owner_approved`)
+APPROVED: frozenset[str] = frozenset({"owner_approved", "scholar_approved"})
 Kind = Literal["quran", "hadith", "dua", "sira", "ruling"]
 KINDS: tuple[Kind, ...] = ("quran", "hadith", "dua", "sira", "ruling")
 TEXT_KINDS: frozenset[str] = frozenset({"quran", "hadith", "dua"})  # the kinds that can have wording
@@ -133,6 +143,7 @@ class Source(_Model):
     reviewed_on: date | None = None
     # the sha256 of the wording the scholar saw (hadith, dua): a later fetch that changes it fails loudly
     approved_sha256: str = ""
+    approval_note: str = ""  # why an `owner_approved` source is approved (no person is named)
 
     @model_validator(mode="after")
     def _shape(self) -> Source:
@@ -477,8 +488,8 @@ class Resolved:
 
     @property
     def printable(self) -> bool:
-        """True when a print build may use it: wording present and approved by the scholar."""
-        return self.has_text and self.status == "scholar_approved"
+        """True when a print build may use it: wording present and approved (`APPROVED`)."""
+        return self.has_text and self.status in APPROVED
 
 
 class Resolver:

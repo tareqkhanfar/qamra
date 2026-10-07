@@ -39,25 +39,28 @@ corpus:
 
 sources:
   # ---- القرآن الكريم (ranges; wording from the Tanzil file)
-  - {id: q-112, kind: quran, title_ar: "سورة الإخلاص", quran: {surah: 112, from: 1, to: 4}, topic: tawhid}
-  - {id: q-21-87, kind: quran, title_ar: "دعاء يونس عليه السلام في الظلمات", quran: {surah: 21, from: 87, to: 87}, topic: dua}
-  - {id: q-21-88, kind: quran, title_ar: "استجابة الله ليونس عليه السلام", quran: {surah: 21, from: 88, to: 88}, topic: dua}
+  - {id: q-112, kind: quran, title_ar: "سورة الإخلاص", quran: {surah: 112, from: 1, to: 4}, topic: tawhid, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-21-87, kind: quran, title_ar: "دعاء يونس عليه السلام في الظلمات", quran: {surah: 21, from: 87, to: 87}, topic: dua, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-21-88, kind: quran, title_ar: "استجابة الله ليونس عليه السلام", quran: {surah: 21, from: 88, to: 88}, topic: dua, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
   - id: q-37-139-148
     kind: quran
     title_ar: خبر يونس عليه السلام في سورة الصافات
     quran: {surah: 37, from: 139, to: 148}
     topic: prophet-yunus
     scholar_decision: "قصّة يونس للأطفال: نقتصر على ما في الآيات (السفينة، الحوت، التسبيح، النجاة، شجرة اليقطين)، ولا نذكر مدّة المكث ولا تفاصيل لم تثبت"
-  - {id: q-5-6, kind: quran, title_ar: "آية الوضوء", quran: {surah: 5, from: 6, to: 6}, topic: wudu}
-  - {id: q-16-18, kind: quran, title_ar: "نِعَم الله لا تُحصى", quran: {surah: 16, from: 18, to: 18}, topic: blessings}
-  - {id: q-6-1, kind: quran, title_ar: "الحمد لله الذي خلق السماوات والأرض", quran: {surah: 6, from: 1, to: 1}, topic: creation}
-  - {id: q-39-62, kind: quran, title_ar: "الله خالق كل شيء", quran: {surah: 39, from: 62, to: 62}, topic: creation}
-  - {id: q-2-172, kind: quran, title_ar: "الأكل من الطيبات وشكر الله", quran: {surah: 2, from: 172, to: 172}, topic: gratitude}
-  - {id: q-14-7, kind: quran, title_ar: "وعد الله للشاكرين", quran: {surah: 14, from: 7, to: 7}, topic: gratitude}
-  - {id: q-1-2, kind: quran, title_ar: "الحمد لله رب العالمين", quran: {surah: 1, from: 2, to: 2}, topic: gratitude}
-  - {id: q-2-186, kind: quran, title_ar: "الله قريب يجيب الدعاء", quran: {surah: 2, from: 186, to: 186}, topic: dua}
-  - {id: q-2-222, kind: quran, title_ar: "الله يحب التوّابين", quran: {surah: 2, from: 222, to: 222}, topic: repentance}
-  - {id: q-41-34, kind: quran, title_ar: "ادفع بالتي هي أحسن", quran: {surah: 41, from: 34, to: 34}, topic: anger}
+    status: owner_approved
+    reviewed_on: 2026-10-07
+    approval_note: "owner decision 2026-10-07"
+  - {id: q-5-6, kind: quran, title_ar: "آية الوضوء", quran: {surah: 5, from: 6, to: 6}, topic: wudu, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-16-18, kind: quran, title_ar: "نِعَم الله لا تُحصى", quran: {surah: 16, from: 18, to: 18}, topic: blessings, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-6-1, kind: quran, title_ar: "الحمد لله الذي خلق السماوات والأرض", quran: {surah: 6, from: 1, to: 1}, topic: creation, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-39-62, kind: quran, title_ar: "الله خالق كل شيء", quran: {surah: 39, from: 62, to: 62}, topic: creation, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-2-172, kind: quran, title_ar: "الأكل من الطيبات وشكر الله", quran: {surah: 2, from: 172, to: 172}, topic: gratitude, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-14-7, kind: quran, title_ar: "وعد الله للشاكرين", quran: {surah: 14, from: 7, to: 7}, topic: gratitude, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-1-2, kind: quran, title_ar: "الحمد لله رب العالمين", quran: {surah: 1, from: 2, to: 2}, topic: gratitude, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-2-186, kind: quran, title_ar: "الله قريب يجيب الدعاء", quran: {surah: 2, from: 186, to: 186}, topic: dua, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-2-222, kind: quran, title_ar: "الله يحب التوّابين", quran: {surah: 2, from: 222, to: 222}, topic: repentance, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-41-34, kind: quran, title_ar: "ادفع بالتي هي أحسن", quran: {surah: 41, from: 34, to: 34}, topic: anger, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
 
   # ---- الحديث الشريف (collection + number; the grading column is the drafter's belief, to be verified)
   - id: h-bukhari-159
@@ -68,6 +71,10 @@ sources:
     grading_claimed: "متفق عليه (البخاري ١٥٩ ومسلم ٢٢٦)"
     topic: wudu
     scholar_decision: "عدد الغسلات والمسح (الرأس مرة أو ثلاثًا، والأذنان) تختلف فيه المذاهب: نعرض المتّفق عليه: غسل الأعضاء ثلاثًا والمسح مرة"
+    approved_sha256: caef7a5575b882fe0d1085d618952ace7063b5a58d36e65052def60a5700f237
+    status: owner_approved
+    reviewed_on: 2026-10-07
+    approval_note: "owner decision 2026-10-07"
   - id: h-abudawud-101
     kind: hadith
     title_ar: التسمية في أول الوضوء
@@ -76,6 +83,10 @@ sources:
     grading_claimed: "اختُلف في تصحيحه"
     topic: wudu
     scholar_decision: "هل نكتب «بسم الله» في أول الوضوء؟ هي سنّة عند الجمهور والحديث فيه كلام. القرار للمشرف: نُبقيها أو نحذفها أو نكتفي بمصدر آخر"
+    approved_sha256: 9c7c67b690a40f6cd7950599080388ec0fae9a9a9bfc1e7db85254ff31516851
+    status: owner_approved
+    reviewed_on: 2026-10-07
+    approval_note: "owner decision 2026-10-07"
   - id: h-bukhari-5376
     kind: hadith
     title_ar: «يا غلام سمِّ الله وكل بيمينك وكل مما يليك»
@@ -83,6 +94,10 @@ sources:
     expect: [الله, بيمينك, يليك]
     grading_claimed: "متفق عليه (البخاري ٥٣٧٦ ومسلم ٢٠٢٢)"
     topic: eating
+    approved_sha256: 723fa8c573447780b23de99070dbb8c2b5c018a1b6dbdb9edc67410b4c13d782
+    status: owner_approved
+    reviewed_on: 2026-10-07
+    approval_note: "owner decision 2026-10-07"
   - id: h-abudawud-3767
     kind: hadith
     title_ar: التسمية عند الأكل
@@ -90,6 +105,10 @@ sources:
     expect: [اسم, أوله, آخره]
     grading_claimed: "صحّحه الألباني (للتحقق)"
     topic: eating
+    approved_sha256: 779aa5372eb369b15d75bb8eac7521d1dd7389d0b4e3eae5621b6296d416db1e
+    status: owner_approved
+    reviewed_on: 2026-10-07
+    approval_note: "owner decision 2026-10-07"
   - id: h-bukhari-6094
     kind: hadith
     title_ar: «الصدق يهدي إلى البر»
@@ -97,6 +116,10 @@ sources:
     expect: [الصدق, البر]
     grading_claimed: "متفق عليه (البخاري ٦٠٩٤ ومسلم ٢٦٠٧)"
     topic: honesty
+    approved_sha256: 6d55f555cb2572030de104165a3789a52020d6f3a7e4addb10201ee2f4934f6f
+    status: owner_approved
+    reviewed_on: 2026-10-07
+    approval_note: "owner decision 2026-10-07"
   - id: h-bukhari-6114
     kind: hadith
     title_ar: «ليس الشديد بالصُّرَعة»
@@ -104,6 +127,10 @@ sources:
     expect: [الشديد, الصرعة, الغضب]
     grading_claimed: "متفق عليه (البخاري ٦١١٤ ومسلم ٢٦٠٩)"
     topic: anger
+    approved_sha256: 7c0e8861fd8a9abe9565ba4dfa4c81ec8b67091a010d67129390bb9ede091627
+    status: owner_approved
+    reviewed_on: 2026-10-07
+    approval_note: "owner decision 2026-10-07"
   - id: h-bukhari-3282
     kind: hadith
     title_ar: الاستعاذة عند الغضب
@@ -111,6 +138,10 @@ sources:
     expect: [أعوذ, الشيطان, احمر]
     grading_claimed: "متفق عليه (البخاري ٣٢٨٢ ومسلم ٢٦١٠)"
     topic: anger
+    approved_sha256: 8c37cf626bfcaaed30e512491009193e63f30f339387840dd86ed5caac498e37
+    status: owner_approved
+    reviewed_on: 2026-10-07
+    approval_note: "owner decision 2026-10-07"
   - id: h-muslim-2610
     kind: hadith
     title_ar: الاستعاذة عند الغضب
@@ -118,6 +149,10 @@ sources:
     expect: [أعوذ, الشيطان, الرجيم, يغضب]
     grading_claimed: "متفق عليه (البخاري ٣٢٨٢ ومسلم ٢٦١٠)"
     topic: anger
+    approved_sha256: 118c2883e684dc6eb57d657897d9f9bfb0b99479465d2c8e679d667ef835d8c2
+    status: owner_approved
+    reviewed_on: 2026-10-07
+    approval_note: "owner decision 2026-10-07"
   - id: h-abudawud-4782
     kind: hadith
     title_ar: الجلوس عند الغضب
@@ -125,7 +160,11 @@ sources:
     expect: [غضب, فليجلس]
     grading_claimed: "صحّحه الألباني (للتحقق)"
     topic: anger
+    approved_sha256: 2e99670c5714645613d30cb9f8201c101924662747e7ef63bc398d58583c3c1c
+    status: owner_approved
+    reviewed_on: 2026-10-07
+    approval_note: "owner decision 2026-10-07"
 
   # ---- الأذكار والأدعية (a span of a hadith's verified text; markers are never printed)
-  - {id: d-eat-start, kind: dua, title_ar: "ذكر ابتداء الطعام", dua: {from: h-abudawud-3767, start: "بسم الله", end: "بسم الله"}, topic: eating}
-  - {id: d-anger-refuge, kind: dua, title_ar: "الاستعاذة عند الغضب", dua: {from: h-muslim-2610, start: "أعوذ", end: "الرجيم"}, topic: anger}
+  - {id: d-eat-start, kind: dua, title_ar: "ذكر ابتداء الطعام", dua: {from: h-abudawud-3767, start: "بسم الله", end: "بسم الله"}, topic: eating, approved_sha256: e04227e76e93073d4986e666c2d93df8cb9ee56e50fc400f6a93cee30b7f3513, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: d-anger-refuge, kind: dua, title_ar: "الاستعاذة عند الغضب", dua: {from: h-muslim-2610, start: "أعوذ", end: "الرجيم"}, topic: anger, approved_sha256: 2f94e22a8ce609aa71feca88ae048a9b87b55c984e3d5224bf95dafa6df44a14, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}

@@ -5,6 +5,7 @@ and the thin
 page types work. No test depends on the real candidates file or on any real verse."""
 
 import asyncio
+import dataclasses
 import datetime as dt
 import re
 from pathlib import Path
@@ -13,6 +14,7 @@ from typing import Any
 import pytest
 from qamra_workbook import islamic_checks as checks
 from qamra_workbook.islamic_sources import (
+    APPROVED,
     SAMPLES,
     Candidate,
     Resolver,
@@ -36,8 +38,16 @@ ASSETS = Assets(LibraryStore())
 def fake_resolver(*, quran: bool = True) -> Resolver:
     """The real register's ids with FAKE wording: every hadith holds its duas' and the pages' markers (the
     markers are the
-    only Arabic, taken from the files), every verse is FAKE-VERSE-n."""
-    reg = load()
+    only Arabic, taken from the files), every verse is FAKE-VERSE-n. The FAKE wording was never approved, so
+    every source is back at `proposed` (the gate's tests stay about the gate, whatever the register says)."""
+    real = load()
+    reg = dataclasses.replace(
+        real,
+        sources=tuple(
+            s.model_copy(update={"status": "proposed", "approved_sha256": "", "reviewed_on": None})
+            for s in real.sources
+        ),
+    )
     raw = checks.load_pages(SAMPLES)
     spans: dict[str, list[str]] = {}
     for src in reg.of_kind("dua"):
@@ -135,9 +145,9 @@ def test_the_placeholder_shows_when_there_is_no_quran_file(samples: list[Any]) -
 
 
 def test_a_print_build_refuses_a_placeholder_and_unapproved_sources(samples: list[Any]) -> None:
-    with pytest.raises(PageProblems, match=r"print build|scholar_approved"):
+    with pytest.raises(PageProblems, match=r"print build|not approved"):
         build(samples[11:12], fake_resolver(quran=False), mode="print")
-    with pytest.raises(PageProblems, match="scholar_approved"):
+    with pytest.raises(PageProblems, match="not approved"):
         build(samples[11:12], fake_resolver(), mode="print")  # the text is there but nothing is approved
 
 
@@ -312,3 +322,23 @@ def test_the_samples_render_to_a_print_pdf_that_passes_preflight(samples: list[A
     assert report.passed, [c for c in report.to_dict()["checks"] if not c["ok"]]
     fonts = next(c for c in report.to_dict()["checks"] if c["name"] == "fonts_embedded")
     assert fonts["ok"]
+
+
+def test_an_owner_approved_source_prints_but_is_not_a_scholars_decision(samples: list[Any]) -> None:
+    """The owner's decision of 2026-10-07: `owner_approved` passes the print gate like `scholar_approved`,
+    and still never counts as the scholar having decided."""
+    fake = fake_resolver()
+    owner = dataclasses.replace(
+        fake.register,
+        sources=tuple(s.model_copy(update={"status": "owner_approved"}) for s in fake.register.sources),
+    )
+    approved = Resolver(owner, fake.quran, fake.candidates)
+    built = build(samples[11:12], approved, mode="print")
+    assert built and not any(s.decided for s in owner.sources)
+
+
+def test_the_real_register_is_approved_for_print() -> None:
+    """Every source in content/islamic is approved (the owner's decision of 2026-10-07), none by name."""
+    reg = load()
+    assert reg.sources and all(s.status in APPROVED for s in reg.sources)
+    assert not any(s.reviewed_by for s in reg.sources if s.status == "owner_approved")

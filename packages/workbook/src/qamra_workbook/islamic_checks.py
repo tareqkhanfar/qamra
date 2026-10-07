@@ -11,7 +11,7 @@ Every check returns a list of `Problem`; an `error` fails the build. What they e
     tagged by its type) declares no person in its scene region (the narrator panel may show the recurring
     characters), its scene art draws none, and no picture on it is a person, a body part or the reader;
     on every page, a library picture of a person is never a prop (people appear only as the cast);
-* a print build fails while any placeholder or any source below `scholar_approved` is used (`check_print`);
+* a print build fails while any placeholder or any unapproved source (`APPROVED`) is used (`check_print`);
 * religious wording is never typed: a text that contains a register dhikr or verse (matched on the letters
 only) must
     use `{src:ID}`, and a quiz option that is wording names a `source` (`typed-wording`; on a page that must
@@ -30,6 +30,7 @@ from typing import Any, Literal
 import yaml
 
 from qamra_workbook.islamic_sources import (
+    APPROVED,
     PLAN,
     TEXT_KINDS,
     Resolver,
@@ -503,7 +504,7 @@ def chain(resolver: Resolver, source_id: str) -> list[str]:
 
 
 def check_print(pages: Iterable[Mapping[str, Any]], resolver: Resolver) -> list[Problem]:
-    """A print build fails on any placeholder and on any source that is not `scholar_approved`."""
+    """A print build fails on any placeholder and on any source that is not approved (`APPROVED`)."""
     out: list[Problem] = []
     for page in pages:
         pid = str(page.get("id", "?"))
@@ -525,8 +526,8 @@ def check_print(pages: Iterable[Mapping[str, Any]], resolver: Resolver) -> list[
         for source_id in page_ids(page):
             for each in chain(resolver, source_id):  # a dua stands on its hadith, a ruling on its basis
                 status = resolver.status_of(each)
-                if status != "scholar_approved" and each not in checked and each in resolver.register.by_id:
-                    out.append(Problem("not-approved", pid, f"{each} is {status}, not scholar_approved"))
+                if status not in APPROVED and each not in checked and each in resolver.register.by_id:
+                    out.append(Problem("not-approved", pid, f"{each} is {status}, not approved"))
                 checked.add(each)
     return out
 

@@ -358,7 +358,7 @@ def test_a_print_build_refuses_unapproved_sources_missing_pages_and_writes_nothi
     codes = {p.code for p in content.errors}
     assert "not-approved" in codes and "not-reviewed" not in codes  # the sources wait for the scholar
     out = tmp_path / "v1"
-    with pytest.raises(iv.VolumeRefused, match="not scholar_approved"):
+    with pytest.raises(iv.VolumeRefused, match="not approved"):
         asyncio.run(
             iv.render_volume(
                 "v1",

@@ -352,6 +352,7 @@ ST_AR = {
     "proposed": "مقترح",
     "text_candidate": "نصّ مرشَّح",
     "text_verified": "نصّ موثَّق",
+    "owner_approved": "معتمد",
     "scholar_approved": "معتمد من المشرف",
 }
 KIND_AR = {"quran": "قرآن", "hadith": "حديث", "dua": "ذكر/دعاء", "sira": "سيرة", "ruling": "حكم"}

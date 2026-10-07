@@ -37,7 +37,7 @@ def test_the_cut_figure_keeps_its_chest_and_drops_the_shadow(tmp_path: Path) -> 
     sheet = tmp_path / "sheet.png"
     _sheet(sheet)
     for index in (0, 1):
-        out = pose(sheet, tmp_path / "cut", index, max_print_mm=20)  # small: no upscaling in the test
+        out = pose(sheet, tmp_path / "cut", index, max_print_mm=20, min_print_w_mm=0)  # no upscaling
         with Image.open(out) as im:
             rgba = np.asarray(im.convert("RGBA"))
         alpha = rgba[..., 3]
