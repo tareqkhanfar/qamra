@@ -758,3 +758,116 @@ Each one has a default that we use unless Tareq says otherwise.
 and hide the black-and-white variants until a B&W interior exists; (2) no art-style question for activity books —
 reuse any approved character, a new one is drawn in 3D; (3) the family details become the «عائلة …» step in the
 order flow; (4) ١٢٣ digits, not asked.
+
+---
+
+## Add-ons: what is deactivated (2026-10-07)
+
+Tareq: «أي إضافات لازم تذكرها من ضمن المنتج مع صور إلهم». His decisions:
+- the physical add-ons we have no stock of (`gift-box`, `wipe-sleeve`, `crayon-kit`) are hidden now;
+- any add-on that nothing in the system can produce is hidden until it can be produced.
+
+So every add-on in `content/store/catalog.yaml` `addons:` was traced from the cart to what is actually made: the
+order job, the PDF engine, the print batch (manifest, printer email, `/api/printer/…` files) and the admin.
+Paths as in the header; line numbers from commit `0d85b87`.
+
+### What the print batch carries for an add-on
+
+- The manifest (`api/print_batches.py:128-160`) has, per book: `format` (the hardcover upgrade turns softcover
+  into hardcover, `qamra_core/printing.py:69-73`), `copies` (×(1+extra copies), `printing.py:76-78`), the interior
+  and cover PDFs, and `inserts` = **every** file in `book.generation["files"]` (`print_batches.py:151`).
+- Every other add-on reaches the printer **only as its slug** in the CSV column `extras` (`printing.py:81-86`).
+  A slug is not a print file: nothing renders a poster, a coloring interior or a sticker sheet for it.
+
+### Audit
+
+| Slug | Lines | Verdict | Evidence | Decision |
+|---|---|---|---|---|
+| `hardcover-upgrade` | classic (softcover) | **DELIVERABLE** | `printing.py:69-73` → manifest `format: hardcover` (`print_batches.py:144`); the one cover wrap already has the board allowance (`packages/ai/…/pipeline/layout.py:45,59-64`) | keep |
+| `gift-box` | all printed | physical, no stock | slug in `extras` only | **hide** (owner) |
+| `dedication-page` | classic (+5 ₪), magic (included) | **DELIVERABLE** | attached on the story step (`api/routers/create.py:678-679`); printed on page 1 with the parent's words (`packages/ai/…/pipeline/assemble.py:241-250`, `qamra_pdf/spec.py:47`) | keep |
+| `drawing-companion` | magic (included) | **DELIVERABLE** | attached on the companion step (`create.py:680-688`); the companion is on the pages and on «وهكذا وُلد صاحبي» (`layout.py:7,213-214`, `assemble.py:257-266`) | keep |
+| `extra-character` | classic, magic | **NOT DELIVERABLE** | no step can attach it (`step: character`; the add-ons screen offers only `format`/`checkout`, `api/store/addons.py:23,69`); no story or image input for a second character; only listed as "not printed" (`printing.py:25`) | **hide** |
+| `family-voice` | classic, magic | **DELIVERABLE** | recording and listening flow (`api/routers/voice.py`, `voice_public.py`, `web/app/[locale]/books/[id]/voice`, `web/app/[locale]/v/[token]`); the final render prints a QR per story page (`worker/…/voice.py:9-21`, `worker/books.py:700`, `assemble.py:235,288`) | keep |
+| `extra-copy` | classic, magic | **DELIVERABLE** | `printing.py:76-78` → manifest `copies` (`print_batches.py:146`) | keep |
+| `coloring-version` | classic, magic | **NOT DELIVERABLE** | nothing renders a line-art interior of a story (no "coloring" in `worker/`, `pipeline/`, `qamra_pdf/`); the coloring book itself is off for the same reason (`catalog.yaml:54`) | **hide** |
+| `cover-poster` | classic, magic | **NOT DELIVERABLE** | no poster file: the printer gets the slug and the book's 21×21 wrap cover (spine and back included), not an A3 print file | **hide** |
+| `express` | printed lines | **PARTIAL** | a daily cap is enforced at checkout (`api/store/router.py:686-699,751-754`) and the slug shows in the admin order list and packing slip; but nothing puts the book first (generation, approval queue, print batch), and there is no printer agreement for 48 h | **hide**: not a small gap |
+| `digital-copy` | classic, magic (printed) | **DELIVERABLE** | added free and automatically to a printed book (`api/store/catalog.py:181-189`); the owner's web reader and share link work for every finished book (`api/routers/reader.py:188-309`). It is the web reader, **not** a PDF download | keep |
+| `wipe-sleeve` | workbook, journey (spiral) | physical, no stock | slug only | **hide** (owner) |
+| `sticker-sheet` | workbook, journey, family, islamic | **NOT DELIVERABLE** | no reward sticker sheet is rendered for workbook, journey or islamic; the family book's own sticker sheet is already in every copy (see below), so the add-on would be a second copy of nothing new | **hide** |
+| `crayon-kit` | workbook, journey, family | physical, no stock | slug only | **hide** (owner) |
+| `audio-qr` | workbook | **NOT DELIVERABLE** | no page of «دوسية التأسيس» has audio (the QR engine, `wb/render/engine.py:114`, is used by the journey only), and the dawseyeh has no per-order render yet (§0.3-1) | **hide** |
+| `parent-guide` | workbook (free PDF) | **NOT DELIVERABLE** | no teacher/parent guide file exists for buyers (`docs/workbook/educator-kg*.md` are the internal plan for the educator's sign-off) and there is no download for it | **hide** |
+| `printed-answer-key` | journey (spiral) | **PARTIAL, small gap** | the order job renders `answer-key.pdf` for every stage (`worker/journey_book.py:125-129`) and it reaches the printer as an insert (`print_batches.py:151`, `routers/printer.py:88`). Gaps: it is sent for **every** journey order, bought or not, and the printer email labels it with the raw name `answer-key` (`printing.py:48-52`) | **keep**, with fixes F1–F2 |
+| `family-characters` | family | **PARTIAL** | the worker draws approved members into the book when the item has the add-on (`worker/family_book.py:105-131`); but the drawing flow is behind `family_characters_enabled` (off, `api/routers/family_members.py:63`) and nothing can attach the add-on to a cart line (`addons.py:23`) | **hide** until the family step (§c.7, phase 2) |
+| `editable-files` | family | **NOT DELIVERABLE** | nothing produces source files (`printing.py:28`); already `active: false` | **hide** (already) |
+| `printed-parent-guide` | islamic (softcover) | **PARTIAL, small gap** | the order job renders each volume's `answer-key.pdf` (`worker/islamic_book.py:200-209`; all six volumes have one) and it reaches the printer as an insert. Gaps: as for the journey (F1–F2), and the description promises «صفحات الأهل» but the file has only the solved activity pages (`wb/render/engine.py:135-141`); the parents' pages are inside the book itself | **keep**, with fixes F1–F3 |
+
+### Deactivate (exact slugs)
+
+```
+gift-box  wipe-sleeve  crayon-kit                      # physical, no stock (owner)
+extra-character  coloring-version  cover-poster        # nothing produces them
+sticker-sheet  audio-qr  parent-guide  editable-files  # nothing produces them (editable-files is already off)
+express  family-characters                             # partial: the gap is not small
+```
+
+### Stay on
+
+```
+hardcover-upgrade  dedication-page  drawing-companion  family-voice  extra-copy  digital-copy
+printed-answer-key  printed-parent-guide               # only with F1–F3 below
+```
+
+**Small fixes for the two answer-key add-ons** (API/worker owner, same migration round). If they can't land with
+the deactivation, hide these two as well.
+- **F1:** `build_manifest` puts `answer-key` in `inserts` only when the item has `printed-answer-key` or
+  `printed-parent-guide` (`api/print_batches.py:151`).
+- **F2:** add a label: `INSERT_LABELS["answer-key"] = "مفتاح الإجابات (كتيّب منفصل)"` (`qamra_core/printing.py:48`).
+- **F3:** `printed-parent-guide` text, to match what is printed:
+  - `name_ar` «إجابات الأنشطة مطبوعة», `name_en` "Printed activity answers";
+  - `description_ar` «إجابات أنشطة الكتاب في كتيّب منفصل للأهل»;
+  - `description_en` "The answers to the book's activities, in a separate booklet for parents".
+
+### What each product already includes (verified in the renderers)
+
+| Product | Included | Where it comes from |
+|---|---|---|
+| قمرة كلاسيك | title page with a dedication to the child (the parent's own words are the +5 ₪ add-on) | `assemble.py:241-250`; `pipeline/classic.py:591` |
+| قمرة سحري (and the custom story) | the drawing companion and the dedication page | `catalog.yaml` `included_addons`, `create.py:678-688` |
+| رحلتي الأولى للتعلّم | «هذا الكتاب لـ…» owner page, the journey map, a certificate at the end, audio QR codes on the pages that have sound | `out/journey/stage-*/png-book/p001,p002,p118`; `wb/render/pages/journey_frame.py:33`; `wb/render/engine.py:114`; `api/routers/journey_audio.py` |
+| مغامراتي مع عائلتي | **printed apart:** a sticker sheet (passport badges, rewards, routine icons) and two card-stock sheets: play money and recipe cards; memory, question and role cards and finger puppets. **In the book:** the family passport, «عائلتي» page and a certificate | `wb/render/family_order.py:115-143`; `printing.py:48-52`; `worker/family_book.py:214-226`; `out/family-book/inserts/png`, `png-book-21x28/p003,p004,p112` |
+| قلبي يعرف الله | in every volume: «هذا أنا», the young Muslim's passport (a stamp circle per unit), a «للأهل» page after each unit, and the certificate at the end | `wb/render/islamic_volume.py:114-140`; `content/islamic/plan.yaml:82-87`; `out/islamic/v1/png` |
+| دوسية التأسيس | owner page, name-tracing pages (Arabic and English), the certificate | `wb/render/pages/workbook_front.py:97,110`; `wb/render/foundation.py:24`. Not yet made per order (§0.3-1, chunk 10) |
+
+**Side findings (not add-ons, for the owners of those books):**
+- The Islamic passport draws "ghost" stamp circles «to stick the real one over» (`wb/render/pages/islamic_keepsake.py:41`, `content/islamic/samples.yaml:147`).
+- The journey map has a dashed circle for the child's sticker (`journey_frame.py:50`).
+- No sticker sheet is made for either book. The child can draw or colour the circle, but the page asks for a sticker.
+
+### Pictures for the product pages and the add-ons step: `web/lib/addonsMedia.ts`
+
+Rendered locally from our own engines and outputs, with no AI calls, then composed as product mockups (WebP, 640 px):
+- `apps/web/public/addons/<slug>.webp`: one per add-on that stays;
+- `apps/web/public/included/<product>/<item>.webp`: the included items.
+
+**How to use it** (chunk 5's review step, chunk 7's `AddOnsStep`/`ItemAddOns`, the product pages):
+
+```ts
+import { addonMedia, includedItems, type AddonMedia, type IncludedItem } from "@/lib/addonsMedia";
+
+const media = addonMedia[addon.slug];          // AddonMedia | undefined: {src, alt_ar, alt_en}
+// show the picture only when media exists; a hidden add-on has no entry and is never offered anyway
+<Image src={media.src} alt={locale === "ar" ? media.alt_ar : media.alt_en} width={640} height={480} />
+
+const items = includedItems[product.slug] ?? []; // IncludedItem[]: {src, title_ar, title_en, desc_ar, desc_en}
+// «يأتي مع الكتاب» / "Comes with the book": a small grid of these on the product page and the review step
+```
+
+- Keys:
+  - `addonMedia` is keyed by add-on slug;
+  - `includedItems` by product slug (`classic-book`, `magic-book`, `magic-custom-story`, `learning-journey`,
+    `family-adventures`, `islamic-series`, `foundation-workbook`).
+- The texts are short and language-reviewed. They describe the printed thing, never a delivery time or stock.
+- The module has no other imports, so a `node --test` file can load it.
