@@ -2338,11 +2338,15 @@
       "privacy": "Read the full privacy policy",
       "accept": "{gender, select, f {I confirm I am <b>{name}'s parent</b> (or legal guardian), and I agree to her photo being used only to draw her books.} other {I confirm I am <b>{name}'s parent</b> (or legal guardian), and I agree to his photo being used only to draw his books.}}",
       "cta": "I agree, continue",
-      "required": "Please tick the consent box to continue."
+      "required": "Please tick the consent box to continue.",
+      "why": {
+        "story": "{gender, select, f {We need one photo of {name} to draw her character, so she can be the hero of the story.} other {We need one photo of {name} to draw his character, so he can be the hero of the story.}}",
+        "activity": "{gender, select, f {We need one photo of {name} to draw her character for the book.} other {We need one photo of {name} to draw his character for the book.}}"
+      },
+      "next": "Once you agree, you choose the photo, and we check it before drawing anything."
     },
     "photo": {
       "title": "One clear photo is enough",
-      "body": "{name}'s face from the front, in daylight.",
       "guide": "Face guide",
       "pick": "Choose a photo",
       "pickHint": "From your gallery or camera",
@@ -2362,19 +2366,34 @@
       "blurry": "Blurry",
       "far": "Too far",
       "cta": "Use this photo",
-      "private": "The photo is private and encrypted; only the drawing model sees it."
+      "private": "The photo is private and encrypted; only the drawing model sees it.",
+      "why": {
+        "story": "From this photo we draw {name} as the hero of the story.",
+        "activity": "From this photo we draw {name}'s character to appear {places}."
+      },
+      "how": "Just make sure the face is clear, facing the camera, in daylight.",
+      "keep": "{gender, select, f {Once you approve the drawing, we keep {name}'s character for her future books and delete the original photo within 24 hours.} other {Once you approve the drawing, we keep {name}'s character for his future books and delete the original photo within 24 hours.}}",
+      "next": {
+        "story": "Next we draw {name}'s character in the style you choose, and we don't go on until you approve it.",
+        "activity": "Next we draw {name}'s character straight away, and we don't go on until you approve it."
+      }
     },
     "line": {
       "title": "Which book would you like for {name}?",
       "body": "You choose the cover after the preview. The preview is free.",
       "lead": "Two kinds of the same book. Compare the pages and pick what suits you; you can change it before ordering.",
       "realPages": "Real pages from a story (the hero: {look})",
-      "classicPages": "In Classic these are the very scenes, with {name} drawn into them.",
-      "magicPages": "In Magic every scene is drawn afresh for {name} alone, with their drawing as a companion."
+      "classicPages": "In Classic you get these same scenes, with {name} drawn into them.",
+      "magicPages": "{gender, select, f {In Magic every scene is drawn afresh for {name} alone, with a companion from her own drawing.} other {In Magic every scene is drawn afresh for {name} alone, with a companion from his own drawing.}}",
+      "next": {
+        "photo": "{gender, select, f {Next we ask for a photo of {name} to draw her character, then you choose the story.} other {Next we ask for a photo of {name} to draw his character, then you choose the story.}}",
+        "draw": "{gender, select, f {Next we draw {name}'s character from her photo, then you choose the story.} other {Next we draw {name}'s character from his photo, then you choose the story.}}",
+        "drawn": "{name}'s character is ready, so we go straight to choosing the story."
+      }
     },
     "style": {
       "title": "How should we draw {name}?",
-      "body": "Every page is drawn in the same style.",
+      "body": "Every page of the story is drawn in the style you choose.",
       "desc": {
         "watercolor": "Soft and warm, as if painted with a brush on textured paper.",
         "cartoon": "Bright colors and clean lines, playful and full of movement.",
@@ -2384,11 +2403,11 @@
       },
       "popular": "Most chosen",
       "extra": "+{amount}",
-      "cta": "Draw {name}'s character"
+      "cta": "Draw {name}'s character",
+      "next": "Next we draw {name}'s character in a minute or two, and we don't go on until you approve it."
     },
     "character": {
       "title": "Does this look like {name}?",
-      "body": "This is {name} on every page of the book.",
       "drawing": "Drawing {name} now…",
       "drawingHint": "Drawing takes a minute or two. Please stay on this page.",
       "failed": "The drawing didn't work this time.",
@@ -2404,18 +2423,67 @@
       },
       "approve": "{gender, select, f {Yes, that's {name}} other {Yes, that's {name}}}",
       "redraw": "Redraw · {left} of 3 left",
-      "noRedraws": "The free redraws are used up. Message us if the character isn't right."
+      "noRedraws": "The free redraws are used up. Message us if the character isn't right.",
+      "where": {
+        "story": "This is how {name} will appear in the story.",
+        "activity": "This is how {name} will appear {places}."
+      },
+      "places": {
+        "workbook": "on the first page of the workbook and at the start of each unit",
+        "journey": "on the cover and the journey map, at the start of each stop, and on the certificate",
+        "family": "on the cover, in the adventures, in the passport and on the certificate",
+        "islamic": "on the cover, at the start of each unit, in the passport and on the certificate",
+        "other": "on selected pages of the book"
+      },
+      "onApprove": "When you approve:",
+      "keep": "{gender, select, f {We keep {name}'s character for her future books and delete her original photo within 24 hours.} other {We keep {name}'s character for his future books and delete his original photo within 24 hours.}}",
+      "next": {
+        "story": "We move on to choosing the story, and draw you a free preview before you order.",
+        "activity": "You review what we will print before we add it to the cart."
+      },
+      "redrawRule": "Each child gets 3 free redraws, and any attempt that fails because of a fault on our side doesn't count."
     },
     "story": {
       "title": "Where is {name} going?",
-      "body": "Stories that suit the age come first.",
+      "body": "Stories that suit {name}'s age come first.",
       "suggested": "Suggested for {name}",
       "pages": "{pages} pages",
       "dedication": "A dedication at the front",
       "dedicationPlaceholder": "e.g. To our little hero, with all our love",
       "dedicationPaid": "+{amount} in Qamra Classic",
       "dedicationFree": "Included in Qamra Magic",
-      "cta": "Write the story"
+      "cta": "Write the story",
+      "chosenTitle": "The story you chose for {name}",
+      "next": "Next we write the story and draw you a free preview; you pay nothing before you see it.",
+      "change": "Change the story",
+      "likes": "What does {name} love?",
+      "upTo3": "(pick up to 3)",
+      "likesHint": "We weave what you pick into one or two pages of the story.",
+      "likesList": [
+        "Space",
+        "Animals",
+        "The sea",
+        "Football",
+        "Drawing",
+        "Cooking",
+        "Dinosaurs",
+        "Princesses and knights",
+        "Cars",
+        "Music"
+      ],
+      "note": "{gender, select, f {Something special about her?} other {Something special about him?}}",
+      "notePlaceholder": "{gender, select, f {e.g. she has a cat called Lulu} other {e.g. he has a cat called Lulu}}",
+      "optional": "(optional)",
+      "language": "Language of the story",
+      "languages": {
+        "ar": "العربية",
+        "en": "English"
+      },
+      "languageHint": {
+        "ar": "We write the story in Arabic, with full vowel marks (tashkeel) for children up to age 7.",
+        "en": "We write the story in English."
+      },
+      "classicArabic": "Qamra Classic books are in Arabic only."
     },
     "writing": {
       "title": "Writing and drawing {name}'s story",

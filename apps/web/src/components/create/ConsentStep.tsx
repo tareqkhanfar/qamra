@@ -7,12 +7,29 @@ import { Button } from "@/components/ui/Button";
 import { Link } from "@/i18n/navigation";
 import { errorText } from "@/lib/api";
 import { createApi, type Child } from "@/lib/create";
+import { ACTIVITY_LINES } from "@/lib/shop";
 import { Frame } from "./Frame";
 
 const POINTS = ["p1", "p2", "p3", "p4"] as const;
 
-/** Step 2 (design Create2): the guardian's consent, stored with the version of this exact text. */
-export function ConsentStep({ child, back, onDone }: { child: Child; back: () => void; onDone: (c: Child) => void }) {
+/**
+ * Step 2 (design Create2): the guardian's consent, stored with the version of this exact text. Shown only when a
+ * photo is needed; the line above the promises says what the photo is for in this product (a story's hero, or
+ * the character on an activity book's cover and chosen pages). The promises and the box are the versioned text.
+ */
+export function ConsentStep({
+  child,
+  productLine = null,
+  title,
+  back,
+  onDone,
+}: {
+  child: Child;
+  productLine?: string | null; // classic|magic|workbook|journey|family|islamic (null: a story, type not chosen)
+  title?: string; // the frame title; the wizard's FlowFrameContext wins when present
+  back: () => void;
+  onDone: (c: Child) => void;
+}) {
   const t = useTranslations("create");
   const te = useTranslations("errors");
   const locale = useLocale();
@@ -20,6 +37,7 @@ export function ConsentStep({ child, back, onDone }: { child: Child; back: () =>
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const who = { name: child.name, gender: child.gender };
+  const activity = (ACTIVITY_LINES as readonly string[]).includes(productLine ?? "");
 
   async function submit() {
     if (!accepted) {
@@ -36,9 +54,8 @@ export function ConsentStep({ child, back, onDone }: { child: Child; back: () =>
 
   return (
     <Frame
-      title={t("bookOf", { name: child.name })}
+      title={title ?? t("bookOf", { name: child.name })}
       label={t("steps.consent")}
-      n={2}
       back={back}
       footer={
         <Button onClick={submit} loading={busy} size="lg" className="grow">
@@ -57,6 +74,9 @@ export function ConsentStep({ child, back, onDone }: { child: Child; back: () =>
         </div>
         <h1 className="text-[26px] leading-snug text-night-900">{t("consent.title", who)}</h1>
       </div>
+      <p className="text-body text-ink-muted">
+        {t(activity ? "consent.why.activity" : "consent.why.story", who)} {t("consent.next")}
+      </p>
 
       <ol className="flex flex-col gap-3">
         {POINTS.map((p, i) => (

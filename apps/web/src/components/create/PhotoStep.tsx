@@ -7,6 +7,7 @@ import { Alert } from "@/components/ui/Alert";
 import { Button, Spinner } from "@/components/ui/Button";
 import { errorText } from "@/lib/api";
 import { createApi, type Child } from "@/lib/create";
+import { ACTIVITY_LINES } from "@/lib/shop";
 import { Frame, Lead } from "./Frame";
 
 const CHECKS = ["one", "front", "light", "close"] as const;
@@ -28,8 +29,24 @@ const EXAMPLES = [
   { key: "far", good: false, fx: "scale-[0.45] origin-bottom" },
 ] as const;
 
-/** Step 3 (design Create3): one clear photo, checked on the server before anything is drawn. */
-export function PhotoStep({ child, back, onDone }: { child: Child; back: () => void; onDone: (c: Child) => void }) {
+/**
+ * Step 3 (design Create3): one clear photo, checked on the server before anything is drawn. The lead says where
+ * this product shows the character (order-flows §c.5); the card at the end says what we keep, what we delete and
+ * what happens next.
+ */
+export function PhotoStep({
+  child,
+  productLine = null,
+  title,
+  back,
+  onDone,
+}: {
+  child: Child;
+  productLine?: string | null; // classic|magic|workbook|journey|family|islamic (null: a story, type not chosen)
+  title?: string; // the frame title; the wizard's FlowFrameContext wins when present
+  back: () => void;
+  onDone: (c: Child) => void;
+}) {
   const t = useTranslations("create");
   const te = useTranslations("errors");
   const locale = useLocale();
@@ -40,6 +57,12 @@ export function PhotoStep({ child, back, onDone }: { child: Child; back: () => v
   const [failed, setFailed] = useState<CheckName[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState<Child>(child);
+  const who = { name: child.name, gender: child.gender };
+  const activity = (ACTIVITY_LINES as readonly string[]).includes(productLine ?? "");
+  // where this activity book prints the character (checked against the renderers, 2026-10-07)
+  const places = t(
+    t.has(`character.places.${productLine}`) ? `character.places.${productLine}` : "character.places.other",
+  );
 
   useEffect(
     () => () => {
@@ -74,9 +97,8 @@ export function PhotoStep({ child, back, onDone }: { child: Child; back: () => v
 
   return (
     <Frame
-      title={t("bookOf", { name: child.name })}
+      title={title ?? t("bookOf", { name: child.name })}
       label={t("steps.photo")}
-      n={3}
       back={back}
       footer={
         <Button onClick={() => onDone(saved)} disabled={state !== "ok"} size="lg" className="grow">
@@ -84,7 +106,10 @@ export function PhotoStep({ child, back, onDone }: { child: Child; back: () => v
         </Button>
       }
     >
-      <Lead title={t("photo.title")} body={t("photo.body", { name: child.name })} />
+      <Lead
+        title={t("photo.title")}
+        body={`${activity ? t("photo.why.activity", { ...who, places }) : t("photo.why.story", who)} ${t("photo.how")}`}
+      />
 
       <input
         ref={input}
@@ -191,7 +216,47 @@ export function PhotoStep({ child, back, onDone }: { child: Child; back: () => v
           ))}
         </div>
       </div>
-      <p className="text-caption text-ink-muted">{t("photo.private")}</p>
+      <ul className="flex flex-col gap-2.5 rounded-2xl bg-paper-sunk p-4 text-small text-ink">
+        {(
+          [
+            ["lock", t("photo.private")],
+            ["clock", t("photo.keep", who)],
+            ["next", t(activity ? "photo.next.activity" : "photo.next.story", who)],
+          ] as const
+        ).map(([icon, text]) => (
+          <li key={icon} className="flex items-start gap-2.5">
+            <Icon name={icon} />
+            <span>{text}</span>
+          </li>
+        ))}
+      </ul>
     </Frame>
+  );
+}
+
+/** The small line icons of the "what happens to the photo" card. */
+function Icon({ name }: { name: "lock" | "clock" | "next" }) {
+  return (
+    <svg
+      className={`mt-0.5 size-[18px] shrink-0 text-night-700 ${name === "next" ? "rtl:-scale-x-100" : ""}`}
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <g fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        {name === "lock" && (
+          <>
+            <rect x="5" y="11" width="14" height="10" rx="2" />
+            <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+          </>
+        )}
+        {name === "clock" && (
+          <>
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 7v5l3 2" />
+          </>
+        )}
+        {name === "next" && <path d="M5 12h14M13 6l6 6-6 6" />}
+      </g>
+    </svg>
   );
 }

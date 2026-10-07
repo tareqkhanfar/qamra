@@ -15,9 +15,10 @@ import { LINES, offer, type Offer } from "@/lib/story";
 import { Frame, Lead } from "./Frame";
 
 /**
- * Step 4 (Addendum 9, as on the story page): Classic («الأكثر طلباً») and Magic («الأفخم») side by side, with
- * real pages of a published example in the child's look, the chosen line's checklist, and Classic suggested
- * first wherever a Classic template exists for this child.
+ * The story type (Addendum 9, as on the story page): Classic («الأكثر طلباً») and Magic («الأفخم») side by side,
+ * with real pages of a published example in the child's look, the chosen line's checklist, and Classic suggested
+ * first wherever a Classic template exists for this child. Stories only, and only when the type isn't chosen yet:
+ * it comes right after the child (order-flows §c.3), so the parent knows what they buy before giving a photo.
  */
 export function LineStep({
   child,
@@ -25,6 +26,7 @@ export function LineStep({
   themes,
   theme,
   initial,
+  title,
   back,
   onDone,
 }: {
@@ -33,6 +35,7 @@ export function LineStep({
   themes: ThemeCard[];
   theme: string | null;
   initial: Line | null;
+  title?: string; // the frame title; the wizard's FlowFrameContext wins when present
   back: () => void;
   onDone: (line: Line) => void;
 }) {
@@ -66,12 +69,19 @@ export function LineStep({
   const example = pickExample(examples, theme ?? examples[0]?.theme, look);
   const pages = storyPages(example, 6);
   const strip = storyPages(example, 3, 1);
+  const who = { name: child.name, gender: child.gender };
+  // what comes next for this type: the story (a character it can use), the drawing (a photo), else the photo
+  const fits = new Set((catalog?.styles ?? []).filter((s) => s.lines.includes(line)).map((s) => s.slug));
+  const next = child.characters.some((c) => c.approved && fits.has(c.style))
+    ? "drawn"
+    : child.consent && child.photos > 0
+      ? "draw"
+      : "photo";
 
   return (
     <Frame
-      title={t("bookOf", { name: child.name })}
+      title={title ?? t("bookOf", { name: child.name })}
       label={t("steps.line")}
-      n={4}
       back={back}
       footer={
         <Button onClick={() => onDone(line)} size="lg" className="grow">
@@ -106,12 +116,11 @@ export function LineStep({
             ))}
           </div>
           <p className="text-caption text-ink-muted">
-            {line === "classic"
-              ? t("line.classicPages", { name: child.name })
-              : t("line.magicPages", { name: child.name })}
+            {line === "classic" ? t("line.classicPages", who) : t("line.magicPages", who)}
           </p>
         </section>
       )}
+      <p className="rounded-2xl bg-paper-sunk p-4 text-small text-ink">{t(`line.next.${next}`, who)}</p>
     </Frame>
   );
 }

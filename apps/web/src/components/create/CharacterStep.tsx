@@ -7,21 +7,30 @@ import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { errorText } from "@/lib/api";
 import { characterImage, createApi, type Character, type Child, type Fix } from "@/lib/create";
+import { ACTIVITY_LINES } from "@/lib/shop";
 import { Chip, Frame, Lead } from "./Frame";
 
 const FIXES: Fix[] = ["skin", "face", "hair", "age"];
 const POLL_MS = 3000;
 
-/** Step 6 (design Create5): the drawn character; approve it, or redraw with what didn't look right. */
+/**
+ * Step 6 (design Create5): the drawn character; approve it, or redraw with what didn't look right. It says where
+ * this product shows the character, what approving does (kept for the next books, the photo deleted within 24 h)
+ * and the free-redraw rule (3 per child; a drawing that failed on our side doesn't count).
+ */
 export function CharacterStep({
   child,
   character,
+  productLine = null,
+  title,
   back,
   onChange,
   onApproved,
 }: {
   child: Child;
   character: Character;
+  productLine?: string | null; // classic|magic|workbook|journey|family|islamic (null: a story)
+  title?: string; // the frame title; the wizard's FlowFrameContext wins when present
   back: () => void;
   onChange: (c: Character) => void;
   onApproved: (c: Character) => void;
@@ -35,6 +44,10 @@ export function CharacterStep({
   const [tick, setTick] = useState(0);
   const who = { name: child.name, gender: child.gender };
   const drawing = character.status === "generating";
+  const kind = (ACTIVITY_LINES as readonly string[]).includes(productLine ?? "") ? "activity" : "story";
+  const places = t(
+    t.has(`character.places.${productLine}`) ? `character.places.${productLine}` : "character.places.other",
+  );
 
   useEffect(() => {
     if (!drawing) return;
@@ -69,9 +82,8 @@ export function CharacterStep({
   const left = Math.max(0, child.redraws_left);
   return (
     <Frame
-      title={t("bookOf", { name: child.name })}
+      title={title ?? t("bookOf", { name: child.name })}
       label={t("steps.character")}
-      n={6}
       back={back}
       footer={
         character.status === "ready" || character.status === "approved" ? (
@@ -106,7 +118,7 @@ export function CharacterStep({
         <Alert>{t("character.failed")}</Alert>
       ) : (
         <>
-          <Lead title={t("character.title", who)} body={t("character.body", who)} />
+          <Lead title={t("character.title", who)} body={t(`character.where.${kind}`, { ...who, places })} />
           <figure className="flex flex-col gap-2 overflow-hidden rounded-3xl border border-line bg-paper-raised p-2">
             {/* eslint-disable-next-line @next/next/no-img-element -- private image through the API, no-store */}
             <img
@@ -137,6 +149,19 @@ export function CharacterStep({
           ) : (
             <p className="text-small text-ink-muted">{t("character.noRedraws")}</p>
           )}
+          <section
+            aria-labelledby="on-approve"
+            className="flex flex-col gap-2 rounded-2xl bg-paper-sunk p-4 text-small text-ink"
+          >
+            <strong id="on-approve" className="text-body text-night-900">
+              {t("character.onApprove", who)}
+            </strong>
+            <ul className="flex list-disc flex-col gap-1.5 ps-5 marker:text-night-700">
+              <li>{t("character.keep", who)}</li>
+              <li>{t(`character.next.${kind}`, who)}</li>
+            </ul>
+            {left > 0 && <p className="border-t border-dashed border-line pt-2">{t("character.redrawRule")}</p>}
+          </section>
         </>
       )}
       {error && <Alert>{error}</Alert>}
