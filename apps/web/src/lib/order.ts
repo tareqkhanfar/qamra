@@ -1,5 +1,6 @@
 /** The order path of Addendum 9 (designs AddOns, Cart, Create10): types and calls. Every amount is the server's. */
 import { api } from "@/lib/api";
+import { ACTIVITY_LINES } from "@/lib/shop";
 import type { Cart, CartItem } from "@/lib/store";
 
 export type OrderAddOn = CartItem["addons"][number] & { amount: string };
@@ -114,7 +115,14 @@ export function bundleLabel(name: string): string {
   return name.replace(/\s*[−-]\s*\d+(\.\d+)?\s*%\s*$/u, "").trim();
 }
 
-const ACTIVITY = ["workbook", "journey", "family"];
+/**
+ * Whether a cart line is an activity book. The lines come from `ACTIVITY_LINES` (lib/shop.ts), the one list the
+ * site keeps (the API's is `store/workbooks.py` ACTIVITY): a copy here once left «قلبي يعرف الله» out, and its
+ * «أكملوا بيانات الطفل» ran the story flow, which the API then refused.
+ */
+function isActivity(item: Pick<OrderItem, "line">): boolean {
+  return (ACTIVITY_LINES as readonly string[]).includes(item.line);
+}
 
 /**
  * «أكملوا بيانات الطفل»: the create flow for a line added in one tap, with what the product page chose. When
@@ -122,7 +130,7 @@ const ACTIVITY = ["workbook", "journey", "family"];
  */
 export function completeHref(item: OrderItem): string {
   const q = new URLSearchParams({ item: item.id });
-  if (ACTIVITY.includes(item.line)) {
+  if (isActivity(item)) {
     q.set("product", item.sku);
     q.set("line", "magic");
   } else {
@@ -139,5 +147,5 @@ export function editHref(item: OrderItem): string {
   if (item.book_id && item.child_id) {
     return `/create?step=addons&child=${item.child_id}&book=${item.book_id}`;
   }
-  return ACTIVITY.includes(item.line) ? `/workbooks/${item.product}` : "/shop";
+  return isActivity(item) ? `/workbooks/${item.product}` : "/shop";
 }

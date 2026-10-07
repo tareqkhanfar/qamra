@@ -131,6 +131,61 @@ async def test_an_activity_book_added_in_one_tap_gets_the_child_and_keeps_the_fa
     assert (await client.post("/api/store/checkout", json=CHECKOUT)).status_code == 201
 
 
+@pytest.mark.parametrize(
+    "sku", ["islamic-v1-softcover", "islamic-r-softcover", "islamic-l2-softcover", "islamic-set-softcover"]
+)
+async def test_an_islamic_volume_added_in_one_tap_completes_as_an_activity_book(
+    client: AsyncClient, adb: AsyncSession, sku: str
+) -> None:
+    """«قلبي يعرف الله» (2026-10-07): its «أكملوا بيانات الطفل» takes the activity path (`product=<sku>`)
+    like the other activity books, and `/api/shop/workbooks/cart` fills the line with the child's approved
+    character. A story preview never fills it (the path the cart wrongly sent it on)."""
+    line = (await _add(client, sku))["items"][0]
+    assert line["line"] == "islamic" and line["needs_details"]
+    assert line["product"] == "islamic-series"  # the cart's «تعديل» opens /workbooks/islamic-series
+    await register(client)
+    made = await _preview(client, name="ضحى", gender="f")  # a child with an approved character
+    child = made["child_id"]
+
+    r = await client.post(
+        f"/api/create/books/{made['book_id']}/cart", json={"sku": "classic-soft-21", "item_id": line["id"]}
+    )
+    assert r.status_code == 409 and r.json()["error"]["code"] == "item_mismatch"  # not a story line
+    r = await client.post(
+        "/api/shop/workbooks/cart", json={"sku": sku, "child_id": child, "item_id": line["id"]}
+    )
+    assert r.status_code == 201, r.text
+    cart = r.json()
+    assert [i["id"] for i in cart["items"]] == [line["id"]]  # filled, not a second line
+    filled = cart["items"][0]
+    assert filled["sku"] == sku and filled["child_id"] == child and not filled["needs_details"]
+    assert filled["child_name"] == "ضحى" and filled["book_id"] is None
+    row = await adb.get(CartItem, uuid.UUID(line["id"]))
+    assert row is not None
+    await adb.refresh(row)
+    assert row.personalization["gender"] == "f" and row.personalization["character_id"]
+    assert "family" not in row.personalization
+
+    r = await client.post("/api/store/checkout", json=CHECKOUT)
+    assert r.status_code == 201, r.text
+    order = (await adb.execute(select(Order).where(Order.code == r.json()["code"]))).scalar_one()
+    item = (await adb.execute(select(OrderItem).where(OrderItem.order_id == order.id))).scalar_one()
+    assert item.line == "islamic" and str(item.child_id) == child and item.book_id is None
+
+
+async def test_an_islamic_pdf_added_in_one_tap_gets_the_child(client: AsyncClient) -> None:
+    line = (await _add(client, "islamic-r-digital"))["items"][0]
+    await register(client)
+    child = (await _preview(client, name="يوسف", gender="m"))["child_id"]
+    r = await client.post(
+        "/api/shop/workbooks/cart",
+        json={"sku": "islamic-r-digital", "child_id": child, "item_id": line["id"]},
+    )
+    assert r.status_code == 201, r.text
+    filled = r.json()["items"][0]
+    assert filled["id"] == line["id"] and filled["child_id"] == child and not filled["needs_details"]
+
+
 async def test_only_the_owner_can_fill_a_line(client: AsyncClient, adb: AsyncSession, app: FastAPI) -> None:
     await register(client)
     line = (await _add(client, "journey-s1-spiral"))["items"][0]
