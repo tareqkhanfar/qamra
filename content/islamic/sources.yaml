@@ -108,7 +108,14 @@ sources:
     kind: hadith
     title_ar: الاستعاذة عند الغضب
     hadith: {collection: bukhari, number: 3282}
-    expect: [أعوذ, الشيطان, الغضب]
+    expect: [أعوذ, الشيطان, احمر]
+    grading_claimed: "متفق عليه (البخاري ٣٢٨٢ ومسلم ٢٦١٠)"
+    topic: anger
+  - id: h-muslim-2610
+    kind: hadith
+    title_ar: الاستعاذة عند الغضب
+    hadith: {collection: muslim, number: 2610}
+    expect: [أعوذ, الشيطان, الرجيم, يغضب]
     grading_claimed: "متفق عليه (البخاري ٣٢٨٢ ومسلم ٢٦١٠)"
     topic: anger
   - id: h-abudawud-4782
@@ -121,4 +128,4 @@ sources:
 
   # ---- الأذكار والأدعية (a span of a hadith's verified text; markers are never printed)
   - {id: d-eat-start, kind: dua, title_ar: "ذكر ابتداء الطعام", dua: {from: h-abudawud-3767, start: "بسم الله", end: "بسم الله"}, topic: eating}
-  - {id: d-anger-refuge, kind: dua, title_ar: "الاستعاذة عند الغضب", dua: {from: h-bukhari-3282, start: "أعوذ", end: "الرجيم"}, topic: anger}
+  - {id: d-anger-refuge, kind: dua, title_ar: "الاستعاذة عند الغضب", dua: {from: h-muslim-2610, start: "أعوذ", end: "الرجيم"}, topic: anger}

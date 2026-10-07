@@ -6,8 +6,8 @@
   <div class="isl-body su">
     <section class="su-verse">{{ isl.sacred(d.verse, c, true, true) }}</section>
     <section class="su-meaning card"><h2>{{ icon('bulb', 'ico', 2.2) }}{{ d.labels.meaning }}</h2><p{{ ' class=ai' if d.meaning.ai }}>{{ d.meaning.text }}</p></section>
-    <section class="su-row">
-      <div class="su-qr card"><div class="su-qr-code">{{ p.qr }}</div><span>{{ icon('speaker', 'ico', 2.2) }}{{ d.labels.listen }}</span></div>
+    <section class="su-row{{ '' if p.qr else ' no-qr' }}">
+      {% if p.qr %}<div class="su-qr card"><div class="su-qr-code">{{ p.qr }}</div><span>{{ icon('speaker', 'ico', 2.2) }}{{ d.labels.listen }}</span></div>{% endif %}
       <div class="su-track card"><h2>{{ icon('star', 'ico', 2.2) }}{{ d.labels.tracker }}</h2>
         <div class="su-grid" style="--days: {{ d.days|length }}"><span class="su-corner">{{ d.labels.ayah }}</span>{% for n in d.days %}<span class="su-day">{{ n }}</span>{% endfor %}
           {% for r in d.rows %}<span class="su-ay">{{ r }}</span>{% for n in d.days %}<span class="su-cell">{{ icon('star', 'star-outline', 1.6) }}</span>{% endfor %}{% endfor %}</div></div>

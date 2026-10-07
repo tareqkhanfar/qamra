@@ -719,6 +719,10 @@ PLAN_TYPE: dict[str, str] = {
     "back-page": "front",
 }
 AUDIO_TYPES = frozenset({"dhikr", "surah"})  # pages with a QR to a recorded voice (never TTS for sacred text)
+# The one switch for those QR codes. Off since 2026-10-07: no reciter's or human recording exists yet, so the
+# pages print with no QR and no «listen» label (docs/decisions.md). Turn it on once every code plays a real
+# recording.
+AUDIO_QR = False
 FINALE = "finale"  # the section of the pages that belong to no unit (front pages, passport, certificate)
 
 
@@ -768,6 +772,6 @@ def page_spec(
         section=section,
         title=title,
         instruction=page.instruction,
-        audio=page.type in AUDIO_TYPES,
+        audio=AUDIO_QR and page.type in AUDIO_TYPES,
         params={**(extra or {}), "page": page, "islamic": context},
     )

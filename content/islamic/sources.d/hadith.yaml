@@ -12,10 +12,10 @@ sources:
   - {id: h-bukhari-6203, kind: hadith, title_ar: "«كان النبي ﷺ أحسن الناس خُلقًا»", hadith: {collection: bukhari, number: 6203}, expect: [أحسن, خلقا], grading_claimed: "متفق عليه (البخاري ٦٢٠٣ ومسلم ٢١٥٠)", topic: prophet-character}
   - {id: h-bukhari-3560, kind: hadith, title_ar: "ما انتقم لنفسه ﷺ", hadith: {collection: bukhari, number: 3560}, expect: [انتقم, أيسرهما], grading_claimed: "متفق عليه (البخاري ٣٥٦٠ ومسلم ٢٣٢٧)", topic: forgiveness}
   - {id: h-bukhari-676, kind: hadith, title_ar: "كان ﷺ في خدمة أهله", hadith: {collection: bukhari, number: 676}, expect: [مهنة, أهله], grading_claimed: "البخاري ٦٧٦", topic: helping-home}
-  - {id: h-bukhari-4770, kind: hadith, title_ar: "«ما جرّبنا عليك كذبًا» (النداء من الصفا)", hadith: {collection: bukhari, number: 4770}, expect: [الصفا, مصدقي, كذبا], grading_claimed: "متفق عليه (البخاري ٤٧٧٠ ومسلم ٢٠٨)", topic: prophet-honesty}
+  - {id: h-bukhari-4770, kind: hadith, title_ar: "«ما جرّبنا عليك إلا صدقًا» (النداء من الصفا)", hadith: {collection: bukhari, number: 4770}, expect: [الصفا, مصدقي, صدقا], grading_claimed: "متفق عليه (البخاري ٤٧٧٠ ومسلم ٢٠٨)", topic: prophet-honesty}
   - {id: h-bukhari-3653, kind: hadith, title_ar: "الغار: «ما ظنّك باثنين الله ثالثهما»", hadith: {collection: bukhari, number: 3653}, expect: [الغار, ثالثهما], grading_claimed: "متفق عليه (البخاري ٣٦٥٣ ومسلم ٢٣٨١)", topic: hijra}
   - {id: h-bukhari-1356, kind: hadith, title_ar: "النبي ﷺ يعود غلامًا مريضًا", hadith: {collection: bukhari, number: 1356}, expect: [غلام, يعوده], grading_claimed: "البخاري ١٣٥٦", topic: visiting-sick}
-  - {id: h-bukhari-3149, kind: hadith, title_ar: "صبر النبي ﷺ على الأعرابي", hadith: {collection: bukhari, number: 3149}, expect: [أعرابي, بردائه], grading_claimed: "متفق عليه (البخاري ٣١٤٩ ومسلم ١٠٥٧)", topic: prophet-patience}
+  - {id: h-bukhari-3149, kind: hadith, title_ar: "صبر النبي ﷺ على الأعرابي", hadith: {collection: bukhari, number: 3149}, expect: [أعرابي, الرداء, فضحك], grading_claimed: "متفق عليه (البخاري ٣١٤٩ ومسلم ١٠٥٧)", topic: prophet-patience}
   # ---- الإسلام والإيمان
   - {id: h-bukhari-8, kind: hadith, title_ar: "«بُني الإسلام على خمس»", hadith: {collection: bukhari, number: 8}, expect: [خمس, الصلاة, الزكاة], grading_claimed: "متفق عليه (البخاري ٨ ومسلم ١٦)", topic: pillars}
   - {id: h-muslim-8, kind: hadith, title_ar: "حديث جبريل (الإسلام والإيمان والإحسان)", hadith: {collection: muslim, number: 8}, expect: [جبريل, الإيمان, القدر], grading_claimed: "مسلم ٨", topic: iman}
@@ -54,7 +54,7 @@ sources:
   - {id: h-bukhari-13, kind: hadith, title_ar: "«يحبّ لأخيه ما يحبّ لنفسه»", hadith: {collection: bukhari, number: 13}, expect: [يحب, لأخيه, لنفسه], grading_claimed: "متفق عليه (البخاري ١٣ ومسلم ٤٥)", topic: sharing}
   - {id: h-bukhari-5392, kind: hadith, title_ar: "«طعام الاثنين كافي الثلاثة»", hadith: {collection: bukhari, number: 5392}, expect: [الاثنين, الثلاثة], grading_claimed: "متفق عليه (البخاري ٥٣٩٢ ومسلم ٢٠٥٨)", topic: sharing}
   - {id: h-muslim-2699, kind: hadith, title_ar: "«والله في عون العبد ما كان العبد في عون أخيه»", hadith: {collection: muslim, number: 2699}, expect: [عون, أخيه], grading_claimed: "مسلم ٢٦٩٩", topic: helping}
-  - {id: h-bukhari-6245, kind: hadith, title_ar: "«الاستئذان ثلاث»", hadith: {collection: bukhari, number: 6245}, expect: [الاستئذان, ثلاث], grading_claimed: "متفق عليه (البخاري ٦٢٤٥ ومسلم ٢١٥٣)", topic: permission}
+  - {id: h-bukhari-6245, kind: hadith, title_ar: "«الاستئذان ثلاث»", hadith: {collection: bukhari, number: 6245}, expect: [استأذن, ثلاثا, فليرجع], grading_claimed: "متفق عليه (البخاري ٦٢٤٥ ومسلم ٢١٥٣)", topic: permission}
   - {id: h-muslim-54, kind: hadith, title_ar: "«أفشوا السلام بينكم»", hadith: {collection: muslim, number: 54}, expect: [السلام, تحاببتم], grading_claimed: "مسلم ٥٤", topic: salam}
   - {id: h-bukhari-12, kind: hadith, title_ar: "«تطعم الطعام وتقرأ السلام»", hadith: {collection: bukhari, number: 12}, expect: [الطعام, السلام], grading_claimed: "متفق عليه (البخاري ١٢ ومسلم ٣٩)", topic: salam}
   - {id: h-bukhari-6014, kind: hadith, title_ar: "«ما زال جبريل يوصيني بالجار»", hadith: {collection: bukhari, number: 6014}, expect: [جبريل, بالجار], grading_claimed: "متفق عليه (البخاري ٦٠١٤ ومسلم ٢٦٢٤)", topic: neighbor}
