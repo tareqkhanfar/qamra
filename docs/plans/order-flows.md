@@ -1045,15 +1045,17 @@ the deactivation, hide these two as well.
 |---|---|---|
 | قمرة كلاسيك | title page with a dedication to the child (the parent's own words are the +5 ₪ add-on) | `assemble.py:241-250`; `pipeline/classic.py:591` |
 | قمرة سحري (and the custom story) | the drawing companion and the dedication page | `catalog.yaml` `included_addons`, `create.py:678-688` |
-| رحلتي الأولى للتعلّم | «هذا الكتاب لـ…» owner page, the journey map, a certificate at the end, audio QR codes on the pages that have sound | `out/journey/stage-*/png-book/p001,p002,p118`; `wb/render/pages/journey_frame.py:33`; `wb/render/engine.py:114`; `api/routers/journey_audio.py` |
+| رحلتي الأولى للتعلّم | «هذا الكتاب لـ…» owner page, the journey map, a certificate at the end, audio QR codes on the pages that have sound. **Printed apart (2026-10-08):** the stage's sticker sheet (the hero for the map, a sticker per opener circle, the pattern pages' stickers, rewards) | `out/journey/stage-*/png-book/p001,p002,p118`; `wb/render/pages/journey_frame.py:33`; `wb/render/engine.py:114`; `api/routers/journey_audio.py`; `wb/render/stickers.py` |
 | مغامراتي مع عائلتي | **printed apart:** a sticker sheet (passport badges, rewards, routine icons) and two card-stock sheets: play money and recipe cards; memory, question and role cards and finger puppets. **In the book:** the family passport, «عائلتي» page and a certificate | `wb/render/family_order.py:115-143`; `printing.py:48-52`; `worker/family_book.py:214-226`; `out/family-book/inserts/png`, `png-book-21x28/p003,p004,p112` |
-| قلبي يعرف الله | in every volume: «هذا أنا», the young Muslim's passport (a stamp circle per unit), a «للأهل» page after each unit, and the certificate at the end | `wb/render/islamic_volume.py:114-140`; `content/islamic/plan.yaml:82-87`; `out/islamic/v1/png` |
+| قلبي يعرف الله | in every volume: «هذا أنا», the young Muslim's passport (a stamp circle per unit), a «للأهل» page after each unit, and the certificate at the end. **Printed apart (2026-10-08):** the volume's sticker sheet (a unit stamp for every passport circle, stars or leaves for the home boards, rewards) | `wb/render/islamic_volume.py:114-140`; `content/islamic/plan.yaml:82-87`; `out/islamic/v1/png`; `wb/render/stickers.py` |
 | دوسية التأسيس | owner page, name-tracing pages (Arabic and English), the certificate | `wb/render/pages/workbook_front.py:97,110`; `wb/render/foundation.py:24`. Not yet made per order (§0.3-1, chunk 10) |
 
 **Side findings (not add-ons, for the owners of those books):**
 - The Islamic passport draws "ghost" stamp circles «to stick the real one over» (`wb/render/pages/islamic_keepsake.py:41`, `content/islamic/samples.yaml:147`).
 - The journey map has a dashed circle for the child's sticker (`journey_frame.py:50`).
-- No sticker sheet is made for either book. The child can draw or colour the circle, but the page asks for a sticker.
+- ~~No sticker sheet is made for either book.~~ **Fixed 2026-10-08:** every journey stage and every Islamic volume
+  now comes with its own sticker sheet («The included sticker sheets» below). The `sticker-sheet` add-on stays
+  hidden: the sheet is part of the book, so the add-on would be a second copy.
 
 ### Pictures for the product pages and the add-ons step: `web/lib/addonsMedia.ts`
 
@@ -1092,3 +1094,65 @@ const items = includedItems[product.slug] ?? []; // IncludedItem[]: {src, title_
 | `addons/printed-answer-key`, `printed-parent-guide` | The cover and `answer-key.pdf` of journey stage 1 and of Islamic V1 (a print build, so there is no draft mark) |
 | `included/classic-book/*` | Page 1 (default dedication) and the «للأهل» page of the same book. Magic and the custom story reuse the add-on pictures and this «للأهل» picture. |
 | `included/learning-journey/*`, `family-adventures/*`, `islamic-series/*`, `foundation-workbook/*` | The engines' renders for the sample child «ليان»: the journey stages, the family book and its insert PDFs, Islamic V1 (print build), and KG1 volumes 1 and 3 |
+| `included/learning-journey/sticker-sheet`, `included/islamic-series/sticker-sheet` | The sticker sheets of journey stage 1 and Islamic V1 for «ليان» (`python -m qamra_workbook.render.stickers`), tilted on the brand background like the family book's sheet |
+
+## The included sticker sheets (2026-10-08)
+
+The journey's map and openers and the Islamic passports ask the child to stick stickers, and stage 1's back
+cover promises «ملصقات», but nothing printed them. Now every journey stage and every «قلبي يعرف الله» volume
+(V1–V5, R) comes with one A4 sheet of matte sticker paper with kiss-cut lines, made for the child like the
+family book's sheet. No AI call, no new cost per order beyond the paper.
+
+**What is on it** (read from the very pages being printed, `wb/render/pages/reward_stickers.py`):
+
+| Book | What the pages ask for | Rewards | Total |
+|---|---|---|---|
+| Journey, stage 1 | 1 hero (map p2) + 12 opener circles + 2 train pictures (p71, the child picks the missing one) + 12 shapes (p74: 6 stars, 6 hearts) = **27** | 6 stars, 2 moons, 3 «أحسنت/أحسنتِ», 2 name labels | 40 |
+| Journey, stage 2 | 1 hero + 9 opener circles + 15 shapes (p23: 5 each of star, heart, circle) = **25** | same | 38 |
+| Journey, stage 3 | 1 hero + 9 opener circles + 18 shapes (p20: 6 each) = **28** | same | 41 |
+| V1 | 8 stamps × 2 passport pages (p4 and the end card p118) + 2 home boards × 7 stars = **30** | 8 eight-pointed stars, 2 moons, 2 «أحسنت», 1 name | 43 |
+| V2 | 8 × 2 + 7 stars = **23** | same | 36 |
+| V3 | 7 × 2 + 7 stars = **21** | same | 34 |
+| V4 | 7 × 2 + 7 green leaves («شجرة الأخلاق») = **21** | 7 stars (the passport's challenge count), 2 moons, 2 «أحسنت», 1 name | 33 |
+| V5 | 7 × 2 + 7 stars = **21** | same as V4 | 33 |
+| R | 6 stamps (its one passport, p70) = **6** | 6 stars, 2 moons, 2 «أحسنت», 1 name | 17 |
+
+- **Sizes cover their spots:** an opener's dashed circle is 12.8 mm (13.5 with its stroke), its sticker 15 mm;
+  a passport ring is 29.1 mm (front) or 32.8 mm (end card), its stamp 30.8 or 34.4 mm; a pattern shape is 0.8 mm
+  smaller than its dashed slot; the train picture is 30 mm for the 36 mm wagon.
+- **The rules:** a pattern page gets `ceil(slots / shapes) + 2` of each shape (the simple repeat, and two more
+  for a pattern like AAB); a train asks for each of its pictures, so the child still chooses; a home board is a
+  week: 7 stars (or leaves) for each unit whose closing or parent page asks the child to stick a star or a leaf
+  at home.
+- **Personal:** the owner's name in the header, name labels, «أحسنتَ/أحسنتِ» and the instruction in the child's
+  gender, the hero is the child's own character (cut out of the approved sheet).
+- **Islamic sheet:** the stamps are the units' icons (no person, no prophet, no text on a sticker). Its own words
+  never include the name of Allah, ﷺ, a prophet, the Quran, a surah or a verse (the backing is thrown away):
+  `sacred_words` checks every line and a sheet that fails is never built. So the footer names the volume
+  («المجلّد الأوّل», «كتاب رمضان والعيد»), not the series. The child's own name prints as it is.
+- **Print file:** `inserts/stickers.pdf` (A4 with 3 mm bleed, a 9 mm safe margin; the cut lines on the optional
+  layer «CutContour») and `inserts/stickers-die.pdf` (the cut lines alone), each with its preflight in
+  `book.preflight["inserts/stickers.pdf"]` (a die with no ink fails it, and a failed sheet keeps the book from
+  print approval).
+
+**How it flows:**
+- **Engine:** `journey_order.render_order` and `islamic_volume.render_volume` (not for an `only` render, nor the
+  scholar's review previews) render it after the cover: `OrderFiles.inserts["stickers"]` /
+  `VolumeFiles.inserts["stickers"]`, with `dies`. Staff CLI:
+  `uv run python -m qamra_workbook.render.stickers --journey 1|2|3` or `--islamic v1…v5|r`
+  `[--name … --gender m|f --numerals latin] [--out DIR]` writes the PDF, its die, a PNG and the preflight.
+- **Order jobs:** `worker/journey_book.py` and `worker/islamic_book.py` store it with
+  `family_book.store_inserts` beside the book's files, as the family book does:
+  `children/<child>/books/<book>/files/inserts/stickers.pdf` (+ `stickers-die.pdf`), and put its key in
+  **`book.generation["files"]["stickers"]`**.
+- **Print batch:** unchanged code. `build_manifest` lists every key of `generation["files"]` as an insert
+  (`printing.item_inserts`; only the answer key waits for its add-on), so the sheet goes with every printed copy
+  under the label «ورقة الملصقات (ورق لاصق مطفي، قصّ نصفي)», in the CSV's `insert_files` and as a link in the
+  printer's email (`/api/printer/{token}/files/{n}/inserts/stickers`).
+- **Admin:** the book detail lists `inserts: [{name, label}]` (every file of `generation["files"]`, the
+  printer's label) and `GET /api/admin/books/{id}/inserts/{name}` downloads each; the admin queue shows them as
+  links beside the interior and cover.
+- **Digital copies:** `qamra_core.downloads` already offers `files["stickers"]` as an extra file of a digital
+  line (kind `stickers`, «ورقة الملصقات» / "Sticker sheet"), cut to its trim like the book. The parent prints it
+  at home on A4 sticker paper (the magenta cut lines show, as a guide for scissors). A printed line does not
+  offer it: the printed sheet comes in the parcel.

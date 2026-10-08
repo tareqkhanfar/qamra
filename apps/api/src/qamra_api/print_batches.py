@@ -147,7 +147,7 @@ def build_manifest(candidates: list[Candidate], sends: int) -> dict[str, Any]:
                     "extras": item_extras(item.addons or []),
                     "interior_key": book.pdf_interior_key if book else None,
                     "cover_key": book.pdf_cover_key if book else None,
-                    # a family book's sticker sheet and card stock (name → key), printed on their own paper
+                    # the sheets printed apart (name → key): a sticker sheet, card stock, a bought answer key
                     "inserts": item_inserts((book.generation or {}).get("files") or {}, item.addons or [])
                     if book
                     else {},

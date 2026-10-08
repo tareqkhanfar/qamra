@@ -19,7 +19,7 @@ The city is optional: without it the engine prints «مَدينَتِنا» / «
 never «سوق » with nothing after it.
 
 The helpers the other activity books' jobs share live here: `approved_character`, `numerals_of`,
-`name_en_of` (the parent's English spelling) and `name_flags`.
+`name_en_of` (the parent's English spelling), `name_flags` and `store_inserts` (the sticker and card sheets).
 """
 
 from __future__ import annotations
@@ -176,6 +176,20 @@ def name_flags(flags: list[str] | None, *, guessed: bool, traceable: bool) -> li
     return kept + ([NAME_EN_GUESSED] if guessed else []) + ([] if traceable else [NAME_NOT_TRACEABLE])
 
 
+def store_inserts(storage: ObjectStorage, book: Book, files: Any) -> dict[str, str]:
+    """The render's insert sheets (`files.inserts`, `files.dies`) stored beside the book's files:
+    `inserts/<name>.pdf`, the layered print file whose key goes in `generation["files"]` (the print batch and
+    the digital download read it there), and `inserts/<name>-die.pdf`, its die lines alone."""
+    keys: dict[str, str] = {}
+    dies = getattr(files, "dies", None) or {}
+    for name, pdf in (getattr(files, "inserts", None) or {}).items():
+        keys[name] = file_key(book, f"inserts/{name}.pdf")
+        storage.put(keys[name], pdf.read_bytes(), "application/pdf")
+        if name in dies:
+            storage.put(file_key(book, f"inserts/{name}-die.pdf"), dies[name].read_bytes(), "application/pdf")
+    return keys
+
+
 def family_theme(db: Session) -> Theme:
     theme = db.execute(select(Theme).where(Theme.slug == THEME_SLUG)).scalar_one_or_none()
     if theme is None:
@@ -241,13 +255,7 @@ async def render_item(db: Session, storage: ObjectStorage, item: OrderItem) -> d
         storage.put(book.pdf_interior_key, files.interior.read_bytes(), "application/pdf")
         book.pdf_cover_key = file_key(book, "cover.pdf")
         storage.put(book.pdf_cover_key, files.cover.read_bytes(), "application/pdf")
-        inserts = {}
-        for name, pdf in files.inserts.items():
-            inserts[name] = file_key(book, f"inserts/{name}.pdf")
-            storage.put(inserts[name], pdf.read_bytes(), "application/pdf")
-            storage.put(
-                file_key(book, f"inserts/{name}-die.pdf"), files.dies[name].read_bytes(), "application/pdf"
-            )
+        inserts = store_inserts(storage, book, files)
     book.preflight = files.preflight
     book.generation = {
         **(book.generation or {}),

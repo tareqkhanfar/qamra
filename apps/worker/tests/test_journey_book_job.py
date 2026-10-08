@@ -1,6 +1,6 @@
 """«رحلتي الأولى للتعلّم» for an order item: each ordered stage that is built becomes a Book with its interior,
-cover and answer key, the preflight of each file, and waits for an admin's print approval. The page engine is
-tested in packages/workbook; here the render is a stand-in that writes small PDFs."""
+cover, answer key and sticker sheet, the preflight of each file, and waits for an admin's print approval. The
+page engine is tested in packages/workbook; here the render is a stand-in that writes small PDFs."""
 
 import datetime as dt
 import uuid
@@ -28,8 +28,10 @@ from qamra_core.db.models import (
     PaymentStatus,
     User,
 )
+from qamra_core.printing import INSERT_LABELS, item_inserts
 from qamra_core.storage import ObjectStorage
 from qamra_worker.jobs import journey_book
+from qamra_worker.jobs.print_batches import _items as printer_rows
 
 
 def _pdf(path: Path, pages: int = 1) -> Path:
@@ -95,6 +97,10 @@ def fake_render(monkeypatch: pytest.MonkeyPatch) -> list[dict[str, Any]]:
         )
         files.pages = 118
         files.preflight = {"interior.pdf": {"passed": True}, "cover.pdf": {"passed": True}}
+        # the stage's sticker sheet, as `journey_order.render_order` adds it
+        files.inserts = {"stickers": _pdf(out / "inserts" / "stickers.pdf")}
+        files.dies = {"stickers": _pdf(out / "inserts" / "stickers-die.pdf")}
+        files.preflight["inserts/stickers.pdf"] = {"passed": True, "die_ink": [0.04]}
         return files
 
     monkeypatch.setattr("qamra_workbook.render.journey_order.render_order", render)
@@ -122,6 +128,33 @@ async def test_a_stage_becomes_a_book_waiting_for_print_approval(
     assert book.preflight["interior.pdf"]["passed"] and "preflight_failed" not in (book.flags or [])
     again = await journey_book.render_item(db, storage, item)  # a retried job reuses the same book
     assert again["books"][0]["book_id"] == str(book.id)
+
+
+async def test_the_stages_sticker_sheet_reaches_the_printer_with_the_book(
+    db: Session, storage: ObjectStorage, fake_render: list[dict[str, Any]]
+) -> None:
+    """The sheet is stored beside the book's files (and its die beside it); the print batch's manifest
+    lists it as an insert of every copy, the answer key only when the line bought it; the printer's email
+    links it."""
+    item = _item(db, storage)
+    await journey_book.render_item(db, storage, item)
+    db.refresh(item)
+    book = db.get(Book, item.book_id)
+    assert book is not None
+    key = book.generation["files"]["stickers"]
+    assert key == f"children/{book.child_id}/books/{book.id}/files/inserts/stickers.pdf"
+    assert storage.exists(key) and storage.exists(key.replace("stickers.pdf", "stickers-die.pdf"))
+    assert "stickers-die" not in str(book.generation["files"])  # the die is on the sheet's layer too
+    assert book.preflight["inserts/stickers.pdf"]["passed"] and "preflight_failed" not in (book.flags or [])
+    inserts = item_inserts(book.generation["files"], item.addons or [])
+    assert inserts == {"stickers": key}  # included in every copy; the answer key is an add-on
+    bought = item_inserts(book.generation["files"], [{"slug": "printed-answer-key"}])
+    assert set(bought) == {"answer-key", "stickers"}
+    line = {"n": 1, "order": "QM-1", "format": "spiral", "size": None, "copies": 1, "inserts": inserts}
+    manifest = {"items": [line]}
+    rows = printer_rows(manifest, "https://qamra.app/api/printer/T")
+    sticker_rows = [r for r in rows if r.url and r.url.endswith("/files/1/inserts/stickers")]
+    assert len(sticker_rows) == 1 and INSERT_LABELS["stickers"] in sticker_rows[0].label
 
 
 async def test_a_set_renders_the_built_stages_and_skips_the_rest(

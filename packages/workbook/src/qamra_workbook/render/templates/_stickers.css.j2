@@ -1,0 +1,53 @@
+/* ---- the reward sticker sheet of the journey and «قلبي يعرف الله» (pages/reward_stickers.py): A4 sticker
+   paper, its own header, no tab or page number; every kiss-cut line has the class `cut` (render/dielines.py) */
+.rs { flex: 1; display: flex; flex-direction: column; gap: 2.4mm; --rs-title: var(--title); --rs-text: var(--body); }
+.rs.rs-font-kitab { --rs-title: var(--naskh); --rs-text: var(--naskh); }
+.rs-head { display: flex; align-items: center; justify-content: space-between; gap: 4mm; padding-bottom: 2mm;
+           border-bottom: 0.5mm dashed var(--line); }
+.rs-title { display: flex; align-items: center; gap: 3mm; min-width: 0; }
+.rs-title .mascot { width: 14mm; height: 14mm; }
+.rs-title h1 { font: 800 22pt/1.2 var(--rs-title); color: var(--night); padding-top: 1.5mm; }
+.rs-font-kitab .rs-title h1 { font-weight: 700; font-size: 20pt; line-height: 1.5; padding-top: 0; }
+.rs-title p { font: 600 11pt/1.5 var(--rs-text); color: var(--ink-2); }
+.rs-owner { display: flex; flex-direction: column; align-items: center; padding: 1.5mm 5mm; border-radius: 5mm; background: var(--tint);
+            max-width: 55mm; }
+.rs-owner small { font: 600 8.5pt var(--rs-text); color: var(--deep); }
+.rs-owner b { font: 800 15pt/1.3 var(--rs-title); color: var(--deep); white-space: nowrap; overflow: hidden; max-width: 45mm; }
+.rs-body { flex: 1; display: flex; flex-direction: column; justify-content: space-evenly; gap: 2.4mm; }
+.rs-group { display: flex; flex-direction: column; gap: 1.2mm; }
+.rs-label { display: flex; align-items: center; gap: 1.6mm; font: 700 10.5pt/1.5 var(--rs-text); color: var(--deep); }
+.rs-label .ico { width: 5mm; height: 5mm; color: var(--c); flex: none; }
+.rs-blocks { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: center; gap: 2.4mm 7mm; }
+.rs-block { display: flex; flex-direction: column; align-items: center; gap: 1mm; }
+.rs-cap { font: 600 8.5pt/1.4 var(--rs-text); color: var(--muted); white-space: nowrap; }
+.rs-cells { display: grid; gap: 1.2mm 2.4mm; justify-items: center; align-items: start; }
+.rs-cell { position: relative; display: flex; flex-direction: column; align-items: center; gap: 0.4mm; }
+.rs-st { position: relative; display: flex; align-items: center; justify-content: center; }
+.rs-st .rs-art { display: block; }
+.rs-over { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding-top: 0.6mm;
+           font: 800 10pt/1 var(--rs-title); color: #FFFFFF; white-space: nowrap; }
+.rs-font-kitab .rs-over { font-weight: 700; font-size: 10.5pt; line-height: 1.5; padding-top: 0; }
+.rs-under { font: 600 7.5pt/1.3 var(--rs-text); color: var(--muted); white-space: nowrap; }
+/* a stamp's unit number, on the backing in the corner the round sticker leaves free (as the passport's) */
+.rs-num { position: absolute; top: -0.6mm; inset-inline-start: -0.6mm; width: 4.8mm; height: 4.8mm; border-radius: 50%;
+          font: 800 8pt/4.8mm var(--title); font-style: normal; text-align: center; box-shadow: 0 0 0 0.4mm #FFFFFF; }
+
+/* the hero: the child's cut-out on a rounded card, its cut along the card's edge */
+.rs-hero { position: relative; border-radius: 5mm; background: #FFFFFF; }
+.rs-hero-bg { position: absolute; inset: 1mm; border-radius: 4mm; background: var(--tint); }
+.rs-hero img { position: absolute; left: 50%; bottom: 2mm; height: calc(100% - 4.5mm); transform: translateX(-50%); }
+.rs-hero .rs-hero-moon { position: absolute; inset: 6mm 3mm; width: auto; height: auto; }
+.rs-cutbox { position: absolute; inset: 0; border: 0.3mm solid #EC008C; border-radius: inherit; }
+
+/* the child's name on a label */
+.rs-name { position: relative; border-radius: 7mm; background: #FFFFFF; }
+.rs-name-in { position: absolute; inset: 0.9mm; border-radius: 5.6mm; background: var(--nc); color: var(--ni); display: flex;
+              align-items: center; justify-content: center; gap: 1.6mm; padding: 0 4mm; }
+.rs-name-in .ico { width: 4.2mm; height: 4.2mm; flex: none; }
+.rs-name-in b { font: 800 14pt/1.3 var(--rs-title); white-space: nowrap; overflow: hidden; max-width: 36mm; }
+.rs-font-kitab .rs-name-in b { font-weight: 700; font-size: 13pt; line-height: 1.6; }
+
+.rs-foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 4mm; padding: 2.2mm 1.5mm 1.5mm;
+           border-top: 0.5mm dashed var(--line); font: 600 8.5pt/1.5 var(--rs-text); color: var(--muted); }
+.rs-brand { display: inline-flex; align-items: center; gap: 1.2mm; font: 800 9pt var(--title); }
+.rs-brand .mascot { width: 6mm; height: 6mm; }

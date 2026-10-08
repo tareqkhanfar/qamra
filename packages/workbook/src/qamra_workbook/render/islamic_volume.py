@@ -688,6 +688,8 @@ class VolumeFiles:
     answer_key: Path | None = None
     pages: int = 0
     preflight: dict[str, dict[str, Any]] = field(default_factory=dict)  # file name → report
+    inserts: dict[str, Path] = field(default_factory=dict)  # print file name → the layered PDF (stickers)
+    dies: dict[str, Path] = field(default_factory=dict)  # print file name → its die lines alone
 
     @property
     def passed(self) -> bool:
@@ -728,6 +730,7 @@ async def render_volume(
     entries: Sequence[Mapping[str, Any]] | None = None,
     only: set[str] | None = None,
     review: Review | None = None,
+    stickers: bool = True,
 ) -> VolumeFiles:
     """One child's copy of a volume into `out`: interior.pdf, cover.pdf and answer-key.pdf, with a preflight
     report per file. The cover carries the child's character and name; the passport and the certificate the
@@ -735,7 +738,11 @@ async def render_volume(
     while any page is missing, any check fails, any source is not `scholar_approved`, or any unit of the
     volume is not approved in the review export (`review`, default: $QAMRA_ISLAMIC_REVIEW_FILE, else
     content/islamic/review-status.json, else nothing is approved). A print build prints «راجعه علميًّا: …»
-    when the export names the scholar."""
+    when the export names the scholar.
+
+    With `stickers` (and no `only`), also the volume's sticker sheet: inserts/stickers.pdf and its die
+    inserts/stickers-die.pdf (a stamp for every circle of its passport pages, stars for its home boards,
+    rewards; `render.stickers`)."""
     vid = volume_id(volume)
     plan = plan or islamic.load()
     if vid not in plan.volumes:
@@ -761,6 +768,12 @@ async def render_volume(
     files = VolumeFiles(out / "interior.pdf", out / "cover.pdf", key, pages=len(book.pages))
     g = book.geometry
     files.preflight = {"interior.pdf": _report(files.interior, g), "cover.pdf": _report(files.cover, g)}
+    if stickers and not only:
+        from qamra_workbook.render.stickers import NAME, render_sheet
+
+        sheet = await render_sheet(book, assets, out / "inserts")
+        files.inserts[NAME], files.dies[NAME] = sheet.pdf, sheet.die
+        files.preflight[f"inserts/{NAME}.pdf"] = sheet.report
     return files
 
 

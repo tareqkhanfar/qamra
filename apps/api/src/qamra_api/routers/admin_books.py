@@ -49,6 +49,7 @@ from qamra_core.db.models import Theme as ThemeRow
 from qamra_core.db.portal import ClassBook, ClassBookPage
 from qamra_core.db.text_review import PAGE, STORY_FIELDS, BookTextEdit
 from qamra_core.islamic_review import load_state
+from qamra_core.printing import INSERT_LABELS
 from qamra_core.storage import ObjectNotFound, ObjectStorage
 
 LINE_JOBS = {  # activity books are drawn by their line's job from the order item, not the story pipeline
@@ -344,6 +345,11 @@ class ClassPageOut(BaseModel):
     text: str | None
 
 
+class InsertOut(BaseModel):
+    name: str  # its key in `generation["files"]` (stickers, card-money-recipes, answer-key…)
+    label: str  # what the printer is told it is
+
+
 class BookDetail(BaseModel):
     id: uuid.UUID
     status: BookStatus
@@ -362,6 +368,7 @@ class BookDetail(BaseModel):
     error: str | None
     generation: dict[str, Any]
     files: dict[str, bool]
+    inserts: list[InsertOut]  # files printed apart: a sticker sheet, card stock, an answer key
     pages: list[PageView]
     plan: list[dict[str, Any]]
     costs: dict[str, float]
@@ -374,6 +381,11 @@ class BookDetail(BaseModel):
     text_originals: dict[str, str | None]  # the generated words of each story field, for «استرجاع»
     text_edits: list[TextEditOut]  # newest first
     class_pages: list[ClassPageOut]  # a class copy's shared story words (read-only)
+
+
+def _inserts(book: Book) -> list[InsertOut]:
+    files = (book.generation or {}).get("files") or {}
+    return [InsertOut(name=str(name), label=INSERT_LABELS.get(str(name), str(name))) for name in files]
 
 
 async def _book(db: AsyncSession, book_id: uuid.UUID) -> Book:
@@ -456,6 +468,7 @@ async def book_detail(book_id: uuid.UUID, db: SessionDep) -> BookDetail:
             "mockup_hardcover": bool(_mockup_key(book, "hardcover")),
             "mockup_spread": bool(_mockup_key(book, "spread")),
         },
+        inserts=_inserts(book),
         pages=pages,
         plan=plan,
         costs={str(k): round(float(v), 4) for k, v in groups},
@@ -589,6 +602,17 @@ async def book_file(
     }[name]
     media = "image/png" if name.endswith(".png") else "application/pdf"
     return _stream(storage, key, media, f"qamra-{str(book.id)[:8]}-{name}")
+
+
+@router.get("/books/{book_id}/inserts/{name}", dependencies=[Depends(require_permission("books.view"))])
+async def book_insert(book_id: uuid.UUID, name: str, db: SessionDep, storage: StorageDep) -> Response:
+    """A file the book's job rendered to print apart (`generation["files"]`): the sticker sheet with its die
+    lines on their layer, the card stock, the answer key."""
+    book = await _book(db, book_id)
+    key = ((book.generation or {}).get("files") or {}).get(name)
+    return _stream(
+        storage, str(key) if key else None, "application/pdf", f"qamra-{str(book.id)[:8]}-{name}.pdf"
+    )
 
 
 # ---- review actions ---------------------------------------------------------------------------------

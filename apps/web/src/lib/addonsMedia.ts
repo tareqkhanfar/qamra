@@ -119,8 +119,16 @@ export const includedItems: Readonly<Record<string, IncludedItem[] | undefined>>
       src: "/included/learning-journey/journey-map.webp",
       title_ar: "خريطة الرحلة",
       title_en: "Journey map",
-      desc_ar: "يتابع عليها طفلكم رحلته محطّةً بعد محطّة.",
-      desc_en: "Your child follows the journey on it, stop by stop.",
+      desc_ar: "يلصق عليها طفلكم ملصق شخصيته، ثم يتابع رحلته محطّةً بعد محطّة.",
+      desc_en: "Your child sticks their character sticker on it, then follows the journey stop by stop.",
+    },
+    {
+      src: "/included/learning-journey/sticker-sheet.webp",
+      title_ar: "ورقة ملصقات",
+      title_en: "Sticker sheet",
+      desc_ar: "تُطبع على ورق لاصق: ملصق بشخصية طفلكم للخريطة، وملصق لكل محطّة، وملصقات للأنماط، وملصقات مكافأة باسمه.",
+      desc_en:
+        "Printed on sticker paper: a sticker of your child’s character for the map, a sticker for every stop, pattern stickers, and reward stickers with their name.",
     },
     {
       src: "/included/learning-journey/audio-qr.webp",
@@ -188,8 +196,17 @@ export const includedItems: Readonly<Record<string, IncludedItem[] | undefined>>
       src: "/included/islamic-series/passport.webp",
       title_ar: "جواز السفر",
       title_en: "Passport",
-      desc_ar: "باسم طفلكم وشخصيته، وفيه دائرة لكل وحدة ونجوم للتحدّيات.",
-      desc_en: "With your child’s name and character, a circle for each unit and stars for the challenges.",
+      desc_ar: "باسم طفلكم وشخصيته: يلصق فيه ختم كل وحدة من ورقة الملصقات، ويلوّن نجمة بعد كل تحدٍّ.",
+      desc_en:
+        "With your child’s name and character: they stick in a stamp from the sticker sheet after each unit, and color a star after each challenge.",
+    },
+    {
+      src: "/included/islamic-series/sticker-sheet.webp",
+      title_ar: "ورقة ملصقات",
+      title_en: "Sticker sheet",
+      desc_ar: "تُطبع على ورق لاصق: ختم لكل وحدة يلصقه طفلكم في جوازه، ونجوم وملصقات مكافأة باسمه.",
+      desc_en:
+        "Printed on sticker paper: a stamp for each unit for your child to stick in their passport, plus stars and reward stickers with their name.",
     },
     {
       src: "/included/islamic-series/parents-page.webp",

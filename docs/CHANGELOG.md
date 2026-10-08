@@ -1,5 +1,12 @@
 # Changelog
 
+## «رحلتي الأولى» and «قلبي يعرف الله» come with their own sticker sheet (2026-10-08)
+- **Why:** the journey map and openers and the Islamic passports ask the child to stick stickers, and stage 1's back cover promises «ملصقات», but no sticker sheet was printed or shipped (the add-ons audit).
+- **The sheets:** one A4 sheet of matte sticker paper with kiss-cut lines per journey stage and per Islamic volume (V1–V5, R), read from the very pages being printed: the hero for the map, a sticker for every opener circle, the train's pictures and the pattern shapes (journey: 25–28 stickers); a unit stamp for every circle of both passport pages and stars or leaves for the home boards (Islamic: 6–30); then rewards (stars, Qamra's moon, «أحسنتَ/أحسنتِ», the child's name). Each covers its spot (15 mm over a 13 mm circle; 30.8 / 34.4 mm stamps over 29.1 / 32.8 mm rings). The Islamic sheet has no person, no sacred words (checked) and no series title on its backing.
+- **Engine:** `qamra_workbook.render.stickers` (and the `reward-stickers` page type): `inserts/stickers.pdf` with its cut lines on the «CutContour» layer, `inserts/stickers-die.pdf`, and a preflight; `journey_order.render_order` and `islamic_volume.render_volume` render it. Staff CLI: `uv run python -m qamra_workbook.render.stickers --journey 1` / `--islamic v1`.
+- **Orders:** the journey and Islamic jobs store it as `generation["files"]["stickers"]` (the die beside it): the print batch sends it with every printed copy as «ورقة الملصقات», the admin book detail lists and downloads it, and a digital copy's downloads include it to print at home.
+- **Site:** «ورقة ملصقات» with a real picture of the rendered sheet under «يأتي مع الكتاب» for the journey and the Islamic series; the journey map's and the passport's lines say what is stuck on them. Language-reviewed (Arabic and English); all fixes applied.
+
 ## Digital delivery: parents download the PDFs they bought (2026-10-08)
 - **Why:** the store sold «نسخة رقمية» and «ملف PDF» lines (19–75 ₪), and a parent had no way to get the file.
 - **API (`routers/downloads.py`):** the parent's downloadable lines, each file's state and the file itself (attachment with an Arabic UTF-8 name such as «قلبي-يعرف-الله-المجلد-1-ضحى.pdf» and an ASCII fallback). Only the owning parent (403 otherwise), rate-limited, and every download goes in the audit log with ids only. A story is ready after staff's «تأكيد», an activity book after a clean render, a set as each volume is ready. The order tracking now sends each line's id.

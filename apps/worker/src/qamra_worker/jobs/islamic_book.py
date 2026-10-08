@@ -7,10 +7,11 @@
 The order item (from `POST /api/shop/workbooks/cart`) carries the child, the variant (its options: `volume`
 V1…V5 or R, or a set L1 / L2 / set, and `format`) and, in its `personalization`, the approved character. The
 page engine (`qamra_workbook.render.islamic_volume.render_volume`, a print build) draws each volume from its
-plan and content with the child's character and name, in the child's gender. The files are stored like the
-other activity books' on a `Book` per volume linked to the order item, with every file's preflight; the book
-waits `in_review` for an admin's print approval (Addendum 3 §5), and that approval also needs the scholar's
-approval of the volume (admin_books.approve).
+plan and content with the child's character and name, in the child's gender, with the volume's sticker sheet
+(`generation["files"]["stickers"]`: the passport's stamps, the home boards' stars, rewards). The files are
+stored like the other activity books' on a `Book` per volume linked to the order item, with every file's
+preflight; the book waits `in_review` for an admin's print approval (Addendum 3 §5), and that approval also
+needs the scholar's approval of the volume (admin_books.approve).
 
 P0 (Addendum 10 §3.3): a volume the scholar has not approved unit by unit is never rendered for an order. Its
 book is kept `failed` with the reason, and the admin's retry renders it once the volume is approved. Before
@@ -51,7 +52,7 @@ from qamra_core.islamic_review import (
 from qamra_core.storage import ObjectStorage
 from qamra_worker import context
 from qamra_worker.jobs.books import file_key
-from qamra_worker.jobs.family_book import approved_character, numerals_of
+from qamra_worker.jobs.family_book import approved_character, numerals_of, store_inserts
 
 log = structlog.get_logger("qamra.worker.islamic_book")
 LINE = "islamic"
@@ -200,6 +201,7 @@ async def render_one(
     if files.answer_key is not None:  # the parents' file: also what the printed parent guide add-on prints
         extra["answer-key"] = file_key(book, "answer-key.pdf")
         storage.put(extra["answer-key"], files.answer_key.read_bytes(), "application/pdf")
+    extra.update(store_inserts(storage, book, files))  # the volume's sticker sheet, printed apart
     book.preflight = files.preflight
     credit = review["volumes"][volume].get("credit_name")
     book.generation = {
@@ -347,6 +349,7 @@ async def previews(db: Session, storage: ObjectStorage, volume: str, run_id: str
                 size=SIZES[0],
                 numerals="hindi",
                 print_build=False,
+                stickers=False,  # the review pages are the interior and the cover
             )
         base = f"{PREVIEW_PREFIX}/{volume}/{run_id}"
         keys = []

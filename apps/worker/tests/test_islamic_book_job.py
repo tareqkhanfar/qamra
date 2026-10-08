@@ -36,6 +36,7 @@ from qamra_core.db.models import (
     User,
 )
 from qamra_core.islamic_review import EXPORT_ENV, content_units
+from qamra_core.printing import item_inserts
 from qamra_core.storage import ObjectStorage
 from qamra_worker.jobs import islamic_book
 
@@ -57,6 +58,8 @@ class VolumeFiles:  # the engine's `islamic_volume.VolumeFiles`
     answer_key: Path | None = None
     pages: int = 0
     preflight: dict[str, dict[str, Any]] = field(default_factory=dict)
+    inserts: dict[str, Path] = field(default_factory=dict)
+    dies: dict[str, Path] = field(default_factory=dict)
 
     @property
     def passed(self) -> bool:
@@ -84,6 +87,10 @@ def engine(monkeypatch: pytest.MonkeyPatch) -> list[dict[str, Any]]:
         )
         files.pages = 3
         files.preflight = {"interior.pdf": {"passed": True}, "cover.pdf": {"passed": True}}
+        if kw.get("stickers", True):  # the volume's sticker sheet, as `render_volume` adds it
+            files.inserts = {"stickers": _pdf(out / "inserts" / "stickers.pdf")}
+            files.dies = {"stickers": _pdf(out / "inserts" / "stickers-die.pdf")}
+            files.preflight["inserts/stickers.pdf"] = {"passed": True, "die_ink": [0.05]}
         return files
 
     module = types.ModuleType("qamra_workbook.render.islamic_volume")
@@ -172,6 +179,11 @@ async def test_an_approved_volume_becomes_a_book_waiting_for_print_approval(
     assert book.pdf_interior_key and storage.exists(book.pdf_interior_key)
     assert book.pdf_cover_key and storage.exists(book.pdf_cover_key)
     assert storage.exists(book.generation["files"]["answer-key"])
+    stickers = book.generation["files"]["stickers"]  # the volume's sticker sheet, printed apart
+    assert stickers.endswith("/inserts/stickers.pdf") and storage.exists(stickers)
+    assert storage.exists(stickers.replace("stickers.pdf", "stickers-die.pdf"))
+    assert item_inserts(book.generation["files"], item.addons or []) == {"stickers": stickers}
+    assert "stickers" in item_inserts(book.generation["files"], [{"slug": "printed-parent-guide"}])
     again = await islamic_book.render_item(db, storage, item)  # a retried job reuses the same book
     assert again["books"][0]["book_id"] == str(book.id)
 
@@ -228,6 +240,7 @@ async def test_the_review_previews_are_one_png_per_page(
     assert result == {"status": "ready", "pages": 3}
     call = engine[0]
     assert call["print_build"] is False and call["child"].name == "ليان"  # the sample child, never a real one
+    assert call["stickers"] is False  # the review pages are the interior and the cover
     row = db.get(IslamicReviewPreview, "R")
     assert row is not None and row.status == "ready" and row.rendered_at and row.problems == []
     assert row.pages == [f"islamic/review/R/run1/p00{n}.png" for n in (1, 2, 3)]
@@ -263,3 +276,6 @@ def test_the_order_entry_point_renders_each_item(
     results = islamic_book.render_order_islamic_items(str(item.order_id))
     assert len(results) == 1 and results[0]["status"] == "in_review"
     assert [c["volume"] for c in engine] == ["R"] and engine[0]["print_build"] is True  # the PDF too
+    book = db.get(Book, uuid.UUID(results[0]["books"][0]["book_id"]))
+    assert book is not None
+    assert storage.exists(book.generation["files"]["stickers"])  # a digital copy's download includes it

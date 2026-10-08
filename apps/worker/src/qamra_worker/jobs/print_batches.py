@@ -51,7 +51,7 @@ def _items(manifest: dict[str, Any], link: str) -> list[Item]:
                     f"{link}/files/{item['n']}/{kind}",
                 )
             )
-        for name in item.get("inserts") or {}:  # a family book's sticker sheet and card stock
+        for name in item.get("inserts") or {}:  # a sticker sheet, card stock, a bought answer key
             label = INSERT_LABELS.get(name, name)
             rows.append(
                 Item(

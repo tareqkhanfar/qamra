@@ -10,7 +10,9 @@ and 3. Without one they print a transliteration and the book is flagged `name_en
 tracing page cannot write whole is flagged `name_not_traceable` (order flows §d chunk 9). The page engine
 (`qamra_workbook.render.journey_order`) draws the stage from the plan and its print layer: the interior, the
 cover and the parents' answer key, with cut-outs of the child from the character sheet, exactly as the sample
-render does. Audio QR codes point to `https://{BRAND_DOMAIN}/a/{code}`. The files are stored like the story
+render does, and the stage's sticker sheet (`inserts/stickers.pdf` and its die; its key is
+`generation["files"]["stickers"]`, so the print batch sends it as an insert and a digital copy's download
+includes it). Audio QR codes point to `https://{BRAND_DOMAIN}/a/{code}`. The files are stored like the story
 books' (`children/<child>/books/<book>/files/…`) on a `Book` row linked to the order item, with every file's
 preflight; the book waits `in_review` for an admin's print approval (Addendum 3 §5), after which print batches
 pick up its interior and cover. A set gets one book per built stage (all three: stages 1, 2 and 3 are built);
@@ -33,7 +35,13 @@ from qamra_core.db.models import AuditLog, Book, BookStatus, Child, Locale, Orde
 from qamra_core.storage import ObjectStorage
 from qamra_worker import context
 from qamra_worker.jobs.books import file_key
-from qamra_worker.jobs.family_book import approved_character, name_en_of, name_flags, numerals_of
+from qamra_worker.jobs.family_book import (
+    approved_character,
+    name_en_of,
+    name_flags,
+    numerals_of,
+    store_inserts,
+)
 from qamra_worker.settings import get_settings
 
 log = structlog.get_logger("qamra.worker.journey_book")
@@ -134,6 +142,7 @@ async def render_stage(
     if files.answer_key is not None:
         extra["answer-key"] = file_key(book, "answer-key.pdf")
         storage.put(extra["answer-key"], files.answer_key.read_bytes(), "application/pdf")
+    extra.update(store_inserts(storage, book, files))  # the stage's sticker sheet, printed apart
     book.preflight = files.preflight
     book.generation = {
         **(book.generation or {}),

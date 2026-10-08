@@ -29,6 +29,7 @@ from qamra_workbook.render.pages import (
     listening,
     motor,
     numbers,
+    reward_stickers,  # the journey's and «قلبي يعرف الله»'s sticker sheet
     thinking,
     workbook,
 )
@@ -58,6 +59,7 @@ __all__ = [
     "listening",
     "motor",
     "numbers",
+    "reward_stickers",
     "thinking",
     "workbook",
 ]

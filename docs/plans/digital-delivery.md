@@ -12,7 +12,7 @@ nothing in the emails. Only staff could download print files (`admin_portal.py _
 
 | Line | File(s) |
 | --- | --- |
-| any `format: digital` variant | the whole book with its cover, cut for home printing (one file per volume or stage; a set gives every one), **plus** the extra files its job renders: the answer key (journey, Islamic, foundation) and the family book's sticker and card sheets, since a digital buyer gets no printed insert |
+| any `format: digital` variant | the whole book with its cover, cut for home printing (one file per volume or stage; a set gives every one), **plus** the extra files its job renders: the answer key (journey, Islamic, foundation), the sticker sheet (family book, every journey stage, every Islamic volume: `files["stickers"]`, order-flows.md «The included sticker sheets») and the family book's card sheets, since a digital buyer gets no printed insert |
 | a printed «رحلتي الأولى» stage | only its answer key, a free download (Addendum 6 §5) |
 | any other printed line | nothing. The free «نسخة رقمية مع المطبوع» stays the web reader (owner's audit, 2026-10-07), and a PDF of the printed book would undercut the digital variants |
 

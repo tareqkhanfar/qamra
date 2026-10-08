@@ -41,10 +41,12 @@ CSV_COLUMNS = (
     "cover_file",
     "gift",  # Addendum 9: pack as a gift (no prices in the parcel) with this card message
     "gift_message",
-    "insert_files",  # «مغامراتي مع عائلتي»: its sticker sheet and card-stock sheets, printed apart
+    "insert_files",  # the sheets printed apart: a sticker sheet, the family book's card stock, an answer key
 )
-# A family book's insert files (manifest item["inserts"]: name → storage key), each a PDF with its die lines
-# on the optional-content layer «CutContour»; the labels tell the printer the paper.
+# An activity book's insert files (manifest item["inserts"]: name → storage key). The family book, every
+# journey stage and every «قلبي يعرف الله» volume has its sticker sheet; the family book also its card stock.
+# Each sheet is a PDF with its die lines on the optional-content layer «CutContour»; the labels tell the
+# printer the paper.
 INSERT_LABELS = {
     "stickers": "ورقة الملصقات (ورق لاصق مطفي، قصّ نصفي)",
     "card-money-recipes": "كرتون القصّ 250 غ: النقود والوصفات",

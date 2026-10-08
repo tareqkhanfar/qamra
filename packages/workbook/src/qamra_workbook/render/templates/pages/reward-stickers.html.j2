@@ -1,0 +1,47 @@
+{% macro sticker(c) -%}
+<div class="rs-cell rs-{{ c.kind }}">
+  {% if c.kind == 'hero' %}
+  <div class="rs-hero" style="width: {{ c.w }}mm; height: {{ c.h }}mm">
+    <span class="rs-hero-bg"></span>
+    {% if c.img %}<img src="{{ c.img }}" alt="">{% else %}{{ mascot('rs-hero-moon') }}{% endif %}
+    <span class="cut rs-cutbox" aria-hidden="true"></span>
+  </div>
+  {% elif c.kind == 'name' %}
+  <div class="rs-name" style="--nc: {{ c.color }}; --ni: {{ c.ink }}; width: {{ c.w }}mm; height: {{ c.h }}mm">
+    <span class="rs-name-in">{{ icon('star') }}<b data-fit="8">{{ c.text }}</b></span>
+    <span class="cut rs-cutbox" aria-hidden="true"></span>
+  </div>
+  {% else %}
+  <div class="rs-st">{{ c.art }}{% if c.text %}<b class="rs-over">{{ c.text }}</b>{% endif %}</div>
+  {% endif %}
+  {% if c.badge %}<i class="rs-num" style="background: {{ c.color }}; color: {{ c.ink }}">{{ c.badge }}</i>{% endif %}
+  {% if c.caption %}<span class="rs-under">{{ c.caption }}</span>{% endif %}
+</div>
+{%- endmacro %}
+<div class="rs rs-font-{{ d.font }}">
+  <header class="rs-head">
+    <div class="rs-title">{{ mascot('mascot') }}<div><h1>{{ p.title }}</h1><p>{{ p.instruction }}</p></div></div>
+    <div class="rs-owner"><small>{{ d.owner_label }}</small><b data-fit="10">{{ d.owner }}</b></div>
+  </header>
+  <div class="rs-body">
+  {% for g in d.groups %}
+  <section class="rs-group">
+    <div class="rs-label">{{ icon(g.icon) }}<span>{{ g.label }}</span></div>
+    <div class="rs-blocks">
+      {% for b in g.blocks %}
+      <div class="rs-block">
+        {% if b.caption %}<div class="rs-cap">{{ b.caption }}</div>{% endif %}
+        <div class="rs-cells" style="grid-template-columns: repeat({{ b.cols }}, auto)">
+          {% for c in b.cells %}{{ sticker(c) }}{% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endfor %}
+  </div>
+  <footer class="rs-foot">
+    <span>{{ d.key }}</span>
+    <span class="rs-brand">{{ mascot('mascot') }}{{ d.brand }}</span>
+  </footer>
+</div>

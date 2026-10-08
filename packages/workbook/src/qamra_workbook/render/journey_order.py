@@ -1,7 +1,8 @@
 """One personalized «رحلتي الأولى للتعلّم» stage for an order (Addendum 9 §2: no new AI cost): the interior
-(every page of the stage's plan with its print layer), the cover (front and back, on card) and the parents'
-answer key (Addendum 6 §5, a free download), drawn for one child and their approved character, with a
-preflight report per file. Audio QR codes point to `https://{domain}/a/{code}`.
+(every page of the stage's plan with its print layer), the cover (front and back, on card), the parents'
+answer key (Addendum 6 §5, a free download) and the stage's sticker sheet (`render.stickers`: the stickers
+its map, openers and pattern pages ask for, on A4 sticker paper with its die lines), drawn for one child and
+their approved character, with a preflight report per file. Audio QR codes point to `https://{domain}/a/{code}`.
 
 The worker's order job (`qamra_worker.jobs.journey_book`) calls `render_order`; the CLI
 (`qamra_workbook.render.journey --book`) renders the sample child's copy the same way.
@@ -21,6 +22,8 @@ from qamra_workbook.render.engine import PageProblems, answer_key_html, book_htm
 from qamra_workbook.render.registry import Assets
 from qamra_workbook.render.samples import assets_for, book_problems
 from qamra_workbook.render.spec import BookSpec, Child, Geometry, Numerals
+from qamra_workbook.render.stickers import NAME as STICKERS
+from qamra_workbook.render.stickers import render_sheet
 
 
 @dataclass
@@ -30,6 +33,8 @@ class OrderFiles:
     answer_key: Path | None = None
     preflight: dict[str, dict[str, Any]] = field(default_factory=dict)  # file name → report
     pages: int = 0
+    inserts: dict[str, Path] = field(default_factory=dict)  # print file name → the layered PDF (stickers)
+    dies: dict[str, Path] = field(default_factory=dict)  # print file name → its die lines alone
 
     @property
     def passed(self) -> bool:
@@ -83,7 +88,8 @@ async def render_order(
     plan: Journey | None = None,
     name_en: str = "",
 ) -> OrderFiles:
-    """Every file of one stage into `out`: interior.pdf, cover.pdf and answer-key.pdf."""
+    """Every file of one stage into `out`: interior.pdf, cover.pdf, answer-key.pdf and
+    inserts/stickers.pdf (with inserts/stickers-die.pdf)."""
     out.mkdir(parents=True, exist_ok=True)
     interior, cover = stage_specs(
         child, stage, numerals=numerals, day=day, domain=domain, plan=plan, name_en=name_en
@@ -94,4 +100,7 @@ async def render_order(
     files = OrderFiles(out / "interior.pdf", out / "cover.pdf", key, pages=len(interior.pages))
     g = interior.geometry
     files.preflight = {"interior.pdf": report(files.interior, g), "cover.pdf": report(files.cover, g)}
+    sheet = await render_sheet(interior, assets, out / "inserts")
+    files.inserts[STICKERS], files.dies[STICKERS] = sheet.pdf, sheet.die
+    files.preflight[f"inserts/{STICKERS}.pdf"] = sheet.report
     return files

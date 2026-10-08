@@ -85,6 +85,8 @@ type Detail = {
     mockup_hardcover?: boolean; // product mockups (Addendum 11 §2.7), rendered beside the print files
     mockup_spread?: boolean;
   };
+  // the activity books' files printed apart: the sticker sheet, card stock, the answer key (label: the printer's)
+  inserts?: { name: string; label: string }[];
   pages: Page[];
   plan: Slot[];
   costs: Record<string, number>;
@@ -480,6 +482,15 @@ export function AdminQueue() {
                         </a>
                       ),
                   )}
+                  {(detail.inserts ?? []).map((f) => (
+                    <a
+                      key={f.name}
+                      href={`/api/admin/books/${detail.id}/inserts/${encodeURIComponent(f.name)}`}
+                      className="font-semibold text-night-800 underline underline-offset-4"
+                    >
+                      {f.label}
+                    </a>
+                  ))}
                   <a
                     href={`/api/admin/books/${detail.id}/character`}
                     target="_blank"

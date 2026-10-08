@@ -8,6 +8,7 @@
 {% if book.product == 'journey' %}{% include "_workbook.css.j2" %}{% include "_journey.css.j2" %}{% endif %}
 {% if book.product == 'family' %}{% include "_family.css.j2" %}{% include "family-book.css.j2" %}{% endif %}
 {% if book.product == 'islamic' %}{% include "islamic-book.css.j2" %}{% endif %}
+{% if book.product in ('journey', 'islamic') %}{% include "_stickers.css.j2" %}{% endif %}
 </style></head>
 <body>
 {% for p in pages %}

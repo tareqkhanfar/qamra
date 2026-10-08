@@ -27,6 +27,7 @@ from qamra_core.db.models import (
     Theme,
     User,
 )
+from qamra_core.printing import INSERT_LABELS
 from qamra_core.storage import ObjectStorage
 
 FACE = Path(__file__).resolve().parents[3] / "packages/ai/tests/fixtures/face-astronaut-public-domain.png"
@@ -203,6 +204,32 @@ async def test_book_mockups_are_downloadable(
     assert r.status_code == 200 and r.headers["content-type"] == "image/png"
     assert r.headers["content-disposition"].endswith('mockup-hardcover.png"')
     assert (await client.get(f"/api/admin/books/{book.id}/files/mockup-spread.png")).status_code == 404
+
+
+async def test_the_sheets_printed_apart_are_listed_and_downloadable(
+    client: AsyncClient, adb: AsyncSession, storage: ObjectStorage
+) -> None:
+    """A journey stage or an Islamic volume prints its sticker sheet apart, like the family book: the book's
+    detail lists every file of `generation["files"]` with the printer's label, and each one downloads."""
+    await make_admin(client, adb)
+    book = await _seed_book(adb)
+    base = f"children/{book.child_id}/books/{book.id}/files"
+    files = {"answer-key": f"{base}/answer-key.pdf", "stickers": f"{base}/inserts/stickers.pdf"}
+    for key in files.values():
+        storage.put(key, b"%PDF-1.4 sheet", "application/pdf")
+    book.generation = {**book.generation, "line": "journey", "stage": 1, "files": files}
+    await adb.commit()
+    detail = (await client.get(f"/api/admin/books/{book.id}")).json()
+    assert detail["inserts"] == [
+        {"name": "answer-key", "label": INSERT_LABELS["answer-key"]},
+        {"name": "stickers", "label": INSERT_LABELS["stickers"]},
+    ]
+    r = await client.get(f"/api/admin/books/{book.id}/inserts/stickers")
+    assert r.status_code == 200 and r.headers["content-type"] == "application/pdf"
+    assert r.content.startswith(b"%PDF") and r.headers["content-disposition"].endswith('-stickers.pdf"')
+    assert (await client.get(f"/api/admin/books/{book.id}/inserts/card-games-roles")).status_code == 404
+    story = await _seed_book(adb)  # a story book prints nothing apart
+    assert (await client.get(f"/api/admin/books/{story.id}")).json()["inserts"] == []
 
 
 async def test_queue_detail_and_review_actions(client: AsyncClient, adb: AsyncSession, app: FastAPI) -> None:
