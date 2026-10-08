@@ -55,6 +55,7 @@ from qamra_core.db.store import (
     OrderEvent,
     Variant,
 )
+from qamra_core.downloads import sold_as_file
 from qamra_core.pricing import ItemInput, Quote, addon_amount, quote
 
 router = APIRouter(prefix="/api/store", tags=["store"])
@@ -973,6 +974,8 @@ class TrackAddOn(BaseModel):
 
 
 class TrackItem(BaseModel):
+    id: uuid.UUID | None = None  # the order line (its download button, docs/plans/digital-delivery.md)
+    downloadable: bool = False  # a digital line: its parent downloads the file once it is made
     name_ar: str
     name_en: str
     qty: int
@@ -1045,6 +1048,8 @@ async def track(code: str, phone: str, request: Request, db: SessionDep, redis: 
         placed_at=order.created_at,
         items=[
             TrackItem(
+                id=i.id,
+                downloadable=sold_as_file(i),
                 name_ar=str(i.title.get("name_ar", "")),
                 name_en=str(i.title.get("name_en", "")),
                 qty=i.quantity,

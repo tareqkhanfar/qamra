@@ -130,6 +130,7 @@ def test_every_template_renders_in_both_languages() -> None:
         "track_url": f"{BASE}/ar/order/QM-ABC123",
         "reader_url": f"{BASE}/ar/books/1",
         "create_url": f"{BASE}/ar/create?child=1&book=1",
+        "account_url": f"{BASE}/ar/account#downloads",
         "manifest_url": f"{BASE}/api/printer/t/manifest.csv",
         "queue_url": f"{BASE}/ar/admin/queue",
         "date": "2026-09-29",

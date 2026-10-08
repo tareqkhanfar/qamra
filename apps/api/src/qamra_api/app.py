@@ -29,6 +29,7 @@ from qamra_api.routers.admin_studio import router as admin_studio_router
 from qamra_api.routers.admin_themes import router as admin_themes_router
 from qamra_api.routers.companions import router as companions_router
 from qamra_api.routers.create import router as create_router
+from qamra_api.routers.downloads import router as downloads_router
 from qamra_api.routers.e2e import router as e2e_router
 from qamra_api.routers.examples import admin_router as examples_admin_router
 from qamra_api.routers.examples import router as examples_router
@@ -139,6 +140,7 @@ def create_app(settings: ApiSettings | None = None, *, manage_resources: bool = 
     app.include_router(shop_router)
     app.include_router(shop_admin_router)
     app.include_router(reader_router)  # W5: the web reader and share links
+    app.include_router(downloads_router)  # digital delivery: the parents' PDFs (plans/digital-delivery.md)
     app.include_router(payments_router)
     app.include_router(admin_print_batches_router)
     app.include_router(printer_router)

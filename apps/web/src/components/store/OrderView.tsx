@@ -3,6 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { MoonPhase } from "@/components/art/MoonPhase";
+import { DownloadButton } from "@/components/order/DownloadButton";
 import { LineText } from "@/components/order/LineSummary";
 import { Alert } from "@/components/ui/Alert";
 import { buttonClasses, Spinner } from "@/components/ui/Button";
@@ -21,6 +22,8 @@ const field = "min-h-12 w-full rounded-md border border-line bg-paper-raised px-
  */
 type TrackedItem = Tracked["items"][number] &
   Partial<{
+    id: string; // the order line: its download button (docs/plans/digital-delivery.md)
+    downloadable: boolean; // a file its parent downloads once it is made
     line: string;
     product: string;
     options: Record<string, string>;
@@ -157,12 +160,7 @@ function Item({ item, styles, themes }: { item: TrackedItem; styles: CatalogStyl
           {t("addons", { names: addons.join(locale === "ar" ? "، " : ", ") })}
         </span>
       )}
-      {/*
-        DOWNLOAD SLOT (digital lines, `item.options.format === "digital"`): mount the digital-delivery agent's
-        <DownloadButton … /> (components/order/DownloadButton.tsx, props in docs/plans/order-flows.md) here, once
-        it is committed. It needs the order line's id from the order tracking. Until then the summary's
-        `orderPath.line.download` fact says where the file is downloaded once it is ready.
-      */}
+      {item.downloadable && item.id && <DownloadButton itemId={item.id} />}
     </LineText>
   );
 }

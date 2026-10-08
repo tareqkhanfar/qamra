@@ -10,7 +10,9 @@ import { brandName } from "@/config/brand";
 import { Link, useRouter } from "@/i18n/navigation";
 import { api, errorText, type User } from "@/lib/api";
 import { MyCompanions } from "@/components/create/companion/MyCompanions";
+import { DownloadsSection } from "@/components/order/DownloadButton";
 import { createApi } from "@/lib/create";
+import { downloadsApi, type DownloadLine } from "@/lib/downloads";
 import { READABLE } from "@/lib/reader";
 import { useVoiceBooks, VoiceBookLink } from "@/components/voice/VoiceBookLink";
 
@@ -62,6 +64,7 @@ export function AccountView() {
   const [user, setUser] = useState<User | null>(null);
   const [children, setChildren] = useState<Child[]>([]);
   const [books, setBooks] = useState<Book[]>([]);
+  const [downloads, setDownloads] = useState<DownloadLine[]>([]); // the PDFs of digital lines (#downloads)
   const [selected, setSelected] = useState<string | null>(null);
   const [tab, setTab] = useState<"books" | "orders" | "companions">("books");
   const [error, setError] = useState<string | null>(null);
@@ -79,15 +82,23 @@ export function AccountView() {
       const me = await api<User>("/api/auth/me");
       if (!alive) return;
       if (!me.ok) {
-        if (me.status === 401) router.replace(`/login?next=${encodeURIComponent("/account")}`);
-        else setError(errorText(me.error, locale, me.status === 0 ? te("network") : te("unknown")));
+        if (me.status === 401) {
+          // the "ready to download" email opens /account#downloads: come back to the files after signing in
+          const back = window.location.hash === "#downloads" ? "/account#downloads" : "/account";
+          router.replace(`/login?next=${encodeURIComponent(back)}`);
+        } else setError(errorText(me.error, locale, me.status === 0 ? te("network") : te("unknown")));
         return;
       }
-      const [c, b] = await Promise.all([api<Child[]>("/api/children"), api<Book[]>("/api/books")]);
+      const [c, b, d] = await Promise.all([
+        api<Child[]>("/api/children"),
+        api<Book[]>("/api/books"),
+        downloadsApi.mine(locale),
+      ]);
       if (!alive) return;
       setUser(me.data);
       if (c.ok) setChildren(c.data);
       if (b.ok) setBooks(b.data);
+      if (d.ok) setDownloads(d.data);
     })();
     return () => {
       alive = false;
@@ -99,6 +110,15 @@ export function AccountView() {
   const shownBooks = useMemo(
     () => (activeChild ? books.filter((b) => b.child_id === activeChild.id) : books),
     [books, activeChild],
+  );
+  const shownDownloads = useMemo(
+    () =>
+      downloads.filter(
+        // a digital line from the start (with its "we're preparing it" note); a printed journey's answer key once made
+        (d) =>
+          (d.files.length > 0 || d.options.format === "digital") && (!activeChild || d.child_id === activeChild.id),
+      ),
+    [downloads, activeChild],
   );
   const generating = books.find((b) => b.status === "generating");
 
@@ -115,6 +135,7 @@ export function AccountView() {
     }
     setChildren((list) => list.filter((c) => c.id !== child.id));
     setBooks((list) => list.filter((b) => b.child_id !== child.id));
+    setDownloads((list) => list.filter((d) => d.child_id !== child.id)); // their files went with them
     setSelected(null);
     setNotice(tc("delete.done"));
   }
@@ -219,6 +240,12 @@ export function AccountView() {
           </div>
         )}
       </section>
+
+      {shownDownloads.length > 0 && (
+        <div className="px-4 pb-4">
+          <DownloadsSection lines={shownDownloads} />
+        </div>
+      )}
 
       <div role="tablist" className="flex gap-1 border-b border-line px-4">
         <button

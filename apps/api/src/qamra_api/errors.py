@@ -454,6 +454,20 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "الحكاية الخاصة متوفرة في الكتاب السحري فقط.",
         "Custom stories are available for Magic books only.",
     ),
+    # digital delivery (routers/downloads.py)
+    "download_not_yours": (
+        "هذا الطلب مسجَّل في حساب آخر. لتنزيل الملف، سجّلوا الدخول بالحساب الذي استخدمتموه في الطلب.",
+        "This order belongs to another account. "
+        "To download the file, sign in with the account you used to place the order.",
+    ),
+    "download_not_ready": (
+        "ما زلنا نجهّز هذا الملف، وسنخبركم بالبريد الإلكتروني حين يصبح جاهزًا للتنزيل.",
+        "We're still preparing this file, and we'll email you when it's ready to download.",
+    ),
+    "download_preparing": (
+        "الملف قيد التجهيز. حاولوا مرة أخرى بعد دقيقة.",
+        "The file is still being prepared. Please try again in a minute.",
+    ),
     "internal_error": (
         "حدث خطأ غير متوقع. حاولوا مرة أخرى بعد قليل.",
         "Something went wrong. Please try again in a moment.",

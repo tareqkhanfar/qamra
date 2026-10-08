@@ -1,5 +1,13 @@
 # Changelog
 
+## Digital delivery: parents download the PDFs they bought (2026-10-08)
+- **Why:** the store sold «نسخة رقمية» and «ملف PDF» lines (19–75 ₪), and a parent had no way to get the file.
+- **API (`routers/downloads.py`):** the parent's downloadable lines, each file's state and the file itself (attachment with an Arabic UTF-8 name such as «قلبي-يعرف-الله-المجلد-1-ضحى.pdf» and an ASCII fallback). Only the owning parent (403 otherwise), rate-limited, and every download goes in the audit log with ids only. A story is ready after staff's «تأكيد», an activity book after a clean render, a set as each volume is ready. The order tracking now sends each line's id.
+- **Home copy:** the worker cuts the print files to their trim (no bleed) with the cover around the book, in under a second (`qamra_pdf.home`, `jobs/downloads.py`). It is kept under the child's storage prefix, so «حذف كل بيانات طفلي» removes it.
+- **Web:** «ملفات للتنزيل» on the account page and «تنزيل PDF» on each digital line of the order page (`components/order/DownloadButton.tsx`), with preparing, ready and failed states in Arabic and English.
+- **Email:** «ملف … جاهز للتنزيل» once per digital line when it is ready (a 5-minute cron), linking to the account page.
+- **Language:** an independent Arabic/English review of every new string (UI, email, errors, file names); all its fixes applied, among them «تنزيل» rather than «تحميل» (which the site uses for "loading").
+
 ## Design audit: the site photos show our real books, the social posts lead with the photo (2026-10-08)
 - **Why:** Tareq (2026-10-07): check every design again, make sure none looks AI-made, and that each one stops the scroll.
 - **Biggest tell found:** in 5 of the 10 site photos the book in hand was a blurred colour smear (hero, family table, the teacher's book, the gift box) or blank paper with an empty phone screen (journey QR). `scripts/retouch_site_photos.py` (no paid API) lays our real art onto those surfaces, lit by the photo's own light and masked around fingers, crayons and tissue: «يوم تخرّج ليان» (front and a back cover with the Qamra mark), real pages of «مغامراتي مع عائلتي» and «رحلتي الأولى للتعلّم» (the audio-QR page, and a player on the father's phone), the class-on-stage spread. Every photo then gets one fine film grain against the over-smooth "AI sheen". Same names, sizes and ratios; each under 1 MB.

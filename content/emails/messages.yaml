@@ -1,7 +1,7 @@
 # Customer and printer emails (Phase 2 notifications, Phase 3 print batches).
 # Each message: subject, lines (paragraphs), an optional button (label + the link variable it opens), and
 # an optional list (`items`). Values are filled with Jinja2: {{ name }}, {{ code }}, {{ total }}, {{ brand }},
-# {{ child }}, {{ title }}, and the links track_url, reader_url, create_url, manifest_url.
+# {{ child }}, {{ title }}, and the links track_url, reader_url, create_url, account_url, manifest_url.
 # Only what the recipient already owns goes in: their order, their child's book. Never another family's data.
 
 order_placed:
@@ -105,6 +105,24 @@ book_ready:
       - "“{{ title }}” is complete, and you can read it on your phone now."
       - "The link opens after you sign in; from there you can share the book with family through a private link."
     button: { label: "Read the book", link: reader_url }
+
+# Digital delivery (docs/plans/digital-delivery.md): a «نسخة رقمية» / «ملف PDF» line is ready. The link opens
+# the account page, never the file itself: the file downloads only for the signed-in parent.
+download_ready:
+  ar:
+    subject: "ملف «{{ title }}» جاهز للتنزيل 📄"
+    lines:
+      - "مرحبًا {{ name }}،"
+      - "جهّزنا ملف «{{ title }}» بصيغة PDF، ويمكنكم الآن تنزيله من حسابكم وطباعته في البيت."
+      - "يفتح الرابط بعد تسجيل الدخول إلى حسابكم، وتجدون الملف في قسم «ملفات للتنزيل»."
+    button: { label: "نزّلوا الملف", link: account_url }
+  en:
+    subject: "“{{ title }}” is ready to download 📄"
+    lines:
+      - "Hello {{ name }},"
+      - "The PDF of “{{ title }}” is ready. You can download it from your account and print it at home."
+      - "The link opens after you sign in; you'll find the file under “Files to download”."
+    button: { label: "Download the file", link: account_url }
 
 text_review_waiting:
   ar:

@@ -3818,5 +3818,29 @@
     "plus": "+{price}",
     "percentOf": "{n}% of the book's price",
     "islamicEdition": "{count, plural, one {# volume} other {# volumes}}{ramadan, select, true { and the Ramadan and Eid book} other {}}"
+  },
+  "downloads": {
+    "title": "Files to download",
+    "hint": "PDFs of your digital books, ready to print at home. Print on A4 paper and choose “Fit to page” in the print settings.",
+    "order": "Order {code}",
+    "download": "Download PDF",
+    "kind": {
+      "book": "Book with cover",
+      "answer-key": "Answer key",
+      "stickers": "Sticker sheet",
+      "card-money-recipes": "Money and recipe cards",
+      "card-games-roles": "Game and role cards"
+    },
+    "preparing": "We're getting the file ready for printing at home. This may take a minute.",
+    "readyNow": "The file is ready — download it now",
+    "started": "Your download has started.",
+    "again": "Didn't start? Tap here",
+    "failed": "We couldn't get the file ready. Please try again in a moment, and contact us if it happens again.",
+    "slow": "This is taking longer than usual. Please come back to this page in a little while.",
+    "retry": "Try again",
+    "waiting": "We're still preparing the file, and we'll email you when it's ready to download.",
+    "moreComing": "We're still preparing the other parts, and we'll email you when they're all ready.",
+    "signIn": "To download the file, sign in with the account you used to place the order.",
+    "signInButton": "Sign in"
   }
 }

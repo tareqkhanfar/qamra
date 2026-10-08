@@ -4,6 +4,7 @@ Everything is private; browsers only ever get short-lived signed URLs (≤ 15 mi
 """
 
 import io
+from collections.abc import Iterator
 from dataclasses import dataclass
 from typing import Any
 
@@ -73,6 +74,34 @@ class ObjectStorage:
                 return False
             raise
         return True
+
+    def etag(self, key: str) -> str | None:
+        """The object's ETag (changes when the object is written again), or None when it doesn't exist."""
+        try:
+            head = self.client.head_object(Bucket=self.bucket, Key=key)
+        except ClientError as e:
+            if e.response.get("Error", {}).get("Code") in ("NoSuchKey", "404", "NotFound"):
+                return None
+            raise
+        return str(head.get("ETag") or "").strip('"') or None
+
+    def stream(self, key: str, chunk: int = 1024 * 1024) -> tuple[Iterator[bytes], int]:
+        """The object in chunks with its size, for a download that never holds the whole file in memory."""
+        try:
+            obj = self.client.get_object(Bucket=self.bucket, Key=key)
+        except ClientError as e:
+            if e.response.get("Error", {}).get("Code") in ("NoSuchKey", "404", "NotFound"):
+                raise ObjectNotFound(key) from e
+            raise
+        body = obj["Body"]
+
+        def chunks() -> Iterator[bytes]:
+            try:
+                yield from body.iter_chunks(chunk)
+            finally:
+                body.close()
+
+        return chunks(), int(obj.get("ContentLength") or 0)
 
     def delete(self, key: str) -> None:
         """Idempotent: deleting a missing key is not an error."""
