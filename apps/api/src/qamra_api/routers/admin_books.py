@@ -55,7 +55,13 @@ LINE_JOBS = {  # activity books are drawn by their line's job from the order ite
     "family": "qamra_worker.jobs.family_book.render_family_item",
     "journey": "qamra_worker.jobs.journey_book.render_journey_item",
     "islamic": "qamra_worker.jobs.islamic_book.render_islamic_item",  # «قلبي يعرف الله» (Addendum 10)
+    "workbook": "qamra_worker.jobs.workbook_book.render_workbook_item",  # «دوسية التأسيس» (Addendum 5)
 }
+# what the book detail shows of `Book.generation` (the activity books: their variant and the English name)
+GENERATION_KEYS = (
+    *("mode", "progress", "models", "outfits", "offline", "public_example", "line", "pages"),
+    *("level", "volume", "stage", "name_en"),
+)
 router = APIRouter(prefix="/api/admin", tags=["admin"], dependencies=[Depends(require_admin)])
 
 SAMPLE_CONSENT_VERSION = "sample-2026-09"
@@ -442,10 +448,7 @@ async def book_detail(book_id: uuid.UUID, db: SessionDep) -> BookDetail:
         qa_summary=dict(book.qa_summary or {}),
         preflight=dict(book.preflight or {}),
         error=book.error,
-        generation={
-            k: gen.get(k)
-            for k in ("mode", "progress", "models", "outfits", "offline", "public_example", "line", "pages")
-        },
+        generation={k: gen.get(k) for k in GENERATION_KEYS},
         files={
             "interior": bool(book.pdf_interior_key),
             "cover": bool(book.pdf_cover_key),

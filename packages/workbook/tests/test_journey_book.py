@@ -79,11 +79,13 @@ def test_the_english_name_page_gets_a_latin_name() -> None:
         p for p in stage_book(pages, BOY).pages if p.type == "name-trace" and p.params.get("script") == "en"
     ]
     assert named and named[0].params["name_en"] == "Adam"
-    given = stage_book(pages, BOY, name_en="Adam K.").pages
+    given = stage_book(pages, BOY, name_en="Adam Karim").pages  # the parent's spelling wins
     assert (
         next(p for p in given if p.type == "name-trace" and p.params.get("script") == "en").params["name_en"]
-        == "Adam K."
+        == "Adam Karim"
     )
+    odd = stage_book(pages, BOY, name_en="Adam K.").pages  # not a spelling the API accepts: the guess
+    assert next(p for p in odd if p.params.get("script") == "en").params["name_en"] == "Adam"
 
 
 def test_the_texts_follow_the_child(stage1: list) -> None:  # type: ignore[type-arg]

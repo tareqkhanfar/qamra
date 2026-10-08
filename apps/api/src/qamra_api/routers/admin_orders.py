@@ -395,6 +395,10 @@ async def change_status(
         select(OrderItem.id).where(OrderItem.order_id == order.id, OrderItem.line == "islamic").limit(1)
     ):  # «قلبي يعرف الله»: each volume drawn with the child's character, once the scholar approved it
         enqueue(queue, "qamra_worker.jobs.islamic_book.render_order_islamic_items", str(order.id))
+    if body.to == S.confirmed and await db.scalar(
+        select(OrderItem.id).where(OrderItem.order_id == order.id, OrderItem.line == "workbook").limit(1)
+    ):  # «دوسية التأسيس»: each volume drawn from its plan with the child's name and character (no AI cost)
+        enqueue(queue, "qamra_worker.jobs.workbook_book.render_order_workbook_items", str(order.id))
     notify.order_statuses(queue.connection, order.id, [body.to])  # customer email (once per status)
     return await _detail(db, order, await _values(db, settings))
 

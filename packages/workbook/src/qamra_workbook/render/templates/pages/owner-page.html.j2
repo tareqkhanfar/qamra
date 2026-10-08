@@ -1,7 +1,7 @@
 <div class="own">
   <div class="own-kicker">{{ d.level_title }}</div>
   <h1 class="own-title">هذا الكتاب لـ</h1>
-  <div class="own-name"><span data-fit="20">{{ d.name }}</span></div>
+  <div class="own-name"><span{% if d.long %} class="long"{% endif %} data-fit="16">{{ d.name }}</span></div>
   <div class="own-vol">{{ d.volume_title }}</div>
   <div class="own-mid">
     <div class="own-hand">

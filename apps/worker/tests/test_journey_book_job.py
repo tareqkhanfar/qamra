@@ -199,3 +199,35 @@ def test_the_stage_comes_from_the_variant() -> None:
     assert journey_book.stages_of(OrderItem(title={"options": {"stage": "set"}})) == [1, 2, 3]
     assert journey_book.stages_of(OrderItem(title={}, personalization={})) == [1]
     assert journey_book.built_stages() == [1, 2, 3]
+
+
+@pytest.mark.parametrize(
+    ("stage", "name_en", "flagged", "printed"),
+    [
+        ("2", "", True, "Adam"),
+        ("2", " Adam ", False, "Adam"),
+        ("3", "ضحى", True, "Adam"),
+        ("1", "", False, None),
+    ],
+)
+async def test_the_english_name_is_the_parents_and_a_guess_is_flagged(
+    db: Session,
+    storage: ObjectStorage,
+    fake_render: list[dict[str, Any]],
+    stage: str,
+    name_en: str,
+    flagged: bool,
+    printed: str | None,
+) -> None:
+    """Stages 2 and 3 print the child's English name: the parent's spelling from the order, else a
+    transliteration that the reviewer sees flagged (`name_en_guessed`). Stage 1 prints none."""
+    item = _item(db, storage, stage=stage)
+    item.personalization = {**(item.personalization or {}), "name_en": name_en}
+    db.commit()
+    result = await journey_book.render_item(db, storage, item)
+    assert result["status"] == "in_review"
+    assert fake_render[0]["name_en"] == ("Adam" if name_en.strip() == "Adam" else "")
+    book = db.get(Book, uuid.UUID(result["books"][0]["book_id"]))
+    assert book is not None and ("name_en_guessed" in (book.flags or [])) is flagged
+    assert book.generation.get("name_en") == printed
+    assert "name_not_traceable" not in (book.flags or [])

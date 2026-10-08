@@ -20,6 +20,7 @@ from __future__ import annotations
 import base64
 import dataclasses
 import datetime as dt
+import functools
 import hashlib
 import os
 import re
@@ -31,6 +32,7 @@ import yaml
 from pydantic import BaseModel, ConfigDict, Field
 
 from qamra_workbook.journey import Journey, JourneyPage, load
+from qamra_workbook.names import clean_arabic, clean_latin_name
 from qamra_workbook.render.spec import BookSpec, Child, Numerals, PageSpec, from_journey, product_geometry
 
 # the repo's content/journey (QAMRA_CONTENT_DIR overrides content/, as for the story themes)
@@ -174,8 +176,9 @@ def cover_specs(layer: PrintLayer) -> list[PageSpec]:
     ]
 
 
-# draft: educator review — a plain transliteration for the English name page when the parent gave no
-# English spelling (the order's `name_en` wins). Consonants get an "a" between them so the name reads.
+# draft: educator review — a plain transliteration, only the last resort for the English name pages: the
+# parent gives the English spelling with the order (`name_en`), and an order printed with a guess is flagged
+# on its book (`name_en_guessed`) for the reviewer. Consonants get an "a" between them so the name reads.
 _LATIN = {
     "ا": "a",
     "أ": "a",
@@ -211,13 +214,16 @@ _LATIN = {
     "ة": "a",
     "ى": "a",
     "ء": "",
+    "ؤ": "u",
+    "ئ": "e",
 }
 _VOWELS = set("aeiou")
 
 
 def latin_name(name: str) -> str:
-    """«ليان» → «Lyan», «سلمى» → «Salma»: a readable Latin spelling for the name-tracing page."""
-    bare = re.sub("[\u064b-\u0652]", "", name.strip().split()[0] if name.strip() else "")
+    """«ليان» → «Lyan», «سلمى» → «Salma»: a readable Latin guess at the name, when the parent gave none."""
+    words = clean_arabic(name).split()
+    bare = words[0] if words else ""
     out = ""
     for k, ch in enumerate(bare):
         piece = _LATIN.get(ch, "")
@@ -231,10 +237,27 @@ def latin_name(name: str) -> str:
     return out[:1].upper() + out[1:] if out else "Name"
 
 
+def english_name(child: Child, name_en: str = "") -> tuple[str, bool]:
+    """The English spelling the pages print, and whether it is a guess: the parent's spelling (`name_en`,
+    tidied by `names.clean_latin_name`) when it is one, else the child's name when it is already in English
+    letters, else the transliteration of the Arabic name (the guess)."""
+    given = clean_latin_name(name_en) or clean_latin_name(child.name)
+    return (given, False) if given else (latin_name(child.name), True)
+
+
+def uses_name_en(page: PageSpec) -> bool:
+    """The page prints the child's English name: the English name-tracing page, or a text with {name_en}."""
+    if page.type == "name-trace" and page.params.get("script") == "en":
+        return True
+    texts = [page.title, page.instruction, page.instruction_en]
+    texts += [v for v in page.params.values() if isinstance(v, str)]
+    return any("{name_en}" in t for t in texts)
+
+
 def with_name_en(pages: list[PageSpec], child: Child, name_en: str = "") -> list[PageSpec]:
     """The English pages (the name-tracing page, the greetings «Well done, {name_en}!») get the child's Latin
-    name: the order's `name_en`, else a transliteration."""
-    latin = name_en.strip() or latin_name(child.name)
+    name: the parent's spelling (`name_en`), else the transliteration (`english_name`)."""
+    latin = english_name(child, name_en)[0]
     return [
         dataclasses.replace(p, params={**p.params, "name_en": latin})
         if (p.lang == "en" or (p.type == "name-trace" and p.params.get("script") == "en"))
@@ -242,6 +265,15 @@ def with_name_en(pages: list[PageSpec], child: Child, name_en: str = "") -> list
         else p
         for p in pages
     ]
+
+
+@functools.cache
+def stage_names(stage: int) -> tuple[bool, bool]:
+    """(the stage prints the English name, the stage traces the Arabic name): stages 2 and 3 do both, stage 1
+    neither. The order job flags a guessed English name or an untraceable Arabic name only where printed."""
+    specs = page_specs(load(PLAN), load_layer(stage))
+    traces_ar = any(p.type == "name-trace" and p.params.get("script", "ar") == "ar" for p in specs)
+    return any(uses_name_en(p) for p in specs), traces_ar
 
 
 def stage_book(

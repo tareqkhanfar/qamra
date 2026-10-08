@@ -15,6 +15,11 @@ batches pick up its interior and cover. The insert sheets' keys are in `book.gen
 The family (name, city, up to 6 members) comes from `personalization["family"]` when the order has it:
 {"name": "…", "city": "…", "members": [{"role": "…", "name": "…", "scarf": false}]}. Without it the book is
 drawn for the child with one neutral grown-up («أحد الكبار»), never an assumed mother and father (A7 §9).
+The city is optional: without it the engine prints «مَدينَتِنا» / «مدينتكم» (`render.spec.Family.city_in`),
+never «سوق » with nothing after it.
+
+The helpers the other activity books' jobs share live here: `approved_character`, `numerals_of`,
+`name_en_of` (the parent's English spelling) and `name_flags`.
 """
 
 from __future__ import annotations
@@ -52,6 +57,8 @@ THEME_SLUG = "family-book"  # a hidden theme row: every Book needs one; the fami
 NEUTRAL_ADULT = "أحد الكبار"
 SIZES = ("21x28", "a4")
 MAX_MEMBERS_IN_BOOK = 6  # A7 §7
+NOT_FOR_ACTIVITY_BOOKS = ("coloring",)  # a coloring-book character is black and white
+NAME_EN_GUESSED, NAME_NOT_TRACEABLE = "name_en_guessed", "name_not_traceable"  # book flags (name pages)
 
 
 def family_of(item: OrderItem, child: Child) -> Any:
@@ -133,17 +140,40 @@ def member_sheets_of(
 
 
 def approved_character(db: Session, item: OrderItem, child: Child) -> Character | None:
+    """The character the order chose (`personalization["character_id"]`), else the child's newest approved
+    one, a coloring-book character (black and white) only when there is no other (order flows A16)."""
     wanted = (item.personalization or {}).get("character_id")
     if wanted:
         character = db.get(Character, uuid.UUID(str(wanted)))
         if character is not None and character.child_id == child.id and character.approved_at is not None:
             return character
-    return db.execute(
+    approved = db.execute(
         select(Character)
         .where(Character.child_id == child.id, Character.approved_at.is_not(None))
         .order_by(Character.approved_at.desc())
-        .limit(1)
-    ).scalar_one_or_none()
+    ).scalars()
+    found = list(approved)
+    return next((c for c in found if c.art_style not in NOT_FOR_ACTIVITY_BOOKS), found[0] if found else None)
+
+
+def name_en_of(item: OrderItem, child: Child) -> str:
+    """The parent's English spelling of the child's name: the order line's `name_en`, else the one saved on
+    the child (`Child.name_latin`), tidied; "" when there is none (the books then print a flagged guess)."""
+    from qamra_workbook.names import clean_latin_name
+
+    for raw in ((item.personalization or {}).get("name_en"), getattr(child, "name_latin", None)):
+        clean = clean_latin_name(str(raw or ""))
+        if clean:
+            return clean
+    return ""
+
+
+def name_flags(flags: list[str] | None, *, guessed: bool, traceable: bool) -> list[str]:
+    """The book's flags with the name checks of this render: `name_en_guessed` (the English name pages print
+    a transliteration, the parent gave no spelling) and `name_not_traceable` (the Arabic name page could not
+    trace the whole name), for the reviewer before print approval."""
+    kept = [f for f in (flags or []) if f not in (NAME_EN_GUESSED, NAME_NOT_TRACEABLE)]
+    return kept + ([NAME_EN_GUESSED] if guessed else []) + ([] if traceable else [NAME_NOT_TRACEABLE])
 
 
 def family_theme(db: Session) -> Theme:

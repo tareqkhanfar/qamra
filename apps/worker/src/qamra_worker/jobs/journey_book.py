@@ -4,7 +4,10 @@
     qamra_worker.jobs.journey_book.render_order_journey_items(order_id)
 
 The order item (from `POST /api/shop/workbooks/cart`) carries the child, the variant (its options: `stage`
-1/2/3 or `set`, `format`) and, in its `personalization`, the approved character used. The page engine
+1/2/3 or `set`, `format`) and, in its `personalization`, the approved character used and the parent's English
+spelling of the name (`name_en`, else the child's saved `name_latin`) for the English name pages of stages 2
+and 3. Without one they print a transliteration and the book is flagged `name_en_guessed`; an Arabic name the
+tracing page cannot write whole is flagged `name_not_traceable` (order flows §d chunk 9). The page engine
 (`qamra_workbook.render.journey_order`) draws the stage from the plan and its print layer: the interior, the
 cover and the parents' answer key, with cut-outs of the child from the character sheet, exactly as the sample
 render does. Audio QR codes point to `https://{BRAND_DOMAIN}/a/{code}`. The files are stored like the story
@@ -30,7 +33,7 @@ from qamra_core.db.models import AuditLog, Book, BookStatus, Child, Locale, Orde
 from qamra_core.storage import ObjectStorage
 from qamra_worker import context
 from qamra_worker.jobs.books import file_key
-from qamra_worker.jobs.family_book import approved_character, numerals_of
+from qamra_worker.jobs.family_book import approved_character, name_en_of, name_flags, numerals_of
 from qamra_worker.settings import get_settings
 
 log = structlog.get_logger("qamra.worker.journey_book")
@@ -100,6 +103,8 @@ def _book(
 async def render_stage(
     db: Session, storage: ObjectStorage, item: OrderItem, child: Child, sheet: Path, stage: int, tmp: Path
 ) -> dict[str, Any]:
+    from qamra_workbook.journey_book import english_name, stage_names
+    from qamra_workbook.names import can_trace
     from qamra_workbook.render.journey_order import render_order
     from qamra_workbook.render.spec import Child as BookChild
 
@@ -109,14 +114,18 @@ async def render_stage(
     book = _book(db, item, child, character.id, character.art_style, stage)
     book.status = BookStatus.generating
     db.commit()
+    book_child = BookChild(child.first_name, child.gender.value, sheet)
+    name_en = name_en_of(item, child)  # the parent's spelling, for the English name pages (stages 2–3)
     files = await render_order(
-        BookChild(child.first_name, child.gender.value, sheet),
+        book_child,
         stage,
         tmp / f"stage-{stage}",
         numerals=numerals_of(item),  # type: ignore[arg-type]
         domain=get_settings().brand_domain,
-        name_en=str((item.personalization or {}).get("name_en") or ""),  # the English name page
+        name_en=name_en,
     )
+    prints_en, traces_ar = stage_names(stage)
+    printed_en, guessed = english_name(book_child, name_en)
     book.pdf_interior_key = file_key(book, "interior.pdf")
     storage.put(book.pdf_interior_key, files.interior.read_bytes(), "application/pdf")
     book.pdf_cover_key = file_key(book, "cover.pdf")
@@ -126,9 +135,19 @@ async def render_stage(
         extra["answer-key"] = file_key(book, "answer-key.pdf")
         storage.put(extra["answer-key"], files.answer_key.read_bytes(), "application/pdf")
     book.preflight = files.preflight
-    book.generation = {**(book.generation or {}), "pages": files.pages, "files": extra}
+    book.generation = {
+        **(book.generation or {}),
+        "pages": files.pages,
+        "files": extra,
+        **({"name_en": printed_en} if prints_en else {}),
+    }
     book.flags = [f for f in (book.flags or []) if f != "preflight_failed"] + (
         [] if files.passed else ["preflight_failed"]
+    )
+    book.flags = name_flags(
+        book.flags,
+        guessed=prints_en and guessed,
+        traceable=not traces_ar or can_trace(child.first_name),
     )
     book.status = BookStatus.in_review  # an admin approves it for print, as every printed book (A3 §5)
     book.error = None

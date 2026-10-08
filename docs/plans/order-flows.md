@@ -613,7 +613,7 @@ Language chips «لغة الحكاية: العربية · English» appear only 
   - `api/store/addons.py`: offer `checkout`/`format` add-ons for activity lines by cart line.
   - `packages/core/src/qamra_core/db/models.py`: `Child.name_latin` (String 40, nullable).
   - A new Alembic migration for that column. The same migration adds `islamic` to the `lines` of 3d, watercolor and cartoon.
-  - Name validation for tracing books calls `qamra_workbook.render.pages.workbook_front.can_trace(name)` (chunk 9). Until chunk 9 lands, use a local Arabic-letter regex.
+  - Name validation for tracing books calls `qamra_workbook.render.pages.workbook_front.can_trace(name)` (chunk 9). Until chunk 9 lands, use a local Arabic-letter regex. **Landed:** import it from the light module `qamra_workbook.names` (see «Chunks 9 and 10: the interface as built»).
 - **Tests:**
   - `apps/api/tests/test_create.py`, `test_workbooks.py`, `test_cart_one_tap.py`
   - new `apps/api/tests/test_order_flow_needs.py`
@@ -745,6 +745,68 @@ inactive, not deleted:
   - `api/routers/admin_books.py`: `LINE_JOBS["workbook"]`
   - tests
 - See Q1 for what to do with the B&W variants until then.
+
+### Chunks 9 and 10: the interface as built (2026-10-08)
+
+**Name check for the API (chunk 8 calls this at order time).** Import the light module, which loads no page engine:
+
+```python
+from qamra_workbook.names import can_trace, check_name, clean_latin_name
+can_trace(name) -> bool                 # every word traceable; False for "", Latin, digits, emoji
+check_name(name) -> NameCheck           # .name (cleaned), .words, .traceable_words, .unsupported, .traceable
+clean_latin_name(value) -> str | None   # the English spelling, tidied (é → e, single spaces), else None
+```
+
+`qamra_workbook.render.pages.workbook_front.can_trace` is the same function, re-exported.
+
+**The Arabic name rules** (`names.py` and the «اسمي» page):
+- **Traceable letters:** the 28 letters, ة ى ء and لا, plus أ إ آ ؤ ئ. ؤ is drawn as a waw with a small hamza. ئ is drawn as the dotless tooth of ي (start and middle of a word) or as ى (end of a word), with a small hamza. Both marks are a draft for the educator's review.
+- **Cleaning before the check:** tashkeel and the tatweel are removed, presentation forms are normalised, the Persian ی and ک become ي and ك, ٱ becomes ا, and a hyphen counts as a space.
+- **Compound names** are traced word by word with a gap between the words.
+- **Long names:** the page traces as many parts, from the start, as fit at a cap height of at least 14 mm.
+  - A part is never cut inside: «عبد» and «أبو» take the next word, and a word starting with «ال» joins the one before it («نور الهدى»).
+  - The first part is always traced. A single long word shrinks to fit the row.
+  - The owner page and the cover wrap a name longer than 16 characters onto two lines.
+- **Never a crash:**
+  - A word with a letter the hand cannot write (Latin «Sara», digits) is left out of the tracing.
+  - If no word is left, the page prints the name as a model in the book's type, over empty writing lines.
+  - The order job flags the book `name_not_traceable`.
+
+**The English name** (dawseyeh: every volume; journey: stages 2 and 3). The workers read it in this order:
+1. `personalization["name_en"]` on the order line;
+2. else `Child.name_latin` (read with `getattr`, so it works before and after the chunk 8 migration);
+3. else the child's name, when it is already in English letters;
+4. else a transliteration. This is the last resort, and the book is flagged `name_en_guessed`.
+
+Each value is tidied with `clean_latin_name`. `qamra_workbook.journey_book.stage_names(stage)` returns `(prints the English name, traces the Arabic name)`: stage 1 gives `(False, False)`, and stages 2 and 3 give `(True, True)`.
+
+**Book flags** (shown in the admin before print approval):
+- `name_en_guessed`
+- `name_not_traceable`
+
+Admin labels, already through the language review (to add with the admin messages):
+- `name_en_guessed`: «الاسم الإنجليزي تخمين آلي، لم يكتبه الأهل» / "English name auto-guessed"
+- `name_not_traceable`: «تتبّع الاسم غير مكتمل» / "Name tracing incomplete"
+
+The language review also suggests a plainer Arabic-letters error for chunk 3: «اكتبوا الاسم بالحروف العربية فقط، لأن طفلكم سيتتبّعه حرفًا حرفًا.»
+
+**The family city:** empty is allowed.
+- The child's vowelized texts and the market sign print «مَدينَتِنا».
+- The parents' plain texts print «مدينتكم» (`render.spec.Family.city_in`).
+- The passport's city field stays blank, to fill in by hand.
+
+**«دوسية التأسيس» per order:**
+- **On confirm:** `qamra_worker.jobs.workbook_book.render_order_workbook_items(order_id)`.
+- **Admin retry:** `LINE_JOBS["workbook"]` runs `render_workbook_item(item_id)`.
+- **What the job reads:** `title.options.level` (kg1/kg2), `volume` (1/2/3/set) and `interior`. A set renders all three volumes.
+- **One `Book` per volume**, waiting `in_review`:
+  - files: interior, cover (front and back on card) and the answer key;
+  - each file's preflight;
+  - `generation`: level, volume, `name_en`. The admin book detail now shows `level`, `volume`, `stage` and `name_en`.
+- **Digits:** ١٢٣ unless `personalization["numerals"] == "latin"`.
+- **Black-and-white items are refused.** Their books are kept `failed` with the reason, and nothing is drawn.
+- **Engine:** `qamra_workbook.render.workbook.render_order(child, level, volume, out, *, interior, name_en, numerals, day, domain)`.
+- **Staff CLI:** `--name/--gender/--sheet/--cover` render one child's copy by hand.
 
 ### Chunks 1, 2, 3 and 5: the interface as built (2026-10-08)
 

@@ -5,6 +5,8 @@
 #
 # 112 pages (Tareq's order, 2026-09-28): front p1–5, twelve adventures (each an opening spread, its activities and «ذكرى اليوم»), back
 # p110–112. {child}, {adult}, {member}, {family_name}, {city}; {masc/fem} pairs follow the child's gender.
+# {city} is optional (the family step of the order): without it the child's vowelized texts print «مَدينَتِنا»
+# and the parents' plain texts «مدينتكم» (render/spec.py `Family.city_in`), never «سوق » with nothing after it.
 
 title_ar: مغامراتي مع عائلتي
 title_en: My Adventures with My Family

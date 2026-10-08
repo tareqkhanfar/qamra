@@ -179,6 +179,13 @@ class Member:
 MAX_MEMBERS = 6  # A7 §7
 
 
+# The family's city is optional (the order flow's family step). Without it a text never prints «سوق » with
+# nothing after it: the child's vowelized texts say «مَدينَتِنا» (the book speaks with the family), the
+# parents' plain texts «مدينتكم». The passport's city field stays empty, to fill in by hand.
+CITY_FALLBACK_VOWELIZED = "مَدينَتِنا"
+CITY_FALLBACK_PLAIN = "مدينتكم"
+
+
 @dataclass(frozen=True)
 class Family:
     """The child's family (A7 §7): who does the missions with them, and where they live."""
@@ -208,12 +215,18 @@ class Family:
                 return m
         return among[key % len(among)]
 
+    def city_in(self, text: str) -> str:
+        """The city as `text` prints it: the family's, else the fallback in the text's own register."""
+        if self.city.strip():
+            return self.city.strip()
+        return CITY_FALLBACK_VOWELIZED if _TASHKEEL.search(text) else CITY_FALLBACK_PLAIN
+
     def personalize(self, text: str, key: int = 0, adult: str = "", member: str = "") -> str:
         grown_up = self.pick(self.adults, key, adult)
         anyone = self.pick(self.members, key, member)
         return (
             text.replace("{family_name}", self.name)
-            .replace("{city}", self.city)
+            .replace("{city}", self.city_in(text))
             .replace("{adult}", grown_up.label if grown_up else NO_ADULT)
             .replace("{member}", anyone.label if anyone else NO_ADULT)
         )

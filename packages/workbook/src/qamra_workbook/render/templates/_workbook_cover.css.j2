@@ -1,0 +1,58 @@
+/* «دوسية التأسيس» cover (front and back, on card): no tab, no page number; the background runs into the
+   bleed, the text stays in the safe area. The amber band is the spine side (the book opens from the right). */
+.type-workbook-cover-front .foot, .type-workbook-cover-back .foot,
+.type-workbook-cover-front .tab, .type-workbook-cover-back .tab { display: none; }
+.wc-bg { position: absolute; left: calc(-1 * var(--inset)); top: calc(-1 * var(--inset));
+         width: {{ g.page_w }}mm; height: {{ g.page_h }}mm; z-index: 0; }
+.wc-bg svg { width: 100%; height: 100%; }
+.wc, .wb-back { position: relative; z-index: 1; flex: 1; padding: 3mm 8mm 4mm 2mm; display: flex; flex-direction: column;
+                align-items: center; min-height: 0; }
+.wc-brand { align-self: flex-start; display: flex; align-items: center; gap: 1.5mm; font: 800 13pt var(--title); color: #FFFFFF; }
+.wc-brand.dark { color: var(--night); }
+.wc-brand .mascot { width: 9mm; height: 9mm; }
+.wc-title { font: 800 48pt/1.1 var(--title); color: #FFF6E0; text-align: center; margin-top: 5mm; }
+.wc-level { margin-top: 2mm; display: flex; align-items: center; gap: 2.5mm; font: 700 14pt var(--body); color: #F7C84A; }
+.wc-level.dark { color: var(--moon-deep); }
+.wc-level b { font: 800 12pt var(--title); padding: 0.6mm 2.6mm 1mm; border-radius: 3mm; border: 0.5mm solid currentColor; }
+.wc-volume { margin-top: 4mm; padding: 1.5mm 8mm 2.2mm; border-radius: 8mm; background: #E9A62B; color: #16204A;
+             font: 800 16pt var(--title); }
+.wc-sub { margin-top: 2.5mm; font: 600 13pt/1.7 var(--naskh); color: #E8ECF8; text-align: center; max-width: 160mm; }
+.wc-hero { flex: 1; min-height: 0; width: 100%; display: flex; align-items: flex-end; justify-content: center; }
+.wc-hero img { max-height: min(100%, 112mm); max-width: 70%; object-fit: contain; }
+.wc-name { margin-top: 2mm; padding: 1mm 12mm 2mm; border-radius: 10mm; background: #FFFFFF; max-width: 160mm;
+           box-shadow: 0 1.2mm 0 #C98A1B; }
+.wc-name span { display: block; font: 800 28pt/1.25 var(--title); color: var(--night); white-space: nowrap; overflow: hidden;
+                text-align: center; }
+.wc-name span.long { white-space: normal; font-size: 22pt; line-height: 1.6; }
+.wc-subjects { display: flex; gap: 2.5mm; margin-top: 5mm; }
+.wc-subjects span { width: 11mm; height: 11mm; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+                    color: #FFFFFF; box-shadow: 0 0 0 0.8mm #FFFFFF; }
+.wc-subjects .ico { width: 6.5mm; height: 6.5mm; }
+.wc-ages { margin-top: 3mm; font: 700 12pt var(--body); color: #E8ECF8; }
+
+.wb-back { padding: 3mm 2mm 4mm 8mm; }
+.wb-back-title { font: 800 34pt/1.2 var(--title); color: var(--night); margin-top: 8mm; }
+.wb-back-sub { margin-top: 3mm; font: 600 13pt/1.7 var(--naskh); color: var(--ink-2); text-align: center; max-width: 160mm; }
+.wb-back-blurb { margin-top: 8mm; font: 500 14pt/1.8 var(--body); color: var(--ink); text-align: center; max-width: 160mm; }
+.wb-back-subjects { margin-top: 9mm; display: grid; grid-template-columns: 1fr 1fr; gap: 3.5mm 8mm; align-self: stretch;
+                    padding: 6mm 8mm; background: #FFFFFF; border: 0.5mm solid var(--line); border-radius: 6mm; }
+.wb-back-subject { display: flex; align-items: center; gap: 2.5mm; font: 600 12.5pt var(--body); color: var(--ink); }
+.wb-back-subject i { width: 8.5mm; height: 8.5mm; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+                     color: #FFFFFF; flex: none; }
+.wb-back-subject .ico { width: 5.2mm; height: 5.2mm; }
+.wb-back-hero { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.wb-back-frame { width: 62mm; height: 62mm; border-radius: 50%; background: #FCEFD2; border: 1.4mm solid #E9A62B;
+                 display: flex; align-items: flex-end; justify-content: center; overflow: hidden; }
+.wb-back-frame img { height: 92%; object-fit: contain; object-position: top; }
+.wb-back-name { margin-top: 3mm; padding: 0.8mm 8mm 1.6mm; border-radius: 8mm; background: var(--night); max-width: 120mm; }
+.wb-back-name span { display: block; font: 800 16pt/1.3 var(--title); color: #FFFFFF; white-space: nowrap; overflow: hidden;
+                     text-align: center; }
+.wb-back-name span.long { white-space: normal; font-size: 14pt; line-height: 1.6; }
+.wb-back-foot { margin-top: auto; align-self: stretch; display: flex; align-items: center; justify-content: space-between; }
+.wb-back-ages { font: 700 12pt var(--body); color: var(--ink-2); }
+.wb-back-site { font: 700 12pt var(--title); color: var(--night); }
+
+/* the owner page: a long name wraps over two lines instead of shrinking away */
+.own-name span.long { white-space: normal; font-size: 26pt; line-height: 1.6; }
+.wb-name-typed { display: block; font: 800 40pt/1.3 var(--title); color: var(--night); white-space: nowrap; overflow: hidden;
+                 text-align: center; max-width: 168mm; }

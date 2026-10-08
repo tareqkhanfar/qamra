@@ -30,7 +30,7 @@ from qamra_workbook.render.pages.thinking import shape_kind
 from qamra_workbook.render.registry import Built, PageContext, page_type
 from qamra_workbook.render.sections import FAMILY as FAMILY_SECTIONS
 from qamra_workbook.render.sections import section_style
-from qamra_workbook.render.spec import Family, Member
+from qamra_workbook.render.spec import CITY_FALLBACK_VOWELIZED, Family, Member
 
 
 @dataclass(frozen=True)
@@ -524,7 +524,7 @@ def shopping_list(ctx: PageContext) -> Built:
         "count_dots": 5,
         "products": [{"pic": ctx.pic(x), "word": picture(x).word_ar} for x in products],
         "choices": CHOICES,
-        "city": family.city if family else "",
+        "city": (family.city.strip() if family else "") or CITY_FALLBACK_VOWELIZED,  # «سوقُ …» on the sign
         "character": uri(ctx.assets.character),
         "bag": ctx.pic("shopping-bag"),
         "choose": ctx.text(str(params.get("choose", "{اخْتَرْ/اخْتاري} لِكُلِّ شَيْءٍ: صِحِّيٌّ؟ نَحْتاجُهُ؟"))),
