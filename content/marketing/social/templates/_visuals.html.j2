@@ -55,9 +55,9 @@
 {% macro family(ad, fmt) -%}
 {% call photo_or('family') %}
 <div class="stage" data-w="900" data-h="560" data-max="1.3">
-  {{ m.page_card('workbooks/family-adventures/04.jpg', 300, 400, 560, 92, 7, 1) }}
-  {{ m.page_card('workbooks/family-adventures/02.jpg', 300, 400, 50, 100, -8, 1) }}
-  <div style="position:absolute;left:260px;top:18px;z-index:3">{{ m.spiral_book('workbooks/family-adventures/01.jpg', 360, 480, 0, 0, -2) }}</div>
+  {{ m.page_card('wb:family-adventures/book/3', 300, 400, 560, 92, 7, 1) }}
+  {{ m.page_card('wb:family-adventures/book/1', 300, 400, 50, 100, -8, 1) }}
+  <div style="position:absolute;left:260px;top:18px;z-index:3">{{ m.spiral_book('wb:family-adventures/book/cover', 360, 480, 0, 0, -2) }}</div>
   {{ sticker(232, 448, 44, '#F2B33D', 'star') }}
   {{ sticker(668, 70, 36, '#E9826B', 'heart') }}
 </div>
@@ -78,12 +78,12 @@
 {%- endmacro %}
 
 {% macro journey(ad, fmt) -%}
-{% call photo_or('journey', none, 'workbooks/learning-journey/01.jpg') %}
+{% call photo_or('journey', none, 'wb:learning-journey/1/cover') %}
 <div class="stage" data-w="900" data-h="560" data-max="1.3">
   <div style="position:absolute;left:260px;top:-30px;width:640px;height:640px;border-radius:50%;background:radial-gradient(closest-side, rgba(91,111,192,.35), rgba(91,111,192,0))"></div>
   {{ m.starfield(900, 560, seed=21, n=10, keep_out=[(80, 0, 860, 560)]) }}
-  {{ m.page_card('workbooks/learning-journey/10.jpg', 318, 450, 150, 70, -6, 1) }}
-  <div style="position:absolute;left:470px;top:14px;z-index:3">{{ m.spiral_book('workbooks/learning-journey/01.jpg', 360, 509, 0, 0, 3) }}</div>
+  {{ m.page_card('wb:learning-journey/2/3', 318, 450, 150, 70, -6, 1) }}
+  <div style="position:absolute;left:470px;top:14px;z-index:3">{{ m.spiral_book('wb:learning-journey/1/cover', 360, 509, 0, 0, 3) }}</div>
   {{ phone(70, 250, 166, -9) }}
 </div>
 {% endcall %}
@@ -93,9 +93,9 @@
 {% macro foundation(ad, fmt) -%}
 {% call photo_or('foundation') %}
 <div class="stage" data-w="900" data-h="560" data-max="1.3">
-  {{ m.page_card('workbooks/foundation-workbook/09.jpg', 300, 424, 560, 96, 7, 1) }}
-  {{ m.page_card('workbooks/foundation-workbook/02.jpg', 300, 424, 44, 104, -7, 1) }}
-  <div style="position:absolute;left:262px;top:14px;z-index:3">{{ m.spiral_book('workbooks/foundation-workbook/01.jpg', 356, 504, 0, 0, -1.5) }}</div>
+  {{ m.page_card('wb:foundation-workbook/kg2-3/10', 300, 424, 560, 96, 7, 1) }}
+  {{ m.page_card('wb:foundation-workbook/kg1-1/1', 300, 424, 44, 104, -7, 1) }}
+  <div style="position:absolute;left:262px;top:14px;z-index:3">{{ m.spiral_book('wb:foundation-workbook/kg2-1/cover', 356, 504, 0, 0, -1.5) }}</div>
 </div>
 {% endcall %}
 {%- endmacro %}
@@ -192,6 +192,21 @@
   {{ m.page_card(ad.pages[1], 300, 424, 44, 104, -7, 1) }}
   <div style="position:absolute;left:262px;top:14px;z-index:3">{{ m.spiral_book(ad.pages[0], 356, 504, 0, 0, -1.5) }}</div>
   {% if ad.phone %}{{ phone(52, 262, 150, -9) }}{% endif %}
+</div>
+{%- endmacro %}
+
+{# all the activity books side by side, right to left in the order the copy names them, each at its real
+   cover's proportions (previews manifest); the spiral ones with their wire, a softcover without. A gentle arc:
+   the outer books sit lower and lean outwards. books: [{page: wb:…, spiral: true|false}] #}
+{% macro books(ad, fmt) -%}
+{% set n = ad.books | length %}{% set bw = 240 %}{% set gap = 16 %}{% set pad = 34 %}
+{% set sizes = [] %}{% for b in ad.books %}{% set p = preview(b.page) %}{% set _ = sizes.append((bw * p.h / p.w) | round) %}{% endfor %}
+{% set tall = sizes | max %}{% set mid = (n - 1) / 2 %}
+{% set sw = n * bw + (n - 1) * gap + 2 * pad %}
+<div class="stage" data-w="{{ sw }}" data-h="{{ tall + 2 * pad + 40 }}" data-max="1.35">
+  {% for b in ad.books %}{% set k = loop.index0 %}{% set bh = sizes[k] %}
+  {{ m.spiral_book(b.page, bw, bh, sw - pad - bw - k * (bw + gap), pad + (tall - bh) / 2 + ((k - mid) | abs) * 26, (mid - k) * 3, spiral=b.spiral, z=k + 1) }}
+  {% endfor %}
 </div>
 {%- endmacro %}
 
@@ -342,6 +357,7 @@
 {% if ad.visual == 'photo' %}{{ photo(ad, fmt) }}
 {% elif ad.visual == 'pair' %}{{ pair(ad, fmt) }}
 {% elif ad.visual == 'fan' %}{{ fan(ad, fmt) }}
+{% elif ad.visual == 'books' %}{{ books(ad, fmt) }}
 {% elif ad.visual == 'scene_book' %}{{ scene_book(ad, fmt) }}
 {% elif ad.visual == 'points' %}{{ points(ad, fmt) }}
 {% elif ad.visual == 'faq' %}{{ faq(ad, fmt) }}

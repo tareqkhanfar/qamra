@@ -9,17 +9,19 @@
 Everything lives in content/marketing/social/: copy.yaml (all words), captions.yaml (post captions),
 images.yaml (photo/mockup slots and the `media:` registry), templates/ (Jinja2), ads.md and calendar.md (Meta
 ads and the posting plan). Art is drawn in code; the bitmaps are pages and photos already public on the site
-(apps/web/public/**), the theme plates and cast sheets (content/), the brand film's stills and mockups
-(out/video/, made by scripts/build_film.py) and, once Tareq delivers them, files in design/incoming/. Every
-video gets the brand soundtrack (scripts/film_audio.py): a voice version and a music-only one (*-music.mp4).
-After each render a layout check (templates/qa.js) reports text that leaves its box or the
-safe zone, headline lines that wrap, and paragraphs that end with a lone word.
+(apps/web/public/**; workbook pages are named `wb:<book>/<scope>/<cover|n>` and found through the site's
+previews manifest, apps/web/src/lib/workbook-previews.json), the theme plates and cast sheets (content/), the
+brand film's stills and mockups (out/video/, made by scripts/build_film.py) and, once Tareq delivers them,
+files in design/incoming/. Every video gets the brand soundtrack (scripts/film_audio.py): a voice version and
+a music-only one (*-music.mp4). After each render a layout check (templates/qa.js) reports text that leaves
+its box or the safe zone, headline lines that wrap, and paragraphs that end with a lone word.
 """
 
 from __future__ import annotations
 
 import argparse
 import asyncio
+import functools
 import json
 import os
 import random
@@ -41,6 +43,7 @@ KIT = ROOT / "content/marketing/social"
 OUT = ROOT / "out/social"
 FONTS = ROOT / "packages/pdf/src/qamra_pdf/fonts"
 PUBLIC = ROOT / "apps/web/public"
+PREVIEWS = ROOT / "apps/web/src/lib/workbook-previews.json"
 
 AR_DIGITS = str.maketrans("0123456789", "٠١٢٣٤٥٦٧٨٩")
 
@@ -61,14 +64,41 @@ class Design:
 # ---------------------------------------------------------------------------------------------- images
 
 
+@functools.cache
+def previews() -> dict[str, Any]:
+    """The site's workbook-preview manifest (built by scripts/export_workbook_previews.py)."""
+    data = json.loads(PREVIEWS.read_text(encoding="utf-8"))
+    assert isinstance(data, dict)
+    return data
+
+
+def preview(ref: str) -> dict[str, Any]:
+    """A workbook preview image named by what it shows, not by its file: `wb:<book>/<scope>/<cover|n>`, e.g.
+    `wb:learning-journey/2/cover` or `wb:foundation-workbook/kg1-1/3` (the 3rd page the manifest lists for
+    that part). Re-exporting the previews renames and moves the files; the manifest always says where they
+    are. Returns {path, w, h}."""
+    try:
+        book, scope, which = ref.removeprefix("wb:").split("/")
+        part = previews()[book]["scopes"][scope]
+        if which == "cover":
+            entry = part["cover"]
+        elif which.isdigit() and int(which) >= 1:
+            entry = part["pages"][int(which) - 1]
+        else:
+            raise ValueError(which)
+    except (ValueError, KeyError, IndexError) as exc:
+        raise KeyError(f"{ref!r} is not in {PREVIEWS.relative_to(ROOT)}") from exc
+    path = PUBLIC / entry["src"].split("?")[0].lstrip("/")
+    return {"path": path, "w": entry["w"], "h": entry["h"]}
+
+
 def public(rel: str) -> str:
-    """A file URI for an image that is already public on the website (apps/web/public/...). `a|b` lists
-    alternatives, the first that exists wins (pages move when a workbook's previews are re-exported)."""
-    for alt in rel.split("|"):
-        path = PUBLIC / alt
-        if path.exists():
-            return path.as_uri()
-    raise FileNotFoundError(f"public image missing: {PUBLIC / rel.split('|')[0]}")
+    """A file URI for an image that is already public on the website (apps/web/public/...). A workbook page or
+    cover is named `wb:…` and looked up in the previews manifest (see preview())."""
+    path = preview(rel)["path"] if rel.startswith("wb:") else PUBLIC / rel
+    if not path.exists():
+        raise FileNotFoundError(f"public image missing: {path} (for {rel!r})")
+    return path.as_uri()
 
 
 def homography(src: list[tuple[float, float]], dst: list[tuple[float, float]]) -> list[float]:
@@ -441,6 +471,7 @@ def make_env() -> Environment:
     )
     env.filters["ar"] = lambda s: str(s).translate(AR_DIGITS)
     env.globals["public"] = public
+    env.globals["preview"] = preview
     env.globals["stars"] = stars
     env.globals["tatreez"] = tatreez
     env.globals["fonts"] = FONTS.as_uri()

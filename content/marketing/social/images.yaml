@@ -1,7 +1,8 @@
 # Image slots of the social kit. Each slot lists files in priority order: `public:` site photos first (retouched on
 # 2026-10-07 by scripts/retouch_site_photos.py: our real covers and pages are on the books in them), then files
 # from design/incoming/ (names as in docs/image-prompts.md, sections A and B), whose books are blurred and blank. The renderer uses the first file that exists; when none exists it
-# draws the slot in code (books, sky, moon, public workbook pages). Nothing from out/ and no real child's photo.
+# draws the slot in code (books, sky, moon, public workbook pages: `wb:<book>/<scope>/<cover|n>`, looked up in
+# apps/web/src/lib/workbook-previews.json). Nothing from out/ and no real child's photo.
 #
 # kind: photo   → shown in a rounded frame, cropped to fill it; `focus` is the CSS object-position.
 # kind: mockup  → a product photo with a blank white cover. Our cover is laid onto it, so it is used only
@@ -31,14 +32,14 @@ slots:
     fallback: a stack of «يوم تخرّج» books with a different child's name on each spine
   family:        # ad-c-family
     candidates: [public:photos/family-book-table.jpg, A4-family-book-table.png]
-    fallback: spiral book + real pages of «مغامراتي مع عائلتي» (apps/web/public/workbooks/family-adventures)
+    fallback: spiral book + real pages of «مغامراتي مع عائلتي» (wb:family-adventures/book/…)
   journey:       # ad-d-journey
     candidates: [public:photos/journey-qr.jpg, A6-journey-qr.png, B4-mockup-spiral.png]
-    cover_image: workbooks/learning-journey/01.jpg
+    cover_image: wb:learning-journey/1/cover  # laid onto B4's blank cover
     fallback: the real cover and QR page of «رحلتي الأولى للتعلّم» + a phone drawn in code
   foundation:    # ad-e-foundation
     candidates: [public:photos/workbook-tracing.jpg, A5-workbook-tracing.png]
-    fallback: real pages of «دوسية التأسيس» (apps/web/public/workbooks/foundation-workbook)
+    fallback: real pages of «دوسية التأسيس» (wb:foundation-workbook/…)
   gifts:         # ad-f-gifts, story-f-gifts
     candidates: [public:photos/gift-box.jpg, A8-gift-box.png]
     fallback: hardcover «ليان وضيفنا الصغير» with a ribbon and a gift tag, drawn in code

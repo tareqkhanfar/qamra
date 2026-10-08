@@ -164,10 +164,13 @@ carousel:
 # October 2026: a month of posts, two carousels, the Meta ad sets and the video pieces (Tareq, 2026-10-03).
 # Same rules as above. Pictures are images.yaml `media:` keys; every one was checked by eye (no little girl in a
 # hijab). Facts come from the site (apps/web/messages/ar.json), content/store/catalog.yaml, the theme files and
-# content/journey/*.yaml. Never mention the Islamic series here: it is not on sale yet.
+# content/journey/*.yaml. «قلبي يعرف الله» is on sale since 2026-10-07 (catalog.yaml): it appears where a design
+# shows all the activity books, and nothing may claim audio or QR codes for it, or say who reviewed it.
 # visual: photo (media, focus?, badge?, badge_kind: approve|tag) · pair (two media + labels) · fan (pages:
-# [middle, left, right] under apps/web/public, phone?) · scene_book (media + code cover) · points · faq ·
-# kg_stack. faq takes `qa:` (q, a). hl_size overrides the headline size (px) when a line is long.
+# [middle, left, right], phone?) · books (books: [{page, spiral}], right to left: every activity book) ·
+# scene_book (media + code cover) · points · faq · kg_stack. Workbook pages are named wb:<book>/<scope>/<cover|n>
+# (the site's previews manifest, apps/web/src/lib/workbook-previews.json), never by file: re-exports rename them.
+# faq takes `qa:` (q, a). hl_size overrides the headline size (px) when a line is long.
 # =============================================================================================================
 
 # Feed posts (1080×1350), in posting order: post-01-… is the first post of the month (calendar.md).
@@ -253,7 +256,8 @@ posts:
     headline: ["منهج متكامل", "في دوسية باسمه"]
     sub: العربية والإنجليزية والرياضيات ومهارات القلم، متدرّجة أسبوعًا بأسبوع، وشخصية طفلكم من الغلاف حتى شهادة~الإنجاز.
     visual: fan
-    pages: [workbooks/foundation-workbook/01.jpg, workbooks/foundation-workbook/02.jpg, workbooks/foundation-workbook/09.jpg]
+    # the first page of KG2 part 1, «اسمي» from KG1 part 1, the certificate at the end of KG2 part 3
+    pages: [wb:foundation-workbook/kg2-1/cover, wb:foundation-workbook/kg1-1/1, wb:foundation-workbook/kg2-3/10]
     note: لعمر ٤–٦ سنوات، في ثلاثة أجزاء بتجليد حلزوني
     cta: order
 
@@ -319,7 +323,7 @@ posts:
     headline: ["ثلاث محطات", "حتى يقرأ ويكتب"]
     sub: يستعدّ في الأولى بالتفكير وتدريب اليد، ويتعرّف في الثانية على الحروف والأعداد، ويقرأ ويكتب ويجمع ويطرح في~الثالثة.
     visual: fan
-    pages: [workbooks/learning-journey/09.jpg, workbooks/learning-journey/01.jpg, workbooks/learning-journey/17.jpg]
+    pages: [wb:learning-journey/2/cover, wb:learning-journey/1/cover, wb:learning-journey/3/cover]  # the three stages
     note: الأولى لعمر ٣–٤، والثانية ٤–٥، والثالثة ٥–٦ سنوات
     cta: order
 
@@ -471,9 +475,13 @@ ad_sets:
     bg: glow
     pill: كتب الأنشطة
     headline: ["يتعلّم ويلعب،", "وهو بطل الصفحات"]
-    sub: «دوسية التأسيس» و«رحلتي الأولى للتعلّم» و«مغامراتي مع عائلتي»، باسم طفلكم~وشخصيته.
-    visual: fan
-    pages: [workbooks/learning-journey/01.jpg, workbooks/foundation-workbook/01.jpg, workbooks/family-adventures/01.jpg]
+    sub: «دوسية~التأسيس» و«رحلتي~الأولى~للتعلّم» و«مغامراتي~مع~عائلتي» و«قلبي~يعرف~الله»، باسم طفلكم~وشخصيته.
+    visual: books
+    books: &activity-books  # right to left, in the order the sub names them; «قلبي يعرف الله» is perfect-bound
+      - {page: wb:foundation-workbook/kg2-1/cover, spiral: true}
+      - {page: wb:learning-journey/1/cover, spiral: true}
+      - {page: wb:family-adventures/book/cover, spiral: true}
+      - {page: wb:islamic-series/V1/cover, spiral: false}
     note: صفحات حقيقية تتصفّحونها قبل الطلب
     cta: order
 
@@ -537,9 +545,9 @@ video:
       bg: glow
       pill: كتب الأنشطة
       headline: ["يتعلّم ويلعب،", "وهو بطل الصفحات"]
-      sub: صفحات حقيقية تتصفّحونها قبل الطلب، وتجليد حلزوني ينفتح~مسطّحًا.
-      visual: fan
-      pages: [workbooks/learning-journey/01.jpg, workbooks/foundation-workbook/01.jpg, workbooks/family-adventures/01.jpg]
+      sub: صفحات حقيقية تتصفّحونها قبل الطلب، والدفع عند~الاستلام.  # not «تجليد حلزوني»: «قلبي يعرف الله» is perfect-bound
+      visual: books
+      books: *activity-books
       cta: order
     - slug: ad-gifts
       bg: blush
@@ -556,7 +564,8 @@ video:
       headline: ["امسحوا الرمز،", "فيسمع طفلكم الحرف"]
       sub: ثلاث محطات متدرّجة لعمر ٣–٦~سنوات.
       visual: fan
-      pages: [workbooks/learning-journey/01.jpg, workbooks/learning-journey/11.jpg, workbooks/learning-journey/04.jpg]
+      # stage 2 (letters and numbers): its cover, «حرف الألف» and «صوت الألف: أسد», both with their QR code
+      pages: [wb:learning-journey/2/cover, wb:learning-journey/2/4, wb:learning-journey/2/3]
       phone: true
       cta: none
     - slug: frame-foundation

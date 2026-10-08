@@ -21,7 +21,7 @@
   </svg>
   <div class="art">
     <div style="position:absolute;left:-40px;top:20px;width:580px;height:580px;border-radius:50%;background:radial-gradient(closest-side, rgba(120,140,220,.32), rgba(91,111,192,0))"></div>
-    {{ m.spiral_book('workbooks/learning-journey/1/cover.webp|workbooks/learning-journey/01.jpg', 230, 325, 4, 176, -9) }}
+    {{ m.spiral_book('wb:learning-journey/1/cover', 230, 325, 4, 176, -9) }}
     <div style="position:absolute;left:150px;top:150px;width:330px;height:330px;box-shadow:-24px 18px 40px rgba(5,8,25,.55);border-radius:8px;transform:perspective(2400px) rotateY(-30deg) rotateX(-4deg)"></div>
     {# the real front of «يوم تخرّج ليان» (images.yaml media cover-graduation), not a cover drawn in code #}
     {{ m.hardcover('graduation', s=340, d=24, ry=-30, rx=-4, x=160, y=118, board='#22306A', dark=true, art=media('cover-graduation').src) }}

@@ -120,12 +120,13 @@
 </svg>
 {%- endmacro %}
 
-{# portrait spiral activity book; `src` is a public page image shown as its top sheet #}
-{% macro spiral_book(src, w=380, h=506, x=0, y=0, rot=0, inner='') -%}
-<div class="spiral" style="left:{{ x }}px;top:{{ y }}px;width:{{ w }}px;height:{{ h }}px;transform:rotate({{ rot }}deg)">
+{# portrait spiral activity book; `src` is a public page image shown as its top sheet. spiral=false: the same
+   book without the wire, a perfect-bound softcover («قلبي يعرف الله») #}
+{% macro spiral_book(src, w=380, h=506, x=0, y=0, rot=0, inner='', spiral=true, z=none) -%}
+<div class="spiral" style="left:{{ x }}px;top:{{ y }}px;width:{{ w }}px;height:{{ h }}px;transform:rotate({{ rot }}deg){% if z is not none %};z-index:{{ z }}{% endif %}">
   <div class="sheet s3"></div><div class="sheet s2"></div>
   <div class="front">{% if src %}<img src="{{ public(src) }}" alt="">{% else %}{{ inner }}{% endif %}</div>
-  {{ wire(h) }}
+  {% if spiral %}{{ wire(h) }}{% endif %}
 </div>
 {%- endmacro %}
 

@@ -63,25 +63,33 @@ Their pictures come from the `media:` registry at the end of `images.yaml` (site
 stills and mockups), each checked by eye: **no little girl in a hijab in our marketing** (adults in a hijab are
 fine). `content/cast/classmates-*` breaks that rule and is never used; `photos/graduation-class.jpg` is the
 2026-10-03 file without hijabs. The film's sample girl is AI-made, so every post or video that shows her as "the
-photo" says «مثال توضيحي». Never mention «قلبي يعرف الله» here: it is not on sale yet.
+photo" says «مثال توضيحي». «قلبي يعرف الله» is on sale since 2026-10-07: it appears where a design shows all the
+activity books (the activity-books ad set and its end card), and nothing may claim audio or QR codes for it, or
+say who reviewed it.
 
 ## Pictures in each design
 
 | Design | Drawn in code | Public images used (apps/web/public/…) | Incoming image that replaces the picture |
 |---|---|---|---|
 | profile, highlights | all | none | none |
-| fb-cover | sky, moon, hardcover «ليان في أوّل يوم بالروضة» | `workbooks/character.webp`, `workbooks/learning-journey/01.jpg` | none |
+| fb-cover | sky, moon, hardcover «ليان في أوّل يوم بالروضة» | `workbooks/character.webp`, `wb:learning-journey/1/cover` | none |
 | ad-a-launch, story-a-launch | hardcover «ليان في أوّل يوم بالروضة» | `character.webp` | **A1-hero-reading**, else **B1** (once it has a `cover_quad`) |
 | ad-b-kindergarten, story-b | stack of «يوم تخرّج …» books + «يوم تخرّج ليان» | `character.webp` | **A3-graduation-class** |
-| ad-c-family | spiral binding, stickers | `workbooks/family-adventures/01, 02, 04.jpg` | **A4-family-book-table** |
-| ad-d-journey | spiral binding, phone | `workbooks/learning-journey/01, 10.jpg` | **A6-journey-qr**, else **B4** (once it has a `cover_quad`) |
-| ad-e-foundation | spiral binding | `workbooks/foundation-workbook/01, 02, 09.jpg` | **A5-workbook-tracing** |
+| ad-c-family | spiral binding, stickers | `wb:family-adventures/book/cover, 1, 3` | **A4-family-book-table** |
+| ad-d-journey | spiral binding, phone | `wb:learning-journey/1/cover`, `wb:learning-journey/2/3` | **A6-journey-qr**, else **B4** (once it has a `cover_quad`) |
+| ad-e-foundation | spiral binding | `wb:foundation-workbook/kg2-1/cover`, `kg1-1/1`, `kg2-3/10` | **A5-workbook-tracing** |
 | ad-f-gifts, story-f-gifts | hardcover «ليان وضيفنا الصغير», ribbon, tag | `character.webp` | **A8-gift-box** |
 | ad-g-trust | icons only | none | none |
 | carousel-1-photo | phone, face guide, a head-and-shoulders shape (never a real photo) | none | none |
 | carousel-2-character | character card | `character.webp` | none |
 | carousel-3-story | open book with the vowelized first page of «أوّل يوم في الروضة» | `character.webp` | **B2-mockup-open-spread** (once it has a `cover_quad`) |
 | carousel-4-book | hardcover «يوم تخرّج ليان» | `character.webp` | **B1-mockup-hardcover-angle** (once it has a `cover_quad`) |
+
+Workbook pages are never named by file: `wb:<book>/<scope>/<cover|n>` (the cover, or the n-th page the site
+shows for that part) is looked up in the site's previews manifest, `apps/web/src/lib/workbook-previews.json`
+(built by `scripts/export_workbook_previews.py`), so re-exporting the previews never breaks a design. The fan
+posts (`post-08-foundation`, `post-14-journey-stages`, `end-frame-journey`) name their pages in `copy.yaml`
+(`pages:`); the activity-books ad set and its end card show the four books' covers (`visual: books`).
 
 A2, A7, A9, A10 and B3 are not used here. Nothing comes from `out/`, and no real child's photo is used. ليان, يوسف,
 سلمى, آدم, جنى and كريم are invented sample names. `character.webp` is the site's AI-drawn sample character.
