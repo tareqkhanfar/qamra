@@ -77,6 +77,14 @@ export function ChildStep({
 
   useEffect(() => onSelect(selected), [onSelect, selected]);
 
+  /** A name being corrected: the error said about the previous one no longer holds. */
+  function edited<T>(set: (v: T) => void): (v: T) => void {
+    return (v) => {
+      set(v);
+      setError(null);
+    };
+  }
+
   function pick(c: Child | null) {
     setSelectedId(c?.id ?? null);
     setEditing(false);
@@ -214,7 +222,7 @@ export function ChildStep({
           asksNameEn={asksNameEn}
           traces={traces}
           nameEn={knownEn}
-          onNameEn={setKnownEn}
+          onNameEn={edited(setKnownEn)}
           look={look}
           onLook={setLook}
           onEdit={() => {
@@ -234,7 +242,7 @@ export function ChildStep({
             name={name}
             gender={gender}
             age={age}
-            onName={setName}
+            onName={edited(setName)}
             onGender={setGender}
             onAge={setAge}
             nameError={badName ? t("who.arabicInvalid") : null}
@@ -266,7 +274,7 @@ export function ChildStep({
                 placeholder={t("who.nameEnPlaceholder")}
                 aria-describedby="kid-name-en-hint"
                 aria-invalid={badEn ? true : undefined}
-                onChange={(e) => setNameEn(e.target.value)}
+                onChange={(e) => edited(setNameEn)(e.target.value)}
                 className={`${inputClass} text-start placeholder:text-ink-faint`}
               />
               {badEn && <span className="text-caption font-semibold text-danger">{t("who.nameEnInvalid")}</span>}

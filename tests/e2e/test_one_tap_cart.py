@@ -76,8 +76,9 @@ def test_completing_a_line_opens_the_create_flow_for_that_line(guest: Page) -> N
 
 
 def test_a_known_child_completes_an_islamic_line_without_the_story_flow(page: Page) -> None:
-    """«قلبي يعرف الله» from the cart: the parent picks a child whose character is approved, and the line
-    is filled with it, back in the cart. No Classic/Magic choice, no story, nothing drawn (placeholders)."""
+    """«قلبي يعرف الله» from the cart: the parent picks a child whose character is approved, confirms the
+    child's card, checks the review, and the line is filled with it, back in the cart. No Classic/Magic
+    choice, no story, nothing drawn (placeholders)."""
     child = preview_book(page, name="ضحى")["child_id"]  # consent and an approved character, no AI
     add(page, "/ar/workbooks/islamic-series")
     line = call(page, "GET", "/api/store/cart")["items"][0]
@@ -87,7 +88,13 @@ def test_a_known_child_completes_an_islamic_line_without_the_story_flow(page: Pa
     page.wait_for_url("**/create**")
     query = parse_qs(urlsplit(page.url).query)
     assert query["item"] == [line["id"]] and query["product"] == [line["sku"]], page.url
+    # a known child is a confirmation card now (order flows §c.4), then the review of what will print (§c.8)
     page.get_by_role("button", name="ضحى", exact=True).click()
+    expect(page.get_by_text("شخصيتها جاهزة")).to_be_visible()
+    page.get_by_role("button", name="نعم، الكتاب لـضحى").click()
+    expect(page.get_by_role("heading", name="راجعوا كتاب ضحى")).to_be_visible()
+    expect(page.get_by_text("أي كتاب تريدون")).to_have_count(0)
+    page.get_by_role("button", name="احفظوا في السلة").click()
     page.wait_for_url("**/cart")
 
     cart = call(page, "GET", "/api/store/cart")

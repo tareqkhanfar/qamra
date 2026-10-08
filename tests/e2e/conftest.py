@@ -5,6 +5,14 @@
 The site's API must run with `E2E_FIXTURES=true` (never in prod: the settings refuse it). The tests make
 their preview books through `/api/e2e/*` with placeholder art, so no AI provider is ever called. How to run
 the whole stack locally: docs/e2e.md.
+
+The order flows (test_order_flows.py) go through the real photo, drawing and story steps. Those steps still
+put jobs on the worker's `generation` queue; the fixtures finish them with placeholders and take the jobs off
+the queue. So run the stack's worker on the `pdf` queue only (`rq worker pdf`: the parent's download needs
+it), never on `generation`.
+
+A whole run signs up and orders more from one address than the API's per-address limits allow in an hour:
+each test first clears this machine's own counters (`/api/e2e/rate-limits/reset`).
 """
 
 import uuid
@@ -37,6 +45,7 @@ def page(browser: Browser) -> Iterator[Page]:
     context.set_default_timeout(30_000)
     page = context.new_page()
     page.goto(f"{BASE_URL}/ar/login")
+    call(page, "POST", "/api/e2e/rate-limits/reset")  # this machine's sign-ups, checkouts and look-ups
     call(
         page,
         "POST",

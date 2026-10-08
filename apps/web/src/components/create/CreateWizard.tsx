@@ -11,7 +11,7 @@ import { emptyFamily, familyPayload, type Family, type Relation } from "@/compon
 import { Link, useRouter } from "@/i18n/navigation";
 import { api, errorText, type User } from "@/lib/api";
 import type { ThemeCard } from "@/lib/catalog";
-import { classicStyles, classicVariant } from "@/lib/classic";
+import { classicStyles, classicVariant, type ClassicVariant } from "@/lib/classic";
 import { companionAddOn } from "@/lib/companion";
 import {
   createApi,
@@ -406,12 +406,15 @@ export function CreateWizard() {
 
   /**
    * The style picked on the story page (Addendum 9), when this line can draw it for this child: then the
-   * style step is already answered and the character is drawn right away.
+   * style step is already answered and the character is drawn right away. Before the child is known (a new
+   * child on the child step), when the line can draw it for some look, so «n من N» doesn't count a style step
+   * that the story page already answered.
    */
-  function presetStyle(value: Line, c: Child): string | null {
+  function presetStyle(value: Line, c: Child | null): string | null {
     const s = catalog?.styles.find((x) => x.slug === q.style);
     if (!s || !s.lines.includes(value)) return null;
-    if (value === "classic" && !classicStyles(themes, classicVariant(c), q.theme).has(s.slug)) return null;
+    const looks: ClassicVariant[] = c ? [classicVariant(c)] : ["girl", "girl_hijab", "boy"];
+    if (value === "classic" && !looks.some((look) => classicStyles(themes, look, q.theme).has(s.slug))) return null;
     return s.slug;
   }
 
@@ -430,7 +433,7 @@ export function CreateWizard() {
       reusable,
       character: c && c.id === child?.id && usedCharacter ? { approved: usedCharacter.approved } : null,
       book: shownBook ? { status: shownBook.status, line: shownBook.line } : null,
-      stylePreset: activity || (!!storyLine && !!c && !!presetStyle(storyLine, c)),
+      stylePreset: activity || (!!storyLine && !!presetStyle(storyLine, c ?? null)),
       companionOffered: !activity && !!companionAddOn(catalog, storyLine ?? "magic"),
       asksFamily,
       plan: c && c.id === child?.id ? plan : null,

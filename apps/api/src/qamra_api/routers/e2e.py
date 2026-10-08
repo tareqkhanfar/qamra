@@ -2,6 +2,13 @@
 in prod (the settings refuse it). They create what the paid steps would have made, with placeholder art and
 no AI call: a child with the guardian's consent, an approved character, and a book waiting at its preview.
 Everything belongs to the signed-in parent, so the real create, cart and checkout APIs run unchanged.
+
+The order flows' tests (tests/e2e/test_order_flows.py) also finish what the real flow asked the worker for,
+again with placeholders and no AI: the character drawn after the photo (`/characters/{id}/ready`, the parent
+then approves it in the flow), the story preview (`/books/{id}/preview`), a live «قمرة كلاسيك» template so a
+Classic preview can start (`/classic-templates`), and the staff's order confirmation with the activity books
+"rendered" as placeholder PDFs (`/orders/{code}/confirm`), so the parent's download can be tested. One test
+machine signs up and orders more than any family: `/rate-limits/reset` clears its own per-address counters.
 """
 
 import io
@@ -11,16 +18,21 @@ from datetime import UTC, date, datetime
 from decimal import Decimal
 from typing import Literal
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from PIL import Image, ImageDraw
 from pydantic import BaseModel, Field
+from rq import Queue
 from sqlalchemy import select
 
 from qamra_ai.pipeline.theme import fill_title
-from qamra_api.deps import CurrentUser, SessionDep, StorageDep
+from qamra_api.auth.router import client_ip
+from qamra_api.deps import CurrentUser, RedisDep, SessionDep, StorageDep
 from qamra_api.errors import ApiError
+from qamra_api.jobs import QueueDep
 from qamra_api.routers.create import CONSENT_VERSION
 from qamra_api.store import gift_cards
+from qamra_core import downloads as dl
+from qamra_core.db.classic import ClassicTemplate, TemplateStatus
 from qamra_core.db.models import (
     Book,
     BookPage,
@@ -34,13 +46,16 @@ from qamra_core.db.models import (
     Locale,
     Order,
     OrderItem,
+    OrderStatus,
     PageStatus,
     Theme,
 )
-from qamra_core.db.store import Coupon, CouponKind, GiftCard
+from qamra_core.db.store import Coupon, CouponKind, GiftCard, OrderEvent
+from qamra_core.storage import ObjectStorage
 
 router = APIRouter(prefix="/api/e2e", tags=["e2e"])
 PREVIEW_BEATS = (0, 1, 2, 3)  # the cover and three pages, like a real preview
+ACTIVITY_THEME = "e2e-activity-book"  # the hidden theme the placeholder activity books hang on
 
 
 def _placeholder(color: tuple[int, int, int], fmt: str, side: int = 512) -> bytes:
@@ -52,6 +67,40 @@ def _placeholder(color: tuple[int, int, int], fmt: str, side: int = 512) -> byte
     buf = io.BytesIO()
     img.save(buf, fmt)
     return buf.getvalue()
+
+
+def _preview_pages(db: SessionDep, storage: ObjectStorage, book: Book, text: str | None = None) -> None:
+    """The cover and the first pages of a preview, with placeholder art (and `text` on the story pages)."""
+    for beat in PREVIEW_BEATS:
+        key = f"children/{book.child_id}/books/{book.id}/preview/{beat:02d}.jpg"
+        storage.put(key, _placeholder((22, 32, 74), "JPEG"), "image/jpeg")
+        db.add(
+            BookPage(
+                book_id=book.id,
+                index=beat,
+                status=PageStatus.ok,
+                preview_image_key=key,
+                layout="full",
+                text=text if beat else None,
+                original_text=text if beat else None,
+            )
+        )
+
+
+def _drop_queued(queue: Queue, target: uuid.UUID) -> None:
+    """The worker's job for what a fixture just finished (a drawing, a preview), taken off the queue while it
+    still waits, so it never reaches a provider. Run the e2e stack with no worker on this queue: a job a
+    worker already took can't be called back."""
+    for job in queue.get_jobs():
+        if job.args and str(job.args[0]) == str(target):
+            job.cancel()
+
+
+async def _my_child(db: SessionDep, user_id: uuid.UUID, child_id: uuid.UUID) -> Child:
+    child = await db.get(Child, child_id)
+    if child is None or child.guardian_user_id != user_id:
+        raise ApiError("not_found", 404)
+    return child
 
 
 class BookIn(BaseModel):
@@ -133,12 +182,7 @@ async def preview_book(body: BookIn, user: CurrentUser, db: SessionDep, storage:
     )
     db.add(book)
     await db.flush()
-    for beat in PREVIEW_BEATS:
-        key = f"children/{child.id}/books/{book.id}/preview/{beat:02d}.jpg"
-        storage.put(key, _placeholder((22, 32, 74), "JPEG"), "image/jpeg")
-        db.add(
-            BookPage(book_id=book.id, index=beat, status=PageStatus.ok, preview_image_key=key, layout="full")
-        )
+    _preview_pages(db, storage, book)
     await db.commit()
     count = len(
         (await db.execute(select(Character.id).where(Character.child_id == child.id))).scalars().all()
@@ -151,6 +195,127 @@ async def preview_book(body: BookIn, user: CurrentUser, db: SessionDep, storage:
         line=body.line,
         characters=count,
     )
+
+
+class CharacterOut(BaseModel):
+    id: uuid.UUID
+    child_id: uuid.UUID
+    status: str
+    style: str
+
+
+@router.post("/characters/{character_id}/ready")
+async def character_ready(
+    character_id: uuid.UUID, user: CurrentUser, db: SessionDep, storage: StorageDep, queue: QueueDep
+) -> CharacterOut:
+    """The drawing the create flow asked for after the photo (`generating`), finished with placeholder art
+    instead of the image model: `ready`, for the parent to approve in the flow as usual."""
+    character = await db.get(Character, character_id)
+    if character is None:
+        raise ApiError("not_found", 404)
+    child = await _my_child(db, user.id, character.child_id)
+    if character.status == CharacterStatus.generating:
+        _drop_queued(queue, character.id)
+        character.sheet_image_key = f"children/{child.id}/characters/{character.id}.png"
+        storage.put(character.sheet_image_key, _placeholder((34, 48, 106), "PNG"), "image/png")
+        character.status = CharacterStatus.ready
+        character.provider, character.model = "e2e", "placeholder"
+        await db.commit()
+    return CharacterOut(
+        id=character.id, child_id=child.id, status=character.status.value, style=character.art_style
+    )
+
+
+class PreviewOut(BaseModel):
+    id: uuid.UUID
+    status: str
+    title: str | None
+
+
+@router.post("/books/{book_id}/preview")
+async def finish_preview(
+    book_id: uuid.UUID, user: CurrentUser, db: SessionDep, storage: StorageDep, queue: QueueDep
+) -> PreviewOut:
+    """A story the create flow started (`generating`), at its preview with placeholder pages, as the worker
+    would leave it: the parent then reviews it (Magic), picks the format and orders it."""
+    book = await db.get(Book, book_id)
+    if book is None or book.created_by_user_id != user.id:
+        raise ApiError("not_found", 404)
+    if book.status == BookStatus.generating:
+        _drop_queued(queue, book.id)
+        child = await _my_child(db, user.id, book.child_id)
+        theme = await db.get(Theme, book.theme_id)
+        if theme is not None and not book.title:
+            title = theme.title_en if book.language == Locale.en else theme.title_ar
+            book.title = fill_title(title, child.first_name, child.gender.value)
+        _preview_pages(db, storage, book, text=f"نَصٌّ تَجْرِيبِيٌّ لِصَفْحَةٍ مِنْ حِكايَةِ {child.first_name}.")
+        book.status = BookStatus.preview
+        book.generation = {**(book.generation or {}), "offline": "sketch", "e2e": True}
+        await db.commit()
+    return PreviewOut(id=book.id, status=book.status.value, title=book.title)
+
+
+class TemplateIn(BaseModel):
+    theme: str = Field(default="first-day", max_length=64)
+    style: str = Field(default="watercolor", max_length=40)
+    variant: Literal["girl", "girl_hijab", "boy"] = "girl"
+
+
+class TemplateOut(BaseModel):
+    id: uuid.UUID
+    theme: str
+    style: str
+    variant: str
+    status: str
+
+
+@router.post("/classic-templates", status_code=201)
+async def classic_template(body: TemplateIn, user: CurrentUser, db: SessionDep) -> TemplateOut:
+    """A live «قمرة كلاسيك» template for a story, style and look (no pages: nothing draws from it here), so
+    the Classic flow is offered and can start its preview; `/books/{id}/preview` finishes that preview.
+    An existing template of the same story, style and look is used as it is (never changed)."""
+    theme = (await db.execute(select(Theme).where(Theme.slug == body.theme))).scalar_one_or_none()
+    if theme is None:
+        raise ApiError("not_found", 404)
+    template = (
+        await db.execute(
+            select(ClassicTemplate).where(
+                ClassicTemplate.theme_id == theme.id,
+                ClassicTemplate.art_style == body.style,
+                ClassicTemplate.variant == body.variant,
+            )
+        )
+    ).scalar_one_or_none()
+    if template is None:
+        now = datetime.now(UTC)
+        template = ClassicTemplate(
+            theme_id=theme.id,
+            theme_version=theme.version,
+            art_style=body.style,
+            variant=body.variant,
+            status=TemplateStatus.live,
+            generation={"e2e": True, "offline": "sketch"},
+            approved_at=now,
+            live_at=now,
+        )
+        db.add(template)
+        await db.commit()
+    return TemplateOut(
+        id=template.id,
+        theme=theme.slug,
+        style=template.art_style,
+        variant=template.variant,
+        status=template.status.value,
+    )
+
+
+@router.post("/rate-limits/reset", status_code=204)
+async def reset_rate_limits(request: Request, redis: RedisDep) -> None:
+    """The caller's own per-address counters (sign-ups, checkouts, order tracking, codes): a test machine
+    signs up and orders more in an hour than any family would. Per-account counters stay as they are."""
+    keys = [key async for key in redis.scan_iter(match=f"rl:*:{client_ip(request)}")]
+    if keys:
+        await redis.delete(*keys)
 
 
 class CodeOut(BaseModel):
@@ -185,8 +350,18 @@ async def gift_card(body: CardIn, user: CurrentUser, db: SessionDep) -> CodeOut:
     return CodeOut(code=gift_cards.pretty(code))
 
 
+class ItemOut(BaseModel):
+    id: uuid.UUID
+    sku: str | None
+    line: str | None
+    child_id: uuid.UUID | None
+    book_id: uuid.UUID | None
+    personalization: dict[str, object]
+
+
 class OrderOut(BaseModel):
     code: str
+    status: str
     gift: bool
     gift_message: str | None
     total: Decimal
@@ -194,17 +369,28 @@ class OrderOut(BaseModel):
     pricing: dict[str, object]
     skus: list[str]
     addons: list[list[str]]
+    items: list[ItemOut]
+
+
+async def _my_order(db: SessionDep, user_id: uuid.UUID, code: str) -> tuple[Order, list[OrderItem]]:
+    row = (await db.execute(select(Order).where(Order.code == code))).scalar_one_or_none()
+    if row is None or row.user_id != user_id:
+        raise ApiError("not_found", 404)
+    items = (
+        (await db.execute(select(OrderItem).where(OrderItem.order_id == row.id).order_by(OrderItem.id)))
+        .scalars()
+        .all()
+    )
+    return row, list(items)
 
 
 @router.get("/orders/{code}")
 async def order(code: str, user: CurrentUser, db: SessionDep) -> OrderOut:
     """What the test needs to check after checkout, for the signed-in parent's own orders only."""
-    row = (await db.execute(select(Order).where(Order.code == code))).scalar_one_or_none()
-    if row is None or row.user_id != user.id:
-        raise ApiError("not_found", 404)
-    items = (await db.execute(select(OrderItem).where(OrderItem.order_id == row.id))).scalars().all()
+    row, items = await _my_order(db, user.id, code)
     return OrderOut(
         code=row.code,
+        status=row.status.value,
         gift=row.gift,
         gift_message=row.gift_message,
         total=row.total,
@@ -212,4 +398,153 @@ async def order(code: str, user: CurrentUser, db: SessionDep) -> OrderOut:
         pricing=row.pricing,
         skus=[str(i.sku) for i in items],
         addons=[[str(a.get("slug")) for a in i.addons] for i in items],
+        items=[
+            ItemOut(
+                id=i.id,
+                sku=i.sku,
+                line=i.line,
+                child_id=i.child_id,
+                book_id=i.book_id,
+                personalization=dict(i.personalization or {}),
+            )
+            for i in items
+        ],
     )
+
+
+def _placeholder_pdf(pages: int, label: str) -> bytes:
+    """A small PDF of `pages` A4 pages (595 × 842 pt): no TrimBox, so its home copy is the page itself."""
+    sheets = []
+    for n in range(pages):
+        img = Image.new("RGB", (595, 842), (250, 247, 240))
+        draw = ImageDraw.Draw(img)
+        draw.ellipse((330, 80, 500, 250), fill=(242, 179, 61))
+        draw.text((60, 760), f"qamra e2e placeholder: {label} {n + 1}/{pages}", fill=(22, 32, 74))
+        sheets.append(img)
+    buf = io.BytesIO()
+    sheets[0].save(buf, "PDF", resolution=72, save_all=True, append_images=sheets[1:])
+    return buf.getvalue()
+
+
+async def _activity_theme(db: SessionDep) -> Theme:
+    theme = (await db.execute(select(Theme).where(Theme.slug == ACTIVITY_THEME))).scalar_one_or_none()
+    if theme is None:
+        theme = Theme(
+            slug=ACTIVITY_THEME,
+            title_ar="كتاب أنشطة (اختبار)",
+            title_en="Activity book (test)",
+            age_min=3,
+            age_max=8,
+            active=False,  # never listed as a story
+            definition={"e2e": True},
+        )
+        db.add(theme)
+        await db.flush()
+    return theme
+
+
+class ConfirmIn(BaseModel):
+    render: bool = False  # also "render" the activity books, with placeholder PDFs (no page engine, no AI)
+
+
+class MadeBook(BaseModel):
+    book_id: uuid.UUID
+    line: str
+    part: str
+    files: list[str]
+
+
+class ConfirmOut(BaseModel):
+    code: str
+    status: str
+    books: list[MadeBook]
+
+
+# the extra files each activity book's job stores (worker/*_book.py), by line
+EXTRA_FILES: dict[str, tuple[str, ...]] = {
+    "workbook": ("answer-key",),
+    "journey": ("answer-key",),
+    "islamic": ("answer-key",),
+    "family": ("stickers", "card-money-recipes", "card-games-roles"),
+}
+
+
+def _part_generation(item: OrderItem, part: str) -> dict[str, object]:
+    """What the line's real job writes on each book: the line, the order line, and its volume or stage."""
+    gen: dict[str, object] = {"line": item.line, "order_item_id": str(item.id), "e2e": True}
+    if item.line == "workbook":
+        gen |= {"level": dl.options_of(item).get("level", ""), "volume": int(part)}
+    elif item.line == "journey":
+        gen["stage"] = part
+    elif item.line == "islamic":
+        gen["volume"] = part
+    return gen
+
+
+async def _render_placeholders(
+    db: SessionDep, storage: ObjectStorage, user_id: uuid.UUID, item: OrderItem
+) -> list[MadeBook]:
+    """Each book of an activity line as its job leaves a passed render (`in_review`, every preflight passed,
+    the print files and extra files stored), with placeholder PDFs instead of the page engine."""
+    if item.child_id is None or item.line not in EXTRA_FILES:
+        return []
+    child = await _my_child(db, user_id, item.child_id)
+    theme = await _activity_theme(db)
+    character_id = (item.personalization or {}).get("character_id")
+    made = []
+    for part in dl.parts_of(item.line, dl.options_of(item)):
+        book = Book(
+            child_id=child.id,
+            character_id=uuid.UUID(str(character_id)) if character_id else None,
+            theme_id=theme.id,
+            theme_version=theme.version,
+            language=Locale.ar,
+            art_style="3d",
+            status=BookStatus.in_review,
+            title=f"{(item.title or {}).get('name_ar') or item.sku} · {child.first_name}",
+            generation=_part_generation(item, part),
+        )
+        db.add(book)
+        await db.flush()
+        prefix = f"children/{child.id}/books/{book.id}/final"
+        book.pdf_interior_key = f"{prefix}/interior.pdf"
+        storage.put(
+            book.pdf_interior_key, _placeholder_pdf(4, f"{item.line} {part} interior"), "application/pdf"
+        )
+        book.pdf_cover_key = f"{prefix}/cover.pdf"
+        storage.put(book.pdf_cover_key, _placeholder_pdf(2, f"{item.line} {part} cover"), "application/pdf")
+        files = {}
+        for kind in EXTRA_FILES[str(item.line)]:
+            files[kind] = f"{prefix}/{kind}.pdf"
+            storage.put(files[kind], _placeholder_pdf(1, f"{item.line} {part} {kind}"), "application/pdf")
+        book.generation = {**book.generation, "files": files}
+        book.preflight = {"interior": {"passed": True}, "cover": {"passed": True}}
+        made.append(MadeBook(book_id=book.id, line=str(item.line), part=part, files=["book", *files]))
+    return made
+
+
+@router.post("/orders/{code}/confirm")
+async def confirm(
+    code: str, body: ConfirmIn, user: CurrentUser, db: SessionDep, storage: StorageDep
+) -> ConfirmOut:
+    """Staff confirm the parent's cash-on-delivery order (`new` → `confirmed`, with its event), without the
+    jobs a real confirmation starts (invoice, renders). With `render`, the activity lines' books are made as
+    their jobs would leave them after a passed render, so the parent's downloads can be tested."""
+    row, items = await _my_order(db, user.id, code)
+    if row.status == OrderStatus.new:
+        row.status = OrderStatus.confirmed
+        db.add(
+            OrderEvent(
+                order_id=row.id,
+                kind="status",
+                from_status=OrderStatus.new,
+                to_status=OrderStatus.confirmed,
+                note="e2e",
+            )
+        )
+    books: list[MadeBook] = []
+    if body.render:
+        for item in items:
+            books += await _render_placeholders(db, storage, user.id, item)
+    await db.commit()
+    return ConfirmOut(code=row.code, status=row.status.value, books=books)
