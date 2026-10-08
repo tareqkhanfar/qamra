@@ -54,6 +54,7 @@ export type Summary = {
 const OPTIONS = ["level", "volume", "stage", "interior", "format"] as const;
 
 const DEDICATION = "dedication-page";
+const DIGITAL = "digital"; // a file, not a printed book: downloaded from the order page or the account once made
 
 export function summarize(item: LineInput, kind: Kind, names: Names): Summary {
   return kind === "activity" ? activity(item, names) : story(item, names);
@@ -75,6 +76,7 @@ function activity(item: LineInput, names: Names): Summary {
   const facts: Part[] = [];
   const latin = clean(item.child_name_en);
   if (latin) facts.push({ key: "nameEn", values: { name: latin } });
+  if (options.format === DIGITAL) facts.push({ key: "download" });
   return { kind: "activity", title, details, facts, family: line === "family" ? familyOf(item, child) : null };
 }
 
@@ -95,6 +97,7 @@ function story(item: LineInput, names: Names): Summary {
   // the story, unless the title already is it (a line still waiting for its child shows the story as its title)
   if (theme && (book || child)) facts.push({ key: "story", values: { name: theme } });
   if (item.dedication || (item.addons ?? []).some((a) => a.slug === DEDICATION)) facts.push({ key: "dedication" });
+  if (options.format === DIGITAL) facts.push({ key: "download" });
   return { kind: "story", title, details, facts, family: null };
 }
 

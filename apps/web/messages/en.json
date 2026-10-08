@@ -1403,6 +1403,7 @@
       "nameEn": "Name in English: {name}",
       "story": "Story: {name}",
       "dedication": "Dedication ✓",
+      "download": "Download the file from the order page or your account once it's ready.",
       "family": {
         "with": "The {name} family: {members}",
         "alone": "The {name} family, no names: the missions say «أحد الكبار» (a grown-up)",

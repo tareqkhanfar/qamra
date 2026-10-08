@@ -100,6 +100,9 @@ describe("activity books (§c.9)", () => {
     );
     assert.equal(ar(islamic.title), "قلبي يعرف الله · ضحى");
     assert.equal(details(islamic), "كتاب رمضان والعيد · ملف PDF");
+    assert.deepEqual(islamic.facts, [{ key: "download" }]); // where the file is downloaded, once ready
+    ar(islamic.facts[0]);
+    assert.deepEqual(journey.facts, []); // printed: nothing to download
   });
 
   it("the family book: the family as printed («عائلة ضحى» when its name is empty)", () => {
@@ -164,5 +167,7 @@ describe("stories (§c.9)", () => {
     assert.deepEqual(s.title, { text: "موسم الزيتون" });
     assert.equal(details(s), "قمرة كلاسيك · غلاف ورقي");
     assert.deepEqual(s.facts.map(ar), ["إهداء ✓"]);
+    const digital = summarize({ line: "classic", options: { format: "digital" } }, "story", classic);
+    assert.deepEqual(digital.facts, [{ key: "download" }]);
   });
 });

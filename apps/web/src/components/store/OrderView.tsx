@@ -157,6 +157,12 @@ function Item({ item, styles, themes }: { item: TrackedItem; styles: CatalogStyl
           {t("addons", { names: addons.join(locale === "ar" ? "، " : ", ") })}
         </span>
       )}
+      {/*
+        DOWNLOAD SLOT (digital lines, `item.options.format === "digital"`): mount the digital-delivery agent's
+        <DownloadButton … /> (components/order/DownloadButton.tsx, props in docs/plans/order-flows.md) here, once
+        it is committed. It needs the order line's id from the order tracking. Until then the summary's
+        `orderPath.line.download` fact says where the file is downloaded once it is ready.
+      */}
     </LineText>
   );
 }
