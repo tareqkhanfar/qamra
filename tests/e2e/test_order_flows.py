@@ -230,7 +230,7 @@ def test_foundation_kg1_v2_english_name(page: Page) -> None:
     in Latin letters can't be traced («Luay»: refused, with the friendly message); «لؤي» (ؤ) can; an English
     name in Arabic letters is refused. The review and the cart then show the level, the volume and «Luay»."""
     page.goto(f"{BASE_URL}/ar/workbooks/foundation-workbook")
-    pick(page, "المستوى", "KG1 · 4–5 سنين")
+    pick(page, "المستوى", "KG1 · 4–5 سنوات")
     pick(page, "الجزء", "الثاني")
     pick(page, "الشكل", "مطبوع")
     expect(page.get_by_role("radio", name="أبيض وأسود")).to_have_count(0)  # no B&W interior is sold
@@ -298,7 +298,7 @@ def test_foundation_digital_set_download(page: Page) -> None:
     page lists every volume's files, and «تنزيل PDF» downloads the home copy the worker cut."""
     preview_book(page, name="ليان", age=5)
     page.goto(f"{BASE_URL}/ar/workbooks/foundation-workbook")
-    pick(page, "المستوى", "KG2 · 5–6 سنين")
+    pick(page, "المستوى", "KG2 · 5–6 سنوات")
     pick(page, "الجزء", "الثلاثة معًا")
     pick(page, "الشكل", "PDF للطباعة بالبيت")
     page.get_by_role("link", name=START).click()
@@ -704,7 +704,7 @@ def test_only_active_add_ons(page: Page) -> None:
     assert not [s for s in skus if "-bw-" in s], skus
 
     page.goto(f"{BASE_URL}/ar/workbooks/foundation-workbook")
-    for level in ("KG1 · 4–5 سنين", "KG2 · 5–6 سنين"):
+    for level in ("KG1 · 4–5 سنوات", "KG2 · 5–6 سنوات"):
         pick(page, "المستوى", level)
         expect(page.get_by_role("radio", name="أبيض وأسود")).to_have_count(0)
 

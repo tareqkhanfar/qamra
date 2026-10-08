@@ -37,7 +37,7 @@ export const addonMedia: Readonly<Record<string, AddonMedia | undefined>> = {
   },
   "drawing-companion": {
     src: "/addons/drawing-companion.webp",
-    alt_ar: "رسمة طفل على ورقة، وسهم منها إلى الكتاب: تصبح الرسمة صاحبًا يرافقه في الحكاية",
+    alt_ar: "رسمة طفل على ورقة، وسهم منها إلى الكتاب: تصبح الرسمة رفيقًا له في الحكاية",
     alt_en: "A child’s drawing on paper, with an arrow to the book: the drawing becomes a companion in the story",
   },
   "family-voice": {
@@ -89,8 +89,8 @@ const MAGIC: IncludedItem[] = [
     src: "/addons/drawing-companion.webp",
     title_ar: "صاحبي من رسمتي",
     title_en: "Drawing companion",
-    desc_ar: "يرسم طفلكم صاحبًا له، فنحوّل رسمته إلى شخصية ترافقه في الحكاية.",
-    desc_en: "Your child draws a friend, and we turn the drawing into a character who joins them in the story.",
+    desc_ar: "يرسم طفلكم رفيقًا له، فنحوّل رسمته إلى شخصية ترافقه في الحكاية.",
+    desc_en: "Your child draws a companion, and we turn the drawing into a character who joins them in the story.",
   },
   {
     src: "/addons/dedication-page.webp",
@@ -194,8 +194,8 @@ export const includedItems: Readonly<Record<string, IncludedItem[] | undefined>>
     },
     {
       src: "/included/islamic-series/passport.webp",
-      title_ar: "جواز السفر",
-      title_en: "Passport",
+      title_ar: "جواز المسلم الصغير",
+      title_en: "Young Muslim’s passport",
       desc_ar: "باسم طفلكم وشخصيته: يلصق فيه ختم كل وحدة من ورقة الملصقات، ويلوّن نجمة بعد كل تحدٍّ.",
       desc_en:
         "With your child’s name and character: they stick in a stamp from the sticker sheet after each unit, and color a star after each challenge.",

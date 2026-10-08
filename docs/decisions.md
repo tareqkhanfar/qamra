@@ -606,3 +606,15 @@ Verified prices and parameters are listed in `docs/plans/addendum-03.md` §1, wi
 - **No sacred words on the Islamic sheet** (content guide: pages cut or thrown away carry none): not the name of Allah, ﷺ, a prophet, the Quran, a surah or a verse, so the footer names the volume, never the series «قلبي يعرف الله»; checked on every build (`sacred_words`). The child's own name is theirs and prints as given («عبد الله»).
 - **Digital copies:** the sheet is the `stickers` extra of the digital download (cut to A4, the magenta cut lines show as a guide), not a page appended to the book's PDF: the print file stays one file for the printer and the parent can print it on sticker paper.
 
+
+## The words the site uses for the same things (language pass, 2026-10-08)
+
+A strict review of every customer-facing string added during the order-flow work (chunk 13 of `docs/plans/order-flows.md`) fixed the texts to these house terms. New text follows them.
+- **Ages:** «سنوات» («KG1 · 4–5 سنوات», «3 سنوات أو أقل»), never «سنين»; one age with the ICU plural `one {سنة واحدة} two {سنتان} few {# سنوات} many {# سنة} other {# سنة}`.
+- **Download / loading:** «تنزيل، نزّلوا» for a file the parent saves; «تحميل» only for loading («جارٍ التحميل…»).
+- **The passports:** «قلبي يعرف الله» has «الجواز» / «جواز المسلم الصغير» (English "Young Muslim's passport"), never «جواز السفر»; «مغامراتي مع عائلتي» keeps its «جواز السفر».
+- **The drawn companion of a story book:** described as «رفيق من رسمته/رسمتها» (English "companion"). The add-on's name «صاحبي من رسمتي» and the printed page «وهكذا وُلد صاحبي» stay.
+- **«دوسية»** names only «دوسية التأسيس»; the four books together are «كتب الأنشطة» (English "activity books").
+- **Parents** are addressed in the plural (اختاروا، طفلكم); the child step's words for a child of unknown gender use the generic masculine «طفلكم … اسمه».
+- **English apostrophes:** the straight `'` in `messages/en.json`, as in the rest of the site.
+- **Left for the owner:** the colloquial lines that came with the Addendum 9 design (e.g. «بدكم تزيدوا الفرحة؟», «بالخطوة الجاية», «تشوفوا المعاينة», the quiz's «قديش» and «شو», the add-on descriptions «سطرين منكم بأول الكتاب», «نفس الكتاب بنص السعر تقريبًا») are kept as they are: whether the whole site speaks MSA is Tareq's call. Older strings outside this pass that still say «صاحبه» for the companion (the companion step, the home headline, the landing page) or «دوسيات» as a category (the meta description, the landing lead, the footer) are listed in the chunk 13 report.

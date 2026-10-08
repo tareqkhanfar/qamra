@@ -12,6 +12,8 @@ Specs: [CLAUDE.md](CLAUDE.md) + addenda [01](docs/ADDENDUM-01.md), [03](docs/ADD
 - **Admin:** approval queue (every story's text is reviewed, edited if needed and confirmed there before it reaches the family or the printer), the template studio (theme versions, page editor, bulk actions), staff roles, the audit log, catalog and prices, reports, cost per line, print costs, organizations, leads, journey audio, settings with 2FA.
 - **Operations:** the production overlay, encrypted backups with a restore drill, monitoring and runbooks (`docs/runbooks/`).
 
+**Order flows (2026-10-08, `docs/plans/order-flows.md`):** each product has its own order flow. Activity books ask only what they print (the name as printed, the English name where the book traces it, the family for «مغامراتي مع عائلتي») and end on a review of what will be printed; stories ask the type, drawing and story steps. The cart, checkout and order page say what each line prints and offer each line its own add-ons; add-ons nothing can produce are switched off. Every «رحلتي الأولى» stage and «قلبي يعرف الله» volume ships with its own sticker sheet, «دوسية التأسيس» is rendered per order, and parents download the PDFs they bought from their account (`docs/plans/digital-delivery.md`).
+
 ## Run the stack
 
 Requirements: Docker with Compose v2.
@@ -64,7 +66,7 @@ make check         # ruff + mypy + pytest + prettier/eslint/tsc for the web
 make migration m="add something"   # autogenerate + tidy a migration
 ```
 
-Tests use fake AI providers, fakeredis and moto (S3). Only Postgres is real: each run rebuilds `*_test` through the migrations, and each test is rolled back. The browser E2E flows of the order path are in `tests/e2e/` (`docs/e2e.md`).
+Tests use fake AI providers, fakeredis and moto (S3). Only Postgres is real: each run rebuilds `*_test` through the migrations, and each test is rolled back. The web's pure modules (`src/lib/flows.ts`, `variantSummary.ts`) have unit tests: `cd apps/web && npm test`. The browser E2E flows of the order path, one per product, are in `tests/e2e/` (`docs/e2e.md`: the API needs `E2E_FIXTURES=true`, and the worker must run on the `pdf` queue only, never `generation`).
 
 ## Sample books, examples and Classic templates
 

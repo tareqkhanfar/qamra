@@ -164,7 +164,7 @@ export function LineCompare({
                     })
                   }
                   aria-label={t("zoom", { page: sampleAlt(sample, locale) })}
-                  className={`relative flex aspect-[4/3] w-full cursor-zoom-in sm:aspect-[16/10] items-center justify-center overflow-hidden p-4 ${dark ? "bg-night-800" : "bg-paper-sunk"}`}
+                  className={`relative flex aspect-[4/3] w-full cursor-zoom-in items-center justify-center overflow-hidden p-4 sm:aspect-[16/10] ${dark ? "bg-night-800" : "bg-paper-sunk"}`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element -- static sample pages in two sizes */}
                   <img

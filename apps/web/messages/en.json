@@ -345,7 +345,7 @@
     },
     "learn": {
       "title": "Learn and play",
-      "lead": "Workbooks and activity books with their name and character",
+      "lead": "Activity books with their name and character",
       "chip": {
         "workbook": "{ages} · kindergarten",
         "journey": "{ages} · at home",
@@ -361,7 +361,7 @@
     },
     "b2b": {
       "eyebrow": "For kindergartens and schools",
-      "title": "A graduation book for every child, and workbooks with your school's logo",
+      "title": "A graduation book for every child, and activity books with your school's logo",
       "price": "From {price} per child for orders of {n} children or more",
       "cta": "Ask for a quote"
     },
@@ -2576,7 +2576,7 @@
       "title": "{name}'s book is ready!",
       "classicTitle": "{name}'s book in Qamra Classic",
       "classicNote": "After you order, we draw {name}'s features into the story's ready illustrations and send you the book to review before printing.",
-      "examplePages": "Real pages from this story (a sample). In your book {name} is the hero, with their own face, and you review the book before printing.",
+      "examplePages": "Real pages from this story (a sample). In your book we draw {name}'s features into the story's pictures, and send you the book to review before printing.",
       "previewOf": "{n} of {total} preview pages",
       "watermark": "The full book, without the watermark, after you order",
       "choose": "Choose the format",
@@ -3690,23 +3690,23 @@
     "lead": "Real pages from books we made for imaginary children. Pick a style to see its pages, and tap any page to enlarge it.",
     "tabsLabel": "Art style",
     "galleryLabel": "Pages in the “{style}” style",
-    "stepGallery": "Here’s how the pages look in the “{style}” style",
+    "stepGallery": "Here's how the pages look in the “{style}” style",
     "styles": {
       "3d": "Warm cinematic light, expressive eyes and magical depth in every scene, as if your child were the hero of an animated film.",
-      "watercolor": "The warmth of watercolor on textured paper, with golden light and deep shadows. This is Qamra’s signature look.",
+      "watercolor": "The warmth of watercolor on textured paper, with golden light and deep shadows. This is Qamra's signature look.",
       "cartoon": "Clean outlines, bright cheerful colors and simple shapes that little ones love at first sight."
     },
     "soldIn": "Available in {lines}",
     "realPages": "{count, plural, one {# real page} other {# real pages}}",
     "styleCount": "{count, plural, one {# art style} other {# art styles}}",
     "caption": {
-      "companion": "Qamour, the hero’s companion in our stories",
+      "companion": "Qamour, the hero's companion in our stories",
       "from": "From “{story}”",
       "story": "“{story}”"
     },
     "note": {
-      "otherStories": "These pages come from other stories in the same style. You’ll see your child’s story drawn this way in the free preview, before you pay.",
-      "companionOnly": "This is how Qamour looks in this style. You’ll see your child’s story drawn this way in the free preview, before you pay."
+      "otherStories": "These pages come from other stories in the same style. You'll see your child's story drawn this way in the free preview, before you pay.",
+      "companionOnly": "This is how Qamour looks in this style. You'll see your child's story drawn this way in the free preview, before you pay."
     },
     "gallery": {
       "zoom": "Enlarge: {page}",
@@ -3731,7 +3731,7 @@
       "lead": "Choose any you like after the preview.",
       "later": "Choose any you like after the preview.",
       "plus": "+{price}",
-      "percent": "{percent}% of the book’s price",
+      "percent": "{percent}% of the book's price",
       "free": "Free",
       "includedIn": "Included in {line}",
       "onlyIn": "Only with {line}",
@@ -3753,7 +3753,7 @@
       "classic": {
         "tagline": "Beautiful ready-made art, with your child drawn in as the hero",
         "points": [
-          "The story’s pictures are ready-made and reviewed, and we draw your child’s features into every page where they appear",
+          "The story's pictures are ready-made and reviewed, and we draw your child's features into every page where they appear",
           "Their name on every page, with the right “he” or “she” throughout",
           "Ready to preview within minutes, at a lower price"
         ]
@@ -3762,7 +3762,7 @@
         "tagline": "Every page is drawn anew for your child alone",
         "points": [
           "One-of-a-kind pictures no other child has",
-          "The story text suits your child’s age, with a touch of their interests"
+          "The story text suits your child's age, with a touch of their interests"
         ]
       },
       "facts": {

@@ -7,7 +7,7 @@ import { money, type Catalog } from "@/lib/store";
 import { LINES, offer } from "@/lib/story";
 
 /**
- * Design Shop: the two story lines side by side (Classic, Magic «مع صاحبه») with a real page each when an
+ * Design Shop: the two story lines side by side (Classic, Magic «مع رفيق من رسمته») with a real page each when an
  * example is published, and the price they start from.
  */
 export function StoryLines({ catalog, examples }: { catalog: Catalog | null; examples: Example[] }) {
