@@ -108,3 +108,15 @@ async def open_jordan(adb) -> None:  # type: ignore[no-untyped-def]
 
     await adb.execute(update(ShippingZone).where(ShippingZone.country == "JO").values(active=True))
     await adb.commit()
+
+
+async def sell_every_addon(adb) -> None:  # type: ignore[no-untyped-def]
+    """Switch every add-on on, as the admin can: the seed keeps the extras we cannot deliver switched off
+    (owner's decision, 2026-10-07; migration 18342eeba4e4). For tests of the add-on and pricing mechanics,
+    which use the whole catalog; test_order_flow_needs covers the switched-off ones."""
+    from sqlalchemy import update
+
+    from qamra_core.db.store import AddOn
+
+    await adb.execute(update(AddOn).values(active=True))
+    await adb.commit()

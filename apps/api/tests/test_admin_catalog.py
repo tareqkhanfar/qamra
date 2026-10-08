@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from api_helpers import make_admin
+from api_helpers import make_admin, sell_every_addon
 from httpx import AsyncClient
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -76,6 +76,7 @@ async def test_the_simulator_runs_the_store_pricing_with_costs(
     client: AsyncClient, adb: AsyncSession
 ) -> None:
     await seed_store(adb)
+    await sell_every_addon(adb)  # the gift box is switched off in the seed (no stock)
     await make_admin(client, adb)
     r = await client.post(
         "/api/admin/catalog/simulate",

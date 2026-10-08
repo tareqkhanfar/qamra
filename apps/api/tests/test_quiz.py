@@ -67,8 +67,9 @@ async def test_quiz_answers_with_catalog_prices(client: AsyncClient, adb: AsyncS
     assert product["slug"] == "learning-journey" and product["options"] == {"stage": "2"}
     assert product["available"] is True
     assert Decimal(product["from_price"]) == Decimal("69")  # the cheapest printed copy, not the PDF
+    # the black-and-white 49 ₪ volumes are off until their interior exists (2026-10-07): the colour one
     assert alternative["slug"] == "foundation-workbook" and Decimal(alternative["from_price"]) == Decimal(
-        "49"
+        "69"
     )
     story = (await client.get("/api/shop/quiz?age=5&goal=gift")).json()["product"]
     assert story["kind"] == "stories" and Decimal(story["from_price"]) == Decimal("69")

@@ -178,6 +178,30 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "هذا الكتاب لا يطابق الكتاب الذي في السلة. ارجعوا إلى السلة وحاولوا مرة أخرى.",
         "This book doesn't match the one in your cart. Go back to the cart and try again.",
     ),
+    # ---- activity books: what the book prints for the child (docs/plans/order-flows.md, chunk 8)
+    "name_en_required": (
+        "اكتبوا اسم طفلكم بالأحرف الإنجليزية، ففي الكتاب صفحة يتتبّع فيها اسمه بالإنجليزية.",
+        "Please write your child's name in English letters: the book has a page where they trace it in "
+        "English.",
+    ),
+    "name_en_invalid": (
+        "اكتبوا الاسم بالأحرف الإنجليزية فقط، دون أرقام أو رموز.",
+        "Write the name in English letters only, with no numbers or symbols.",
+    ),
+    "name_not_arabic": (
+        "اكتبوا الاسم بالحروف العربية، فهكذا سيتتبّعه طفلكم.",
+        "Write the name in Arabic letters: that's how your child will trace it.",
+    ),
+    "name_not_traceable": (
+        "في هذا الاسم حرف لم تشمله صفحات تتبّع الاسم بعد. تواصلوا معنا لنجهّز الكتاب لطفلكم.",
+        "This name has a letter our name-tracing pages don't include yet. Contact us and we'll prepare the "
+        "book for your child.",
+    ),
+    "character_style": (
+        "هذه الشخصية مرسومة بأسلوب لا يناسب هذا الكتاب. اختاروا شخصية أخرى، أو ارسموا شخصية جديدة.",
+        "This character is drawn in a style that doesn't suit this book. Choose another character, or draw a "
+        "new one.",
+    ),
     # ---- the create flow
     "consent_outdated": (
         "تغيّر نصّ الموافقة. حدّثوا الصفحة واقرؤوه من جديد.",

@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from api_helpers import complete_cart, make_admin
+from api_helpers import complete_cart, make_admin, sell_every_addon
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -18,6 +18,7 @@ CHECKOUT = {
 
 async def test_reports_count_the_period_and_export_csv(client: AsyncClient, adb: AsyncSession) -> None:
     await seed_store(adb)
+    await sell_every_addon(adb)
     item = {
         "sku": "classic-soft-21",
         "addons": [{"slug": "gift-box"}],

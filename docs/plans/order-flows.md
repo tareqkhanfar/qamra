@@ -618,6 +618,112 @@ Language chips «لغة الحكاية: العربية · English» appear only 
   - `apps/api/tests/test_create.py`, `test_workbooks.py`, `test_cart_one_tap.py`
   - new `apps/api/tests/test_order_flow_needs.py`
 
+### Chunk 8: the API contract as built (2026-10-08)
+
+Migration `18342eeba4e4` (after `0c695b89fde0`). Every error body is `{"error": {"code", "message": {"ar", "en"},
+"details"?}}`: show `message[locale]` as it is.
+
+**`PATCH /api/create/children/{id}`** (guardian only; anyone else gets 404, signed out 401). Send only what
+changes:
+
+```ts
+{ name?: string /*1–40*/; gender?: "m"|"f"; age?: number /*2–10*/; interests?: string[] /*≤3, ≤30 chars*/;
+  note?: string /*≤60*/; hijab?: boolean; glasses?: boolean; name_latin?: string|null /*"" or null clears*/ }
+```
+
+- `interests` and `note` are one list on the child (the note last, as on `POST /children`): sending either
+  replaces it, so send both together.
+- For a boy, `hijab` is always saved as false. Unknown fields → 422.
+- Errors: `invalid_input` (422, `details.fields`); `name_en_invalid` (422, `fields: ["name_latin"]`): the
+  name must be in English letters, `^[A-Za-z][A-Za-z' -]{0,39}$` after accents are dropped (é → e).
+- The drawn character is never touched. The audit log gets `child.updated` with the changed field names only.
+- The child's activity lines in an open cart (lines without a book) take the new name, gender, age and look,
+  and the new English name when that book prints one.
+- Returns `ChildOut`, which (here and on every `/children` endpoint) now has
+  `interests: string[]` and `name_latin: string|null`.
+
+**`GET /api/shop/workbooks/needs?sku=<sku>[&child_id=<id>]`.** Public without `child_id`. With it: the
+caller's own child (signed out 401, someone else's 404). An unknown SKU, a story SKU or one not on sale gives
+404 `unknown_product`.
+
+```ts
+type Needs = {
+  line: "workbook"|"journey"|"family"|"islamic"; product: string; sku: string; options: Record<string,string>;
+  ages: [number, number] | null;   // what the variant is made for (the review step's non-blocking check)
+  traces_name: boolean;            // workbook, journey: the Arabic name is traced → ask for Arabic letters
+  asks: { name_en: boolean; family: boolean };
+  character: { reuse_id: string|null; draw_style: string|null /*"3d"*/; styles: string[] /*3d, watercolor, cartoon*/ };
+  child: { id: string; name: string; name_traceable: boolean;
+           name_problem: "not_arabic"|"not_traceable"|null; name_latin: string|null } | null;
+};
+```
+
+- `asks.name_en`: «دوسية التأسيس» always; «رحلتي الأولى» stages 2, 3 and the set.
+- `asks.family`: «مغامراتي مع عائلتي».
+- `ages`: KG1 4–5, KG2 5–6; stages 3–4, 4–5, 5–6, set 3–6; family 3–7; islamic V1, V2, L1 4–6, V3–V5, L2 6–8,
+  R and the set 4–8.
+- `reuse_id` is the child's newest approved character in one of `styles` (never `coloring`). When it is null,
+  draw one in `draw_style` without a style question:
+  `POST /api/create/children/{id}/characters {style: draw_style, sku}`.
+- `POST /characters` now takes optional `line` or `sku`. A style that line doesn't accept → 422 `invalid_style`.
+- The name rules are `qamra_workbook.names` (chunk 9), so `name_traceable` is true for رؤى.
+
+**`POST /api/shop/workbooks/cart`**:
+
+```ts
+{ sku: string; child_id: string; qty?: number; item_id?: string; character_id?: string; name_en?: string;
+  family?: FamilyPayload }
+```
+
+- **Character:** the given one must be this child's (else 404 `not_found`), approved (else 409
+  `character_not_approved`) and in an accepted style (else 409 `character_style`). Without it, the newest
+  reusable one is used; if there is none → 409 `character_not_approved`.
+- **Name:** for the tracing books, a name that isn't in Arabic letters → 422 `name_not_arabic`. One with a
+  letter the tracing hand doesn't have → 422 `name_not_traceable`. Both have `details.fields: ["name"]`; fix it with
+  `PATCH /children/{id}`.
+- **English name:** when the book prints it, send `name_en`, or the child's saved `name_latin` is used. If
+  there is neither → 422 `name_en_required`. An invalid one → 422 `name_en_invalid`. Both have
+  `details.fields: ["name_en"]`. A `name_en` that is sent is saved on the child (`name_latin`) for the next
+  book.
+- **The line keeps** `personalization.character_id`, plus `name_en` when printed, plus `family` for the family
+  line. With `item_id`, the family sent on the product page stays unless a new `family` is sent.
+- **Checkout** copies the line's personalization onto the order line.
+
+**Cart line (`CartItemOut`), new fields** (the cart's owner only):
+- `missing: ("name_en"|"name")[]`: a line filled before these rules that still lacks the English name, or
+  whose name can't be traced;
+- `child_name_en: string|null` (`name_en` is already taken by the product's English name);
+- `family: {name, city, members: [{relation, role, name, adult, scarf}]} | null`;
+- `character_id: string|null`.
+
+`needs_details` is also true when `missing` is not empty. Checkout's `details_missing` items then carry
+`missing` too.
+
+**Cart edits.** `PATCH /api/store/cart/items/{id}` with `personalization` keeps `character_id`, `name_en` and
+`family`.
+
+**Order tracking.** Each item in the `GET /api/store/orders/{code}?phone=` response now also has the cart's detail fields, as
+frozen on the order line: `line`, `product`, `sku`, `options`, `theme`, `style`, `book_title`, `child_name_en`,
+`family` and `addons: [{slug, name_ar, name_en, qty}]`.
+
+**Add-ons by cart line:** `GET`/`PUT /api/store/cart/items/{id}/addons` works for every line, activity books
+included. Only active add-ons are offered. After the deactivations below, the only add-ons offered for activity books are:
+- `printed-answer-key` for journey spiral;
+- `printed-parent-guide` for islamic softcover.
+
+A line that still holds an add-on that has since been switched off drops it in the cart, on edit and at
+checkout; the line itself is never refused.
+
+**Privacy.** «احذفوا كل بيانات طفلي» also removes `family`, `name_en`, `character_id` and `custom_brief` from
+the child's order lines. The prices, quantities and SKUs stay.
+
+**Owner's decisions in the catalog** (`content/store/catalog.yaml` and the migration). Switched-off items are made
+inactive, not deleted:
+- the 8 black-and-white «دوسية التأسيس» SKUs (`wb-kg1|kg2-v1|v2|v3|set-bw-spiral`);
+- the 11 add-ons in «Deactivate (exact slugs)» below (`editable-files` was already off);
+- the answer key goes to the printer only when bought (F1), with its label (F2) and the new
+  «إجابات الأنشطة مطبوعةً» texts (F3).
+
 ### Chunk 9: the engine and workers use what the flow now collects
 
 - **Files:**

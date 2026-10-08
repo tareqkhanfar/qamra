@@ -2,7 +2,7 @@
 
 slug: cartoon
 version: 2
-lines: magic, workbook, journey, family
+lines: magic, workbook, journey, family, islamic
 qa_threshold: 0.75
 likeness_min: 7
 

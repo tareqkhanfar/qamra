@@ -49,7 +49,11 @@ INSERT_LABELS = {
     "stickers": "ورقة الملصقات (ورق لاصق مطفي، قصّ نصفي)",
     "card-money-recipes": "كرتون القصّ 250 غ: النقود والوصفات",
     "card-games-roles": "كرتون القصّ 250 غ: الألعاب والأدوار",
+    "answer-key": "مفتاح الإجابات (كتيّب منفصل)",
 }
+# The answer key the journey and Islamic jobs render goes to the printer only for a line that bought it
+# (docs/plans/order-flows.md, «Add-ons: what is deactivated», F1); the other inserts are part of the book.
+PAID_INSERTS = {"answer-key": frozenset({"printed-answer-key", "printed-parent-guide"})}
 
 
 def batch_code(batch_id: uuid.UUID, batch_date: date) -> str:
@@ -76,6 +80,14 @@ def item_format(options: dict[str, Any], addons: list[dict[str, Any]]) -> str:
 def item_copies(quantity: int, addons: list[dict[str, Any]]) -> int:
     extra = sum(int(a.get("qty", 1)) for a in addons if a.get("slug") == COPY_ADDON)
     return quantity * (1 + extra)
+
+
+def item_inserts(files: dict[str, Any], addons: list[dict[str, Any]]) -> dict[str, Any]:
+    """The book's insert files the printer makes for this line (name → storage key)."""
+    bought = {str(a.get("slug")) for a in addons}
+    return {
+        name: key for name, key in files.items() if not PAID_INSERTS.get(name) or PAID_INSERTS[name] & bought
+    }
 
 
 def item_extras(addons: list[dict[str, Any]]) -> list[str]:

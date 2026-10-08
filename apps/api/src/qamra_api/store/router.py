@@ -16,6 +16,7 @@ from qamra_api.auth.router import client_ip
 from qamra_api.deps import OptionalUser, RedisDep, SessionDep, SettingsDep
 from qamra_api.errors import ApiError
 from qamra_api.store import gift_cards
+from qamra_api.store.addons import available
 from qamra_api.store.cart import (
     COOKIE,
     cart_items,
@@ -41,11 +42,19 @@ from qamra_api.store.catalog import (
     zone_rule,
 )
 from qamra_api.store.payments import provider_for
-from qamra_api.store.workbooks import FamilyIn, family_personalization, orderable
+from qamra_api.store.workbooks import FamilyIn, family_personalization, line_gaps, orderable
 from qamra_api.validation import PHONE
 from qamra_core import settings_store
 from qamra_core.db.models import AuditLog, Book, Currency, Order, OrderItem, OrderStatus
-from qamra_core.db.store import Cart, CartItem, CartStatus, CouponRedemption, OrderEvent, Variant
+from qamra_core.db.store import (
+    Cart,
+    CartItem,
+    CartStatus,
+    CatalogProduct,
+    CouponRedemption,
+    OrderEvent,
+    Variant,
+)
 from qamra_core.pricing import ItemInput, Quote, addon_amount, quote
 
 router = APIRouter(prefix="/api/store", tags=["store"])
@@ -264,6 +273,11 @@ class CartItemOut(BaseModel):
     book_title: str | None = None
     book_status: str | None = None
     needs_details: bool = False  # added in one tap: the child (and a story's book) come from the create flow
+    # docs/plans/order-flows.md (chunk 8), for the cart's owner: what an activity line prints for the child
+    missing: list[str] = Field(default_factory=list)  # still lacks "name_en" | "name" (workbooks.line_gaps)
+    child_name_en: str | None = None  # the child's name in English letters (the English name page)
+    family: dict[str, Any] | None = None  # the family book's {name, city, members: [{relation, role, name…}]}
+    character_id: uuid.UUID | None = None  # the approved character the book is drawn with
 
 
 class CartOut(BaseModel):
@@ -364,6 +378,26 @@ def _gender(raw: object) -> Literal["m", "f"] | None:
     return "m" if raw == "m" else "f" if raw == "f" else None
 
 
+def _uuid(raw: object) -> uuid.UUID | None:
+    try:
+        return uuid.UUID(str(raw)) if raw else None
+    except ValueError:
+        return None
+
+
+def _gaps(c: Catalog, item: CartItem, variant: Variant) -> list[str]:
+    """What a line that has its child still lacks for its book (an activity book's English name, a name the
+    tracing pages can write): the cart asks to complete it, and checkout waits like for a missing child."""
+    if item.child_id is None:
+        return []
+    return line_gaps(c.product_of(variant).line.value, variant.options, item.personalization)
+
+
+# What the server writes on a line when the child fills it (`POST /api/shop/workbooks/cart`): a cart edit that
+# sends `personalization` keeps them (they are not the storefront's to change).
+SERVER_HELD = ("character_id", "name_en", "family")
+
+
 def _input(
     c: Catalog,
     item: CartItem,
@@ -412,6 +446,8 @@ async def cart_out(db: SessionDep, cart: Cart | None) -> CartOut:
         lines = addon_lines(c, variant, cart.currency, addons)
         amounts = {a.slug: addon_amount(a, p.unit_price) for a in lines}
         book = books.get(item.book_id) if item.book_id else None
+        held = item.personalization
+        missing = _gaps(c, item, variant)
         items.append(
             CartItemOut(
                 id=item.id,
@@ -448,7 +484,11 @@ async def cart_out(db: SessionDep, cart: Cart | None) -> CartOut:
                 child_id=item.child_id,
                 book_title=book.title if book else None,
                 book_status=book.status.value if book else None,
-                needs_details=needs_details(product.line.value, item),
+                needs_details=needs_details(product.line.value, item) or bool(missing),
+                missing=missing,
+                child_name_en=held.get("name_en") or None,
+                family=held.get("family") or None,
+                character_id=_uuid(held.get("character_id")),
             )
         )
     zone = next((z.slug for z in c.zones.values() if z.id == cart.zone_id), None)
@@ -567,15 +607,17 @@ async def update_item(
     c = await load_catalog(db)
     variant = next((v for v in c.variants.values() if v.id == item.variant_id), None)
     style = body.style if body.style is not None else item.style_slug
-    addons = [a.model_dump() for a in body.addons] if body.addons is not None else item.addons
+    addons = [a.model_dump() for a in body.addons] if body.addons is not None else available(c, item.addons)
     check_item(c, variant, style, addons)
     if body.qty is not None and variant is not None:
         await check_copies(db, cart, variant, body.qty, skip=item.id)
     if body.personalization is not None:
         try:
-            item.personalization = clean_personalization(body.personalization)
+            cleaned = clean_personalization(body.personalization)
         except (ValueError, TypeError) as e:
             raise ApiError("invalid_input", 422, details={"field": str(e)}) from e
+        kept = {k: item.personalization[k] for k in SERVER_HELD if k in item.personalization}
+        item.personalization = {**cleaned, **kept}
     item.style_slug, item.addons = style, addons
     if body.qty is not None:
         item.qty = body.qty
@@ -730,16 +772,20 @@ async def checkout(
     if missing:
         raise ApiError("items_unavailable", 409, details={"items": missing})
     waiting = [
-        (item, c.product_of(variant))
+        (item, c.product_of(variant), _gaps(c, item, variant))
         for item, variant in rows
-        if needs_details(c.product_of(variant).line.value, item)
+        if needs_details(c.product_of(variant).line.value, item) or _gaps(c, item, variant)
     ]
     if waiting:  # «أكملوا بيانات الطفل» in the cart: nothing can be made without the child
-        items = [{"id": str(i.id), "name_ar": p.name_ar, "name_en": p.name_en} for i, p in waiting]
+        items = [
+            {"id": str(i.id), "name_ar": p.name_ar, "name_en": p.name_en, **({"missing": g} if g else {})}
+            for i, p, g in waiting
+        ]
         raise ApiError("details_missing", 409, details={"items": items})
     per_product: dict[uuid.UUID, int] = {}
     copies = Counter[uuid.UUID]()
     for item, variant in rows:
+        item.addons = available(c, item.addons)  # an add-on switched off since then is dropped, not refused
         check_item(c, variant, item.style_slug, item.addons)
         per_product[variant.product_id] = per_product.get(variant.product_id, 0) + item.qty
         copies[variant.id] += item.qty
@@ -919,11 +965,29 @@ def _quote_json(q: Quote) -> dict[str, Any]:
 # ---- tracking ---------------------------------------------------------------------------------------------
 
 
+class TrackAddOn(BaseModel):
+    slug: str
+    name_ar: str
+    name_en: str
+    qty: int
+
+
 class TrackItem(BaseModel):
     name_ar: str
     name_en: str
     qty: int
     child_name: str | None
+    # docs/plans/order-flows.md §c.9: the same detail line as the cart (frozen on the order line)
+    line: str | None = None
+    product: str | None = None
+    sku: str | None = None
+    options: dict[str, str] = Field(default_factory=dict)
+    theme: str | None = None
+    style: str | None = None
+    book_title: str | None = None
+    child_name_en: str | None = None
+    family: dict[str, Any] | None = None
+    addons: list[TrackAddOn] = Field(default_factory=list)
 
 
 class TrackEvent(BaseModel):
@@ -950,7 +1014,22 @@ async def track(code: str, phone: str, request: Request, db: SessionDep, redis: 
     order = (await db.execute(select(Order).where(Order.code == code.strip().upper()))).scalar_one_or_none()
     if order is None or not order.phone or not same_phone(order.phone, phone):
         raise ApiError("not_found", 404)  # same answer for a wrong code and a wrong phone
-    items = (await db.execute(select(OrderItem).where(OrderItem.order_id == order.id))).scalars()
+    items = list((await db.execute(select(OrderItem).where(OrderItem.order_id == order.id))).scalars())
+    books = await _books(db, [i.book_id for i in items if i.book_id])
+    variants = [i.variant_id for i in items if i.variant_id]
+    products = (
+        dict(
+            (
+                await db.execute(
+                    select(Variant.id, CatalogProduct.slug)
+                    .join(CatalogProduct, CatalogProduct.id == Variant.product_id)
+                    .where(Variant.id.in_(variants))
+                )
+            ).all()
+        )
+        if variants
+        else {}
+    )
     events = (
         await db.execute(
             select(OrderEvent)
@@ -970,6 +1049,25 @@ async def track(code: str, phone: str, request: Request, db: SessionDep, redis: 
                 name_en=str(i.title.get("name_en", "")),
                 qty=i.quantity,
                 child_name=i.personalization.get("child_name"),
+                line=i.line,
+                product=products.get(i.variant_id) if i.variant_id else None,
+                sku=i.sku,
+                options={str(k): str(v) for k, v in (i.title.get("options") or {}).items()},
+                theme=i.theme_slug,
+                style=i.style_slug,
+                book_title=books[i.book_id].title if i.book_id and i.book_id in books else None,
+                child_name_en=i.personalization.get("name_en") or None,
+                family=i.personalization.get("family") or None,
+                addons=[
+                    TrackAddOn(
+                        slug=str(a.get("slug")),
+                        name_ar=str(a.get("name_ar", "")),
+                        name_en=str(a.get("name_en", "")),
+                        qty=int(a.get("qty", 1)),
+                    )
+                    for a in (i.addons or [])
+                    if a.get("slug")
+                ],
             )
             for i in items
         ],

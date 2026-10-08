@@ -12,7 +12,7 @@ from decimal import Decimal
 from typing import Annotated, Any, Literal
 
 from fastapi import APIRouter, File, Request, Response, UploadFile
-from pydantic import BaseModel, Field, ValidationError, field_validator
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 from sqlalchemy import func, select
 
 from qamra_ai.pipeline.classic import classic_budget_usd
@@ -29,6 +29,7 @@ from qamra_api.store.addons import fits
 from qamra_api.store.cart import clean_personalization, ensure_cart
 from qamra_api.store.catalog import addon_problems, load_catalog
 from qamra_api.store.router import AddOnIn, CartOut, _own_item, cart_out, check_item
+from qamra_api.store.workbooks import clean_latin, needs_name_en
 from qamra_api.uploads import clean_image, read_upload, require_face
 from qamra_core.db.models import (
     AuditLog,
@@ -50,7 +51,7 @@ from qamra_core.db.models import (
     PhotoStatus,
 )
 from qamra_core.db.models import Theme as ThemeRow
-from qamra_core.db.store import CartItem, OrderEvent
+from qamra_core.db.store import Cart, CartItem, CartStatus, CatalogProduct, OrderEvent, Variant
 from qamra_core.storage import child_prefix
 
 router = APIRouter(prefix="/api/create", tags=["create"])
@@ -98,6 +99,8 @@ class ChildOut(BaseModel):
     photos: int
     characters: list[CharacterOut]
     redraws_left: int
+    interests: list[str] = Field(default_factory=list)  # the likes, then the note (as saved)
+    name_latin: str | None = None  # the name in English letters (activity books' English name page)
 
 
 def _character_out(c: Character) -> CharacterOut:
@@ -135,6 +138,8 @@ async def _child_out(db: SessionDep, child: Child) -> ChildOut:
         photos=int(photos),
         characters=[_character_out(c) for c in characters],
         redraws_left=max(0, MAX_CHARACTERS - sum(c.status != CharacterStatus.failed for c in characters)),
+        interests=list(child.interests or []),
+        name_latin=child.name_latin,
     )
 
 
@@ -161,6 +166,121 @@ async def add_child(body: ChildIn, user: CurrentUser, db: SessionDep) -> ChildOu
     return await _child_out(db, child)
 
 
+class ChildPatch(BaseModel):
+    """Only the fields sent change. `interests` and `note` are one list on the child (the note last, as on
+    POST): sending either replaces it. An empty `name_latin` clears it. The drawn character is never
+    touched."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    name: str | None = Field(default=None, min_length=1, max_length=40)
+    gender: Literal["m", "f"] | None = None
+    age: int | None = Field(default=None, ge=2, le=10)
+    interests: list[Annotated[str, Field(max_length=30)]] | None = Field(default=None, max_length=3)
+    note: str | None = Field(default=None, max_length=60)
+    hijab: bool | None = None
+    glasses: bool | None = None
+    name_latin: str | None = Field(default=None, max_length=80)  # checked by `clean_latin`
+
+    @field_validator("name")
+    @classmethod
+    def _squash(cls, v: str | None) -> str | None:
+        if v is None:
+            return None
+        v = " ".join(v.split())
+        if not v:
+            raise ValueError("empty")
+        return v
+
+
+# The child's fields an activity line (no book yet) copies when the child fills it: a fixed name or age shows
+# on those lines too. A story's line keeps its book's words.
+LINE_FIELDS = ("child_name", "gender", "age", "hijab", "glasses", "name_en")
+
+
+@router.patch("/children/{child_id}")
+async def update_child(child_id: uuid.UUID, body: ChildPatch, user: CurrentUser, db: SessionDep) -> ChildOut:
+    """«تعديل البيانات» (docs/plans/order-flows.md §c.4): fix the child's name, gender, age, look, likes or
+    English name. Only the guardian; the audit log keeps which fields changed, never their values."""
+    child = await _my_child(db, user, child_id)
+    before = _editable(child)
+    if "name_latin" in body.model_fields_set:
+        latin = (body.name_latin or "").strip()
+        try:
+            child.name_latin = clean_latin(latin) if latin else None
+        except ValueError as e:
+            raise ApiError("name_en_invalid", 422, {"fields": ["name_latin"]}) from e
+    if body.name is not None:
+        child.first_name = body.name
+    if body.gender is not None:
+        child.gender = Gender(body.gender)
+    if body.age is not None:
+        child.birth_year = date.today().year - body.age
+    if body.interests is not None or body.note is not None:
+        child.interests = [
+            " ".join(x.split()) for x in [*(body.interests or []), body.note or ""] if x.strip()
+        ]
+    if body.hijab is not None:
+        child.wears_hijab = body.hijab
+    if body.glasses is not None:
+        child.wears_glasses = body.glasses
+    if child.gender == Gender.m:
+        child.wears_hijab = False
+    after = _editable(child)
+    changed = [k for k in after if after[k] != before[k]]
+    if changed:
+        await _refresh_lines(db, child)
+        db.add(
+            AuditLog(
+                actor_user_id=user.id,
+                action="child.updated",
+                entity_type="child",
+                entity_id=str(child.id),
+                data={"fields": changed},
+            )
+        )
+    await db.commit()
+    return await _child_out(db, child)
+
+
+def _editable(child: Child) -> dict[str, object]:
+    return {
+        "name": child.first_name,
+        "gender": child.gender,
+        "age": child.birth_year,
+        "interests": list(child.interests or []),
+        "hijab": child.wears_hijab,
+        "glasses": child.wears_glasses,
+        "name_latin": child.name_latin,
+    }
+
+
+async def _refresh_lines(db: SessionDep, child: Child) -> None:
+    """The child's activity lines in open carts carry the new details (a story's line keeps its book)."""
+    values = {
+        "child_name": child.first_name,
+        "gender": child.gender.value,
+        "age": max(2, min(12, date.today().year - child.birth_year)),
+        "hijab": child.wears_hijab,
+        "glasses": child.wears_glasses,
+        "name_en": child.name_latin,
+    }
+    rows = await db.execute(
+        select(CartItem, Variant.options, CatalogProduct.line)
+        .join(Cart, Cart.id == CartItem.cart_id)
+        .join(Variant, Variant.id == CartItem.variant_id)
+        .join(CatalogProduct, CatalogProduct.id == Variant.product_id)
+        .where(CartItem.child_id == child.id, CartItem.book_id.is_(None), Cart.status == CartStatus.open)
+    )
+    for line, options, product_line in rows.all():
+        held = dict(line.personalization)
+        for key in LINE_FIELDS:
+            if key == "name_en" and not (values["name_en"] and needs_name_en(product_line.value, options)):
+                continue  # only a book that prints the English name gets it, and it is never emptied
+            held[key] = values[key]
+        line.personalization = held
+
+
 @router.get("/children")
 async def my_children(user: CurrentUser, db: SessionDep) -> list[ChildOut]:
     rows = (
@@ -172,7 +292,20 @@ async def my_children(user: CurrentUser, db: SessionDep) -> list[ChildOut]:
 
 
 # The personal fields an order or cart line may carry; the rest (format, add-ons, prices) stays for the books.
-PERSONAL = ("child_name", "gender", "age", "hijab", "glasses", "dedication")
+# The family book's family (names and city), the English name, the character used and a custom story's brief
+# are the child's data too (docs/plans/order-flows.md §0.3-8).
+PERSONAL = (
+    "child_name",
+    "gender",
+    "age",
+    "hijab",
+    "glasses",
+    "dedication",
+    "family",
+    "name_en",
+    "character_id",
+    "custom_brief",
+)
 OPEN_ORDERS = (
     OrderStatus.new,
     OrderStatus.confirmed,
@@ -299,6 +432,9 @@ async def upload_photos(
 class CharacterIn(BaseModel):
     style: str = Field(max_length=40)
     fixes: list[Literal["skin", "face", "hair", "age"]] = Field(default_factory=list, max_length=4)
+    # the book it is drawn for: the style must be one that book's line accepts (`ArtStyle.lines`)
+    line: str | None = Field(default=None, max_length=16)
+    sku: str | None = Field(default=None, max_length=64)
 
 
 @router.post("/children/{child_id}/characters", status_code=202)
@@ -309,6 +445,14 @@ async def draw_character(
     catalog = await load_catalog(db)
     if body.style not in catalog.styles:
         raise ApiError("invalid_style", 422)
+    line = body.line
+    if body.sku is not None:
+        variant = catalog.variants.get(body.sku)
+        if variant is None:
+            raise ApiError("unknown_product", 404)
+        line = catalog.product_of(variant).line.value
+    if line is not None and line not in catalog.styles[body.style].lines:
+        raise ApiError("invalid_style", 422)  # e.g. a coloring character for an activity book
     if not body.fixes:  # Addendum 9 §6: the child's approved character is reused by every book, never redrawn
         approved = (
             (

@@ -249,6 +249,9 @@ class Child(IdMixin, TimestampMixin, Base):
         ForeignKey("classrooms.id", ondelete="SET NULL"), index=True
     )
     first_name: Mapped[str] = mapped_column(String(40))
+    # the name in English letters, as the parent wants it traced (activity books' English name page); None
+    # until a book asks for it (docs/plans/order-flows.md §c.4)
+    name_latin: Mapped[str | None] = mapped_column(String(40))
     gender: Mapped[Gender] = mapped_column(str_enum(Gender, "child_gender"))
     birth_year: Mapped[int] = mapped_column(SmallInteger)
     interests: Mapped[list[str]] = mapped_column(JSONB, default=list)

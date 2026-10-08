@@ -107,16 +107,19 @@ products:
         - {volume: "1", interior: color, format: digital, price: {ILS: 29, JOD: 5.5}, cost: {ai_usd: 0.03}}
         - {volume: "2", interior: color, format: digital, price: {ILS: 29, JOD: 5.5}, cost: {ai_usd: 0.03}}
         - {volume: "3", interior: color, format: digital, price: {ILS: 29, JOD: 5.5}, cost: {ai_usd: 0.03}}
-        - {volume: "1", interior: bw, format: spiral, price: {ILS: 49, JOD: 9.5}, cost: {print: 13, packaging: 2, ai_usd: 0.03}}  # placeholder
-        - {volume: "2", interior: bw, format: spiral, price: {ILS: 49, JOD: 9.5}, cost: {print: 13, packaging: 2, ai_usd: 0.03}}  # placeholder
-        - {volume: "3", interior: bw, format: spiral, price: {ILS: 49, JOD: 9.5}, cost: {print: 13, packaging: 2, ai_usd: 0.03}}  # placeholder
+        # Black and white (49 ₪ a volume, 129 ₪ the set): switched off until a black-and-white interior exists
+        # (owner's decision, 2026-10-07; migration 18342eeba4e4 for the running store). `active: false` on a row
+        # inserts it inactive for both levels; switch it on in Admin → الكتالوج once the interior renders.
+        - {volume: "1", interior: bw, format: spiral, active: false, price: {ILS: 49, JOD: 9.5}, cost: {print: 13, packaging: 2, ai_usd: 0.03}}  # placeholder
+        - {volume: "2", interior: bw, format: spiral, active: false, price: {ILS: 49, JOD: 9.5}, cost: {print: 13, packaging: 2, ai_usd: 0.03}}  # placeholder
+        - {volume: "3", interior: bw, format: spiral, active: false, price: {ILS: 49, JOD: 9.5}, cost: {print: 13, packaging: 2, ai_usd: 0.03}}  # placeholder
         - {volume: "1", interior: color, format: spiral, price: {ILS: 69, JOD: 13}, cost: {print: 24, packaging: 2, ai_usd: 0.03}}  # placeholder
         - {volume: "2", interior: color, format: spiral, price: {ILS: 69, JOD: 13}, cost: {print: 24, packaging: 2, ai_usd: 0.03}}  # placeholder
         - {volume: "3", interior: color, format: spiral, price: {ILS: 69, JOD: 13}, cost: {print: 24, packaging: 2, ai_usd: 0.03}}  # placeholder
         - {volume: set, interior: color, format: spiral, price: {ILS: 179, JOD: 34}, cost: {print: 72, packaging: 4, ai_usd: 0.03}}  # placeholder
         # the set as a PDF and in black and white (Addendum 9, WorkbookProduct design)
         - {volume: set, interior: color, format: digital, price: {ILS: 75, JOD: 14.5}, cost: {ai_usd: 0.03}}
-        - {volume: set, interior: bw, format: spiral, price: {ILS: 129, JOD: 25}, cost: {print: 39, packaging: 4, ai_usd: 0.03}}  # placeholder
+        - {volume: set, interior: bw, format: spiral, active: false, price: {ILS: 129, JOD: 25}, cost: {print: 39, packaging: 4, ai_usd: 0.03}}  # placeholder
 
   # ---- «رحلتي الأولى للتعلّم» (Addendum 6): full color only ---------------------------------------------
   - slug: learning-journey
@@ -196,32 +199,36 @@ products:
       - {sku: islamic-r-digital, options: {volume: R, format: digital}, price: {ILS: 35, JOD: 6.5}, cost: {ai_usd: 0.30}}
 
 addons:
+  # `active: false`: an add-on we cannot deliver is kept but not offered (owner's decision, 2026-10-07; migration
+  # 18342eeba4e4 for the running store): the physical extras with no stock, and every add-on nothing can produce
+  # yet (docs/plans/order-flows.md, «Add-ons: what is deactivated»). Switch one on again in Admin → الكتالوج.
   # Addendum 4 §4
   - {slug: hardcover-upgrade, name_ar: ترقية إلى غلاف مقوّى, name_en: Hardcover upgrade, description_ar: يدوم سنوات، والأنسب للهدايا, description_en: "Lasts for years, the best choice for a gift", featured: true, badge_ar: الأكثر اختيارًا, badge_en: Most chosen, price: {ILS: 30, JOD: 6}, cost_ils: 12, lines: [classic], requires: {format: [softcover]}, step: format}  # placeholder cost
-  - {slug: gift-box, name_ar: علبة هدية فاخرة مع بطاقة, name_en: Premium gift box + card, description_ar: جاهز للإهداء، ونكتب رسالتكم على البطاقة, description_en: "Ready to give, with your message on the card", featured: true, price: {ILS: 15, JOD: 3}, cost_ils: 6, lines: [classic, magic, coloring, workbook, journey, family, islamic], requires: {format: [softcover, hardcover, spiral]}, step: checkout}  # placeholder cost; the Ramadan/Eid gift box of «قلبي يعرف الله» too
+  - {slug: gift-box, name_ar: علبة هدية فاخرة مع بطاقة, name_en: Premium gift box + card, description_ar: جاهز للإهداء، ونكتب رسالتكم على البطاقة, description_en: "Ready to give, with your message on the card", featured: true, price: {ILS: 15, JOD: 3}, cost_ils: 6, lines: [classic, magic, coloring, workbook, journey, family, islamic], requires: {format: [softcover, hardcover, spiral]}, active: false, step: checkout}  # placeholder cost; the Ramadan/Eid gift box of «قلبي يعرف الله» too
   - {slug: dedication-page, name_ar: صفحة إهداء خاصة, name_en: Custom dedication page, description_ar: سطرين منكم بأول الكتاب, description_en: A few lines from you at the start of the book, price: {ILS: 5, JOD: 1}, cost_ils: 0, lines: [classic, magic], included_lines: [magic], step: story}
   # Classic templates don't draw the child's companion yet (W3 note, 2026-09-29): Magic only for now
   - {slug: drawing-companion, name_ar: صاحبي من رسمتي, name_en: Drawing companion, description_ar: رسمة طفلكم تتحوّل لشخصية ترافقه في كل الصفحات, description_en: Your child's drawing becomes a companion on every page, featured: true, badge_ar: مميّز, badge_en: Special, price: {ILS: 20, JOD: 4}, cost_ai_usd: 0.25, lines: [magic], included_lines: [magic], step: character}
-  - {slug: extra-character, name_ar: شخصية إضافية (أخ أو صديق), name_en: Extra character (sibling or friend), price: {ILS: 20, JOD: 4}, cost_ai_usd: 0.20, lines: [classic, magic], max_qty: 3, step: character}
+  - {slug: extra-character, name_ar: شخصية إضافية (أخ أو صديق), name_en: Extra character (sibling or friend), price: {ILS: 20, JOD: 4}, cost_ai_usd: 0.20, lines: [classic, magic], max_qty: 3, active: false, step: character}
   - {slug: family-voice, name_ar: أصوات العائلة (رمز QR), name_en: Family voice QR, description_ar: سجّلوا القصة بصوتكم، وتسمعونها بمسح الرمز, description_en: "Record the story in your voice, and play it by scanning the code", price: {ILS: 15, JOD: 3}, cost_ils: 0, lines: [classic, magic], step: format}
   - {slug: extra-copy, name_ar: نسخة إضافية من الكتاب نفسه, name_en: Extra copy of the same book, description_ar: نفس الكتاب بنص السعر تقريبًا, description_en: The same book at about half the price, featured: true, badge_ar: توفير, badge_en: Save, pricing: percent_of_item, percent: 50, cost_ils: 17, lines: [classic, magic, coloring], requires: {format: [softcover, hardcover]}, max_qty: 5, step: checkout}  # placeholder cost
-  - {slug: coloring-version, name_ar: نسخة تلوين من الحكاية نفسها, name_en: Coloring version of the story, description_ar: نفس الصفحات بالأبيض والأسود ليلوّنها طفلكم, description_en: The same pages in black and white for your child to color, featured: true, price: {ILS: 25, JOD: 5}, cost_ils: 9, cost_ai_usd: 0.35, lines: [classic, magic], step: format}  # placeholder cost
-  - {slug: cover-poster, name_ar: بوستر الغلاف A3, name_en: Cover poster A3, description_ar: غلاف الكتاب بحجم كبير لغرفة طفلكم, description_en: "The book's cover, big, for your child's room", price: {ILS: 25, JOD: 5}, cost_ils: 7, lines: [classic, magic], step: checkout}  # placeholder cost
-  - {slug: express, name_ar: إنتاج سريع خلال 48 ساعة, name_en: Express production (48h), description_ar: حسب توفر المطبعة, description_en: Subject to the printer's availability, price: {ILS: 20, JOD: 4}, cost_ils: 5, lines: [classic, magic, coloring, workbook, journey], requires: {format: [softcover, hardcover, spiral]}, daily_capacity: 10, step: checkout}  # placeholder cost
+  - {slug: coloring-version, name_ar: نسخة تلوين من الحكاية نفسها, name_en: Coloring version of the story, description_ar: نفس الصفحات بالأبيض والأسود ليلوّنها طفلكم, description_en: The same pages in black and white for your child to color, featured: true, price: {ILS: 25, JOD: 5}, cost_ils: 9, cost_ai_usd: 0.35, lines: [classic, magic], active: false, step: format}  # placeholder cost
+  - {slug: cover-poster, name_ar: بوستر الغلاف A3, name_en: Cover poster A3, description_ar: غلاف الكتاب بحجم كبير لغرفة طفلكم, description_en: "The book's cover, big, for your child's room", price: {ILS: 25, JOD: 5}, cost_ils: 7, lines: [classic, magic], active: false, step: checkout}  # placeholder cost
+  - {slug: express, name_ar: إنتاج سريع خلال 48 ساعة, name_en: Express production (48h), description_ar: حسب توفر المطبعة, description_en: Subject to the printer's availability, price: {ILS: 20, JOD: 4}, cost_ils: 5, lines: [classic, magic, coloring, workbook, journey], requires: {format: [softcover, hardcover, spiral]}, daily_capacity: 10, active: false, step: checkout}  # placeholder cost
   - {slug: digital-copy, name_ar: نسخة رقمية مجانية مع المطبوع, name_en: Free digital copy with a printed order, price: {ILS: 0, JOD: 0}, lines: [classic, magic, coloring], requires: {format: [softcover, hardcover]}, step: checkout}
   # Addendum 5 §6 and Addendum 6 §8
-  - {slug: wipe-sleeve, name_ar: غلاف شفاف يُمسح مع قلم, name_en: Wipe-clean sleeve + dry-erase pen, price: {ILS: 15, JOD: 3}, cost_ils: 6, lines: [workbook, journey], requires: {format: [spiral]}, step: checkout}  # placeholder cost
-  - {slug: sticker-sheet, name_ar: لوحة ملصقات مكافآت, name_en: Reward sticker sheet, price: {ILS: 8, JOD: 1.5}, cost_ils: 2, lines: [workbook, journey, family, islamic], step: checkout}  # placeholder cost
-  - {slug: crayon-kit, name_ar: طقم أقلام وألوان, name_en: Pencil and crayon kit, price: {ILS: 15, JOD: 3}, cost_ils: 7, lines: [workbook, journey, family], step: checkout}  # placeholder cost
-  - {slug: audio-qr, name_ar: رموز QR لنطق الحروف, name_en: Audio QR codes for letter pronunciation, price: {ILS: 10, JOD: 2}, cost_ils: 0, lines: [workbook], step: format}
-  - {slug: parent-guide, name_ar: دليل المعلّم وولي الأمر (PDF), name_en: Teacher and parent guide PDF, price: {ILS: 0, JOD: 0}, lines: [workbook], step: checkout}
+  - {slug: wipe-sleeve, name_ar: غلاف شفاف يُمسح مع قلم, name_en: Wipe-clean sleeve + dry-erase pen, price: {ILS: 15, JOD: 3}, cost_ils: 6, lines: [workbook, journey], requires: {format: [spiral]}, active: false, step: checkout}  # placeholder cost
+  - {slug: sticker-sheet, name_ar: لوحة ملصقات مكافآت, name_en: Reward sticker sheet, price: {ILS: 8, JOD: 1.5}, cost_ils: 2, lines: [workbook, journey, family, islamic], active: false, step: checkout}  # placeholder cost
+  - {slug: crayon-kit, name_ar: طقم أقلام وألوان, name_en: Pencil and crayon kit, price: {ILS: 15, JOD: 3}, cost_ils: 7, lines: [workbook, journey, family], active: false, step: checkout}  # placeholder cost
+  - {slug: audio-qr, name_ar: رموز QR لنطق الحروف, name_en: Audio QR codes for letter pronunciation, price: {ILS: 10, JOD: 2}, cost_ils: 0, lines: [workbook], active: false, step: format}
+  - {slug: parent-guide, name_ar: دليل المعلّم وولي الأمر (PDF), name_en: Teacher and parent guide PDF, price: {ILS: 0, JOD: 0}, lines: [workbook], active: false, step: checkout}
   - {slug: printed-answer-key, name_ar: مفتاح الإجابات مطبوعًا, name_en: Printed answer key, price: {ILS: 10, JOD: 2}, cost_ils: 3, lines: [journey], requires: {format: [spiral]}, step: checkout}  # suggested price; placeholder cost
   # Addendum 7 §7, §8, §10
-  - {slug: family-characters, name_ar: رسم أفراد العائلة (حتى 4), name_en: Illustrated family characters (up to 4), price: {ILS: 30, JOD: 6}, cost_ai_usd: 0.30, lines: [family], step: character}
+  - {slug: family-characters, name_ar: رسم أفراد العائلة (حتى 4), name_en: Illustrated family characters (up to 4), price: {ILS: 30, JOD: 6}, cost_ai_usd: 0.30, lines: [family], active: false, step: character}
   - {slug: editable-files, name_ar: الملفات القابلة للتعديل, name_en: Editable source files, price: {ILS: 150, JOD: 29}, lines: [family], active: false, step: checkout}  # admin-priced; placeholder
-  # Addendum 10 §9: «قلبي يعرف الله» reuses the sticker sheet and the gift box above; the printed parent guide is
-  # the volume's parents' file (the engine's answer key and parent pages), printed on its own
-  - {slug: printed-parent-guide, name_ar: دليل الأهل مطبوعًا, name_en: Printed parent guide, description_ar: صفحات الأهل وإجابات الأنشطة في كتيّب منفصل, description_en: The parents' pages and the activity answers in a separate booklet, price: {ILS: 15, JOD: 3}, cost_ils: 5, lines: [islamic], requires: {format: [softcover]}, step: checkout}  # placeholder price and cost
+  # Addendum 10 §9: «قلبي يعرف الله» shares the sticker sheet and the gift box above (both off for now); the printed
+  # answers are the volume's answer key (the engine's solved activity pages), printed as a separate booklet only
+  # for a line that bought it (`qamra_core.printing.PAID_INSERTS`). The parents' pages are inside every volume.
+  - {slug: printed-parent-guide, name_ar: إجابات الأنشطة مطبوعةً, name_en: Printed activity answers, description_ar: إجابات أنشطة الكتاب في كتيّب منفصل للأهل, description_en: "The answers to the book's activities, in a separate booklet for parents", price: {ILS: 15, JOD: 3}, cost_ils: 5, lines: [islamic], requires: {format: [softcover]}, step: checkout}  # placeholder price and cost
 
 bundles:
   # Addendum 9 «الكتاب الثاني −15%»: in every 2 books, the cheaper one is discounted

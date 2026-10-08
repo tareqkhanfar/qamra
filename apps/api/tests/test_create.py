@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from api_helpers import register
+from api_helpers import register, sell_every_addon
 from fastapi import FastAPI
 from httpx import AsyncClient
 from rq import Queue
@@ -68,6 +68,7 @@ async def test_from_child_to_cart(
 ) -> None:
     await upsert_themes(adb)
     await seed_store(adb)
+    await sell_every_addon(adb)  # the gift box is switched off in the seed (no stock)
     await register(client)
     child = await _child(client)
     assert child["consent"] is False and child["redraws_left"] == MAX_CHARACTERS

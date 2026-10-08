@@ -5,13 +5,21 @@ public facts.
 import uuid
 from datetime import UTC, date, datetime
 from decimal import Decimal
-from typing import Any, Literal
+from typing import Annotated, Any, Literal
 
-from fastapi import APIRouter, Depends, Request, Response
+from fastapi import APIRouter, Depends, Query, Request, Response
 from pydantic import BaseModel, Field
 from sqlalchemy import select
 
-from qamra_api.deps import AdminUser, CurrentUser, SessionDep, SettingsDep, require_admin, require_permission
+from qamra_api.deps import (
+    AdminUser,
+    CurrentUser,
+    OptionalUser,
+    SessionDep,
+    SettingsDep,
+    require_admin,
+    require_permission,
+)
 from qamra_api.errors import ApiError
 from qamra_api.store.cart import ensure_cart
 from qamra_api.store.catalog import PRINTED_FORMATS, Catalog, load_catalog
@@ -29,9 +37,22 @@ from qamra_api.store.quiz import (
     match,
 )
 from qamra_api.store.router import CartOut, _own_item, cart_out, check_copies, check_item
-from qamra_api.store.workbooks import ACTIVITY, FamilyIn, family_personalization, orderable
-from qamra_core.db.models import AppSetting, AuditLog, Character, Child, Currency
-from qamra_core.db.store import CartItem, CatalogProduct
+from qamra_api.store.workbooks import (
+    ACTIVITY,
+    TRACES_NAME,
+    FamilyIn,
+    accepted_styles,
+    ages_for,
+    asks_family,
+    clean_latin,
+    family_personalization,
+    name_problem,
+    needs_name_en,
+    orderable,
+    reusable_character,
+)
+from qamra_core.db.models import AppSetting, AuditLog, Character, Child, Currency, User
+from qamra_core.db.store import CartItem, CatalogProduct, Variant
 
 router = APIRouter(prefix="/api/shop", tags=["shop"])
 admin_router = APIRouter(prefix="/api/admin", tags=["admin"], dependencies=[Depends(require_admin)])
@@ -213,7 +234,98 @@ async def put_rules(body: QuizRules, admin: AdminUser, db: SessionDep) -> RulesO
     return RulesOut(rules=body.rules, saved=True)
 
 
-# ---- activity books: the order item for a child, and who can order what ------------------------------------
+# ---- activity books: what the book needs, the order item for a child, and who can order what ---------------
+
+
+class NeedsAsks(BaseModel):
+    name_en: bool  # the English name page: «دوسية التأسيس», «رحلتي الأولى» stages 2–3 and the set
+    family: bool  # the «عائلة …» step: «مغامراتي مع عائلتي»
+
+
+class NeedsCharacter(BaseModel):
+    reuse_id: uuid.UUID | None  # the child's newest approved character in an accepted style; None: draw one
+    draw_style: str | None  # a new character is drawn in this style, without asking (3D)
+    styles: list[str]  # the styles this book accepts (never coloring)
+
+
+class NeedsChild(BaseModel):
+    id: uuid.UUID
+    name: str
+    name_traceable: bool  # False: the tracing pages can't write this name (see `name_problem`)
+    name_problem: Literal["not_arabic", "not_traceable"] | None
+    name_latin: str | None  # the English name saved on the child
+
+
+class NeedsOut(BaseModel):
+    line: str
+    product: str
+    sku: str
+    options: dict[str, str]
+    ages: list[int] | None  # [min, max] the variant is made for: the review step's non-blocking check
+    traces_name: bool  # the Arabic name is traced (the who step asks for Arabic letters)
+    asks: NeedsAsks
+    character: NeedsCharacter
+    child: NeedsChild | None  # with `child_id`
+
+
+def _activity_variant(catalog: Catalog, sku: str) -> tuple[Variant, CatalogProduct]:
+    """An activity book on sale now (404 otherwise: stories go through the create flow)."""
+    variant = check_item(catalog, catalog.variants.get(sku), None, [])  # unknown, off sale or closed
+    product = catalog.product_of(variant)
+    if product.line.value not in ACTIVITY:
+        raise ApiError("unknown_product", 404)
+    return variant, product
+
+
+async def _guarded_child(db: SessionDep, user: User | None, child_id: uuid.UUID) -> Child:
+    if user is None:
+        raise ApiError("not_authenticated", 401)
+    child = await db.get(Child, child_id)
+    if child is None or child.guardian_user_id != user.id:
+        raise ApiError("not_found", 404)  # the same answer for someone else's child
+    return child
+
+
+@router.get("/workbooks/needs")
+async def workbook_needs(
+    sku: Annotated[str, Query(max_length=64)],
+    db: SessionDep,
+    user: OptionalUser,
+    child_id: uuid.UUID | None = None,
+) -> NeedsOut:
+    """What this activity book needs from the child, so the create flow shows only those steps (and the
+    review step's age check). With `child_id` (the parent's own child): the character it reuses, if any,
+    and whether the name can be traced. The cart (`POST /workbooks/cart`) checks the same rules."""
+    catalog = await load_catalog(db)
+    variant, product = _activity_variant(catalog, sku)
+    line = product.line.value
+    styles = accepted_styles(catalog.styles.values(), line)
+    ages = ages_for(line, variant.options)
+    child_out, reuse = None, None
+    if child_id is not None:
+        child = await _guarded_child(db, user, child_id)
+        reuse = await reusable_character(db, child.id, styles)
+        problem = name_problem(line, child.first_name)
+        child_out = NeedsChild(
+            id=child.id,
+            name=child.first_name,
+            name_traceable=problem is None,
+            name_problem=problem,
+            name_latin=child.name_latin,
+        )
+    return NeedsOut(
+        line=line,
+        product=product.slug,
+        sku=variant.sku,
+        options=variant.options,
+        ages=list(ages) if ages else None,
+        traces_name=line in TRACES_NAME,
+        asks=NeedsAsks(name_en=needs_name_en(line, variant.options), family=asks_family(line)),
+        character=NeedsCharacter(
+            reuse_id=reuse.id if reuse else None, draw_style=styles[0] if styles else None, styles=styles
+        ),
+        child=child_out,
+    )
 
 
 class WorkbookItemIn(BaseModel):
@@ -222,6 +334,41 @@ class WorkbookItemIn(BaseModel):
     qty: int = Field(default=1, ge=1, le=50)
     family: FamilyIn | None = None  # «مغامراتي مع عائلتي»: the family's name, city and members (optional)
     item_id: uuid.UUID | None = None  # the cart line added in one tap, which this child completes
+    # the character the flow chose (default: the newest approved one in a style the book accepts)
+    character_id: uuid.UUID | None = None
+    name_en: str | None = Field(default=None, max_length=80)  # the English name page; saved on the child
+
+
+async def _character_for(
+    db: SessionDep, child: Child, styles: list[str], character_id: uuid.UUID | None
+) -> Character:
+    if character_id is None:
+        character = await reusable_character(db, child.id, styles)
+        if character is None:
+            raise ApiError("character_not_approved", 409)  # the flow draws one first
+        return character
+    character = await db.get(Character, character_id)
+    if character is None or character.child_id != child.id:
+        raise ApiError("not_found", 404)
+    if character.approved_at is None:
+        raise ApiError("character_not_approved", 409)
+    if character.art_style not in styles:
+        raise ApiError("character_style", 409)  # e.g. a coloring character
+    return character
+
+
+def _english_name(body: WorkbookItemIn, child: Child, needed: bool) -> str | None:
+    """The English name for the line: the one sent (saved on the child too), else the child's saved one."""
+    if body.name_en is not None and body.name_en.strip():
+        try:
+            child.name_latin = clean_latin(body.name_en)
+        except ValueError as e:
+            raise ApiError("name_en_invalid", 422, {"fields": ["name_en"]}) from e
+    if not needed:
+        return None
+    if not child.name_latin:
+        raise ApiError("name_en_required", 422, {"fields": ["name_en"]})
+    return child.name_latin
 
 
 @router.post("/workbooks/cart", status_code=201)
@@ -234,26 +381,18 @@ async def add_workbook(
     settings: SettingsDep,
 ) -> CartOut:
     """An activity book for one of the parent's children, drawn with the child's approved character (no new
-    AI cost). The order item carries the child, the variant (its options) and the character used. With
-    `item_id`, the line added in one tap from the product page gets this child instead of a new line."""
-    child = await db.get(Child, body.child_id)
-    if child is None or child.guardian_user_id != user.id:
-        raise ApiError("not_found", 404)
-    character = (
-        await db.execute(
-            select(Character)
-            .where(Character.child_id == child.id, Character.approved_at.is_not(None))
-            .order_by(Character.approved_at.desc())
-            .limit(1)
-        )
-    ).scalar_one_or_none()
-    if character is None:
-        raise ApiError("character_not_approved", 409)
+    AI cost). The order item carries the child, the variant (its options), the character used and, when the
+    book prints it, the name in English letters. With `item_id`, the line added in one tap from the product
+    page gets this child instead of a new line (the family given there stays unless a new one is sent)."""
+    child = await _guarded_child(db, user, body.child_id)
     c = await load_catalog(db)
-    variant = check_item(c, c.variants.get(body.sku), None, [])  # unknown, off sale or not orderable yet
-    line = c.product_of(variant).line.value
-    if line not in ACTIVITY:
-        raise ApiError("unknown_product", 404)
+    variant, product = _activity_variant(c, body.sku)
+    line = product.line.value
+    character = await _character_for(db, child, accepted_styles(c.styles.values(), line), body.character_id)
+    problem = name_problem(line, child.first_name)
+    if problem is not None:  # the tracing pages would fail later, in the worker
+        raise ApiError(f"name_{problem}", 422, {"fields": ["name"]})
+    name_en = _english_name(body, child, needs_name_en(line, variant.options))
     item = None
     if body.item_id is not None:
         cart, item = await _own_item(db, request, user, body.item_id)  # 404 unless it is in the caller's cart
@@ -264,7 +403,7 @@ async def add_workbook(
         await check_copies(db, cart, variant, body.qty)  # 10+ family books wait for the printer's prices
     family = family_personalization(body.family) if body.family is not None else None
     if family is None and item is not None:
-        family = item.personalization.get("family")  # given on the product page
+        family = item.personalization.get("family")  # given on the product page, or in an earlier pass
     personalization = {
         "child_name": child.first_name,
         "gender": child.gender.value,
@@ -272,7 +411,8 @@ async def add_workbook(
         "hijab": child.wears_hijab,
         "glasses": child.wears_glasses,
         "character_id": str(character.id),
-        **({"family": family} if family and line == "family" else {}),
+        **({"name_en": name_en} if name_en else {}),
+        **({"family": family} if family and asks_family(line) else {}),
     }
     if item is not None:
         item.child_id, item.personalization = child.id, personalization

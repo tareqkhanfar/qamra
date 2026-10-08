@@ -1,7 +1,7 @@
 from decimal import Decimal
 
 import pytest
-from api_helpers import complete_cart, open_jordan
+from api_helpers import complete_cart, open_jordan, sell_every_addon
 from httpx import AsyncClient
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -23,6 +23,7 @@ CHECKOUT = {
 @pytest.fixture(autouse=True)
 async def _catalog(adb: AsyncSession) -> None:
     await seed_store(adb)
+    await sell_every_addon(adb)  # the add-on mechanics, with the whole catalog
 
 
 async def _add(client: AsyncClient, sku: str, **extra: object) -> dict:  # type: ignore[type-arg]

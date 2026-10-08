@@ -9,6 +9,11 @@ The step gathers the add-ons chosen after the preview (`step` format or checkout
 - One that can't be combined with an add-on that is on is locked (reason `excludes`, with that add-on).
 - Turning one on turns on what it needs; turning a needed one off turns off what depends on it. The web does
   that as the parent taps, and the cart checks the final set (`catalog.addon_problems`).
+
+Every book in the cart has this step by its cart line (`/api/store/cart/items/{id}/addons`), activity books
+too (docs/plans/order-flows.md §c.8): the sticker sheet, the printed parent guide… wherever the catalog offers
+them. Only active add-ons are offered: one the admin switches off (an extra we cannot deliver, 2026-10-07)
+leaves the catalog, the step and the cart, and a line that still holds it drops it (`available`).
 """
 
 from dataclasses import dataclass, field
@@ -32,6 +37,11 @@ class Offer:
     qty: int
     locked: str | None = None  # needs | excludes
     blockers: list[str] = field(default_factory=list)  # the add-ons behind the lock
+
+
+def available(catalog: Catalog, chosen: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """The add-ons of a line that are still sold (the catalog holds active add-ons only)."""
+    return [a for a in chosen if str(a.get("slug")) in catalog.addons]
 
 
 def fits(catalog: Catalog, variant: Variant, addon: AddOn) -> bool:
@@ -101,7 +111,7 @@ def merge(
 ) -> list[dict[str, Any]]:
     """The item's add-ons after this step: the ones it doesn't offer stay, the ones it offers are `picked`."""
     mine = {a.slug for a in managed(catalog, variant)}
-    kept = [a for a in current if str(a["slug"]) not in mine]
+    kept = [a for a in available(catalog, current) if str(a["slug"]) not in mine]
     return kept + [
         {"slug": str(a["slug"]), "qty": int(a.get("qty", 1))} for a in picked if str(a["slug"]) in mine
     ]

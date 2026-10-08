@@ -15,7 +15,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from qamra_core.db.models import Book, BookStatus, Order, OrderItem, OrderStatus, PrintBatch, PrintBatchStatus
-from qamra_core.printing import PRINTED_FORMATS, item_copies, item_extras, item_format
+from qamra_core.printing import PRINTED_FORMATS, item_copies, item_extras, item_format, item_inserts
 
 READY_FROM = (OrderStatus.confirmed, OrderStatus.generating, OrderStatus.review)
 
@@ -148,7 +148,9 @@ def build_manifest(candidates: list[Candidate], sends: int) -> dict[str, Any]:
                     "interior_key": book.pdf_interior_key if book else None,
                     "cover_key": book.pdf_cover_key if book else None,
                     # a family book's sticker sheet and card stock (name → key), printed on their own paper
-                    "inserts": dict((book.generation or {}).get("files") or {}) if book else {},
+                    "inserts": item_inserts((book.generation or {}).get("files") or {}, item.addons or [])
+                    if book
+                    else {},
                     # Addendum 9: a gift parcel has no prices inside and carries the parent's card message
                     "gift": bool(c.order.gift),
                     "gift_message": c.order.gift_message if c.order.gift else None,

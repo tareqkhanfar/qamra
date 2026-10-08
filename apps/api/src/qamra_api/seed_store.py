@@ -49,7 +49,8 @@ def expand_variants(product: dict[str, Any]) -> list[dict[str, Any]]:
     """Plain `variants`, or a `variant_matrix` of levels × rows (the workbook).
 
     `variant_matrix.rendered` (per level, the volumes that render today) marks every other row inactive: it
-    is inserted, but neither listed nor sold until it is switched on. A set needs all of its volumes.
+    is inserted, but neither listed nor sold until it is switched on. A set needs all of its volumes. A row
+    with `active: false` is inserted inactive for every level.
     """
     matrix = product.get("variant_matrix")
     if not matrix:
@@ -67,6 +68,8 @@ def expand_variants(product: dict[str, Any]) -> list[dict[str, Any]]:
             if rendered is not None:
                 have = {str(v) for v in rendered.get(level, [])}
                 entry["active"] = singles <= have if volume == "set" else str(volume) in have
+            if row.get("active") is False:  # a row switched off for every level (black and white, 2026-10-07)
+                entry["active"] = False
             out.append(entry)
     return out
 

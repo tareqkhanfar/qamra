@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from api_helpers import make_admin, open_jordan, register
+from api_helpers import make_admin, open_jordan, register, sell_every_addon
 from fastapi import FastAPI
 from httpx import AsyncClient
 from rq import Queue
@@ -59,6 +59,7 @@ def settings() -> ApiSettings:
 async def _data(adb: AsyncSession) -> None:
     await upsert_themes(adb)
     await seed_store(adb)
+    await sell_every_addon(adb)  # the add-ons step's mechanics, with the whole catalog
 
 
 async def _book(client: AsyncClient, **body: Any) -> dict[str, Any]:
