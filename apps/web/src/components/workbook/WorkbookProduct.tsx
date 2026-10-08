@@ -2,12 +2,12 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useState, type ReactNode } from "react";
+import { ArrowForward } from "@/components/ui/Button";
 import { Link } from "@/i18n/navigation";
 import type { AddonMedia, IncludedItem } from "@/lib/addonsMedia";
 import { money, type CatalogAddOn, type CatalogProduct, type Currency } from "@/lib/store";
 import { groups, initialPicks, isSet, partsFor, resolve, soldAges, soldOptions, type Picks } from "@/lib/workbook";
 import { AddWorkbook } from "./AddWorkbook";
-import { emptyFamily, FamilyDetails } from "./FamilyDetails";
 import { FamilyQuoteForm } from "./FamilyQuoteForm";
 import { WorkbookCover } from "./WorkbookCover";
 import { showcaseCopy } from "./showcase/copy";
@@ -36,7 +36,9 @@ const chip = (on: boolean, off: boolean) =>
  * variants, the price is the chosen variant's, and the book is made with the child's approved character. The
  * pages and the details follow the picks: the cover and real pages of the level, volume or stage chosen (every
  * book of a set), and what that part teaches (owner's request, 2026-10-07). On phones the pages sit right under
- * the choices; on wide screens they stay beside them.
+ * the choices; on wide screens they stay beside them. Nothing about the child is asked here: «أضيفوا للسلة» adds
+ * the book in one tap, and the order flow (`/create?product=<sku>`) asks for the child, and for «مغامراتي مع
+ * عائلتي» the family, after it (order flows §c.7, chunk 11).
  */
 export function WorkbookProduct({
   product,
@@ -44,6 +46,7 @@ export function WorkbookProduct({
   query,
   photo = null,
   familyCharacters = false,
+  signedIn = false,
   addons = [],
   included = [],
   addonMedia = {},
@@ -53,6 +56,7 @@ export function WorkbookProduct({
   query: Picks;
   photo?: ReactNode; // the book's lifestyle photo (components/site/Photo), when Tareq has added it
   familyCharacters?: boolean; // the illustrated-family add-on is switched on
+  signedIn?: boolean; // a parent is signed in: «ابدؤوا لطفلكم الآن» opens the order flow for this book
   addons?: CatalogAddOn[]; // the catalog's active add-ons (the extras the cart offers come from these)
   included?: readonly IncludedItem[]; // what every copy comes with, with photos (lib/addonsMedia)
   addonMedia?: Readonly<Record<string, AddonMedia | undefined>>; // add-on photos (lib/addonsMedia)
@@ -61,7 +65,6 @@ export function WorkbookProduct({
   const ts = useTranslations("workbookShowcase");
   const locale = useLocale();
   const [state, setState] = useState(() => resolve(product, initialPicks(product, query)));
-  const [family, setFamily] = useState(emptyFamily); // «مغامراتي مع عائلتي»: optional, goes into the cart
   const { variant, picks } = state;
   const line = product.line;
   const name = locale === "ar" ? product.name_ar : product.name_en;
@@ -123,7 +126,6 @@ export function WorkbookProduct({
   const tone = TONE[line] ?? "bg-night-100";
   const binding = String(product.features.binding ?? "");
   const bindingLabel = t.has(`binding.${binding}`) ? t(`binding.${binding}`) : null;
-  const mine = (t.has(`mine.${line}`) ? t.raw(`mine.${line}`) : []) as string[];
   const row = "px-4 md:px-0";
 
   return (
@@ -230,9 +232,37 @@ export function WorkbookProduct({
               </div>
             ))}
             {note && <p className="text-caption leading-[1.6] text-ink-muted">{note}</p>}
+            {line === "family" && (
+              <p className="flex items-start gap-2 rounded-[14px] bg-amber-100 px-3 py-2.5 text-small leading-[1.6] text-night-900">
+                <svg
+                  className="mt-0.5 size-5 shrink-0"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#9A620A"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <circle cx="9" cy="7" r="3" />
+                  <path d="M3 20v-1a6 6 0 0 1 12 0v1" />
+                  <circle cx="17.5" cy="9.5" r="2.5" />
+                  <path d="M17 14.6a4.5 4.5 0 0 1 4.5 4.4v1" />
+                </svg>
+                {t("familyLater")}
+              </p>
+            )}
+            {signedIn && variant && (
+              <Link
+                href={`/create?product=${encodeURIComponent(variant.sku)}`}
+                className="flex min-h-11 items-center gap-1.5 self-start font-display text-body font-bold text-night-900 underline underline-offset-4"
+              >
+                {t("start")} <ArrowForward />
+              </Link>
+            )}
           </section>
 
-          {copy ? (
+          {copy && (
             <ShowcaseDetails
               copy={copy}
               partName={partName}
@@ -245,23 +275,6 @@ export function WorkbookProduct({
               }
               className="order-6"
             />
-          ) : (
-            mine.length > 0 && (
-              <section className="order-6 mx-4 flex flex-col gap-2.5 rounded-[20px] border border-line bg-paper-raised p-4 md:mx-0">
-                <h2 className="text-[18px] text-night-900">{t("mine.title")}</h2>
-                {mine.map((item) => (
-                  <div key={item} className="flex items-center gap-2.5 text-[15px]">
-                    <span
-                      aria-hidden="true"
-                      className="flex size-[22px] shrink-0 items-center justify-center rounded-full bg-success-bg text-[13px] font-extrabold text-success"
-                    >
-                      ✓
-                    </span>
-                    {item}
-                  </div>
-                ))}
-              </section>
-            )
           )}
 
           <Extras
@@ -277,8 +290,6 @@ export function WorkbookProduct({
 
           <div className={`order-8 flex flex-col gap-[22px] ${row}`}>
             {photo}
-
-            {line === "family" && <FamilyDetails value={family} onChange={setFamily} />}
 
             {line === "family" && (
               <a href="#family-quote" className="text-small font-semibold text-amber-700 underline">
@@ -325,7 +336,7 @@ export function WorkbookProduct({
               {price === null ? "—" : money(price, currency, locale)}
             </strong>
           </div>
-          <AddWorkbook sku={variant?.sku ?? null} family={line === "family" ? family : undefined} />
+          <AddWorkbook sku={variant?.sku ?? null} />
         </div>
       </div>
       {line === "family" && (

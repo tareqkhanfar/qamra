@@ -5,19 +5,13 @@ import { useState } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { errorText } from "@/lib/api";
 import { cartApi } from "@/lib/store";
-import { familyPayload, type Family } from "./FamilyDetails";
 
 /**
  * «أضيفوا للسلة» on an activity book: one tap puts the chosen variant in the cart, for guests too. The child
- * (and their character, reused when approved) comes after, from the cart's «أكملوا بيانات الطفل».
+ * (and their character, reused when approved) comes after, from the cart's «أكملوا بيانات الطفل»; so does the
+ * family of «مغامراتي مع عائلتي» (the flow's family step, order flows §c.7).
  */
-export function AddWorkbook({
-  sku,
-  family,
-}: {
-  sku: string | null;
-  family?: Family; // «مغامراتي مع عائلتي»: who is in the family, as the page collected it (optional)
-}) {
+export function AddWorkbook({ sku }: { sku: string | null }) {
   const t = useTranslations("workbook");
   const te = useTranslations("errors");
   const locale = useLocale();
@@ -29,8 +23,7 @@ export function AddWorkbook({
     if (!sku) return;
     setBusy(true);
     setError(null);
-    const details = family ? familyPayload(family) : undefined;
-    const r = await cartApi.add({ sku, ...(details ? { family: details } : {}) });
+    const r = await cartApi.add({ sku });
     if (r.ok) return router.push("/cart");
     setBusy(false);
     setError(errorText(r.error, locale, r.status === 0 ? te("network") : te("unknown")));

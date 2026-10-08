@@ -14,7 +14,8 @@ Every page is drawn by the local page engine for its invented sample child «ل�
 (no real child's data, no AI cost here). The sources, and the command that renders each one (`--render` runs
 it when the source is missing; nothing calls a paid API):
 
-    out/workbook/png-<level>-v<n>/          python -m qamra_workbook.render.workbook --level kg1 --volume 1
+    out/workbook/png-<level>-v<n>[-cover]/  python -m qamra_workbook.render.workbook --level kg1 --volume 1
+                                                --cover
     out/journey/stage-<n>/png-book|cover/   python -m qamra_workbook.render.journey --stage 1 --book
     out/family-book/png-*-21x28/            python -m qamra_workbook.render.family --book --no-inserts
     out/islamic/web/<v>/interior|cover.pdf  python -m qamra_workbook.render.islamic_volume --volume v1 --print
@@ -72,19 +73,21 @@ class Scope:
 
 
 def _workbook(level: str, volume: int, pages: list[tuple[str, str, str]]) -> Scope:
-    """A volume of «دوسية التأسيس»: its first page (the child's own page, with the volume's title) is
-    its cover."""
+    """A volume of «دوسية التأسيس»: its real front cover (the `workbook-cover-front` page, printed on card:
+    «دوسية ليان» with her character, the level and the volume) and its chosen inside pages. The child's own
+    page («هذا الكتاب لـ…») is on the product page's «يأتي مع الكتاب» (lib/addonsMedia)."""
     kicker = {"kg1": "المستوى الأول", "kg2": "المستوى الثاني"}[level]
+    name = f"{level}-v{volume}"
     return Scope(
         key=f"{level}-{volume}",
-        folder=ROOT / f"out/workbook/png-{level}-v{volume}",
+        folder=ROOT / "out/workbook",
         cover=Page(
-            "p001-owner-page",
-            f"الصفحة الأولى: «هذا الكتاب لـ…» باسم طفلكم، {kicker}",
-            f"The first page: “This book belongs to…” with your child's name ({level.upper()})",
+            f"png-{name}-cover/workbook-cover-front",
+            f"غلاف {kicker} باسم طفلكم وشخصيته",
+            f"The {level.upper()} cover, with your child's name and character",
         ),
-        pages=tuple(Page(*p) for p in pages),
-        render=("qamra_workbook.render.workbook", "--level", level, "--volume", str(volume)),
+        pages=tuple(Page(f"png-{name}/{stem}", ar, en) for stem, ar, en in pages),
+        render=("qamra_workbook.render.workbook", "--level", level, "--volume", str(volume), "--cover"),
     )
 
 

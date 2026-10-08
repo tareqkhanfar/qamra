@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { JsonLd } from "@/components/site/JsonLd";
@@ -51,16 +52,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 /** Addendum 9 WorkbookProduct at /workbooks/[product] (دوسية التأسيس، رحلتي الأولى، مغامراتي مع عائلتي). */
 export default async function WorkbookPage({ params, searchParams }: Props) {
   const [{ product: slug }, query, locale] = await Promise.all([params, searchParams, getLocale()]);
-  const [{ catalog, product }, site, t] = await Promise.all([
+  const [{ catalog, product }, site, t, jar] = await Promise.all([
     load(slug),
     getPublicSettings(),
     getTranslations("workbook"),
+    cookies(),
   ]);
   if (!product) notFound();
   const picks = Object.fromEntries(
     Object.entries(query).filter((e): e is [string, string] => typeof e[1] === "string"),
   );
   const photo = PHOTO[product.line];
+  const signedIn = jar.has("qamra_at") || jar.has("qamra_rt"); // the session cookies (httpOnly), as SiteNav reads them
   return (
     <PageShell>
       <JsonLd
@@ -86,6 +89,7 @@ export default async function WorkbookPage({ params, searchParams }: Props) {
           ) : null
         }
         familyCharacters={site?.family_characters_enabled ?? false}
+        signedIn={signedIn}
         addons={catalog?.addons ?? []}
         included={includedItems[slug] ?? []}
         addonMedia={addonMedia}

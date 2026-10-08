@@ -844,6 +844,18 @@ The language review also suggests a plainer Arabic-letters error for chunk 3: «
   - `web/components/workbook/AddWorkbook.tsx`: stop sending `family`.
 - **Messages:** `workbook.familyLater`.
 
+### Chunk 11: as built (2026-10-08)
+
+- **The product page asks nothing about the child or the family.** The collapsed family form is gone. For «مغامراتي مع عائلتي», a line under the choices says «تضيفون أسماء العائلة بعد اختيار الطفل.» (`workbook.familyLater`). `AddWorkbook` sends only the SKU.
+- **Signed-in parents** also get «ابدؤوا كتاب طفلكم الآن» (`workbook.start`) → `/create?product=<sku>`.
+  - The route reads the session cookies (`qamra_at`/`qamra_rt`), as `SiteNav` does.
+  - Guests keep the one-tap «أضيفوا للسلة» only.
+- **Both paths reach the family step.** One tap → cart «أكملوا بيانات الطفل», or «ابدؤوا» → child → [drawing] → «من في عائلة …؟» → review.
+  - A line that already has a family (given on the old product page) opens the step prefilled, and the review shows it (`CreateWizard` reads the line's `family`).
+- **`components/workbook/FamilyDetails.tsx`** now only holds the family model: `RELATIONS`, `MAX_MEMBERS`, the types, `emptyFamily` and `familyPayload`. Its form was the only user of `workbook.family.title/hint/name/city`, which were removed.
+- **Removed `workbook.mine.*`** (the fallback list under the pages, which claimed «اسمه في كل مهمة» and «اسمه في القصص والأنشطة»). The page shows the showcase copy (`showcase/copy.json`, every part of the four books); nothing rendered the fallback. Also removed the unused old keys `workbook.peek`, `peekFrom`, `placeholder`, `zoom`, `zoomTitle` and `close`.
+- **Previews:** «دوسية التأسيس» shows its real cover per level and volume (`png-<level>-v<n>-cover/workbook-cover-front`, rendered with `--cover`; `scripts/export_workbook_previews.py`). The owner page «هذا الكتاب لـ…», which used to stand in for the cover, is already shown under «يأتي مع الكتاب».
+
 ### Chunk 12: end-to-end tests
 
 - **Files:**

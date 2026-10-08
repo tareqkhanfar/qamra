@@ -991,44 +991,6 @@
       "wire-o": "Wire-o bound · lies flat",
       "perfect": "Perfect-bound softcover · pages stay in"
     },
-    "peek": "A peek inside",
-    "peekFrom": {
-      "level": "Pages from {level}",
-      "volume": "Pages from {level}, volume {n}",
-      "stage": "Pages from stage {n}",
-      "allStages": "Pages from all three stages"
-    },
-    "placeholder": {
-      "trace": "Trace the letter",
-      "name": "Write my name",
-      "count": "How many apples?"
-    },
-    "zoom": "Enlarge the page: {title}",
-    "zoomTitle": "A page of the book",
-    "close": "Close",
-    "mine": {
-      "title": "Made for your child",
-      "workbook": [
-        "A cover with their character and name",
-        "Pages where they learn to write their name in Arabic and English",
-        "A certificate in their name at the end of the year"
-      ],
-      "journey": [
-        "A cover with their character and name",
-        "Their name in every mission",
-        "A journey certificate in their name"
-      ],
-      "family": [
-        "Their character is the hero of every adventure",
-        "Family names in the missions",
-        "A passport with their picture and an adventurer's certificate"
-      ],
-      "islamic": [
-        "A cover with their character and name",
-        "Their name in the stories and activities",
-        "A certificate in their name at the end of the book"
-      ]
-    },
     "options": {
       "level": "Level",
       "volume": "Volume",
@@ -1084,12 +1046,10 @@
       "body": "Special prices for 20 children or more, each volume delivered at the start of its term."
     },
     "add": "Add to cart",
+    "start": "Start your child's book now",
     "familyCharacters": "Draw your family in the book (add-on)",
+    "familyLater": "You'll add the family's names after choosing the child.",
     "family": {
-      "title": "Your family in the book (optional)",
-      "hint": "Their names appear in the book's missions, on the “My family” page and on the certificate. Every family is different and lovely.",
-      "name": "Family name",
-      "city": "City",
       "member": "Family member {n}",
       "relation": "Relation",
       "choose": "Choose…",
@@ -2209,7 +2169,7 @@
       "magic": {
         "tag": "The finest",
         "short": "Magic",
-        "desc": "Every page drawn afresh for your child, with their companion"
+        "desc": "Every page drawn afresh for your child, with a companion from their own drawing"
       },
       "unavailable": "Not offered for this story"
     },
@@ -2685,7 +2645,7 @@
     },
     "who": {
       "ageHint": "So we can check that the book suits your child's age.",
-      "arabicInvalid": "Please write the name in Arabic letters: that is how your child will trace it.",
+      "arabicInvalid": "Please write the name in Arabic letters only, because your child will trace it letter by letter.",
       "body": "We print your child's name on the cover and inside the book, and word the instructions correctly for a girl or a boy.",
       "coverPreview": "The cover will read:",
       "edit": {
@@ -2878,7 +2838,9 @@
       "text_changed": "Edit not in the files yet",
       "admin_edited": "Edited by a reviewer",
       "parent_edited": "Edited by the family",
-      "text_unsafe": "Flagged by the text check"
+      "text_unsafe": "Flagged by the text check",
+      "name_en_guessed": "English name auto-guessed",
+      "name_not_traceable": "Name tracing incomplete"
     },
     "status": {
       "draft": "Draft",

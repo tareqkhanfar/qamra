@@ -4,12 +4,12 @@
     "scopes": {
       "kg1-1": {
         "cover": {
-          "src": "/workbooks/foundation-workbook/kg1-1/cover.webp?v=457afa5b",
-          "sm": "/workbooks/foundation-workbook/kg1-1/cover-sm.webp?v=457afa5b",
+          "src": "/workbooks/foundation-workbook/kg1-1/cover.webp?v=cf9f00a9",
+          "sm": "/workbooks/foundation-workbook/kg1-1/cover-sm.webp?v=cf9f00a9",
           "w": 720,
           "h": 1018,
-          "title_ar": "الصفحة الأولى: «هذا الكتاب لـ…» باسم طفلكم، المستوى الأول",
-          "title_en": "The first page: “This book belongs to…” with your child's name (KG1)"
+          "title_ar": "غلاف المستوى الأول باسم طفلكم وشخصيته",
+          "title_en": "The KG1 cover, with your child's name and character"
         },
         "pages": [
           {
@@ -21,8 +21,8 @@
             "title_en": "My name: tracing it in big dotted letters"
           },
           {
-            "src": "/workbooks/foundation-workbook/kg1-1/02.webp?v=d46887f4",
-            "sm": "/workbooks/foundation-workbook/kg1-1/02-sm.webp?v=d46887f4",
+            "src": "/workbooks/foundation-workbook/kg1-1/02.webp?v=953d414b",
+            "sm": "/workbooks/foundation-workbook/kg1-1/02-sm.webp?v=953d414b",
             "w": 720,
             "h": 1018,
             "title_ar": "أبدأ رحلة الحروف مع شخصيتي",
@@ -69,8 +69,8 @@
             "title_en": "Where are the stars hiding?"
           },
           {
-            "src": "/workbooks/foundation-workbook/kg1-1/08.webp?v=cef02595",
-            "sm": "/workbooks/foundation-workbook/kg1-1/08-sm.webp?v=cef02595",
+            "src": "/workbooks/foundation-workbook/kg1-1/08.webp?v=3a4ed23f",
+            "sm": "/workbooks/foundation-workbook/kg1-1/08-sm.webp?v=3a4ed23f",
             "w": 720,
             "h": 1018,
             "title_ar": "متاهة سهلة إلى الحديقة",
@@ -96,17 +96,17 @@
       },
       "kg1-2": {
         "cover": {
-          "src": "/workbooks/foundation-workbook/kg1-2/cover.webp?v=b9377140",
-          "sm": "/workbooks/foundation-workbook/kg1-2/cover-sm.webp?v=b9377140",
+          "src": "/workbooks/foundation-workbook/kg1-2/cover.webp?v=50da06a5",
+          "sm": "/workbooks/foundation-workbook/kg1-2/cover-sm.webp?v=50da06a5",
           "w": 720,
           "h": 1018,
-          "title_ar": "الصفحة الأولى: «هذا الكتاب لـ…» باسم طفلكم، المستوى الأول",
-          "title_en": "The first page: “This book belongs to…” with your child's name (KG1)"
+          "title_ar": "غلاف المستوى الأول باسم طفلكم وشخصيته",
+          "title_en": "The KG1 cover, with your child's name and character"
         },
         "pages": [
           {
-            "src": "/workbooks/foundation-workbook/kg1-2/01.webp?v=34fb3c0e",
-            "sm": "/workbooks/foundation-workbook/kg1-2/01-sm.webp?v=34fb3c0e",
+            "src": "/workbooks/foundation-workbook/kg1-2/01.webp?v=3710c80d",
+            "sm": "/workbooks/foundation-workbook/kg1-2/01-sm.webp?v=3710c80d",
             "w": 720,
             "h": 1018,
             "title_ar": "أتابع رحلة الحروف مع شخصيتي",
@@ -188,12 +188,12 @@
       },
       "kg1-3": {
         "cover": {
-          "src": "/workbooks/foundation-workbook/kg1-3/cover.webp?v=578ab813",
-          "sm": "/workbooks/foundation-workbook/kg1-3/cover-sm.webp?v=578ab813",
+          "src": "/workbooks/foundation-workbook/kg1-3/cover.webp?v=32dede54",
+          "sm": "/workbooks/foundation-workbook/kg1-3/cover-sm.webp?v=32dede54",
           "w": 720,
           "h": 1018,
-          "title_ar": "الصفحة الأولى: «هذا الكتاب لـ…» باسم طفلكم، المستوى الأول",
-          "title_en": "The first page: “This book belongs to…” with your child's name (KG1)"
+          "title_ar": "غلاف المستوى الأول باسم طفلكم وشخصيته",
+          "title_en": "The KG1 cover, with your child's name and character"
         },
         "pages": [
           {
@@ -237,8 +237,8 @@
             "title_en": "Drawing myself and my friends at kindergarten"
           },
           {
-            "src": "/workbooks/foundation-workbook/kg1-3/06.webp?v=d26655c0",
-            "sm": "/workbooks/foundation-workbook/kg1-3/06-sm.webp?v=d26655c0",
+            "src": "/workbooks/foundation-workbook/kg1-3/06.webp?v=62d55d58",
+            "sm": "/workbooks/foundation-workbook/kg1-3/06-sm.webp?v=62d55d58",
             "w": 720,
             "h": 1018,
             "title_ar": "أبدأ مع شخصيتي: أسمع حركات الحروف",
@@ -269,8 +269,8 @@
             "title_en": "The pencil-skills check, with a parent or teacher"
           },
           {
-            "src": "/workbooks/foundation-workbook/kg1-3/10.webp?v=4cdbdf16",
-            "sm": "/workbooks/foundation-workbook/kg1-3/10-sm.webp?v=4cdbdf16",
+            "src": "/workbooks/foundation-workbook/kg1-3/10.webp?v=e928e05a",
+            "sm": "/workbooks/foundation-workbook/kg1-3/10-sm.webp?v=e928e05a",
             "w": 720,
             "h": 1018,
             "title_ar": "شهادة إنجاز باسم طفلكم وصورة شخصيته",
@@ -280,12 +280,12 @@
       },
       "kg2-1": {
         "cover": {
-          "src": "/workbooks/foundation-workbook/kg2-1/cover.webp?v=cd563d42",
-          "sm": "/workbooks/foundation-workbook/kg2-1/cover-sm.webp?v=cd563d42",
+          "src": "/workbooks/foundation-workbook/kg2-1/cover.webp?v=74149e68",
+          "sm": "/workbooks/foundation-workbook/kg2-1/cover-sm.webp?v=74149e68",
           "w": 720,
           "h": 1018,
-          "title_ar": "الصفحة الأولى: «هذا الكتاب لـ…» باسم طفلكم، المستوى الثاني",
-          "title_en": "The first page: “This book belongs to…” with your child's name (KG2)"
+          "title_ar": "غلاف المستوى الثاني باسم طفلكم وشخصيته",
+          "title_en": "The KG2 cover, with your child's name and character"
         },
         "pages": [
           {
@@ -297,8 +297,8 @@
             "title_en": "My name: tracing it, then writing it on my own"
           },
           {
-            "src": "/workbooks/foundation-workbook/kg2-1/02.webp?v=35f2deba",
-            "sm": "/workbooks/foundation-workbook/kg2-1/02-sm.webp?v=35f2deba",
+            "src": "/workbooks/foundation-workbook/kg2-1/02.webp?v=19249e94",
+            "sm": "/workbooks/foundation-workbook/kg2-1/02-sm.webp?v=19249e94",
             "w": 720,
             "h": 1018,
             "title_ar": "أنا وعالم الأرقام",
@@ -372,17 +372,17 @@
       },
       "kg2-2": {
         "cover": {
-          "src": "/workbooks/foundation-workbook/kg2-2/cover.webp?v=7b06ea6b",
-          "sm": "/workbooks/foundation-workbook/kg2-2/cover-sm.webp?v=7b06ea6b",
+          "src": "/workbooks/foundation-workbook/kg2-2/cover.webp?v=a7a7848b",
+          "sm": "/workbooks/foundation-workbook/kg2-2/cover-sm.webp?v=a7a7848b",
           "w": 720,
           "h": 1018,
-          "title_ar": "الصفحة الأولى: «هذا الكتاب لـ…» باسم طفلكم، المستوى الثاني",
-          "title_en": "The first page: “This book belongs to…” with your child's name (KG2)"
+          "title_ar": "غلاف المستوى الثاني باسم طفلكم وشخصيته",
+          "title_en": "The KG2 cover, with your child's name and character"
         },
         "pages": [
           {
-            "src": "/workbooks/foundation-workbook/kg2-2/01.webp?v=5435d744",
-            "sm": "/workbooks/foundation-workbook/kg2-2/01-sm.webp?v=5435d744",
+            "src": "/workbooks/foundation-workbook/kg2-2/01.webp?v=398d8dd7",
+            "sm": "/workbooks/foundation-workbook/kg2-2/01-sm.webp?v=398d8dd7",
             "w": 720,
             "h": 1018,
             "title_ar": "أنا والحروف من جديد",
@@ -464,12 +464,12 @@
       },
       "kg2-3": {
         "cover": {
-          "src": "/workbooks/foundation-workbook/kg2-3/cover.webp?v=2b123e77",
-          "sm": "/workbooks/foundation-workbook/kg2-3/cover-sm.webp?v=2b123e77",
+          "src": "/workbooks/foundation-workbook/kg2-3/cover.webp?v=a5a56e03",
+          "sm": "/workbooks/foundation-workbook/kg2-3/cover-sm.webp?v=a5a56e03",
           "w": 720,
           "h": 1018,
-          "title_ar": "الصفحة الأولى: «هذا الكتاب لـ…» باسم طفلكم، المستوى الثاني",
-          "title_en": "The first page: “This book belongs to…” with your child's name (KG2)"
+          "title_ar": "غلاف المستوى الثاني باسم طفلكم وشخصيته",
+          "title_en": "The KG2 cover, with your child's name and character"
         },
         "pages": [
           {
@@ -537,16 +537,16 @@
             "title_en": "Building the word from syllables"
           },
           {
-            "src": "/workbooks/foundation-workbook/kg2-3/09.webp?v=ae5ec6d1",
-            "sm": "/workbooks/foundation-workbook/kg2-3/09-sm.webp?v=ae5ec6d1",
+            "src": "/workbooks/foundation-workbook/kg2-3/09.webp?v=67f9f747",
+            "sm": "/workbooks/foundation-workbook/kg2-3/09-sm.webp?v=67f9f747",
             "w": 720,
             "h": 1018,
             "title_ar": "أنا أقرأ: جمل عن نفسي",
             "title_en": "I can read: sentences about me"
           },
           {
-            "src": "/workbooks/foundation-workbook/kg2-3/10.webp?v=95305664",
-            "sm": "/workbooks/foundation-workbook/kg2-3/10-sm.webp?v=95305664",
+            "src": "/workbooks/foundation-workbook/kg2-3/10.webp?v=1763914b",
+            "sm": "/workbooks/foundation-workbook/kg2-3/10-sm.webp?v=1763914b",
             "w": 720,
             "h": 1018,
             "title_ar": "شهادة إنجاز باسم طفلكم وصورة شخصيته",
