@@ -38,6 +38,10 @@ __CF_RANGES__
     if ($host = www.__DOMAIN__) {
         return 301 https://__DOMAIN__$request_uri;
     }
+    # a visitor who typed http:// (Cloudflare tells us in X-Forwarded-Proto) goes to https://
+    if ($qamra_proto = "http") {
+        return 301 https://__DOMAIN__$request_uri;
+    }
 
     location / {
         proxy_pass http://127.0.0.1:__PORT__;  # the Qamra edge container, bound to localhost only
