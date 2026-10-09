@@ -1,18 +1,2 @@
-<div class="wc-bg back" aria-hidden="true">
-  <svg viewBox="0 0 {{ g.page_w }} {{ g.page_h }}" preserveAspectRatio="none">
-    <rect width="{{ g.page_w }}" height="{{ g.page_h }}" fill="#FDF6E8"/>
-    {% for k in range(22) %}<path d="M0 {{ 40 + k * 12 }} L{{ g.page_w }} {{ 40 + k * 12 }}" stroke="#9BB7E0" stroke-opacity="0.22" stroke-width="0.45"/>{% endfor %}
-    <rect x="0" y="0" width="{{ g.bleed + 9 }}" height="{{ g.page_h }}" fill="#E9A62B"/>
-  </svg>
-</div>
-<div class="wb-back">
-  <div class="wc-brand dark">{{ mascot('mascot') }}<span>قمرة</span></div>
-  <h2 class="wb-back-title">{{ d.title }}</h2>
-  <div class="wc-level dark">{% if d.code %}<b dir="ltr">{{ d.code }}</b>{% endif %}<span>{{ d.level }}</span></div>
-  <div class="wc-volume">{{ d.volume }}</div>
-  {% if d.subtitle %}<p class="wb-back-sub">{{ d.subtitle }}</p>{% endif %}
-  {% if d.blurb %}<p class="wb-back-blurb">{{ d.blurb }}</p>{% endif %}
-  <div class="wb-back-subjects">{% for s in d.subjects %}<span class="wb-back-subject"><i style="background: {{ s.color }}">{{ s.icon }}</i>{{ s.name }}</span>{% endfor %}</div>
-  {% if d.character %}<div class="wb-back-hero"><div class="wb-back-frame"><img src="{{ d.character }}" alt=""></div><div class="wb-back-name"><span{% if d.long %} class="long"{% endif %} data-fit="12">{{ d.kicker }}</span></div></div>{% endif %}
-  <div class="wb-back-foot">{% if d.ages %}<span class="wb-back-ages">{{ d.ages }}</span>{% endif %}<span class="wb-back-site" dir="ltr">{{ d.domain }}</span></div>
-</div>
+{% import "_cover.html.j2" as cover with context %}
+<div class="cv-root">{{ cover.back(d.cv) }}</div>

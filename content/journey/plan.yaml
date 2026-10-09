@@ -421,7 +421,7 @@ stages:
       - {n: 120, section: finale, type: mini-certificate, title: "شهادة المحطة الثانية 🏅", instruction: "أحسنت يا {child}!", skill: "يحتفل بإنهاء المحطة الثانية", goals: [independence], difficulty: 1, params: {stage: 2, character: child, date: true, letters_learned: 14}}
   - stage: 3
     age: "5–6"
-    title_ar: "المحطة الثالثة: أقرأ وأكتب وأحل"
+    title_ar: "المحطة الثالثة: أقرأ وأكتب وأحلّ"
     objectives:
       think: ["يرتّب قصة من 6 صور ويحكيها", "يتذكّر 6 صور ويحدّد ما اختفى"]
       eye-hand: ["يحلّ متاهة كبيرة فيها خمسة طرق مسدودة", "يتتبع طريقًا واحدًا بين أربعة طرق متشابكة"]

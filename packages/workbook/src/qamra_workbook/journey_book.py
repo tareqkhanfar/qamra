@@ -159,8 +159,8 @@ def page_specs(plan: Journey, layer: PrintLayer) -> list[PageSpec]:
     return out
 
 
-def cover_specs(layer: PrintLayer) -> list[PageSpec]:
-    """The front and back cover (card, no page numbers)."""
+def cover_specs(layer: PrintLayer, pages: int = 0) -> list[PageSpec]:
+    """The front and back cover (card, no page numbers); `pages`: the stage's page count (0: not printed)."""
     return [
         PageSpec(
             id=f"journey-s{layer.stage}-cover-{side}",
@@ -170,7 +170,7 @@ def cover_specs(layer: PrintLayer) -> list[PageSpec]:
             title=TITLE_AR,
             instruction=layer.title_ar,
             stage=layer.stage,
-            params={"stage": layer.stage, **getattr(layer.cover, side)},
+            params={"stage": layer.stage, "pages": pages, **getattr(layer.cover, side)},
         )
         for side in ("front", "back")
     ]

@@ -11,8 +11,8 @@ from typing import Any
 from markupsafe import Markup
 from PIL import Image
 
-from qamra_workbook.render.pages.family import CORE_BADGES, family_group, family_of, rosette, uri
-from qamra_workbook.render.pages.family_front import split_name, title_art
+from qamra_workbook.render import covers
+from qamra_workbook.render.pages.family import family_group, family_of, uri
 from qamra_workbook.render.registry import Built, PageContext, page_type
 from qamra_workbook.render.sections import FAMILY
 
@@ -21,23 +21,38 @@ ADVENTURES = [s for k, s in FAMILY.items() if k not in ("front", "back")]
 
 @page_type("cover-front", frame="full")
 def cover_front(ctx: PageContext) -> Built:
+    """The family book's scene, the child in the middle of the family, the title with the child's name on a
+    house-shaped panel, the family's name on the ribbon, three info badges (render/covers.py)."""
     problems: list[str] = []
     family = family_of(ctx, problems)
-    before, name, after = split_name(ctx, ctx.page.title)
-    group, tags = Markup(""), list[dict[str, Any]]()
-    if family is not None:
-        group, tags = family_group(ctx, family, 186.0, 126.0)
+    sc = covers.series_copy("family")
+    pages = int(ctx.page.params.get("pages") or 0)
+    badges = []
+    for b in sc.get("badges", []):
+        if "{pages}" in b["text"] and not pages:
+            continue
+        badges.append((b["icon"], covers.fill(ctx, b["text"], pages=covers.pages_phrase(pages))))
+    age = str(sc.get("age", ""))
+
+    def group(w: float, h: float) -> tuple[Markup, list[dict[str, Any]]]:
+        return family_group(ctx, family, w, h) if family is not None else (Markup(""), [])
+
+    front = covers.Front(
+        series="family",
+        part="family",
+        title=ctx.text(ctx.page.title),
+        ribbon=ctx.text(str(sc.get("ribbon", ""))) if family is not None else ctx.book.child.name,
+        subtitle=ctx.text(ctx.page.instruction),
+        pills=((str(sc.get("pill", "")), "main"),) if sc.get("pill") else (),
+        age=ctx.num(age) + " سنوات" if age else "",
+        badges=tuple(badges),
+        group=group,
+        one_line_max=12,
+    )
     data = {
-        "art": title_art(ctx),
-        "before": before,
-        "name": name,
-        "after": after,
-        "sub": ctx.text(ctx.page.instruction),
-        "group": group,
-        "tags": tags,
+        "cv": covers.front_data(ctx, front),
         "family": family.name if family else "",
         "adventures": [{"icon": s.icon, "color": s.color} for s in ADVENTURES],
-        "count": ctx.num(len(ADVENTURES)),
     }
     return Built(data, None, problems)
 
@@ -70,16 +85,32 @@ def org_slot(org: Any) -> dict[str, Any]:
 def cover_back(ctx: PageContext) -> Built:
     problems: list[str] = []
     family = family_of(ctx, problems)
-    data = {
-        "blurb": [ctx.text(str(x)) for x in ctx.page.params.get("blurb", [])],
-        "adventures": [{"icon": s.icon, "color": s.color, "name": ctx.text(s.name_ar)} for s in ADVENTURES],
-        "made_for": ctx.text(
-            f"صُنع خصيصًا لـ{{child}} وعائلة {family.name}" if family else "صُنع خصيصًا لـ{child}"
+    sc = covers.series_copy("family")
+    p = ctx.page.params
+    pages = int(p.get("pages") or 0)
+    blurb = [ctx.text(str(x)) for x in p.get("blurb", [])]
+    if p.get("collect"):
+        blurb.append(ctx.text(str(p["collect"])))
+    age = str(sc.get("age", ""))
+    facts = [ctx.num(age) + " سنوات" if age else ctx.text(str(p.get("ages", "")))]
+    if pages:
+        facts.append(ctx.num(covers.counted(pages, "صفحة", "صفحات")))
+    if sc.get("binding"):
+        facts.append(str(sc["binding"]))
+    back = covers.Back(
+        series="family",
+        part="family",
+        title=ctx.text(ctx.page.title),
+        pills=((str(sc.get("pill", "")), "main"),) if sc.get("pill") else (),
+        blurb=tuple(blurb),
+        inside=tuple((s.icon, ctx.text(s.name_ar), s.color) for s in ADVENTURES),
+        inside_title="في هذا الكتاب",
+        comes=tuple((c["icon"], covers.fill(ctx, str(c["text"]))) for c in sc.get("comes_with", [])),
+        facts=tuple(facts),
+        made_for=covers.fill(
+            ctx, f"صُنع خصيصًا لـ{{child}} وعائلة {family.name}" if family else "صُنع خصيصًا لـ{child}"
         ),
-        "kit": [ctx.text(str(x)) for x in ctx.page.params.get("kit", [])],
-        "ages": ctx.text(str(ctx.page.params.get("ages", "من ٣ إلى ٧ سنوات"))),
-        "badges": [rosette(b, css_class="cb-badge") for b in CORE_BADGES],
-        "collect": ctx.text(str(ctx.page.params.get("collect", ""))),
-        **org_slot(ctx.page.params.get("org")),
-    }
+        org=org_slot(p.get("org")),
+    )
+    data = {"cv": covers.back_data(ctx, back), **org_slot(p.get("org"))}
     return Built(data, None, problems)

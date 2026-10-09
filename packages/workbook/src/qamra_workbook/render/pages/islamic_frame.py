@@ -8,7 +8,6 @@ text."""
 
 from __future__ import annotations
 
-import hashlib
 import re
 from pathlib import Path
 from typing import Any
@@ -18,6 +17,7 @@ from PIL import Image
 
 from qamra_workbook.islamic_sources import REPO
 from qamra_workbook.pictures.islamic import glyph_svg, motif_strip, star8_svg, unit_glyph
+from qamra_workbook.render import covers
 from qamra_workbook.render.islamic_content import (
     BackPage,
     FrontCharacters,
@@ -46,14 +46,6 @@ ASSETS = REPO / "content/assets"
 DPI = 300
 GOLD = "#C9962B"
 LEVELS = {1: "الْمُسْتَوَى الْأَوَّلُ", 2: "الْمُسْتَوَى الثَّانِي"}
-COVER_ART = {
-    "V1": "F5-cover-v1",
-    "V2": "F6-cover-v2",
-    "V3": "F7-cover-v3",
-    "V4": "F8-cover-v4",
-    "V5": "F9-cover-v5",
-}
-COVER_ART["R"] = "F10-cover-ramadan"
 SERIES = "قلبي يعرف الله"
 
 
@@ -89,33 +81,6 @@ def print_width_mm(path: Path, most: float) -> float:
     """The widest an image prints at 300 DPI (and never wider than `most`)."""
     with Image.open(path) as img:
         return round(min(most, img.width / DPI * 25.4), 2)
-
-
-def cover_art(volume: str, out_dir: Path, g: Geometry) -> Path | None:
-    """The volume's cover picture, cropped to the cover with its bleed and resampled to 300 DPI at that size
-    (as `render.character` does for the child's cut-out): cached by content."""
-    stem = COVER_ART.get(volume.upper())
-    src = ASSETS / f"{stem}.jpg" if stem else None
-    if src is None or not src.is_file():
-        return None
-    digest = hashlib.sha256(src.read_bytes()).hexdigest()[:12]
-    out = out_dir / f"cover-{digest}-{g.page_w:g}x{g.page_h:g}.jpg"
-    if out.exists():
-        return out
-    target = (round(g.page_w / 25.4 * DPI), round(g.page_h / 25.4 * DPI))
-    with Image.open(src) as img:
-        rgb = img.convert("RGB")
-    ratio = target[0] / target[1]
-    w, h = rgb.size
-    if w / h > ratio:  # wider than the cover: crop the sides
-        cut = round((w - h * ratio) / 2)
-        rgb = rgb.crop((cut, 0, w - cut, h))
-    else:  # taller: crop the top, keep the hero's spot at the bottom
-        rgb = rgb.crop((0, h - round(w / ratio), w, h))
-    rgb = rgb.resize(target, Image.Resampling.LANCZOS)
-    out_dir.mkdir(parents=True, exist_ok=True)
-    rgb.save(out, format="JPEG", quality=92, dpi=(DPI, DPI))
-    return out
 
 
 def glyph(name: str, color: str, size: float = 24.0, stroke: float = 1.9) -> Markup:
@@ -331,47 +296,99 @@ def missing(ctx: PageContext) -> Built:
 # ---- the covers -------------------------------------------------------------------------------------------
 
 
+def _cover_parts(ctx: PageContext) -> tuple[covers.Front, covers.Back, list[str]]:
+    """The volume's front and back (render/covers.py) and its spine's lines. No sacred text: the volume's
+    title, the series' name, the units' titles."""
+    info = volume_info(ctx)
+    vid = str(info.get("id", "")).lower()
+    part = f"islamic-{vid}"
+    units = volume_units(str(info.get("id", "")))
+    sc = covers.series_copy("islamic")
+    title = ctx.text(str(info.get("title", ctx.page.title)))
+    level = LEVELS.get(int(info.get("level") or 0), "")
+    series = str(sc.get("series", SERIES))
+    pills = ((series, "main"), *(((level, "alt"),) if level else ()))
+    pages = int(ctx.page.params.get("pages") or 0)
+    values = {
+        "pages": covers.pages_phrase(pages, vowelized=True),
+        "units": covers.counted(len(units), "وَحْدَة", "وَحَدَات", vowelized=True),
+    }
+    badges = tuple(
+        (b["icon"], covers.fill(ctx, b["text"], **values))
+        for b in sc.get("badges", [])
+        if pages or "{pages}" not in b["text"]
+    )
+    front = covers.Front(
+        series="islamic",
+        part=part,
+        title=title,
+        ribbon=ctx.book.child.name,
+        subtitle=ctx.text(str(sc.get("kicker", ""))),
+        pills=pills,
+        age=ages(ctx, info),
+        badges=badges,
+        one_line_max=15,
+    )
+    facts = [ages(ctx, info)]
+    if pages:
+        facts.append(ctx.num(covers.counted(pages, "صَفْحَة", "صَفَحَات", vowelized=True)))
+    goal = str(info.get("goal", "")).strip()
+    blurb = str(
+        covers.part_copy("islamic", part).get("blurb") or (goal if goal.endswith(".") else goal + ".")
+    )
+    books = [
+        {"title": ctx.text(str(b["title"])), "this": b["id"] == info.get("id")}
+        for b in ctx.page.params.get("books", [])
+    ]
+    back = covers.Back(
+        series="islamic",
+        part=part,
+        title=title,
+        pills=pills,
+        blurb=(ctx.text(blurb),) if blurb.strip(".") else (),
+        inside=tuple((glyph(u.icon, u.on_color, 24, 1.8), ctx.text(u.title_ar), u.color) for u in units),
+        inside_title="فِي هَذَا الْكِتَابِ",
+        comes=tuple((c["icon"], covers.fill(ctx, str(c["text"]))) for c in sc.get("comes_with", [])),
+        comes_title="يَأْتِي مَعَ الْكِتَابِ",
+        facts=tuple(f for f in facts if f),
+        made_for=covers.fill(ctx, "صُنِعَ هَذَا الْكِتَابُ خِصِّيصًا لِـ{child}"),
+        cols=2,
+        extra={
+            "books": books,
+            "books_title": "كُتُبُ السِّلْسِلَةِ",
+            "care": str(sc.get("care", "")),
+        },
+    )
+    return front, back, [series, title, ctx.book.child.name]
+
+
 @islamic_page("islamic-cover-front", frame="full")
 def cover_front(ctx: PageContext) -> Built:
-    info = volume_info(ctx)
-    units = volume_units(str(info.get("id", "")))
-    art = ctx.page.params.get("art")
-    data: dict[str, Any] = {
-        "art": uri(Path(str(art))) if art else "",
-        "series": SERIES,
-        "title": ctx.text(str(info.get("title", ctx.page.title))),
-        "level": LEVELS.get(int(info.get("level") or 0), ""),
-        "ages": ages(ctx, info),
-        "reader": reader(ctx),
-        "kicker": ctx.text("{رِحْلَةُ الْمُسْلِمِ الصَّغِيرِ/رِحْلَةُ الْمُسْلِمَةِ الصَّغِيرَةِ}"),
-        "name": ctx.book.child.name,
-        "units": [{"glyph": glyph(u.icon, u.on_color, 24, 1.8), "color": u.color} for u in units],
-        "star": star8_svg(GOLD, 9.0, "#FFFBEE"),
-    }
-    return Built(data, None, [])
+    """The volume's scene, the child, the title on a cream arch with the series and level, the child's name on
+    the ribbon, three info badges. No sacred text, no person but the child."""
+    front, _, _ = _cover_parts(ctx)
+    return Built({"cv": covers.front_data(ctx, front)}, None, [])
 
 
 @islamic_page("islamic-cover-back", frame="full")
 def cover_back(ctx: PageContext) -> Built:
-    info = volume_info(ctx)
-    units = volume_units(str(info.get("id", "")))
-    data: dict[str, Any] = {
-        "series": SERIES,
-        "title": ctx.text(str(info.get("title", ""))),
-        "goal": ctx.text(str(info.get("goal", ""))),
-        "ages": ages(ctx, info),
-        "units": [
-            {"glyph": glyph(u.icon, u.on_color, 24, 1.8), "color": u.color, "title": ctx.text(u.title_ar)}
-            for u in units
-        ],
-        "books": [
-            {"title": ctx.text(str(b["title"])), "this": b["id"] == info.get("id")}
-            for b in ctx.page.params.get("books", [])
-        ],
-        "labels": {"books": "كُتُبُ السِّلْسِلَةِ"},
-        "made_for": ctx.text("صُنِعَ هَذَا الْكِتَابُ خَاصَّةً لِـ{child}"),
-        "care": "في الكتاب آيات وأذكار؛ نرجو حفظه في مكان نظيف مرتفع، وعدم رميه.",
-        "credit": credit_line(ctx),
-        "star": star8_svg(GOLD, 9.0, "#FFFBEE"),
+    _, back, _ = _cover_parts(ctx)
+    return Built({"cv": covers.back_data(ctx, back)}, None, [])
+
+
+@islamic_page("islamic-cover-wrap", frame="full")
+def cover_wrap(ctx: PageContext) -> Built:
+    """The perfect-bound cover as the printer lays it flat: [front | spine | back] (the book opens from the
+    right), the spine sized from the page count (`covers.spine_mm`)."""
+    front, back, lines = _cover_parts(ctx)
+    spine = float(ctx.page.params.get("spine_mm") or 0.0)
+    g = ctx.book.geometry
+    trim = Geometry(trim_w=(g.trim_w - spine) / 2, trim_h=g.trim_h, bleed=g.bleed, safe=g.safe, dpi=g.dpi)
+    front_box, (x, width), back_box = covers.wrap_boxes(trim, spine)
+    problems = [] if spine > 0 else ["a wrap needs its spine width"]
+    data = {
+        "front": covers.front_data(ctx, front, front_box),
+        "back": covers.back_data(ctx, back, back_box),
+        "spine": covers.spine_data(ctx, covers.LOOKS["islamic"], x, width, lines),
     }
-    return Built(data, None, [])
+    return Built(data, None, problems)

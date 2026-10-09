@@ -16,7 +16,7 @@ from qamra_workbook.letters import ARABIC, LEFT_OPEN, RIGHT_OPEN
 from qamra_workbook.letters.model import Guides, Letter
 from qamra_workbook.names import MIN_CAP_MM, can_trace, check_name, latin_words, name_parts
 from qamra_workbook.pictures.model import strip_tashkeel
-from qamra_workbook.render import art, draw
+from qamra_workbook.render import covers, draw
 from qamra_workbook.render.pages.letters import dotted_letter, letter_extent
 from qamra_workbook.render.pages.workbook_common import (
     HAMZA_STROKE,
@@ -379,56 +379,73 @@ def blank(ctx: PageContext) -> Built:
     return Built({"note": "تُركت هذه الصفحة فارغة: على الوجه الآخر من الورقة نشاط القصّ واللصق."})
 
 
-# ---- the cover (front and back, printed on card apart from the interior) ---------------------------------
+# ---- the cover (front and back, printed on card apart from the interior; render/covers.py) --------------
 
 
-def _cover_subjects(ctx: PageContext) -> list[dict[str, str]]:
-    out = []
-    for subject in ctx.page.params.get("subjects", []):
-        style = section_style(str(subject), ctx.book.product)
-        out.append({"name": style.name_ar, "icon": art.icon(style.icon), "color": style.color})
-    return out
+def _cover_pills(ctx: PageContext) -> tuple[tuple[str, str], ...]:
+    p = ctx.page.params
+    code, level, volume = str(p.get("code", "")), str(p.get("level", "")), str(p.get("volume", ""))
+    level_pill = f"{code} · {level}" if code and level else level or code
+    volume = strip_tashkeel(volume)  # plain, like the level beside it
+    return tuple(x for x in ((level_pill, "main"), (volume, "alt")) if x[0])
+
+
+def _ages(ctx: PageContext) -> str:
+    ages = ctx.page.params.get("ages")
+    return ctx.num(str(ages)) + " سنوات" if ages else ""
 
 
 @page_type("workbook-cover-front", frame="full")
 def workbook_cover_front(ctx: PageContext) -> Built:
-    """The child's character and name, the product, the level and the volume."""
+    """The scene of the volume, the child's character among toy blocks of its letters and numbers, the title
+    on a notebook page with the level and volume, the child's name on a ribbon, three info badges."""
     p = ctx.page.params
-    name = ctx.book.child.name
-    data = {
-        "kicker": ctx.text("دوسية {child}"),
-        "long": len(name) > LONG_NAME,
-        "character": ctx.assets.character.resolve().as_uri() if ctx.assets.character else "",
-        "title": str(p.get("title", "دوسية التأسيس")),
-        "level": str(p.get("level", "")),
-        "code": str(p.get("code", "")),
-        "volume": str(p.get("volume", "")),
-        "subtitle": str(p.get("subtitle", "")),
-        "ages": ctx.num(str(p.get("ages", ""))) + " سنوات" if p.get("ages") else "",
-        "subjects": _cover_subjects(ctx),
-    }
-    problems = [] if data["volume"] and data["level"] else ["the cover names the level and the volume"]
+    part = str(p.get("part", ""))
+    sc, pc = covers.series_copy("foundation"), covers.part_copy("foundation", part)
+    pages = covers.pages_phrase(int(p.get("pages") or 0))
+    front = covers.Front(
+        series="foundation",
+        part=part,
+        title=str(p.get("title", "دوسية التأسيس")),
+        ribbon=ctx.text(str(sc.get("ribbon", "دوسية {child}"))),
+        subtitle=str(p.get("subtitle", "")),
+        pills=_cover_pills(ctx),
+        age=_ages(ctx),
+        badges=tuple((b["icon"], covers.fill(ctx, b["text"], pages=pages)) for b in sc.get("badges", [])),
+        blocks=tuple(str(x) for x in pc.get("blocks", [])),
+    )
+    data = {"cv": covers.front_data(ctx, front), "kicker": front.ribbon}
+    problems = [] if p.get("volume") and p.get("level") else ["the cover names the level and the volume"]
     return Built(data, None, problems)
 
 
 @page_type("workbook-cover-back", frame="full")
 def workbook_cover_back(ctx: PageContext) -> Built:
-    """For the grown-ups: what the series is, the subjects of this volume, the child's portrait, the ages and
-    the site."""
+    """For the grown-ups: the scene with the child waving, what this volume teaches, three of its pages, what
+    comes with it, the ages, pages and binding, and the site."""
     p = ctx.page.params
-    portrait = ctx.assets.wave or ctx.assets.character  # the waving pose when the sheet has one
-    data = {
-        "title": str(p.get("title", "دوسية التأسيس")),
-        "level": str(p.get("level", "")),
-        "code": str(p.get("code", "")),
-        "volume": str(p.get("volume", "")),
-        "subtitle": str(p.get("subtitle", "")),
-        "blurb": str(p.get("blurb", "")),
-        "ages": ctx.num(str(p.get("ages", ""))) + " سنوات" if p.get("ages") else "",
-        "subjects": _cover_subjects(ctx),
-        "domain": str(p.get("domain", "qamra.app")),
-        "kicker": ctx.text("دوسية {child}"),
-        "long": len(ctx.book.child.name) > LONG_NAME,
-        "character": portrait.resolve().as_uri() if portrait else "",
-    }
-    return Built(data)
+    part = str(p.get("part", ""))
+    sc, pc = covers.series_copy("foundation"), covers.part_copy("foundation", part)
+    comes = [(c["icon"], covers.fill(ctx, c["text"])) for c in sc.get("comes_with", [])]
+    if p.get("certificate") and sc.get("certificate"):
+        comes.append((sc["certificate"]["icon"], ctx.text(sc["certificate"]["text"])))
+    facts = [
+        _ages(ctx),
+        covers.counted(int(p.get("pages") or 0), "صفحة", "صفحات"),
+        str(sc.get("binding", "")),
+    ]
+    back = covers.Back(
+        series="foundation",
+        part=part,
+        title=str(p.get("title", "دوسية التأسيس")),
+        pills=_cover_pills(ctx),
+        blurb=tuple(
+            x for x in (ctx.text(str(pc.get("blurb", ""))), ctx.text(str(sc.get("series_line", "")))) if x
+        ),
+        inside=tuple((i["icon"], ctx.text(str(i["text"])), "") for i in pc.get("inside", [])),
+        comes=tuple(comes),
+        facts=tuple(ctx.num(f) for f in facts if f),
+        made_for=covers.fill(ctx, "صُنعت خصيصًا لـ{child}"),
+        domain=str(p.get("domain", "qamra.app")),
+    )
+    return Built({"cv": covers.back_data(ctx, back), "kicker": ctx.text("دوسية {child}")})

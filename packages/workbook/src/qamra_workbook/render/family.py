@@ -30,6 +30,7 @@ from PIL import Image, ImageDraw, ImageFont
 from qamra_pdf import preflight
 from qamra_pdf.render import FONTS_DIR
 from qamra_workbook.family import FamilyPlan, Placed, book_pages, load
+from qamra_workbook.render import covers
 from qamra_workbook.render.dielines import LAYER, die_ink
 from qamra_workbook.render.engine import book_html, build_pages, previews, print_pdf
 from qamra_workbook.render.samples import FamilySamples, assets_for, book_problems, family_book
@@ -116,7 +117,9 @@ def plan_pages(
 
 
 def cover_specs(plan: FamilyPlan) -> list[PageSpec]:
-    """The front and back cover as engine pages (printed on card, without page numbers)."""
+    """The front and back cover as engine pages (printed on card, without page numbers), with the book's page
+    count for their badges."""
+    pages = len(book_pages(plan))
     return [
         PageSpec(
             id=f"family-cover-{i}",
@@ -125,7 +128,7 @@ def cover_specs(plan: FamilyPlan) -> list[PageSpec]:
             section="front",
             title=page.title,
             instruction=page.instruction,
-            params=dict(page.params),
+            params={"pages": pages, **page.params},
         )
         for i, page in enumerate(plan.cover, start=1)
     ]
@@ -313,6 +316,10 @@ def main(argv: list[str] | None = None) -> int:
             print("  spreads:", *result["spreads"])
         if args.book:
             cover = family_book(samples, tuple(cover_specs(plan)), size)
+            if not args.inserts_only:
+                cover = covers.with_thumbs(
+                    cover, book, Path(result["pdf"]), args.out / "assets", covers.THUMBS["family"]
+                )
             done_cover = asyncio.run(render_cover(cover, args.out, f"cover-{size}"))
             passed &= _print_report(done_cover, f"front and back, {size}")
         for insert, sheets in inserts:

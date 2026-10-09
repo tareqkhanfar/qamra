@@ -50,6 +50,7 @@ MANIFEST = ROOT / "apps/web/src/lib/workbook-previews.json"
 WIDTH, SMALL = 720, 360  # the page in the viewer (≈2× a 360 px phone column) and in strips and cards
 QUALITY = 80
 BLEED_MM = 3.0  # the Islamic PDFs carry 3 mm bleed around a 210 × 280 mm page
+PAGE_RATIO = 210 / 280  # width / height of an Islamic page (its cover is a wrap of two such panels)
 ISLAMIC = ROOT / "out/islamic/web"
 CHARACTER = ROOT / "out/samples/journey/assets"  # the sample character's standing pose, for the cover mock-up
 
@@ -571,12 +572,18 @@ def _image(scope: Scope, page: Page) -> Image.Image:
     try:
         pdf_page = pdf[int(n) - 1]
         width_mm = pdf_page.get_width() / 72 * 25.4
-        trim = WIDTH * width_mm / (width_mm - 2 * BLEED_MM)  # full width so that the trimmed page is WIDTH px
-        img = pdf_page.render(scale=trim / pdf_page.get_width()).to_pil().convert("RGB")
+        height_mm = pdf_page.get_height() / 72 * 25.4
+        # a perfect-bound cover is one wrap [front | spine | back]: show its front panel (on the left)
+        panel_mm = (
+            (height_mm - 2 * BLEED_MM) * PAGE_RATIO if width_mm > height_mm else width_mm - 2 * BLEED_MM
+        )
+        scale = WIDTH / (panel_mm / 25.4 * 72)  # the trimmed panel is WIDTH px wide
+        img = pdf_page.render(scale=scale).to_pil().convert("RGB")
     finally:
         pdf.close()
-    cut = round(img.width * BLEED_MM / width_mm)
-    trimmed: Image.Image = img.crop((cut, cut, img.width - cut, img.height - cut))
+    px_mm = img.width / width_mm
+    cut = round(BLEED_MM * px_mm)
+    trimmed: Image.Image = img.crop((cut, cut, cut + round(panel_mm * px_mm), img.height - cut))
     return trimmed
 
 

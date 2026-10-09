@@ -48,7 +48,7 @@ proposal:
 
 front:
   - type: title-page
-    title: "مُغامَراتُ {child} مَعَ عائِلَتي"
+    title: "مُغامَراتُ {child} مَعَ {عائِلَتِهِ/عائِلَتِها}"
     instruction: "هَذا كِتابُ {مُغامَراتِكَ/مُغامَراتِكِ} مَعَ عائِلَةِ {family_name}"
   - type: toc
     title: "خَريطَةُ المُغامَراتِ"
@@ -1775,7 +1775,7 @@ back:
 
 cover:  # printed on 350 g card with matte lamination, apart from the book; draft texts: educator review
   - type: cover-front
-    title: "مُغامَراتُ {child} مَعَ عائِلَتي"
+    title: "مُغامَراتُ {child} مَعَ {عائِلَتِهِ/عائِلَتِها}"
     instruction: "اثْنَتا عَشْرَةَ مُغامَرَةً مَعَ عائِلَةِ {family_name}"
   - type: cover-back
     title: مغامراتي مع عائلتي
@@ -1784,8 +1784,8 @@ cover:  # printed on 350 g card with matte lamination, apart from the book; draf
       ages: من ٣ إلى ٧ سنوات
       blurb:
         - "كتاب {يعيش/تعيش} فيه {child} اثنتي عشرة مغامرة حقيقية مع {عائلته/عائلتها}: في البيت والمطبخ والسوق والطبيعة، وفي الحكايات والمشاعر والألعاب."
-        - "كل نشاط من ٥ إلى ٢٠ دقيقة بأشياء موجودة في كل بيت، بمستويين للصغار والكبار، ومعه صندوق «هيا نفعلها معًا!» للأهل."
-      collect: "{يجمع/تجمع} {child} ختمًا بعد كل مغامرة وشارات المغامر السبع، ثم شهادة المغامر!"
+        - "كل نشاط من ٥ إلى ٢٠ دقيقة بأشياء موجودة في كل بيت، بمستويين: للأصغر سنًّا وللأكبر، ومعه صندوق «هيا نفعلها معًا!» للأهل."
+      collect: "{يجمع/تجمع} {child} ختمًا بعد كل مغامرة، والشارات السبع، ثم {شهادة المغامر/شهادة المغامِرة}!"
       kit: [١١٢ صفحة بتجليد حلزوني, ورقة ملصقات, "كرتون للقصّ: نقود اللعب والبطاقات والدمى"]
 
 inserts:  # each insert is a print file (out/family-book/inserts/<id>-<size>.pdf), its sheets on their own paper

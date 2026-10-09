@@ -1,14 +1,2 @@
-<div class="tp cover">
-  <div class="tp-art">{{ d.art }}</div>
-  <div class="tp-top">
-    <div class="tp-brand">{{ mascot('mascot') }}<span>قمرة</span><i></i><small>كِتابُ أَنْشِطَةٍ عائِلِيٌّ</small></div>
-    <h1 class="tp-title cover-title">{{ d.before }}<span class="tp-name" data-fit="30">{{ d.name }}</span>{{ d.after }}</h1>
-    <p class="tp-sub" data-fit="11">{{ d.sub }}</p>
-    <div class="tp-dots">{% for a in d.adventures %}<span style="background: {{ a.color }}">{{ icon(a.icon) }}</span>{% endfor %}</div>
-  </div>
-  <div class="tp-family cover-family">
-    {{ d.group }}
-    {% for t in d.tags %}<span class="op-tag{{ ' child' if t.child }}" style="left: {{ t.x }}mm; top: {{ t.y }}mm; max-width: {{ t.w }}mm" data-fit="7.5">{{ t.label }}</span>{% endfor %}
-  </div>
-  <div class="op-family-name tp-family-name">{{ icon('home') }}<span data-fit="10">عائِلَةُ {{ d.family }}</span></div>
-</div>
+{% import "_cover.html.j2" as cover with context %}
+<div class="cv-root">{{ cover.front(d.cv) }}</div>

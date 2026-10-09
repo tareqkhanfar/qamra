@@ -18,6 +18,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from qamra_workbook.render import covers
 from qamra_workbook.render.engine import previews
 from qamra_workbook.render.family import _print_report, page_range, spreads_sheets
 from qamra_workbook.render.journey_order import render_book, report, stage_specs
@@ -49,6 +50,7 @@ async def render(book: BookSpec, cover: BookSpec | None, out: Path, name: str) -
         result["answer_key"] = str(key)
     if cover is not None:
         cover_pdf = out / "cover.pdf"
+        cover = covers.with_thumbs(cover, book, pdf, out / "assets", covers.THUMBS["journey"])
         await render_book(cover, assets, cover_pdf)
         previews(cover_pdf, out / "png-cover", [p.type for p in cover.pages], cover.geometry)
         result["cover"] = {"pdf": str(cover_pdf), "preflight": report(cover_pdf, cover.geometry)}

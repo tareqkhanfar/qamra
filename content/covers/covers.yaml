@@ -1,0 +1,180 @@
+# The covers of the four activity series (front, back and the Islamic spine): every word they print that is
+# not already in the books' own plans. Read by packages/workbook/src/qamra_workbook/render/covers.py.
+# Placeholders: {child}; {masc/fem} picks the child's gender; {pages} the page count with its noun and
+# adjective («١٢٠ صفحة ملوّنة», covers.pages_phrase); {units} the number of units with its noun. Numbers
+# are written in Latin digits here and printed in the book's numerals.
+# Facts only: every line names something the part really holds (docs/plans/cover-scenes.md).
+# draft: language review 2026-10-09
+
+foundation:
+  # the volume's subtitle (vowelized) comes from the curriculum plan; the series line from workbook.BLURB
+  ribbon: "دوسية {child}"
+  badges:
+    - {icon: book, text: "{pages}"}
+    - {icon: pencil, text: "القلم والحروف والأعداد"}
+    - {icon: heart, text: "باسم {child} {وشخصيته/وشخصيتها}"}
+  comes_with:
+    - {icon: home, text: "صفحة «هذا الكتاب لـ{child}»"}
+    - {icon: trace, text: "اسم {child} للتتبّع بالعربية والإنجليزية"}
+  certificate: {icon: trophy, text: "شهادة إنجاز في آخر الجزء"}  # the volumes that end with one
+  binding: "تجليد حلزوني يُفتح مسطّحًا"
+  series_line: "منهج متكامل للروضة في ثلاثة أجزاء، باسم {child} {وشخصيته/وشخصيتها}."
+  parts:
+    kg1-v1:
+      blocks: [أ, ب, ت, "1", "2", "3"]
+      blurb: "في هذا الجزء {يتعلّم/تتعلّم} {child} إمساك القلم بثقة، {فيرسم/فترسم} الخطوط والأقواس والدوائر، ثم {يتعرّف/تتعرّف} على أول تسعة حروف عربية والأعداد من 1 إلى 5، باللعب والتلوين والتتبّع."
+      inside:
+        - {icon: pencil, text: "خطوط وأقواس ودوائر"}
+        - {icon: letter-ba, text: "الحروف من الألف إلى الذال"}
+        - {icon: abacus, text: "الأعداد من 1 إلى 5 والصفر"}
+        - {icon: palette, text: "الألوان والأحجام والكميات"}
+        - {icon: letter-a, text: "الحروف الإنجليزية A–H"}
+        - {icon: brain, text: "ألعاب التفكير والتذكّر"}
+    kg1-v2:
+      blocks: [ر, ز, س, "6", "7", "8"]
+      blurb: "في هذا الجزء {يتعرّف/تتعرّف} {child} على عشرة حروف جديدة وعلى الأعداد حتى 10، {ويلعب/وتلعب} بالأشكال والأنماط وكلمات المكان."
+      inside:
+        - {icon: letter-ba, text: "الحروف من الراء إلى الغين"}
+        - {icon: book, text: "أين الحرف في الكلمة؟"}
+        - {icon: abacus, text: "الأعداد من 6 إلى 10"}
+        - {icon: shapes, text: "الأشكال والأنماط وكلمات المكان"}
+        - {icon: letter-a, text: "الحروف الإنجليزية I–R"}
+        - {icon: puzzle, text: "أصنّف وأرتّب وأحلّ"}
+    kg1-v3:
+      blocks: [ف, ق, م, "4", "+", "5"]
+      blurb: "في الجزء الأخير {يُكمل/تُكمل} {child} الحروف العربية {ويسمع/وتسمع} الحركات، {ويجمع ويطرح/وتجمع وتطرح} بالصور حتى 5، ثم {ينال/تنال} شهادة الإنجاز."
+      inside:
+        - {icon: letter-ba, text: "الحروف من الفاء إلى الياء"}
+        - {icon: ear, text: "أسمع الحركات"}
+        - {icon: book, text: "كلماتي الأولى: أتعرّف وأتتبّع"}
+        - {icon: abacus, text: "الجمع والطرح بالصور حتى 5"}
+        - {icon: letter-a, text: "الحروف الإنجليزية S–Z وكلمات بسيطة"}
+        - {icon: brain, text: "أفكّر وأتذكّر وأركّب"}
+    kg2-v1:
+      blocks: [أ, ب, ت, "1", "2", "3"]
+      blurb: "في هذا الجزء {يدرّب/تدرّب} {child} {يده/يدها} على الخطوط والمنحنيات وضربات الحروف، ثم {يتعلّم/تتعلّم} أول تسعة حروف عربية والأعداد من 1 إلى 5."
+      inside:
+        - {icon: pencil, text: "الخطوط والمنحنيات وضربات الحروف"}
+        - {icon: letter-ba, text: "الحروف من الألف إلى الذال"}
+        - {icon: abacus, text: "الأعداد من 1 إلى 5 والصفر"}
+        - {icon: palette, text: "مفاهيم أساسية والألوان"}
+        - {icon: letter-a, text: "الحروف الإنجليزية A–H"}
+        - {icon: brain, text: "أنظر وأميّز، أفكّر وأحلّ"}
+    kg2-v2:
+      blocks: [س, ش, ع, "8", "9", "10"]
+      blurb: "في هذا الجزء {يكتب/تكتب} {child} الحرف في أول الكلمة ووسطها وآخرها، {ويتعلّم/وتتعلّم} عشرة حروف جديدة والأعداد حتى 10، مع الأشكال والمواقع والأنماط."
+      inside:
+        - {icon: write, text: "الحرف في أول الكلمة ووسطها وآخرها"}
+        - {icon: letter-ba, text: "الحروف من الراء إلى الغين"}
+        - {icon: abacus, text: "الأعداد من 6 إلى 10 والترتيب"}
+        - {icon: shapes, text: "الأشكال والمواقع والأنماط"}
+        - {icon: letter-a, text: "الحروف الإنجليزية I–R"}
+        - {icon: puzzle, text: "أدقّق وأصنّف وأحلّ"}
+    kg2-v3:
+      blocks: [ق, ل, م, "12", "+", "20"]
+      blurb: "في الجزء الأخير {يُكمل/تُكمل} {child} الحروف {ويقرأ/وتقرأ} بالحركات كلمات وجملًا قصيرة، {ويعدّ/وتعدّ} حتى 20 {ويجمع ويطرح/وتجمع وتطرح}، ثم {ينال/تنال} شهادة الإنجاز."
+      inside:
+        - {icon: letter-ba, text: "الحروف من الفاء إلى الياء"}
+        - {icon: book, text: "الحركات والمقاطع وقراءة الكلمات"}
+        - {icon: write, text: "أقرأ جملًا قصيرة وأكتب"}
+        - {icon: abacus, text: "الأعداد من 11 إلى 20، والجمع والطرح"}
+        - {icon: letter-a, text: "الحروف الإنجليزية S–Z ومفردات بسيطة"}
+        - {icon: brain, text: "أركّز وأتذكّر وأحلّ المشكلات"}
+
+journey:
+  ribbon: "رحلة {child}"  # from content/journey/stage-*.yaml cover.front.kicker when it is set
+  binding: "تجليد حلزوني يُفتح مسطّحًا"
+  badges:
+    - {icon: book, text: "{pages}"}
+    - {icon: flag, text: "مهمّة واحدة في كل صفحة"}
+    - {icon: heart, text: "باسم {child} {وشخصيته/وشخصيتها}"}
+  parts:
+    journey-1:
+      blocks: [circle, triangle, square, "1", "2", "3"]  # stage 1 writes no letter: shapes and quantities
+      inside:
+        - {icon: brain, text: "ألعاب التفكير والملاحظة"}
+        - {icon: ear, text: "الاستماع وتمييز الأصوات"}
+        - {icon: hand, text: "تحريك اليد ومسك القلم"}
+        - {icon: shapes, text: "الأشكال والألوان والأنماط"}
+        - {icon: abacus, text: "الكميات والأعداد من 1 إلى 5"}
+        - {icon: speaker, text: "أول كلمات إنجليزية بالسمع"}
+      comes_with:
+        - {icon: flag, text: "خريطة الرحلة"}
+        - {icon: sticker, text: "ورقة ملصقات"}
+        - {icon: speaker, text: "رموز QR لسماع الأصوات والكلمات"}
+        - {icon: trophy, text: "شهادة باسم {child}"}
+    journey-2:
+      blocks: [أ, ب, ج, "5", "6", "7"]
+      inside:
+        - {icon: letter-ba, text: "أول 14 حرفًا: من الألف إلى الصاد"}
+        - {icon: ear, text: "صوت كل حرف، وأول صوت في الكلمة"}
+        - {icon: write, text: "أتتبّع بإصبعي ثم أكتب بقلمي"}
+        - {icon: abacus, text: "الأعداد من 1 إلى 10"}
+        - {icon: letter-a, text: "الحروف الإنجليزية A–N وكلماتها"}
+        - {icon: brain, text: "ألعاب تفكير أصعب"}
+      comes_with:
+        - {icon: flag, text: "خريطة الرحلة"}
+        - {icon: sticker, text: "ورقة ملصقات"}
+        - {icon: speaker, text: "رموز QR لسماع كل حرف وكلمة"}
+        - {icon: trophy, text: "اسم {child} للتتبّع، وشهادة {باسمه/باسمها}"}
+    journey-3:
+      blocks: [ض, ن, ي, "3", "+", "4"]
+      inside:
+        - {icon: letter-ba, text: "آخر 14 حرفًا: من الضاد إلى الياء"}
+        - {icon: ear, text: "الحركات والمقاطع"}
+        - {icon: book, text: "قراءة الكلمات والجمل القصيرة"}
+        - {icon: write, text: "أكتب على السطر ثم وحدي"}
+        - {icon: abacus, text: "الجمع والطرح بالصور"}
+        - {icon: letter-a, text: "الحروف الإنجليزية O–Z وجمل قصيرة"}
+      comes_with:
+        - {icon: flag, text: "خريطة الرحلة"}
+        - {icon: sticker, text: "ورقة ملصقات"}
+        - {icon: speaker, text: "رموز QR لسماع الحروف والكلمات"}
+        - {icon: trophy, text: "تقييم ختامي وشهادة إتمام الرحلة"}
+
+family:
+  ribbon: "عائِلَةُ {family_name}"
+  pill: "كِتابُ أَنْشِطَةٍ عائِلِيٌّ"  # on the front and the back
+  age: "3–7"
+  badges:
+    - {icon: clock, text: "أنشطة من 5 إلى 20 دقيقة"}
+    - {icon: book, text: "{pages}"}
+    - {icon: heart, text: "باسم {child} {وعائلته/وعائلتها}"}
+  comes_with:
+    - {icon: sticker, text: "ورقة ملصقات"}
+    - {icon: scissors, text: "كرتون للقصّ: نقود وبطاقات ودمى"}
+    - {icon: passport, text: "{جواز سفر المغامر/جواز سفر المغامِرة}"}
+    - {icon: trophy, text: "{شهادة المغامر/شهادة المغامِرة}"}
+  binding: "تجليد حلزوني مزدوج يُفتح مسطّحًا"
+  parts:
+    family:
+      blocks: []
+
+islamic:
+  # the volume's title, level, goal and units come from content/islamic (plan.yaml, units.yaml)
+  series: "قَلْبِي يَعْرِفُ اللهَ"  # «الله» as units.yaml writes it
+  kicker: "{رِحْلَةُ الْمُسْلِمِ الصَّغِيرِ/رِحْلَةُ الْمُسْلِمَةِ الصَّغِيرَةِ}"
+  badges:
+    - {icon: book, text: "{pages}"}
+    - {icon: star, text: "{units}"}
+    - {icon: heart, text: "صُنِعَ لِـ{child}"}
+  comes_with:
+    - {icon: passport, text: "{جواز المسلم الصغير/جواز المسلمة الصغيرة}"}
+    - {icon: sticker, text: "ورقة ملصقات للأختام والنجوم"}
+    - {icon: heart, text: "صفحة للأهل بعد كل وحدة"}
+    - {icon: trophy, text: "شهادة في آخر الكتاب"}
+  care: "في الكتاب آيات وأذكار؛ نرجو حفظه في مكان نظيف لائق، وألّا يوضع على الأرض أو يُرمى مع المهملات."
+  # the back's blurb for parents (the volume's goal in content/islamic/plan.yaml, worded for the cover)
+  parts:
+    islamic-v1:
+      blurb: "يتعرّف الطفل إلى الله ونعمه ونبيّه ﷺ، ويكتسب عاداته الأولى: الأذكار والأخلاق ويومه مع الله."
+    islamic-v2:
+      blurb: "يتعلّم الطفل الوضوء والصلاة، ويستمع إلى القرآن ويحفظ سورًا قصيرة، ويتعلّم أذكارًا يومية ويُحسن إلى أهله، ويتدرّب على التصرّف في مواقف يومية."
+    islamic-v3:
+      blurb: "يفهم الطفل أركان الإسلام والإيمان بأمثلة من عالمه، ويتعلّم الصلاة كاملة، ويتعرّف إلى الصيام والزكاة والحج حبًّا لا خوفًا."
+    islamic-v4:
+      blurb: "يسمع الطفل قصصًا مختارة من حياة الأنبياء عليهم السلام، ويأخذ من كل قصة قيمة واحدة، ويقترب من نبيّنا ﷺ بمواقف صحيحة من سيرته."
+    islamic-v5:
+      blurb: "تتحوّل القيم إلى عادات: أخلاق تكبر معه، وآداب يومية، وبرّ بالوالدين، وحلال وحرام بلا تخويف، وسور جديدة، ويوم كامل مع الله."
+    islamic-r:
+      blurb: "أجواء رمضان والعيد بالقصة واللعب والأنشطة: الصيام بقدر الطاقة، والقرآن والصدقة، وليلة القدر، وآداب العيد وفرحته."

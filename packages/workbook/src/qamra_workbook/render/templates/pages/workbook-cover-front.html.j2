@@ -1,24 +1,2 @@
-<div class="wc-bg" aria-hidden="true">
-  <svg viewBox="0 0 {{ g.page_w }} {{ g.page_h }}" preserveAspectRatio="none">
-    <defs>
-      <linearGradient id="wc-sky-{{ p.spec.id }}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#16204A"/><stop offset="1" stop-color="#2B3A78"/></linearGradient>
-      <radialGradient id="wc-glow-{{ p.spec.id }}" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FCEFD2" stop-opacity="0.95"/><stop offset="0.6" stop-color="#F2B33D" stop-opacity="0.35"/><stop offset="1" stop-color="#F2B33D" stop-opacity="0"/></radialGradient>
-    </defs>
-    <rect width="{{ g.page_w }}" height="{{ g.page_h }}" fill="url(#wc-sky-{{ p.spec.id }})"/>
-    {% for k in range(14) %}<path d="M0 {{ 120 + k * 12 }} L{{ g.page_w }} {{ 120 + k * 12 }}" stroke="#FFFFFF" stroke-opacity="0.06" stroke-width="0.5"/>{% endfor %}
-    <circle cx="{{ g.page_w / 2 }}" cy="{{ g.page_h * 0.62 }}" r="{{ g.page_w * 0.42 }}" fill="url(#wc-glow-{{ p.spec.id }})"/>
-    {% for x, y, r in [(0.12, 0.07, 1.6), (0.3, 0.04, 1.1), (0.82, 0.09, 1.8), (0.9, 0.3, 1.2), (0.08, 0.36, 1.3), (0.2, 0.5, 0.9), (0.86, 0.52, 1.0), (0.66, 0.05, 0.9)] %}<circle cx="{{ g.page_w * x }}" cy="{{ g.page_h * y }}" r="{{ r }}" fill="#F2B33D"/>{% endfor %}
-    <rect x="{{ g.page_w - g.bleed - 9 }}" y="0" width="{{ g.bleed + 9 }}" height="{{ g.page_h }}" fill="#E9A62B"/>
-  </svg>
-</div>
-<div class="wc">
-  <div class="wc-brand">{{ mascot('mascot') }}<span>قمرة</span></div>
-  <h1 class="wc-title">{{ d.title }}</h1>
-  <div class="wc-level">{% if d.code %}<b dir="ltr">{{ d.code }}</b>{% endif %}<span>{{ d.level }}</span></div>
-  <div class="wc-volume">{{ d.volume }}</div>
-  {% if d.subtitle %}<p class="wc-sub">{{ d.subtitle }}</p>{% endif %}
-  <div class="wc-hero">{% if d.character %}<img src="{{ d.character }}" alt="">{% endif %}</div>
-  <div class="wc-name"><span{% if d.long %} class="long"{% endif %} data-fit="16">{{ d.kicker }}</span></div>
-  <div class="wc-subjects">{% for s in d.subjects %}<span style="background: {{ s.color }}">{{ s.icon }}</span>{% endfor %}</div>
-  {% if d.ages %}<div class="wc-ages">{{ d.ages }}</div>{% endif %}
-</div>
+{% import "_cover.html.j2" as cover with context %}
+<div class="cv-root">{{ cover.front(d.cv) }}</div>

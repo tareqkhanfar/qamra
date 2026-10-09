@@ -18,6 +18,7 @@ from typing import Any
 from qamra_pdf import preflight
 from qamra_workbook.journey import Journey, load
 from qamra_workbook.journey_book import PLAN, cover_specs, layer_problems, load_layer, page_specs, stage_book
+from qamra_workbook.render import covers
 from qamra_workbook.render.engine import PageProblems, answer_key_html, book_html, build_pages, print_pdf
 from qamra_workbook.render.registry import Assets
 from qamra_workbook.render.samples import assets_for, book_problems
@@ -59,9 +60,10 @@ def stage_specs(
     """The stage's interior (all pages, or `numbers`) and its cover, checked before anything is drawn."""
     plan = plan or load(PLAN)
     layer = load_layer(stage)
-    pages = [p for p in page_specs(plan, layer) if numbers is None or p.number in numbers]
+    every = page_specs(plan, layer)
+    pages = [p for p in every if numbers is None or p.number in numbers]
     interior = stage_book(pages, child, numerals=numerals, day=day, domain=domain, name_en=name_en)
-    cover = stage_book(cover_specs(layer), child, numerals=numerals, day=day, domain=domain)
+    cover = stage_book(cover_specs(layer, len(every)), child, numerals=numerals, day=day, domain=domain)
     problems = layer_problems(plan, layer) + book_problems(interior)
     if problems:
         raise PageProblems("\n".join(problems))
@@ -96,6 +98,9 @@ async def render_order(
     )
     assets = assets_for(interior, out)
     key = await render_book(interior, assets, out / "interior.pdf", key=out / "answer-key.pdf")
+    cover = covers.with_thumbs(
+        cover, interior, out / "interior.pdf", out / "assets", covers.THUMBS["journey"]
+    )
     await render_book(cover, assets, out / "cover.pdf")
     files = OrderFiles(out / "interior.pdf", out / "cover.pdf", key, pages=len(interior.pages))
     g = interior.geometry

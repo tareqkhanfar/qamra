@@ -63,7 +63,7 @@ def test_approved_members_are_drawn_as_their_characters(tmp_path: Path) -> None:
     full = family_spec(tuple(cover_specs(load(ROOT / PLAN))), Child("ليان", "f"), FAMILY)
     book = dataclasses.replace(full, pages=tuple(p for p in full.pages if p.type == "cover-front"))
     [front] = build_pages(book, assets)
-    group = str(front.built.data["group"])
+    group = str(front.built.data["cv"]["group"])
     assert art.name in group  # «بابا» drawn from his sheet …
     assert (
         group.count("<image") == 1

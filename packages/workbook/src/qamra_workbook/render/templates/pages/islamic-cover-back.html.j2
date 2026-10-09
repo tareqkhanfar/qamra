@@ -1,15 +1,2 @@
-<div class="icv back">
-  <div class="icv-bg back" aria-hidden="true"></div>
-  <div class="icv-body back">
-    <div class="icv-series"><span>{{ d.star }}</span><b>{{ d.series }}</b><span>{{ d.star }}</span></div>
-    <h2 class="icv-btitle">{{ d.title }}</h2>
-    {% if d.goal %}<p class="icv-goal">{{ d.goal }}</p>{% endif %}
-    <ul class="icv-ulist">{% for u in d.units %}<li><span class="icv-u" style="background: {{ u.color }}">{{ u.glyph }}</span><span>{{ u.title }}</span></li>{% endfor %}</ul>
-    {% if d.ages %}<p class="icv-level dark">{{ d.ages }}</p>{% endif %}
-    {% if d.books %}<section class="icv-books"><h3>{{ d.labels.books }}</h3><ol>{% for b in d.books %}<li class="{{ 'this' if b.this }}">{{ b.title }}</li>{% endfor %}</ol></section>{% endif %}
-    <p class="icv-made">{{ d.made_for }}</p>
-    <p class="icv-care">{{ d.care }}</p>
-    {% if d.credit %}<p class="icv-care icv-credit">{{ d.credit }}</p>{% endif %}
-    <div class="icv-brand dark">{{ mascot('mascot') }}<span>قمرة</span></div>
-  </div>
-</div>
+{% import "_cover.html.j2" as cover with context %}
+<div class="cv-root">{{ cover.back(d.cv) }}</div>

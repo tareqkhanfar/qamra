@@ -42,6 +42,7 @@ from qamra_workbook.curriculum import REPLACED_WORDS, SUBJECTS, Curriculum, load
 from qamra_workbook.journey_book import english_name, uses_name_en
 from qamra_workbook.names import can_trace
 from qamra_workbook.pictures.model import strip_tashkeel
+from qamra_workbook.render import covers
 from qamra_workbook.render.engine import (
     PageProblems,
     answer_key_html,
@@ -183,6 +184,9 @@ def cover_specs(plan: Curriculum, number: int, domain: str = "qamra.app") -> lis
         "subjects": subjects,
         "blurb": BLURB,
         "domain": domain.strip().rstrip("/") or "qamra.app",
+        "part": f"{plan.level}-v{number}",  # the cover's scene and copy (render/covers.py)
+        "pages": len(volume.pages),
+        "certificate": any(p.type == "certificate" for p in volume.pages),
     }
     return [
         PageSpec(
@@ -263,6 +267,7 @@ async def render_order(
     )
     assets = assets_for(book, out)
     key = await render_book(book, assets, out / "interior.pdf", key=out / "answer-key.pdf")
+    cover = covers.with_thumbs(cover, book, out / "interior.pdf", out / "assets", covers.THUMBS["foundation"])
     await render_book(cover, assets, out / "cover.pdf")
     files = WorkbookFiles(
         out / "interior.pdf",
@@ -355,9 +360,12 @@ def main(argv: list[str] | None = None) -> int:
         name += f"-p{args.pages}"
     result = asyncio.run(render(book, args.out, name))
     if args.cover:
-        covers = asyncio.run(render_cover(cover, args.out, name))
-        result["preflight"].update(covers["preflight"])
-        print(f"wrote {covers['pdf']}")
+        cover = covers.with_thumbs(
+            cover, book, Path(result["pdf"]), args.out / "assets", covers.THUMBS["foundation"]
+        )
+        done = asyncio.run(render_cover(cover, args.out, name))
+        result["preflight"].update(done["preflight"])
+        print(f"wrote {done['pdf']}")
     passed = True
     for pdf_name, report_ in result["preflight"].items():
         verdict = "passed" if report_["passed"] else "FAILED"

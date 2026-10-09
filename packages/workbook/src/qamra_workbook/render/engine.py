@@ -23,6 +23,7 @@ from playwright.async_api import async_playwright
 import qamra_workbook.render.pages  # noqa: F401  (importing the builders registers every page type)
 from qamra_pdf.render import FONTS_DIR, qr_svg, set_boxes
 from qamra_workbook.render import art
+from qamra_workbook.render.covers import COVER_FIT_JS
 from qamra_workbook.render.registry import Assets, Built, PageContext, PageType, lookup
 from qamra_workbook.render.sections import PATTERNS, SectionStyle, section_style, tab_top
 from qamra_workbook.render.spec import (
@@ -178,7 +179,8 @@ async def print_pdf(html: str, html_path: Path, pdf_path: Path, geometry: Geomet
             page = await browser.new_page()
             await page.goto(html_path.resolve().as_uri(), wait_until="load")
             await page.evaluate("document.fonts.ready.then(() => true)")
-            overflowing: list[str] = await page.evaluate(_FIT_JS)
+            overflowing: list[str] = await page.evaluate(COVER_FIT_JS)  # the covers' lettering first
+            overflowing += await page.evaluate(_FIT_JS)
             if overflowing:
                 raise PageProblems("does not fit: " + "; ".join(overflowing))
             await page.pdf(

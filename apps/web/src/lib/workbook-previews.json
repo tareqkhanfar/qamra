@@ -4,8 +4,8 @@
     "scopes": {
       "kg1-1": {
         "cover": {
-          "src": "/workbooks/foundation-workbook/kg1-1/cover.webp?v=cf9f00a9",
-          "sm": "/workbooks/foundation-workbook/kg1-1/cover-sm.webp?v=cf9f00a9",
+          "src": "/workbooks/foundation-workbook/kg1-1/cover.webp?v=4538ae37",
+          "sm": "/workbooks/foundation-workbook/kg1-1/cover-sm.webp?v=4538ae37",
           "w": 720,
           "h": 1018,
           "title_ar": "غلاف المستوى الأول باسم طفلكم وشخصيته",
@@ -96,8 +96,8 @@
       },
       "kg1-2": {
         "cover": {
-          "src": "/workbooks/foundation-workbook/kg1-2/cover.webp?v=50da06a5",
-          "sm": "/workbooks/foundation-workbook/kg1-2/cover-sm.webp?v=50da06a5",
+          "src": "/workbooks/foundation-workbook/kg1-2/cover.webp?v=2b6bb23f",
+          "sm": "/workbooks/foundation-workbook/kg1-2/cover-sm.webp?v=2b6bb23f",
           "w": 720,
           "h": 1018,
           "title_ar": "غلاف المستوى الأول باسم طفلكم وشخصيته",
@@ -188,8 +188,8 @@
       },
       "kg1-3": {
         "cover": {
-          "src": "/workbooks/foundation-workbook/kg1-3/cover.webp?v=32dede54",
-          "sm": "/workbooks/foundation-workbook/kg1-3/cover-sm.webp?v=32dede54",
+          "src": "/workbooks/foundation-workbook/kg1-3/cover.webp?v=ee18292a",
+          "sm": "/workbooks/foundation-workbook/kg1-3/cover-sm.webp?v=ee18292a",
           "w": 720,
           "h": 1018,
           "title_ar": "غلاف المستوى الأول باسم طفلكم وشخصيته",
@@ -280,8 +280,8 @@
       },
       "kg2-1": {
         "cover": {
-          "src": "/workbooks/foundation-workbook/kg2-1/cover.webp?v=74149e68",
-          "sm": "/workbooks/foundation-workbook/kg2-1/cover-sm.webp?v=74149e68",
+          "src": "/workbooks/foundation-workbook/kg2-1/cover.webp?v=2554939e",
+          "sm": "/workbooks/foundation-workbook/kg2-1/cover-sm.webp?v=2554939e",
           "w": 720,
           "h": 1018,
           "title_ar": "غلاف المستوى الثاني باسم طفلكم وشخصيته",
@@ -372,8 +372,8 @@
       },
       "kg2-2": {
         "cover": {
-          "src": "/workbooks/foundation-workbook/kg2-2/cover.webp?v=a7a7848b",
-          "sm": "/workbooks/foundation-workbook/kg2-2/cover-sm.webp?v=a7a7848b",
+          "src": "/workbooks/foundation-workbook/kg2-2/cover.webp?v=b30a1e1d",
+          "sm": "/workbooks/foundation-workbook/kg2-2/cover-sm.webp?v=b30a1e1d",
           "w": 720,
           "h": 1018,
           "title_ar": "غلاف المستوى الثاني باسم طفلكم وشخصيته",
@@ -464,8 +464,8 @@
       },
       "kg2-3": {
         "cover": {
-          "src": "/workbooks/foundation-workbook/kg2-3/cover.webp?v=a5a56e03",
-          "sm": "/workbooks/foundation-workbook/kg2-3/cover-sm.webp?v=a5a56e03",
+          "src": "/workbooks/foundation-workbook/kg2-3/cover.webp?v=0a440de9",
+          "sm": "/workbooks/foundation-workbook/kg2-3/cover-sm.webp?v=0a440de9",
           "w": 720,
           "h": 1018,
           "title_ar": "غلاف المستوى الثاني باسم طفلكم وشخصيته",
@@ -561,8 +561,8 @@
     "scopes": {
       "1": {
         "cover": {
-          "src": "/workbooks/learning-journey/1/cover.webp?v=c9af0d8c",
-          "sm": "/workbooks/learning-journey/1/cover-sm.webp?v=c9af0d8c",
+          "src": "/workbooks/learning-journey/1/cover.webp?v=323e47f6",
+          "sm": "/workbooks/learning-journey/1/cover-sm.webp?v=323e47f6",
           "w": 720,
           "h": 1018,
           "title_ar": "الغلاف باسم طفلكم وشخصيته",
@@ -570,16 +570,16 @@
         },
         "pages": [
           {
-            "src": "/workbooks/learning-journey/1/01.webp?v=0b05237d",
-            "sm": "/workbooks/learning-journey/1/01-sm.webp?v=0b05237d",
+            "src": "/workbooks/learning-journey/1/01.webp?v=2b9579b0",
+            "sm": "/workbooks/learning-journey/1/01-sm.webp?v=2b9579b0",
             "w": 720,
             "h": 1018,
             "title_ar": "خريطة الرحلة باسم طفلكم",
             "title_en": "The journey map, with your child's name"
           },
           {
-            "src": "/workbooks/learning-journey/1/02.webp?v=1b78e6fc",
-            "sm": "/workbooks/learning-journey/1/02-sm.webp?v=1b78e6fc",
+            "src": "/workbooks/learning-journey/1/02.webp?v=59303286",
+            "sm": "/workbooks/learning-journey/1/02-sm.webp?v=59303286",
             "w": 720,
             "h": 1018,
             "title_ar": "أفكّر: أدرّب عقلي",
@@ -642,8 +642,8 @@
             "title_en": "Three differences"
           },
           {
-            "src": "/workbooks/learning-journey/1/10.webp?v=d0e709ea",
-            "sm": "/workbooks/learning-journey/1/10-sm.webp?v=d0e709ea",
+            "src": "/workbooks/learning-journey/1/10.webp?v=7000f194",
+            "sm": "/workbooks/learning-journey/1/10-sm.webp?v=7000f194",
             "w": 720,
             "h": 1018,
             "title_ar": "شهادة المحطة الأولى",
@@ -653,8 +653,8 @@
       },
       "2": {
         "cover": {
-          "src": "/workbooks/learning-journey/2/cover.webp?v=15366088",
-          "sm": "/workbooks/learning-journey/2/cover-sm.webp?v=15366088",
+          "src": "/workbooks/learning-journey/2/cover.webp?v=97f514e1",
+          "sm": "/workbooks/learning-journey/2/cover-sm.webp?v=97f514e1",
           "w": 720,
           "h": 1018,
           "title_ar": "الغلاف باسم طفلكم وشخصيته",
@@ -662,8 +662,8 @@
         },
         "pages": [
           {
-            "src": "/workbooks/learning-journey/2/01.webp?v=9cf42830",
-            "sm": "/workbooks/learning-journey/2/01-sm.webp?v=9cf42830",
+            "src": "/workbooks/learning-journey/2/01.webp?v=a2551d00",
+            "sm": "/workbooks/learning-journey/2/01-sm.webp?v=a2551d00",
             "w": 720,
             "h": 1018,
             "title_ar": "خريطة الرحلة: المحطة الثانية",
@@ -734,8 +734,8 @@
             "title_en": "Searching the market"
           },
           {
-            "src": "/workbooks/learning-journey/2/10.webp?v=fd79dc75",
-            "sm": "/workbooks/learning-journey/2/10-sm.webp?v=fd79dc75",
+            "src": "/workbooks/learning-journey/2/10.webp?v=392a5450",
+            "sm": "/workbooks/learning-journey/2/10-sm.webp?v=392a5450",
             "w": 720,
             "h": 1018,
             "title_ar": "شهادة المحطة الثانية",
@@ -745,8 +745,8 @@
       },
       "3": {
         "cover": {
-          "src": "/workbooks/learning-journey/3/cover.webp?v=4c7e83d7",
-          "sm": "/workbooks/learning-journey/3/cover-sm.webp?v=4c7e83d7",
+          "src": "/workbooks/learning-journey/3/cover.webp?v=021db59a",
+          "sm": "/workbooks/learning-journey/3/cover-sm.webp?v=021db59a",
           "w": 720,
           "h": 1018,
           "title_ar": "الغلاف باسم طفلكم وشخصيته",
@@ -754,8 +754,8 @@
         },
         "pages": [
           {
-            "src": "/workbooks/learning-journey/3/01.webp?v=19184a71",
-            "sm": "/workbooks/learning-journey/3/01-sm.webp?v=19184a71",
+            "src": "/workbooks/learning-journey/3/01.webp?v=d7444b72",
+            "sm": "/workbooks/learning-journey/3/01-sm.webp?v=d7444b72",
             "w": 720,
             "h": 1018,
             "title_ar": "خريطة الرحلة: المحطة الثالثة",
@@ -826,8 +826,8 @@
             "title_en": "Adding with pictures"
           },
           {
-            "src": "/workbooks/learning-journey/3/10.webp?v=4a186978",
-            "sm": "/workbooks/learning-journey/3/10-sm.webp?v=4a186978",
+            "src": "/workbooks/learning-journey/3/10.webp?v=8657fb17",
+            "sm": "/workbooks/learning-journey/3/10-sm.webp?v=8657fb17",
             "w": 720,
             "h": 1018,
             "title_ar": "شهادة إتمام الرحلة",
@@ -842,8 +842,8 @@
     "scopes": {
       "book": {
         "cover": {
-          "src": "/workbooks/family-adventures/book/cover.webp?v=32a42250",
-          "sm": "/workbooks/family-adventures/book/cover-sm.webp?v=32a42250",
+          "src": "/workbooks/family-adventures/book/cover.webp?v=26d68a48",
+          "sm": "/workbooks/family-adventures/book/cover-sm.webp?v=26d68a48",
           "w": 720,
           "h": 959,
           "title_ar": "الغلاف باسم طفلكم وشخصيته",
@@ -851,8 +851,8 @@
         },
         "pages": [
           {
-            "src": "/workbooks/family-adventures/book/01.webp?v=2695e6b0",
-            "sm": "/workbooks/family-adventures/book/01-sm.webp?v=2695e6b0",
+            "src": "/workbooks/family-adventures/book/01.webp?v=5817414d",
+            "sm": "/workbooks/family-adventures/book/01-sm.webp?v=5817414d",
             "w": 720,
             "h": 959,
             "title_ar": "جواز سفر المغامر الصغير",
@@ -867,16 +867,16 @@
             "title_en": "My family"
           },
           {
-            "src": "/workbooks/family-adventures/book/03.webp?v=bbf9da03",
-            "sm": "/workbooks/family-adventures/book/03-sm.webp?v=bbf9da03",
+            "src": "/workbooks/family-adventures/book/03.webp?v=d77d8f73",
+            "sm": "/workbooks/family-adventures/book/03-sm.webp?v=d77d8f73",
             "w": 720,
             "h": 959,
             "title_ar": "صيد الدوائر في المطبخ",
             "title_en": "A circle hunt in the kitchen"
           },
           {
-            "src": "/workbooks/family-adventures/book/04.webp?v=507e2d31",
-            "sm": "/workbooks/family-adventures/book/04-sm.webp?v=507e2d31",
+            "src": "/workbooks/family-adventures/book/04.webp?v=625b506f",
+            "sm": "/workbooks/family-adventures/book/04-sm.webp?v=625b506f",
             "w": 720,
             "h": 959,
             "title_ar": "قائمة مشترياتي",
@@ -923,8 +923,8 @@
             "title_en": "A memory game with the family"
           },
           {
-            "src": "/workbooks/family-adventures/book/10.webp?v=73389563",
-            "sm": "/workbooks/family-adventures/book/10-sm.webp?v=73389563",
+            "src": "/workbooks/family-adventures/book/10.webp?v=321ea5e8",
+            "sm": "/workbooks/family-adventures/book/10-sm.webp?v=321ea5e8",
             "w": 720,
             "h": 959,
             "title_ar": "شهادة المغامر باسم طفلكم",
@@ -939,91 +939,91 @@
     "scopes": {
       "V1": {
         "cover": {
-          "src": "/workbooks/islamic-series/V1/cover.webp?v=2e8435de",
-          "sm": "/workbooks/islamic-series/V1/cover-sm.webp?v=2e8435de",
+          "src": "/workbooks/islamic-series/V1/cover.webp?v=90d820a9",
+          "sm": "/workbooks/islamic-series/V1/cover-sm.webp?v=90d820a9",
           "w": 720,
-          "h": 960,
+          "h": 961,
           "title_ar": "الغلاف باسم طفلكم وشخصيته",
           "title_en": "The cover, with your child's name and character"
         },
         "pages": [
           {
-            "src": "/workbooks/islamic-series/V1/01.webp?v=e8cef403",
-            "sm": "/workbooks/islamic-series/V1/01-sm.webp?v=e8cef403",
+            "src": "/workbooks/islamic-series/V1/01.webp?v=e1a0cbab",
+            "sm": "/workbooks/islamic-series/V1/01-sm.webp?v=e1a0cbab",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "بداية وحدة «الله خلقني»",
             "title_en": "Unit opener: Allah created me"
           },
           {
-            "src": "/workbooks/islamic-series/V1/02.webp?v=031d3e31",
-            "sm": "/workbooks/islamic-series/V1/02-sm.webp?v=031d3e31",
+            "src": "/workbooks/islamic-series/V1/02.webp?v=62681d90",
+            "sm": "/workbooks/islamic-series/V1/02-sm.webp?v=62681d90",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "قصة مع ستّي هدى وريم وسالم",
             "title_en": "A story with Grandma Huda, Reem and Salem"
           },
           {
-            "src": "/workbooks/islamic-series/V1/03.webp?v=31efc296",
-            "sm": "/workbooks/islamic-series/V1/03-sm.webp?v=31efc296",
+            "src": "/workbooks/islamic-series/V1/03.webp?v=9b117899",
+            "sm": "/workbooks/islamic-series/V1/03-sm.webp?v=9b117899",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "أبحث عن نعم الله",
             "title_en": "Looking for Allah's blessings"
           },
           {
-            "src": "/workbooks/islamic-series/V1/04.webp?v=003f9c6b",
-            "sm": "/workbooks/islamic-series/V1/04-sm.webp?v=003f9c6b",
+            "src": "/workbooks/islamic-series/V1/04.webp?v=7db7ec01",
+            "sm": "/workbooks/islamic-series/V1/04-sm.webp?v=7db7ec01",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "بداية وحدة «نبيّنا محمد ﷺ»",
             "title_en": "Unit opener: our Prophet Muhammad ﷺ"
           },
           {
-            "src": "/workbooks/islamic-series/V1/05.webp?v=41f7e509",
-            "sm": "/workbooks/islamic-series/V1/05-sm.webp?v=41f7e509",
+            "src": "/workbooks/islamic-series/V1/05.webp?v=bfad7be3",
+            "sm": "/workbooks/islamic-series/V1/05-sm.webp?v=bfad7be3",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "ذكر في موقف: حين أستيقظ",
             "title_en": "A dhikr for the moment: when I wake up"
           },
           {
-            "src": "/workbooks/islamic-series/V1/06.webp?v=a84f04ed",
-            "sm": "/workbooks/islamic-series/V1/06-sm.webp?v=a84f04ed",
+            "src": "/workbooks/islamic-series/V1/06.webp?v=230b7bad",
+            "sm": "/workbooks/islamic-series/V1/06-sm.webp?v=230b7bad",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "ماذا كنت ستفعل؟",
             "title_en": "What would you do?"
           },
           {
-            "src": "/workbooks/islamic-series/V1/07.webp?v=0b03930c",
-            "sm": "/workbooks/islamic-series/V1/07-sm.webp?v=0b03930c",
+            "src": "/workbooks/islamic-series/V1/07.webp?v=fcce79d3",
+            "sm": "/workbooks/islamic-series/V1/07-sm.webp?v=fcce79d3",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "ألوّن: هدية لأمّي وأبي",
             "title_en": "Coloring: a gift for Mom and Dad"
           },
           {
-            "src": "/workbooks/islamic-series/V1/08.webp?v=ac1688c2",
-            "sm": "/workbooks/islamic-series/V1/08-sm.webp?v=ac1688c2",
+            "src": "/workbooks/islamic-series/V1/08.webp?v=52f2f1ff",
+            "sm": "/workbooks/islamic-series/V1/08-sm.webp?v=52f2f1ff",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "صفحة للأهل في آخر الوحدة",
             "title_en": "A page for parents at the end of the unit"
           },
           {
-            "src": "/workbooks/islamic-series/V1/09.webp?v=4aedf89f",
-            "sm": "/workbooks/islamic-series/V1/09-sm.webp?v=4aedf89f",
+            "src": "/workbooks/islamic-series/V1/09.webp?v=0b58f20c",
+            "sm": "/workbooks/islamic-series/V1/09-sm.webp?v=0b58f20c",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "بطاقة رحلة الإيمان",
             "title_en": "The faith journey card"
           },
           {
-            "src": "/workbooks/islamic-series/V1/10.webp?v=d9fe8c81",
-            "sm": "/workbooks/islamic-series/V1/10-sm.webp?v=d9fe8c81",
+            "src": "/workbooks/islamic-series/V1/10.webp?v=c45ccc4e",
+            "sm": "/workbooks/islamic-series/V1/10-sm.webp?v=c45ccc4e",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "شهادة باسم طفلكم",
             "title_en": "A certificate in your child's name"
           }
@@ -1031,91 +1031,91 @@
       },
       "V2": {
         "cover": {
-          "src": "/workbooks/islamic-series/V2/cover.webp?v=96544241",
-          "sm": "/workbooks/islamic-series/V2/cover-sm.webp?v=96544241",
+          "src": "/workbooks/islamic-series/V2/cover.webp?v=3366dafa",
+          "sm": "/workbooks/islamic-series/V2/cover-sm.webp?v=3366dafa",
           "w": 720,
-          "h": 960,
+          "h": 961,
           "title_ar": "الغلاف باسم طفلكم وشخصيته",
           "title_en": "The cover, with your child's name and character"
         },
         "pages": [
           {
-            "src": "/workbooks/islamic-series/V2/01.webp?v=a85d36ea",
-            "sm": "/workbooks/islamic-series/V2/01-sm.webp?v=a85d36ea",
+            "src": "/workbooks/islamic-series/V2/01.webp?v=8f9a0598",
+            "sm": "/workbooks/islamic-series/V2/01-sm.webp?v=8f9a0598",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "بداية وحدة «لماذا نصلّي؟»",
             "title_en": "Unit opener: why do we pray?"
           },
           {
-            "src": "/workbooks/islamic-series/V2/02.webp?v=f30aff20",
-            "sm": "/workbooks/islamic-series/V2/02-sm.webp?v=f30aff20",
+            "src": "/workbooks/islamic-series/V2/02.webp?v=56fe3deb",
+            "sm": "/workbooks/islamic-series/V2/02-sm.webp?v=56fe3deb",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "أرتّب صلوات يومي",
             "title_en": "Putting my day's prayers in order"
           },
           {
-            "src": "/workbooks/islamic-series/V2/03.webp?v=4a5d1fd3",
-            "sm": "/workbooks/islamic-series/V2/03-sm.webp?v=4a5d1fd3",
+            "src": "/workbooks/islamic-series/V2/03.webp?v=ec12c12b",
+            "sm": "/workbooks/islamic-series/V2/03-sm.webp?v=ec12c12b",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "أتوضّأ كما علّمنا النبي ﷺ: أرتّب الخطوات",
             "title_en": "Wudu as the Prophet ﷺ taught: putting the steps in order"
           },
           {
-            "src": "/workbooks/islamic-series/V2/04.webp?v=803997f7",
-            "sm": "/workbooks/islamic-series/V2/04-sm.webp?v=803997f7",
+            "src": "/workbooks/islamic-series/V2/04.webp?v=25ac6685",
+            "sm": "/workbooks/islamic-series/V2/04-sm.webp?v=25ac6685",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "قصة: أتعلّم الصلاة",
             "title_en": "A story: learning to pray"
           },
           {
-            "src": "/workbooks/islamic-series/V2/05.webp?v=89605644",
-            "sm": "/workbooks/islamic-series/V2/05-sm.webp?v=89605644",
+            "src": "/workbooks/islamic-series/V2/05.webp?v=4d589ab9",
+            "sm": "/workbooks/islamic-series/V2/05-sm.webp?v=4d589ab9",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "ألعب الدور",
             "title_en": "Role play"
           },
           {
-            "src": "/workbooks/islamic-series/V2/06.webp?v=3fbf90c5",
-            "sm": "/workbooks/islamic-series/V2/06-sm.webp?v=3fbf90c5",
+            "src": "/workbooks/islamic-series/V2/06.webp?v=1e49c103",
+            "sm": "/workbooks/islamic-series/V2/06-sm.webp?v=1e49c103",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "دعاء لأمّي وأبي",
             "title_en": "A dua for Mom and Dad"
           },
           {
-            "src": "/workbooks/islamic-series/V2/07.webp?v=c3012204",
-            "sm": "/workbooks/islamic-series/V2/07-sm.webp?v=c3012204",
+            "src": "/workbooks/islamic-series/V2/07.webp?v=bbbb6c00",
+            "sm": "/workbooks/islamic-series/V2/07-sm.webp?v=bbbb6c00",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "أبحث وأجد",
             "title_en": "Search and find"
           },
           {
-            "src": "/workbooks/islamic-series/V2/08.webp?v=a91e7a52",
-            "sm": "/workbooks/islamic-series/V2/08-sm.webp?v=a91e7a52",
+            "src": "/workbooks/islamic-series/V2/08.webp?v=56c4f6bb",
+            "sm": "/workbooks/islamic-series/V2/08-sm.webp?v=56c4f6bb",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "ماذا أفعل لو كذبت؟",
             "title_en": "What do I do if I tell a lie?"
           },
           {
-            "src": "/workbooks/islamic-series/V2/09.webp?v=52fbd1b3",
-            "sm": "/workbooks/islamic-series/V2/09-sm.webp?v=52fbd1b3",
+            "src": "/workbooks/islamic-series/V2/09.webp?v=1602345a",
+            "sm": "/workbooks/islamic-series/V2/09-sm.webp?v=1602345a",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "صفحة للأهل في آخر الوحدة",
             "title_en": "A page for parents at the end of the unit"
           },
           {
-            "src": "/workbooks/islamic-series/V2/10.webp?v=51a2a8ab",
-            "sm": "/workbooks/islamic-series/V2/10-sm.webp?v=51a2a8ab",
+            "src": "/workbooks/islamic-series/V2/10.webp?v=652806eb",
+            "sm": "/workbooks/islamic-series/V2/10-sm.webp?v=652806eb",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "شهادة باسم طفلكم",
             "title_en": "A certificate in your child's name"
           }
@@ -1123,91 +1123,91 @@
       },
       "V3": {
         "cover": {
-          "src": "/workbooks/islamic-series/V3/cover.webp?v=11e8f0c1",
-          "sm": "/workbooks/islamic-series/V3/cover-sm.webp?v=11e8f0c1",
+          "src": "/workbooks/islamic-series/V3/cover.webp?v=baa6ac5c",
+          "sm": "/workbooks/islamic-series/V3/cover-sm.webp?v=baa6ac5c",
           "w": 720,
-          "h": 960,
+          "h": 961,
           "title_ar": "الغلاف باسم طفلكم وشخصيته",
           "title_en": "The cover, with your child's name and character"
         },
         "pages": [
           {
-            "src": "/workbooks/islamic-series/V3/01.webp?v=1437910a",
-            "sm": "/workbooks/islamic-series/V3/01-sm.webp?v=1437910a",
+            "src": "/workbooks/islamic-series/V3/01.webp?v=3b90fe5a",
+            "sm": "/workbooks/islamic-series/V3/01-sm.webp?v=3b90fe5a",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "بداية وحدة «الشهادتان»",
             "title_en": "Unit opener: the two testimonies"
           },
           {
-            "src": "/workbooks/islamic-series/V3/02.webp?v=126f3cc4",
-            "sm": "/workbooks/islamic-series/V3/02-sm.webp?v=126f3cc4",
+            "src": "/workbooks/islamic-series/V3/02.webp?v=75e5e3b4",
+            "sm": "/workbooks/islamic-series/V3/02-sm.webp?v=75e5e3b4",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "بطاقة الركن",
             "title_en": "A pillar card"
           },
           {
-            "src": "/workbooks/islamic-series/V3/03.webp?v=2438c89c",
-            "sm": "/workbooks/islamic-series/V3/03-sm.webp?v=2438c89c",
+            "src": "/workbooks/islamic-series/V3/03.webp?v=7c5b4611",
+            "sm": "/workbooks/islamic-series/V3/03-sm.webp?v=7c5b4611",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "صلاة الفجر خطوة خطوة",
             "title_en": "The Fajr prayer, step by step"
           },
           {
-            "src": "/workbooks/islamic-series/V3/04.webp?v=7e758aa0",
-            "sm": "/workbooks/islamic-series/V3/04-sm.webp?v=7e758aa0",
+            "src": "/workbooks/islamic-series/V3/04.webp?v=2064d928",
+            "sm": "/workbooks/islamic-series/V3/04-sm.webp?v=2064d928",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "ماذا أفعل لو نسيت الصلاة؟",
             "title_en": "What do I do if I forget a prayer?"
           },
           {
-            "src": "/workbooks/islamic-series/V3/05.webp?v=58e14d02",
-            "sm": "/workbooks/islamic-series/V3/05-sm.webp?v=58e14d02",
+            "src": "/workbooks/islamic-series/V3/05.webp?v=6b793bc0",
+            "sm": "/workbooks/islamic-series/V3/05-sm.webp?v=6b793bc0",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "ماذا كنت ستفعل؟ في وحدة الزكاة",
             "title_en": "What would you do? From the zakat unit"
           },
           {
-            "src": "/workbooks/islamic-series/V3/06.webp?v=0af06453",
-            "sm": "/workbooks/islamic-series/V3/06-sm.webp?v=0af06453",
+            "src": "/workbooks/islamic-series/V3/06.webp?v=53eca9a1",
+            "sm": "/workbooks/islamic-series/V3/06-sm.webp?v=53eca9a1",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "بداية وحدة «الصيام»",
             "title_en": "Unit opener: fasting"
           },
           {
-            "src": "/workbooks/islamic-series/V3/07.webp?v=f2cdd0cb",
-            "sm": "/workbooks/islamic-series/V3/07-sm.webp?v=f2cdd0cb",
+            "src": "/workbooks/islamic-series/V3/07.webp?v=6575fc04",
+            "sm": "/workbooks/islamic-series/V3/07-sm.webp?v=6575fc04",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "أبحث وأجد: الحج",
             "title_en": "Search and find: Hajj"
           },
           {
-            "src": "/workbooks/islamic-series/V3/08.webp?v=66d196e6",
-            "sm": "/workbooks/islamic-series/V3/08-sm.webp?v=66d196e6",
+            "src": "/workbooks/islamic-series/V3/08.webp?v=6a1b5b7a",
+            "sm": "/workbooks/islamic-series/V3/08-sm.webp?v=6a1b5b7a",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "أركان الإيمان: بطاقة الركن",
             "title_en": "Pillars of faith: a pillar card"
           },
           {
-            "src": "/workbooks/islamic-series/V3/09.webp?v=acd0b27b",
-            "sm": "/workbooks/islamic-series/V3/09-sm.webp?v=acd0b27b",
+            "src": "/workbooks/islamic-series/V3/09.webp?v=c0d82122",
+            "sm": "/workbooks/islamic-series/V3/09-sm.webp?v=c0d82122",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "ألوّن وأفرح",
             "title_en": "Coloring with joy"
           },
           {
-            "src": "/workbooks/islamic-series/V3/10.webp?v=0b98bfe1",
-            "sm": "/workbooks/islamic-series/V3/10-sm.webp?v=0b98bfe1",
+            "src": "/workbooks/islamic-series/V3/10.webp?v=bce73073",
+            "sm": "/workbooks/islamic-series/V3/10-sm.webp?v=bce73073",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "شهادة باسم طفلكم",
             "title_en": "A certificate in your child's name"
           }
@@ -1215,91 +1215,91 @@
       },
       "V4": {
         "cover": {
-          "src": "/workbooks/islamic-series/V4/cover.webp?v=77ba685d",
-          "sm": "/workbooks/islamic-series/V4/cover-sm.webp?v=77ba685d",
+          "src": "/workbooks/islamic-series/V4/cover.webp?v=379cb6b1",
+          "sm": "/workbooks/islamic-series/V4/cover-sm.webp?v=379cb6b1",
           "w": 720,
-          "h": 960,
+          "h": 961,
           "title_ar": "الغلاف باسم طفلكم وشخصيته",
           "title_en": "The cover, with your child's name and character"
         },
         "pages": [
           {
-            "src": "/workbooks/islamic-series/V4/01.webp?v=1bba883c",
-            "sm": "/workbooks/islamic-series/V4/01-sm.webp?v=1bba883c",
+            "src": "/workbooks/islamic-series/V4/01.webp?v=f9f23d3d",
+            "sm": "/workbooks/islamic-series/V4/01-sm.webp?v=f9f23d3d",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "بداية وحدة «آدم عليه السلام»",
             "title_en": "Unit opener: Adam, peace be upon him"
           },
           {
-            "src": "/workbooks/islamic-series/V4/02.webp?v=93d303cc",
-            "sm": "/workbooks/islamic-series/V4/02-sm.webp?v=93d303cc",
+            "src": "/workbooks/islamic-series/V4/02.webp?v=e5d328c6",
+            "sm": "/workbooks/islamic-series/V4/02-sm.webp?v=e5d328c6",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "قصة نبي تحكيها ستّي هدى",
             "title_en": "A prophet's story told by Grandma Huda"
           },
           {
-            "src": "/workbooks/islamic-series/V4/03.webp?v=80eaaefa",
-            "sm": "/workbooks/islamic-series/V4/03-sm.webp?v=80eaaefa",
+            "src": "/workbooks/islamic-series/V4/03.webp?v=4d330eb6",
+            "sm": "/workbooks/islamic-series/V4/03-sm.webp?v=4d330eb6",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "متاهة في قصة نوح عليه السلام",
             "title_en": "A maze from the story of Nuh, peace be upon him"
           },
           {
-            "src": "/workbooks/islamic-series/V4/04.webp?v=53e4634d",
-            "sm": "/workbooks/islamic-series/V4/04-sm.webp?v=53e4634d",
+            "src": "/workbooks/islamic-series/V4/04.webp?v=696db6a2",
+            "sm": "/workbooks/islamic-series/V4/04-sm.webp?v=696db6a2",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "صفحة تلوين",
             "title_en": "A coloring page"
           },
           {
-            "src": "/workbooks/islamic-series/V4/05.webp?v=fadd3ec3",
-            "sm": "/workbooks/islamic-series/V4/05-sm.webp?v=fadd3ec3",
+            "src": "/workbooks/islamic-series/V4/05.webp?v=529d45ab",
+            "sm": "/workbooks/islamic-series/V4/05-sm.webp?v=529d45ab",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "من قصة يوسف عليه السلام",
             "title_en": "From the story of Yusuf, peace be upon him"
           },
           {
-            "src": "/workbooks/islamic-series/V4/06.webp?v=0518dbd3",
-            "sm": "/workbooks/islamic-series/V4/06-sm.webp?v=0518dbd3",
+            "src": "/workbooks/islamic-series/V4/06.webp?v=3345ba2b",
+            "sm": "/workbooks/islamic-series/V4/06-sm.webp?v=3345ba2b",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "أبحث وأجد: قصة موسى عليه السلام",
             "title_en": "Search and find: the story of Musa, peace be upon him"
           },
           {
-            "src": "/workbooks/islamic-series/V4/07.webp?v=0d02e706",
-            "sm": "/workbooks/islamic-series/V4/07-sm.webp?v=0d02e706",
+            "src": "/workbooks/islamic-series/V4/07.webp?v=5acd063f",
+            "sm": "/workbooks/islamic-series/V4/07-sm.webp?v=5acd063f",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "قصة يونس عليه السلام",
             "title_en": "The story of Yunus, peace be upon him"
           },
           {
-            "src": "/workbooks/islamic-series/V4/08.webp?v=0e4e948a",
-            "sm": "/workbooks/islamic-series/V4/08-sm.webp?v=0e4e948a",
+            "src": "/workbooks/islamic-series/V4/08.webp?v=1861388c",
+            "sm": "/workbooks/islamic-series/V4/08-sm.webp?v=1861388c",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "من حياة نبيّنا ﷺ",
             "title_en": "From the life of our Prophet ﷺ"
           },
           {
-            "src": "/workbooks/islamic-series/V4/09.webp?v=ccb6e2f3",
-            "sm": "/workbooks/islamic-series/V4/09-sm.webp?v=ccb6e2f3",
+            "src": "/workbooks/islamic-series/V4/09.webp?v=216cb093",
+            "sm": "/workbooks/islamic-series/V4/09-sm.webp?v=216cb093",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "ماذا كنت ستفعل؟",
             "title_en": "What would you do?"
           },
           {
-            "src": "/workbooks/islamic-series/V4/10.webp?v=620c701f",
-            "sm": "/workbooks/islamic-series/V4/10-sm.webp?v=620c701f",
+            "src": "/workbooks/islamic-series/V4/10.webp?v=d9206a3c",
+            "sm": "/workbooks/islamic-series/V4/10-sm.webp?v=d9206a3c",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "شهادة باسم طفلكم",
             "title_en": "A certificate in your child's name"
           }
@@ -1307,91 +1307,91 @@
       },
       "V5": {
         "cover": {
-          "src": "/workbooks/islamic-series/V5/cover.webp?v=fd2126ea",
-          "sm": "/workbooks/islamic-series/V5/cover-sm.webp?v=fd2126ea",
+          "src": "/workbooks/islamic-series/V5/cover.webp?v=4a83909e",
+          "sm": "/workbooks/islamic-series/V5/cover-sm.webp?v=4a83909e",
           "w": 720,
-          "h": 960,
+          "h": 961,
           "title_ar": "الغلاف باسم طفلكم وشخصيته",
           "title_en": "The cover, with your child's name and character"
         },
         "pages": [
           {
-            "src": "/workbooks/islamic-series/V5/01.webp?v=0336e637",
-            "sm": "/workbooks/islamic-series/V5/01-sm.webp?v=0336e637",
+            "src": "/workbooks/islamic-series/V5/01.webp?v=cb9a429d",
+            "sm": "/workbooks/islamic-series/V5/01-sm.webp?v=cb9a429d",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "بداية وحدة «أخلاقي أكبر»",
             "title_en": "Unit opener: my manners grow"
           },
           {
-            "src": "/workbooks/islamic-series/V5/02.webp?v=8c0e8161",
-            "sm": "/workbooks/islamic-series/V5/02-sm.webp?v=8c0e8161",
+            "src": "/workbooks/islamic-series/V5/02.webp?v=c921f535",
+            "sm": "/workbooks/islamic-series/V5/02-sm.webp?v=c921f535",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "ألوّن: أرفق بالحيوان",
             "title_en": "Coloring: being kind to animals"
           },
           {
-            "src": "/workbooks/islamic-series/V5/03.webp?v=8dbbe3ef",
-            "sm": "/workbooks/islamic-series/V5/03-sm.webp?v=8dbbe3ef",
+            "src": "/workbooks/islamic-series/V5/03.webp?v=3e416f0e",
+            "sm": "/workbooks/islamic-series/V5/03-sm.webp?v=3e416f0e",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "أرتّب آداب الطعام",
             "title_en": "Putting mealtime manners in order"
           },
           {
-            "src": "/workbooks/islamic-series/V5/04.webp?v=3d8b561d",
-            "sm": "/workbooks/islamic-series/V5/04-sm.webp?v=3d8b561d",
+            "src": "/workbooks/islamic-series/V5/04.webp?v=f796e48b",
+            "sm": "/workbooks/islamic-series/V5/04-sm.webp?v=f796e48b",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "ألعب الدور",
             "title_en": "Role play"
           },
           {
-            "src": "/workbooks/islamic-series/V5/05.webp?v=54d0f30a",
-            "sm": "/workbooks/islamic-series/V5/05-sm.webp?v=54d0f30a",
+            "src": "/workbooks/islamic-series/V5/05.webp?v=e1b0714e",
+            "sm": "/workbooks/islamic-series/V5/05-sm.webp?v=e1b0714e",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "دعاء لوالديّ",
             "title_en": "A dua for my parents"
           },
           {
-            "src": "/workbooks/islamic-series/V5/06.webp?v=772e2b04",
-            "sm": "/workbooks/islamic-series/V5/06-sm.webp?v=772e2b04",
+            "src": "/workbooks/islamic-series/V5/06.webp?v=3c69f880",
+            "sm": "/workbooks/islamic-series/V5/06-sm.webp?v=3c69f880",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "ماذا أفعل لو قالت أمّي: لا؟",
             "title_en": "What do I do if Mom says no?"
           },
           {
-            "src": "/workbooks/islamic-series/V5/07.webp?v=7fc18db7",
-            "sm": "/workbooks/islamic-series/V5/07-sm.webp?v=7fc18db7",
+            "src": "/workbooks/islamic-series/V5/07.webp?v=f75cb9be",
+            "sm": "/workbooks/islamic-series/V5/07-sm.webp?v=f75cb9be",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "قصة من وحدة «حلال وحرام»",
             "title_en": "A story from the halal and haram unit"
           },
           {
-            "src": "/workbooks/islamic-series/V5/08.webp?v=e4957e05",
-            "sm": "/workbooks/islamic-series/V5/08-sm.webp?v=e4957e05",
+            "src": "/workbooks/islamic-series/V5/08.webp?v=ff8bdfe6",
+            "sm": "/workbooks/islamic-series/V5/08-sm.webp?v=ff8bdfe6",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "ماذا أفعل لو وجدت شيئًا ليس لي؟",
             "title_en": "What do I do if I find something that isn't mine?"
           },
           {
-            "src": "/workbooks/islamic-series/V5/09.webp?v=cd9bd6bd",
-            "sm": "/workbooks/islamic-series/V5/09-sm.webp?v=cd9bd6bd",
+            "src": "/workbooks/islamic-series/V5/09.webp?v=4a83ff63",
+            "sm": "/workbooks/islamic-series/V5/09-sm.webp?v=4a83ff63",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "صباحي مع الله",
             "title_en": "My morning with Allah"
           },
           {
-            "src": "/workbooks/islamic-series/V5/10.webp?v=d9fe8c81",
-            "sm": "/workbooks/islamic-series/V5/10-sm.webp?v=d9fe8c81",
+            "src": "/workbooks/islamic-series/V5/10.webp?v=c45ccc4e",
+            "sm": "/workbooks/islamic-series/V5/10-sm.webp?v=c45ccc4e",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "شهادة باسم طفلكم",
             "title_en": "A certificate in your child's name"
           }
@@ -1399,91 +1399,91 @@
       },
       "R": {
         "cover": {
-          "src": "/workbooks/islamic-series/R/cover.webp?v=a91dae41",
-          "sm": "/workbooks/islamic-series/R/cover-sm.webp?v=a91dae41",
+          "src": "/workbooks/islamic-series/R/cover.webp?v=2ce9885c",
+          "sm": "/workbooks/islamic-series/R/cover-sm.webp?v=2ce9885c",
           "w": 720,
-          "h": 960,
+          "h": 961,
           "title_ar": "الغلاف باسم طفلكم وشخصيته",
           "title_en": "The cover, with your child's name and character"
         },
         "pages": [
           {
-            "src": "/workbooks/islamic-series/R/01.webp?v=880683d7",
-            "sm": "/workbooks/islamic-series/R/01-sm.webp?v=880683d7",
+            "src": "/workbooks/islamic-series/R/01.webp?v=5f0e6d8c",
+            "sm": "/workbooks/islamic-series/R/01-sm.webp?v=5f0e6d8c",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "بداية وحدة «ما هو رمضان؟»",
             "title_en": "Unit opener: what is Ramadan?"
           },
           {
-            "src": "/workbooks/islamic-series/R/02.webp?v=6199d37f",
-            "sm": "/workbooks/islamic-series/R/02-sm.webp?v=6199d37f",
+            "src": "/workbooks/islamic-series/R/02.webp?v=eafecf58",
+            "sm": "/workbooks/islamic-series/R/02-sm.webp?v=eafecf58",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "قصة رمضانية",
             "title_en": "A Ramadan story"
           },
           {
-            "src": "/workbooks/islamic-series/R/03.webp?v=449c302b",
-            "sm": "/workbooks/islamic-series/R/03-sm.webp?v=449c302b",
+            "src": "/workbooks/islamic-series/R/03.webp?v=980d1977",
+            "sm": "/workbooks/islamic-series/R/03-sm.webp?v=980d1977",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "ألوّن زينة رمضان",
             "title_en": "Coloring Ramadan decorations"
           },
           {
-            "src": "/workbooks/islamic-series/R/04.webp?v=6614d62d",
-            "sm": "/workbooks/islamic-series/R/04-sm.webp?v=6614d62d",
+            "src": "/workbooks/islamic-series/R/04.webp?v=d2cebfb2",
+            "sm": "/workbooks/islamic-series/R/04-sm.webp?v=d2cebfb2",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "ذكر في موقف: عند الإفطار",
             "title_en": "A dhikr for the moment: breaking the fast"
           },
           {
-            "src": "/workbooks/islamic-series/R/05.webp?v=67ffe354",
-            "sm": "/workbooks/islamic-series/R/05-sm.webp?v=67ffe354",
+            "src": "/workbooks/islamic-series/R/05.webp?v=0e43fe58",
+            "sm": "/workbooks/islamic-series/R/05-sm.webp?v=0e43fe58",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "ألوّن سلّة الخير",
             "title_en": "Coloring the basket of giving"
           },
           {
-            "src": "/workbooks/islamic-series/R/06.webp?v=3d4af456",
-            "sm": "/workbooks/islamic-series/R/06-sm.webp?v=3d4af456",
+            "src": "/workbooks/islamic-series/R/06.webp?v=3fff83d6",
+            "sm": "/workbooks/islamic-series/R/06-sm.webp?v=3fff83d6",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "بداية وحدة «ليلة القدر»",
             "title_en": "Unit opener: Laylat al-Qadr"
           },
           {
-            "src": "/workbooks/islamic-series/R/07.webp?v=701fd90b",
-            "sm": "/workbooks/islamic-series/R/07-sm.webp?v=701fd90b",
+            "src": "/workbooks/islamic-series/R/07.webp?v=2fa38257",
+            "sm": "/workbooks/islamic-series/R/07-sm.webp?v=2fa38257",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "بداية وحدة «صباح العيد»",
             "title_en": "Unit opener: Eid morning"
           },
           {
-            "src": "/workbooks/islamic-series/R/08.webp?v=5b25d456",
-            "sm": "/workbooks/islamic-series/R/08-sm.webp?v=5b25d456",
+            "src": "/workbooks/islamic-series/R/08.webp?v=f6d4e3ce",
+            "sm": "/workbooks/islamic-series/R/08-sm.webp?v=f6d4e3ce",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "صباح العيد خطوة خطوة",
             "title_en": "Eid morning, step by step"
           },
           {
-            "src": "/workbooks/islamic-series/R/09.webp?v=36d7e2df",
-            "sm": "/workbooks/islamic-series/R/09-sm.webp?v=36d7e2df",
+            "src": "/workbooks/islamic-series/R/09.webp?v=4154fcfd",
+            "sm": "/workbooks/islamic-series/R/09-sm.webp?v=4154fcfd",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "متاهة العيد",
             "title_en": "An Eid maze"
           },
           {
-            "src": "/workbooks/islamic-series/R/10.webp?v=bceb5896",
-            "sm": "/workbooks/islamic-series/R/10-sm.webp?v=bceb5896",
+            "src": "/workbooks/islamic-series/R/10.webp?v=2e473b73",
+            "sm": "/workbooks/islamic-series/R/10-sm.webp?v=2e473b73",
             "w": 720,
-            "h": 960,
+            "h": 961,
             "title_ar": "شهادة باسم طفلكم",
             "title_en": "A certificate in your child's name"
           }

@@ -49,6 +49,7 @@ from qamra_workbook import islamic_checks as checks
 from qamra_workbook.islamic_checks import Problem
 from qamra_workbook.islamic_sources import REPO, Resolver, SourceError
 from qamra_workbook.pictures import LibraryStore
+from qamra_workbook.render import covers
 from qamra_workbook.render.engine import (
     PageProblems,
     RenderedPage,
@@ -68,7 +69,6 @@ from qamra_workbook.render.islamic_content import (
     parse_page,
 )
 from qamra_workbook.render.islamic_figures import SAMPLE_SHEET, kit_for
-from qamra_workbook.render.pages.islamic_frame import cover_art
 from qamra_workbook.render.registry import Assets
 from qamra_workbook.render.samples import assets_for
 from qamra_workbook.render.spec import BookSpec, Child, Geometry, Numerals, PageSpec, product_geometry
@@ -528,9 +528,17 @@ def volume_book(
 
 
 def cover_book(
-    plan: islamic.Plan, volume: str, context: IslamicContext, book: BookSpec, art: Path | None = None
+    plan: islamic.Plan,
+    volume: str,
+    context: IslamicContext,
+    book: BookSpec,
+    art: Path | None = None,
+    *,
+    pages: int | None = None,
 ) -> BookSpec:
-    """The front and the back cover (on card, no page numbers); `art` is the cover picture at print size."""
+    """The perfect-bound cover (on card, no page numbers): one wrap [front | spine | back] whose spine fits
+    `pages` interior pages (default: the book's). `art` is kept for older callers: the scene now comes from
+    `render.covers` (the part's drawn scene, else this same plate)."""
     v = plan.volumes[volume]
     books = [{"id": vid, "title": vol["title_ar"]} for vid, vol in plan.volumes.items()]
     info = {
@@ -541,27 +549,42 @@ def cover_book(
         "goal": v.get("goal", ""),
         "units": [u["id"] for u in v["units"]],
     }
-    pages = tuple(
-        PageSpec(
-            id=f"{volume.lower()}-cover-{side}",
-            type=f"islamic-cover-{side}",
-            number=0,
-            section="finale",
-            title=v["title_ar"],
-            instruction="",
-            params={"volume_info": info, "islamic": context, "books": books, "art": str(art) if art else ""},
-        )
-        for side in ("front", "back")
+    count = pages if pages is not None else len(book.pages)
+    spine = covers.spine_mm(count)
+    page = PageSpec(
+        id=f"{volume.lower()}-cover-wrap",
+        type="islamic-cover-wrap",
+        number=0,
+        section="finale",
+        title=v["title_ar"],
+        instruction="",
+        params={"volume_info": info, "islamic": context, "books": books, "pages": count, "spine_mm": spine},
     )
     return BookSpec(
         product="islamic",
         title_ar=SERIES_AR,
         child=book.child,
-        pages=pages,
+        pages=(page,),
         date=book.date,
         numerals=book.numerals,
-        geometry=book.geometry,
+        geometry=covers.wrap_geometry(book.geometry, spine),
     )
+
+
+_RULES: checks.PageRules | None = None
+
+
+def no_sacred_text(spec: PageSpec) -> bool:
+    """A page that may be shown small on the back cover: its type never carries a verse, a hadith or a dhikr
+    (plan.yaml `sacred: false`: colouring, mazes, the passport…), so no sacred text is ever printed as a
+    decoration (Addendum 10 §3.6)."""
+    global _RULES
+    _RULES = _RULES or checks.PageRules.load()
+    page = spec.params.get("page")
+    kind = str(getattr(page, "type", "") or "")
+    if not kind:
+        return False
+    return not _RULES.may_carry_sacred({"type": kind, "sacred_text": getattr(page, "sacred_text", None)})
 
 
 @dataclass(frozen=True)
@@ -763,11 +786,17 @@ async def render_volume(
     book = volume_book(plan, content, context, child, size=size, numerals=numerals, only=only)
     assets = assets_for(book, out)
     _, key = await _pdf(book, assets, out / "interior.pdf", out / "answer-key.pdf")
-    art = cover_art(vid, out / "assets", book.geometry)
-    await _pdf(cover_book(plan, vid, context, book, art), assets, out / "cover.pdf")
+    cover = cover_book(plan, vid, context, book, pages=len(content.slots))
+    cover = covers.with_thumbs(
+        cover, book, out / "interior.pdf", out / "assets", covers.THUMBS["islamic"], no_sacred_text
+    )
+    await _pdf(cover, assets, out / "cover.pdf")
     files = VolumeFiles(out / "interior.pdf", out / "cover.pdf", key, pages=len(book.pages))
     g = book.geometry
-    files.preflight = {"interior.pdf": _report(files.interior, g), "cover.pdf": _report(files.cover, g)}
+    files.preflight = {
+        "interior.pdf": _report(files.interior, g),
+        "cover.pdf": _report(files.cover, cover.geometry),
+    }
     if stickers and not only:
         from qamra_workbook.render.stickers import NAME, render_sheet
 

@@ -1,0 +1,83 @@
+{#- The activity series' covers (render/covers.py): the front, the back and the spine, each a panel placed on
+    the page by its box (mm). Text stays inside the box's safe area; the scene runs into the bleed. -#}
+
+{% macro brand(top, side, offset) -%}
+<div class="cv-brand" style="top: {{ '%.2f' % top }}mm; {{ side }}: {{ '%.2f' % offset }}mm;">{{ mascot('mascot') }}<span>قمرة</span></div>
+{%- endmacro %}
+
+{% macro front(c) -%}
+{% set b = c.box %}{% set L = c.look %}{% set p = c.panel %}
+<div class="cv cv-front cv-{{ c.series }}" style="{{ b.style() }}">
+  {% if c.scene %}<img class="cv-scene" src="{{ c.scene }}" alt="">{% else %}<div class="cv-scene cv-noscene"></div>{% endif %}
+  <div class="cv-veil"></div>
+  {{ brand(c.brand_top, 'right', b.right) }}
+  {% if c.age %}<div class="cv-age" style="top: {{ '%.2f' % c.brand_top }}mm; left: {{ '%.2f' % b.left }}mm; color: {{ L.ink }}">{{ icon('star') }}<span>{{ c.age }}</span></div>{% endif %}
+  <div class="cv-panel" style="left: {{ '%.2f' % p.x }}mm; top: {{ '%.2f' % p.y }}mm; width: {{ '%.2f' % p.w }}mm; height: {{ '%.2f' % p.h }}mm;">
+    {{ p.svg }}
+    {% if c.pills %}<div class="cv-pills" style="top: {{ '%.2f' % p.pills_top }}mm">{% for pill in c.pills %}<span class="cv-pill" style="background: {{ L.pill if pill.kind == 'main' else L.pill_alt }}; color: {{ L.pill_ink if pill.kind == 'main' else L.pill_alt_ink }}">{{ pill.text }}</span>{% endfor %}</div>{% endif %}
+    <div class="cv-title" style="top: {{ '%.2f' % p.pad_top }}mm; height: {{ '%.2f' % c.title_h }}mm">{{ c.title }}</div>
+    {% if c.subtitle %}<p class="cv-sub" style="top: {{ '%.2f' % (p.pad_top + c.title_h) }}mm; height: {{ '%.2f' % c.sub_h }}mm; color: {{ L.ink }}" data-fit="9">{{ c.subtitle }}</p>{% endif %}
+  </div>
+  {% set r = c.ribbon %}
+  <div class="cv-ribbon" style="left: {{ '%.2f' % r.x }}mm; top: {{ '%.2f' % r.y }}mm; width: {{ '%.2f' % r.w }}mm; height: {{ '%.2f' % r.h }}mm;">
+    {{ r.svg }}<span style="color: {{ L.ribbon_ink }}" data-fit="11">{{ r.text }}</span>
+  </div>
+  {% if c.hero.src %}
+  <svg class="cv-floor" style="left: {{ '%.2f' % (b.cx - c.hero.w * 0.55) }}mm; top: {{ '%.2f' % (c.feet - 4) }}mm; width: {{ '%.2f' % (c.hero.w * 1.1) }}mm; height: 8mm" viewBox="0 0 10 8" preserveAspectRatio="none" aria-hidden="true"><defs><radialGradient id="{{ c.uid }}-floor"><stop offset="0" stop-color="#000" stop-opacity=".32"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient></defs><ellipse cx="5" cy="4" rx="5" ry="4" fill="url(#{{ c.uid }}-floor)"/></svg>
+  <img class="cv-hero" src="{{ c.hero.src }}" alt="" style="left: {{ '%.2f' % c.hero.x }}mm; top: {{ '%.2f' % c.hero.y }}mm; height: {{ '%.2f' % c.hero.h }}mm;">
+  {% endif %}
+  {% for k in c.blocks %}<div class="cv-block" style="left: {{ '%.2f' % k.x }}mm; top: {{ '%.2f' % k.y }}mm">{{ k.svg }}</div>{% endfor %}
+  {% if c.group %}
+  <div class="cv-group" style="left: {{ '%.2f' % c.group_box.x }}mm; top: {{ '%.2f' % c.group_box.y }}mm; width: {{ '%.2f' % c.group_box.w }}mm; height: {{ '%.2f' % c.group_box.h }}mm;">
+    {{ c.group }}
+    {% for t in c.tags %}<span class="op-tag{{ ' child' if t.child }}" style="left: {{ t.x }}mm; top: {{ t.y }}mm; max-width: {{ t.w }}mm" data-fit="7.5">{{ t.label }}</span>{% endfor %}
+  </div>
+  {% endif %}
+  {% if c.badges %}<div class="cv-badges" style="top: {{ '%.2f' % c.badges_top }}mm; left: {{ '%.2f' % b.left }}mm; right: {{ '%.2f' % b.right }}mm;" data-box="badges" data-box-x>{% for x in c.badges %}<span class="cv-badge" style="color: {{ L.ink }}"{% if loop.index == 2 %} data-drop="1"{% endif %}><i style="background: {{ x.color }}">{{ x.icon }}</i><span data-fit="8.5">{{ x.text }}</span></span>{% endfor %}</div>{% endif %}
+</div>
+{%- endmacro %}
+
+{% macro back(c) -%}
+{% set b = c.box %}{% set L = c.look %}
+<div class="cv cv-back cv-{{ c.series }}" style="{{ b.style() }} background: {{ L.paper }};">
+  <div class="cvk-band" style="height: {{ '%.2f' % c.band_h }}mm">{% if c.band %}<img src="{{ c.band }}" alt="">{% endif %}</div>
+  <svg class="cvk-wave" style="top: {{ '%.2f' % (c.band_h - 9) }}mm; height: 10mm" viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path d="M0 6 C 30 0, 55 0, 85 4.5 S 150 10, 200 3 L200 10 L0 10 Z" fill="{{ L.paper }}"/><path d="M0 6 C 30 0, 55 0, 85 4.5 S 150 10, 200 3" fill="none" stroke="{{ L.accent }}" stroke-width="0.9" opacity=".55"/></svg>
+  {{ brand(b.top, 'right', b.right) }}
+  {% if c.org.org_name %}<div class="cvk-org" style="top: {{ '%.2f' % (b.top + 12) }}mm; right: {{ '%.2f' % b.right }}mm;">{% if c.org.org_logo %}<img src="{{ c.org.org_logo }}" alt="" style="width: {{ c.org.org_logo_mm[0] }}mm; height: {{ c.org.org_logo_mm[1] }}mm">{% endif %}<span data-fit="7">بالتعاون مع {{ c.org.org_name }}</span></div>{% endif %}
+  {% if c.hero.src %}<img class="cvk-hero" src="{{ c.hero.src }}" alt="" style="left: {{ '%.2f' % (b.left + 1) }}mm; top: {{ '%.2f' % (c.band_h + 12 - c.hero.h) }}mm; height: {{ '%.2f' % c.hero.h }}mm;">{% endif %}
+  <div class="cvk-body" data-box="back" style="top: {{ '%.2f' % (c.band_h + 2) }}mm; left: {{ '%.2f' % (b.left + 1.5) }}mm; right: {{ '%.2f' % (b.right + 1.5) }}mm; bottom: {{ '%.2f' % (b.bottom + 2) }}mm; color: {{ L.ink }}">
+    <div class="cvk-head" style="padding-left: {{ '%.2f' % (c.hero.w + 5) }}mm">
+      <div class="cvk-title">{{ c.title }}</div>
+      {% if c.pills %}<div class="cvk-pills">{% for pill in c.pills %}<span class="cv-pill small" style="background: {{ L.pill if pill.kind == 'main' else L.pill_alt }}; color: {{ L.pill_ink if pill.kind == 'main' else L.pill_alt_ink }}">{{ pill.text }}</span>{% endfor %}</div>{% endif %}
+    </div>
+    {% if c.blurb %}<div class="cvk-blurb">{% for line in c.blurb %}<p{% if not loop.first %} data-drop="{{ 4 - loop.index if loop.index < 4 else 1 }}"{% endif %}>{{ line }}</p>{% endfor %}</div>{% endif %}
+    <div class="cvk-mid{{ ' no-thumbs' if not c.thumbs }}">
+      {% if c.inside %}<section class="cvk-inside">
+        <h3 style="color: {{ L.ink }}"><i style="background: {{ L.accent }}"></i>{{ c.inside_title }}</h3>
+        <ul class="cols-{{ c.cols }}">{% for x in c.inside %}<li><span class="cvk-ico" style="background: {{ x.color }}">{{ x.icon }}</span><span>{{ x.text }}</span></li>{% endfor %}</ul>
+      </section>{% endif %}
+      {% if c.thumbs %}<div class="cvk-thumbs" style="height: {{ c.thumbs_h }}mm" data-drop="3">{% for t in c.thumbs %}<img class="t{{ loop.index }}" src="{{ t }}" alt="">{% endfor %}</div>{% endif %}
+    </div>
+    {% if c.comes %}<section class="cvk-comes">
+      <h3><i style="background: {{ L.accent }}"></i>{{ c.comes_title }}</h3>
+      <div class="cvk-chips">{% for x in c.comes %}<span class="cvk-chip"><i style="background: {{ x.color }}">{{ x.icon }}</i><span>{{ x.text }}</span></span>{% endfor %}</div>
+    </section>{% endif %}
+    {% if c.extra.books %}<section class="cvk-books" data-drop="4"><h3><i style="background: {{ L.accent }}"></i>{{ c.extra.books_title }}</h3><div>{% for x in c.extra.books %}<span class="{{ 'this' if x.this }}" style="{{ 'background: ' ~ L.pill ~ '; color: ' ~ L.pill_ink if x.this }}">{{ x.title }}</span>{% endfor %}</div></section>{% endif %}
+    {% if c.extra.care %}<p class="cvk-care" data-drop="5">{{ c.extra.care }}</p>{% endif %}
+    <div class="cvk-foot">
+      {% if c.made_for %}<div class="cvk-made"><b style="color: {{ L.accent }}">{{ icon('heart') }}</b><span data-fit="8">{{ c.made_for }}</span></div>{% endif %}
+      <div class="cvk-foot-row">
+        <div class="cvk-facts">{% for f in c.facts %}<span>{{ f }}</span>{% endfor %}</div>
+        <div class="cvk-site">{{ mascot('mascot') }}<b>قمرة</b><small dir="ltr">{{ c.domain }}</small></div>
+      </div>
+    </div>
+  </div>
+</div>
+{%- endmacro %}
+
+{% macro spine(s, page_h) -%}
+<div class="cv-spine" style="left: {{ '%.2f' % s.x }}mm; width: {{ '%.2f' % s.w }}mm; background: linear-gradient(to right, rgba(0,0,0,.18), rgba(0,0,0,0) 22%, rgba(0,0,0,0) 78%, rgba(0,0,0,.18)), {{ s.color }};">
+  {% if s.text %}<span class="cv-spine-text" style="font-size: {{ s.font_pt }}pt">{% for line in s.lines %}<span{{ ' class=nm' if loop.index == 2 }}>{{ line }}</span>{% if not loop.last %}<i class="dot"></i>{% endif %}{% endfor %}</span>{% endif %}
+  <span class="cv-spine-moon">{{ mascot('mascot') }}</span>
+</div>
+{%- endmacro %}

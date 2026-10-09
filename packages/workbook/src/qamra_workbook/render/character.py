@@ -107,6 +107,8 @@ def pose(
 ) -> Path:
     """The cut-out figure `index` (0: front view, 1: the first pose) as a print PNG; cached by content."""
     key = f"cutout-v{CUTOUT_VERSION}-w{min_print_w_mm:g}"
+    if max_print_mm != MAX_PRINT_MM:  # a bigger print (the covers) is its own file
+        key += f"-h{max_print_mm:g}"
     digest = hashlib.sha256(sheet.read_bytes() + key.encode()).hexdigest()[:12]
     out = out_dir / (f"character-{digest}.png" if index == 0 else f"character-{digest}-pose{index}.png")
     if out.exists():

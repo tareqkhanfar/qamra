@@ -170,7 +170,12 @@ def test_the_cover_has_a_front_and_a_back() -> None:
     plan = load(ROOT / PLAN)
     pages = build_pages(family_spec(tuple(cover_specs(plan)), BOY, LONG_SIX), ASSETS)
     assert [p.spec.type for p in pages] == ["cover-front", "cover-back"]
-    assert "عبد الرحمن" in pages[1].built.data["made_for"] and "يجمع" in pages[1].built.data["collect"]
+    back = pages[1].built.data["cv"]
+    assert "عبد الرحمن" in back["made_for"] and any("يجمع" in line for line in back["blurb"])
+    front = pages[0].built.data["cv"]
+    assert (
+        front["ribbon"]["text"] == "عائِلَةُ أبو الهيجاء الكيلاني" and len(front["tags"]) == 7
+    )  # all six and him
 
 
 def test_insert_sheets_carry_their_die_lines_on_their_own_layer(tmp_path: Path) -> None:

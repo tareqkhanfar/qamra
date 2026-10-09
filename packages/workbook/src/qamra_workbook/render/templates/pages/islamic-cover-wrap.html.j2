@@ -1,0 +1,2 @@
+{% import "_cover.html.j2" as cover with context %}
+<div class="cv-root">{{ cover.front(d.front) }}{{ cover.spine(d.spine, g.page_h) }}{{ cover.back(d.back) }}</div>

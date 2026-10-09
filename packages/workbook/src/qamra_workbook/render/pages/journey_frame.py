@@ -4,7 +4,9 @@ at the end of a stage is the journey's `certificate` page with its own line."""
 
 from __future__ import annotations
 
-from qamra_workbook.render import art, draw
+from typing import Any
+
+from qamra_workbook.render import covers, draw
 from qamra_workbook.render.pages.journey import (
     MAP_H,
     MAP_W,
@@ -20,7 +22,6 @@ from qamra_workbook.render.pages.journey import (
 from qamra_workbook.render.pages.journey_kit import SOFT, W, card, svg, text
 from qamra_workbook.render.pages.motor import character_image
 from qamra_workbook.render.registry import Built, PageContext, page_type
-from qamra_workbook.render.sections import SECTIONS
 
 STAGE_AGES = {1: "٣–٤", 2: "٤–٥", 3: "٥–٦"}
 AGES_LATIN = {1: "3–4", 2: "4–5", 3: "5–6"}
@@ -110,32 +111,61 @@ def journey_opener(ctx: PageContext) -> Built:
     return Built({"svg": svg(area)}, None, problems)
 
 
+def _stage_cover(ctx: PageContext) -> tuple[int, str, dict[str, Any], dict[str, Any]]:
+    stage = int(ctx.page.params.get("stage", ctx.page.stage or 1))
+    part = f"journey-{stage}"
+    return stage, part, covers.series_copy("journey"), covers.part_copy("journey", part)
+
+
+def _badges(ctx: PageContext, sc: dict[str, Any]) -> tuple[tuple[str, str], ...]:
+    pages = int(ctx.page.params.get("pages") or 0)
+    out = []
+    for b in sc.get("badges", []) or []:
+        if "{pages}" in b["text"] and not pages:
+            continue  # a cover rendered without its interior's count
+        out.append((b["icon"], covers.fill(ctx, b["text"], pages=covers.pages_phrase(pages))))
+    return tuple(out)
+
+
 @page_type("journey-cover-front", frame="full")
 def journey_cover_front(ctx: PageContext) -> Built:
-    stage = int(ctx.page.params.get("stage", ctx.page.stage or 1))
-    return Built(
-        {
-            "name": ctx.book.child.name,
-            "character": ctx.assets.character.resolve().as_uri() if ctx.assets.character else "",
-            "stage": stage_name(stage),
-            "subtitle": str(ctx.page.params.get("subtitle", "")),
-            "ages": ctx.book.num(AGES_LATIN.get(stage, "")) + " سنوات",
-            "stops": [{"icon": art.icon(s["icon"]), "color": s["color"]} for s in stops_of(ctx)],
-            "kicker": ctx.text(str(ctx.page.params.get("kicker", "رحلة {child}"))),
-        }
+    """The stage's scene, the child among blocks of what the stage teaches, the title on a trail sign, the
+    stage, the ribbon «رحلة …», three info badges (render/covers.py)."""
+    stage, part, sc, pc = _stage_cover(ctx)
+    p = ctx.page.params
+    front = covers.Front(
+        series="journey",
+        part=part,
+        title=str(ctx.page.title or "رحلتي الأولى للتعلّم"),
+        ribbon=ctx.text(str(p.get("kicker") or sc.get("ribbon", "رحلة {child}"))),
+        subtitle=str(p.get("subtitle", "")),
+        pills=((stage_name(stage), "main"),),
+        age=ctx.book.num(AGES_LATIN.get(stage, "")) + " سنوات",
+        badges=_badges(ctx, sc),
+        blocks=tuple(str(x) for x in pc.get("blocks", []) or []),
     )
+    return Built({"cv": covers.front_data(ctx, front), "kicker": front.ribbon})
 
 
 @page_type("journey-cover-back", frame="full")
 def journey_cover_back(ctx: PageContext) -> Built:
-    stage = int(ctx.page.params.get("stage", ctx.page.stage or 1))
-    order = [s for s in SECTIONS.values() if s.id != "intro"]
-    return Built(
-        {
-            "blurb": ctx.text(str(ctx.page.params.get("blurb", ""))),
-            "points": [ctx.text(str(p)) for p in ctx.page.params.get("points", [])],
-            "sections": [{"name": s.name_ar, "icon": art.icon(s.icon), "color": s.color} for s in order],
-            "stage": stage_name(stage),
-            "ages": ctx.book.num(AGES_LATIN.get(stage, "")) + " سنوات",
-        }
+    stage, part, sc, pc = _stage_cover(ctx)
+    p = ctx.page.params
+    pages = int(p.get("pages") or 0)
+    facts = [ctx.book.num(AGES_LATIN.get(stage, "")) + " سنوات"]
+    if pages:
+        facts.append(ctx.book.num(covers.counted(pages, "صفحة", "صفحات")))
+    facts.append(str(sc.get("binding", "")))
+    back = covers.Back(
+        series="journey",
+        part=part,
+        title=str(ctx.page.title or "رحلتي الأولى للتعلّم"),
+        pills=((stage_name(stage), "main"),),
+        blurb=(ctx.text(str(p.get("blurb", ""))),) if p.get("blurb") else (),
+        inside=tuple((i["icon"], ctx.text(str(i["text"])), "") for i in pc.get("inside", []) or []),
+        inside_title="في هذه المحطة",
+        comes=tuple((c["icon"], covers.fill(ctx, str(c["text"]))) for c in pc.get("comes_with", []) or []),
+        facts=tuple(facts),
+        made_for=covers.fill(ctx, "صُنع هذا الكتاب خصيصًا لـ{child}"),
     )
+    return Built({"cv": covers.back_data(ctx, back), "stage": stage_name(stage)})

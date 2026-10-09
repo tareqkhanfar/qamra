@@ -1,10 +1,2 @@
-<div class="jc-bg back" aria-hidden="true"></div>
-<div class="jb">
-  <div class="jc-brand">{{ mascot('mascot') }}<span>قمرة</span></div>
-  <h2 class="jb-title">رحلتي الأولى للتعلّم</h2>
-  <div class="jc-stage">{{ d.stage }}</div>
-  <p class="jb-blurb">{{ d.blurb }}</p>
-  <ul class="jb-points">{% for x in d.points %}<li>{{ icon('check') }}<span>{{ x }}</span></li>{% endfor %}</ul>
-  <div class="jb-map">{% for s in d.sections %}<span class="jb-sec"><i style="background: {{ s.color }}">{{ s.icon }}</i>{{ s.name }}</span>{% endfor %}</div>
-  <div class="jb-foot"><span class="jb-ages">{{ d.ages }}</span><div class="jb-code"></div></div>
-</div>
+{% import "_cover.html.j2" as cover with context %}
+<div class="cv-root">{{ cover.back(d.cv) }}</div>

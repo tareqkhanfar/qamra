@@ -9,6 +9,7 @@ The provider's terms cover commercial use of outputs. Each is used only with ter
 | Model | Where | Use | Notes |
 |---|---|---|---|
 | Nano Banana 2 (`fal-ai/nano-banana-2`, `/edit`) | fal | Magic pages, covers, character sheets | Default image model. fal privacy headers: no stored I/O, 15-minute file expiry |
+| Nano Banana Pro (`fal-ai/nano-banana-pro`) | fal | The activity covers' scenes, drawn once per part (`scripts/cover_scenes.py`, `docs/plans/cover-scenes.md`) | Commercial use through fal (model page, checked 2026-10-09); outputs carry Google's invisible SynthID mark. No child data is sent: text prompts only |
 | FLUX.2 [pro] edit (`fal-ai/flux-2-pro/edit`) | fal | Fallback image model | |
 | SeedVR upscaler (`fal-ai/seedvr/upscale/image`) | fal | Print upscaling | API only. Weights license to verify before any self-hosting |
 | Gemini image (`gemini-3.1-flash-image`) | Google | Selectable alternative | Paid tier: no training on our data |

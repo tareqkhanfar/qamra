@@ -238,9 +238,15 @@ def test_the_cover_comes_from_the_plan() -> None:
     assert front.params["level"] == "المستوى الأول" and front.params["ages"] == "4–5"
     assert front.params["subjects"] == ["pen", "arabic", "math", "english", "thinking"]
     assert back.type == "workbook-cover-back" and back.params["domain"] == "qamra.app"
+    assert front.params["part"] == "kg1-v2" and front.params["pages"] == 116  # the cover's scene and badges
     child = Child("لؤي", "m")
     pages = build_pages(BookSpec("foundation", "دوسية", child, (front, back), dt.date.today()), ASSETS)
-    assert pages[0].built.data["kicker"] == "دوسية لؤي" and len(pages[0].built.data["subjects"]) == 5
+    cover, back_cover = pages[0].built.data["cv"], pages[1].built.data["cv"]
+    assert pages[0].built.data["kicker"] == "دوسية لؤي" and cover["ribbon"]["text"] == "دوسية لؤي"
+    pills = [p["text"] for p in cover["pills"]]
+    assert pills == ["KG1 · المستوى الأول", "الجزء الثاني"]  # plain, like the level
+    assert [b["text"] for b in cover["badges"]][::2] == ["١١٦ صفحة ملوّنة", "باسم لؤي وشخصيته"]
+    assert len(back_cover["inside"]) == 6 and back_cover["made_for"] == "صُنعت خصيصًا لـلؤي"
     with pytest.raises(ValueError):
         plan_of("kg3")
 

@@ -17,6 +17,7 @@ from typing import Any
 
 from qamra_pdf import preflight
 from qamra_workbook.family import FamilyPlan, book_pages, load
+from qamra_workbook.render import covers
 from qamra_workbook.render.character import aspect, front_view
 from qamra_workbook.render.dielines import ART_CSS, DIE_CSS, die_ink, merge_layer, with_css
 from qamra_workbook.render.engine import book_html, build_pages, print_pdf
@@ -122,13 +123,12 @@ async def render_order(
     interior = family_spec(tuple(specs), child, family, size, numerals, day)
     assets = with_members(assets_for(interior, out), member_sheets or {}, out / "assets")
     g = interior.geometry
+    interior_pdf = await render_pages(interior, assets, out / "interior.pdf")
+    cover = family_spec(tuple(with_org(cover_specs(plan), org)), child, family, size, numerals, day)
+    cover = covers.with_thumbs(cover, interior, interior_pdf, out / "assets", covers.THUMBS["family"])
     files = OrderFiles(
-        interior=await render_pages(interior, assets, out / "interior.pdf"),
-        cover=await render_pages(
-            family_spec(tuple(with_org(cover_specs(plan), org)), child, family, size, numerals, day),
-            assets,
-            out / "cover.pdf",
-        ),
+        interior=interior_pdf,
+        cover=await render_pages(cover, assets, out / "cover.pdf"),
         pages=len(specs),
     )
     files.preflight = {"interior.pdf": _report(files.interior, g), "cover.pdf": _report(files.cover, g)}
