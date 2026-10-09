@@ -567,10 +567,12 @@ def classic_story(
     if texts is not None and lang == "ar":
         by_index = {p.index: p.text for p in texts.pages}
         return StoryOut(
-            title=fill(texts.title, child.name, companion_name),
+            title=fill(texts.title, child.name, companion_name, theme.title_ar),
             dedication=fill(texts.dedication, child.name, companion_name),
             pages=[
-                StoryPageOut(index=p.index, text=fill(by_index[p.index], child.name, companion_name))
+                StoryPageOut(
+                    index=p.index, text=fill(by_index[p.index], child.name, companion_name, p.text_ar)
+                )
                 if p.index in by_index
                 else StoryPageOut(
                     index=p.index, text=theme.base_text(p, lang, child.gender, child.name, companion_name)
@@ -579,7 +581,7 @@ def classic_story(
             ],
             parents_lesson=fill(texts.lesson, child.name, companion_name),
             parents_questions=[fill(q, child.name, companion_name) for q in texts.questions],
-            blurb=fill(texts.blurb, child.name, companion_name),
+            blurb=fill(texts.blurb, child.name, companion_name, theme.blurb_ar or ""),
         )
 
     def render(template: str) -> str:

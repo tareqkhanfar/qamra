@@ -288,7 +288,7 @@ pages:
     others: "{mom} and {baby} asleep in the bassinet"
     others_count: 2
     companion_action: floats nearby, glowing warmly
-    text_ar: "ثُمَّ جَاءَتْ مَامَا وَضَمَّتْ {name} طَوِيلًا وَقَالَتْ: «{أَنْتَ بَطَلِي الْكَبِيرُ/أَنْتِ بَطَلَتِي الْكَبِيرَةُ}!»"
+    text_ar: "ثُمَّ جَاءَتْ مَامَا وَضَمَّتْ {name:acc} طَوِيلًا وَقَالَتْ: «{أَنْتَ بَطَلِي الْكَبِيرُ/أَنْتِ بَطَلَتِي الْكَبِيرَةُ}!»"
     text_en: "Then Mama came and gave {name} a long hug: \"You are my big hero!\""
   - index: 12
     layout: split

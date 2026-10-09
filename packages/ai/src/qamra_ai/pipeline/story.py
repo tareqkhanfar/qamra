@@ -16,6 +16,7 @@ from qamra_ai.pipeline.models import Child, CompanionSpec, Lang, SafetyVerdict, 
 from qamra_ai.pipeline.runtime import Runtime
 from qamra_ai.pipeline.theme import Theme, max_words_for, render_template, word_count
 from qamra_ai.text.base import SystemPart
+from qamra_pdf.arabic_names import accusative, fix_vocatives
 
 VOWELIZE_MAX_AGE = 7
 PARENT_MESSAGE_MAX = 120  # Addendum 3 §4: optional dedication message from the parent
@@ -65,6 +66,28 @@ def validate_story(story: StoryOut, n_pages: int, wordless: Collection[int] = ()
         pages = [p.model_copy(update={"text": ""}) if p.index in wordless else p for p in story.pages]
         story = story.model_copy(update={"pages": pages})
     return story
+
+
+def fix_name_case(story: StoryOut, name: str) -> StoryOut:
+    """The model's text with «يا أبو بكر» → «يا أبا بكر» on the child's own name (Fusha: the vocative of
+    «أبو …» is «أبا …»; `qamra_pdf.arabic_names.fix_vocatives`). The prompt asks the model to inflect the name
+    in every case; a vocative it misses is fixed here, the same way every time. Other names stay untouched."""
+    if accusative(name) == name:
+        return story
+
+    def fix(text: str) -> str:
+        return fix_vocatives(text, name)
+
+    return story.model_copy(
+        update={
+            "title": fix(story.title),
+            "dedication": fix(story.dedication),
+            "pages": [p.model_copy(update={"text": fix(p.text)}) for p in story.pages],
+            "parents_lesson": fix(story.parents_lesson),
+            "parents_questions": [fix(q) for q in story.parents_questions],
+            "blurb": fix(story.blurb),
+        }
+    )
 
 
 def wordless_pages(theme: Theme) -> set[int]:
@@ -150,6 +173,7 @@ async def write_story(
         len(theme.pages),
         wordless_pages(theme),
     )
+    out = fix_name_case(out, child.name)
     message = clean_parent_message(parent_message)
     review = out.model_dump()
     if message:

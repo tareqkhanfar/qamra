@@ -15,7 +15,8 @@ from pydantic import BaseModel
 from qamra_ai import prompts
 from qamra_ai.cost import anthropic_estimate
 from qamra_ai.pipeline.runtime import Runtime
-from qamra_ai.pipeline.theme import Theme, max_words_for
+from qamra_ai.pipeline.theme import NAME_SLOTS, Theme, max_words_for
+from qamra_pdf.arabic_names import unmark
 
 PROMPT_TOKENS = 700  # the rules above the texts
 CHARS_PER_TOKEN_IN = 2.0  # Arabic (with its JSON): a conservative count
@@ -36,14 +37,19 @@ class ThemeTranslation(BaseModel):
 
 
 def translation_source(theme: Theme) -> dict[str, Any]:
-    """The Arabic texts the model sees (placeholders and {m/f} variants kept)."""
+    """The Arabic texts the model sees (placeholders and {m/f} variants kept; an Arabic case mark,
+    `{name:acc}`, is shown as `{name}`, since English names do not change)."""
     fp = theme.for_parents
+
+    def plain(text: str) -> str:
+        return unmark(text, NAME_SLOTS)
+
     return {
-        "title_ar": theme.title_ar,
-        "blurb_ar": theme.blurb_ar or "",
-        "lesson_ar": fp.lesson_ar if fp else "",
-        "questions_ar": list(fp.questions_ar) if fp else [],
-        "pages": [{"index": p.index, "text_ar": p.text_ar} for p in theme.pages],
+        "title_ar": plain(theme.title_ar),
+        "blurb_ar": plain(theme.blurb_ar or ""),
+        "lesson_ar": plain(fp.lesson_ar) if fp else "",
+        "questions_ar": [plain(q) for q in fp.questions_ar] if fp else [],
+        "pages": [{"index": p.index, "text_ar": plain(p.text_ar)} for p in theme.pages],
     }
 
 

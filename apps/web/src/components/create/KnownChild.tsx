@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Kid } from "@/components/art/Kid";
+import { accusativeName } from "@/lib/arabicName";
 import { characterImage, type Character, type Child } from "@/lib/create";
 import { isArabicName, isLatinName } from "@/lib/flows";
 import { Hint, inputClass } from "./EditChild";
@@ -105,7 +106,9 @@ export function KnownChild({
 
       {!ready && (
         <fieldset className="flex flex-col gap-2" aria-describedby={`look-${child.id}-hint`}>
-          <legend className="text-body font-semibold">{t("child.drawAs", { name: child.name })}</legend>
+          <legend className="text-body font-semibold">
+            {t("child.drawAs", { name: child.name, nameAcc: accusativeName(child.name) })}
+          </legend>
           <Hint id={`look-${child.id}-hint`}>{t("child.lookHint")}</Hint>
           <div className="flex flex-wrap gap-2">
             {child.gender === "f" && (

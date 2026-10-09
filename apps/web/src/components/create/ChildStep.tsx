@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Alert } from "@/components/ui/Alert";
 import { ArrowForward, Button } from "@/components/ui/Button";
 import { errorText } from "@/lib/api";
+import { accusativeName } from "@/lib/arabicName";
 import { createApi, missingEndpoint, type Character, type Child, type ChildPatch } from "@/lib/create";
 import { isArabicName, isLatinName, type Kind } from "@/lib/flows";
 import { ChildFields, EditChild, Hint, inputClass } from "./EditChild";
@@ -282,7 +283,9 @@ export function ChildStep({
           )}
 
           <fieldset className="flex flex-col gap-2" aria-describedby="kid-look-hint">
-            <legend className="text-body font-semibold">{t("child.drawAs", { name: shown })}</legend>
+            <legend className="text-body font-semibold">
+              {t("child.drawAs", { name: shown, nameAcc: accusativeName(shown) })}
+            </legend>
             <Hint id="kid-look-hint">{t("child.lookHint")}</Hint>
             <div className="flex flex-wrap gap-2">
               {gender === "f" && (

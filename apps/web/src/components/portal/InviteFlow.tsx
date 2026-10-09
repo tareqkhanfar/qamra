@@ -7,6 +7,7 @@ import { Alert } from "@/components/ui/Alert";
 import { Button, buttonClasses } from "@/components/ui/Button";
 import { Link } from "@/i18n/navigation";
 import { api, errorText, type User } from "@/lib/api";
+import { accusativeName } from "@/lib/arabicName";
 import type { Character, Child } from "@/lib/create";
 import { inviteApi, type Invite } from "@/lib/portal";
 import { CharacterPart, ConsentPart, PhotoPart } from "./InviteSteps";
@@ -95,6 +96,7 @@ export function InviteFlow({ token }: { token: string }) {
               school: invite.school,
               classroom: invite.classroom,
               name: invite.child_name,
+              nameAcc: accusativeName(invite.child_name),
               gender: invite.child_gender,
               theme: theme ?? t("classBook"),
             })}

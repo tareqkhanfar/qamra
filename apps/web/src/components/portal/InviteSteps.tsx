@@ -6,6 +6,7 @@ import { MoonPhase } from "@/components/art/MoonPhase";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { errorText } from "@/lib/api";
+import { accusativeName } from "@/lib/arabicName";
 import { characterImage, createApi, type Character, type Child, type Fix } from "@/lib/create";
 import { inviteApi, type Invite } from "@/lib/portal";
 
@@ -180,7 +181,9 @@ export function CharacterPart({
       ) : drawing ? (
         <div role="status" className="flex flex-col items-center gap-4 py-8 text-center">
           <MoonPhase p={((tick % 12) + 1) / 12} className="size-20" />
-          <strong className="text-h3 text-night-900">{t("drawing", { name: child.name })}</strong>
+          <strong className="text-h3 text-night-900">
+            {t("drawing", { name: child.name, nameAcc: accusativeName(child.name) })}
+          </strong>
           <p className="text-small text-ink-muted">{t("drawingHint")}</p>
         </div>
       ) : (

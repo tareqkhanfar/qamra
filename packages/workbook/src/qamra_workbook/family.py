@@ -93,7 +93,7 @@ ASSUMED_PARENTS = re.compile(r"(?<!\w)(?:[وفبلك]|لل)?(?:ماما|بابا
 NUTS_AND_RAW_EGGS = re.compile(
     r"(مكسّرات|مكسرات|جوز|لوز|فستق|بندق|كاجو|فول سوداني|زبدة الفول|بيض ني|بيض غير مطبوخ)"
 )
-_PLACEHOLDER = re.compile(r"\{([a-z_]+)\}")
+_PLACEHOLDER = re.compile(r"\{([a-z_]+)(?::acc)?\}")  # `{adult:acc}`: the name in the accusative
 _TASHKEEL = re.compile(r"[\u064B-\u0652\u0670]")  # the printed texts are vowelized; the checks match letters
 
 

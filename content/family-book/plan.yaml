@@ -5,6 +5,8 @@
 #
 # 112 pages (Tareq's order, 2026-09-28): front p1–5, twelve adventures (each an opening spread, its activities and «ذكرى اليوم»), back
 # p110–112. {child}, {adult}, {member}, {family_name}, {city}; {masc/fem} pairs follow the child's gender.
+# A name in the accusative without «يا» before it is {child:acc} / {adult:acc} / {member:acc} («اشكروا {child:acc}»
+# → «اشكروا أبا بكر»); «يا {child}» needs no mark (qamra_pdf.arabic_names).
 # {city} is optional (the family step of the order): without it the child's vowelized texts print «مَدينَتِنا»
 # and the parents' plain texts «مدينتكم» (render/spec.py `Family.city_in`), never «سوق » with nothing after it.
 
@@ -58,7 +60,7 @@ front:
     instruction: "بَعْدَ كُلِّ مُغامَرَةٍ، {أَلْصِقْ/أَلْصِقي} خَتْمَها فِي {جَوازِكَ/جَوازِكِ}"
     parent:
       - "بعد كل مغامرة، {ساعدوه/ساعدوها} على لصق الختم من ورقة الملصقات، واحتفلوا معًا."
-      - "امنحوا {child} شارة من الشارات السبع كلما {رأيتموه/رأيتموها} {يفكّر/تفكّر} أو {يبدع/تبدع} أو {يساعد/تساعد}."  # draft: educator review
+      - "امنحوا {child:acc} شارة من الشارات السبع كلما {رأيتموه/رأيتموها} {يفكّر/تفكّر} أو {يبدع/تبدع} أو {يساعد/تساعد}."  # draft: educator review
   - type: my-family
     title: "عائِلَتي"
     instruction: "مَنْ فِي {عائِلَتِكَ/عائِلَتِكِ}؟ {ارْسُمْ/ارْسُمي} وُجوهَهُمْ {وَاكْتُبْ/وَاكْتُبي} أَسْماءَهُمْ"
@@ -909,8 +911,8 @@ activities:
     pages:
       - type: drawing
         title: "{مُساعِدُ/مُساعِدَةُ} العائِلَةِ"
-        instruction: "{ارْسُمْ نَفْسَكَ/ارْسُمي نَفْسَكِ} فِي مَهَمَّةٍ {ساعَدْتَ/ساعَدْتِ} فيها {member}"
-        parent: ["اشكروا {child} على مساعدة حقيقية {قدّمها/قدّمتها} هذا الأسبوع."]
+        instruction: "{ارْسُمْ نَفْسَكَ/ارْسُمي نَفْسَكِ} فِي مَهَمَّةٍ {ساعَدْتَ/ساعَدْتِ} فيها {member:acc}"
+        parent: ["اشكروا {child:acc} على مساعدة حقيقية {قدّمها/قدّمتها} هذا الأسبوع."]
   - id: resp-memory
     section: responsible
     title: "ذِكْرى اليَوْمِ"
@@ -1187,7 +1189,7 @@ activities:
     title: "حِكاياتُ زَمانٍ"
     goal: الحوار بين الأجيال والاستماع
     skills: [speaking, cooperation, memory]
-    child_part: يسأل {adult} عن أيام الطفولة بأسئلة البطاقات، ثم يحكي ما سمعه للعائلة
+    child_part: يسأل {adult:acc} عن أيام الطفولة بأسئلة البطاقات، ثم يحكي ما سمعه للعائلة
     parent_part: يساعد الطفل في الاتصال أو الزيارة، ويشجّعه على السؤال
     together: true
     materials: []
@@ -1198,8 +1200,8 @@ activities:
         title: "حِكاياتُ زَمانٍ"
         instruction: "{اجْلِسْ/اجْلِسي} مَعَ {adult} {وَاسْأَلْ/وَاسْأَلي}: كَيْفَ كانَتْ طُفولَتُك؟"
         parent:
-          - "ساعدوا {child} في الاتصال أو الزيارة، واختاروا معًا سؤالين."
-          - "بعدها اسألوا {child}: ماذا {عرفت/عرفتِ} عن زمان؟"
+          - "ساعدوا {child:acc} في الاتصال أو الزيارة، واختاروا معًا سؤالين."
+          - "بعدها اسألوا {child:acc}: ماذا {عرفت/عرفتِ} عن زمان؟"
         params:  # draft: educator review (the questions; no second-person verbs, so they suit any grown-up)
           answers: true
           cards:
@@ -1255,9 +1257,9 @@ activities:
     pages:
       - type: interview-template
         title: "مُقابَلَةٌ مَعَ {adult}"
-        instruction: "{كُنْ صَحَفِيًّا/كوني صَحَفِيَّةً}: {اسْأَلْ/اسْأَلي} {adult} عَنِ العَمَلِ، {وَارْسُمِ/وَارْسُمي} الإِجاباتِ"
+        instruction: "{كُنْ صَحَفِيًّا/كوني صَحَفِيَّةً}: {اسْأَلْ/اسْأَلي} {adult:acc} عَنِ العَمَلِ، {وَارْسُمِ/وَارْسُمي} الإِجاباتِ"
         parent:
-          - "أجيبوا بجمل بسيطة، وأروا {child} أداة أو صورة من العمل."
+          - "أجيبوا بجمل بسيطة، وأروا {child:acc} أداة أو صورة من العمل."
           - "العمل في البيت ورعاية العائلة عمل مهم أيضًا."
         params:  # draft: educator review (the questions)
           questions:
@@ -1306,7 +1308,7 @@ activities:
       - type: scavenger-hunt
         title: "أَبْطالُ حَيِّنا"
         instruction: "عَلى الطَّريقِ أَبْطالٌ! {اشْطُبْ/اشْطُبي} كُلَّ صاحِبِ مِهْنَةٍ {تَراهُ/تَرَيْنَهُ}"
-        parent: ["شجّعوا {child} على قول «شكرًا» لبائع أو عامل نظافة."]
+        parent: ["شجّعوا {child:acc} على قول «شكرًا» لبائع أو عامل نظافة."]
         params:  # draft: educator review (who we meet in the street)
           count: true
           items:
@@ -1383,7 +1385,7 @@ activities:
       - type: price-tags
         title: "نَفْتَحُ المَتْجَرَ"
         instruction: "{مَتْجَرُكَ/مَتْجَرُكِ} يَفْتَحُ أَبْوابَهُ! {اكْتُبْ/اكْتُبي} سِعْرَ كُلِّ شَيْءٍ فيهِ"
-        parent: ["اقترحوا أسعارًا صغيرة من 1 إلى 10، واتركوا {child} {يقرّر/تقرّر}."]
+        parent: ["اقترحوا أسعارًا صغيرة من 1 إلى 10، واتركوا {child:acc} {يقرّر/تقرّر}."]
         params: {mode: blank, spots: 6}
   - id: shop-customer
     section: shop
@@ -1654,7 +1656,7 @@ activities:
               pictures: [milk, cup]
               options:
                 - {icon: hand, text: "نَمْسَحُهُ مَعًا"}
-                - {icon: talk, text: "نُخْبِرُ {adult}"}
+                - {icon: talk, text: "نُخْبِرُ {adult:acc}"}
                 - {icon: cross, text: "نَتْرُكُهُ وَنَذْهَبُ"}
   - id: act-roles
     section: act

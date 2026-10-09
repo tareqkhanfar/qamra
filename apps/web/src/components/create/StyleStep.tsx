@@ -7,6 +7,7 @@ import { StyleShowcase } from "@/components/story/StyleShowcase";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { errorText } from "@/lib/api";
+import { accusativeName } from "@/lib/arabicName";
 import type { ThemeCard } from "@/lib/catalog";
 import { classicStyles, classicVariant } from "@/lib/classic";
 import { createApi, type Character, type Child, type Line } from "@/lib/create";
@@ -97,7 +98,10 @@ export function StyleStep({
         </Button>
       }
     >
-      <Lead title={t("style.title", { name: child.name })} body={t("style.body")} />
+      <Lead
+        title={t("style.title", { name: child.name, nameAcc: accusativeName(child.name) })}
+        body={t("style.body")}
+      />
       {noClassic && (
         <div className="flex flex-col gap-3">
           <Alert>{tc("noStyle", { name: child.name })}</Alert>

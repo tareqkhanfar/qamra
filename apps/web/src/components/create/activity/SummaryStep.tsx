@@ -6,6 +6,7 @@ import { ItemAddOns } from "@/components/order/AddOnsStep";
 import { Alert } from "@/components/ui/Alert";
 import { ArrowForward, Button } from "@/components/ui/Button";
 import { Link } from "@/i18n/navigation";
+import { accusativeName } from "@/lib/arabicName";
 import { characterImage, type Child, type FamilyPayload } from "@/lib/create";
 import { money, type CatalogProduct, type CatalogVariant, type Currency } from "@/lib/store";
 import { partsFor } from "@/lib/workbook";
@@ -102,7 +103,7 @@ export function SummaryStep({
   const line = product.line as string;
   const name = locale === "ar" ? product.name_ar : product.name_en;
   const variantLine = useVariantLine(product, variant);
-  const who = { name: child.name, gender: child.gender };
+  const who = { name: child.name, nameAcc: accusativeName(child.name), gender: child.gender };
   const productHref = `/workbooks/${product.slug}?${new URLSearchParams(variant.options).toString()}`;
   const cover = partsFor(product.slug, line, variant.options)[0]?.cover;
   const digital = variant.options.format === "digital";
@@ -185,7 +186,7 @@ export function SummaryStep({
             {t.rich("activity.summary.muslim", { ...who, ar: arabic })}
           </Row>
         ) : (
-          <Row label={t("activity.summary.address", { name: child.name })}>
+          <Row label={t("activity.summary.address", who)}>
             {t.rich("activity.summary.praise", { ...who, ar: arabic })}
           </Row>
         )}

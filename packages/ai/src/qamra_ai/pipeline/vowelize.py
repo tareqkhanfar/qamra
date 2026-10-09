@@ -4,6 +4,10 @@ A Classic book's words are the theme's page templates. For Arabic they are vowel
 text model (an admin-side, one-time step, cached with the template and keyed by a hash of the source), with
 `{name}` and `{companion}` kept as placeholders. Each book then fills in the name at no AI cost.
 
+A name's case marks (`{name:acc}`, `qamra_pdf.arabic_names`) are not part of the vowelized source, so adding
+one never changes the hash or calls the model again: `fill` puts the template's marks back slot by slot
+before it fills the name («وَضَمَّتْ أبا بكر»), and «يا {name}» needs no mark («يا أبا بكر»).
+
 The model may only add diacritics: every text is checked to be the same letters and placeholders as its
 source once the diacritics are removed. A text that fails the check keeps its unvowelized source (and is
 listed in `kept`), so a mistake can never change a word in a printed book.
@@ -19,7 +23,8 @@ from pydantic import BaseModel
 from qamra_ai import prompts
 from qamra_ai.pipeline.models import Gender
 from qamra_ai.pipeline.runtime import Runtime
-from qamra_ai.pipeline.theme import Theme, render_template
+from qamra_ai.pipeline.theme import NAME_SLOTS, Theme, render_template
+from qamra_pdf.arabic_names import fill_names, remark
 
 _TASHKEEL = re.compile(r"[ؐ-ًؚ-ٰٟۖ-ۭـ]")
 _PLACEHOLDER = re.compile(r"\{(name|companion)\}")
@@ -121,8 +126,12 @@ async def vowelize(rt: Runtime, theme: Theme, gender: Gender, *, step: str) -> V
     return checked(source, answer)
 
 
-def fill(text: str, name: str, companion: str) -> str:
-    return text.replace("{name}", name).replace("{companion}", companion)
+def fill(text: str, name: str, companion: str, template: str = "") -> str:
+    """A cached text with the child's names: `template` (the theme text it was vowelized from) gives back
+    its case marks first, so `{name:acc}` and «يا {name}» print «أبا بكر»."""
+    if template:
+        text = remark(text, template, NAME_SLOTS)
+    return fill_names(text, {"name": name, "companion": companion})
 
 
 TEXT_KEYS = ("title_ar", "title_en", "blurb_ar", "blurb_en", "for_parents")

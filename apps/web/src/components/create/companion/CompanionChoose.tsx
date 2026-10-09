@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { errorText } from "@/lib/api";
+import { accusativeName } from "@/lib/arabicName";
 import { companionApi, drawingImage, optionImage, type Companion } from "@/lib/companion";
 import type { Child } from "@/lib/create";
 import { Check } from "../Frame";
@@ -64,7 +65,12 @@ export function CompanionChoose({
       }
     >
       <p className="text-body leading-relaxed text-ink-muted">
-        {t("body", { name: companion.name, child: child.name, gender: child.gender })}
+        {t("body", {
+          name: companion.name,
+          nameAcc: accusativeName(companion.name),
+          child: child.name,
+          gender: child.gender,
+        })}
       </p>
       <div role="radiogroup" aria-label={t("title", { name: companion.name })} className="flex flex-col gap-3.5">
         {options.map((n) => {

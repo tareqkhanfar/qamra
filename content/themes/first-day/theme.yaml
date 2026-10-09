@@ -47,7 +47,8 @@ default_companion:
     The crescent shape never changes
   image: default-companion.png
 
-# Template syntax: {name}, {companion}; gender variants {masculine/feminine}.
+# Template syntax: {name}, {companion}; gender variants {masculine/feminine}. A name in the accusative
+# without «يا» before it is {name:acc} («وَضَمَّتْ {name:acc}» → «أبا بكر»); «يا {name}» needs no mark.
 # Scenes and locations are English for the image model. Layouts (Addendum 3 §4):
 #   full (text panel top/bottom/side) · split (art above, text below) · spread (two pages, even page first)
 #   no_child: true = background plate without the hero or companion, drawn once per theme and cached.
@@ -247,7 +248,7 @@ pages:
     others: "{teacher}"
     others_count: 1
     companion_action: waves at the teacher from behind the hero
-    text_ar: "اسْتَقْبَلَتِ الْمُعَلِّمَةُ {name} بِابْتِسَامَةٍ كَبِيرَةٍ وَقَالَتْ: «أَهْلًا {بِكَ/بِكِ} يَا {name}، كُنَّا {نَنْتَظِرُكَ/نَنْتَظِرُكِ}!»"
+    text_ar: "اسْتَقْبَلَتِ الْمُعَلِّمَةُ {name:acc} بِابْتِسَامَةٍ كَبِيرَةٍ وَقَالَتْ: «أَهْلًا {بِكَ/بِكِ} يَا {name}، كُنَّا {نَنْتَظِرُكَ/نَنْتَظِرُكِ}!»"
     text_en: "The teacher greeted {name} with a big smile: \"Welcome, {name}! We were waiting for you!\""
   - index: 8
     layout: spread

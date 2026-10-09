@@ -28,7 +28,7 @@ pages:
   5: {title: "خَمْسُ صُوَرٍ", instruction: "{احْفَظِ/احْفَظي} الصُّوَرَ الخَمْسَ جَيِّدًا، ثُمَّ {اقْلِبِ/اقْلِبي} الصَّفْحَةَ", params: {items: [moon, key, apple, cat, ball]}}  # draft: educator review
   6: {title: "ماذا اخْتَفى؟", instruction: "صورَتانِ اخْتَفَتا! {ضَعْ/ضَعي} حَوْلَهُما دائِرَتَيْنِ", params: {shown: [moon, apple, ball], choices: [key, cat, fish, sun], answer: [key, cat]}}  # draft: educator review
   7: {type: journey-classify-shapes, title: "أَشْكالٌ وَأَلْوانٌ", instruction: "{صِلْ/صِلي} كُلَّ شَكْلٍ بِصُنْدوقِ شَكْلِهِ وَلَوْنِهِ", params: {shapes: [circle, triangle], colors: {red: "#E5604E", blue: "#5E86D6"}}}  # draft: educator review
-  8: {title: "{ساعِدْ/ساعِدي} {child} لِلْوُصولِ إِلى الرَّوْضَةِ", instruction: "{ابْحَثْ/ابْحَثي} عَنِ الطَّريقِ المَفْتوحِ {وَارْسُمْهُ/وَارْسُميهِ} بِالقَلَمِ", params: {seed: 208, cols: 6, rows: 6, goal: school}}  # draft: educator review
+  8: {title: "{ساعِدْ/ساعِدي} {child:acc} لِلْوُصولِ إِلى الرَّوْضَةِ", instruction: "{ابْحَثْ/ابْحَثي} عَنِ الطَّريقِ المَفْتوحِ {وَارْسُمْهُ/وَارْسُميهِ} بِالقَلَمِ", params: {seed: 208, cols: 6, rows: 6, goal: school}}  # draft: educator review
   9: {type: journey-tangled, title: "ثَلاثُ طائِراتٍ وَرَقِيَّةٍ", instruction: "لِمَنْ كُلُّ طائِرَةٍ وَرَقِيَّةٍ؟ {اتْبَعْ/اتْبَعي} خَيْطَها {بِإِصْبَعِكَ/بِإِصْبَعِكِ}", params: {from: [red, blue, yellow], to: [boy, girl, boy]}}  # draft: educator review
   10: {title: "ماذا تَعَلَّمْتُ؟", instruction: "{رَتِّبِ/رَتِّبي} الصُّوَرَ، {وَتَذَكَّرْ/وَتَذَكَّري}، ثُمَّ {اتْبَعِ/اتْبَعي} الطَّريقَ", params: {tasks: [sequence-4, memory, classify, maze], cheer: "رائِعٌ يا {child}!"}}  # draft: educator review
 

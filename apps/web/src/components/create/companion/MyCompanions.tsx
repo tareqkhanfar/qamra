@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Alert } from "@/components/ui/Alert";
 import { Link } from "@/i18n/navigation";
 import { errorText } from "@/lib/api";
+import { accusativeName } from "@/lib/arabicName";
 import { companionApi, companionImage, drawingImage, type MyCompanion } from "@/lib/companion";
 
 const STAGES = ["bg-night-100", "bg-amber-100", "bg-success-bg"];
@@ -34,7 +35,7 @@ export function MyCompanions() {
     const r = await companionApi.remove(c.id);
     if (r.ok) {
       setList((l) => (l ?? []).filter((x) => x.id !== c.id));
-      setNotice(t("deleted", { name: c.name }));
+      setNotice(t("deleted", { name: c.name, nameAcc: accusativeName(c.name) }));
     } else setNotice(errorText(r.error, locale, r.status === 0 ? te("network") : te("unknown")));
   }
 

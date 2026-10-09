@@ -300,7 +300,7 @@ pages:
       On the stage under a warm spotlight, the hero in gown and cap raises a rolled certificate tied with
       a ribbon high above their head, beaming.
     companion_action: cheers with both arms up
-    text_ar: "نَادَتِ الْمُعَلِّمَةُ: «{name}!» {فَمَشَى/فَمَشَتْ} {name} بِثِقَةٍ، {وَرَفَعَ/وَرَفَعَتْ} الشَّهَادَةَ عَالِيًا تَحْتَ الضَّوْءِ."
+    text_ar: "نَادَتِ الْمُعَلِّمَةُ: «{name:acc}!» {فَمَشَى/فَمَشَتْ} {name} بِثِقَةٍ، {وَرَفَعَ/وَرَفَعَتْ} الشَّهَادَةَ عَالِيًا تَحْتَ الضَّوْءِ."
     text_en: "The teacher called: \"{name}!\" {name} walked up proudly and held the certificate high in the light."
   - index: 12
     layout: split

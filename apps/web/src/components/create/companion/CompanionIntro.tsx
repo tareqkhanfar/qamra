@@ -5,6 +5,7 @@ import { Companion as CompanionArt } from "@/components/art/Companion";
 import { Drawing } from "@/components/art/Drawing";
 import { Button } from "@/components/ui/Button";
 import { brandName } from "@/config/brand";
+import { accusativeName } from "@/lib/arabicName";
 import { companionImage, type MyCompanion } from "@/lib/companion";
 import type { Child } from "@/lib/create";
 import { money, type Currency } from "@/lib/store";
@@ -38,7 +39,7 @@ export function CompanionIntro({
   const t = useTranslations("companion.intro");
   const tc = useTranslations("create");
   const locale = useLocale();
-  const who = { name: child.name, gender: child.gender };
+  const who = { name: child.name, nameAcc: accusativeName(child.name), gender: child.gender };
   const picked = mine.find((c) => c.id === chosen) ?? null;
   const steps = ["one", "two", "three"] as const;
 

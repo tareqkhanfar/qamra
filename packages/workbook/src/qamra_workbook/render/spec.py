@@ -21,6 +21,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Literal
 
+from qamra_pdf.arabic_names import fill_name
 from qamra_workbook.family import SKILLS, FamilyPlan, Placed
 from qamra_workbook.journey import JourneyPage
 
@@ -33,7 +34,7 @@ Numerals = Literal["hindi", "latin"]  # ١٢٣ or 123
 Figure = Literal["woman", "man", "grandma", "grandpa", "girl", "boy", "baby", "adult", "child"]
 
 _VARIANT = re.compile(r"\{([^{}/]+)/([^{}/]+)\}")
-_PLACEHOLDER = re.compile(r"\{[a-z_]+\}")
+_PLACEHOLDER = re.compile(r"\{[a-z_]+(?::acc)?\}")  # `{child}`, or `{child:acc}` for the accusative
 _HINDI = str.maketrans("0123456789", "٠١٢٣٤٥٦٧٨٩")
 _LATIN = str.maketrans("٠١٢٣٤٥٦٧٨٩", "0123456789")
 _TASHKEEL = re.compile(r"[ً-ٰٟ]")
@@ -54,8 +55,19 @@ MONTHS_AR = (
 
 
 #: The placeholders the parent's own words fill: the child's name (Arabic and English), a family member, the
-#: family's name, the city. Whatever the parent typed counts as one word for the word limits.
-NAME_SLOTS = ("{child}", "{name_en}", "{adult}", "{member}", "{family_name}", "{city}")
+#: family's name, the city. Whatever the parent typed counts as one word for the word limits. A name in the
+#: accusative is marked `{child:acc}` (`qamra_pdf.arabic_names`: «ساعِدْ أبا بكر»); after «يا» it needs no mark.
+NAME_SLOTS = (
+    "{child}",
+    "{child:acc}",
+    "{name_en}",
+    "{adult}",
+    "{adult:acc}",
+    "{member}",
+    "{member:acc}",
+    "{family_name}",
+    "{city}",
+)
 _NAME_UNIT = "اسم"  # one word standing in for a name while counting
 
 
@@ -151,8 +163,10 @@ class Child:
     character_sheet: Path | None = None  # front view + two poses on plain paper
 
     def personalize(self, text: str) -> str:
+        """`{masc/fem}` for the child's gender, then the name: «يا {child}» and `{child:acc}` print the
+        accusative («يا أبا بكر», `qamra_pdf.arabic_names`), every other `{child}` the name as typed."""
         text = _VARIANT.sub(lambda m: m.group(1 if self.gender == "m" else 2), text)
-        return text.replace("{child}", self.name)
+        return fill_name(text, "child", self.name)
 
 
 # The role a parent types → the placeholder figure (tashkeel ignored); anything else is drawn as "adult".
@@ -240,12 +254,11 @@ class Family:
     def personalize(self, text: str, key: int = 0, adult: str = "", member: str = "") -> str:
         grown_up = self.pick(self.adults, key, adult)
         anyone = self.pick(self.members, key, member)
-        return (
-            text.replace("{family_name}", self.name)
-            .replace("{city}", self.city_in(text))
-            .replace("{adult}", grown_up.label if grown_up else NO_ADULT)
-            .replace("{member}", anyone.label if anyone else NO_ADULT)
-        )
+        # a member's name takes the accusative after «يا» and at `{adult:acc}` («نُخْبِرُ أبا أحمد»); the
+        # family's name is a surname and prints as typed («عائلة أبو غوش»)
+        text = text.replace("{family_name}", self.name).replace("{city}", self.city_in(text))
+        text = fill_name(text, "adult", grown_up.label if grown_up else NO_ADULT)
+        return fill_name(text, "member", anyone.label if anyone else NO_ADULT)
 
 
 @dataclass(frozen=True)

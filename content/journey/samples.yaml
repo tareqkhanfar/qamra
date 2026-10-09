@@ -55,7 +55,7 @@ samples:
       n: 22
       section: eye-hand
       type: maze
-      title: "{ساعد/ساعدي} {child} للوصول إلى الحديقة"
+      title: "{ساعد/ساعدي} {child:acc} للوصول إلى الحديقة"
       instruction: "{ارسم/ارسمي} الطريق بالقلم"
       skill: "التآزر البصري الحركي: يتبع طريقًا دون لمس الجدران"
       goals: [visual_motor, pen_control, attention]

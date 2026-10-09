@@ -1,4 +1,5 @@
 /** Template studio (Addendum 4 §3): API shapes and small helpers shared by the studio's admin pages. */
+import { fillName } from "@/lib/arabicName";
 
 export type TemplateStatus = "draft" | "in_review" | "approved" | "live";
 export type VersionStatus = TemplateStatus | "retired";
@@ -157,12 +158,13 @@ export type AuditPage = { items: AuditItem[]; total: number; page: number; pages
 
 const VARIANT = /\{([^{}/]+)\/([^{}/]+)\}/g;
 
-/** A theme text for one child, as the book prints it: `{boy/girl}` variants, then the placeholders. */
+/**
+ * A theme text for one child, as the book prints it: `{boy/girl}` variants, then the placeholders; a name after
+ * «يا» and at `{name:acc}` in the accusative («يا أبا بكر», lib/arabicName.ts).
+ */
 export function renderText(template: string, gender: "m" | "f", name: string, companion: string): string {
-  return template
-    .replace(VARIANT, (_, m: string, f: string) => (gender === "m" ? m : f))
-    .replaceAll("{name}", name)
-    .replaceAll("{companion}", companion);
+  const text = template.replace(VARIANT, (_, m: string, f: string) => (gender === "m" ? m : f));
+  return fillName(fillName(text, "name", name), "companion", companion);
 }
 
 /** Braces left after rendering: an unknown placeholder or a broken variant (the API rejects them too). */

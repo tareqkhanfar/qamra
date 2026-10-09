@@ -6,6 +6,7 @@ import { MoonPhase } from "@/components/art/MoonPhase";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { errorText } from "@/lib/api";
+import { accusativeName } from "@/lib/arabicName";
 import { characterImage, createApi, type Character, type Child, type Fix } from "@/lib/create";
 import { ACTIVITY_LINES } from "@/lib/shop";
 import { Chip, Frame, Lead } from "./Frame";
@@ -42,7 +43,7 @@ export function CharacterStep({
   const [busy, setBusy] = useState<"approve" | "redraw" | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [tick, setTick] = useState(0);
-  const who = { name: child.name, gender: child.gender };
+  const who = { name: child.name, nameAcc: accusativeName(child.name), gender: child.gender };
   const drawing = character.status === "generating";
   const kind = (ACTIVITY_LINES as readonly string[]).includes(productLine ?? "") ? "activity" : "story";
   const places = t(
@@ -111,7 +112,9 @@ export function CharacterStep({
       {drawing ? (
         <div role="status" className="flex flex-col items-center gap-5 py-10 text-center">
           <MoonPhase p={((tick % 12) + 1) / 12} className="size-24" />
-          <h1 className="text-[26px] text-night-900">{t("character.drawing", { name: child.name })}</h1>
+          <h1 className="text-[26px] text-night-900">
+            {t("character.drawing", { name: child.name, nameAcc: accusativeName(child.name) })}
+          </h1>
           <p className="text-body text-ink-muted">{t("character.drawingHint")}</p>
         </div>
       ) : character.status === "failed" ? (

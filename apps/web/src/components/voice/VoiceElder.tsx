@@ -6,6 +6,7 @@ import { MoonMark } from "@/components/Logo";
 import { Spinner } from "@/components/ui/Button";
 import { brandName } from "@/config/brand";
 import { errorText } from "@/lib/api";
+import { accusativeName } from "@/lib/arabicName";
 import { voiceApi, type ElderBook } from "@/lib/voice";
 import { useRecorder } from "./useRecorder";
 import { Icon, ICONS } from "./VoicePieces";
@@ -89,7 +90,7 @@ export function VoiceElder({ token }: { token: string }) {
         </span>
       </div>
       <h1 className="text-[30px] leading-[1.35] font-bold text-night-900">
-        {t("hello", { label: book.label, child: book.child_name })}
+        {t("hello", { label: book.label, labelAcc: accusativeName(book.label), child: book.child_name })}
       </h1>
       <p className="rounded-xl border-2 border-line bg-white p-5 font-display text-[30px] leading-[1.8] font-semibold">
         {page.text}

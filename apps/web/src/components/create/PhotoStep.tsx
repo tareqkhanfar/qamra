@@ -6,6 +6,7 @@ import { Kid } from "@/components/art/Kid";
 import { Alert } from "@/components/ui/Alert";
 import { Button, Spinner } from "@/components/ui/Button";
 import { errorText } from "@/lib/api";
+import { accusativeName } from "@/lib/arabicName";
 import { createApi, type Child } from "@/lib/create";
 import { ACTIVITY_LINES } from "@/lib/shop";
 import { Frame, Lead } from "./Frame";
@@ -57,7 +58,7 @@ export function PhotoStep({
   const [failed, setFailed] = useState<CheckName[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState<Child>(child);
-  const who = { name: child.name, gender: child.gender };
+  const who = { name: child.name, nameAcc: accusativeName(child.name), gender: child.gender };
   const activity = (ACTIVITY_LINES as readonly string[]).includes(productLine ?? "");
   // where this activity book prints the character (checked against the renderers, 2026-10-07)
   const places = t(

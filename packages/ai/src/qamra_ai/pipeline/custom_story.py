@@ -24,6 +24,7 @@ from qamra_ai.pipeline.story import (
     VOWELIZE_MAX_AGE,
     Story,
     clean_parent_message,
+    fix_name_case,
     validate_story,
     wordless_pages,
 )
@@ -289,7 +290,7 @@ async def write_custom_story(
         effort=s.story_effort,
         max_tokens=16000,
     )
-    story = validate_story(out.story(), len(base.pages), wordless_pages(base))
+    story = fix_name_case(validate_story(out.story(), len(base.pages), wordless_pages(base)), child.name)
     if [p.index for p in out.pages] != [p.index for p in base.pages]:
         raise InvalidOutput("custom story pages do not follow the plan")
     review = out.model_dump()

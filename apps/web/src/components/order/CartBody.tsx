@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useState, type ReactNode } from "react";
 import { Alert } from "@/components/ui/Alert";
 import { Link } from "@/i18n/navigation";
+import { accusativeName } from "@/lib/arabicName";
 import type { ThemeCard } from "@/lib/catalog";
 import type { Child } from "@/lib/create";
 import {
@@ -54,6 +55,7 @@ export function CartBody(props: {
   const minus = (v: string) => `−${amount(v)}`;
   const bundle = locale === "ar" ? cart.bundle_name_ar : cart.bundle_name_en;
   const firstName = offer?.child_name ?? "";
+  const giftName = firstName || cart.items[0]?.child_name || "";
 
   return (
     <main className="flex flex-col gap-4 px-4 pt-5 pb-[150px]">
@@ -105,7 +107,8 @@ export function CartBody(props: {
               onChange={(e) => props.onMessage(e.target.value)}
               onBlur={props.onMessageDone}
               placeholder={t("gift.placeholder", {
-                name: firstName || cart.items[0]?.child_name || "",
+                name: giftName,
+                nameAcc: accusativeName(giftName),
                 gender: (firstName ? offer?.gender : cart.items[0]?.child_gender) ?? "other",
               })}
               className="resize-none rounded-[14px] border-[1.5px] border-line bg-white px-3.5 py-3 text-body outline-none focus:border-night-900"

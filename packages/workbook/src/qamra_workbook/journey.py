@@ -201,6 +201,7 @@ def _numbers(params: dict[str, Any]) -> set[int]:
 
 
 _MARKS = re.compile("[\u064b-\u065f\u0670\u0640]")  # harakat, superscript alif, tatweel
+_NAMED = re.compile(r"\{child(?::acc)?\}")  # the child's name, as typed or in the accusative
 ARABIC_LETTERS = frozenset("ابتثجحخدذرزسشصضطظعغفقكلمنهوي")  # alif forms count as ا (norm_letter)
 
 
@@ -417,7 +418,7 @@ def check_stage_scope(s: Stage) -> list[str]:
         scripts = {str(p.params.get("script")) for p in s.pages if p.type == "name-trace"}
         if not {"ar", "en"} <= scripts:
             out.append(f"{tag}: name tracing in Arabic and English (name-trace, params.script)")
-    named = [p for p in s.pages if "{child}" in p.title or "{child}" in p.instruction]
+    named = [p for p in s.pages if _NAMED.search(p.title) or _NAMED.search(p.instruction)]
     if len(named) < 2:
         out.append(f"{tag}: at least 2 missions use the child's name ({{child}})")
     last = s.pages[-1].type if s.pages else ""

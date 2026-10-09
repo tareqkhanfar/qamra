@@ -14,6 +14,7 @@ import yaml
 from pydantic import BaseModel, Field, model_validator
 
 from qamra_ai.pipeline.models import Gender, Lang
+from qamra_pdf.arabic_names import fill_names
 from qamra_pdf.lettering import DEFAULT_TITLE_STYLE, TitleStyle
 from qamra_pdf.page_layouts import GEOMETRY, PageLayout
 
@@ -273,10 +274,16 @@ class ArtStyle(BaseModel):
     negative: str = ""  # the style's own never-allowed list, added to the house's (style.negatives)
 
 
+# the name slots of a theme text; `{name:acc}` marks the accusative («وَضَمَّتْ {name:acc}» → «وَضَمَّتْ أبا بكر»)
+NAME_SLOTS = ("name", "companion")
+
+
 def render_template(template: str, gender: Gender, name: str, companion: str) -> str:
-    """`{masc/fem}` → variant for gender, then `{name}` / `{companion}`."""
+    """`{masc/fem}` → variant for gender, then `{name}` / `{companion}`: a name after «يا» and at `{name:acc}`
+    in the accusative («يا أبا بكر», `qamra_pdf.arabic_names`), elsewhere as typed. Filled with the
+    placeholders themselves (`"{name}"`), the case marks go and the text reads as it did before them."""
     text = _VARIANT.sub(lambda m: m.group(1 if gender == "m" else 2), template)
-    return text.replace("{name}", name).replace("{companion}", companion)
+    return fill_names(text, {"name": name, "companion": companion})
 
 
 def fill_title(template: str, name: str, gender: Gender | None) -> str:
@@ -284,7 +291,7 @@ def fill_title(template: str, name: str, gender: Gender | None) -> str:
     catalog) both forms stay, «حارس/حارسة النجوم», so a title never shows a brace or the wrong gender."""
     if gender is None:
         text = _VARIANT.sub(lambda m: f"{m.group(1)}/{m.group(2)}", template)
-        return text.replace("{name}", name).strip()
+        return fill_names(text, {"name": name}).strip()
     return render_template(template, gender, name, "").strip()
 
 

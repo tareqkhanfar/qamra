@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { errorText } from "@/lib/api";
+import { accusativeName } from "@/lib/arabicName";
 import {
   COMPANION_TYPES,
   companionApi,
@@ -40,7 +41,7 @@ export function CompanionName({
   const [traits, setTraits] = useState<Trait[]>(companion.traits);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const who = { name: child.name, gender: child.gender };
+  const who = { name: child.name, nameAcc: accusativeName(child.name), gender: child.gender };
   const shownName = name.trim() || t("placeholder");
 
   async function draw() {

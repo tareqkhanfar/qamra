@@ -1,6 +1,7 @@
 # «رحلتي الأولى للتعلّم» — the print layer of stage 1 (qamra_workbook.journey_book): how each page of the
 # plan (content/journey/plan.yaml) prints. The plan says what a page teaches; this file gives the printed,
-# vowelised title and instruction ({masc/fem} variants, {child}), the engine page type when it differs, the
+# vowelised title and instruction ({masc/fem} variants, {child}; {child:acc} for an object, «{ساعِدْ/ساعِدي}
+# {child:acc}» → «أبا بكر», while «يا {child}» needs no mark), the engine page type when it differs, the
 # render params and the audio item its QR plays.
 #
 # draft: educator review — every title, instruction, «في هذه المحطة» line, riddle and audio script in this
@@ -46,7 +47,7 @@ pages:
   19: {title: "السَّيّارَةُ تَعودُ إلى البَيْتِ", instruction: "{تَتَبَّعْ/تَتَبَّعي} طَريقَ السَّيّارَةِ حَتّى البَيْتِ", params: {path: curve, words: [car, house]}}  # draft: educator review
   20: {title: "طَعامُ الحَيَواناتِ", instruction: "ماذا يَأْكُلُ كُلُّ حَيَوانٍ؟ {صِلْهُ/صِليهِ} بِطَعامِهِ", params: {pairs: [[rabbit, carrot], [bee, flower], [cow, grass]]}}  # draft: educator review
   21: {title: "الأَرْنَبُ الجائِعُ", instruction: "{ارْسُمْ/ارْسُمي} طَريقًا لِلْأَرْنَبِ إلى الجَزَرَةِ", params: {seed: 21, cols: 3, rows: 3, runner: rabbit, goal: carrot}}  # draft: educator review
-  22: {title: "{ساعِدْ/ساعِدي} {child} لِلْوُصولِ إلى الحَديقَةِ", instruction: "{مُرَّ/مُرّي} بِالقَلَمِ بَيْنَ الأَشْجارِ وَلا {تَلْمِسْها/تَلْمِسيها}", params: {seed: 19, cols: 5, rows: 5, goal: garden}}  # draft: educator review
+  22: {title: "{ساعِدْ/ساعِدي} {child:acc} لِلْوُصولِ إلى الحَديقَةِ", instruction: "{مُرَّ/مُرّي} بِالقَلَمِ بَيْنَ الأَشْجارِ وَلا {تَلْمِسْها/تَلْمِسيها}", params: {seed: 19, cols: 5, rows: 5, goal: garden}}  # draft: educator review
   23: {title: "أَيْنَ ظِلّي؟", instruction: "{قارِنِ/قارِني} الأَشْكالَ، ثُمَّ {صِلْ/صِلي} كُلَّ طِفْلٍ بِظِلِّهِ", params: {items: [{figure: boy, outfit: "#6E95DB", prop: ball, name: "ولد وكرة"}, {figure: girl, outfit: "#E98AA6", prop: balloon, name: "بنت وبالون"}, {figure: boy, outfit: "#86BF72", prop: kite, name: "ولد وطائرة ورقية"}]}}  # draft: educator review
   24: {title: "الطَّريقُ الأَقْصَرُ", instruction: "أَيُّ طَريقٍ أَقْصَرُ إلى الرَّوْضَةِ؟ {لَوِّنْهُ/لَوِّنيهِ}", params: {to: school}}  # draft: educator review
   25: {title: "لِمَنِ البالونُ؟", instruction: "{اتْبَعْ/اتْبَعي} كُلَّ خَيْطٍ {بِإِصْبَعِكَ/بِإِصْبَعِكِ} حَتّى صاحِبِهِ", params: {from: [red, blue], to: [boy, girl]}}  # draft: educator review

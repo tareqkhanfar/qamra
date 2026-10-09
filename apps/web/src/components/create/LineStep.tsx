@@ -6,6 +6,7 @@ import { ExampleImage } from "@/components/book/ExampleImage";
 import { LineCards, LineChecklist } from "@/components/story/Choices";
 import { Button } from "@/components/ui/Button";
 import { api } from "@/lib/api";
+import { accusativeName } from "@/lib/arabicName";
 import type { ThemeCard } from "@/lib/catalog";
 import { classicStyles, classicVariant } from "@/lib/classic";
 import type { Child, Line } from "@/lib/create";
@@ -69,7 +70,7 @@ export function LineStep({
   const example = pickExample(examples, theme ?? examples[0]?.theme, look);
   const pages = storyPages(example, 6);
   const strip = storyPages(example, 3, 1);
-  const who = { name: child.name, gender: child.gender };
+  const who = { name: child.name, nameAcc: accusativeName(child.name), gender: child.gender };
   // what comes next for this type: the story (a character it can use), the drawing (a photo), else the photo
   const fits = new Set((catalog?.styles ?? []).filter((s) => s.lines.includes(line)).map((s) => s.slug));
   const next = child.characters.some((c) => c.approved && fits.has(c.style))
