@@ -21,6 +21,7 @@ from PIL import Image, ImageDraw, ImageFont
 from playwright.async_api import async_playwright
 
 import qamra_workbook.render.pages  # noqa: F401  (importing the builders registers every page type)
+from qamra_pdf.arabic_names import accusative, genitive
 from qamra_pdf.render import FONTS_DIR, qr_svg, set_boxes
 from qamra_workbook.names import shorter_names
 from qamra_workbook.render import art
@@ -136,6 +137,19 @@ def names_of(book: BookSpec) -> list[str]:
     return [name, *shorter_names(name)] if name else []
 
 
+def case_names(book: BookSpec) -> list[list[str]]:
+    """`names_of` in every case a page may print it, for `_FIT_JS` (`<body data-names>`): as typed, then in
+    the accusative and the genitive when they differ («أبا بكر محمد…» → «أبا بكر», «أبي بكر محمد…» → «أبي
+    بكر», `qamra_pdf.arabic_names`), each form shortened in its own case."""
+    typed = names_of(book)
+    lists = [typed]
+    for case in (accusative, genitive):
+        forms = [case(n) for n in typed]
+        if forms not in lists:
+            lists.append(forms)
+    return lists if typed else []
+
+
 def book_html(book: BookSpec, pages: Sequence[RenderedPage], assets: Assets, *, solved: bool = False) -> str:
     return _render(
         "book.html.j2",
@@ -144,7 +158,7 @@ def book_html(book: BookSpec, pages: Sequence[RenderedPage], assets: Assets, *, 
         assets=assets,
         g=book.geometry,
         solved=solved,
-        names=names_of(book),
+        names=case_names(book),
     )
 
 
@@ -159,7 +173,7 @@ def answer_key_html(book: BookSpec, pages: Sequence[RenderedPage], assets: Asset
         assets=assets,
         g=book.geometry,
         solved=True,
-        names=names_of(book),
+        names=case_names(book),
     )
 
 
@@ -171,18 +185,27 @@ def answer_key_html(book: BookSpec, pages: Sequence[RenderedPage], assets: Asset
 # last parts dropped, a compound never cut), each shrunk again from the box's size; a box that still
 # overflows with the shortest form, or a one-line box marked `data-fit-wrap` (a family member's name),
 # takes a second line. A page whose work area overflows while it names the child (a dialogue that says
-# the name twice) uses the shorter forms on the whole page, in turn, until it fits.
+# the name twice) uses the shorter forms on the whole page, in turn, until it fits. The name is found in
+# every case it prints in (`case_names`: one list per case; a flat list is the typed name alone): a box
+# with «لِأبي بكر محمد…» shortens to «لِأبي بكر», and a box or page that holds two cases shortens both.
 _FIT_JS = """
 () => {
   const over = (el) => getComputedStyle(el).whiteSpace.startsWith('nowrap')
     ? el.scrollWidth > el.clientWidth + 1
     : el.scrollHeight > el.clientHeight + 1;
   const pageOf = (el) => { const page = el.closest('[data-page]'); return page ? page.dataset.page : '?'; };
-  const names = JSON.parse(document.body.dataset.names || '[]');
+  const raw = JSON.parse(document.body.dataset.names || '[]');
+  // one list per case (as typed, accusative, genitive), the longest first: a form is never renamed inside
+  // a longer one
+  const lists = (raw.length && Array.isArray(raw[0]) ? raw : [raw])
+    .filter((l) => l.length > 0)
+    .sort((a, b) => b[0].length - a[0].length);
+  const steps = Math.max(0, ...lists.map((l) => l.length));
   const rename = (el, from, to) => {
     const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
     for (let t = walk.nextNode(); t; t = walk.nextNode()) t.nodeValue = t.nodeValue.split(from).join(to);
   };
+  const shorten = (el, ls, i) => { for (const l of ls) if (i < l.length) rename(el, l[i - 1], l[i]); };
   const out = [];
   for (const el of document.querySelectorAll('[data-fit]')) {
     const min = parseFloat(el.dataset.fit);
@@ -193,9 +216,10 @@ _FIT_JS = """
       while (over(el) && pt > min) { pt -= 0.5; el.style.fontSize = pt + 'pt'; }
     };
     shrink();
-    const named = names.length > 0 && el.textContent.includes(names[0]);
-    for (let i = 1; named && over(el) && i < names.length; i++) {
-      rename(el, names[i - 1], names[i]);
+    const hits = lists.filter((l) => el.textContent.includes(l[0]));  // the cases this box prints
+    const named = hits.length > 0;
+    for (let i = 1; named && over(el) && i < steps; i++) {
+      shorten(el, hits, i);
       shrink();
     }
     if (over(el) && (named || el.hasAttribute('data-fit-wrap'))) {
@@ -207,7 +231,7 @@ _FIT_JS = """
   for (const work of works) {
     const tall = () => work.scrollHeight > work.clientHeight + 2;
     const page = work.closest('[data-page]') || work;
-    for (let i = 1; tall() && i < names.length; i++) rename(page, names[i - 1], names[i]);  // a dialogue…
+    for (let i = 1; tall() && i < steps; i++) shorten(page, lists, i);  // a dialogue…, in every case
     if (tall()) out.push(pageOf(work) + ': taller than its work area');
   }
   return out;

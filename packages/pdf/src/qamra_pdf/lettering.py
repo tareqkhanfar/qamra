@@ -17,6 +17,8 @@ from typing import Literal
 
 from markupsafe import Markup, escape
 
+from qamra_pdf.arabic_names import case_forms
+
 TitleStyle = Literal["gold-magic", "candy-bright", "night-glow", "nature-fresh", "heritage-tatreez"]
 TITLE_STYLES: tuple[TitleStyle, ...] = (
     "gold-magic",
@@ -288,9 +290,11 @@ def _plain(word: str) -> str:
 
 def name_units(title: str, keep: str | None) -> tuple[list[str], int | None]:
     """The title's words with the name's words kept as one unit, and the index of that unit (None when the
-    name is not in the title). «Layla's» counts as the name in English titles."""
+    name is not in the title). «Layla's» counts as the name in English titles, and «أبي بكر» / «أبا بكر» as
+    «أبو بكر» (the name in its case, `arabic_names.case_forms`: «يوم تخرّج أبي بكر»)."""
     words = title.split()
     name = [_plain(w) for w in (keep or "").split()]
+    forms = [[_plain(w) for w in form.split()] for form in case_forms(keep or "")]
     units: list[str] = []
     found: int | None = None
     i = 0
@@ -298,7 +302,7 @@ def name_units(title: str, keep: str | None) -> tuple[list[str], int | None]:
         chunk = [_plain(w) for w in words[i : i + len(name)]]
         last = chunk[-1] if chunk else ""
         possessive = last.endswith(("'s", "’s")) and last[:-2] == (name[-1] if name else None)
-        if name and found is None and (chunk == name or (chunk[:-1] == name[:-1] and possessive)):
+        if name and found is None and (chunk in forms or (chunk[:-1] == name[:-1] and possessive)):
             units.append(" ".join(words[i : i + len(name)]))
             found = len(units) - 1
             i += len(name)

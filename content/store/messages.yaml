@@ -1,7 +1,8 @@
-# Customer messages per order status (Addendum 4 §5), filled with {name}, {code}, {total}, {track_url}.
+# Customer messages per order status (Addendum 4 §5), filled with {name}, {code}, {total}, {track_url}; the
+# Arabic greeting calls the customer by name, so it takes the accusative {name_acc} («مرحبًا أبا أحمد»).
 # Staff send them from the order page: WhatsApp opens with the message ready (no paid provider needed yet).
 confirmed:
-  ar: "مرحبًا {name} 🌙 تأكّد طلبكم {code} من قمرة، وبدأنا العمل على الكتاب. تتبّعوا الطلب هنا: {track_url}"
+  ar: "مرحبًا {name_acc} 🌙 تأكّد طلبكم {code} من قمرة، وبدأنا العمل على الكتاب. تتبّعوا الطلب هنا: {track_url}"
   en: "Hello {name} 🌙 Your Qamra order {code} is confirmed and we've started on the book. Track it here: {track_url}"
 generating:
   ar: "نرسم الآن كتاب طلبكم {code} ✨ سنخبركم عندما يصبح جاهزًا للطباعة."

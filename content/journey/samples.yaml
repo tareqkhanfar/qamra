@@ -5,8 +5,9 @@
 #
 # `page` uses the journey plan's page schema (qamra_workbook.journey.JourneyPage): a big title, an
 # instruction of at most 7 words, the skill for grown-ups, goals and difficulty. Titles and instructions
-# take `{child}` and `{masc/fem}` variants. Engine-only keys live in `params`: `seed` fixes a puzzle (the
-# same seed always gives the same page), `lang: en` and `instruction_en` make an English page.
+# take `{child}` (`{child:acc}` / `{child:gen}` for its case, as in the stage files) and `{masc/fem}`
+# variants. Engine-only keys live in `params`: `seed` fixes a puzzle (the same seed always gives the same
+# page), `lang: en` and `instruction_en` make an English page.
 # Page numbers are the pages chosen in content/journey/plan.yaml (`samples:`), in the same order.
 #
 # `numerals`: hindi (١٢٣, the default) or latin (123, the parent's option) on Arabic and math pages; English
@@ -29,7 +30,7 @@ samples:
       n: 2
       section: intro
       type: journey-map
-      title: "خريطة رحلة {child}"
+      title: "خريطة رحلة {child:gen}"
       instruction: "{لوّن/لوّني} نجمة كل محطة {تنهيها/تنهينها}"
       skill: "يتعرّف محطات رحلته التسع ويتابع تقدّمه بنفسه"
       goals: [independence]

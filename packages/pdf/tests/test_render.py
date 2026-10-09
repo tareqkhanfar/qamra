@@ -606,3 +606,25 @@ def test_decor_images_are_used_when_present(tmp_path: Path, monkeypatch: pytest.
     html = render_html("interior.html.j2", spec, assets=assets.Assets(decor=found))
     assert 'class="mp-frame-img"' in html
     assert 'class="mp-frame-img"' not in render_html("interior.html.j2", spec)  # SVG fallback otherwise
+
+
+def test_a_cover_names_abu_bakr_in_his_case(tmp_path: Path) -> None:
+    """«يوم تخرّج أبي بكر»: the ribbon follows «البطلِ» (genitive), the personal line «بِـأبي بكر», and the
+    title and spine still find the name in its case (no «· أبو بكر» added after a title that holds it)."""
+    base = _spec(tmp_path)
+    title = "يَوْمُ تَخَرُّجِ أَبِي بَكْرٍ"
+    spec = dataclasses.replace(
+        base,
+        title=title,
+        child_name="أبو بكر",
+        gender="m",
+        cover=dataclasses.replace(base.cover, name=title, subtitle=""),
+    )
+    html = render_html("cover.html.j2", spec)
+    assert '<span class="r-label">بُطُولَةُ الْبَطَلِ الرَّائِعِ</span><span class="r-name">أبي بكر</span>' in html
+    assert 'نُسْخَةٌ خاصَّةٌ بِـ<span class="nm">أبي بكر</span>' in html
+    spine = html[html.index('class="spine-text"') :][:400]
+    assert '<span class="nm">أبي بكر</span>' in spine and "أبو بكر" not in spine
+    assert '<tspan class="nm"' in html  # the name keeps its own lettering inside the title
+    salma = render_html("cover.html.j2", base)
+    assert '<span class="r-name">سلمى</span>' in salma and 'بِـ<span class="nm">سلمى</span>' in salma

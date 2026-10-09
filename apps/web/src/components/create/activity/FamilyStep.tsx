@@ -9,6 +9,7 @@ import {
   type FamilyMember,
   type Relation,
 } from "@/components/workbook/FamilyDetails";
+import { nameCases } from "@/lib/arabicName";
 import type { Child } from "@/lib/create";
 import { arabic, Hint } from "../EditChild";
 import { Frame, Lead } from "../Frame";
@@ -46,7 +47,7 @@ export function FamilyStep({
 
   return (
     <Frame
-      title={t("bookOf", { name: child.name })}
+      title={t("bookOf", nameCases(child.name))}
       label={t("steps.family")}
       back={back}
       footer={
@@ -55,13 +56,15 @@ export function FamilyStep({
         </Button>
       }
     >
-      <Lead title={t("activity.family.title", { name: child.name })} body={t("activity.family.body")} />
+      <Lead title={t("activity.family.title", nameCases(child.name))} body={t("activity.family.body")} />
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="family-name" className="text-body font-semibold">
           {t("activity.family.name")}
         </label>
-        <Hint id="family-name-hint">{t.rich("activity.family.nameHint", { name: child.name, ar: arabic })}</Hint>
+        <Hint id="family-name-hint">
+          {t.rich("activity.family.nameHint", { ...nameCases(child.name), ar: arabic })}
+        </Hint>
         <input
           id="family-name"
           className={`${field} min-h-14 text-body-l`}

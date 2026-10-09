@@ -30,6 +30,7 @@ from qamra_pdf import (
     preflight,
     render_book,
 )
+from qamra_pdf.arabic_names import case_forms, fill_name, genitive
 from qamra_pdf.page_layouts import ON_ART, normalize
 from qamra_pdf.spec import PanelArea, Series
 from qamra_pdf.strings import STRINGS
@@ -48,12 +49,14 @@ _OPENERS: dict[Lang, tuple[str, ...]] = {"ar": ("إلى", "الى"), "en": ("to 
 
 
 def dedication_text(name: str, message: str, lang: Lang) -> str:
-    """«إلى ليان… <message>», unless the message already addresses the child (its own «إلى …» or the name):
-    parents often write «إلى ليان… مبارك», which would print as «إلى ليان… إلى ليان… مبارك»."""
+    """«إلى ليان… <message>», unless the message already addresses the child (its own «إلى …» or the name in
+    any case, «يا أبا بكر»): parents often write «إلى ليان… مبارك», which would print as «إلى ليان… إلى ليان…
+    مبارك». After «إلى» the name is genitive: «إلى أبي بكر…» (`arabic_names`)."""
     text = plain(message).strip().lower()
-    if plain(name).strip().lower() in text or text.startswith(_OPENERS[lang]):
+    named = any(plain(form).strip().lower() in text for form in case_forms(name))
+    if named or text.startswith(_OPENERS[lang]):
         return message.strip()
-    return f"{'إلى' if lang == 'ar' else 'To'} {name}… {message.strip()}"
+    return f"إلى {genitive(name)}… {message.strip()}" if lang == "ar" else f"To {name}… {message.strip()}"
 
 
 def split_title(title: str, name: str) -> tuple[str, str]:
@@ -247,7 +250,7 @@ async def assemble_book(
     title_page = TitleSpec(
         name=name,
         subtitle=subtitle,
-        made_for=s["made_for"].format(name=inp.child.name),
+        made_for=fill_name(s["made_for"], "name", inp.child.name),  # «خِصّيصًا لِأبي بكر»
         dedication=dedication,
         portrait=portrait,
     )

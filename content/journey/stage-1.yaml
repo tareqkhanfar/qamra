@@ -1,7 +1,8 @@
 # «رحلتي الأولى للتعلّم» — the print layer of stage 1 (qamra_workbook.journey_book): how each page of the
 # plan (content/journey/plan.yaml) prints. The plan says what a page teaches; this file gives the printed,
 # vowelised title and instruction ({masc/fem} variants, {child}; {child:acc} for an object, «{ساعِدْ/ساعِدي}
-# {child:acc}» → «أبا بكر», while «يا {child}» needs no mark), the engine page type when it differs, the
+# {child:acc}» → «أبا بكر», while «يا {child}» needs no mark; {child:gen} after a preposition or owning a
+# noun, «رِحْلَةِ {child:gen}» → «أبي بكر»), the engine page type when it differs, the
 # render params and the audio item its QR plays.
 #
 # draft: educator review — every title, instruction, «في هذه المحطة» line, riddle and audio script in this
@@ -15,15 +16,15 @@
 stage: 1
 title_ar: "المحطة الأولى: أستعدّ للرحلة"
 cover:
-  front: {subtitle: "أستعدّ للرحلة", kicker: "رحلة {child}"}  # draft: educator review
+  front: {subtitle: "أستعدّ للرحلة", kicker: "رحلة {child:gen}"}  # draft: educator review
   back:  # draft: educator review
     blurb: "في المحطة الأولى {يستعدّ/تستعدّ} {child} للتعلّم باللعب: التفكير والملاحظة والاستماع، ثم تحريك اليد ومسك القلم، والأشكال والألوان والكميات من 1 إلى 5. لا حروف ولا كتابة أرقام بعدُ؛ الاستعداد أولًا."
-    points: ["118 صفحة ملوّنة بالكامل، في كل صفحة مهمّة واحدة", "رموز QR لسماع الأصوات والكلمات", "خريطة رحلة وملصقات وشهادة باسم {child}"]
+    points: ["118 صفحة ملوّنة بالكامل، في كل صفحة مهمّة واحدة", "رموز QR لسماع الأصوات والكلمات", "خريطة رحلة وملصقات وشهادة باسم {child:gen}"]
 
 pages:
   # ---- البداية
-  1: {type: journey-owner, title: "هَذا الكِتابُ لِـ {child}", instruction: "{ضَعْ كَفَّكَ/ضَعي كَفَّكِ} هُنا", params: {subtitle: "المَحَطَّةُ الأولى: أَسْتَعِدُّ لِلرِّحْلَةِ", lines: ["عُمْري", "بَدَأْتُ رِحْلَتي في"]}}  # draft: educator review
-  2: {title: "خَريطَةُ رِحْلَةِ {child}", instruction: "{أَلْصِقْ مُلْصَقَ بَطَلِكَ/أَلْصِقي مُلْصَقَ بَطَلَتِكِ} عِنْدَ البِدايَةِ", params: {stops: [أفكر, ألاحظ, أسمع, "أحرّك يدي", "أمسك القلم", أتتبع, أكتب, أقرأ, "أحل وأبدع"]}}  # draft: educator review
+  1: {type: journey-owner, title: "هَذا الكِتابُ لِـ {child:gen}", instruction: "{ضَعْ كَفَّكَ/ضَعي كَفَّكِ} هُنا", params: {subtitle: "المَحَطَّةُ الأولى: أَسْتَعِدُّ لِلرِّحْلَةِ", lines: ["عُمْري", "بَدَأْتُ رِحْلَتي في"]}}  # draft: educator review
+  2: {title: "خَريطَةُ رِحْلَةِ {child:gen}", instruction: "{أَلْصِقْ مُلْصَقَ بَطَلِكَ/أَلْصِقي مُلْصَقَ بَطَلَتِكِ} عِنْدَ البِدايَةِ", params: {stops: [أفكر, ألاحظ, أسمع, "أحرّك يدي", "أمسك القلم", أتتبع, أكتب, أقرأ, "أحل وأبدع"]}}  # draft: educator review
 
   # ---- 🧠 أدرّب عقلي
   3: {type: journey-opener, title: "أُفَكِّرُ: أُدَرِّبُ عَقْلي", instruction: "هَيّا نَبْدَأُ! {حَرِّكْ بَطَلَكَ/حَرِّكي بَطَلَتَكِ} إلى «أُفَكِّرُ»", params: {stop: أفكر, inside: ["أُلاحِظُ وَأَجِدُ المُخْتَلِفَ", "أَتَذَكَّرُ الصُّوَرَ", "أُرَتِّبُ القِصَّةَ وَأُصَنِّفُ"]}}  # draft: educator review

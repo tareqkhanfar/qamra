@@ -9,6 +9,7 @@ import { Button, buttonClasses } from "@/components/ui/Button";
 import { brandName } from "@/config/brand";
 import { Link, useRouter } from "@/i18n/navigation";
 import { api, errorText, type User } from "@/lib/api";
+import { nameCases } from "@/lib/arabicName";
 import { MyCompanions } from "@/components/create/companion/MyCompanions";
 import { DownloadsSection } from "@/components/order/DownloadButton";
 import { createApi } from "@/lib/create";
@@ -124,7 +125,7 @@ export function AccountView() {
 
   /** CLAUDE.md §3.1: "Delete all my child's data", now. */
   async function deleteChild(child: Child) {
-    const who = { name: child.first_name, gender: child.gender };
+    const who = { ...nameCases(child.first_name), gender: child.gender };
     if (!window.confirm(tc("delete.confirm", who))) return;
     setDeleting(true);
     const r = await createApi.deleteChild(child.id);
@@ -230,7 +231,7 @@ export function AccountView() {
               loading={deleting}
               onClick={() => deleteChild(activeChild)}
             >
-              {tc("delete.button", { name: activeChild.first_name, gender: activeChild.gender })}
+              {tc("delete.button", { ...nameCases(activeChild.first_name), gender: activeChild.gender })}
             </Button>
           </div>
         )}
@@ -256,7 +257,7 @@ export function AccountView() {
           className={tabClass(tab === "books")}
         >
           {activeChild
-            ? t("booksOf", { name: activeChild.first_name, count: shownBooks.length })
+            ? t("booksOf", { ...nameCases(activeChild.first_name), count: shownBooks.length })
             : t("allBooks", { count: books.length })}
         </button>
         <button

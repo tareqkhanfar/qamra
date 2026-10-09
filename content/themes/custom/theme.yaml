@@ -8,7 +8,7 @@
 # No page is a child-free plate: plates are cached per theme, and every custom book is different.
 slug: custom
 version: 1
-title_ar: "حكاية {name} الخاصة"
+title_ar: "حكاية {name:gen} الخاصة"
 title_en: "{name}'s Very Own Story"
 # Cover lettering (Addendum 11 §2.3): gold-magic, candy-bright, night-glow, nature-fresh, heritage-tatreez
 cover_title_style: gold-magic
@@ -53,7 +53,7 @@ outfits:
       en: light-blue pajamas with tiny golden moons
       hijab_en: a soft light-blue hijab matching the pajamas
 
-blurb_ar: "حكايةٌ كُتبت لـ{name} وحدَ{ه/ها}، فيها ما {يحبُّه/تحبُّه} ومَن {يحبُّهم/تحبُّهم}."
+blurb_ar: "حكايةٌ كُتبت لـ{name:gen} وحدَ{ه/ها}، فيها ما {يحبُّه/تحبُّه} ومَن {يحبُّهم/تحبُّهم}."
 blurb_en: "A story written for {name} alone, full of the things and the people {name} loves."
 
 for_parents:

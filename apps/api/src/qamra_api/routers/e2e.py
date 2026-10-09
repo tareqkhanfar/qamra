@@ -52,6 +52,7 @@ from qamra_core.db.models import (
 )
 from qamra_core.db.store import Coupon, CouponKind, GiftCard, OrderEvent
 from qamra_core.storage import ObjectStorage
+from qamra_pdf.arabic_names import genitive
 
 router = APIRouter(prefix="/api/e2e", tags=["e2e"])
 PREVIEW_BEATS = (0, 1, 2, 3)  # the cover and three pages, like a real preview
@@ -248,7 +249,7 @@ async def finish_preview(
         if theme is not None and not book.title:
             title = theme.title_en if book.language == Locale.en else theme.title_ar
             book.title = fill_title(title, child.first_name, child.gender.value)
-        _preview_pages(db, storage, book, text=f"نَصٌّ تَجْرِيبِيٌّ لِصَفْحَةٍ مِنْ حِكايَةِ {child.first_name}.")
+        _preview_pages(db, storage, book, text=f"نَصٌّ تَجْرِيبِيٌّ لِصَفْحَةٍ مِنْ حِكايَةِ {genitive(child.first_name)}.")
         book.status = BookStatus.preview
         book.generation = {**(book.generation or {}), "offline": "sketch", "e2e": True}
         await db.commit()

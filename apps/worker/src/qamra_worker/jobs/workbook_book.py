@@ -37,6 +37,7 @@ from sqlalchemy.orm import Session
 
 from qamra_core.db.models import AuditLog, Book, BookStatus, Child, Locale, OrderItem, Theme
 from qamra_core.storage import ObjectStorage
+from qamra_pdf.arabic_names import genitive
 from qamra_worker import context
 from qamra_worker.jobs.books import file_key
 from qamra_worker.jobs.family_book import approved_character, name_en_of, name_flags, numerals_of
@@ -125,7 +126,7 @@ def _book(
         language=Locale.ar,
         art_style=style,
         status=BookStatus.generating,
-        title=f"دوسية {child.first_name} — {level.upper()} — {VOLUME_AR[volume]}",
+        title=f"دوسية {genitive(child.first_name)} — {level.upper()} — {VOLUME_AR[volume]}",
         generation={"line": LINE, "order_item_id": str(item.id), "level": level, "volume": volume},
     )
     db.add(book)

@@ -116,7 +116,7 @@ cast:
       swaddled in a soft cream blanket with a thin blue-and-red tatreez border (a cream onesie with the
       same border when awake on a mat or in a bouncer)
 
-blurb_ar: "خبرٌ سعيد، وانتظارٌ طويل، ثمّ ضيفٌ صغير يغيّر كلّ شيء. حكاية {name} {الأخِ الكبير/الأختِ الكبيرة}، وقلبٍ يتّسع للجميع."
+blurb_ar: "خبرٌ سعيد، وانتظارٌ طويل، ثمّ ضيفٌ صغير يغيّر كلّ شيء. حكاية {name:gen} {الأخِ الكبير/الأختِ الكبيرة}، وقلبٍ يتّسع للجميع."
 blurb_en: "Happy news, a long wait, and then a little guest who changes everything. The story of {name}, the proud big one, and a heart with room for everyone."
 
 for_parents:
@@ -315,7 +315,7 @@ pages:
     others: "{baby} in a bouncer"
     others_count: 1
     companion_action: gasps with delight, hands on its cheeks
-    text_ar: "وَذَاتَ صَبَاحٍ، نَظَرَ الضَّيْفُ الصَّغِيرُ إِلَى {name}… وَابْتَسَمَ! وَكَانَتْ أَجْمَلَ ابْتِسَامَةٍ فِي الدُّنْيَا."
+    text_ar: "وَذَاتَ صَبَاحٍ، نَظَرَ الضَّيْفُ الصَّغِيرُ إِلَى {name:gen}… وَابْتَسَمَ! وَكَانَتْ أَجْمَلَ ابْتِسَامَةٍ فِي الدُّنْيَا."
     text_en: "One morning, the little guest looked at {name}... and smiled! It was the most beautiful smile in the world."
   - index: 14
     layout: full
@@ -344,7 +344,7 @@ pages:
     others: "{mom}, {dad}, and {baby} in a stroller"
     others_count: 3
     companion_action: picks a tiny lemon leaf for the baby
-    text_ar: "فِي الْمَسَاءِ {خَرَجَ/خَرَجَتْ} {name} مَعَ الْعَائِلَةِ إِلَى الْحَدِيقَةِ، {وَأَرَى/وَأَرَتْ} الضَّيْفَ الصَّغِيرَ شَجَرَةَ اللَّيْمُونِ وَالْعَرِيشَةَ."
+    text_ar: "فِي الْمَسَاءِ {خَرَجَ/خَرَجَتْ} {name} مَعَ الْعَائِلَةِ إِلَى الْحَدِيقَةِ، {وَأَرَى/وَأَرَتِ} الضَّيْفَ الصَّغِيرَ شَجَرَةَ اللَّيْمُونِ وَالْعَرِيشَةَ."
     text_en: "In the evening, {name} went out to the garden with the family and showed the little guest the lemon tree and the grapevine."
   - index: 16
     layout: full

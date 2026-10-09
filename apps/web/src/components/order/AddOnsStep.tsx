@@ -9,6 +9,7 @@ import { Spinner } from "@/components/ui/Button";
 import { useRouter } from "@/i18n/navigation";
 import { addonMedia, includedItems } from "@/lib/addonsMedia";
 import { errorText } from "@/lib/api";
+import { nameCases } from "@/lib/arabicName";
 import type { ThemeCard } from "@/lib/catalog";
 import type { Book, Child } from "@/lib/create";
 import { lineSummary, orderApi, toggleAddOn, type AddOnOffer, type AddOnsStep as Step } from "@/lib/order";
@@ -216,7 +217,7 @@ export function AddOnsStep({
     router.push("/cart");
   }
 
-  const title = book.title ?? t("bookOf", { name: child.name });
+  const title = book.title ?? t("bookOf", nameCases(child.name));
   const header = (
     <FlowHeader
       title={title}

@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { MoonPhase } from "@/components/art/MoonPhase";
 import { Button } from "@/components/ui/Button";
+import { genitiveName } from "@/lib/arabicName";
 import { companionApi, drawingImage, type Companion } from "@/lib/companion";
 import type { Child } from "@/lib/create";
 
@@ -76,7 +77,9 @@ export function CompanionGen({
         ) : (
           <>
             <p className="min-h-7 font-display text-[19px] font-semibold text-amber-300">
-              {messages[i % messages.length].replace("{child}", child.name)}
+              {messages[i % messages.length]
+                .replace("{childGen}", genitiveName(child.name))
+                .replace("{child}", child.name)}
             </p>
             <p className="text-small text-night-100">{t("closer", { name: companion.name })}</p>
           </>

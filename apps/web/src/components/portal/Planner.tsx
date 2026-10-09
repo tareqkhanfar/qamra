@@ -6,7 +6,7 @@ import { Alert } from "@/components/ui/Alert";
 import { Button, buttonClasses } from "@/components/ui/Button";
 import { Link } from "@/i18n/navigation";
 import { errorText, type ApiResult } from "@/lib/api";
-import { accusativeName } from "@/lib/arabicName";
+import { nameCases } from "@/lib/arabicName";
 import { portalApi, type Plan, type PlanKid } from "@/lib/portal";
 
 type Held = { kid: PlanKid; from: number | null }; // from = page index, null = the class list
@@ -173,7 +173,7 @@ export function Planner({ classId }: { classId: string }) {
         {plan.outdated && <Alert tone="info">{t("outdated")}</Alert>}
         {held && (
           <p className="text-small font-semibold text-night-900" role="status">
-            {t("holding", { name: held.kid.name, nameAcc: accusativeName(held.kid.name) })}
+            {t("holding", nameCases(held.kid.name))}
           </p>
         )}
         {error && <Alert>{error}</Alert>}
@@ -203,7 +203,7 @@ export function Planner({ classId }: { classId: string }) {
                       {chip(k, p.index)}
                       <button
                         type="button"
-                        aria-label={t("remove", { name: k.name })}
+                        aria-label={t("remove", nameCases(k.name))}
                         onClick={() => takeOff(p.index, k)}
                         className="size-9 text-ink-muted"
                       >
@@ -218,9 +218,7 @@ export function Planner({ classId }: { classId: string }) {
                       disabled={!held}
                       className="min-h-10 rounded-full border border-dashed border-line px-3 text-caption text-ink-muted disabled:opacity-60"
                     >
-                      {held
-                        ? t("putHere", { name: held.kid.name, nameAcc: accusativeName(held.kid.name) })
-                        : t("dropHere")}
+                      {held ? t("putHere", nameCases(held.kid.name)) : t("dropHere")}
                     </button>
                   )}
                 </div>

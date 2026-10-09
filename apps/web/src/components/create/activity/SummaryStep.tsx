@@ -6,7 +6,7 @@ import { ItemAddOns } from "@/components/order/AddOnsStep";
 import { Alert } from "@/components/ui/Alert";
 import { ArrowForward, Button } from "@/components/ui/Button";
 import { Link } from "@/i18n/navigation";
-import { accusativeName } from "@/lib/arabicName";
+import { genitiveName, nameCases } from "@/lib/arabicName";
 import { characterImage, type Child, type FamilyPayload } from "@/lib/create";
 import { money, type CatalogProduct, type CatalogVariant, type Currency } from "@/lib/store";
 import { partsFor } from "@/lib/workbook";
@@ -103,7 +103,7 @@ export function SummaryStep({
   const line = product.line as string;
   const name = locale === "ar" ? product.name_ar : product.name_en;
   const variantLine = useVariantLine(product, variant);
-  const who = { name: child.name, nameAcc: accusativeName(child.name), gender: child.gender };
+  const who = { ...nameCases(child.name), gender: child.gender };
   const productHref = `/workbooks/${product.slug}?${new URLSearchParams(variant.options).toString()}`;
   const cover = partsFor(product.slug, line, variant.options)[0]?.cover;
   const digital = variant.options.format === "digital";
@@ -118,7 +118,7 @@ export function SummaryStep({
 
   return (
     <Frame
-      title={t("bookOf", { name: child.name })}
+      title={t("bookOf", who)}
       label={t("steps.summary")}
       back={back}
       footer={
@@ -128,7 +128,7 @@ export function SummaryStep({
       }
     >
       <Lead
-        title={t("activity.summary.title", { name: child.name })}
+        title={t("activity.summary.title", who)}
         body={digital ? t("activity.summary.bodyDigital") : t("activity.summary.body")}
       />
 
@@ -202,7 +202,7 @@ export function SummaryStep({
             // eslint-disable-next-line @next/next/no-img-element -- private image through the API, no-store
             <img
               src={characterImage(characterId)}
-              alt={t("activity.summary.characterAlt", { name: child.name })}
+              alt={t("activity.summary.characterAlt", who)}
               className="mt-1 h-[88px] w-[132px] rounded-xl bg-white object-contain"
             />
           ) : (
@@ -222,7 +222,7 @@ export function SummaryStep({
           >
             {family ? (
               <>
-                {t.rich("activity.summary.familyName", { family: family.name || child.name, ar: arabic })}
+                {t.rich("activity.summary.familyName", { family: family.name || genitiveName(child.name), ar: arabic })}
                 {family.members.length > 0 && <> · {t("activity.summary.members", { count: family.members.length })}</>}
               </>
             ) : (

@@ -6,7 +6,7 @@ import { MoonPhase } from "@/components/art/MoonPhase";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { errorText } from "@/lib/api";
-import { accusativeName } from "@/lib/arabicName";
+import { nameCases } from "@/lib/arabicName";
 import { characterImage, createApi, type Character, type Child, type Fix } from "@/lib/create";
 import { ACTIVITY_LINES } from "@/lib/shop";
 import { Chip, Frame, Lead } from "./Frame";
@@ -43,7 +43,7 @@ export function CharacterStep({
   const [busy, setBusy] = useState<"approve" | "redraw" | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [tick, setTick] = useState(0);
-  const who = { name: child.name, nameAcc: accusativeName(child.name), gender: child.gender };
+  const who = { ...nameCases(child.name), gender: child.gender };
   const drawing = character.status === "generating";
   const kind = (ACTIVITY_LINES as readonly string[]).includes(productLine ?? "") ? "activity" : "story";
   const places = t(
@@ -83,7 +83,7 @@ export function CharacterStep({
   const left = Math.max(0, child.redraws_left);
   return (
     <Frame
-      title={title ?? t("bookOf", { name: child.name })}
+      title={title ?? t("bookOf", who)}
       label={t("steps.character")}
       back={back}
       footer={
@@ -112,9 +112,7 @@ export function CharacterStep({
       {drawing ? (
         <div role="status" className="flex flex-col items-center gap-5 py-10 text-center">
           <MoonPhase p={((tick % 12) + 1) / 12} className="size-24" />
-          <h1 className="text-[26px] text-night-900">
-            {t("character.drawing", { name: child.name, nameAcc: accusativeName(child.name) })}
-          </h1>
+          <h1 className="text-[26px] text-night-900">{t("character.drawing", who)}</h1>
           <p className="text-body text-ink-muted">{t("character.drawingHint")}</p>
         </div>
       ) : character.status === "failed" ? (
@@ -126,7 +124,7 @@ export function CharacterStep({
             {/* eslint-disable-next-line @next/next/no-img-element -- private image through the API, no-store */}
             <img
               src={characterImage(character.id)}
-              alt={t("character.alt", { name: child.name })}
+              alt={t("character.alt", who)}
               className="aspect-[3/2] w-full rounded-2xl object-contain"
             />
             <figcaption className="pb-1 text-center text-caption text-ink-muted">{t("character.views")}</figcaption>

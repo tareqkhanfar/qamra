@@ -11,6 +11,7 @@ from typing import Any
 
 from markupsafe import Markup
 
+from qamra_pdf.arabic_names import GEN, in_case
 from qamra_workbook.pictures import get as picture
 from qamra_workbook.render import art, draw, people
 from qamra_workbook.render.pages.family import step_picture
@@ -21,8 +22,11 @@ from qamra_workbook.render.sections import section_style
 RECIPE_COLORS = ("#E4675A", "#F08A3E", "#2FA36B", "#8C6CCB", "#2E9FD6")
 
 
-def sheet_data(ctx: PageContext) -> dict[str, Any]:
-    return {"owner": ctx.book.child.name, "scissors": art.icon("scissors")}
+def sheet_data(ctx: PageContext, case: str = "") -> dict[str, Any]:
+    """The sheet's owner (the child's name under the sheet's label) and the scissors icon. `case` is the
+    name's case after the label: `GEN` when the label owns the name («بِطاقاتُ أبي بكر»), as typed under a
+    label that is complete («لُعْبَةُ الذّاكِرَةِ», «دُمى الأَصابِعِ»)."""
+    return {"owner": in_case(ctx.book.child.name, case), "scissors": art.icon("scissors")}
 
 
 @page_type("recipe-cards", frame="sheet")
@@ -44,7 +48,7 @@ def recipe_cards(ctx: PageContext) -> Built:
                 }
             )
     problems = [] if 6 <= len(cards) <= 20 else [f"a recipe sheet holds 6–20 step cards, not {len(cards)}"]
-    return Built(sheet_data(ctx) | {"cards": cards}, None, problems)
+    return Built(sheet_data(ctx, GEN) | {"cards": cards}, None, problems)  # «بِطاقاتُ» + the name
 
 
 @page_type("memory-cards", frame="sheet")

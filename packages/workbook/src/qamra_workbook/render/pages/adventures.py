@@ -514,7 +514,7 @@ def price_tags(ctx: PageContext) -> Built:
         spots = int(params.get("spots", 6))
         data = {
             "mode": "blank",
-            "sign": ctx.text(str(params.get("sign", "مَتْجَرُ {child}"))),
+            "sign": ctx.text(str(params.get("sign", "مَتْجَرُ {child:gen}"))),
             "spots": [{"n": ctx.num(i + 1)} for i in range(spots)],
             "levels": [ctx.text(str(x)) for x in params.get("levels", ["أَسْعارٌ مِنْ ١ إِلى ٥", "أَسْعارٌ حَتّى ٢٠"])],
             "order": ctx.text(str(params.get("order", "{رَتِّبْ/رَتِّبي} مِنَ الأَرْخَصِ إِلى الأَغْلى"))),

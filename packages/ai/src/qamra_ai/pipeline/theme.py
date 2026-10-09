@@ -274,14 +274,16 @@ class ArtStyle(BaseModel):
     negative: str = ""  # the style's own never-allowed list, added to the house's (style.negatives)
 
 
-# the name slots of a theme text; `{name:acc}` marks the accusative («وَضَمَّتْ {name:acc}» → «وَضَمَّتْ أبا بكر»)
+# the name slots of a theme text; `{name:acc}` marks the accusative («وَضَمَّتْ {name:acc}» → «وَضَمَّتْ أبا بكر»),
+# `{name:gen}` the genitive («حكاية {name:gen}» → «حكاية أبي بكر», «لِـ{companion:gen}» → «لِأبي شنب»)
 NAME_SLOTS = ("name", "companion")
 
 
 def render_template(template: str, gender: Gender, name: str, companion: str) -> str:
     """`{masc/fem}` → variant for gender, then `{name}` / `{companion}`: a name after «يا» and at `{name:acc}`
-    in the accusative («يا أبا بكر», `qamra_pdf.arabic_names`), elsewhere as typed. Filled with the
-    placeholders themselves (`"{name}"`), the case marks go and the text reads as it did before them."""
+    in the accusative («يا أبا بكر», `qamra_pdf.arabic_names`), at `{name:gen}` in the genitive («إلى أبي
+    بكر»), elsewhere as typed. Filled with the placeholders themselves (`"{name}"`), the case marks go and the
+    text reads as it did before them."""
     text = _VARIANT.sub(lambda m: m.group(1 if gender == "m" else 2), template)
     return fill_names(text, {"name": name, "companion": companion})
 

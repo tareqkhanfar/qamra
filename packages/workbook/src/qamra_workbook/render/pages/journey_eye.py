@@ -315,7 +315,7 @@ def tangled(ctx: PageContext) -> Built:
     )
     if child_start:
         answer = str(ctx.page.params.get("answer", ends[owner[0]]))
-        key = [f"{ctx.text('{child}')} يصل إلى: {PICTURES[pid(ends[owner[0]])].word_ar}"]
+        key = [f"{ctx.text('{child} {يصل/تصل}')} إلى: {PICTURES[pid(ends[owner[0]])].word_ar}"]
         problems = (
             []
             if crossed and ends[owner[0]] == answer
@@ -325,7 +325,7 @@ def tangled(ctx: PageContext) -> Built:
             j = ends.index(answer)
             ends[owner[0]], ends[j] = ends[j], ends[owner[0]]
             problems = [] if crossed else ["the strings must cross"]
-            key = [f"{ctx.text('{child}')} يصل إلى: {PICTURES[pid(answer)].word_ar}"]
+            key = [f"{ctx.text('{child} {يصل/تصل}')} إلى: {PICTURES[pid(answer)].word_ar}"]
     else:
         key = [f"الطائرة {c}: للطفل {ctx.num(owner[k] + 1)} من اليمين" for k, c in enumerate(colors)]
         problems = [] if crossed else ["the strings must cross"]

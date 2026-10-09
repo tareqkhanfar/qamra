@@ -1365,8 +1365,8 @@
       "dedication": "Dedication ✓",
       "download": "Download the file from the order page or your account once it's ready.",
       "family": {
-        "with": "The {name} family: {members}",
-        "alone": "The {name} family, no names: the missions say «أحد الكبار» (a grown-up)",
+        "with": "Family, printed as «عائلة {name}»: {members}",
+        "alone": "Family, printed as «عائلة {name}», no names: the missions say «أحد الكبار» (a grown-up)",
         "city": "City: {city}",
         "member": "{relation} ({name})",
         "relation": {
@@ -2379,7 +2379,9 @@
       "drawAs": "How should we draw {name}?",
       "genderHint": "So we can write the story for a girl or a boy.",
       "lookHint": "Details the photo may not show.",
-      "nameHint": "The name you call your child, as it will be written in the story."
+      "nameHint": "The name you call your child, as it will be written in the story.",
+      "twoWords": "Did you mean <ar>«{suggestion}»</ar>? This name is usually written as two words.",
+      "twoWordsUse": "Use <ar>«{suggestion}»</ar>"
     },
     "consent": {
       "version": "parent-2026-09",
@@ -2611,7 +2613,7 @@
         "cityHint": "It appears in the market and nature adventures.",
         "members": "Family members",
         "name": "Family name",
-        "nameHint": "Printed on the cover and in the passport as <ar>«عائلة …»</ar> (the … family). If you leave it empty, we print <ar>«عائلة {name}»</ar> ({name}'s family).",
+        "nameHint": "Printed on the cover and in the passport as <ar>«عائلة …»</ar> (the … family). If you leave it empty, we print <ar>«عائلة {nameGen}»</ar> ({name}'s family).",
         "skip": "Skip this step",
         "skipHint": "The missions then say <ar>«أحد الكبار»</ar> (a grown-up) instead of names.",
         "title": "Who is in {name}'s family?"

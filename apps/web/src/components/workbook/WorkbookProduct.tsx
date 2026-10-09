@@ -5,6 +5,7 @@ import { useState, type ReactNode } from "react";
 import { ArrowForward } from "@/components/ui/Button";
 import { Link } from "@/i18n/navigation";
 import type { AddonMedia, IncludedItem } from "@/lib/addonsMedia";
+import { nameCases } from "@/lib/arabicName";
 import { money, type CatalogAddOn, type CatalogProduct, type Currency } from "@/lib/store";
 import { groups, initialPicks, isSet, partsFor, resolve, soldAges, soldOptions, type Picks } from "@/lib/workbook";
 import { AddWorkbook } from "./AddWorkbook";
@@ -174,7 +175,7 @@ export function WorkbookProduct({
             <div className="order-2">
               <WorkbookCover
                 tone={tone}
-                title={t(`cover.${line}`, { name: t("sampleName") })}
+                title={t(`cover.${line}`, nameCases(t("sampleName")))}
                 line={summary}
                 character="/workbooks/character.webp"
                 binding={bindingLabel}

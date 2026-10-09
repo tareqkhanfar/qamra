@@ -6,7 +6,7 @@ import { Kid } from "@/components/art/Kid";
 import { Alert } from "@/components/ui/Alert";
 import { Button, Spinner } from "@/components/ui/Button";
 import { errorText } from "@/lib/api";
-import { accusativeName } from "@/lib/arabicName";
+import { nameCases } from "@/lib/arabicName";
 import { createApi, type Child } from "@/lib/create";
 import { ACTIVITY_LINES } from "@/lib/shop";
 import { Frame, Lead } from "./Frame";
@@ -58,7 +58,7 @@ export function PhotoStep({
   const [failed, setFailed] = useState<CheckName[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState<Child>(child);
-  const who = { name: child.name, nameAcc: accusativeName(child.name), gender: child.gender };
+  const who = { ...nameCases(child.name), gender: child.gender };
   const activity = (ACTIVITY_LINES as readonly string[]).includes(productLine ?? "");
   // where this activity book prints the character (checked against the renderers, 2026-10-07)
   const places = t(
@@ -98,7 +98,7 @@ export function PhotoStep({
 
   return (
     <Frame
-      title={title ?? t("bookOf", { name: child.name })}
+      title={title ?? t("bookOf", who)}
       label={t("steps.photo")}
       back={back}
       footer={
@@ -187,9 +187,7 @@ export function PhotoStep({
               </div>
             );
           })}
-          <p className="border-t border-dashed border-line pt-1 text-caption text-amber-700">
-            {t("photo.tip", { name: child.name })}
-          </p>
+          <p className="border-t border-dashed border-line pt-1 text-caption text-amber-700">{t("photo.tip", who)}</p>
         </div>
       )}
       {error && <Alert>{error}</Alert>}

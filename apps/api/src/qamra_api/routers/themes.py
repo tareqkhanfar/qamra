@@ -1,5 +1,6 @@
 """Public catalog: story worlds (themes) and prices."""
 
+import re
 from decimal import Decimal
 from typing import Any, Literal
 
@@ -88,6 +89,9 @@ def _card(theme: Theme, lang: Lang) -> ThemeCard:
     )
 
 
+_NAMED = re.compile(r"\{name(?::acc|:gen)?\}")  # the child's name, in any case
+
+
 def _peek(theme: Theme, lang: Lang) -> list[PeekItem]:
     """Design: illustration · text · illustration · illustration (text from the real story)."""
     c = theme.catalog
@@ -96,7 +100,7 @@ def _peek(theme: Theme, lang: Lang) -> list[PeekItem]:
     arts: list[CatalogArt] = c.peek or [c.art]
     items = [PeekItem(kind="art", art=arts[0].model_dump())]
     if theme.pages and c.sample_child:
-        named = [p for p in theme.pages if "{name}" in (p.text_ar if lang == "ar" else p.text_en)]
+        named = [p for p in theme.pages if _NAMED.search(p.text_ar if lang == "ar" else p.text_en)]
         page = next((p for p in named if p.index >= 4), named[0] if named else theme.pages[0])
         name = c.sample_child.name_ar if lang == "ar" else c.sample_child.name_en
         companion = ""

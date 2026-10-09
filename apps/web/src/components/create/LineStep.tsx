@@ -6,7 +6,7 @@ import { ExampleImage } from "@/components/book/ExampleImage";
 import { LineCards, LineChecklist } from "@/components/story/Choices";
 import { Button } from "@/components/ui/Button";
 import { api } from "@/lib/api";
-import { accusativeName } from "@/lib/arabicName";
+import { nameCases } from "@/lib/arabicName";
 import type { ThemeCard } from "@/lib/catalog";
 import { classicStyles, classicVariant } from "@/lib/classic";
 import type { Child, Line } from "@/lib/create";
@@ -70,7 +70,7 @@ export function LineStep({
   const example = pickExample(examples, theme ?? examples[0]?.theme, look);
   const pages = storyPages(example, 6);
   const strip = storyPages(example, 3, 1);
-  const who = { name: child.name, nameAcc: accusativeName(child.name), gender: child.gender };
+  const who = { ...nameCases(child.name), gender: child.gender };
   // what comes next for this type: the story (a character it can use), the drawing (a photo), else the photo
   const fits = new Set((catalog?.styles ?? []).filter((s) => s.lines.includes(line)).map((s) => s.slug));
   const next = child.characters.some((c) => c.approved && fits.has(c.style))
@@ -81,7 +81,7 @@ export function LineStep({
 
   return (
     <Frame
-      title={title ?? t("bookOf", { name: child.name })}
+      title={title ?? t("bookOf", who)}
       label={t("steps.line")}
       back={back}
       footer={
@@ -90,7 +90,7 @@ export function LineStep({
         </Button>
       }
     >
-      <Lead title={t("line.title", { name: child.name })} body={t("line.lead")} />
+      <Lead title={t("line.title", who)} body={t("line.lead")} />
       <LineCards
         offers={offers}
         value={line}

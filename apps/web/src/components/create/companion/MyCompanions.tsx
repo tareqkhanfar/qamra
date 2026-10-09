@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Alert } from "@/components/ui/Alert";
 import { Link } from "@/i18n/navigation";
 import { errorText } from "@/lib/api";
-import { accusativeName } from "@/lib/arabicName";
+import { nameCases } from "@/lib/arabicName";
 import { companionApi, companionImage, drawingImage, type MyCompanion } from "@/lib/companion";
 
 const STAGES = ["bg-night-100", "bg-amber-100", "bg-success-bg"];
@@ -31,11 +31,11 @@ export function MyCompanions() {
   }, []);
 
   async function remove(c: MyCompanion) {
-    if (!window.confirm(t("confirm", { name: c.name }))) return;
+    if (!window.confirm(t("confirm", nameCases(c.name)))) return;
     const r = await companionApi.remove(c.id);
     if (r.ok) {
       setList((l) => (l ?? []).filter((x) => x.id !== c.id));
-      setNotice(t("deleted", { name: c.name, nameAcc: accusativeName(c.name) }));
+      setNotice(t("deleted", nameCases(c.name)));
     } else setNotice(errorText(r.error, locale, r.status === 0 ? te("network") : te("unknown")));
   }
 
@@ -73,7 +73,7 @@ export function MyCompanions() {
               onClick={() => setChild(id)}
               className={tab(child === id)}
             >
-              {t("of", { name })}
+              {t("of", nameCases(name))}
             </button>
           ))}
         </div>
@@ -97,7 +97,9 @@ export function MyCompanions() {
               </div>
             </div>
             <strong className="font-display text-[20px] text-night-900">{c.name}</strong>
-            <span className="text-caption text-ink-muted">{t("meta", { name: c.child_name, books: c.books })}</span>
+            <span className="text-caption text-ink-muted">
+              {t("meta", { ...nameCases(c.child_name), books: c.books })}
+            </span>
             <Link
               href={`/create?child=${c.child_id}&companion=${c.id}`}
               className="flex min-h-11 items-center justify-center rounded-full border-[1.5px] border-night-900 text-caption font-bold"

@@ -7,7 +7,8 @@
 # (as in content/family-book/plan.yaml); a section-opener is the two-page spread n, n + 1. `activity`
 # carries the activity icons (A7 §5) and `skill` the skills line for grown-ups.
 # Placeholders: {child}, {adult} (the grown-up doing the activity), {member}, {family_name}, {city} and
-# {masc/fem} for the child. A page's params `adult` / `member` name who the mission is with (a role or a
+# {masc/fem} for the child; a name in the accusative is {child:acc}, in the genitive {child:gen} (as in
+# plan.yaml). A page's params `adult` / `member` name who the mission is with (a role or a
 # name from `family`); otherwise the missions go round the family.
 # `inserts` are printed separately (sticker sheet, card stock), so they have no page number.
 
@@ -70,7 +71,7 @@ samples:
       title: "صَيْدُ الدَّوائِرِ فِي المَطْبَخِ"
       instruction: "{ابْحَثْ/ابْحَثي} فِي المَطْبَخِ عَنْ أَشْياءَ دائِرِيَّةٍ، {وَارْسُمْ/وَارْسُمي} كُلَّ ما {تَجِدُهُ/تَجِدينَهُ}"
       parent:
-        - "تجوّلوا مع {child} في المطبخ، وسمّوا معًا كل شيء دائري."
+        - "تجوّلوا مع {child:gen} في المطبخ، وسمّوا معًا كل شيء دائري."
         - "اسألوا: أيّها أكبر؟ أيّها أصغر؟ كم دائرة وجدنا؟"
         - "امدحوا الملاحظة: «عيناك عينا {محقّق صغير/محقّقة صغيرة}!»"
       params: {shape: circle, find: 3, challenge: 2, examples: [plate, orange, clock]}
@@ -82,7 +83,7 @@ samples:
       title: "ذِكْرى اليَوْمِ"
       instruction: "أَيَّ لَحْظَةٍ {أَحْبَبْتَ/أَحْبَبْتِ} فِي مُغامَرَةِ البَيْتِ؟ {ارْسُمْها/ارْسُميها} أَوْ {أَلْصِقْ/أَلْصِقي} صورَتَها"
       parent:
-        - "اكتبوا ما قاله {child}، وأضيفوا كلمة من {adult}."
+        - "اكتبوا ما {قاله/قالته} {child}، وأضيفوا كلمة من {adult:gen}."
       params: {adult: ستّي}
 
   - n: 18
@@ -94,7 +95,7 @@ samples:
       title: "قائِمَةُ مُشْتَرَياتي"
       instruction: "ماذا نَحْتاجُ مِنَ السّوقِ؟ {ارْسُمْهُ/ارْسُميهِ} أَوِ {اكْتُبْهُ/اكْتُبيهِ} فِي القائِمَةِ"
       parent:
-        - "اكتبوا القائمة مع {child} قبل الذهاب إلى سوق {city}."
+        - "اكتبوا القائمة مع {child:gen} قبل الذهاب إلى سوق {city}."
         - "في السوق، يدًا بيد، {دعوه/دعوها} {يجد/تجد} الأشياء {ويعدّها/وتعدّها}."
         - "اسألوا: هل هذا صحي؟ هل نحتاجه فعلًا؟"
       params: {rows: 4, products: [apple, milk, bread, candy, carrot, soda], adult: بابا}
@@ -110,7 +111,7 @@ samples:
       parent:
         - "{دعوه/دعوها} {يعدّ/تعدّ} الملاعق {ويدحرج/وتدحرج} الكرات {بيديه/بيديها}."
         - "سمّوا المكوّنات معًا: لبنة، زعتر، زيت زيتون."
-        - "صوّروا الطبق مع {adult}، وألصقوا الصورة في «ذكرى اليوم»."
+        - "صوّروا الطبق مع {adult:gen}، وألصقوا الصورة في «ذكرى اليوم»."
       params:
         adult: ستّي
         ingredients:
@@ -137,7 +138,7 @@ samples:
       title: "ميزانُ مَشاعِري"
       instruction: "كَيْفَ {تَشْعُرُ/تَشْعُرينَ} الآنَ؟ {لَوِّنِ/لَوِّني} الميزانَ بِقَدْرِ {شُعورِكَ/شُعورِكِ}"
       parent:
-        - "كل المشاعر مقبولة: سمّوا الشعور مع {child} دون لوم أو استعجال."
+        - "كل المشاعر مقبولة: سمّوا الشعور مع {child:gen} دون لوم أو استعجال."
         - "اسألوا: ماذا يساعدك عندما يكبر شعورك؟"
         - "جرّبوا معًا نفَسًا بطيئًا، كأننا ننفخ بالونًا."
       params: {adult: ماما}
@@ -160,7 +161,7 @@ samples:
           - {icon: book, text: "نَقْرَأُ قِصَّةً"}
           - {icon: tree, text: "نَمْشي فِي الحَيِّ"}
           - {icon: sprout, text: "نَزْرَعُ بِذْرَةً"}
-          - {icon: phone, text: "نَتَّصِلُ بِـ{member}"}
+          - {icon: phone, text: "نَتَّصِلُ بِـ{member:gen}"}
           - {icon: dice, text: "لَيْلَةُ أَلْعابٍ"}
           - {icon: heart, text: "نَشْكُرُ بَعْضُنا بَعْضًا"}
         reward: "مُكافَأَةُ عائِلَتِنا"
@@ -202,5 +203,5 @@ inserts:
     page:
       type: play-money
       title: "نُقودُ قَمْرَةَ لِلَّعِبِ"
-      instruction: "{قُصَّ/قُصّي} النُّقودَ مَعَ {adult}، {وَاتْبَعِ/وَاتْبَعي} الخَطَّ المُتَقَطِّعَ بِالمِقَصِّ"
+      instruction: "{قُصَّ/قُصّي} النُّقودَ مَعَ {adult:gen}، {وَاتْبَعِ/وَاتْبَعي} الخَطَّ المُتَقَطِّعَ بِالمِقَصِّ"
       params: {adult: بابا, notes: [5, 5, 10, 10, 20, 20], coins: [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2], price_tags: 5}

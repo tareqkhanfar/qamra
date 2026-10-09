@@ -13,6 +13,7 @@ from typing import Any
 
 from markupsafe import Markup, escape
 
+from qamra_pdf.arabic_names import genitive
 from qamra_workbook.pictures.model import scallop_d, strip_tashkeel
 from qamra_workbook.render import art, draw
 from qamra_workbook.render.pages.family import CORE_BADGES, rosette, seal, section_badges
@@ -122,7 +123,7 @@ def badge_sticker_sheet(ctx: PageContext) -> Built:
         "days": [day_star(ctx.num(i + 1)) for i in range(CHALLENGE_DAYS)],
         "routine": [{"icon": i, "label": t, "color": c} for i, t, c in ROUTINE],
         "cut": cut_ring(19.4),
-        "owner": ctx.book.child.name,
+        "owner": genitive(ctx.book.child.name),  # «مُلْصَقاتُ أبي بكر»: the label owns the name
     }
     return Built(data, None, problems)
 

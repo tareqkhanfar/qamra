@@ -7,6 +7,7 @@ import { Alert } from "@/components/ui/Alert";
 import { buttonClasses } from "@/components/ui/Button";
 import { Link } from "@/i18n/navigation";
 import { api } from "@/lib/api";
+import { nameCases } from "@/lib/arabicName";
 import { coverImage, freeCoverApi, shareImage, type FreeCover } from "@/lib/freeCover";
 import { money, type Catalog } from "@/lib/store";
 
@@ -80,7 +81,7 @@ export function FreeCoverResult({ id, brand }: { id: string; brand: string }) {
     return p ? money(p, catalog?.currency ?? "ILS", locale) : "";
   };
   const next = (line: "classic" | "magic") => `/create?child=${cover.child_id}&line=${line}&theme=${cover.theme}`;
-  const text = t("shareText", { name, brand });
+  const text = t("shareText", { ...nameCases(name), brand });
   return <ResultView cover={cover} name={name} price={price} next={next} text={text} />;
 }
 
@@ -98,19 +99,20 @@ function ResultView({
   text: string;
 }) {
   const t = useTranslations("freeCover");
+  const who = nameCases(name);
   const tile =
     "flex min-h-[72px] flex-col items-center justify-center gap-1 rounded-2xl border border-line bg-paper-raised text-small font-semibold text-night-900";
   return (
     <div className="flex flex-col gap-5">
       <div className="flex flex-col gap-1">
-        <h1 className="text-[28px] text-night-900">{t("readyTitle", { name })}</h1>
+        <h1 className="text-[28px] text-night-900">{t("readyTitle", who)}</h1>
         <p className="text-body text-ink-muted">{t("body")}</p>
       </div>
       <div className="flex justify-center rounded-3xl bg-paper-sunk py-6">
         {/* eslint-disable-next-line @next/next/no-img-element -- the parent's own watermarked cover, through the API */}
         <img
           src={coverImage(cover.id, "cover.jpg")}
-          alt={t("alt", { name })}
+          alt={t("alt", who)}
           className="aspect-square w-[min(270px,72vw)] rounded-[16px_6px_6px_16px] border-l-[10px] border-night-950 shadow-2 rtl:rounded-[6px_16px_16px_6px] rtl:border-r-[10px] rtl:border-l-0"
         />
       </div>
@@ -155,7 +157,7 @@ function ResultView({
           {t("download")}
         </a>
       </div>
-      <p className="text-small text-ink-muted">{t("onlyDrawn", { name })}</p>
+      <p className="text-small text-ink-muted">{t("onlyDrawn", who)}</p>
 
       <section className="flex flex-col gap-2.5">
         <h2 className="text-[20px] text-night-900">{t("continue")}</h2>
@@ -177,7 +179,7 @@ function ResultView({
         >
           <span className="flex grow flex-col gap-0.5">
             <strong className="text-body">{t("magic")}</strong>
-            <span className="text-small text-night-100">{t("magicBody", { name })}</span>
+            <span className="text-small text-night-100">{t("magicBody", who)}</span>
           </span>
           {price("magic-book") && <strong className="whitespace-nowrap text-amber-300">{price("magic-book")}</strong>}
         </Link>
@@ -190,13 +192,13 @@ function ResultView({
             <path d="M9 12l2 2 4-4" />
           </g>
         </svg>
-        <span>{t("privacy", { name })}</span>
+        <span>{t("privacy", who)}</span>
       </div>
 
       <div className="fixed inset-x-0 bottom-0 z-10 border-t border-line bg-paper/95 backdrop-blur-sm">
         <div className="mx-auto flex max-w-[640px] px-4 pt-3 pb-6">
           <Link href={next("classic")} className={buttonClasses("primary", "lg", "grow")}>
-            {price("classic-book") ? t("ctaBook", { name, price: price("classic-book") }) : t("ctaPlain", { name })}
+            {price("classic-book") ? t("ctaBook", { ...who, price: price("classic-book") }) : t("ctaPlain", who)}
           </Link>
         </div>
       </div>

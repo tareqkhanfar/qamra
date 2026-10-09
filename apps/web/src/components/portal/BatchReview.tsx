@@ -6,6 +6,7 @@ import { Alert } from "@/components/ui/Alert";
 import { Button, buttonClasses } from "@/components/ui/Button";
 import { Link } from "@/i18n/navigation";
 import { errorText } from "@/lib/api";
+import { nameCases } from "@/lib/arabicName";
 import { portalApi, portalFiles, type Review } from "@/lib/portal";
 import { usePortal } from "./PortalShell";
 import { BatchProgress, Chip } from "./parts";
@@ -125,7 +126,7 @@ export function BatchReview({ classId }: { classId: string }) {
                   // eslint-disable-next-line @next/next/no-img-element -- private illustration through the API
                   <img
                     src={portalFiles.cover(classId, c.child_id)}
-                    alt={t("coverOf", { name: c.name })}
+                    alt={t("coverOf", nameCases(c.name))}
                     className="aspect-square w-full rounded-md object-cover"
                   />
                 ) : (
@@ -136,7 +137,7 @@ export function BatchReview({ classId }: { classId: string }) {
                 {c.status === "ready" && (
                   <input
                     type="checkbox"
-                    aria-label={t("choose", { name: c.name })}
+                    aria-label={t("choose", nameCases(c.name))}
                     checked={chosen.includes(c.child_id)}
                     onChange={() => setChosen((l) => toggle(l, c.child_id))}
                     className="absolute end-2 top-2 size-6 accent-night-900"

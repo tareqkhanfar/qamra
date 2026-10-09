@@ -351,7 +351,7 @@ def _cover_parts(ctx: PageContext) -> tuple[covers.Front, covers.Back, list[str]
         comes=tuple((c["icon"], covers.fill(ctx, str(c["text"]))) for c in sc.get("comes_with", [])),
         comes_title="يَأْتِي مَعَ الْكِتَابِ",
         facts=tuple(f for f in facts if f),
-        made_for=covers.fill(ctx, "صُنِعَ هَذَا الْكِتَابُ خِصِّيصًا لِـ{child}"),
+        made_for=covers.fill(ctx, "صُنِعَ هَذَا الْكِتَابُ خِصِّيصًا لِـ{child:gen}"),
         cols=2,
         extra={
             "books": books,

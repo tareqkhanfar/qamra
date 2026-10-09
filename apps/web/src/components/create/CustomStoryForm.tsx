@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
+import { nameCases } from "@/lib/arabicName";
 import type { Child } from "@/lib/create";
 import { LIMITS, type CustomBrief, type FamilyMember } from "@/lib/customStory";
 import { Chip } from "./Frame";
@@ -47,7 +48,7 @@ export function CustomStoryForm({
   bad: string[]; // fields the server sent back
 }) {
   const t = useTranslations("customStory");
-  const who = { name: child.name, gender: child.gender };
+  const who = { ...nameCases(child.name), gender: child.gender };
   const set = (patch: Partial<CustomBrief>) => onChange({ ...value, ...patch });
   const border = (field: string) => (bad.includes(field) ? "border-danger" : "border-line");
   const person = (i: number, patch: Partial<FamilyMember>) =>

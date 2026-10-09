@@ -149,6 +149,21 @@ def test_every_template_renders_in_both_languages() -> None:
     assert "{{" not in render("order_placed", "ar", values).text
 
 
+def test_arabic_emails_put_names_in_their_case() -> None:
+    """«مرحبًا أبا أحمد» (a greeting calls the parent), «كتاب أبي بكر», «مع أبي بكر»; other names as typed."""
+    values = {"brand": "قمرة", "code": "QM-1", "total": "139 ₪", "title": "يوم تخرّج أبي بكر"}
+    values |= {"track_url": BASE, "reader_url": BASE, "create_url": BASE, "account_url": BASE}
+    abu = {**values, "name": "أبو أحمد", "child": "أبو بكر"}
+    assert render("order_placed", "ar", abu).lines[0] == "مرحبًا أبا أحمد،"
+    preview = render("preview_ready", "ar", abu)
+    assert preview.subject == "معاينة كتاب أبي بكر جاهزة 🌙" and "مع أبي بكر،" in preview.lines[1]
+    assert render("book_ready", "ar", abu).subject == "كتاب أبي بكر جاهز للقراءة 📖"
+    plain = {**values, "name": "أم سلمى", "child": "سلمى"}
+    assert render("order_placed", "ar", plain).lines[0] == "مرحبًا أم سلمى،"
+    assert render("preview_ready", "ar", plain).subject == "معاينة كتاب سلمى جاهزة 🌙"
+    assert render("order_placed", "en", abu).lines[0] == "Hello أبو أحمد,"  # English: as typed
+
+
 def test_the_printer_email_counts_in_good_english() -> None:
     values = {"brand": "قمرة", "code": "B1", "date": "2026-10-01", "expires": "2026-10-13"}
     values["manifest_url"] = BASE

@@ -13,7 +13,7 @@ from typing import Any
 
 from markupsafe import Markup
 
-from qamra_pdf.arabic_names import accusative
+from qamra_pdf.arabic_names import GEN, after_lam, in_case, with_helping_vowel
 from qamra_pdf.arabic_names import after as after_words
 from qamra_workbook.render import art, draw
 from qamra_workbook.render.pages.family import _balloon, _hill, family_group, family_of, uri
@@ -21,19 +21,25 @@ from qamra_workbook.render.pages.motor import nested_picture
 from qamra_workbook.render.registry import Built, PageContext, page_type
 from qamra_workbook.render.sections import section_style
 
-_CHILD_SLOT = re.compile(r"\{child(:acc)?\}")
+_CHILD_SLOT = re.compile(r"\{child(:acc|:gen)?\}")
+_LAM_JOINED = re.compile("ل[ً-ْ]*ـ$")  # «لـ» / «لِـ» written onto the name that follows
 
 
 def split_name(ctx: PageContext, template: str) -> tuple[str, str, str]:
     """A title around the child's name, so the name can be set in its own color: (before, name, after). The
-    name takes its case as in any text: accusative at `{child:acc}` and after «يا» (`arabic_names`)."""
+    name takes its case as in any text: accusative at `{child:acc}` and after «يا», genitive at `{child:gen}`
+    (`arabic_names`), joined to a «لـ» before it as `fill_name` joins it: «لِأبي بكر», «لِلمعتصم», and with the
+    helping vowel before a name that starts with the article («هَمَسَتِ الجود»)."""
     slot = _CHILD_SLOT.search(template)
     if slot is None:
         return ctx.text(template), "", ""
     before = ctx.text(template[: slot.start()])
     name = ctx.book.child.name
-    name = accusative(name) if slot.group(1) else after_words(before, name)
-    return before, name, ctx.text(template[slot.end() :])
+    name = in_case(name, slot.group(1)) if slot.group(1) else after_words(before, name)
+    joined = after_lam(name) if slot.group(1) == GEN and _LAM_JOINED.search(before) else None
+    if joined is not None:
+        before, name = before[:-1], joined  # «لِأبي بكر», «لِأحمد» (لا), «لِلمعتصم»; never «لِـأبي»
+    return with_helping_vowel(before, name), name, ctx.text(template[slot.end() :])
 
 
 def title_art(ctx: PageContext) -> Markup:

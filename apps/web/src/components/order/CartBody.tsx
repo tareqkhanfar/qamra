@@ -4,7 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useState, type ReactNode } from "react";
 import { Alert } from "@/components/ui/Alert";
 import { Link } from "@/i18n/navigation";
-import { accusativeName } from "@/lib/arabicName";
+import { nameCases } from "@/lib/arabicName";
 import type { ThemeCard } from "@/lib/catalog";
 import type { Child } from "@/lib/create";
 import {
@@ -68,7 +68,7 @@ export function CartBody(props: {
       {offer && (
         <div className="flex items-center gap-3 rounded-[18px] bg-paper-sunk px-3.5 py-3">
           <div className="flex grow flex-col gap-0.5">
-            <strong className="text-[15px] text-ink">{t("cross.title", { name: firstName })}</strong>
+            <strong className="text-[15px] text-ink">{t("cross.title", nameCases(firstName))}</strong>
             <span className="text-caption text-ink-muted">{t("cross.body", { gender: offer.gender })}</span>
           </div>
           <Link
@@ -107,8 +107,7 @@ export function CartBody(props: {
               onChange={(e) => props.onMessage(e.target.value)}
               onBlur={props.onMessageDone}
               placeholder={t("gift.placeholder", {
-                name: giftName,
-                nameAcc: accusativeName(giftName),
+                ...nameCases(giftName),
                 gender: (firstName ? offer?.gender : cart.items[0]?.child_gender) ?? "other",
               })}
               className="resize-none rounded-[14px] border-[1.5px] border-line bg-white px-3.5 py-3 text-body outline-none focus:border-night-900"

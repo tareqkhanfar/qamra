@@ -10,8 +10,11 @@
  * Pure TypeScript with no "@/" imports, so `node --test src/lib/*.test.ts` loads it. It returns message keys
  * under `orderPath.line` (with their values and a fallback text for a value we have no words for yet) or plain
  * text: names that are data (products, stories, styles, the child's own names). The caller says whether the line
- * is an activity book (`lib/order.ts`, from the one list `ACTIVITY_LINES`).
+ * is an activity book (`lib/order.ts`, from the one list `ACTIVITY_LINES`). A title gets the child's name in every
+ * case (`nameCases`): «دوسية أبي بكر».
  */
+
+import { genitiveName, nameCases } from "./arabicName.ts";
 
 export type Kind = "story" | "activity";
 
@@ -65,7 +68,7 @@ function activity(item: LineInput, names: Names): Summary {
   const child = clean(item.child_name);
   const options = item.options ?? {};
   const title: Part = child
-    ? { key: `title.${line}`, values: { name: child }, fallback: names.product }
+    ? { key: `title.${line}`, values: nameCases(child), fallback: names.product }
     : { text: names.product };
   const details: Part[] = OPTIONS.filter((o) => options[o]).map((o) => {
     const value = options[o];
@@ -88,7 +91,7 @@ function story(item: LineInput, names: Names): Summary {
   const title: Part = book
     ? { text: book }
     : child
-      ? { key: "title.story", values: { name: child } }
+      ? { key: "title.story", values: nameCases(child) }
       : { text: theme || names.product };
   const details: Part[] = [{ text: names.product }];
   if (options.format) details.push({ key: `format.${options.format}`, fallback: options.format });
@@ -106,7 +109,8 @@ function familyOf(item: LineInput, child: string): FamilyFact | null {
   if (!child) return null;
   const held = item.family ?? {};
   return {
-    name: clean(held.name) || child, // the book prints «عائلة {child}» when the family name is empty
+    // the book prints «عائلة» + the child's name in the genitive when the family name is empty: «عائلة أبي بكر»
+    name: clean(held.name) || genitiveName(child),
     city: clean(held.city),
     members: (held.members ?? []).map((m) => ({ relation: clean(m.relation) || "other", name: clean(m.name) })),
   };

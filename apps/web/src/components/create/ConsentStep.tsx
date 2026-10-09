@@ -6,6 +6,7 @@ import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { Link } from "@/i18n/navigation";
 import { errorText } from "@/lib/api";
+import { nameCases } from "@/lib/arabicName";
 import { createApi, type Child } from "@/lib/create";
 import { ACTIVITY_LINES } from "@/lib/shop";
 import { Frame } from "./Frame";
@@ -36,7 +37,7 @@ export function ConsentStep({
   const [accepted, setAccepted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const who = { name: child.name, gender: child.gender };
+  const who = { ...nameCases(child.name), gender: child.gender };
   const activity = (ACTIVITY_LINES as readonly string[]).includes(productLine ?? "");
 
   async function submit() {
@@ -54,7 +55,7 @@ export function ConsentStep({
 
   return (
     <Frame
-      title={title ?? t("bookOf", { name: child.name })}
+      title={title ?? t("bookOf", who)}
       label={t("steps.consent")}
       back={back}
       footer={

@@ -585,7 +585,7 @@ def general_texts(kind: str, params: dict[str, Any], unit_title: str, subject: s
     match kind:
         case "owner-page":  # not printed: the page's own label asks for the handprint
             return (
-                "هذا الكِتابُ لِـ{child}",
+                "هذا الكِتابُ لِـ{child:gen}",
                 "{ضَعْ كَفَّكَ عَلى الصَّفْحَةِ وَارْسُمْ حَوْلَها/ضَعي كَفَّكِ عَلى الصَّفْحَةِ وَارْسُمي حَوْلَها}",
                 "",
             )

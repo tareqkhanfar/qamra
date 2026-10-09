@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { naskh } from "@/components/book/fonts";
+import { nameCases } from "@/lib/arabicName";
 import { renderText, type TemplateTexts, type TextPage } from "@/lib/studio";
 
 // The print renderer's geometry (packages/pdf templates/_base.css.j2), in mm on a 216 mm page with bleed.
@@ -137,7 +138,7 @@ export function PagePreview({
         </div>
       </div>
       <p ref={note} className="text-caption text-ink-muted" aria-live="polite" />
-      <p className="text-caption text-ink-muted">{t("note", { name, size, min })}</p>
+      <p className="text-caption text-ink-muted">{t("note", { ...nameCases(name), size, min })}</p>
     </div>
   );
 }

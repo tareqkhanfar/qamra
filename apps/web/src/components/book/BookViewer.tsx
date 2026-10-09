@@ -13,6 +13,7 @@ import {
 } from "react";
 import { Scene, fromArt, type SceneArt } from "@/components/art/Scene";
 import { Link } from "@/i18n/navigation";
+import { nameCases } from "@/lib/arabicName";
 import { rememberedVariant, type Example, type ExamplePage, type ExampleVariant } from "@/lib/examples";
 import { ExampleImage } from "./ExampleImage";
 import { naskh } from "./fonts";
@@ -262,7 +263,7 @@ export function BookViewer({
           <p lang={lang} className={`${naskh.className} text-[26px] leading-[1.6] font-bold text-night-900`}>
             {example.title}
           </p>
-          <p className="text-small text-ink-muted">{t("madeFor", { name: example.child_name })}</p>
+          <p className="text-small text-ink-muted">{t("madeFor", nameCases(example.child_name))}</p>
           {example.dedication && (
             <div className="mt-2 flex flex-col gap-1">
               <span className="text-caption font-bold text-amber-700">{t("dedication")}</span>
@@ -325,7 +326,7 @@ export function BookViewer({
         <div className="flex flex-wrap items-center justify-between gap-2">
           <VariantSwitch value={example.variant} available={available} onChange={pick} />
           <span className="text-caption text-ink-muted">
-            {t("synthetic", { name: example.child_name, variant: example.variant })}
+            {t("synthetic", { ...nameCases(example.child_name), variant: example.variant })}
           </span>
         </div>
       )}

@@ -1,7 +1,9 @@
 """Email templates (content/emails): Arabic and English, rendered to a subject, a plain-text body and HTML.
 
 The wording lives in `messages.yaml`; `layout.html` is the shared frame. Values are filled as plain text
-first, then placed into the HTML with autoescaping, so a name like "<b>" can never become markup.
+first, then placed into the HTML with autoescaping, so a name like "<b>" can never become markup. An Arabic
+name takes its case through two filters (`qamra_pdf.arabic_names`): `{{ name | acc }}` in a greeting
+(«مرحبًا أبا أحمد»), `{{ child | gen }}` after a preposition or a possessed noun («كتاب أبي بكر»).
 """
 
 from dataclasses import dataclass, field
@@ -15,6 +17,7 @@ from jinja2.sandbox import SandboxedEnvironment
 
 from qamra_ai.pipeline.theme import CONTENT_DIR
 from qamra_core.app_settings import display_phone
+from qamra_pdf.arabic_names import accusative, genitive
 
 EMAILS_DIR = CONTENT_DIR / "emails"
 FOOTER = {
@@ -60,6 +63,8 @@ def _envs(root: Path = EMAILS_DIR) -> tuple[SandboxedEnvironment, SandboxedEnvir
     )
     for env in (text, html):
         env.filters["plural"] = plural
+        env.filters["acc"] = lambda name: accusative(str(name))  # «مرحبًا أبا أحمد»
+        env.filters["gen"] = lambda name: genitive(str(name))  # «كتاب أبي بكر»
     return text, html
 
 

@@ -12,6 +12,7 @@ import dataclasses
 
 from markupsafe import Markup, escape
 
+from qamra_pdf.arabic_names import genitive
 from qamra_workbook.letters import ARABIC, LEFT_OPEN, RIGHT_OPEN
 from qamra_workbook.letters.model import Guides, Letter
 from qamra_workbook.names import MIN_CAP_MM, can_trace, check_name, latin_words, name_parts
@@ -222,10 +223,12 @@ LONG_NAME = 16  # characters: a longer name wraps on the owner page and the cove
 
 @page_type("owner-page", frame="full")
 def owner_page(ctx: PageContext) -> Built:
+    """«هذا الكتاب لـ» and the name under it, in the genitive («أبي بكر», `qamra_pdf.arabic_names`)."""
     character = ctx.assets.character.resolve().as_uri() if ctx.assets.character else ""
+    name = genitive(ctx.book.child.name)
     data = {
-        "name": ctx.book.child.name,
-        "long": len(ctx.book.child.name) > LONG_NAME,
+        "name": name,
+        "long": len(name) > LONG_NAME,
         "character": character,
         "volume_title": str(ctx.page.params.get("volume_title", "")),
         "level_title": str(ctx.page.params.get("level_title", "")),
@@ -407,7 +410,7 @@ def workbook_cover_front(ctx: PageContext) -> Built:
         series="foundation",
         part=part,
         title=str(p.get("title", "دوسية التأسيس")),
-        ribbon=ctx.text(str(sc.get("ribbon", "دوسية {child}"))),
+        ribbon=ctx.text(str(sc.get("ribbon", "دوسية {child:gen}"))),
         subtitle=str(p.get("subtitle", "")),
         pills=_cover_pills(ctx),
         age=_ages(ctx),
@@ -445,7 +448,7 @@ def workbook_cover_back(ctx: PageContext) -> Built:
         inside=tuple((i["icon"], ctx.text(str(i["text"])), "") for i in pc.get("inside", [])),
         comes=tuple(comes),
         facts=tuple(ctx.num(f) for f in facts if f),
-        made_for=covers.fill(ctx, "صُنعت خصيصًا لـ{child}"),
+        made_for=covers.fill(ctx, "صُنعت خصيصًا لـ{child:gen}"),
         domain=str(p.get("domain", "qamra.app")),
     )
-    return Built({"cv": covers.back_data(ctx, back), "kicker": ctx.text("دوسية {child}")})
+    return Built({"cv": covers.back_data(ctx, back), "kicker": ctx.text("دوسية {child:gen}")})

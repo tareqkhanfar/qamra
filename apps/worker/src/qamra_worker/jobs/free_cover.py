@@ -33,6 +33,7 @@ from qamra_core.db.classic import (
 )
 from qamra_core.db.models import Character, CharacterStatus, Child, ChildPhoto, GenerationCost, PhotoStatus
 from qamra_core.storage import ObjectStorage
+from qamra_pdf.arabic_names import genitive
 from qamra_worker import context
 from qamra_worker.ai import ai_settings, make_classic_runtime
 from qamra_worker.jobs.books import ai_child, resolved_settings
@@ -172,7 +173,7 @@ async def run_free_cover(
         else (f"Preview · {brand_en}")
     )
     finished = cover_art.watermarked(cover_art.titled(res.page, name, subtitle), mark)
-    headline = f"غلاف حكاية {ai.name}" if lang == "ar" else f"{ai.name}'s storybook cover"
+    headline = f"غلاف حكاية {genitive(ai.name)}" if lang == "ar" else f"{ai.name}'s storybook cover"
     footer = f"{brand_ar if lang == 'ar' else brand_en} · {core.brand_domain}"
     story = cover_art.story(
         finished,

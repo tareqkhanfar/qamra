@@ -5,7 +5,7 @@ import { Companion as CompanionArt } from "@/components/art/Companion";
 import { Drawing } from "@/components/art/Drawing";
 import { Button } from "@/components/ui/Button";
 import { brandName } from "@/config/brand";
-import { accusativeName } from "@/lib/arabicName";
+import { nameCases } from "@/lib/arabicName";
 import { companionImage, type MyCompanion } from "@/lib/companion";
 import type { Child } from "@/lib/create";
 import { money, type Currency } from "@/lib/store";
@@ -39,13 +39,13 @@ export function CompanionIntro({
   const t = useTranslations("companion.intro");
   const tc = useTranslations("create");
   const locale = useLocale();
-  const who = { name: child.name, nameAcc: accusativeName(child.name), gender: child.gender };
+  const who = { ...nameCases(child.name), gender: child.gender };
   const picked = mine.find((c) => c.id === chosen) ?? null;
   const steps = ["one", "two", "three"] as const;
 
   return (
     <Frame
-      title={tc("bookOf", { name: child.name })}
+      title={tc("bookOf", who)}
       label={t("label")}
       n={COMPANION_STEP}
       back={back}
@@ -53,7 +53,7 @@ export function CompanionIntro({
         <div className="flex grow flex-col gap-1.5">
           {picked ? (
             <Button variant="primary" size="lg" onClick={() => onUse(picked.id)}>
-              {t("use", { name: picked.name })}
+              {t("use", nameCases(picked.name))}
             </Button>
           ) : (
             <Button variant="primary" size="lg" onClick={onStart}>

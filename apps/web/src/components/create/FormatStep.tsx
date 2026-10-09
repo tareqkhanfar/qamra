@@ -9,6 +9,7 @@ import { ArrowForward, Button } from "@/components/ui/Button";
 import { ExampleImage } from "@/components/book/ExampleImage";
 import { FormatCards } from "@/components/story/Choices";
 import { api, errorText } from "@/lib/api";
+import { nameCases } from "@/lib/arabicName";
 import type { ThemeCard } from "@/lib/catalog";
 import { companionAddOn } from "@/lib/companion";
 import { createApi, pageImage, type Book, type Child } from "@/lib/create";
@@ -102,7 +103,7 @@ export function FormatStep({
 
   return (
     <Frame
-      title={book.title ?? t("bookOf", { name: child.name })}
+      title={book.title ?? t("bookOf", nameCases(child.name))}
       label={t("steps.format")}
       n={10}
       back={back}
@@ -120,8 +121,8 @@ export function FormatStep({
     >
       <h1 className="text-[26px] text-night-900">
         {book.line === "magic"
-          ? t("format.title", { name: child.name })
-          : t("format.classicTitle", { name: child.name })}
+          ? t("format.title", nameCases(child.name))
+          : t("format.classicTitle", nameCases(child.name))}
       </h1>
 
       {previews.length > 0 ? (
@@ -185,8 +186,8 @@ export function FormatStep({
           )}
           <p className="text-small text-ink-muted">
             {strip.length > 0
-              ? t("format.examplePages", { name: child.name })
-              : t("format.classicNote", { name: child.name })}
+              ? t("format.examplePages", nameCases(child.name))
+              : t("format.classicNote", nameCases(child.name))}
           </p>
         </div>
       )}

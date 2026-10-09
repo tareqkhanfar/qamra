@@ -282,7 +282,7 @@ Writing lines are largest in stage 1 and get smaller in each stage. In stage 2 a
 
 | # | Section | Mission | Instruction | Type | Difficulty |
 |---|---|---|---|---|---|
-| 1 | البداية | هذا الكتاب لـ {child} | ضع بصمة يدك هنا | `owner-page` | ● |
+| 1 | البداية | هذا الكتاب لـ {child:gen} | ضع بصمة يدك هنا | `owner-page` | ● |
 | 2 | البداية | خريطة رحلتي | ألصق ملصق بطلك عند البداية | `journey-map` | ● |
 | 3 | 🧠 أدرّب عقلي | أفكر 🧠: أدرّب عقلي | هيّا نبدأ! حرّك بطلك إلى «أفكّر» | `section-opener` | ● |
 | 4 | 🧠 أدرّب عقلي | مَن المختلف؟ | في كلّ صفّ ضع دائرة حول المختلف | `odd-one-out` | ● |
@@ -489,7 +489,7 @@ Writing lines are largest in stage 1 and get smaller in each stage. In stage 2 a
 
 | # | Section | Mission | Instruction | Type | Difficulty |
 |---|---|---|---|---|---|
-| 1 | البداية | هذا الكتاب لـ {child} | ضع بصمة يدك هنا | `owner-page` | ● |
+| 1 | البداية | هذا الكتاب لـ {child:gen} | ضع بصمة يدك هنا | `owner-page` | ● |
 | 2 | البداية | خريطة رحلتي: المحطة الثانية | ألصق ملصق بطلك عند «أفكّر» | `journey-map` | ● |
 | 3 | 🧠 أدرّب عقلي | أفكر 🧠 وألاحظ 👀 (shared: 🧠 أدرّب عقلي + 👀 عيني تقود يدي) | هيّا! حرّك بطلك إلى «أفكّر» ثمّ «ألاحظ» | `section-opener` | ● |
 | 4 | 🧠 أدرّب عقلي | كعك العيد | كيف نصنع كعك العيد؟ رتّب الصّور الأربع | `sequence-story` | ●● |
@@ -694,7 +694,7 @@ Writing lines are largest in stage 1 and get smaller in each stage. In stage 2 a
 
 | # | Section | Mission | Instruction | Type | Difficulty |
 |---|---|---|---|---|---|
-| 1 | البداية | هذا الكتاب لـ {child} | ضع بصمة يدك هنا | `owner-page` | ● |
+| 1 | البداية | هذا الكتاب لـ {child:gen} | ضع بصمة يدك هنا | `owner-page` | ● |
 | 2 | البداية | خريطة رحلتي: المحطة الثالثة | المحطّة الثّالثة تبدأ! ضع ملصقك عند «أفكّر» | `journey-map` | ● |
 | 3 | 🧠 أدرّب عقلي | أفكر 🧠 وألاحظ 👀: تحديات أكبر (shared: 🧠 أدرّب عقلي + 👀 عيني تقود يدي) | خذ بطلك إلى «أفكّر» ثمّ «ألاحظ» | `section-opener` | ● |
 | 4 | 🧠 أدرّب عقلي | موسم الزيتون 🫒 | رتّب صور قطاف الزّيتون، ثمّ احك قصّتها | `sequence-story` | ●●● |

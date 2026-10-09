@@ -6,6 +6,7 @@ import { Scene, fromArt } from "@/components/art/Scene";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { errorText } from "@/lib/api";
+import { nameCases } from "@/lib/arabicName";
 import type { ThemeCard } from "@/lib/catalog";
 import { createApi, missingEndpoint, type Book, type Character, type Child, type Line } from "@/lib/create";
 import { briefBody, briefReady, CUSTOM_THEME, customExtra, useCustomBrief } from "@/lib/customStory";
@@ -53,7 +54,7 @@ export function StoryStep({
   const tcs = useTranslations("customStory");
   const te = useTranslations("errors");
   const locale = useLocale();
-  const who = { name: child.name, gender: child.gender };
+  const who = { ...nameCases(child.name), gender: child.gender };
   const magic = line === "magic";
   const fits = (th: ThemeCard) => th.age_min <= child.age && child.age <= th.age_max;
   const list = themes.filter((th) => th.status === "available").sort((a, b) => Number(fits(b)) - Number(fits(a)));
@@ -145,7 +146,7 @@ export function StoryStep({
           {extra > 0 ? `+${money(extra, catalog?.currency ?? "ILS", locale)}` : tcs("badge")}
         </span>
         <h2 className="text-[18px] leading-snug text-paper">{tcs("title")}</h2>
-        <p className="text-caption text-night-100">{tcs("tagline", { name: child.name })}</p>
+        <p className="text-caption text-night-100">{tcs("tagline", who)}</p>
       </div>
       <Check on={custom} />
     </button>
@@ -153,7 +154,7 @@ export function StoryStep({
 
   return (
     <Frame
-      title={title ?? t("bookOf", { name: child.name })}
+      title={title ?? t("bookOf", who)}
       label={t("steps.story")}
       back={back}
       footer={
@@ -198,7 +199,7 @@ export function StoryStep({
                 <div className="flex grow flex-col gap-1">
                   {fits(th) && (
                     <span className="self-start rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-bold text-amber-700">
-                      {t("story.suggested", { name: child.name })}
+                      {t("story.suggested", who)}
                     </span>
                   )}
                   <h2 className="text-[18px] leading-snug text-night-900">

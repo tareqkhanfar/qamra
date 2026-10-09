@@ -1,6 +1,7 @@
 # The covers of the four activity series (front, back and the Islamic spine): every word they print that is
 # not already in the books' own plans. Read by packages/workbook/src/qamra_workbook/render/covers.py.
-# Placeholders: {child}; {masc/fem} picks the child's gender; {pages} the page count with its noun and
+# Placeholders: {child} (`{child:gen}` after a preposition or owning a noun: «باسم أبي بكر», «لِأبي بكر»;
+# qamra_pdf.arabic_names); {masc/fem} picks the child's gender; {pages} the page count with its noun and
 # adjective («١٢٠ صفحة ملوّنة», covers.pages_phrase); {units} the number of units with its noun. Numbers
 # are written in Latin digits here and printed in the book's numerals.
 # Facts only: every line names something the part really holds (docs/plans/cover-scenes.md).
@@ -8,17 +9,17 @@
 
 foundation:
   # the volume's subtitle (vowelized) comes from the curriculum plan; the series line from workbook.BLURB
-  ribbon: "دوسية {child}"
+  ribbon: "دوسية {child:gen}"
   badges:
     - {icon: book, text: "{pages}"}
     - {icon: pencil, text: "القلم والحروف والأعداد"}
-    - {icon: heart, text: "باسم {child} {وشخصيته/وشخصيتها}"}
+    - {icon: heart, text: "باسم {child:gen} {وشخصيته/وشخصيتها}"}
   comes_with:
-    - {icon: home, text: "صفحة «هذا الكتاب لـ{child}»"}
-    - {icon: trace, text: "اسم {child} للتتبّع بالعربية والإنجليزية"}
+    - {icon: home, text: "صفحة «هذا الكتاب لـ{child:gen}»"}
+    - {icon: trace, text: "اسم {child:gen} للتتبّع بالعربية والإنجليزية"}
   certificate: {icon: trophy, text: "شهادة إنجاز في آخر الجزء"}  # the volumes that end with one
   binding: "تجليد حلزوني يُفتح مسطّحًا"
-  series_line: "منهج متكامل للروضة في ثلاثة أجزاء، باسم {child} {وشخصيته/وشخصيتها}."
+  series_line: "منهج متكامل للروضة في ثلاثة أجزاء، باسم {child:gen} {وشخصيته/وشخصيتها}."
   parts:
     kg1-v1:
       blocks: [أ, ب, ت, "1", "2", "3"]
@@ -82,12 +83,12 @@ foundation:
         - {icon: brain, text: "أركّز وأتذكّر وأحلّ المشكلات"}
 
 journey:
-  ribbon: "رحلة {child}"  # from content/journey/stage-*.yaml cover.front.kicker when it is set
+  ribbon: "رحلة {child:gen}"  # from content/journey/stage-*.yaml cover.front.kicker when it is set
   binding: "تجليد حلزوني يُفتح مسطّحًا"
   badges:
     - {icon: book, text: "{pages}"}
     - {icon: flag, text: "مهمّة واحدة في كل صفحة"}
-    - {icon: heart, text: "باسم {child} {وشخصيته/وشخصيتها}"}
+    - {icon: heart, text: "باسم {child:gen} {وشخصيته/وشخصيتها}"}
   parts:
     journey-1:
       blocks: [circle, triangle, square, "1", "2", "3"]  # stage 1 writes no letter: shapes and quantities
@@ -102,7 +103,7 @@ journey:
         - {icon: flag, text: "خريطة الرحلة"}
         - {icon: sticker, text: "ورقة ملصقات"}
         - {icon: speaker, text: "رموز QR لسماع الأصوات والكلمات"}
-        - {icon: trophy, text: "شهادة باسم {child}"}
+        - {icon: trophy, text: "شهادة باسم {child:gen}"}
     journey-2:
       blocks: [أ, ب, ج, "5", "6", "7"]
       inside:
@@ -116,7 +117,7 @@ journey:
         - {icon: flag, text: "خريطة الرحلة"}
         - {icon: sticker, text: "ورقة ملصقات"}
         - {icon: speaker, text: "رموز QR لسماع كل حرف وكلمة"}
-        - {icon: trophy, text: "اسم {child} للتتبّع، وشهادة {باسمه/باسمها}"}
+        - {icon: trophy, text: "اسم {child:gen} للتتبّع، وشهادة {باسمه/باسمها}"}
     journey-3:
       blocks: [ض, ن, ي, "3", "+", "4"]
       inside:
@@ -139,7 +140,7 @@ family:
   badges:
     - {icon: clock, text: "أنشطة من 5 إلى 20 دقيقة"}
     - {icon: book, text: "{pages}"}
-    - {icon: heart, text: "باسم {child} {وعائلته/وعائلتها}"}
+    - {icon: heart, text: "باسم {child:gen} {وعائلته/وعائلتها}"}
   comes_with:
     - {icon: sticker, text: "ورقة ملصقات"}
     - {icon: scissors, text: "كرتون للقصّ: نقود وبطاقات ودمى"}
@@ -157,7 +158,7 @@ islamic:
   badges:
     - {icon: book, text: "{pages}"}
     - {icon: star, text: "{units}"}
-    - {icon: heart, text: "صُنِعَ لِـ{child}"}
+    - {icon: heart, text: "صُنِعَ لِـ{child:gen}"}
   comes_with:
     - {icon: passport, text: "{جواز المسلم الصغير/جواز المسلمة الصغيرة}"}
     - {icon: sticker, text: "ورقة ملصقات للأختام والنجوم"}

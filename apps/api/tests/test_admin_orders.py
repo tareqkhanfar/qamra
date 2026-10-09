@@ -91,3 +91,20 @@ async def test_production_staff_can_view_but_not_change(client: AsyncClient, adb
     assert (await client.get(f"/api/admin/orders/{order}")).status_code == 200
     r = await client.post(f"/api/admin/orders/{order}/status", json={"to": "confirmed"})
     assert r.status_code == 403
+
+
+def test_whatsapp_greets_the_customer_in_the_accusative() -> None:
+    """«مرحبًا أبا أحمد»: the greeting calls the customer by name (a vocative), «مرحبًا سلمى» as typed."""
+    from decimal import Decimal
+    from urllib.parse import unquote
+
+    from qamra_api.routers.admin_orders import whatsapp_links
+    from qamra_core.db.models import Currency
+
+    def greeting(name: str) -> str:
+        order = Order(code="QM-1", phone="0591234567", currency=Currency.ILS, total=Decimal("139"))
+        order.shipping = {"name": name}
+        return unquote(whatsapp_links(order)["confirmed"].split("text=", 1)[1])
+
+    assert greeting("أبو أحمد").startswith("مرحبًا أبا أحمد 🌙")
+    assert greeting("أم سلمى").startswith("مرحبًا أم سلمى 🌙")

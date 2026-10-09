@@ -48,7 +48,9 @@ default_companion:
   image: default-companion.png
 
 # Template syntax: {name}, {companion}; gender variants {masculine/feminine}. A name in the accusative
-# without «يا» before it is {name:acc} («وَضَمَّتْ {name:acc}» → «أبا بكر»); «يا {name}» needs no mark.
+# without «يا» before it is {name:acc} («وَضَمَّتْ {name:acc}» → «أبا بكر»); «يا {name}» needs no mark. A
+# name in the genitive (after a preposition or a possessed noun) is {name:gen} («لِـ{companion:gen}»,
+# «حكاية {name:gen}» → «لِأبي شنب», «حكاية أبي بكر»).
 # Scenes and locations are English for the image model. Layouts (Addendum 3 §4):
 #   full (text panel top/bottom/side) · split (art above, text below) · spread (two pages, even page first)
 #   no_child: true = background plate without the hero or companion, drawn once per theme and cached.
@@ -133,7 +135,7 @@ cast:
       headscarf, a traditional black Palestinian thobe with red cross-stitch tatreez on the chest panel
       and sleeves, a string of olive-wood prayer beads in her hand
 
-blurb_ar: "حقيبةٌ جديدة، وبوّابةٌ زرقاء، وصاحبٌ صغير يهمس: «أنا {معكَ/معكِ}». حكاية {name} في أوّل يوم في الروضة."
+blurb_ar: "حقيبةٌ جديدة، وبوّابةٌ زرقاء، وصاحبٌ صغير يهمس: «أنا {معكَ/معكِ}». حكاية {name:gen} في أوّل يوم في الروضة."
 blurb_en: "A new backpack, a blue gate, and a little friend who whispers: \"I'm with you.\" This is {name}'s first day at kindergarten."
 
 for_parents:
@@ -384,5 +386,5 @@ pages:
       The hero is tucked in bed, eyes half closed, smiling, lit by a big gentle moon through the window.
       The backpack rests ready by the door and the moon painting is pinned on the wall.
     companion_action: curls up on the pillow next to the hero, glowing softly like a night light
-    text_ar: "وَفِي اللَّيْلِ، تَحْتَ ضَوْءِ الْقَمَرِ، {هَمَسَ/هَمَسَتْ} {name} لِـ{companion}: «غَدًا نَعُودُ إِلَى الرَّوْضَةِ مَعًا.» ثُمَّ {نَامَ/نَامَتْ} {مُبْتَسِمًا/مُبْتَسِمَةً}."
+    text_ar: "وَفِي اللَّيْلِ، تَحْتَ ضَوْءِ الْقَمَرِ، {هَمَسَ/هَمَسَتْ} {name} لِـ{companion:gen}: «غَدًا نَعُودُ إِلَى الرَّوْضَةِ مَعًا.» ثُمَّ {نَامَ/نَامَتْ} {مُبْتَسِمًا/مُبْتَسِمَةً}."
     text_en: "That night, under the moonlight, {name} whispered to {companion}: \"Tomorrow we go back together.\" And fell asleep smiling."

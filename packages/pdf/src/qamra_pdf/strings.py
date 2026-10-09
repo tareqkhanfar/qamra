@@ -29,7 +29,7 @@ STRINGS: dict[str, dict[str, str]] = {
         "keepsake_note_f": "رَسَمَتْهُ {name} بِيَدَيْها… وَصارَ بَطَلًا في حِكايَتِها.",
         "watermark": "مُعايَنَة · {brand}",
         "dedication_label": "إهْداء",
-        "made_for": "حِكايَةٌ كُتِبَتْ وَرُسِمَتْ خِصّيصًا لِـ{name}",
+        "made_for": "حِكايَةٌ كُتِبَتْ وَرُسِمَتْ خِصّيصًا لِـ{name:gen}",  # «لِأبي بكر» (`arabic_names.fill_name`)
         "the_end": "النِّهايَة",
         "parents_title": "لِلأَهْل",
         "parents_lesson_label": "ماذا تُعَلِّمُ هذِهِ الحِكايَة؟",
@@ -46,7 +46,8 @@ STRINGS: dict[str, dict[str, str]] = {
         "back_voice": "امْسَحوا الرَّمْزَ لِتَسْمَعوا الحِكايَةَ بِصَوْتِ العائِلَة",
         "scan_listen": "امْسَحْ وَاسْمَعْ",
         "made_by": "صُنِعَ بِحُبٍّ في {brand}",
-        # cover ribbon (Addendum 11 §2.3): «بطولة البطل الرائع» / «بطولة البطلة الرائعة», then the name
+        # cover ribbon (Addendum 11 §2.3): «بطولة البطل الرائع» / «بطولة البطلة الرائعة», then the name in the
+        # genitive (it follows «البطلِ»: «بطولة البطل الرائع أبي بكر»)
         "ribbon_m": "بُطُولَةُ الْبَطَلِ الرَّائِعِ",
         "ribbon_f": "بُطُولَةُ الْبَطَلَةِ الرَّائِعَةِ",
         # the companion's bubble on the drawing page (addresses the child)
@@ -57,7 +58,7 @@ STRINGS: dict[str, dict[str, str]] = {
         "series_magic": "سحري",
         "series_custom": "حكاية خاصّة",
         "series_class": "كتاب الصفّ",
-        "made_for_copy": "نُسْخَةٌ خاصَّةٌ بِـ{name}",
+        "made_for_copy": "نُسْخَةٌ خاصَّةٌ بِـ{name:gen}",
         "ages": "لِلأَعْمارِ {low}–{high}",
         "vowelized": "الحِكايَةُ مُشَكَّلَةٌ بِالكامِل",
     },

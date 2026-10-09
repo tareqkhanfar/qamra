@@ -33,6 +33,7 @@ from sqlalchemy.orm import Session
 
 from qamra_core.db.models import AuditLog, Book, BookStatus, Child, Locale, OrderItem, Theme
 from qamra_core.storage import ObjectStorage
+from qamra_pdf.arabic_names import genitive
 from qamra_worker import context
 from qamra_worker.jobs.books import file_key
 from qamra_worker.jobs.family_book import (
@@ -98,7 +99,7 @@ def _book(
         language=Locale.ar,
         art_style=style,
         status=BookStatus.generating,
-        title=f"رحلة {child.first_name} الأولى للتعلّم — المحطة {stage}",
+        title=f"رحلة {genitive(child.first_name)} الأولى للتعلّم — المحطة {stage}",
         generation={"line": LINE, "order_item_id": str(item.id), "stage": stage},
     )
     db.add(book)

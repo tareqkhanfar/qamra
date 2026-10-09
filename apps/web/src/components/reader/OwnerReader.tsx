@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { buttonClasses } from "@/components/ui/Button";
 import { Link, useRouter } from "@/i18n/navigation";
 import { errorText } from "@/lib/api";
+import { nameCases } from "@/lib/arabicName";
 import { readerApi, type OwnerBook } from "@/lib/reader";
 import { BookReader } from "./BookReader";
 import { ReaderMessage, ReaderSkeleton } from "./ReaderStates";
@@ -76,14 +77,14 @@ export function OwnerReader({ id }: { id: string }) {
   const end =
     book.kind === "preview" ? (
       <>
-        <p className="text-body text-ink-muted">{t("previewEnd", { name: book.child_name })}</p>
+        <p className="text-body text-ink-muted">{t("previewEnd", nameCases(book.child_name))}</p>
         <Link href={`/create?child=${book.child_id}&book=${book.id}`} className={buttonClasses("primary", "md")}>
           {t("continueOrder")}
         </Link>
       </>
     ) : (
       <>
-        <p className="text-body text-ink-muted">{t("ownerEnd", { name: book.child_name })}</p>
+        <p className="text-body text-ink-muted">{t("ownerEnd", nameCases(book.child_name))}</p>
         {book.can_share && (
           <button type="button" onClick={() => setSharing(true)} className={buttonClasses("primary", "md")}>
             {t("share.open")}

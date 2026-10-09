@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Alert } from "@/components/ui/Alert";
 import { buttonClasses } from "@/components/ui/Button";
 import { api, errorText } from "@/lib/api";
+import { nameCases } from "@/lib/arabicName";
 import { money, type Currency } from "@/lib/store";
 
 type Row = {
@@ -367,7 +368,7 @@ export function AdminOrders() {
                     <span>
                       <strong>{t(`events.${e.kind}`)}</strong>
                       {e.to_status && ` → ${t(`statuses.${e.to_status}`)}`}
-                      {e.actor && <span className="text-ink-muted"> · {t("by", { name: e.actor })}</span>}
+                      {e.actor && <span className="text-ink-muted"> · {t("by", nameCases(e.actor))}</span>}
                     </span>
                     {e.note && <span className="text-ink-muted">{e.note}</span>}
                     <span className="text-caption text-ink-muted">{new Date(e.at).toLocaleString(locale)}</span>

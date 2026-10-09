@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { nameCases } from "@/lib/arabicName";
 import { outsideAges } from "@/lib/flows";
 
 /**
@@ -26,7 +27,7 @@ export function AgeCheck({
   return (
     <p role="status" className="rounded-2xl border-[1.5px] border-amber-500 bg-amber-100 px-4 py-3 text-small text-ink">
       {t.rich("ages", {
-        name,
+        ...nameCases(name),
         gender,
         age,
         min: ages[0],

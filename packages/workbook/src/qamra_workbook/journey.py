@@ -201,7 +201,7 @@ def _numbers(params: dict[str, Any]) -> set[int]:
 
 
 _MARKS = re.compile("[\u064b-\u065f\u0670\u0640]")  # harakat, superscript alif, tatweel
-_NAMED = re.compile(r"\{child(?::acc)?\}")  # the child's name, as typed or in the accusative
+_NAMED = re.compile(r"\{child(?::acc|:gen)?\}")  # the child's name, as typed or in its case
 ARABIC_LETTERS = frozenset("ابتثجحخدذرزسشصضطظعغفقكلمنهوي")  # alif forms count as ا (norm_letter)
 
 

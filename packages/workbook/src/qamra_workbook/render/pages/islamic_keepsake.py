@@ -17,6 +17,7 @@ from typing import Any
 
 from markupsafe import Markup
 
+from qamra_pdf.arabic_names import genitive
 from qamra_workbook.pictures.islamic import glyph_svg, star8_svg, unit_glyph
 from qamra_workbook.render.islamic_content import Certificate, Passport, Surah
 from qamra_workbook.render.islamic_units import volume_units
@@ -106,7 +107,7 @@ def muslim_certificate(ctx: PageContext) -> Built:
         "chrome": chrome(ctx, problems),
         "statement": ctx.text(page.statement),
         "character": uri(ctx.assets.character),
-        "name": child.name,
+        "name": genitive(child.name),  # after «تُمْنَحُ هَذِهِ الشَّهَادَةُ إِلَى»: «أبي بكر»
         "date": ctx.book.date_ar(),
         "star": star8_svg(GOLD, 11.0, "#FFFBEE"),
         "fields": page.fields,

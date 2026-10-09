@@ -47,6 +47,7 @@ from qamra_core.db.models import (
     Theme,
 )
 from qamra_core.storage import ObjectStorage
+from qamra_pdf.arabic_names import genitive
 from qamra_worker import context
 from qamra_worker.jobs.books import file_key
 
@@ -78,7 +79,8 @@ def family_of(item: OrderItem, child: Child) -> Any:
         if isinstance(adult, bool) and adult != member.is_adult:
             member = Member(role, name, "adult" if adult else "child", member.scarf)
         members.append(member)
-    name = str(raw.get("name") or "").strip() or child.first_name
+    # with no family name the book says «عائلة» + the child's own name, a genitive: «عائِلَةِ أبي بكر»
+    name = str(raw.get("name") or "").strip() or genitive(child.first_name)
     return Family(name, tuple(members) or (Member(NEUTRAL_ADULT),), str(raw.get("city") or "").strip())
 
 
@@ -230,7 +232,8 @@ async def render_item(db: Session, storage: ObjectStorage, item: OrderItem) -> d
             language=Locale.ar,
             art_style=character.art_style,
             status=BookStatus.generating,
-            title=f"مغامرات {child.first_name} مع {'عائلتها' if child.gender == Gender.f else 'عائلته'}",
+            title=f"مغامرات {genitive(child.first_name)} مع "
+            + ("عائلتها" if child.gender == Gender.f else "عائلته"),
             generation={"line": LINE, "order_item_id": str(item.id)},
         )
         db.add(book)

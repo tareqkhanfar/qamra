@@ -6,7 +6,7 @@ import { Alert } from "@/components/ui/Alert";
 import { Spinner } from "@/components/ui/Button";
 import { Link, useRouter } from "@/i18n/navigation";
 import { errorText } from "@/lib/api";
-import { accusativeName } from "@/lib/arabicName";
+import { nameCases } from "@/lib/arabicName";
 import { voiceApi, type Invite, type VoiceBook } from "@/lib/voice";
 import { Icon, ICONS } from "./VoicePieces";
 
@@ -40,9 +40,8 @@ export function VoiceInvite({ id }: { id: string }) {
   const label = who === "other" || who === "aunt" ? name.trim() || t(`who.${who}`) : t(`who.${who}`);
   const url = made && typeof window !== "undefined" ? `${window.location.origin}/${locale}${made.path}` : "";
   const text = t("message", {
-    label,
-    labelAcc: accusativeName(label),
-    child: book?.child_name ?? "",
+    ...nameCases(label, "label"),
+    ...nameCases(book?.child_name ?? "", "child"),
     url: url || "…",
   });
 

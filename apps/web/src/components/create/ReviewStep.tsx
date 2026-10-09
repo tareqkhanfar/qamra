@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { errorText } from "@/lib/api";
+import { nameCases } from "@/lib/arabicName";
 import { createApi, pageImage, type Book, type Child } from "@/lib/create";
 import { Frame } from "./Frame";
 
@@ -59,7 +60,7 @@ export function ReviewStep({
   const label = (n: number) => (n === 0 ? t("review.cover") : t("review.page", { n }));
   return (
     <Frame
-      title={book.title ?? t("bookOf", { name: child.name })}
+      title={book.title ?? t("bookOf", nameCases(child.name))}
       label={t("steps.review")}
       n={9}
       back={back}

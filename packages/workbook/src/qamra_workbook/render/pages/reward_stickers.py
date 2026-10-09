@@ -28,6 +28,7 @@ from typing import Any, Literal
 
 from markupsafe import Markup
 
+from qamra_pdf.arabic_names import genitive
 from qamra_workbook.pictures.islamic import glyph_svg, unit_glyph
 from qamra_workbook.pictures.model import scallop_d, strip_tashkeel
 from qamra_workbook.render import art, draw
@@ -702,7 +703,7 @@ def reward_stickers(ctx: PageContext) -> Built:
     data = {
         "groups": groups,
         "count": count,
-        "owner": ctx.book.child.name,
+        "owner": genitive(ctx.book.child.name),  # «مُلْصَقاتُ أبي بكر»: the label owns the name
         "owner_label": text["owner"],
         "key": text["key"],
         "brand": brand,

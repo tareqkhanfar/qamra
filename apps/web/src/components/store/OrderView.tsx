@@ -9,6 +9,7 @@ import { Alert } from "@/components/ui/Alert";
 import { buttonClasses, Spinner } from "@/components/ui/Button";
 import { Link, useRouter } from "@/i18n/navigation";
 import { api } from "@/lib/api";
+import { nameCases } from "@/lib/arabicName";
 import type { ThemeCard } from "@/lib/catalog";
 import { lineSummary } from "@/lib/order";
 import { ORDER_STEPS, cartApi, money, orderPhone, type Catalog, type CatalogStyle, type Tracked } from "@/lib/store";
@@ -122,7 +123,7 @@ export function OrderView({ code, placed }: { code: string; placed: boolean }) {
           ) : (
             <p key={i}>
               {item.child_name
-                ? tc("bookFor", { name: item.child_name })
+                ? tc("bookFor", nameCases(item.child_name))
                 : locale === "ar"
                   ? item.name_ar
                   : item.name_en}

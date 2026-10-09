@@ -18,11 +18,13 @@ Light on purpose (no page engine, no fonts): the API checks a name at order time
   tracing. When no word is left, the page prints the name as a model in the book's type and gives empty
   writing lines; the order job flags the book `name_not_traceable` for the reviewer.
 
-**Printed names (every page and cover):** the name prints as typed. A box it does not fit even at its
-smallest size shows its shorter forms in turn (`shorter_names`: the last parts dropped, a compound never cut),
-a page whose work area overflows while it names the child does the same on the whole page, and the family's
-game tables use the name the family calls the child by (`call_name`). The word limits count a name as one
-word (`render.spec.instruction_words`). A long or compound name never refuses an order.
+**Printed names (every page and cover):** the name prints as typed, or in its case («يا أبا بكر», «لِأبي
+بكر», `qamra_pdf.arabic_names`). A box it does not fit even at its smallest size shows its shorter forms in
+turn (`shorter_names`: the last parts dropped, a compound never cut, each in the case the box prints it in:
+`render.engine.case_names`), a page whose work area overflows while it names the child does the same on the
+whole page, and the family's game tables use the name the family calls the child by (`call_name`). The word
+limits count a name as one word (`render.spec.instruction_words`). A long or compound name never refuses an
+order.
 
 **English (the English name page):** the parent's spelling, `^[A-Za-z][A-Za-z' -]{0,39}$` after accents are
 dropped (é → e). Spaces and hyphens leave a gap; apostrophes are not traced. A long English name is traced

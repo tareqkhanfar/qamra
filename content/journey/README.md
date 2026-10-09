@@ -38,7 +38,7 @@ stages:
 
 - `section`: a section id, or `intro` for the opening pages.
 - `merged: [a, b]`: a `section-opener` or `what-i-learned` page shared by two small neighbouring sections. The shared opener is the first page of `a`; the shared «ماذا تعلمت؟» is the last page of `b`.
-- `title`: the mission's big title. `instruction`: at most 7 words, easy to read aloud. Put `{child}` where the child's name goes.
+- `title`: the mission's big title. `instruction`: at most 7 words, easy to read aloud. Put `{child}` where the child's name goes: `{child:acc}` for an object («ساعد {child:acc}»), `{child:gen}` after a preposition or owning a noun («رحلة {child:gen}», «لـ {child:gen}»); «يا {child}» needs no mark (`qamra_pdf.arabic_names`).
 - `goals`: the development goals from Addendum 6 §2 (`attention`, `memory`, `observation`, `visual_discrimination`, `auditory_discrimination`, `logic`, `classification`, `sequencing`, `visual_motor`, `pen_control`, `fine_motor`, `writing_readiness`, `reading_readiness`, `arabic`, `numbers`, `english`, `independence`).
 - `audio: true`: the page carries a QR code for the sound or word. Listening pages, a letter's `finger-trace` page and `en-letter` need it.
 - Letters: `params.letter`, `letters`, `target` and a color `key` name the letters a page shows (`distractors` do not count). An Arabic letter's first page is its `finger-trace` page (meet it, hear it, link it to a picture, trace it with a finger).

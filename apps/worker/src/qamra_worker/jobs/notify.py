@@ -15,6 +15,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from qamra_core.db.models import Book, Child, NotificationStatus, Order, OrderItem, User
+from qamra_pdf.arabic_names import genitive
 from qamra_worker import context
 from qamra_worker.jobs.books import brand, resolved_settings
 from qamra_worker.notify.email import EmailSender, sender_from_settings
@@ -60,7 +61,8 @@ def _item_label(item: OrderItem, lang: str) -> str:
     name = str(item.title.get("name_ar" if lang == "ar" else "name_en") or item.sku or "")
     fmt = FORMATS[lang].get(str(item.title.get("options", {}).get("format", "")))
     child = item.personalization.get("child_name")
-    parts = [name, fmt, (f"كتاب {child}" if lang == "ar" else f"{child}'s book") if child else None]
+    book = f"كتاب {genitive(str(child))}" if lang == "ar" else f"{child}'s book"  # «كتاب أبي بكر»
+    parts = [name, fmt, book if child else None]
     qty = f" × {item.quantity}" if item.quantity > 1 else ""
     return " · ".join(p for p in parts if p) + qty
 

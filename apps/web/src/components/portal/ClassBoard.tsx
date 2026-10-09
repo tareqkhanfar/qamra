@@ -6,7 +6,7 @@ import { Alert } from "@/components/ui/Alert";
 import { buttonClasses } from "@/components/ui/Button";
 import { Link } from "@/i18n/navigation";
 import { errorText, type ApiResult } from "@/lib/api";
-import { accusativeName } from "@/lib/arabicName";
+import { nameCases } from "@/lib/arabicName";
 import { portalApi, portalFiles, type ChildRow, type ClassDetail, type Stage } from "@/lib/portal";
 import { usePortal } from "./PortalShell";
 import { Chip, Steps } from "./parts";
@@ -46,8 +46,7 @@ export function ClassBoard({ classId }: { classId: string }) {
   const message = (c: ChildRow) =>
     t("message", {
       school: me.org.name,
-      name: c.name,
-      nameAcc: accusativeName(c.name),
+      ...nameCases(c.name),
       gender: c.gender,
       link: link(c),
     });
@@ -133,7 +132,7 @@ export function ClassBoard({ classId }: { classId: string }) {
                 // eslint-disable-next-line @next/next/no-img-element -- the approved drawing (never the photo), private
                 <img
                   src={portalFiles.character(classId, c.id)}
-                  alt={t("drawingOf", { name: c.name })}
+                  alt={t("drawingOf", nameCases(c.name))}
                   className="size-12 rounded-full bg-amber-100 object-cover object-left"
                 />
               ) : (
@@ -150,7 +149,7 @@ export function ClassBoard({ classId }: { classId: string }) {
             </div>
             <Steps
               on={[c.steps.invited, c.steps.consent, c.steps.photo, c.steps.approved]}
-              label={t("stepsLabel", { name: c.name })}
+              label={t("stepsLabel", nameCases(c.name))}
             />
             <div className="flex flex-wrap items-center gap-2">
               <Chip tone={c.stage}>{tp(`stage.${c.stage}`)}</Chip>
@@ -188,7 +187,7 @@ export function ClassBoard({ classId }: { classId: string }) {
               <button
                 type="button"
                 onClick={() => {
-                  if (window.confirm(t("removeConfirm", { name: c.name })))
+                  if (window.confirm(t("removeConfirm", nameCases(c.name))))
                     void act(() => portalApi.removeChild(classId, c.id));
                 }}
                 className="min-h-11 px-2 text-small text-danger underline underline-offset-4"

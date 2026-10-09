@@ -29,6 +29,7 @@ from qamra_api.errors import ApiError
 from qamra_core.db.models import AuditLog, Book, BookPage, BookStatus, Character, Child, Gender, Locale
 from qamra_core.db.models import Theme as ThemeRow
 from qamra_core.storage import ObjectNotFound, ObjectStorage
+from qamra_pdf.arabic_names import case_forms, genitive
 
 router = APIRouter(prefix="/api/examples", tags=["examples"])
 admin_router = APIRouter(prefix="/api/admin", tags=["admin"], dependencies=[Depends(require_admin)])
@@ -105,9 +106,10 @@ def dedication_of(book: Book, name: str, lang: str) -> str | None:
         story = (book.story or {}).get("dedication")
         return str(story) if story else None
     text = _plain(message).lower()
-    if _plain(name).strip().lower() in text or text.startswith(_OPENERS.get(lang, ())):
+    named = any(_plain(form).strip().lower() in text for form in case_forms(name))
+    if named or text.startswith(_OPENERS.get(lang, ())):
         return message
-    return f"{'إلى' if lang == 'ar' else 'To'} {name}… {message}"
+    return f"إلى {genitive(name)}… {message}" if lang == "ar" else f"To {name}… {message}"
 
 
 def _public() -> tuple[ColumnElement[bool], ...]:

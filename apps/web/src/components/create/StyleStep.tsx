@@ -7,7 +7,7 @@ import { StyleShowcase } from "@/components/story/StyleShowcase";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { errorText } from "@/lib/api";
-import { accusativeName } from "@/lib/arabicName";
+import { nameCases } from "@/lib/arabicName";
 import type { ThemeCard } from "@/lib/catalog";
 import { classicStyles, classicVariant } from "@/lib/classic";
 import { createApi, type Character, type Child, type Line } from "@/lib/create";
@@ -64,6 +64,7 @@ export function StyleStep({
   const tc = useTranslations("classic");
   const te = useTranslations("errors");
   const locale = useLocale();
+  const who = nameCases(child.name);
   const ready = classicStyles(themes, classicVariant(child), theme);
   const styles = (catalog?.styles ?? []).filter(
     (s) => s.lines.includes(line) && (line !== "classic" || ready.has(s.slug)),
@@ -89,22 +90,19 @@ export function StyleStep({
 
   return (
     <Frame
-      title={title ?? t("bookOf", { name: child.name })}
+      title={title ?? t("bookOf", who)}
       label={t("steps.style")}
       back={back}
       footer={
         <Button onClick={draw} loading={busy} size="lg" className="grow" disabled={!styles.length}>
-          {t("style.cta", { name: child.name })}
+          {t("style.cta", who)}
         </Button>
       }
     >
-      <Lead
-        title={t("style.title", { name: child.name, nameAcc: accusativeName(child.name) })}
-        body={t("style.body")}
-      />
+      <Lead title={t("style.title", who)} body={t("style.body")} />
       {noClassic && (
         <div className="flex flex-col gap-3">
-          <Alert>{tc("noStyle", { name: child.name })}</Alert>
+          <Alert>{tc("noStyle", who)}</Alert>
           <Button variant="secondary" onClick={back} className="self-start">
             {tc("toMagic")}
           </Button>
@@ -199,9 +197,7 @@ export function StyleStep({
           );
         })}
       </div>
-      {styles.length > 0 && (
-        <p className="rounded-2xl bg-paper-sunk p-4 text-small text-ink">{t("style.next", { name: child.name })}</p>
-      )}
+      {styles.length > 0 && <p className="rounded-2xl bg-paper-sunk p-4 text-small text-ink">{t("style.next", who)}</p>}
       {error && <Alert>{error}</Alert>}
     </Frame>
   );

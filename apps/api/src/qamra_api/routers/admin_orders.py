@@ -22,6 +22,7 @@ from qamra_api.errors import ApiError
 from qamra_api.jobs import QueueDep, enqueue
 from qamra_core.db.models import AuditLog, Order, OrderItem, OrderStatus, User
 from qamra_core.db.store import Counter, Invoice, OrderEvent
+from qamra_pdf.arabic_names import accusative
 
 router = APIRouter(prefix="/api/admin/orders", tags=["admin"])
 MESSAGES_FILE = CONTENT_DIR / "store" / "messages.yaml"
@@ -190,8 +191,10 @@ def whatsapp_links(order: Order, base_url: str = "https://qamra.app") -> dict[st
     phone = "".join(ch for ch in (order.phone or "") if ch.isdigit())
     if phone.startswith("0"):
         phone = ("962" if order.currency.value == "JOD" else "970") + phone[1:]
+    name = str(order.shipping.get("name", ""))
     values = {
-        "name": str(order.shipping.get("name", "")),
+        "name": name,
+        "name_acc": accusative(name),  # «مرحبًا أبا أحمد»: a greeting calls the customer
         "code": order.code,
         "total": _money(order.total, order.currency.value),
         "track_url": f"{base_url}/ar/track",

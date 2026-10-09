@@ -6,6 +6,7 @@ import { Alert } from "@/components/ui/Alert";
 import { buttonClasses, Spinner } from "@/components/ui/Button";
 import { Link, useRouter } from "@/i18n/navigation";
 import { api, errorText } from "@/lib/api";
+import { nameCases } from "@/lib/arabicName";
 import { cartApi, deliveryCountries, money, orderPhone, type Cart, type Catalog, type CatalogZone } from "@/lib/store";
 
 const field = "min-h-12 w-full rounded-md border border-line bg-paper-raised px-3 text-body focus:border-night-900";
@@ -185,7 +186,7 @@ export function CheckoutForm() {
         <ul className="flex flex-col gap-2 text-body">
           {cart.items.map((item) => (
             <li key={item.id} className="flex justify-between gap-3">
-              <span>{item.child_name ? tc("bookFor", { name: item.child_name }) : name(item)}</span>
+              <span>{item.child_name ? tc("bookFor", nameCases(item.child_name)) : name(item)}</span>
               <strong>{amount(item.total)}</strong>
             </li>
           ))}

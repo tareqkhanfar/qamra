@@ -160,7 +160,7 @@ pages:
     ai_drafted: true
     sacred_text: none
     title: أُلَوِّنُ الْمَسْجِدَ
-    instruction: "{لَوِّنْ/لَوِّنِي} الْمَسْجِدَ وَمَا حَوْلَهُ"
+    instruction: "{لَوِّنِ/لَوِّنِي} الْمَسْجِدَ وَمَا حَوْلَهُ"
     pics: ["isl:dome", "isl:lantern", "isl:prayer-mat", palm]
 
   - key: u-why-pray/closing-1
@@ -967,7 +967,7 @@ pages:
     ai_drafted: true
     sacred_text: none
     title: أُلَوِّنُ وَأَفْرَحُ
-    instruction: "{لَوِّنْ/لَوِّنِي} النَّخْلَةَ وَالْقُبَّةَ وَالْفَانُوسَ وَالتَّمْرَ"
+    instruction: "{لَوِّنِ/لَوِّنِي} النَّخْلَةَ وَالْقُبَّةَ وَالْفَانُوسَ وَالتَّمْرَ"
     pics: [palm, "isl:dome", "isl:lantern", dates]
 
   - key: u-adhkar2/closing-1

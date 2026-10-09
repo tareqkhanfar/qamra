@@ -108,7 +108,7 @@ def cover_back(ctx: PageContext) -> Built:
         comes=tuple((c["icon"], covers.fill(ctx, str(c["text"]))) for c in sc.get("comes_with", [])),
         facts=tuple(facts),
         made_for=covers.fill(
-            ctx, f"صُنع خصيصًا لـ{{child}} وعائلة {family.name}" if family else "صُنع خصيصًا لـ{child}"
+            ctx, f"صُنع خصيصًا لـ{{child:gen}} وعائلة {family.name}" if family else "صُنع خصيصًا لـ{child:gen}"
         ),
         org=org_slot(p.get("org")),
     )

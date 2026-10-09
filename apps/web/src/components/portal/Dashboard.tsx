@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
 import { Link, useRouter } from "@/i18n/navigation";
 import { errorText } from "@/lib/api";
+import { nameCases } from "@/lib/arabicName";
 import { portalApi, type ClassSummary } from "@/lib/portal";
 import { usePortal } from "./PortalShell";
 import { StageBar } from "./parts";
@@ -28,7 +29,7 @@ export function Dashboard() {
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-col gap-1">
-          <h1 className="text-h2 text-night-900 md:text-h1">{t("dash.hello", { name: me.name })}</h1>
+          <h1 className="text-h2 text-night-900 md:text-h1">{t("dash.hello", nameCases(me.name))}</h1>
           <p className="text-body text-ink-muted">{t("dash.lead")}</p>
         </div>
         <a

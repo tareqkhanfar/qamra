@@ -14,9 +14,9 @@ from qamra_ai.errors import ContentBlocked, InvalidOutput
 from qamra_ai.pipeline.companion import type_label
 from qamra_ai.pipeline.models import Child, CompanionSpec, Lang, SafetyVerdict, StoryOut
 from qamra_ai.pipeline.runtime import Runtime
-from qamra_ai.pipeline.theme import Theme, max_words_for, render_template, word_count
+from qamra_ai.pipeline.theme import NAME_SLOTS, Theme, max_words_for, render_template, word_count
 from qamra_ai.text.base import SystemPart
-from qamra_pdf.arabic_names import accusative, fix_vocatives
+from qamra_pdf.arabic_names import case_forms, fix_genitives, fix_vocatives, unmark
 
 VOWELIZE_MAX_AGE = 7
 PARENT_MESSAGE_MAX = 120  # Addendum 3 §4: optional dedication message from the parent
@@ -41,13 +41,14 @@ def base_pages(theme: Theme, child: Child, lang: Lang, companion_name: str) -> l
 
 
 def theme_bible(theme: Theme, lang: Lang) -> str:
-    """The fixed part of the story prompt for this theme: identical for every child (cacheable)."""
-    title = theme.title_ar if lang == "ar" else theme.title_en
+    """The fixed part of the story prompt for this theme: identical for every child (cacheable). A name's case
+    marks (`{name:gen}`) are the templates' own: the model sees `{name}` and inflects the name itself."""
+    title = unmark(theme.title_ar if lang == "ar" else theme.title_en, NAME_SLOTS)
     lines = [f"Title template: {title}", f"Ages: {theme.age_range[0]}–{theme.age_range[1]}", "Beats:"]
     lines += [f"{p.index}. {p.beat}" for p in theme.pages]
     if theme.for_parents:
         lesson = theme.for_parents.lesson_ar if lang == "ar" else theme.for_parents.lesson_en
-        lines.append(f"Lesson: {lesson}")
+        lines.append(f"Lesson: {unmark(lesson, NAME_SLOTS)}")
     return "\n".join(lines)
 
 
@@ -69,14 +70,16 @@ def validate_story(story: StoryOut, n_pages: int, wordless: Collection[int] = ()
 
 
 def fix_name_case(story: StoryOut, name: str) -> StoryOut:
-    """The model's text with «يا أبو بكر» → «يا أبا بكر» on the child's own name (Fusha: the vocative of
-    «أبو …» is «أبا …»; `qamra_pdf.arabic_names.fix_vocatives`). The prompt asks the model to inflect the name
-    in every case; a vocative it misses is fixed here, the same way every time. Other names stay untouched."""
-    if accusative(name) == name:
+    """The model's text with the child's own «أبو بكر» in its case (Fusha, الأسماء الخمسة): «يا أبو بكر» →
+    «يا أبا بكر» (the vocative), and after a preposition «لأبو بكر» / «لِـأبو بكر» / «مع أبو بكر» / «إلى أبو
+    بكر» … → «لأبي بكر» / «لِأبي بكر» / «مع أبي بكر» / «إلى أبي بكر» (`qamra_pdf.arabic_names.fix_vocatives`,
+    `fix_genitives`). The prompt asks the model to inflect the name in every case; what it misses there is
+    fixed here, the same way every time. Other names and other cases stay untouched."""
+    if len(case_forms(name)) == 1:
         return story
 
     def fix(text: str) -> str:
-        return fix_vocatives(text, name)
+        return fix_genitives(fix_vocatives(text, name), name)
 
     return story.model_copy(
         update={

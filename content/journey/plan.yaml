@@ -163,7 +163,7 @@ stages:
       games: ["يجد 3 فروق ويطابق الجزء بالكل", "يحلّ لغزًا مصوّرًا بسيطًا"]
       finale: ["يراجع مهارات المحطة كلها في مهام قصيرة", "ينال شهادته الصغيرة"]
     pages:
-      - {n: 1, section: intro, type: owner-page, title: "هذا الكتاب لـ {child}", instruction: "ضع بصمة يدك هنا", skill: "يتعرّف على كتابه ويترك بصمة يده", goals: [independence, fine_motor], difficulty: 1, params: {handprint: true, character: child}}
+      - {n: 1, section: intro, type: owner-page, title: "هذا الكتاب لـ {child:gen}", instruction: "ضع بصمة يدك هنا", skill: "يتعرّف على كتابه ويترك بصمة يده", goals: [independence, fine_motor], difficulty: 1, params: {handprint: true, character: child}}
       - {n: 2, section: intro, type: journey-map, title: "خريطة رحلتي", instruction: "ألصق ملصق بطلك عند البداية", skill: "يتعرّف على محطات الرحلة التسع ويبدأ من الأولى", goals: [independence, attention], difficulty: 1, params: {stops: [أفكر, ألاحظ, أسمع, "أحرّك يدي", "أمسك القلم", أتتبع, أكتب, أقرأ, "أحل وأبدع"], character: child, sticker: true, page_numbers: true}}
       - {n: 3, section: think, type: section-opener, title: "أفكر 🧠: أدرّب عقلي", instruction: "هيّا نبدأ! حرّك بطلك إلى «أفكّر»", skill: "يعرف هدف القسم: ألعاب تنشّط العقل", goals: [independence], difficulty: 1, params: {stop: أفكر}}
       - {n: 4, section: think, type: odd-one-out, title: "مَن المختلف؟", instruction: "في كلّ صفّ ضع دائرة حول المختلف", skill: "يميّز الصورة المختلفة بين أربع", goals: [observation, visual_discrimination], difficulty: 1, example: true, params: {rows: [[تفاحة, تفاحة, تفاحة, كرة], [بطة, بطة, سمكة, بطة], [نجمة, قمر, نجمة, نجمة]], solved_row: 1}}
@@ -299,7 +299,7 @@ stages:
       games: ["يجد 4 فروق ويبحث عن أشياء مخبّأة", "يحلّ لغزًا من دليلين"]
       finale: ["يراجع الحروف والأعداد والحروف الإنجليزية", "ينال شهادته الصغيرة الثانية"]
     pages:
-      - {n: 1, section: intro, type: owner-page, title: "هذا الكتاب لـ {child}", instruction: "ضع بصمة يدك هنا", skill: "يتعرّف على كتابه ويترك بصمة يده", goals: [independence, fine_motor], difficulty: 1, params: {handprint: true, character: child}}
+      - {n: 1, section: intro, type: owner-page, title: "هذا الكتاب لـ {child:gen}", instruction: "ضع بصمة يدك هنا", skill: "يتعرّف على كتابه ويترك بصمة يده", goals: [independence, fine_motor], difficulty: 1, params: {handprint: true, character: child}}
       - {n: 2, section: intro, type: journey-map, title: "خريطة رحلتي: المحطة الثانية", instruction: "ألصق ملصق بطلك عند «أفكّر»", skill: "يرى الخريطة كلها من جديد ويبدأ من المحطة الأولى", goals: [independence, attention], difficulty: 1, params: {stage: 2, stops: [أفكر, ألاحظ, أسمع, "أحرّك يدي", "أمسك القلم", أتتبع, أكتب, أقرأ, "أحل وأبدع"], character: child, sticker: true, page_numbers: true}}
       - {n: 3, section: think, type: section-opener, merged: [think, eye-hand], title: "أفكر 🧠 وألاحظ 👀", instruction: "هيّا! حرّك بطلك إلى «أفكّر» ثمّ «ألاحظ»", skill: "يعرف هدف القسمين: ألعاب تفكير أصعب وطرق أطول", goals: [independence], difficulty: 1, params: {stops: [أفكر, ألاحظ]}}
       - {n: 4, section: think, type: sequence-story, title: "كعك العيد", instruction: "كيف نصنع كعك العيد؟ رتّب الصّور الأربع", skill: "يرتّب قصة من أربع صور", goals: [sequencing, logic], difficulty: 2, params: {panels: ["نعجن العجين", "نحشوه بالتمر", "نخبزه في الفرن", "نقدّمه للضيوف"]}}
@@ -437,7 +437,7 @@ stages:
       games: ["يجد 5 فروق بين صورتين متقاربتين", "يحلّ لغزًا من ثلاثة أدلّة"]
       finale: ["ينجز مهمّات التقييم النهائي وحده", "يملأ وليّ الأمر أو المعلّمة بطاقة الملاحظة (3 وجوه لكل مهارة)", "ينال شهادة «رحلتي الأولى للتعلّم»"]
     pages:
-      - {n: 1, section: intro, type: owner-page, title: "هذا الكتاب لـ {child}", instruction: "ضع بصمة يدك هنا", skill: "يتعرّف على كتابه ويترك بصمة يده", goals: [independence, fine_motor], difficulty: 1, params: {handprint: true, character: child}}
+      - {n: 1, section: intro, type: owner-page, title: "هذا الكتاب لـ {child:gen}", instruction: "ضع بصمة يدك هنا", skill: "يتعرّف على كتابه ويترك بصمة يده", goals: [independence, fine_motor], difficulty: 1, params: {handprint: true, character: child}}
       - {n: 2, section: intro, type: journey-map, title: "خريطة رحلتي: المحطة الثالثة", instruction: "المحطّة الثّالثة تبدأ! ضع ملصقك عند «أفكّر»", skill: "يرى الخريطة كلها للمرة الأخيرة ويبدأ من المحطة الأولى", goals: [independence, attention], difficulty: 1, params: {stage: 3, stops: [أفكر, ألاحظ, أسمع, "أحرّك يدي", "أمسك القلم", أتتبع, أكتب, أقرأ, "أحل وأبدع"], character: child, sticker: true, page_numbers: true}}
       - {n: 3, section: think, type: section-opener, merged: [think, eye-hand], title: "أفكر 🧠 وألاحظ 👀: تحديات أكبر", instruction: "خذ بطلك إلى «أفكّر» ثمّ «ألاحظ»", skill: "يعرف هدف القسمين: قصص أطول وذاكرة أقوى وطرق متشابكة", goals: [independence], difficulty: 1, params: {stops: [أفكر, ألاحظ]}}
       - {n: 4, section: think, type: sequence-story, title: "موسم الزيتون 🫒", instruction: "رتّب صور قطاف الزّيتون، ثمّ احك قصّتها", skill: "يرتّب قصة من ست صور ويحكيها", goals: [sequencing, logic], difficulty: 3, params: {panels: ["نفرش القماش تحت الشجرة", "نقطف الزيتون", "نجمعه في الأكياس", "نأخذه إلى المعصرة", "يخرج الزيت", "نأكل الخبز بالزيت والزعتر"]}}

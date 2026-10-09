@@ -30,7 +30,7 @@ proposal:            # Addendum 7 §3, in Arabic
   paper: |           # interior, cover, sticker sheet, card stock
   binding: |         # wire-o; digital vs offset and the break-even
 front:               # pages before the first adventure (title page, «عائلتي», the passport, contents)
-  - {type: passport, title: "جواز سفر المغامر {child}", instruction: "ألصق ختمًا بعد كل مغامرة"}
+  - {type: passport, title: "جواز سفر المغامر {child:gen}", instruction: "ألصق ختمًا بعد كل مغامرة"}
 sections:            # the adventures, in the book's order
   - {id: home, title_ar: بيتي مدرسة, icon: 🏠, hook: "…", badge: "مستكشف البيت"}
 activities:          # grouped by section, in order
@@ -68,6 +68,7 @@ samples:             # 8–10 pages for approving the look (book page numbers, o
 - `{member}`: a family member from the family list.
 - `{family_name}`, `{city}`.
 - `{masc/fem}` pairs for the child's gender.
+- A name's case (`qamra_pdf.arabic_names`; only a name that starts with «أبو» or «ذو» changes): `{child:acc}`, `{adult:acc}`, `{member:acc}` for an object or a call without «يا» («اشكروا {child:acc}» → «اشكروا أبا بكر»); `{child:gen}`, `{adult:gen}`, `{member:gen}` after a preposition or «مع» / «عند», or owning a noun («مع {adult:gen}» → «مع أبي أحمد», «مَطْبَخُ {child:gen}», «لـ{child:gen}» → «لأبي بكر»). «يا {child}» needs no mark. `{family_name}` is a surname and is never marked.
 
 Never write a fixed «ماما» or «بابا» into instructions or parent boxes. Families differ, and a child may be raised by a grandparent or one parent (§9).
 

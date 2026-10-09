@@ -31,6 +31,7 @@ import numpy as np
 from markupsafe import Markup, escape
 from PIL import Image
 
+from qamra_pdf.arabic_names import case_forms, fill_name, genitive
 from qamra_pdf.assets import Assets
 from qamra_pdf.lettering import (
     Treatment,
@@ -217,12 +218,13 @@ class CoverDesign:
 
     @property
     def made_for_html(self) -> Markup:
-        """«نُسْخَةٌ خاصَّةٌ بِـ{name}» with the name in its color (it is glued to «بِـ», so it is not a word of
-        its own that `cover_name` could find)."""
-        before, found, after = self.made_for.rpartition(self.name)
-        if not found:
-            return escape(self.made_for)
-        return escape(before) + Markup('<span class="nm">%s</span>') % found + escape(after)
+        """«نُسْخَةٌ خاصَّةٌ بِـ{name:gen}» with the name in its color (it is glued to «بِـ», so it is not a word
+        of its own that `cover_name` could find; it is in the genitive, «بِـأبي بكر»)."""
+        for form in reversed(case_forms(self.name)):
+            before, found, after = self.made_for.rpartition(form)
+            if found:
+                return escape(before) + Markup('<span class="nm">%s</span>') % found + escape(after)
+        return escape(self.made_for)
 
     @property
     def brand_name(self) -> str:
@@ -397,12 +399,12 @@ def story_design(spec: BookSpec, assets: Assets, qr: Markup | None = None) -> Co
         title=title,
         name=name,
         ribbon_label=s["ribbon_f"] if spec.gender == "f" else s["ribbon_m"],
-        ribbon_name=name,
+        ribbon_name=genitive(name),  # «بطولة البطل الرائع أبي بكر»
         brand=spec.brand,
         series=series_label(spec.series, spec.lang),
         hook=title,
         blurb=c.blurb,
-        made_for=s["made_for_copy"].format(name=name),
+        made_for=fill_name(s["made_for_copy"], "name", name),
         chips=chips,
         thumbs=list(assets.thumbs),
         hero=assets.hero,
@@ -457,12 +459,12 @@ def class_design(
         title=title,
         name=name,
         ribbon_label=gendered.get(copy.gender or "", school.school),
-        ribbon_name=name if copy.gender else "",
+        ribbon_name=genitive(name) if copy.gender else "",  # after «بطولة البطل الرائع»: «أبي بكر»
         brand=spec.brand,
         series=series_label("class", spec.lang),
         hook=display_text(spec.title),
         blurb=spec.blurb,
-        made_for=s["made_for_copy"].format(name=name),
+        made_for=fill_name(s["made_for_copy"], "name", name),
         chips=chips,
         thumbs=list(assets.thumbs),
         hero=assets.hero,

@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Kid } from "@/components/art/Kid";
-import { accusativeName } from "@/lib/arabicName";
+import { nameCases } from "@/lib/arabicName";
 import { characterImage, type Character, type Child } from "@/lib/create";
 import { isArabicName, isLatinName } from "@/lib/flows";
 import { Hint, inputClass } from "./EditChild";
@@ -40,7 +40,7 @@ export function KnownChild({
   showErrors: boolean;
 }) {
   const t = useTranslations("create");
-  const who = { name: child.name, gender: child.gender };
+  const who = { ...nameCases(child.name), gender: child.gender };
   const badName = traces && !isArabicName(child.name);
   const badEn = asksNameEn && showErrors && !isLatinName(nameEn);
   return (
@@ -52,11 +52,7 @@ export function KnownChild({
         <div className="flex size-[76px] shrink-0 items-end justify-center overflow-hidden rounded-2xl bg-night-100">
           {ready ? (
             // eslint-disable-next-line @next/next/no-img-element -- private image through the API, no-store
-            <img
-              src={characterImage(ready.id)}
-              alt={t("who.known.alt", { name: child.name })}
-              className="size-full object-cover"
-            />
+            <img src={characterImage(ready.id)} alt={t("who.known.alt", who)} className="size-full object-cover" />
           ) : (
             <Kid hijab={child.hijab} className="h-auto w-[64px]" />
           )}
@@ -106,9 +102,7 @@ export function KnownChild({
 
       {!ready && (
         <fieldset className="flex flex-col gap-2" aria-describedby={`look-${child.id}-hint`}>
-          <legend className="text-body font-semibold">
-            {t("child.drawAs", { name: child.name, nameAcc: accusativeName(child.name) })}
-          </legend>
+          <legend className="text-body font-semibold">{t("child.drawAs", who)}</legend>
           <Hint id={`look-${child.id}-hint`}>{t("child.lookHint")}</Hint>
           <div className="flex flex-wrap gap-2">
             {child.gender === "f" && (

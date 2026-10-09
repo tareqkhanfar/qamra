@@ -1,6 +1,6 @@
 slug: graduation
 version: 3
-title_ar: "يوم تخرّج {name}"
+title_ar: "يوم تخرّج {name:gen}"
 title_en: "{name}'s Graduation Day"
 # Cover lettering (Addendum 11 §2.3): gold-magic, candy-bright, night-glow, nature-fresh, heritage-tatreez
 cover_title_style: gold-magic
@@ -131,7 +131,7 @@ cast:
       headscarf, a traditional black Palestinian thobe with red cross-stitch tatreez on the chest panel
       and sleeves, a string of olive-wood prayer beads in her hand
 
-blurb_ar: "من ذكرى أوّل يوم إلى لحظة رفع الشهادة عاليًا: حكاية {name} في يوم التخرّج، وحلمٌ صغير اسمه الصفّ الأول."
+blurb_ar: "من ذكرى أوّل يوم إلى لحظة رفع الشهادة عاليًا: حكاية {name:gen} في يوم التخرّج، وحلمٌ صغير اسمه الصفّ الأول."
 blurb_en: "From the memory of the very first day to the moment the certificate goes up high: {name}'s graduation day, and a little dream called first grade."
 
 for_parents:
@@ -207,7 +207,7 @@ pages:
       At the painting table, the hero with paint on both hands mixes blue and yellow paint into green on
       a big sheet of paper, delighted.
     companion_action: has a drop of green paint on its nose and laughs
-    text_ar: "{وَخَلَطَ/وَخَلَطَتْ} {name} الْأَلْوَانَ: الْأَزْرَقُ وَالْأَصْفَرُ صَارَا أَخْضَرَ! وَعَلَى أَنْفِ {companion} نُقْطَةُ طِلَاءٍ خَضْرَاءُ."
+    text_ar: "{وَخَلَطَ/وَخَلَطَتْ} {name} الْأَلْوَانَ: الْأَزْرَقُ وَالْأَصْفَرُ صَارَا أَخْضَرَ! وَعَلَى أَنْفِ {companion:gen} نُقْطَةُ طِلَاءٍ خَضْرَاءُ."
     text_en: "{name} mixed the colors: blue and yellow turned green! And {companion} got a green dot on its nose."
   - index: 5
     layout: full
@@ -300,7 +300,7 @@ pages:
       On the stage under a warm spotlight, the hero in gown and cap raises a rolled certificate tied with
       a ribbon high above their head, beaming.
     companion_action: cheers with both arms up
-    text_ar: "نَادَتِ الْمُعَلِّمَةُ: «{name:acc}!» {فَمَشَى/فَمَشَتْ} {name} بِثِقَةٍ، {وَرَفَعَ/وَرَفَعَتْ} الشَّهَادَةَ عَالِيًا تَحْتَ الضَّوْءِ."
+    text_ar: "نَادَتِ الْمُعَلِّمَةُ: «{name:acc}!» {فَمَشَى/فَمَشَتْ} {name} بِثِقَةٍ، {وَرَفَعَ/وَرَفَعَتِ} الشَّهَادَةَ عَالِيًا تَحْتَ الضَّوْءِ."
     text_en: "The teacher called: \"{name}!\" {name} walked up proudly and held the certificate high in the light."
   - index: 12
     layout: split
@@ -385,5 +385,5 @@ pages:
       Night in the bedroom. The hero in pajamas kneels on the bed looking at a big gentle moon through
       the window, dreaming, with a new school bag ready on the chair.
     companion_action: curls up on the windowsill, glowing like a night light
-    text_ar: "وَفِي اللَّيْلِ، تَحْتَ ضَوْءِ الْقَمَرِ، {هَمَسَ/هَمَسَتْ} {name} لِـ{companion}: «الصَّفُّ الْأَوَّلُ… {أَنَا قَادِمٌ/أَنَا قَادِمَةٌ}!»"
+    text_ar: "وَفِي اللَّيْلِ، تَحْتَ ضَوْءِ الْقَمَرِ، {هَمَسَ/هَمَسَتْ} {name} لِـ{companion:gen}: «الصَّفُّ الْأَوَّلُ… {أَنَا قَادِمٌ/أَنَا قَادِمَةٌ}!»"
     text_en: "That night, under the moonlight, {name} whispered to {companion}: \"First grade... here I come!\""

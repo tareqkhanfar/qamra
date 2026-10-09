@@ -38,6 +38,7 @@ import yaml
 from markupsafe import Markup, escape
 from PIL import Image, ImageEnhance
 
+from qamra_pdf.arabic_names import case_forms
 from qamra_pdf.lettering import honorific_runs, honorific_tspan, with_honorifics
 from qamra_workbook.render import art, draw
 from qamra_workbook.render.character import pose
@@ -327,6 +328,12 @@ _MARKS = re.compile("[\\u0610-\\u061a\\u064b-\\u065f\\u0670\\u06d6-\\u06ed\\u064
 
 def letters(text: str) -> int:
     return len(_MARKS.sub("", text).replace(" ", ""))
+
+
+def printed_name(title: str, name: str) -> str:
+    """The child's name as `title` prints it: as typed, or in its case when the title inflects it
+    («مُغامَراتُ أبي بكر» for «أبو بكر», `qamra_pdf.arabic_names.case_forms`)."""
+    return next((form for form in case_forms(name) if form in title), name)
 
 
 def title_lines(title: str, keep: str = "", one_line_max: int = 14) -> list[str]:
@@ -1021,7 +1028,8 @@ def front_data(ctx: PageContext, f: Front, box: Box | None = None) -> dict[str, 
     # the brand row, then the title panel
     brand_top = box.top
     panel_top = brand_top + 13
-    lines = title_lines(f.title, ctx.book.child.name, f.one_line_max)
+    name = printed_name(f.title, ctx.book.child.name)  # «مُغامَراتُ أبي بكر»: kept whole, in its colors
+    lines = title_lines(f.title, name, f.one_line_max)
     marked = bool(_MARKS.search(f.title))  # tashkeel needs room above and below each line
     title_h = (36.0 if len(lines) == 1 else 54.0) * scale + (5.0 if marked else 0.0)
     if marked and len(lines) > 1:
@@ -1055,7 +1063,7 @@ def front_data(ctx: PageContext, f: Front, box: Box | None = None) -> dict[str, 
     hero_w = hero_h * aspect
     block = round(23.0 * scale, 1)
     blocks = blocks_layout(f.blocks, look, box, feet, hero_w, block, ctx.book.numerals)
-    title = title_svg(lines, look, width=panel_w - 14, height=title_h, uid=uid, name=ctx.book.child.name)
+    title = title_svg(lines, look, width=panel_w - 14, height=title_h, uid=uid, name=name)
     return {
         "series": f.series,
         "box": box,
@@ -1139,7 +1147,8 @@ def back_data(ctx: PageContext, b: Back, box: Box | None = None) -> dict[str, An
     if thumb_files:
         with Image.open(thumb_files[0]) as first:
             thumb_ratio = first.height / first.width
-    lines = title_lines(b.title, ctx.book.child.name, 28)  # small on the back: one line when it can
+    name = printed_name(b.title, ctx.book.child.name)
+    lines = title_lines(b.title, name, 28)  # small on the back: one line when it can
     title_w = box.inner_w - hero_h * aspect - 6
     title = title_svg(
         lines,
@@ -1147,7 +1156,7 @@ def back_data(ctx: PageContext, b: Back, box: Box | None = None) -> dict[str, An
         width=min(title_w, 120.0),
         height=17.0 if len(lines) == 1 else 26.0,
         uid=uid,
-        name=ctx.book.child.name,
+        name=name,
     )  # small: the outline and the extrusion follow its size (COVER_FIT_JS)
     inside = []
     for i, (icon, text, color) in enumerate(b.inside):
@@ -1206,7 +1215,9 @@ def pages_phrase(n: int, *, vowelized: bool = False) -> str:
 
 def fill(ctx: PageContext, text: str, **values: Any) -> str:
     """A cover line as printed: `{pages}`/`{units}`… filled in, personalized, in the book's numerals. «لـ»
-    before a name that starts with «ال» joins it as «لل» («للمعتصم», never «لـالمعتصم»)."""
+    before a name that starts with «ال» joins it as «لل» («للمعتصم», never «لـالمعتصم»). A genitive slot,
+    «لِـ{child:gen}», is joined when it is filled (`qamra_pdf.arabic_names`: «لِلمعتصم», «لِأبي بكر»); the rule
+    here keeps unmarked text right."""
     for key, value in values.items():
         text = text.replace("{" + key + "}", str(value))
     return re.sub(r"لِ?ـال", "لل", ctx.text(text))

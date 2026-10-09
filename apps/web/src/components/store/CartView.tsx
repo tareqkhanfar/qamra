@@ -6,6 +6,7 @@ import { Alert } from "@/components/ui/Alert";
 import { buttonClasses } from "@/components/ui/Button";
 import { Link } from "@/i18n/navigation";
 import { api, errorText } from "@/lib/api";
+import { nameCases } from "@/lib/arabicName";
 import { cartApi, money, type Cart, type CartItem, type Catalog, type CatalogAddOn } from "@/lib/store";
 
 /** Add-ons offered in the cart; the others are offered at their own step of the create flow (Addendum 4 §4). */
@@ -95,7 +96,7 @@ export function CartView() {
               <div className="flex items-start justify-between gap-3">
                 <div className="flex flex-col gap-0.5">
                   <strong className="text-[18px] text-night-900">
-                    {item.child_name ? t("bookFor", { name: item.child_name }) : name(item)}
+                    {item.child_name ? t("bookFor", nameCases(item.child_name)) : name(item)}
                   </strong>
                   <span className="text-small text-ink-muted">
                     {tl(item.line)} · {tf(item.options.format ?? "digital")}

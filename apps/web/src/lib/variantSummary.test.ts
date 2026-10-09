@@ -99,6 +99,13 @@ describe("activity books (§c.9)", () => {
       NAMES,
     );
     assert.equal(ar(islamic.title), "قلبي يعرف الله · ضحى");
+    // the child's name in its case: «رحلة أبي بكر الأولى», «قلبي يعرف الله · أبو بكر»
+    const abu = (line: string) => ar(summarize({ line, options: {}, child_name: "أبو بكر" }, "activity", NAMES).title);
+    assert.equal(abu("journey"), "رحلة أبي بكر الأولى");
+    assert.equal(abu("workbook"), "دوسية أبي بكر");
+    assert.equal(abu("family"), "مغامرات أبي بكر");
+    assert.equal(abu("islamic"), "قلبي يعرف الله · أبو بكر");
+    assert.equal(ar(summarize({ child_name: "أبو بكر" }, "story", NAMES).title), "كتاب أبي بكر");
     assert.equal(details(islamic), "كتاب رمضان والعيد · ملف PDF");
     assert.deepEqual(islamic.facts, [{ key: "download" }]); // where the file is downloaded, once ready
     ar(islamic.facts[0]);
@@ -134,6 +141,8 @@ describe("activity books (§c.9)", () => {
       city: "",
       members: [],
     }); // skipped: one neutral grown-up
+    const abuBakr = summarize({ ...line, child_name: "أبو بكر" }, "activity", NAMES).family;
+    assert.equal(abuBakr?.name, "أبي بكر"); // «عائلة أبي بكر», as the book prints it
   });
 });
 

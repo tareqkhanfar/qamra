@@ -12,6 +12,7 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { StickyCta } from "@/components/site/StickyCta";
 import { Arrow, CtaBand, Faq, SECTION, SectionHead, Steps, type QA, type Step } from "@/components/site/blocks";
 import { Link } from "@/i18n/navigation";
+import { nameCases } from "@/lib/arabicName";
 import { examplesFor, getShopSummary, getStoreCatalog, getTheme } from "@/lib/catalog";
 import { brandName } from "@/config/brand";
 import { siteJsonLd } from "@/lib/pageSeo";
@@ -60,7 +61,7 @@ export default async function LandingPage() {
       <img
         key="character"
         src={featured.character}
-        alt={t("howCharacterAlt", { name: featured.child_name })}
+        alt={t("howCharacterAlt", nameCases(featured.child_name))}
         loading="lazy"
         className="size-full object-contain p-3"
       />
@@ -104,7 +105,7 @@ export default async function LandingPage() {
             <SectionHead
               id="samples-title"
               eyebrow={t("samplesEyebrow")}
-              title={featured ? t("realBookTitle") : t("samplesTitle", { name: sample?.sample_name ?? "" })}
+              title={featured ? t("realBookTitle") : t("samplesTitle", nameCases(sample?.sample_name ?? ""))}
               lead={featured ? t("realBookLead") : t("sampleLead")}
             />
             {sample && (

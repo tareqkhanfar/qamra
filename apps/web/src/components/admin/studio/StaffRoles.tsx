@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { api, errorText } from "@/lib/api";
+import { nameCases } from "@/lib/arabicName";
 import { when, type StaffList, type StaffMember } from "@/lib/studio";
 import { inputClass } from "./parts";
 
@@ -90,7 +91,7 @@ export function StaffRoles() {
                 `remove:${member.id}`,
                 `/api/admin/staff/${member.id}`,
                 { method: "DELETE" },
-                t("confirmRemove", { name: member.full_name }),
+                t("confirmRemove", nameCases(member.full_name)),
               )
             }
             locale={locale}

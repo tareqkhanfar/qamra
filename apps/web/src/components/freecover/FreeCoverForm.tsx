@@ -6,6 +6,7 @@ import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { Link, useRouter } from "@/i18n/navigation";
 import { api, errorText, type User } from "@/lib/api";
+import { nameCases } from "@/lib/arabicName";
 import type { ThemeCard } from "@/lib/catalog";
 import { classicAvailable, classicVariant } from "@/lib/classic";
 import { createApi, type Child } from "@/lib/create";
@@ -64,7 +65,7 @@ export function FreeCoverForm({ initialTheme }: { initialTheme: string | null })
   const chosen = ready.find((th) => th.slug === theme) ?? ready[0] ?? null;
   const needsPhoto = !child || (child.photos === 0 && !child.characters.some((c) => c.approved));
   const needsConsent = !child || !child.consent;
-  const who = { name: child?.name ?? (name.trim() || t("yourChild")), gender: child?.gender ?? gender ?? "f" };
+  const who = { ...nameCases(child?.name ?? (name.trim() || t("yourChild"))), gender: child?.gender ?? gender ?? "f" };
 
   async function submit() {
     setError(null);
@@ -224,7 +225,7 @@ export function FreeCoverForm({ initialTheme }: { initialTheme: string | null })
             {(["p1", "p3", "p4"] as const).map((p) => (
               <li key={p}>• {tc(`consent.${p}.body`, who)}</li>
             ))}
-            <li>• {t("photoRule", { name: who.name })}</li>
+            <li>• {t("photoRule", who)}</li>
           </ul>
           <label
             className={`flex cursor-pointer items-start gap-3 rounded-2xl p-4 text-body ${consent ? "border-2 border-night-900 bg-night-100" : "border-[1.5px] border-line bg-paper-raised"}`}

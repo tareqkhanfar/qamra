@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { errorText } from "@/lib/api";
-import { accusativeName } from "@/lib/arabicName";
+import { nameCases } from "@/lib/arabicName";
 import { companionApi, drawingImage, optionImage, type Companion } from "@/lib/companion";
 import type { Child } from "@/lib/create";
 import { Check } from "../Frame";
@@ -66,9 +66,8 @@ export function CompanionChoose({
     >
       <p className="text-body leading-relaxed text-ink-muted">
         {t("body", {
-          name: companion.name,
-          nameAcc: accusativeName(companion.name),
-          child: child.name,
+          ...nameCases(companion.name),
+          ...nameCases(child.name, "child"),
           gender: child.gender,
         })}
       </p>
@@ -106,7 +105,7 @@ export function CompanionChoose({
                   {/* eslint-disable-next-line @next/next/no-img-element -- private image through the API */}
                   <img
                     src={optionImage(companion.id, n, version)}
-                    alt={t("optionAlt", { n: n + 1, name: companion.name })}
+                    alt={t("optionAlt", { n: n + 1, ...nameCases(companion.name) })}
                     className="max-h-full max-w-full object-contain"
                   />
                 </div>

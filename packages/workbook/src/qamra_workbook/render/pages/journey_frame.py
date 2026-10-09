@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from qamra_pdf.arabic_names import genitive
 from qamra_workbook.render import covers, draw
 from qamra_workbook.render.pages.journey import (
     MAP_H,
@@ -33,10 +34,11 @@ def stage_name(stage: int) -> str:
 
 @page_type("journey-owner", frame="full")
 def journey_owner(ctx: PageContext) -> Built:
-    """«هذا الكتاب لـ…»: the name, the child's character, a hand to draw around, age and start date."""
+    """«هذا الكتاب لـ…»: the name (in the genitive: «أبي بكر»), the child's character, a hand to draw around,
+    age and start date."""
     stage = ctx.page.stage or 1
     data = {
-        "name": ctx.book.child.name,
+        "name": genitive(ctx.book.child.name),
         "character": ctx.assets.character.resolve().as_uri() if ctx.assets.character else "",
         "level_title": "رِحْلَتي الأولى لِلتَّعَلُّمِ",
         "volume_title": str(ctx.page.params.get("subtitle", stage_name(stage))),
@@ -137,7 +139,7 @@ def journey_cover_front(ctx: PageContext) -> Built:
         series="journey",
         part=part,
         title=str(ctx.page.title or "رحلتي الأولى للتعلّم"),
-        ribbon=ctx.text(str(p.get("kicker") or sc.get("ribbon", "رحلة {child}"))),
+        ribbon=ctx.text(str(p.get("kicker") or sc.get("ribbon", "رحلة {child:gen}"))),
         subtitle=str(p.get("subtitle", "")),
         pills=((stage_name(stage), "main"),),
         age=ctx.book.num(AGES_LATIN.get(stage, "")) + " سنوات",
@@ -166,6 +168,6 @@ def journey_cover_back(ctx: PageContext) -> Built:
         inside_title="في هذه المحطة",
         comes=tuple((c["icon"], covers.fill(ctx, str(c["text"]))) for c in pc.get("comes_with", []) or []),
         facts=tuple(facts),
-        made_for=covers.fill(ctx, "صُنع هذا الكتاب خصيصًا لـ{child}"),
+        made_for=covers.fill(ctx, "صُنع هذا الكتاب خصيصًا لـ{child:gen}"),
     )
     return Built({"cv": covers.back_data(ctx, back), "stage": stage_name(stage)})

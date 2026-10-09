@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { emptyFamily, familyPayload, type Family, type Relation } from "@/components/workbook/FamilyDetails";
 import { Link, useRouter } from "@/i18n/navigation";
 import { api, errorText, type User } from "@/lib/api";
+import { nameCases } from "@/lib/arabicName";
 import type { ThemeCard } from "@/lib/catalog";
 import { classicStyles, classicVariant, type ClassicVariant } from "@/lib/classic";
 import { companionAddOn } from "@/lib/companion";
@@ -449,10 +450,10 @@ export function CreateWizard() {
   const productName = found ? (locale === "ar" ? found.product.name_ar : found.product.name_en) : null;
   const frameTitle = activity
     ? shownName
-      ? t(`titles.${productLine}`, { name: shownName })
+      ? t(`titles.${productLine}`, nameCases(shownName))
       : productName!
     : shownName
-      ? t("titles.story", { name: shownName })
+      ? t("titles.story", nameCases(shownName))
       : t("newBook");
   const frame = { title: frameTitle, ...count, close: q.item ? "/cart" : "/account" };
 

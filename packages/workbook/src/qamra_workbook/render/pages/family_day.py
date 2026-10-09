@@ -188,7 +188,7 @@ def chore_chart(ctx: PageContext) -> Built:
         "ideas": [
             {"pic": ctx.pic(str(i["picture"])), "text": ctx.text(str(i.get("text", "")))} for i in ideas[:6]
         ],
-        "owner": ctx.text(str(params.get("owner", "جَدْوَلُ {child}"))),
+        "owner": ctx.text(str(params.get("owner", "جَدْوَلُ {child:gen}"))),
         "reward": ctx.text(str(params.get("reward", "مُكافَأَتي فِي آخِرِ الأُسْبوعِ:"))),
     }
     return Built(data, None, problems)

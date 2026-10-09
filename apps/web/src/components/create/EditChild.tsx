@@ -1,10 +1,11 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { errorText } from "@/lib/api";
+import { nameCases, twoWordName } from "@/lib/arabicName";
 import { createApi, type Child } from "@/lib/create";
 import { isArabicName, type Kind } from "@/lib/flows";
 import { Chip } from "./Frame";
@@ -39,7 +40,8 @@ function nameHint(kind: Kind, line: string | null): string {
 
 /**
  * The name, gender and age, each with why we ask it for this product (§c.4): the new-child form and «تعديل
- * البيانات» share them.
+ * البيانات» share them. A name typed as one word that is usually two («أبوبكر», «عبدالله») gets a gentle
+ * suggestion under the field («أبو بكر» is what the book's sentences inflect: «يا أبا بكر»); the parent decides.
  */
 export function ChildFields({
   id,
@@ -68,6 +70,8 @@ export function ChildFields({
 }) {
   const t = useTranslations("create");
   const activity = kind === "activity";
+  const input = useRef<HTMLInputElement>(null);
+  const split = twoWordName(name);
   return (
     <>
       <div className="flex flex-col gap-1.5">
@@ -76,16 +80,34 @@ export function ChildFields({
         </label>
         <Hint id={`${id}-name-hint`}>{t(nameHint(kind, productLine))}</Hint>
         <input
+          ref={input}
           id={`${id}-name`}
           value={name}
           maxLength={40}
           autoComplete="off"
-          aria-describedby={`${id}-name-hint`}
+          aria-describedby={split ? `${id}-name-hint ${id}-name-split` : `${id}-name-hint`}
           aria-invalid={nameError ? true : undefined}
           onChange={(e) => onName(e.target.value)}
           className={inputClass}
         />
         {nameError && <span className="text-caption font-semibold text-danger">{nameError}</span>}
+        {split && (
+          <div className="flex flex-col items-start gap-2 rounded-sm border border-info/20 bg-info-bg px-3 py-2.5">
+            <p id={`${id}-name-split`} className="text-caption text-info">
+              {t.rich("child.twoWords", { suggestion: split, ar: arabic })}
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                onName(split);
+                input.current?.focus();
+              }}
+              className="min-h-11 rounded-full border-2 border-night-900 bg-paper-raised px-4 py-1.5 text-start font-display text-small font-bold text-night-900 hover:bg-night-100"
+            >
+              {t.rich("child.twoWordsUse", { suggestion: split, ar: arabic })}
+            </button>
+          </div>
+        )}
         {preview}
       </div>
 
@@ -182,7 +204,7 @@ export function EditChild({
     >
       <div className="flex flex-col gap-1">
         <h2 id={`edit-${child.id}-title`} className="text-[20px] leading-snug text-night-900">
-          {t("who.edit.title", { name: child.name })}
+          {t("who.edit.title", nameCases(child.name))}
         </h2>
         <Hint>{t("who.edit.note")}</Hint>
       </div>

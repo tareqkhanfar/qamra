@@ -19,6 +19,7 @@ from typing import Any
 
 from markupsafe import Markup
 
+from qamra_pdf.arabic_names import GEN, in_case
 from qamra_workbook.family import NUTS_AND_RAW_EGGS
 from qamra_workbook.pictures import get as picture
 from qamra_workbook.pictures.model import OUTLINE, scallop_d
@@ -180,9 +181,9 @@ def family_of(ctx: PageContext, problems: list[str]) -> Family | None:
     return ctx.book.family
 
 
-def members_line(members: Sequence[Member]) -> str:
-    """«ماما وبابا وكرم وستّي»."""
-    labels = [m.label for m in members]
+def members_line(members: Sequence[Member], case: str = "") -> str:
+    """«ماما وبابا وكرم وستّي»; with `case` (`GEN`) every name in that case: «مَعَ أبي أحمد وستّي»."""
+    labels = [in_case(m.label, case) for m in members]
     return " و".join(labels) if len(labels) > 1 else "".join(labels)
 
 
@@ -707,7 +708,7 @@ FEELINGS: tuple[tuple[people.Feeling, str], ...] = (("angry", "الغَضَبُ"
 STRATEGIES = (
     ("wind", "أَتَنَفَّسُ بِبُطْءٍ"),
     ("heart", "أَطْلُبُ حِضْنًا"),
-    ("talk", "أَحْكي لِـ{adult}"),
+    ("talk", "أَحْكي لِـ{adult:gen}"),
     ("cup", "أَشْرَبُ ماءً"),
     ("crayon", "أَرْسُمُ شُعوري"),
     ("hand", "أَعُدُّ حَتّى ٥"),
@@ -823,7 +824,7 @@ def memory_page(ctx: PageContext) -> Built:
     members = list(family.members) if family else []
     data = {
         "members": [m.label for m in members],
-        "quote_from": ctx.text(str(ctx.page.params.get("quote_from", "كَلِمَةٌ مِنْ {adult}"))),
+        "quote_from": ctx.text(str(ctx.page.params.get("quote_from", "كَلِمَةٌ مِنْ {adult:gen}"))),
         "stars_q": ctx.text(str(ctx.page.params.get("stars_q", "كَمْ نَجْمَةً {تُعْطي/تُعْطينَ} مُغامَرَتَنا؟"))),
         "stars": int(ctx.page.params.get("stars", 5)),  # how many stars to color (the plan's `stars`)
         "draw_label": ctx.text("أَوِ {ارْسُمْ/ارْسُمي} ما فَعَلْناهُ"),
@@ -930,7 +931,7 @@ def certificate_family(ctx: PageContext) -> Built:
         "line": ctx.text(str(ctx.page.params.get("line", "{أَنْهى/أَنْهَتْ} كُلَّ مُغامَراتِ «مُغامَراتي مَعَ عائِلَتي»"))),
         "name": ctx.book.child.name,
         "family": family.name if family else "",
-        "members": ("مَعَ " + members_line(family.members)) if family else "",
+        "members": ("مَعَ " + members_line(family.members, GEN)) if family else "",
         "date": ctx.book.date_ar(),
         "character": uri(hero),
         "badges": [rosette(b, css_class="cert-seal") for b in CORE_BADGES],

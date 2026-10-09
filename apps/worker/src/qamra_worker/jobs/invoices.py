@@ -15,6 +15,7 @@ from qamra_core.db.store import Invoice
 from qamra_core.storage import ObjectStorage
 from qamra_pdf import InvoiceLine, InvoiceSpec
 from qamra_pdf import render_invoice as render_invoice_pdf
+from qamra_pdf.arabic_names import genitive
 from qamra_worker import context
 from qamra_worker.jobs.books import brand, resolved_settings
 
@@ -38,7 +39,10 @@ def invoice_spec(db: Session, invoice: Invoice) -> InvoiceSpec:
         options = item.title.get("options", {})
         detail = " · ".join(
             x
-            for x in (FORMATS_AR.get(str(options.get("format", ""))), f"كتاب {child}" if child else None)
+            for x in (
+                FORMATS_AR.get(str(options.get("format", ""))),
+                f"كتاب {genitive(str(child))}" if child else None,
+            )
             if x
         )
         name = str(item.title.get("name_ar", item.sku or ""))

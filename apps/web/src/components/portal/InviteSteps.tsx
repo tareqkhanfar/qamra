@@ -6,7 +6,7 @@ import { MoonPhase } from "@/components/art/MoonPhase";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { errorText } from "@/lib/api";
-import { accusativeName } from "@/lib/arabicName";
+import { nameCases } from "@/lib/arabicName";
 import { characterImage, createApi, type Character, type Child, type Fix } from "@/lib/create";
 import { inviteApi, type Invite } from "@/lib/portal";
 
@@ -21,7 +21,7 @@ export function ConsentPart({ invite, token, onDone }: { invite: Invite; token: 
   const [accepted, setAccepted] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const who = { name: invite.child_name, school: invite.school };
+  const who = { ...nameCases(invite.child_name), school: invite.school };
 
   async function submit() {
     if (!accepted) return setError(t("required"));
@@ -87,7 +87,7 @@ export function PhotoPart({ child, onDone }: { child: Child; onDone: (c: Child) 
 
   return (
     <section className="flex flex-col gap-3">
-      <h2 className="text-h3 text-night-900">{t("title", { name: child.name })}</h2>
+      <h2 className="text-h3 text-night-900">{t("title", nameCases(child.name))}</h2>
       <p className="text-body text-ink-muted">{t("body")}</p>
       <ul className="flex flex-col gap-1 text-small">
         {(["one", "front", "light"] as const).map((k) => (
@@ -172,7 +172,7 @@ export function CharacterPart({
     <section className="flex flex-col gap-3">
       {!latest || latest.status === "failed" ? (
         <>
-          <h2 className="text-h3 text-night-900">{t("drawTitle", { name: child.name })}</h2>
+          <h2 className="text-h3 text-night-900">{t("drawTitle", nameCases(child.name))}</h2>
           {latest?.status === "failed" && <Alert>{t("failed")}</Alert>}
           <Button size="lg" loading={busy === "draw"} onClick={() => void draw()}>
             {t("draw")}
@@ -181,18 +181,16 @@ export function CharacterPart({
       ) : drawing ? (
         <div role="status" className="flex flex-col items-center gap-4 py-8 text-center">
           <MoonPhase p={((tick % 12) + 1) / 12} className="size-20" />
-          <strong className="text-h3 text-night-900">
-            {t("drawing", { name: child.name, nameAcc: accusativeName(child.name) })}
-          </strong>
+          <strong className="text-h3 text-night-900">{t("drawing", nameCases(child.name))}</strong>
           <p className="text-small text-ink-muted">{t("drawingHint")}</p>
         </div>
       ) : (
         <>
-          <h2 className="text-h3 text-night-900">{t("title", { name: child.name })}</h2>
+          <h2 className="text-h3 text-night-900">{t("title", nameCases(child.name))}</h2>
           {/* eslint-disable-next-line @next/next/no-img-element -- private image through the API, no-store */}
           <img
             src={characterImage(latest.id)}
-            alt={t("alt", { name: child.name })}
+            alt={t("alt", nameCases(child.name))}
             className="aspect-[3/2] w-full rounded-xl border border-line bg-paper-raised object-contain"
           />
           <Button size="lg" loading={busy === "approve"} onClick={() => void approve()}>

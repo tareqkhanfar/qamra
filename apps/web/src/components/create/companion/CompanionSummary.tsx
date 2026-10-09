@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { nameCases } from "@/lib/arabicName";
 import { companionAddOn, companionApi, companionImage, type Companion } from "@/lib/companion";
 import type { Child, Line } from "@/lib/create";
 import { money, type Catalog } from "@/lib/store";
@@ -61,7 +62,7 @@ export function CompanionSummary({
       </div>
       <div className="flex grow flex-col gap-0.5">
         <strong className="text-body">
-          {shown ? t("with", { name: shown.name }) : t("none", { name: child.name, gender: child.gender })}
+          {shown ? t("with", { name: shown.name }) : t("none", { ...nameCases(child.name), gender: child.gender })}
         </strong>
         {shown && price && <span className="text-caption text-ink-muted">{price}</span>}
       </div>

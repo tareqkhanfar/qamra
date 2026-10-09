@@ -44,7 +44,7 @@ from qamra_ai.pipeline.qa import LIKENESS_HARD_FAIL, QAResult
 from qamra_ai.pipeline.runtime import Runtime
 from qamra_ai.pipeline.style import house_style, negatives
 from qamra_ai.pipeline.theme import ArtStyle, Theme, render_template
-from qamra_ai.pipeline.vowelize import VowelizedTexts, fill
+from qamra_ai.pipeline.vowelize import DEDICATION_AR, VowelizedTexts, fill
 from qamra_ai.text.base import ImagePart, UserPart
 
 VARIANTS: tuple[str, ...] = ("girl", "girl_hijab", "boy")
@@ -55,7 +55,7 @@ CLASSIC_REDRAWS = 1  # automatic redraws per page, after every page had its firs
 LIKENESS_MIN = 7
 _DRAW_ERRORS = (ContentBlocked, ProviderError, ProviderConfigError, InvalidOutput)
 DEDICATION: dict[Lang, str] = {
-    "ar": "إلى {name}، {نجمِنا الصغير/نجمتِنا الصغيرة}: {نحبُّكَ/نحبُّكِ} حتّى القمر.",
+    "ar": DEDICATION_AR,  # «إلى {name:gen}»: «إلى أبي بكر»
     "en": "To {name}, our little star: we love you to the moon.",
 }
 
@@ -566,9 +566,11 @@ def classic_story(
     `texts`: the theme's Arabic texts vowelized once for this gender (pipeline.vowelize), used when given."""
     if texts is not None and lang == "ar":
         by_index = {p.index: p.text for p in texts.pages}
+        fp = theme.for_parents
+        asked = list(fp.questions_ar) if fp and len(fp.questions_ar) == len(texts.questions) else []
         return StoryOut(
             title=fill(texts.title, child.name, companion_name, theme.title_ar),
-            dedication=fill(texts.dedication, child.name, companion_name),
+            dedication=fill(texts.dedication, child.name, companion_name, DEDICATION_AR),
             pages=[
                 StoryPageOut(
                     index=p.index, text=fill(by_index[p.index], child.name, companion_name, p.text_ar)
@@ -579,8 +581,11 @@ def classic_story(
                 )
                 for p in theme.pages
             ],
-            parents_lesson=fill(texts.lesson, child.name, companion_name),
-            parents_questions=[fill(q, child.name, companion_name) for q in texts.questions],
+            parents_lesson=fill(texts.lesson, child.name, companion_name, fp.lesson_ar if fp else ""),
+            parents_questions=[
+                fill(q, child.name, companion_name, asked[i] if asked else "")
+                for i, q in enumerate(texts.questions)
+            ],
             blurb=fill(texts.blurb, child.name, companion_name, theme.blurb_ar or ""),
         )
 

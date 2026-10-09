@@ -34,7 +34,7 @@ Numerals = Literal["hindi", "latin"]  # ١٢٣ or 123
 Figure = Literal["woman", "man", "grandma", "grandpa", "girl", "boy", "baby", "adult", "child"]
 
 _VARIANT = re.compile(r"\{([^{}/]+)/([^{}/]+)\}")
-_PLACEHOLDER = re.compile(r"\{[a-z_]+(?::acc)?\}")  # `{child}`, or `{child:acc}` for the accusative
+_PLACEHOLDER = re.compile(r"\{[a-z_]+(?::acc|:gen)?\}")  # `{child}`, `{child:acc}`, `{child:gen}`
 _HINDI = str.maketrans("0123456789", "٠١٢٣٤٥٦٧٨٩")
 _LATIN = str.maketrans("٠١٢٣٤٥٦٧٨٩", "0123456789")
 _TASHKEEL = re.compile(r"[ً-ٰٟ]")
@@ -56,15 +56,19 @@ MONTHS_AR = (
 
 #: The placeholders the parent's own words fill: the child's name (Arabic and English), a family member, the
 #: family's name, the city. Whatever the parent typed counts as one word for the word limits. A name in the
-#: accusative is marked `{child:acc}` (`qamra_pdf.arabic_names`: «ساعِدْ أبا بكر»); after «يا» it needs no mark.
+#: accusative is marked `{child:acc}` (`qamra_pdf.arabic_names`: «ساعِدْ أبا بكر»), after «يا» it needs no mark;
+#: a name in the genitive is marked `{child:gen}` («لِأبي بكر», «رِحْلَةُ أبي بكر»).
 NAME_SLOTS = (
     "{child}",
     "{child:acc}",
+    "{child:gen}",
     "{name_en}",
     "{adult}",
     "{adult:acc}",
+    "{adult:gen}",
     "{member}",
     "{member:acc}",
+    "{member:gen}",
     "{family_name}",
     "{city}",
 )
@@ -164,7 +168,8 @@ class Child:
 
     def personalize(self, text: str) -> str:
         """`{masc/fem}` for the child's gender, then the name: «يا {child}» and `{child:acc}` print the
-        accusative («يا أبا بكر», `qamra_pdf.arabic_names`), every other `{child}` the name as typed."""
+        accusative («يا أبا بكر», `qamra_pdf.arabic_names`), `{child:gen}` the genitive («لِأبي بكر»), every
+        other `{child}` the name as typed."""
         text = _VARIANT.sub(lambda m: m.group(1 if self.gender == "m" else 2), text)
         return fill_name(text, "child", self.name)
 
@@ -254,8 +259,9 @@ class Family:
     def personalize(self, text: str, key: int = 0, adult: str = "", member: str = "") -> str:
         grown_up = self.pick(self.adults, key, adult)
         anyone = self.pick(self.members, key, member)
-        # a member's name takes the accusative after «يا» and at `{adult:acc}` («نُخْبِرُ أبا أحمد»); the
-        # family's name is a surname and prints as typed («عائلة أبو غوش»)
+        # a member's name takes the accusative after «يا» and at `{adult:acc}` («نُخْبِرُ أبا أحمد»), the
+        # genitive at `{adult:gen}` («مَعَ أبي أحمد»); the family's name is a surname and prints as typed
+        # («عائلة أبو غوش»)
         text = text.replace("{family_name}", self.name).replace("{city}", self.city_in(text))
         text = fill_name(text, "adult", grown_up.label if grown_up else NO_ADULT)
         return fill_name(text, "member", anyone.label if anyone else NO_ADULT)
@@ -345,7 +351,10 @@ class BookSpec:
 
     def personalize(self, text: str, page: PageSpec | None = None) -> str:
         """The text as printed for this child (and family): a page may name the grown-up (`adult`) or the
-        member (`member`) its mission is with; otherwise they go round the family by page number."""
+        member (`member`) its mission is with; otherwise they go round the family by page number. The
+        `{masc/fem}` variants are chosen first, so a name sees the word before it («{اسْأَلْ/اسْأَلي} {adult}»:
+        «اسْأَلِ الحاجَّ», the helping vowel of `arabic_names.fill_name`)."""
+        text = _VARIANT.sub(lambda m: m.group(1 if self.child.gender == "m" else 2), text)
         if self.family is not None:
             params = page.params if page is not None else {}
             text = self.family.personalize(

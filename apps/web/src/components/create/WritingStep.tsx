@@ -6,6 +6,7 @@ import { MoonPhase } from "@/components/art/MoonPhase";
 import { Alert } from "@/components/ui/Alert";
 import { buttonClasses } from "@/components/ui/Button";
 import { Link } from "@/i18n/navigation";
+import { nameCases } from "@/lib/arabicName";
 import { createApi, type Book, type Child } from "@/lib/create";
 import { Frame } from "./Frame";
 
@@ -42,13 +43,13 @@ export function WritingStep({
   }, [failed, book.id, onChange]);
 
   return (
-    <Frame title={t("bookOf", { name: child.name })} label={t("steps.writing")} n={8} back={failed ? back : undefined}>
+    <Frame title={t("bookOf", nameCases(child.name))} label={t("steps.writing")} n={8} back={failed ? back : undefined}>
       {failed ? (
         <Alert>{book.problem === "brief_unsafe" ? tcs("unsafeBrief") : t("writing.failed")}</Alert>
       ) : (
         <div role="status" className="flex flex-col items-center gap-5 py-8 text-center">
           <MoonPhase p={total ? Math.max(0.08, done / total) : ((tick % 12) + 1) / 12} className="size-28" />
-          <h1 className="text-[26px] text-night-900">{t("writing.title", { name: child.name })}</h1>
+          <h1 className="text-[26px] text-night-900">{t("writing.title", nameCases(child.name))}</h1>
           <p className="min-h-7 text-body text-ink-muted">{messages[tick % messages.length]}</p>
           {total > 0 && (
             <div className="flex w-full max-w-xs flex-col gap-2">

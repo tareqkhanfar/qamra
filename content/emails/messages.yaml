@@ -2,13 +2,15 @@
 # Each message: subject, lines (paragraphs), an optional button (label + the link variable it opens), and
 # an optional list (`items`). Values are filled with Jinja2: {{ name }}, {{ code }}, {{ total }}, {{ brand }},
 # {{ child }}, {{ title }}, and the links track_url, reader_url, create_url, account_url, manifest_url.
+# A person's name in Arabic takes its case (qamra_pdf.arabic_names): `{{ name | acc }}` when it is called
+# («مرحبًا أبا أحمد»), `{{ child | gen }}` after a preposition or a possessed noun («كتاب أبي بكر»).
 # Only what the recipient already owns goes in: their order, their child's book. Never another family's data.
 
 order_placed:
   ar:
     subject: "استلمنا طلبكم {{ code }} 🌙"
     lines:
-      - "مرحبًا {{ name }}،"
+      - "مرحبًا {{ name | acc }}،"
       - "شكرًا لأنكم اخترتم {{ brand }}! وصلنا طلبكم رقم {{ code }}، والمبلغ عند الاستلام {{ total }}."
       - "سنتواصل معكم قريبًا لتأكيد العنوان، ثم نبدأ العمل على الكتاب."
     button: { label: "تتبّعوا الطلب", link: track_url }
@@ -24,7 +26,7 @@ order_confirmed:
   ar:
     subject: "تأكّد طلبكم {{ code }} ✨"
     lines:
-      - "مرحبًا {{ name }}،"
+      - "مرحبًا {{ name | acc }}،"
       - "تأكّد طلبكم {{ code }}، وبدأنا العمل على الكتاب. سنخبركم عند كل خطوة."
     button: { label: "تتبّعوا الطلب", link: track_url }
   en:
@@ -38,7 +40,7 @@ order_printing:
   ar:
     subject: "كتابكم في المطبعة الآن 📖"
     lines:
-      - "مرحبًا {{ name }}،"
+      - "مرحبًا {{ name | acc }}،"
       - "كتاب طلبكم {{ code }} في المطبعة الآن. بعد الطباعة والتغليف يخرج إليكم مع المندوب."
     button: { label: "تتبّعوا الطلب", link: track_url }
   en:
@@ -52,7 +54,7 @@ order_shipped:
   ar:
     subject: "طلبكم {{ code }} في الطريق إليكم 🚚"
     lines:
-      - "مرحبًا {{ name }}،"
+      - "مرحبًا {{ name | acc }}،"
       - "خرج طلبكم {{ code }} مع المندوب، وسيتصل بكم قبل الوصول."
       - "المبلغ عند الاستلام: {{ total }}."
     button: { label: "تتبّعوا الطلب", link: track_url }
@@ -68,7 +70,7 @@ order_delivered:
   ar:
     subject: "وصل كتابكم 🎉"
     lines:
-      - "مرحبًا {{ name }}،"
+      - "مرحبًا {{ name | acc }}،"
       - "وصل طلبكم {{ code }}. نتمنى أن يسعد به طفلكم ليالي كثيرة تحت ضوء القمر!"
       - "إن لاحظتم أي شيء في الطباعة، ردّوا على هذه الرسالة وسنساعدكم."
   en:
@@ -80,10 +82,10 @@ order_delivered:
 
 preview_ready:
   ar:
-    subject: "معاينة كتاب {{ child }} جاهزة 🌙"
+    subject: "معاينة كتاب {{ child | gen }} جاهزة 🌙"
     lines:
       - "رسمنا أولى صفحات «{{ title }}»."
-      - "تفرّجوا على المعاينة مع {{ child }}، وعدّلوا النصوص إن أحببتم قبل الطلب."
+      - "تفرّجوا على المعاينة مع {{ child | gen }}، وعدّلوا النصوص إن أحببتم قبل الطلب."
     button: { label: "شاهدوا المعاينة", link: create_url }
   en:
     subject: "{{ child }}'s book preview is ready 🌙"
@@ -94,7 +96,7 @@ preview_ready:
 
 book_ready:
   ar:
-    subject: "كتاب {{ child }} جاهز للقراءة 📖"
+    subject: "كتاب {{ child | gen }} جاهز للقراءة 📖"
     lines:
       - "اكتمل «{{ title }}»، وصار بإمكانكم قراءته الآن على الجوال."
       - "الرابط يفتح بعد تسجيل الدخول إلى حسابكم، ومنه تستطيعون مشاركة الكتاب مع العائلة برابط خاص."
@@ -112,7 +114,7 @@ download_ready:
   ar:
     subject: "ملف «{{ title }}» جاهز للتنزيل 📄"
     lines:
-      - "مرحبًا {{ name }}،"
+      - "مرحبًا {{ name | acc }}،"
       - "جهّزنا ملف «{{ title }}» بصيغة PDF، ويمكنكم الآن تنزيله من حسابكم وطباعته في البيت."
       - "يفتح الرابط بعد تسجيل الدخول إلى حسابكم، وتجدون الملف في قسم «ملفات للتنزيل»."
     button: { label: "نزّلوا الملف", link: account_url }
