@@ -69,6 +69,7 @@ def rendered(tmp_path_factory: pytest.TempPathFactory) -> tuple[ClassBookSpec, l
             cover_image=_img(tmp / f"cover{i}.jpg", "#F2B33D", (PAGE_PX, PAGE_PX)),
             portrait=_img(tmp / f"portrait{i}.jpg", "#FCEFD2", (1300, 1950)),
             portrait_line=f"{n} نَجْمٌ يُضيءُ صَفَّنا.",
+            gender=("m", "f", None)[i],
         )
         for i, n in enumerate(names)
     ]
@@ -111,5 +112,23 @@ def test_the_combined_print_file_holds_every_copy_and_shares_the_pictures(
     _, copies, files = rendered
     combined = PdfReader(files.combined)
     assert len(combined.pages) == len(copies) * (1 + 8)  # a cover, then its interior, child after child
-    separate = sum(p.stat().st_size for p in files.interiors.values())
+    separate = sum(p.stat().st_size for p in [*files.interiors.values(), *files.covers.values()])
     assert files.combined.stat().st_size < separate  # the shared pictures are stored once
+
+
+def test_every_cover_is_the_story_cover_design_with_the_class_words(
+    rendered: tuple[ClassBookSpec, list[ChildCopy], ClassFiles],
+) -> None:
+    _, copies, files = rendered
+    out = files.combined.parent
+    covers = [(out / f"cover-{i}.html").read_text(encoding="utf-8") for i in range(len(copies))]
+    for copy, html in zip(copies, covers, strict=True):
+        assert 'class="title-art"' in html and '<tspan class="nm"' in html  # poster lettering, name in gold
+        assert ">كتاب الصفّ<" in html  # the series pill
+        assert "روضة القمر، ٢٠٢٦-٢٠٢٧" in html  # the school on the back, digits as in the book
+        assert f'نُسْخَةٌ خاصَّةٌ بِـ<span class="nm">{copy.name}</span>' in html
+        assert 'class="school-logo"' in html and 'data-reserved="barcode"' in html
+    assert "بُطُولَةُ الْبَطَلِ الرَّائِعِ" in covers[0] and "بُطُولَةُ الْبَطَلَةِ الرَّائِعَةِ" in covers[1]
+    assert (
+        '<span class="r-label">روضة القمر</span>' in covers[2]
+    )  # gender unknown: the ribbon names the school

@@ -61,6 +61,7 @@ async def test_generated_book_assembles_and_passes_preflight(
             brand=BRAND,
             character_sheet=book_inputs.character_sheet,
             parent_message="نحبّكِ",
+            series="magic",
         ),
         tmp_path,
     )
@@ -81,6 +82,15 @@ async def test_generated_book_assembles_and_passes_preflight(
     assert len(first_half) == 3 and all(p.side == "right" for p in first_half)  # RTL: text on the right page
     assert files.spec.title_page.dedication.startswith("إلى سلمى… نحبّكِ")
     assert sum(p.is_last_story for p in files.spec.pages) == 1
+    # the cover names the line and the theme's ages, and gets the approved sheet for the back's figure
+    assert files.spec.series == "magic" and files.spec.age_range == (
+        book_inputs.theme.age_range[0],
+        book_inputs.theme.age_range[1],
+    )
+    assert (
+        files.spec.cover.hero is not None
+        and files.spec.cover.hero.read_bytes() == book_inputs.character_sheet
+    )
 
 
 @pytest.mark.parametrize("print_files", [False])

@@ -72,6 +72,7 @@ from qamra_core.settings_store import Resolved, load_sync
 from qamra_core.storage import ObjectNotFound, ObjectStorage
 from qamra_pdf import Brand
 from qamra_pdf.mockups import mockups_from_pdfs, spread_from_pages
+from qamra_pdf.spec import Series
 from qamra_worker import context
 from qamra_worker.ai import ai_settings, make_runtime
 from qamra_worker.notify import queue as notify_queue
@@ -638,6 +639,15 @@ async def print_companion_sheet(rt: Runtime, ctx: BookContext, drawn: bytes | No
     return ctx.companion_sheet
 
 
+def cover_series(generation: dict[str, Any] | None) -> Series | None:
+    """The product line the cover names: a custom story («حكاية خاصة»), else the book's line."""
+    gen = generation or {}
+    if gen.get("custom"):
+        return "custom"
+    line = gen.get("line")
+    return line if line in ("classic", "magic", "class") else None
+
+
 async def render_files(
     job: BookJob,
     mode: str,
@@ -698,6 +708,7 @@ async def render_files(
                     made_on=date.today(),
                     watermark=mode == "preview",
                     voice_url=voice_url(db, book, brand().domain) if mode == "final" else None,
+                    series=cover_series(book.generation),
                 ),
                 Path(tmp),
                 print_files=mode == "final" and not missing,

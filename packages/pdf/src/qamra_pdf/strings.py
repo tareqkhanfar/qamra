@@ -1,5 +1,25 @@
 """Fixed book copy per language (brand name always comes from config)."""
 
+AR_DIGITS = str.maketrans("0123456789", "٠١٢٣٤٥٦٧٨٩")
+
+
+def page_count(n: int, lang: str) -> str:
+    """«٢٤ صَفْحَةً» with the number's agreement (3–10: صَفَحاتٍ, 11–99: صَفْحَةً, 100+: صَفْحَةٍ), "24 pages"."""
+    if lang != "ar":
+        return f"{n} page" if n == 1 else f"{n} pages"
+    digits = str(n).translate(AR_DIGITS)
+    if n == 1:
+        return "صَفْحَةٌ واحِدَةٌ"
+    if n == 2:
+        return "صَفْحَتانِ"
+    rest = n % 100
+    if 3 <= rest <= 10:
+        return f"{digits} صَفَحاتٍ"
+    if rest == 0 or rest in (1, 2):
+        return f"{digits} صَفْحَةٍ"
+    return f"{digits} صَفْحَةً"
+
+
 STRINGS: dict[str, dict[str, str]] = {
     "ar": {
         "keepsake_title": "وَهٰكَذا وُلِدَ صاحِبي",
@@ -32,6 +52,14 @@ STRINGS: dict[str, dict[str, str]] = {
         # the companion's bubble on the drawing page (addresses the child)
         "activity_bubble_m": "أَنَا أَنْتَظِرُ رَسْمَتَكَ!",
         "activity_bubble_f": "أَنَا أَنْتَظِرُ رَسْمَتَكِ!",
+        # cover: the series after the brand name (front pill), the facts on the back, the personal line
+        "series_classic": "كلاسيك",
+        "series_magic": "سحري",
+        "series_custom": "حكاية خاصّة",
+        "series_class": "كتاب الصفّ",
+        "made_for_copy": "نُسْخَةٌ خاصَّةٌ بِـ{name}",
+        "ages": "لِلأَعْمارِ {low}–{high}",
+        "vowelized": "الحِكايَةُ مُشَكَّلَةٌ بِالكامِل",
     },
     "en": {
         "keepsake_title": "And that's how my friend was born",
@@ -62,5 +90,11 @@ STRINGS: dict[str, dict[str, str]] = {
         "ribbon_f": "Starring the amazing heroine",
         "activity_bubble_m": "I can't wait to see your drawing!",
         "activity_bubble_f": "I can't wait to see your drawing!",
+        "series_classic": "Classic",
+        "series_magic": "Magic",
+        "series_custom": "Custom story",
+        "series_class": "Class book",
+        "made_for_copy": "A special edition for {name}",
+        "ages": "Ages {low}–{high}",
     },
 }

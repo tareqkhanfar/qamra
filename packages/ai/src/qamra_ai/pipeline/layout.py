@@ -117,6 +117,7 @@ class BookPlan:
     beats: dict[int, BeatPlan] = field(default_factory=dict)  # includes 0 = cover
     title_style: str = DEFAULT_TITLE_STYLE  # the theme's cover lettering (`cover_title_style`)
     memories: Literal["school", "default"] = "default"  # «ذكرياتنا» prompts: first/last day for school themes
+    age_range: tuple[int, int] | None = None  # the theme's ages, printed as a fact on the back cover
 
     @property
     def rtl(self) -> bool:
@@ -175,6 +176,7 @@ def plan_book(theme: Theme, lang: Lang, *, companion_page: bool, spec: PrintSpec
         spec=spec,
         title_style=theme.cover_title_style,
         memories="school" if any(o in SCHOOL_OCCASIONS for o in occasions) else "default",
+        age_range=(theme.age_range[0], theme.age_range[1]) if theme.age_range else None,
     )
     plan.slots.append(Slot(1, "title", side_of(1, rtl)))
     plan.beats[0] = BeatPlan(0, "cover", (), "1:1", spec.page_px, "top")

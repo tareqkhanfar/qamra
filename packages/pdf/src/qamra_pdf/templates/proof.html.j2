@@ -10,8 +10,7 @@
 {{ book.styles() }}
 {% include "_book_cover.css.j2" %}
 .proof-cover .front, .proof-cover .back { left: 0; width: var(--page); }
-.proof-cover .front .cover-title { left: calc(var(--bleed) + 8mm); }
-.proof-cover .back .back-content, .proof-cover .back .back-foot { left: 23mm; }
+.proof-cover .front .trim, .proof-cover .back .trim { left: var(--bleed); }
 </style></head>
 <body>
 <section class="page proof-cover" data-kind="front-cover" dir="ltr"><div dir="{{ spec.dir }}">{{ cv.front_panel('left') }}</div>{{ m.watermark(spec, s) }}</section>

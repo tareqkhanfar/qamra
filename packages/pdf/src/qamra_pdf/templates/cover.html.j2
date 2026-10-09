@@ -10,7 +10,7 @@
 {% include "_shared.css.j2" %}
 {% include "_book_cover.css.j2" %}
 @page { size: {{ spec.wrap_width_mm }}mm {{ spec.page_mm }}mm; margin: 0; }
-.wrap { position: relative; width: {{ spec.wrap_width_mm }}mm; height: var(--page); overflow: hidden; background: {{ t.ink }}; }
+.wrap { position: relative; width: {{ spec.wrap_width_mm }}mm; height: var(--page); overflow: hidden; background: {{ cover.reading.deep }}; }
 .left-panel { left: 0; } .right-panel { left: {{ spec.trim_mm + spec.bleed_mm + spec.spine_mm }}mm; }
 </style></head>
 <body>

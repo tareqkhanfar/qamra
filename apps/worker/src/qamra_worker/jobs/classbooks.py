@@ -45,6 +45,7 @@ from qamra_ai.pipeline.layout import PrintSpec
 from qamra_ai.pipeline.models import Gender, Lang
 from qamra_ai.pipeline.printimg import downscale, fit_exact
 from qamra_ai.pipeline.runtime import Runtime
+from qamra_ai.pipeline.theme import load_theme
 from qamra_core.db.models import (
     AuditLog,
     Book,
@@ -72,6 +73,7 @@ from qamra_pdf.classbook import (
     file_stem,
     render_class_book,
 )
+from qamra_pdf.lettering import DEFAULT_TITLE_STYLE
 from qamra_worker import context
 from qamra_worker.ai import ai_settings, make_runtime
 from qamra_worker.jobs.books import CostSink, brand, file_key, page_key, resolved_settings
@@ -174,6 +176,16 @@ class ClassJob:
 
 def _gender(child: Child) -> Gender:
     return "f" if child.gender == ChildGender.f else "m"
+
+
+def _theme_cover(slug: str) -> tuple[str, tuple[int, int] | None]:
+    """The class book's theme: its cover lettering and its ages (the default lettering when the class
+    template has no story theme of the same name)."""
+    try:
+        theme = load_theme(slug)
+    except (OSError, ValueError):
+        return DEFAULT_TITLE_STYLE, None
+    return theme.cover_title_style, (theme.age_range[0], theme.age_range[1])
 
 
 def _seed(cb: ClassBook) -> int:
@@ -560,8 +572,10 @@ async def render_files(job: ClassJob) -> dict[str, Any]:
                     if comp
                     else None,
                     companion_name=comp.name if comp else None,
+                    gender=_gender(child),
                 )
             )
+        title_style, ages = _theme_cover(job.template.slug)
         book_spec = ClassBookSpec(
             lang=lang,
             brand=brand(),
@@ -580,6 +594,8 @@ async def render_files(job: ClassJob) -> dict[str, Any]:
             spine_mm=spec.spine_mm,
             signature=spec.signature,
             dpi=spec.dpi,
+            title_style=title_style,
+            age_range=ages,
         )
         book_spec = dataclasses.replace(book_spec, spine_mm=spec.spine_for(book_spec.interior_pages))
         job.progress(stage="files", files={"done": 0, "total": len(copies)})

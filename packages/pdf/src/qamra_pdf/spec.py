@@ -13,6 +13,7 @@ from typing import Literal
 PageKind = Literal["title", "story", "companion", "parents", "activity", "memories", "blank"]
 Side = Literal["left", "right"]
 PanelArea = Literal["top", "bottom", "left", "right"]
+Series = Literal["classic", "magic", "custom", "class"]
 # Story text size and its shrink-to-fit floor (pt): 24–28 pt for ages 3–5, 20–22 pt for 6–8 (Addendum 11 §3).
 STORY_PT: dict[str, tuple[float, float]] = {"young": (26.0, 24.0), "older": (21.0, 20.0)}
 
@@ -77,6 +78,9 @@ class CoverSpec:
     subtitle: str
     blurb: str
     qr_url: str | None = None  # family voice (Addendum 1 §3): the back shows a QR only when this is set
+    # the approved character sheet (three views): its waving view, cut out, stands on the back cover. None or
+    # a picture that is not a clean three-view sheet: the back shows the round portrait instead.
+    hero: Path | None = None
 
 
 @dataclass(frozen=True)
@@ -110,6 +114,8 @@ class BookSpec:
     companion: Path | None = None  # the companion's front view (peeks on the drawing page)
     memories: Literal["school", "default"] = "default"  # «ذكرياتنا» prompts: first/last day for school books
     extra: dict[str, str] = field(default_factory=dict)
+    series: Series | None = None  # the product line, named on the cover (front pill)
+    age_range: tuple[int, int] | None = None  # the theme's ages: a fact on the back cover
 
     @property
     def page_mm(self) -> float:

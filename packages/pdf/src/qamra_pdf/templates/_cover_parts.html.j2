@@ -1,47 +1,102 @@
-{#- The story book cover (Addendum 11 §2): art layer, coded title lettering + «بطولة» ribbon, a small moon mark
-    on the front; the back continues the front art (mirrored, blurred) with the blurb, the child's portrait,
-    the logo and the domain. A QR only when family voice exists. Imported "with context". -#}
+{#- The story book cover (Addendum 11 §2, redesigned 2026-10-09): every decision comes from `cover`
+    (`qamra_pdf.cover.CoverDesign`). Front: the art, a soft scrim of the art's own tone behind the title, the
+    poster lettering (the child's name on its own line, in the name colors), the «بطولة» ribbon and the series
+    pill. Back: the art continued (mirrored, blurred) under a tint of its deep or pale tone, the title, the
+    story's blurb, three pages from the book, the facts, «نُسْخَةٌ خاصَّةٌ بِـ…», the child waving (and the
+    companion), the logo, the domain and a reserved barcode area. Spine: the art's deep tone, title and name.
+    Imported "with context" (needs `cover`, `img`, `title_svg`, `orn`, `rgba`, `hero`). -#}
 {% import "_macros.html.j2" as m %}
-{% import "_matter.html.j2" as mt with context %}
 
-{% macro cover_title(c) -%}
-<div class="cover-title">
-  {{ title_svg((c.name ~ ' ' ~ c.subtitle) | trim, t.slug, width_mm=194, height_mm=54, uid='ct', rtl=spec.dir == 'rtl', keep=spec.child_name) }}
-  <div class="ribbon"><span class="r-label">{{ s.ribbon_f if spec.gender == 'f' else s.ribbon_m }}</span><span class="r-name">{{ spec.child_name }}</span></div>
+{% macro named(text, name) -%}{{ cover_name(text, name) }}{%- endmacro %}
+
+{% macro ribbon(cd) -%}
+<div class="ribbon">
+  <span class="rb-tail start"></span><span class="rb-tail end"></span>
+  <div class="rb-band"><span class="r-label">{{ cd.ribbon_label }}</span>{% if cd.ribbon_name %}<span class="r-name">{{ cd.ribbon_name }}</span>{% endif %}</div>
 </div>
 {%- endmacro %}
 
-{% macro front_panel(outer='left') -%}{% set c = spec.cover %}
-<div class="front outer-{{ outer }} style-{{ t.slug }}">
-  <img class="bleed-img" src="{{ img(c.front_image) }}" alt="">
-  <div class="cover-shade" style="background: {{ t.shade }}"></div>
-  {{ cover_title(c) }}
-  <div class="front-moon">{{ m.moon_mark('11mm', '#F6C14E', t.ink) }}</div>
-</div>
-{%- endmacro %}
-
-{% macro back_panel(outer='right') -%}{% set c = spec.cover %}
-<div class="back outer-{{ outer }} style-{{ t.slug }}">
-  {% if assets.back %}<img class="bleed-img" src="{{ img(assets.back) }}" alt="">{% endif %}
-  <div class="back-tint" style="background: linear-gradient(to bottom, {{ rgba(t.ink, 0.58) }}, {{ rgba(t.ink, 0.72) }} 55%, {{ rgba(t.ink, 0.84) }})"></div>
-  <div class="back-stars">{{ orn.scattered_stars(213, 216, 16, 5, '#FCEFD2', (40, 30, 173, 150)) }}</div>
-  <div class="back-content">
-    {{ mt.moon_portrait(spec.title_page.portrait, 'on-back') }}
-    <p class="blurb">{{ hero(c.blurb) }}</p>
-  </div>
-  <div class="back-foot">
-    {% if qr_svg %}<div class="qr-card"><div class="qr">{{ qr_svg }}</div><div class="qr-caption">{{ s.back_voice }}</div></div>{% endif %}
-    <div class="back-brand">{{ m.moon_mark('13mm', '#F6C14E', '#FFFDF8') }}<div><div class="back-name">{{ spec.brand.name_ar if spec.lang == 'ar' else spec.brand.name_en }}</div><div class="back-domain">{{ spec.brand.domain }}</div></div></div>
+{% macro front_panel(outer='left') -%}{% set cd = cover %}
+<div class="front outer-{{ outer }} {{ 'dark' if cd.dark else 'light' }} style-{{ cd.t.slug }}" data-calm="{{ cd.reading.calm_mm }}" data-busy="{{ cd.reading.busy }}">
+  <img class="bleed-img" src="{{ img(cd.art) }}" alt="">
+  <div class="cover-scrim" style="background: {{ cd.scrim }}"></div>
+  <div class="trim">
+    <div class="cover-title">
+      {{ title_svg(cd.title, cd.t.slug, width_mm=194, height_mm=cd.title_h_mm, uid='ct', rtl=cd.dir == 'rtl', keep=cd.name, poster=True, glow=cd.glow) }}
+      {{ ribbon(cd) }}
+    </div>
+    <div class="series-pill" dir="{{ cd.dir }}">{{ m.moon_mark('6.4mm', '#F2B33D', '#FFF8EA' if cd.dark else cd.reading.deep) }}<span class="sp-brand">{{ cd.brand_name }}</span>{% if cd.series %}<span class="sp-sep"></span><span class="sp-line">{{ cd.series }}</span>{% endif %}</div>
   </div>
 </div>
 {%- endmacro %}
 
-{% macro spine_strip() -%}
-{% set title = spec.title %}
-<div class="spine" style="background: {{ t.ink }}">
-  {% if spec.spine_mm >= 6 %}
-  <div class="spine-moon">{{ m.moon_mark(((spec.spine_mm - 2.4) | round(1)) ~ 'mm', '#F6C14E', '#FFFDF8') }}</div>
-  <span class="spine-text" dir="{{ spec.dir }}">{{ title }}{% if spec.child_name not in title %} · {{ spec.child_name }}{% endif %}</span>
+{% macro chip_icon(kind, color) -%}
+<svg class="chip-icon" viewBox="0 0 24 24" aria-hidden="true">
+{%- if kind == 'age' -%}
+<circle cx="12" cy="7.4" r="3.6" fill="{{ color }}"/><path d="M5.4 20.5 C5.4 15.2 8.3 12.6 12 12.6 C15.7 12.6 18.6 15.2 18.6 20.5 Z" fill="{{ color }}"/>
+{%- elif kind == 'pages' -%}
+<path d="M3 5.6 C6.2 4.4 9.2 4.6 11.4 6.4 V20 C9.2 18.3 6.2 18.1 3 19.3 Z" fill="{{ color }}"/><path d="M21 5.6 C17.8 4.4 14.8 4.6 12.6 6.4 V20 C14.8 18.3 17.8 18.1 21 19.3 Z" fill="{{ color }}" opacity=".72"/>
+{%- elif kind == 'marks' -%}
+<path d="M4.5 9.2 L11 7.2" stroke="{{ color }}" stroke-width="2.4" stroke-linecap="round"/><circle cx="16.6" cy="8" r="3" fill="none" stroke="{{ color }}" stroke-width="2.2"/><path d="M5 17.6 L11.5 15.6" stroke="{{ color }}" stroke-width="2.4" stroke-linecap="round"/><path d="M14 19 C14 15 19.6 15 19.6 18 C19.6 19.6 18 20.4 16.4 19.6" fill="none" stroke="{{ color }}" stroke-width="2" stroke-linecap="round"/>
+{%- else -%}
+<path d="M12 3 L21 8 V10 H3 V8 Z" fill="{{ color }}"/><path d="M5 11 H8 V18 H5 Z M10.5 11 H13.5 V18 H10.5 Z M16 11 H19 V18 H16 Z M3 19 H21 V21 H3 Z" fill="{{ color }}"/>
+{%- endif -%}
+</svg>
+{%- endmacro %}
+
+{% macro back_panel(outer='right') -%}{% set cd = cover %}
+<div class="back outer-{{ outer }} {{ 'dark' if cd.dark else 'light' }} style-{{ cd.t.slug }}" dir="{{ cd.dir }}">
+  {% if cd.back_art %}<img class="bleed-img" src="{{ img(cd.back_art) }}" alt="">{% endif %}
+  <div class="back-tint"></div>
+  <div class="back-stars">{{ orn.scattered_stars(213, 216, 18 if cd.dark else 12, 5, '#FCEFD2' if cd.dark else cd.t.accent, (30, 14, 183, 200)) }}</div>
+  <div class="trim">
+    <div class="back-top">
+      <div class="head">
+        <div class="hook">{{ named(cd.hook, cd.name) }}</div>
+        <div class="hook-rule"><span></span>{{ m.sparkle('3.6mm', cd.gold_ink) }}<span></span></div>
+        <p class="blurb">{{ hero(cd.blurb) }}</p>
+      </div>
+      {% if cd.thumbs %}
+      <div class="thumbs n{{ cd.thumbs | length }}">
+        {% for p in cd.thumbs %}<figure class="thumb t{{ loop.index }}"><img src="{{ img(p) }}" alt=""></figure>{% endfor %}
+      </div>
+      {% endif %}
+      {% if cd.chips %}
+      <div class="chips">{% for c in cd.chips %}<span class="chip">{{ chip_icon(c.icon, cd.gold_ink) }}<span>{{ c.text }}</span></span>{% endfor %}</div>
+      {% endif %}
+    </div>
+    <div class="back-hero">
+      {% if cd.hero %}
+        {% set disc = (cd.hero_mm[1] * 0.92) | round(1) %}
+        <span class="hero-moon" style="width: {{ disc }}mm; height: {{ disc }}mm; {{ 'right' if cd.dir == 'rtl' else 'left' }}: {{ ((cd.hero_mm[0] - disc) / 2) | round(1) }}mm"></span>
+        <img class="hero-fig" src="{{ img(cd.hero) }}" alt="" style="width: {{ cd.hero_mm[0] }}mm; height: {{ cd.hero_mm[1] }}mm">
+        {% if cd.companion %}<img class="companion-fig" src="{{ img(cd.companion) }}" alt="" style="width: {{ cd.companion_mm[0] }}mm; height: {{ cd.companion_mm[1] }}mm">{% endif %}
+      {% elif cd.portrait %}
+        <div class="moon-portrait on-back"><div class="mp-photo"><img src="{{ img(cd.portrait) }}" alt=""></div>{% if assets.decor.moon_frame %}<img class="mp-frame-img" src="{{ img(assets.decor.moon_frame) }}" alt="">{% else %}{{ orn.moon_frame() }}{% endif %}</div>
+      {% endif %}
+    </div>
+    <div class="back-foot">
+      <div class="made-for">{{ m.sparkle('3mm', cd.gold_ink) }}<span>{{ cd.made_for_html }}</span>{{ m.sparkle('3mm', cd.gold_ink) }}</div>
+      {% if cd.school_line %}<div class="school-line">{{ cd.school_line }}</div>{% endif %}
+      <div class="back-brand">
+        {% if cd.logo %}<img class="school-logo" src="{{ img(cd.logo) }}" alt="">{% endif %}
+        {{ m.moon_mark('11mm', '#F2B33D', '#FFF8EA' if cd.dark else cd.reading.deep) }}
+        <div><div class="back-name">{{ cd.brand_name }}</div><div class="back-domain">{{ cd.brand.domain }}</div></div>
+      </div>
+    </div>
+    <div class="inner-col">
+      {% if cd.qr %}<div class="qr-card"><div class="qr">{{ cd.qr }}</div><div class="qr-caption">{{ cd.qr_caption }}</div></div>{% endif %}
+      <div class="barcode-zone" data-reserved="barcode"></div>
+    </div>
+  </div>
+</div>
+{%- endmacro %}
+
+{% macro spine_strip() -%}{% set cd = cover %}
+<div class="spine" style="background: linear-gradient(to right, {{ cd.spine_edge }}, {{ cd.reading.deep }} 30%, {{ cd.reading.deep }} 70%, {{ cd.spine_edge }})">
+  {% if cd.spine_type %}
+  <span class="spine-text" dir="{{ cd.dir }}">{{ named(cd.spine_title, cd.name) }}</span>
+  <div class="spine-foot"><span class="spine-brand" dir="{{ cd.dir }}">{{ cd.brand_name }}</span>{{ m.moon_mark(((cd.spine_mm - 2.6) | round(1)) ~ 'mm', '#F2B33D', '#FFF8EA') }}</div>
   {% endif %}
 </div>
 {%- endmacro %}

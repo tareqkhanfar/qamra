@@ -2,7 +2,7 @@
 
 Outputs, from one Chromium session:
 - `interior.pdf`: 216 × 216 mm pages in reading order, fonts embedded;
-- `cover.pdf`: one wrap sheet (front | spine | back for right-bound Arabic books);
+- `cover.pdf`: one wrap sheet (front | spine | back for right-bound Arabic books), designed in `cover`;
 - `proof.pdf`: the low-res web proof (front, interior, back as squares).
 
 Story pages come from the layout library in `packages/pdf/layouts/` (Addendum 11 §3); the cover title is
@@ -30,6 +30,7 @@ from pypdf.generic import RectangleObject
 
 from qamra_pdf import ornaments
 from qamra_pdf.assets import LAYOUTS_DIR, Assets, prepare
+from qamra_pdf.cover import cover_name, story_design, story_thumbs
 from qamra_pdf.lettering import TITLE_FIT_JS, title_svg, treatment
 from qamra_pdf.page_layouts import LAYOUTS, drop_word, normalize, split_dialogue
 from qamra_pdf.spec import BookSpec
@@ -131,6 +132,9 @@ def qr_svg(url: str | None) -> Markup | None:
     )
 
 
+COVER_TEMPLATES = ("cover.html.j2", "front.html.j2", "proof.html.j2")
+
+
 def render_html(
     template: str,
     spec: BookSpec,
@@ -139,6 +143,9 @@ def render_html(
 ) -> str:
     def uri(p: Path | None) -> str:
         return p.resolve().as_uri() if p else ""
+
+    assets = assets or Assets()
+    design = story_design(spec, assets, qr_svg(spec.cover.qr_url)) if template in COVER_TEMPLATES else None
 
     def hero(text: str | None) -> Markup:
         return hero_text(text, spec.child_name, spec.lang)
@@ -156,7 +163,9 @@ def render_html(
         qr_svg=qr_svg(spec.cover.qr_url),
         qr=qr_svg,
         t=treatment(spec.title_style),
-        assets=assets or Assets(),
+        assets=assets,
+        cover=design,
+        cover_name=cover_name,
         hero=hero,
         layout_of=normalize,
         layouts=LAYOUTS,
@@ -254,7 +263,9 @@ async def render_book(
     spec: BookSpec, out_dir: Path, *, proof: bool = True, print_files: bool = True
 ) -> RenderedBook:
     out_dir.mkdir(parents=True, exist_ok=True)
-    assets = prepare(spec.cover.front_image, spec.companion, out_dir)
+    assets = prepare(
+        spec.cover.front_image, spec.companion, out_dir, hero=spec.cover.hero, thumbs=story_thumbs(spec.pages)
+    )
     interior_html, cover_html = out_dir / "interior.html", out_dir / "cover.html"
     interior_html.write_text(render_html("interior.html.j2", spec, assets=assets), encoding="utf-8")
     cover_html.write_text(render_html("cover.html.j2", spec, assets=assets), encoding="utf-8")

@@ -31,7 +31,7 @@ from qamra_core.db.models import (
 )
 from qamra_core.db.portal import ClassBook, ClassBookPage, ClassBookStatus
 from qamra_core.storage import ObjectStorage
-from qamra_worker.jobs.classbooks import copy_book, run_class_book
+from qamra_worker.jobs.classbooks import _theme_cover, copy_book, run_class_book
 
 NAMES = [
     "يوسف", "جنى", "ليان", "آدم", "سلمى", "كرم", "تالا", "عمر", "ريم", "زيد",
@@ -175,3 +175,8 @@ async def test_a_second_run_draws_only_what_changed(db: Session, storage: Object
     assert {p.index: p.image_key for p in db.scalars(select(ClassBookPage)).all()} == first
     child = db.get(Child, uuid.UUID(cb.plan["children"][0]))
     assert child is not None and copy_book(db, cb, child) is not None
+
+
+def test_class_covers_take_the_theme_lettering_and_ages() -> None:
+    assert _theme_cover("graduation") == ("gold-magic", (5, 6))
+    assert _theme_cover("no-such-theme") == ("gold-magic", None)  # the default lettering, no ages claimed

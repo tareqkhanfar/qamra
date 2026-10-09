@@ -1,5 +1,6 @@
 import asyncio
 import dataclasses
+import unicodedata
 from pathlib import Path
 from typing import Any, Literal
 
@@ -230,14 +231,18 @@ def test_display_fonts_embed_as_truetype_never_type3(rendered: tuple[BookSpec, R
     assert any("NotoNaskhArabic-SemiBold" in name for name in interior)  # the child's name in the story
 
 
-def test_cover_title_lettering_ribbon_and_moon(tmp_path: Path) -> None:
-    spec = _spec(tmp_path)
+def test_cover_title_lettering_ribbon_and_series_pill(tmp_path: Path) -> None:
+    spec = dataclasses.replace(_spec(tmp_path), series="magic")
     html = render_html("cover.html.j2", spec)
-    assert 'class="title-art"' in html and "سَلْمَى" in html
+    assert 'class="title-art"' in html and "سلمى" in html
     assert "بُطُولَةُ الْبَطَلَةِ الرَّائِعَةِ" in html  # gender-aware ribbon
     boy = render_html("cover.html.j2", dataclasses.replace(spec, gender="m"))
     assert "بُطُولَةُ الْبَطَلِ الرَّائِعِ" in boy
-    assert 'class="front-moon"' in html and 'class="spine"' in html
+    assert 'class="series-pill"' in html and ">سحري<" in html and 'class="spine"' in html
+    assert ">كلاسيك<" in render_html("cover.html.j2", dataclasses.replace(spec, series="classic"))
+    assert 'class="sp-line"' not in render_html("cover.html.j2", dataclasses.replace(spec, series=None))
+    # two-tone lettering: the child's name in its own gradient, the letters extruded (3D side)
+    assert '<tspan class="nm"' in html and "--nf:url(#ct-name)" in html and 'data-depth="1.3"' in html
     for style in TITLE_STYLES:
         assert f"style-{style}" in render_html("cover.html.j2", dataclasses.replace(spec, title_style=style))
 
@@ -350,6 +355,153 @@ def test_title_lines_never_break_a_word_or_the_name() -> None:
         lines = split_lines(title, keep=name)
         assert 1 <= len(lines) <= 3 and " ".join(lines).split() == title.split()
         assert any(name in line for line in lines)  # the name is never split over two lines
+
+
+def test_poster_titles_lead_with_the_name() -> None:
+    from qamra_pdf.lettering import display_text, poster_layout
+
+    assert poster_layout("يوم تخرّج ليان", "ليان") == (["يوم تخرّج ليان"], None)  # short: one line
+    assert poster_layout("آدم في أوّل يوم بالروضة", "آدم") == (["آدم", "في أوّل يوم بالروضة"], 0)
+    assert poster_layout("حكاية عبد الرحمن الخاصة والجميلة جدا", "عبد الرحمن") == (
+        ["حكاية", "عبد الرحمن", "الخاصة والجميلة جدا"],
+        1,
+    )
+    assert poster_layout("Layla's First Day at Kindergarten", "Layla")[0][0] == "Layla's"
+    # cover lettering keeps the shadda, drops the short vowels and the sun letter's shadda after al-
+    assert display_text("آدَمُ فِي أَوَّلِ يَوْمٍ بِالرَّوْضَةِ") == "آدم في أوّل يوم بالروضة"
+    assert display_text("يَوْمُ تَخَرُّجِ هٰذا") == "يوم تخرّج هذا"  # no stray dagger alif
+    assert [display_text(w) for w in ("اللّٰهِ", "لِلرَّوْضَةِ", "الَّذي", "وَالشَّمْسِ", "الأَوَّلُ")] == [
+        "الله",
+        "للروضة",
+        "الذي",
+        "والشمس",
+        "الأوّل",
+    ]
+
+
+def test_page_counts_agree_with_the_number() -> None:
+    from qamra_pdf.strings import page_count
+
+    assert [page_count(n, "ar") for n in (2, 3, 10, 11, 24, 100)] == [
+        "صَفْحَتانِ",
+        "٣ صَفَحاتٍ",
+        "١٠ صَفَحاتٍ",
+        "١١ صَفْحَةً",
+        "٢٤ صَفْحَةً",
+        "١٠٠ صَفْحَةٍ",
+    ]
+    assert page_count(24, "en") == "24 pages" and page_count(1, "en") == "1 page"
+
+
+def _art(path: Path, sky: str, ground: str, scene_from: float) -> Path:
+    """A calm sky over a busy striped scene starting at `scene_from` (share of the height)."""
+    im = Image.new("RGB", (PAGE_PX // 4, PAGE_PX // 4), sky)
+    draw = ImageDraw.Draw(im)
+    top = int(im.height * scene_from)
+    for x in range(0, im.width, 8):
+        draw.rectangle((x, top, x + 3, im.height), fill=ground)
+    im.save(path)
+    return path
+
+
+def test_the_cover_reads_its_art(tmp_path: Path) -> None:
+    from qamra_pdf.cover import read_art
+
+    night = read_art(_art(tmp_path / "night.jpg", "#101A40", "#C9A14A", 0.5))
+    day = read_art(_art(tmp_path / "day.jpg", "#F4EBD6", "#3E7A4A", 0.3))
+    assert night.mode == "dark" and day.mode == "light"
+    # where the busy scene begins (108 mm and 65 mm of the 216 mm page), within the smoothing window
+    assert abs(night.calm_mm - 108) <= 10 and abs(day.calm_mm - 65) <= 10
+    for reading in (night, day):  # print-safe tones: a dark deep, a pale light
+        deep = int(reading.deep[1:3], 16) + int(reading.deep[3:5], 16) + int(reading.deep[5:7], 16)
+        light = int(reading.light[1:3], 16) + int(reading.light[3:5], 16) + int(reading.light[5:7], 16)
+        assert deep < 3 * 80 and light > 3 * 220
+
+
+def _sheet(path: Path) -> Path:
+    """A three-view character sheet: three standing figures on plain cream paper."""
+    im = Image.new("RGB", (1500, 1000), "#F3E9D6")
+    draw = ImageDraw.Draw(im)
+    for cx in (250, 750, 1250):
+        draw.ellipse((cx - 70, 80, cx + 70, 230), fill="#C98B5E", outline="#3A2414", width=6)  # head
+        draw.rectangle((cx - 110, 230, cx + 110, 640), fill="#2F4A8A", outline="#16204A", width=6)  # body
+        draw.rectangle((cx - 90, 640, cx + 90, 930), fill="#22306A", outline="#16204A", width=6)  # legs
+    im.save(path)
+    return path
+
+
+def test_back_cover_facts_pages_and_the_child(tmp_path: Path) -> None:
+    base = _library_spec(tmp_path)
+    spec = dataclasses.replace(
+        base,
+        age_range=(3, 7),
+        series="classic",
+        cover=dataclasses.replace(base.cover, hero=_sheet(tmp_path / "sheet.png")),
+    )
+    book = asyncio.run(render_book(spec, tmp_path / "out", proof=False))
+    assert book.cover_pdf is not None
+    html = (tmp_path / "out" / "cover.html").read_text(encoding="utf-8")
+    assert "لِلأَعْمارِ ٣–٧" in html  # the theme's ages, in Arabic-Indic digits
+    assert f">{len(spec.pages)} صَفْحَةً<".translate(str.maketrans("0123456789", "٠١٢٣٤٥٦٧٨٩")) in html
+    assert "الحِكايَةُ مُشَكَّلَةٌ بِالكامِل" in html  # the story text is fully vowelized
+    assert "نُسْخَةٌ خاصَّةٌ بِـ" in html and 'class="hero-fig"' in html  # the waving child, cut out
+    assert html.count('class="thumb t') == 2  # pages from the book, each picture once (this one has two)
+    assert '<div class="barcode-zone" data-reserved="barcode"></div>' in html  # kept free
+    report = preflight(book.cover_pdf, width_mm=spec.wrap_width_mm, height_mm=216, bleed_mm=3, safe_mm=10)
+    assert report.passed and report.min_dpi is not None and report.min_dpi >= 299.5, report.to_dict()
+    with pdfplumber.open(book.cover_pdf) as pdf:
+        text = unicodedata.normalize("NFKC", pdf.pages[0].extract_text() or "")
+    assert "qamra.app" in text
+
+
+def test_one_unvowelized_page_drops_the_vowelized_claim() -> None:
+    from qamra_pdf.cover import is_vowelized
+
+    pages = [VOWELIZED] * 6
+    assert is_vowelized(pages) and is_vowelized([*pages, "!"])  # a page without words is not counted
+    assert not is_vowelized([*pages, "استيقظت سلمى باكرا وقلبها يرقص فرحا"])  # retyped by a parent
+
+
+def test_back_cover_thumbnails_spread_through_the_story() -> None:
+    from qamra_pdf.cover import pick_thumbs, story_thumbs
+
+    pics = [Path(f"p{i:02d}.jpg") for i in range(2, 22)]
+    picked = pick_thumbs(pics)
+    assert len(picked) == 3 and pics[0] not in picked and pics[-1] not in picked
+    assert picked == sorted(picked) and len(set(picked)) == 3
+    pages = [PageSpec(2, "story", "right", "spread-panorama", Path("wide.jpg"), "x")] + [
+        PageSpec(n, "story", side_of(n), "full-bleed-cloud", Path(f"q{n}.jpg"), "x") for n in range(3, 9)
+    ]
+    assert Path("wide.jpg") not in story_thumbs(pages)  # half of a panorama would cut the scene
+
+
+def test_back_cover_falls_back_to_the_portrait_and_drops_unvowelized_claims(tmp_path: Path) -> None:
+    base = _spec(tmp_path, text="نص قصير بلا تشكيل في هذه الصفحة من الحكاية الجميلة جدا")
+    plain = dataclasses.replace(base, cover=dataclasses.replace(base.cover, hero=base.title_page.portrait))
+    html = render_html("cover.html.j2", plain)
+    assert 'class="moon-portrait on-back"' in html and 'class="hero-fig"' not in html  # not a sheet
+    assert "مُشَكَّلَةٌ" not in html and "لِلأَعْمارِ" not in html  # no vowels, no theme ages: no claims
+
+
+def test_spine_names_the_child_in_gold(tmp_path: Path) -> None:
+    html = render_html("cover.html.j2", _spec(tmp_path))
+    spine = html[html.index('class="spine-text"') :]
+    assert '<span class="nm">سلمى</span>' in spine[:400]
+
+
+def test_english_cover_mirrors_the_wrap(tmp_path: Path) -> None:
+    base = _spec(tmp_path)
+    spec = dataclasses.replace(
+        base,
+        lang="en",
+        title="Salma's First Day",
+        child_name="Salma",
+        cover=dataclasses.replace(base.cover, name="Salma's First Day", subtitle="", blurb="A lovely story."),
+        series="magic",
+    )
+    html = render_html("cover.html.j2", spec)
+    assert html.index('class="left-panel"') < html.index('class="back ')  # back on the left for LTR
+    assert "Starring the amazing heroine" in html and "A special edition for" in html and ">Magic<" in html
 
 
 def test_cover_thumbnails_at_phone_size(tmp_path: Path) -> None:

@@ -55,13 +55,18 @@ class Treatment:
     accent: str  # the child's name in the story text, page badges, ornaments
     ink: str  # dark tone for the spine and the back cover tint
     soft: str  # light tint for paper pages (color blocks, washes)
+    # Two-tone title: the child's name in its own gradient (the rest of the title in `fill`); () = one tone.
+    name_fill: tuple[tuple[float, str], ...] = ()
+    side: str = ""  # the 3D side of the letters under the face (extrusion); "" = flat lettering
+    depth_mm: float = 1.3  # how deep the extrusion goes
+    line_gap: float = 1.1  # stacked lines, × the font size (Ruqaa's deep descenders need more)
 
 
 TREATMENTS: dict[TitleStyle, Treatment] = {
     "gold-magic": Treatment(
         slug="gold-magic",
         font="Lalezar",
-        fill=((0.0, "#FFFBEA"), (0.42, "#FFD75E"), (0.78, "#F2A61F"), (1.0, "#D9770F")),
+        fill=((0.0, "#FFFFFF"), (0.5, "#FFF4DA"), (1.0, "#FFD993")),
         outline="#3A1D08",
         outline_mm=1.5,
         rim="#FFF8DC",
@@ -80,6 +85,8 @@ TREATMENTS: dict[TitleStyle, Treatment] = {
         accent="#A8560A",
         ink="#16204A",
         soft="#FCEFD2",
+        name_fill=((0.0, "#FFF7CC"), (0.4, "#FFD54F"), (0.78, "#F6A623"), (1.0, "#DC7A0E")),
+        side="#8C4A12",
     ),
     "candy-bright": Treatment(
         slug="candy-bright",
@@ -103,11 +110,13 @@ TREATMENTS: dict[TitleStyle, Treatment] = {
         accent="#C2306F",
         ink="#4E0F3E",
         soft="#FFE3F0",
+        name_fill=((0.0, "#FFFFFF"), (0.35, "#FFF4B3"), (0.75, "#FFD43F"), (1.0, "#F5A517")),
+        side="#9E2560",
     ),
     "night-glow": Treatment(
         slug="night-glow",
         font="Lalezar",
-        fill=((0.0, "#FFFFFF"), (0.45, "#DDF0FF"), (0.8, "#8CC4FF"), (1.0, "#5E9CF0")),
+        fill=((0.0, "#FFFFFF"), (0.5, "#E8F4FF"), (1.0, "#AFD5FF")),
         outline="#0A1238",
         outline_mm=1.5,
         rim="#FFFFFF",
@@ -126,6 +135,8 @@ TREATMENTS: dict[TitleStyle, Treatment] = {
         accent="#2B4BA8",
         ink="#0E1530",
         soft="#E3EEFF",
+        name_fill=((0.0, "#FFF8DA"), (0.45, "#FFD866"), (0.8, "#F4AE2E"), (1.0, "#E08C14")),
+        side="#24398A",
     ),
     "nature-fresh": Treatment(
         slug="nature-fresh",
@@ -149,11 +160,13 @@ TREATMENTS: dict[TitleStyle, Treatment] = {
         accent="#3F7F1F",
         ink="#183A10",
         soft="#EAF5D3",
+        name_fill=((0.0, "#FFFBEA"), (0.4, "#FFD36A"), (0.78, "#FFA03A"), (1.0, "#EE7420")),
+        side="#2E6A1B",
     ),
     "heritage-tatreez": Treatment(
         slug="heritage-tatreez",
         font="Aref Ruqaa",
-        fill=((0.0, "#FFF4E2"), (0.4, "#FFD9B0"), (0.75, "#E8664F"), (1.0, "#B3262F")),
+        fill=((0.0, "#FFF9F0"), (0.55, "#FFE9D0"), (1.0, "#F7CCA4")),
         outline="#2A0A0D",
         outline_mm=1.5,
         rim="#FFF6EA",
@@ -172,6 +185,9 @@ TREATMENTS: dict[TitleStyle, Treatment] = {
         accent="#A8232D",
         ink="#2A0A0D",
         soft="#F8E6DA",
+        name_fill=((0.0, "#FFE9D6"), (0.4, "#FF9A7A"), (0.75, "#E0483C"), (1.0, "#B3262F")),
+        side="#6E1A20",
+        line_gap=1.34,
     ),
 }
 
@@ -187,29 +203,53 @@ def _length(text: str) -> int:
     return len(_MARKS.sub("", text))
 
 
-def split_lines(title: str, max_lines: int = 3, keep: str | None = None) -> list[str]:
-    """Balanced lines, never breaking a word: 1 line up to 13 letters, 2 up to 28, else 3. The words of
-    `keep` (the child's name, e.g. «عبد الرحمن») stay on one line, and a line that is exactly the name is
-    preferred (it reads as a big name line)."""
+# Display lettering keeps the shadda («تخرّج», «أوّل») and drops the short vowels, the sukun, the tanween and
+# the dagger alif (modern print writes «هذا», «الرحمن»): at poster size the full tashkeel crowds the letters
+# and collides between lines. The article's own shadda («الّذي») and a sun letter's after «ال» or «لل»
+# («بالرّوضة», «للشّمس», «اللّه») go too. The story text inside the book keeps every mark.
+_SHORT_VOWELS = re.compile("[\\u064b-\\u0650\\u0652\\u0670]")
+_WORD_START = "(?<![\\u0621-\\u064a])"
+_ARTICLE_SHADDA = re.compile(_WORD_START + "([وفبك]?ال)\\u0651")
+_SUN_SHADDA = re.compile(_WORD_START + "([وفبك]?ال|[وف]?لل)([\\u0621-\\u064a])\\u0651")
+
+
+def display_text(text: str) -> str:
+    plain = _SHORT_VOWELS.sub("", text)
+    plain = _SUN_SHADDA.sub(r"\1\2", _ARTICLE_SHADDA.sub(r"\1", plain))
+    return " ".join(plain.split())
+
+
+def _plain(word: str) -> str:
+    return _MARKS.sub("", word).strip("،,:!?.«»\"'")
+
+
+def name_units(title: str, keep: str | None) -> tuple[list[str], int | None]:
+    """The title's words with the name's words kept as one unit, and the index of that unit (None when the
+    name is not in the title). «Layla's» counts as the name in English titles."""
     words = title.split()
-    name = keep.split() if keep else []
+    name = [_plain(w) for w in (keep or "").split()]
     units: list[str] = []
+    found: int | None = None
     i = 0
     while i < len(words):
-        if len(name) > 1 and [_MARKS.sub("", w) for w in words[i : i + len(name)]] == [
-            _MARKS.sub("", w) for w in name
-        ]:
+        chunk = [_plain(w) for w in words[i : i + len(name)]]
+        last = chunk[-1] if chunk else ""
+        possessive = last.endswith(("'s", "’s")) and last[:-2] == (name[-1] if name else None)
+        if name and found is None and (chunk == name or (chunk[:-1] == name[:-1] and possessive)):
             units.append(" ".join(words[i : i + len(name)]))
+            found = len(units) - 1
             i += len(name)
         else:
             units.append(words[i])
             i += 1
-    n = _length(title)
-    lines_wanted = 1 if n <= 13 else 2 if n <= 28 else max_lines
-    lines_wanted = max(1, min(lines_wanted, len(units), max_lines))
+    return units, found
+
+
+def _balanced(units: list[str], lines_wanted: int, plain_name: str = "") -> list[str]:
+    """`units` cut into `lines_wanted` lines whose longest line is as short as possible."""
+    lines_wanted = max(1, min(lines_wanted, len(units)))
     if lines_wanted == 1:
         return [" ".join(units)]
-    plain_name = _MARKS.sub("", keep or "").strip()
 
     def cuts(start: int, left: int) -> list[list[int]]:
         if left == 1:
@@ -236,11 +276,77 @@ def split_lines(title: str, max_lines: int = 3, keep: str | None = None) -> list
     return best
 
 
+def split_lines(title: str, max_lines: int = 3, keep: str | None = None) -> list[str]:
+    """Balanced lines, never breaking a word: 1 line up to 13 letters, 2 up to 28, else 3. The words of
+    `keep` (the child's name, e.g. «عبد الرحمن») stay on one line, and a line that is exactly the name is
+    preferred (it reads as a big name line)."""
+    units, _ = name_units(title, keep)
+    n = _length(title)
+    lines_wanted = 1 if n <= 13 else 2 if n <= 28 else max_lines
+    return _balanced(units, max(1, min(lines_wanted, max_lines)), _MARKS.sub("", keep or "").strip())
+
+
+LONG_PART = 26  # characters: a part of a poster title longer than this takes two lines when there is room
+
+
+def poster_lines(title: str, keep: str | None, max_lines: int = 3) -> tuple[list[str], int | None]:
+    """Poster layout: the child's name on a line of its own (it is set larger, in the name's colors), the
+    words before and after it on their own lines; a long part takes two balanced lines while the total
+    stays within `max_lines`. Returns the lines and the index of the name line (None: no name in the title,
+    then the balanced `split_lines`)."""
+    units, at = name_units(title, keep)
+    if at is None or len(units) == 1:
+        return split_lines(title, max_lines, keep), (0 if at is not None else None)
+    before, name, after = units[:at], units[at], units[at + 1 :]
+    parts = [p for p in (before, after) if p]
+    room = max_lines - 1 - len(parts)
+    lines: list[str] = []
+    name_line = 0
+    for part in (before, [name], after):
+        if not part:
+            continue
+        if part == [name]:
+            name_line = len(lines)
+            lines.append(name)
+            continue
+        two = room > 0 and len(part) > 1 and _length(" ".join(part)) > LONG_PART
+        if two:
+            room -= 1
+        lines += _balanced(part, 2 if two else 1)
+    return lines, name_line
+
+
 def _ring(radius: float, n: int) -> list[tuple[float, float]]:
     return [
         (round(radius * math.cos(2 * math.pi * i / n), 3), round(radius * math.sin(2 * math.pi * i / n), 3))
         for i in range(n)
     ]
+
+
+def _line_markup(line: str, keep: str | None, scale: float = 1.0) -> Markup:
+    """One title line, the child's name wrapped in a `tspan.nm` (painted in the name's gradient, `scale` × the
+    line's size when it shares the line with other words)."""
+    if not keep:
+        return escape(line)
+    units, at = name_units(line, keep)
+    if at is None:
+        return escape(line)
+    size = f' font-size="{scale:g}em"' if scale != 1.0 and len(units) > 1 else ""
+    parts = [
+        escape(u) if i != at else Markup('<tspan class="nm"%s>%s</tspan>') % (Markup(size), u)
+        for i, u in enumerate(units)
+    ]
+    return Markup(" ").join(parts)
+
+
+ONE_LINE = 19  # characters (spaces too): a poster title this short stays on one line, the name larger
+
+
+def poster_layout(title: str, keep: str | None) -> tuple[list[str], int | None]:
+    """The lines of a poster title (see `title_svg`)."""
+    if _length(title) <= ONE_LINE:
+        return [" ".join(title.split())], None
+    return poster_lines(title, keep)
 
 
 def title_svg(
@@ -252,57 +358,93 @@ def title_svg(
     uid: str = "t",
     rtl: bool = True,
     keep: str | None = None,
+    poster: bool = False,
+    glow: float = 1.0,
 ) -> Markup:
-    """The layered title as inline SVG (mm units). Sizes and line positions are set by `TITLE_FIT_JS`."""
+    """The layered title as inline SVG (mm units). Sizes and line positions are set by `TITLE_FIT_JS`.
+
+    `keep` is the child's name: its words stay on one line and are painted in the treatment's name colors.
+    `poster`: a short title stays on one line with the name set larger; a longer one gives the name a line of
+    its own (`poster_lines`). `glow` scales the soft halo (light art needs less of it)."""
     t = treatment(style)
-    lines = split_lines(title, keep=keep)
+    if poster:
+        lines, name_line = poster_layout(title, keep)
+    else:
+        lines, name_line = split_lines(title, keep=keep), None
     w, h = width_mm, height_mm
-    stops = "".join(f'<stop offset="{o}" stop-color="{c}"/>' for o, c in t.fill)
+
+    def gradient(gid: str, stops: tuple[tuple[float, str], ...]) -> str:
+        body = "".join(f'<stop offset="{o}" stop-color="{c}"/>' for o, c in stops)
+        return f'<linearGradient id="{gid}" x1="0" y1="0" x2="0" y2="1">{body}</linearGradient>'
+
+    two_tone = bool(keep and t.name_fill)
     defs = [
-        f'<linearGradient id="{uid}-fill" x1="0" y1="0" x2="0" y2="1">{stops}</linearGradient>',
+        gradient(f"{uid}-fill", t.fill),
         f'<filter id="{uid}-blur" x="-10%" y="-40%" width="120%" height="180%">'
         f'<feGaussianBlur stdDeviation="{t.glow_mm * 0.55:.2f}"/></filter>',
     ]
+    if two_tone:
+        defs.append(gradient(f"{uid}-name", t.name_fill))
     direction = "rtl" if rtl else "ltr"
     for i, line in enumerate(lines):
+        is_name = name_line is not None and i == name_line
         defs.append(f'<path id="{uid}-arc{i}" d="M 0 {h / 2} L {w} {h / 2}"/>')
         defs.append(
-            f'<text id="{uid}-l{i}" class="tl" direction="{direction}" text-anchor="middle" '
-            f'font-family="{t.font}" font-size="10"><textPath href="#{uid}-arc{i}" startOffset="50%">'
-            f"{escape(line)}</textPath></text>"
+            f'<text id="{uid}-l{i}" class="tl{" tl-name" if is_name else ""}" direction="{direction}" '
+            f'text-anchor="middle" font-family="{t.font}" font-size="10" data-w="{1.75 if is_name else 1.3}">'
+            f'<textPath href="#{uid}-arc{i}" startOffset="50%">'
+            f"{_line_markup(line, keep if two_tone else None, 1.14 if poster else 1.0)}"
+            "</textPath></text>"
         )
     ids = [f"{uid}-l{i}" for i in range(len(lines))]
 
     def copies(offsets: list[tuple[float, float]]) -> str:
         return "".join(f'<use href="#{i}" x="{dx}" y="{dy}"/>' for i in ids for dx, dy in offsets)
 
-    outline = copies(_ring(t.outline_mm, 24) + _ring(t.outline_mm * 0.55, 12))
-    glow = copies(_ring(t.glow_mm, 24))
-    layers = [
-        f'<g fill="{t.glow}" filter="url(#{uid}-blur)" opacity=".9">{glow}</g>',
-        f'<g fill="{t.glow}" opacity=".28">{glow}</g>',
-        f'<g fill="{t.shadow}" opacity=".6" transform="translate(0 {t.shadow_mm})">{outline}</g>',
-        f'<g fill="{t.outline}">{outline}</g>',
+    ring = _ring(t.outline_mm, 24) + _ring(t.outline_mm * 0.55, 12)
+    depth = t.depth_mm if t.side else 0.0
+    steps = [round(depth * k / 4, 3) for k in range(1, 5)] if depth else []
+    # the outline wraps the face and its extruded side as one silhouette
+    silhouette = ring + [(dx, dy + s) for s in steps for dx, dy in _ring(t.outline_mm, 16)]
+    glow_ring = _ring(t.glow_mm, 24)
+    layers = []
+    if glow > 0:  # only blurred: a sharp ring of copies this wide would show its scallops in print
+        layers.append(
+            f'<g fill="{t.glow}" filter="url(#{uid}-blur)" opacity="{min(1.0, 1.05 * glow):.2f}">'
+            f"{copies(glow_ring)}</g>"
+        )
+    drop = t.shadow_mm + depth
+    layers += [
+        f'<g fill="{t.shadow}" opacity=".55" transform="translate(0 {drop})">{copies(ring)}</g>',
+        f'<g fill="{t.outline}">{copies(silhouette)}</g>',
+    ]
+    if steps:
+        layers.append(f'<g fill="{t.side}">{copies([(0, s) for s in steps])}</g>')
+        layers.append(f'<g fill="{t.outline}">{copies(_ring(0.3, 12))}</g>')  # the face's edge
+    layers += [
         f'<g fill="{t.rim}">{copies([(0, -0.45)])}</g>',
-        f'<g fill="url(#{uid}-fill)">{copies([(0, 0)])}</g>',
+        f'<g fill="url(#{uid}-fill)"{f" style=--nf:url(#{uid}-name)" if two_tone else ""}>'
+        f"{copies([(0, 0)])}</g>",
     ]
     return Markup(  # nosec B704 (the only text is escaped above)
         f'<svg class="title-art" viewBox="0 0 {w} {h}" data-bend="{t.bend}" data-tilt="{t.tilt}" '
-        f'data-rtl="{1 if rtl else 0}" '
+        f'data-rtl="{1 if rtl else 0}" data-depth="{depth}" data-lh="{t.line_gap}" '
         f'data-pad="{t.glow_mm + t.outline_mm + 3:.2f}" aria-label="{escape(title)}" role="img">'
-        f"<defs>{''.join(defs)}</defs>{''.join(layers)}</svg>"
+        f"<style>.nm{{fill:var(--nf)}}</style><defs>{''.join(defs)}</defs>{''.join(layers)}</svg>"
     )
 
 
-# Fits every `.title-art` SVG: each line as large as its width allows (lines stay within 1.3× of each
-# other), the stack scaled down to the box height, then each line's arc (and tilt) set on its text path.
-# The tilt lives in the path, not in a rotated group: a rotated blur layer would print at a lower DPI.
+# Fits every `.title-art` SVG: each line as large as its width allows (a line stays within `data-w` × the
+# smallest line: 1.3, or 1.75 for the child's name line in a poster title, whose other lines step back to a
+# smaller cap), the stack scaled down to the box height, then each line's arc (and tilt) set on its text
+# path. The tilt lives in the path, not in a rotated group: a rotated blur layer would print at a lower DPI.
 TITLE_FIT_JS = """
 () => {
   const out = [];
   for (const svg of document.querySelectorAll('svg.title-art')) {
     const vb = svg.viewBox.baseVal, W = vb.width, H = vb.height;
     const pad = parseFloat(svg.dataset.pad || '4'), bend = parseFloat(svg.dataset.bend || '0');
+    const depth = parseFloat(svg.dataset.depth || '0');
     const tilt = parseFloat(svg.dataset.tilt || '0') * Math.PI / 180;
     const rtl = svg.dataset.rtl !== '0';
     const texts = [...svg.querySelectorAll('text.tl')];
@@ -313,14 +455,17 @@ TITLE_FIT_JS = """
       return 10 * avail / len;
     });
     const multi = texts.length > 1;
-    const cap = H * (multi ? 0.5 : 0.62);
-    let s = sizes.map(v => Math.min(v, cap));
+    // poster titles: the name line leads (up to 0.62 of the box), the other lines step back (0.38)
+    const poster = texts.some(t => t.classList.contains('tl-name'));
+    const named = t => t.classList.contains('tl-name');
+    const caps = texts.map(t => H * (!multi || named(t) ? 0.62 : poster ? 0.38 : 0.5));
+    let s = sizes.map((v, i) => Math.min(v, caps[i]));
     const smallest = Math.min(...s);
-    s = s.map(v => Math.min(v, smallest * 1.3));
-    const lineH = v => v * (multi ? 1.04 : 1.15);
+    s = s.map((v, i) => Math.min(v, smallest * parseFloat(texts[i].dataset.w || '1.3')));
+    const lineH = v => v * (multi ? parseFloat(svg.dataset.lh || '1.1') : 1.15);
     const bendK = multi ? 0.45 : 1;  // stacked lines arch less, so they do not collide
     // vertical budget: the glow may spill outside the box (overflow visible), the arcs and tilt may not
-    const vpad = 1.5;
+    const vpad = 1.5 + depth;
     const slope = Math.abs(Math.tan(tilt)) * (W / 2 - pad);
     const rises = s.map(v => bend * bendK * 2 * Math.min(W / 2 - pad / 2, avail / 2));
     let total = s.reduce((a, v) => a + lineH(v), 0) + 2 * vpad + slope + Math.max(...rises) * 0.5;
@@ -329,7 +474,7 @@ TITLE_FIT_JS = """
       const k = (H - fixed) / (total - fixed); s = s.map(v => v * k);
     }
     total = s.reduce((a, v) => a + lineH(v), 0);
-    let y = (H - total) / 2;
+    let y = (H - total - depth) / 2;
     texts.forEach((t, i) => {
       t.setAttribute('font-size', s[i].toFixed(2));
       const base = y + s[i] * 0.98;

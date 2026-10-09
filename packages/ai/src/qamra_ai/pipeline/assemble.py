@@ -31,7 +31,7 @@ from qamra_pdf import (
     render_book,
 )
 from qamra_pdf.page_layouts import ON_ART, normalize
-from qamra_pdf.spec import PanelArea
+from qamra_pdf.spec import PanelArea, Series
 from qamra_pdf.strings import STRINGS
 
 _TASHKEEL = re.compile(r"[ؐ-ًؚ-ٰٟۖ-ۭـ]")
@@ -166,6 +166,7 @@ class AssemblyInputs:
     watermark: bool = False
     # «صوت أهلي» (family-voice add-on): https://{domain}/v/{token}; each story page prints <voice_url>/<page>
     voice_url: str | None = None
+    series: Series | None = None  # the product line named on the cover: classic, magic, custom, class
 
 
 async def assemble_book(
@@ -254,6 +255,10 @@ async def assemble_book(
     if cover_data is None:
         raise ValueError("the cover image is missing")
     cover_path = _save(images / "cover.jpg", as_jpeg(cover_data))
+    # the back cover's waving child comes from the approved sheet (cut out by the renderer, which falls back
+    # to the round portrait when the picture is not a clean three-view sheet)
+    sheet_ext = ".png" if inp.character_sheet[:4] == b"\x89PNG" else ".jpg"
+    hero_sheet = _save(images / f"hero-sheet{sheet_ext}", inp.character_sheet)
     companion_front = (
         _save(images / "companion-front.jpg", front_view(inp.companion_sheet))
         if inp.companion_sheet is not None
@@ -286,6 +291,7 @@ async def assemble_book(
             subtitle=subtitle,
             blurb=inp.story.blurb,
             qr_url=inp.qr_url or inp.voice_url,
+            hero=hero_sheet,
         ),
         pages=pages,
         parents=ParentsSpec(inp.story.parents_lesson, inp.story.parents_questions)
@@ -300,6 +306,8 @@ async def assemble_book(
         title_style=plan.title_style,
         companion=companion_front,
         memories=plan.memories,
+        series=inp.series,
+        age_range=plan.age_range,
     )
     rendered = await render_book(spec, out_dir, proof=proof, print_files=print_files)
     for f in rendered.fit:

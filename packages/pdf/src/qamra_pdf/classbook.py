@@ -17,12 +17,16 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from playwright.async_api import async_playwright
 from pypdf import PdfReader, PdfWriter
 
+from qamra_pdf import ornaments
+from qamra_pdf.assets import LAYOUTS_DIR, prepare
+from qamra_pdf.cover import class_design, cover_name, pick_thumbs, rgba
+from qamra_pdf.lettering import title_svg, treatment
 from qamra_pdf.preflight import Check, PreflightReport, preflight
-from qamra_pdf.render import FONTS_DIR, PKG_DIR, _to_pdf, set_boxes
+from qamra_pdf.render import FONTS_DIR, PKG_DIR, _to_pdf, hero_text, set_boxes
 from qamra_pdf.spec import Brand
 
 _env = Environment(
-    loader=FileSystemLoader(PKG_DIR / "templates"),
+    loader=FileSystemLoader([PKG_DIR / "templates", LAYOUTS_DIR]),
     autoescape=select_autoescape(["html", "j2"]),
     trim_blocks=True,
     lstrip_blocks=True,
@@ -63,6 +67,7 @@ class ChildCopy:
     portrait_line: str
     companion: Path | None = None  # the child's drawing companion, when there is one
     companion_name: str | None = None
+    gender: Literal["m", "f"] | None = None  # the cover's «بطولة» ribbon; None: the ribbon names the school
 
 
 @dataclass(frozen=True)
@@ -86,6 +91,8 @@ class ClassBookSpec:
     dpi: int = 300
     child_age: int = 5
     extra: dict[str, str] = field(default_factory=dict)
+    title_style: str = "gold-magic"  # the theme's cover lettering (`lettering.TITLE_STYLES`)
+    age_range: tuple[int, int] | None = None  # the theme's ages, a fact on the back cover
 
     @property
     def page_mm(self) -> float:
@@ -144,6 +151,36 @@ def _render(template: str, spec: ClassBookSpec, **extra: object) -> str:
     return _env.get_template(template).render(spec=spec, fonts=FONTS_DIR.as_uri(), img=uri, **extra)
 
 
+def cover_html(spec: ClassBookSpec, copy: ChildCopy, work: Path) -> str:
+    """A child's cover wrap: the story cover's design (`cover.class_design`) with the class book's words."""
+    assets = prepare(
+        copy.cover_image,
+        None,
+        work,
+        hero=copy.portrait,
+        hero_is_sheet=False,
+        thumbs=pick_thumbs([p.image for p in spec.pages]),
+    )
+    design = class_design(spec, copy, assets)
+
+    def hero(text: str | None) -> object:
+        return hero_text(text, copy.name, spec.lang)
+
+    return _render(
+        "class_cover.html.j2",
+        spec,
+        copy=copy,
+        cover=design,
+        cover_name=cover_name,
+        assets=assets,
+        t=treatment(spec.title_style),
+        title_svg=title_svg,
+        orn=ornaments,
+        rgba=rgba,
+        hero=hero,
+    )
+
+
 def _merged(name: str, parts: list[PreflightReport], pages: int, signature: int) -> PreflightReport:
     """One copy's interior report from the shared interior's and its portrait page's reports."""
     report = PreflightReport(file=name)
@@ -185,7 +222,7 @@ async def render_class_book(
                 await _to_pdf(browser, html, pdf, spec.page_mm, spec.page_mm, None)
                 portraits.append(pdf)
                 html, pdf = out_dir / f"cover-{i}.html", out_dir / f"cover-{i}.pdf"
-                html.write_text(_render("class_cover.html.j2", spec, copy=copy), encoding="utf-8")
+                html.write_text(cover_html(spec, copy, out_dir / f"cover-{i}"), encoding="utf-8")
                 await _to_pdf(browser, html, pdf, spec.wrap_width_mm, spec.page_mm, None)
                 covers.append(pdf)
                 if on_copy is not None:

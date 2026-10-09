@@ -37,6 +37,7 @@ from qamra_worker.jobs import books as books_job
 from qamra_worker.jobs.books import (
     _beat_of,
     cover_photo,
+    cover_series,
     page_key,
     redraw_pages,
     rerender_book,
@@ -106,6 +107,12 @@ def test_step_names_map_to_pages() -> None:
     assert _beat_of("cover:a1") == 0 and _beat_of("qa:cover:a2") == 0 and _beat_of("upscale:cover") == 0
     assert _beat_of("page:7:a1") == 7 and _beat_of("qa:7:a3") == 7 and _beat_of("upscale:page:12") == 12
     assert _beat_of("story") is None and _beat_of("character:1") is None
+
+
+def test_the_cover_names_the_product_line() -> None:
+    assert cover_series({"line": "classic"}) == "classic" and cover_series({"line": "magic"}) == "magic"
+    assert cover_series({"line": "magic", "custom": {"wish": "x"}}) == "custom"  # «حكاية خاصة»
+    assert cover_series({"offline": True}) is None and cover_series(None) is None
 
 
 async def test_final_book_job_end_to_end(db: Session, storage: ObjectStorage) -> None:

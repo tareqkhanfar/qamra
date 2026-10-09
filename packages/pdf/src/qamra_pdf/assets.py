@@ -6,10 +6,13 @@
   drawing page).
 - Decor (E1–E5 in docs/image-prompts.md): finished PNGs listed in `packages/pdf/layouts/decor/manifest.json`
   are used when present (cropped, white keyed out); otherwise the templates draw their SVG fallbacks.
+- The back cover's hero: the child's figure from the character sheet, cut out (only when the cut-out reads as
+  a whole figure); and small print copies of a few story pages for the back cover's thumbnails.
 """
 
 import json
 import os
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -166,6 +169,78 @@ def cutout(src: Path, dest: Path) -> Path:
     return dest
 
 
+THUMB_PX = 720  # a back-cover thumbnail is at most 46 mm: 720 px is ≥ 390 DPI
+HERO_MIN_HEIGHT = 0.62  # a whole figure fills at least this share of its view's height
+# ... and this share of its own box (a cut-out of the whole view, or a sliver, fails)
+HERO_COVERAGE = (0.18, 0.85)
+
+
+def hero_view(sheet: Path, dest: Path) -> Path | None:
+    """The middle view of a three-view character sheet (three-quarter, waving: the back cover's hero), cut
+    out. None when the picture is not a three-view sheet or the cut-out is not a clean whole figure; the back
+    cover then shows the round portrait."""
+    if dest.exists() and dest.stat().st_mtime >= sheet.stat().st_mtime:
+        return dest
+    with Image.open(sheet) as original:
+        im = original.convert("RGB")
+    w, h = im.size
+    if w < 1.3 * h:
+        return None
+    view = im.crop((w // 3, 0, 2 * w // 3, h))
+    figure = cut_out_figure(view)
+    alpha = figure.getchannel("A").point(lambda v: 255 if v > 40 else 0)
+    box = alpha.getbbox()
+    if not box:
+        return None
+    x0, y0, x1, y1 = box
+    area = max(1, (x1 - x0) * (y1 - y0))
+    coverage = sum(alpha.crop(box).histogram()[255:]) / area
+    if (y1 - y0) < HERO_MIN_HEIGHT * h or not HERO_COVERAGE[0] <= coverage <= HERO_COVERAGE[1]:
+        return None
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    figure.crop(box).save(dest, format="PNG", optimize=True)
+    _fit_height(dest)
+    return dest
+
+
+HERO_MAX_PX = 1100  # the back cover's figure is at most ~75 mm tall: 1100 px is ≥ 370 DPI there
+
+
+def _fit_height(path: Path, px: int = HERO_MAX_PX) -> None:
+    """Shrink a cut-out stored far above print resolution (PNG with alpha is stored losslessly)."""
+    with Image.open(path) as im:
+        if im.height <= px:
+            return
+        small = im.resize((max(1, round(im.width * px / im.height)), px), Image.Resampling.LANCZOS)
+    small.save(path, format="PNG", optimize=True)
+
+
+def figure_cutout(src: Path, dest: Path) -> Path | None:
+    """A single front view on plain paper (a class book's portrait), cut out; None when it is not clean."""
+    fresh = not (dest.exists() and dest.stat().st_mtime >= src.stat().st_mtime)
+    out = cutout(src, dest)
+    if fresh:
+        _fit_height(out)
+    with Image.open(out) as im:
+        alpha = im.getchannel("A").point(lambda v: 255 if v > 40 else 0)
+        coverage = sum(alpha.histogram()[255:]) / max(1, im.width * im.height)
+    return out if HERO_COVERAGE[0] <= coverage <= HERO_COVERAGE[1] else None
+
+
+def thumb_copy(src: Path, dest: Path, px: int = THUMB_PX) -> Path:
+    """A small print copy (center square) of a story page for the back cover."""
+    if dest.exists() and dest.stat().st_mtime >= src.stat().st_mtime:
+        return dest
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    with Image.open(src) as original:
+        im = original.convert("RGB")
+        side = min(im.size)
+        left, top = (im.width - side) // 2, (im.height - side) // 2
+        im = im.crop((left, top, left + side, top + side)).resize((px, px), Image.Resampling.LANCZOS)
+        im.save(dest, format="JPEG", quality=88, dpi=(300, 300))
+    return dest
+
+
 @dataclass
 class Assets:
     """What a render adds to the book's own images: derived pictures and the decor found on disk."""
@@ -173,14 +248,32 @@ class Assets:
     back: Path | None = None
     companion: Path | None = None
     decor: dict[str, Path] = field(default_factory=dict)
+    hero: Path | None = None  # the child's cut-out figure for the back cover
+    thumbs: list[Path] = field(default_factory=list)  # story pages shown small on the back cover
 
 
-def prepare(front: Path | None, companion: Path | None, out_dir: Path) -> Assets:
+def prepare(
+    front: Path | None,
+    companion: Path | None,
+    out_dir: Path,
+    *,
+    hero: Path | None = None,
+    hero_is_sheet: bool = True,
+    thumbs: Sequence[Path] = (),
+) -> Assets:
     work = out_dir / "derived"
+    figure: Path | None = None
+    if hero and hero.is_file():
+        dest = work / f"hero-{hero.stem}-v{CUTOUT_VERSION}.png"
+        figure = hero_view(hero, dest) if hero_is_sheet else figure_cutout(hero, dest)
     return Assets(
         back=back_background(front, work / "back.jpg") if front and front.is_file() else None,
         companion=cutout(companion, work / f"companion-v{CUTOUT_VERSION}.png")
         if companion and companion.is_file()
         else None,
         decor=prepare_decor(work / "decor"),
+        hero=figure,
+        thumbs=[
+            thumb_copy(p, work / "thumbs" / f"{i}-{p.stem}.jpg") for i, p in enumerate(thumbs) if p.is_file()
+        ],
     )

@@ -1,42 +1,106 @@
-/* Story book cover (Addendum 11 §2). Class books keep _cover.css.j2. */
-.front, .back { position: absolute; top: 0; width: {{ spec.trim_mm + spec.bleed_mm }}mm; height: var(--page); overflow: hidden; }
-.front .cover-shade { position: absolute; inset: 0; }
-.front .cover-title { position: absolute; top: calc(var(--bleed) + 6mm); width: 194mm; display: flex; flex-direction: column; align-items: center; z-index: 2; }
-.front.outer-left .cover-title { left: calc(var(--bleed) + 8mm); } .front.outer-right .cover-title { left: 8mm; }
-.front svg.title-art { display: block; width: 194mm; height: 54mm; overflow: visible; }
-.ribbon { position: relative; display: inline-flex; align-items: center; gap: 3mm; margin-top: 1.5mm; padding: .8mm 13mm 1.4mm;
-  background: linear-gradient(to bottom, {{ t.ribbon[0] }}, {{ t.ribbon[1] }});
-  clip-path: polygon(0 0, 100% 0, calc(100% - 4.6mm) 50%, 100% 100%, 0 100%, 4.6mm 50%); }
-.ribbon::before { content: ""; position: absolute; inset: .8mm 3.6mm; border-top: .35mm solid {{ t.ribbon_edge }}; border-bottom: .35mm solid {{ t.ribbon_edge }}; opacity: .85; }
-.ribbon .r-label { position: relative; font: 800 15pt/1.7 "Baloo Bhaijaan 2", sans-serif; color: {{ t.ribbon_label }}; }
-.ribbon .r-name { position: relative; font: 400 30pt/1.35 "Lalezar", "Baloo Bhaijaan 2", sans-serif; color: {{ t.ribbon_name }};
-  text-shadow: .35mm 0 0 {{ t.ribbon_name_outline }}, -.35mm 0 0 {{ t.ribbon_name_outline }}, 0 .35mm 0 {{ t.ribbon_name_outline }}, 0 -.35mm 0 {{ t.ribbon_name_outline }},
-    .25mm .25mm 0 {{ t.ribbon_name_outline }}, -.25mm .25mm 0 {{ t.ribbon_name_outline }}, .25mm -.25mm 0 {{ t.ribbon_name_outline }}, -.25mm -.25mm 0 {{ t.ribbon_name_outline }}; }
-.front .front-moon { position: absolute; bottom: calc(var(--bleed) + 8mm); width: 15mm; height: 15mm; display: flex; align-items: center; justify-content: center; border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,253,248,.55) 0%, rgba(255,253,248,.25) 45%, rgba(255,253,248,0) 70%); }
-.front.outer-left .front-moon { left: calc(var(--bleed) + 7mm); } .front.outer-right .front-moon { right: calc(var(--bleed) + 7mm); }
+{#- Story and class book covers (Addendum 11 §2, redesigned 2026-10-09). Positions inside `.trim` are mm from
+    the trimmed edge; the panels carry the bleed on their outer side only (the spine side meets the spine). -#}
+{% set cd = cover %}
+.front, .back { position: absolute; top: 0; width: {{ cd.trim_mm + cd.bleed_mm }}mm; height: var(--page); overflow: hidden; }
+.front .trim, .back .trim { position: absolute; top: {{ cd.bleed_mm }}mm; width: {{ cd.trim_mm }}mm; height: {{ cd.trim_mm }}mm; }
+.outer-left .trim { left: {{ cd.bleed_mm }}mm; } .outer-right .trim { left: 0; }
+.cover-scrim, .back-tint, .back-stars { position: absolute; inset: 0; }
 
-.back { background: {{ t.ink }}; color: var(--cream); }
-.back .back-tint { position: absolute; inset: 0; }
-.back .back-stars svg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .7; }
-.back .back-content { position: absolute; top: calc(var(--bleed) + 30mm); width: 170mm; display: flex; flex-direction: column; align-items: center; gap: 7mm; text-align: center; }
-.back.outer-right .back-content { left: 20mm; } .back.outer-left .back-content { left: calc(var(--bleed) + 20mm); }
-.back .moon-portrait.on-back { width: 46mm; height: 46mm; }
-.back .blurb { font-size: 16pt; line-height: 1.95; color: var(--cream); max-width: 150mm; }
-.back .blurb .hero-name { color: #FFD36B; }
-[dir="ltr"] .back .blurb { font-family: "IBM Plex Sans Arabic", sans-serif; font-size: 15pt; }
-.back .back-foot { position: absolute; bottom: calc(var(--safe) + 2mm); width: 170mm; display: flex; align-items: flex-end; justify-content: space-between; gap: 6mm; }
-.back.outer-right .back-foot { left: 20mm; } .back.outer-left .back-foot { left: calc(var(--bleed) + 20mm); }
-.back .back-foot:not(:has(.qr-card)) { justify-content: center; }
-.back .back-brand { display: flex; align-items: center; gap: 3mm; }
-.back .back-name { font: 400 17pt/1.3 "Lalezar", "Baloo Bhaijaan 2", sans-serif; color: var(--moon-glow); }
-.back .back-domain { font: 600 10pt "IBM Plex Sans Arabic", sans-serif; letter-spacing: .5mm; color: #D7DBF0; direction: ltr; text-align: start; }
-.back .qr-card { display: flex; align-items: center; gap: 3mm; background: rgba(255,253,248,.1); border: .3mm solid rgba(255,253,248,.35); border-radius: 4mm; padding: 2.5mm 3.5mm; }
-.back .qr { width: 22mm; height: 22mm; background: var(--paper-raised); border-radius: 2mm; padding: 1.6mm; }
+/* ---- front: poster title in the art's calm sky, the ribbon, the series pill */
+.front .cover-title { position: absolute; top: 8.5mm; left: 8mm; width: 194mm; display: flex; flex-direction: column; align-items: center; z-index: 2; }
+.front svg.title-art { display: block; width: 194mm; height: {{ cd.title_h_mm }}mm; overflow: visible; }
+.ribbon { position: relative; display: inline-flex; margin-top: -2.4mm; }
+.rb-band { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 2.4mm; padding: .3mm 8.5mm .8mm;
+  background: linear-gradient(to bottom, {{ cd.t.ribbon[0] }}, {{ cd.t.ribbon[1] }}); box-shadow: 0 .9mm 1.8mm rgba(0,0,0,.28); }
+.rb-band::before { content: ""; position: absolute; inset: .7mm 1.2mm; border-top: .3mm solid {{ cd.t.ribbon_edge }}; border-bottom: .3mm solid {{ cd.t.ribbon_edge }}; opacity: .8; }
+.rb-tail { position: absolute; top: 2.4mm; bottom: -2.4mm; width: 13mm; z-index: 0;
+  background: linear-gradient(rgba(0,0,0,.3), rgba(0,0,0,.3)), {{ cd.t.ribbon[1] }}; }
+.rb-tail.start { right: -8.6mm; clip-path: polygon(0 0, 100% 0, calc(100% - 3.6mm) 50%, 100% 100%, 0 100%); }
+.rb-tail.end { left: -8.6mm; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 3.6mm 50%); }
+.ribbon .r-label { position: relative; font: 800 12.5pt/1.7 "Baloo Bhaijaan 2", sans-serif; color: {{ cd.t.ribbon_label }}; white-space: nowrap; }
+.ribbon .r-name { position: relative; font: 400 22pt/1.28 "Lalezar", "Baloo Bhaijaan 2", sans-serif; color: {{ cd.t.ribbon_name }}; white-space: nowrap;
+  text-shadow: .32mm 0 0 {{ cd.t.ribbon_name_outline }}, -.32mm 0 0 {{ cd.t.ribbon_name_outline }}, 0 .32mm 0 {{ cd.t.ribbon_name_outline }}, 0 -.32mm 0 {{ cd.t.ribbon_name_outline }},
+    .23mm .23mm 0 {{ cd.t.ribbon_name_outline }}, -.23mm .23mm 0 {{ cd.t.ribbon_name_outline }}, .23mm -.23mm 0 {{ cd.t.ribbon_name_outline }}, -.23mm -.23mm 0 {{ cd.t.ribbon_name_outline }}; }
+[dir="ltr"] .ribbon .r-label { font-family: "Baloo Bhaijaan 2", "IBM Plex Sans Arabic", sans-serif; letter-spacing: .1mm; }
+.series-pill { position: absolute; bottom: 10.5mm; display: inline-flex; align-items: center; gap: 2mm; height: 9.6mm; padding: 0 3.6mm 0 3mm; border-radius: 4.8mm; z-index: 3;
+  {% if cd.dark %}background: {{ rgba(cd.reading.deep, 0.78) }}; border: .3mm solid rgba(255,248,234,.4); color: #FFF8EA;
+  {% else %}background: rgba(255,253,248,.9); border: .3mm solid {{ rgba(cd.reading.deep, 0.22) }}; color: {{ cd.reading.deep }};{% endif %}
+  box-shadow: 0 .8mm 2mm rgba(0,0,0,.22); }
+.front.outer-left .series-pill { left: 10.5mm; } .front.outer-right .series-pill { right: 10.5mm; }
+.series-pill .sp-brand { font: 400 13pt/1 "Lalezar", "Baloo Bhaijaan 2", sans-serif; padding-top: .9mm; }
+.series-pill .sp-sep { width: .3mm; height: 4.6mm; background: currentColor; opacity: .45; }
+.series-pill .sp-line { font: 700 10pt/1 "Baloo Bhaijaan 2", "IBM Plex Sans Arabic", sans-serif; padding-top: .6mm; color: {{ cd.gold_ink }}; }
+
+/* ---- back: tinted continuation of the art, title, blurb, pages, facts, the child waving, brand */
+.back { color: {{ cd.ink }}; background: {{ cd.reading.deep if cd.dark else cd.reading.light }}; }
+.back .back-tint { background: {% if cd.dark %}linear-gradient(to bottom, {{ rgba(cd.reading.deep, 0.6) }} 0%, {{ rgba(cd.reading.deep, 0.74) }} 45%, {{ rgba(cd.reading.deep, 0.9) }} 100%){% else %}radial-gradient(110mm 80mm at {{ '86%' if cd.dir == 'rtl' else '14%' }} 96%, {{ rgba(cd.t.soft, 0.75) }} 0%, {{ rgba(cd.t.soft, 0) }} 100%), linear-gradient(to bottom, {{ rgba(cd.reading.light, 0.74) }} 0%, {{ rgba(cd.reading.light, 0.86) }} 40%, {{ rgba(cd.reading.light, 0.9) }} 100%){% endif %}; }
+.back .back-stars svg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .6; }
+.back.light .back-stars svg { opacity: .32; }
+.back .back-top { position: absolute; top: 9mm; bottom: 62mm; left: 18mm; right: 18mm; display: flex; flex-direction: column; align-items: center; justify-content: space-evenly; text-align: center; }
+.back .back-top .head { display: flex; flex-direction: column; align-items: center; }
+.back .hook { font: 400 24pt/1.35 "{{ cd.t.font }}", "Lalezar", sans-serif; color: {{ cd.gold_ink }}; }
+.back .hook .nm, .back .made-for .nm { color: {{ cd.name_ink }}; }
+.spine .nm { color: #F6C35A; }
+.back.dark .hook { text-shadow: 0 .5mm 1.6mm rgba(0,0,0,.35); }
+.back .hook-rule { display: flex; align-items: center; gap: 2.4mm; margin: 1.6mm 0 2.4mm; }
+.back .hook-rule span { width: 16mm; height: .3mm; background: {{ cd.gold_ink }}; opacity: .6; }
+.back .blurb { font-size: 15.5pt; line-height: 1.85; color: {{ cd.ink }}; max-width: 160mm; }
+.back .blurb .hero-name { color: {{ cd.name_ink }}; }
+[dir="ltr"] .back .blurb { font-family: "IBM Plex Sans Arabic", sans-serif; font-size: 13.5pt; line-height: 1.7; }
+[dir="ltr"] .back .hook { font-family: "Baloo Bhaijaan 2", sans-serif; font-weight: 800; }
+
+.back .thumbs { height: 58mm; display: flex; justify-content: center; align-items: center; }
+.back .thumb { position: relative; width: 47mm; height: 47mm; margin: 0 -3mm; padding: 1.6mm; background: #FFFDF8; border-radius: 2.6mm;
+  box-shadow: 0 1.2mm 2.8mm rgba(0,0,0,.32), 0 0 0 .2mm rgba(0,0,0,.06); }
+.back .thumb img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 1.4mm; }
+.back .thumb.t1 { transform: rotate(-5deg) translateY(2mm); z-index: 1; }
+.back .thumb.t2 { transform: rotate(1.5deg) translateY(-1.5mm); z-index: 2; width: 51mm; height: 51mm; }
+.back .thumb.t3 { transform: rotate(4.5deg) translateY(2.5mm); z-index: 1; }
+.back .thumbs.n1 .thumb, .back .thumbs.n2 .thumb { margin: 0 2mm; }
+
+.back .chips { display: flex; justify-content: center; flex-wrap: wrap; gap: 2.4mm; }
+.back .chip { display: inline-flex; align-items: center; gap: 1.6mm; height: 8.4mm; padding: 0 3.4mm 0 2.6mm; border-radius: 4.2mm; white-space: nowrap;
+  font: 600 10.5pt/1 "IBM Plex Sans Arabic", sans-serif; color: {{ cd.ink }};
+  {% if cd.dark %}background: rgba(255,248,234,.12); border: .3mm solid rgba(255,248,234,.38);{% else %}background: rgba(255,253,248,.78); border: .3mm solid {{ rgba(cd.reading.deep, 0.2) }};{% endif %} }
+.back .chip .chip-icon { width: 4.6mm; height: 4.6mm; flex: none; }
+.back .chip > span { padding-top: .5mm; }
+
+.back .back-hero { position: absolute; bottom: 4mm; display: flex; align-items: flex-end; gap: 1mm; z-index: 2; }
+.back.outer-right .back-hero { right: 9mm; } .back.outer-left .back-hero { left: 9mm; }
+.back .back-hero img { position: relative; display: block; object-fit: contain; }
+.back .back-hero::after { content: ""; position: absolute; left: -4mm; right: -4mm; bottom: -1.4mm; height: 6mm; z-index: -1;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,{{ 0.32 if cd.dark else 0.2 }}) 0%, rgba(0,0,0,0) 70%); }
+.back .back-hero .companion-fig { margin-bottom: 1mm; }
+/* a full moon behind the waving child (the brand's moon), so a light outfit never melts into a light back */
+.back .back-hero .hero-moon { position: absolute; bottom: 9mm; z-index: -1; border-radius: 50%;
+  {% if cd.dark %}background: radial-gradient(circle at 42% 38%, rgba(252,239,210,.26), rgba(252,239,210,.1) 62%, rgba(252,239,210,.04)); border: .35mm solid rgba(246,195,90,.45);
+  {% else %}background: radial-gradient(circle at 42% 38%, {{ rgba(cd.t.accent, 0.1) }}, {{ rgba(cd.t.accent, 0.2) }} 70%, {{ rgba(cd.t.accent, 0.26) }}); border: .35mm solid {{ rgba(cd.t.accent, 0.4) }};{% endif %} }
+.back .moon-portrait.on-back { width: 40mm; height: 40mm; margin-bottom: 8mm; }
+
+.back .back-foot { position: absolute; bottom: 10.5mm; left: 58mm; right: 58mm; display: flex; flex-direction: column; align-items: center; gap: 2.2mm; text-align: center; }
+.back .made-for { display: inline-flex; align-items: center; gap: 2mm; font: 700 18pt/1.5 "Aref Ruqaa", "Noto Naskh Arabic", serif; color: {{ cd.ink }}; white-space: nowrap; }
+[dir="ltr"] .back .made-for { font: 600 12.5pt/1.5 "IBM Plex Sans Arabic", sans-serif; font-style: italic; }
+.back .school-line { font: 600 10.5pt "IBM Plex Sans Arabic", sans-serif; color: {{ cd.ink }}; opacity: .9; }
+.back .back-brand { display: flex; align-items: center; gap: 2.4mm; }
+.back .school-logo { width: 13mm; height: 13mm; object-fit: contain; border-radius: 2mm; background: rgba(255,253,248,.92); padding: 1mm; }
+.back .back-name { font: 400 16pt/1.2 "Lalezar", "Baloo Bhaijaan 2", sans-serif; color: {{ cd.gold_ink }}; text-align: start; }
+.back .back-domain { font: 600 9.5pt "IBM Plex Sans Arabic", sans-serif; letter-spacing: .45mm; color: {{ cd.ink }}; opacity: .85; direction: ltr; text-align: start; }
+
+/* the inner column (spine side): QR card when family voice exists, and the area kept free for a barcode */
+.back .inner-col { position: absolute; bottom: 10.5mm; display: flex; flex-direction: column; align-items: center; gap: 3mm; }
+.back.outer-right .inner-col { left: 14mm; } .back.outer-left .inner-col { right: 14mm; }
+.back .barcode-zone { width: 38mm; height: 22mm; }
+.back .qr-card { display: flex; flex-direction: column; align-items: center; gap: 1.4mm; width: 38mm; padding: 2.4mm 2mm; border-radius: 3.4mm;
+  {% if cd.dark %}background: rgba(255,248,234,.1); border: .3mm solid rgba(255,248,234,.35);{% else %}background: rgba(255,253,248,.8); border: .3mm solid {{ rgba(cd.reading.deep, 0.2) }};{% endif %} }
+.back .qr { width: 20mm; height: 20mm; background: #FFFDF8; border-radius: 1.6mm; padding: 1.4mm; }
 .back .qr svg { width: 100%; height: 100%; display: block; }
-.back .qr-caption { font: 500 9.5pt "IBM Plex Sans Arabic", sans-serif; color: #E3E6F5; max-width: 48mm; text-align: start; line-height: 1.6; }
+.back .qr-caption { font: 500 8.5pt/1.5 "IBM Plex Sans Arabic", sans-serif; color: {{ cd.ink }}; text-align: center; }
+.back .inner-col:has(.qr-card) .barcode-zone { display: none; }
 
-.spine { position: absolute; top: 0; height: var(--page); width: {{ spec.spine_mm }}mm; left: {{ spec.trim_mm + spec.bleed_mm }}mm; overflow: hidden; }
-.spine .spine-moon { position: absolute; left: 1.2mm; right: 1.2mm; bottom: calc(var(--bleed) + 10mm); display: flex; justify-content: center; }
-.spine .spine-text { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) rotate(90deg); white-space: nowrap;
-  font: 700 {{ [((spec.spine_mm - 2.6) / 1.5 / 0.3528) | round(1), 13] | min }}pt/1 "Baloo Bhaijaan 2", sans-serif; color: var(--moon-glow); }
+/* ---- spine: the art's deep tone; title with the name in gold, the brand and the moon at the tail */
+.spine { position: absolute; top: 0; height: var(--page); width: {{ cd.spine_mm }}mm; left: {{ cd.trim_mm + cd.bleed_mm }}mm; overflow: hidden; }
+.spine .spine-text { position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%) rotate(90deg); white-space: nowrap;
+  font: 400 {{ cd.spine_pt }}pt/1 "Lalezar", "Baloo Bhaijaan 2", sans-serif; color: #FFF8EA; padding-top: .6mm; }
+[dir="ltr"] .spine .spine-text, .spine .spine-text[dir="ltr"] { font-family: "Baloo Bhaijaan 2", sans-serif; font-weight: 800; }
+.spine .spine-foot { position: absolute; left: 0; right: 0; bottom: calc({{ cd.bleed_mm }}mm + 9mm); display: flex; flex-direction: column; align-items: center; gap: 2.4mm; }
+.spine .spine-brand { display: block; transform: rotate(90deg); white-space: nowrap; font: 400 {{ [cd.spine_pt - 1, 7.5] | max }}pt/1 "Lalezar", "Baloo Bhaijaan 2", sans-serif; color: #F6C35A; margin-bottom: 6mm; }
