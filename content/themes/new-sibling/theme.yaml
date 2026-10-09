@@ -1,5 +1,5 @@
 slug: new-sibling
-version: 2
+version: 3
 title_ar: "{name} وضيفنا الصغير"
 title_en: "{name} and Our Little Guest"
 # Cover lettering (Addendum 11 §2.3): gold-magic, candy-bright, night-glow, nature-fresh, heritage-tatreez
@@ -135,11 +135,13 @@ for_parents:
 
 cover:
   scene: >-
-    The hero sits on the soft sofa carefully holding a swaddled newborn baby, a parent's hand gently
-    supporting from the side; a crescent moon glows through the window behind them.
+    The hero sits on the soft sofa with a swaddled newborn baby resting safely on a big embroidered
+    cushion across the hero's lap, looking down at the baby with a gentle smile; a crescent moon glows
+    through the window behind them. Only the hero and the baby are in the picture: no other people and
+    no arms or hands of anyone else.
   location: living_room
   time: evening
-  others: "{baby}, and a parent's supporting hand"
+  others: "{baby}"
   others_count: 1
   companion_action: peeks over the sofa, smiling at the baby
 
