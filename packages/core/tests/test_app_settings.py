@@ -1,6 +1,6 @@
 import pytest
 
-from qamra_core.app_settings import REGISTRY, SettingError, mask, validate
+from qamra_core.app_settings import REGISTRY, SettingError, display_phone, mask, validate
 
 
 @pytest.mark.parametrize(
@@ -73,3 +73,32 @@ def test_secrets_are_never_public() -> None:
 
 def test_mask() -> None:
     assert mask("") == "" and mask("short") == "•••• " and mask("sk-ant-abcdefgh1234") == "•••• 1234"
+
+
+def test_the_owners_contact_details_are_the_defaults() -> None:
+    """Tareq, 2026-10-09: calls on +970, WhatsApp on +972, info@qamra.app; all shown to the website."""
+    expected = {
+        "support_phone": "+970595870228",
+        "support_whatsapp": "+972595870228",
+        "sales_whatsapp": "+972595870228",
+        "support_email": "info@qamra.app",
+        "sales_email": "info@qamra.app",
+    }
+    for key, value in expected.items():
+        d = REGISTRY[key]
+        assert (d.default, d.public, d.example) == (value, True, False), key
+        assert validate(d, value) == value
+
+
+@pytest.mark.parametrize(
+    ("stored", "shown"),
+    [
+        ("+970595870228", "+970 59 587 0228"),
+        ("+972595870228", "+972 59 587 0228"),
+        ("+970 (59) 587-0228", "+970 59 587 0228"),
+        ("+96279123456", "+96279123456"),
+        ("0595870228", "0595870228"),
+    ],
+)
+def test_display_phone(stored: str, shown: str) -> None:
+    assert display_phone(stored) == shown

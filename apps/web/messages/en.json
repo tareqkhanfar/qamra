@@ -2120,7 +2120,14 @@
     "privacy": "Privacy & data deletion",
     "contact": "Contact us",
     "whatsapp": "WhatsApp",
-    "rights": "© {year} {brand}"
+    "rights": "© {year} {brand}. All rights reserved."
+  },
+  "contact": {
+    "title": "Contact us",
+    "phone": "Phone",
+    "whatsapp": "WhatsApp",
+    "email": "Email",
+    "help": "Have a question about your order? We're here to help."
   },
   "themes": {
     "title": "Stories starring your child",
@@ -3420,45 +3427,54 @@
   },
   "pricingPage": {
     "title": "Pricing",
-    "lead": "Prices include the free preview. Cash on delivery, with delivery by zone.",
-    "storiesTitle": "Story books",
-    "storiesLead": "Any of our stories, in the art style you choose. The price depends on the book type and format.",
-    "pages": "{count} pages",
-    "chooseStory": "Choose a story",
-    "formats": {
-      "digital": "Digital copy (PDF and reader)",
+    "lead": "Personalized printed books, with clear prices.",
+    "from": "From <b>{price}</b>",
+    "fromRow": "from {price}",
+    "order": "Order now",
+    "orderLabel": "Order {name} now",
+    "format": {
       "softcover": "Softcover",
       "hardcover": "Hardcover",
-      "spiral": "Printed, spiral-bound"
+      "digital": "Digital copy (PDF)",
+      "printed": "Printed",
+      "pdf": "PDF",
+      "book": "Printed book",
+      "file": "PDF file"
     },
-    "addonsTitle": "Add-ons",
-    "addonsLead": "Chosen after the preview or in the cart.",
-    "included": "Included in {lines}",
+    "product": {
+      "magic-book": "One of our stories",
+      "magic-custom-story": "A story based on your idea"
+    },
+    "unit": {
+      "workbook": {
+        "one": "One volume",
+        "set": "Full set ({n, plural, one {# volume} other {# volumes}})"
+      },
+      "journey": {
+        "one": "One stage",
+        "set": "Full set ({n, plural, one {# stage} other {# stages}})"
+      },
+      "islamic": {
+        "one": "One volume",
+        "L1": "Level 1 set ({n, plural, one {# volume} other {# volumes}})",
+        "L2": "Level 2 set ({n, plural, one {# volume} other {# volumes}})",
+        "set": "Complete series ({n, plural, one {# volume} other {# volumes}})"
+      }
+    },
+    "unitFallback": {
+      "one": "One part",
+      "set": "Full set"
+    },
+    "delivery": "Delivery and payment",
+    "zone": "<b>{zone}</b>: <n>{fee}</n>, free on orders over <n>{free}</n> <n>({min}–{max} working days)</n>",
+    "zonePlain": "<b>{zone}</b>: <n>{fee}</n> <n>({min}–{max} working days)</n>",
+    "cod": "Cash on delivery.",
+    "codFee": "Cash on delivery (a {fee} fee).",
+    "addons": "Add-ons",
     "percent": "{percent}% of the book's price",
     "free": "Free",
-    "photoAlt": "A Qamra gift box with its card",
-    "activityTitle": "Activity books",
-    "activityLead": "Price per copy, by volume or stage and format.",
-    "orderBook": "Order {name}",
-    "kgTitle": "Kindergartens",
-    "kgBody": "From {price} per child for orders of {n} children or more: one book per child with its own cover and a school page, on one invoice.",
-    "kgCta": "Request a quote",
-    "deliveryTitle": "Delivery and payment",
-    "zone": "Zone",
-    "fee": "Delivery fee",
-    "freeOver": "Free on orders over {amount}",
-    "eta": "{min}–{max} working days",
-    "codTitle": "Cash on delivery",
-    "codBody": "You pay the courier in cash when the book arrives. No card and no prepayment.",
-    "codFee": "Cash-on-delivery fee: {fee}",
-    "etaHead": "Delivery time",
-    "ctaTitle": "Ready?",
-    "ctaBody": "The preview is free, and you pay only on delivery.",
-    "country": {
-      "label": "Prices for",
-      "PS": "Palestine (₪)",
-      "JO": "Jordan (JD)"
-    }
+    "kg": "Kindergartens get special prices for the whole class.",
+    "kgCta": "Request a quote"
   },
   "howPage": {
     "title": "How it works",

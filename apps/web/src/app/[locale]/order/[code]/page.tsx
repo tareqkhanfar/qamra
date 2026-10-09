@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { ContactHelp } from "@/components/site/ContactLinks";
 import { PageShell } from "@/components/site/PageShell";
 import { OrderView } from "@/components/store/OrderView";
 
@@ -16,6 +17,7 @@ export default async function OrderPage({ params, searchParams }: Props) {
     <PageShell>
       <section className="px-4 py-10 md:py-16">
         <OrderView code={decodeURIComponent(code).toUpperCase()} placed={placed === "1"} />
+        <ContactHelp className="mt-6" />
       </section>
     </PageShell>
   );

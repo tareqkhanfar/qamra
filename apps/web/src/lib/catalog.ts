@@ -82,6 +82,8 @@ export type PublicSettings = {
   price_softcover_ils: string;
   price_hardcover_ils: string;
   delivery_fee_ils: string;
+  /** Calls (the owner's number, +970); WhatsApp is on +972. Digits with a leading "+". */
+  support_phone?: string;
   support_whatsapp: string;
   sales_whatsapp: string;
   support_email: string;
@@ -103,6 +105,17 @@ export const getPublicSettings = () => get<PublicSettings>("/api/settings/public
 
 /** wa.me link for a stored phone number (digits only). */
 export const whatsappLink = (phone: string) => `https://wa.me/${phone.replace(/\D/g, "")}`;
+
+/** tel: link for a stored phone number ("+970595870228"). */
+export const telLink = (phone: string) => `tel:+${phone.replace(/\D/g, "")}`;
+
+/** A stored number as people read it: "+970595870228" → "+970 59 587 0228" (Palestinian and Israeli mobiles). */
+export function displayPhone(phone: string): string {
+  const digits = phone.replace(/\D/g, "");
+  if (digits.length === 12 && (digits.startsWith("970") || digits.startsWith("972")))
+    return `+${digits.slice(0, 3)} ${digits.slice(3, 5)} ${digits.slice(5, 8)} ${digits.slice(8)}`;
+  return phone.trim().startsWith("+") ? `+${digits}` : phone.trim();
+}
 
 /** Lowest configured price, or null when prices are not set yet. */
 export function lowestPrice(prices: Price[] | null): string | null {

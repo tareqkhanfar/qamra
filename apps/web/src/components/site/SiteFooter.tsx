@@ -1,9 +1,13 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { brandName } from "@/config/brand";
 import { Link } from "@/i18n/navigation";
-import { getPublicSettings, whatsappLink } from "@/lib/catalog";
+import { getPublicSettings } from "@/lib/catalog";
+import { ContactLinks } from "./ContactLinks";
 
-/** Launch footer: the products, kindergartens, and the company (contact details only when the admin set them). */
+/**
+ * Launch footer: the products, kindergartens, the company, how to reach us (phone, WhatsApp, email from the
+ * admin settings), and the copyright line at the very bottom of every page.
+ */
 export async function SiteFooter() {
   const [t, locale, site] = await Promise.all([getTranslations("footer"), getLocale(), getPublicSettings()]);
   const brand = brandName(locale);
@@ -31,7 +35,7 @@ export async function SiteFooter() {
   return (
     <footer className="bg-night-950 text-ink-dark-muted">
       <div className="mx-auto flex max-w-[1440px] flex-col gap-10 px-4 pt-16 pb-28 md:px-10 md:pb-10 xl:px-24">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr]">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1.5fr]">
           <div className="flex flex-col gap-3">
             <span className="font-display text-[32px] font-extrabold text-paper">{brand}</span>
             <p className="max-w-[340px] text-[15px] leading-7">{t("about")}</p>
@@ -59,16 +63,10 @@ export async function SiteFooter() {
                 {l.label}
               </Link>
             ))}
-            {site?.support_whatsapp && (
-              <a href={whatsappLink(site.support_whatsapp)} rel="noopener noreferrer" className={a}>
-                {t("contact")} · {t("whatsapp")}
-              </a>
-            )}
-            {site?.support_email && (
-              <a href={`mailto:${site.support_email}`} className={a} dir="ltr">
-                {site.support_email}
-              </a>
-            )}
+          </nav>
+          <div className={col}>
+            <strong className="text-paper">{t("contact")}</strong>
+            <ContactLinks tone="dark" />
             {site?.instagram_url && (
               <a href={site.instagram_url} rel="noopener noreferrer" target="_blank" className={a}>
                 Instagram
@@ -79,10 +77,10 @@ export async function SiteFooter() {
                 Facebook
               </a>
             )}
-          </nav>
+          </div>
         </div>
-        <div className="flex justify-between gap-4 border-t border-line-dark pt-6 text-caption font-normal">
-          <span>{t("rights", { year: new Date().getFullYear(), brand })}</span>
+        <div className="flex flex-wrap justify-between gap-x-4 gap-y-1 border-t border-line-dark pt-6 text-caption font-normal">
+          <span>{t("rights", { year: String(new Date().getFullYear()), brand })}</span>
           {company && <span>{company}</span>}
         </div>
       </div>

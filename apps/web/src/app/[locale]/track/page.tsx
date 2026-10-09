@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { ContactHelp } from "@/components/site/ContactLinks";
 import { PageShell } from "@/components/site/PageShell";
 import { TrackForm } from "@/components/store/OrderView";
 
@@ -12,6 +13,7 @@ export default async function TrackPage() {
     <PageShell>
       <section className="px-4 py-10 md:py-16">
         <TrackForm />
+        <ContactHelp className="mt-6" />
       </section>
     </PageShell>
   );

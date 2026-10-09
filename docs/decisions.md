@@ -667,3 +667,12 @@ Tareq asked for covers that look professional and show what each part holds, wit
 - **Not changed, on purpose:** «أبوبكر» typed as one word (a name is never split or respelled); a name that does not start with «أبو» («محمد أبو بكر»: the first name takes the case, the rest is a surname); the family's name (`{family_name}`, «عائلة أبو غوش»: a surname, never inflected); genitive slots («لِـ{child}», «كِتابُ {child}», «مَعَ {adult}») print the name as typed for now; a follow-up can add «أبي» there with the same helper.
 - **Classic texts keep their cache.** A theme text's `:acc` marks are removed before the text is vowelized and hashed, so marking a slot never invalidates a vowelized template or calls the model; the book's fill puts the marks back by slot order.
 - **AI text:** the story prompts state the five-nouns rule (nominative «أبو», accusative and vocative «أبا», genitive «أبي»); after the model writes, «يا أبو …» on the child's own name is fixed deterministically. Other cases in AI text are the model's.
+
+## A simple pricing page and the owner's contact numbers (2026-10-09)
+
+- **One card per book, a few rows each.** A row is a part (none, one volume or stage, a set, a named bundle) in a format at its lowest price; the levels of «دوسية التأسيس» cost the same, so they are one row. If prices inside a row ever differ, the row says «من …». The rows come from the catalog, so a new variant or price shows up by itself; only the words for a part are in the messages (`pricingPage.unit.<line>.<part>`).
+- **«ابتداءً من» on each card** is the lowest price of the book, the PDF included (that is what a parent can pay).
+- **Delivery, cash on delivery and add-ons once, at the end.** The add-ons stay on the page only folded (`<details>`), with their names and prices and no notes.
+- **One phone number for calls (+970) and one for WhatsApp (+972)**, both the owner's, as he asked. They live in the admin settings (`support_phone`, `support_whatsapp`, `sales_whatsapp`), so they change without a deploy; the migration sets them over whatever was saved. The copyright year is Latin digits like every number on the site.
+- **Full-screen flows keep no footer** (create, cart, checkout, quiz): they have their own bottom bars; their order and tracking pages show the numbers instead.
+

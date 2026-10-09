@@ -51,6 +51,8 @@ def base_values(values: dict[str, Any], lang: str) -> dict[str, Any]:
     return {
         "brand": b.name_ar if lang == "ar" else b.name_en,
         "support_email": values.get("support_email") or "",
+        "support_whatsapp": values.get("support_whatsapp") or "",
+        "support_phone": values.get("support_phone") or "",
     }
 
 

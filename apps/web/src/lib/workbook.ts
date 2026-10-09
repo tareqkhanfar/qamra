@@ -23,7 +23,7 @@ export const PREVIEWS: Record<string, Preview[]> = Object.fromEntries(
 );
 
 /** «قلبي يعرف الله»'s sets and the volumes in each (content/store/catalog.yaml). */
-const ISLAMIC_SETS: Record<string, string[]> = {
+export const ISLAMIC_SETS: Record<string, string[]> = {
   L1: ["V1", "V2"],
   L2: ["V3", "V4", "V5"],
   set: ["V1", "V2", "V3", "V4", "V5"],

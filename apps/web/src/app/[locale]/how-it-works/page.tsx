@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Kid } from "@/components/art/Kid";
 import { Scene } from "@/components/art/Scene";
+import { ContactLinks } from "@/components/site/ContactLinks";
 import { JsonLd } from "@/components/site/JsonLd";
 import { PageShell } from "@/components/site/PageShell";
 import { Photo } from "@/components/site/Photo";
 import { Arrow, CtaBand, Faq, SECTION, SectionHead, Steps, type QA, type Step } from "@/components/site/blocks";
 import { Link } from "@/i18n/navigation";
-import { getPublicSettings, getStoreCatalog, whatsappLink } from "@/lib/catalog";
+import { getStoreCatalog } from "@/lib/catalog";
 import { faqJsonLd } from "@/lib/pageSeo";
 import { pageMetadata } from "@/lib/seo";
 import { money } from "@/lib/store";
@@ -20,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
 /** How it works: the story-book flow with the privacy promises, the activity-book flow, «صوت أهلي», the FAQ. */
 export default async function HowItWorksPage() {
   const locale = await getLocale();
-  const [t, catalog, site] = await Promise.all([getTranslations("howPage"), getStoreCatalog(), getPublicSettings()]);
+  const [t, catalog] = await Promise.all([getTranslations("howPage"), getStoreCatalog()]);
   const currency = catalog?.currency ?? "ILS";
   const zones = (catalog?.zones ?? []).filter((z) => z.currency === currency);
   const eta = zones.length
@@ -34,7 +35,6 @@ export default async function HowItWorksPage() {
   const privacy = t.raw("privacy") as { title: string; body: string }[];
   const faq = t.raw("faq") as QA[];
   const voice = catalog?.addons.find((a) => a.slug === "family-voice") ?? null;
-  const whatsapp = site?.support_whatsapp;
   const shield = (
     <svg
       className="size-7 md:size-9"
@@ -171,11 +171,7 @@ export default async function HowItWorksPage() {
         <section id="faq" className="grid scroll-mt-24 gap-6 lg:grid-cols-[1fr_2fr] lg:gap-16">
           <div className="flex flex-col gap-3">
             <SectionHead title={t("faqTitle")} lead={t("faqLead")} />
-            {whatsapp && (
-              <a href={whatsappLink(whatsapp)} className="font-bold text-amber-700" rel="noopener">
-                {t("faqWhatsapp")}
-              </a>
-            )}
+            <ContactLinks className="text-[15px]" />
             <div className="hidden w-[40%] lg:block">
               <Kid hijab hijabColor="#E9826B" outfit="#F2B33D" pose="wave" />
             </div>

@@ -101,13 +101,24 @@ def test_the_activity_books_hub_lists_three_books_each_orderable(visitor: Page) 
         visitor.goto(f"{BASE_URL}/ar/workbooks", wait_until="load")
 
 
-def test_the_pricing_page_has_every_kind_of_price(visitor: Page) -> None:
+def test_the_pricing_page_is_one_simple_card_per_book(visitor: Page) -> None:
+    """The owner, 2026-10-09: each book with its price, its main options and «اطلبوا الآن»; then delivery and
+    cash on delivery in one place; the add-ons folded away; the phone and WhatsApp in the footer."""
     visitor.goto(f"{BASE_URL}/ar/pricing", wait_until="load")
-    for heading in ("كتب الحكايات", "الإضافات", "كتب الأنشطة", "للروضات", "التوصيل والدفع"):
-        expect(visitor.get_by_role("heading", name=heading, exact=True).first).to_be_visible()
-    expect(visitor.get_by_role("heading", name="قمرة كلاسيك")).to_be_visible()
-    expect(visitor.get_by_role("heading", name="الدفع عند الاستلام")).to_be_visible()
-    assert visitor.locator("table tbody tr").count() >= 1  # a delivery zone
+    for name in ("قمرة كلاسيك", "قمرة سحري", *BOOKS.values()):
+        card = visitor.locator("article", has=visitor.get_by_role("heading", name=name, exact=True))
+        expect(card).to_contain_text("ابتداءً من")
+        expect(card.get_by_role("link", name=f"اطلبوا {name} الآن")).to_be_visible()
+    delivery = visitor.locator("section", has=visitor.get_by_role("heading", name="التوصيل والدفع"))
+    expect(delivery).to_contain_text("الضفة الغربية")
+    expect(delivery).to_contain_text("الدفع نقدًا عند الاستلام")
+    addons = visitor.locator("details", has_text="الإضافات")
+    expect(addons).to_be_visible()
+    assert addons.get_attribute("open") is None  # folded away
+    footer = visitor.locator("footer")
+    expect(footer.locator('a[href="tel:+970595870228"]')).to_contain_text("+970 59 587 0228")
+    expect(footer.locator('a[href="https://wa.me/972595870228"]')).to_contain_text("+972 59 587 0228")
+    expect(footer).to_contain_text("جميع الحقوق محفوظة")
 
 
 def test_the_english_site_has_the_same_structure(browser: Browser) -> None:

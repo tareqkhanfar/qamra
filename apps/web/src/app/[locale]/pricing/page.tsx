@@ -1,14 +1,17 @@
+/* eslint-disable @next/next/no-img-element -- the books' real covers (static files in /public) */
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { PageShell } from "@/components/site/PageShell";
+import { Arrow } from "@/components/site/blocks";
 import { Alert } from "@/components/ui/Alert";
-import { Photo } from "@/components/site/Photo";
-import { Arrow, CtaBand, SECTION, SectionHead } from "@/components/site/blocks";
+import { buttonClasses } from "@/components/ui/Button";
 import { Link } from "@/i18n/navigation";
-import { getShopSummary, getStoreCatalog } from "@/lib/catalog";
+import { getStoreCatalog } from "@/lib/catalog";
+import { priceFamilies, type PriceFamily, type PriceRow } from "@/lib/pricing";
 import { pageMetadata } from "@/lib/seo";
 import { ACTIVITY_LINES } from "@/lib/shop";
-import { deliveryCountries, money, type CatalogProduct, type CatalogVariant } from "@/lib/store";
+import { money } from "@/lib/store";
+import { ISLAMIC_SETS, PREVIEWS } from "@/lib/workbook";
 
 export async function generateMetadata(): Promise<Metadata> {
   const [t, locale] = await Promise.all([getTranslations("pricingPage"), getLocale()]);
@@ -16,270 +19,207 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const STORY_LINES = ["classic", "magic", "coloring"];
-const FORMAT_ORDER = ["softcover", "hardcover", "spiral", "digital"];
-
-type Props = { searchParams: Promise<{ country?: string }> };
+const LINES = [...STORY_LINES, ...ACTIVITY_LINES];
+/** The stories' covers: a real «قمرة كلاسيك» cover, and the same story drawn for «قمرة سحري». */
+const STORY_COVERS: Record<string, string> = {
+  classic: "/samples/cartoon/first-day-cover-sm.webp",
+  magic: "/samples/3d/first-day-cover-sm.webp",
+};
 
 /**
- * Every price on one page, all from the catalog API: story formats, add-ons, activity books, class books,
- * delivery. `?country=jo` shows the same page in Jordanian dinars (the cart's currency follows the zone), but
- * only while a Jordan zone is active: since 2026-10-05 we deliver to the West Bank and Jerusalem only, so the
- * page stays in shekels and shows no country choice.
+ * Prices, simply (the owner, 2026-10-09): one card per book with its cover, the price it starts from, its main
+ * options and an order button; then one line on delivery and cash on delivery, and the add-ons folded away.
+ * Every price comes from the catalog API (only what is on sale: hidden variants and add-ons never reach it).
  */
-export default async function PricingPage({ searchParams }: Props) {
-  const [query, locale] = await Promise.all([searchParams, getLocale()]);
-  const prices = (currency: "ILS" | "JOD") => Promise.all([getStoreCatalog(currency), getShopSummary(currency)]);
-  const [t, tw, tn, te, inWanted] = await Promise.all([
+export default async function PricingPage() {
+  const [t, te, locale, catalog] = await Promise.all([
     getTranslations("pricingPage"),
-    getTranslations("workbook"),
-    getTranslations("nav"),
     getTranslations("errors"),
-    prices(query.country === "jo" ? "JOD" : "ILS"),
+    getLocale(),
+    getStoreCatalog(),
   ]);
-  let [catalog, summary] = inWanted;
-  if (catalog?.currency === "JOD" && !catalog.zones.some((z) => z.currency === "JOD")) {
-    [catalog, summary] = await prices("ILS"); // no active Jordan zone: nobody can pay in dinars
-  }
   const currency = catalog?.currency ?? "ILS";
-  const countries = deliveryCountries(catalog?.zones ?? []); // PS, JO
   const amount = (n: string | number) => money(n, currency, locale);
   const name = (p: { name_ar: string; name_en: string }) => (locale === "ar" ? p.name_ar : p.name_en);
-  const desc = (p: { description_ar: string; description_en: string }) =>
-    locale === "ar" ? p.description_ar : p.description_en;
-  const products = catalog?.products ?? [];
-  const stories = products.filter((p) => STORY_LINES.includes(p.line));
-  const activity = products.filter((p) => (ACTIVITY_LINES as readonly string[]).includes(p.line));
+  const families = priceFamilies(catalog?.products ?? [], LINES, { islamic: ISLAMIC_SETS });
   const zones = (catalog?.zones ?? []).filter((z) => z.currency === currency);
-  const lineName = (line: string) => name(products.find((p) => p.line === line) ?? { name_ar: line, name_en: line });
-  const priced = (p: CatalogProduct) =>
-    p.variants
-      .filter((v) => v.price !== null)
-      .sort((a, b) => FORMAT_ORDER.indexOf(a.options.format ?? "") - FORMAT_ORDER.indexOf(b.options.format ?? ""));
-  const optionLabel = (group: string, value: string) =>
-    group === "format"
-      ? t(`formats.${value}`)
-      : tw.has(`values.${group}.${value}`)
-        ? tw(`values.${group}.${value}`)
-        : value.toUpperCase();
-  // activity books: one row per volume or stage (with its level), its formats side by side
-  const WHICH = ["level", "stage", "volume"];
-  const whichLabel = (v: CatalogVariant, line: string) =>
-    WHICH.filter((g) => v.options[g])
-      .map((g) =>
-        tw.has(`summaryOf.${line}.${v.options[g]}`) // a line's own names (e.g. «قلبي يعرف الله»'s volumes and sets)
-          ? tw(`summaryOf.${line}.${v.options[g]}`)
-          : g === "level"
-            ? optionLabel(g, v.options[g]!).split(" ·")[0]
-            : `${tw(`options.${g}`)} ${optionLabel(g, v.options[g]!)}`,
-      )
-      .join(" · ");
-  const formatLabel = (v: CatalogVariant) =>
-    ["interior", "format"]
-      .filter((g) => v.options[g])
-      .map((g) =>
-        tw.has(`values.${g}.${v.options[g]}`) ? tw(`values.${g}.${v.options[g]}`) : optionLabel(g, v.options[g]!),
-      )
-      .join(" · ");
-  const rows = (p: CatalogProduct) => {
-    const out = new Map<string, CatalogVariant[]>();
-    for (const v of priced(p)) out.set(whichLabel(v, p.line), [...(out.get(whichLabel(v, p.line)) ?? []), v]);
-    return [...out.entries()];
+  const codFee = Math.max(0, ...zones.map((z) => Number(z.cod_fee)));
+  const addons = catalog?.addons ?? [];
+
+  /** A row's words: what it is, and (when that isn't the format itself) its format, smaller. */
+  const rowLabel = (family: PriceFamily, row: PriceRow): [string, string | null] => {
+    const story = STORY_LINES.includes(family.line);
+    const printed = row.format === "digital" ? t("format.pdf") : t("format.printed");
+    if (row.unit) {
+      const own = `unit.${family.line}.${row.unit}`;
+      const words = t.has(own)
+        ? t(own, { n: row.parts ?? 0 })
+        : t(`unitFallback.${row.unit === "one" ? "one" : "set"}`);
+      return [words, printed];
+    }
+    const format = story
+      ? t(`format.${row.format === "digital" ? "digital" : row.format}`)
+      : row.format === "digital"
+        ? t("format.file")
+        : t("format.book");
+    if (family.products.length < 2) return [format, null];
+    const product = family.products.find((p) => p.slug === row.product);
+    const words = t.has(`product.${row.product}`) ? t(`product.${row.product}`) : product ? name(product) : "";
+    return [words, story ? format : printed];
   };
-  const row = "flex items-baseline justify-between gap-3 border-b border-dashed border-line py-2.5 last:border-0";
-  const card = "flex flex-col gap-3 rounded-[20px] border border-line bg-paper-raised p-5";
 
   return (
     <PageShell>
-      <div className={`${SECTION} flex flex-col gap-10 pt-8 pb-16 md:gap-14 md:pt-14 md:pb-24`}>
-        <header className="flex flex-col gap-3">
-          <h1 className="text-[32px] leading-tight text-night-900 md:text-[52px]">{t("title")}</h1>
-          <p className="max-w-[680px] text-body text-ink-muted md:text-body-l">{t("lead")}</p>
-          {countries.length > 1 && (
-            <nav aria-label={t("country.label")} className="mt-1 flex flex-wrap items-center gap-2">
-              <span className="text-small font-semibold text-ink-muted">{t("country.label")}</span>
-              {countries.map((c) => {
-                const on = (c === "JO") === (currency === "JOD");
-                return (
-                  <Link
-                    key={c}
-                    href={c === "JO" ? "/pricing?country=jo" : "/pricing"}
-                    aria-current={on ? "page" : undefined}
-                    className={`flex min-h-11 items-center rounded-full border-[1.5px] px-4 text-[15px] transition ${on ? "border-night-900 bg-night-900 font-semibold text-paper" : "border-line bg-paper-raised text-ink hover:border-night-500"}`}
-                  >
-                    {t(`country.${c}`)}
-                  </Link>
-                );
-              })}
-            </nav>
-          )}
+      <div className="mx-auto flex w-full max-w-[1100px] flex-col gap-6 px-4 pt-8 pb-16 md:gap-8 md:px-10 md:pt-14 md:pb-24">
+        <header className="flex flex-col gap-2">
+          <h1 className="text-[32px] leading-tight text-night-900 md:text-[48px]">{t("title")}</h1>
+          <p className="text-body text-ink-muted md:text-body-l">{t("lead")}</p>
         </header>
 
         {catalog === null && <Alert>{te("unknown")}</Alert>}
 
-        {/* STORY BOOKS */}
-        <section className="flex flex-col gap-5">
-          <SectionHead
-            title={t("storiesTitle")}
-            lead={t("storiesLead")}
-            more={{ href: "/stories", label: t("chooseStory") }}
-          />
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {stories.map((p) => (
-              <div key={p.slug} className={card}>
-                <h3 className="text-[22px] text-night-900">{name(p)}</h3>
-                <p className="text-small text-ink-muted">{desc(p)}</p>
-                {typeof p.features.pages === "number" && (
-                  <span className="text-caption font-semibold text-ink-muted">
-                    {t("pages", { count: p.features.pages })}
-                  </span>
-                )}
-                <dl>
-                  {priced(p).map((v) => (
-                    <div key={v.sku} className={row}>
-                      <dt>{optionLabel("format", v.options.format ?? "")}</dt>
-                      <dd className="font-display text-[20px] font-extrabold text-night-900">{amount(v.price!)}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ADD-ONS */}
-        <section className="grid gap-6 lg:grid-cols-[1fr_260px]">
-          <div className="flex flex-col gap-5">
-            <SectionHead title={t("addonsTitle")} lead={t("addonsLead")} />
-            <dl className="grid gap-x-8 md:grid-cols-2">
-              {(catalog?.addons ?? []).map((a) => (
-                <div key={a.slug} className={row}>
-                  <dt className="flex flex-col">
-                    <span className="font-semibold text-ink">{name(a)}</span>
-                    {desc(a) && <span className="text-caption text-ink-muted">{desc(a)}</span>}
-                    {a.included_lines.length > 0 && (
-                      <span className="text-caption font-semibold text-success">
-                        {t("included", { lines: a.included_lines.map(lineName).join("، ") })}
+        <div className="grid gap-4 md:grid-cols-2 md:gap-5">
+          {families.map((family) => {
+            const lead = family.products[0]!;
+            const story = STORY_LINES.includes(family.line);
+            const first = PREVIEWS[lead.slug]?.[0];
+            const cover = story ? STORY_COVERS[family.line] : (first?.sm ?? first?.src);
+            const href = story ? `/stories?line=${family.line}` : `/workbooks/${lead.slug}`;
+            return (
+              <article
+                key={family.line}
+                aria-labelledby={`price-${family.line}`}
+                className="flex flex-col gap-4 rounded-[20px] border border-line bg-paper-raised p-4 md:p-5"
+              >
+                <div className="flex items-center gap-3.5">
+                  {cover && (
+                    <img
+                      src={cover}
+                      alt=""
+                      width={story ? 80 : 57}
+                      height={80}
+                      loading="lazy"
+                      className={`h-20 shrink-0 rounded-[8px] border border-line object-cover object-top ${story ? "w-20" : "w-[57px]"}`}
+                    />
+                  )}
+                  <div className="flex flex-col gap-0.5">
+                    <h2 id={`price-${family.line}`} className="text-[20px] leading-snug text-night-900 md:text-[22px]">
+                      {name(lead)}
+                    </h2>
+                    {family.from !== null && (
+                      <span className="text-[15px] text-ink-muted">
+                        {t.rich("from", {
+                          price: amount(family.from),
+                          b: (chunks) => <strong className="text-night-900">{chunks}</strong>,
+                        })}
                       </span>
                     )}
-                  </dt>
-                  <dd className="shrink-0 font-display text-[18px] font-extrabold text-night-900">
+                  </div>
+                </div>
+                <dl className="flex flex-col">
+                  {family.rows.map((row) => {
+                    const [words, sub] = rowLabel(family, row);
+                    return (
+                      <div
+                        key={`${row.product}|${row.unit}|${row.format}`}
+                        className="flex items-baseline justify-between gap-3 border-t border-line py-2.5 text-[15px]"
+                      >
+                        <dt className="text-ink">
+                          {words}
+                          {sub && <span className="ms-1.5 text-caption text-ink-muted">{sub}</span>}
+                        </dt>
+                        <dd className="shrink-0 font-display text-[18px] font-extrabold text-night-900">
+                          {row.from ? t("fromRow", { price: amount(row.price) }) : amount(row.price)}
+                        </dd>
+                      </div>
+                    );
+                  })}
+                </dl>
+                <Link
+                  href={href}
+                  aria-label={t("orderLabel", { name: name(lead) })}
+                  className={buttonClasses("solid", "md", "mt-auto w-full")}
+                >
+                  {t("order")}
+                </Link>
+              </article>
+            );
+          })}
+        </div>
+
+        {zones.length > 0 && (
+          <section
+            aria-labelledby="delivery-title"
+            className="flex flex-col gap-1.5 rounded-[16px] bg-paper-sunk px-4 py-3.5 text-[15px] leading-[1.7] md:px-5"
+          >
+            <h2 id="delivery-title" className="text-[17px] text-night-900">
+              {t("delivery")}
+            </h2>
+            <ul className="flex flex-col gap-1 md:flex-row md:flex-wrap md:gap-x-8">
+              {zones.map((z) => (
+                <li key={z.slug}>
+                  {t.rich(z.free_over ? "zone" : "zonePlain", {
+                    zone: name(z),
+                    fee: amount(z.fee),
+                    free: z.free_over ? amount(z.free_over) : "",
+                    min: z.eta_days[0],
+                    max: z.eta_days[1],
+                    b: (chunks) => <strong className="text-night-900">{chunks}</strong>,
+                    n: (chunks) => <span className="whitespace-nowrap">{chunks}</span>,
+                  })}
+                </li>
+              ))}
+              <li className="font-bold text-night-900">
+                {codFee > 0 ? t("codFee", { fee: amount(codFee) }) : t("cod")}
+              </li>
+            </ul>
+          </section>
+        )}
+
+        {addons.length > 0 && (
+          <details className="group rounded-[16px] border border-line bg-paper-raised">
+            <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 font-bold text-night-900 [&::-webkit-details-marker]:hidden">
+              {t("addons")}
+              <svg
+                aria-hidden="true"
+                className="size-5 shrink-0 transition group-open:rotate-180"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </summary>
+            <dl className="grid gap-x-8 px-4 pb-2 md:grid-cols-2">
+              {addons.map((a) => (
+                <div
+                  key={a.slug}
+                  className="flex items-baseline justify-between gap-3 border-t border-line py-2.5 text-[15px]"
+                >
+                  <dt className="text-ink">{name(a)}</dt>
+                  <dd className="shrink-0 font-bold text-night-900">
                     {a.percent
                       ? t("percent", { percent: Number(a.percent) })
                       : Number(a.price) === 0
                         ? t("free")
-                        : amount(a.price!)}
+                        : amount(a.price ?? 0)}
                   </dd>
                 </div>
               ))}
             </dl>
-          </div>
-          <Photo name="gift-box" alt={t("photoAlt")} sizes="260px" className="hidden rounded-[24px] lg:block" />
-        </section>
-
-        {/* ACTIVITY BOOKS */}
-        <section className="flex flex-col gap-5">
-          <SectionHead
-            title={t("activityTitle")}
-            lead={t("activityLead")}
-            more={{ href: "/workbooks", label: tn("workbooks") }}
-          />
-          <div className="grid gap-4 md:grid-cols-3">
-            {activity.map((p) => (
-              <div key={p.slug} className={card}>
-                <h3 className="text-[22px] text-night-900">{name(p)}</h3>
-                <dl className="flex flex-col">
-                  {rows(p).map(([which, variants]) => (
-                    <div
-                      key={which || p.slug}
-                      className="flex flex-col gap-1.5 border-b border-dashed border-line py-3 last:border-0"
-                    >
-                      {which && <dt className="font-bold text-night-900">{which}</dt>}
-                      {variants.map((v) => (
-                        <dd key={v.sku} className="flex items-baseline justify-between gap-3 text-small">
-                          <span>{formatLabel(v)}</span>
-                          <strong className="shrink-0 font-display text-[18px] text-night-900">
-                            {amount(v.price!)}
-                          </strong>
-                        </dd>
-                      ))}
-                    </div>
-                  ))}
-                </dl>
-                <Link
-                  href={`/workbooks/${p.slug}`}
-                  className="mt-auto flex min-h-11 items-center self-start font-bold text-amber-700"
-                >
-                  {t("orderBook", { name: name(p) })} <Arrow />
-                </Link>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* KINDERGARTENS */}
-        {summary?.class_book_from && summary.class_book_min_qty && (
-          <Link
-            href="/kindergartens#demo"
-            className="flex flex-col gap-2 rounded-[24px] bg-night-950 p-6 text-paper md:p-8"
-          >
-            <h2 className="text-[24px] md:text-[30px]">{t("kgTitle")}</h2>
-            <p className="max-w-[720px] text-small text-night-100 md:text-body">
-              {t("kgBody", { price: amount(summary.class_book_from), n: summary.class_book_min_qty })}
-            </p>
-            <span className="mt-2 flex min-h-11 items-center self-start rounded-full bg-amber-500 px-[18px] text-[15px] font-bold text-night-950">
-              {t("kgCta")}
-            </span>
-          </Link>
+          </details>
         )}
 
-        {/* DELIVERY AND PAYMENT */}
-        <section className="flex flex-col gap-5">
-          <SectionHead title={t("deliveryTitle")} />
-          <div className="grid gap-4 md:grid-cols-[1.4fr_1fr]">
-            <table className="w-full border-collapse overflow-hidden rounded-[20px] border border-line bg-paper-raised text-start text-[15px]">
-              <thead className="bg-paper-sunk text-caption font-bold text-ink-muted">
-                <tr>
-                  <th className="p-3 text-start">{t("zone")}</th>
-                  <th className="p-3 text-start">{t("fee")}</th>
-                  <th className="p-3 text-start">{t("etaHead")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {zones.map((z) => (
-                  <tr key={z.slug} className="border-t border-line">
-                    <td className="p-3 font-semibold text-night-900">{name(z)}</td>
-                    <td className="p-3">
-                      {amount(z.fee)}
-                      {z.free_over && (
-                        <span className="block text-caption text-success">
-                          {t("freeOver", { amount: amount(z.free_over) })}
-                        </span>
-                      )}
-                    </td>
-                    <td className="p-3">{t("eta", { min: z.eta_days[0], max: z.eta_days[1] })}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <div className={card}>
-              <h3 className="text-[20px] text-night-900">{t("codTitle")}</h3>
-              <p className="text-[15px] leading-[1.7] text-ink-muted">{t("codBody")}</p>
-              {zones.some((z) => Number(z.cod_fee) > 0) && (
-                <p className="text-caption text-ink-muted">
-                  {t("codFee", { fee: amount(Math.max(...zones.map((z) => Number(z.cod_fee)))) })}
-                </p>
-              )}
-            </div>
-          </div>
-        </section>
+        <p className="text-small text-ink-muted">
+          {t("kg")}{" "}
+          <Link href="/kindergartens#demo" className="inline-flex items-center gap-1 font-bold text-amber-700">
+            {t("kgCta")} <Arrow />
+          </Link>
+        </p>
       </div>
-      <CtaBand
-        title={t("ctaTitle")}
-        body={t("ctaBody")}
-        primary={{ href: "/stories", label: tn("themes") }}
-        secondary={{ href: "/workbooks", label: tn("workbooks") }}
-      />
-      <div className="h-12 md:h-20" />
     </PageShell>
   );
 }

@@ -14,13 +14,17 @@ from jinja2 import FileSystemLoader, StrictUndefined
 from jinja2.sandbox import SandboxedEnvironment
 
 from qamra_ai.pipeline.theme import CONTENT_DIR
+from qamra_core.app_settings import display_phone
 
 EMAILS_DIR = CONTENT_DIR / "emails"
 FOOTER = {
     "ar": "وصلتكم هذه الرسالة لأن لكم طلبًا أو كتابًا في {brand}.{support}",
     "en": "You're receiving this because you have an order or a book with {brand}.{support}",
 }
-SUPPORT = {"ar": " للمساعدة: {email}", "en": " Need help? {email}"}
+SUPPORT = {"ar": " للمساعدة: {contact}", "en": " Need help? {contact}"}
+# the support WhatsApp and phone (admin settings), each number isolated left to right inside an Arabic line
+CONTACT = {"ar": {"whatsapp": "واتساب", "phone": "هاتف"}, "en": {"whatsapp": "WhatsApp", "phone": "Phone"}}
+LTR, POP = "\u2066", "\u2069"  # LEFT-TO-RIGHT ISOLATE … POP DIRECTIONAL ISOLATE
 
 
 @dataclass(frozen=True)
@@ -59,6 +63,15 @@ def _envs(root: Path = EMAILS_DIR) -> tuple[SandboxedEnvironment, SandboxedEnvir
     return text, html
 
 
+def support_contact(lang: str, values: dict[str, Any]) -> str:
+    """«info@qamra.app · واتساب +972 59 587 0228 · هاتف +970 59 587 0228», from what the admin set."""
+    parts = [str(values.get("support_email") or "")]
+    for key, word in (("support_whatsapp", "whatsapp"), ("support_phone", "phone")):
+        if values.get(key):
+            parts.append(f"{CONTACT[lang][word]} {LTR}{display_phone(str(values[key]))}{POP}")
+    return " · ".join(p for p in parts if p)
+
+
 def render(
     template: str,
     lang: str,
@@ -78,9 +91,9 @@ def render(
     button = None
     if spec.get("button"):
         button = {"label": fill(spec["button"]["label"]), "url": str(values[spec["button"]["link"]])}
-    support = str(values.get("support_email") or "")
+    contact = support_contact(lang, values)
     footer = FOOTER[lang].format(
-        brand=values["brand"], support=SUPPORT[lang].format(email=support) if support else ""
+        brand=values["brand"], support=SUPPORT[lang].format(contact=contact) if contact else ""
     )
     rows = items or []
     text_parts = [*lines]

@@ -3,13 +3,14 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { Scene } from "@/components/art/Scene";
 import { MoonMark } from "@/components/Logo";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
+import { ContactLinks } from "@/components/site/ContactLinks";
 import { LeadForm } from "@/components/site/LeadForm";
 import { Photo } from "@/components/site/Photo";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { FamilyQuoteForm } from "@/components/workbook/FamilyQuoteForm";
 import { brandName } from "@/config/brand";
 import { Link } from "@/i18n/navigation";
-import { getPublicSettings, getShopSummary, whatsappLink } from "@/lib/catalog";
+import { getShopSummary } from "@/lib/catalog";
 import { pageMetadata } from "@/lib/seo";
 import { money } from "@/lib/store";
 
@@ -30,11 +31,10 @@ const WHO_STYLE = {
 
 export default async function KindergartensPage() {
   const locale = await getLocale();
-  const [t, tn, te, site, summary] = await Promise.all([
+  const [t, tn, te, summary] = await Promise.all([
     getTranslations("kg"),
     getTranslations("nav"),
     getTranslations("errors"),
-    getPublicSettings(),
     getShopSummary(),
   ]);
   const perChild =
@@ -49,8 +49,6 @@ export default async function KindergartensPage() {
   const flow = t.raw("flow") as Step[];
   const inside = t.raw("inside") as string[];
   const trust = t.raw("trust") as { title: string; body: string }[];
-  const salesWhatsapp = site?.sales_whatsapp;
-  const salesEmail = site?.sales_email;
   const wrap = "mx-auto w-full max-w-[1440px] px-4 md:px-10 xl:px-24";
 
   return (
@@ -265,25 +263,7 @@ export default async function KindergartensPage() {
               sizes="(min-width: 1024px) 480px, 100vw"
               className="rounded-[20px]"
             />
-            {(salesWhatsapp || salesEmail) && (
-              <div className="mt-2 flex flex-col gap-2 text-body">
-                {salesWhatsapp && (
-                  <a
-                    href={whatsappLink(salesWhatsapp)}
-                    rel="noopener"
-                    dir="ltr"
-                    className="self-start font-semibold text-night-800 rtl:self-end"
-                  >
-                    {t("whatsapp")}: {salesWhatsapp}
-                  </a>
-                )}
-                {salesEmail && (
-                  <a href={`mailto:${salesEmail}`} className="font-semibold text-night-800">
-                    {t("email")}: {salesEmail}
-                  </a>
-                )}
-              </div>
-            )}
+            <ContactLinks sales className="mt-2 text-body" />
           </div>
           <LeadForm
             labels={{

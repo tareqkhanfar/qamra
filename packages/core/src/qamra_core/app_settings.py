@@ -162,50 +162,57 @@ _DEFS: list[SettingDef] = [
         min=0.5,
         max=20,
     ),
-    # ---- contact
+    # ---- contact (the owner's own numbers since 2026-10-09: calls on +970, WhatsApp on +972)
+    SettingDef(
+        "support_phone",
+        "contact",
+        Kind.phone,
+        "+970595870228",
+        "رقم الهاتف (للاتصال)",
+        "Phone number (for calls)",
+        "يظهر في أسفل كل صفحة وفي صفحة الطلب وفي الرسائل.",
+        "Shown in every page's footer, on the order page and in emails.",
+        public=True,
+    ),
     SettingDef(
         "support_whatsapp",
         "contact",
         Kind.phone,
-        "+970590000000",
+        "+972595870228",
         "واتساب الدعم",
         "Support WhatsApp",
-        "يظهر في الأسئلة الشائعة للأهالي.",
-        "Shown to parents in the FAQ.",
+        "يظهر في أسفل كل صفحة وفي الأسئلة الشائعة وصفحة الطلب والرسائل.",
+        "Shown in every page's footer, in the FAQ, on the order page and in emails.",
         public=True,
-        example=True,
     ),
     SettingDef(
         "sales_whatsapp",
         "contact",
         Kind.phone,
-        "+970590000001",
+        "+972595870228",
         "واتساب المبيعات (الروضات)",
         "Sales WhatsApp (kindergartens)",
         "يظهر في صفحة الروضات.",
         "Shown on the kindergartens page.",
         public=True,
-        example=True,
     ),
     SettingDef(
         "support_email",
         "contact",
         Kind.email,
-        "support@example.com",
+        "info@qamra.app",
         "بريد الدعم",
         "Support email",
         public=True,
-        example=True,
     ),
     SettingDef(
         "sales_email",
         "contact",
         Kind.email,
-        "sales@example.com",
+        "info@qamra.app",
         "بريد المبيعات",
         "Sales email",
         public=True,
-        example=True,
     ),
     SettingDef(
         "company_name",
@@ -880,6 +887,14 @@ if any(d.group not in {g.id for g in GROUPS} for d in _DEFS):
 
 _PHONE = re.compile(r"^\+?[0-9]{7,15}$")
 _EMAIL = re.compile(r"^[^@\s]{1,64}@[^@\s]{1,190}\.[A-Za-z]{2,24}$")
+
+
+def display_phone(phone: str) -> str:
+    """A stored number as people read it: "+970595870228" → "+970 59 587 0228" (+970/+972 mobiles)."""
+    digits = re.sub(r"\D", "", phone)
+    if len(digits) == 12 and digits[:3] in ("970", "972"):
+        return f"+{digits[:3]} {digits[3:5]} {digits[5:8]} {digits[8:]}"
+    return f"+{digits}" if phone.strip().startswith("+") else phone.strip()
 
 
 class SettingError(ValueError):
