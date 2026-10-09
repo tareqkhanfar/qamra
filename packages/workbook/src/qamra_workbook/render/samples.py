@@ -17,6 +17,7 @@ import argparse
 import asyncio
 import dataclasses
 import datetime as dt
+import functools
 import json
 import sys
 import tempfile
@@ -205,6 +206,25 @@ def spec_problems(pages: list[PageSpec], child: Child) -> list[str]:
     return book_problems(BookSpec("journey", "", child, tuple(pages), dt.date.today()))
 
 
+@functools.cache
+def _stage_audio_codes(stage: int) -> dict[int, str]:
+    """The audio item code of each page of a journey stage, from its print layer (`journey_book`)."""
+    from qamra_workbook.journey import load as load_plan
+    from qamra_workbook.journey_book import PLAN, load_layer, page_specs  # it imports this package
+
+    specs = page_specs(load_plan(PLAN), load_layer(stage))
+    return {p.number: str(p.params["audio_code"]) for p in specs if p.params.get("audio_code")}
+
+
+def _with_audio_code(page: PageSpec) -> PageSpec:
+    """A sample page with audio plays the item of the same stage page, so its QR opens the real player
+    (`engine.audio_qr` prints no QR without a code)."""
+    if not page.audio or page.stage is None or page.params.get("audio_code"):
+        return page
+    code = _stage_audio_codes(page.stage).get(page.number)
+    return dataclasses.replace(page, params={**page.params, "audio_code": code}) if code else page
+
+
 def book_from(samples: Samples | FamilySamples, only: set[str] | None = None) -> BookSpec:
     if isinstance(samples, FamilySamples):
         pages = tuple(
@@ -212,7 +232,9 @@ def book_from(samples: Samples | FamilySamples, only: set[str] | None = None) ->
         )
         return family_book(samples, pages)
     pages = tuple(
-        from_journey(s.page, s.stage) for s in samples.samples if only is None or s.page.type in only
+        _with_audio_code(from_journey(s.page, s.stage))
+        for s in samples.samples
+        if only is None or s.page.type in only
     )
     return BookSpec(
         product=samples.product,

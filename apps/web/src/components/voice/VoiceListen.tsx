@@ -10,7 +10,9 @@ import { errorText } from "@/lib/api";
 import { clock, voiceApi, type ListenPage } from "@/lib/voice";
 import { Icon, ICONS } from "./VoicePieces";
 
-/** The page a printed QR opens (design VoiceListen): the picture, the words, and the family's voices. */
+/** The page a printed QR opens (design VoiceListen): the picture, the words, and the family's voices. Before
+ * the family has recorded the page it says so kindly (the narrator plays when it is switched on); the book's
+ * owner, signed in, gets a button to record this page, anyone else a way to sign in. */
 export function VoiceListen({ token, beat }: { token: string; beat: number }) {
   const t = useTranslations("voice.listen");
   const te = useTranslations("errors");
@@ -115,7 +117,27 @@ export function VoiceListen({ token, beat }: { token: string; beat: number }) {
             ))}
           </div>
         )}
-        {current ? (
+        {page.voices.length === 0 && (
+          <div className={`flex flex-col gap-3 rounded-md bg-night-900 px-4 py-3 ${current ? "" : "mt-auto"}`}>
+            <p className="text-body text-night-100">{t("noVoice")}</p>
+            {page.record ? (
+              <Link
+                href={page.record}
+                className="flex min-h-11 items-center justify-center rounded-full bg-amber-500 px-5 text-body font-bold text-night-950"
+              >
+                {t("recordNow")}
+              </Link>
+            ) : (
+              <Link
+                href={`/login?next=${encodeURIComponent(`/v/${token}/${beat}`)}`}
+                className="flex min-h-11 items-center text-small font-semibold text-amber-300 underline underline-offset-4"
+              >
+                {t("ownerSignIn")}
+              </Link>
+            )}
+          </div>
+        )}
+        {current && (
           <div className="mt-auto flex items-center gap-4">
             <audio
               ref={audio}
@@ -155,8 +177,6 @@ export function VoiceListen({ token, beat }: { token: string; beat: number }) {
               </div>
             </div>
           </div>
-        ) : (
-          <p className="mt-auto rounded-md bg-night-900 px-4 py-3 text-body text-ink-dark-muted">{t("noVoice")}</p>
         )}
         <nav className="flex items-center justify-between border-t border-night-800 pt-3.5">
           {page.prev !== null ? (

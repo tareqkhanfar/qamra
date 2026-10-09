@@ -1489,7 +1489,9 @@
       "play": "Play",
       "pause": "Pause",
       "by": "Read by {voice}",
-      "noVoice": "This page hasn't been recorded yet. Read it together!",
+      "noVoice": "The family hasn't recorded this page yet. Read it together for now; once it's recorded, this same code will play it.",
+      "recordNow": "Record your voice for this page",
+      "ownerSignIn": "Is this your book? Sign in to record your voices",
       "prev": "Page {n}",
       "next": "Page {n}"
     }

@@ -40,12 +40,21 @@ needs only a running site with the store seeded): every public page fits a 390 p
 the home shows the four offers with prices; the activity-books hub lists the three books, each with a price and
 an orderable page; the pricing page has every kind of price; the English site has the same structure.
 
+**`test_qr_codes.py`** scans the printed QR codes (owner, 2026-10-09: every QR must work): a page is rendered
+as it prints (a «رحلتي الأولى» sounds page and letter page; a story page with «أصوات العائلة»), its QR is read
+from a screenshot with OpenCV, and the decoded `https://qamra.app/...` link is opened on the stack. The journey
+codes show their item and play its reviewed clip; the story code says kindly that the family hasn't recorded
+the page yet (a visitor gets a sign-in link, the owner «سجّلوا صوتكم لهذه الصفحة», which opens the recording
+page at that page), and plays the owner's recording once it exists; the back cover's code opens page 1.
+
 The shop → quiz flow of §3 is not covered here.
 
 ## No AI, no paid calls
 
 The tests never draw anything. What a paid step would make comes from test-only fixtures, `/api/e2e/*`
-(`apps/api/src/qamra_api/routers/e2e.py`), all with placeholder art:
+(`apps/api/src/qamra_api/routers/e2e.py` and `e2e_qr.py`), all with placeholder art:
+- for the QR codes: a journey item's reviewed clip from content/journey/clips (`/journey-audio/{code}`, as the
+  server's loader stores it), and a book ordered with «أصوات العائلة» (`/books/{id}/family-voice`);
 - a child with the guardian's consent, an approved character and a book at its preview;
 - the character the flow asked for after the photo (`/characters/{id}/ready`; the parent then approves it in
   the flow), the story preview (`/books/{id}/preview`) and a live «قمرة كلاسيك» template (`/classic-templates`);

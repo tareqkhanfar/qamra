@@ -10,8 +10,9 @@ import { clock, SUGGESTED_VOICES, voiceApi, type VoiceBook } from "@/lib/voice";
 import { RecordPanel } from "./RecordPanel";
 import { Dots, Icon, ICONS, VoiceChips } from "./VoicePieces";
 
-/** «صوت أهلي» for the parent (design VoiceRecord): large text, one page at a time, up to three voices a page. */
-export function VoiceRecord({ id }: { id: string }) {
+/** «صوت أهلي» for the parent (design VoiceRecord): large text, one page at a time, up to three voices a page.
+ * Opens at page `start` when given, else at the first page with no recording. */
+export function VoiceRecord({ id, start }: { id: string; start?: number }) {
   const t = useTranslations("voice.record");
   const te = useTranslations("errors");
   const locale = useLocale();
@@ -36,15 +37,18 @@ export function VoiceRecord({ id }: { id: string }) {
       if (r.ok) {
         setBook(r.data);
         setVoice((v) => v || r.data.voices[0] || SUGGESTED_VOICES[locale === "ar" ? "ar" : "en"][0]);
+        const asked = r.data.pages.findIndex((p) => p.beat === start);
         const first = r.data.pages.findIndex((p) => p.recordings.length === 0);
-        setIndex(first < 0 ? 0 : first);
-      } else if (r.status === 401) router.replace(`/login?next=${encodeURIComponent(`/books/${id}/voice`)}`);
-      else fail(r.error, r.status);
+        setIndex(asked >= 0 ? asked : Math.max(first, 0));
+      } else if (r.status === 401) {
+        const back = `/books/${id}/voice${start === undefined ? "" : `?page=${start}`}`;
+        router.replace(`/login?next=${encodeURIComponent(back)}`);
+      } else fail(r.error, r.status);
     });
     return () => {
       alive = false;
     };
-  }, [id, locale, router, fail]);
+  }, [id, start, locale, router, fail]);
 
   if (error && !book) {
     return (

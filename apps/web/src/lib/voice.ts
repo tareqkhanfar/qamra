@@ -47,6 +47,7 @@ export type ListenPage = {
   image: string | null;
   voices: { label: string; audio: string; duration_ms: number }[];
   narrator: string | null;
+  record: string | null; // the book's recording page, only for its owner signed in
 };
 
 const enc = encodeURIComponent;

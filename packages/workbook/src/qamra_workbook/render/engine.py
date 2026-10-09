@@ -9,6 +9,7 @@ changes with the child and family (names, the parent box) is marked `data-fit="<
 from __future__ import annotations
 
 import logging
+import re
 from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
@@ -86,6 +87,18 @@ class RenderedPage:
 
 
 MAX_PARENT_LINES = 3  # A7 §5
+# The audio player's code format (apps/web `/a/[code]`, `qamra_api.journey_audio.CODE_CHARS`, 4–16 characters)
+AUDIO_CODE = re.compile(r"[a-z2-7]{4,16}")
+
+
+def audio_qr(book: BookSpec, spec: PageSpec) -> Markup | None:
+    """The page's audio QR, printed only when it can play: the page has audio and its item's code
+    (`params.audio_code`, the journey's `journey_book`) is in the player's format. A page without one (an
+    Islamic page id such as `v2-u-why-pray-l3-2`) would print a QR to «we couldn't find this sound», so it
+    prints none; the page's own text still tells the grown-up what to say."""
+    if not spec.audio or not AUDIO_CODE.fullmatch(str(spec.params.get("audio_code") or "")):
+        return None
+    return qr_svg(book.audio_url(spec))
 
 
 def build_pages(book: BookSpec, assets: Assets) -> list[RenderedPage]:
@@ -114,7 +127,7 @@ def build_pages(book: BookSpec, assets: Assets) -> list[RenderedPage]:
                 title,
                 instruction,
                 book.folio(spec.number),
-                qr_svg(book.audio_url(spec)) if spec.audio else None,
+                audio_qr(book, spec),
                 parent,
                 ctx.text(ctx.style.name_ar),
                 ctx.numerals,

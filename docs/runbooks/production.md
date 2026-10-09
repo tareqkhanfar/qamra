@@ -44,8 +44,9 @@ How to put Qamra on a production server, deploy updates, and check that it works
 1. Tests are green in CI (`make check` locally: lint, types, tests, web checks).
 2. Take a backup first: `infra/scripts/backup.sh`.
 3. Sync the code (git pull, or rsync without `.env`), then `docker compose -f compose.yaml -f compose.prod.yaml up -d --build`. Compose rebuilds the images, runs the migrate job, and replaces the containers. A migration that fails stops the deploy before the new API starts.
-4. Smoke test.
-5. Rollback: redeploy the previous commit. If a migration must be undone, restore the backup from step 2 (`restore.sh --replace`) rather than hand-editing the schema.
+4. The voices behind the activity books' printed QR codes (content/journey/clips, one per item of content/journey/audio.yaml): `docker compose exec worker python -m qamra_worker.journey_voices` stores what storage lacks (a new storage, a new item) and never replaces a recording staff uploaded; `--check` only reports. Running it on every deploy is safe: when everything is in place it changes nothing.
+5. Smoke test.
+6. Rollback: redeploy the previous commit. If a migration must be undone, restore the backup from step 2 (`restore.sh --replace`) rather than hand-editing the schema.
 
 ## Smoke test (5 minutes, on a phone)
 
@@ -54,5 +55,6 @@ How to put Qamra on a production server, deploy updates, and check that it works
 - `/ar/create`: add a test child, give consent, and upload a test photo (the photo check answers); stop before drawing, or draw one character (a few cents).
 - Add a book to the cart and view the checkout. Don't place an order on production unless you delete it afterwards.
 - Admin (2FA): orders, the catalog, reports, and the cost dashboard load; the GPU card shows «غير مُعدّ».
+- The printed QR codes: https://qamra.app/a/ogjmg6ob («رحلتي الأولى», stage 1 p. 28) shows the animals and its play button plays the sounds; a story page's code (`https://qamra.app/v/<token>/<page>`, from a book with «أصوات العائلة») opens its listen page.
 - `infra/scripts/monitor.sh` prints «healthy».
 - Delete the test child from the account page.

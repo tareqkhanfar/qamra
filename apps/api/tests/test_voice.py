@@ -8,6 +8,7 @@ from decimal import Decimal
 
 from api_helpers import register
 from httpx import AsyncClient
+from printed_qr import qr_urls, route
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -32,6 +33,7 @@ from qamra_core.db.models import (
     Theme,
 )
 from qamra_core.storage import ObjectStorage
+from qamra_pdf.render import qr_svg
 
 WEBM = b"\x1a\x45\xdf\xa3" + bytes(range(256)) * 4
 MP4 = b"\x00\x00\x00\x18ftypM4A " + bytes(range(256)) * 4
@@ -301,6 +303,44 @@ async def test_the_listen_page_behind_the_printed_qr(
     assert (
         await client.get(f"/api/voice/listen/{token}/1")
     ).status_code == 200  # the printed codes work again
+
+
+async def test_the_printed_codes_before_and_after_the_family_records(
+    client: AsyncClient, adb: AsyncSession, storage: ObjectStorage
+) -> None:
+    """The QR the worker prints on each story page (`listen_url/<page>`, the back cover `listen_url`), read
+    back and opened: before any recording the page answers kindly (no voice) and offers the book's owner,
+    and only the owner, the link to record this very page; once the owner records it, anyone scanning plays
+    it."""
+    me = await register(client)
+    book = await _book(adb, storage, me["id"])
+    listen_url = (await client.get(f"/api/books/{book.id}/voice")).json()["listen_url"]
+    for beat in (1, 2, 3):  # the story pages (page 4 failed its safety check: no page, no code)
+        found = route(qr_urls(str(qr_svg(f"{listen_url}/{beat}")))[0])
+        assert found is not None and found[0] == "listen"
+        token = found[1]["token"]
+        page = (await client.get(f"/api/voice/listen/{token}/{found[1]['page']}")).json()
+        assert page["voices"] == [] and page["text"] == f"صفحة {beat}"
+        assert page["record"] == f"/books/{book.id}/voice?page={beat}"  # the owner, signed in
+    back = route(qr_urls(str(qr_svg(listen_url)))[0])
+    assert back == ("listen-start", {"token": token})
+    assert (await client.get(f"/api/voice/listen/{token}")).json()["first"] == 1
+
+    await client.post("/api/auth/logout")
+    guest = (await client.get(f"/api/voice/listen/{token}/1")).json()
+    assert guest["voices"] == [] and guest["record"] is None  # a guest scanning the book
+    await register(client, email="another.parent@example.com")
+    assert (await client.get(f"/api/voice/listen/{token}/1")).json()["record"] is None  # someone else's book
+
+    await client.post("/api/auth/logout")
+    await client.post(
+        "/api/auth/login", json={"email": "salma.mom@example.com", "password": "moonlight-2026"}
+    )
+    assert (await _record(client, book, 1, "ماما")).status_code == 201
+    await client.post("/api/auth/logout")
+    heard = (await client.get(f"/api/voice/listen/{token}/1")).json()
+    assert [v["label"] for v in heard["voices"]] == ["ماما"] and heard["record"] is None
+    assert (await client.get(heard["voices"][0]["audio"])).content == WEBM
 
 
 async def test_audio_links_are_signed_and_expire(

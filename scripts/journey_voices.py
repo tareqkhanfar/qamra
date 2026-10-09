@@ -6,8 +6,10 @@ Words and letters: ElevenLabs Multilingual v2 through fal (commercial use; about
 read slowly for young children. The sound items (animals, house sounds, loud/quiet, fast/slow): ElevenLabs
 sound effects ($0.002 a second), each announced by the same voice («الصوت الأول» …). Every clip is transcribed
 back (Whisper) and compared with its script without the tashkeel; clips under the similarity bar are listed
-in out/journey-audio/report.json for a person to listen to. Files land in out/journey-audio/<code>.mp3, ready
-for the admin's «صوتيات الرحلة» (or the server loader). The fal key comes from FAL_KEY; it is never printed.
+in out/journey-audio/report.json for a person to listen to. Files land in out/journey-audio/<code>.mp3. A clip
+that passed its review is copied to content/journey/clips/<code>.mp3 with its length in durations.json (it
+ships with the code); after the deploy `python -m qamra_worker.journey_voices` loads it into the server's
+storage. The fal key comes from FAL_KEY; it is never printed.
 """
 
 from __future__ import annotations

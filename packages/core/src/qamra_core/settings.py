@@ -1,5 +1,6 @@
 """Infrastructure settings shared by the api and the worker (env / .env)."""
 
+import ipaddress
 from functools import lru_cache
 from typing import Literal
 
@@ -17,7 +18,7 @@ class CoreSettings(BaseSettings):
     # Brand (Addendum 1: never hardcode)
     brand_name_ar: str = "قمرة"
     brand_name_en: str = "Qamra"
-    brand_domain: str = "qamra.app"
+    brand_domain: str = "qamra.app"  # the bare host every printed QR code and link names (https://{it}/…)
 
     database_url: str = "postgresql+psycopg://qamra:qamra@localhost:5432/qamra"
     db_pool_size: int = 5
@@ -48,12 +49,40 @@ class CoreSettings(BaseSettings):
             raise ValueError("SETTINGS_ENCRYPTION_KEYS must be set in prod")
         return self
 
+    @field_validator("brand_domain")
+    @classmethod
+    def _bare_domain(cls, v: str) -> str:
+        """`https://qamra.app/` → `qamra.app`: the QR codes print `https://{brand_domain}/…`."""
+        host = v.strip().lower().removeprefix("https://").removeprefix("http://").rstrip("/")
+        if not host or "/" in host:
+            raise ValueError("BRAND_DOMAIN is a domain such as qamra.app, not a URL with a path")
+        return host
+
+    @model_validator(mode="after")
+    def _prod_prints_the_public_domain(self) -> "CoreSettings":
+        """A printed QR code lives for years: in prod it names the public domain, never an address or port."""
+        if self.env == "prod" and (
+            ":" in self.brand_domain or _is_ip(self.brand_domain) or "." not in self.brand_domain
+        ):
+            raise ValueError(
+                "BRAND_DOMAIN must be the public domain in prod (e.g. qamra.app), not an IP or a port"
+            )
+        return self
+
     @field_validator("s3_signed_url_seconds")
     @classmethod
     def _cap_signed_urls(cls, v: int) -> int:
         if not 0 < v <= MAX_SIGNED_URL_SECONDS:
             raise ValueError(f"signed URLs must expire within {MAX_SIGNED_URL_SECONDS}s")
         return v
+
+
+def _is_ip(host: str) -> bool:
+    try:
+        ipaddress.ip_address(host.strip("[]"))
+    except ValueError:
+        return False
+    return True
 
 
 @lru_cache

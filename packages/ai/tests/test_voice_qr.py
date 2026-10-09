@@ -7,6 +7,7 @@ import cv2
 import numpy as np
 import pypdfium2 as pdfium
 from playwright.async_api import async_playwright
+from printed_qr import qr_by_page, qr_urls, route
 
 from qamra_ai.pipeline.assemble import AssemblyInputs, assemble_book
 from qamra_ai.pipeline.book import BookInputs, run_book
@@ -79,6 +80,29 @@ async def test_the_add_on_prints_a_readable_qr_on_every_story_page(
     corner = image[h // 2 :, : w // 2] if first.side == "left" else image[h // 2 :, w // 2 :]
     text, _, _ = cv2.QRCodeDetector().detectAndDecode(corner)
     assert text == first.qr_url
+
+
+async def test_every_printed_code_opens_its_listen_page(
+    rt: Runtime, book_inputs: BookInputs, tmp_path: Path
+) -> None:
+    """Read back from the print HTML: each story page's QR opens `/v/<token>/<its page>` on https://qamra.app
+    (the web app's listen route, the API's `/api/voice/listen/<token>/<page>`), the back cover's opens
+    `/v/<token>` (the first page); nothing else is printed as a code."""
+    run = await run_book(rt, book_inputs, mode="final")
+    files = await assemble_book(_inputs(run, book_inputs, VOICE), tmp_path)
+    token = VOICE.rsplit("/", 1)[1]
+    by_number = qr_by_page((tmp_path / "interior.html").read_text(encoding="utf-8"), "data-number")
+    coded = {p.number: p for p in files.spec.pages if p.qr_url}
+    assert set(by_number) == {str(n) for n in coded}
+    beats = set()
+    for number, urls in by_number.items():
+        assert len(urls) == 1 and urls[0] == coded[int(number)].qr_url
+        found = route(urls[0])
+        assert found is not None and found[0] == "listen" and found[1]["token"] == token, urls[0]
+        beats.add(int(found[1]["page"]))
+    assert beats == {b for b in run.plan.beats if b > 0}  # every story page, and only those
+    back = qr_urls((tmp_path / "cover.html").read_text(encoding="utf-8"))
+    assert back == [VOICE] and route(back[0]) == ("listen-start", {"token": token})
 
 
 async def test_books_without_the_add_on_print_no_qr(

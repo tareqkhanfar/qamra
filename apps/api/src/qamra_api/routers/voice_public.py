@@ -4,7 +4,8 @@
 - the page a printed QR opens (scope `listen`): the picture, the text and the family's voices;
 - signed audio links (≤ 10 minutes), and the narrator fallback when a TTS provider is switched on.
 
-Unknown, expired and revoked links get the same answer. Nothing here returns ids of the child or the parent.
+Unknown, expired and revoked links get the same answer. Nothing here returns ids of the child or the parent;
+only the book's own guardian, signed in, gets the link to its recording page (`record`).
 """
 
 import re
@@ -19,7 +20,7 @@ from sqlalchemy import select
 from qamra_ai.tts import TTSLang, make_tts
 from qamra_api import ratelimit, runtime_settings
 from qamra_api.auth.router import client_ip
-from qamra_api.deps import RedisDep, SessionDep, SettingsDep, StorageDep
+from qamra_api.deps import OptionalUser, RedisDep, SessionDep, SettingsDep, StorageDep
 from qamra_api.errors import ApiError
 from qamra_api.theme_versions import book_title
 from qamra_api.voice_common import (
@@ -167,6 +168,8 @@ class ListenOut(BaseModel):
     image: str | None
     voices: list[ListenVoice]
     narrator: str | None  # the TTS fallback's audio link, only without recordings and with a provider on
+    # the book's recording page at this page, only for its guardian signed in (anyone else gets None)
+    record: str | None = None
 
 
 async def _listen_page(db: SessionDep, token: str, beat: int) -> tuple[ShareToken, Book, list[BookPage], int]:
@@ -187,9 +190,12 @@ async def listen(
     db: SessionDep,
     redis: RedisDep,
     settings: SettingsDep,
+    user: OptionalUser,
 ) -> ListenOut:
     await _limit(redis, request, "voice-listen", VIEWS_PER_IP_PER_HOUR)
     _, book, pages, at = await _listen_page(db, token, beat)
+    child = await db.get(Child, book.child_id) if user is not None else None
+    owner = child is not None and user is not None and child.guardian_user_id == user.id
     page, secret = pages[at], settings.jwt_secret.get_secret_value()
     recs = [r for r in await recordings(db, book) if r.page_index == beat]
     values = (await runtime_settings.current(db, settings)).values
@@ -212,6 +218,7 @@ async def listen(
             for r in recs
         ],
         narrator=narrator,
+        record=f"/books/{book.id}/voice?page={beat}" if owner else None,
     )
 
 

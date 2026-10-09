@@ -31,6 +31,7 @@ from qamra_api.routers.companions import router as companions_router
 from qamra_api.routers.create import router as create_router
 from qamra_api.routers.downloads import router as downloads_router
 from qamra_api.routers.e2e import router as e2e_router
+from qamra_api.routers.e2e_qr import router as e2e_qr_router
 from qamra_api.routers.examples import admin_router as examples_admin_router
 from qamra_api.routers.examples import router as examples_router
 from qamra_api.routers.family import router as family_router
@@ -160,4 +161,5 @@ def create_app(settings: ApiSettings | None = None, *, manage_resources: bool = 
     app.include_router(admin_islamic_router)  # «قلبي يعرف الله»: the scholar's review (Addendum 10 §3.3)
     if settings.e2e_fixtures and settings.env != "prod":  # test-only fixtures (tests/e2e), never in prod
         app.include_router(e2e_router)
+        app.include_router(e2e_qr_router)  # the printed QR codes' e2e test
     return app

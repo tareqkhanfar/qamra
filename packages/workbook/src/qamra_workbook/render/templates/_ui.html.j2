@@ -93,9 +93,12 @@
 <span class="example-tag">{{ icon('star') }}{{ label }}</span>
 {%- endmacro %}
 
+{# no card at all when the page has no playable code (engine.audio_qr): never a «scan» box with no QR #}
 {% macro qr_card(p, title='امسح واسمع', note='') -%}
+{% if p.qr %}
 <div class="qr-card">
   <div class="qr">{{ p.qr }}</div>
   <div class="label">{{ icon('speaker') }}<span>{{ title }}</span>{% if note %}<small>{{ note }}</small>{% endif %}</div>
 </div>
+{% endif %}
 {%- endmacro %}
