@@ -266,9 +266,9 @@ posts:
     pill: ضيفنا الصغير
     headline: ["مولود جديد في البيت؟", "طفلكم هو البطل"]
     sub: حكاية «ضيفنا الصغير» تطمئن طفلكم أنّ مكانه في قلب العائلة لا يتغيّر، وتعلّمه كيف يكون الأخ الكبير أو الأخت~الكبيرة.
-    visual: scene_book
-    media: plate-new-sibling
-    cover: new-sibling
+    visual: photo
+    media: new-baby-3d
+    layout: hero
     note: لعمر ٣–٦ سنوات، ويمكنكم إضافة علبة هدية
     cta: order
 

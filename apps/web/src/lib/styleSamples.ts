@@ -107,8 +107,96 @@ const COMPANION: Row = [
   "Qamour, the hero’s companion, from several angles",
 ];
 
+/** «آدم في أوّل يوم بالروضة»: drawn in every style for the same sample boy, the same scenes. */
+const FIRST_DAY_ADAM = {
+  cover: [
+    "first-day-cover",
+    "first-day",
+    "cover",
+    "boy",
+    "غلاف «آدم في أوّل يوم بالروضة»",
+    "Cover of “Adam’s First Day at Kindergarten”",
+  ],
+  gate: [
+    "first-day-gate",
+    "first-day",
+    "page",
+    "boy",
+    "آدم عند بوّابة الروضة وصاحبه الصغير يطمئنه",
+    "Adam at the kindergarten gate, his little companion reassuring him",
+  ],
+  blocks: [
+    "first-day-blocks",
+    "first-day",
+    "page",
+    "boy",
+    "آدم وصديقان جديدان يبنون برجًا من المكعّبات",
+    "Adam and two new friends build a tower of blocks",
+  ],
+  yard: [
+    "first-day-yard",
+    "first-day",
+    "page",
+    "boy",
+    "آدم يركض في ساحة الروضة كالريح",
+    "Adam runs across the kindergarten yard like the wind",
+  ],
+} satisfies Record<string, Row>;
+
+/** «تالا وضيفنا الصغير»: the same sample girl (no hijab) and scenes in every style. */
+const SIBLING_TALA = {
+  cover: [
+    "new-sibling-cover",
+    "new-sibling",
+    "cover",
+    "girl",
+    "غلاف «تالا وضيفنا الصغير»",
+    "Cover of “Tala and Our Little Guest”",
+  ],
+  news: [
+    "new-sibling-news",
+    "new-sibling",
+    "page",
+    "girl",
+    "تالا تقفز فرحًا بالخبر السعيد",
+    "Tala jumps for joy at the happy news",
+  ],
+  bassinet: [
+    "new-sibling-bassinet",
+    "new-sibling",
+    "page",
+    "girl",
+    "تالا تهمس للمولود: «مرحبًا يا ضيفنا الصغير»",
+    "Tala whispers to the newborn: “Welcome, our little guest”",
+  ],
+  hug: [
+    "new-sibling-hug",
+    "new-sibling",
+    "page",
+    "girl",
+    "ماما تضمّ تالا وتقول: «أنتِ بطلتي الكبيرة!»",
+    "Mama hugs Tala and says, “You’re my big hero!”",
+  ],
+  smile: [
+    "new-sibling-smile",
+    "new-sibling",
+    "page",
+    "girl",
+    "المولود يبتسم لتالا أوّل مرّة",
+    "The baby smiles at Tala for the first time",
+  ],
+} satisfies Record<string, Row>;
+
 const ROWS: Record<SampleStyle, Row[]> = {
+  // A story without a hijab comes first in every style: it gives the style its swatch (owner, 2026-10-09: little
+  // girls in the sample imagery without a hijab). The 3D new-sibling cover is missing: both tries drew a parent's
+  // arm with no one attached to it.
   "3d": [
+    FIRST_DAY_ADAM.cover,
+    FIRST_DAY_ADAM.blocks,
+    FIRST_DAY_ADAM.yard,
+    SIBLING_TALA.bassinet,
+    SIBLING_TALA.smile,
     ...GRADUATION.slice(0, 2),
     [
       "graduation-album",
@@ -122,39 +210,10 @@ const ROWS: Record<SampleStyle, Row[]> = {
     COMPANION,
   ],
   watercolor: [
-    ...GRADUATION,
-    [
-      "first-day-cover",
-      "first-day",
-      "cover",
-      "boy",
-      "غلاف «آدم في أوّل يوم بالروضة»",
-      "Cover of “Adam’s First Day at Kindergarten”",
-    ],
-    [
-      "first-day-gate",
-      "first-day",
-      "page",
-      "boy",
-      "آدم عند بوّابة الروضة وصاحبه الصغير يطمئنه",
-      "Adam at the kindergarten gate, his little companion reassuring him",
-    ],
-    [
-      "first-day-blocks",
-      "first-day",
-      "page",
-      "boy",
-      "آدم وصديقان جديدان يبنون برجًا من المكعّبات",
-      "Adam and two new friends build a tower of blocks",
-    ],
-    [
-      "first-day-yard",
-      "first-day",
-      "page",
-      "boy",
-      "آدم يركض في ساحة الروضة كالريح",
-      "Adam runs across the kindergarten yard like the wind",
-    ],
+    FIRST_DAY_ADAM.cover,
+    FIRST_DAY_ADAM.gate,
+    FIRST_DAY_ADAM.blocks,
+    FIRST_DAY_ADAM.yard,
     [
       "first-day-cover-girl",
       "first-day",
@@ -179,50 +238,23 @@ const ROWS: Record<SampleStyle, Row[]> = {
       "ليلى ترسم قمرًا أصفر كبيرًا في ركن الرسم",
       "Layla paints a big yellow moon in the art corner",
     ],
-    [
-      "new-sibling-cover",
-      "new-sibling",
-      "cover",
-      "girl",
-      "غلاف «تالا وضيفنا الصغير»",
-      "Cover of “Tala and Our Little Guest”",
-    ],
-    [
-      "new-sibling-news",
-      "new-sibling",
-      "page",
-      "girl",
-      "تالا تقفز فرحًا بالخبر السعيد",
-      "Tala jumps for joy at the happy news",
-    ],
-    [
-      "new-sibling-bassinet",
-      "new-sibling",
-      "page",
-      "girl",
-      "تالا تهمس للمولود: «مرحبًا يا ضيفنا الصغير»",
-      "Tala whispers to the newborn: “Welcome, our little guest”",
-    ],
-    [
-      "new-sibling-hug",
-      "new-sibling",
-      "page",
-      "girl",
-      "ماما تضمّ تالا وتقول: «أنتِ بطلتي الكبيرة!»",
-      "Mama hugs Tala and says, “You’re my big hero!”",
-    ],
-    [
-      "new-sibling-smile",
-      "new-sibling",
-      "page",
-      "girl",
-      "المولود يبتسم لتالا أوّل مرّة",
-      "The baby smiles at Tala for the first time",
-    ],
+    SIBLING_TALA.cover,
+    SIBLING_TALA.news,
+    SIBLING_TALA.bassinet,
+    SIBLING_TALA.hug,
+    SIBLING_TALA.smile,
+    ...GRADUATION,
     COMPANION,
   ],
-  // No cartoon book pages yet (the fal balance ran out on 2026-10-07): the companion's sheet shows the look.
-  cartoon: [COMPANION],
+  cartoon: [
+    FIRST_DAY_ADAM.cover,
+    FIRST_DAY_ADAM.blocks,
+    FIRST_DAY_ADAM.yard,
+    SIBLING_TALA.cover,
+    SIBLING_TALA.bassinet,
+    SIBLING_TALA.smile,
+    COMPANION,
+  ],
 };
 
 export const STYLE_SAMPLES: StyleSample[] = SAMPLE_STYLES.flatMap((style) =>

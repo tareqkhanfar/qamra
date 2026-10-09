@@ -66,10 +66,20 @@ GRAD_WC = "out/redesign/proof/20261003-110907-fal-graduation/proof.pdf"
 FIRST_ADAM = "out/style-samples/watercolor-first-day-adam/proof.pdf"  # published examples, laid out (step 2)
 FIRST_LAYLA = "out/style-samples/watercolor-first-day-layla/proof.pdf"
 SIBLING_TALA = "out/style-samples/watercolor-new-sibling-tala/proof.pdf"
+# drawn on 2026-10-09 (step 3), then laid out with `reuse` from out/style-samples/src/<run>/ (step 2)
+CARTOON_ADAM = "out/style-samples/cartoon-first-day-adam/proof.pdf"
+CARTOON_TALA = "out/style-samples/cartoon-new-sibling-tala/proof.pdf"
+ADAM_3D = "out/style-samples/3d-first-day-adam/proof.pdf"
+TALA_3D = "out/style-samples/3d-new-sibling-tala/proof.pdf"  # p1 is a rejected cover, never exported
 
 # What the site shows: style/name ← (a proof PDF and its 1-based page) or a picture file. The alt texts and
 # the order live in styleSamples.ts; this list only makes the files.
 SAMPLES: list[tuple[str, str, str, int | None]] = [
+    ("3d", "first-day-cover", ADAM_3D, 1),
+    ("3d", "first-day-blocks", ADAM_3D, 3),
+    ("3d", "first-day-yard", ADAM_3D, 4),
+    ("3d", "new-sibling-bassinet", TALA_3D, 3),
+    ("3d", "new-sibling-smile", TALA_3D, 4),
     ("3d", "graduation-cover", GRAD_3D, 1),
     ("3d", "graduation-mirror", GRAD_3D, 3),
     ("3d", "graduation-album", GRAD_3D, 4),
@@ -97,6 +107,12 @@ SAMPLES: list[tuple[str, str, str, int | None]] = [
     ("watercolor", "new-sibling-hug", SIBLING_TALA, 5),
     ("watercolor", "new-sibling-smile", SIBLING_TALA, 6),
     ("watercolor", "companion", "content/cast/qamour-watercolor.jpg", None),
+    ("cartoon", "first-day-cover", CARTOON_ADAM, 1),
+    ("cartoon", "first-day-blocks", CARTOON_ADAM, 3),
+    ("cartoon", "first-day-yard", CARTOON_ADAM, 4),
+    ("cartoon", "new-sibling-cover", CARTOON_TALA, 1),
+    ("cartoon", "new-sibling-bassinet", CARTOON_TALA, 3),
+    ("cartoon", "new-sibling-smile", CARTOON_TALA, 4),
     ("cartoon", "companion", "content/cast/qamour-cartoon.jpg", None),
 ]
 
@@ -105,7 +121,7 @@ def _ledger_row(entry: CostEntry, tag: str) -> None:
     if entry.provider in ("fake", "sketch"):  # offline dry runs cost nothing
         return
     LEDGER.parent.mkdir(parents=True, exist_ok=True)
-    row = {"id": f"style-samples:{tag}:{entry.step}", "model": entry.model, "usd": round(entry.usd, 4)}
+    row = {"id": f"samples:{tag}:{entry.step}", "model": entry.model, "usd": round(entry.usd, 4)}
     with LEDGER.open("a", encoding="utf-8") as f:
         f.write(json.dumps(row, ensure_ascii=False) + "\n")
 
@@ -213,16 +229,26 @@ async def reuse(args: argparse.Namespace) -> int:
     settings = Settings().model_copy(update={"image_provider": "fake", "text_provider": "fake"})
     theme, style, child = load_theme(args.theme), load_style(args.style), _child(args)
     rt = Runtime(settings=settings, text=make_text_provider(settings), image=make_image_provider(settings))
-    inputs = BookInputs(child=child, lang="ar", theme=theme, style=style, character_sheet=b"", seed=1)
+    # the pictures come from books drawn with the theme's companion: its lines stay in the text (as in `draw`)
+    inputs = BookInputs(
+        child=child,
+        lang="ar",
+        theme=theme,
+        style=style,
+        character_sheet=b"",
+        companion=default_companion(theme, "ar"),
+        seed=1,
+    )
     run = await run_book(rt, inputs, mode="preview", beats=[])
     for beat in args.beats:
-        found = sorted(args.images.glob(f"p{beat:02d}-*.jpg"))
+        found = sorted(p for p in args.images.glob(f"p{beat:02d}-*") if p.suffix in (".jpg", ".png"))
         if not found:
             print(f"✗ no picture for beat {beat} in {args.images}")
             return 2
         data = found[0].read_bytes()
+        mime = "image/png" if found[0].suffix == ".png" else "image/jpeg"
         cost = CostEntry(f"reuse:{beat}", "file", found[0].name, {}, 0.0)
-        run.pages[beat] = PageResult(beat, "ok", image=GeneratedImage(data, "image/jpeg", cost))
+        run.pages[beat] = PageResult(beat, "ok", image=GeneratedImage(data, mime, cost))
     sheet = next(iter(args.images.glob("character.*")), None)
     out = OUT / (args.out_name or f"{time.strftime('%Y%m%d-%H%M%S')}-reuse-{args.style}-{args.theme}")
     out.mkdir(parents=True, exist_ok=True)

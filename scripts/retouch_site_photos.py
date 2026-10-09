@@ -12,7 +12,9 @@ hides the very thing we sell. This script lays our real art onto those surfaces,
 - journey-qr: two real pages of «رحلتي الأولى للتعلّم» (the maze and the audio-QR page) + an audio player on
   the father's phone;
 - kindergarten-teacher: the class-on-stage spread of «يوم تخرّج ليان»;
-- gift-box: the front of «يوم تخرّج ليان» in the gift box.
+- gift-box: the front of «يوم تخرّج ليان» in the gift box;
+- books-stack: three workbooks fanned out (دوسية التأسيس, رحلتي الأولى للتعلّم, مغامرات مع عائلتي) on a newer
+  photo (2026-10-09, no people), mirrored so the wire binding sits on the right as on our Arabic books.
 
 Each surface is a grid of homographies (art → photo quad); the photo's own light on the blank paper is fitted
 with a smooth polynomial (linear light) and multiplied in; hands, crayons and tissue lying over the book are
@@ -20,8 +22,11 @@ masked out by polygons traced on the photo (px of the 2400/2048 px originals). T
 not) gets one fine film grain, which breaks the over-smooth "AI sheen" and makes the set consistent.
 
 Inputs: the untouched originals (--originals; restore them with
-`git show 244d81f:apps/web/public/photos/<name>.jpg`), the film's cover art in out/video/
-(scripts/build_film.py) and the public workbook previews. No paid API.
+`git show 244d81f:apps/web/public/photos/<name>.jpg`; books-stack.jpg is the fal photo
+out/design-images/samples/books-stack-2.png saved as JPEG; graduation-class.jpg has its thrown caps redrawn
+by a fal edit on 2026-10-09, blended in only where the caps are, the older file kept as
+graduation-class-2026-10-03.jpg), the film's cover art in out/video/ (scripts/build_film.py) and the public
+workbook previews. No paid API.
 """
 
 from __future__ import annotations
@@ -593,12 +598,128 @@ def gift_box(img: Img) -> Img:
     return img
 
 
+def _unit(v: npt.ArrayLike) -> npt.NDArray[np.float64]:
+    a = np.asarray(v, np.float64)
+    out: npt.NDArray[np.float64] = a / np.linalg.norm(a)
+    return out
+
+
+# A wire-bound workbook lying cover up, traced on the mirrored photo: L, T, R, B are its cover's top-left,
+# top-right, bottom-right and bottom-left corners (the wire runs along T-R, the right edge, as on our books).
+Book = dict[str, Pt]
+
+
+def _rear_book(front: Book, t: Pt, r: Pt, on_top_edge: Pt) -> Book:
+    """A book half hidden under another: its binding (T-R) is seen whole and its top edge runs through
+    `on_top_edge`; the hidden corners follow the front book's shape (an affine map of it)."""
+    scale = float(np.linalg.norm(np.subtract(r, t)) / np.linalg.norm(np.subtract(front["R"], front["T"])))
+    width = float(np.linalg.norm(np.subtract(front["L"], front["T"])))
+    left = np.asarray(t, np.float64) + _unit(np.subtract(on_top_edge, t)) * width * scale
+    src = np.array([front["T"], front["R"], front["L"]], np.float32)
+    dst = np.array([t, r, (float(left[0]), float(left[1]))], np.float32)
+    m = np.asarray(cv2.getAffineTransform(src, dst), np.float64)
+    b = m @ np.array([*front["B"], 1.0])
+    return {"L": (float(left[0]), float(left[1])), "T": t, "R": r, "B": (float(b[0]), float(b[1]))}
+
+
+def _wire_side(book: Book) -> npt.NDArray[np.float64]:
+    """The outward normal of the binding edge."""
+    d = _unit(np.subtract(book["R"], book["T"]))
+    return np.array([d[1], -d[0]])
+
+
+def _under_wire(book: Book, px: float) -> Book:
+    """The traced cover stops where the wire starts; the cover itself runs on under it to the binding edge."""
+    n = _wire_side(book) * px
+    t, r = np.asarray(book["T"]) + n, np.asarray(book["R"]) + n
+    return {**book, "T": (float(t[0]), float(t[1])), "R": (float(r[0]), float(r[1]))}
+
+
+def _book_body(book: Book) -> list[Poly]:
+    """What of a book lies on the books under it: the cover, the wire beyond the binding edge, the page block
+    under the lower edges and a hair along the top edge (bands of 34, 44, 30 and 6 px)."""
+    pts = [np.asarray(book[k], np.float64) for k in ("L", "T", "R", "B")]
+    c = np.mean(pts, axis=0)
+    polys: list[Poly] = [[(float(p[0]), float(p[1])) for p in pts]]
+    for i, margin in enumerate((6, 34, 44, 30)):  # edges L-T, T-R, R-B, B-L
+        a, b = pts[i], pts[(i + 1) % 4]
+        d = _unit(b - a)
+        n = np.array([d[1], -d[0]])
+        if np.dot(n, (a + b) / 2 - c) < 0:
+            n = -n
+        band = [a, b, b + n * margin, a + n * margin]
+        polys.append([(float(p[0]), float(p[1])) for p in band])
+    return polys
+
+
+def _a4(art: Img) -> Img:
+    """A 21 × 28 cover on an A4 book: the middle strip at A4 proportions."""
+    h, w = art.shape[:2]
+    keep = min(w, round(h / 2**0.5))
+    x0 = (w - keep) // 2
+    return art[:, x0 : x0 + keep]
+
+
+def books_stack(img: Img) -> Img:
+    """Three of our wire-bound workbooks fanned out on the table, the binding on the right (Arabic books).
+
+    The 2026-10-09 photo (fal, `samples:books-stack` in the ledger) has the wire on the left, so it is
+    mirrored first. The covers are the site's current ones (public/workbooks/*/cover.webp): run this again
+    when the covers change. A book underneath gets its cover only where the photo shows blank paper, and the
+    wire of every book is kept from the photo.
+    """
+    img = np.ascontiguousarray(img[:, ::-1])
+    photo = img.copy()
+    front: Book = {"L": (244, 1477), "T": (773, 1313), "R": (1297, 1576), "B": (765, 1852)}
+    middle = _rear_book(front, (1087, 1228), (1530, 1525), on_top_edge=(829, 1299))
+    back = _rear_book(front, (1435, 1200), (1774, 1524), on_top_edge=(1150, 1236))
+    books = [
+        (_under_wire(back, 14), _a4(load(WORKBOOKS / "family-adventures/book/cover.webp"))),
+        (_under_wire(middle, 14), load(WORKBOOKS / "learning-journey/1/cover.webp")),
+        (_under_wire(front, 14), load(WORKBOOKS / "foundation-workbook/kg2-1/cover.webp")),
+    ]
+    hsv = cv2.cvtColor((photo * 255).astype(np.uint8), cv2.COLOR_RGB2HSV)
+    white = ((hsv[..., 2] > 185) & (hsv[..., 1] < 45)).astype(np.uint8)
+    blank = cv2.morphologyEx(white, cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (31, 31)))
+    paper = feather(np.asarray(cv2.dilate(blank, np.ones((5, 5), np.uint8)), np.float32), 1.0)[..., None]
+    for i, (book, art) in enumerate(books):
+        lying_on = [p for above, _ in books[i + 1 :] for p in _book_body(above)]
+        before = img
+        img, _ = lay(
+            img,
+            art,
+            quad_grid(book["L"], book["T"], book["R"], book["B"], rows=4, cols=4),
+            reflect=(0.93, 0.93, 0.93),
+            occluders=lying_on or None,
+            blur=0.8,
+            sat=0.92,
+            haze=0.03,
+            seed=21 + i,
+        )
+        if lying_on:
+            img = (before + (img - before) * paper).astype(np.float32)
+    # the wire: wherever the photo is darker than its paper along a binding edge
+    lum = photo.mean(-1)
+    around = np.asarray(cv2.GaussianBlur(lum, (0, 0), 25), np.float32)
+    wire = np.zeros(lum.shape, np.float32)
+    for book, _ in books:
+        n = _wire_side(book)
+        t, r = np.asarray(book["T"]), np.asarray(book["R"])
+        band = [tuple(t - n * 40), tuple(r - n * 40), tuple(r + n * 8), tuple(t + n * 8)]
+        strip = poly_mask(lum.shape, [[(float(x), float(y)) for x, y in band]])
+        wire = np.maximum(wire, strip * np.clip((around - lum - 0.03) / 0.06, 0, 1))
+    w3 = feather(wire, 0.7)[..., None]
+    out: Img = (img * (1 - w3) + photo * w3).astype(np.float32)
+    return out
+
+
 RETOUCH = {
     "hero-reading": hero_reading,
     "family-book-table": family_book_table,
     "journey-qr": journey_qr,
     "kindergarten-teacher": kindergarten_teacher,
     "gift-box": gift_box,
+    "books-stack": books_stack,
 }
 
 

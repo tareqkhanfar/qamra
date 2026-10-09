@@ -70,6 +70,8 @@ media:
   kindergarten-teacher: {src: apps/web/public/photos/kindergarten-teacher.jpg, focus: "48% 60%"}
   workbook-tracing: {src: apps/web/public/photos/workbook-tracing.jpg, focus: "50% 55%"}
   plate-new-sibling: {src: content/themes/new-sibling/plates/3d-1.jpg, focus: "50% 60%"}
+  # a big sister (no hijab) and the newborn, 3D still drawn on fal 2026-10-09 (samples:post-09-new-baby), film grain
+  new-baby-3d: {src: content/marketing/social/media/new-baby-3d.jpg, focus: "50% 52%"}
   film-qamour: {src: out/video/shot1-start.png, focus: "62% 30%"}        # «قمّور» over the town at night
   film-photo: {src: out/video/shot2-start.png, focus: "50% 32%"}         # the sample photo (AI-made girl)
   film-character: {src: out/video/shot2-end.png, focus: "50% 32%"}       # the same girl drawn in 3D
