@@ -180,16 +180,18 @@ def _child(child: SampleChild) -> Child:
 
 def book_problems(book: BookSpec) -> list[str]:
     """Rules the engine can check on its own, on the text as printed for this child and family: a short
-    instruction (≤ 7 words in the journey, ≤ 10 in the family book), a title and an instruction on each
-    page."""
+    instruction (≤ 7 words in the journey and «دوسية التأسيس», ≤ 10 in the family book; a name is one word
+    however long, so no name refuses an order), a title and an instruction on each page."""
     limit = MAX_CHILD_WORDS if book.product == "family" else MAX_INSTRUCTION_WORDS
     out = []
     for p in book.pages:
-        texts = [] if p.type in STORY_TYPES else [book.personalize(p.instruction, p), p.instruction_en]
+        texts = [] if p.type in STORY_TYPES else [p.instruction, p.instruction_en]
         for text in texts:
-            words = len(text.split())
+            words = book.words(text)
             if words > limit:
-                out.append(f"{p.id}: instruction has {words} words (max {limit}): {text}")
+                out.append(
+                    f"{p.id}: instruction has {words} words (max {limit}): {book.personalize(text, p)}"
+                )
         if not p.title.strip() or not p.instruction.strip():
             out.append(f"{p.id}: every page needs a title and an instruction")
         if book.product == "journey":

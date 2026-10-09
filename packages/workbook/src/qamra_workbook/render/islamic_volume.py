@@ -71,7 +71,15 @@ from qamra_workbook.render.islamic_content import (
 from qamra_workbook.render.islamic_figures import SAMPLE_SHEET, kit_for
 from qamra_workbook.render.registry import Assets
 from qamra_workbook.render.samples import assets_for
-from qamra_workbook.render.spec import BookSpec, Child, Geometry, Numerals, PageSpec, product_geometry
+from qamra_workbook.render.spec import (
+    BookSpec,
+    Child,
+    Geometry,
+    Numerals,
+    PageSpec,
+    instruction_words,
+    product_geometry,
+)
 
 PAGES_DIR = REPO / "content/islamic/pages"
 # the scholar's approvals (qamra_core.islamic_review.build_export): the worker writes the export next to every
@@ -368,7 +376,6 @@ def match_content(
 # ---- the checks on the written pages --------------------------------------------------------------------
 
 _LEFTOVER = re.compile(r"\{(?!src:)[^{}]*\}")
-_WORD = re.compile(r"\S+")
 
 
 def _limit(ptype: str, name: str) -> int | None:
@@ -389,7 +396,7 @@ def text_problems(key: str, raw: Mapping[str, Any]) -> list[Problem]:
                 out.append(Problem("placeholder", key, f"{path}: unresolved {left} in {text!r}"))
                 break
             limit = _limit(ptype, name)
-            words = len(_WORD.findall(shown))
+            words = instruction_words(checks.TOKEN.sub("ذكر", text), gender)  # a name is one word
             if limit is not None and words > limit:
                 out.append(Problem("too-long", key, f"{path}: {words} words (max {limit}): {text}"))
                 break

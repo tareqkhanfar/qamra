@@ -10,7 +10,7 @@
 {% if book.product == 'family' %}{% include "_family.css.j2" %}{% endif %}
 {% if book.product == 'islamic' %}{% include "islamic-book.css.j2" %}{% endif %}
 </style></head>
-<body>
+<body data-names='{{ names|default([])|tojson }}'>
 {% for sheet in sheets %}
 {% set vowelized = book.product in ('foundation', 'journey') %}
 <section class="page key-sheet{{ ' vowelized' if vowelized }}" dir="rtl" style="--c: #E2A32A; --tint: #FCEFD2; --deep: #8A5A08;">

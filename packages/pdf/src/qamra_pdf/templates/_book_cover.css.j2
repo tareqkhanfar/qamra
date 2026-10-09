@@ -42,6 +42,8 @@
 .back .hook .nm, .back .made-for .nm { color: {{ cd.name_ink }}; }
 .spine .nm { color: #F6C35A; }
 .back.dark .hook { text-shadow: 0 .5mm 1.6mm rgba(0,0,0,.35); }
+/* an honorific sign (ﷺ) in a title: smaller, in Naskh, raised, without the title's shadow (lettering.HONORIFIC) */
+.back .hook .hon, .spine .hon { font: 700 .58em/1 "Noto Naskh Arabic", serif; vertical-align: .3em; text-shadow: none; }
 .back .hook-rule { display: flex; align-items: center; gap: 2.4mm; margin: 1.6mm 0 2.4mm; }
 .back .hook-rule span { width: 16mm; height: .3mm; background: {{ cd.gold_ink }}; opacity: .6; }
 .back .blurb { font-size: 15.5pt; line-height: 1.85; color: {{ cd.ink }}; max-width: 160mm; }

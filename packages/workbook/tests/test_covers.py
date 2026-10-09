@@ -6,13 +6,15 @@ import asyncio
 import dataclasses
 import datetime as dt
 from pathlib import Path
+from typing import Any
 
 import pytest
 from PIL import Image
+from playwright.async_api import async_playwright
 from qamra_workbook import islamic
 from qamra_workbook.islamic_sources import Resolver
 from qamra_workbook.render import covers
-from qamra_workbook.render.engine import build_pages
+from qamra_workbook.render.engine import book_html, build_pages
 from qamra_workbook.render.islamic_volume import (
     IslamicContext,
     check_volume,
@@ -40,7 +42,7 @@ PARTS = [
 ]
 
 
-# ---- words and numbers ----------------------------------------------------------------------------------
+# ---- words and numbers -------------------------------------------------------------------------------------
 
 
 def test_the_counted_noun_agrees_with_the_number() -> None:
@@ -84,7 +86,7 @@ def test_a_scene_is_cropped_to_the_cover_at_300_dpi(tmp_path: Path) -> None:
         assert a.size == (2551, 3579) and b.size == (2551, 945)
 
 
-# ---- the perfect-bound wrap ------------------------------------------------------------------------------
+# ---- the perfect-bound wrap --------------------------------------------------------------------------------
 
 
 def test_the_spine_grows_with_the_pages() -> None:
@@ -97,7 +99,7 @@ def test_the_spine_grows_with_the_pages() -> None:
     assert front.right == back.left == covers.SPINE_HINGE_MM  # no text in the glued hinge
 
 
-# ---- the back's pages ------------------------------------------------------------------------------------
+# ---- the back's pages --------------------------------------------------------------------------------------
 
 
 def _spec(n: int, kind: str) -> PageSpec:
@@ -132,7 +134,7 @@ def test_islamic_backs_only_show_pages_that_never_carry_sacred_text() -> None:
     assert not no_sacred_text(spec("story")) and no_sacred_text(spec("story", sacred_text="none"))
 
 
-# ---- rendered covers pass the preflight -------------------------------------------------------------------
+# ---- rendered covers pass the preflight --------------------------------------------------------------------
 
 
 def _interior_pdf(book: BookSpec, out: Path) -> Path:
@@ -186,5 +188,91 @@ def test_an_islamic_volume_gets_one_wrap_with_its_spine(tmp_path: Path) -> None:
     front, back = page.built.data["front"], page.built.data["back"]
     assert front["ribbon"]["text"] == "ليان" and front["subtitle"] == "رِحْلَةُ الْمُسْلِمَةِ الصَّغِيرَةِ"
     assert any(x["this"] for x in back["extra"]["books"]) and "راجعه" not in str(back)  # no reviewer claim
+    result = _render(cover, book, tmp_path)
+    assert result["passed"] and all(c["ok"] for c in result["checks"]), result  # type: ignore[union-attr]
+
+
+# ---- the lettering: honorifics apart, small titles thin ----------------------------------------------------
+
+
+def test_an_honorific_in_a_title_is_set_apart_from_the_lettering() -> None:
+    """ﷺ in a display title (V4 «قصص الأنبياء وسيرة نبيّنا ﷺ»): its own run in Naskh, smaller, raised, one
+    solid colour, and the copies that draw the outline, keyline, extrusion and shadow never draw it."""
+    look = covers.LOOKS["islamic"]
+    svg = str(covers.title_svg(["وَسِيرَةُ نَبِيِّنَا ﷺ"], look, width=170, height=40, uid="t"))
+    base, _, layers = svg.partition("</defs>")
+    hon = 'class="hon" font-family="Noto Naskh Arabic" font-weight="700" font-size="0.58em"'
+    assert base.count(hon) == 1 and f'{hon} baseline-shift="0.3em" fill="none"> ﷺ</tspan>' in base
+    assert layers.count(hon) == 1 and f'fill="{look.outline}"> ﷺ</tspan>' in layers  # solid, no gradient
+    assert "url(#t-g" not in layers.split("ﷺ")[0].rsplit("<tspan", 1)[1]
+    assert layers.count("ﷺ") == 1 and svg.count("ﷺ") == 3  # base, colour, aria-label: never a copy of its own
+    plain = str(covers.title_svg(["أَعْرِفُ رَبِّي وَأُحِبُّهُ"], look, width=170, height=40, uid="t"))
+    assert 'class="hon"' not in plain
+    # the honorific's space goes with it, and the words keep their colours in order
+    assert covers.title_lines("قَصَصُ الْأَنْبِيَاءِ وَسِيرَةُ نَبِيِّنَا ﷺ", one_line_max=15) == [
+        "قَصَصُ الْأَنْبِيَاءِ",
+        "وَسِيرَةُ نَبِيِّنَا ﷺ",
+    ]
+
+
+async def _fitted_titles(html: Path) -> list[dict[str, Any]]:
+    """Every `svg.cvt` of a cover after the fit: its fitted size, the reach of its outline and keyline, how
+    far its extrusion drops, and its honorific's size against the line's and its font."""
+    async with async_playwright() as pw:
+        browser = await pw.chromium.launch()
+        try:
+            page = await browser.new_page()
+            await page.goto(html.resolve().as_uri(), wait_until="load")
+            await page.evaluate("document.fonts.ready.then(() => true)")
+            assert await page.evaluate(covers.COVER_FIT_JS) == []
+            found: list[dict[str, Any]] = await page.evaluate(
+                """() => [...document.querySelectorAll('svg.cvt')].map(svg => {
+                  const uses = [...svg.querySelectorAll('use')];
+                  const at = (u, k) => parseFloat(u.getAttribute(k));
+                  const hon = svg.querySelector(':scope > text tspan.hon');
+                  const style = hon && getComputedStyle(hon);
+                  return {
+                    back: svg.querySelector('defs text').id.startsWith('cvb-'),
+                    fs: parseFloat(svg.dataset.fs),
+                    reach: Math.max(...uses.filter(u => !u.dataset.d)
+                      .map(u => Math.hypot(at(u, 'x'), at(u, 'y')))),
+                    drop: Math.max(...uses.filter(u => u.parentNode.getAttribute('class') !== 'cvt-soft')
+                      .map(u => at(u, 'y'))),
+                    hon: hon && {
+                      ratio: parseFloat(style.fontSize)
+                        / parseFloat(getComputedStyle(hon.closest('text')).fontSize),
+                      font: style.fontFamily, fill: hon.getAttribute('fill'),
+                      loaded: document.fonts.check('700 12px "Noto Naskh Arabic"', 'ﷺ'),
+                    },
+                  };
+                })"""
+            )
+            return found
+        finally:
+            await browser.close()
+
+
+def test_the_v4_wrap_sets_the_honorific_small_and_the_back_title_thin(tmp_path: Path) -> None:
+    plan, resolver = islamic.load(), Resolver.load()
+    content = check_volume(plan, "V4", resolver, build=False)
+    context = IslamicContext(resolver, kit_for(SHEET, tmp_path / "assets"), "preview", dt.date(2026, 10, 9))
+    book = volume_book(plan, content, context, BOY)
+    cover = cover_book(plan, "V4", context, book, pages=len(content.slots))
+    assets = assets_for(book, tmp_path)
+    html = tmp_path / "cover.html"
+    html.write_text(book_html(cover, build_pages(cover, assets), assets), encoding="utf-8")
+    front, back = sorted(asyncio.run(_fitted_titles(html)), key=lambda t: t["back"])
+    full = 1.5 + 0.75  # the keyline and the outline at full size
+    # the front: a big title keeps the full sticker effect; ﷺ at 58 % in Naskh, solid
+    assert front["fs"] >= covers.FULL_EFFECT_MM and front["reach"] == pytest.approx(full, abs=0.01)
+    for title in (front, back):
+        assert title["hon"]["ratio"] == pytest.approx(0.58, abs=0.01)
+        assert "Noto Naskh Arabic" in title["hon"]["font"] and title["hon"]["loaded"]
+        assert title["hon"]["fill"] == covers.LOOKS["islamic"].outline
+    # the back: a small title gets a thin outline in proportion to its size and only a hint of extrusion
+    assert back["fs"] < covers.SMALL_TITLE_MM
+    assert back["reach"] == pytest.approx(full * back["fs"] / covers.FULL_EFFECT_MM, rel=0.08)
+    depth = {k: t["drop"] - t["reach"] for k, t in (("front", front), ("back", back))}  # the extrusion
+    assert back["reach"] < 0.5 * front["reach"] and depth["back"] < 0.25 * depth["front"]
     result = _render(cover, book, tmp_path)
     assert result["passed"] and all(c["ok"] for c in result["checks"]), result  # type: ignore[union-attr]

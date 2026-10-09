@@ -22,6 +22,7 @@ from playwright.async_api import async_playwright
 
 import qamra_workbook.render.pages  # noqa: F401  (importing the builders registers every page type)
 from qamra_pdf.render import FONTS_DIR, qr_svg, set_boxes
+from qamra_workbook.names import shorter_names
 from qamra_workbook.render import art
 from qamra_workbook.render.covers import COVER_FIT_JS
 from qamra_workbook.render.registry import Assets, Built, PageContext, PageType, lookup
@@ -129,8 +130,22 @@ def _render(template: str, **context: Any) -> str:
     return _env.get_template(template).render(fonts=FONTS_DIR.as_uri(), **context)
 
 
+def names_of(book: BookSpec) -> list[str]:
+    """The child's name as typed, then its shorter forms (`names.shorter_names`), for `_FIT_JS`."""
+    name = book.child.name.strip()
+    return [name, *shorter_names(name)] if name else []
+
+
 def book_html(book: BookSpec, pages: Sequence[RenderedPage], assets: Assets, *, solved: bool = False) -> str:
-    return _render("book.html.j2", book=book, pages=pages, assets=assets, g=book.geometry, solved=solved)
+    return _render(
+        "book.html.j2",
+        book=book,
+        pages=pages,
+        assets=assets,
+        g=book.geometry,
+        solved=solved,
+        names=names_of(book),
+    )
 
 
 def answer_key_html(book: BookSpec, pages: Sequence[RenderedPage], assets: Assets) -> str:
@@ -138,29 +153,62 @@ def answer_key_html(book: BookSpec, pages: Sequence[RenderedPage], assets: Asset
     per_sheet = 4
     sheets = [keyed[i : i + per_sheet] for i in range(0, len(keyed), per_sheet)]
     return _render(
-        "answer-key.html.j2", book=book, sheets=sheets, assets=assets, g=book.geometry, solved=True
+        "answer-key.html.j2",
+        book=book,
+        sheets=sheets,
+        assets=assets,
+        g=book.geometry,
+        solved=True,
+        names=names_of(book),
     )
 
 
 # Shrink every `[data-fit]` box's text until it fits (down to its minimum), then list what still overflows:
 # one-line text (white-space: nowrap) by its width, a box of lines by its height, and the work area of every
 # page that lays out its content in the frame (so nothing runs into the footer or out of the safe area).
+# A long name never refuses an order (the name rules of `qamra_workbook.names`): a box that holds the child's
+# name and still overflows at its minimum shows the name's shorter forms in turn (`<body data-names>`: the
+# last parts dropped, a compound never cut), each shrunk again from the box's size; a box that still
+# overflows with the shortest form, or a one-line box marked `data-fit-wrap` (a family member's name),
+# takes a second line. A page whose work area overflows while it names the child (a dialogue that says
+# the name twice) uses the shorter forms on the whole page, in turn, until it fits.
 _FIT_JS = """
 () => {
   const over = (el) => getComputedStyle(el).whiteSpace.startsWith('nowrap')
     ? el.scrollWidth > el.clientWidth + 1
     : el.scrollHeight > el.clientHeight + 1;
   const pageOf = (el) => { const page = el.closest('[data-page]'); return page ? page.dataset.page : '?'; };
+  const names = JSON.parse(document.body.dataset.names || '[]');
+  const rename = (el, from, to) => {
+    const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    for (let t = walk.nextNode(); t; t = walk.nextNode()) t.nodeValue = t.nodeValue.split(from).join(to);
+  };
   const out = [];
   for (const el of document.querySelectorAll('[data-fit]')) {
     const min = parseFloat(el.dataset.fit);
-    let pt = Math.round(parseFloat(getComputedStyle(el).fontSize) * 75) / 100;
-    while (over(el) && pt > min) { pt -= 0.5; el.style.fontSize = pt + 'pt'; }
+    const start = Math.round(parseFloat(getComputedStyle(el).fontSize) * 75) / 100;
+    const shrink = () => {
+      let pt = start;
+      el.style.fontSize = '';
+      while (over(el) && pt > min) { pt -= 0.5; el.style.fontSize = pt + 'pt'; }
+    };
+    shrink();
+    const named = names.length > 0 && el.textContent.includes(names[0]);
+    for (let i = 1; named && over(el) && i < names.length; i++) {
+      rename(el, names[i - 1], names[i]);
+      shrink();
+    }
+    if (over(el) && (named || el.hasAttribute('data-fit-wrap'))) {
+      Object.assign(el.style, {whiteSpace: 'normal', overflowWrap: 'anywhere', lineHeight: '1.15'});
+    }
     if (over(el)) out.push(pageOf(el) + ': ' + el.textContent.trim().slice(0, 60));
   }
   const works = document.querySelectorAll('.frame-mission > .safe > .work, .frame-sheet > .safe > .work');
   for (const work of works) {
-    if (work.scrollHeight > work.clientHeight + 2) out.push(pageOf(work) + ': taller than its work area');
+    const tall = () => work.scrollHeight > work.clientHeight + 2;
+    const page = work.closest('[data-page]') || work;
+    for (let i = 1; tall() && i < names.length; i++) rename(page, names[i - 1], names[i]);  // a dialogue…
+    if (tall()) out.push(pageOf(work) + ': taller than its work area');
   }
   return out;
 }

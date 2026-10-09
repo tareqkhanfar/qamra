@@ -38,6 +38,7 @@ import yaml
 from markupsafe import Markup, escape
 from PIL import Image, ImageEnhance
 
+from qamra_pdf.lettering import honorific_runs, honorific_tspan, with_honorifics
 from qamra_workbook.render import art, draw
 from qamra_workbook.render.character import pose
 from qamra_workbook.render.registry import PageContext
@@ -359,6 +360,12 @@ def _ring(radius: float, n: int) -> list[tuple[float, float]]:
     ]
 
 
+# The sticker effect follows the title's fitted size: full from FULL_EFFECT_MM (every front reaches it), in
+# proportion below, and under SMALL_TITLE_MM (the backs) only a hint of the extrusion and the soft shadow.
+FULL_EFFECT_MM = 18.0
+SMALL_TITLE_MM = 10.0
+
+
 def title_svg(
     lines: Sequence[str],
     look: Look,
@@ -371,11 +378,17 @@ def title_svg(
     outline: float = 0.75,
     depth: float = 1.6,
     cap: float = 0.0,
+    full: float = FULL_EFFECT_MM,
 ) -> Markup:
     """The title as sticker letters (mm units): each word in its own gradient, a white keyline, a dark outline
     and a toy-block extrusion below. Font sizes and line positions are set in the browser
     (`COVER_FIT_JS`): each line as wide as the box allows, the stack fitted to its height. `cap` limits the
-    font size (mm; 0 = none). Words equal to `name` take the look's name colors."""
+    font size (mm; 0 = none). Words equal to `name` take the look's name colors.
+
+    `keyline`, `outline` and `depth` (mm) are the effect at a font size of `full` mm or more; a smaller title
+    gets them in proportion to its size (thin lines at print size, never a smudge), and below
+    `SMALL_TITLE_MM` only a hint of the extrusion and the soft shadow. An honorific sign (ﷺ, ﷻ…) is set apart
+    (`qamra_pdf.lettering.HONORIFIC`): smaller, in Naskh, solid, raised, outside every outline layer."""
     defs, color_texts, base_ids = [], [], []
     gradients: dict[tuple[str, str], str] = {}
 
@@ -396,35 +409,54 @@ def title_svg(
     for i, line in enumerate(lines):
         base_id = f"{uid}-l{i}"
         base_ids.append(base_id)
+        # the copies (outline, keyline, extrusion, shadow) never draw an honorific sign: fill="none"
         defs.append(
             f'<text id="{base_id}" class="cvt-line cvt-l{i}" direction="rtl" text-anchor="middle" '
             f'x="{width / 2:.2f}" y="{height / 2:.2f}" font-family="{look.font}" font-weight="800" '
-            f'font-size="10">{escape(line)}</text>'
+            f'font-size="10">{with_honorifics(line, "none")}</text>'
         )
-        spans = []
-        for word in line.split():
+        spans = ""  # the same characters as the base text, each word in its colors
+        pair = look.words[k % len(look.words)]
+        for j, word in enumerate(line.split()):
+            runs = honorific_runs(word)
+            lone = len(runs) == 1 and runs[0][1]  # a sign after a space takes the space at its own size
             if plain_name and _MARKS.sub("", word) == plain_name:
                 pair = look.name_word
-            else:
+            elif not lone:
                 pair = look.words[k % len(look.words)]
                 k += 1
-            spans.append(f'<tspan fill="url(#{gradient(pair)})">{escape(word)}</tspan>')
+            if j and not lone:
+                spans += " "
+            for run, sign in runs:
+                if sign:
+                    spans += str(honorific_tspan((" " if lone and j else "") + run, look.outline))
+                else:
+                    spans += f'<tspan fill="url(#{gradient(pair)})">{escape(run)}</tspan>'
         color_texts.append(
             f'<text class="cvt-line cvt-l{i}" direction="rtl" text-anchor="middle" x="{width / 2:.2f}" '
             f'y="{height / 2:.2f}" font-family="{look.font}" font-weight="800" font-size="10">'
-            f"{' '.join(spans)}</text>"
+            f"{spans}</text>"
         )
 
-    def copies(offsets: Iterable[tuple[float, float]]) -> str:
-        return "".join(f'<use href="#{b}" x="{dx}" y="{dy}"/>' for b in base_ids for dx, dy in offsets)
+    def copies(offsets: Iterable[tuple[float, float, float]]) -> str:
+        """A `<use>` per line and offset: (dx, dy) of the outline's ring, `d` of the depth below (`data-d`,
+        so the fit can scale the two apart)."""
+        out = []
+        for b in base_ids:
+            for dx, dy, d in offsets:
+                below = f' data-d="{d}"' if d else ""
+                out.append(f'<use href="#{b}" x="{dx}" y="{round(dy + d, 3)}"{below}/>')
+        return "".join(out)
 
-    outer = _ring(keyline + outline, 28) + _ring((keyline + outline) * 0.6, 14)
-    inner = _ring(keyline, 24) + _ring(keyline * 0.55, 12)
+    ring = keyline + outline
+    outer = [(dx, dy, 0.0) for dx, dy in _ring(ring, 28) + _ring(ring * 0.6, 14)]
+    inner = [(dx, dy, 0.0) for dx, dy in _ring(keyline, 24) + _ring(keyline * 0.55, 12)]
     steps = [round(depth * (j + 1) / 4, 3) for j in range(4)]
-    extrusion = [(dx, dy + s) for s in steps for dx, dy in _ring(keyline + outline, 20)]
+    extrusion = [(dx, dy, s) for s in steps for dx, dy in _ring(ring, 20)]
+    shadow = [(dx, dy, round(depth + 1.4, 3)) for dx, dy in _ring(ring, 12)]
     layers = [
-        f'<g fill="{look.outline}" opacity=".22" filter="url(#{uid}-soft)">'
-        f"{copies((dx, dy + depth + 1.4) for dx, dy in _ring(keyline + outline, 12))}</g>",
+        f'<g class="cvt-soft" fill="{look.outline}" opacity=".22" filter="url(#{uid}-soft)">'
+        f"{copies(shadow)}</g>",
         f'<g fill="{look.outline}">{copies(extrusion)}</g>',
         f'<g fill="{look.outline}">{copies(outer)}</g>',
         f'<g fill="{look.keyline}">{copies(inner)}</g>',
@@ -434,10 +466,11 @@ def title_svg(
         f'<filter id="{uid}-soft" x="-10%" y="-30%" width="120%" height="160%">'
         '<feGaussianBlur stdDeviation="1.1"/></filter>'
     )
-    pad = keyline + outline + 1.5
+    pad = ring + 1.5
     return Markup(  # nosec B704 (the only text is escaped above)
         f'<svg class="cvt" viewBox="0 0 {width:.2f} {height:.2f}" width="{width:.2f}mm" '
         f'height="{height:.2f}mm" data-pad="{pad:.2f}" data-depth="{depth + 1.2:.2f}" data-cap="{cap:.2f}" '
+        f'data-ring="{ring:.2f}" data-full="{full:.2f}" data-small="{SMALL_TITLE_MM:.2f}" '
         f'data-marks="{1 if any(_MARKS.search(line) for line in lines) else 0}" '
         f'role="img" aria-label="{escape(" ".join(lines))}"><defs>{"".join(defs)}</defs>'
         f"{''.join(layers)}</svg>"
@@ -445,32 +478,66 @@ def title_svg(
 
 
 # Fits every `svg.cvt` (each line as wide as the box allows, lines within 1.25× of each other, the stack
-# fitted to the height with room for the extrusion). Then, in every cover box (`[data-box]`) that overflows,
-# hides its optional pieces (`[data-drop]`, lowest number first: the blurb's later lines, the pages, the
-# series' books, the care note) until it fits, and lists the boxes that still overflow: a cover never prints
-# with text cut off, and a long name or an organization's logo never stops an order.
+# fitted to the height with room for the extrusion). The outline, keyline and extrusion follow the fitted
+# size: full at `data-full` mm and above, in proportion below it, and below `data-small` the extrusion and the
+# soft shadow shrink to a hint (the copies' offsets are scaled, then the box is fitted again with the room
+# the thinner effect needs). Then, in every cover box (`[data-box]`) that overflows, hides its optional pieces
+# (`[data-drop]`, lowest number first: the blurb's later lines, the pages, the series' books, the care note)
+# until it fits, and lists the boxes that still overflow: a cover never prints with text cut off, and a long
+# name or an organization's logo never stops an order.
 COVER_FIT_JS = """
 () => {
   for (const svg of document.querySelectorAll('svg.cvt')) {
     const vb = svg.viewBox.baseVal, W = vb.width, H = vb.height;
-    const pad = parseFloat(svg.dataset.pad || '3'), depth = parseFloat(svg.dataset.depth || '2');
+    const pad0 = parseFloat(svg.dataset.pad || '3'), depth0 = parseFloat(svg.dataset.depth || '2');
     const cap = parseFloat(svg.dataset.cap || '0');
+    const ring = parseFloat(svg.dataset.ring || '0');
+    const full = parseFloat(svg.dataset.full || '0'), small = parseFloat(svg.dataset.small || '0');
     const n = svg.querySelectorAll('defs text.cvt-line').length;
     const lines = [...Array(n).keys()].map(i => [...svg.querySelectorAll('text.cvt-l' + i)]);
-    const sizes = lines.map(texts => {
-      texts.forEach(t => t.setAttribute('font-size', 10));
-      const len = texts[0].getComputedTextLength() || 1;
-      return 10 * (W - 2 * pad) / len;
-    });
-    let s = sizes.map(v => cap > 0 ? Math.min(v, cap) : v);
-    const smallest = Math.min(...s);
-    s = s.map(v => Math.min(v, smallest * 1.25));
     const marks = svg.dataset.marks === '1';  // tashkeel rises above the letters and hangs below them
     const lh = v => v * (marks ? 1.42 : n > 1 ? 1.16 : 1.0);
     const rise = marks ? 1.06 : 0.80;  // the first baseline below the line's top
+    const widths = lines.map(texts => {
+      texts.forEach(t => t.setAttribute('font-size', 10));
+      return texts[0].getComputedTextLength() || 1;
+    });
+    const fit = (pad, depth) => {
+      let s = widths.map(len => 10 * (W - 2 * pad) / len).map(v => cap > 0 ? Math.min(v, cap) : v);
+      const smallest = Math.min(...s);
+      s = s.map(v => Math.min(v, smallest * 1.25));
+      const room = H - 2 * pad - depth;
+      const total = s.reduce((a, v) => a + lh(v), 0);
+      if (total > room) { const k = room / total; s = s.map(v => v * k); }
+      return s;
+    };
+    let pad = pad0, depth = depth0, s = fit(pad, depth), kr = 1, kd = 1;
+    if (full > 0 && Math.min(...s) < full) {
+      let f = Math.min(...s);
+      for (let i = 0; i < 4; i++) {  // a thinner effect needs less room, so the text grows a little: settle
+        kr = Math.min(1, f / full);
+        kd = f < small ? kr * 0.35 : kr;
+        pad = pad0 - ring * (1 - kr);
+        depth = depth0 * kd;
+        s = fit(pad, depth);
+        f = Math.min(...s);
+      }
+      for (const u of svg.querySelectorAll('use')) {
+        if (u.dataset.x === undefined) {  // the offsets at full size, kept so a second fit starts from them
+          u.dataset.x = u.getAttribute('x') || '0';
+          u.dataset.y = u.getAttribute('y') || '0';
+        }
+        const d = parseFloat(u.dataset.d || '0');
+        u.setAttribute('x', (parseFloat(u.dataset.x) * kr).toFixed(3));
+        u.setAttribute('y', ((parseFloat(u.dataset.y) - d) * kr + d * kd).toFixed(3));
+      }
+      const soft = svg.querySelector('.cvt-soft');
+      if (soft && kd < kr) soft.setAttribute('opacity', '.12');
+      const blur = svg.querySelector('feGaussianBlur');
+      if (blur) blur.setAttribute('stdDeviation', (1.1 * Math.max(kr, 0.3)).toFixed(2));
+    }
     const room = H - 2 * pad - depth;
-    let total = s.reduce((a, v) => a + lh(v), 0);
-    if (total > room) { const k = room / total; s = s.map(v => v * k); total = room; }
+    const total = s.reduce((a, v) => a + lh(v), 0);
     let y = pad + (room - total) / 2;
     lines.forEach((texts, i) => {
       const base = y + s[i] * rise;
@@ -480,6 +547,7 @@ COVER_FIT_JS = """
       });
       y += lh(s[i]);
     });
+    svg.dataset.fs = Math.min(...s).toFixed(2);  // the fitted size (mm), for tests and reviews
   }
   const out = [];
   for (const box of document.querySelectorAll('[data-box]')) {
@@ -1080,10 +1148,7 @@ def back_data(ctx: PageContext, b: Back, box: Box | None = None) -> dict[str, An
         height=17.0 if len(lines) == 1 else 26.0,
         uid=uid,
         name=ctx.book.child.name,
-        keyline=0.9,
-        outline=0.45,
-        depth=0.9,
-    )
+    )  # small: the outline and the extrusion follow its size (COVER_FIT_JS)
     inside = []
     for i, (icon, text, color) in enumerate(b.inside):
         mark = icon if isinstance(icon, Markup) else art.icon(icon, "ico")

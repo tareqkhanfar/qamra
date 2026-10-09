@@ -11,7 +11,7 @@
 {% if book.product in ('journey', 'islamic') %}{% include "_stickers.css.j2" %}{% endif %}
 {% if book.product in ('foundation', 'journey', 'family', 'islamic') %}{% include "_cover.css.j2" %}{% endif %}
 </style></head>
-<body>
+<body data-names='{{ names|default([])|tojson }}'>
 {% for p in pages %}
 {% include "_page.html.j2" %}
 {% endfor %}

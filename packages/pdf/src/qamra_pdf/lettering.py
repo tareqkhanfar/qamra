@@ -219,6 +219,69 @@ def display_text(text: str) -> str:
     return " ".join(plain.split())
 
 
+# ---- honorifics in display titles -------------------------------------------------------------------------
+
+# The honorific signs written as one character after a name: ﷺ, ﷻ, «سبحانه وتعالى», «عز وجل»,
+# «عليه السلام», «رضي الله عنه»… (U+FDFA, U+FDFB, U+FDFE, U+FDFF, U+FDCF, U+FD40–U+FD4F). A display font
+# draws them badly or not at all (Baloo Bhaijaan has no ﷺ), and inside the outline and the extrusion the
+# dense ligature turns into a blob. A display title therefore sets each one apart: smaller (`HONORIFIC_SCALE`
+# of the title's size), in a Naskh that draws the ligature well, in one solid colour, raised a little, with no
+# outline, rim or extrusion.
+HONORIFIC = re.compile("[\ufdfa\ufdfb\ufdfe\ufdff\ufdcf\ufd40-\ufd4f]")
+HONORIFIC_FONT = "Noto Naskh Arabic"  # embedded in every print template (_base.css.j2); has every sign above
+HONORIFIC_SCALE = 0.58
+HONORIFIC_RISE = 0.3  # baseline shift, × the honorific's own size
+
+
+def honorific_runs(text: str) -> list[tuple[str, bool]]:
+    """`text` cut into runs: ordinary text (False) and single honorific signs (True), in order. The space
+    before a sign goes with it, so it is set at the sign's smaller size (a full-size gap looks detached)."""
+    runs: list[tuple[str, bool]] = []
+    start = 0
+    for m in HONORIFIC.finditer(text):
+        before, lead = text[start : m.start()], ""
+        if before.endswith(" "):
+            before, lead = before[:-1], " "
+        if before:
+            runs.append((before, False))
+        runs.append((lead + m.group(), True))
+        start = m.end()
+    if start < len(text):
+        runs.append((text[start:], False))
+    return runs
+
+
+def honorific_tspan(sign: str, fill: str = "", cls: str = "hon") -> Markup:
+    """One honorific sign as an SVG `<tspan>` of a display title (see `HONORIFIC`): `fill` paints it
+    ("none" keeps it out of a layer of copies); without `fill` the class decides (CSS)."""
+    paint = f' fill="{escape(fill)}"' if fill else ""
+    tag = '<tspan class="%s" font-family="%s" font-weight="700" font-size="%sem" baseline-shift="%sem"%s>'
+    return Markup(tag + "%s</tspan>") % (
+        cls,
+        HONORIFIC_FONT,
+        f"{HONORIFIC_SCALE:g}",
+        f"{HONORIFIC_RISE:g}",
+        Markup(paint),
+        sign,
+    )
+
+
+def with_honorifics(text: str, fill: str = "", cls: str = "hon") -> Markup:
+    """`text` escaped, each honorific sign in its own `honorific_tspan`."""
+    return Markup("").join(
+        honorific_tspan(run, fill, cls) if sign else escape(run) for run, sign in honorific_runs(text)
+    )
+
+
+def honorific_html(text: str) -> Markup:
+    """`text` escaped for HTML, each honorific sign (with the space before it) in a `span.hon`: the covers'
+    CSS sets it like the SVG titles do (smaller, in Naskh, raised, without the title's shadow)."""
+    return Markup("").join(
+        Markup('<span class="hon">%s</span>') % run if sign else escape(run)
+        for run, sign in honorific_runs(text)
+    )
+
+
 def _plain(word: str) -> str:
     return _MARKS.sub("", word).strip("،,:!?.«»\"'")
 
@@ -325,18 +388,19 @@ def _ring(radius: float, n: int) -> list[tuple[float, float]]:
 
 def _line_markup(line: str, keep: str | None, scale: float = 1.0) -> Markup:
     """One title line, the child's name wrapped in a `tspan.nm` (painted in the name's gradient, `scale` × the
-    line's size when it shares the line with other words)."""
+    line's size when it shares the line with other words), an honorific sign (ﷺ) in a `tspan.hon`."""
     if not keep:
-        return escape(line)
+        return with_honorifics(line)
     units, at = name_units(line, keep)
     if at is None:
-        return escape(line)
+        return with_honorifics(line)
     size = f' font-size="{scale:g}em"' if scale != 1.0 and len(units) > 1 else ""
     parts = [
-        escape(u) if i != at else Markup('<tspan class="nm"%s>%s</tspan>') % (Markup(size), u)
-        for i, u in enumerate(units)
+        with_honorifics(" ".join(units[:at])),
+        Markup('<tspan class="nm"%s>%s</tspan>') % (Markup(size), units[at]),
+        with_honorifics(" ".join(units[at + 1 :])),
     ]
-    return Markup(" ").join(parts)
+    return Markup(" ").join(part for part in parts if part)
 
 
 ONE_LINE = 19  # characters (spaces too): a poster title this short stays on one line, the name larger
@@ -365,7 +429,9 @@ def title_svg(
 
     `keep` is the child's name: its words stay on one line and are painted in the treatment's name colors.
     `poster`: a short title stays on one line with the name set larger; a longer one gives the name a line of
-    its own (`poster_lines`). `glow` scales the soft halo (light art needs less of it)."""
+    its own (`poster_lines`). `glow` scales the soft halo (light art needs less of it: `CoverDesign.glow` is
+    below 1 on light art). An honorific sign (ﷺ) is painted once, solid, in the face's light colour on dark
+    art and in the outline's dark colour on light art, so it reads without an outline of its own."""
     t = treatment(style)
     if poster:
         lines, name_line = poster_layout(title, keep)
@@ -421,16 +487,20 @@ def title_svg(
     if steps:
         layers.append(f'<g fill="{t.side}">{copies([(0, s) for s in steps])}</g>')
         layers.append(f'<g fill="{t.outline}">{copies(_ring(0.3, 12))}</g>')  # the face's edge
+    # the face: the name in its own gradient; an honorific sign (ﷺ) only here, in one solid colour
+    # (`.hon` paints nothing in the layers below: no glow, shadow, outline, extrusion or rim around it)
+    honor = t.fill[1][1] if glow >= 1.0 else t.outline
+    face_vars = f"--hf:{honor}" + (f";--nf:url(#{uid}-name)" if two_tone else "")
     layers += [
         f'<g fill="{t.rim}">{copies([(0, -0.45)])}</g>',
-        f'<g fill="url(#{uid}-fill)"{f" style=--nf:url(#{uid}-name)" if two_tone else ""}>'
-        f"{copies([(0, 0)])}</g>",
+        f'<g fill="url(#{uid}-fill)" style="{face_vars}">{copies([(0, 0)])}</g>',
     ]
     return Markup(  # nosec B704 (the only text is escaped above)
         f'<svg class="title-art" viewBox="0 0 {w} {h}" data-bend="{t.bend}" data-tilt="{t.tilt}" '
         f'data-rtl="{1 if rtl else 0}" data-depth="{depth}" data-lh="{t.line_gap}" '
         f'data-pad="{t.glow_mm + t.outline_mm + 3:.2f}" aria-label="{escape(title)}" role="img">'
-        f"<style>.nm{{fill:var(--nf)}}</style><defs>{''.join(defs)}</defs>{''.join(layers)}</svg>"
+        f"<style>.nm{{fill:var(--nf)}} .hon{{fill:var(--hf,none)}}</style>"
+        f"<defs>{''.join(defs)}</defs>{''.join(layers)}</svg>"
     )
 
 

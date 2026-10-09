@@ -161,10 +161,12 @@ def test_long_names_and_big_families_fit_the_parent_box_and_the_certificate(
     assert html.count('<aside class="parent-box') == 3  # passport, hunt, memory page; never the certificate
 
 
-def test_a_name_too_long_to_fit_stops_the_render(tmp_path: Path) -> None:
+def test_a_name_too_long_to_fit_prints_its_first_parts(tmp_path: Path) -> None:
+    """A name that does not fit even at the box's smallest size prints its shorter forms (whole parts from the
+    start, `names.shorter_names`) instead of refusing the order (the name rules, 2026-10-09)."""
     b = book(page(112, "certificate-family", "back"), child=Child("عبد الرحمن " * 9, "m"))
-    with pytest.raises(PageProblems, match="does not fit"):
-        render(b, tmp_path)
+    pdf = render(b, tmp_path)
+    assert len(PdfReader(pdf).pages) == 1
 
 
 def test_the_parent_box_is_titled_for_the_activity() -> None:

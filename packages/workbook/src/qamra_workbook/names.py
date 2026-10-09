@@ -18,6 +18,12 @@ Light on purpose (no page engine, no fonts): the API checks a name at order time
   tracing. When no word is left, the page prints the name as a model in the book's type and gives empty
   writing lines; the order job flags the book `name_not_traceable` for the reviewer.
 
+**Printed names (every page and cover):** the name prints as typed. A box it does not fit even at its
+smallest size shows its shorter forms in turn (`shorter_names`: the last parts dropped, a compound never cut),
+a page whose work area overflows while it names the child does the same on the whole page, and the family's
+game tables use the name the family calls the child by (`call_name`). The word limits count a name as one
+word (`render.spec.instruction_words`). A long or compound name never refuses an order.
+
 **English (the English name page):** the parent's spelling, `^[A-Za-z][A-Za-z' -]{0,39}$` after accents are
 dropped (é → e). Spaces and hyphens leave a gap; apostrophes are not traced. A long English name is traced
 like an Arabic one: as many words from the start as fit at `MIN_CAP_MM`, at least the first.
@@ -87,6 +93,33 @@ def name_parts(words: tuple[str, ...] | list[str]) -> list[str]:
         else:
             parts.append([w])
     return [" ".join(p) for p in parts]
+
+
+def shorter_names(name: str) -> list[str]:
+    """The name with its last parts dropped one at a time, longest first, never cutting a compound
+    («محمد عبد الرحمن أحمد محمود العلي» → «محمد عبد الرحمن أحمد», «محمد عبد الرحمن», «محمد»). The print
+    engine falls back to them, in order, in a box the full name does not fit even at its smallest size
+    (`render.engine._FIT_JS`), so a long name shows as many whole parts as fit and never refuses an order."""
+    parts = name_parts(name.split())
+    return [" ".join(parts[:n]) for n in range(len(parts) - 1, 0, -1)]
+
+
+CALL_NAME_LETTERS = 12  # the most letters a short label (a game's score table) shows of a long name
+
+
+def call_name(name: str, letters: int = CALL_NAME_LETTERS) -> str:
+    """The name the family calls the child by, for narrow labels (the game tables): whole parts from the start
+    while they fit in `letters` letters, at least the first part («محمد عبد الرحمن أحمد العلي» → «محمد»,
+    «عبد الرحمن» and «نور الهدى» stay whole). Spaces and tashkeel are kept as typed."""
+    parts = name_parts(name.split())
+    if not parts:
+        return name.strip()
+    taken = parts[:1]
+    for part in parts[1:]:
+        if len(clean_arabic(" ".join([*taken, part])).replace(" ", "")) > letters:
+            break
+        taken.append(part)
+    return " ".join(taken)
 
 
 def can_trace(name: str) -> bool:

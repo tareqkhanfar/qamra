@@ -58,7 +58,7 @@ def instruction_problems(pages: list[Page], book: BookSpec) -> list[str]:
         for name in INSTRUCTION_FIELDS:
             text = getattr(page, name, "")
             if isinstance(text, str) and text:
-                words = len(book.personalize(text).split())
+                words = book.words(text)  # the child's name is one word, however long
                 if words > MAX_INSTRUCTION_WORDS:
                     out.append(f"{page.id}: {name} has {words} words (max {MAX_INSTRUCTION_WORDS}): {text}")
     return out

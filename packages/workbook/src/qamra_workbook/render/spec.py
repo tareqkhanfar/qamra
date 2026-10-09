@@ -53,6 +53,22 @@ MONTHS_AR = (
 )
 
 
+#: The placeholders the parent's own words fill: the child's name (Arabic and English), a family member, the
+#: family's name, the city. Whatever the parent typed counts as one word for the word limits.
+NAME_SLOTS = ("{child}", "{name_en}", "{adult}", "{member}", "{family_name}", "{city}")
+_NAME_UNIT = "اسم"  # one word standing in for a name while counting
+
+
+def instruction_words(text: str, gender: Gender) -> int:
+    """How many words a child-facing text has as printed, for the word limits (≤ 7 in an instruction): the
+    book's own words in the child's gender, and each name one unit however many words the parent typed
+    («عبد الرحمن», «نور الهدى», «أبو بكر», a 20-letter name, «أم أحمد»). The limit keeps the book's own
+    sentences short; a long or compound name never makes a page too long, so it never refuses an order."""
+    for slot in NAME_SLOTS:
+        text = text.replace(slot, _NAME_UNIT)
+    return len(_VARIANT.sub(lambda m: m.group(1 if gender == "m" else 2), text).split())
+
+
 def format_number(value: int | str, numerals: Numerals = "hindi") -> str:
     """The one place digits are written: every digit of `value` (a number, or a text with numbers in it) as
     Hindi numerals (١٢٣) or Latin numerals (123), whichever way it was written."""
@@ -309,6 +325,10 @@ class BookSpec:
     def audio_url(self, page: PageSpec) -> str:
         """The page's QR link: its audio item's code (the journey's `journey_book`), else its id."""
         return f"{self.audio_base}{page.params.get('audio_code') or page.id}"
+
+    def words(self, text: str) -> int:
+        """`instruction_words` for this child's gender."""
+        return instruction_words(text, self.child.gender)
 
     def personalize(self, text: str, page: PageSpec | None = None) -> str:
         """The text as printed for this child (and family): a page may name the grown-up (`adult`) or the

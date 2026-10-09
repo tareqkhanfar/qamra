@@ -32,7 +32,14 @@ from markupsafe import Markup, escape
 from PIL import Image
 
 from qamra_pdf.assets import Assets
-from qamra_pdf.lettering import Treatment, display_text, name_units, poster_layout, treatment
+from qamra_pdf.lettering import (
+    Treatment,
+    display_text,
+    honorific_html,
+    name_units,
+    poster_layout,
+    treatment,
+)
 from qamra_pdf.spec import BookSpec, Brand, PageSpec
 from qamra_pdf.strings import AR_DIGITS, STRINGS, page_count
 
@@ -292,13 +299,17 @@ def _shade(color: str, lightness: float) -> str:
 
 
 def cover_name(text: str, name: str) -> Markup:
-    """`text` with the child's name in a `span.nm` (the name's color on the back and the spine)."""
+    """`text` with the child's name in a `span.nm` (the name's color on the back and the spine) and an
+    honorific sign (ﷺ) in a `span.hon` (`lettering.honorific_html`)."""
     units, at = name_units(text, name)
     if at is None:
-        return escape(text)
-    return Markup(" ").join(
-        escape(u) if i != at else Markup('<span class="nm">%s</span>') % u for i, u in enumerate(units)
-    )
+        return honorific_html(text)
+    parts = [
+        honorific_html(" ".join(units[:at])),
+        Markup('<span class="nm">%s</span>') % units[at],
+        honorific_html(" ".join(units[at + 1 :])),
+    ]
+    return Markup(" ").join(part for part in parts if part)
 
 
 def _digits(text: str, lang: str) -> str:

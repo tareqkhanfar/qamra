@@ -379,6 +379,84 @@ def test_poster_titles_lead_with_the_name() -> None:
     ]
 
 
+def test_honorifics_are_their_own_runs_with_the_space_before_them() -> None:
+    from qamra_pdf.lettering import HONORIFIC_FONT, honorific_runs, with_honorifics
+
+    assert honorific_runs("وسيرة نبينا ﷺ") == [("وسيرة نبينا", False), (" ﷺ", True)]
+    assert honorific_runs("الله ﷻ ونبيه ﷺ.") == [
+        ("الله", False),
+        (" ﷻ", True),
+        (" ونبيه", False),
+        (" ﷺ", True),
+        (".", False),
+    ]
+    assert honorific_runs("يوم تخرّج سلمى") == [("يوم تخرّج سلمى", False)]
+    assert honorific_runs("عيسى \ufd47") == [("عيسى", False), (" \ufd47", True)]  # «عليه السلام» as one sign
+    marked = str(with_honorifics("سيرة <نبينا> ﷺ", "none"))
+    assert (
+        "&lt;نبينا&gt;" in marked
+        and f'font-family="{HONORIFIC_FONT}"' in marked
+        and 'fill="none"> ﷺ' in marked
+    )
+
+
+async def _story_title(html: Path, pdf: Path) -> dict[str, Any]:
+    from playwright.async_api import async_playwright
+
+    from qamra_pdf.lettering import TITLE_FIT_JS
+
+    async with async_playwright() as pw:
+        browser = await pw.chromium.launch()
+        try:
+            page = await browser.new_page()
+            await page.goto(html.as_uri(), wait_until="load")
+            await page.evaluate("document.fonts.ready.then(() => true)")
+            await page.evaluate(TITLE_FIT_JS)
+            found: dict[str, Any] = await page.evaluate(
+                """() => {
+                  const hon = document.querySelector('svg.title-art defs tspan.hon');
+                  const style = getComputedStyle(hon);
+                  const line = getComputedStyle(hon.closest('text'));
+                  return {ratio: parseFloat(style.fontSize) / parseFloat(line.fontSize),
+                          fill: style.fill, font: style.fontFamily, text: hon.textContent};
+                }"""
+            )
+            await page.pdf(path=str(pdf), print_background=True, prefer_css_page_size=True)
+            return found
+        finally:
+            await browser.close()
+
+
+def test_an_honorific_in_a_story_title_is_set_apart(tmp_path: Path) -> None:
+    """A title with ﷺ: the sign is painted once, by the face layer, in one solid colour, at 58 % of its line
+    in Noto Naskh (embedded, never a Type 3 fallback); the glow, shadow, outline, extrusion and rim layers
+    leave it out. The back's title and the spine set it apart the same way (`span.hon`)."""
+    from qamra_pdf.lettering import title_svg
+
+    svg = str(
+        title_svg("سلمى تحب نبيها ﷺ", "gold-magic", width_mm=194, height_mm=60, keep="سلمى", poster=True)
+    )
+    assert ".hon{fill:var(--hf,none)}" in svg and 'style="--hf:#FFF4DA;--nf:url(#t-name)"' in svg
+    assert svg.count('class="hon"') == 1 and svg.count("ﷺ") == 2  # the line's text and the aria-label
+    light = str(
+        title_svg("سلمى تحب نبيها ﷺ", "gold-magic", width_mm=194, height_mm=60, keep="سلمى", glow=0.35)
+    )
+    assert "--hf:#3A1D08" in light  # on light art: the outline's dark colour, so it reads without an outline
+    base = _spec(tmp_path)
+    spec = dataclasses.replace(base, cover=dataclasses.replace(base.cover, subtitle="تُحِبُّ نَبِيَّهَا ﷺ"))
+    html = tmp_path / "cover.html"
+    html.write_text(render_html("cover.html.j2", spec), encoding="utf-8")
+    pdf = tmp_path / "cover.pdf"
+    hon = asyncio.run(_story_title(html, pdf))
+    assert hon["text"] == " ﷺ" and hon["ratio"] == pytest.approx(0.58, abs=0.01)
+    assert hon["fill"] == "none" and "Noto Naskh Arabic" in hon["font"]  # outside every layer of copies
+    fonts = _fonts(pdf)
+    assert any("NotoNaskhArabic-Bold" in name for name in fonts), fonts
+    assert all(kind == "/Type0" for kind in fonts.values()), fonts
+    back = html.read_text(encoding="utf-8").split('<div class="hook">', 1)[1].split("</div>", 1)[0]
+    assert back.endswith('<span class="hon"> ﷺ</span>') and '<span class="nm">سلمى</span>' in back
+
+
 def test_page_counts_agree_with_the_number() -> None:
     from qamra_pdf.strings import page_count
 

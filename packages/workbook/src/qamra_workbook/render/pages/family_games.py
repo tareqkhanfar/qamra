@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from qamra_workbook.names import call_name
 from qamra_workbook.pictures import get as picture
 from qamra_workbook.render.pages.family import family_of
 from qamra_workbook.render.registry import Built, PageContext, page_type
@@ -35,8 +36,10 @@ def pairs_ar(n: int, ctx: PageContext) -> str:
 
 
 def players(ctx: PageContext, problems: list[str]) -> list[dict[str, Any]]:
+    """The child (by the name the family calls them: a long full name shows its first parts) and every
+    member. A name too long for its cell at the smallest size wraps to a second line (`data-fit-wrap`)."""
     family = family_of(ctx, problems)
-    names = [ctx.book.child.name] + [m.label for m in (family.members if family else ())]
+    names = [call_name(ctx.book.child.name)] + [m.label for m in (family.members if family else ())]
     return [{"name": n, "child": i == 0} for i, n in enumerate(names)]
 
 
