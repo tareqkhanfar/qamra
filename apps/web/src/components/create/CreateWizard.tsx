@@ -111,7 +111,7 @@ function localNeeds(found: Found, catalog: Catalog | null, child: Child | null):
     product: found.product.slug,
     ages: agesFor(line, options),
     asks: { name_en: asksNameEn(line, options), family: line === "family" },
-    character: { reuse_id: reuse?.id ?? null, draw_style: styles.includes("3d") ? "3d" : styles[0]! },
+    character: { reuse_id: reuse?.id ?? null, draw_style: styles.includes("3d") ? "3d" : styles[0]!, styles },
     child: child
       ? { name_traceable: !tracesName(line) || isArabicName(child.name), name_latin: child.name_latin ?? null }
       : null,
@@ -144,8 +144,9 @@ function needsKeyOf(sku: string | null, child: Child | null): string {
  * The parent create flow, one flow per product (docs/plans/order-flows.md §c): lib/flows.ts decides the steps
  * for this product and child, and the real «الخطوة n من N». Stories: the child, the type, the drawing, the story,
  * the preview, the format and the add-ons (design Create1–Create9, then the cart). Activity books
- * (`?product=<sku>[&item=<cart line>]`): the child, a drawing only when no character can be reused (no style
- * question: a new one is drawn in 3D), the family for «مغامراتي مع عائلتي», and the review of what will print.
+ * (`?product=<sku>[&item=<cart line>]`): the child, a drawing only when no character can be reused or the parent
+ * asks for a new one in another style (consent, photo, the style step, the character: owner's decision of
+ * 2026-10-09), the family for «مغامراتي مع عائلتي», and the review of what will print.
  */
 export function CreateWizard() {
   const t = useTranslations("create");
@@ -177,6 +178,8 @@ export function CreateWizard() {
   const [served, setServed] = useState<{ key: string; value: Needs | null } | null>(null);
   // the child picked on the child step before it is confirmed: the step count follows it
   const [picked, setPicked] = useState<Child | null>(null);
+  // activity books: the parent asked for a new character in another style for the picked child (the who card)
+  const [redraw, setRedraw] = useState(false);
   // FALLBACK until `PATCH /children/{id}` is deployed: the English name kept for this visit, sent with the line
   const [pendingEn, setPendingEn] = useState<Record<string, string>>({});
   // «مغامراتي مع عائلتي»: the family step's form (`known`: the line's own family could be read)
@@ -426,7 +429,8 @@ export function CreateWizard() {
 
   /** The flow's state for a child (the URL's, or the one picked on the child step). */
   function stateFor(c: Child | null | undefined): FlowState {
-    const reusable = activity ? !!c && !!needsOf(c).character.reuse_id : !!c && !!readyStory(c, storyLine);
+    const fresh = activity && redraw && !!c && c.id === picked?.id; // «ارسموا شخصية جديدة بأسلوب آخر»
+    const reusable = activity ? !!c && !fresh && !!needsOf(c).character.reuse_id : !!c && !!readyStory(c, storyLine);
     return {
       kind: activity ? "activity" : "story",
       productLine,
@@ -434,7 +438,7 @@ export function CreateWizard() {
       reusable,
       character: c && c.id === child?.id && usedCharacter ? { approved: usedCharacter.approved } : null,
       book: shownBook ? { status: shownBook.status, line: shownBook.line } : null,
-      stylePreset: activity || (!!storyLine && !!presetStyle(storyLine, c ?? null)),
+      stylePreset: !activity && !!storyLine && !!presetStyle(storyLine, c ?? null),
       companionOffered: !activity && !!companionAddOn(catalog, storyLine ?? "magic"),
       asksFamily,
       plan: c && c.id === child?.id ? plan : null,
@@ -514,29 +518,8 @@ export function CreateWizard() {
     return fail(r);
   }
 
-  /** Draw an activity book's character from the saved photo, in the product's style (no style question). */
-  async function drawActivity(c: Child, pin?: PlanToken[]) {
-    const n = await neededFor(c);
-    const style =
-      (typeof n === "string" ? null : n.character.draw_style) ?? localNeeds(found!, catalog, c).character.draw_style!;
-    const r = await createApi.draw(c.id, style);
-    if (r.ok) {
-      setCharacter({ id: r.data.id, value: r.data });
-      void refreshChildren();
-      go({ step: "character", child: c.id, character: r.data.id, ...(pin ? { plan: formatPlan(pin) } : {}) });
-      return;
-    }
-    setFailure({
-      message: fail(r),
-      retry: () => {
-        setFailure(null);
-        void drawActivity(c, pin);
-      },
-    });
-  }
-
   /** The child step is done: the activity book's next step, or the story's type, drawing or story. */
-  async function afterChild(c: Child, extra: { nameEn?: string }): Promise<string | null> {
+  async function afterChild(c: Child, extra: { nameEn?: string; redraw?: boolean }): Promise<string | null> {
     saveChild(c);
     if (extra.nameEn !== undefined && extra.nameEn !== (c.name_latin ?? "")) {
       setPendingEn((m) => ({ ...m, [c.id]: extra.nameEn! })); // not saved on the child: goes with the cart line
@@ -549,22 +532,21 @@ export function CreateWizard() {
     const n = await neededFor(c);
     if (typeof n === "string") return n;
     if (n.child?.name_problem) return t("who.arabicInvalid"); // the tracing pages can't write this name
-    const reuse = n.character.reuse_id;
+    // the ready character, unless the parent asked for a new one in another style
+    const reuse = extra.redraw ? null : n.character.reuse_id;
     const pin = planFor({ ...stateFor(c), reusable: !!reuse }, false);
     const base = { child: c.id, book: null, plan: formatPlan(pin) };
-    if (reuse) go({ ...base, step: asksFamily ? "family" : "summary", character: reuse });
-    else if (!c.consent) go({ ...base, step: "consent", character: null });
-    else if (!c.photos) go({ ...base, step: "photo", character: null });
-    else void drawActivity(c, pin); // a photo saved in the last 24 hours: drawn from it right away
+    if (reuse) go({ ...base, step: asksFamily ? "family" : "summary", character: reuse, style: null });
+    else if (!c.consent) go({ ...base, step: "consent", character: null, style: null });
+    else if (!c.photos) go({ ...base, step: "photo", character: null, style: null });
+    else go({ ...base, step: "style", character: null, style: null }); // a photo saved in the last 24 hours
     return null;
   }
 
   /** Consent given: the photo, or the drawing (a story's type is chosen before the consent now). */
   function afterConsent(c: Child) {
-    if (activity) {
-      if (!c.photos) go({ step: "photo", child: c.id });
-      else void drawActivity(c);
-    } else if (!storyLine) go({ step: "line", child: c.id });
+    if (activity) go({ step: c.photos ? "style" : "photo", child: c.id });
+    else if (!storyLine) go({ step: "line", child: c.id });
     else if (!c.photos && !readyStory(c, storyLine)) go({ step: "photo", child: c.id });
     else void styleOrDraw(c, storyLine);
   }
@@ -622,11 +604,12 @@ export function CreateWizard() {
             ready={(c) => (activity ? readyActivity(c) : readyStory(c, storyLine))}
             nameEnOf={(c) => pendingEn[c.id] ?? c.name_latin ?? ""}
             preview={(name, gender) => {
-              if (activity) return t(`titles.${productLine}`, { name });
+              if (activity) return t(`titles.${productLine}`, nameCases(name)); // «دوسية {nameGen}»
               const theme = themes.find((th) => th.slug === q.theme);
               return theme ? fillTitle(theme.title, name, gender) : null;
             }}
             onSelect={setPicked}
+            onRedraw={activity ? setRedraw : undefined}
             onEdited={saveChild}
             onDone={afterChild}
           />
@@ -663,14 +646,28 @@ export function CreateWizard() {
             back={() => go({ step: previous("photo") })}
             onDone={(c) => {
               saveChild(c);
-              if (activity) void drawActivity(c);
+              if (activity) go({ step: "style" });
               else if (storyLine) void styleOrDraw(c, storyLine);
               else go({ step: "line" });
             }}
           />
         );
       case "style":
-        return (
+        return activity ? (
+          <StyleStep
+            kind="activity"
+            child={child!}
+            line={productLine!}
+            sku={q.product}
+            accepted={needs?.character.styles ?? null}
+            catalog={catalog}
+            themes={themes}
+            theme={null}
+            initial={q.style}
+            back={() => go({ step: previous("style") })}
+            onDrawing={onCharacter}
+          />
+        ) : (
           <StyleStep
             child={child!}
             line={storyLine!}
@@ -688,7 +685,7 @@ export function CreateWizard() {
             child={child!}
             character={shownCharacter!}
             productLine={productLine}
-            back={() => go({ step: activity ? "photo" : "style" })}
+            back={() => go({ step: "style" })}
             onChange={onCharacter}
             onApproved={(c) => {
               setCharacter({ id: c.id, value: c });
@@ -800,13 +797,22 @@ export function CreateWizard() {
             back={() => go({ step: previous("summary") })}
             onEditChild={() => go({ step: "child" })}
             onEditFamily={asksFamily ? () => go({ step: "family" }) : undefined}
-            onNewCharacter={() =>
+            onNewCharacter={() => {
+              // a new drawing, in a style the parent picks: a new photo unless one was saved in the last 24 hours
+              const c = child!;
+              const pin: PlanToken[] = [
+                ...(c.consent ? [] : (["consent"] as PlanToken[])),
+                ...(c.photos ? [] : (["photo"] as PlanToken[])),
+                "style",
+                "character",
+              ];
               go({
-                step: child!.consent ? "photo" : "consent",
+                step: !c.consent ? "consent" : !c.photos ? "photo" : "style",
                 character: null,
-                plan: formatPlan([...(child!.consent ? [] : (["consent"] as PlanToken[])), "photo", "character"]),
-              })
-            }
+                style: null,
+                plan: formatPlan(pin),
+              });
+            }}
             onAdd={() => addProduct(child!)}
           />
         );

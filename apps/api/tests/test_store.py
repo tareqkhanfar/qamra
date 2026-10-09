@@ -45,9 +45,11 @@ async def test_catalog_lists_public_products_with_prices(client: AsyncClient) ->
         "watercolor",
         "cartoon",
         "3d",
+        "semi-realistic",  # «شبه حقيقي», back on 2026-10-09
         "coloring",
-    }  # semi-realistic retired
-    assert [s["slug"] for s in ils["styles"]][:3] == ["3d", "watercolor", "cartoon"]  # Addendum 11 §1
+    }
+    # Addendum 11 §1, then the semi-realistic style (Tareq, 2026-10-09)
+    assert [s["slug"] for s in ils["styles"]][:4] == ["3d", "watercolor", "cartoon", "semi-realistic"]
 
 
 async def test_guest_cart_prices_add_ons_bundles_and_shipping(client: AsyncClient) -> None:

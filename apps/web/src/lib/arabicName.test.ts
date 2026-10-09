@@ -366,6 +366,7 @@ const GENITIVE: Record<string, string> = {
   "create.line.next.drawn": "nameGen",
   "create.style.cta": "nameGen",
   "create.style.next": "nameGen",
+  "create.style.bodyActivity": "nameGen", // the activity books' style step (2026-10-09)
   "create.character.alt": "nameGen",
   "create.character.keep": "nameGen",
   "create.story.body": "nameGen",

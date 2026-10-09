@@ -16,7 +16,7 @@ Written from the addenda, because Addendum 2 (the original matrix) is not in the
 | How pages are made | a ready illustrated template per story × style × look; only the hero is edited to the child (FLUX.2 klein 4B) | every page drawn for the child from the character sheet, with automatic checks | ✅ |
 | Child's name, gender forms, full تشكيل | template text, vowelized once per story and gender | Claude adapts and vowelizes per book | ✅ |
 | Looks | girl, girl with hijab, boy (a template for each) | any, from the photo | ✅ |
-| Art styles | only where a live template exists (today: first day and graduation for all three looks, new sibling for a girl, all watercolor) | watercolor, cartoon, 3D, semi-realistic, coloring | 🟡 more templates need fal.ai balance (about $2 per example book) |
+| Art styles | only where a live template exists (today: first day and graduation for all three looks, new sibling for a girl, all watercolor) | 3D, watercolor, cartoon, «شبه حقيقي» (semi-realistic, since 2026-10-09), coloring; the activity books ask the style too | 🟡 more templates need fal.ai balance (about $2 per example book) |
 | Character from a photo, reused by every book and product | ✅ | ✅ | ✅ |
 | Companion from the child's drawing («ارسم صاحبك») | not yet: templates don't draw it, so the add-on is Magic-only | included | ✅ (Magic) |
 | Custom story («حكاية خاصة», product `magic-custom-story`) | — | brief → safety screen → Claude writes it | ✅ |

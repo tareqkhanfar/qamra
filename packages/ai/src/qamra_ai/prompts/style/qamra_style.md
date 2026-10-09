@@ -7,16 +7,18 @@ Composition → Safety → Negative (Addendum 3 §3).
 To tune the look, edit this file, not the code. Keep each section short and visual; image models follow
 concrete instructions best. Change the version line on every edit so books record which style drew them.
 
-version: 4
+version: 5
 
 ## Style
 A premium children's picture-book illustration. The medium and rendering come from the art-style line below
-(watercolor, 3D animated film or bright 2D cartoon); everything else here is shared by every style.
+(watercolor, 3D animated film, bright 2D cartoon or semi-realistic painting); everything else here is shared
+by every style.
 The palette is warm moonlit-and-golden: deep indigo and night blue, moon gold and honey, and creamy whites,
 with gentle sage-green and coral accents. Light is warm with a golden glow, and every scene has depth:
 foreground, midground and background. Shapes are clean and readable, and backgrounds uncluttered.
-Characters are friendly and rounded, with expressive, happy faces and warm eyes. Children have slightly
-large heads and short limbs but real faces, never chibi or doll-like. Not photorealistic, not anime.
+Characters are friendly and rounded, with expressive, happy faces and warm eyes. Children have real faces, never
+chibi or doll-like, with slightly large heads and short limbs unless the art-style line asks for natural
+proportions. Not photorealistic, not anime.
 
 ## Setting
 Unless the scene says otherwise, the world is Palestinian and Levantine village and city life:

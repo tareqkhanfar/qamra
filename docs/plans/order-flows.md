@@ -816,7 +816,7 @@ The language review also suggests a plainer Arabic-letters error for chunk 3: «
 - The mirror of the server's needs rules, used for the first paint and as the fallback: `asksNameEn(line, options)`, `agesFor(line, options)`, `outsideAges`, `tracesName(line)`, `isArabicName` (Arabic letters; spaces or hyphens between words; tashkeel ignored) and `isLatinName` (`^[A-Za-z][A-Za-z' -]{0,39}$`).
 
 **The wizard** (`CreateWizard.tsx`):
-- Activity books: `/create?product=<sku>[&item=<line>][&child=<id>][&step=summary]`. A `line` in the URL is ignored. The steps are child → [consent → photo → character] → [family] → summary. A new character is drawn in `needs.character.draw_style` (3D) as soon as a photo is saved; there is no style step.
+- Activity books: `/create?product=<sku>[&item=<line>][&child=<id>][&step=summary]`. A `line` in the URL is ignored. The steps are child → [consent → photo → character] → [family] → summary. A new character is drawn in `needs.character.draw_style` (3D) as soon as a photo is saved; there is no style step. **Superseded on 2026-10-09:** a style step comes between the photo and the character (see «Owner's decisions of 2026-10-09»).
 - Stories: child → [line] → [consent] → [photo] → [style] → [character] → [companion] → story → writing → [review] → format → add-ons. The type step now comes right after the child.
 - Back on every drawing step goes to the previous step of this flow.
 - **Frame titles and counts come from the flow:** `FlowFrameContext` in `Frame.tsx` gives `{ title, n, total, close }`, and `Frame` and the companion `SubFrame` read it, so the steps' own `n` props are ignored. Other headers can call `useFlowFrame()` (chunk 7: `AddOnsStep`'s `FlowHeader` could show «n من N»). `TOTAL_STEPS` stays exported, deprecated, only for `CheckoutScreen` until §c.9 drops "n of 12".
@@ -898,7 +898,7 @@ The language review also suggests a plainer Arabic-letters error for chunk 3: «
 - «n من N».
 
 Hard rules it asserts:
-- no `line`, `style`, `companion` or `story` step in any activity flow;
+- no `line`, `style`, `companion` or `story` step in any activity flow (since 2026-10-09 the `style` step is back: it comes right before `character`, exactly when a character is drawn);
 - no `summary` or `family` step in story flows;
 - `family` only for the family line;
 - `ACTIVITY_LINES` includes `islamic`.
@@ -939,7 +939,7 @@ Hard rules it asserts:
 | `test_workbook_asks_the_english_name_and_shows_the_level` | dawseyeh | KG2 volume 1 → the child step has «الاسم بالأحرف الإنجليزية» (Latin validation) → the review shows «KG2 · الجزء الأول» → the cart line shows the same |
 | `test_journey_stage_1_does_not_ask_the_english_name` | journey | stage 1: no English field; stage 2: field shown |
 | `test_family_book_family_step` | family | details given on the page are prefilled; add a member and a city → the review shows «عائلة … · 3 أفراد» |
-| `test_new_child_activity_flow_draws_once` | activity | new child → consent → photo → (fixture approves a placeholder) → review; 5 steps; no style step |
+| `test_new_child_activity_flow_draws_once` | activity | new child → consent → photo → (fixture approves a placeholder) → review; 5 steps; no style step (since 2026-10-09: 6 steps, with the style step) |
 | `test_classic_story_asks_no_interests` | story | the story page «جرّبوا المعاينة» → the child step has no likes or note; no line step; «من 8» |
 | `test_magic_story_asks_interests_on_the_story_step` | story | Magic: likes on the story step, saved to the child |
 | `test_age_check_warns_but_does_not_block` | activity | a 3-year-old with KG2 → amber note → can still add |
@@ -967,6 +967,9 @@ Each one has a default that we use unless Tareq says otherwise.
 and hide the black-and-white variants until a B&W interior exists; (2) no art-style question for activity books —
 reuse any approved character, a new one is drawn in 3D; (3) the family details become the «عائلة …» step in the
 order flow; (4) ١٢٣ digits, not asked.
+
+**Decision (2) was reversed by Tareq on 2026-10-09:** the activity books ask the art style again, and a fourth
+style, «شبه حقيقي», joins the stories and the activity books. See «Owner's decisions of 2026-10-09» at the end.
 
 ---
 
@@ -1156,3 +1159,119 @@ family book's sheet. No AI call, no new cost per order beyond the paper.
   line (kind `stickers`, «ورقة الملصقات» / "Sticker sheet"), cut to its trim like the book. The parent prints it
   at home on A4 sticker paper (the magenta cut lines show, as a guide for scissors). A printed line does not
   offer it: the printed sheet comes in the parcel.
+
+---
+
+## Owner's decisions of 2026-10-09: the activity books' style step is back, and «شبه حقيقي»
+
+Tareq, 2026-10-09:
+1. A new art style, **«شبه حقيقي» / Semi-realistic**, for both the activity books and the story books.
+2. **The activity books get the style step back**, with real examples per style. A child who already has an
+   approved character sees it first, with the option to draw a new one in another style.
+
+This reverses decision (2) of 2026-10-07 ("no art-style question for activity books; a new one is drawn in 3D").
+
+### The style
+
+- **Slug `semi-realistic`.** The retired row of 2026-10-02 (`c4e8a1f20b37`) comes back rather than a second
+  row, so the admin never shows two semi-realistic styles. Guide version 2:
+  `packages/ai/src/qamra_ai/prompts/style/semi-realistic.md`.
+- **The look:** a painted (gouache and oil) storybook portrait, likeness first, natural true-to-age proportions,
+  soft modelling, warm Qamra light. Figures have clean silhouettes, so the activity books' sticker cut-out works.
+  Never a photograph.
+- **Negatives:** no camera look, no watercolor washes or ink outlines, no uncanny or waxy faces, no chibi or
+  cartoon eyes, no extra fingers, no text. The house style adds its own (no photorealism, no text).
+- **QA:** `qa_threshold` 0.8 and `likeness_min` 8. The other styles have 0.75 and 7.
+- **Lines:** magic, workbook, journey, family, islamic. Sort 3, after 3D, watercolor and cartoon, so the default
+  stays 3D.
+- **Not «قمرة كلاسيك»:** Classic pages are templates drawn once per theme × style × look
+  (`classic_templates`), and none exist in this style. The Classic line lists only styles with templates.
+- **House style v5** (`qamra_style.md`): it names the new medium and lets a style ask for natural proportions.
+  The other styles are unaffected.
+- **Migration `a58eeffa5362`** (after `6a87cac7a912`): idempotent (version 1 → 2 only) and reversible (back to
+  the retired version-1 row). A fresh database gets the row from `seed_store` (`STYLE_ORDER` puts it 4th).
+
+### Activity flows (as built)
+
+| Child | Steps |
+| --- | --- |
+| New child | who → consent → photo → **style** → character → [family] → review: **6** (family book **7**) |
+| Consent, no photo | who → photo → style → character → [family] → review |
+| A photo saved in the last 24 hours | who → style → character → [family] → review |
+| A ready character | who → [family] → review: **2** (family **3**), unchanged |
+| A ready character + «ارسموا شخصية جديدة بأسلوب آخر» on the who card | who → [photo] → style → character → [family] → review |
+| The review's «ارسموا شخصية جديدة» | [consent] → [photo] → style → character → [family] → review |
+
+- **The style step comes after the photo**, as in the story flow (consent → photo → style → character).
+- **The who card's new option:** the card shows the ready character with «ارسموا شخصية جديدة بأسلوب آخر».
+  - Tapping it fades the drawing and says «سنرسم لها/له شخصية جديدة بالأسلوب الذي تختارونه.»
+  - It asks the look (hijab, glasses) for the new drawing.
+  - It counts the drawing steps («الخطوة 1 من 5»).
+  - «لا، استخدموا شخصيتها/شخصيته الجاهزة» takes it back.
+  - The flow pins the drawing steps in `plan`, so the count holds while the old character is still reusable.
+- **Story flows are unchanged.** Magic's style step now lists four styles.
+
+### The activity style step (`StyleStep kind="activity"`)
+
+- **Which styles:** every style the book accepts (`needs.character.styles`), never `coloring`.
+- **Each card:** the same invented child's character sheet as its swatch (the front view), plus a one-line
+  description.
+- **The chosen style's gallery**, in this order:
+  - her «دوسية التأسيس» cover and «هذا الكتاب لـ…» page, with her cut-out;
+  - her character sheet;
+  - story pages in that style.
+- **The lead says what changes:** «نرسم شخصية {الطفل} بالأسلوب الذي تختارونه، لتظهر {أين}. أمّا صفحات الأنشطة
+  نفسها فلا تتغيّر.»
+- **Preselected:** the first style the child has no approved character in.
+- **No "ready in this style" badge.** `POST /characters` reuses an approved character in the chosen style
+  only when no newer photo exists. In the redraw path the parent has just given a photo, so such a badge would
+  promise a reuse that doesn't happen.
+- **The drawing:** `POST /api/create/children/{id}/characters {style, sku}`. The API checks that the book's
+  line accepts the style (else 422 `invalid_style`).
+
+### API
+
+- **`GET /api/shop/workbooks/needs?sku[&child_id][&style]`:**
+  - `character.styles` lists every accepted style in the site's order: `3d, watercolor, cartoon,
+    semi-realistic`.
+  - `draw_style` is the parent's `style` when it is given, else the first style (3D).
+  - With `style`, `reuse_id` is only a character already in that style.
+  - A style the book doesn't take → 422 `invalid_style`.
+- **`POST /api/shop/workbooks/cart`:** the line's `style_slug` is the character's style. It shows as the
+  cart's and the order's `style`, so the chosen style travels with the order. `check_item` validates it
+  against the line.
+- **Admin test book** (`POST /api/admin/books/sample`): accepts `semi-realistic`.
+
+### Samples
+
+How they were made (`scripts/style_samples.py`; ledger rows `semireal:`; **$1.26 of a $1.30 cap**):
+- **The child:** the invented sample child تالا (new-sibling), a girl without hijab.
+- **The sheet:** drawn from a head-and-shoulders crop of her published sheet. With the whole sheet as the
+  reference, the model just copied it back.
+- **Rejected:** the bassinet page (three tries put the baby under the text box) and the news page (the
+  companion drawn twice). Neither is exported.
+- **Exported** to `apps/web/public/samples/semi-realistic/`:
+  - the new-sibling cover and the «smile» page;
+  - her character sheet;
+  - the «دوسية التأسيس» KG1 cover and owner page with her cut-out, rendered locally, no AI.
+- **The same activity pages for 3D and cartoon**, and every style's character sheet, from the sheets already
+  drawn for تالا.
+- **Watercolor has no activity sample:** that sheet's paper grain defeats the cut-out (the whole sheet is
+  pasted). Production watercolor characters should be checked for the same problem.
+- **Where they show:** in `lib/styleSamples.ts` under two new kinds, `character` and `activity`. They are shown
+  only for activity books (`samplesForStyle(style, null, { activity: true })`), contained in their tile. The
+  stories page's style switcher and the story style step show the new style's story pages.
+
+### Tests
+
+- `packages/ai/tests/test_prompts.py`: every guide parses with known lines; the semi-realistic guide.
+- `apps/api/tests/test_semi_realistic_style.py`: the catalog, `needs` with and without `style`, the line
+  check at `POST /characters`, the cart line's style, and the migration down, up and again.
+- Updated: `test_order_flow_needs.py`, `test_store.py`, `test_store_seed.py`.
+- `apps/web/src/lib/flows.test.ts`: activity step lists with the style step, and the redraw plan.
+- `tests/e2e/test_order_flows.py`:
+  - Islamic V1 new child: 6 steps, «شبه حقيقي» chosen, and the line's `style`.
+  - The set's card: the redraw option counts 5 steps, then back to 2.
+  - KG1 V2: 6 steps.
+  - Magic: 4 styles.
+  - New: `test_journey_new_character_in_another_style`.

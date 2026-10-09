@@ -108,26 +108,27 @@ describe("stepsFor: the steps per product and child (§c.3)", () => {
       s: { productLine: "classic", child: CONSENTED, stylePreset: true },
       steps: ["child", "photo", "character", "story", "writing", "format", "addons"],
     },
+    // the style step is back for the activity books (owner, 2026-10-09): after the photo, before the drawing
     ...(["workbook", "journey", "islamic"] as const).flatMap((line) => [
       {
-        name: `${line}: new child = 5`,
+        name: `${line}: new child = 6`,
         s: { productLine: line, child: NEW_CHILD },
-        steps: ["child", "consent", "photo", "character", "summary"] as StepId[],
+        steps: ["child", "consent", "photo", "style", "character", "summary"] as StepId[],
       },
       {
-        name: `${line}: no child chosen yet = 5`,
+        name: `${line}: no child chosen yet = 6`,
         s: { productLine: line, child: null },
-        steps: ["child", "consent", "photo", "character", "summary"] as StepId[],
+        steps: ["child", "consent", "photo", "style", "character", "summary"] as StepId[],
       },
       {
         name: `${line}: consent but no photo`,
         s: { productLine: line, child: CONSENTED },
-        steps: ["child", "photo", "character", "summary"] as StepId[],
+        steps: ["child", "photo", "style", "character", "summary"] as StepId[],
       },
       {
         name: `${line}: photo but no character`,
         s: { productLine: line, child: PHOTOGRAPHED },
-        steps: ["child", "character", "summary"] as StepId[],
+        steps: ["child", "style", "character", "summary"] as StepId[],
       },
       {
         name: `${line}: a usable character = 2`,
@@ -136,9 +137,9 @@ describe("stepsFor: the steps per product and child (§c.3)", () => {
       },
     ]),
     {
-      name: "family: new child = 6",
+      name: "family: new child = 7",
       s: { productLine: "family", child: NEW_CHILD },
-      steps: ["child", "consent", "photo", "character", "family", "summary"],
+      steps: ["child", "consent", "photo", "style", "character", "family", "summary"],
     },
     {
       name: "family: a usable character = 3",
@@ -163,12 +164,21 @@ describe("hard rules (§e)", () => {
       ),
     );
 
-  it("no line, style, companion, story, writing, review, format or add-ons step in an activity flow", () => {
+  it("no line, companion, story, writing, review, format or add-ons step in an activity flow", () => {
     for (const s of all([...ACTIVITY_LINES])) {
       const steps = stepsFor({ ...s, plan: ["line", "style", "consent"] });
-      for (const banned of ["line", "style", "companion", "story", "writing", "review", "format", "addons"]) {
+      for (const banned of ["line", "companion", "story", "writing", "review", "format", "addons"]) {
         assert.ok(!steps.includes(banned as StepId), `${s.productLine}: ${banned} in ${steps.join(",")}`);
       }
+    }
+  });
+
+  it("an activity flow asks the style exactly when it draws, right before the character", () => {
+    for (const s of all([...ACTIVITY_LINES]).map((x) => ({ ...x, stylePreset: false }))) {
+      const steps = stepsFor(s);
+      assert.equal(steps.includes("style"), steps.includes("character"), steps.join(","));
+      if (steps.includes("style")) assert.equal(steps[steps.indexOf("style") + 1], "character", steps.join(","));
+      assert.equal(steps.includes("style"), !s.reusable, `${s.productLine}: ${steps.join(",")}`);
     }
   });
 
@@ -212,22 +222,37 @@ describe("kindOf", () => {
 });
 
 describe("the plan pins the count while the parent passes steps", () => {
-  it("activity: consent given and photo saved keep «n من 5»", () => {
+  it("activity: consent given, photo saved and style picked keep «n من 6»", () => {
     const start = state({ productLine: "islamic", child: NEW_CHILD });
     const plan = planFor(start, false);
-    assert.equal(formatPlan(plan), "consent,photo,character");
+    assert.equal(formatPlan(plan), "consent,photo,style,character");
     const later = [
       { child: NEW_CHILD, step: "consent", n: 2 },
       { child: CONSENTED, step: "photo", n: 3 },
-      { child: PHOTOGRAPHED, step: "character", n: 4 },
+      { child: PHOTOGRAPHED, step: "style", n: 4 },
+      { child: PHOTOGRAPHED, step: "character", n: 5 },
     ] as const;
     for (const at of later) {
       const s = { ...start, child: at.child, plan: parsePlan(formatPlan(plan)) };
-      assert.deepEqual(progress(stepsFor(s), at.step), { n: at.n, total: 5 });
+      assert.deepEqual(progress(stepsFor(s), at.step), { n: at.n, total: 6 });
     }
-    // the character is approved: it is now reusable, and the review is still 5 of 5
+    // the character is approved: it is now reusable, and the review is still 6 of 6
     const done = { ...start, child: PHOTOGRAPHED, reusable: true, character: { approved: true }, plan };
-    assert.deepEqual(progress(stepsFor(done), "summary"), { n: 5, total: 5 });
+    assert.deepEqual(progress(stepsFor(done), "summary"), { n: 6, total: 6 });
+  });
+
+  it("activity: «ارسموا شخصية جديدة بأسلوب آخر» pins the drawing steps although a character is ready", () => {
+    const ready = state({ productLine: "journey", child: PHOTOGRAPHED, reusable: true });
+    // the wizard plans the flow as if nothing were reusable; the plan holds while the ready one still exists
+    const plan = planFor({ ...ready, reusable: false }, false);
+    assert.equal(formatPlan(plan), "style,character");
+    assert.deepEqual(stepsFor({ ...ready, plan }), ["child", "style", "character", "summary"]);
+    assert.ok(canShow("style", { ...ready, plan }));
+    // photos are deleted 24 hours after an approval: a new photo first
+    const old = state({ productLine: "family", child: CONSENTED, reusable: true });
+    const again = planFor({ ...old, reusable: false }, false);
+    assert.equal(formatPlan(again), "photo,style,character");
+    assert.deepEqual(stepsFor({ ...old, plan: again }), ["child", "photo", "style", "character", "family", "summary"]);
   });
 
   it("activity: a ready character pins `reuse` (2 steps)", () => {
@@ -260,9 +285,9 @@ describe("resumeAt and canShow", () => {
     { name: "activity, new child → consent", s: { productLine: "islamic", child: NEW_CHILD }, at: "consent" },
     { name: "activity, consent → photo", s: { productLine: "workbook", child: CONSENTED }, at: "photo" },
     {
-      name: "activity, a saved photo and no drawing → photo (it draws from there)",
+      name: "activity, a saved photo and no drawing → style",
       s: { productLine: "journey", child: PHOTOGRAPHED },
-      at: "photo",
+      at: "style",
     },
     {
       name: "activity, drawing → character",
@@ -326,11 +351,17 @@ describe("resumeAt and canShow", () => {
       book: { status: "preview", line: "magic" },
       companionOffered: true,
     });
-    for (const step of ["line", "style", "companion", "story", "writing", "review", "format", "addons"] as const) {
+    for (const step of ["line", "companion", "story", "writing", "review", "format", "addons"] as const) {
       assert.equal(canShow(step, s), false, step);
     }
     assert.ok(canShow("summary", s));
     assert.equal(canShow("family", s), false);
+  });
+
+  it("the activity style step needs the consent and a saved photo (it draws right away)", () => {
+    assert.equal(canShow("style", state({ productLine: "workbook", child: CONSENTED })), false);
+    assert.ok(canShow("style", state({ productLine: "workbook", child: PHOTOGRAPHED })));
+    assert.equal(canShow("style", state({ productLine: "workbook", child: NEW_CHILD })), false);
   });
 
   it("story flows never show the summary or family steps", () => {

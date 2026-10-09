@@ -96,6 +96,7 @@ export function SampleForm() {
             <option value="3d">سينمائي ثلاثي الأبعاد · 3D</option>
             <option value="watercolor">مائي فاخر · Watercolor</option>
             <option value="cartoon">كرتون ملوّن · Cartoon</option>
+            <option value="semi-realistic">شبه حقيقي · Semi-realistic</option>
           </select>
         </label>
         <label className="flex items-center gap-3">

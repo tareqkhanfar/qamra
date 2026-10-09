@@ -11,14 +11,22 @@
  *   samplesForStyle("3d", "first-day", { strict: true }) → only this story's own pages
  *
  * A sample whose `theme` differs from the one asked for must be labelled with its own story.
+ *
+ * The activity books' style step (owner, 2026-10-09) also shows, per style, the same invented child's character
+ * sheet and the «دوسية التأسيس» cover and «هذا الكتاب لـ…» page with her cut-out: `samplesForStyle(style, null,
+ * { activity: true })`. Those two kinds never appear with the story books' pages.
  */
 import type { ExampleVariant } from "@/lib/examples";
 
-/** The styles the story books sell (catalog `ArtStyle` slugs, Addendum 11 §1). */
-export type SampleStyle = "3d" | "watercolor" | "cartoon";
-export const SAMPLE_STYLES: SampleStyle[] = ["3d", "watercolor", "cartoon"];
+/** The styles the books sell (catalog `ArtStyle` slugs, Addendum 11 §1; «شبه حقيقي» since 2026-10-09). */
+export type SampleStyle = "3d" | "watercolor" | "cartoon" | "semi-realistic";
+export const SAMPLE_STYLES: SampleStyle[] = ["3d", "watercolor", "cartoon", "semi-realistic"];
 
-export type SampleKind = "cover" | "page" | "companion";
+/**
+ * `character`: the sample child's character sheet; `activity`: an activity-book page with her cut-out (the cover,
+ * the owner page). Both are shown only for the activity books, contained in their tile (not square).
+ */
+export type SampleKind = "cover" | "page" | "companion" | "character" | "activity";
 
 export type StyleSample = {
   id: string; // "<style>/<name>", unique
@@ -30,8 +38,8 @@ export type StyleSample = {
   look: ExampleVariant | null;
   /** The same moment drawn in another style has the same scene (e.g. "graduation-stage"). */
   scene: string;
-  src: string; // 900 × 900
-  thumb: string; // 480 × 480
+  src: string; // 900 px on the long side (900 × 900 for book pages)
+  thumb: string; // 480 px on the long side
   width: number;
   height: number;
   alt_ar: string;
@@ -44,6 +52,16 @@ const STYLE_NAME: Record<SampleStyle, { ar: string; en: string }> = {
   "3d": { ar: "أسلوب سينمائي ثلاثي الأبعاد", en: "cinematic 3D style" },
   watercolor: { ar: "أسلوب مائي فاخر", en: "premium watercolor style" },
   cartoon: { ar: "أسلوب كرتون ملوّن", en: "bright 2D cartoon style" },
+  "semi-realistic": { ar: "أسلوب شبه حقيقي", en: "semi-realistic style" },
+};
+
+/** The size of a sample's large file (`src`): book pages are square, the rest keep their own shape. */
+const SIZE: Record<SampleKind, [number, number]> = {
+  cover: [900, 900],
+  page: [900, 900],
+  companion: [900, 900],
+  character: [900, 604], // a 3:2 sheet: front, waving, walking
+  activity: [637, 900], // an A4 page
 };
 
 /** The «يوم تخرّجي» proof exists in both 3D and watercolor: the same pages, the same order. */
@@ -187,6 +205,36 @@ const SIBLING_TALA = {
   ],
 } satisfies Record<string, Row>;
 
+/** تالا’s character sheet in each style (the same invented child as the new-sibling pages). */
+const CHARACTER: Row = [
+  "character",
+  null,
+  "character",
+  "girl",
+  "شخصية تالا في ثلاث رسمات: واقفةً، وتلوّح بيدها، وتمشي",
+  "Tala’s character in three poses: standing, waving and walking",
+];
+
+/** «دوسية التأسيس» (KG1, part one) for تالا: the cover and the owner page, with her character cut out. */
+const ACTIVITY: Row[] = [
+  [
+    "activity-cover",
+    null,
+    "activity",
+    "girl",
+    "غلاف «دوسية التأسيس» وعليه شخصية تالا",
+    "Cover of the Foundation workbook, with Tala’s character",
+  ],
+  [
+    "activity-owner",
+    null,
+    "activity",
+    "girl",
+    "صفحة «هذا الكتاب لـ…» وعليها شخصية تالا",
+    "The “This book belongs to…” page with Tala’s character",
+  ],
+];
+
 const ROWS: Record<SampleStyle, Row[]> = {
   // A story without a hijab comes first in every style: it gives the style its swatch (owner, 2026-10-09: little
   // girls in the sample imagery without a hijab). The 3D new-sibling cover is missing: both tries drew a parent's
@@ -208,6 +256,8 @@ const ROWS: Record<SampleStyle, Row[]> = {
     ],
     ...GRADUATION.slice(2),
     COMPANION,
+    CHARACTER,
+    ...ACTIVITY,
   ],
   watercolor: [
     FIRST_DAY_ADAM.cover,
@@ -245,6 +295,7 @@ const ROWS: Record<SampleStyle, Row[]> = {
     SIBLING_TALA.smile,
     ...GRADUATION,
     COMPANION,
+    CHARACTER, // no activity pages: this sheet's paper grain defeats the cut-out (scripts/style_samples.py)
   ],
   cartoon: [
     FIRST_DAY_ADAM.cover,
@@ -254,7 +305,12 @@ const ROWS: Record<SampleStyle, Row[]> = {
     SIBLING_TALA.bassinet,
     SIBLING_TALA.smile,
     COMPANION,
+    CHARACTER,
+    ...ACTIVITY,
   ],
+  // drawn 2026-10-09 (`semireal:` rows in the ledger); the bassinet and news pages were rejected (the baby under
+  // the text box; the companion drawn twice), so the story has its cover and one page so far
+  "semi-realistic": [SIBLING_TALA.cover, SIBLING_TALA.smile, CHARACTER, ...ACTIVITY],
 };
 
 export const STYLE_SAMPLES: StyleSample[] = SAMPLE_STYLES.flatMap((style) =>
@@ -267,8 +323,8 @@ export const STYLE_SAMPLES: StyleSample[] = SAMPLE_STYLES.flatMap((style) =>
     scene: name,
     src: `/samples/${style}/${name}.webp`,
     thumb: `/samples/${style}/${name}-sm.webp`,
-    width: 900,
-    height: 900,
+    width: SIZE[kind][0],
+    height: SIZE[kind][1],
     alt_ar: `${ar} (${STYLE_NAME[style].ar})`,
     alt_en: `${en} (${STYLE_NAME[style].en})`,
   })),
@@ -291,18 +347,28 @@ function interleave(list: StyleSample[], look?: ExampleVariant | null): StyleSam
   return out;
 }
 
+/** The kinds that are pictures of a story book (the rest: the companion's sheet and the activity-only kinds). */
+const BOOK_KINDS: readonly SampleKind[] = ["cover", "page"];
+
 /**
  * The example pages of a style. With a story: its own pages first (cover first), then the other stories'
  * pages in the same style, unless `strict`. The companion's sheet always comes last (never with `strict`).
+ * `activity`: for an activity book, the activity pages with the cut-out first, then the character sheet, then
+ * the story pages (no companion: activity books have none); `theme` and `strict` are ignored.
  */
 export function samplesForStyle(
   style: string,
   theme?: string | null,
-  options: { look?: ExampleVariant | null; limit?: number; strict?: boolean } = {},
+  options: { look?: ExampleVariant | null; limit?: number; strict?: boolean; activity?: boolean } = {},
 ): StyleSample[] {
   if (!isSampleStyle(style)) return [];
   const all = STYLE_SAMPLES.filter((s) => s.style === style);
-  const books = all.filter((s) => s.kind !== "companion");
+  const books = all.filter((s) => BOOK_KINDS.includes(s.kind));
+  if (options.activity) {
+    const own = [...all.filter((s) => s.kind === "activity"), ...all.filter((s) => s.kind === "character")];
+    const list = [...own, ...interleave(books, options.look)];
+    return options.limit ? list.slice(0, options.limit) : list;
+  }
   const own = theme
     ? interleave(
         books.filter((s) => s.theme === theme),
@@ -320,17 +386,25 @@ export function samplesForStyle(
 
 /**
  * The one picture that stands for a style (a swatch): this story's cover in it, else any cover; with
- * `prefer: "page"` a story page instead (a wide crop of a cover cuts through its title).
+ * `prefer: "page"` a story page instead (a wide crop of a cover cuts through its title); with
+ * `prefer: "character"` the sample child's character sheet (the activity books' style step), else a cover.
  */
 export function styleThumb(
   style: string,
   theme?: string | null,
   look?: ExampleVariant | null,
-  prefer: "cover" | "page" = "cover",
+  prefer: "cover" | "page" | "character" = "cover",
 ): StyleSample | null {
+  if (prefer === "character") {
+    const list = samplesForStyle(style, null, { look, activity: true });
+    return list.find((s) => s.kind === "character") ?? list.find((s) => s.kind === "cover") ?? list[0] ?? null;
+  }
   const list = samplesForStyle(style, theme, { look });
   return list.find((s) => s.kind === prefer) ?? list[0] ?? null;
 }
+
+/** Whether a sample is shown whole in its tile (sheets and A4 pages), not cropped to a square. */
+export const containedSample = (s: StyleSample) => !BOOK_KINDS.includes(s.kind);
 
 /** How many real book pages (not the companion's sheet) a style has, for one story or for all. */
 export function bookSampleCount(style: string, theme?: string | null): number {

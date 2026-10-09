@@ -248,11 +248,12 @@ async def test_what_each_activity_book_asks(
     assert out["line"] == line and out["sku"] == sku and out["child"] is None
     assert out["asks"] == {"name_en": name_en, "family": family}
     assert out["traces_name"] is traces and out["ages"] == ages
-    # no style question: a new character is drawn in 3D, and any approved 3D/watercolor/cartoon one is reused
+    # the style step lists every accepted style (3D first, the default); any approved one is reused
+    # (2026-10-09: the activity books ask the style again, and «شبه حقيقي» joined)
     assert out["character"] == {
         "reuse_id": None,
         "draw_style": "3d",
-        "styles": ["3d", "watercolor", "cartoon"],
+        "styles": ["3d", "watercolor", "cartoon", "semi-realistic"],
     }
 
 
@@ -673,6 +674,7 @@ def _migration() -> ModuleType:
 
 async def _state(adb: AsyncSession) -> dict[str, Any]:
     lines = dict((await adb.execute(text("SELECT slug, lines FROM art_styles"))).all())
+    lines.pop("semi-realistic", None)  # migration a58eeffa5362's own row (test_semi_realistic_style.py)
     variants = dict((await adb.execute(text("SELECT sku, active FROM product_variants"))).all())
     addons = dict((await adb.execute(text("SELECT slug, active FROM addons"))).all())
     guide = (

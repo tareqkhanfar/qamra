@@ -85,8 +85,11 @@ export const createApi = {
     form.append("photos", file);
     return upload<Child>(`/api/create/children/${childId}/photos`, form);
   },
-  draw: (childId: string, style: string, fixes: Fix[] = []) =>
-    api<Character>(`/api/create/children/${childId}/characters`, { json: { style, fixes } }),
+  // sku: the activity book it is drawn for, so the API checks that the book accepts the style
+  draw: (childId: string, style: string, fixes: Fix[] = [], sku?: string | null) =>
+    api<Character>(`/api/create/children/${childId}/characters`, {
+      json: { style, fixes, ...(sku ? { sku } : {}) },
+    }),
   character: (id: string) => api<Character>(`/api/create/characters/${id}`),
   approve: (id: string) => api<Character>(`/api/create/characters/${id}/approve`, { method: "POST" }),
   startBook: (input: StartBook) => api<Book>("/api/create/books", { json: input }),
@@ -99,10 +102,11 @@ export const createApi = {
   deleteChild: (id: string) => api<void>(`/api/create/children/${id}`, { method: "DELETE" }),
   updateChild: (id: string, patch: ChildPatch) =>
     api<Child>(`/api/create/children/${id}`, { method: "PATCH", json: patch }),
-  needs: (sku: string, childId?: string) =>
-    api<Needs>(
-      `/api/shop/workbooks/needs?sku=${encodeURIComponent(sku)}${childId ? `&child_id=${encodeURIComponent(childId)}` : ""}`,
-    ),
+  // style: the parent's pick on the style step (the character it draws in, and the only one it reuses)
+  needs: (sku: string, childId?: string, style?: string) => {
+    const q = new URLSearchParams({ sku, ...(childId ? { child_id: childId } : {}), ...(style ? { style } : {}) });
+    return api<Needs>(`/api/shop/workbooks/needs?${q.toString()}`);
+  },
   addWorkbook: (body: AddWorkbook) => api<Cart>("/api/shop/workbooks/cart", { json: body }),
 };
 
@@ -117,7 +121,8 @@ export type Needs = {
   ages: [number, number] | null;
   traces_name?: boolean; // the Arabic name is traced, so it must be in Arabic letters
   asks: { name_en: boolean; family: boolean };
-  // draw_style: a new character is drawn in it, without asking (3D); styles: the ones the book reuses
+  // draw_style: the style a new character is drawn in (the parent's pick, else the first: 3D); styles: the ones
+  // the book accepts, in the site's order (the style step's list, owner's decision of 2026-10-09)
   character: { reuse_id: string | null; draw_style: string | null; styles?: string[] };
   child: {
     name_traceable: boolean;

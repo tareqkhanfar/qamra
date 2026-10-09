@@ -71,6 +71,28 @@ CARTOON_ADAM = "out/style-samples/cartoon-first-day-adam/proof.pdf"
 CARTOON_TALA = "out/style-samples/cartoon-new-sibling-tala/proof.pdf"
 ADAM_3D = "out/style-samples/3d-first-day-adam/proof.pdf"
 TALA_3D = "out/style-samples/3d-new-sibling-tala/proof.pdf"  # p1 is a rejected cover, never exported
+# «شبه حقيقي» (2026-10-09, `semireal:` rows in the ledger): the sheet was drawn from a head-and-shoulders
+# crop of تالا's published sheet (a whole sheet as the reference is copied back unchanged), then the cover and
+# pages with `draw --sheet`. The bassinet page (three tries) put the baby under the text box and the news page
+# drew the companion twice: neither is exported.
+SEMI_TALA = "out/style-samples/semi-realistic-new-sibling-tala/proof.pdf"
+# The same invented child's character sheet per style, and the activity-book cover and «هذا الكتاب لـ…»
+# page with her cut-out, rendered locally (no AI):
+#   python -m qamra_workbook.render.workbook --level kg1 --volume 1 --cover --pages 1-1 --name تالا \
+#       --name-en Tala --gender f --sheet <sheet> --out out/style-samples/activity/<style>
+# Watercolor has no activity sample: that sheet's paper grain defeats the cut-out (the whole sheet is
+# pasted).
+SHEETS = {
+    "3d": "out/style-samples/src/3d-new-sibling-tala/character.png",
+    "watercolor": "out/style-samples/src/watercolor-tala-sheet.png",
+    "cartoon": "out/style-samples/src/cartoon-new-sibling-tala/character.png",
+    "semi-realistic": "out/style-samples/src/semi-realistic-new-sibling-tala/character.png",
+}
+ACTIVITY = {  # style → the render folder's page-range suffix
+    "3d": "p1-1",
+    "cartoon": "p1-1",
+    "semi-realistic": "p1-3",
+}
 
 # What the site shows: style/name ← (a proof PDF and its 1-based page) or a picture file. The alt texts and
 # the order live in styleSamples.ts; this list only makes the files.
@@ -114,14 +136,25 @@ SAMPLES: list[tuple[str, str, str, int | None]] = [
     ("cartoon", "new-sibling-bassinet", CARTOON_TALA, 3),
     ("cartoon", "new-sibling-smile", CARTOON_TALA, 4),
     ("cartoon", "companion", "content/cast/qamour-cartoon.jpg", None),
+    ("semi-realistic", "new-sibling-cover", SEMI_TALA, 1),
+    ("semi-realistic", "new-sibling-smile", SEMI_TALA, 3),
+    *((style, "character", sheet, None) for style, sheet in SHEETS.items()),
+    *(
+        (style, name, f"out/style-samples/activity/{style}/png-kg1-v1-{pages}{folder}/{file}.png", None)
+        for style, pages in ACTIVITY.items()
+        for name, folder, file in (
+            ("activity-cover", "-cover", "workbook-cover-front"),
+            ("activity-owner", "", "p001-owner-page"),
+        )
+    ),
 ]
 
 
-def _ledger_row(entry: CostEntry, tag: str) -> None:
+def _ledger_row(entry: CostEntry, tag: str, prefix: str = "samples") -> None:
     if entry.provider in ("fake", "sketch"):  # offline dry runs cost nothing
         return
     LEDGER.parent.mkdir(parents=True, exist_ok=True)
-    row = {"id": f"samples:{tag}:{entry.step}", "model": entry.model, "usd": round(entry.usd, 4)}
+    row = {"id": f"{prefix}:{tag}:{entry.step}", "model": entry.model, "usd": round(entry.usd, 4)}
     with LEDGER.open("a", encoding="utf-8") as f:
         f.write(json.dumps(row, ensure_ascii=False) + "\n")
 
@@ -180,7 +213,7 @@ async def draw(args: argparse.Namespace) -> int:
         image=image,
         upscaler=make_upscaler(settings),
         budget=Budget(cap_usd=args.budget),
-        on_cost=lambda e: _ledger_row(e, tag),
+        on_cost=lambda e: _ledger_row(e, tag, args.ledger),
     )
     out = OUT / f"{time.strftime('%Y%m%d-%H%M%S')}-{args.style}-{args.theme}"
     out.mkdir(parents=True, exist_ok=True)
@@ -337,6 +370,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
             )
             s.add_argument("--seed", type=int, default=7, help="same seed = same outfits as an earlier run")
             s.add_argument("--cover", type=Path, help="an earlier run's cover (beat-00.png): no cover call")
+            s.add_argument(
+                "--ledger", default="samples", help="the ledger rows' prefix (a budget of its own)"
+            )
         else:
             s.add_argument("--images", type=Path, required=True)
             s.add_argument("--out-name", help="folder name under out/style-samples (default: a time stamp)")

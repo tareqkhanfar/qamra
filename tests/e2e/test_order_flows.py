@@ -7,9 +7,13 @@ renders are finished by the test-only fixtures (`/api/e2e/*`, placeholder art an
 the real site and API: the steps, «الخطوة n من N», the cart, the checkout, the order page and the download
 (the worker's home copy).
 
-- «قلبي يعرف الله» V1, new child: one tap → cart → who → consent → photo → character → review (5 steps).
-- «قلبي يعرف الله», the set, child with a ready character: «ابدؤوا» → who → review (2).
-- «دوسية التأسيس» KG1 V2: the English name asked and checked, «لؤي» traced, a Latin Arabic name refused (5).
+- «قلبي يعرف الله» V1, new child: one tap → cart → who → consent → photo → style (every style, real samples;
+  «شبه حقيقي» chosen) → character → review (6 steps; the owner brought the style step back on 2026-10-09).
+- «قلبي يعرف الله», the set, child with a ready character: «ابدؤوا» → who → review (2); the card's
+  «ارسموا شخصية جديدة بأسلوب آخر» adds the drawing steps (5) and taking it back removes them.
+- «رحلتي الأولى», a ready 3D character, a new one in another style: who → photo → style → character →
+  review (5); the cart line keeps the new character and its style.
+- «دوسية التأسيس» KG1 V2: the English name asked and checked, «لؤي» traced, a Latin Arabic name refused (6).
 - «دوسية التأسيس» KG2 set as PDF: who → review (2) → order → placeholder render → the download.
 - «رحلتي الأولى»: stage 3 asks the English name, stage 1 doesn't (its age note warns, never blocks).
 - «مغامراتي مع عائلتي»: one tap → who → family → review (3); «تعديل» keeps the family; «ابدؤوا» + skip.
@@ -45,13 +49,13 @@ COMPLETE = "أكملوا بيانات الطفل"
 START = "ابدؤوا كتاب طفلكم الآن"
 WHO_LABEL = "الاسم كما سيُطبع في الكتاب"
 NAME_EN = "الاسم بالأحرف الإنجليزية"
-# what an activity book's flow never asks (the story flow it used to fall into, §0.1)
+# what an activity book's flow never asks (the story flow it used to fall into, §0.1); the art style is asked
+# again since 2026-10-09, on its own step, when a character is drawn
 STORY_THINGS = (
     "أي كتاب تريدون",
     "قمرة كلاسيك",
     "قمرة سحري",
     "ماذا تحب",
-    "أسلوب الرسم",
     "إلى أين",
     "شيء مميز",
 )
@@ -106,9 +110,32 @@ def confirmed(page: Page, code: str) -> dict[str, Any]:
 # ---- «قلبي يعرف الله» --------------------------------------------------------------------------------------
 
 
+ACTIVITY_STYLES = ("سينمائي ثلاثي الأبعاد", "مائي فاخر", "كرتون ملوّن", "شبه حقيقي")
+
+
+def pick_style(page: Page, name: str, child: str) -> None:
+    """The activity style step: every style the book accepts, each with a real sample picture, the chosen one
+    with its gallery (the activity-book pages first); then «ارسموا شخصية …»."""
+    expect(page.get_by_role("heading", name=f"كيف تحبون أن نرسم {child}؟")).to_be_visible()
+    styles = page.get_by_role("radiogroup", name="أسلوب الرسم").get_by_role("radio")
+    expect(styles).to_have_count(len(ACTIVITY_STYLES))  # never the black-and-white coloring
+    for style, label in zip(styles.all(), ACTIVITY_STYLES, strict=True):
+        expect(style).to_contain_text(label)
+        expect(style.locator("img")).to_have_attribute("src", re.compile(r"^/samples/"))  # a real sample
+    expect(page.get_by_text("أمّا صفحات الأنشطة نفسها فلا تتغيّر")).to_be_visible()
+    styles.filter(has_text=name).click()
+    gallery = page.get_by_role("region", name=f"هكذا تبدو الشخصية بأسلوب «{name}»")
+    expect(gallery.get_by_role("listitem").first.locator("img")).to_have_attribute(
+        "src", re.compile(r"/samples/.+/(activity-cover|character)-sm\.webp$")
+    )
+    fits(page)
+    page.get_by_role("button", name=f"ارسموا شخصية {child}").click()
+
+
 def test_islamic_v1_new_child(page: Page) -> None:
-    """One tap V1 → «أكملوا بيانات الطفل» → a new child: who, consent, photo, the character (drawn in 3D, no
-    style question), the review with «أنا مسلمة صغيرة» → the same cart line, filled → a confirmed order."""
+    """One tap V1 → «أكملوا بيانات الطفل» → a new child: who, consent, photo, the art style (every style, with
+    real samples; «شبه حقيقي»), the character, the review with «أنا مسلمة صغيرة» → the same cart line, filled,
+    with the chosen style → a confirmed order."""
     page.goto(f"{BASE_URL}/ar/workbooks/islamic-series")
     pick(page, "المجلد", "الأول")
     pick(page, "الشكل", "مطبوع")
@@ -124,7 +151,7 @@ def test_islamic_v1_new_child(page: Page) -> None:
     page.wait_for_url("**/create**")
     assert query(page)["product"] == "islamic-v1-softcover" and query(page)["item"] == line["id"]
     expect(page.get_by_role("heading", name="لمن هذا الكتاب؟")).to_be_visible()
-    step_is(page, 1, 5)
+    step_is(page, 1, 6)
     expect(page.get_by_label(NAME_EN)).to_have_count(0)  # «قلبي يعرف الله» prints no English name
     expect(page.get_by_text("لنكتب في الشهادة: «أنا مسلمة صغيرة» أو «أنا مسلم صغير».")).to_be_visible()
     no_story_things(page)
@@ -133,21 +160,26 @@ def test_islamic_v1_new_child(page: Page) -> None:
     fits(page)
     page.get_by_role("button", name="متابعة").click()
 
-    step_is(page, 2, 5)
+    step_is(page, 2, 6)
     expect(page.get_by_role("heading", name="قبل أن نطلب صورة ضحى، هذا ما نعد به")).to_be_visible()
     fits(page)
     give_consent(page)
 
-    step_is(page, 3, 5)
+    step_is(page, 3, 6)
     expect(page.get_by_role("heading", name="صورة واحدة واضحة تكفي")).to_be_visible()
+    expect(page.get_by_text("بعدها تختارون أسلوب الرسم، ثم نرسم شخصية ضحى")).to_be_visible()
     fits(page)
     upload_photo(page)
 
-    step_is(page, 4, 5)  # drawn at once in the product's style: no style step
+    step_is(page, 4, 6)  # the parent picks the style (owner, 2026-10-09)
     no_story_things(page)
-    character = approve_placeholder_character(page, "نعم، تشبه ضحى")
+    pick_style(page, "شبه حقيقي", "ضحى")
 
-    step_is(page, 5, 5)
+    step_is(page, 5, 6)
+    character = approve_placeholder_character(page, "نعم، تشبه ضحى")
+    assert call(page, "GET", f"/api/create/characters/{character}")["style"] == "semi-realistic"
+
+    step_is(page, 6, 6)
     expect(page.get_by_role("heading", name="راجعوا كتاب ضحى")).to_be_visible()
     expect(page.get_by_text("المجلد الأول · مطبوع")).to_be_visible()
     expect(page.get_by_text("«أنا مسلمة صغيرة»")).to_be_visible()
@@ -166,6 +198,7 @@ def test_islamic_v1_new_child(page: Page) -> None:
     assert [i["id"] for i in cart["items"]] == [line["id"]]  # this line, filled; not a second one
     filled = cart["items"][0]
     assert not filled["needs_details"] and filled["book_id"] is None and filled["character_id"] == character
+    assert filled["style"] == "semi-realistic"  # the style the parent chose
     expect(page.get_by_text("قلبي يعرف الله · ضحى")).to_be_visible()
     expect(page.get_by_text("المجلد الأول · مطبوع")).to_be_visible()
     fits(page)
@@ -196,6 +229,13 @@ def test_islamic_set_known_child(page: Page) -> None:
     expect(card.get_by_label(NAME_EN)).to_have_count(0)
     no_story_things(page)
     fits(page)
+    # a new character in another style instead: a photo (hers was never kept), the style and the drawing
+    card.get_by_role("button", name="ارسموا شخصية جديدة بأسلوب آخر").click()
+    expect(card.get_by_text("سنرسم لها شخصية جديدة بالأسلوب الذي تختارونه.")).to_be_visible()
+    expect(card.get_by_role("button", name="ترتدي الحجاب")).to_be_visible()  # the look, for the new drawing
+    step_is(page, 1, 5)
+    card.get_by_role("button", name="لا، استخدموا شخصيتها الجاهزة").click()
+    step_is(page, 1, 2)
     page.get_by_role("button", name="نعم، الكتاب لـضحى").click()
 
     step_is(page, 2, 2)
@@ -241,7 +281,7 @@ def test_foundation_kg1_v2_english_name(page: Page) -> None:
     page.get_by_role("link", name=COMPLETE).first.click()
     page.wait_for_url("**/create**")
 
-    step_is(page, 1, 5)
+    step_is(page, 1, 6)
     expect(page.get_by_text("بالحروف العربية، فطفلكم سيتتبّعه ويكتبه في صفحات «اسمي».")).to_be_visible()
     english = page.get_by_label(NAME_EN)
     expect(english).to_have_attribute("placeholder", "مثال: Duha")
@@ -251,7 +291,7 @@ def test_foundation_kg1_v2_english_name(page: Page) -> None:
     english.fill("Luay")
     page.get_by_role("button", name="متابعة").click()
     expect(page.get_by_role("alert").filter(has_text=ARABIC_ONLY)).to_be_visible()
-    step_is(page, 1, 5)  # not added
+    step_is(page, 1, 6)  # not added
 
     page.get_by_label(WHO_LABEL, exact=True).fill("لؤي")
     expect(page.get_by_text(ARABIC_ONLY)).to_have_count(0)  # ؤ is traced
@@ -259,18 +299,20 @@ def test_foundation_kg1_v2_english_name(page: Page) -> None:
     english.fill("لؤي")
     page.get_by_role("button", name="متابعة").click()
     expect(page.get_by_role("alert").filter(has_text=LATIN_ONLY)).to_be_visible()
-    step_is(page, 1, 5)
+    step_is(page, 1, 6)
     english.fill("Luay")
     page.get_by_role("button", name="متابعة").click()
 
-    step_is(page, 2, 5)
+    step_is(page, 2, 6)
     give_consent(page)
-    step_is(page, 3, 5)
+    step_is(page, 3, 6)
     upload_photo(page)
-    step_is(page, 4, 5)
+    step_is(page, 4, 6)
+    pick_style(page, "سينمائي ثلاثي الأبعاد", "لؤي")  # the default, kept
+    step_is(page, 5, 6)
     approve_placeholder_character(page, "نعم، يشبه لؤي")
 
-    step_is(page, 5, 5)
+    step_is(page, 6, 6)
     expect(page.get_by_role("heading", name="راجعوا كتاب لؤي")).to_be_visible()
     expect(page.get_by_text("KG1 · الجزء الثاني · ملوّن · مطبوع")).to_be_visible()
     expect(page.get_by_text("Luay", exact=True)).to_be_visible()
@@ -423,6 +465,51 @@ def test_journey_stage_3_and_stage_1(page: Page) -> None:
     assert lines["journey-s3-spiral"]["personalization"]["name_en"] == "Salma"
     assert "name_en" not in lines["journey-s1-spiral"]["personalization"]
     assert {i["child_id"] for i in placed["items"]} == {child}
+
+
+def test_journey_new_character_in_another_style(page: Page) -> None:
+    """A child with a ready 3D character asks for a new one in another style (the card's «ارسموا شخصية جديدة
+    بأسلوب آخر»): a new photo (hers is never kept after an approval), the style step (3D is drawn already, so
+    the next style is preselected), the drawing in «شبه حقيقي», the review, and a cart line with the new
+    character and its style."""
+    first = preview_book(page, name="تالا", age=4, style="3d")  # an approved 3D character, no photo kept
+    page.goto(f"{BASE_URL}/ar/workbooks/learning-journey")
+    pick(page, "المحطة", "الأولى")
+    pick(page, "الشكل", "مطبوع")
+    page.get_by_role("link", name=START).click()
+    page.wait_for_url("**/create**")
+    page.get_by_role("button", name="تالا", exact=True).click()
+    step_is(page, 1, 2)
+    card = page.get_by_role("region", name="تالا · بنت · 4 سنوات")
+    card.get_by_role("button", name="ارسموا شخصية جديدة بأسلوب آخر").click()
+    step_is(page, 1, 5)
+    fits(page)
+    page.get_by_role("button", name="نعم، الكتاب لـتالا").click()
+
+    step_is(page, 2, 5)
+    upload_photo(page)
+    step_is(page, 3, 5)
+    styles = page.get_by_role("radiogroup", name="أسلوب الرسم").get_by_role("radio")
+    expect(styles.filter(has_text="مائي فاخر")).to_have_attribute("aria-checked", "true")  # not 3D again
+    pick_style(page, "شبه حقيقي", "تالا")
+
+    step_is(page, 4, 5)
+    character = approve_placeholder_character(page, "نعم، تشبه تالا")
+    assert character != str(first["character_id"])
+    step_is(page, 5, 5)
+    expect(page.get_by_text("المحطة الأولى · مطبوع")).to_be_visible()
+    no_story_things(page)
+    page.get_by_role("button", name="أضيفوا للسلة").click()
+
+    page.wait_for_url("**/cart")
+    [line] = call(page, "GET", "/api/store/cart")["items"]
+    assert (line["sku"], line["character_id"], line["style"]) == (
+        "journey-s1-spiral",
+        character,
+        "semi-realistic",
+    )
+    styles_of = {c["id"]: c["style"] for c in call(page, "GET", "/api/create/children")[0]["characters"]}
+    assert styles_of == {str(first["character_id"]): "3d", character: "semi-realistic"}  # both kept
 
 
 # ---- «مغامراتي مع عائلتي» ----------------------------------------------------------------------------------
@@ -642,7 +729,9 @@ def test_magic_story_new_child(page: Page) -> None:
     step_is(page, 5, 12)
     expect(page.get_by_role("heading", name="كيف تحبون أن نرسم كرم؟")).to_be_visible()
     styles = page.get_by_role("radiogroup", name="أسلوب الرسم").get_by_role("radio")
-    expect(styles).to_have_count(3)  # 3D, watercolor, cartoon: never the black-and-white coloring
+    expect(styles).to_have_count(
+        4
+    )  # 3D, watercolor, cartoon, semi-realistic: never the black-and-white coloring
     for style in styles.all():
         expect(style.locator("img")).to_have_attribute("src", re.compile(r"^/samples/"))  # a real page
     styles.filter(has_text="سينمائي ثلاثي الأبعاد").click()

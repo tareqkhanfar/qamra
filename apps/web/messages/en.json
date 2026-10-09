@@ -2444,7 +2444,7 @@
       "keep": "{gender, select, f {Once you approve the drawing, we keep {name}'s character for her future books and delete the original photo within 24 hours.} other {Once you approve the drawing, we keep {name}'s character for his future books and delete the original photo within 24 hours.}}",
       "next": {
         "story": "Next we draw {name}'s character in the style you choose, and we don't go on until you approve it.",
-        "activity": "Next we draw {name}'s character straight away, and we don't go on until you approve it."
+        "activity": "Next you choose the art style, then we draw {name}'s character, and we don't go on until you approve it."
       }
     },
     "line": {
@@ -2463,11 +2463,12 @@
     "style": {
       "title": "How should we draw {name}?",
       "body": "Every page of the story is drawn in the style you choose.",
+      "bodyActivity": "We draw {name}'s character in the style you choose, to appear {places}. The activity pages themselves stay the same.",
       "desc": {
         "watercolor": "Soft and warm, as if painted with a brush on textured paper.",
         "cartoon": "Bright colors and clean lines, playful and full of movement.",
         "3d": "Rounded and three-dimensional like an animated film, with warm light.",
-        "semi-realistic": "A painted look close to real life, with soft features.",
+        "semi-realistic": "True to life, with your child's real features, warm light and natural proportions.",
         "coloring": "Black lines on white paper, for your child to color in."
       },
       "popular": "Most chosen",
@@ -2674,8 +2675,11 @@
         "alt": "{name}'s character",
         "confirm": "Yes, the book is for {name}",
         "edit": "Edit details",
+        "keep": "{gender, select, f {No, use her ready character} other {No, use his ready character}}",
         "notDrawn": "{gender, select, f {We haven't drawn her character yet} other {We haven't drawn his character yet}}",
-        "ready": "{gender, select, f {Her character is ready} other {His character is ready}}"
+        "ready": "{gender, select, f {Her character is ready} other {His character is ready}}",
+        "redraw": "Draw a new character in another style",
+        "redrawOn": "{gender, select, f {We'll draw her a new character in the style you choose.} other {We'll draw him a new character in the style you choose.}}"
       },
       "name": "The name as it will be printed",
       "nameEn": "The name in English letters",
@@ -3711,16 +3715,20 @@
     "tabsLabel": "Art style",
     "galleryLabel": "Pages in the “{style}” style",
     "stepGallery": "Here's how the pages look in the “{style}” style",
+    "stepGalleryActivity": "Here's how the character looks in the “{style}” style",
     "styles": {
       "3d": "Warm cinematic light, expressive eyes and magical depth in every scene, as if your child were the hero of an animated film.",
       "watercolor": "The warmth of watercolor on textured paper, with golden light and deep shadows. This is Qamra's signature look.",
-      "cartoon": "Clean outlines, bright cheerful colors and simple shapes that little ones love at first sight."
+      "cartoon": "Clean outlines, bright cheerful colors and simple shapes that little ones love at first sight.",
+      "semi-realistic": "Your child's real features through a painter's brush: warm light, soft shading and natural proportions. A painting, not a photo."
     },
     "soldIn": "Available in {lines}",
     "realPages": "{count, plural, one {# real page} other {# real pages}}",
     "styleCount": "{count, plural, one {# art style} other {# art styles}}",
     "caption": {
       "companion": "Qamour, the hero's companion in our stories",
+      "character": "The child's character in this style",
+      "activity": "In the activity books",
       "from": "From “{story}”",
       "story": "“{story}”"
     },

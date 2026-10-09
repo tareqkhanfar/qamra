@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
-import { sampleAlt, type StyleSample } from "@/lib/styleSamples";
+import { containedSample, sampleAlt, type StyleSample } from "@/lib/styleSamples";
 import { SampleLightbox } from "./SampleLightbox";
 
 /**
@@ -88,7 +88,7 @@ export function StyleGallery({
                     loading={i < 2 ? "eager" : "lazy"}
                     decoding="async"
                     draggable={false}
-                    className={`size-full ${s.kind === "companion" ? "object-contain p-2" : "object-cover"} transition duration-300 group-hover:scale-[1.02]`}
+                    className={`size-full ${containedSample(s) ? "object-contain p-2" : "object-cover"} transition duration-300 group-hover:scale-[1.02]`}
                   />
                   {s.kind === "cover" && (
                     <span className="absolute start-2 top-2 rounded-full bg-night-950/75 px-2 py-0.5 text-[11px] font-semibold text-paper">

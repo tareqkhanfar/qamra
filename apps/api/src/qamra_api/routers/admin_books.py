@@ -101,7 +101,9 @@ async def create_sample(
     hijab: Annotated[bool, Form()] = False,
     glasses: Annotated[bool, Form()] = False,
     lang: Annotated[Literal["ar", "en"], Form()] = "ar",
-    style: Annotated[Literal["3d", "watercolor", "cartoon", "crayon", "papercut"], Form()] = "watercolor",
+    style: Annotated[
+        Literal["3d", "watercolor", "cartoon", "semi-realistic", "crayon", "papercut"], Form()
+    ] = "watercolor",
     message: Annotated[str | None, Form(max_length=120)] = None,
     offline: Annotated[bool, Form()] = False,
     drawing: Annotated[UploadFile | None, File()] = None,

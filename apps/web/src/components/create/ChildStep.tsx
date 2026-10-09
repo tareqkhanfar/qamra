@@ -17,7 +17,8 @@ import { KnownChild, type Look } from "./KnownChild";
  * under each question (docs/plans/order-flows.md §c.4): a story asks the hero's name, gender and age; an activity
  * book asks the name as printed, the gender for its grammar, the age for the level check, and the name in
  * English letters when it prints one. The look is asked only when a new character will be drawn. A child added
- * before is a confirmation card that can be corrected.
+ * before is a confirmation card that can be corrected; for an activity book whose child has a ready character,
+ * the card also offers a new one in another style (`onRedraw`, owner's decision of 2026-10-09).
  */
 export function ChildStep({
   kind,
@@ -30,6 +31,7 @@ export function ChildStep({
   ready,
   nameEnOf,
   onSelect,
+  onRedraw,
   onEdited,
   onDone,
 }: {
@@ -49,9 +51,11 @@ export function ChildStep({
   nameEnOf: (child: Child) => string;
   /** The chosen known child changed (the step count follows it). */
   onSelect: (child: Child | null) => void;
+  /** Activity books: the parent asks for (or drops) a new character in another style; the count follows it. */
+  onRedraw?: (on: boolean) => void;
   onEdited: (child: Child) => void;
   /** The child is confirmed or added: the flow goes on (or returns why it could not). */
-  onDone: (child: Child, extra: { nameEn?: string }) => Promise<string | null>;
+  onDone: (child: Child, extra: { nameEn?: string; redraw?: boolean }) => Promise<string | null>;
 }) {
   const t = useTranslations("create");
   const te = useTranslations("errors");
@@ -65,6 +69,8 @@ export function ChildStep({
   // the known child's English name and look, as the card shows them
   const [knownEn, setKnownEn] = useState(selected ? nameEnOf(selected) : "");
   const [look, setLook] = useState<Look>({ hijab: !!selected?.hijab, glasses: !!selected?.glasses });
+  // «ارسموا شخصية جديدة بأسلوب آخر»: a ready character is not reused
+  const [redraw, setRedraw] = useState(false);
   // a new child
   const [name, setName] = useState("");
   const [nameEn, setNameEn] = useState("");
@@ -86,7 +92,13 @@ export function ChildStep({
     };
   }
 
+  function wantRedraw(on: boolean) {
+    setRedraw(on);
+    onRedraw?.(on);
+  }
+
   function pick(c: Child | null) {
+    wantRedraw(false);
     setSelectedId(c?.id ?? null);
     setEditing(false);
     setError(null);
@@ -108,7 +120,7 @@ export function ChildStep({
     if (asksNameEn && !isLatinName(knownEn)) return setError(t("who.nameEnInvalid"));
     const patch: ChildPatch = {};
     if (asksNameEn && knownEn.trim() !== (c.name_latin ?? "")) patch.name_latin = knownEn.trim();
-    if (!ready(c) && (look.hijab !== c.hijab || look.glasses !== c.glasses)) {
+    if ((!ready(c) || redraw) && (look.hijab !== c.hijab || look.glasses !== c.glasses)) {
       patch.hijab = c.gender === "f" && look.hijab;
       patch.glasses = look.glasses;
     }
@@ -126,7 +138,7 @@ export function ChildStep({
       }
       // FALLBACK until `PATCH /children/{id}` is deployed (§d chunk 8): the English name goes with the cart line
     }
-    const failed = await onDone(child, { nameEn: asksNameEn ? knownEn.trim() : undefined });
+    const failed = await onDone(child, { nameEn: asksNameEn ? knownEn.trim() : undefined, redraw });
     setBusy(false);
     if (failed) setError(failed);
   }
@@ -226,6 +238,8 @@ export function ChildStep({
           onNameEn={edited(setKnownEn)}
           look={look}
           onLook={setLook}
+          redraw={redraw}
+          onRedraw={onRedraw ? wantRedraw : undefined}
           onEdit={() => {
             setEditing(true);
             setError(null);

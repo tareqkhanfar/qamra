@@ -10,10 +10,11 @@ import { errorText } from "@/lib/api";
 import { nameCases } from "@/lib/arabicName";
 import type { ThemeCard } from "@/lib/catalog";
 import { classicStyles, classicVariant } from "@/lib/classic";
-import { createApi, type Character, type Child, type Line } from "@/lib/create";
+import { createApi, type Character, type Child } from "@/lib/create";
 import { variantOf } from "@/lib/examples";
+import type { Kind } from "@/lib/flows";
 import { money, type Catalog } from "@/lib/store";
-import { styleThumb } from "@/lib/styleSamples";
+import { containedSample, styleThumb } from "@/lib/styleSamples";
 import { Check, Frame, Lead } from "./Frame";
 
 /** How a style's card hints at its look when there is no real page in that style yet. */
@@ -32,15 +33,23 @@ const LOOK: Record<string, { bg: string; fx: string }> = {
 };
 
 /**
- * Step 5 (design Create4), stories only: the art style, then the character is drawn right away. Each card has a
- * real page of that style as its swatch, and the chosen style opens a gallery of real pages (the chosen story's
- * first; lib/styleSamples). A Classic book offers only the styles that have a live template for the child's
- * look (and for the chosen story, when there is one). Activity books never show this step: their character is
- * drawn in the product's own style (owner decision, 2026-10-07).
+ * The art style (design Create4), then the character is drawn right away. Each card has a real picture of that
+ * style as its swatch, and the chosen style opens a gallery of real pages (lib/styleSamples).
+ *
+ * - Stories: the chosen story's pages first. A Classic book offers only the styles that have a live template for
+ *   the child's look (and for the chosen story, when there is one).
+ * - Activity books (owner, 2026-10-09: the style step is back, with «شبه حقيقي»): every style the book accepts
+ *   (`needs.character.styles`), the same sample child's character sheet as the swatch, and her activity-book cover
+ *   and owner page first in the gallery. The style only changes the child's character: the activity pages are
+ *   drawn once for everyone. The first style the child has no character in is preselected (the parent came for
+ *   a new one); the API reuses an approved character in the chosen style unless a newer photo was given.
  */
 export function StyleStep({
+  kind = "story",
   child,
   line,
+  sku = null,
+  accepted = null,
   catalog,
   themes,
   theme,
@@ -49,8 +58,14 @@ export function StyleStep({
   back,
   onDrawing,
 }: {
+  kind?: Kind;
   child: Child;
-  line: Line;
+  /** The book's line: classic | magic, or the activity line (workbook, journey, family, islamic). */
+  line: string;
+  /** Activity books: the variant, so the API checks that the book accepts the style. */
+  sku?: string | null;
+  /** Activity books: the styles the book accepts, in the site's order (the server's `needs`). */
+  accepted?: string[] | null;
   catalog: Catalog | null;
   themes: ThemeCard[];
   theme: string | null;
@@ -64,25 +79,34 @@ export function StyleStep({
   const tc = useTranslations("classic");
   const te = useTranslations("errors");
   const locale = useLocale();
+  const activity = kind === "activity";
   const who = nameCases(child.name);
   const ready = classicStyles(themes, classicVariant(child), theme);
-  const styles = (catalog?.styles ?? []).filter(
-    (s) => s.lines.includes(line) && (line !== "classic" || ready.has(s.slug)),
+  const styles = (catalog?.styles ?? []).filter((s) =>
+    activity
+      ? s.lines.includes(line) && s.slug !== "coloring" && (!accepted || accepted.includes(s.slug))
+      : s.lines.includes(line) && (line !== "classic" || ready.has(s.slug)),
   );
   const noClassic = line === "classic" && catalog !== null && themes.length > 0 && styles.length === 0;
+  // the styles the child already has an approved character in: an activity book preselects another one
+  const drawn = new Set(child.characters.filter((c) => c.approved).map((c) => c.style));
+  const firstNew = styles.find((s) => !drawn.has(s.slug))?.slug;
   const [style, setStyle] = useState<string>(
-    initial && styles.some((s) => s.slug === initial) ? initial : (styles[0]?.slug ?? "watercolor"),
+    initial && styles.some((s) => s.slug === initial)
+      ? initial
+      : ((activity ? firstNew : null) ?? styles[0]?.slug ?? "watercolor"),
   );
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const look = variantOf(child);
   const themeNames = Object.fromEntries(themes.map((th) => [th.slug, th.name]));
   const nameOf = (s: { name_ar: string; name_en: string }) => (locale === "ar" ? s.name_ar : s.name_en);
+  const places = t(t.has(`character.places.${line}`) ? `character.places.${line}` : "character.places.other");
 
   async function draw() {
     setBusy(true);
     setError(null);
-    const r = await createApi.draw(child.id, style);
+    const r = await createApi.draw(child.id, style, [], activity ? sku : null);
     setBusy(false);
     if (r.ok) onDrawing(r.data);
     else setError(errorText(r.error, locale, r.status === 0 ? te("network") : te("unknown")));
@@ -99,7 +123,10 @@ export function StyleStep({
         </Button>
       }
     >
-      <Lead title={t("style.title", who)} body={t("style.body")} />
+      <Lead
+        title={t("style.title", who)}
+        body={activity ? t("style.bodyActivity", { ...who, places }) : t("style.body")}
+      />
       {noClassic && (
         <div className="flex flex-col gap-3">
           <Alert>{tc("noStyle", who)}</Alert>
@@ -113,7 +140,7 @@ export function StyleStep({
           const on = style === s.slug;
           const art = LOOK[s.slug] ?? LOOK.watercolor;
           const extra = Number(s.price_modifier) > 0;
-          const swatch = styleThumb(s.slug, theme, look);
+          const swatch = activity ? styleThumb(s.slug, null, look, "character") : styleThumb(s.slug, theme, look);
           return (
             <Fragment key={s.slug}>
               <button
@@ -124,9 +151,20 @@ export function StyleStep({
                 className={`relative flex items-center gap-3.5 rounded-3xl bg-paper-raised p-2.5 text-start transition ${on ? "border-[3px] border-amber-500 shadow-[0_8px_24px_rgba(242,179,61,0.25)]" : "border-[1.5px] border-line"}`}
               >
                 <div
-                  className={`flex size-[96px] shrink-0 items-end justify-center overflow-hidden rounded-2xl ${swatch ? "bg-paper-sunk" : art.bg}`}
+                  className={`relative flex size-[96px] shrink-0 items-end justify-center overflow-hidden rounded-2xl ${swatch ? "bg-paper-sunk" : art.bg}`}
                 >
-                  {swatch ? (
+                  {swatch?.kind === "character" ? (
+                    // the sheet is three full figures side by side: show the front view, head to hips
+                    // eslint-disable-next-line @next/next/no-img-element -- a 480 px static sample sheet as a swatch
+                    <img
+                      src={swatch.thumb}
+                      alt=""
+                      width={229}
+                      height={154}
+                      loading="lazy"
+                      className="absolute top-0 left-[7px] h-[154px] w-auto max-w-none"
+                    />
+                  ) : swatch ? (
                     // eslint-disable-next-line @next/next/no-img-element -- a 480 px static sample page as a swatch
                     <img
                       src={swatch.thumb}
@@ -134,7 +172,7 @@ export function StyleStep({
                       width={96}
                       height={96}
                       loading="lazy"
-                      className={`size-full ${swatch.kind === "companion" ? "object-contain p-1.5" : "object-cover"}`}
+                      className={`size-full ${containedSample(swatch) ? "object-contain p-1.5" : "object-cover"}`}
                     />
                   ) : s.sample_images[0] ? (
                     // eslint-disable-next-line @next/next/no-img-element -- admin-uploaded sample art
@@ -177,19 +215,22 @@ export function StyleStep({
               </button>
               {on && swatch && (
                 <section
-                  aria-label={ts("stepGallery", { style: nameOf(s) })}
+                  aria-label={ts(activity ? "stepGalleryActivity" : "stepGallery", { style: nameOf(s) })}
                   className="-mt-1 mb-2 flex flex-col gap-2 rounded-3xl bg-paper-sunk p-3"
                 >
-                  <h3 className="text-body font-semibold text-night-900">{ts("stepGallery", { style: nameOf(s) })}</h3>
+                  <h3 className="text-body font-semibold text-night-900">
+                    {ts(activity ? "stepGalleryActivity" : "stepGallery", { style: nameOf(s) })}
+                  </h3>
                   <StyleShowcase
                     styles={[{ slug: s.slug, name: nameOf(s), lines: s.lines }]}
-                    theme={theme}
+                    theme={activity ? null : theme}
                     themeNames={themeNames}
                     lineNames={{}}
                     value={s.slug}
                     look={look}
                     tabs={false}
                     size="sm"
+                    activity={activity}
                   />
                 </section>
               )}

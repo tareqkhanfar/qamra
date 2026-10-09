@@ -687,3 +687,40 @@ Tareq asked for covers that look professional and show what each part holds, wit
 - **One phone number for calls (+970) and one for WhatsApp (+972)**, both the owner's, as he asked. They live in the admin settings (`support_phone`, `support_whatsapp`, `sales_whatsapp`), so they change without a deploy; the migration sets them over whatever was saved. The copyright year is Latin digits like every number on the site.
 - **Full-screen flows keep no footer** (create, cart, checkout, quiz): they have their own bottom bars; their order and tracking pages show the numbers instead.
 
+
+## «شبه حقيقي» and the activity books' style step (2026-10-09)
+
+Tareq asked for a new art style, «شبه حقيقي», for the activity books and the stories, and for the activity books
+to ask the style again, with real examples. This reverses "no style question for activity books, a new one is
+drawn in 3D" (2026-10-07). The full record is `docs/plans/order-flows.md`, «Owner's decisions of 2026-10-09».
+
+- **The retired `semi-realistic` row comes back** (guide v2, migration `a58eeffa5362`), not a new `semireal`
+  slug. One row means the admin never shows two semi-realistic styles, and a character drawn in it before stays
+  valid. The name is the owner's: «شبه حقيقي» / Semi-realistic.
+- **Likeness first, a painting always:** gouache-and-oil storybook painting, natural proportions,
+  `likeness_min` 8 and `qa_threshold` 0.8 (the other styles have 7 and 0.75). Its negatives are about technique
+  (no camera look, no washes or ink outlines, no waxy faces). Words about children's skin or "glamorized"
+  children made the image model refuse the character sheet twice, so the guide avoids them.
+- **Not in «قمرة كلاسيك»:** Classic needs pre-drawn templates per theme × style × look, and none exist in this
+  style.
+- **Fourth in the order (sort 3):** a parent who is never asked still gets 3D, and «الأكثر اختيارًا» stays on
+  3D.
+- **House style v5:** it names the new medium and lets a style ask for natural proportions. The other three
+  styles keep their slightly large heads.
+- **Where the style step goes:** after the photo, as in the story flow. The activity flow for a new child is now
+  6 steps (the family book 7). A child with a ready character still takes 2 (3).
+- **The who card offers «ارسموا شخصية جديدة بأسلوب آخر»** rather than a separate entry point. The plan pins
+  the drawing steps, so «n من N» holds while the old character can still be reused.
+- **No "ready in this style" badge on the style step:** the API reuses an approved character in the chosen
+  style only when no newer photo exists, and the redraw path has just taken one. The step only preselects the
+  first style the child has no character in.
+- **The cart line keeps the style** (`style_slug` = the character's), so the order and the admin see the
+  parent's choice. Price modifiers stay at zero for every style.
+- **Activity examples are the same invented child (تالا) in every style:** her character sheet, and the
+  «دوسية التأسيس» cover and owner page with her cut-out, rendered locally. Watercolor has none: its sheet's
+  paper grain defeats the cut-out (`render/character.py` finds one figure spanning the whole sheet).
+  Production watercolor sheets should be checked for the same problem.
+- **Sample spend:** $1.26 of a $1.30 cap (`semireal:` rows in `out/design-images/ledger.jsonl`).
+  - The bassinet page was rejected three times: the baby was under the text box.
+  - The news page drew the companion twice. A retry with the same seed gave the same picture.
+  - So the story samples are the cover and one page for now.

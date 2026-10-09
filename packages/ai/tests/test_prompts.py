@@ -65,3 +65,36 @@ def test_a_redraw_carries_what_the_parent_said() -> None:
     assert "Skin tone:" in redraw.prompt and "Hijab: keep" in redraw.prompt
     assert "older than 5" in redraw.prompt
     assert redraw.seed != first.seed
+
+
+def test_every_style_guide_parses_and_names_known_lines() -> None:
+    from qamra_ai.pipeline.style import style_guides
+
+    lines = {"magic", "classic", "workbook", "journey", "family", "islamic", "coloring"}
+    guides = {g.slug: g for g in style_guides()}
+    assert {"3d", "watercolor", "cartoon", "semi-realistic", "coloring"} <= set(guides)
+    for g in guides.values():
+        assert g.name_ar and g.name_en and g.look and g.negative
+        assert set(g.lines) <= lines, g.slug
+        assert 0 < g.qa_threshold <= 1 and 0 <= g.likeness_min <= 10
+
+
+def test_semi_realistic_is_a_likeness_first_painting_for_stories_and_activity_books() -> None:
+    """«شبه حقيقي» (Tareq, 2026-10-09): Magic and the four activity lines, never Classic (no templates in
+    it)."""
+    from qamra_ai.pipeline.style import style_guides
+    from qamra_ai.pipeline.theme import load_style
+
+    guides = {g.slug: g for g in style_guides()}
+    semi = guides["semi-realistic"]
+    assert (semi.name_ar, semi.name_en, semi.version) == ("شبه حقيقي", "Semi-realistic", 2)
+    assert semi.lines == ("magic", "workbook", "journey", "family", "islamic")
+    assert "classic" not in semi.lines
+    others = [g for slug, g in guides.items() if slug in ("3d", "watercolor", "cartoon")]
+    assert all(semi.likeness_min > g.likeness_min for g in others)  # likeness first
+    assert semi.qa_threshold >= max(g.qa_threshold for g in others)
+    look = " ".join(semi.look.split())
+    assert "never a photograph" in look and "cuts out cleanly" in look  # the activity books' sticker cut-out
+    assert "No photograph" in semi.negative and "uncanny" in semi.negative and "fingers" in semi.negative
+    assert "No photorealism" in house_style().negative  # shared by every style
+    assert load_style("semi-realistic").guide == semi.look  # what the page and sheet prompts paint with

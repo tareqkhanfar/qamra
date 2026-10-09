@@ -69,13 +69,19 @@ export type FlowState = {
   productLine: string | null;
   /** The child the book is for (null: not chosen yet). */
   child: { consent: boolean; photos: number } | null;
-  /** The server's "needs" answer (activity) / an approved character in the wanted style (story). */
+  /**
+   * The server's "needs" answer (activity) / an approved character in the wanted style (story). An activity book
+   * whose parent asked for a new character in another style («ارسموا شخصية جديدة بأسلوب آخر») is not reusable.
+   */
   reusable: boolean;
   /** The character in the URL: drawn in this flow, or the one reused. */
   character: { approved: boolean } | null;
   /** The story book in the URL (stories only). */
   book: { status: string; line: "classic" | "magic" } | null;
-  /** Story: the style is fixed by the story page or the type has a single option, so no style step. */
+  /**
+   * Story: the style is fixed by the story page or the type has a single option, so no style step. Activity books
+   * always ask it when they draw (owner, 2026-10-09: the style step is back, with «شبه حقيقي»).
+   */
   stylePreset: boolean;
   /** The catalog offers the drawn companion («ارسم صاحبك») for this line. */
   companionOffered: boolean;
@@ -114,7 +120,7 @@ function drawingNow(s: FlowState): Set<DrawStep> {
   if (s.reusable) return out;
   if (!s.child?.consent) out.add("consent");
   if (!s.child?.photos) out.add("photo");
-  if (s.kind === "story" && !s.stylePreset) out.add("style");
+  if (!s.stylePreset) out.add("style");
   out.add("character");
   return out;
 }
@@ -126,10 +132,7 @@ function optional(s: FlowState): Set<StepId> {
   if (s.kind === "story" && (plan.includes("line") || s.productLine === null)) out.add("line");
   const pinned = plan.some((x) => DRAWING.includes(x));
   const drawing = pinned ? new Set(plan.filter((x): x is DrawStep => x !== "line" && x !== "reuse")) : drawingNow(s);
-  for (const step of drawing) {
-    if (step === "style" && s.kind !== "story") continue; // activity books never ask the art style
-    out.add(step);
-  }
+  for (const step of drawing) out.add(step);
   return out;
 }
 
@@ -185,8 +188,7 @@ export function resumeAt(s: FlowState): StepId {
   }
   if (!s.child.consent) return "consent";
   if (!s.child.photos) return "photo";
-  // a saved photo and no drawing yet: a story picks its style; an activity book draws from the photo step
-  return s.kind === "story" ? "style" : "photo";
+  return "style"; // a saved photo and no drawing yet: the parent picks the style, then it is drawn
 }
 
 /** Whether a step named in the URL can be shown with what is loaded (replaces `allowed()`). */
@@ -205,7 +207,8 @@ export function canShow(step: StepId, s: FlowState): boolean {
     case "photo":
       return !!child?.consent;
     case "style":
-      return story && !!child?.consent && !!s.productLine;
+      // a story knows its type first; an activity book draws from the photo it just saved
+      return story ? !!child?.consent && !!s.productLine : !!child?.consent && !!child.photos;
     case "character":
       return !!child && !!s.character;
     case "companion":

@@ -243,9 +243,13 @@ class NeedsAsks(BaseModel):
 
 
 class NeedsCharacter(BaseModel):
-    reuse_id: uuid.UUID | None  # the child's newest approved character in an accepted style; None: draw one
-    draw_style: str | None  # a new character is drawn in this style, without asking (3D)
-    styles: list[str]  # the styles this book accepts (never coloring)
+    # the child's newest approved character in an accepted style (in `style` when it was asked);
+    # None: draw one
+    reuse_id: uuid.UUID | None
+    # a new character is drawn in this style: the parent's choice (`style`), else the first accepted one
+    draw_style: str | None
+    # the styles this book accepts, in the site's order (never coloring): the style step's list
+    styles: list[str]
 
 
 class NeedsChild(BaseModel):
@@ -292,19 +296,25 @@ async def workbook_needs(
     db: SessionDep,
     user: OptionalUser,
     child_id: uuid.UUID | None = None,
+    style: Annotated[str | None, Query(max_length=40)] = None,
 ) -> NeedsOut:
     """What this activity book needs from the child, so the create flow shows only those steps (and the
     review step's age check). With `child_id` (the parent's own child): the character it reuses, if any,
-    and whether the name can be traced. The cart (`POST /workbooks/cart`) checks the same rules."""
+    and whether the name can be traced. With `style` (the parent's pick on the style step, owner's decision
+    of 2026-10-09): the character is drawn in it, and only one already in it is reused; a style the book
+    doesn't accept → 422 `invalid_style`. The cart (`POST /workbooks/cart`) checks the same rules."""
     catalog = await load_catalog(db)
     variant, product = _activity_variant(catalog, sku)
     line = product.line.value
     styles = accepted_styles(catalog.styles.values(), line)
+    if style is not None and style not in styles:
+        raise ApiError("invalid_style", 422)
+    wanted = [style] if style is not None else styles
     ages = ages_for(line, variant.options)
     child_out, reuse = None, None
     if child_id is not None:
         child = await _guarded_child(db, user, child_id)
-        reuse = await reusable_character(db, child.id, styles)
+        reuse = await reusable_character(db, child.id, wanted)
         problem = name_problem(line, child.first_name)
         child_out = NeedsChild(
             id=child.id,
@@ -322,7 +332,7 @@ async def workbook_needs(
         traces_name=line in TRACES_NAME,
         asks=NeedsAsks(name_en=needs_name_en(line, variant.options), family=asks_family(line)),
         character=NeedsCharacter(
-            reuse_id=reuse.id if reuse else None, draw_style=styles[0] if styles else None, styles=styles
+            reuse_id=reuse.id if reuse else None, draw_style=wanted[0] if wanted else None, styles=styles
         ),
         child=child_out,
     )
@@ -416,6 +426,7 @@ async def add_workbook(
     }
     if item is not None:
         item.child_id, item.personalization = child.id, personalization
+        item.style_slug = character.art_style  # the style the parent chose (or the reused character's)
     else:
         db.add(
             CartItem(
@@ -423,6 +434,7 @@ async def add_workbook(
                 variant_id=variant.id,
                 child_id=child.id,
                 qty=body.qty,
+                style_slug=character.art_style,
                 addons=[],
                 personalization=personalization,
             )

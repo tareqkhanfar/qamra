@@ -80,7 +80,8 @@ async def _existing(db: AsyncSession, column: Any) -> dict[Any, Any]:
     return {getattr(row, column.key): row for row in rows}
 
 
-STYLE_ORDER = ("3d", "watercolor", "cartoon")  # Addendum 11 §1: the three styles, 3D first
+# Addendum 11 §1: 3D first; «شبه حقيقي» joined on 2026-10-09 (migration a58eeffa5362 sets the same order)
+STYLE_ORDER = ("3d", "watercolor", "cartoon", "semi-realistic")
 
 
 async def _styles(db: AsyncSession) -> list[str]:
@@ -102,7 +103,7 @@ async def _styles(db: AsyncSession) -> list[str]:
                 qa_threshold=Decimal(str(g.qa_threshold)),
                 likeness_min=g.likeness_min,
                 sort=sort,
-                active=bool(g.lines),  # a guide sold in no line (semi-realistic) is kept, not offered
+                active=bool(g.lines),  # a guide sold in no line is kept, not offered
             )
         )
         added.append(f"+style:{g.slug}")

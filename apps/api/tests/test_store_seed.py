@@ -38,6 +38,9 @@ async def test_seed_builds_the_catalog_once(adb: AsyncSession) -> None:
     assert {"watercolor", "cartoon", "3d", "semi-realistic", "coloring"} <= set(styles)
     assert styles["watercolor"].lines[:2] == ["magic", "classic"] and not styles["crayon"].active
     assert "family" in styles["3d"].lines  # 3D for the activity books too (Tareq, 2026-10-02)
+    semi = styles["semi-realistic"]  # «شبه حقيقي»: stories and activity books, never Classic (2026-10-09)
+    assert semi.active and semi.sort == 3 and semi.likeness_min == 8 and semi.name_ar == "شبه حقيقي"
+    assert semi.lines == ["magic", "workbook", "journey", "family", "islamic"]
     for style in styles.values():  # never a studio or artist name (Addendum 4 §2)
         assert not any(name in style.prompt.lower() for name in ("pixar", "disney", "ghibli", "dreamworks"))
 

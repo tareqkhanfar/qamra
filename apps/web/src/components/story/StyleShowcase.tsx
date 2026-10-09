@@ -19,7 +19,8 @@ export function joinWords(words: string[], locale: string): string {
  * The art styles side by side (Tareq, 2026-10-07): a style switch that swaps a gallery of real pages at
  * once, a short line on what the style looks like, and where it is sold. With a story, its own pages come
  * first and pages borrowed from other stories say so. `tabs={false}` hides the switch when the page has its
- * own style picker (the story page's step 2) and passes the chosen style in `value`.
+ * own style picker (the story page's step 2) and passes the chosen style in `value`. `activity`: for an activity
+ * book's style step, the sample child's activity-book pages and character sheet first, then story pages.
  */
 export function StyleShowcase({
   styles,
@@ -31,6 +32,7 @@ export function StyleShowcase({
   look = null,
   tabs = true,
   size = "md",
+  activity = false,
 }: {
   styles: ShowcaseStyle[];
   theme?: string | null;
@@ -41,12 +43,13 @@ export function StyleShowcase({
   look?: ExampleVariant | null;
   tabs?: boolean;
   size?: "sm" | "md";
+  activity?: boolean;
 }) {
   const t = useTranslations("storyShowcase");
   const locale = useLocale();
   const id = useId();
   const [own, setOwn] = useState<string | null>(null);
-  const shown = styles.filter((s) => samplesForStyle(s.slug).length > 0);
+  const shown = styles.filter((s) => samplesForStyle(s.slug, null, { activity }).length > 0);
   const current = shown.find((s) => s.slug === (value ?? own)) ?? shown[0];
   if (!current) return null;
 
@@ -76,22 +79,33 @@ export function StyleShowcase({
     document.getElementById(`${id}-tab-${target.slug}`)?.focus();
   }
 
-  const samples = samplesForStyle(current.slug, theme, { look });
+  const samples = samplesForStyle(current.slug, theme, { look, activity });
   const ownCount = theme ? bookSampleCount(current.slug, theme) : 0;
   const books = bookSampleCount(current.slug);
   // the chip counts story pages (not covers): this story's own when it has some, else the style's
   const pageCount = samplesForStyle(current.slug, ownCount ? theme : null, { strict: !!ownCount }).filter(
     (s) => s.kind === "page",
   ).length;
-  const sold = ["classic", "magic"].filter((l) => current.lines.includes(l) && lineNames[l]).map((l) => lineNames[l]!);
+  const sold = activity
+    ? []
+    : ["classic", "magic"].filter((l) => current.lines.includes(l) && lineNames[l]).map((l) => lineNames[l]!);
   const story = (s: StyleSample) => (s.theme ? themeNames[s.theme] : undefined);
   const caption = (s: StyleSample): string | null => {
     if (s.kind === "companion") return t("caption.companion");
+    if (s.kind === "character") return t("caption.character");
+    if (s.kind === "activity") return t("caption.activity");
     const name = story(s);
+    if (activity) return name ? t("caption.from", { story: name }) : null;
     if (theme && s.theme === theme) return null; // this story's own page
     return name ? t(theme ? "caption.from" : "caption.story", { story: name }) : null;
   };
-  const note = books === 0 ? t("note.companionOnly") : theme && ownCount === 0 ? t("note.otherStories") : null;
+  const note = activity
+    ? null
+    : books === 0
+      ? t("note.companionOnly")
+      : theme && ownCount === 0
+        ? t("note.otherStories")
+        : null;
 
   return (
     <div className="flex flex-col gap-3.5">
@@ -104,7 +118,7 @@ export function StyleShowcase({
         >
           {shown.map((s) => {
             const on = s.slug === current.slug;
-            const thumb = styleThumb(s.slug, theme, look);
+            const thumb = styleThumb(s.slug, theme, look, activity ? "character" : "cover");
             return (
               <button
                 key={s.slug}
