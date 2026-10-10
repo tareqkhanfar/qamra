@@ -243,11 +243,11 @@ def test_the_family_book_puts_aba_bakr_and_his_grandfather_in_the_genitive(gende
     assert "'owner': 'جَدْوَلُ أبي بكر'" in text  # the chore chart
     assert "احكوا لأبي بكر عن" in text and "وتشجيع لأبي بكر." in text  # «لـ{child:gen}»: the لا ligature
     assert "مع أبي بكر في المطبخ" in text and "اطلبوا من أبي بكر أن" in text and "بكلمات أبي بكر" in text
-    assert "وَنُحَضِّرُ مَعَ أبي أحمد" in text and "من أبي أحمد ويدًا بيد" in text
-    assert "أَحْكي لِأبي أحمد" in text and "نَتَّصِلُ بِـأبي أحمد" in text
+    assert "وَنُحَضِّرُ مَعَ أبي أحمد" in text and "من أبي أحمد، يدًا بيد" in text
+    assert "أَحْكِيَ لِأبي أحمد" in text and "نَتَّصِلُ بِـأبي أحمد" in text
     # the interview (p81, with ماما) and its preview on the opener name the same grown-up
     assert "مُقابَلَةٌ مَعَ ماما" in text and "مُقابَلَةٌ مَعَ أبي أحمد" not in text
-    assert "'members': 'مَعَ أبي أحمد وماما'" in text  # the certificate
+    assert "'members': 'مَعَ أبي أحمد وَماما'" in text  # the certificate
     assert ("يبقى أبو بكر" if gender == "m" else "تبقى أبو بكر") in text  # a subject: as typed
     assert "اشكروا أبا بكر على" in text  # the accusative is unchanged
 

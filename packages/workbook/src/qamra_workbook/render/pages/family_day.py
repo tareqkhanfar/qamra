@@ -208,7 +208,8 @@ def nature_bingo(ctx: PageContext) -> Built:
     hear = {str(i) for i in params.get("hear", [])}
     problems = [] if len(items) == BINGO_SIZE**2 - 1 else [f"a bingo card has {BINGO_SIZE**2 - 1} things"]
     cards = []
-    for k, owner in enumerate((ctx.book.child.name, ctx.text("{adult}"))):
+    # each card is the owner's: «بِنْغو أبي عبد الرحمن» (a name in «أبو» takes the genitive)
+    for k, owner in enumerate((ctx.text("{child:gen}"), ctx.text("{adult:gen}"))):
         order = list(items)
         ctx.rng(f"bingo-{k}").shuffle(order)
         order.insert(len(order) // 2, "")

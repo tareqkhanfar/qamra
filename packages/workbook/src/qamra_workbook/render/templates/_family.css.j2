@@ -2,7 +2,7 @@
 .fam { --sun: #F2B33D; --sun-deep: #B27A0C; --sun-glow: #FFF4D6; --pb: #FFF8E6; --pb-edge: #F3C75E; }
 
 /* header: chip and activity tags on one row, a big friendly title, the moon guide */
-.fam .head { gap: 2.4mm; margin-bottom: 4.5mm; }
+.fam .head { gap: 3.4mm; margin-bottom: 4mm; }  /* a title's hamza and sukun («كَأْسَكِ») clear the tag row */
 .fam .head-row { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 3mm; }
 .fam .chip { height: 7.6mm; font-size: 9.5pt; }
 .fam .title { font-size: 32pt; line-height: 1.12; }
@@ -95,7 +95,8 @@
           background: var(--c); color: #FFFFFF; font: 800 14pt/1 var(--title); box-shadow: 0 1mm 0 var(--deep); }
 .op-adv .ico { width: 7mm; height: 7mm; padding: 1mm; border-radius: 50%; background: #FFFFFF; color: var(--c); }
 .op-adv span { padding-top: 1mm; }
-.op-title { font: 800 54pt/1.05 var(--title); color: var(--deep); text-align: center; text-shadow: 0 1.2mm 0 #FFFFFF; }
+.op-title { font: 800 54pt/1.05 var(--title); color: var(--deep); text-align: center; text-shadow: 0 1.2mm 0 #FFFFFF;
+            padding-top: 3mm; }  /* the marks above the first line clear the «المغامرة» pill */
 .op-hook { position: relative; width: 150mm; background: #FFFFFF; border-radius: 8mm; padding: 6mm 9mm 6mm 8mm;
            box-shadow: 0 1.4mm 0 var(--tint), 0 0 0 0.6mm var(--tint); }
 .op-hook p { font: 600 15pt/1.75 var(--body); color: var(--ink); text-align: center; }
@@ -127,7 +128,7 @@
                   height: 10mm; padding-inline: 3mm 5mm; border-radius: 5mm; background: var(--deep); color: #FFFFFF;
                   font: 800 14pt/1 var(--title); max-width: 120mm; }
 .op-family-name .ico { width: 6mm; height: 6mm; flex: none; }
-.op-family-name span { white-space: nowrap; overflow: hidden; padding-top: 1mm; }
+.op-family-name span { white-space: nowrap; overflow: hidden; padding-top: 1mm; line-height: 1.5; }  /* room for the dots under «الزعبي» */
 
 /* ---- treasure hunt */
 .hunt { flex: 1; display: flex; flex-direction: column; gap: 4.5mm; }

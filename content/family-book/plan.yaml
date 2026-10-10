@@ -135,7 +135,7 @@ sections:
   - id: act
     title_ar: "نُمَثِّلُ وَنَحْكي"
     icon: 🎭
-    hook: "كُلُّ حِكايَةٍ تَحْتاجُ نِهايَةً… وَ{child} {يَعْرِفُها/تَعْرِفُها}! نَلْبَسُ الأَدْوارَ، وَنُحَرِّكُ الدُّمى، وَنَجِدُ حُلولًا ذَكِيَّةً."
+    hook: "كُلُّ حِكايَةٍ تَحْتاجُ نِهايَةً… وَ{child} {يَعْرِفُ/تَعْرِفُ} كَيْفَ {يَصْنَعُها/تَصْنَعُها}! نَلْعَبُ الأَدْوارَ، وَنُحَرِّكُ الدُّمى، وَنَجِدُ حُلولًا ذَكِيَّةً."
     badge: "{فَنّانٌ/فَنّانَةٌ}"
 
 activities:
@@ -273,7 +273,7 @@ activities:
     materials: [قلم رصاص, كيس تسوّق]
     minutes: 15
     levels: {simple: "3 أشياء بالرسم", challenge: "5 أشياء، يكتب أسماءها ويعدّ المجموع"}
-    safety: "في السوق {يبقى/تبقى} {child} {قريبًا/قريبة} من {adult:gen} ويدًا بيد. اتفقوا قبل الخروج: إن {ضاع/ضاعت}، {يقف/تقف} {مكانه/مكانها} {ويطلب/وتطلب} المساعدة من البائع."
+    safety: "في السوق {يبقى/تبقى} {child} {قريبًا/قريبة} من {adult:gen}، يدًا بيد. اتفقوا قبل الخروج: إذا {ضاع/ضاعت}، {يقف/تقف} في {مكانه/مكانها} {ويطلب/وتطلب} المساعدة من أقرب بائع."
     pages:
       - type: shopping-list
         title: "قائِمَةُ مُشْتَرَياتي"
@@ -400,13 +400,14 @@ activities:
           - "{دعوه/دعوها} {يدهن/تدهن} الخبز بالملعقة، والسكين معكم."
           - "سمّوا المكوّنات معًا: خبز، زيت زيتون، زعتر."
         params:
+          count_label: "المُكَوِّناتُ: {عُدَّ/عُدّي} القِطَعَ وَالمَلاعِقَ"
           ingredients:
-            - {picture: bread, name: "خُبْزٌ", count: 1}
+            - {picture: bread, name: "خُبْزٌ", count: 1, unit: piece}  # a loaf, not a spoonful
             - {picture: olive-oil, name: "زَيْتُ زَيْتونٍ", count: 2}
             - {picture: zaatar, name: "زَعْتَرٌ", count: 1}
           steps:
             - {picture: wash, text: "نَغْسِلُ أَيْدِيَنا"}
-            - {picture: oil, text: "نَدْهُنُ الخُبْزَ بِالزَّيْتِ"}
+            - {picture: oil-bread, text: "نَدْهُنُ الخُبْزَ بِالزَّيْتِ"}
             - {picture: zaatar, text: "نَرُشُّ الزَّعْتَرَ"}
           shown: [2, 3, 1]
   - id: chef-fruit
@@ -623,7 +624,7 @@ activities:
         title: "نَعُدُّ فِي الطَّبيعَةِ"
         instruction: "كَمْ شَيْئًا {جَمَعْتَ/جَمَعْتِ}؟ {لَوِّنْ/لَوِّني} مُرَبَّعًا لِكُلِّ واحِدٍ"
         parent: ["رتّبوا الكنوز في صفوف على الطاولة قبل العدّ."]
-        params: {mode: things, things: [stone, leaf, flower], challenge_things: [pinecone], squares: 10}
+        params: {mode: things, things: [stone, leaf, leaf-long], challenge_things: [pinecone], squares: 10}  # no flower: p36 «لا نقطف الأزهار»
   - id: nature-olive
     section: nature
     title: "شَجَرَةُ الزَّيْتونِ"
@@ -729,7 +730,7 @@ activities:
       - type: sequence-cards
         title: "يَوْمي بِالتَّرْتيبِ"
         instruction: "مِنَ الصَّباحِ إِلى المَساءِ: {رَقِّمْ/رَقِّمي} صُوَرَ {يَوْمِكَ/يَوْمِكِ} بِالتَّرْتيبِ"
-        parent: ["اسألوا: ماذا نفعل قبل الفطور؟ وماذا نفعل بعد النوم؟"]
+        parent: ["اسألوا: ماذا نفعل قبل الفطور؟ وماذا نفعل قبل النوم؟"]
         params:  # draft: educator review (the day's cards)
           mode: day
           cards:
@@ -1005,7 +1006,7 @@ activities:
     levels: {simple: "شعوران", challenge: "4 مشاعر، ولكل شعور فكرتان"}
     pages:
       - type: story-finish
-        title: "عِنْدَما أَغْضَبُ أَسْتَطيعُ…"
+        title: "عِنْدَما أَشْعُرُ… أَسْتَطيعُ…"  # four feelings on the page, not anger alone
         instruction: "لِكُلِّ شُعورٍ، ماذا {تَسْتَطيعُ/تَسْتَطيعينَ} أَنْ {تَفْعَلَ/تَفْعَلي}؟ {ارْسُمْ/ارْسُمي} أَوْ {قُلْ/قولي}"
         parent: ["أفكار لطيفة: أعدّ إلى خمسة، أشرب ماء، أطلب حضنًا، أرسم غضبي."]
         params:  # draft: educator review
@@ -1205,6 +1206,7 @@ activities:
           - "ساعدوا {child:acc} في الاتصال أو الزيارة، واختاروا معًا سؤالين."
           - "بعدها اسألوا {child:acc}: ماذا {عرفتَ/عرفتِ} عن زمان؟"
         params:  # draft: educator review (the questions; no second-person verbs, so they suit any grown-up)
+          adult: grandparent  # «the old days» and «call or visit»: a grandparent when the family has one
           answers: true
           cards:
             - {icon: ball, text: "ما لُعْبَتُك المُفَضَّلَةُ فِي الطُّفولَةِ؟"}
@@ -1298,7 +1300,7 @@ activities:
     title: "أَبْطالُ حَيِّنا"
     goal: ملاحظة المهن في الحيّ وتقدير أصحابها
     skills: [observation, counting]
-    child_part: يشطب كل صاحب مهنة يراه في الطريق ويعدّهم
+    child_part: يضع إشارة عند كل صاحب مهنة يراه في الطريق ويعدّهم
     parent_part: يمشي مع الطفل في الحيّ، ويشجّعه على شكر البائع أو عامل النظافة
     together: true
     where: outside
@@ -1309,10 +1311,11 @@ activities:
     pages:
       - type: scavenger-hunt
         title: "أَبْطالُ حَيِّنا"
-        instruction: "عَلى الطَّريقِ أَبْطالٌ! {اشْطُبْ/اشْطُبي} كُلَّ صاحِبِ مِهْنَةٍ {تَراهُ/تَرَيْنَهُ}"
+        instruction: "عَلى الطَّريقِ أَبْطالٌ! {ضَعْ/ضَعي} إِشارَةً عِنْدَ كُلِّ صاحِبِ مِهْنَةٍ {تَراهُ/تَرَيْنَهُ}"
         parent: ["شجّعوا {child:acc} على قول «شكرًا» لبائع أو عامل نظافة."]
         params:  # draft: educator review (who we meet in the street)
           count: true
+          found: "كَمْ صاحِبَ مِهْنَةٍ {رَأَيْتَ/رَأَيْتِ}؟"  # people, not «شَيْئًا»
           items:
             - {picture: stall, label: "البائِعُ"}
             - {picture: broom, label: "عامِلُ النَّظافَةِ"}
@@ -1378,7 +1381,7 @@ activities:
     goal: كتابة الأرقام والتخطيط
     skills: [counting, creativity, life_skills]
     child_part: يختار أشياء من البيت لمتجره، ويكتب أو يرسم سعر كل واحد على بطاقة
-    parent_part: يساعد في ترتيب المتجر، ويقترح أسعارًا صغيرة من 1 إلى 10
+    parent_part: يساعد في ترتيب المتجر، ويقترح أسعارًا صغيرة من 1 إلى 5 (وحتى 20 للتحدّي)
     together: true
     materials: [أشياء من البيت, بطاقات الأسعار]
     minutes: 15
@@ -1387,7 +1390,7 @@ activities:
       - type: price-tags
         title: "نَفْتَحُ المَتْجَرَ"
         instruction: "{مَتْجَرُكَ/مَتْجَرُكِ} يَفْتَحُ أَبْوابَهُ! {اكْتُبْ/اكْتُبي} سِعْرَ كُلِّ شَيْءٍ فيهِ"
-        parent: ["اقترحوا أسعارًا صغيرة من 1 إلى 10، واتركوا {child:acc} {يقرّر/تقرّر}."]
+        parent: ["اقترحوا أسعارًا صغيرة من 1 إلى 5، واتركوا {child:acc} {يقرّر/تقرّر}."]
         params: {mode: blank, spots: 6}
   - id: shop-customer
     section: shop
@@ -1413,7 +1416,7 @@ activities:
               picture: stall
               icon: shop
               lines: ["أَهْلًا وَسَهْلًا فِي مَتْجَري!", "هَذا بِثَلاثِ قَمَراتٍ.", "شُكْرًا، مَعَ السَّلامَةِ!"]
-              challenge: ["المَجْموعُ خَمْسُ قَمَراتٍ.", "الباقي قَمْرَتانِ."]
+              challenge: ["المَجْموعُ ثَماني قَمَراتٍ.", "الباقي قَمْرَتانِ."]  # 10 − 8 = 2, the customer's lines
             - name: "الزَّبونُ"
               picture: shopping-bag
               icon: bag
@@ -1548,7 +1551,7 @@ activities:
             - {pose: spin, text: "{دُرْ/دُوري}"}
             - {pose: hop, text: "{قِفْ/قِفي} عَلى رِجْلٍ واحِدَةٍ"}
             - {pose: touch, text: "{الْمِسْ قَدَمَيْكَ/الْمِسي قَدَمَيْكِ}"}
-            - {pose: stretch, text: "{تَمَدَّدْ/تَمَدَّدي}"}
+            - {pose: stretch, text: "{ارْفَعْ يَدَيْكَ/ارْفَعي يَدَيْكِ}"}
   - id: games-scoreboard
     section: games
     title: "لَوْحَةُ نِقاطِ العائِلَةِ"

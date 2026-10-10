@@ -186,6 +186,7 @@ ROLE_FIGURES: dict[str, Figure] = {
 }
 ADULT_FIGURES: frozenset[Figure] = frozenset({"woman", "man", "grandma", "grandpa", "adult"})
 NO_ADULT = "أحد الكبار"  # {adult} when the family lists no grown-up
+GRANDPARENT = "grandparent"  # a page's `adult`/`member` param: a grandparent, by whatever name, when there is one
 
 
 @dataclass(frozen=True)
@@ -219,6 +220,10 @@ MAX_MEMBERS = 6  # A7 §7
 # parents' plain texts «مدينتكم». The passport's city field stays empty, to fill in by hand.
 CITY_FALLBACK_VOWELIZED = "مَدينَتِنا"
 CITY_FALLBACK_PLAIN = "مدينتكم"
+# A text is the child's vowelized register when it carries short vowels or sukun. The parents' plain texts
+# carry tanween and shadda too («طريقًا آمنًا»، «تحبّهم») and the odd helping vowel («نفَسًا»).
+_SHORT_VOWELS = re.compile(r"[َُِْ]")
+VOWELIZED_MIN = 3
 
 
 @dataclass(frozen=True)
@@ -248,13 +253,18 @@ class Family:
         for m in among:
             if wanted and wanted in (_TASHKEEL.sub("", m.role).strip(), _TASHKEEL.sub("", m.name).strip()):
                 return m
+        if wanted == GRANDPARENT:  # whatever the family calls them: ستّي، تيتا، سيدو، جدّي…
+            elders = [m for m in among if m.drawn_as in ("grandma", "grandpa")]
+            if elders:
+                return elders[key % len(elders)]
         return among[key % len(among)]
 
     def city_in(self, text: str) -> str:
         """The city as `text` prints it: the family's, else the fallback in the text's own register."""
         if self.city.strip():
             return self.city.strip()
-        return CITY_FALLBACK_VOWELIZED if _TASHKEEL.search(text) else CITY_FALLBACK_PLAIN
+        vowelized = len(_SHORT_VOWELS.findall(text)) >= VOWELIZED_MIN
+        return CITY_FALLBACK_VOWELIZED if vowelized else CITY_FALLBACK_PLAIN
 
     def personalize(self, text: str, key: int = 0, adult: str = "", member: str = "") -> str:
         grown_up = self.pick(self.adults, key, adult)

@@ -1,7 +1,7 @@
 <div class="feel">
   <div class="feel-main">
     <div class="thermo-card fcard">
-      <div class="label">{{ icon('heart') }}كَمْ حَجْمُ شُعوري الآنَ؟</div>
+      <div class="label">{{ icon('heart') }}ما حَجْمُ شُعوري الآنَ؟</div>
       <div class="thermo-wrap" style="height: {{ d.thermo_mm }}mm">
         <div class="thermo-svg">{{ d.thermo }}</div>
         <div class="levels">
@@ -11,7 +11,7 @@
     </div>
     <div class="feel-side">
       <div class="when fcard">
-        <div class="label">{{ icon('talk') }}عِنْدَما أَشْعُرُ بِـ…</div>
+        <div class="label">{{ icon('talk') }}عِنْدَما يَزورُني…</div>
         <div class="faces">{% for f in d.feelings %}<div class="face-opt">{{ f.face }}<span>{{ f.label }}</span></div>{% endfor %}</div>
       </div>
       <div class="can fcard">

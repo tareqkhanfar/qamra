@@ -185,7 +185,7 @@ def family_of(ctx: PageContext, problems: list[str]) -> Family | None:
 def members_line(members: Sequence[Member], case: str = "") -> str:
     """«ماما وبابا وكرم وستّي»; with `case` (`GEN`) every name in that case: «مَعَ أبي أحمد وستّي»."""
     labels = [in_case(m.label, case) for m in members]
-    return " و".join(labels) if len(labels) > 1 else "".join(labels)
+    return " وَ".join(labels) if len(labels) > 1 else "".join(labels)  # the certificate is vowelled
 
 
 # ---- the passport (front pages) -------------------------------------------------------------------------
@@ -308,7 +308,7 @@ def spread_art(ctx: PageContext) -> Markup:
         (gutter + 172, 46),
         (22, 38),
         (gutter - 24, 24),
-        (190, 30),
+        (64, 20),  # (not beside the one at gutter − 24: two flowers drawn on top of each other)
     ):
         body.append(nested_picture("flower", x, h - dy, 12))
     for x, y, r in (
@@ -506,7 +506,8 @@ def checklist_hunt(ctx: PageContext) -> Built:
         "count": bool(params.get("count", False)),
         "compare": ctx.text(str(params.get("compare", ""))),
         "character": uri(ctx.assets.character),
-        "found_q": ctx.text("كَمْ شَيْئًا {وَجَدْتَ/وَجَدْتِ}؟"),
+        # what the hunt counts: things, or people («كَمْ صاحِبَ مِهْنَةٍ رَأَيْتِ؟»)
+        "found_q": ctx.text(str(params.get("found", "كَمْ شَيْئًا {وَجَدْتَ/وَجَدْتِ}؟"))),
         "total": [ctx.num(i + 1) for i in range(len(items))],
         "safety": ctx.text(str(params["safety"])) if params.get("safety") else "",
     }
@@ -609,6 +610,13 @@ def step_picture(kind: str) -> Markup:
                 + f'<g transform="rotate(-38 11 10)">{nested_picture("olive-oil", 0, -2, 23)}</g>'
                 + draw.path("M17.5 16.5 Q19.2 20 19.8 23.5", stroke="#D9BE3A", width=1.4)
             )
+        case "oil-bread":  # the sandwich: oil poured on a round of bread (not on the labneh balls)
+            body = (
+                nested_picture("bread", 7, 15, 30)
+                + draw.el("ellipse", cx=23, cy=29.5, rx=6.5, ry=2.6, fill="#D9BE3A", opacity=0.75)
+                + f'<g transform="rotate(-38 11 10)">{nested_picture("olive-oil", 0, -2, 23)}</g>'
+                + draw.path("M17.5 16.5 Q19.2 21 20.5 27.5", stroke="#D9BE3A", width=1.4)
+            )
         case "cut":  # the grown-up's knife: fruit on a board
             board = draw.el(
                 "rect", x=3, y=22, width=34, height=15, rx=4, fill="#E7B070", stroke=OUTLINE, stroke_width=0.9
@@ -685,6 +693,7 @@ def recipe_steps(ctx: PageContext) -> Built:
                 "mini": ctx.pic(str(i["picture"]), css_class="pic mini"),
                 "name": ctx.text(str(i["name"])),
                 "count": int(i.get("count", 1)),
+                "unit": str(i.get("unit", "spoon")),  # piece: counted as pieces (a loaf), not in spoons
             }
             for i in ingredients
         ],
@@ -718,13 +727,13 @@ LEVELS: tuple[tuple[people.Feeling, str, str], ...] = (  # bottom to top: how bi
     ("angry", "كَبيرٌ جِدًّا", "#EE8A7A"),
 )
 FEELINGS: tuple[tuple[people.Feeling, str], ...] = (("angry", "الغَضَبُ"), ("sad", "الحُزْنُ"), ("scared", "الخَوْفُ"))
-STRATEGIES = (
-    ("wind", "أَتَنَفَّسُ بِبُطْءٍ"),
-    ("heart", "أَطْلُبُ حِضْنًا"),
-    ("talk", "أَحْكي لِـ{adult:gen}"),
-    ("cup", "أَشْرَبُ ماءً"),
-    ("crayon", "أَرْسُمُ شُعوري"),
-    ("hand", "أَعُدُّ حَتّى ٥"),
+STRATEGIES = (  # each completes «أَسْتَطيعُ أَنْ…», so the verb is in the subjunctive
+    ("wind", "أَتَنَفَّسَ بِبُطْءٍ"),
+    ("heart", "أَطْلُبَ حِضْنًا"),
+    ("talk", "أَحْكِيَ لِـ{adult:gen}"),
+    ("cup", "أَشْرَبَ ماءً"),
+    ("crayon", "أَرْسُمَ شُعوري"),
+    ("hand", "أَعُدَّ حَتّى ٥"),
 )
 
 
@@ -945,7 +954,8 @@ def certificate_family(ctx: PageContext) -> Built:
         "name": ctx.book.child.name,
         "family": family.name if family else "",
         "members": ("مَعَ " + members_line(family.members, GEN)) if family else "",
-        "date": ctx.book.date_ar(),
+        # the day the child finishes the last adventure, written by the family: never the print date
+        "date": "",
         "character": uri(hero),
         "badges": [rosette(b, css_class="cert-seal") for b in CORE_BADGES],
         "star": _star,

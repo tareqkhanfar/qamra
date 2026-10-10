@@ -28,7 +28,7 @@
     <div class="fcert-members" data-fit="9">{{ d.members }}</div>
     <div class="fcert-badges">{% for b in d.badges %}{{ b }}{% endfor %}</div>
     <div class="fcert-sign">
-      <div><span class="fcert-label">التّاريخُ</span><span class="fcert-value">{{ d.date }}</span></div>
+      <div><span class="fcert-label">التّاريخُ</span><span class="fcert-value{% if not d.date %} blank{% endif %}">{{ d.date }}</span></div>
       <div><span class="fcert-label">تَوْقيعُ العائِلَةِ</span><span class="fcert-value blank"></span></div>
     </div>
     <div class="say fcert-say">{{ mascot('mascot', true) }}<div class="bubble">{{ p.instruction }}</div></div>

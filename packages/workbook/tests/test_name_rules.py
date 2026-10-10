@@ -201,6 +201,9 @@ def test_an_empty_city_never_prints_souq_with_nothing_after_it() -> None:
     hook = family.personalize(market.hook)
     assert hook.startswith(f"سوقُ {CITY_FALLBACK_VOWELIZED} ") and "سوقُ  " not in hook
     assert family.personalize("قبل الذهاب إلى سوق {city}.") == f"قبل الذهاب إلى سوق {CITY_FALLBACK_PLAIN}."
+    # a parent's plain line with tanween is still plain («طريقًا آمنًا»)
+    park = "اختاروا حديقة أو طريقًا آمنًا في {city}، وابقوا معًا."
+    assert family.personalize(park) == f"اختاروا حديقة أو طريقًا آمنًا في {CITY_FALLBACK_PLAIN}، وابقوا معًا."
     assert family.personalize("في {city}") == "في مدينتكم"
     given = dataclasses.replace(family, city="نابلس")
     assert given.personalize(market.hook).startswith("سوقُ نابلس ")

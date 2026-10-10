@@ -141,7 +141,7 @@ COLORS = {  # a color hunt's colors: name, paint
     "orange": ("بُرْتُقالِيٌّ", "#F39A3D"),
     "purple": ("بَنَفْسَجِيٌّ", "#9376CF"),
 }
-FRUITS = ("apple", "orange", "banana", "strawberry", "tomato", "carrot", "grapes")
+FRUITS = ("apple", "orange", "banana", "strawberry", "pear", "lemon", "grapes")  # «عُدَّ الفاكِهَةَ»: fruit only
 
 
 def group(picture_id: str, count: int, w: float = 50, h: float = 30) -> Markup:

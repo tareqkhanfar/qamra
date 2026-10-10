@@ -115,6 +115,16 @@ def test_family_placeholders_resolve_for_the_page() -> None:
     assert grown_ups == {"ماما", "بابا", "ستّي"}
     lone = book(page(8, "scavenger-hunt", "home"), family=Family("الكيلاني", (Member("أخي", "كرم"),)))
     assert lone.personalize("مع {adult}", lone.pages[0]) == "مع أحد الكبار"
+    # «حكايات زمان» asks a grandparent, whatever the family calls them, and anyone when there is none
+    elders = {
+        b.personalize("{adult}", dataclasses.replace(chosen, number=n, params={"adult": "grandparent"}))
+        for n in range(6)
+    }
+    assert elders == {"ستّي"}
+    tita = Family("الخطيب", (Member("ماما"), Member("تيتا"), Member("سيدي", "أبو عبد الرحمن")))
+    picked = {tita.personalize("{adult}", n, adult="grandparent") for n in range(4)}
+    assert picked == {"تيتا", "أبو عبد الرحمن"}
+    assert Family("الكيلاني", (Member("بابا"),)).personalize("{adult}", 3, adult="grandparent") == "بابا"
     rendered = build_pages(book(page(8, "scavenger-hunt", "home")), ASSETS)[0]
     assert rendered.title == "مغامرة ليان" and rendered.instruction == "ابحثي عن أشياء دائرية في المطبخ"
     assert "ليان" in rendered.parent[0] and "محقّقة صغيرة" in rendered.parent[2]
@@ -263,6 +273,10 @@ def test_the_family_book_has_its_own_section_styles() -> None:
         from qamra_workbook.family import load as load_plan
 
         assert [s.id for s in load_plan(PLAN).sections] == FAMILY_ORDER
+        # the chip on every page spells the adventure as its opening spread and the contents do («يَوْمِيَ»)
+        assert {s.id: s.title_ar for s in load_plan(PLAN).sections} == {
+            s: section_style(s, "family").name_ar for s in FAMILY_ORDER
+        }
 
 
 def test_the_opening_spread_shares_one_landscape() -> None:
