@@ -36,6 +36,7 @@ class OrderFiles:
     pages: int = 0
     inserts: dict[str, Path] = field(default_factory=dict)  # print file name → the layered PDF (stickers)
     dies: dict[str, Path] = field(default_factory=dict)  # print file name → its die lines alone
+    cutout_fallback: bool = False  # the child is printed as a framed portrait (not cut out): flag the book
 
     @property
     def passed(self) -> bool:
@@ -103,6 +104,7 @@ async def render_order(
     )
     await render_book(cover, assets, out / "cover.pdf")
     files = OrderFiles(out / "interior.pdf", out / "cover.pdf", key, pages=len(interior.pages))
+    files.cutout_fallback = assets.framed
     g = interior.geometry
     files.preflight = {"interior.pdf": report(files.interior, g), "cover.pdf": report(files.cover, g)}
     sheet = await render_sheet(interior, assets, out / "inserts")

@@ -15,8 +15,9 @@ book waits `in_review` for an admin's print approval (Addendum 3 §5), after whi
 interior and cover. A set gets one book per volume (all three). The digital PDF is the same files.
 
 Flags for the reviewer, besides `preflight_failed`: `name_en_guessed` (no English spelling was given, the
-English name page prints a transliteration) and `name_not_traceable` (the Arabic name page could not trace the
-whole name; see `qamra_workbook.names`).
+English name page prints a transliteration), `name_not_traceable` (the Arabic name page could not trace the
+whole name; see `qamra_workbook.names`) and `cutout_fallback` (the child could not be cut out of the character
+sheet and is printed as a framed portrait; see `qamra_pdf.cutout`).
 
 The black-and-white interior is not built yet (the B&W variants are off sale, owner decision 2026-10-07): an
 item that orders it is refused, and its books are kept `failed` with the reason, for staff to sort out with
@@ -40,7 +41,13 @@ from qamra_core.storage import ObjectStorage
 from qamra_pdf.arabic_names import genitive
 from qamra_worker import context
 from qamra_worker.jobs.books import file_key
-from qamra_worker.jobs.family_book import approved_character, name_en_of, name_flags, numerals_of
+from qamra_worker.jobs.family_book import (
+    approved_character,
+    cutout_flags,
+    name_en_of,
+    name_flags,
+    numerals_of,
+)
 from qamra_worker.settings import get_settings
 
 log = structlog.get_logger("qamra.worker.workbook_book")
@@ -205,6 +212,7 @@ async def render_volume(
         [] if files.passed else ["preflight_failed"]
     )
     book.flags = name_flags(book.flags, guessed=files.name_en_guessed, traceable=files.name_traceable)
+    book.flags = cutout_flags(book.flags, files)
     book.status = BookStatus.in_review  # an admin approves it for print, as every printed book (A3 §5)
     book.error = None
     db.add(

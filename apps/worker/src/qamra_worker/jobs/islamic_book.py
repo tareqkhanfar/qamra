@@ -52,7 +52,7 @@ from qamra_core.islamic_review import (
 from qamra_core.storage import ObjectStorage
 from qamra_worker import context
 from qamra_worker.jobs.books import file_key
-from qamra_worker.jobs.family_book import approved_character, numerals_of, store_inserts
+from qamra_worker.jobs.family_book import approved_character, cutout_flags, numerals_of, store_inserts
 
 log = structlog.get_logger("qamra.worker.islamic_book")
 LINE = "islamic"
@@ -214,6 +214,7 @@ async def render_one(
     book.flags = [f for f in (book.flags or []) if f != "preflight_failed"] + (
         [] if files.passed else ["preflight_failed"]
     )
+    book.flags = cutout_flags(book.flags, files)
     book.status = BookStatus.in_review  # an admin approves it for print, as every printed book (A3 §5)
     book.error = None
     db.add(

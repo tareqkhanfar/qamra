@@ -60,6 +60,7 @@ SIZES = ("21x28", "a4")
 MAX_MEMBERS_IN_BOOK = 6  # A7 §7
 NOT_FOR_ACTIVITY_BOOKS = ("coloring",)  # a coloring-book character is black and white
 NAME_EN_GUESSED, NAME_NOT_TRACEABLE = "name_en_guessed", "name_not_traceable"  # book flags (name pages)
+CUTOUT_FALLBACK = "cutout_fallback"  # book flag: a character is printed as a framed portrait, not cut out
 
 
 def family_of(item: OrderItem, child: Child) -> Any:
@@ -178,6 +179,14 @@ def name_flags(flags: list[str] | None, *, guessed: bool, traceable: bool) -> li
     return kept + ([NAME_EN_GUESSED] if guessed else []) + ([] if traceable else [NAME_NOT_TRACEABLE])
 
 
+def cutout_flags(flags: list[str] | None, files: Any) -> list[str]:
+    """The book's flags with the cut-out check of this render: `cutout_fallback` when a character could not be
+    cut out of its sheet (a watercolour sheet's grain, an odd sheet) and the pages print it as a framed
+    portrait instead (`files.cutout_fallback`), so the reviewer looks at it before print approval."""
+    kept = [f for f in (flags or []) if f != CUTOUT_FALLBACK]
+    return kept + ([CUTOUT_FALLBACK] if getattr(files, "cutout_fallback", False) else [])
+
+
 def store_inserts(storage: ObjectStorage, book: Book, files: Any) -> dict[str, str]:
     """The render's insert sheets (`files.inserts`, `files.dies`) stored beside the book's files:
     `inserts/<name>.pdf`, the layered print file whose key goes in `generation["files"]` (the print batch and
@@ -269,6 +278,7 @@ async def render_item(db: Session, storage: ObjectStorage, item: OrderItem) -> d
     book.flags = [f for f in (book.flags or []) if f != "preflight_failed"] + (
         [] if files.passed else ["preflight_failed"]
     )
+    book.flags = cutout_flags(book.flags, files)
     book.status = BookStatus.in_review  # an admin approves it for print, as every printed book (A3 §5)
     book.error = None
     db.add(

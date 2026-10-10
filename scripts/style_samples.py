@@ -80,8 +80,8 @@ SEMI_TALA = "out/style-samples/semi-realistic-new-sibling-tala/proof.pdf"
 # page with her cut-out, rendered locally (no AI):
 #   python -m qamra_workbook.render.workbook --level kg1 --volume 1 --cover --pages 1-1 --name تالا \
 #       --name-en Tala --gender f --sheet <sheet> --out out/style-samples/activity/<style>
-# Watercolor has no activity sample: that sheet's paper grain defeats the cut-out (the whole sheet is
-# pasted).
+# Watercolor has no activity sample yet: until cut-out v3 (2026-10-09) that sheet's paper grain defeated the
+# cut-out (the whole sheet was pasted); it now cuts cleanly, so one can be rendered and added to ACTIVITY.
 SHEETS = {
     "3d": "out/style-samples/src/3d-new-sibling-tala/character.png",
     "watercolor": "out/style-samples/src/watercolor-tala-sheet.png",

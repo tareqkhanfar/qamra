@@ -37,6 +37,15 @@ class Assets:
     # the family book's illustrated members: the member's index in the family → (cut-out, width / height)
     family: Mapping[int, tuple[Path, float]] = field(default_factory=dict)
 
+    @property
+    def framed(self) -> bool:
+        """A character could not be cut out of its sheet and is printed as a framed portrait instead
+        (`qamra_pdf.cutout`'s safety fallback): the order job flags the book `cutout_fallback`."""
+        from qamra_workbook.render.character import is_fallback
+
+        paths = [self.character, self.wave, *(path for path, _ in self.family.values())]
+        return any(path is not None and is_fallback(path) for path in paths)
+
 
 @dataclass
 class Built:

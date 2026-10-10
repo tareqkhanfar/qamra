@@ -720,6 +720,7 @@ class VolumeFiles:
     preflight: dict[str, dict[str, Any]] = field(default_factory=dict)  # file name → report
     inserts: dict[str, Path] = field(default_factory=dict)  # print file name → the layered PDF (stickers)
     dies: dict[str, Path] = field(default_factory=dict)  # print file name → its die lines alone
+    cutout_fallback: bool = False  # the child is printed as a framed portrait (not cut out): flag the book
 
     @property
     def passed(self) -> bool:
@@ -799,6 +800,7 @@ async def render_volume(
     )
     await _pdf(cover, assets, out / "cover.pdf")
     files = VolumeFiles(out / "interior.pdf", out / "cover.pdf", key, pages=len(book.pages))
+    files.cutout_fallback = assets.framed
     g = book.geometry
     files.preflight = {
         "interior.pdf": _report(files.interior, g),

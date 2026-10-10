@@ -19,7 +19,7 @@ from pathlib import Path
 from PIL import Image, ImageChops, ImageFilter, ImageOps
 
 from qamra_pdf.cutout import VERSION as CUTOUT_VERSION
-from qamra_pdf.cutout import cut_out_figure
+from qamra_pdf.cutout import cut_out, cut_out_figure
 
 PKG_DIR = Path(__file__).parent
 
@@ -152,16 +152,21 @@ def back_background(front: Path, dest: Path) -> Path:
     return dest
 
 
-def cutout(src: Path, dest: Path) -> Path:
-    """A figure on a plain background (character/companion sheets) as a transparent PNG, trimmed.
+def cutout(src: Path, dest: Path) -> Path | None:
+    """A figure on a plain background (character/companion sheets) as a transparent PNG, trimmed; None when
+    it cannot be cut out (qamra_pdf.cutout's safety check: a many-view sheet on painted corners, grain).
 
     The paper and the floor shadow go; light clothes and anything the figure encloses stay (qamra_pdf.cutout).
+    A figure that cannot be cut is left out rather than printed as a framed portrait: it is a decoration.
     """
     if dest.exists() and dest.stat().st_mtime >= src.stat().st_mtime:
         return dest
-    dest.parent.mkdir(parents=True, exist_ok=True)
     with Image.open(src) as original:
-        out = cut_out_figure(original.convert("RGB"))
+        cut = cut_out(original.convert("RGB"))
+    if cut.fallback:
+        return None
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    out = cut.image
     box = out.getchannel("A").point(lambda v: 255 if v > 40 else 0).getbbox()
     if box:
         out = out.crop(box)
@@ -219,6 +224,8 @@ def figure_cutout(src: Path, dest: Path) -> Path | None:
     """A single front view on plain paper (a class book's portrait), cut out; None when it is not clean."""
     fresh = not (dest.exists() and dest.stat().st_mtime >= src.stat().st_mtime)
     out = cutout(src, dest)
+    if out is None:
+        return None
     if fresh:
         _fit_height(out)
     with Image.open(out) as im:

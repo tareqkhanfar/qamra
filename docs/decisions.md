@@ -724,3 +724,45 @@ drawn in 3D" (2026-10-07). The full record is `docs/plans/order-flows.md`, «Own
   - The bassinet page was rejected three times: the baby was under the text box.
   - The news page drew the companion twice. A retry with the same seed gave the same picture.
   - So the story samples are the cover and one page for now.
+
+## Watercolor sheets: the cut-out handles grainy paper, and never pastes the whole sheet (2026-10-09)
+
+Follows «Watercolor has none» above: real watercolor character sheets put the whole sheet on the activity
+covers. Checked on every sheet in `out/` (the watercolor تالا sheet, the watercolor graduation sheet, the
+seven published watercolor examples, and the 3D, cartoon and semi-realistic sheets as controls).
+
+- **Two causes.** `render/character.figure_box` counted any pixel more than 22 off the paper colour as
+  drawing; the paper's grain passes that in every column, so the sheet came back as one figure. And inside a
+  crop, the cut-out's edge test (gradient over 6) fires on every grain pixel, so the flood never started. The
+  style guide asks for "a little visible paper grain", so every watercolor sheet has it. The cartoon آدم
+  sample sheet, drawn from a watercolor reference, has the same grain and failed the same way.
+- **Measured, not guessed.** The grain is the 90th-percentile gradient on plain paper: paper at least 6 px from
+  anything drawn, inside any flat margin the caller padded the crop with. Clean sheets measure 0–3.6 (the
+  published watercolor examples too), the grainy ones 5.4–8.2. The threshold is 4.
+- **Clean paper runs exactly as before.** At or under the threshold, the cut-out and the figure finding run
+  the steps and thresholds of cut-out v2 (b4cec64) unchanged. The 3D, cartoon (تالا) and semi-realistic
+  masks are identical to cut-out v2, checked with golden masks in the tests, and their activity cover, back
+  and owner page renders are pixel-identical. Their existing flaws stay: the cartoon front view keeps its
+  floor-shadow ellipse.
+- **Textured paper:** the picture is smoothed with a Gaussian (grain / 5 px, at most 2), not a median: a
+  median erases a 2-px outline, a Gaussian keeps it as a weaker line. The ink and edge thresholds come from
+  the paper's own noise (99th percentile plus a margin). The rim is peeled through the grain, and the "pocket"
+  step is skipped. Figures on a sheet are found from what is clearly drawn (twice the paper's noise), plus 6 px
+  of real paper around each. One run wider than 60 % of a three-view sheet is split at the emptiest columns
+  near its thirds. That way the cut-out never gets three children as one "figure".
+- **Safety check:** a cut mask covering more than 78 % of its picture (the whole sheet was 91 %; real
+  figures are 36–61 %), under 1 %, or touching all four edges is not a cut-out. The child is then printed as a
+  framed portrait: the figure's region of the sheet in a rounded rectangle with a soft vignette, given the
+  same white sticker edge as a cut-out. The PNG says so (`qamra-cutout` text), and the four activity-book jobs
+  flag the book **`cutout_fallback`** for the reviewer. Any render that cuts cleanly clears it.
+- **Not held for the family.** `cutout_fallback` is not in `HELD_FLAGS`: the framed portrait is a finished
+  look, and a printed book is approved by a person anyway. The admin queue shows the raw flag name until
+  `queue.flags.cutout_fallback` gets a label in the messages (another change owns those files now). Suggested:
+  «الشخصية في إطار (تعذّر قصّها)» / "Character framed (cut-out failed)".
+- **Story covers too:** the back cover's waving hero (`qamra_pdf.assets.hero_view`) of the watercolor تالا
+  and the cartoon آدم sheets is now the cut figure, not the round-portrait fallback. Every other sheet is
+  unchanged. The companion beside the hero is left out when it cannot be cut out (`assets.cutout` returns
+  None): it is decoration, and the shared watercolor «قمّور» sheet (seven views, painted night-sky corners)
+  came out as a ragged block of all seven views on paper.
+- **Speed:** the border flood labels row runs instead of Pillow's per-pixel Python flood fill. Same result,
+  about 30× faster, so a cut-out takes about 1 s instead of 2–4 s.

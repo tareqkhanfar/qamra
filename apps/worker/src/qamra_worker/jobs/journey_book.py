@@ -38,6 +38,7 @@ from qamra_worker import context
 from qamra_worker.jobs.books import file_key
 from qamra_worker.jobs.family_book import (
     approved_character,
+    cutout_flags,
     name_en_of,
     name_flags,
     numerals_of,
@@ -159,6 +160,7 @@ async def render_stage(
         guessed=prints_en and guessed,
         traceable=not traces_ar or can_trace(child.first_name),
     )
+    book.flags = cutout_flags(book.flags, files)
     book.status = BookStatus.in_review  # an admin approves it for print, as every printed book (A3 §5)
     book.error = None
     db.add(

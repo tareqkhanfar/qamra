@@ -35,6 +35,7 @@ class OrderFiles:
     dies: dict[str, Path] = field(default_factory=dict)  # print file name → its die lines alone
     preflight: dict[str, dict[str, Any]] = field(default_factory=dict)  # file name → report
     pages: int = 0
+    cutout_fallback: bool = False  # a character is printed as a framed portrait (not cut out): flag the book
 
     @property
     def passed(self) -> bool:
@@ -130,6 +131,7 @@ async def render_order(
         interior=interior_pdf,
         cover=await render_pages(cover, assets, out / "cover.pdf"),
         pages=len(specs),
+        cutout_fallback=assets.framed,
     )
     files.preflight = {"interior.pdf": _report(files.interior, g), "cover.pdf": _report(files.cover, g)}
     for name, sheets in insert_sheets(plan):

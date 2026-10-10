@@ -159,7 +159,9 @@ async def test_a_foundation_order_renders_a_volume_for_the_child(
     assert len(PdfReader(io.BytesIO(storage.get(book.pdf_interior_key))).pages) == 4
     assert len(PdfReader(io.BytesIO(storage.get(book.pdf_cover_key))).pages) == 2  # front and back
     assert book.preflight["interior.pdf"]["passed"] and book.preflight["cover.pdf"]["passed"]
-    assert not {"preflight_failed", "name_en_guessed", "name_not_traceable"} & set(book.flags or [])
+    assert not {"preflight_failed", "name_en_guessed", "name_not_traceable", "cutout_fallback"} & set(
+        book.flags or []
+    )
     # the child's name on the owner page and the tracing page, the character cut out of the sheet
     assert "رؤى" in seen["interior"] and "character-" in seen["interior"]
     assert "دوسية رؤى" in seen["cover"] and "KG2" in seen["cover"] and "character-" in seen["cover"]
@@ -210,6 +212,46 @@ async def test_without_an_english_spelling_the_book_is_flagged_for_the_reviewer(
     db.refresh(item)
     book = db.get(Book, item.book_id)
     assert book is not None and "name_en_guessed" in book.flags and book.status == BookStatus.in_review
+
+
+async def test_a_child_printed_in_a_frame_instead_of_cut_out_is_flagged_for_the_reviewer(
+    db: Session, storage: ObjectStorage, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """When the character could not be cut out of its sheet (`qamra_pdf.cutout`'s safety check), the pages
+    print a framed portrait and the book says so; a render that cuts it out again clears the flag."""
+    framed = {"value": True}
+
+    async def render(child: Any, level: str, volume: int, out: Path, **kw: Any) -> WorkbookFiles:
+        files = WorkbookFiles(
+            _pdf(out / "interior.pdf", 3),
+            _pdf(out / "cover.pdf", 2),
+            _pdf(out / "answer-key.pdf"),
+            pages=128,
+            name_en="Rua",
+            cutout_fallback=framed["value"],
+        )
+        files.preflight = {"interior.pdf": {"passed": True}, "cover.pdf": {"passed": True}}
+        return files
+
+    monkeypatch.setattr("qamra_workbook.render.workbook.render_order", render)
+    item = _item(db, storage, personalization={"name_en": "Rua"})
+    result = await workbook_book.render_item(db, storage, item)
+    assert "cutout_fallback" in result["books"][0]["flags"]
+    db.refresh(item)
+    book = db.get(Book, item.book_id)
+    assert book is not None and book.flags == ["cutout_fallback"] and book.status == BookStatus.in_review
+    framed["value"] = False
+    await workbook_book.render_item(db, storage, item)
+    db.refresh(book)
+    assert "cutout_fallback" not in (book.flags or [])
+
+
+def test_the_cutout_flag_is_set_and_cleared() -> None:
+    files = SimpleNamespace(cutout_fallback=True)
+    assert family_book.cutout_flags(["preflight_failed"], files) == ["preflight_failed", "cutout_fallback"]
+    assert family_book.cutout_flags(["cutout_fallback"], files) == ["cutout_fallback"]
+    assert family_book.cutout_flags(["cutout_fallback", "x"], SimpleNamespace(cutout_fallback=False)) == ["x"]
+    assert family_book.cutout_flags(None, object()) == []  # a render without the field never flags
 
 
 async def test_black_and_white_is_refused_with_a_clear_reason(
