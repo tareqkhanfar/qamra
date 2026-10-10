@@ -1,6 +1,11 @@
 """Privacy cleanup (CLAUDE.md §3, Addendum 1 §1): originals are deleted after approval + 24h,
 abandoned drafts after 30 days. Runs every 15 minutes from `rq cron`.
 
+The child's drawings are all kept so the parent can compare them and go back to one (owner, 2026-10-10); a
+drawing never approved is an abandoned draft too: after the same 30 days its picture is deleted and the row is
+marked `discarded` (it still counts as one of the child's redraws). Approved drawings stay for the next books
+until the parent deletes the child's data.
+
 It also releases stalled work: a book or character left `generating` for 2 hours with no job waiting, running
 or scheduled for it (the worker was restarted or ran out of memory mid-job) becomes `failed`, so the admin's
 «أعيدوا التوليد» and the parent's «حاولوا مرة أخرى» work again instead of a spinner that never ends."""
@@ -15,7 +20,7 @@ from rq import get_current_job
 from rq.job import Job
 from rq.queue import Queue
 from rq.registry import DeferredJobRegistry, ScheduledJobRegistry, StartedJobRegistry
-from sqlalchemy import select
+from sqlalchemy import and_, or_, select
 from sqlalchemy.orm import Session
 
 from qamra_core.db.models import (
@@ -44,10 +49,12 @@ class CleanupSummary:
     photos_deleted: int = 0
     drawings_deleted: int = 0
     drafts_deleted: int = 0
+    characters_discarded: int = 0  # drawings never approved, 30 days on
     family_photos_deleted: int = 0  # the illustrated-family add-on's photos, 24 h after approval
     stalled_released: int = 0  # books and characters left `generating` by a job that died
 
 
+NOTE_KEYS = ("note", "note_instruction")  # «ما الذي لا يشبهه؟» in the parent's words, and its rewrite
 STALLED_AFTER = timedelta(hours=2)  # longer than any job's timeout (1 h) plus its retries' waits
 STALLED_ERROR = (
     "stalled: no result after 2 hours and no job left for it (the worker restarted or ran out of memory)"
@@ -117,6 +124,33 @@ def cleanup_expired_media(
         _audit(db, "book.draft_expired", "book", book.id)
         db.delete(book)
         summary.drafts_deleted += 1
+    db.commit()
+
+    drawings = db.scalars(
+        select(Character)
+        .where(
+            Character.approved_at.is_(None),
+            Character.updated_at < cutoff,
+            or_(
+                Character.status == CharacterStatus.ready,
+                # a failed drawing has no picture and stays failed (it is not one of the redraws), but the
+                # parent's words it was asked with go after the same 30 days
+                and_(Character.status == CharacterStatus.failed, Character.params.has_key("note")),
+            ),
+        )
+        .with_for_update(skip_locked=True)
+    ).all()
+    for character in drawings:
+        # the parent's own words go; the chips and how it was drawn stay with the costs
+        character.params = {k: v for k, v in (character.params or {}).items() if k not in NOTE_KEYS}
+        if character.status != CharacterStatus.ready:
+            continue
+        if character.sheet_image_key:
+            storage.delete(character.sheet_image_key)  # storage first: a crash leaves a row to retry
+        character.sheet_image_key = None
+        character.status = CharacterStatus.discarded
+        _audit(db, "character.draft_expired", "character", character.id)
+        summary.characters_discarded += 1
     db.commit()
     return summary
 

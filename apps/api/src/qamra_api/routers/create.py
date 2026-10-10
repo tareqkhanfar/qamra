@@ -15,6 +15,7 @@ from fastapi import APIRouter, File, Request, Response, UploadFile
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 from sqlalchemy import func, select
 
+from qamra_ai.pipeline.character_feedback import NOTE_MAX, clean_note
 from qamra_ai.pipeline.classic import classic_budget_usd
 from qamra_ai.pipeline.custom_story import CUSTOM_THEME, CustomBrief, screen_brief
 from qamra_ai.pipeline.theme import Theme
@@ -51,7 +52,7 @@ from qamra_core.db.models import (
     PhotoStatus,
 )
 from qamra_core.db.models import Theme as ThemeRow
-from qamra_core.db.store import Cart, CartItem, CartStatus, CatalogProduct, OrderEvent, Variant
+from qamra_core.db.store import ArtStyle, Cart, CartItem, CartStatus, CatalogProduct, OrderEvent, Variant
 from qamra_core.storage import child_prefix
 
 router = APIRouter(prefix="/api/create", tags=["create"])
@@ -86,6 +87,17 @@ class CharacterOut(BaseModel):
     status: str
     style: str
     approved: bool
+    # the last time the parent approved it: the child's character is the one approved last (a parent can go
+    # back to an earlier drawing), so later books reuse that one
+    approved_at: datetime | None = None
+
+
+class DrawingOut(CharacterOut):
+    """One of the child's drawings kept for comparing (owner, 2026-10-10): every redraw stays choosable."""
+
+    created_at: datetime
+    style_name_ar: str
+    style_name_en: str
 
 
 class ChildOut(BaseModel):
@@ -104,7 +116,13 @@ class ChildOut(BaseModel):
 
 
 def _character_out(c: Character) -> CharacterOut:
-    return CharacterOut(id=c.id, status=c.status.value, style=c.art_style, approved=c.approved_at is not None)
+    return CharacterOut(
+        id=c.id,
+        status=c.status.value,
+        style=c.art_style,
+        approved=c.approved_at is not None,
+        approved_at=c.approved_at,
+    )
 
 
 async def _child_out(db: SessionDep, child: Child) -> ChildOut:
@@ -136,7 +154,8 @@ async def _child_out(db: SessionDep, child: Child) -> ChildOut:
         glasses=child.wears_glasses,
         consent=bool(consent),
         photos=int(photos),
-        characters=[_character_out(c) for c in characters],
+        # a drawing the cleanup removed is gone for the parent, but it still counts as one of the redraws
+        characters=[_character_out(c) for c in characters if c.status != CharacterStatus.discarded],
         redraws_left=max(0, MAX_CHARACTERS - sum(c.status != CharacterStatus.failed for c in characters)),
         interests=list(child.interests or []),
         name_latin=child.name_latin,
@@ -432,9 +451,22 @@ async def upload_photos(
 class CharacterIn(BaseModel):
     style: str = Field(max_length=40)
     fixes: list[Literal["skin", "face", "hair", "age"]] = Field(default_factory=list, max_length=4)
+    # «ما الذي لا يشبهه؟» in the parent's own words: read by the worker (prompts character_feedback.v1), which
+    # keeps only what is about the child's looks; an unsafe or off-topic note is dropped there, silently
+    note: str | None = Field(default=None, max_length=NOTE_MAX * 2)  # checked once tidied (`_tidy_note`)
+    # the parent pressed «أعيدوا الرسم»: always a new drawing, never the approved one reused
+    redraw: bool = False
     # the book it is drawn for: the style must be one that book's line accepts (`ArtStyle.lines`)
     line: str | None = Field(default=None, max_length=16)
     sku: str | None = Field(default=None, max_length=64)
+
+    @field_validator("note")
+    @classmethod
+    def _tidy_note(cls, v: str | None) -> str | None:
+        v = clean_note(v)
+        if v is not None and len(v) > NOTE_MAX:
+            raise ValueError("too long")
+        return v
 
 
 @router.post("/children/{child_id}/characters", status_code=202)
@@ -453,7 +485,7 @@ async def draw_character(
         line = catalog.product_of(variant).line.value
     if line is not None and line not in catalog.styles[body.style].lines:
         raise ApiError("invalid_style", 422)  # e.g. a coloring character for an activity book
-    if not body.fixes:  # Addendum 9 §6: the child's approved character is reused by every book, never redrawn
+    if not (body.fixes or body.note or body.redraw):  # Addendum 9 §6: the approved character is reused
         approved = (
             (
                 await db.execute(
@@ -499,16 +531,57 @@ async def draw_character(
     ).scalar_one()  # a drawing that failed on our side is not one of the parent's redraws
     if drawn >= MAX_CHARACTERS:
         raise ApiError("redraws_used", 429)
+    asked: dict[str, Any] = {"attempt": drawn + 1, "fixes": sorted(set(body.fixes))}  # what didn't look right
+    if body.note:
+        asked["note"] = body.note  # the parent's words; the worker adds what it made of them
     character = Character(
-        child_id=child.id,
-        art_style=body.style,
-        status=CharacterStatus.generating,
-        params={"attempt": drawn + 1, "fixes": sorted(set(body.fixes))},  # what didn't look like the child
+        child_id=child.id, art_style=body.style, status=CharacterStatus.generating, params=asked
     )
     db.add(character)
     await db.commit()
     enqueue(queue, "qamra_worker.jobs.create.generate_character", str(character.id))
     return _character_out(character)
+
+
+@router.get("/children/{child_id}/characters")
+async def child_drawings(child_id: uuid.UUID, user: CurrentUser, db: SessionDep) -> list[DrawingOut]:
+    """The child's drawings, newest first (only the guardian): every drawing that came out, in any style, so
+    the parent can compare them and go back to an earlier one. A failed drawing has no picture and is left
+    out; so is one the cleanup removed (`discarded`: never approved, after 30 days). Each picture comes
+    through `/characters/{id}/image`, privately."""
+    child = await _my_child(db, user, child_id)
+    rows = (
+        (
+            await db.execute(
+                select(Character)
+                .where(
+                    Character.child_id == child.id,
+                    Character.status.in_((CharacterStatus.ready, CharacterStatus.approved)),
+                    Character.sheet_image_key.is_not(None),
+                )
+                .order_by(Character.created_at.desc())
+            )
+        )
+        .scalars()
+        .all()
+    )
+    names = {
+        slug: (ar, en)
+        for slug, ar, en in await db.execute(
+            select(ArtStyle.slug, ArtStyle.name_ar, ArtStyle.name_en).where(
+                ArtStyle.slug.in_({c.art_style for c in rows})
+            )
+        )
+    }
+    out = []
+    for c in rows:
+        ar, en = names.get(c.art_style, (c.art_style, c.art_style))
+        out.append(
+            DrawingOut(
+                **_character_out(c).model_dump(), created_at=c.created_at, style_name_ar=ar, style_name_en=en
+            )
+        )
+    return out
 
 
 async def _my_character(db: SessionDep, user: CurrentUser, character_id: uuid.UUID) -> Character:
@@ -546,7 +619,10 @@ async def approve_character(
     if character.status not in (CharacterStatus.ready, CharacterStatus.approved):
         raise ApiError("not_ready", 409)
     now = datetime.now(UTC)
-    character.status, character.approved_at = CharacterStatus.approved, character.approved_at or now
+    # approved again when the parent goes back to it: the child's character is the one approved last, so every
+    # later book (stories, activity books, the class book) reuses this drawing and its style
+    again = character.approved_at is not None
+    character.status, character.approved_at = CharacterStatus.approved, now
     retention = int((await runtime_settings.current(db, settings)).values["photo_retention_hours"])
     for photo in (
         await db.execute(select(ChildPhoto).where(ChildPhoto.child_id == character.child_id))
@@ -558,6 +634,7 @@ async def approve_character(
             action="character.approved",
             entity_type="character",
             entity_id=str(character.id),
+            data={"style": character.art_style, "again": again},
         )
     )
     await db.commit()

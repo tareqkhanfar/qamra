@@ -2551,6 +2551,14 @@
         "hair": "Hijab / hair",
         "age": "Looks older"
       },
+      "drawings": "{name}'s drawings so far",
+      "drawingsHint": "Tap a drawing to see it bigger, then approve the one that looks most like {name}.",
+      "drawingNow": "Drawing now…",
+      "inUse": "Approved",
+      "noteLabel": "{gender, select, f {Or tell us in your own words what doesn't look like her} other {Or tell us in your own words what doesn't look like him}}",
+      "notePlaceholder": "{gender, select, f {e.g. her face is rounder and her eyes are brown} other {e.g. his face is rounder and his eyes are brown}}",
+      "noteHint": "{gender, select, f {We only use the parts about how she looks.} other {We only use the parts about how he looks.}}",
+      "otherStyle": "You chose a drawing in the “{style}” style, so every picture in the story will be in that style.",
       "approve": "{gender, select, f {Yes, that's {name}} other {Yes, that's {name}}}",
       "redraw": "Redraw · {left} of 3 left",
       "noRedraws": "The free redraws are used up. Message us if the character isn't right.",
@@ -2862,6 +2870,8 @@
       "mockup_spread": "Open-book mockup"
     },
     "character": "Character sheet",
+    "characterNote": "What the parent wrote when asking for this drawing:",
+    "characterNoteUnused": "Not used in the drawing: not about looks, unsuitable, or couldn't be read.",
     "page": "p {n}",
     "cover": "Cover",
     "select": "Select",

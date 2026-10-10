@@ -2,6 +2,16 @@
 
 Newest first. Each entry: date — decision — why.
 
+## 2026-10-10 — Every drawing kept and choosable; the parent's own words in «ما الذي لا يشبهه؟»
+
+Owner (2026-10-10): «اذا بدي ارسم كمان مرة القديمة ما تنحذف خليك معرضها … عشان المقارنات بين الصور ونمط الرسم» and «بدي تضيف كمان حقل اسمح انه اقدر ادخل كتابة كمان».
+
+- **The child's character is the drawing approved last.** Approving sets `approved_at` to now every time, also for a drawing approved before, so going back to an earlier drawing makes it the one every later book reuses (stories, activity books, the class book: all already pick `approved_at desc`). Older approved drawings stay approved: books and orders may point at them. The web's local fallbacks pick the same way (`lib/drawings.ts` `lastApproved`), and the API sends `approved_at` with each character.
+- **The character step offers only drawings in a style this book can use** (the style step's list: the line's styles; Classic, the styles with a live template for the child's look). Approving one in another style moves the flow to that style (`?style=`), so the book is drawn in it.
+- **A redraw is always a new drawing** (`redraw: true`, sent by the redraw button). Before, a redraw without chips could return the approved drawing in the same style.
+- **The note never goes into an image prompt as written.** Claude (the fast model, `character_feedback` v1) keeps only what is about how the child looks and rewrites it as a short English instruction for `character_sheet` v4. The hijab, glasses and gender stay the family's settings. The instant local screen of the custom-story brief runs first (links, phone numbers, plainly unsafe words), so personal data never reaches the text provider. An unsafe or off-topic note, or a failed text step, is ignored without an error: the redraw uses the chips. Only the outcome is logged, never the note. 200 characters, counted after squashing spaces.
+- **Drawings never approved are abandoned drafts:** after `draft_retention_days` (30) the cleanup deletes the picture and marks the row `discarded`. It still counts as one of the 3 free redraws. The parent's note goes with it, and from failed drawings too. Approved drawings stay until «احذفوا كل بيانات طفلي».
+
 ## 2026-09-29 — The template studio: theme versions, bulk actions, staff roles (Addendum 4 step 4, W8)
 
 - **Theme versions live in `theme_versions`** (definition JSON, status, author, timestamps). `themes.definition` stays the live copy that every reader already uses, so nothing else had to change.

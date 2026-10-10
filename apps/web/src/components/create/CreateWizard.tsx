@@ -14,6 +14,7 @@ import { nameCases } from "@/lib/arabicName";
 import type { ThemeCard } from "@/lib/catalog";
 import { classicStyles, classicVariant, type ClassicVariant } from "@/lib/classic";
 import { companionAddOn } from "@/lib/companion";
+import { lastApproved } from "@/lib/drawings";
 import {
   createApi,
   missingEndpoint,
@@ -105,7 +106,7 @@ function localNeeds(found: Found, catalog: Catalog | null, child: Child | null):
   const line = found.product.line as string;
   const options = found.variant.options;
   const styles = activityStyles(catalog, line);
-  const reuse = child ? [...child.characters].reverse().find((c) => c.approved && styles.includes(c.style)) : null;
+  const reuse = child ? lastApproved(child.characters, (c) => styles.includes(c.style)) : null;
   return {
     line,
     product: found.product.slug,
@@ -134,9 +135,9 @@ function toFamily(given: FamilyPayload): Family {
 
 const EMPTY_FAMILY: FamilyPayload = { name: "", city: "", members: [] };
 
-/** The server's "needs" answer is for a product, a child and the characters it has approved. */
+/** The server's "needs" answer is for a product, a child and the characters it has approved (and when). */
 function needsKeyOf(sku: string | null, child: Child | null): string {
-  const approved = (child?.characters ?? []).filter((c) => c.approved).map((c) => c.id);
+  const approved = (child?.characters ?? []).filter((c) => c.approved).map((c) => `${c.id}@${c.approved_at ?? ""}`);
   return `${sku}|${child?.id ?? ""}|${approved.join(",")}`;
 }
 
@@ -241,7 +242,8 @@ export function CreateWizard() {
     (async () => {
       const id = q.character as string;
       const r = await createApi.character(id);
-      if (alive) setCharacter({ id, value: r.ok ? r.data : null });
+      // a drawing the cleanup removed (never approved, 30 days on) is as good as gone: the flow starts it again
+      if (alive) setCharacter({ id, value: r.ok && r.data.status !== "discarded" ? r.data : null });
     })();
     return () => {
       alive = false;
@@ -387,14 +389,24 @@ export function CreateWizard() {
     return new Set((catalog?.styles ?? []).filter((s) => lines.some((l) => s.lines.includes(l))).map((s) => s.slug));
   }
 
-  /** The approved character a story reuses: in a style the type draws, and the style the story page chose. */
+  /**
+   * The approved character a story reuses: in a style the type draws, and the style the story page chose; the one
+   * approved last (a parent can go back to an earlier drawing).
+   */
   function readyStory(c: Child, value: Line | null): Character | null {
     const styles = storyStyles(value);
-    return (
-      [...c.characters]
-        .reverse()
-        .find((ch) => ch.approved && styles.has(ch.style) && (!q.style || ch.style === q.style)) ?? null
-    );
+    return lastApproved(c.characters, (ch) => styles.has(ch.style) && (!q.style || ch.style === q.style));
+  }
+
+  /**
+   * The styles this book can use for a child (the style step's list): the character step offers the earlier
+   * drawings in these only. Null while the catalog is unknown (then every drawing is offered).
+   */
+  function usableStyles(c: Child): string[] | null {
+    if (!catalog) return null;
+    if (activity) return needs?.character.styles ?? activityStyles(catalog, productLine!);
+    const ready = classicStyles(themes, classicVariant(c), q.theme);
+    return [...storyStyles(storyLine)].filter((s) => storyLine !== "classic" || ready.has(s));
   }
 
   /** What this activity book needs from a child: the server's answer when it came, else the same local rules. */
@@ -685,13 +697,16 @@ export function CreateWizard() {
             child={child!}
             character={shownCharacter!}
             productLine={productLine}
+            usable={usableStyles(child!)}
             back={() => go({ step: "style" })}
             onChange={onCharacter}
             onApproved={(c) => {
+              // maybe an earlier drawing, in another style: the book then uses that drawing and its style
               setCharacter({ id: c.id, value: c });
               void refreshChildren();
-              if (activity) go({ step: asksFamily ? "family" : "summary", character: c.id });
-              else go({ step: storyLine ? storyOrCompanion(storyLine) : "line" });
+              const chosen = { character: c.id, style: c.style };
+              if (activity) go({ step: asksFamily ? "family" : "summary", ...chosen });
+              else go({ step: storyLine ? storyOrCompanion(storyLine) : "line", ...chosen });
             }}
           />
         );
