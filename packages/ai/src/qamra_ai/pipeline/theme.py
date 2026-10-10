@@ -8,7 +8,7 @@ in the picture (for the QA count check), and whether it is a child-free backgrou
 import os
 import re
 from pathlib import Path
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
 import yaml
 from pydantic import BaseModel, Field, model_validator
@@ -17,6 +17,9 @@ from qamra_ai.pipeline.models import Gender, Lang
 from qamra_pdf.arabic_names import fill_names
 from qamra_pdf.lettering import DEFAULT_TITLE_STYLE, TitleStyle
 from qamra_pdf.page_layouts import GEOMETRY, PageLayout
+
+if TYPE_CHECKING:
+    from qamra_ai.pipeline.style import StyleGuide
 
 CONTENT_DIR = Path(os.environ.get("QAMRA_CONTENT_DIR") or Path(__file__).resolve().parents[5] / "content")
 
@@ -272,6 +275,11 @@ class ArtStyle(BaseModel):
     title_en: str
     guide: str  # the painting medium; palette/setting/people/composition come from the house style
     negative: str = ""  # the style's own never-allowed list, added to the house's (style.negatives)
+    version: int = 0  # the guide's version (0: a legacy medium of content/styles/styles.yaml)
+    # A guide's own house sections (style.HouseStyle.for_style) and character-sheet line; empty for most
+    house_style: str = ""
+    house_negative: str = ""
+    sheet: str = ""
 
 
 # the name slots of a theme text; `{name:acc}` marks the accusative («وَضَمَّتْ {name:acc}» → «وَضَمَّتْ أبا بكر»),
@@ -310,6 +318,21 @@ def theme_dir(slug: str, content_dir: Path = CONTENT_DIR) -> Path:
     return content_dir / "themes" / slug
 
 
+def art_style(guide: "StyleGuide") -> ArtStyle:
+    """An art style from its guide file (a current one, or an earlier version from `style/history/`)."""
+    return ArtStyle(
+        slug=guide.slug,
+        title_ar=guide.name_ar,
+        title_en=guide.name_en,
+        guide=guide.look,
+        negative=guide.negative,
+        version=guide.version,
+        house_style=guide.house_style,
+        house_negative=guide.house_negative,
+        sheet=guide.sheet,
+    )
+
+
 def load_style(slug: str, content_dir: Path = CONTENT_DIR) -> ArtStyle:
     """An art style: the store's style guides first (`prompts/style/<slug>.md`, the styles parents pick:
     watercolor, 3d, cartoon…), then the legacy media of `content/styles/styles.yaml` (crayon, papercut)."""
@@ -317,13 +340,7 @@ def load_style(slug: str, content_dir: Path = CONTENT_DIR) -> ArtStyle:
 
     guide = next((g for g in style_guides() if g.slug == slug), None)
     if guide is not None:
-        return ArtStyle(
-            slug=slug,
-            title_ar=guide.name_ar,
-            title_en=guide.name_en,
-            guide=guide.look,
-            negative=guide.negative,
-        )
+        return art_style(guide)
     data = yaml.safe_load((content_dir / "styles" / "styles.yaml").read_text(encoding="utf-8"))
     if slug not in data:
         known = sorted({*data, *(g.slug for g in style_guides())})

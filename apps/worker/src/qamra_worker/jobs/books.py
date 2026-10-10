@@ -50,7 +50,7 @@ from qamra_ai.pipeline.pages import (
 from qamra_ai.pipeline.printimg import downscale
 from qamra_ai.pipeline.runtime import Runtime
 from qamra_ai.pipeline.story import missing_text, write_story
-from qamra_ai.pipeline.style import house_style
+from qamra_ai.pipeline.style import house_for, house_style
 from qamra_ai.pipeline.theme import ArtStyle, Theme, load_style
 from qamra_core.crypto import cipher_for
 from qamra_core.db.models import (
@@ -526,7 +526,7 @@ async def _setup(db: Session, storage: ObjectStorage, book: Book) -> BookJob:
         "text": settings.text_model,
         "text_fast": settings.text_model_fast,
         "final_mode": settings.final_mode,
-        "style": house_style().prompt_id,
+        "style": house_for(load_style(book.art_style)).prompt_id,  # «…v5+semi-realistic.v3» when merged
     }
     book.generation = gen
     if book.budget_usd is None:

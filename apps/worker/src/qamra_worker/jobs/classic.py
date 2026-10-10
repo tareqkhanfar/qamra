@@ -49,7 +49,7 @@ from qamra_ai.pipeline.models import Lang, StoryOut
 from qamra_ai.pipeline.pages import BookContext, PageResult, generate_beat, generate_pages
 from qamra_ai.pipeline.printimg import downscale
 from qamra_ai.pipeline.runtime import Runtime
-from qamra_ai.pipeline.style import house_style
+from qamra_ai.pipeline.style import house_for, house_style
 from qamra_ai.pipeline.theme import Theme, load_style
 from qamra_ai.pipeline.vowelize import VowelizedTexts, source_hash, sources, vowelize
 from qamra_core.db.classic import (
@@ -365,7 +365,7 @@ async def run_template_job(
         else f"{settings.image_provider}:{settings.fal_image_model}",
         "upscale": settings.fal_upscale_model,
         "text_fast": settings.text_model_fast,
-        "style": house_style().prompt_id,
+        "style": house_for(style).prompt_id,
     }
     template.generation = gen
     db.commit()

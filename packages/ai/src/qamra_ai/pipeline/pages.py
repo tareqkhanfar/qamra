@@ -91,7 +91,7 @@ class BookContext:
     lang: Lang
     theme: Theme
     style: ArtStyle
-    house: HouseStyle
+    house: HouseStyle  # the house style; merged with the style's own house sections on creation
     plan: BookPlan
     character_sheet: bytes
     outfits: dict[str, str]  # scene group → locked outfit line (rebuilt from the bible)
@@ -112,6 +112,8 @@ class BookContext:
     content_dir: Path = CONTENT_DIR
 
     def __post_init__(self) -> None:
+        # a style whose guide replaces house sections («شبه حقيقي» v3) paints, and is judged, with them
+        self.house = self.house.for_style(self.style)
         if self.bible is None:
             self.bible = build_bible(
                 self.theme,

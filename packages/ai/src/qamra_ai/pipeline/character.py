@@ -11,7 +11,7 @@ from qamra_ai import prompts
 from qamra_ai.image.base import GeneratedImage, ImageRequest, RefImage, Resolution, sniff_mime
 from qamra_ai.pipeline.models import Child
 from qamra_ai.pipeline.runtime import Runtime
-from qamra_ai.pipeline.style import house_style, negatives
+from qamra_ai.pipeline.style import house_for, negatives
 from qamra_ai.pipeline.theme import ArtStyle
 
 # What the parent can tick under "what doesn't look like her?" → the line the redraw prompt gets.
@@ -45,10 +45,10 @@ def character_request(
 ) -> ImageRequest:
     if not 1 <= len(photos) <= 3:
         raise ValueError("character sheet needs 1–3 photos")
-    h = house_style()
+    h = house_for(style)
     prompt = prompts.render(
         "character_sheet",
-        version=3,
+        version=4,  # v3 + the style's own sheet line: identical text for a style without one
         fixes=fix_lines(child, fixes),
         n_photos=len(photos),
         age=child.age,
@@ -57,6 +57,7 @@ def character_request(
         glasses=child.glasses,
         style=h.style,
         medium=style.guide,
+        sheet=style.sheet,
         people=h.people,
         negative=negatives(h, style.negative),
     )

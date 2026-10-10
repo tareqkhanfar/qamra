@@ -29,7 +29,7 @@ from qamra_ai.pipeline.budget import BudgetExceeded
 from qamra_ai.pipeline.models import Gender, Lang
 from qamra_ai.pipeline.printimg import downscale, fit_exact
 from qamra_ai.pipeline.runtime import Runtime
-from qamra_ai.pipeline.style import house_style, negatives
+from qamra_ai.pipeline.style import house_for, house_style, negatives
 from qamra_ai.pipeline.theme import CONTENT_DIR, ArtStyle, TimeOfDay, load_style, render_template
 from qamra_ai.text.base import ImagePart, UserPart
 
@@ -180,11 +180,6 @@ def class_style(slug: str) -> ArtStyle:
         return load_style(slug)
     except KeyError:
         return load_style("watercolor")
-
-
-def style_guide(slug: str) -> str:
-    """The painting-medium line for an art style."""
-    return class_style(slug).guide
 
 
 # ---- the plan: who appears where -------------------------------------------------------------------
@@ -384,13 +379,14 @@ def picture_prompt(
     *,
     kind: Literal["page", "cover"],
 ) -> str:
-    h = house_style()
+    art = class_style(style_slug)
+    h = house_for(art)
     return prompts.render(
         "class_scene",
         version=1,
         kind=kind,
         style=h.style,
-        medium=style_guide(style_slug),
+        medium=art.guide,
         setting=h.setting,
         scene=scene.scene,
         location=template.locations.get(scene.location) if scene.location else None,
@@ -402,7 +398,7 @@ def picture_prompt(
         outfit=template.outfits[scene.outfit],
         composition=h.composition,
         safety=h.safety,
-        negative=negatives(h, class_style(style_slug).negative),
+        negative=negatives(h, art.negative),
     )
 
 

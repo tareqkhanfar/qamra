@@ -8,7 +8,7 @@ from qamra_ai.errors import ContentBlocked
 from qamra_ai.image.base import GeneratedImage, ImageRequest, RefImage, sniff_mime
 from qamra_ai.pipeline.models import CompanionFidelity, CompanionSpec, DrawingReview
 from qamra_ai.pipeline.runtime import Runtime
-from qamra_ai.pipeline.style import house_style, negatives
+from qamra_ai.pipeline.style import house_for, negatives
 from qamra_ai.pipeline.theme import ArtStyle
 from qamra_ai.text.base import ImagePart
 
@@ -53,7 +53,7 @@ def companion_request(
     option: int,
     round_: int = 1,  # the parent's redraws get new seeds (round 1 keeps the original ones)
 ) -> ImageRequest:
-    h = house_style()
+    h = house_for(style)
     prompt = prompts.render(
         "companion_sheet",
         version=2,
@@ -100,7 +100,7 @@ DEFAULT_SHEET_PROMPT = ("companion_default_sheet", 1)
 def default_companion_request(description: str, style: ArtStyle) -> ImageRequest:
     """A theme's own companion («قمّور») from its locked description, when no fixed sheet image exists
     (Addendum 11 §4.2). No names in the prompt: a written name invites lettering in the picture."""
-    h = house_style()
+    h = house_for(style)
     name, version = DEFAULT_SHEET_PROMPT
     prompt = prompts.render(
         name,

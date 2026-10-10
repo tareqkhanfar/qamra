@@ -6,8 +6,10 @@ class-book scenes and the page QA. `assembled_prompts(style)` builds all of them
 themes, offline, so a change meant for one style can be proven to leave the others byte-identical.
 
 The golden file (`fixtures/prompt_snapshots.json`) keeps a SHA-256 per prompt group (a book's pages, a
-book's QA, every other prompt on its own); `--dump DIR` writes the texts themselves, to diff two versions.
-Regenerate the golden file only for a change that is meant to touch every style:
+book's QA, every other prompt on its own), per style and per kept earlier guide version
+(`semi-realistic.v2`); `--dump DIR` writes the texts themselves, to diff two versions. It was first taken
+before «شبه حقيقي» v3 (commit 0bd49a6): the other styles' entries have not changed since. Regenerate it only
+for a change that is meant to touch the prompts it guards:
 
     PYTHONPATH=packages/ai/tests uv run python packages/ai/tests/prompt_snapshot.py --write
 """
@@ -33,12 +35,24 @@ from qamra_ai.pipeline.layout import plan_book
 from qamra_ai.pipeline.models import Child, CompanionSpec, DrawingReview
 from qamra_ai.pipeline.pages import BookContext, page_request, qa_request
 from qamra_ai.pipeline.runtime import Runtime
-from qamra_ai.pipeline.style import house_style
-from qamra_ai.pipeline.theme import ArtStyle, load_style, load_theme
+from qamra_ai.pipeline.style import history_guide, house_style
+from qamra_ai.pipeline.theme import ArtStyle, art_style, load_style, load_theme
 
 GOLDEN = Path(__file__).parent / "fixtures" / "prompt_snapshots.json"
 # every style a book can be drawn in: the store's guides and the legacy media of content/styles/styles.yaml
 STYLES = ("3d", "watercolor", "cartoon", "coloring", "crayon", "papercut", "semi-realistic")
+# earlier guide versions kept in prompts/style/history/, snapshotted as "<slug>.v<version>"
+HISTORY = (("semi-realistic", 2),)
+
+
+def snapshot_styles() -> dict[str, ArtStyle]:
+    """golden key → art style: every current style, and every kept earlier version."""
+    styles = {slug: load_style(slug) for slug in STYLES}
+    for slug, version in HISTORY:
+        styles[f"{slug}.v{version}"] = art_style(history_guide(slug, version))
+    return styles
+
+
 THEMES = ("new-sibling", "graduation")
 CHILDREN = {
     "girl": Child(name="تالا", gender="f", age=5, glasses=True),
@@ -120,14 +134,23 @@ def assembled_prompts(style: ArtStyle) -> dict[str, str]:
     for key in ("girl", "girl_hijab", "boy"):
         variant = Variant(key=key, gender="m" if key == "boy" else "f", hijab=key == "girl_hijab")
         out[f"classic-placeholder:{key}"] = placeholder_request(variant, style, theme, 5).prompt
-    template = load_class_template("graduation")
-    kids = [
-        Kid(id=f"k{i}", name=c.name, gender=c.gender, age=c.age, hijab=c.hijab, glasses=c.glasses, sheet=IMG)
-        for i, c in enumerate(CHILDREN.values())
-    ]
-    out["class:cover"] = picture_prompt(template, template.cover, kids, style.slug, kind="cover")
-    for scene in template.scenes[:3]:
-        out[f"class:{scene.key}"] = picture_prompt(template, scene, kids[:2], style.slug, kind="page")
+    if style == load_style(style.slug):  # class books name their style by slug: current guides only
+        template = load_class_template("graduation")
+        kids = [
+            Kid(
+                id=f"k{i}",
+                name=c.name,
+                gender=c.gender,
+                age=c.age,
+                hijab=c.hijab,
+                glasses=c.glasses,
+                sheet=IMG,
+            )
+            for i, c in enumerate(CHILDREN.values())
+        ]
+        out["class:cover"] = picture_prompt(template, template.cover, kids, style.slug, kind="cover")
+        for scene in template.scenes[:3]:
+            out[f"class:{scene.key}"] = picture_prompt(template, scene, kids[:2], style.slug, kind="page")
     _book_prompts(style, out)
     return out
 
@@ -157,13 +180,14 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--write", action="store_true", help="rewrite the golden file from the current code")
     p.add_argument("--dump", type=Path, help="write every prompt as text under DIR/<style>/")
     args = p.parse_args(argv)
-    data = {slug: snapshot(load_style(slug)) for slug in STYLES}
+    styles = snapshot_styles()
+    data = {key: snapshot(style) for key, style in styles.items()}
     if args.write:
         GOLDEN.parent.mkdir(parents=True, exist_ok=True)
         GOLDEN.write_text(json.dumps(data, indent=1, sort_keys=True) + "\n", encoding="utf-8")
     if args.dump:
-        for slug in STYLES:
-            dump(load_style(slug), args.dump / slug)
+        for key, style in styles.items():
+            dump(style, args.dump / key)
     print(f"{sum(len(v) for v in data.values())} prompt groups over {len(data)} styles")
     return 0
 

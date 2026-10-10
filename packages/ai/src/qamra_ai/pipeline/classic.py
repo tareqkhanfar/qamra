@@ -42,7 +42,7 @@ from qamra_ai.pipeline.pages import Attempt, PageStatus, Why
 from qamra_ai.pipeline.printimg import downscale
 from qamra_ai.pipeline.qa import LIKENESS_HARD_FAIL, QAResult
 from qamra_ai.pipeline.runtime import Runtime
-from qamra_ai.pipeline.style import house_style, negatives
+from qamra_ai.pipeline.style import house_for, negatives
 from qamra_ai.pipeline.theme import ArtStyle, Theme, render_template
 from qamra_ai.pipeline.vowelize import DEDICATION_AR, VowelizedTexts, fill
 from qamra_ai.text.base import ImagePart, UserPart
@@ -152,7 +152,7 @@ def evaluate_classic(qa: ClassicQA, *, likeness_min: int, threshold: float) -> Q
 
 def placeholder_request(variant: Variant, style: ArtStyle, theme: Theme, seed: int) -> ImageRequest:
     """Text to image: the neutral placeholder hero's reference sheet for one template variant."""
-    h = house_style()
+    h = house_for(style)
     child = placeholder_child(variant, theme)
     prompt = prompts.render(
         "classic_placeholder",

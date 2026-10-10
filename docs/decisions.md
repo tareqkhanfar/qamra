@@ -793,3 +793,66 @@ Owner (2026-10-09): «انت بالحكايات والدوسيات ماخذ بع
 - **A gender slip in AI text never blocks a book.** Before, the safety review marked a misgendered story unsafe and the book failed. Now the review lists the words (`gender_issues`), a deterministic check reads them too (`qamra_ai.pipeline.gender_check`), and the book is flagged `gender_check` for the staff text review that every story book goes through anyway. The check prefers silence to noise: a mark decides only where it is written, a verb that can take the child as its object counts only when the name is marked as the subject, and a word that is also a noun counts only when its marks make it a verb. Its rules and lexicon are in the module.
 - **Wording fixes in live themes ship with their cache patch** (`vowelize.TEXT_FIXES`). The theme keeps its version number. The deploy patches the stored definitions and the Classic templates' cached vowelization, so no paid re-vowelization is needed.
 - **Generic texts with no child** (catalog descriptions, the home page) may keep the generic masculine «طفلكم» where a neutral wording would read worse. A text that names a child, or sits next to a known girl, follows her gender.
+
+## «شبه حقيقي» v3: a realistic painted portrait, not a storybook cartoon (2026-10-10, proposal)
+
+Tareq: «الصورة الشبه واقعية … كانت أشبه بالكرتون.» Nothing was drawn for this (no fal spend): the guide, the
+code and a comparison script are ready, and the comparison runs only with his budget.
+
+- **Why v2 looked like a cartoon** (in order of weight):
+  1. **The reference.** The site's samples were drawn from a crop of تالا's published *watercolor* sheet
+     (`scripts/style_samples.py`), and an edit model keeps the rendering of its reference: FLUX.2 pro returned
+     the sheet unchanged, Nano Banana 2's first tries were near-copies of the watercolor sheet, and the
+     published one keeps its poses, outfit and proportions. The sheet then fixes every
+     page ("keep exactly the same face … and body proportions", plus the cover as the page's style reference)
+     and the activity books' cut-out. Customers' photos are a better start, but the prompt cues below still apply.
+  2. **The house style comes first in every prompt** and says "a premium children's picture-book illustration",
+     "friendly and rounded" characters, "slightly large heads and short limbs unless the art-style line asks for
+     natural proportions" (the words are still in the prompt), "Not photorealistic" and "No photorealism".
+  3. **v2's own words**: "children's-book illustration, like a classic hand-painted storybook portrait", "a head
+     only slightly larger than life", "hair painted in soft, glossy clumps", "clean, readable silhouettes", and
+     a negative "no photographic detail" that forbade the very detail that reads as real.
+  4. **The sheet prompt**: "a picture-book CHARACTER REFERENCE SHEET" with three views side by side is the
+     animation model-sheet format.
+  5. **The model**: Nano Banana 2 at 1K for the sheet, as for every style.
+- **v3** (`prompts/style/semi-realistic.md`; v2 kept in `prompts/style/history/`): a fine-art oil-portrait
+  look carried through the scene, natural proportions and eye size, real tones in the face, hair in strands,
+  real fabric folds, soft painterly light, visible brushwork, "never a photograph". It describes the face by
+  its complexion and tones only, and avoids life-drawing words ("figure study", "painted from life",
+  "anatomy"): words about skin or "glamorous" children made the model refuse sheets before.
+- **The house merge is per style.** A guide may carry `## House style` and `## House negative`, which replace
+  those two house sections for that style only (`HouseStyle.for_style`, `house_for`), and `## Sheet`, a line
+  added to its character-sheet prompt (`character_sheet.v4`, otherwise the v3 text). `BookContext` merges on
+  creation, so the pages, the cover and the page QA use it. The merged version is «5+semi-realistic.v3»: books
+  record it, and the companion-sheet cache never mixes it with the plain house. Its house negative is the
+  house's list without "No photorealism" (a test fails if the house list changes and the guide does not).
+- **Every other style is byte-identical.** `packages/ai/tests/prompt_snapshot.py` builds every image prompt a
+  style sends (sheets, every page and cover of two books, companion and family sheets, Classic, class book,
+  page QA). The golden digests were committed before the change (0bd49a6); the other six styles still match
+  them, and v2 from the history file still sends exactly what v2 sent.
+- **Models (recommendation, not switched).** Models are global admin settings; nothing per style was added.
+  - Character sheet: **Nano Banana Pro edit at 2K, $0.15** (fal: $0.15 at 1K and 2K) instead of Nano
+    Banana 2 at 1K ($0.08): +$0.07 once per child, the strongest likeness of the two, and the printed cut-out
+    gets twice the pixels (the activity cover prints it 125 mm tall at 300 DPI, 1476 px; a 1K sheet's figure
+    is about 700 px).
+  - Cover: Nano Banana Pro ($0.15), the existing `cover_image_model` setting (Addendum 11 §6.4).
+  - Pages: stay on Nano Banana 2 (0.5K preview $0.06, 1K final $0.08 plus the upscale), painted from the
+    realistic sheet. Pro pages would cost $2.40–3.00 a book.
+  - Not FLUX.2 pro edit ($0.03 first MP + $0.015 per extra MP of input and output, about $0.06 a call here):
+    it copied the reference back unchanged on 2026-10-09. Not GPT Image 2.5 on fal (sunburst edit $0.053 at
+    1024² "high", plus input image tokens at $8/M): cheap, but our fal adapter does not set its size or
+    quality and would price it at the $0.15 "unknown" rate; a candidate for a later round.
+  - If the grid confirms it, the smallest change is to let a guide ask for the cover model on its sheet.
+- **The comparison** (`scripts/semireal_compare.py`, dry run by default): rows v2/v3 × Nano Banana 2/Pro, plus
+  v3 with the Pro sheet and a Nano Banana 2 page; columns sheet, story page (new-sibling beat 13, without the
+  companion), activity cut-out (local). Reference: the same تالا crop the v2 samples used. 9 calls, **$1.00**
+  at fal's prices rounded up to the cent; `--max-usd` caps every run together, failed calls are logged at full
+  price, and finished cells are reused.
+- **Left as they are** (shared with other styles, or not sold in this style): the page template's
+  "picture-book page", the house Composition's "stage it like a picture book", the sheet template's first line
+  (the v3 sheet line follows it), the Classic portrait prompt (Classic is not sold in this style), and the page
+  QA's "false if photorealistic" (a soft `style` flag worth 0.05; watch it on the first v3 books). The theme
+  companion «قمّور» is a dot-eyed mascot by design and will look stylized next to a realistic child.
+- **After approval:** merge (the guide is live as soon as it deploys; migration `968a4be3c42d` updates the
+  row's record to v3), redraw the site's semi-realistic samples (about $0.55), and decide what to do with
+  characters already drawn in v2 (they are reused until the parent asks for a new drawing).
