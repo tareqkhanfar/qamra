@@ -5,7 +5,7 @@ edit the YAML, not this file.
 
 ## The idea
 
-«رحلتي الأولى للتعلّم» is a readiness-first learning journey for ages 3–6. It comes as three stages («محطات») of up to 120 full-colour pages each, sold separately or as a set. The child is the explorer. Their own character from the cover walks a journey map of nine stops: أفكر 🧠 → ألاحظ 👀 → أسمع 👂 → أحرّك يدي ✋ → أمسك القلم ✏️ → أتتبع → أكتب → أقرأ → أحل وأبدع 🌈. **Every stage walks the whole map.** Every section appears in every stage, with fewer pages each, so the child fills the same map three times, each time at a higher level. Every section starts on the map with the character at the section's stop (the child moves a sticker there) and ends with «ماذا تعلمت؟», a short review that mixes the new skills with earlier ones and ends with «رائع يا {child}!». Two small neighbouring sections may share one opener page and one «ماذا تعلمت؟» page.
+«رحلتي الأولى للتعلّم» is a readiness-first learning journey for ages 3–6. It comes as three stages («محطات») of up to 120 full-colour pages each, sold separately or as a set. The child is the explorer. Their own character from the cover walks a journey map of nine stops: أفكر 🧠 → ألاحظ 👀 → أسمع 👂 → أحرّك يدي ✋ → أمسك القلم ✏️ → أتتبع → أكتب → أقرأ → أحل وأبدع 🌈. **Every stage walks the whole map.** Every section appears in every stage, with fewer pages each, so the child fills the same map three times, each time at a higher level. Every section starts on the map with the character at the section's stop (the child moves a sticker there) and ends with «ماذا تعلمت؟», a short review that mixes the new skills with earlier ones and ends with «{رائع/رائعة} يا {child}!». Two small neighbouring sections may share one opener page and one «ماذا تعلمت؟» page.
 
 Every page is a **mission**. It has one or two goals, a big title and an instruction of at most 7 words for a parent to read aloud. The pictures are big, and the task uses every one of them. A solved example appears whenever a format is new, and there is plenty of room to work. Formats rotate: never more than two pages of the same type in a row, and every spread mixes activities. Listening pages, Arabic letters and English letters carry a QR code that plays the sound or word. Every page still works without audio, because the parent can read the instruction.
 
@@ -433,7 +433,7 @@ Writing lines are largest in stage 1 and get smaller in each stage. In stage 2 a
 
 **🎨 التلوين الذكي**
 - يلوّن حسب الصوت الأول: ما يبدأ بصوت /ب/
-- يلوّن حسب مفتاح من أربعة أشكال وألوان
+- يلوّن حسب مفتاح: ثلاثة أشكال، لكلّ شكل لونه
 
 **🔤 الحروف العربية**
 - يتعرّف على 14 حرفًا (أ – ص)، حرفًا جديدًا واحدًا في كل صفحة: يراه ويسمعه ويربطه بصورة ويتتبعه بإصبعه

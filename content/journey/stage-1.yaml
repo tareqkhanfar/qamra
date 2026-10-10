@@ -32,13 +32,13 @@ pages:
   5: {title: "تَوْأَمانِ!", instruction: "{لَوِّنْ/لَوِّني} صورَتَيْنِ مُتَشابِهَتَيْنِ تَمامًا", params: {picture: cat, bows: [red, blue, red, none], bow_at: [50, 86]}}  # draft: educator review
   6: {title: "كَبيرٌ وَصَغيرٌ", instruction: "{أَشِرْ/أَشيري} إلى الكَبيرِ {وَضَعْ/وَضَعي} حَوْلَهُ دائِرَةً", params: {concept: big-small}}  # draft: educator review
   7: {title: "{انْظُرْ وَتَذَكَّرْ/انْظُري وَتَذَكَّري}", instruction: "{احْفَظِ/احْفَظي} الصُّوَرَ الثَّلاثَ، ثُمَّ {اقْلِبِ/اقْلِبي} الصَّفْحَةَ", params: {items: [sun, ball, duck]}}  # draft: educator review
-  8: {title: "{ماذا رَأَيْتَ؟/ماذا رَأَيْتِ؟}", instruction: "{تَذَكَّرْ/تَذَكَّري} {وَلَوِّنِ/وَلَوِّني} الصُّوَرَ الَّتي {رَأَيْتَها/رَأَيْتِها}", params: {choices: [sun, ball, duck, cat, apple, car], answer: [sun, ball, duck]}}  # draft: educator review
+  8: {title: "{ماذا رَأَيْتَ؟/ماذا رَأَيْتِ؟}", instruction: "{تَذَكَّرْ/تَذَكَّري} {وَلَوِّنِ/وَلَوِّني} الصُّوَرَ الَّتي {رَأَيْتَها/رَأَيْتِها}", params: {choices: [cat, sun, apple, ball, car, duck], answer: [sun, ball, duck]}}  # draft: educator review
   9: {title: "ماذا يَنْقُصُ؟", instruction: "{ابْحَثْ/ابْحَثي} عَنِ الجُزْءِ النّاقِصِ {وَصِلْهُ/وَصِليهِ} بِصورَتِهِ", params: {items: ["car:wheel", "rabbit:ear", "house:door"]}}  # draft: educator review
-  10: {title: "مِنَ المَجْموعَةِ نَفْسِها", instruction: "أَيُّ صورَةٍ تُناسِبُ المَجْموعَةَ؟ {ضَعْ/ضَعي} حَوْلَها دائِرَةً", params: {group: "فَواكِهُ", shown: [apple, banana, grapes], choices: [orange, shoe, car], answer: orange}}  # draft: educator review
+  10: {title: "مِنَ المَجْموعَةِ نَفْسِها", instruction: "أَيُّ صورَةٍ تُناسِبُ المَجْموعَةَ؟ {ضَعْ/ضَعي} حَوْلَها دائِرَةً", params: {group: "فَواكِهُ", shown: [apple, banana, grapes], choices: [shoe, orange, car], answer: orange}}  # draft: educator review
   11: {title: "قِصَّةُ البِذْرَةِ", instruction: "{رَتِّبِ/رَتِّبي} الصُّوَرَ بِرَسْمِ النِّقاطِ تَحْتَها", params: {story: seed}}  # draft: educator review
   12: {title: "طَويلٌ وَقَصيرٌ", instruction: "{جِدِ/جِدي} الأَطْوَلَ في كُلِّ صَفٍّ {وَحَوِّطْهُ/وَحَوِّطيهِ}", params: {concept: long-short}}  # draft: educator review
   13: {title: "أَرْبَعُ صُوَرٍ", instruction: "{انْظُرْ/انْظُري} جَيِّدًا {وَتَذَكَّرْ/وَتَذَكَّري}، ثُمَّ {اقْلِبِ/اقْلِبي} الصَّفْحَةَ", params: {items: [cat, tree, ball, car]}}  # draft: educator review
-  14: {title: "أَيُّ صورَةٍ اخْتَفَتْ؟", instruction: "{ضَعْ/ضَعي} دائِرَةً حَوْلَ الصّورَةِ الَّتي اخْتَفَتْ", params: {shown: [cat, tree, car], choices: [ball, apple, duck], answer: [ball]}}  # draft: educator review
+  14: {title: "أَيُّ صورَةٍ اخْتَفَتْ؟", instruction: "{ضَعْ/ضَعي} دائِرَةً حَوْلَ الصّورَةِ الَّتي اخْتَفَتْ", params: {shown: [cat, tree, car], choices: [apple, duck, ball], answer: [ball]}}  # draft: educator review
   15: {title: "ما نَأْكُلُهُ وَما نَلْبَسُهُ", instruction: "نَأْكُلُهُ أَمْ نَلْبَسُهُ؟ {صِلْ/صِلي} كُلَّ صورَةٍ بِسَلَّتِها", params: {groups: [{label: "نَأْكُلُهُ", icon: plate}, {label: "نَلْبَسُهُ", icon: sun-hat}], items: [[apple, 0], [hat, 1], [bread, 0], [shoe, 1], [banana, 0], [sock, 1]]}}  # draft: educator review
   16: {title: "ماذا تَعَلَّمْتُ؟", instruction: "{حُلَّ/حُلّي} المُهِمّاتِ، ثُمَّ {لَوِّنْ/لَوِّني} نَجْمَةً لِكُلِّ واحِدَةٍ", params: {tasks: [odd-one-out, big-small, gone], cheer: "{رائِعٌ/رائِعَةٌ} يا {child}!"}}  # draft: educator review
 
@@ -172,7 +172,7 @@ pages:
     params: {lang: en, instruction_en: "Listen and point to the animal.", words: [cat, duck, fish, cow, bird]}
     audio: {lang: en, say: "cat. duck. fish. cow. bird.", show: [cat, duck, fish, cow, bird], tts: true}
   95:  # draft: educator review
-    title: "Colors"
+    title: "Colours"
     instruction: "ما اللَّوْنُ الَّذي {تَسْمَعُهُ/تَسْمَعينَهُ}؟ {لَوِّنْ/لَوِّني} بِهِ البالونَ"
     params: {lang: en, instruction_en: "Listen and colour each balloon.", colors: [red, yellow, blue, green]}
     audio: {lang: en, say: "red. yellow. blue. green.", show: [red, yellow, blue, green], tts: true}
@@ -184,7 +184,7 @@ pages:
 
   # ---- 🔢 الرياضيات (quantities 1–5 first; the numerals 1–5 seen and matched, never written)
   97: {type: journey-opener, title: "أَحُلُّ وَأُبْدِعُ: أَعُدُّ", instruction: "{حَرِّكْ بَطَلَكَ/حَرِّكي بَطَلَتَكِ} إلى «أَحُلُّ وَأُبْدِعُ»", params: {stop: "أحل وأبدع", inside: ["أَعُدُّ مِنْ 1 إلى 5", "أَتَعَرَّفُ الأَرْقامَ مِنْ 1 إلى 5", "فَوْقَ وَتَحْتَ، داخِلَ وَخارِجَ، قَريبٌ وَبَعيدٌ"]}}  # draft: educator review
-  98: {title: "كَمْ عُصْفورًا؟", instruction: "{عُدَّ/عُدّي} العَصافيرَ، ثُمَّ {لَوِّنْ/لَوِّني} نُقْطَةً لِكُلِّ عُصْفورٍ", params: {seed: 98, picture: bird, answer_with: dots, example: 1, counts: [2, 3]}}  # draft: educator review
+  98: {title: "كَمْ عُصْفورًا؟", instruction: "{عُدَّ/عُدّي} العَصافيرَ، {وَحَوِّطْ/وَحَوِّطي} بِطاقَةً فيها نِقاطٌ بِعَدَدِها", params: {seed: 98, picture: bird, answer_with: dots, example: 1, counts: [2, 3]}}  # draft: educator review
   99: {title: "كَثيرٌ وَقَليلٌ", instruction: "{جِدِ/جِدي} المَجْموعَةَ الكَثيرَةَ {وَحَوِّطْها/وَحَوِّطيها}", params: {concept: many-few}}  # draft: educator review
   100: {title: "كَمْ بَطَّةً؟", instruction: "لِكُلِّ بَطَّةٍ بَصْمَةٌ: {اطْبَعْ إِصْبَعَكَ/اطْبَعي إِصْبَعَكِ} {وَعُدَّ/وَعُدّي}", type: count-print, params: {picture: duck, count: 4}}  # draft: educator review
   101: {title: "العَدَدُ نَفْسُهُ", instruction: "{صِلْ/صِلي} كُلَّ مَجْموعَتَيْنِ لَهُما العَدَدُ نَفْسُهُ", params: {numbers: [2, 3, 4], groups: [نجوم, قلوب]}}  # draft: educator review

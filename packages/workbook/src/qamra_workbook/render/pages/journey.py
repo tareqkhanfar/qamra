@@ -225,7 +225,7 @@ def certificate(ctx: PageContext) -> Built:
     data = {
         "line": ctx.text(str(ctx.page.params.get("line", "لَقَدْ {أَنْهَيْتَ/أَنْهَيْتِ} «رِحْلَتي الأولى لِلتَّعَلُّمِ»"))),
         "name": ctx.book.child.name,
-        "date": ctx.book.date_ar(),
+        "date": "",  # left blank: the grown-up writes the day the child finishes, not the print date
         "character": ctx.assets.character.resolve().as_uri() if ctx.assets.character else "",
         "badges": badges,
         "star": _star,

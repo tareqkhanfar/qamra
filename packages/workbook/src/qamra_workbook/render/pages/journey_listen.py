@@ -17,6 +17,15 @@ from qamra_workbook.render.spec import Figure
 
 # for the grown-up, with the child's gender (`ctx.text`): «ليسمع طفلكم» / «لتسمع طفلتكم»
 QR_NOTE = "للأهل: امسحوا الرمز بالهاتف {ليسمع طفلكم/لتسمع طفلتكم}، أو اقرؤوا الكلمات بصوتكم."
+# a page of sounds (animals, the house, loud/soft, fast/slow: `audio.tts` false) has no words to read aloud
+QR_NOTE_SOUNDS = (
+    "للأهل: امسحوا الرمز بالهاتف {ليسمع طفلكم/لتسمع طفلتكم} الأصوات، أو قلّدوها {له/لها} بأصواتكم."
+)
+
+
+def qr_note(ctx: PageContext) -> str:
+    """The QR card's note: read the words aloud, or (a page of sounds) imitate the sounds."""
+    return ctx.text(QR_NOTE if ctx.page.params.get("audio_tts", True) else QR_NOTE_SOUNDS)
 
 
 def _audio_problem(ctx: PageContext) -> list[str]:
@@ -65,7 +74,7 @@ def listen_rows(ctx: PageContext) -> Built:
                     ).replace('class="key-ring"', "" if example else 'class="key-ring"')
                 )
     key = [f"{ctx.num(i + 1)}: {PICTURES[pid(a)].word_ar}" for i, a in enumerate(answers)]
-    return Built({"svg": svg(body), "qr_note": ctx.text(QR_NOTE)}, key, problems)
+    return Built({"svg": svg(body), "qr_note": qr_note(ctx)}, key, problems)
 
 
 def speaker(cx: float, cy: float, s: float, waves: int) -> str:
@@ -110,7 +119,7 @@ def _two_choice_rows(
             if (k == 0) == yes:
                 body.append(ring_at(cx, y + h / 2, 27, h / 2 - 3))
         key.append(f"{ctx.num(i + 1)}: {names[0] if yes else names[1]}")
-    return Built({"svg": svg(body), "qr_note": ctx.text(QR_NOTE)}, key, _audio_problem(ctx))
+    return Built({"svg": svg(body), "qr_note": qr_note(ctx)}, key, _audio_problem(ctx))
 
 
 @page_type("loud-soft")

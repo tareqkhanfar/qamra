@@ -106,10 +106,10 @@ def memory_look(ctx: PageContext) -> Built:
         for w, (x, y, size) in zip(items, grid(len(items), cols, h=H - 30), strict=True)
     ]
     turn = draw.d_path(
-        ("M", (W / 2 + 26, H - 8)), ("C", (W / 2 + 10, H - 26, W / 2 - 14, H - 26, W / 2 - 26, H - 12))
-    )
+        ("M", (W / 2 - 26, H - 8)), ("C", (W / 2 - 10, H - 26, W / 2 + 14, H - 26, W / 2 + 26, H - 12))
+    )  # an Arabic book: the page turns from left to right
     body.append(draw.path(turn, stroke="#E27D63", width=2.4))
-    body.append(draw.arrow((W / 2 - 27, H - 11), 140, 5))
+    body.append(draw.arrow((W / 2 + 27, H - 11), 40, 5))
     return Built({"svg": svg(body)}, None, problems)
 
 
@@ -312,7 +312,7 @@ def classify_by(ctx: PageContext) -> Built:
         [] if groups and all(0 <= g < len(groups) for _, g in items) else ["every item needs its group"]
     )
     top_h = 118.0
-    cells = grid(len(items), 3, h=top_h)
+    cells = grid(len(items), 3, h=top_h, gap=14.0)  # the hook under a top-row picture stays visible
     body = []
     for (w, _), (x, y, size) in zip(items, cells, strict=True):
         body.append(card(x - 3, y - 3, size + 6, size + 6, r=8))

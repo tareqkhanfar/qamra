@@ -119,11 +119,12 @@ def write_progression(ctx: PageContext) -> Built:
             cx = W - 14 - size / 2 - k * (W - 28 - size) / max(count - 1, 1)
             cy = base - size / 2 - 3 if kind != "boat-curve" else base - size * 0.3
             if params.get("train"):
+                wide = size * 1.5 if kind == "rectangle" else size  # the rectangle is 1.5× as wide
                 body.append(
                     card(
-                        cx - size / 2 - 5,
+                        cx - wide / 2 - 5,
                         cy - size / 2 - 5,
-                        size + 10,
+                        wide + 10,
                         size + 8,
                         r=3,
                         fill="#FFFFFF",

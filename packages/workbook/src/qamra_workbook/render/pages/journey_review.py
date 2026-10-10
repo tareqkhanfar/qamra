@@ -9,6 +9,7 @@ from collections.abc import Callable
 
 from qamra_workbook.geometry import Stroke
 from qamra_workbook.pictures import PICTURES
+from qamra_workbook.pictures.model import strip_tashkeel
 from qamra_workbook.render import draw
 from qamra_workbook.render.pages.journey_eye import boat
 from qamra_workbook.render.pages.journey_hand import row_strokes, shape_of
@@ -177,7 +178,7 @@ def beach(ctx: PageContext, box: Box) -> tuple[list[str], str]:
         out += [traced(s, spacing=3.6, r=0.9, start=1.8) for s in row_strokes(kind, x + w - 8, x + 8, y0, hh)]
     grass = [
         traced(s, spacing=3.2, r=0.9, start=1.8)
-        for s in row_strokes("vertical", x + w / 2 - 4, x + 8, y + 1.5 * third, third * 0.5)
+        for s in row_strokes("vertical", x + w - 8, x + 8, y + 1.5 * third, third * 0.5)
     ]
     return out + grass, ""
 
@@ -192,9 +193,15 @@ def draw_shape(ctx: PageContext, box: Box) -> tuple[list[str], str]:
 
 def shapes(ctx: PageContext, box: Box) -> tuple[list[str], str]:
     x, y, w, h = box
-    s = h - 12
+    s = min(h - 4, w / 3 - 8)  # a small panel (stage 1's final review) still shows a shape, not loose dots
+    small = s < 20
     return [
-        traced(shape_of(k, x + w - (i + 0.5) * w / 3, y + h / 2, s), spacing=3.4, r=0.95, start=1.9)
+        traced(
+            shape_of(k, x + w - (i + 0.5) * w / 3, y + h / 2, s),
+            spacing=2.4 if small else 3.4,
+            r=0.75 if small else 0.95,
+            start=1.4 if small else 1.9,
+        )
         for i, k in enumerate(("circle", "triangle", "square"))
     ], ""
 
@@ -411,13 +418,13 @@ MINIS: dict[str, tuple[str, Mini]] = {
     "shapes": ("أَتَتَبَّعُ الأَشْكالَ", shapes),
     "pattern": ("أُكْمِلُ النَّمَطَ", pattern),
     "sequence": ("أُرَتِّبُ القِصَّةَ", sequence),
-    "rule-coloring": ("أُلَوِّنُ حَسَبَ القاعِدَةِ", rule),
+    "rule-coloring": ("أُلَوِّنُ الدَّوائِرَ فَقَطْ", rule),
     "like-model": ("أُلَوِّنُ مِثْلَ النَّموذَجِ", model),
     "right-to-left": ("مِنَ اليَمينِ إلى اليَسارِ", rtl),
     "boats-dots": ("قَوارِبُ وَنِقاطٌ", boats),
     "boat-on-line": ("قَوارِبُ عَلى السَّطْرِ", boat_line),
     "animals": ("Animals", animals),
-    "colors": ("Colors", colors),
+    "colors": ("Colours", colors),
     "counting": ("أَعُدُّ", count),
     "numerals": ("الرَّقْمُ وَمَجْموعَتُهُ", numeral),
     "above-below": ("فَوْقَ وَتَحْتَ", above),
@@ -596,14 +603,28 @@ def complete_mini(chars: tuple[str, ...]) -> Mini:
     return mini
 
 
-def write_mini(ctx: PageContext, box: Box) -> tuple[list[str], str]:
+def write_mini(ctx: PageContext, box: Box, model: str = "ب") -> tuple[list[str], str]:
     from qamra_workbook.render.pages.journey_letters import shape, solid
 
     x, y, w, h = box
-    out = [solid(shape("ب"), x + w - 22, y + 2, 20, h - 4, "#E27D63", ctx.num)]
+    out = [solid(shape(model), x + w - 22, y + 2, 20, h - 4, "#E27D63", ctx.num)]
     side = min(22.0, (w - 30) / 3 - 4, h - 8)
     out += [_box(x + w - 28 - (k + 1) * (side + 4), y + (h - side) / 2, side, side) for k in range(3)]
     return out, ""
+
+
+def name_letter_mini(ctx: PageContext, box: Box) -> tuple[list[str], str]:
+    """«ما أَوَّلُ حَرْفٍ في اسْمِكَ؟»: the model is the first letter of the child's own name (ب when the
+    letter model has no such letter)."""
+    from qamra_workbook.render.pages.journey_letters import shape
+
+    first = strip_tashkeel(ctx.book.child.name.strip())[:1]
+    try:
+        shape(first)
+    except Exception:  # a letter the stroke models do not draw: fall back to the page's usual model
+        first = "ب"
+    out, _ = write_mini(ctx, box, first)
+    return out, f"نكتب «{first}» ثلاث مرات"
 
 
 def en_letters_mini(chars: str) -> Mini:
@@ -727,7 +748,18 @@ def write_line_mini(ctx: PageContext, box: Box) -> tuple[list[str], str]:
 def write_alone_mini(ctx: PageContext, box: Box) -> tuple[list[str], str]:
     x, y, w, h = box
     s = h - 6
-    return [picture("fish", x + w - s - 2, y + 3, s), _box(x + 6, y + 4, w - s - 16, h - 8)], "سمك"
+    return [picture("fish", x + w - s - 2, y + 3, s), _box(x + 6, y + 4, w - s - 16, h - 8)], "سَمَكَة"
+
+
+def first_letter_mini(ctx: PageContext, box: Box) -> tuple[list[str], str]:
+    """The picture's first letter only: one letter-sized box next to the fish."""
+    x, y, w, h = box
+    s = h - 6
+    side = min(h - 8, 24.0)
+    return [
+        picture("fish", x + w - s - 2, y + 3, s),
+        _box(x + w - s - 10 - side, y + (h - side) / 2, side, side),
+    ], "س"
 
 
 def ltr(markup: str) -> str:
@@ -903,7 +935,7 @@ def en_match_mini(chars: str, words: tuple[str, ...]) -> Mini:
         x, y, w, h = box
         n = len(chars)
         slot = [(i + 1) % n for i in range(n)]  # the picture in each slot: never under its own letter
-        s = min(h * 0.5, w / n - 8)
+        s = max(9.0, min(h * 0.5, h - 23, w / n - 8))  # a real gap between the two hooks to join
         out = []
         for j in range(n):
             cx = x + (j + 0.5) * w / n
@@ -950,7 +982,7 @@ MINIS.update(
         "write": ("أَكْتُبُ الحَرْفَ", write_mini),
         "trace": ("أَتَتَبَّعُ", letters_mini(("د", "ذ", "ر"), "trace")),
         "complete": ("أُكْمِلُ الحَرْفَ", complete_mini(("س", "ش"))),
-        "copy": ("أَكْتُبُ بِجانِبِ النَّموذَجِ", write_mini),
+        "copy": ("أَكْتُبُ أَوَّلَ حَرْفٍ مِنِ اسْمي", name_letter_mini),
         "sound": ("أَقولُ الصَّوْتَ", en_letters_mini("ABC")),
         "match": ("أَصِلُ الحَرْفَ بِصورَتِهِ", en_match_mini("DEF", ("duck", "egg", "fish"))),
         "count-write": ("أَعُدُّ وَأَكْتُبُ", count_write_mini),
@@ -1008,7 +1040,7 @@ def faces(x: float, y: float, r: float = 4.2) -> str:
 
 
 ASSESS: dict[str, Mini] = {
-    "first-letter": write_alone_mini,
+    "first-letter": first_letter_mini,
     "harakat": harakat_mini,
     "read": read_mini,
     "write-word": write_line_mini,

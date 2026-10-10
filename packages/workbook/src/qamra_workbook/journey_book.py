@@ -141,6 +141,7 @@ def page_specs(plan: Journey, layer: PrintLayer) -> list[PageSpec]:
         instruction_en = str(params.pop("instruction_en", spec.instruction_en))
         if printed.audio is not None:
             params["audio_code"] = audio_item(layer.stage, page, printed.audio, printed.title).code
+            params["audio_tts"] = printed.audio.tts  # words (read them aloud) or sounds (imitate them)
         params.setdefault("brief", dict(page.params))  # the plan's params, for builders that read them
         if (printed.type or JOURNEY_TYPES.get(page.type, page.type)) == "find-letter":
             params.setdefault("box_pitch", 18.0)  # three answer boxes stay inside a half-width card

@@ -27,7 +27,7 @@
     <div class="cert-name"><span>{{ d.name }}</span></div>
     <div class="cert-stops">{% for b in d.badges %}{{ b }}{% endfor %}<span class="cert-done">{{ icon('check') }}</span></div>
     <div class="cert-sign">
-      <div><span class="cert-label">التاريخ</span><span class="cert-value">{{ d.date }}</span></div>
+      <div><span class="cert-label">التاريخ</span><span class="cert-value{% if not d.date %} cert-blank{% endif %}">{{ d.date }}</span></div>
       <div><span class="cert-label">توقيع الأهل أو المعلّمة</span><span class="cert-value cert-blank"></span></div>
     </div>
     <div class="say cert-say">{{ mascot('mascot', true) }}<div class="bubble">{{ p.instruction }}</div></div>

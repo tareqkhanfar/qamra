@@ -308,7 +308,11 @@ def tangled(ctx: PageContext) -> Built:
             if k == 0:
                 body.append(starter(ctx, x1, 48, 40))
         else:
-            body.append(picture("kite", x1 - 18, 8, 36, main=hexes[k % 4]))
+            body.append(
+                picture(
+                    "kite", x1 - 18, 8, 36, a=hexes[k % 4], b=hexes[k % 4], c=hexes[k % 4], d=hexes[k % 4]
+                )
+            )
     for k, end in enumerate(ends):
         if end in ("boy", "girl", "ولد", "بنت"):
             body.append(

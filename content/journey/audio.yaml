@@ -104,7 +104,7 @@ items:
   key: journey:s1:p95
   stage: 1
   page: 95
-  title: Colors
+  title: Colours
   say: red. yellow. blue. green.
   show:
   - red
@@ -191,7 +191,7 @@ items:
   key: letter:ar:أ
   stage: 2
   page: 30
-  title: حَرْفُ الأَلِف
+  title: حَرْفُ الأَلِفِ
   say: أَلِف. أَسَد. أَرْنَب.
   show:
   - أ
@@ -213,7 +213,7 @@ items:
   key: letter:ar:ت
   stage: 2
   page: 35
-  title: حَرْفُ التّاء
+  title: حَرْفُ التّاءِ
   say: تاء. تُفّاحَة. تَمْر.
   show:
   - ت
@@ -224,7 +224,7 @@ items:
   key: letter:ar:ث
   stage: 2
   page: 37
-  title: حَرْفُ الثّاء
+  title: حَرْفُ الثّاءِ
   say: ثاء. ثَعْلَب. ثُوم.
   show:
   - ث
@@ -268,7 +268,7 @@ items:
   key: letter:ar:د
   stage: 2
   page: 48
-  title: حَرْفُ الدّال
+  title: حَرْفُ الدّالِ
   say: دال. دُبّ. دَجاجَة.
   show:
   - د
@@ -279,7 +279,7 @@ items:
   key: letter:ar:ذ
   stage: 2
   page: 50
-  title: حَرْفُ الذّال
+  title: حَرْفُ الذّالِ
   say: ذال. ذُرَة. ذَيْل.
   show:
   - ذ
@@ -290,7 +290,7 @@ items:
   key: letter:ar:ر
   stage: 2
   page: 54
-  title: حَرْفُ الرّاء
+  title: حَرْفُ الرّاءِ
   say: راء. رُمّان. ريشَة.
   show:
   - ر
@@ -301,7 +301,7 @@ items:
   key: letter:ar:ز
   stage: 2
   page: 56
-  title: حَرْفُ الزّاي
+  title: حَرْفُ الزّايِ
   say: زاي. زَرافَة. زَيْتون.
   show:
   - ز
@@ -312,7 +312,7 @@ items:
   key: letter:ar:س
   stage: 2
   page: 59
-  title: حَرْفُ السّين
+  title: حَرْفُ السّينِ
   say: سين. سَمَكَة. ساعَة.
   show:
   - س
@@ -323,7 +323,7 @@ items:
   key: letter:ar:ش
   stage: 2
   page: 61
-  title: حَرْفُ الشّين
+  title: حَرْفُ الشّينِ
   say: شين. شَمْس. شَجَرَة.
   show:
   - ش
@@ -334,7 +334,7 @@ items:
   key: letter:ar:ص
   stage: 2
   page: 63
-  title: حَرْفُ الصّاد
+  title: حَرْفُ الصّادِ
   say: صاد. صَقْر. صُنْدوق.
   show:
   - ص
@@ -614,7 +614,7 @@ items:
   key: letter:ar:ض
   stage: 3
   page: 27
-  title: حَرْفُ الضّاد
+  title: حَرْفُ الضّادِ
   say: ضاد. ضِفْدَع. ضِرْس.
   show:
   - ض
@@ -625,7 +625,7 @@ items:
   key: letter:ar:ط
   stage: 3
   page: 30
-  title: حَرْفُ الطّاء
+  title: حَرْفُ الطّاءِ
   say: طاء. طائِرَة. طَبْل.
   show:
   - ط
@@ -636,7 +636,7 @@ items:
   key: letter:ar:ظ
   stage: 3
   page: 32
-  title: حَرْفُ الظّاء
+  title: حَرْفُ الظّاءِ
   say: ظاء. ظَرْف. ظِلّ.
   show:
   - ظ
@@ -647,7 +647,7 @@ items:
   key: letter:ar:ع
   stage: 3
   page: 35
-  title: حَرْفُ العَيْن
+  title: حَرْفُ العَيْنِ
   say: عَيْن. عِنَب. عَصا.
   show:
   - ع
@@ -658,7 +658,7 @@ items:
   key: letter:ar:غ
   stage: 3
   page: 37
-  title: حَرْفُ الغَيْن
+  title: حَرْفُ الغَيْنِ
   say: غَيْن. غَيْمَة. غَزال.
   show:
   - غ
@@ -673,7 +673,7 @@ items:
   say: فاء. فيل. فَراشَة.
   show:
   - ف
-  - فيل
+  - فِيل
   lang: ar
   tts: true
 - code: f2zjvnqh
@@ -702,7 +702,7 @@ items:
   key: letter:ar:ل
   stage: 3
   page: 48
-  title: حَرْفُ اللّام
+  title: حَرْفُ اللّامِ
   say: لام. لَيْمون. لِسان.
   show:
   - ل
@@ -724,7 +724,7 @@ items:
   key: letter:ar:ن
   stage: 3
   page: 53
-  title: حَرْفُ النّون
+  title: حَرْفُ النّونِ
   say: نون. نَحْلَة. نَجْمَة.
   show:
   - ن
