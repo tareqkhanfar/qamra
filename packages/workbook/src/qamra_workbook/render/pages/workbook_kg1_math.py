@@ -176,14 +176,14 @@ def kg1_picture_subtract(ctx: PageContext) -> Built:
     return sums_page(ctx, True)
 
 
-def sums_task(top: int, subtract: bool) -> Task:
-    """Two picture sums in a review box."""
+def sums_task(top: int, subtract: bool, rows: int = 2) -> Task:
+    """Picture sums in a review box (two, or `rows`), each a different pair."""
 
     def task(ctx: PageContext, box: Box, r: random.Random) -> Drawn:
         out = Drawn()
-        for i, (a, b) in enumerate(sums(r, top, 2, subtract)):
+        for i, (a, b) in enumerate(sums(r, top, rows, subtract)):
             part, line = sum_row(
-                ctx, r, a, b, Box(box.x, box.y + i * box.h / 2, box.w, box.h / 2), subtract, False
+                ctx, r, a, b, Box(box.x, box.y + i * box.h / rows, box.w, box.h / rows), subtract, False
             )
             out.body += part
             out.answer.append(line)

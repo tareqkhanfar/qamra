@@ -217,7 +217,7 @@ def test_a_word_problem_told_by_a_girl_gives_to_her_friend() -> None:
 
 def test_the_sentence_key_never_points_a_girl_to_a_masculine_verb() -> None:
     key = "\n".join(volume_text("kg2", 3, "f")["key"])
-    assert "رَسَمَتْ سَلْمى ← صورة الرسم" in key and "← رَسَمَ" not in key
+    assert "رَسَمَتْ سَلْمَى ← صورة الرسم" in key and "← رَسَمَ" not in key
 
 
 def test_arabic_lists_join_every_item_with_wa() -> None:

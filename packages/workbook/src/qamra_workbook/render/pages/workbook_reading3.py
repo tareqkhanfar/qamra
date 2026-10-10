@@ -10,7 +10,7 @@ from qamra_workbook.letters.model import Letter
 from qamra_workbook.pictures import PICTURES
 from qamra_workbook.pictures.model import strip_tashkeel
 from qamra_workbook.render import draw
-from qamra_workbook.render.pages.letters import Number, letter_extent, start_points
+from qamra_workbook.render.pages.letters import Number, dotted_letter, letter_extent
 from qamra_workbook.render.pages.workbook_common import (
     INK,
     W,
@@ -34,7 +34,8 @@ HARAKA_SAY = {  # draft: educator review
     "كسرة": "خَطٌّ صَغيرٌ تَحْتَ الحَرْفِ، نَكْسِرُ صَوْتَنا: بِ",
     "سكون": "دائِرَةٌ صَغيرَةٌ فَوْقَ الحَرْفِ: لا حَرَكَةَ، الصَّوْتُ يَقِفُ",
 }
-MADD = {"ا": "ا", "و": "و", "ي": "ي"}
+# a long syllable keeps its short vowel (بَا بُو بِي), as the child learns the madd and as the words print it
+MADD = {"ا": "َا", "و": "ُو", "ي": "ِي"}
 
 
 def mark_path(haraka: str, x0: float, y0: float, x1: float, y1: float) -> str:
@@ -323,31 +324,21 @@ def dotted_word_letter(
     shape: Letter, *, scale: float, x: float, y: float, first: bool, number: Number
 ) -> str:
     """A letter of a word in fine tracing dots (the small teeth of سـ and the loops of مـ need a closer dot
-    spacing than a single big letter does); its own dots are dashed rings. Every stroke starts at a green dot,
-    and the first letter of the word carries the numbers and arrows."""
-    moved = [s.scaled(scale, x, y) for s in shape.strokes]
-    radius = 1.9 if first else 1.5
-    out = [draw.dotted(s, spacing=2.5, r=0.68) for s in moved]
-    for cx, cy in shape.dots:
-        out.append(
-            draw.el(
-                "circle",
-                cx=x + cx * scale,
-                cy=y + cy * scale,
-                r=max(shape.dot_r * scale, 1.3),
-                fill="none",
-                stroke=draw.DOT,
-                stroke_width=0.55,
-                stroke_dasharray="0.9 0.8",
-            )
-        )
-    if first:
-        for s in moved:
-            point, angle = s.at(min(0.55, 8.5 / max(s.length, 1)))
-            out.append(draw.arrow(point, angle, 2.6))
-    for k, point in enumerate(start_points(moved, radius), start=1):
-        out.append(draw.start_dot(point, radius, number(k) if first else "", font_size=2.6))
-    return "".join(out)
+    spacing than a single big letter does), drawn like a writing row's letters (`letters.dotted_letter`):
+    its own dots are round dots to fill in, a small mark has its ghost and its start dot beside it. Every
+    stroke starts at a green dot, and the first letter of the word carries the numbers and arrows."""
+    return dotted_letter(
+        shape,
+        scale=scale,
+        x=x,
+        y=y,
+        first=first,
+        number=number,
+        spacing=2.5,
+        dot=0.68,
+        mark=0.6,
+        number_dots=False,
+    )
 
 
 def word_row(word: str, right: float, y: float, h: float, ctx: PageContext, *, dotted: bool) -> str:
@@ -428,18 +419,23 @@ SENTENCE_PICTURES = {
 ACTION_PICTURES = {
     "writing": "صورة الكتابة",
     "drawing": "صورة الرسم",
+    "drawing-girl": "صورة الرسم",
     "playing": "صورة اللعب",
     "eating": "صورة الأكل",
 }
 
 
+GIRL_PICTURES = {"drawing": "drawing-girl"}  # a feminine verb («رَسَمَتْ سَلْمَى») shows a girl
+
+
 def sentence_picture(sentence: str) -> str | None:
-    words = strip_tashkeel(sentence).replace(".", "").replace("ت ", " ").split()
+    words = strip_tashkeel(sentence).replace(".", "").split()
     for w in words:
         key = w[:-1] if w.endswith("ت") and w[:-1] in SENTENCE_PICTURES else w
         for cand in (key, w, w.rstrip("s")):
             if cand in SENTENCE_PICTURES:
-                return SENTENCE_PICTURES[cand]
+                found = SENTENCE_PICTURES[cand]
+                return GIRL_PICTURES.get(found, found) if key != w else found
     return None
 
 

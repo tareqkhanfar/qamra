@@ -685,6 +685,25 @@ def review_say(subject: str, params: Mapping[str, Any]) -> str:
     return pick(pool, turn(params))
 
 
+_MARKS = re.compile("[ً-ْٰ]")
+
+
+def review_title(unit_title: str, params: Mapping[str, Any]) -> str:
+    """A review page's title, «مُراجَعَةٌ: <the unit>», never saying «مراجعة» twice: a unit that is itself a
+    review («مُراجَعَةٌ شامِلَةٌ لِلجُزْءِ الأَوَّلِ») keeps its own title, a letters unit that ends with its
+    review week («حَرْفا السّينِ وَالشّينِ، وَمُراجَعَةُ ر ز س ش») names its letters, and a titled unit
+    («الحَرَكاتُ: الفَتْحَةُ …») does not get a second colon."""
+    plain = _MARKS.sub("", unit_title)
+    if plain.startswith(("مراجعة", "المراجعة")):
+        return unit_title
+    letters = [str(c) for c in params.get("letters", ())]
+    if "مراجعة" in plain and letters:
+        return "مُراجَعَةُ حُروفي: " + " ".join(letters)
+    if ": " in unit_title:
+        return "مُراجَعَةٌ: " + unit_title.partition(": ")[2]
+    return f"مُراجَعَةٌ: {unit_title}"
+
+
 def assessment_say(subject: str, params: Mapping[str, Any]) -> str:
     return pick(ASSESSMENT_SAY.get(subject, ASSESSMENT_SAY["thinking"]), volume_key(params))
 
@@ -744,7 +763,7 @@ def general_texts(kind: str, params: dict[str, Any], unit_title: str, subject: s
         case "drawing":
             return "أُكْمِلُ الرَّسْمَ", "{ارْسُمِ/ارْسُمي} النِّصْفَ النّاقِصَ لِيُشْبِهَ النِّصْفَ الآخَرَ", ""
         case "unit-review":
-            return f"مُراجَعَةٌ: {unit_title}", review_say(subject, params), ""
+            return review_title(unit_title, params), review_say(subject, params), ""
         case "assessment":
             return unit_title, assessment_say(subject, params), ""
     return None

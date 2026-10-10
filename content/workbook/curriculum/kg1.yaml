@@ -741,7 +741,7 @@ volumes:
       - {n: 61, week: 6, subject: arabic, unit: v3-ar-03, type: unit-review, skill: "أراجع حرفي الميم والنون", difficulty: 2, params: {letters: [م, ن]}}
       - {n: 62, week: 6, subject: pen, unit: v3-pen-02, type: dot-to-dot, skill: "أصل النقاط من ١ إلى ١٠ ثم ألوّن الصورة", difficulty: 2, params: {to: 10, level: 2}}
       - {n: 63, week: 6, subject: english, unit: v3-en-03, type: vocab-unit, skill: "أتعلّم بالصور أسماء أفراد العائلة بالإنجليزية", difficulty: 2, params: {unit: Family, words: [mother, father, brother, sister]}}
-      - {n: 64, week: 6, subject: math, unit: v3-ma-02, type: unit-review, skill: "أراجع الجمع بالصور حتى ٥", difficulty: 3, params: {max: 5}}
+      - {n: 64, week: 6, subject: math, unit: v3-ma-02, type: unit-review, skill: "أراجع الجمع بالصور حتى ٥", difficulty: 3, params: {max: 5, ops: [add]}}
       - {n: 65, week: 6, subject: arabic, unit: v3-ar-04, type: letter-intro, skill: "أتعرّف على حرف الهاء وألوّنه مع الهدهد والهرم", difficulty: 1, params: {letter: ه, words: [هدهد, هرم]}}
       - {n: 66, week: 6, subject: arabic, unit: v3-ar-04, type: letter-trace, skill: "أتتبّع الهاء المنقّطة: كبيرة ثم متوسطة", difficulty: 2, params: {letter: ه, sizes: [l, m]}}
       # ── V3 week 7 ────────────────────────────────────────

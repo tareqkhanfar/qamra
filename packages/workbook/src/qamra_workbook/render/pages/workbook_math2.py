@@ -39,7 +39,7 @@ def _grid(cols: int, rows: int, count: int) -> tuple[Point, ...]:
 LAYOUTS10: dict[int, tuple[Point, ...]] = {
     **LAYOUTS,
     6: _grid(3, 2, 6),
-    7: (*_grid(3, 2, 6), (0.5, 0.86)),
+    7: (*_grid(4, 2, 4), *(((c + 1) / 4, 0.75) for c in range(3))),  # 4 + 3: none sits on another
     8: _grid(4, 2, 8),
     9: _grid(3, 3, 9),
     10: _grid(5, 2, 10),
@@ -57,8 +57,8 @@ def group_any(picture: str, count: int, x: float, y: float, w: float, h: float) 
     """`count` pictures (0–10) in a box; every picture is tagged for the quantity checks."""
     if count == 0:
         return f'<g data-count="0" data-picture="{picture}"></g>'
-    cols = {6: 3, 7: 3, 8: 4, 9: 3, 10: 5}.get(count, 2)
-    rows = {6: 2, 7: 3, 8: 2, 9: 3, 10: 2}.get(count, 2)
+    cols = {6: 3, 7: 4, 8: 4, 9: 3, 10: 5}.get(count, 2)
+    rows = {6: 2, 7: 2, 8: 2, 9: 3, 10: 2}.get(count, 2)
     size = min(w / cols, h / rows) * (0.62 if count <= 2 else 0.5 if count <= 5 else 0.8)
     items = "".join(
         pic(picture, x + u * w - size / 2, y + v * h - size / 2, size, data_count_item=picture)

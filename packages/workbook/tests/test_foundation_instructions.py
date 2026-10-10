@@ -81,3 +81,12 @@ def test_the_instruction_follows_the_page() -> None:
     kg2 = {p.number: p for p in volume_pages("kg2", 1)}
     assert "العُصْفورَ" in kg2[22].instruction  # the maze's own walker
     assert "الأَرْنَبَ" in kg2[10].instruction or "الأَرْنَبِ" in kg2[10].instruction  # the path's walker
+
+
+@pytest.mark.parametrize(("level", "number"), VOLUMES)
+def test_a_review_title_says_review_once(level: str, number: int) -> None:
+    """«مُراجَعَةٌ: مُراجَعَةٌ شامِلَةٌ…» and «مُراجَعَةٌ: حَرْفا السّينِ وَالشّينِ، وَمُراجَعَةُ ر ز س ش» read badly."""
+    for page in volume_pages(level, number):
+        title = strip_tashkeel(page.title)
+        assert title.count("مراجعة") <= 1, f"{page.id}: {page.title}"
+        assert title.count(":") <= 1, f"{page.id}: {page.title}"

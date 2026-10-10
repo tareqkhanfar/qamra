@@ -439,6 +439,14 @@ def _child(hair: str, extra: tuple[Part, ...]) -> tuple[Part, ...]:
 
 
 HAIR_SHORT = "M34 36 C32 20 44 14 50 16 C58 12 70 20 66 36 C62 28 56 26 50 28 C44 26 38 28 34 36 Z"
+# a girl's hair, worn with two pigtails
+HAIR_GIRL = "M34 42 C30 22 44 14 50 16 C56 14 70 22 66 42 C60 32 56 28 50 28 C44 28 40 32 34 42 Z"
+DRAWING = (
+    body("paper", p("M6 66 L46 66 L46 96 L6 96 Z")),
+    body("sun", c(20, 78, 6)),
+    body("grass", p("M8 92 L44 92 L44 96 L8 96 Z")),
+    body("crayon", p("M60 62 L76 78 L72 82 L56 66 Z")),
+)
 ACTIONS = (
     _pic(
         "writing",
@@ -465,18 +473,24 @@ ACTIONS = (
         "رَسَمَ",
         "drawing",
         "action",
-        _child(
-            HAIR_SHORT,
-            (
-                body("paper", p("M6 66 L46 66 L46 96 L6 96 Z")),
-                body("sun", c(20, 78, 6)),
-                body("grass", p("M8 92 L44 92 L44 96 L8 96 Z")),
-                body("crayon", p("M60 62 L76 78 L72 82 L56 66 Z")),
-            ),
-        ),
+        _child(HAIR_SHORT, DRAWING),
         skin=SKIN,
         hair=DARK_BROWN,
         shirt=LEAF,
+        paper=WHITE,
+        sun=YELLOW,
+        grass=LEAF,
+        crayon=RED,
+    ),
+    _pic(  # «رَسَمَتْ سَلْمَى»: a girl draws, never the boy of «رَسَمَ»
+        "drawing-girl",
+        "رَسَمَتْ",
+        "drawing",
+        "action",
+        _child(HAIR_GIRL, (body("hair", c(30, 44, 6), c(70, 44, 6)), *DRAWING)),
+        skin=SKIN,
+        hair=CHESTNUT,
+        shirt=PINK,
         paper=WHITE,
         sun=YELLOW,
         grass=LEAF,

@@ -506,7 +506,7 @@ def review_sections_v3(ctx: PageContext, r: random.Random) -> Drawn | None:
             ctx,
             [
                 ("مَقاطِعُ قَصيرَةٌ", syllable_rows(["سَ سُ سِ", "تَ تُ تِ", "رَ رُ رِ"]), 1.0),
-                ("مَقاطِعُ طَويلَةٌ", syllable_rows(["با بو بي", "دا دو دي", "نا نو ني"]), 1.0),
+                ("مَقاطِعُ طَويلَةٌ", syllable_rows(["بَا بُو بِي", "دَا دُو دِي", "نَا نُو نِي"]), 1.0),
                 ("أُرَكِّبُ وَأَقْرَأُ", marks_task(["ك", "ل"], ["فتحة", "ضمة", "كسرة"]), 1.2),
             ],
             r,
@@ -527,7 +527,7 @@ def review_sections_v3(ctx: PageContext, r: random.Random) -> Drawn | None:
                 (
                     "أَصِلُ الجُمْلَةَ بِصورَتِها",
                     sentences_task(
-                        [("كَتَبَ باسِم", "writing"), ("رَسَمَتْ سَلْمى", "drawing"), ("لَعِبَ عُمَر", "playing")]
+                        [("كَتَبَ بَاسِم", "writing"), ("رَسَمَتْ سَلْمَى", "drawing-girl"), ("لَعِبَ عُمَر", "playing")]
                     ),
                     1.4,
                 ),
