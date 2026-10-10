@@ -35,3 +35,11 @@ def test_the_ribbon_runs_into_the_bleed_and_its_motif_sits_inside_the_trim() -> 
     assert band and float(band.group(1)) > G.bleed + 4  # a solid band below the cut, not only scallops
     motif = re.search(r'<g transform="translate\(4 ([\d.]+)\)"', svg)
     assert motif and float(motif.group(1)) >= G.bleed  # the motif's top is below the trim line
+
+
+def test_backdrop_skips_props_it_already_draws_and_keeps_sky_props_in_the_sky() -> None:
+    from qamra_workbook.pictures.islamic_backdrops import compose
+
+    once = compose("bedroom-night", [], [], "a", None)
+    assert compose("bedroom-night", ["bed", "lamp"], [], "a", None) == once  # no second, small bed
+    assert compose("garden", ["sun"], [], "b", None) == compose("garden", [], [], "b", None)  # one sun

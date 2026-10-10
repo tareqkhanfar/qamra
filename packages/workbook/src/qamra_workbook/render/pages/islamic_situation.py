@@ -13,7 +13,7 @@ from typing import Any
 
 from qamra_workbook.render.islamic_content import Quote, Wdif, Wwyd
 from qamra_workbook.render.pages.islamic_common import (
-    choice,
+    choices,
     chrome,
     claim,
     islamic_page,
@@ -40,12 +40,12 @@ def what_would_you_do(ctx: PageContext) -> Built:
     problems += scene_problems(page.scene)
     if len(page.choices) != 3 or sum(c.ok for c in page.choices) != 1:
         problems.append("three choices with exactly one right answer")
-    choices = [{"n": ctx.num(i), **choice(ctx, c, problems)} for i, c in enumerate(page.choices, start=1)]
+    ticks = [{"n": ctx.num(i), **c} for i, c in enumerate(choices(ctx, page.choices, problems), start=1)]
     data: dict[str, Any] = {
         "chrome": chrome(ctx, problems),
         "scenario": rich(ctx, page.scenario, problems),
         "scene": scene(ctx, page.scene, "wy-art") if not problems else "",
-        "choices": choices,
+        "choices": ticks,
         "quote": sacred(ctx, page.quote, "quote", problems),
         "role_play": rich(ctx, page.role_play, problems),
         "refs": references(
@@ -53,7 +53,7 @@ def what_would_you_do(ctx: PageContext) -> Built:
         ),
         "labels": {"role": "تَمْثِيلٌ"},
     }
-    answer = ["الأجمل: " + "، ".join(c["text"] for c in choices if c["ok"])]
+    answer = ["الأجمل: " + "، ".join(c["text"] for c in ticks if c["ok"])]
     return Built(data, answer, problems)
 
 

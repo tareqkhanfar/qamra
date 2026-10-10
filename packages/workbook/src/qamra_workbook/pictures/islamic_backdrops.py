@@ -41,6 +41,7 @@ PERSON_CATEGORIES = frozenset({"person", "people", "family", "action"})
 PERSON_PICTURES = frozenset(k for k, p in PICTURES.items() if p.category in PERSON_CATEGORIES)
 # body parts: allowed as props on everyday pages (the wudu cards use them), never on a prophet's page
 BODY_PICTURES = frozenset(k for k, p in PICTURES.items() if p.category == "body")
+SKY_PROPS = frozenset({"sun", "moon", "star", "cloud", "kite"})  # in the sky, never on the grass or the sand
 GLYPH_PREFIX = "isl:"  # a prop that is one of the series' icons: isl:lantern, isl:prayer-mat…
 GLYPH_COLORS = ("#1F7A5A", "#C9962B", "#5B6FC0", "#C0265B", "#14606E", "#D9822B")
 
@@ -50,11 +51,14 @@ class Backdrop:
     name: str
     back: Callable[[str], str]  # (unique id prefix) → SVG elements behind everything
     front: Callable[[str], str] | None = None  # drawn over the figures (a table's edge)
+    props_front: bool = False  # the props stand on that edge, in front of everyone (the family table)
     floor: float = 100.0  # where the figures' feet are
     figure_h: float = 62.0  # the tallest figure (the grandmother); the children are a little shorter
     spots: tuple[tuple[float, float, float], ...] = ()  # where props go, in order: x, y (top-left), size
     people_x: tuple[float, ...] = (66.0, 94.0, 122.0, 150.0)
     note: str = ""
+    has: frozenset[str] = frozenset()  # props the backdrop already draws (a page naming one again is skipped)
+    sky: tuple[tuple[float, float, float], ...] = ()  # where a sun, a moon, a star, a cloud or a kite goes
 
 
 def prop_known(prop: str) -> bool:
@@ -90,7 +94,8 @@ def _home(uid: str) -> str:
         rect(0, 79, W, 1.8, "#C2925C"),
     ]
     out += [path(f"M0 {y} L{W} {y}", stroke="#C99A62", sw=0.5) for y in (87, 95)]
-    out += [pic("window", 8, 8, 40), pic("lamp", 150, 34, 22)]
+    # no table lamp of its own: it floated mid-wall, and a short scene cut it to a dark blob at its top edge
+    out += [pic("window", 8, 8, 40)]
     out.append('<ellipse cx="104" cy="96" rx="58" ry="6.5" fill="#C0265B" opacity="0.28"/>')
     out.append('<ellipse cx="104" cy="96" rx="50" ry="4.6" fill="none" stroke="#F2B33D" stroke-width="0.8"/>')
     return "".join(out)
@@ -130,7 +135,7 @@ def _table_back(uid: str) -> str:
 
 
 def _table_front(uid: str) -> str:
-    return rect(6, 82, 168, 6, "#FFFFFF") + rect(6, 88, 168, 16, "#FFF6E0") + rect(6, 96, 168, 3.2, "#E4675A")
+    return rect(6, 86, 168, 6, "#FFFFFF") + rect(6, 92, 168, 12, "#FFF6E0") + rect(6, 99, 168, 3.2, "#E4675A")
 
 
 def _bedroom(night: bool) -> Callable[[str], str]:
@@ -297,7 +302,8 @@ BACKDROPS: dict[str, Backdrop] = {
             "home",
             _home,
             spots=((46, 66, 26), (160, 72, 18), (8, 72, 22), (130, 74, 16), (52, 30, 18), (176, 80, 14)),
-            note="the living room: a window, a lamp, a rug",
+            note="the living room: a window, a rug",
+            has=frozenset({"window"}),
         ),
         Backdrop(
             "kitchen",
@@ -305,15 +311,20 @@ BACKDROPS: dict[str, Backdrop] = {
             floor=101,
             spots=((60, 40, 18), (84, 42, 16), (106, 40, 18), (128, 42, 16), (150, 40, 18), (40, 44, 14)),
             note="the kitchen: tiles, the counter (props stand on it)",
+            has=frozenset({"window"}),
         ),
         Backdrop(
             "table",
             _table_back,
             front=_table_front,
-            floor=112,
+            props_front=True,
+            # the cast sit higher behind a lower table: at floor 112 behind an edge at 82, Reem was hidden
+            # and only the top of Salem's hair showed (the children's drawings fill the foot of their box)
+            floor=104,
             figure_h=76,
             people_x=(30.0, 70.0, 110.0, 150.0),
-            spots=((24, 73, 16), (60, 73, 16), (96, 72, 18), (132, 73, 16), (150, 72, 16), (6, 70, 18)),
+            # on the table, between the people (in front of them, so never on a face)
+            spots=((42, 74, 14), (84, 74, 14), (124, 74, 14), (2, 72, 16), (162, 74, 14), (64, 78, 10)),
             note="the family table: the cast sit behind it, props stand on it",
         ),
         Backdrop(
@@ -322,6 +333,7 @@ BACKDROPS: dict[str, Backdrop] = {
             spots=((70, 76, 14), (8, 80, 18), (40, 82, 16), (150, 24, 16)),
             people_x=(46.0, 70.0, 94.0, 160.0),
             note="a bedroom at night: the window shows the crescent and stars",
+            has=frozenset({"bed", "lamp", "window"}),
         ),
         Backdrop(
             "bedroom-morning",
@@ -329,6 +341,7 @@ BACKDROPS: dict[str, Backdrop] = {
             spots=((70, 76, 14), (8, 80, 18), (40, 82, 16), (150, 24, 16)),
             people_x=(46.0, 70.0, 94.0, 160.0),
             note="a bedroom in the morning: the sun in the window",
+            has=frozenset({"bed", "lamp", "window"}),
         ),
         Backdrop(
             "garden",
@@ -336,12 +349,16 @@ BACKDROPS: dict[str, Backdrop] = {
             spots=((20, 70, 18), (100, 74, 16), (60, 62, 14), (160, 80, 16), (2, 52, 18), (82, 50, 12)),
             people_x=(52.0, 80.0, 108.0, 130.0),
             note="sky, sun, hills, a tree, flowers",
+            has=frozenset({"sun"}),
+            sky=((40, 28, 12), (86, 28, 12), (6, 36, 10)),
         ),
         Backdrop(
             "night-sky",
             _night_sky,
             spots=((60, 80, 14), (150, 80, 16), (40, 84, 12), (100, 84, 12)),
             note="a night sky with the crescent and stars over the hills",
+            has=frozenset({"moon"}),
+            sky=((50, 10, 14), (80, 22, 12), (100, 44, 12), (160, 8, 12)),
         ),
         Backdrop(
             "mosque",
@@ -362,6 +379,7 @@ BACKDROPS: dict[str, Backdrop] = {
             _classroom,
             spots=((60, 30, 16), (80, 28, 16), (100, 30, 16), (34, 74, 18), (150, 76, 16)),
             note="the kindergarten class: a blank board, shelves",
+            has=frozenset({"clock"}),
         ),
         Backdrop(
             "street",
@@ -381,12 +399,15 @@ BACKDROPS: dict[str, Backdrop] = {
             _sea,
             spots=((20, 84, 14), (150, 84, 14), (60, 62, 18), (110, 66, 14)),
             note="the sea and the beach",
+            has=frozenset({"sun"}),
         ),
         Backdrop(
             "desert",
             _desert,
             spots=((20, 78, 16), (60, 80, 14), (100, 82, 12)),
             note="dunes and palms",
+            has=frozenset({"sun"}),
+            sky=((64, 14, 14), (96, 8, 12), (104, 30, 10)),
         ),
     )
 }
@@ -420,18 +441,47 @@ def compose(backdrop: str, props: Sequence[str], figures: Sequence[str], uid: st
     """The composed scene's SVG elements in the 180 × 104 box."""
     back = BACKDROPS[backdrop]
     out = [back.back(uid)]
-    things = list(zip(props, back.spots, strict=False))
-    for i, (prop, (x, y, size)) in enumerate(things):
-        out.append(prop_svg(prop, x, y, size, i))
     if figures and kit is None:
         raise ValueError(f"backdrop {backdrop!r} with figures needs a kit")
     fit = min(1.0, (back.floor - HEAD_ROOM_TOP) / back.figure_h)  # every head inside the widest box
-    for who, x in zip(figures, back.people_x, strict=False):
+    people = [
+        (who, x, back.figure_h * fit * HEIGHTS.get(who, 0.85))
+        for who, x in zip(figures, back.people_x, strict=False)
+    ]
+    things = [p for p in props if p not in back.has]  # a second bed or window drew as a small one in the air
+    ground, sky = (list(back.spots) if back.props_front else _spots(back, people)), list(back.sky)
+    placed: list[str] = []
+    for i, prop in enumerate(things):
+        spots = sky if prop in SKY_PROPS and sky else ground
+        if not spots:
+            continue
+        x, y, size = spots.pop(0)
+        placed.append(prop_svg(prop, x, y, size, i))
+    if not back.props_front:
+        out += placed
+    for who, x, height in people:
         assert kit is not None
-        out.append(kit.figure(who, x, back.floor, back.figure_h * fit * HEIGHTS.get(who, 0.85)))
+        out.append(kit.figure(who, x, back.floor, height))
     if back.front is not None:
         out.append(back.front(uid))
+    if back.props_front:
+        out += placed
     return "".join(out)
+
+
+def _spots(back: Backdrop, people: Sequence[tuple[str, float, float]]) -> list[tuple[float, float, float]]:
+    """The backdrop's prop spots, those clear of every figure first (a prop behind a figure peeked out round
+    its head like a hat), each group in the backdrop's order."""
+
+    def hidden(spot: tuple[float, float, float]) -> bool:
+        x, y, size = spot
+        for _, px, height in people:
+            half = height * 0.24  # the drawn body, a little narrower than its 1:2 box
+            if x < px + half and x + size > px - half and y < back.floor and y + size > back.floor - height:
+                return True
+        return False
+
+    return [s for s in back.spots if not hidden(s)] + [s for s in back.spots if hidden(s)]
 
 
 def composed_svg(

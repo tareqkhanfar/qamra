@@ -18,7 +18,7 @@ from qamra_workbook.render.islamic_figures import listeners
 from qamra_workbook.render.pages.islamic_common import (
     SPEAKERS,
     answer_lines,
-    choice,
+    choices,
     chrome,
     claim,
     context_of,
@@ -69,7 +69,7 @@ def told_story(ctx: PageContext, page: ProphetStory | SiraStory) -> Built:
         )
     question: dict[str, Any] = {
         "text": rich(ctx, page.question.text, problems),
-        "choices": [choice(ctx, c, problems) for c in page.question.choices],
+        "choices": choices(ctx, page.question.choices, problems),
     }
     if sum(c.ok for c in page.question.choices) != 1:
         problems.append("the question needs exactly one right answer")

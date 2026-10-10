@@ -12,7 +12,7 @@
     <p class="ic-statement" data-fit="14">{{ d.statement }}</p>
     {% if d.credit %}<p class="ic-credit">{{ d.credit }}</p>{% endif %}
     <div class="ic-sign">
-      <div><span class="ic-label">{{ d.labels.date }}</span><span class="ic-value">{{ d.date }}</span></div>
+      <div><span class="ic-label">{{ d.labels.date }}</span><span class="ic-value{{ ' blank' if not d.date }}">{{ d.date }}</span></div>
       <div><span class="ic-label">{{ d.labels.sign }}</span><span class="ic-value blank"></span></div>
     </div>
   </div>

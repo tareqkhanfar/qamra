@@ -338,13 +338,17 @@ def family_meal(uid: str, kit: Kit | None) -> str:
         path("M141 13 L163 13 L158 24 L146 24 Z", "#F2B33D"),
         circle(152, 26, 14, "#FFE9A8", 0.28),
     ]
+    # seated: the table (y 82) hides them from the chest down. Every head stays below y ~54, inside the
+    # widest box a story page gives a scene (54 mm high: it shows only y >= ~51; the grandmother and the
+    # reader, drawn 78 and 76 high, lost their heads there), and every face above the plates (y 79). The
+    # children's drawings fill only the lower part of their box, so they keep their size.
     for who, x, feet, h in (
         ("reem", 30, 108, 74),
-        ("huda", 70, 110, 78),
-        ("reader", 110, 114, 76),
+        ("huda", 70, 118, 64),
+        ("reader", 110, 120, 64),
         ("salem", 150, 108, 68),
     ):
-        out.append(kit.figure(who, x, feet, h))  # seated: the table hides them from the waist down
+        out.append(kit.figure(who, x, feet, h))
     out += [rect(6, 82, 168, 6, "#FFFFFF"), rect(6, 88, 168, 16, "#FFF6E0"), rect(6, 96, 168, 3.2, "#E4675A")]
     for x in (21, 61, 101, 141):
         out.append(pic("plate", x, 79, 17))
@@ -395,7 +399,7 @@ def kitchen_broken_cup(uid: str, kit: Kit | None) -> str:
         ("M70 99 Q76 93 84 99 Q76 102 70 99 Z", "#7FB7E0"),
     )
     out += [path(d, f, OUTLINE, 0.8) for d, f in shards]
-    out += [pic("cat", 6, 74, 22), kit.figure("reader", 142, 101, 74)]
+    out += [pic("cat", 6, 74, 22), kit.figure("reader", 142, 101, 47)]  # the head below y 54, as above
     return "".join(out)
 
 

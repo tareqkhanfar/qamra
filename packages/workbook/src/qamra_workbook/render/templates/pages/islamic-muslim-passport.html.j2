@@ -11,7 +11,7 @@
         <div class="pp-photo">{% if d.photo %}<img src="{{ d.photo }}" alt="">{% endif %}</div>
         <dl class="pp-fields">
           <div class="pf"><dt>{{ d.labels.name }}</dt><dd data-fit="12">{{ d.name }}</dd></div>
-          <div class="pf"><dt>{{ d.labels.date }}</dt><dd>{{ d.date }}</dd></div>
+          <div class="pf{{ ' sign' if not d.date }}"><dt>{{ d.labels.date }}</dt><dd>{{ d.date }}</dd></div>
           <div class="pf sign"><dt>{{ d.labels.sign }}</dt><dd></dd></div>
         </dl>
       </div>

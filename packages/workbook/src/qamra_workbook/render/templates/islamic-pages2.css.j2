@@ -4,9 +4,11 @@
 
 /* ---- a story or dialogue of the cast */
 .tl { gap: 2.6mm; padding-top: 2mm; }
-.tl-scene { flex: none; position: relative; height: 72mm; margin: 0; border-radius: 5mm; overflow: hidden; box-shadow: 0 0 0 0.5mm var(--c), 0 0.9mm 0 var(--tint); }
+/* the scene takes the page's free room (up to the art's own 180:104), so a short page shows the whole picture
+   instead of an empty foot and a scene cut at its top (lamps, shelves, the tops of trees) */
+.tl-scene { flex: 1 0 72mm; position: relative; min-height: 72mm; max-height: 104mm; margin: 0; border-radius: 5mm; overflow: hidden; box-shadow: 0 0 0 0.5mm var(--c), 0 0.9mm 0 var(--tint); }
 .tl-scene svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-.tl-compact .tl-scene { height: 54mm; }
+.tl-compact .tl-scene { flex-basis: 54mm; min-height: 54mm; }
 .tl-lines { flex: none; display: flex; flex-direction: column; gap: 2mm; }
 .tl-line { display: flex; align-items: center; gap: 3mm; }
 .tl-who { flex: none; width: 17mm; display: flex; flex-direction: column; align-items: center; gap: 0.4mm; }

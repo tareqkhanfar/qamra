@@ -16,7 +16,7 @@ from qamra_workbook.render.islamic_content import (
 )
 from qamra_workbook.render.pages.islamic_common import (
     answer_lines,
-    choice,
+    choices,
     chrome,
     claim,
     islamic_page,
@@ -63,7 +63,7 @@ def pillar_card(ctx: PageContext) -> Built:
         "idea": claim(ctx, page.idea, problems),
         "question": {
             "text": rich(ctx, page.question.text, problems),
-            "choices": [choice(ctx, c, problems) for c in page.question.choices],
+            "choices": choices(ctx, page.question.choices, problems),
         },
         "refs": references(ctx, [*source_ids(page.idea), *page.question.sources]),
     }

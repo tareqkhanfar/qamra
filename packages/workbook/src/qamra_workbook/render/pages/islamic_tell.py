@@ -15,7 +15,7 @@ from qamra_workbook.render.islamic_content import RolePlay, Story
 from qamra_workbook.render.islamic_figures import cast_names
 from qamra_workbook.render.pages.islamic_common import (
     answer_lines,
-    choice,
+    choices,
     chrome,
     claim,
     context_of,
@@ -79,7 +79,7 @@ def _ask(ctx: PageContext, ask: Any, problems: list[str]) -> dict[str, Any]:
         problems.append("the question needs exactly one right answer")
     return {
         "text": rich(ctx, ask.text, problems),
-        "choices": [choice(ctx, c, problems) for c in ask.choices],
+        "choices": choices(ctx, ask.choices, problems),
     }
 
 

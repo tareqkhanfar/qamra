@@ -28,7 +28,7 @@ from qamra_workbook.render.islamic_content import (
 )
 from qamra_workbook.render.pages.islamic_activity import shuffled
 from qamra_workbook.render.pages.islamic_common import (
-    choice,
+    choices,
     chrome,
     claim,
     context_of,
@@ -232,7 +232,7 @@ def choose(ctx: PageContext) -> Built:
                 "n": ctx.num(i),
                 "text": rich(ctx, q.text, problems),
                 "pic": picture(q.pic, css_class="ch-pic") if q.pic and not found else "",
-                "choices": [choice(ctx, c, problems) for c in q.choices],
+                "choices": choices(ctx, q.choices, problems, str(i)),
             }
         )
     ids = [s for q in page.questions for s in [*q.sources, *(x for c in q.choices for x in source_ids(c))]]

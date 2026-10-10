@@ -13,7 +13,7 @@ from typing import Any
 
 from qamra_workbook.render.islamic_content import ParentGuide, UnitReview
 from qamra_workbook.render.pages.islamic_common import (
-    choice,
+    choices,
     chrome,
     claim,
     context_of,
@@ -39,7 +39,7 @@ def unit_review(ctx: PageContext) -> Built:
     ]
     choose: dict[str, Any] = {
         "text": rich(ctx, page.choose.text, problems),
-        "choices": [choice(ctx, c, problems) for c in page.choose.choices],
+        "choices": choices(ctx, page.choose.choices, problems),
     }
     if sum(c.ok for c in page.choose.choices) != 1:
         problems.append("the choose question needs exactly one right answer")

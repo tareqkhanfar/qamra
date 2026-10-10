@@ -8,7 +8,7 @@ from typing import Any
 
 from qamra_workbook.render.islamic_content import Ask, Assessment, Choice, Quiz, TrueFalse
 from qamra_workbook.render.pages.islamic_common import (
-    choice,
+    choices,
     chrome,
     islamic_page,
     page_of,
@@ -36,7 +36,7 @@ def asks(ctx: PageContext, items: list[Ask], problems: list[str], first: int = 1
             {
                 "n": ctx.num(i),
                 "text": rich(ctx, q.text, problems),
-                "choices": [choice(ctx, c, problems) for c in q.choices],
+                "choices": choices(ctx, q.choices, problems, f"q{i}"),
             }
         )
     return out
@@ -108,7 +108,7 @@ def assessment(ctx: PageContext) -> Built:
             {
                 "n": ctx.num(i),
                 "text": rich(ctx, s.t, problems),
-                "choices": [choice(ctx, c, problems) for c in options],
+                "choices": choices(ctx, options, problems, f"s{i}"),
             }
         )
     skills = [{"skill": ctx.text(k.skill), "text": rich(ctx, k.t, problems)} for k in page.skills]

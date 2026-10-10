@@ -73,7 +73,7 @@ def muslim_passport(ctx: PageContext) -> Built:
         "card": page.layout == "journey-card",
         "photo": uri(ctx.assets.character),
         "name": child.name,
-        "date": ctx.book.date_ar(),
+        "date": "",  # a line the family fills in: the print date is not the day the journey starts
         "stamps": stamps,
         "stars": [ctx.num(i) for i in range(1, page.challenge_stars + 1)],
         "star": star8_svg(GOLD, 9.0, "#1F5A46"),
@@ -108,7 +108,7 @@ def muslim_certificate(ctx: PageContext) -> Built:
         "statement": ctx.text(page.statement),
         "character": uri(ctx.assets.character),
         "name": genitive(child.name),  # after «تُمْنَحُ هَذِهِ الشَّهَادَةُ إِلَى»: «أبي بكر»
-        "date": ctx.book.date_ar(),
+        "date": "",  # written on the day the child finishes the book, not the day it was printed
         "star": star8_svg(GOLD, 11.0, "#FFFBEE"),
         "fields": page.fields,
         "credit": f"راجعه علميًّا: {credit}" if page.reviewed_by_line and credit else "",

@@ -277,6 +277,18 @@ def choice(ctx: PageContext, option: Choice, problems: list[str]) -> dict[str, A
     }
 
 
+def choices(
+    ctx: PageContext, options: list[Choice], problems: list[str], salt: str = ""
+) -> list[dict[str, Any]]:
+    """A question's options to tick, in an order seeded by the page (and `salt`, one per question): the
+    content lists the right answer first, and printed as written it sat first on almost every page, so a
+    child could learn to tick the first one. The answer key names the answer, not its place."""
+    built = [choice(ctx, c, problems) for c in options]
+    order = list(range(len(built)))
+    ctx.rng(f"choices{salt}").shuffle(order)
+    return [built[i] for i in order]
+
+
 def references(ctx: PageContext, ids: list[str]) -> list[str]:
     """The citations under a page («21:87», «صحيح البخاري 6094»), in order, without repeats."""
     isl = context_of(ctx)
