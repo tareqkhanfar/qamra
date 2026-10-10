@@ -7,7 +7,8 @@ The order flows' tests (tests/e2e/test_order_flows.py) also finish what the real
 again with placeholders and no AI: the character drawn after the photo (`/characters/{id}/ready`, the parent
 then approves it in the flow), the story preview (`/books/{id}/preview`), a live «قمرة كلاسيك» template so a
 Classic preview can start (`/classic-templates`), and the staff's order confirmation with the activity books
-"rendered" as placeholder PDFs (`/orders/{code}/confirm`), so the parent's download can be tested. One test
+"rendered" as placeholder PDFs (`/orders/{code}/confirm`), so the parent's download can be tested. The photo
+framing test has the cleanup job's 24-hour deletion of a photo done at once (`/photos/{id}/expire`). One test
 machine signs up and orders more than any family: `/rate-limits/reset` clears its own per-address counters.
 
 The template studio's test (tests/e2e/test_admin_studio.py) signs in as staff (`/staff`: the roles asked for,
@@ -50,6 +51,7 @@ from qamra_core.db.models import (
     Character,
     CharacterStatus,
     Child,
+    ChildPhoto,
     Consent,
     Currency,
     Gender,
@@ -58,6 +60,7 @@ from qamra_core.db.models import (
     OrderItem,
     OrderStatus,
     PageStatus,
+    PhotoStatus,
     Theme,
     UserRole,
 )
@@ -236,6 +239,24 @@ async def character_ready(
     return CharacterOut(
         id=character.id, child_id=child.id, status=character.status.value, style=character.art_style
     )
+
+
+@router.post("/photos/{photo_id}/expire", status_code=204)
+async def expire_photo(
+    photo_id: uuid.UUID, user: CurrentUser, db: SessionDep, storage: StorageDep
+) -> Response:
+    """What the 24-hour cleanup job does to the parent's own photo once it is due (`cleanup_expired_media`),
+    now: the original and its framing go, so the photo framing test sees «حذفنا صورة … الأصلية»."""
+    photo = await db.get(ChildPhoto, photo_id)
+    if photo is None:
+        raise ApiError("not_found", 404)
+    await _my_child(db, user.id, photo.child_id)
+    if photo.storage_key:
+        storage.delete(photo.storage_key)
+    photo.storage_key, photo.crop, photo.status = None, None, PhotoStatus.deleted
+    photo.deleted_at = photo.deleted_at or datetime.now(UTC)
+    await db.commit()
+    return Response(status_code=204)
 
 
 class PreviewOut(BaseModel):

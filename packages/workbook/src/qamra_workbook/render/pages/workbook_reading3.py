@@ -34,7 +34,8 @@ HARAKA_SAY = {  # draft: educator review
     "كسرة": "خَطٌّ صَغيرٌ تَحْتَ الحَرْفِ، نَكْسِرُ صَوْتَنا: بِ",
     "سكون": "دائِرَةٌ صَغيرَةٌ فَوْقَ الحَرْفِ: لا حَرَكَةَ، الصَّوْتُ يَقِفُ",
 }
-MADD = {"ا": "ا", "و": "و", "ي": "ي"}
+# a long syllable keeps its short vowel (بَا بُو بِي), as the child learns the madd and as the words print it
+MADD = {"ا": "َا", "و": "ُو", "ي": "ِي"}
 
 
 def mark_path(haraka: str, x0: float, y0: float, x1: float, y1: float) -> str:
@@ -428,18 +429,23 @@ SENTENCE_PICTURES = {
 ACTION_PICTURES = {
     "writing": "صورة الكتابة",
     "drawing": "صورة الرسم",
+    "drawing-girl": "صورة الرسم",
     "playing": "صورة اللعب",
     "eating": "صورة الأكل",
 }
 
 
+GIRL_PICTURES = {"drawing": "drawing-girl"}  # a feminine verb («رَسَمَتْ سَلْمَى») shows a girl
+
+
 def sentence_picture(sentence: str) -> str | None:
-    words = strip_tashkeel(sentence).replace(".", "").replace("ت ", " ").split()
+    words = strip_tashkeel(sentence).replace(".", "").split()
     for w in words:
         key = w[:-1] if w.endswith("ت") and w[:-1] in SENTENCE_PICTURES else w
         for cand in (key, w, w.rstrip("s")):
             if cand in SENTENCE_PICTURES:
-                return SENTENCE_PICTURES[cand]
+                found = SENTENCE_PICTURES[cand]
+                return GIRL_PICTURES.get(found, found) if key != w else found
     return None
 
 

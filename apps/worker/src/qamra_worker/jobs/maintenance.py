@@ -80,6 +80,7 @@ def cleanup_expired_media(
         if photo.storage_key:
             storage.delete(photo.storage_key)  # storage first: a crash leaves a row to retry, never a file
         photo.storage_key = None
+        photo.crop = None  # the framing goes with the photo it framed
         photo.status = PhotoStatus.deleted
         photo.deleted_at = now
         _audit(db, "photo.auto_deleted", "child_photo", photo.id)

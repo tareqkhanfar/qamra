@@ -297,6 +297,8 @@ def kg1_review(ctx: PageContext, r: random.Random) -> Drawn | None:
         )
     if subject == "math" and "max" in params:
         top = int(params["max"])
+        if "subtract" not in params.get("ops", ("add", "subtract")):  # the addition unit: no subtraction yet
+            return stack(ctx, [("أَجْمَعُ بِالصُّوَرِ", sums_task(top, False, 4), 2.0)], r)
         return stack(
             ctx, [("أَجْمَعُ بِالصُّوَرِ", sums_task(top, False), 1.0), ("أَطْرَحُ بِالصُّوَرِ", sums_task(top, True), 1.0)], r
         )

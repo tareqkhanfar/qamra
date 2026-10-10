@@ -111,6 +111,14 @@ def glyph_svg(name: str, color: str = "currentColor", stroke: float = 1.9) -> st
 
 def motif_strip(motif: str, color: str, width: float, height: float, opacity: float = 0.9) -> Markup:
     """The unit's motif repeating along a strip `width` × `height` mm (an SVG in millimetres)."""
+    return Markup(  # nosec B704 (static art)
+        f'<svg viewBox="0 0 {width:.2f} {height:.2f}" width="{width:.2f}mm" height="{height:.2f}mm" '
+        f'aria-hidden="true" opacity="{opacity}">{_motif_body(motif, color, width, height)}</svg>'
+    )
+
+
+def _motif_body(motif: str, color: str, width: float, height: float) -> str:
+    """The glyphs of a motif strip, in the strip's own units (0…`width` × 0…`height`)."""
     names = MOTIFS.get(motif, MOTIFS["dots"])
     size = height * 0.74
     k = size / 24
@@ -136,23 +144,27 @@ def motif_strip(motif: str, color: str, width: float, height: float, opacity: fl
             body_parts.append(
                 f'<g transform="translate({x:.2f} {y:.2f}) scale({s:.4f})">{glyph_svg(name, color, 1.9)}</g>'
             )
-    return Markup(  # nosec B704 (static art)
-        f'<svg viewBox="0 0 {width:.2f} {height:.2f}" width="{width:.2f}mm" height="{height:.2f}mm" '
-        f'aria-hidden="true" opacity="{opacity}">{"".join(body_parts)}</svg>'
-    )
+    return "".join(body_parts)
 
 
-def ribbon_svg(motif: str, color: str, ink: str, width: float, height: float = 12.0) -> Markup:
+def ribbon_svg(
+    motif: str, color: str, ink: str, width: float, height: float = 12.0, bleed: float = 0.0
+) -> Markup:
     """The unit's ribbon across the top of a page: its colour, a scalloped lower edge and its motif in
-    `ink`.
-    """
-    band = height - 3.4
+    `ink`. `height` is what the reader sees below the trim; the SVG starts `bleed` mm higher, at the page's
+    bleed edge, so the colour runs off the cut while the motif sits whole inside the trim (it used to be
+    centred 1.3 mm under the cut, and the trim sliced the top off every star on every page)."""
+    total = height + bleed
+    band = total - 3.4
     scallops = "".join(f'<circle cx="{x:.2f}" cy="{band:.2f}" r="3.4"/>' for x in _spaced(width, 6.8))
-    strip = motif_strip(motif, ink, width - 8, band - 1.2, 0.92)
+    # the motif in a group, in the ribbon's own millimetres, over the band less a margin of 0.6 (it used to be
+    # a nested <svg> passed through Markup.replace, which escaped its opening tag into the text «&lt;svg …»:
+    # a malformed SVG with a stray </svg>, the motif drawn only by the browser's forgiveness)
+    strip = _motif_body(motif, ink, width - 8, height - 4.6)
     return Markup(  # nosec B704 (static art)
-        f'<svg viewBox="0 0 {width:.2f} {height:.2f}" preserveAspectRatio="none" aria-hidden="true">'
+        f'<svg viewBox="0 0 {width:.2f} {total:.2f}" preserveAspectRatio="none" aria-hidden="true">'
         f'<g fill="{color}"><rect x="0" y="0" width="{width:.2f}" height="{band:.2f}"/>{scallops}</g>'
-        f'<g transform="translate(4 0.6)">{strip.replace("<svg ", '<svg overflow="visible" ')}</g></svg>'
+        f'<g transform="translate(4 {bleed + 0.6:.2f})" opacity="0.92">{strip}</g></svg>'
     )
 
 

@@ -54,6 +54,13 @@ summary, values, ages and pages, explains «سحري فقط», keeps «قمرة 
 the cart in one tap; and the whole Magic flow from that page (child, consent, photo, character, story with the
 likes, preview, format, add-ons) ends with «… في موسم الزيتون» in the cart.
 
+**`test_photo_framing.py`** (owner 2026-10-10: drag the photo so the face fits the oval, on upload and after the
+drawing): a far-away child is framed around the face on upload; «تعديل موضع الصورة» drags, zooms, turns and uses
+the keyboard, «إلغاء» keeps the saved framing and «احفظوا الموضع» saves a new one; a photo with two children is
+refused, then framed to one and accepted; after the drawing, «تعديل الصورة» opens the kept original after a
+reload and saving returns to the character with its note; once the original is deleted
+(`/api/e2e/photos/{id}/expire`, the 24-hour job at once) the editor says so and takes a new photo.
+
 **`test_admin_studio.py`** (the template studio, owner 2026-10-09: «محرر الثيمات … مش شايفه شغال»): a staff user
 (`/api/e2e/staff`: roles, two-step verification passed) edits a theme's page text (boy, girl, English) into a
 draft, previews it, sends it for review, approves, publishes and rolls back; edits a Classic template drawn with

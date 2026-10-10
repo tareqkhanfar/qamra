@@ -142,7 +142,7 @@ def texts_v3(subject: str, kind: str, params: dict[str, Any], unit_title: str) -
         case "syllables" if params.get("mode") == "long":
             return (
                 "مَقاطِعُ طَويلَةٌ",
-                "{مُدَّ صَوْتَكَ وَأَنْتَ تَقْرَأُ/مُدّي صَوْتَكِ وَأَنْتِ تَقْرَئينَ}: با، بو، بي",
+                "{مُدَّ صَوْتَكَ وَأَنْتَ تَقْرَأُ/مُدّي صَوْتَكِ وَأَنْتِ تَقْرَئينَ}: بَا، بُو، بِي",
                 "",
             )
         case "syllables":

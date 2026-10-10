@@ -424,6 +424,10 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "حذفنا الصورة الأصلية للرسمة حفاظًا على الخصوصية. صوّروها من جديد لتعديلها.",
         "We deleted the original photo of the drawing for privacy. Take it again to change it.",
     ),
+    "photo_gone": (
+        "حذفنا صورة الطفل الأصلية حفاظًا على الخصوصية. ارفعوا صورة جديدة لتعديلها.",
+        "We deleted your child's original photo for privacy. Upload a new one to change it.",
+    ),
     "companion_busy": (
         "ما زلنا نرسم الصاحب، أو تم اختياره. انتظروا لحظات أو ابدؤوا برسمة جديدة.",
         "The companion is still being drawn, or was already chosen. Wait a moment or start a new drawing.",

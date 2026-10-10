@@ -295,6 +295,27 @@ def test_the_cover_photo_is_used_only_while_it_is_kept(db: Session, storage: Obj
     assert cover_photo(db, storage, child) is None
 
 
+def test_the_cover_and_the_classic_portrait_use_the_parents_framing(
+    db: Session, storage: ObjectStorage
+) -> None:
+    from qamra_worker.jobs.classic import portrait_source
+
+    book = _book(db, storage)
+    child = db.get(Child, book.child_id)
+    assert child is not None
+    photo = db.scalars(select(ChildPhoto).where(ChildPhoto.child_id == child.id)).one()
+    photo.crop = {"x": 0.25, "y": 0, "w": 0.5, "h": 0.5 / (358 / 340), "rotate": 0}
+    db.commit()
+    cover = cover_photo(db, storage, child)
+    assert cover is not None
+    with Image.open(io.BytesIO(cover)) as im:
+        assert im.size == (256, 243)  # the framed part of the 512 px photo, not the whole of it
+    book.character_id = None  # no sheet: the Classic portrait is painted from the photo
+    db.commit()
+    source = portrait_source(db, storage, book, child)
+    assert source is not None and source[1] is False and source[0] == cover
+
+
 async def test_a_mockup_failure_never_fails_the_book(
     db: Session, storage: ObjectStorage, tmp_path: Path
 ) -> None:

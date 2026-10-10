@@ -283,6 +283,11 @@ class ChildPhoto(IdMixin, TimestampMixin, Base):
     check_metrics: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
     delete_after: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), index=True)
     deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    # The parent's framing (qamra_ai.pipeline.photo_crop): {x, y, w, h} fractions of the original and `rotate`
+    # (clockwise, 90° steps); None: the whole photo. `crop_saved_at`: when the parent last moved it after the
+    # upload (a newer framing, like a newer photo, lets the next redraw draw again).
+    crop: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    crop_saved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
 class Character(IdMixin, TimestampMixin, Base):

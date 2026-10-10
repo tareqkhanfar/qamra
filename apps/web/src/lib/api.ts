@@ -90,6 +90,25 @@ export async function upload<T>(path: string, form: FormData): Promise<ApiResult
   return { ok: false, status: res.status, error: (body?.error as ApiErrorBody) ?? null };
 }
 
+/**
+ * A private image as a blob (the child's own photo in the framing editor): the parent's cookies, the same
+ * one-shot refresh on 401, and the API's error body when it refuses (e.g. `photo_gone`).
+ */
+export async function fetchBlob(path: string): Promise<ApiResult<Blob>> {
+  const doFetch = () =>
+    fetch(path, { credentials: "same-origin", cache: "no-store", headers: { "X-Qamra-Client": "web" } });
+  let res: Response;
+  try {
+    res = await doFetch();
+    if (res.status === 401 && (await refreshOnce())) res = await doFetch();
+    if (res.ok) return { ok: true, status: res.status, data: await res.blob() };
+  } catch {
+    return { ok: false, status: 0, error: null };
+  }
+  const body = await res.json().catch(() => null);
+  return { ok: false, status: res.status, error: (body?.error as ApiErrorBody) ?? null };
+}
+
 export function errorText(error: ApiErrorBody | null, locale: string, fallback: string): string {
   if (!error) return fallback;
   return locale === "ar" ? error.message.ar : error.message.en;

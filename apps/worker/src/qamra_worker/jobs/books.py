@@ -48,6 +48,7 @@ from qamra_ai.pipeline.pages import (
     prepare_book,
     theme_companion_sheet,
 )
+from qamra_ai.pipeline.photo_crop import crop_photo
 from qamra_ai.pipeline.printimg import downscale
 from qamra_ai.pipeline.runtime import Runtime
 from qamra_ai.pipeline.story import missing_text, write_story
@@ -279,9 +280,9 @@ async def _character(db: Session, storage: ObjectStorage, rt: Runtime, character
             ChildPhoto.storage_key.is_not(None),
         )
     ).all()
-    if not photos:
+    data = [d for p in photos[:3] if (d := photo_bytes(storage, p)) is not None]  # as the parent framed it
+    if not data:
         raise ValueError("no accepted photos (they may have been deleted after approval)")
-    data = [storage.get(p.storage_key) for p in photos[:3] if p.storage_key]
     asked: dict[str, Any] = {k: v for k, v in (character.params or {}).items() if k in ASKED}
     if asked.get("note") and "note_outcome" not in asked:
         await _read_note(db, rt, character, child, asked)
@@ -486,6 +487,18 @@ def book_bible(
     return bible
 
 
+def photo_bytes(storage: ObjectStorage, photo: ChildPhoto | None) -> bytes | None:
+    """A child's photo as the image model gets it: the parent's framing of the original (head and shoulders,
+    upright: `qamra_ai.pipeline.photo_crop`), else the whole photo. None once the photo is deleted."""
+    if photo is None or not photo.storage_key:
+        return None
+    try:
+        data = storage.get(photo.storage_key)
+    except ObjectNotFound:
+        return None
+    return crop_photo(data, photo.crop)
+
+
 def cover_photo(db: Session, storage: ObjectStorage, child: Child) -> bytes | None:
     """The child's first accepted photo while it is still kept (Addendum 11 §1: the cover's likeness
     reference). It goes to the image model only, like the character sheet's photos, never to QA."""
@@ -500,11 +513,9 @@ def cover_photo(db: Session, storage: ObjectStorage, child: Child) -> bytes | No
         )
         .order_by(ChildPhoto.created_at)
     ).all():
-        if photo.storage_key and (photo.delete_after is None or photo.delete_after > now):
-            try:
-                return storage.get(photo.storage_key)
-            except ObjectNotFound:
-                continue
+        kept = photo.delete_after is None or photo.delete_after > now
+        if kept and (data := photo_bytes(storage, photo)) is not None:
+            return data
     return None
 
 

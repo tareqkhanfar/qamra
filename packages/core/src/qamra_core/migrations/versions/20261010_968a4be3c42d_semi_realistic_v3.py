@@ -1,7 +1,7 @@
 """«شبه حقيقي» / Semi-realistic, guide version 3: a realistic painted portrait instead of a storybook cartoon.
 
 Revision ID: 968a4be3c42d
-Revises: a58eeffa5362
+Revises: 3d041b8fdbf1
 Create Date: 2026-10-10
 
 Tareq (2026-10-10): the semi-realistic samples looked like a cartoon (big eyes, outlines, flat shapes). Guide v3
@@ -22,7 +22,7 @@ from alembic import op
 from sqlalchemy.engine import Connection
 
 revision: str = "968a4be3c42d"
-down_revision: str | None = "a58eeffa5362"
+down_revision: str | None = "3d041b8fdbf1"  # after the photo framing (addendum-4)
 branch_labels = None
 depends_on = None
 

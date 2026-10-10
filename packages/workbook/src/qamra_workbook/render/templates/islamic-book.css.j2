@@ -9,7 +9,7 @@
 .page:has(.isl) { --shell: #FFFBF3; background: #FFFBF3; }
 
 /* the unit's ribbon at the top edge, the thumb tab on the outer edge */
-.isl-ribbon { position: absolute; top: calc(-1 * var(--inset)); left: calc(-1 * var(--inset)); width: {{ g.page_w }}mm; height: 12mm; z-index: 0; }
+.isl-ribbon { position: absolute; top: calc(-1 * var(--inset)); left: calc(-1 * var(--inset)); width: {{ g.page_w }}mm; height: calc(12mm + var(--bleed)); z-index: 0; }
 .isl-ribbon svg { width: 100%; height: 100%; }
 .isl-tabhost { position: absolute; top: calc(-1 * var(--inset)); left: calc(-1 * var(--inset)); width: {{ g.page_w }}mm; height: calc({{ g.page_h }}mm - var(--inset)); pointer-events: none; z-index: 3; }
 .isl-tabhost .tab .ico { color: var(--c); }
