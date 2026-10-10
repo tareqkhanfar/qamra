@@ -46,6 +46,9 @@ git archive --format=tar HEAD | "${SSH[@]}" "mkdir -p $DIR && tar -x -C $DIR && 
 "${SSH[@]}" "cd $DIR && set -o pipefail && docker compose $FILES run --rm migrate 2>&1 | tail -6" \
   || { echo "✗ the migrate job failed: the running version was left as it was"; exit 1; }
 "${SSH[@]}" "cd $DIR && docker compose $FILES up -d --remove-orphans 2>&1 | tail -25"
+# the journey clips shipped with the code replace the generated ones in storage (a recording a person uploaded
+# through the admin is never replaced)
+"${SSH[@]}" "cd $DIR && docker compose $FILES exec -T worker python -m qamra_worker.journey_voices 2>&1 | tail -3" || true
 
 echo
 "${SSH[@]}" "cd $DIR && docker compose $FILES ps --format 'table {{.Name}}\t{{.Status}}'"
