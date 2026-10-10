@@ -2,7 +2,8 @@
 
 Generated once per child and reused for every book (Addendum 3 §2.2). The sheet wears a neutral reference
 outfit; each book locks its own outfit through the cover. Hijab only when the parent chose it. A redraw can
-carry what the parent said did not look like their child (design Create5).
+carry what the parent said did not look like their child (design Create5): the chips, and the parent's own
+words once `character_feedback` has turned them into a short appearance-only instruction (`note`).
 """
 
 from collections.abc import Sequence
@@ -42,14 +43,16 @@ def character_request(
     attempt: int = 1,
     resolution: Resolution = "1K",
     fixes: Sequence[str] = (),
+    note: str | None = None,
 ) -> ImageRequest:
     if not 1 <= len(photos) <= 3:
         raise ValueError("character sheet needs 1–3 photos")
     h = house_style()
     prompt = prompts.render(
         "character_sheet",
-        version=3,
+        version=4,  # v4 adds the parent's note; without one it reads exactly as v3
         fixes=fix_lines(child, fixes),
+        note=note,
         n_photos=len(photos),
         age=child.age,
         gender=child.gender,
@@ -78,5 +81,6 @@ async def generate_character_sheet(
     style: ArtStyle,
     attempt: int = 1,
     fixes: Sequence[str] = (),
+    note: str | None = None,
 ) -> GeneratedImage:
-    return await rt.draw(character_request(child, photos, style, attempt, fixes=fixes))
+    return await rt.draw(character_request(child, photos, style, attempt, fixes=fixes, note=note))

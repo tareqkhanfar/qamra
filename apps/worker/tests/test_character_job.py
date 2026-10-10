@@ -1,9 +1,14 @@
 import asyncio
+import uuid
 from pathlib import Path
 
+import pytest
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from qamra_ai.config import Settings as AISettings
+from qamra_ai.image.fake import FakeImageProvider
+from qamra_ai.pipeline.runtime import Runtime
 from qamra_core.db.models import (
     Character,
     CharacterStatus,
@@ -15,6 +20,8 @@ from qamra_core.db.models import (
     User,
 )
 from qamra_core.storage import ObjectStorage
+from qamra_worker.ai import make_runtime
+from qamra_worker.jobs import create as create_jobs
 from qamra_worker.jobs.create import draw_character
 
 FIXTURE = Path(__file__).resolve().parents[3] / "packages/ai/tests/fixtures/face-astronaut-public-domain.png"
@@ -44,3 +51,83 @@ def test_a_character_is_drawn_for_the_child_and_costed_to_the_child(
     assert storage.get(character.sheet_image_key)
     costs = db.scalars(select(GenerationCost).where(GenerationCost.child_id == child.id)).all()
     assert costs and all(c.book_id is None for c in costs)  # a child's character isn't charged to a book
+
+
+def _redraw(db: Session, storage: ObjectStorage, params: dict[str, object]) -> Character:
+    """A redraw the API queued for a boy, with what the parent asked for."""
+    parent = User(email="dad@example.com", full_name="أبو آدم")
+    db.add(parent)
+    db.flush()
+    child = Child(guardian_user_id=parent.id, first_name="آدم", gender=Gender.m, birth_year=2021)
+    db.add(child)
+    db.flush()
+    key = f"children/{child.id}/photos/p1.jpg"
+    storage.put(key, FIXTURE.read_bytes(), "image/png")
+    db.add(ChildPhoto(child_id=child.id, storage_key=key, status=PhotoStatus.accepted))
+    return _again(db, child.id, params)
+
+
+def _again(db: Session, child_id: uuid.UUID, params: dict[str, object]) -> Character:
+    character = Character(child_id=child_id, art_style="3d", status=CharacterStatus.generating, params=params)
+    db.add(character)
+    db.commit()
+    return character
+
+
+def _spy(monkeypatch: pytest.MonkeyPatch, text: object | None = None) -> list[Runtime]:
+    """The runtimes the job builds (their fake image provider keeps every request); `text` replaces Claude."""
+    made: list[Runtime] = []
+
+    def make(settings: AISettings) -> Runtime:
+        rt = make_runtime(settings)
+        if text is not None:
+            rt.text = text  # type: ignore[assignment]
+        made.append(rt)
+        return rt
+
+    monkeypatch.setattr(create_jobs, "make_runtime", make)
+    return made
+
+
+def _prompt(rt: Runtime) -> str:
+    image = getattr(rt.image, "primary", rt.image)
+    assert isinstance(image, FakeImageProvider)
+    return image.requests[-1].prompt
+
+
+def test_the_parents_note_is_rewritten_and_drawn_into_the_redraw(
+    db: Session, storage: ObjectStorage, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    made = _spy(monkeypatch)
+    character = _redraw(db, storage, {"attempt": 2, "fixes": ["hair"], "note": "شعره أجعد وأغمق"})
+
+    assert asyncio.run(draw_character(db, storage, character, offline="fake")) == {"status": "ready"}
+    prompt = _prompt(made[0])
+    assert "- Hair: match the photo" in prompt and "- Appearance: شعره أجعد وأغمق" in prompt
+    params = character.params
+    assert params["note"] == "شعره أجعد وأغمق" and params["note_outcome"] == "used"
+    assert params["note_instruction"] == "Appearance: شعره أجعد وأغمق" and params["fixes"] == ["hair"]
+    steps = db.scalars(select(GenerationCost.step).where(GenerationCost.child_id == character.child_id))
+    assert set(steps) == {"character:feedback", "character:2"}  # the note's reading is costed to the child
+
+
+def test_a_failed_text_step_or_a_screened_note_leaves_the_chips_alone(
+    db: Session, storage: ObjectStorage, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    class Down:
+        name = "down"
+
+        async def structured(self, **_: object) -> object:
+            raise TimeoutError("down")
+
+    made = _spy(monkeypatch, Down())
+    character = _redraw(db, storage, {"attempt": 3, "fixes": ["age"], "note": "عيونه أوسع"})
+    assert asyncio.run(draw_character(db, storage, character, offline="fake")) == {"status": "ready"}
+    prompt = _prompt(made[0])
+    assert "- Age:" in prompt and "عيونه" not in prompt and "Appearance" not in prompt
+    assert character.params["note_outcome"] == "failed" and "note_instruction" not in character.params
+
+    screened = _again(db, character.child_id, {"attempt": 4, "note": "رقمنا 0599123456"})
+    assert asyncio.run(draw_character(db, storage, screened, offline="fake")) == {"status": "ready"}
+    assert screened.params["note_outcome"] == "screened"
+    assert "0599" not in _prompt(made[-1]) and "did not look like" not in _prompt(made[-1])

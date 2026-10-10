@@ -60,7 +60,7 @@ def test_a_redraw_carries_what_the_parent_said() -> None:
     child = Child(name="ليان", gender="f", age=5, hijab=True)
     style = ArtStyle(slug="watercolor", title_ar="مائي", title_en="Watercolor", guide="soft watercolor")
     first = character_request(child, [b"x"], style)
-    assert "did not look like" not in first.prompt  # the first drawing is the v2 prompt, unchanged
+    assert "did not look like" not in first.prompt  # the first drawing has no "fix this" part
     redraw = character_request(child, [b"x"], style, attempt=2, fixes=["age", "hair", "skin"])
     assert "Skin tone:" in redraw.prompt and "Hijab: keep" in redraw.prompt
     assert "older than 5" in redraw.prompt
