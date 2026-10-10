@@ -5,8 +5,8 @@
 #
 # 1. saves the worker's log lines about failed/stalled jobs to out/deploy/ (the containers' logs are lost
 #    when they are recreated), 2. copies the committed code (git archive: no .env, no local files) into
-#    /opt/qamra, 3. rebuilds and restarts with the compose files the server already uses (the migrate job
-#    applies the migrations), 4. prints the containers' state and the site's health.
+#    /opt/qamra, 3. rebuilds, runs the migrate job (migrations and seeds) and only then restarts with the
+#    compose files the server already uses, 4. prints the containers' state and the site's health.
 set -euo pipefail
 
 HOST="${QAMRA_TEST_HOST:-root@62.84.179.155}"
@@ -40,9 +40,15 @@ print(" ".join("-f " + f for f in rows[0]["ConfigFiles"].split(",")) if rows els
 echo "Compose files on the server: $FILES"
 
 git archive --format=tar HEAD | "${SSH[@]}" "mkdir -p $DIR && tar -x -C $DIR && echo $REV > $DIR/REVISION"
-"${SSH[@]}" "cd $DIR && docker compose $FILES up -d --build --remove-orphans 2>&1 | tail -25"
+"${SSH[@]}" "cd $DIR && docker compose $FILES build 2>&1 | tail -5"
+# The migrate job (migrations, then seed-themes and seed-store) runs every time, before the new code starts:
+# `up` alone recreates it only when compose sees it changed, so a new migration could be skipped.
+"${SSH[@]}" "cd $DIR && set -o pipefail && docker compose $FILES run --rm migrate 2>&1 | tail -6" \
+  || { echo "✗ the migrate job failed: the running version was left as it was"; exit 1; }
+"${SSH[@]}" "cd $DIR && docker compose $FILES up -d --remove-orphans 2>&1 | tail -25"
 
 echo
 "${SSH[@]}" "cd $DIR && docker compose $FILES ps --format 'table {{.Name}}\t{{.Status}}'"
-"${SSH[@]}" "curl -s -o /dev/null -w 'health: %{http_code}\n' http://127.0.0.1:\${QAMRA_WEB_PORT:-3000}/healthz || true"
+"${SSH[@]}" "cd $DIR && P=\$(grep -E '^QAMRA_WEB_PORT=' .env | cut -d= -f2); \
+  curl -s -o /dev/null -w 'health: %{http_code}\n' http://127.0.0.1:\${P:-3000}/healthz || true"
 echo "Deployed $REV."
