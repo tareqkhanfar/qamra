@@ -106,13 +106,8 @@ def _person(hair: str, top: str, skirt: bool, tall: float, pigtails: bool = Fals
                 rect(50 + 3 * s, top_y + 44 * s, 6 * s, 8 * s, 2),
             )
         )
-    parts.append(
-        body(
-            "shoe",
-            e(50 - 6 * s, cy + 92 * s if not skirt else top_y + 53 * s, 6 * s, 3 * s),
-            e(50 + 6 * s, cy + 92 * s if not skirt else top_y + 53 * s, 6 * s, 3 * s),
-        )
-    )
+    foot = top_y + (53 if skirt else 45) * s  # under the legs or the trousers, never floating below them
+    parts.append(body("shoe", e(50 - 6 * s, foot, 6 * s, 3 * s), e(50 + 6 * s, foot, 6 * s, 3 * s)))
     parts += [
         *eyes((50 - 5 * s, cy + 13 * s), (50 + 5 * s, cy + 13 * s), 2.2 * s),
         _smile(50, cy + 19 * s, 3.5 * s),
@@ -290,11 +285,14 @@ MORE_WORDS = (
         "pyramid",
         "place",
         (
-            body("sky", c(80, 24, 10)),
-            body("sand", p("M4 86 L96 86 L96 92 L4 92 Z")),
-            body("light", p("M50 18 L92 86 L50 86 Z")),
-            body("dark", p("M50 18 L8 86 L50 86 Z")),
-            line(p("M20 66 L50 66 M32 46 L50 46 M12 80 L50 80")),
+            # seen from a corner (a front face and a narrow side), a small one behind and a dune: the old
+            # two halves on a slab with a line up the middle read as a sailboat
+            body("sky", c(82, 22, 9)),
+            body("dark", p("M24 50 L6 86 L42 86 Z")),
+            body("light", p("M56 16 L20 86 L82 86 Z")),
+            body("dark", p("M56 16 L82 86 L96 74 Z")),
+            line(p("M38 51 L69 51 M29 68 L75 68")),
+            body("sand", p("M2 88 C25 84 45 90 70 86 C82 84 92 86 98 88 L98 94 L2 94 Z")),
         ),
         sky=YELLOW,
         sand=CREAM,

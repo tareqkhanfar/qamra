@@ -236,7 +236,12 @@ def cut_and_paste(ctx: PageContext) -> Built:
         "triangle",
         "square",
     )
-    size, x0, y0 = 104.0, (W - 104) / 2, 4.0
+    per_row = 4 if grid == 2 else 5
+    pw = min(38.0, (W - 8) / per_row - 8)
+    # each square of the frame is exactly a piece's size, so a piece pasted in covers its square and its
+    # part of the outline (a 104 mm frame took 38 mm pieces: the lion never lined up)
+    size = pw * grid
+    x0, y0 = (W - size) / 2, 4.0
     cell = size / grid
     body = [card(x0 - 4, y0 - 2, size + 8, size + 6, r=6, fill="#FFFFFF")]
     faint = PICTURES[thing].inner("line")
@@ -277,16 +282,15 @@ def cut_and_paste(ctx: PageContext) -> Built:
         )
         body.append(mark(marks[i], x + 5, y + 5, colors[i]))
     order = _deranged(r, grid * grid)
-    body.append(text("أَقُصُّ عَلى الخَطِّ المُتَقَطِّعِ", W - 8, 124, 4.8, anchor="end", color=ctx.style.deep))
-    per_row = 4 if grid == 2 else 5
-    pw = min(38.0, (W - 8) / per_row - 8)
+    cut_y = y0 + size + 20
+    body.append(text("أَقُصُّ عَلى الخَطِّ المُتَقَطِّعِ", W - 8, cut_y, 4.8, anchor="end", color=ctx.style.deep))
     unit = 100 / grid
     inner = PICTURES[thing].inner("color")
     for k, i in enumerate(order):
         row, col = divmod(i, grid)
         line, slot = divmod(k, per_row)
         x = W - (slot + 1) * (pw + 8) + 4
-        y = 134.0 + line * (pw + 10)
+        y = cut_y + 10 + line * (pw + 10)
         body.append(
             draw.el(
                 "rect",
@@ -308,7 +312,9 @@ def cut_and_paste(ctx: PageContext) -> Built:
         )
         body.append(mark(marks[i], x + 4, y + 4, colors[i]))
     body.append(
-        draw.el("svg", art.glyph("scissors", INK, 1.8), x=4, y=117, width=9, height=9, viewBox="0 0 24 24")
+        draw.el(
+            "svg", art.glyph("scissors", INK, 1.8), x=4, y=cut_y - 7, width=9, height=9, viewBox="0 0 24 24"
+        )
     )
     problems = (
         [] if sorted(order) == list(range(grid * grid)) else ["the pieces do not make the whole picture"]

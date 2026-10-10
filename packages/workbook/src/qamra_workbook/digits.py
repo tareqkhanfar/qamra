@@ -15,8 +15,9 @@ from qamra_workbook.letters.model import Guides, Letter
 GUIDES = Guides(top=10, base=110, mid=60)
 
 HINDI: dict[str, tuple[str, ...]] = {  # draft: educator review (stroke order and direction)
-    # ٠: a small ring on the midline, round to the left from the top
-    "٠": ("M50 44 C40 44 33 52 33 61 C33 70 40 78 50 78 C60 78 67 70 67 61 C67 52 60 44 50 44",),
+    # ٠: a small ring on the midline, round to the left from the top; small, as children write it (a ring the
+    # size of a letter reads as the Levantine handwritten ٥: «٥ ٠» looked like two fives)
+    "٠": ("M50 50 C44 50 40 55 40 60 C40 65 44 70 50 70 C56 70 60 65 60 60 C60 55 56 50 50 50",),
     # ١: straight down
     "١": ("M50 10 L50 110",),
     # ٢: from the right tip down into the tooth, up to the left tip, then straight down

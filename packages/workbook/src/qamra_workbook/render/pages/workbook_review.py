@@ -383,15 +383,20 @@ def compare_pair(concept: str) -> Task:
         centers = (box.x + box.w * 0.27, box.x + box.w * 0.73)
         mid = box.y + box.h / 2
         thing = r.choice(GROUP_PICTURES)
+        full = min(box.h - 4, box.w * 0.44)  # the big one stays in its half of the box
         for k, cx in enumerate(centers):
             if concept == "big-small":
-                size = (box.h - 4) * (1.0 if k == win else 0.45)
+                size = full * (1.0 if k == win else 0.45)
                 out.body.append(pic(thing, cx - size / 2, mid - size / 2, size))
             elif concept == "long-short":
                 length = box.w * (0.36 if k == win else 0.16)
                 out.body.append(long_thing("pencil", cx - length / 2, mid, length, "#EE8A6E"))
             else:
                 count = 6 if k == win else 2
+                # each group on its own card, so the eye sees two groups and not eight scattered things
+                out.body.append(
+                    card(cx - box.w * 0.22, box.y + 1, box.w * 0.44, box.h - 2, r=5, fill="#FFF6F2")
+                )
                 out.body.append(
                     scatter(
                         r,

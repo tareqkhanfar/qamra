@@ -28,7 +28,8 @@ from qamra_workbook.render.pages.workbook_thinking import POOL
 from qamra_workbook.render.pages.workbook_thinking2 import GROUP_WORDS
 from qamra_workbook.render.registry import Built, PageContext, page_type
 
-NEED = {"umbrella": "raindrop", "coat": "snowflake", "water": "sprout", "lamp": "moon"}
+# the hat for a sunny day: «water ↔ sprout» is not a time, and the glass's own drop paired it with the rain
+NEED = {"umbrella": "raindrop", "coat": "snowflake", "hat": "sun", "lamp": "moon"}
 GROUPS = {
     "حيوانات": ("rabbit", "cat", "sheep", "cow", "horse"),
     "فواكه": ("apple", "banana", "strawberry", "grapes", "orange"),

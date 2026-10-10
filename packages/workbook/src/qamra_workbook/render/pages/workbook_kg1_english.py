@@ -43,7 +43,7 @@ VOCAB = {  # the units of the plan, for the reviews
     "Family": ["mother", "father", "brother", "sister"],
     "Body Parts": ["head", "eye", "nose", "mouth", "hand"],
     "Animals": ["cat", "cow", "horse", "bird", "sheep"],
-    "Fruits": ["apple", "banana", "orange", "grapes", "lemon"],
+    "Fruits": ["apple", "banana", "orange", "strawberry", "lemon"],
     "Food": ["bread", "milk", "rice", "cheese"],
     "Toys": ["ball", "doll", "car", "kite"],
     "School Objects": ["book", "pencil", "bag", "crayon"],
@@ -67,6 +67,8 @@ def word_art(word: str, x: float, y: float, size: float, style: str = "line") ->
         return "".join(
             pic("apple", left + (k % per) * s * 1.05, top + (k // per) * s * 1.1, s) for k in range(n)
         )
+    if word in COLORS and style == "color":  # to match or circle: the crayon alone, one picture per word
+        return crayon_fit(x + size * 0.05, y + size * 0.36, size * 0.9, COLORS[word][0])
     if word in COLORS:
         color, _, thing = COLORS[word]
         width = size * 0.8
@@ -255,7 +257,8 @@ def vocab_tasks(units: list[str], r: random.Random) -> tuple[Task, Task]:
         u: [w for w in VOCAB.get(u, []) if w in PICTURES or w in NUMBERS | COLORS | SHAPES] for u in units
     }
     pool = [w for ws in words.values() for w in ws if w in PICTURES or w in SHAPES]
-    pairs = [r.choice(words[u]) for u in units if words[u]][:4]
+    # «one» is a single apple, like every other picture in the column: a number to match shows two or more
+    pairs = [r.choice([w for w in words[u] if w != "one"] or words[u]) for u in units if words[u]][:4]
     rows = []
     for u in units[-3:]:
         if not words[u]:

@@ -729,7 +729,9 @@ def workbook_certificate(ctx: PageContext) -> Built:
     data = {
         "line": ctx.text(f"لَقَدْ {{أَنْهَيْتَ/أَنْهَيْتِ}} «{level}» بِنَجاحٍ"),
         "name": ctx.book.child.name,
-        "date": ctx.book.date_ar(),
+        # the child earns it at the end of the year, long after the book is printed: the teacher or parent
+        # writes the date, as they sign («٢٨ أيلول», the print date, would date it before the year's work)
+        "date": "",
         "character": ctx.assets.character.resolve().as_uri() if ctx.assets.character else "",
         "badges": badges,
         "star": _star,

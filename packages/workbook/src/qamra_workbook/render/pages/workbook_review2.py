@@ -177,7 +177,7 @@ def letter_place(letters: list[str], words: list[str]) -> Task:
             cx, cy, half = boxes[hit]
             out.body.append(ring_at(cx, cy, half + 2, band / 2 + 1))
             for k, label in enumerate(POSITIONS):
-                bx = box.x + 4 + k * 20
+                bx = box.x + 4 + (len(POSITIONS) - 1 - k) * 20  # «أَوَّل» on the right
                 out.body.append(
                     draw.el(
                         "rect",
@@ -487,7 +487,7 @@ def review_sections_v2(ctx: PageContext, r: random.Random) -> Drawn | None:
                     1.3,
                 ),
                 ("أَتَتَبَّعُ الأَعْدادَ", trace_numbers_any(numbers), 0.8),
-                ("أَكْتُبُ العَدَدَ النّاقِصَ", order_numbers(list(range(max(1, top - 4), top + 1))), 0.8),
+                ("أَكْتُبُ العَدَدَيْنِ النّاقِصَيْنِ", order_numbers(list(range(max(1, top - 4), top + 1))), 0.8),
             ],
             r,
         )

@@ -41,11 +41,13 @@ def spiral(cx: float, cy: float, radius: float, turns: float = 2.5) -> Stroke:
 @page_type("spiral-lines")
 def spiral_lines(ctx: PageContext) -> Built:
     body = []
-    radii = (30.0, 30.0, 30.0, 24.0, 24.0, 24.0)
+    # inside their cards: the top cards start below the header wave and the outer turn (and its start dot)
+    # stays clear of the card's side
+    radii = (25.0, 25.0, 25.0, 22.0, 22.0, 22.0)
     for k, radius in enumerate(radii):
         row, col = divmod(k, 3)
         cx = W - (col + 0.5) * W / 3
-        cy = 40 + row * 108 - (0 if row == 0 else 6)
+        cy = 52 + row * 102 - (0 if row == 0 else 6)
         body.append(
             card(cx - W / 6 + 2, cy - 48 if row == 0 else cy - 42, W / 3 - 4, 96 if row == 0 else 84, r=7)
         )

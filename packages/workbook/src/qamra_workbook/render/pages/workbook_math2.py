@@ -190,7 +190,7 @@ def number_trace_ten(ctx: PageContext) -> Built:
     shapes = digit_shapes(n, ctx.numerals)
     body = [card(0, 0, W, 100, r=8)]
     if len(shapes) == 1:
-        body.append(big_track(shapes[0], 50, 2, 90, 96, ctx.num, ctx.style.color))
+        body.append(big_track(shapes[0], 50, 8, 90, 84, ctx.num, ctx.style.color))  # the band stays inside
     else:
         for k, shape in enumerate(shapes):
             body.append(big_track(shape, 40 + k * 56, 6, 50, 88, ctx.num, ctx.style.color))

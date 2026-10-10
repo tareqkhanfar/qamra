@@ -23,22 +23,25 @@ SHAPE_COLORS = {"circle": ("#E5604E", "أحمر"), "square": ("#5E86D6", "أزر
 SHAPE_COLORS["rectangle"] = ("#F7C84A", "أصفر")
 SHAPE_AR = {"circle": "الدوائر", "square": "المربعات", "triangle": "المثلثات", "rectangle": "المستطيلات"}
 # the shapes of the scene: (kind, cx, cy, size); a rectangle is 1.5 × wider than tall
+# every shape whole and apart inside the panel: the roof sits on the house (it covered its top, so the
+# square read as a rectangle), the wheels and the bottom square stay above the panel's edge, the cabin
+# beside the truck
 SCENE = (
     ("square", 60, 120, 44),
-    ("triangle", 60, 78, 52),
+    ("triangle", 60, 72, 52),
     ("rectangle", 60, 134, 12),
     ("circle", 46, 108, 10),
     ("circle", 156, 30, 22),
     ("rectangle", 130, 156, 26),
-    ("circle", 118, 176, 9),
-    ("circle", 142, 176, 9),
+    ("circle", 118, 168, 9),
+    ("circle", 142, 168, 9),
     ("triangle", 150, 120, 30),
-    ("rectangle", 150, 146, 8),
+    ("rectangle", 158, 160, 10),
     ("square", 108, 60, 18),
     ("triangle", 108, 38, 22),
     ("circle", 20, 40, 12),
-    ("square", 20, 172, 16),
-    ("triangle", 178, 84, 16),
+    ("square", 20, 160, 16),
+    ("triangle", 172, 84, 16),
 )
 STORY_ADD = ("{a} عَلى الشَّجَرَةِ، جاءَ {b}. كَمْ صارَ العَدَدُ؟", "bird")
 STORY_SUB = ("كانَ مَعَنا {a}، أَكَلْنا {b}. كَمْ بَقِيَ؟", "apple")

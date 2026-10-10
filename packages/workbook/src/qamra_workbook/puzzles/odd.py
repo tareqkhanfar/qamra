@@ -186,10 +186,16 @@ def _pick_members(r: random.Random, group: Group, count: int, used: set[str]) ->
 
 
 def generate_odd_rows(
-    seed: int | str, rules: list[Rule], sizes: list[int], groups: tuple[str, ...] | None = None
+    seed: int | str,
+    rules: list[Rule],
+    sizes: list[int],
+    groups: tuple[str, ...] | None = None,
+    *,
+    spread: bool = False,
 ) -> list[OddRow]:
     """One row per rule; the first row is the solved example. Category rows on a page use different groups
-    that share no picture, and a row avoids the pictures the rows above it show."""
+    that share no picture, and a row avoids the pictures the rows above it show. With `spread`, no row puts
+    its answer where the row above it did (a child would learn the place, not the rule)."""
     r = rng(seed, "odd")
     pairs = list(SAME_POOL)
     r.shuffle(pairs)
@@ -210,6 +216,8 @@ def generate_odd_rows(
             items = _pick_members(r, group, size - 1, used)
             odd_pic = r.choice([p for p in group.outside if p not in used] or list(group.outside))
         position = r.randrange(1 if i == 0 else 0, size)  # the example never starts with its answer
+        if spread and rows and size > 1 and position == rows[-1].odd:
+            position = r.choice([k for k in range(size) if k != rows[-1].odd])
         items.insert(position, odd_pic)
         used.update(items)
         rows.append(OddRow(tuple(items), position, rule, example=i == 0, group=name))

@@ -77,9 +77,10 @@ def kg1_colors(ctx: PageContext) -> Built:
         body.append(card(0, y + 1, W, pitch - 5, r=7))
         body.append(crayon(W - 44, y + pitch / 2 - 10, color))
         body.append(text(COLOR_WORDS[name], W - 25, y + pitch / 2 + 9, 5.6, color=color))
-        size = min(pitch - 14, 50.0)
+        step = (W - 56) / len(things)  # the pictures share the card left of the crayon, inside its border
+        size = min(pitch - 14, 50.0, step - 2)
         for k, thing in enumerate(things):
-            x = W - 96 - k * (size - 2)
+            x = W - 52 - (k + 1) * step + (step - size) / 2
             body.append(pic(thing, x, y + (pitch - 4) / 2 - size / 2, size, "line"))
             solved.append(pic(thing, x, y + (pitch - 4) / 2 - size / 2, size, "color", class_="key-ring"))
     answer = [

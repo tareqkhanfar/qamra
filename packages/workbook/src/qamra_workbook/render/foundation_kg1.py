@@ -76,12 +76,12 @@ LETTER_PICTURES_KG1 = {
     "ز": ("giraffe", "olive"),
     "س": ("fish", "car"),
     "ش": ("sun", "tree"),
-    "ص": ("plate", "falcon"),
+    "ص": ("box", "rocket"),  # the falcon read as «عصفور»/«طير», the plate as a ring
     "ض": ("frog",),
     "ط": ("kite", "table"),
     "ظ": ("envelope",),
     "ع": ("grapes", "bird"),
-    "غ": ("gazelle", "cloud"),
+    "غ": ("cloud", "submarine"),  # the gazelle looked like a table with a head
     "ف": ("elephant", "butterfly"),
     "ق": ("moon", "pencil"),
     "ك": ("book", "ball"),
@@ -99,7 +99,7 @@ ENGLISH_PICTURES_KG1 = {
     "D": "duck",
     "E": "egg",
     "F": "fish",
-    "G": "grapes",
+    "G": "goat",  # not «G» + «rapes» in two colours
     "H": "hat",
     "I": "ice-cream",
     "J": "jacket",
@@ -116,7 +116,7 @@ ENGLISH_PICTURES_KG1 = {
     "U": "umbrella",
     "V": "van",
     "W": "window",
-    "X": "box",
+    "X": "xylophone",  # «box» begins with B: every other letter's picture begins with it
     "Y": "yo-yo",
     "Z": "zebra",
 }

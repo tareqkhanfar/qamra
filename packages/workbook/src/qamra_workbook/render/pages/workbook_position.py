@@ -110,7 +110,7 @@ def letter_position(ctx: PageContext) -> Built:
         cx, cy, half = boxes[hit]
         body.append(ring_at(cx, cy, half + 2, band / 2 + 1))
         for k, label in enumerate(POSITIONS):
-            bx = 8 + k * 20
+            bx = 8 + (len(POSITIONS) - 1 - k) * 20  # «أَوَّل» on the right, as the word is read
             body.append(
                 draw.el(
                     "rect",

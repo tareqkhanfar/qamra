@@ -82,10 +82,16 @@ LETTER_WORDS_A = (
         "ريشَة",
         "feather",
         "nature",
-        (
-            body("main", p("M72 12 C88 30 76 66 44 84 L28 90 C30 74 34 58 46 40 C54 28 62 18 72 12 Z")),
-            line(p("M30 88 C42 66 56 42 72 14")),
-            line(p("M40 62 L52 66 M46 50 L58 52 M52 40 L64 40 M58 30 L68 28")),
+        (  # a quill below the vane and two splits in it: the old leaf shape read as «وَرَقَة»
+            body(
+                "main",
+                p(
+                    "M26 77 C22 64 26 52 34 44 L40 46 L38 38 C44 30 50 25 56 22 C64 16 72 12 78 12 "
+                    "C80 20 78 30 72 40 L64 41 L70 47 C62 60 48 72 34 78 Z"
+                ),
+            ),
+            line(p("M12 94 C34 66 56 38 78 12")),
+            line(p("M36 64 L28 58 M44 54 L36 46 M54 42 L48 32 M40 70 L48 72 M50 60 L58 62 M60 48 L68 50")),
         ),
         main=SKY,
     ),

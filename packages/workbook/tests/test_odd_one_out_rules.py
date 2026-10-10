@@ -65,9 +65,14 @@ def recorded(level: str, number: int, monkeypatch: pytest.MonkeyPatch) -> Iterat
     page_id = [""]
 
     def spy(
-        seed: int | str, rules: list[Rule], sizes: list[int], groups: tuple[str, ...] | None = None
+        seed: int | str,
+        rules: list[Rule],
+        sizes: list[int],
+        groups: tuple[str, ...] | None = None,
+        *,
+        spread: bool = False,
     ) -> list[OddRow]:
-        rows = generate_odd_rows(seed, rules, sizes, groups)
+        rows = generate_odd_rows(seed, rules, sizes, groups, spread=spread)
         seen.extend((page_id[0], row) for row in rows)
         return rows
 
@@ -97,3 +102,10 @@ def test_every_odd_one_out_row_in_the_workbooks_is_seen_or_names_its_group(
             assert row.group in BASIC_GROUPS, page
     if (level, number) == ("kg1", 1):  # KG1's first volume: differences that are seen
         assert all(row.rule == "same" for _, row in rows)
+
+
+def test_in_the_workbooks_no_row_puts_its_answer_where_the_row_above_did() -> None:
+    """«دوسية التأسيس» (`spread`): the odd picture moves, so a child learns the rule and not the place."""
+    for seed in range(40):
+        rows = generate_odd_rows(seed, ["same", "same", "category", "category"], [4] * 4, spread=True)
+        assert all(a.odd != b.odd for a, b in zip(rows, rows[1:], strict=False)), seed

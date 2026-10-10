@@ -12,7 +12,7 @@ from qamra_workbook.letters.model import Letter
 from qamra_workbook.puzzles import layout
 from qamra_workbook.render import draw
 from qamra_workbook.render.foundation_text import NUMBER_NAMES
-from qamra_workbook.render.pages.letters import tracing_row
+from qamra_workbook.render.pages.letters import letter_extent, tracing_row
 from qamra_workbook.render.pages.workbook_arabic import big_track, row_svg
 from qamra_workbook.render.pages.workbook_common import (
     INK,
@@ -145,7 +145,7 @@ def number_trace(ctx: PageContext) -> Built:
     n = int(ctx.page.params.get("number", 1))
     shape = number_shape(ctx, n)
     body = [card(0, 0, W, 100, r=8)]
-    body.append(big_track(shape, 50, 2, 90, 96, ctx.num, ctx.style.color))
+    body.append(big_track(shape, 50, 8, 90, 84, ctx.num, ctx.style.color))  # the band's ends stay inside
     body.append(card(W - 42, 8, 34, 34, r=6, fill="#FFF6F2", stroke="none"))
     body.append(plate(W - 40, 20, 30) if n == 0 else group("apple", n, W - 40, 10, 30, 30))
     y = 106.0
@@ -171,8 +171,11 @@ def number_write(ctx: PageContext) -> Built:
         )
         body.append(card(0, y, W, height + 3, r=6, fill="#FFFFFF" if k < 2 else "#FFFDF6"))
         body.append(row)
-        if count == 0:
-            body.append(draw.start_dot((15, y + 1.5 + 5 + (shape.strokes[0].start[1] - 10) * 0.24), 1.9))
+        if count == 0:  # where the child starts alone: the right end for ١٢٣, as the rows above run
+            x0, _, x1, _ = letter_extent(shape)
+            start = shape.strokes[0].start
+            sx = W - 15 - (x1 - start[0]) * 0.24 if shape.rtl else 15 + (start[0] - x0) * 0.24
+            body.append(draw.start_dot((sx, y + 1.5 + 5 + (start[1] - 10) * 0.24), 1.9))
         y += height + 6
     body.append(card(0, y, W, 204 - y, r=7))
     body.append(text("أَعُدُّ وَأَكْتُبُ العَدَدَ", W - 8, y + 10, 5.2, anchor="end", color=ctx.style.deep))

@@ -44,7 +44,8 @@ def odd_one_out(ctx: PageContext) -> Built:
     rules = list(ctx.page.params.get("rules", ["same", "same", "category"]))
     sizes = list(ctx.page.params.get("sizes", [4] * len(rules)))
     groups = ctx.page.params.get("groups")
-    rows = generate_odd_rows(ctx.page.seed, rules, sizes, tuple(groups) if groups else None)
+    spread = ctx.book.product == "foundation"  # «دوسية التأسيس»: the answer moves from row to row
+    rows = generate_odd_rows(ctx.page.seed, rules, sizes, tuple(groups) if groups else None, spread=spread)
     data = [
         {
             "pics": [ctx.pic(i) for i in row.items],
