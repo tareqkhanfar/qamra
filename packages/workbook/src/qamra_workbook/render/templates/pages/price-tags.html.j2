@@ -3,7 +3,7 @@
   <div class="shop-sign"><span class="awning" aria-hidden="true"></span><b data-fit="12">{{ d.sign }}</b></div>
   <div class="shop-shelves fcard">
     {% for sp in d.spots %}
-    <div class="spot"><div class="spot-draw"><small>{{ icon('crayon') }}</small></div><div class="tag-blank"><span class="tag-hole"></span><i></i><small>{{ d.unit }}</small></div></div>
+    <div class="spot"><div class="spot-draw"><small>{{ icon('crayon') }}</small></div><div class="tag-blank"><span class="tag-hole"></span><i></i></div></div>
     {% endfor %}
   </div>
   <div class="shop-levels"><span>{{ stars(1) }}{{ d.levels[0] }}</span><span>{{ stars(2) }}{{ d.levels[1] }}</span></div>
@@ -19,7 +19,7 @@
       {% if not loop.first %}<span class="price-plus">+</span>{% endif %}
       <div class="price-item"><div class="price-pic">{{ it.pic }}</div><span class="tag-price"><i></i>{{ it.price }}</span></div>
       {% endfor %}
-      {% if row['items']|length > 1 %}<span class="price-plus">=</span><span class="price-total"><i></i><small>قَمْرَة</small></span>{% endif %}
+      {% if row['items']|length > 1 %}<span class="price-plus">=</span><span class="price-total"><i></i></span>{% endif %}
     </div>
     <span class="price-arrow" aria-hidden="true">{{ icon('crayon') }}</span>
     <div class="purse">{% for piece in row.pieces %}{{ piece }}{% endfor %}</div>

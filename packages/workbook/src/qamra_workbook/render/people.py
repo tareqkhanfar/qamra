@@ -25,7 +25,7 @@ SHOE = "#7A5240"
 EYE = "#2F2A3A"
 MOUTH = "#8A4637"
 OUTFITS = ("#E98AA6", "#6E95DB", "#86BF72", "#F2A65A", "#A58BD8", "#5DB7A8")
-SCARVES = ("#8FB9A8", "#C9A7D8", "#E8B4A0", "#A9C4E8")
+SCARVES = ("#8FB9A8", "#C9A7D8", "#9C6B98", "#A9C4E8")  # none near a skin tone (a peach scarf read as a bald head)
 BOX_W, BOX_H, FEET = 60.0, 120.0, 118.0
 
 Feeling = Literal[

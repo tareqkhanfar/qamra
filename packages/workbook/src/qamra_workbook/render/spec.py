@@ -213,6 +213,15 @@ class Member:
 
 
 MAX_MEMBERS = 6  # A7 §7
+_WOMEN: frozenset[Figure] = frozenset({"woman", "grandma", "girl"})
+_MEN: frozenset[Figure] = frozenset({"man", "grandpa", "boy"})
+
+
+def you_suffix(member: Member | None) -> str:
+    """The «you» suffix said to `member`: «كِ» to a woman, «كَ» to a man, a bare «ك» when the role does not say."""
+    if member is None:
+        return "ك"
+    return "كِ" if member.drawn_as in _WOMEN else "كَ" if member.drawn_as in _MEN else "ك"
 
 
 # The family's city is optional (the order flow's family step). Without it a text never prints «سوق » with
@@ -273,6 +282,8 @@ class Family:
         # genitive at `{adult:gen}` («مَعَ أبي أحمد»); the family's name is a surname and prints as typed
         # («عائلة أبو غوش»)
         text = text.replace("{family_name}", self.name).replace("{city}", self.city_in(text))
+        # `{adult:k}`: «you» said to that grown-up («طُفولَتُ{adult:k}» → «طُفولَتُكِ» to تيتا, «طُفولَتُكَ» to سيدو)
+        text = text.replace("{adult:k}", you_suffix(grown_up))
         text = fill_name(text, "adult", grown_up.label if grown_up else NO_ADULT)
         return fill_name(text, "member", anyone.label if anyone else NO_ADULT)
 

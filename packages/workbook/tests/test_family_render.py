@@ -125,6 +125,9 @@ def test_family_placeholders_resolve_for_the_page() -> None:
     picked = {tita.personalize("{adult}", n, adult="grandparent") for n in range(4)}
     assert picked == {"تيتا", "أبو عبد الرحمن"}
     assert Family("الكيلاني", (Member("بابا"),)).personalize("{adult}", 3, adult="grandparent") == "بابا"
+    # «you» to the grown-up asked: «طُفولَتُكِ» to a grandmother, «طُفولَتُكَ» to a grandfather
+    asked = {tita.personalize("{adult}: طُفولَتُ{adult:k}", n, adult="grandparent") for n in range(2)}
+    assert asked == {"تيتا: طُفولَتُكِ", "أبو عبد الرحمن: طُفولَتُكَ"}
     rendered = build_pages(book(page(8, "scavenger-hunt", "home")), ASSETS)[0]
     assert rendered.title == "مغامرة ليان" and rendered.instruction == "ابحثي عن أشياء دائرية في المطبخ"
     assert "ليان" in rendered.parent[0] and "محقّقة صغيرة" in rendered.parent[2]

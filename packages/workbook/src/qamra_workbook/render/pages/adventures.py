@@ -261,7 +261,7 @@ SORT_GROUPS: dict[str, dict[str, Any]] = {
     "green": {"label": "أَخْضَرُ", "paint": "#8DBF4A", "items": ["pear"]},
     "sunny": {"label": "مُشْمِسٌ", "pic": "sun", "items": ["sun-hat"]},
     "rainy": {"label": "ماطِرٌ", "pic": "umbrella", "items": ["boots"]},
-    "windy": {"label": "عاصِفٌ", "pic": "wind", "items": ["kite"]},
+    "windy": {"label": "عاصِفٌ", "pic": "wind", "items": ["jacket"]},  # something to wear, not a kite
     "cold": {"label": "بارِدٌ", "pic": "snowflake", "items": ["scarf"]},
     "morning": {"label": "الصَّباحُ", "pic": "sun", "items": ["backpack", "bread"]},
     "evening": {"label": "المَساءُ", "pic": "moon", "items": ["bed", "book"]},
@@ -321,6 +321,15 @@ def group_mark(ctx: PageContext, spec: dict[str, Any]) -> Markup:
     return art.icon(str(spec["icon"]), "ico group-ico")
 
 
+# What a thing is called on a sorting page when the picture's library word is not the right one here: the
+# triangle is a slice of watermelon, and a wool scarf is «وِشاح» (a «كوفِيَّة» is a keffiyeh).
+THING_LABELS = {"watermelon": "شَريحَةُ بَطّيخ", "scarf": "وِشاح صوف"}
+
+
+def thing_word(pic: str) -> str:
+    return THING_LABELS.get(pic, picture(pic).word_ar)
+
+
 @page_type("sort-choose")
 def sort_choose(ctx: PageContext) -> Built:
     """Join each thing to its group with a line: shapes to their houses, products to the right basket."""
@@ -351,7 +360,7 @@ def sort_choose(ctx: PageContext) -> Built:
             for i, g in enumerate(groups)
         ],
         "levels": [(1 if i < simple else 2) for _, i in items],
-        "things": [{"pic": ctx.pic(pic), "word": picture(pic).word_ar} for pic, _ in items],
+        "things": [{"pic": ctx.pic(pic), "word": thing_word(pic)} for pic, _ in items],
         "basket": ctx.pic("basket"),
     }
     open_choice = any(g.get("open") for g in groups)
@@ -360,7 +369,7 @@ def sort_choose(ctx: PageContext) -> Built:
         if open_choice
         else [
             "، ".join(
-                f"{strip_tashkeel(picture(pic).word_ar)} ← {strip_tashkeel(groups[i]['label'])}"
+                f"{strip_tashkeel(thing_word(pic))} ← {strip_tashkeel(groups[i]['label'])}"
                 for pic, i in items
             )
         ]
@@ -518,7 +527,6 @@ def price_tags(ctx: PageContext) -> Built:
             "spots": [{"n": ctx.num(i + 1)} for i in range(spots)],
             "levels": [ctx.text(str(x)) for x in params.get("levels", ["أَسْعارٌ مِنْ ١ إِلى ٥", "أَسْعارٌ حَتّى ٢٠"])],
             "order": ctx.text(str(params.get("order", "{رَتِّبْ/رَتِّبي} مِنَ الأَرْخَصِ إِلى الأَغْلى"))),
-            "unit": "قَمْرَة",
         }
         return Built(data, None, [] if 4 <= spots <= 8 else ["a shop shelf has 4–8 spots"])
     denoms = params.get("denominations", {"simple": [1, 2, 5], "challenge": [1, 2, 5, 10, 20]})

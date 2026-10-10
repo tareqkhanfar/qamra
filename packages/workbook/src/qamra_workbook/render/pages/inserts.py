@@ -140,6 +140,11 @@ NOTE_COLORS = {  # pastel, nothing like a real banknote
 }
 
 
+def qamra_unit(n: int) -> str:
+    """The currency's name under a coin's number: «١ قَمْرَةٌ», «٢ قَمْرَتانِ», «٥ قَمَراتٍ», «٢٠ قَمْرَةً»."""
+    return "قَمْرَةٌ" if n == 1 else "قَمْرَتانِ" if n == 2 else "قَمَراتٍ" if 3 <= n <= 10 else "قَمْرَةً"
+
+
 def qamra_count(n: int, numerals: Numerals = "hindi") -> str:
     """«قمرة واحدة», «قمرتان», «٥ قمرات», «٢٠ قمرة»: the play currency's name agrees with the number."""
     if n == 1:
@@ -219,7 +224,9 @@ def play_money(ctx: PageContext) -> Built:
                 "play": FOR_PLAY,
             }
         )
-    coins = [{"art": coin_art(v), "value": ctx.num(v), "play": FOR_PLAY} for v in coins_in]
+    coins = [
+        {"art": coin_art(v), "value": ctx.num(v), "unit": qamra_unit(v), "play": FOR_PLAY} for v in coins_in
+    ]
     printed = " ".join(
         [*(n["words"] for n in notes), ctx.text(ctx.page.title), ctx.text(ctx.page.instruction)]
     )

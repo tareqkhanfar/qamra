@@ -8,7 +8,7 @@
       {% for i in range(d.backs) %}<span class="mcard back">{{ mascot('mascot') }}</span>{% endfor %}
       {% for c in d.shown %}<span class="mcard face"><span class="mc-pic">{{ c.pic }}</span><small>{{ c.word }}</small></span>{% endfor %}
     </div>
-    <div class="deck-levels">{% for level, n in d.levels %}<span class="dl">{{ stars(level) }}<b>{{ n }}</b></span>{% endfor %}<span class="dl note">{{ icon('scissors') }}البِطاقاتُ فِي وَرَقَةِ القَصِّ</span></div>
+    <div class="deck-levels">{% for level, n in d.levels %}<span class="dl">{{ stars(level) }}<b>{{ n }}</b></span>{% endfor %}<span class="dl note">{{ icon('scissors') }}تَجِدونَها فِي بِطاقاتِ القَصِّ</span></div>
   </div>
   <div class="tally fcard{{ ' many' if d.players|length > 5 }}">
     <span class="label">{{ icon('trophy') }}كَمْ زَوْجًا وَجَدَ كُلُّ لاعِبٍ؟</span>
