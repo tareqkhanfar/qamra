@@ -264,6 +264,9 @@ _H = [
             ),
             tint(LEAF_DARK, c(30, 64, 1.6), c(42, 55, 1.6), c(55, 47, 1.6), c(67, 38, 1.6), c(47, 62, 1.5)),
             body("tip", e(82, 28, 4.4, 3.4, -35)),
+            # bumps and a curly tendril, so the outline reads as a cucumber and not a pill
+            line(p("M30 59 l3 -2.5 M44 50 l3 -2.5 M58 41 l3 -2.5 M38 68 l3 -2.5 M52 59 l3 -2.5")),
+            line(p("M17 75 C12 78 9 84 13 86 C16 87 16 83 13 83")),
             shine(p("M24 60 C38 50 54 39 70 29 C72 28 73 30 71 31 C56 41 40 52 26 62 C24 63 23 61 24 60 Z")),
         ),
         main="#6FAE4E",

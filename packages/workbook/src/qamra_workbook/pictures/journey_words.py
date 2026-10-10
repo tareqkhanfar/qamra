@@ -407,11 +407,13 @@ MORE = (
         "sea",
         "nature",
         (
-            body(
+            body(  # one closed water shape (two open pieces filled as a triangle and left a white wedge)
                 "main",
-                p("M6 40 C18 32 30 32 42 40 C54 48 66 48 78 40 C84 36 90 34 94 36 L94 88 C94 92 92 94 88 94"),
+                p(
+                    "M6 40 C18 32 30 32 42 40 C54 48 66 48 78 40 C84 36 90 34 94 36 L94 88 "
+                    "C94 92 92 94 88 94 L12 94 C8 94 6 92 6 88 Z"
+                ),
             ),
-            body("main", p("M88 94 L12 94 C8 94 6 92 6 88 Z")),
             line(p("M16 58 Q24 52 32 58 Q40 64 48 58 M52 72 Q60 66 68 72 Q76 78 84 72 M14 82 Q20 78 26 82")),
         ),
         main=BLUE,

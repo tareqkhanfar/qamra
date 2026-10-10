@@ -416,7 +416,7 @@ volumes:
       # ── V1 week 12 ────────────────────────────────────────
       - {n: 112, week: 12, subject: arabic, unit: v1-ar-04, type: unit-review, skill: "أراجع حرفي الدال والذال", difficulty: 2, params: {letters: [د, ذ]}}
       - {n: 113, week: 12, subject: pen, unit: v1-pen-04, type: unit-review, skill: "أراجع التحكّم بقلمي: متاهة وممر ونقاط", difficulty: 2, params: {skills: [maze, lane, dot-to-dot]}}
-      - {n: 114, week: 12, subject: mixed, unit: v1-mix, type: coloring, skill: "ألوّن الصورة حسب الرمز: حروف عربية وأعداد", difficulty: 2, params: {mode: color-by-code, letters: [أ, ب, ت], numbers: [1, 2, 3]}}
+      - {n: 114, week: 12, subject: mixed, unit: v1-mix, type: coloring, skill: "ألوّن الصورة حسب الرمز: حروف عربية وأعداد", difficulty: 2, params: {mode: color-by-code, letters: [أ, ب, ت], numbers: [2, 3, 4]}}
       - {n: 115, week: 12, subject: mixed, unit: v1-mix, type: unit-review, skill: "مراجعة شاملة: حروفي العربية والإنجليزية وأعدادي وألواني", difficulty: 2, params: {covers: [arabic, math, english]}}
       - {n: 116, week: 12, subject: pen, unit: v1-pen-test, type: assessment, skill: "تقييم مهارات القلم: أتتبّع موجة ودائرة، ويلاحظ الكبير مسكة قلمي وضغطي واتجاه خطّي", difficulty: 2, params: {checklist: [grip, pressure, direction], tracing: [wave, circle]}}
       - {n: 117, week: 12, subject: arabic, unit: v1-ar-test, type: assessment, skill: "تقييم العربية: أتعرّف على الحروف من الألف إلى الذال، وأكتب وحدي أ ب ت ث د ذ", difficulty: 2, params: {letters: [أ, ب, ت, ث, ج, ح, خ, د, ذ], write: [أ, ب, ت, ث, د, ذ]}}

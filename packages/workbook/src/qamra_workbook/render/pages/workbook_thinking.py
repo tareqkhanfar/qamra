@@ -325,10 +325,9 @@ def cut_and_paste(ctx: PageContext) -> Built:
 
 # symmetric drawings on a dot grid (columns 0–8, rows 0–10; the mirror line is column 4): the right half
 SYMMETRY = {
-    "house": [
+    "house": [  # the door's right half on the mirror line, so the whole house has one door in the middle
         [(4, 1), (8, 5), (7, 5), (7, 10), (4, 10)],
-        [(5, 10), (5, 7), (6, 7), (6, 10)],
-        [(6, 6), (6, 5)],
+        [(4, 7), (5, 7), (5, 10)],
     ],
     "tree": [[(4, 0), (7, 3), (6, 3), (8, 6), (5, 6), (5, 9), (4, 9)]],
     "rocket": [[(4, 0), (6, 3), (6, 8), (8, 10), (4, 10)], [(5, 4), (5, 5)]],

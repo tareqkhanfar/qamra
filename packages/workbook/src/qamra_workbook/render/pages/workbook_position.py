@@ -83,10 +83,12 @@ def letter_position(ctx: PageContext) -> Built:
         shape = arabic_shape(t)
         body.append(glyph(shape, *fit_lines(shape, W - 22, y + 1, 14, 14), color=ctx.style.deep, width=14))
         for k, form in enumerate(FORMS):
+            # inside and at the end of a word the alif is plain «ـا» (باب، حذاء), never «ـأ»
+            shown = "ا" if t in "أإآ" and form != "initial" else t
             try:
-                part = arabic_shape(t, form)
+                part = arabic_shape(shown, form)
             except KeyError:
-                part = arabic_shape(t, "isolated" if form == "initial" else "final")
+                part = arabic_shape(shown, "isolated" if form == "initial" else "final")
             body.append(glyph(part, *fit_lines(part, W - 60 - k * 44, y, 20, 15), color=INK, width=13))
     top = float(head_h + 4)
     pitch = (204 - top) / max(len(words), 1)

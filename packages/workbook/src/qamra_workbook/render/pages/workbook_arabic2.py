@@ -37,6 +37,15 @@ def alone_row(ctx: PageContext, char: str, cap: float, y: float) -> tuple[str, f
     return part + draw.start_dot((sx, sy), 1.9), height
 
 
+DOTLESS = frozenset("ادرسصطعحكلمهو")
+
+
+def differ_by_dots(chars: list[str]) -> str:
+    """«…بِالنُّقْطَةِ فَقَطْ» when one of the pair has none (د ذ، ر ز), «…بِالنِّقاطِ» otherwise (ت ث)."""
+    one = any(c in DOTLESS for c in chars)
+    return "الحَرْفانِ يَخْتَلِفانِ بِالنُّقْطَةِ فَقَطْ" if one else "الحَرْفانِ يَخْتَلِفانِ بِالنِّقاطِ فَقَطْ"
+
+
 @page_type("letters-write")
 def letters_write(ctx: PageContext) -> Built:
     params = ctx.page.params
@@ -48,7 +57,7 @@ def letters_write(ctx: PageContext) -> Built:
         scale, dx, dy = fit_lines(shape, W - 40 - k * 42, 3, 34, 24)
         body.append(glyph(shape, scale, dx, dy, color=ctx.style.color, width=15))
         body.append(start_marks(shape, scale, dx, dy, 2.0, ctx.num))
-    body.append(text("الحَرْفانِ يَخْتَلِفانِ بِالنِّقاطِ فَقَطْ", 50, 13, 5, color=INK))
+    body.append(text(differ_by_dots(chars), 50, 13, 5, color=INK))
     body.append(text("أَكْتُبُ عَلى النِّقاطِ، ثُمَّ وَحْدي", 50, 22, 4.6, color="#676B83"))
     y = 35.0
     rows = len(chars) * (guided + alone)
