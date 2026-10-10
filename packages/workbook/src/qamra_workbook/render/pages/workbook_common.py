@@ -8,6 +8,7 @@ header), so nothing can overflow and tests can read what a page shows from `data
 from __future__ import annotations
 
 from collections.abc import Callable, Sequence
+from typing import TYPE_CHECKING
 
 from markupsafe import Markup, escape
 
@@ -24,6 +25,9 @@ from qamra_workbook.render import draw
 from qamra_workbook.render.pages.letters import letter_extent, start_points
 from qamra_workbook.strokes import letter as stroke_letter
 
+if TYPE_CHECKING:
+    from qamra_workbook.render.registry import PageContext
+
 W, H = 186.0, 204.0  # the work area drawing, mm
 CARD, LINE, INK, MUTED = "#FFFFFF", "#E4D6BC", "#1C2140", "#676B83"
 ANSWER = "#E0483A"
@@ -34,6 +38,12 @@ WORD_ALIASES = {"خيار": "cucumber", "حقيبة": "bag", "دب": "bear", "ث
 WORD_ALIASES.update(WORD_ALIASES_2)  # volume 2's words
 WORD_ALIASES.update(WORD_ALIASES_3)  # volume 3's words
 WORD_ALIASES.update(WORD_ALIASES_KG1)  # KG1's words
+
+
+def for_child(ctx: PageContext, line: str) -> str:
+    """A line for the grown-ups that talks about the child (the key's answers, the checklists), with its
+    `{masc/fem}` variants chosen for the child's gender: «{رأى الطفل/رأت الطفلة}: …»."""
+    return ctx.book.personalize(line, ctx.page)
 
 
 def picture_id(word: str) -> str:

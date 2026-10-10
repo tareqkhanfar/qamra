@@ -8,7 +8,7 @@ from __future__ import annotations
 import random
 
 from qamra_workbook.render import draw
-from qamra_workbook.render.pages.workbook_common import INK, W, card, svg, text
+from qamra_workbook.render.pages.workbook_common import INK, W, card, for_child, svg, text
 from qamra_workbook.render.pages.workbook_math import GROUP_PICTURES
 from qamra_workbook.render.pages.workbook_math3 import (
     MINUS,
@@ -68,7 +68,8 @@ def story_text(ctx: PageContext, a: int, b: int, thing: str, subtract: bool) -> 
     more = {1: "واحِدَةً أُخْرى", 2: "اثْنَتَيْنِ أُخْرَيَيْنِ"}.get(b, f"{ctx.num(b)} أُخْرى")
     gave = {1: "واحِدَةً", 2: "اثْنَتَيْنِ"}.get(b, ctx.num(b))
     if subtract:
-        return f"كانَ عِنْدي {counted(ctx, a, thing)}، وَأَعْطَيْتُ {gave} مِنْها لِصَديقي. كَمْ بَقِيَ عِنْدي؟"
+        friend = for_child(ctx, "{لِصَديقي/لِصَديقَتي}")  # the child tells the story: a girl gives to her friend
+        return f"كانَ عِنْدي {counted(ctx, a, thing)}، وَأَعْطَيْتُ {gave} مِنْها {friend}. كَمْ بَقِيَ عِنْدي؟"
     return f"كانَ عِنْدي {counted(ctx, a, thing)}، وَأَخَذْتُ {more}. كَمْ أَصْبَحَ عِنْدي؟"
 
 

@@ -178,4 +178,4 @@ def shapes_four(ctx: PageContext) -> Built:
                 traced(shape_stroke(kind, x, y + (pitch - 4) / 2, size), spacing=4.2, r=1.1, start=2.3)
             )
             x -= size * wide / 2 + 4
-    return Built({"svg": svg(body)}, [", ".join(SHAPE_AR4.get(k, k) for k in kinds)], [])
+    return Built({"svg": svg(body)}, ["، ".join(SHAPE_AR4.get(k, k) for k in kinds)], [])

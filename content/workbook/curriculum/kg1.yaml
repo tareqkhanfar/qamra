@@ -392,7 +392,7 @@ volumes:
       - {n: 90, week: 9, subject: math, unit: v1-ma-03, type: count-and-circle, skill: "أعدّ الأشياء وأضع دائرة حول العدد الصحيح (٣–٥)", difficulty: 2, params: {numbers: [3, 4, 5]}}
       # ── V1 week 10 ────────────────────────────────────────
       - {n: 91, week: 10, subject: arabic, unit: v1-ar-03, type: unit-review, skill: "أراجع الجيم والحاء والخاء", difficulty: 2, params: {letters: [ج, ح, خ]}}
-      - {n: 92, week: 10, subject: math, unit: v1-ma-03, type: number-intro, skill: "أتعرّف على الصفر: «لا شيء»، سلة فارغة بعد أن أكلنا التفاحات الخمس", difficulty: 2, params: {number: 0, concept: nothing}}
+      - {n: 92, week: 10, subject: math, unit: v1-ma-03, type: number-intro, skill: "أتعرّف على الصفر: «لا شيء»، صحن فارغ بعد أن أكلنا التفاحات الخمس", difficulty: 2, params: {number: 0, concept: nothing}}
       - {n: 93, week: 10, subject: english, unit: v1-en-02, type: en-letter, skill: "أتعرّف على H وh وأتتبّعهما مع كلمة hat", difficulty: 1, params: {letter: H, word: hat}}
       - {n: 94, week: 10, subject: pen, unit: v1-pen-03, type: unit-review, skill: "أراجع الدوائر والحلزون والأشكال والتلوين", difficulty: 2, params: {skills: [circle, spiral, shape, coloring]}}
       - {n: 95, week: 10, subject: math, unit: v1-ma-03, type: number-trace, skill: "أتتبّع الصفر المنقّط: دائرة مغلقة", difficulty: 1, params: {number: 0}}
@@ -774,7 +774,7 @@ volumes:
       - {n: 91, week: 9, subject: pen, unit: v3-pen-02, type: unit-review, skill: "أراجع التوصيل والطرق الطويلة والرسم", difficulty: 2, params: {skills: [dot-to-dot, trace-path, drawing]}}
       - {n: 92, week: 9, subject: arabic, unit: v3-ar-05, type: harakat, skill: "أسمع صوت الضمة وأراها فوق الحرف: بُ دُ رُ", difficulty: 2, params: {haraka: damma, letters: [ب, د, ر], mode: listen}}
       - {n: 93, week: 9, subject: english, unit: v3-en-04, type: vocab-unit, skill: "أتعلّم بالصور أسماء الفواكه بالإنجليزية", difficulty: 2, params: {unit: Fruits, words: [apple, banana, orange, grapes, lemon]}}
-      - {n: 94, week: 9, subject: math, unit: v3-ma-03, type: picture-subtract, skill: "أحلّ قصة طرح مصوّرة: ٥ بالونات طار منها واحد", difficulty: 4, params: {max: 5, mode: story}}
+      - {n: 94, week: 9, subject: math, unit: v3-ma-03, type: picture-subtract, skill: "أحلّ مسائل طرح مصوّرة: تفاحات أكلنا منها، كم بقي؟", difficulty: 4, params: {max: 5, mode: story}}
       # ── V3 week 10 ────────────────────────────────────────
       - {n: 95, week: 10, subject: arabic, unit: v3-ar-05, type: harakat, skill: "أسمع صوت الكسرة وأراها تحت الحرف: بِ دِ رِ", difficulty: 2, params: {haraka: kasra, letters: [ب, د, ر], mode: listen}}
       - {n: 96, week: 10, subject: english, unit: v3-en-04, type: vocab-unit, skill: "أتعلّم بالصور أسماء أطعمة يومية بالإنجليزية", difficulty: 2, params: {unit: Food, words: [bread, milk, rice, cheese]}}

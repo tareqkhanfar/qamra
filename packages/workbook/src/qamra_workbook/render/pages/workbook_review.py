@@ -23,6 +23,7 @@ from qamra_workbook.render.pages.workbook_common import (
     answer_line,
     card,
     fit_lines,
+    for_child,
     glyph,
     hook,
     pic,
@@ -185,7 +186,7 @@ def read_letters(letters: list[str]) -> Task:
                     stroke_width=0.5,
                 )
             )
-        out.answer.append("القراءة: علامة تحت كل حرف سمّاه الطفل")
+        out.answer.append(for_child(ctx, "القراءة: علامة تحت كل حرف {سمّاه الطفل/سمّته الطفلة}"))
         return out
 
     return task
@@ -254,17 +255,24 @@ def match_capitals(letters: list[str]) -> Task:
     return task
 
 
+# the score box's three marks: the child mastered the skill, needs a little practice, needs more practice
+SCORE_AR = (
+    "{أتقن/أتقنت} المهارة",
+    "{يحتاج/تحتاج} قليلًا من التدريب",
+    "{يحتاج/تحتاج} تدريبًا أكثر",
+)  # draft: educator review
+
+
 def score_box(ctx: PageContext, y: float) -> list[str]:
     """«للمعلّمة أو الأهل»: circle one of three faces, and a line to sign (Addendum 5 §4 assessment)."""
     out = [card(0, y, W, 204 - y, r=6, fill="#FFFDF6", stroke="#D8C9AC", dash="2.4 1.6")]
     out.append(text("للمعلّمة أو الأهل:", W - 6, y + 8.5, 4.4, anchor="end", color=ctx.style.deep))
-    labels = ("أتقن المهارة", "يحتاج قليلًا من التدريب", "يحتاج تدريبًا أكثر")  # draft: educator review
-    for k, label in enumerate(labels):
+    for k, label in enumerate(SCORE_AR):
         cx = W - 62 - k * 50
         out.append(
             draw.el("circle", cx=cx + 18, cy=y + 7, r=3.2, fill="#FFFFFF", stroke=INK, stroke_width=0.5)
         )
-        out.append(text(label, cx + 13, y + 8.5, 3.6, anchor="end", color=INK))
+        out.append(text(for_child(ctx, label), cx + 13, y + 8.5, 3.6, anchor="end", color=INK))
     out.append(
         text(
             "التوقيع والتاريخ: ....................................",
@@ -894,10 +902,13 @@ def unit_review(ctx: PageContext) -> Built:
 
 CHECKLIST_AR = {  # draft: educator review
     "grip": "مسكة القلم: بين الإبهام والسبابة، مسنودة على الوسطى",
-    "pressure": "الضغط: خط واضح دون أن يمزّق الورقة",
+    "pressure": "الضغط: خط واضح لا يمزّق الورقة",
     "direction": "الاتجاه: من البداية الخضراء، ومن اليمين إلى اليسار",
 }
-LEVELS_AR = ("أتقنها", "تتحسّن", "تحتاج تدريبًا")  # draft: educator review
+# The grown-ups' lines talk about the child, in the child's gender (`for_child`): the observation note and the
+# checklist's columns (the child mastered the row's skill, is improving, needs practice)
+OBSERVE_AR = "للمعلّمة أو الأهل: لاحظوا {الطفل وهو يتتبّع/الطفلة وهي تتتبّع}، ثم ضعوا علامة"
+LEVELS_AR = ("{أتقنها/أتقنتها}", "{يتحسّن/تتحسّن}", "{يحتاج تدريبًا/تحتاج تدريبًا}")  # draft: educator review
 
 
 def pen_check(ctx: PageContext, r: random.Random) -> Drawn:
@@ -910,7 +921,7 @@ def pen_check(ctx: PageContext, r: random.Random) -> Drawn:
     out.body.append(card(0, y, W, 204 - y, r=6, fill="#FFFDF6", stroke="#D8C9AC"))
     out.body.append(
         text(
-            "للمعلّمة أو الأهل: لاحظوا الطفل وهو يتتبّع، ثم ضعوا علامة",
+            for_child(ctx, OBSERVE_AR),
             W - 6,
             y + 8,
             4.4,
@@ -920,7 +931,7 @@ def pen_check(ctx: PageContext, r: random.Random) -> Drawn:
     )
     col_x = [W - 128, W - 150, W - 172]  # the three levels, right to left
     for k, label in enumerate(LEVELS_AR):
-        out.body.append(text(label, col_x[k], y + 18, 3.6, color=INK))
+        out.body.append(text(for_child(ctx, label), col_x[k], y + 18, 3.6, color=INK))
     row_h = 14.0
     for i, item in enumerate(checklist):
         yy = y + 22 + i * row_h
@@ -963,7 +974,9 @@ def pen_check(ctx: PageContext, r: random.Random) -> Drawn:
             color="#676B83",
         )
     )
-    out.answer.append("تقييم ملاحظة: " + "، ".join(CHECKLIST_AR.get(c, c).split(":")[0] for c in checklist))
+    out.answer.append(
+        "تقييم بالملاحظة: " + "، ".join(CHECKLIST_AR.get(c, c).split(":")[0] for c in checklist)
+    )
     missing = [c for c in ("grip", "pressure", "direction") if c not in checklist]
     if missing or len(tracing) != 2:
         out.problems.append("the pen check has the grip/pressure/direction checklist and two tracing tasks")

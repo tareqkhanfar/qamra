@@ -338,8 +338,8 @@ SCOPES: dict[str, list[Scope]] = {
                 ("p096-cause-effect", "السبب والنتيجة", "Cause and effect"),
                 (
                     "p101-word-read",
-                    "أقرأ كلمات وأصلها بصورها",
-                    "Reading words and matching them to their pictures",
+                    "أقرأ كلمات وأحوّط صورها",
+                    "Reading words and circling their pictures",
                 ),
                 ("p105-build-words", "أبني الكلمة من المقاطع", "Building the word from syllables"),
                 ("p118-sentence-read", "أنا أقرأ: جمل عن نفسي", "I can read: sentences about me"),

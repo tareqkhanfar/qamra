@@ -276,7 +276,7 @@ def number_quantity_match(ctx: PageContext) -> Built:
                 class_="key-line",
             )
         )
-    answer = [", ".join(f"{ctx.num(n)}" for n in numbers) + ": كل عدد بالمجموعة التي فيها بعدده"]
+    answer = ["، ".join(f"{ctx.num(n)}" for n in numbers) + ": كل عدد بالمجموعة التي فيها أشياء بعدده"]
     return Built({"svg": svg(body + key)}, answer, [])
 
 

@@ -17,6 +17,7 @@ from qamra_workbook.render.pages.workbook_common import (
     arabic_shape,
     card,
     fit_lines,
+    for_child,
     glyph,
     pic,
     svg,
@@ -143,7 +144,7 @@ def harakat(ctx: PageContext) -> Built:
                     color=INK if k % 2 == 0 else ctx.style.deep,
                 )
             )
-    answer = ["يقرأ الطفل: " + " ".join(syllable(c, haraka) for c in letters)]
+    answer = [for_child(ctx, "{يقرأ الطفل/تقرأ الطفلة}: ") + " ".join(syllable(c, haraka) for c in letters)]
     return Built({"svg": svg(body)}, answer, [] if haraka in HARAKA else [f"unknown mark {haraka}"])
 
 
@@ -210,7 +211,9 @@ def syllables(ctx: PageContext) -> Built:
                 )
             )
         answer.append(" ".join(cells))
-    return Built({"svg": svg(body)}, ["يقرأ الطفل كل صف: " + "؛ ".join(answer)], [])
+    return Built(
+        {"svg": svg(body)}, [for_child(ctx, "{يقرأ الطفل/تقرأ الطفلة} كل صف: ") + "؛ ".join(answer)], []
+    )
 
 
 # the reading words → their pictures (tashkeel and «ال» ignored); the rest resolve through the library
@@ -420,6 +423,16 @@ SENTENCE_PICTURES = {
 }
 
 
+# an action's picture is named by its verb («رَسَمَ»); the key names it by the action, so «رَسَمَتْ سَلْمى» never
+# points to a masculine verb
+ACTION_PICTURES = {
+    "writing": "صورة الكتابة",
+    "drawing": "صورة الرسم",
+    "playing": "صورة اللعب",
+    "eating": "صورة الأكل",
+}
+
+
 def sentence_picture(sentence: str) -> str | None:
     words = strip_tashkeel(sentence).replace(".", "").replace("ت ", " ").split()
     for w in words:
@@ -503,7 +516,7 @@ def sentence_read(ctx: PageContext) -> Built:
             )
         )
     answer = [
-        f"{s} ← {PICTURES[p].word_en if en else PICTURES[p].word_ar}"
+        f"{s} ← {PICTURES[p].word_en if en else ACTION_PICTURES.get(p, PICTURES[p].word_ar)}"
         for s, p in zip(sentences, pictures, strict=True)
     ]
     return Built({"svg": svg(body + key)}, answer, problems)

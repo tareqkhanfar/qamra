@@ -16,6 +16,7 @@ from qamra_workbook.render.pages.workbook_common import (
     answer_line,
     card,
     fit_lines,
+    for_child,
     glyph,
     hook,
     pic,
@@ -209,7 +210,11 @@ def memory(ctx: PageContext) -> Built:
         if thing in seen:
             body.append(ring_at(cx, cy, 24, 24))
     problems = [] if sorted(set(shown)) == sorted(shown) else ["a picture repeats among the choices"]
-    return Built({"svg": svg(body)}, ["رأى الطفل: " + "، ".join(PICTURES[t].word_ar for t in seen)], problems)
+    return Built(
+        {"svg": svg(body)},
+        [for_child(ctx, "{رأى الطفل/رأت الطفلة}: ") + "، ".join(PICTURES[t].word_ar for t in seen)],
+        problems,
+    )
 
 
 @page_type("cut-and-paste")

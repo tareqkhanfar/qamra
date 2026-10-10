@@ -17,7 +17,7 @@ import datetime as dt
 from typing import Any
 
 from qamra_workbook.curriculum import SUBJECT_AR, Curriculum, Page, Volume
-from qamra_workbook.render.foundation_text import page_texts
+from qamra_workbook.render.foundation_text import objective_as_child, page_texts
 from qamra_workbook.render.spec import BookSpec, Child, Geometry, Lang, Numerals, PageSpec
 
 PRODUCT = "foundation"
@@ -79,7 +79,8 @@ def plan_params(page: Page, plan: Curriculum, volume: Volume, name_en: str) -> d
     }
     match page.type:
         case "unit-opener":
-            extra["objectives"] = list(volume.objectives.get(page.subject, []))
+            # in the child's voice under «في هذا الجزء سأتعلّم» (the plan writes them about the child)
+            extra["objectives"] = [objective_as_child(o) for o in volume.objectives.get(page.subject, [])]
             extra["subject_ar"] = SUBJECT_AR[page.subject]
         case "toc":
             extra["units"] = toc_entries(volume)

@@ -23,6 +23,7 @@ from qamra_workbook.render.foundation_text import (
     path_say,
     pick,
     review_say,
+    shapes_title,
     turn,
 )
 from qamra_workbook.render.foundation_v2 import hidden_say, letter_position_say
@@ -274,7 +275,6 @@ PEN_TITLES_KG1 = {
 }
 # the second connected-lines page goes the other way (its plan direction is ltr)
 CONNECTED_LTR = "نَحْوَ اليَمينِ الآنَ: {ارْسُمْ/ارْسُمي} دونَ رَفْعِ القَلَمِ"
-SHAPE_NAMES_KG1 = {"circle": "الدّائِرَةُ", "square": "المُرَبَّعُ", "triangle": "المُثَلَّثُ", "rectangle": "المُسْتَطيلُ"}
 TRACE_TITLES_KG1 = {
     "straight": "الطَّريقُ المُسْتَقيمُ",
     "winding": "الطَّريقُ المُتَعَرِّجُ",
@@ -346,18 +346,13 @@ def _harakat_title(params: dict[str, Any]) -> str:
     return f"أَسْمَعُ {HARAKA_HEARD.get(str(params.get('haraka', 'fatha')), 'الفَتْحَةَ')}"
 
 
-def _shapes(shapes: Any) -> str:
-    """«الدّائِرَةُ وَالمُرَبَّعُ»."""
-    return " وَ".join(SHAPE_NAMES_KG1.get(str(s), str(s)) for s in shapes)
-
-
 def texts_kg1(subject: str, kind: str, params: dict[str, Any], unit_title: str) -> Texts | None:
     """Titles and instructions for the KG1 pages; None when the KG2 texts serve."""
     p = params
     letters = [str(x) for x in p.get("letters", [])]
     match kind:
         case "pen-lines" if p.get("line") == "shape":
-            return _shapes(p.get("shapes", ["square"])), "{مَرِّرِ/مَرِّري} القَلَمَ عَلى حُدودِ كُلِّ شَكْلٍ", ""
+            return shapes_title(p.get("shapes", ["square"])), "{مَرِّرِ/مَرِّري} القَلَمَ عَلى حُدودِ كُلِّ شَكْلٍ", ""
         case "pen-lines" if p.get("line") == "connected" and p.get("direction") == "ltr":
             return PEN_TITLES_KG1["connected"][0], CONNECTED_LTR, ""
         case "pen-lines" if str(p.get("line", "horizontal")) in PEN_TITLES_KG1 and p.get("line") != "spiral":
@@ -439,11 +434,11 @@ def texts_kg1(subject: str, kind: str, params: dict[str, Any], unit_title: str) 
         case "shapes" if p.get("mode") == "find":
             return "أَجِدُ الأَشْكالَ", "{جِدْ/جِدي} كُلَّ شَكْلٍ، {وَلَوِّنْهُ/وَلَوِّنيهِ} بِلَوْنِهِ في الأَعْلى", ""
         case "shapes" if p.get("shapes"):
-            return _shapes(p["shapes"]), pick(SHAPES_SAY, turn(p)), ""
+            return shapes_title(p["shapes"]), pick(SHAPES_SAY, turn(p)), ""
         case "number-write" if p.get("numbers"):
             listed = " وَ".join(str(n) for n in p["numbers"])
             return (
-                f"أَكْتُبُ الأَعْدادَ {listed}",
+                f"أَكْتُبُ {'العَدَدَيْنِ' if len(p['numbers']) == 2 else 'الأَعْدادَ'} {listed}",
                 pick(
                     (
                         "{تَتَبَّعِ/تَتَبَّعي} الأَعْدادَ، ثُمَّ {اكْتُبْها وَحْدَكَ/اكْتُبيها وَحْدَكِ}",

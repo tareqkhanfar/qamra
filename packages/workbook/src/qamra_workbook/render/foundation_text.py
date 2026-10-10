@@ -15,6 +15,7 @@ English pages carry the instruction in English with the Arabic under it (Addendu
 
 from __future__ import annotations
 
+import re
 from collections.abc import Mapping, Sequence
 from typing import Any
 
@@ -131,8 +132,17 @@ def vowelled_letter_name(char: str, case: str = "i") -> str:
 
 
 def joined(names: list[str]) -> str:
-    """«الباءِ وَالتّاءِ», «الباءِ، التّاءِ وَالثّاءِ»."""
-    return " وَ".join(names) if len(names) <= 2 else "، ".join(names[:-1]) + " وَ" + names[-1]
+    """«الباءِ وَالتّاءِ», «الباءِ وَالتّاءِ وَالثّاءِ»: Arabic joins every name with «وَ» (never «الباءِ، التّاءِ…»)."""
+    return " وَ".join(names)
+
+
+SHAPE_NAMES = {"circle": "الدّائِرَةُ", "square": "المُرَبَّعُ", "triangle": "المُثَلَّثُ", "rectangle": "المُسْتَطيلُ"}
+
+
+def shapes_title(shapes: Any = None) -> str:
+    """«الدّائِرَةُ وَالمُرَبَّعُ وَالمُثَلَّثُ»: the shapes a page teaches (the first three by default)."""
+    names = [str(x) for x in shapes] if shapes else ["circle", "square", "triangle"]
+    return " وَ".join(SHAPE_NAMES.get(x, x) for x in names)
 
 
 def letters_head(letters: list[str]) -> str:
@@ -416,6 +426,104 @@ OPENER_SAY = {  # one a volume: the unit openers greet the subject
     ),
 }
 OPENER_DEFAULT = "هَيّا نَبْدَأْ رِحْلَةً جَديدَةً!"
+
+# The plan's objectives are written for the educator about «the child», in the masculine («يتعرّف على تسعة
+# حروف…», «يكتب وحده…»). Under the opener's «في هذا الجزء سأتعلّم» the child says them, so they print in
+# the first person, which reads the same for a boy and a girl (`objective_as_child`). A verb about the child
+# is one of `_CHILD_VERBS` (maybe with «و»/«ف» before it and an object pronoun after it); every other word
+# that starts like a third-person verb is one of `_NOT_THE_CHILD` (a test keeps the plan inside both lists).
+_CHILD_VERBS = frozenset(
+    {
+        "يمسك",
+        "يرسم",
+        "يتتبّع",
+        "يحلّ",
+        "يخرج",
+        "يلوّن",
+        "يصل",
+        "يتعرّف",
+        "يربط",
+        "يكتب",
+        "يميّز",
+        "يسمّي",
+        "يقارن",
+        "يعدّ",
+        "يجد",
+        "يطابق",
+        "يصنّف",
+        "يكمل",
+        "يتذكّر",
+        "يقصّ",
+        "يلصق",
+        "ينقل",
+        "يحدّد",
+        "يرتّب",
+        "يستعمل",
+        "يستخدم",
+        "يختار",
+        "يسمع",
+        "يعرف",
+        "يجمع",
+        "يطرح",
+        "يشير",
+        "يشرح",
+        "يركّب",
+        "يلاحظ",
+        "يلمس",
+        "يقرأ",
+        "يقرؤ",
+        "يرى",
+    }
+)
+_OBJECT_PRONOUNS = ("هما", "ها", "ه")
+# places («يمين ويسار»), what each situation needs («ما يحتاجه كل موقف»), the odd thing («لا ينتمي»)
+_NOT_THE_CHILD = frozenset({"يمين", "يسار", "ويسار", "يحتاجه", "ينتمي", "في", "فيها", "فيه"})
+# the child's other words in the first person; a ḥāl about «أنا» would still be gendered («مبتدئًا»)
+_CHILD_PHRASES = (
+    ("فيكتمل عنده", "فتكتمل عندي"),
+    ("نفسه وأصدقاءه", "نفسي وأصدقائي"),
+    ("ما رآه", "ما رأيته"),
+    ("التي تعلّمها", "التي تعلّمتها"),
+    ("مبتدئًا من", "بدءًا من"),
+    ("مستقلًّا", "وحدي"),  # «أكتب الحرف مستقلًّا … بعد الكتابة الموجّهة»: on my own
+    ("وحده", "وحدي"),
+)
+_EDGE = "«»().،:؛!؟"
+
+
+def _child_verb(word: str) -> str | None:
+    """`word` (a verb about the child, maybe «و»/«ف» + verb + object pronoun) in the first person, or None."""
+    core = word.strip(_EDGE)
+    for prefix in ("", "و", "ف"):
+        if not core.startswith(prefix + "ي"):
+            continue
+        stem = core[len(prefix) :]
+        for suffix in ("", *_OBJECT_PRONOUNS):
+            if stem.endswith(suffix) and stem[: len(stem) - len(suffix)] in _CHILD_VERBS:
+                return word.replace(core, prefix + "أ" + stem[1:], 1)
+    return None
+
+
+def objective_as_child(objective: str) -> str:
+    """«يكتب وحده الحروف…» → «أكتب وحدي الحروف…»: a plan objective as the child says it on the opener."""
+    for said, mine in _CHILD_PHRASES:
+        objective = objective.replace(said, mine)
+    return " ".join(_child_verb(w) or w for w in objective.split(" "))
+
+
+def third_person_left(text: str) -> list[str]:
+    """Words of `text` that still read like a third-person verb (not one `objective_as_child` knows is about
+    something else): what a test keeps out of the openers."""
+    out = []
+    for word in re.split(r"[\s/]+", text):
+        core = word.strip(_EDGE)
+        if core in _NOT_THE_CHILD:
+            continue
+        if any(core.startswith(p + "ي") for p in ("", "و", "ف")):
+            out.append(core)
+    return out
+
+
 # a trace-path page walks a picture to its goal (the plan's two words): who (accusative, genitive), where to
 PATH_WHO = {
     "نحلة": ("النَّحْلَةَ", "النَّحْلَةِ"),
@@ -607,7 +715,7 @@ def general_texts(kind: str, params: dict[str, Any], unit_title: str, subject: s
         case "dot-to-dot":
             return f"مِنْ 1 إلى {params.get('to', 10)}", dot_to_dot_say(params), ""
         case "shapes":
-            return "الدّائِرَةُ وَالمُرَبَّعُ وَالمُثَلَّثُ", pick(SHAPES_SAY, turn(params)), ""
+            return shapes_title(params.get("shapes")), pick(SHAPES_SAY, turn(params)), ""
         case "coloring":
             return "أُلَوِّنُ بِعِنايَةٍ", pick(COLORING_SAY, turn(params)), ""
         case "connect":
@@ -616,7 +724,7 @@ def general_texts(kind: str, params: dict[str, Any], unit_title: str, subject: s
             return "لِكُلِّ لَوْنٍ سَلَّةٌ", "ما لَوْنُ كُلِّ شَيْءٍ؟ {صِلْهُ/صِليهِ} بِسَلَّةِ لَوْنِهِ", ""
         case "odd-one-out":
             pool = ODD_ONE_OUT_GROUPS if "category" in params.get("rules", ()) else ODD_ONE_OUT
-            return "مَنِ المُخْتَلِفُ؟", pick(pool, turn(params)), ""
+            return "ما المُخْتَلِفُ؟", pick(pool, turn(params)), ""  # things: «ما», never «مَنِ»
         case "maze":
             return "مَتاهَةٌ", maze_say(params), ""
         case "spot-difference":

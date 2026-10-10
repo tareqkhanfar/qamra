@@ -18,6 +18,7 @@ from qamra_workbook.render.pages.workbook_common import (
     W,
     answer_line,
     card,
+    for_child,
     hook,
     pic,
     ring_at,
@@ -50,6 +51,7 @@ from qamra_workbook.render.pages.workbook_reading3 import (
 from qamra_workbook.render.pages.workbook_review import (
     CHECKLIST_AR,
     LEVELS_AR,
+    OBSERVE_AR,
     Box,
     Drawn,
     Task,
@@ -115,7 +117,9 @@ def marks_task(letters: list[str], marks: list[str]) -> Task:
                         color=INK,
                     )
                 )
-        out.answer.append("يقرأ: " + " ".join(syllable(c, m) for c in letters for m in marks))
+        out.answer.append(
+            for_child(ctx, "{يقرأ/تقرأ}: ") + " ".join(syllable(c, m) for c in letters for m in marks)
+        )
         return out
 
     return task
@@ -137,7 +141,7 @@ def syllable_rows(rows: list[str]) -> Task:
                     color=INK if i % 2 == 0 else ctx.style.deep,
                 )
             )
-        out.answer.append("يقرأ: " + "؛ ".join(rows))
+        out.answer.append(for_child(ctx, "{يقرأ/تقرأ}: ") + "؛ ".join(rows))
         return out
 
     return task
@@ -196,7 +200,7 @@ def write_word_task(word: str) -> Task:
                 out.body.append(draw.start_dot((right - 2, top + band * 0.2), 1.8))
         if rows == 1:  # the free part of the same lines starts where the dotted word ends
             out.body.append(draw.start_dot((right - word_width(word, band) - 8, top + band * 0.2), 1.8))
-        out.answer.append(f"يكتب: {word}")
+        out.answer.append(for_child(ctx, "{يكتب/تكتب}: ") + word)
         return out
 
     return task
@@ -495,7 +499,7 @@ def review_sections_v3(ctx: PageContext, r: random.Random) -> Drawn | None:
             ],
             r,
         )
-        out.answer = ["يقرأ الحرف مع الفتحة والضمة والكسرة والسكون"]
+        out.answer = [for_child(ctx, "{يقرأ/تقرأ} الحرف مع الفتحة والضمة والكسرة والسكون")]
         return out
     if subject == "arabic" and "short-syllables" in skills:
         return stack(
@@ -622,7 +626,7 @@ def assessment_sections_v3(ctx: PageContext, r: random.Random) -> Drawn | None:
         out = stack(ctx, [(f"أَتَتَبَّعُ: {PEN_LABELS_3.get(t, t)}", pen_row3(t), 1.0) for t in tracing], r, 0, 104)
         out.body += checklist_box(ctx, checklist)
         out.answer.append(
-            "تقييم ملاحظة: " + "، ".join(CHECKLIST_AR.get(c, c).split(":")[0] for c in checklist)
+            "تقييم بالملاحظة: " + "، ".join(CHECKLIST_AR.get(c, c).split(":")[0] for c in checklist)
         )
         if len(tracing) != 2 or {"grip", "pressure", "direction"} - set(checklist):
             out.problems.append(
@@ -741,7 +745,7 @@ def checklist_box(ctx: PageContext, checklist: list[str], y: float = 110.0) -> l
     out = [card(0, y, W, 204 - y, r=6, fill="#FFFDF6", stroke="#D8C9AC")]
     out.append(
         text(
-            "للمعلّمة أو الأهل: لاحظوا الطفل وهو يتتبّع، ثم ضعوا علامة",
+            for_child(ctx, OBSERVE_AR),
             W - 6,
             y + 8,
             4.4,
@@ -751,7 +755,7 @@ def checklist_box(ctx: PageContext, checklist: list[str], y: float = 110.0) -> l
     )
     col_x = [W - 128, W - 150, W - 172]
     for k, label in enumerate(LEVELS_AR):
-        out.append(text(label, col_x[k], y + 18, 3.6, color=INK))
+        out.append(text(for_child(ctx, label), col_x[k], y + 18, 3.6, color=INK))
     for i, item in enumerate(checklist):
         yy = y + 22 + i * 14
         out.append(draw.path(draw.d_path(("M", (4, yy)), ("L", (W - 4, yy))), stroke="#E4D6BC", width=0.4))

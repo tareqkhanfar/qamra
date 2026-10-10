@@ -301,7 +301,7 @@ def number_quantity_match_ten(ctx: PageContext) -> Built:
                 class_="key-line",
             )
         )
-    return Built({"svg": svg(body + key)}, ["كل عدد بالمجموعة التي فيها بعدده"], [])
+    return Built({"svg": svg(body + key)}, ["كل عدد بالمجموعة التي فيها أشياء بعدده"], [])
 
 
 @page_type("compare-ten")

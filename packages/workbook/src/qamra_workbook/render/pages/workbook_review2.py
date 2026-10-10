@@ -20,6 +20,7 @@ from qamra_workbook.render.pages.workbook_common import (
     W,
     answer_line,
     card,
+    for_child,
     hook,
     pic,
     ring_at,
@@ -33,6 +34,7 @@ from qamra_workbook.render.pages.workbook_position import POSITIONS, position_of
 from qamra_workbook.render.pages.workbook_review import (
     CHECKLIST_AR,
     LEVELS_AR,
+    OBSERVE_AR,
     PEN_LABELS,
     Box,
     Drawn,
@@ -545,7 +547,7 @@ def pen_check2(ctx: PageContext, r: random.Random, tracing: list[str], checklist
     out.body.append(card(0, y, W, 204 - y, r=6, fill="#FFFDF6", stroke="#D8C9AC"))
     out.body.append(
         text(
-            "للمعلّمة أو الأهل: لاحظوا الطفل وهو يتتبّع، ثم ضعوا علامة",
+            for_child(ctx, OBSERVE_AR),
             W - 6,
             y + 8,
             4.4,
@@ -555,7 +557,7 @@ def pen_check2(ctx: PageContext, r: random.Random, tracing: list[str], checklist
     )
     col_x = [W - 128, W - 150, W - 172]
     for k, label in enumerate(LEVELS_AR):
-        out.body.append(text(label, col_x[k], y + 18, 3.6, color=INK))
+        out.body.append(text(for_child(ctx, label), col_x[k], y + 18, 3.6, color=INK))
     for i, item in enumerate(checklist):
         yy = y + 22 + i * 14
         out.body.append(
@@ -597,7 +599,9 @@ def pen_check2(ctx: PageContext, r: random.Random, tracing: list[str], checklist
             color="#676B83",
         )
     )
-    out.answer.append("تقييم ملاحظة: " + "، ".join(CHECKLIST_AR.get(c, c).split(":")[0] for c in checklist))
+    out.answer.append(
+        "تقييم بالملاحظة: " + "، ".join(CHECKLIST_AR.get(c, c).split(":")[0] for c in checklist)
+    )
     if len(tracing) != 2 or {"grip", "pressure", "direction"} - set(checklist):
         out.problems.append("the pen check has the grip/pressure/direction checklist and two tracing tasks")
     return out
