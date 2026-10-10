@@ -47,6 +47,7 @@ def test_expired_photos_are_deleted_from_storage_and_marked(db: Session, storage
         storage_key=due_key,
         status=PhotoStatus.accepted,
         delete_after=NOW - timedelta(minutes=1),
+        crop={"x": 0.1, "y": 0.1, "w": 0.5, "h": 0.5, "rotate": 0},  # the parent's framing goes with it
     )
     later = ChildPhoto(
         child_id=child.id,
@@ -63,6 +64,7 @@ def test_expired_photos_are_deleted_from_storage_and_marked(db: Session, storage
     assert not storage.exists(due_key) and storage.exists(later_key)
     db.refresh(due)
     assert due.status == PhotoStatus.deleted and due.storage_key is None and due.deleted_at == NOW
+    assert due.crop is None
     audit = db.scalars(select(AuditLog).where(AuditLog.action == "photo.auto_deleted")).one()
     assert audit.entity_id == str(due.id) and audit.data == {}
     # idempotent

@@ -360,6 +360,8 @@ const GENITIVE: Record<string, string> = {
   "create.photo.keep": "nameGen",
   "create.photo.next.story": "nameGen",
   "create.photo.next.activity": "nameGen",
+  "create.photo.editTitle": "nameGen", // «تعديل صورة {nameGen}»: PhotoStep passes nameCases
+  "create.photo.gone": "nameGen",
   "create.line.title": "nameLam",
   "create.line.magicPages": "nameLam",
   "create.line.next.photo": "nameLam",

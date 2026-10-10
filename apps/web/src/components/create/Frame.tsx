@@ -3,13 +3,15 @@
 import { useTranslations } from "next-intl";
 import { createContext, useContext, type ReactNode } from "react";
 import { MoonPhase } from "@/components/art/MoonPhase";
+import { Alert } from "@/components/ui/Alert";
 import { Link } from "@/i18n/navigation";
 
 /**
  * What the wizard tells every step's header: the product's title («دوسية ضحى», «كتاب ضحى») and the real
  * «الخطوة n من N» of this product's flow for this child (lib/flows.ts). The steps never count themselves.
+ * `notice`: a short note the flow shows at the top of the step (e.g. the photo's new position was saved).
  */
-export type FlowFrame = { title: string; n: number; total: number; close?: string };
+export type FlowFrame = { title: string; n: number; total: number; close?: string; notice?: string };
 export const FlowFrameContext = createContext<FlowFrame | null>(null);
 export const useFlowFrame = () => useContext(FlowFrameContext);
 
@@ -85,7 +87,10 @@ export function Frame({
           </div>
         )}
       </header>
-      <main className="flex flex-1 flex-col gap-6 px-4 pt-6 pb-36">{children}</main>
+      <main className="flex flex-1 flex-col gap-6 px-4 pt-6 pb-36">
+        {flow?.notice && <Alert tone="success">{flow.notice}</Alert>}
+        {children}
+      </main>
       {(back || footer) && (
         <div className="fixed inset-x-0 bottom-0 z-10 border-t border-line bg-paper/95 backdrop-blur-sm">
           <div className="mx-auto flex max-w-[640px] items-center gap-2 px-4 pt-3 pb-6">

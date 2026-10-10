@@ -32,6 +32,17 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "وجه الطفل بعيد قليلًا. اقتربوا أكثر ليظهر الوجه كبيرًا.",
         "Your child's face is a bit far. Please move closer so the face is larger.",
     ),
+    "face_cut": (
+        "جزء من الوجه خارج الإطار. حرّكوا الصورة أو صغّروها حتى يظهر الوجه كاملًا داخل الشكل البيضوي.",
+        "Part of the face is outside the frame. "
+        "Move the photo or zoom out so the whole face sits inside the oval.",
+    ),
+    "crop_small": (
+        "كبّرتم الصورة كثيرًا فلم تعد واضحة بما يكفي للرسم. "
+        "صغّروها قليلًا، أو اختاروا صورة يظهر فيها الوجه أكبر.",
+        "You've zoomed in a lot, so the photo isn't sharp enough to draw from. "
+        "Zoom out a little, or choose a photo where the face is bigger.",
+    ),
     "blurry": (
         "الصورة غير واضحة (مهزوزة). جرّبوا صورة أثبت.",
         "The photo looks blurry. Please try a steadier shot.",
@@ -86,13 +97,14 @@ def decode_image(data: bytes) -> np.ndarray | None:
     return img if img is not None and img.size else None
 
 
-def check_photo(data: bytes) -> PhotoCheck:
+def check_photo(data: bytes, min_side: int = MIN_SIDE_PX) -> PhotoCheck:
+    """`min_side`: the shortest side allowed (a framed cut-out of the photo has its own, `photo_crop`)."""
     img = decode_image(data)
     if img is None:
         return PhotoCheck(ok=False, issues=[PhotoIssue("unreadable")])
     h, w = img.shape[:2]
     metrics: dict[str, float] = {"width": w, "height": h}
-    if min(h, w) < MIN_SIDE_PX:
+    if min(h, w) < min_side:
         return PhotoCheck(ok=False, issues=[PhotoIssue("too_small")], metrics=metrics)
 
     scale = 1024 / max(h, w) if max(h, w) > 1024 else 1.0

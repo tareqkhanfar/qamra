@@ -2505,6 +2505,27 @@
       "next": {
         "story": "Next we draw {name}'s character in the style you choose, and we don't go on until you approve it.",
         "activity": "Next you choose the art style, then we draw {name}'s character, and we don't go on until you approve it."
+      },
+      "adjust": "Adjust position",
+      "editTitle": "Edit {name}'s photo",
+      "editBody": "Move, zoom or rotate the photo.",
+      "editRedraw": "We only draw again when you tap “Redraw”.",
+      "gone": "{gender, select, f {We deleted {name}'s original photo to protect her privacy. To change it, upload a new photo.} other {We deleted {name}'s original photo to protect his privacy. To change it, upload a new photo.}}",
+      "newPhoto": "Upload a new photo",
+      "editor": {
+        "hint": "Drag and zoom the photo until the face sits inside the oval.",
+        "area": "Photo position. Move it with the arrow keys; zoom in or out with + and −.",
+        "zoom": "Zoom",
+        "zoomIn": "Zoom in",
+        "zoomOut": "Zoom out",
+        "rotate": "Rotate",
+        "reset": "Reset",
+        "save": "Save position",
+        "cancel": "Cancel",
+        "saved": "The photo's new position is saved.",
+        "recheck": "Check the photo again",
+        "retry": "You can also move and zoom the photo so only your child's face is inside the oval, then check it again.",
+        "loading": "Loading the photo…"
       }
     },
     "line": {
@@ -2571,7 +2592,13 @@
         "story": "We move on to choosing the story, and draw you a free preview before you order.",
         "activity": "You review what we will print before we add it to the cart."
       },
-      "redrawRule": "Each child gets 3 free redraws, and any attempt that fails because of a fault on our side doesn't count."
+      "redrawRule": "Each child gets 3 free redraws, and any attempt that fails because of a fault on our side doesn't count.",
+      "editPhoto": "Edit the photo",
+      "photoSaved": {
+        "position": "The photo's new position is saved. We'll use it when you tap “Redraw”.",
+        "photo": "The new photo is saved. We'll draw from it when you tap “Redraw”.",
+        "noRedraws": "Your change to the photo is saved."
+      }
     },
     "story": {
       "title": "Where is {name} going?",

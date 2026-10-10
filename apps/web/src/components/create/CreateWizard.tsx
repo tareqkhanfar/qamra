@@ -72,7 +72,8 @@ type Query = Partial<
     | "companion"
     | "cstep"
     | "item"
-    | "plan",
+    | "plan"
+    | "edit",
     string | null
   >
 >;
@@ -167,6 +168,7 @@ export function CreateWizard() {
     cstep: params.get("cstep"),
     item: params.get("item"), // «أكملوا بيانات الطفل»: the cart line added in one tap that this flow fills
     plan: params.get("plan"), // the optional steps this flow pinned (lib/flows.ts), so the count holds
+    edit: params.get("edit"), // `photo`: the photo step opened from the character step («تعديل الصورة»)
   };
   const [children, setChildren] = useState<Child[] | null>(null);
   const [catalog, setCatalog] = useState<Catalog | null>(null);
@@ -186,6 +188,8 @@ export function CreateWizard() {
   const [family, setFamily] = useState<{ key: string; value: Family; known: boolean } | null>(null);
   // a failed load or a failed add: the error with a way to try again and a way back to the cart
   const [failure, setFailure] = useState<{ message: string; retry: () => void } | null>(null);
+  // back on the character step after «تعديل الصورة»: what was saved there (shown until the next drawing)
+  const [photoSaved, setPhotoSaved] = useState<{ character: string; change: "photo" | "position" } | null>(null);
 
   const go = useCallback(
     (patch: Query) => {
@@ -459,7 +463,14 @@ export function CreateWizard() {
     : shownName
       ? t("titles.story", nameCases(shownName))
       : t("newBook");
-  const frame = { title: frameTitle, ...count, close: q.item ? "/cart" : "/account" };
+  const editingPhoto = step === "photo" && q.edit === "photo" && !!shownCharacter;
+  const photoNotice =
+    step === "character" && photoSaved && photoSaved.character === shownCharacter?.id
+      ? (child?.redraws_left ?? 0) > 0
+        ? t(`character.photoSaved.${photoSaved.change}`)
+        : t("character.photoSaved.noRedraws")
+      : undefined;
+  const frame = { title: frameTitle, ...count, close: q.item ? "/cart" : "/account", notice: photoNotice };
 
   /** Back: the step before this one in this flow (or the child step). */
   function previous(from: Step): Step {
@@ -641,12 +652,19 @@ export function CreateWizard() {
       case "photo":
         return (
           <PhotoStep
+            // a new key when the step opens from the character step: it loads the kept photo afresh
+            key={editingPhoto ? "edit" : "photo"}
             child={child!}
             productLine={productLine}
-            back={() => go({ step: previous("photo") })}
-            onDone={(c) => {
+            edit={editingPhoto}
+            back={() => (editingPhoto ? go({ step: "character", edit: null }) : go({ step: previous("photo") }))}
+            onDone={(c, change) => {
               saveChild(c);
-              if (activity) go({ step: "style" });
+              if (editingPhoto) {
+                // back to the drawing: a new framing or photo is drawn only by the next «أعيدوا الرسم»
+                if (change) setPhotoSaved({ character: shownCharacter!.id, change });
+                go({ step: "character", edit: null });
+              } else if (activity) go({ step: "style" });
               else if (storyLine) void styleOrDraw(c, storyLine);
               else go({ step: "line" });
             }}
@@ -686,6 +704,7 @@ export function CreateWizard() {
             character={shownCharacter!}
             productLine={productLine}
             back={() => go({ step: "style" })}
+            onEditPhoto={() => go({ step: "photo", edit: "photo" })}
             onChange={onCharacter}
             onApproved={(c) => {
               setCharacter({ id: c.id, value: c });

@@ -27,6 +27,7 @@ export function CharacterStep({
   back,
   onChange,
   onApproved,
+  onEditPhoto,
 }: {
   child: Child;
   character: Character;
@@ -35,6 +36,7 @@ export function CharacterStep({
   back: () => void;
   onChange: (c: Character) => void;
   onApproved: (c: Character) => void;
+  onEditPhoto?: () => void; // «تعديل الصورة»: the photo's framing (or a new photo); never redraws by itself
 }) {
   const t = useTranslations("create");
   const te = useTranslations("errors");
@@ -129,6 +131,15 @@ export function CharacterStep({
             />
             <figcaption className="pb-1 text-center text-caption text-ink-muted">{t("character.views")}</figcaption>
           </figure>
+          {onEditPhoto && (
+            <button
+              type="button"
+              onClick={onEditPhoto}
+              className="-mt-3 min-h-11 self-center px-3 text-small font-semibold text-night-900 underline underline-offset-4"
+            >
+              {t("character.editPhoto")}
+            </button>
+          )}
           {left > 0 ? (
             <details className="rounded-2xl border border-line bg-paper-raised p-4">
               <summary className="cursor-pointer text-body font-semibold">
