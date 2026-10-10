@@ -87,6 +87,7 @@ from qamra_worker.jobs.books import (
     book_lang,
     book_prefix,
     page_key,
+    photo_bytes,
     render_files,
     resolved_settings,
 )
@@ -502,7 +503,7 @@ def portrait_source(
         )
         .order_by(ChildPhoto.created_at.desc())
     ).first()
-    data = get_bytes(storage, photo.storage_key if photo else None)
+    data = photo_bytes(storage, photo)  # as the parent framed it
     return (data, False) if data is not None else None
 
 

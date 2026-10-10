@@ -6,18 +6,20 @@ Every step needs a signed-in parent: a consent belongs to a guardian account, an
 that guardian. Original photos get their deletion time the moment the parent approves the character.
 """
 
+import asyncio
 import uuid
 from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal
 from typing import Annotated, Any, Literal
 
-from fastapi import APIRouter, File, Request, Response, UploadFile
+from fastapi import APIRouter, File, Form, Request, Response, UploadFile
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 from sqlalchemy import func, select
 
 from qamra_ai.pipeline.character_feedback import NOTE_MAX, clean_note
 from qamra_ai.pipeline.classic import classic_budget_usd
 from qamra_ai.pipeline.custom_story import CUSTOM_THEME, CustomBrief, screen_brief
+from qamra_ai.pipeline.photo_crop import MIN_FRACTION, PhotoCrop, frame_photo, image_size
 from qamra_ai.pipeline.theme import Theme
 from qamra_api import ratelimit, runtime_settings
 from qamra_api.classic import CLASSIC_JOB, live_template, resume_classic_draft
@@ -31,7 +33,7 @@ from qamra_api.store.cart import clean_personalization, ensure_cart
 from qamra_api.store.catalog import addon_problems, load_catalog
 from qamra_api.store.router import AddOnIn, CartOut, _own_item, cart_out, check_item
 from qamra_api.store.workbooks import clean_latin, needs_name_en
-from qamra_api.uploads import clean_image, read_upload, require_face
+from qamra_api.uploads import clean_image, read_upload, require_ok
 from qamra_core.db.models import (
     AuditLog,
     Book,
@@ -53,13 +55,14 @@ from qamra_core.db.models import (
 )
 from qamra_core.db.models import Theme as ThemeRow
 from qamra_core.db.store import ArtStyle, Cart, CartItem, CartStatus, CatalogProduct, OrderEvent, Variant
-from qamra_core.storage import child_prefix
+from qamra_core.storage import ObjectNotFound, ObjectStorage, child_prefix
 
 router = APIRouter(prefix="/api/create", tags=["create"])
 CONSENT_VERSION = "parent-2026-09"  # the consent text shown on step 2 (messages: create.consent)
 MAX_CHARACTERS = 4  # the first drawing and 3 free redraws per child
 PREVIEWS_PER_DAY = 3  # Magic previews cost real money: per parent, per day
 UPLOADS_PER_HOUR = 20
+FRAMINGS_PER_HOUR = 60  # each saved framing runs the photo check again
 LINE_PRODUCTS = {"classic": ("classic-book",), "magic": ("magic-book", "magic-custom-story")}
 CUSTOM_PRODUCT = "magic-custom-story"  # «قمرة سحري» with a custom story (Addendum 4 §7)
 
@@ -100,6 +103,29 @@ class DrawingOut(CharacterOut):
     style_name_en: str
 
 
+class Framing(BaseModel):
+    """The parent's framing of the photo (qamra_ai.pipeline.photo_crop): `x, y, w, h` fractions (0–1) of the
+    original, then `rotate` clockwise. `_framing_on` checks the frame's shape against the photo's size."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    x: float = Field(ge=0, le=1)
+    y: float = Field(ge=0, le=1)
+    w: float = Field(ge=MIN_FRACTION, le=1)
+    h: float = Field(ge=MIN_FRACTION, le=1)
+    rotate: Literal[0, 90, 180, 270] = 0
+
+    def crop(self) -> PhotoCrop:
+        return PhotoCrop(x=self.x, y=self.y, w=self.w, h=self.h, rotate=self.rotate)
+
+
+class PhotoOut(BaseModel):
+    """The child's kept photo, for the framing editor (its original: `GET /photos/{id}/image`)."""
+
+    id: uuid.UUID
+    crop: Framing | None  # None: the whole photo is used
+
+
 class ChildOut(BaseModel):
     id: uuid.UUID
     name: str
@@ -113,6 +139,7 @@ class ChildOut(BaseModel):
     redraws_left: int
     interests: list[str] = Field(default_factory=list)  # the likes, then the note (as saved)
     name_latin: str | None = None  # the name in English letters (activity books' English name page)
+    photo: PhotoOut | None = None  # the newest kept photo; None once deleted (24 h after the approval)
 
 
 def _character_out(c: Character) -> CharacterOut:
@@ -129,13 +156,17 @@ async def _child_out(db: SessionDep, child: Child) -> ChildOut:
     consent = (
         await db.execute(select(func.count()).select_from(Consent).where(Consent.child_id == child.id))
     ).scalar_one()
-    photos = (
-        await db.execute(
-            select(func.count())
-            .select_from(ChildPhoto)
-            .where(ChildPhoto.child_id == child.id, ChildPhoto.storage_key.is_not(None))
+    kept = (
+        (
+            await db.execute(
+                select(ChildPhoto)
+                .where(ChildPhoto.child_id == child.id, ChildPhoto.storage_key.is_not(None))
+                .order_by(ChildPhoto.created_at.desc(), ChildPhoto.id)
+            )
         )
-    ).scalar_one()
+        .scalars()
+        .all()
+    )
     characters = (
         (
             await db.execute(
@@ -145,6 +176,7 @@ async def _child_out(db: SessionDep, child: Child) -> ChildOut:
         .scalars()
         .all()
     )
+    framing = PhotoCrop.parse(kept[0].crop) if kept else None
     return ChildOut(
         id=child.id,
         name=child.first_name,
@@ -153,12 +185,17 @@ async def _child_out(db: SessionDep, child: Child) -> ChildOut:
         hijab=child.wears_hijab,
         glasses=child.wears_glasses,
         consent=bool(consent),
-        photos=int(photos),
+        photos=len(kept),
         # a drawing the cleanup removed is gone for the parent, but it still counts as one of the redraws
         characters=[_character_out(c) for c in characters if c.status != CharacterStatus.discarded],
         redraws_left=max(0, MAX_CHARACTERS - sum(c.status != CharacterStatus.failed for c in characters)),
         interests=list(child.interests or []),
         name_latin=child.name_latin,
+        photo=(
+            PhotoOut(id=kept[0].id, crop=Framing.model_validate(framing.as_dict()) if framing else None)
+            if kept
+            else None
+        ),
     )
 
 
@@ -404,7 +441,11 @@ async def upload_photos(
     redis: RedisDep,
     settings: SettingsDep,
     photos: Annotated[list[UploadFile], File()],
+    crop: Annotated[str | None, Form(max_length=300)] = None,
 ) -> ChildOut:
+    """The child's photo (CLAUDE.md §3.1). `crop`: the parent's framing as JSON (`Framing`, one photo only);
+    without it the photo is framed around the face found. The check runs on the framed cut-out, and the
+    original is kept with the framing as numbers, never a second, cropped copy."""
     child = await _my_child(db, user, child_id)
     if await ratelimit.hit(redis, f"rl:photos:{user.id}", 3600) > UPLOADS_PER_HOUR:
         raise ApiError("too_many_attempts", 429)
@@ -415,9 +456,17 @@ async def upload_photos(
         raise ApiError("consent_required", 409)
     if not 1 <= len(photos) <= 3:
         raise ApiError("invalid_input", 422, {"fields": ["photos"]})
+    framing = _parse_framing(crop) if crop is not None else None
+    if framing is not None and len(photos) != 1:
+        raise ApiError("invalid_input", 422, {"fields": ["crop"]})
     cleaned = [clean_image(await read_upload(p)) for p in photos]
+    checked: list[tuple[bytes, PhotoCrop | None, dict[str, float]]] = []
     for data in cleaned:
-        require_face(data)
+        if framing is not None:
+            _framing_on(data, framing)
+        check, kept = await asyncio.to_thread(frame_photo, data, framing)
+        require_ok(check)
+        checked.append((data, kept, check.metrics))
     now = datetime.now(UTC)
     for old in (
         await db.execute(
@@ -425,7 +474,7 @@ async def upload_photos(
         )
     ).scalars():
         storage.delete(str(old.storage_key))  # "change the photo": the next drawing uses the new one
-        old.storage_key, old.status, old.deleted_at = None, PhotoStatus.deleted, now
+        old.storage_key, old.status, old.deleted_at, old.crop = None, PhotoStatus.deleted, now, None
     approved = (
         await db.execute(
             select(func.count())
@@ -434,16 +483,95 @@ async def upload_photos(
         )
     ).scalar_one()
     retention = int((await runtime_settings.current(db, settings)).values["photo_retention_hours"])
-    for data in cleaned:
+    for data, kept, metrics in checked:
         photo = ChildPhoto(
             child_id=child.id,
             status=PhotoStatus.accepted,
             delete_after=now + timedelta(hours=retention) if approved else None,  # already approved once
+            crop=kept.as_dict() if kept else None,
+            check_metrics=metrics,
         )
         db.add(photo)
         await db.flush()
         photo.storage_key = f"children/{child.id}/photos/{photo.id}.jpg"
         storage.put(photo.storage_key, data, "image/jpeg")
+    await db.commit()
+    return await _child_out(db, child)
+
+
+def _parse_framing(raw: str) -> PhotoCrop:
+    try:
+        return Framing.model_validate_json(raw).crop()
+    except ValidationError as e:
+        raise ApiError("invalid_input", 422, {"fields": ["crop"]}) from e
+
+
+def _framing_on(data: bytes, framing: PhotoCrop) -> None:
+    """The framing must fit this photo with the frame's shape (a phone's rounding is fine)."""
+    try:
+        width, height = image_size(data)
+    except ValueError as e:
+        raise ApiError("invalid_photo", 422, {"reason": "unreadable"}) from e
+    if framing.problem(width, height) is not None:
+        raise ApiError("invalid_input", 422, {"fields": ["crop"]})
+
+
+async def _my_photo(db: SessionDep, user: CurrentUser, photo_id: uuid.UUID) -> tuple[ChildPhoto, Child]:
+    photo = await db.get(ChildPhoto, photo_id)
+    if photo is None:
+        raise ApiError("not_found", 404)
+    return photo, await _my_child(db, user, photo.child_id)
+
+
+def _original(storage: ObjectStorage, photo: ChildPhoto) -> bytes:
+    """The kept original, or `photo_gone` once the 24-hour job (or a new photo) deleted it."""
+    if not photo.storage_key:
+        raise ApiError("photo_gone", 410)
+    try:
+        return storage.get(photo.storage_key)
+    except ObjectNotFound as e:
+        raise ApiError("photo_gone", 410) from e
+
+
+@router.get("/photos/{photo_id}/image")
+async def photo_image(
+    photo_id: uuid.UUID, user: CurrentUser, db: SessionDep, storage: StorageDep
+) -> Response:
+    """The child's original photo, for the guardian's framing editor on another device or after a reload (the
+    device that uploaded it shows its own copy). Through the API with the parent's cookies, never cached, and
+    every view is in the audit log (never the image itself)."""
+    photo, _ = await _my_photo(db, user, photo_id)
+    data = _original(storage, photo)
+    db.add(
+        AuditLog(
+            actor_user_id=user.id, action="photo.viewed", entity_type="child_photo", entity_id=str(photo.id)
+        )
+    )
+    await db.commit()
+    return Response(data, media_type="image/jpeg", headers={"Cache-Control": "private, no-store"})
+
+
+@router.put("/photos/{photo_id}/crop")
+async def frame_photo_again(
+    photo_id: uuid.UUID,
+    body: Framing,
+    user: CurrentUser,
+    db: SessionDep,
+    storage: StorageDep,
+    redis: RedisDep,
+) -> ChildOut:
+    """A new framing of the kept photo (after the upload, or after the character is drawn). It is checked like
+    an upload; a framing that fails keeps the one saved before. It never redraws by itself: the next
+    «ارسم من جديد» uses it (`draw_character` sees the newer framing)."""
+    photo, child = await _my_photo(db, user, photo_id)
+    if await ratelimit.hit(redis, f"rl:photo-frames:{user.id}", 3600) > FRAMINGS_PER_HOUR:
+        raise ApiError("too_many_attempts", 429)
+    original = _original(storage, photo)
+    framing = body.crop()
+    _framing_on(original, framing)
+    check, _ = await asyncio.to_thread(frame_photo, original, framing)
+    require_ok(check)
+    photo.crop, photo.crop_saved_at, photo.check_metrics = framing.as_dict(), datetime.now(UTC), check.metrics
     await db.commit()
     return await _child_out(db, child)
 
@@ -502,17 +630,18 @@ async def draw_character(
             .scalars()
             .first()
         )
-        newer_photo = (
+        newer_photo = (  # a new photo, or the kept one framed again
             await db.execute(
-                select(func.max(ChildPhoto.created_at)).where(
+                select(func.max(func.coalesce(ChildPhoto.crop_saved_at, ChildPhoto.created_at))).where(
                     ChildPhoto.child_id == child.id, ChildPhoto.storage_key.is_not(None)
                 )
             )
         ).scalar_one()
+        # a new photo (or framing) since the approval: the parent wants a new drawing
         if approved is not None and (
             newer_photo is None or newer_photo <= (approved.approved_at or newer_photo)
         ):
-            return _character_out(approved)  # a new photo since then means the parent wants a new drawing
+            return _character_out(approved)
     photos = (
         await db.execute(
             select(func.count())

@@ -6,7 +6,7 @@ import io
 from fastapi import UploadFile
 from PIL import Image, ImageOps, UnidentifiedImageError
 
-from qamra_ai.pipeline.photo_check import check_photo
+from qamra_ai.pipeline.photo_check import PhotoCheck, check_photo
 from qamra_api.errors import ApiError
 
 MAX_UPLOAD = 10 * 1024 * 1024
@@ -39,7 +39,11 @@ async def read_upload(upload: UploadFile) -> bytes:
 
 def require_face(data: bytes) -> None:
     """One clear, front-facing child's face, or a friendly reason why not."""
-    check = check_photo(data)
+    require_ok(check_photo(data))
+
+
+def require_ok(check: PhotoCheck) -> None:
+    """A failed photo check as the friendly Arabic/English reason the photo step shows."""
     if not check.ok:
         issue = check.issues[0]
         raise ApiError(

@@ -36,7 +36,7 @@ from qamra_core.storage import ObjectStorage
 from qamra_pdf.arabic_names import genitive
 from qamra_worker import context
 from qamra_worker.ai import ai_settings, make_classic_runtime
-from qamra_worker.jobs.books import ai_child, resolved_settings
+from qamra_worker.jobs.books import ai_child, photo_bytes, resolved_settings
 from qamra_worker.jobs.classic import get_bytes, template_lang, template_theme
 from qamra_worker.settings import get_settings
 
@@ -100,7 +100,7 @@ def reference(db: Session, storage: ObjectStorage, child: Child, style: str) -> 
         )
         .order_by(ChildPhoto.created_at.desc())
     ).first()
-    if (data := get_bytes(storage, photo.storage_key if photo else None)) is not None:
+    if (data := photo_bytes(storage, photo)) is not None:  # as the parent framed it
         return "photo", data, "a photo of the child"
     return None
 
