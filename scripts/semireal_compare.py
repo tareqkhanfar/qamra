@@ -1,8 +1,12 @@
 r"""«شبه حقيقي»: the v2 guide against v3, side by side, on at most two image models (Tareq, 2026-10-10).
 
-The child is the invented sample child of the existing semi-realistic samples, تالا: a head-and-shoulders crop
-of her published watercolor character sheet, the very reference those samples were drawn from. Never a real
-child's photo. The grid:
+The reference is a PHOTO, as in a customer's order: the invented girl (no real child) of the site's AI-made
+lifestyle photo `apps/web/public/photos/hero-reading.jpg`, cropped here to her head and shoulders (box
+`PHOTO_BOX`, no other face), then sent through exactly what an upload goes through: `qamra_api.uploads.
+clean_image` (EXIF rotation, re-encoded JPEG, no metadata) and the photo check `check_photo` (one face, big
+enough, sharp, well lit). The script stops if the check fails. At draw time the fal adapter downscales and
+re-encodes it as it does for every order (`encode_ref`). `--ref tala` uses instead the reference of the site's
+current samples: a crop of the invented تالا's watercolor sheet (itself one cause of their cartoon look).
 
     rows      A  v2 · Nano Banana 2              (what the site shows today)
               B  v3 · Nano Banana 2              (the prompt fix alone, same price)
@@ -23,14 +27,15 @@ hero's rendering is compared on its own and no companion sheet is drawn. The act
 
 Prices are fal's published prices for the endpoint and resolution (fal.ai model pages, checked 2026-10-10),
 rounded up to the cent, never lower than `pricing.yaml`: Nano Banana 2 edit $0.08 at 1K; Nano Banana Pro edit
-$0.15 at 1K and 2K. Sheets are drawn at 1K on Nano Banana 2 and at 2K on Pro (the same price as 1K, and twice
-the pixels for the printed cut-out); pages at 1K. The cap covers every run of this script: what earlier runs
-logged (`semireal-v3:` rows) plus this run's reservations. A call that would pass it is skipped. Every paid
-call is appended to out/design-images/ledger.jsonl, a failed one too (fal may still bill it). A cell already
-drawn (its file exists) is reused, so a run can be repeated after a failure without paying twice.
+$0.15 at 1K and 2K (a reference image costs nothing extra). Sheets are drawn at 1K on Nano Banana 2 and at 2K
+on Pro (the same price as 1K, and twice the pixels for the printed cut-out); pages at 1K. The cap covers every
+run of this script: what earlier runs logged (`semireal-v3:` rows) plus this run's reservations. A call that
+would pass it is skipped. Every paid call is appended to out/design-images/ledger.jsonl, a failed one too (fal
+may still bill it). A cell already drawn (its file exists) is reused, so a run can be repeated after a failure
+without paying twice.
 
 The fal key comes from FAL_KEY (environment or the repo's .env); it is never printed. Output:
-out/semireal-compare/ (the cells, `grid.png`, `run.json`).
+out/semireal-compare/<photo|tala>/ (the reference as sent, the cells, `grid.png`, `run.json`).
 """
 
 from __future__ import annotations
@@ -59,17 +64,25 @@ from qamra_ai.pipeline.character import character_request
 from qamra_ai.pipeline.layout import plan_book
 from qamra_ai.pipeline.models import Child
 from qamra_ai.pipeline.pages import BookContext, page_request
+from qamra_ai.pipeline.photo_check import PhotoCheck, check_photo
 from qamra_ai.pipeline.runtime import Runtime
 from qamra_ai.pipeline.style import history_guide, house_style
 from qamra_ai.pipeline.theme import ArtStyle, art_style, load_style, load_theme
+from qamra_api.uploads import clean_image
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "out" / "semireal-compare"
+BASE = ROOT / "out" / "semireal-compare"
 LEDGER = ROOT / "out" / "design-images" / "ledger.jsonl"
 PREFIX = "semireal-v3"
-# تالا's published watercolor sheet: the source of the v2 samples' reference (scripts/style_samples.py)
-REF_SHEET = ROOT / "out" / "style-samples" / "src" / "watercolor-tala-sheet.png"
-TALA = Child(name="تالا", gender="f", age=5)
+RefKind = Literal["photo", "tala"]
+# The site's AI-made lifestyle photo (an invented girl reading with her mother). The box is her head and
+# shoulders, without the mother's face: 512 × 512, the photo check's minimum side.
+PHOTO = ROOT / "apps" / "web" / "public" / "photos" / "hero-reading.jpg"
+PHOTO_BOX = (1175, 560, 1687, 1072)
+# تالا's published watercolor sheet: the source of the current samples' reference (scripts/style_samples.py)
+TALA_SHEET = ROOT / "out" / "style-samples" / "src" / "watercolor-tala-sheet.png"
+# A girl of about five in both references. No name ever reaches an image prompt.
+GIRL = Child(name="تالا", gender="f", age=5)
 THEME, BEAT, SEED = "new-sibling", 13, 7  # the site's «smile» sample page, and the samples' seed
 
 NB2, PRO = "fal-ai/nano-banana-2", "fal-ai/nano-banana-pro"
@@ -101,6 +114,10 @@ class Row:
         sheet = f"sheet {SHORT[self.sheet_model]}" + (f" (row {self.sheet_from})" if self.sheet_from else "")
         return f"{self.key} · v{self.version} · {sheet} · page {SHORT[self.page_model]}"
 
+    @property
+    def sheet_key(self) -> str:
+        return self.sheet_from or self.key
+
 
 ROWS = (
     Row("A", 2, NB2, NB2),
@@ -111,8 +128,17 @@ ROWS = (
 )
 
 
+def folder(kind: RefKind) -> Path:
+    return BASE / kind
+
+
+def cell(kind: RefKind, key: str, item: Literal["sheet", "page"]) -> Path:
+    return folder(kind) / f"{key}-{item}.png"
+
+
 @dataclass(frozen=True)
 class Call:
+    kind: RefKind
     row: Row
     item: Literal["sheet", "page"]
     model: str
@@ -125,11 +151,11 @@ class Call:
 
     @property
     def id(self) -> str:
-        return f"{PREFIX}:{self.row.key}:{self.item}"
+        return f"{PREFIX}:{self.kind}:{self.row.key}:{self.item}"
 
     @property
     def file(self) -> Path:
-        return OUT / f"{self.row.key}-{self.item}.png"
+        return cell(self.kind, self.row.key, self.item)
 
 
 def style_of(version: int) -> ArtStyle:
@@ -148,8 +174,24 @@ def price(endpoint: str, resolution: str) -> float:
     return math.ceil(max(real, listed) * 100 - 1e-9) / 100
 
 
-def reference(sheet: Path) -> bytes:
-    """A head-and-shoulders crop of the front view of an invented child's character sheet, as a PNG."""
+def photo_reference(photo: Path, box: tuple[int, int, int, int]) -> tuple[bytes, PhotoCheck]:
+    """The crop as a parent would upload it, then exactly what the API stores for an order: `clean_image`,
+    and the photo check that must pass (`require_face`). Stops with the check's reason otherwise."""
+    with Image.open(photo) as src:
+        crop = src.convert("RGB").crop(box)
+    upload = io.BytesIO()
+    crop.save(upload, format="PNG")  # lossless: the only JPEG step is the API's own
+    stored = clean_image(upload.getvalue())
+    check = check_photo(stored)
+    if not check.ok:
+        reasons = ", ".join(f"{i.code} ({i.message_en})" for i in check.issues)
+        raise SystemExit(f"the reference photo fails the upload check: {reasons} {check.metrics}")
+    return stored, check
+
+
+def tala_reference(sheet: Path) -> bytes:
+    """A head-and-shoulders crop of the front view of تالا's character sheet, as a PNG (the reference the
+    current semi-realistic samples were drawn from)."""
     with Image.open(sheet) as src:
         img = src.convert("RGB")
     paper = paper_color(img)
@@ -171,13 +213,13 @@ def _rt() -> Runtime:
 
 
 def sheet_request(row: Row, ref: bytes) -> ImageRequest:
-    return character_request(TALA, [ref], style_of(row.version), resolution=SHEET_RES[row.sheet_model])
+    return character_request(GIRL, [ref], style_of(row.version), resolution=SHEET_RES[row.sheet_model])
 
 
 def page_req(row: Row, sheet: bytes) -> ImageRequest:
     theme, style = load_theme(THEME), style_of(row.version)
     ctx = BookContext(
-        child=TALA,
+        child=GIRL,
         lang="ar",
         theme=theme,
         style=style,
@@ -201,33 +243,23 @@ def provider(model: str, key: str | None) -> FalImageProvider:
     return FalImageProvider(key, model) if key else FalImageProvider(None, model, client=_NoNetwork())
 
 
-def describe(row: Row, item: Literal["sheet", "page"], req: ImageRequest, model: str) -> Call:
+def describe(kind: RefKind, row: Row, item: Literal["sheet", "page"], req: ImageRequest, model: str) -> Call:
     endpoint, args, _ = provider(model, None).build(req)
     res = str(args.get("resolution", req.resolution))
-    return Call(
-        row,
-        item,
-        model,
-        endpoint,
-        res,
-        req.aspect,
-        [r.label for r in req.refs],
-        price(endpoint, res),
-        req.prompt,
-    )
+    refs = [r.label for r in req.refs]
+    return Call(kind, row, item, model, endpoint, res, req.aspect, refs, price(endpoint, res), req.prompt)
 
 
-def plan(rows: list[Row], ref: bytes) -> list[Call]:
+def plan(rows: list[Row], ref: bytes, kind: RefKind) -> list[Call]:
     """Every paid call, in order. A page's hero reference is its row's sheet; in a dry run (no sheet yet)
-    the reference crop stands in for it, which changes nothing in the prompt or the price."""
+    the reference stands in for it, which changes nothing in the prompt or the price."""
     calls: list[Call] = []
     for row in rows:
         if row.sheet_from is None:
-            calls.append(describe(row, "sheet", sheet_request(row, ref), row.sheet_model))
-        sheet_row = row.sheet_from or row.key
-        sheet_file = OUT / f"{sheet_row}-sheet.png"
+            calls.append(describe(kind, row, "sheet", sheet_request(row, ref), row.sheet_model))
+        sheet_file = cell(kind, row.sheet_key, "sheet")
         sheet = sheet_file.read_bytes() if sheet_file.exists() else ref
-        calls.append(describe(row, "page", page_req(row, sheet), row.page_model))
+        calls.append(describe(kind, row, "page", page_req(row, sheet), row.page_model))
     return calls
 
 
@@ -259,12 +291,12 @@ def fal_key() -> str:
 
 def print_plan(calls: list[Call], earlier: float, cap: float | None) -> None:
     total = 0.0
-    print(f"{'call':<20} {'endpoint':<28} {'res':<4} {'aspect':<6} {'refs':<4} {'usd':>6} {'total':>6}")
+    print(f"{'call':<26} {'endpoint':<28} {'res':<4} {'aspect':<6} {'refs':<4} {'usd':>6} {'total':>6}")
     for c in calls:
         cached = c.file.exists()
         total += 0.0 if cached else c.usd
         cost = "cached" if cached else f"{c.usd:.2f}"
-        where = f"{c.id:<20} {c.endpoint:<28} {c.resolution:<4} {c.aspect:<6} {len(c.refs):<4}"
+        where = f"{c.id:<26} {c.endpoint:<28} {c.resolution:<4} {c.aspect:<6} {len(c.refs):<4}"
         print(f"{where} {cost:>6} {total:>6.2f}")
     print(f"{len(calls)} paid calls, ${total:.2f} to spend; this script's earlier runs logged ${earlier:.2f}")
     if cap is not None:
@@ -273,21 +305,22 @@ def print_plan(calls: list[Call], earlier: float, cap: float | None) -> None:
 
 
 def write_prompts(calls: list[Call]) -> None:
-    folder = OUT / "prompts"
-    folder.mkdir(parents=True, exist_ok=True)
     for c in calls:
+        prompts = folder(c.kind) / "prompts"
+        prompts.mkdir(parents=True, exist_ok=True)
         refs = "\n".join(f"Image {i + 1}: {r}" for i, r in enumerate(c.refs))
-        (folder / f"{c.row.key}-{c.item}.txt").write_text(f"{refs}\n\n{c.prompt}\n", encoding="utf-8")
-    print(f"prompts: {folder.relative_to(ROOT)}")
+        (prompts / f"{c.row.key}-{c.item}.txt").write_text(f"{refs}\n\n{c.prompt}\n", encoding="utf-8")
+    if calls:
+        print(f"prompts: {(folder(calls[0].kind) / 'prompts').relative_to(ROOT)}")
 
 
-async def draw(rows: list[Row], ref: bytes, cap: float) -> list[dict[str, Any]]:
+async def draw(rows: list[Row], ref: bytes, kind: RefKind, cap: float) -> list[dict[str, Any]]:
     key = fal_key()
     providers = {m: provider(m, key) for m in (NB2, PRO)}
     spent = logged()
     results: list[dict[str, Any]] = []
     for row in rows:  # one call at a time: the page needs its row's sheet
-        for c in plan([row], ref):
+        for c in plan([row], ref, kind):
             if c.file.exists():
                 results.append({"id": c.id, "status": "cached", "file": str(c.file.relative_to(ROOT))})
                 continue
@@ -295,7 +328,7 @@ async def draw(rows: list[Row], ref: bytes, cap: float) -> list[dict[str, Any]]:
                 print(f"✗ {c.id}: SKIPPED, ${spent:.2f} + ${c.usd:.2f} would pass the ${cap:.2f} cap")
                 results.append({"id": c.id, "status": "skipped_cap"})
                 continue
-            sheet_file = OUT / f"{row.sheet_from or row.key}-sheet.png"
+            sheet_file = cell(kind, row.sheet_key, "sheet")
             if c.item == "page" and not sheet_file.exists():
                 print(f"✗ {c.id}: SKIPPED, no sheet (its sheet call failed or was skipped)")
                 results.append({"id": c.id, "status": "skipped_no_sheet"})
@@ -311,7 +344,7 @@ async def draw(rows: list[Row], ref: bytes, cap: float) -> list[dict[str, Any]]:
                 print(f"✗ {c.id}: {type(e).__name__}: {str(e)[:160]}")
                 results.append({"id": c.id, "status": "failed", "error": type(e).__name__})
                 continue
-            OUT.mkdir(parents=True, exist_ok=True)
+            c.file.parent.mkdir(parents=True, exist_ok=True)
             c.file.write_bytes(image.data)
             rel = str(c.file.relative_to(ROOT))
             ledger_row({**base, "file": rel, "s": round(time.time() - t, 1)})
@@ -325,20 +358,20 @@ async def draw(rows: list[Row], ref: bytes, cap: float) -> list[dict[str, Any]]:
     return results
 
 
-def figures(rows: list[Row]) -> dict[str, Path]:
+def figures(rows: list[Row], kind: RefKind) -> dict[str, Path]:
     """The activity-book figure of every drawn sheet: its front view cut out exactly as the books do."""
     out: dict[str, Path] = {}
     for row in rows:
-        sheet = OUT / f"{row.sheet_from or row.key}-sheet.png"
+        sheet = cell(kind, row.sheet_key, "sheet")
         if sheet.exists():
-            path = front_view(sheet, OUT / "figures")
+            path = front_view(sheet, folder(kind) / "figures")
             out[row.key] = path
             how = "FRAMED PORTRAIT (the cut-out failed)" if is_fallback(path) else "cut out"
             print(f"  {row.key} figure: {how}")
     return out
 
 
-def grid(rows: list[Row], figs: dict[str, Path]) -> Path:
+def grid(rows: list[Row], figs: dict[str, Path], kind: RefKind) -> Path:
     cell_h, label_w, gap = 420, 300, 12
     widths = (round(cell_h * 3 / 2), cell_h, round(cell_h * 0.62))
     width = label_w + sum(widths) + gap * 4
@@ -347,15 +380,10 @@ def grid(rows: list[Row], figs: dict[str, Path]) -> Path:
     font = ImageFont.load_default(size=18)
     for i, row in enumerate(rows):
         y = gap + i * (cell_h + gap)
-        pen.multiline_text(
-            (gap, y + 8), row.label.replace(" · ", "\n"), fill=(30, 30, 50), font=font, spacing=6
-        )
+        label = row.label.replace(" · ", "\n") + f"\nreference: {kind}"
+        pen.multiline_text((gap, y + 8), label, fill=(30, 30, 50), font=font, spacing=6)
         x = label_w + gap
-        sources = (
-            OUT / f"{row.sheet_from or row.key}-sheet.png",
-            OUT / f"{row.key}-page.png",
-            figs.get(row.key),
-        )
+        sources = (cell(kind, row.sheet_key, "sheet"), cell(kind, row.key, "page"), figs.get(row.key))
         for w, src in zip(widths, sources, strict=True):
             if src is not None and src.exists():
                 with Image.open(src) as im:
@@ -367,7 +395,7 @@ def grid(rows: list[Row], figs: dict[str, Path]) -> Path:
             else:
                 pen.rectangle((x, y, x + w, y + cell_h), outline=(180, 170, 150))
             x += w + gap
-    path = OUT / "grid.png"
+    path = folder(kind) / "grid.png"
     canvas.save(path)
     return path
 
@@ -377,7 +405,15 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--run", action="store_true", help="draw on fal (without it: a dry run, no spend)")
     p.add_argument("--max-usd", type=float, help="hard cap in USD for every run of this script together")
     p.add_argument("--rows", default="A,B,C,D,E", help="which rows (default: all five)")
-    p.add_argument("--ref-sheet", type=Path, default=REF_SHEET, help="the invented sample child's sheet")
+    p.add_argument(
+        "--ref",
+        choices=["photo", "tala"],
+        default="photo",
+        help="photo: the hero photo's invented girl, as an order sends it (default); tala: the current "
+        "samples' watercolor-sheet crop",
+    )
+    p.add_argument("--photo", type=Path, default=PHOTO, help="the AI-made photo of an invented child")
+    p.add_argument("--tala-sheet", type=Path, default=TALA_SHEET, help="تالا's published watercolor sheet")
     p.add_argument("--show-prompts", action="store_true", help="write every prompt to out/…/prompts/")
     args = p.parse_args(argv)
     if args.run and args.max_usd is None:
@@ -385,29 +421,54 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     return args
 
 
+def reference(args: argparse.Namespace) -> bytes:
+    kind: RefKind = args.ref
+    source: Path = args.photo if kind == "photo" else args.tala_sheet
+    if not source.exists():
+        raise SystemExit(f"{source} not found")
+    out = folder(kind)
+    out.mkdir(parents=True, exist_ok=True)
+    if kind == "tala":
+        ref = tala_reference(source)
+        (out / "reference.png").write_bytes(ref)
+        saved = (out / "reference.png").relative_to(ROOT)
+        print(f"reference: تالا's watercolor sheet crop ({source.name}) → {saved}")
+        return ref
+    ref, check = photo_reference(source, PHOTO_BOX)
+    (out / "reference.jpg").write_bytes(ref)
+    m = check.metrics
+    print(
+        f"reference: {source.name} box {PHOTO_BOX}, as the API stores an upload "
+        f"({len(ref) // 1024} KB JPEG); "
+        f"photo check ok: {int(m['width'])}×{int(m['height'])}, {int(m['faces'])} face, score "
+        f"{m['face_score']}, face {m['face_ratio']:.0%} of the width, sharpness {m['sharpness']}, "
+        f"brightness {m['brightness']}"
+    )
+    return ref
+
+
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
+    kind: RefKind = args.ref
     keys = [k.strip().upper() for k in args.rows.split(",") if k.strip()]
     rows = [r for r in ROWS if r.key in keys]
     needed = {r.sheet_from for r in rows if r.sheet_from and r.sheet_from not in keys}
-    if needed and not all((OUT / f"{k}-sheet.png").exists() for k in needed):
+    if needed and not all(cell(kind, k, "sheet").exists() for k in needed):
         raise SystemExit(f"rows {keys} reuse the sheet of rows {sorted(needed)}: add them or draw them first")
-    if not args.ref_sheet.exists():
-        raise SystemExit(f"{args.ref_sheet} not found (the invented sample child's published sheet)")
-    ref = reference(args.ref_sheet)
-    OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / "ref-tala-head.png").write_bytes(ref)
-    calls = plan(rows, ref)
+    ref = reference(args)
+    calls = plan(rows, ref, kind)
     print_plan(calls, logged(), args.max_usd)
     if args.show_prompts or args.run:
         write_prompts(calls)
     if not args.run:
         print("dry run: nothing was sent (add --run --max-usd X to draw)")
         return 0
-    results = asyncio.run(draw(rows, ref, args.max_usd))
-    figs = figures(rows)
-    print(f"grid: {grid(rows, figs).relative_to(ROOT)}")
-    (OUT / "run.json").write_text(json.dumps(results, indent=2, ensure_ascii=False), encoding="utf-8")
+    results = asyncio.run(draw(rows, ref, kind, args.max_usd))
+    figs = figures(rows, kind)
+    print(f"grid: {grid(rows, figs, kind).relative_to(ROOT)}")
+    (folder(kind) / "run.json").write_text(
+        json.dumps(results, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
     return 0
 
 

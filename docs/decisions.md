@@ -845,9 +845,16 @@ code and a comparison script are ready, and the comparison runs only with his bu
   - If the grid confirms it, the smallest change is to let a guide ask for the cover model on its sheet.
 - **The comparison** (`scripts/semireal_compare.py`, dry run by default): rows v2/v3 × Nano Banana 2/Pro, plus
   v3 with the Pro sheet and a Nano Banana 2 page; columns sheet, story page (new-sibling beat 13, without the
-  companion), activity cut-out (local). Reference: the same تالا crop the v2 samples used. 9 calls, **$1.00**
-  at fal's prices rounded up to the cent; `--max-usd` caps every run together, failed calls are logged at full
-  price, and finished cells are reused.
+  companion), activity cut-out (local). 9 calls, **$1.00** at fal's prices rounded up to the cent;
+  `--max-usd` caps every run together, failed calls are logged at full price, and finished cells are reused.
+  - **The reference is a photo, as in an order** (not تالا's watercolor crop, itself one cause of the cartoon
+    look): the invented girl of the site's AI-made photo `photos/hero-reading.jpg`, head and shoulders, box
+    (1175, 560, 1687, 1072). It goes through what an upload goes through (`clean_image`, then `check_photo`:
+    one face, score 0.94, face 30% of the width), and the fal adapter re-encodes it as for every order.
+  - The first box asked for, (1175, 560, 1625, 1060), is 450 × 500 px: the upload check refuses it
+    (`too_small`, the minimum side is 512). The same corner at 512 × 512 keeps the mother's face out and
+    passes. The open book's Arabic title is in the crop's lower edge; the prompts forbid copying text.
+  - `--ref tala` keeps the current samples' reference, for the same grid on what the site shows today.
 - **Left as they are** (shared with other styles, or not sold in this style): the page template's
   "picture-book page", the house Composition's "stage it like a picture book", the sheet template's first line
   (the v3 sheet line follows it), the Classic portrait prompt (Classic is not sold in this style), and the page
