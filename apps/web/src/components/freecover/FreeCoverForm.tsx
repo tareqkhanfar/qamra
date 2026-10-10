@@ -72,7 +72,7 @@ export function FreeCoverForm({ initialTheme }: { initialTheme: string | null })
     if (!child && (!name.trim() || !gender)) return setError(t("missing"));
     if (needsPhoto && !photo) return setError(t("missingPhoto"));
     if (needsConsent && !consent) return setError(tc("consent.required"));
-    if (!chosen) return setError(t("noStory"));
+    if (!chosen) return setError(t("noStory", { gender: child?.gender ?? gender ?? "other" }));
     setBusy(true);
     const fail = (r: { error: Parameters<typeof errorText>[0]; status: number }) => {
       setBusy(false);
@@ -202,7 +202,7 @@ export function FreeCoverForm({ initialTheme }: { initialTheme: string | null })
             ))}
           </div>
         ) : (
-          <Alert>{t("noStory")}</Alert>
+          <Alert>{t("noStory", { gender: child?.gender ?? gender ?? "other" })}</Alert>
         )}
       </fieldset>
 

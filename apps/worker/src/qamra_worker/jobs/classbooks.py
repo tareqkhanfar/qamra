@@ -563,6 +563,7 @@ async def render_files(job: ClassJob) -> dict[str, Any]:
                     cover_image=_write(d / f"cover-{i}.jpg", storage.get(covers[c])),
                     portrait=_write(d / f"portrait-{i}.jpg", _portrait(job.kid(c).sheet, spec)),
                     portrait_line=job.template.portrait_line(lang, i, _gender(child), child.first_name),
+                    portrait_title=job.template.portrait_title(lang, _gender(child)),  # «هٰذِهِ أَنا» for a girl
                     companion=_write(
                         d / f"companion-{i}.jpg",
                         fit_exact(
@@ -582,7 +583,7 @@ async def render_files(job: ClassJob) -> dict[str, Any]:
             title=job.template.title(lang, job.classroom.name),
             cover_subtitle=job.template.cover_subtitle(lang, job.classroom.name),
             blurb=job.template.blurb(lang, job.classroom.name),
-            portrait_title=job.template.portrait_title_ar if lang == "ar" else job.template.portrait_title_en,
+            portrait_title=job.template.portrait_title(lang, "m"),  # each copy carries its own (`ChildCopy`)
             group_title=job.template.group_title(lang, job.classroom.name),
             school=_school_page(job, d),
             pages=story,

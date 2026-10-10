@@ -32,7 +32,7 @@ def test_the_graduation_template_loads_and_names_the_children() -> None:
     text = t.page_text("arrive", "ar", ["يوسف", "جنى", "ليان"], "صف الفراشات")
     assert "يوسف وجنى وليان" in text and "{" not in text
     assert "أَطْفالُ صف الفراشات" in t.page_text("arrive", "ar", [], "صف الفراشات")  # Classic: no names
-    assert t.page_text("caps#2", "en", ["Yusuf"], "Stars").endswith("Yusuf.")  # a repeat reuses the scene
+    assert t.page_text("caps#2", "en", ["Yusuf"], "Stars").endswith("Yusuf!")  # a repeat reuses the scene
     assert "نَجْمَةٌ" in t.portrait_line("ar", 0, "f", "جنى") and "نَجْمٌ" in t.portrait_line("ar", 0, "m", "آدم")
     assert join_names(["Yusuf", "Jana", "Layan"], "en") == "Yusuf, Jana and Layan"
 

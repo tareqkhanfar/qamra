@@ -129,6 +129,12 @@ class ClassTemplate(BaseModel):
         who = join_names(names, lang) if names else everyone
         return text.replace("{class}", class_name).replace("{names}", who)
 
+    def portrait_title(self, lang: Lang, gender: Gender) -> str:
+        """The heading over a child's own portrait, in the child's gender: «هٰذا أَنا» / «هٰذِهِ أَنا»."""
+        return render_template(
+            self.portrait_title_ar if lang == "ar" else self.portrait_title_en, gender, "", ""
+        )
+
     def portrait_line(self, lang: Lang, index: int, gender: Gender, name: str) -> str:
         lines = self.portrait_lines_ar if lang == "ar" else self.portrait_lines_en
         return render_template(lines[index % len(lines)], gender, name, "")

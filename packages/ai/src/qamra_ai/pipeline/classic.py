@@ -619,7 +619,7 @@ async def check_texts(
         review["parent_message"] = parent_message
     return await rt.ask(
         step="story:safety",
-        system=prompts.render("story_safety", version=2, gender=child.gender),
+        system=prompts.render("story_safety", version=3, gender=child.gender),
         user=[json.dumps(review, ensure_ascii=False)],
         schema=SafetyVerdict,
         fast=True,

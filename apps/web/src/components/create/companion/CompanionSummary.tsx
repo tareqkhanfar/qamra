@@ -62,7 +62,9 @@ export function CompanionSummary({
       </div>
       <div className="flex grow flex-col gap-0.5">
         <strong className="text-body">
-          {shown ? t("with", { name: shown.name }) : t("none", { ...nameCases(child.name), gender: child.gender })}
+          {shown
+            ? t("with", { name: shown.name, gender: child.gender })
+            : t("none", { ...nameCases(child.name), gender: child.gender })}
         </strong>
         {shown && price && <span className="text-caption text-ink-muted">{price}</span>}
       </div>

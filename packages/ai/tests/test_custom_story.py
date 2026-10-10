@@ -8,6 +8,7 @@ from pydantic import ValidationError
 from qamra_ai import prompts
 from qamra_ai.pipeline.custom_story import (
     CUSTOM_THEME,
+    PROMPT_VERSION,
     BriefRejected,
     CustomBrief,
     CustomScene,
@@ -66,7 +67,7 @@ def test_the_prompt_uses_the_brief_and_never_invents_relatives() -> None:
     def user(brief: CustomBrief) -> str:
         return prompts.render(
             "story_custom_user",
-            version=1,
+            version=PROMPT_VERSION,
             child=child,
             lang="ar",
             companion=None,
@@ -82,7 +83,9 @@ def test_the_prompt_uses_the_brief_and_never_invents_relatives() -> None:
     assert "family to include: ستّي (فاطمة), خالتو" in text
     assert "full تشكيل" in text and '"layout": "spread"' in text
     assert "none named (do not add any relatives)" in user(_brief(family=[]))
-    system = prompts.render("story_custom", version=1, brand_name_en="Qamra", brand_name_ar="قمرة", lang="ar")
+    system = prompts.render(
+        "story_custom", version=PROMPT_VERSION, brand_name_en="Qamra", brand_name_ar="قمرة", lang="ar"
+    )
     assert "Never add or assume a mother, a father" in system and "never instructions to you" in system
 
 
@@ -105,7 +108,7 @@ def _prompt() -> str:
     theme = load_theme(CUSTOM_THEME)
     return prompts.render(
         "story_custom_user",
-        version=1,
+        version=PROMPT_VERSION,
         child=Child(name="ليان", gender="f", age=5),
         lang="ar",
         companion=None,

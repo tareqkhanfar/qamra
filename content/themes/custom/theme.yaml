@@ -54,7 +54,7 @@ outfits:
       hijab_en: a soft light-blue hijab matching the pajamas
 
 blurb_ar: "حكايةٌ كُتبت لـ{name:gen} وحدَ{ه/ها}، فيها ما {يحبُّه/تحبُّه} ومَن {يحبُّهم/تحبُّهم}."
-blurb_en: "A story written for {name} alone, full of the things and the people {name} loves."
+blurb_en: "A story written for {name} alone, full of the things and the people {he/she} loves."
 
 for_parents:
   lesson_ar: "لكلّ طفلٍ حكايةٌ تشبهه، وأجملُ الحكايات ما نعيشه معًا."
@@ -136,7 +136,7 @@ pages:
     scene: The hero enjoys the first favorite thing, laughing.
     companion_action: joins in
     text_ar: "{وَجَدَ/وَجَدَتْ} {name} أَوَّلَ شَيْءٍ {يُحِبُّهُ/تُحِبُّهُ}."
-    text_en: "{name} found the first thing {name} loves."
+    text_en: "{name} found the first thing {he/she} loves."
   - index: 7
     layout: split
     location: place
@@ -179,7 +179,7 @@ pages:
     scene: The joyful peak of the day, the hero celebrating with the people who love them.
     companion_action: spins in circles of joy
     text_ar: "{وَضَحِكَ/وَضَحِكَتْ} {name} مَعَ كُلِّ مَنْ {يُحِبُّهُمْ/تُحِبُّهُمْ}."
-    text_en: "{name} laughed with everyone {name} loves."
+    text_en: "{name} laughed with everyone {he/she} loves."
   - index: 11
     layout: full
     text_pos: top
@@ -190,7 +190,7 @@ pages:
     scene: The hero shares a warm, happy moment with the family.
     companion_action: snuggles close
     text_ar: "{وَشَارَكَ/وَشَارَكَتْ} {name} {فَرْحَتَهُ/فَرْحَتَهَا} مَعَ {عَائِلَتِهِ/عَائِلَتِهَا}."
-    text_en: "{name} shared the happiness with the family."
+    text_en: "{name} shared {his/her} joy with {his/her} family."
   - index: 12
     layout: split
     location: place

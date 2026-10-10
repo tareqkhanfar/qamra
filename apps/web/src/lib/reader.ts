@@ -21,7 +21,7 @@ export type OwnerBook = ReaderBook & {
   share: Share | null;
 };
 
-export type SharedBook = ReaderBook & { expires_at: string | null };
+export type SharedBook = ReaderBook & { expires_at: string | null; hero_gender: "m" | "f" | null };
 
 export const SHARE_DAYS = [7, 30, 90] as const;
 

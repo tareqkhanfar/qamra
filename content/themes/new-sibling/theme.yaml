@@ -117,15 +117,16 @@ cast:
       same border when awake on a mat or in a bouncer)
 
 blurb_ar: "خبرٌ سعيد، وانتظارٌ طويل، ثمّ ضيفٌ صغير يغيّر كلّ شيء. حكاية {name:gen} {الأخِ الكبير/الأختِ الكبيرة}، وقلبٍ يتّسع للجميع."
-blurb_en: "Happy news, a long wait, and then a little guest who changes everything. The story of {name}, the proud big one, and a heart with room for everyone."
+blurb_en: "Happy news, a long wait, and then a little guest who changes everything. The story of {name}, the proud big {brother/sister}, and a heart with room for everyone."
 
 for_parents:
   lesson_ar: >-
-    وصولُ مولودٍ جديد يغيّر إيقاع البيت، وقد {يشعرُ/تشعرُ} {name} بالغيرة أو الوحدة. تطمئن الحكاية أنّ
-    {مكانَه/مكانَها} في القلب لا يتغيّر، {وتدعوه ليكونَ الأخَ الكبير/وتدعوها لتكونَ الأختَ الكبيرة} بفخر.
+    وصولُ مولودٍ جديد يغيّر إيقاع البيت، وقد {يشعرُ/تشعرُ} {name} بالغيرة أو الوحدة. {تُطَمْئِنُهُ/تُطَمْئِنُها} الحكاية
+    بأنّ {مكانَه/مكانَها} في القلب لا يتغيّر، {وتدعوه ليكونَ الأخَ الكبير/وتدعوها لتكونَ الأختَ الكبيرة} بفخر.
   lesson_en: >-
     A new baby changes the rhythm of home, and {name} may feel jealous or left out. This story reassures
-    that their place in the family's heart never changes, and invites them to be the proud big sibling.
+    {him/her} that {his/her} place in the family's heart never changes, and invites {him/her} to be the proud big
+    {brother/sister}.
   questions_ar:
     - "كيف {تستطيعُ أن تساعدَ/تستطيعين أن تساعدي} ماما مع الضيف الصغير؟"
     - "ماذا {تحبُّ أن تعلّمَ/تحبّين أن تعلّمي} الضيف الصغير عندما يكبر؟"

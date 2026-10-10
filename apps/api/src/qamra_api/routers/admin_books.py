@@ -383,6 +383,8 @@ class BookDetail(BaseModel):
     text_originals: dict[str, str | None]  # the generated words of each story field, for «استرجاع»
     text_edits: list[TextEditOut]  # newest first
     class_pages: list[ClassPageOut]  # a class copy's shared story words (read-only)
+    # «تحقق من التذكير والتأنيث»: words where the hero's gender may be wrong (field, word, context, rule)
+    gender_check: list[dict[str, str]]
 
 
 def _inserts(book: Book) -> list[InsertOut]:
@@ -486,6 +488,7 @@ async def book_detail(book_id: uuid.UUID, db: SessionDep) -> BookDetail:
         text_originals={f: _original(book, f) for f in STORY_FIELDS},
         text_edits=await _text_edits(db, book.id),
         class_pages=await _class_pages(db, book),
+        gender_check=[dict(h) for h in gen.get("gender_check") or [] if isinstance(h, dict)],
     )
 
 

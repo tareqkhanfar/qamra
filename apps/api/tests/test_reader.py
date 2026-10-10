@@ -167,7 +167,9 @@ async def test_share_links_show_the_book_only_until_revoked(
     assert r.status_code == 200, r.text
     assert r.headers["cache-control"] == "no-store" and r.headers["referrer-policy"] == "no-referrer"
     data = r.json()
-    assert set(data) == {"title", "language", "kind", "pages", "expires_at"}  # no ids, child or parent
+    # no ids, child or parent; `hero_gender` only words the closing line («طفلتها هي البطلة») as the pages do
+    assert set(data) == {"title", "language", "kind", "pages", "expires_at", "hero_gender"}
+    assert data["hero_gender"] in ("m", "f")
     assert str(book.id) not in r.text and str(book.child_id) not in r.text
     assert [p["beat"] for p in data["pages"]] == [0, 1, 2, 3]
     assert all(p["image"].startswith(f"/api/shared/{token}/pages/") for p in data["pages"])

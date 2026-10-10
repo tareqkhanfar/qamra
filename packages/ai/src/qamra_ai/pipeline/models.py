@@ -47,6 +47,8 @@ class StoryOut(BaseModel):
 class SafetyVerdict(BaseModel):
     safe: bool
     reasons: list[str]
+    # words that misgender the hero (story_safety.v3): a hint for the text review, never a reason to block
+    gender_issues: list[str] = []
 
 
 class DrawingReview(BaseModel):

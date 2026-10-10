@@ -129,7 +129,7 @@ export function StyleStep({
       />
       {noClassic && (
         <div className="flex flex-col gap-3">
-          <Alert>{tc("noStyle", who)}</Alert>
+          <Alert>{tc("noStyle", { ...who, gender: child.gender })}</Alert>
           <Button variant="secondary" onClick={back} className="self-start">
             {tc("toMagic")}
           </Button>

@@ -46,7 +46,7 @@ export function CompanionIntro({
   return (
     <Frame
       title={tc("bookOf", who)}
-      label={t("label")}
+      label={t("label", { gender: child.gender })}
       n={COMPANION_STEP}
       back={back}
       footer={

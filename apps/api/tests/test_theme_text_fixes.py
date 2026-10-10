@@ -1,4 +1,5 @@
-"""A tashkeel fix in a theme file reaches the Classic templates on deploy without a new paid vowelization.
+"""A tashkeel or wording fix in a theme file reaches the Classic templates on deploy without a new paid
+vowelization.
 
 `qamra seed-themes` (qamra_api.seed) makes each `qamra_ai.pipeline.vowelize.CORRECTIONS` fix in the stored
 theme, its versions, and every Classic template's pinned definition and cached vowelization, which it re-keys
@@ -7,6 +8,7 @@ model, and the book prints «وَرَفَعَتِ الشَّهَادَةَ».
 """
 
 import copy
+import json
 from typing import Any
 
 from sqlalchemy import select
@@ -14,8 +16,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from qamra_ai.pipeline.classic import classic_story
 from qamra_ai.pipeline.models import Child
-from qamra_ai.pipeline.theme import Theme
-from qamra_ai.pipeline.vowelize import VowelizedTexts, source_hash, sources
+from qamra_ai.pipeline.theme import Theme, load_theme
+from qamra_ai.pipeline.vowelize import TEXT_FIXES, VowelizedTexts, source_hash, sources
 from qamra_api.routers.admin_classic import texts_ready
 from qamra_api.seed import upsert_themes
 from qamra_core.db.classic import ClassicTemplate
@@ -83,4 +85,73 @@ async def test_the_deploy_fixes_the_cached_texts_and_keeps_them_fresh(adb: Async
     versions = (await adb.execute(select(ThemeVersion).where(ThemeVersion.theme_id == row.id))).scalars()
     assert all(v.definition == current for v in versions)
 
+    assert not [c for c in await upsert_themes(adb) if c.startswith("!")]  # the next deploy: nothing to do
+
+
+def _before_review(definition: dict[str, Any], slug: str) -> dict[str, Any]:
+    """The theme's definition as it was before the gender review of 2026-10-09 (its `TEXT_FIXES` undone)."""
+    text = json.dumps(definition, ensure_ascii=False)
+    for fix in (f for f in TEXT_FIXES if f.theme == slug):
+        text = text.replace(
+            json.dumps(fix.new, ensure_ascii=False)[1:-1], json.dumps(fix.old, ensure_ascii=False)[1:-1]
+        )
+    old: dict[str, Any] = json.loads(text)
+    assert old != definition
+    return old
+
+
+async def test_the_gender_review_fixes_reach_the_templates_without_the_model(adb: AsyncSession) -> None:
+    """new-sibling's «للأهل» page reads «تُطَمْئِنُهُ/تُطَمْئِنُها الحكاية بأنّ…» now, and its English «reassures
+    {him/her}»; graduation's English «hugged {him/her} tight». Templates that pinned and vowelized the old
+    words get the new ones on deploy, their caches stay fresh (no model call), and the books print them."""
+    await upsert_themes(adb)
+    templates: list[tuple[ClassicTemplate, str]] = []
+    files: dict[str, dict[str, Any]] = {}
+    for slug in ("new-sibling", "graduation"):
+        row = (await adb.execute(select(ThemeRow).where(ThemeRow.slug == slug))).scalar_one()
+        files[slug] = copy.deepcopy(row.definition)  # the theme file's words, as stored
+        old = _before_review(copy.deepcopy(row.definition), slug)
+        row.definition = old
+        for version in (
+            await adb.execute(select(ThemeVersion).where(ThemeVersion.theme_id == row.id))
+        ).scalars():
+            version.definition = old
+        for variant, gender in (("girl", "f"), ("boy", "m")):
+            source = sources(Theme.model_validate(old), gender)
+            model = source.model_copy(deep=True)  # the model's vowelization of the old words
+            model.lesson = model.lesson.replace("تطمئن الحكاية أنّ", "تُطَمْئِنُ الحِكايَةُ أَنَّ")
+            cache = {"hash": source_hash(source), "gender": gender, "texts": model.model_dump(), "kept": []}
+            t = ClassicTemplate(
+                theme_id=row.id, theme_version=row.version, art_style="watercolor", variant=variant,
+                generation={"theme_def": old, "texts": cache},
+            )  # fmt: skip
+            adb.add(t)
+            templates.append((t, slug))
+    await adb.commit()
+
+    changed = await upsert_themes(adb)  # the deploy
+    assert "!new-sibling:watercolor:girl:texts" in changed and "!new-sibling:watercolor:boy:texts" in changed
+    assert "!graduation:watercolor:girl" in changed  # English only: the same Arabic, the same key
+    for t, slug in templates:
+        await adb.refresh(t)
+        assert texts_ready(t), (slug, t.variant)  # fresh for the new words: no vowelization call
+        current = load_theme(slug)
+        assert t.generation["theme_def"] == files[slug]
+        gender = "m" if t.variant == "boy" else "f"
+        name = "يوسف" if gender == "m" else "ليان"
+        texts = VowelizedTexts.model_validate(t.generation["texts"]["texts"])
+        story = classic_story(
+            Theme.model_validate(t.generation["theme_def"]),
+            Child(name=name, gender=gender, age=5),
+            "ar",
+            "",
+            texts,
+        )
+        if slug == "new-sibling":
+            assert (
+                "تُطَمْئِنُهُ الحكاية بأنّ مكانَه" if gender == "m" else "تُطَمْئِنُها الحكاية بأنّ مكانَها"
+            ) in story.parents_lesson
+        english = classic_story(current, Child(name="Layan", gender="f", age=5), "en", "")
+        if slug == "graduation":
+            assert "who hugged her tight" in english.pages[13].text
     assert not [c for c in await upsert_themes(adb) if c.startswith("!")]  # the next deploy: nothing to do

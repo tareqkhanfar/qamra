@@ -122,6 +122,21 @@ async def test_story_books_wait_for_their_text_review_in_the_queue(
     assert (await client.get(f"/api/admin/books/{activity.id}")).json()["text_editable"] is False
 
 
+async def test_the_review_shows_the_gender_check(client: AsyncClient, adb: AsyncSession) -> None:
+    """«تحقق من التذكير والتأنيث»: the worker's hints (`generation.gender_check`, flag `gender_check`) reach
+    the review screen, next to the words they point at."""
+    await make_admin(client, adb)
+    me = await _admin_id(adb)
+    hint = {"field": "page:2", "word": "ضَحِكَ", "context": "ضَحِكَ لَيَانُ.", "rule": "verb_before_name"}
+    book = await _story_book(adb, me, extra={"gender_check": [hint]})
+    book.flags = ["gender_check"]
+    await adb.commit()
+    detail = (await client.get(f"/api/admin/books/{book.id}")).json()
+    assert detail["gender_check"] == [hint] and "gender_check" in detail["flags"]
+    plain = await _story_book(adb, me)
+    assert (await client.get(f"/api/admin/books/{plain.id}")).json()["gender_check"] == []
+
+
 async def test_a_page_edit_keeps_its_history_and_reopens_a_confirmed_book(
     client: AsyncClient, adb: AsyncSession, app: FastAPI
 ) -> None:

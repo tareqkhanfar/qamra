@@ -76,7 +76,7 @@ export function ChildFields({
     <>
       <div className="flex flex-col gap-1.5">
         <label htmlFor={`${id}-name`} className="text-body font-semibold">
-          {activity ? t("who.name") : t("child.name")}
+          {activity ? t("who.name") : t("child.name", { gender: gender ?? "other" })}
         </label>
         <Hint id={`${id}-name-hint`}>{t(nameHint(kind, productLine))}</Hint>
         <input

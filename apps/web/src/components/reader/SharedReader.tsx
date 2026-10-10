@@ -42,7 +42,7 @@ export function SharedReader({ token }: { token: string }) {
   );
   const end = (
     <>
-      <p className="text-body text-ink-muted">{t("shared.end", { brand })}</p>
+      <p className="text-body text-ink-muted">{t("shared.end", { brand, gender: book.hero_gender ?? "other" })}</p>
       <Link href="/" className={buttonClasses("primary", "md")}>
         {t("shared.cta")}
       </Link>

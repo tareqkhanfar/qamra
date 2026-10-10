@@ -3,6 +3,11 @@
 Addendum 3: ≤ 35 words per page for ages 3–5, a «للأهل» page (lesson + 2 questions) and a back-cover
 blurb in the same call, and prompt caching for the fixed part (rules + theme bible) so class batches of
 the same theme reuse it.
+
+The hero's gender is enforced three times: the prompts spell out the rules (story_adapt.v3), the safety review
+lists any word that misgenders the hero (story_safety.v3, never a reason to block), and a deterministic check
+reads the words (`pipeline.gender_check`). What the last two find is kept with the story (`gender_issues`):
+the book is flagged «تحقق من التذكير والتأنيث» for the staff text review instead of failing.
 """
 
 import json
@@ -12,6 +17,7 @@ from dataclasses import dataclass, field
 from qamra_ai import prompts
 from qamra_ai.errors import ContentBlocked, InvalidOutput
 from qamra_ai.pipeline.companion import type_label
+from qamra_ai.pipeline.gender_check import GenderIssue, gender_issues, review_notes
 from qamra_ai.pipeline.models import Child, CompanionSpec, Lang, SafetyVerdict, StoryOut
 from qamra_ai.pipeline.runtime import Runtime
 from qamra_ai.pipeline.theme import NAME_SLOTS, Theme, max_words_for, render_template, word_count
@@ -20,12 +26,15 @@ from qamra_pdf.arabic_names import case_forms, fix_genitives, fix_vocatives, unm
 
 VOWELIZE_MAX_AGE = 7
 PARENT_MESSAGE_MAX = 120  # Addendum 3 §4: optional dedication message from the parent
+STORY_PROMPT_VERSION = 3  # story_adapt / story_adapt_user
+SAFETY_PROMPT_VERSION = 3  # story_safety: gender slips go to `gender_issues`, never `safe=false`
 
 
 @dataclass
 class Story:
     out: StoryOut
     long_pages: list[int] = field(default_factory=list)  # pages over the word limit (flag for review)
+    gender_issues: list[GenderIssue] = field(default_factory=list)  # «تحقق من التذكير والتأنيث» hints
 
 
 def base_pages(theme: Theme, child: Child, lang: Lang, companion_name: str) -> list[dict[str, object]]:
@@ -139,7 +148,7 @@ async def write_story(
         SystemPart(
             prompts.render(
                 "story_adapt",
-                version=2,
+                version=STORY_PROMPT_VERSION,
                 brand_name_en=s.brand_name_en,
                 brand_name_ar=s.brand_name_ar,
                 lang=lang,
@@ -151,7 +160,7 @@ async def write_story(
     max_words = max_words_for(child.age)
     user = prompts.render(
         "story_adapt_user",
-        version=2,
+        version=STORY_PROMPT_VERSION,
         child=child,
         lang=lang,
         companion=comp_ctx,
@@ -183,7 +192,7 @@ async def write_story(
         review["parent_message"] = message
     verdict = await rt.ask(
         step="story:safety",
-        system=prompts.render("story_safety", version=2, gender=child.gender),
+        system=prompts.render("story_safety", version=SAFETY_PROMPT_VERSION, gender=child.gender),
         user=[json.dumps(review, ensure_ascii=False)],
         schema=SafetyVerdict,
         fast=True,
@@ -192,4 +201,5 @@ async def write_story(
     if not verdict.safe:
         raise ContentBlocked("story failed safety review: " + "; ".join(verdict.reasons))
     long_pages = [p.index for p in out.pages if word_count(p.text) > round(max_words * 1.15)]
-    return Story(out=out, long_pages=long_pages)
+    issues = gender_issues(out, child.name, child.gender, lang, companion=comp_name, theme=theme)
+    return Story(out=out, long_pages=long_pages, gender_issues=issues + review_notes(verdict.gender_issues))

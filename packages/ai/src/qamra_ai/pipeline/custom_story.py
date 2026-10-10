@@ -3,7 +3,7 @@
 The brief (occasion, place, 2–3 things the child loves or did, a wish or lesson, optional family names) is
 checked twice before any story is written: locally for personal data and plainly unsafe words (the API gives
 the parent a friendly error at once), then by the same safety review as every story (Haiku). Claude (Sonnet)
-then writes the text *and* the pictures of the base «custom» theme's beats (prompts story_custom.v1), with the
+then writes the text *and* the pictures of the base «custom» theme's beats (prompts story_custom.v2), with the
 usual page count, word limit and vowelization rules; the result gets the same safety review as a theme story.
 The rewritten theme (scenes, places, times, outfits) is what the book's pages are drawn from.
 """
@@ -18,9 +18,11 @@ from pydantic import BaseModel, Field, field_validator
 from qamra_ai import prompts
 from qamra_ai.errors import ContentBlocked, InvalidOutput
 from qamra_ai.pipeline.companion import type_label
+from qamra_ai.pipeline.gender_check import gender_issues, review_notes
 from qamra_ai.pipeline.models import Child, CompanionSpec, Lang, SafetyVerdict, StoryOut, StoryPageOut
 from qamra_ai.pipeline.runtime import Runtime
 from qamra_ai.pipeline.story import (
+    SAFETY_PROMPT_VERSION,
     VOWELIZE_MAX_AGE,
     Story,
     clean_parent_message,
@@ -32,7 +34,7 @@ from qamra_ai.pipeline.theme import Theme, TimeOfDay, max_words_for, word_count
 from qamra_ai.text.base import SystemPart
 
 CUSTOM_THEME = "custom"  # content/themes/custom: the base beats every custom story is written on
-PROMPT_VERSION = 1
+PROMPT_VERSION = 2  # story_custom.v2: the gender rules spelled out
 MAX_OTHERS = 6
 
 
@@ -229,7 +231,7 @@ async def review_brief(rt: Runtime, brief: CustomBrief, child: Child) -> None:
     """The same safety review as every story, on the family's words, before anything is written."""
     verdict = await rt.ask(
         step="story:brief_safety",
-        system=prompts.render("story_safety", version=2, gender=child.gender),
+        system=prompts.render("story_safety", version=SAFETY_PROMPT_VERSION, gender=child.gender),
         user=[json.dumps({"custom_story_brief": brief.model_dump()}, ensure_ascii=False)],
         schema=SafetyVerdict,
         fast=True,
@@ -299,7 +301,7 @@ async def write_custom_story(
         review["parent_message"] = message
     verdict = await rt.ask(
         step="story:safety",
-        system=prompts.render("story_safety", version=2, gender=child.gender),
+        system=prompts.render("story_safety", version=SAFETY_PROMPT_VERSION, gender=child.gender),
         user=[json.dumps(review, ensure_ascii=False)],
         schema=SafetyVerdict,
         fast=True,
@@ -308,4 +310,11 @@ async def write_custom_story(
     if not verdict.safe:
         raise ContentBlocked("custom story failed safety review: " + "; ".join(verdict.reasons))
     long_pages = [p.index for p in story.pages if word_count(p.text) > round(max_words * 1.15)]
-    return CustomStory(story=Story(out=story, long_pages=long_pages), theme=custom_theme(base, out))
+    comp_name = companion.name if companion else ""
+    issues = gender_issues(
+        story, child.name, child.gender, lang, companion=comp_name
+    )  # no base text to compare
+    issues += review_notes(verdict.gender_issues)
+    return CustomStory(
+        story=Story(out=story, long_pages=long_pages, gender_issues=issues), theme=custom_theme(base, out)
+    )

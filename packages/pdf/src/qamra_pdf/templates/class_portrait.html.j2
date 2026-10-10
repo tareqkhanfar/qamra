@@ -8,7 +8,7 @@
 </style></head>
 <body>
 <section class="page portrait-page" data-kind="portrait" data-number="2">
-  <div class="heading">{{ spec.portrait_title }}</div>
+  <div class="heading">{{ copy.portrait_title or spec.portrait_title }}</div>
   <div class="frame">
     <img class="kid" src="{{ img(copy.portrait) }}" alt="">
     {% if copy.companion %}<img class="companion" src="{{ img(copy.companion) }}" alt="">{% endif %}

@@ -115,7 +115,7 @@ def test_the_models_vocatives_are_fixed_on_the_childs_name() -> None:
 
 @pytest.mark.parametrize("name", ["story_adapt", "story_custom"])
 def test_the_story_prompts_ask_for_the_five_nouns(name: str) -> None:
-    version = 2 if name == "story_adapt" else 1
+    version = 3 if name == "story_adapt" else 2  # the versions that ship (story.py, custom_story.py)
     extra = {"theme_bible": ""} if name == "story_adapt" else {}
     brand = {"brand_name_en": "Qamra", "brand_name_ar": "قمرة"}
     text = prompts.render(name, version=version, lang="ar", **brand, **extra)
@@ -208,7 +208,7 @@ def test_the_models_genitives_are_fixed_on_the_childs_name() -> None:
 
 @pytest.mark.parametrize("name", ["story_adapt", "story_custom"])
 def test_the_story_prompts_ask_for_the_genitive(name: str) -> None:
-    version = 2 if name == "story_adapt" else 1
+    version = 3 if name == "story_adapt" else 2  # the versions that ship (story.py, custom_story.py)
     extra = {"theme_bible": ""} if name == "story_adapt" else {}
     brand = {"brand_name_en": "Qamra", "brand_name_ar": "قمرة"}
     text = prompts.render(name, version=version, lang="ar", **brand, **extra)

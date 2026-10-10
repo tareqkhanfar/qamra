@@ -44,7 +44,7 @@ STRINGS: dict[str, dict[str, str]] = {
         "memories_date": "التَّارِيخُ:",
         "memories_prompt": "ذِكْرَى لَا أَنْسَاهَا:",
         "back_voice": "امْسَحوا الرَّمْزَ لِتَسْمَعوا الحِكايَةَ بِصَوْتِ العائِلَة",
-        "scan_listen": "امْسَحْ وَاسْمَعْ",
+        "scan_listen": "امْسَحوا وَاسْمَعوا",  # to the family, like back_voice (never a boy-only «امْسَحْ»)
         "made_by": "صُنِعَ بِحُبٍّ في {brand}",
         # cover ribbon (Addendum 11 §2.3): «بطولة البطل الرائع» / «بطولة البطلة الرائعة», then the name in the
         # genitive (it follows «البطلِ»: «بطولة البطل الرائع أبي بكر»)

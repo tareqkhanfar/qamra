@@ -342,6 +342,7 @@ const GENITIVE: Record<string, string> = {
   "orderPath.line.title.family": "nameGen",
   "voice.invite.message": "childLam",
   "voice.elder.hello": "childLam",
+  "voice.elder.done": "childGen", // «وصارت حكاية أبي بكر بصوتكم»
   "studio.preview.note": "nameGen",
   "studio.staff.confirmRemove": "nameGen",
   "account.booksOf": "nameGen",

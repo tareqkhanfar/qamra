@@ -43,7 +43,7 @@
       "placeholder": "My friend",
       "drawingAlt": "{name}'s drawing",
       "label": "What's its name?",
-      "ask": "Ask {name} — they know its name best",
+      "ask": "{gender, select, f {Ask {name} — she knows the companion's name best} other {Ask {name} — he knows the companion's name best}}",
       "typeLabel": "What is it?",
       "types": {
         "creature": "Creature",
@@ -2043,13 +2043,13 @@
     "ctaStories": "Browse the stories",
     "ctaWorkbooks": "Activity books",
     "privacyLine": "Your child's photo is deleted automatically once the character is approved",
-    "heroPhoto": "1 · their photo",
-    "heroDrawing": "2 · their drawing",
-    "heroBook": "3 · together in their book",
+    "heroPhoto": "1 · her photo",
+    "heroDrawing": "2 · her drawing",
+    "heroBook": "3 · together in her book",
     "heroBookTitle": "Layan and her friend Nono",
     "heroBookSub": "By moonlight",
     "heroRealBook": "A real Qamra book: {title}",
-    "heroPhotoAlt": "A child reading their printed Qamra book",
+    "heroPhotoAlt": "A girl reading her printed Qamra book with her mother",
     "offersEyebrow": "What we make for your child",
     "offersTitle": "Every book carries your child's name",
     "offers": {
@@ -2511,7 +2511,7 @@
       "title": "Which book would you like for {name}?",
       "body": "You choose the cover after the preview. The preview is free.",
       "lead": "Two kinds of the same book. Compare the pages and pick what suits you; you can change it before ordering.",
-      "realPages": "Real pages from a story (the hero: {look})",
+      "realPages": "{look, select, girl {Real pages from a story starring a girl} girl_hijab {Real pages from a story starring a girl in a hijab} boy {Real pages from a story starring a boy} other {Real pages from the story}}",
       "classicPages": "In Classic you get these same scenes, with {name} drawn into them.",
       "magicPages": "{gender, select, f {In Magic every scene is drawn afresh for {name} alone, with a companion from her own drawing.} other {In Magic every scene is drawn afresh for {name} alone, with a companion from his own drawing.}}",
       "next": {
@@ -2915,7 +2915,8 @@
       "parent_edited": "Edited by the family",
       "text_unsafe": "Flagged by the text check",
       "name_en_guessed": "English name auto-guessed",
-      "name_not_traceable": "Name tracing incomplete"
+      "name_not_traceable": "Name tracing incomplete",
+      "gender_check": "Check boy/girl wording"
     },
     "status": {
       "draft": "Draft",
@@ -2996,7 +2997,21 @@
       },
       "note": "A note explaining why the text stays as it is",
       "saveAnyway": "Save with the note",
-      "noteKept": "Note: {note}"
+      "noteKept": "Note: {note}",
+      "genderCheck": {
+        "title": "Check boy/girl wording",
+        "intro": "The automatic check found words that may not fit {gender, select, f {a girl} other {a boy}}. Read them in context, fix what needs fixing, then rebuild the files.",
+        "row": "Check: {words}",
+        "rules": {
+          "verb_before_name": "verb before the name",
+          "verb_after_name": "verb after the name",
+          "addressed": "said to the child",
+          "epithet": "form of address",
+          "theme_word": "the other gender's form from the story text",
+          "pronoun_en": "English pronoun",
+          "text_review": "text check note"
+        }
+      }
     }
   },
   "metrics": {

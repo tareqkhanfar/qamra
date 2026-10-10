@@ -208,7 +208,7 @@ pages:
       a big sheet of paper, delighted.
     companion_action: has a drop of green paint on its nose and laughs
     text_ar: "{وَخَلَطَ/وَخَلَطَتْ} {name} الْأَلْوَانَ: الْأَزْرَقُ وَالْأَصْفَرُ صَارَا أَخْضَرَ! وَعَلَى أَنْفِ {companion:gen} نُقْطَةُ طِلَاءٍ خَضْرَاءُ."
-    text_en: "{name} mixed the colors: blue and yellow turned green! And {companion} got a green dot on its nose."
+    text_en: "{name} mixed the colors: blue and yellow turned green! And {companion} got a green dot on his nose."
   - index: 5
     layout: full
     text_pos: bottom
@@ -342,7 +342,7 @@ pages:
     others_count: 2
     companion_action: floats above them, glowing warmly
     text_ar: "{رَكَضَ/رَكَضَتْ} {name} إِلَى مَامَا وَبَابَا، {فَضَمَّاهُ/فَضَمَّاهَا} وَقَالَا: «نَحْنُ فَخُورَانِ {بِكَ/بِكِ}!»"
-    text_en: "{name} ran to Mama and Baba, who hugged tight and said: \"We are so proud of you!\""
+    text_en: "{name} ran to Mama and Baba, who hugged {him/her} tight and said: \"We are so proud of you!\""
   - index: 15
     layout: spread
     text_pos: top

@@ -4,7 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
-import { BookTextReview, type StoryField, type TextEdit } from "./BookTextReview";
+import { BookTextReview, type GenderHint, type StoryField, type TextEdit } from "./BookTextReview";
 import { ExamplePublish } from "./ExamplePublish";
 import { api, errorText } from "@/lib/api";
 
@@ -105,6 +105,7 @@ type Detail = {
   text_originals: Partial<Record<StoryField, string | null>>;
   text_edits: TextEdit[];
   class_pages: { index: number; text: string | null }[];
+  gender_check: GenderHint[];
 };
 type Filter = "review" | "flagged" | "generating" | "approved" | "all";
 

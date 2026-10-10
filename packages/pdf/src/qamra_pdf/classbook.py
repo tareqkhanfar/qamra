@@ -68,6 +68,7 @@ class ChildCopy:
     companion: Path | None = None  # the child's drawing companion, when there is one
     companion_name: str | None = None
     gender: Literal["m", "f"] | None = None  # the cover's «بطولة» ribbon; None: the ribbon names the school
+    portrait_title: str = ""  # the heading over this child's portrait in the child's gender; "": the book's
 
 
 @dataclass(frozen=True)

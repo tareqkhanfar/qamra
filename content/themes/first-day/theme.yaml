@@ -387,4 +387,4 @@ pages:
       The backpack rests ready by the door and the moon painting is pinned on the wall.
     companion_action: curls up on the pillow next to the hero, glowing softly like a night light
     text_ar: "وَفِي اللَّيْلِ، تَحْتَ ضَوْءِ الْقَمَرِ، {هَمَسَ/هَمَسَتْ} {name} لِـ{companion:gen}: «غَدًا نَعُودُ إِلَى الرَّوْضَةِ مَعًا.» ثُمَّ {نَامَ/نَامَتْ} {مُبْتَسِمًا/مُبْتَسِمَةً}."
-    text_en: "That night, under the moonlight, {name} whispered to {companion}: \"Tomorrow we go back together.\" And fell asleep smiling."
+    text_en: "That night, under the moonlight, {name} whispered to {companion}: \"Tomorrow we go back together.\" Then {he/she} fell asleep smiling."

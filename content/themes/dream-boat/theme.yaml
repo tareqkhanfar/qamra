@@ -280,7 +280,7 @@ pages:
     others: "{dad} in a coral-orange adult life jacket over his shirt, sitting calmly behind the hero"
     others_count: 1
     companion_action: hovers just above the water, glowing brighter and brighter to light the sea below
-    text_ar: "{شَعَرَ/شَعَرَتْ} {name} بِقَلِيلٍ مِنَ الْخَوْفِ، فَالْبَحْرُ عَمِيقٌ. {نَظَرَ/نَظَرَتْ} إِلَى بَابَا {فَابْتَسَمَ لَهُ/فَابْتَسَمَ لَهَا}، ثُمَّ {قَالَ/قَالَتْ} {name} بِشَجَاعَةٍ: «هُنَاكَ مَنْ يَحْتَاجُ إِلَيْنَا! أَضِئِ الْمَاءَ يَا {companion}!»"
+    text_ar: "{شَعَرَ/شَعَرَتْ} {name} بِقَلِيلٍ مِنَ الْخَوْفِ، فَالْبَحْرُ عَمِيقٌ. لَكِنَّ بَابَا {ابْتَسَمَ لَهُ/ابْتَسَمَ لَهَا}، {فَقَالَ/فَقَالَتْ} {name} بِشَجَاعَةٍ: «هُنَاكَ مَنْ يَحْتَاجُ إِلَيْنَا! أَضِئِ الْمَاءَ يَا {companion}!»"
     text_en: "{name} felt a little scared. The sea was so deep! But Baba smiled, and {name} said bravely: \"Someone needs us! Light up the water, {companion}!\""
   - index: 8
     layout: full

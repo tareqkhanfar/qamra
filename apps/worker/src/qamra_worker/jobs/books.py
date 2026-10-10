@@ -32,6 +32,8 @@ from qamra_ai.pipeline.character import generate_character_sheet
 from qamra_ai.pipeline.companion import generate_companion_options
 from qamra_ai.pipeline.custom_story import BriefRejected, CustomBrief, write_custom_story
 from qamra_ai.pipeline.drawing import clean_drawing
+from qamra_ai.pipeline.gender_check import FLAG as GENDER_FLAG
+from qamra_ai.pipeline.gender_check import GenderIssue, gender_issues
 from qamra_ai.pipeline.layout import BookPlan, PrintSpec, plan_book
 from qamra_ai.pipeline.models import Child as AIChild
 from qamra_ai.pipeline.models import CompanionSpec, Lang, StoryOut
@@ -385,6 +387,39 @@ def _set_flags(book: Book, add: list[str], remove: tuple[str, ...] = ()) -> None
     book.flags = list(dict.fromkeys([*kept, *add]))
 
 
+def review_gender(
+    job: "BookJob", story: StoryOut, companion: CompanionSpec | None, found: list[GenderIssue] | None = None
+) -> list[dict[str, str]]:
+    """«تحقق من التذكير والتأنيث» (`qamra_ai.pipeline.gender_check`): the hero's gender read in the book's
+    words as they are now (the family's and the staff's edits included). Words worth a second look flag the
+    book `gender_check` for the staff text review, with the hints in `generation.gender_check`; nothing found
+    clears both. The safety review's own notes (`generation.gender_notes`) count while no page was reworded.
+    It never fails a book."""
+    book = job.book
+    child = ai_child(job.child)
+    issues = (
+        found
+        if found is not None
+        else gender_issues(
+            story,
+            child.name,
+            child.gender,
+            book_lang(book),
+            companion=companion.name if companion else "",
+            theme=job.theme,
+        )
+    )
+    hints = [i.to_dict() for i in issues if i.rule != "text_review"]
+    rows = job.pages_by_beat()
+    reworded = any(r.text != r.original_text for b, r in rows.items() if b > 0 and r.original_text)
+    notes = [] if reworded else list((book.generation or {}).get("gender_notes") or [])
+    hints += [n for n in notes if n not in hints]
+    gen = {k: v for k, v in (book.generation or {}).items() if k != "gender_check"}
+    book.generation = {**gen, "gender_check": hints} if hints else gen
+    _set_flags(book, [GENDER_FLAG] if hints else [], remove=(GENDER_FLAG,))
+    return hints
+
+
 def _qa_summary(rows: dict[int, BookPage], plan: BookPlan) -> dict[str, Any]:
     story = [r for b, r in rows.items() if b in plan.beats and r.status != PageStatus.pending]
     likeness = [
@@ -553,6 +588,10 @@ async def run_book_job(db: Session, storage: ObjectStorage, book: Book, mode: st
                 )
             if story.long_pages:
                 _set_flags(book, ["long_text"])
+            notes = [i.to_dict() for i in story.gender_issues if i.rule == "text_review"]
+            book.generation = {**book.generation, "gender_notes": notes}
+            db.flush()
+            review_gender(job, story_out, companion, story.gender_issues)
             db.commit()
     except BriefRejected as e:  # the parent edits the brief and starts again (not retried)
         _set_flags(book, ["brief_unsafe"])
@@ -670,6 +709,7 @@ async def render_files(
         book.status, book.error = BookStatus.failed, f"story pages without text: {empty}"
         db.commit()
         return {"status": "text_missing"}
+    review_gender(job, story, companion)  # the words as they print now, edits included
     run = BookRun(
         plan=job.plan,
         seed=int(book.generation["seed"]),

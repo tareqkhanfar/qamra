@@ -78,6 +78,7 @@ class OwnerReaderOut(ReaderOut):
 
 class SharedOut(ReaderOut):
     expires_at: datetime | None
+    hero_gender: Literal["m", "f"] | None  # the closing line's «طفلها هو البطل / طفلتها هي البطلة»
 
 
 def _kind(book: Book) -> Literal["preview", "final"]:
@@ -297,12 +298,14 @@ async def read_shared(
         raise ApiError("too_many_attempts", 429)
     book, share = await _shared_book(db, token)
     response.headers.update(NO_STORE)
+    child = await db.get(Child, book.child_id)
     return SharedOut(
         title=await _title(db, book),
         language=book.language,
         kind="final",
         pages=_reader_pages(await _pages(db, book), "final", f"/api/shared/{token}"),
         expires_at=share.expires_at,
+        hero_gender=child.gender.value if child is not None else None,
     )
 
 

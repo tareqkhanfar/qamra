@@ -8,13 +8,14 @@ A name's case marks (`{name:acc}`, `{name:gen}`, `qamra_pdf.arabic_names`) are n
 source, so adding one never changes the hash or calls the model again: `fill` puts the template's marks back
 slot by slot before it fills the name («وَضَمَّتْ أبا بكر», «إلى أبي بكر»), and «يا {name}» needs no mark.
 
-A tashkeel fix in a theme text does change the source, so it ships with a matching fix of the cached
-vowelized texts (`CORRECTIONS`, `corrected_cache`): the cache is patched and re-keyed in place on deploy
-(`qamra seed-themes`), and no text is vowelized again.
+A tashkeel or wording fix in a theme text does change the source, so it ships with a matching fix of the
+cached vowelized texts (`CORRECTIONS`, `TEXT_FIXES`, `corrected_cache`): the cache is patched and re-keyed in
+place on deploy (`qamra seed-themes`), and no text is vowelized again.
 
 The model may only add diacritics: every text is checked to be the same letters and placeholders as its
-source once the diacritics are removed. A text that fails the check keeps its unvowelized source (and is
-listed in `kept`), so a mistake can never change a word in a printed book.
+source once the diacritics are removed, and to keep every gender-bearing last vowel the source wrote («مَعَكِ»
+never turns into «مَعَكَ», `gender_marks_kept`). A text that fails the check keeps its unvowelized source (and
+is listed in `kept`), so a mistake can never change a word or the hero's gender in a printed book.
 """
 
 import hashlib
@@ -28,6 +29,7 @@ from typing import Any
 from pydantic import BaseModel
 
 from qamra_ai import prompts
+from qamra_ai.pipeline.gender_check import final_mark, tokens
 from qamra_ai.pipeline.models import Gender
 from qamra_ai.pipeline.runtime import Runtime
 from qamra_ai.pipeline.theme import NAME_SLOTS, Theme, render_template
@@ -81,6 +83,21 @@ def plain(text: str) -> str:
     return _TASHKEEL.sub("", text)
 
 
+_GENDER_VOWELS = ("\u064e", "\u0650")  # fatha (to a boy), kasra (to a girl) on «ـكَ / ـكِ», «ـتَ / ـتِ», «أَنْتَ»
+
+
+def gender_marks_kept(source: str, vowelized: str) -> bool:
+    """No last vowel the source wrote on a word ending in «ك» or «ت» was swapped for the other gender's
+    («مَعَكِ» → «مَعَكَ», «أَحْسَنْتَ» → «أَحْسَنْتِ»). The words are the same (`same_words`), so they pair up."""
+    for a, b in zip(tokens(source), tokens(vowelized), strict=False):
+        if not a.key.endswith(("ك", "ت")):
+            continue
+        was, now = final_mark(a.raw), final_mark(b.raw)
+        if any(v in was for v in _GENDER_VOWELS) and any(v in now for v in _GENDER_VOWELS if v not in was):
+            return False
+    return True
+
+
 def same_words(source: str, vowelized: str) -> bool:
     """Only diacritics were added: the same letters, spaces, punctuation and placeholders."""
     return plain(vowelized).split() == plain(source).split() and _PLACEHOLDER.findall(
@@ -99,7 +116,7 @@ def checked(source: VowelizedTexts, answer: VowelizedTexts) -> Vowelized:
     kept: list[str] = []
 
     def take(label: str, src: str, new: str) -> str:
-        if same_words(src, new):
+        if same_words(src, new) and gender_marks_kept(src, new):
             return new
         kept.append(label)
         return src
@@ -124,7 +141,7 @@ async def vowelize(rt: Runtime, theme: Theme, gender: Gender, *, step: str) -> V
     source = sources(theme, gender)
     answer = await rt.ask(
         step=step,
-        system=prompts.render("classic_vowelize", gender=gender),
+        system=prompts.render("classic_vowelize", version=2, gender=gender),
         user=[json.dumps(source.model_dump(), ensure_ascii=False, indent=1)],
         schema=VowelizedTexts,
         kind="story",
@@ -197,22 +214,94 @@ CORRECTIONS: tuple[Correction, ...] = (
 )
 
 
-def _corrected(node: Any, fixes: Sequence[Correction]) -> Any:
-    """Every string in `node` (a theme definition or cached texts) with `fixes` applied."""
+def _loose(words: str) -> str:
+    """A regex for `words` (letters only) with any tashkeel after each letter and any spaces between words."""
+    return r"\s+".join("".join(re.escape(c) + f"{_MARKS}*" for c in w) for w in words.split())
+
+
+@dataclass(frozen=True)
+class TextFix:
+    """A wording fix in one theme's text (the gender review of 2026-10-09): `old` → `new`, both as written in
+    the theme file (with their `{m/f}` braces). The theme's definition gets `new` for `old`. A Classic
+    template's cached vowelization (Arabic, one gender) gets, for the old words rendered for that gender
+    whatever marks the model gave them, the new words rendered for that gender as the file writes them: no
+    model call, and the cache stays keyed to the words it holds (`corrected_cache`). An English fix only
+    changes the definitions (the cache holds no English)."""
+
+    theme: str
+    old: str
+    new: str
+
+    def apply(self, text: str) -> str:
+        return text.replace(self.old, self.new)
+
+    def apply_cached(self, text: str, gender: Gender) -> str:
+        old = plain(_resolve(self.old, gender))
+        if not re.search("[\u0600-\u06ff]", old):
+            return text
+        new = _resolve(self.new, gender)
+        pattern = re.compile(f"(?<![{_LETTER}]){_loose(old)}(?![{_LETTER}])")
+        return pattern.sub(lambda _: new, text)
+
+
+# 2026-10-09, the gender review: words that agree with the hero in every rendering (new-sibling «للأهل»:
+# «تطمئنُه/تطمئنُها»), and the English that avoided a pronoun («hugged {him/her} tight»).
+TEXT_FIXES: tuple[TextFix, ...] = (
+    TextFix("new-sibling", "تطمئن الحكاية أنّ {مكانَه/مكانَها}", "{تُطَمْئِنُهُ/تُطَمْئِنُها} الحكاية بأنّ {مكانَه/مكانَها}"),
+    TextFix(
+        "new-sibling",
+        "This story reassures that their place in the family's heart never changes, and invites them to be "
+        "the proud big sibling.",
+        "This story reassures {him/her} that {his/her} place in the family's heart never changes, and "
+        "invites {him/her} to be the proud big {brother/sister}.",
+    ),
+    TextFix(
+        "new-sibling",
+        "The story of {name}, the proud big one,",
+        "The story of {name}, the proud big {brother/sister},",
+    ),
+    TextFix("graduation", "got a green dot on its nose.", "got a green dot on his nose."),
+    TextFix("graduation", "who hugged tight and said", "who hugged {him/her} tight and said"),
+    TextFix(
+        "first-day", 'together." And fell asleep smiling.', 'together." Then {he/she} fell asleep smiling.'
+    ),
+    TextFix("custom", "the people {name} loves.", "the people {he/she} loves."),
+    TextFix(
+        "custom", "{name} found the first thing {name} loves.", "{name} found the first thing {he/she} loves."
+    ),
+    TextFix(
+        "custom", "{name} laughed with everyone {name} loves.", "{name} laughed with everyone {he/she} loves."
+    ),
+    TextFix(
+        "custom",
+        "{name} shared the happiness with the family.",
+        "{name} shared {his/her} joy with {his/her} family.",
+    ),
+)
+FIXES: tuple[Correction | TextFix, ...] = (*CORRECTIONS, *TEXT_FIXES)
+
+
+def _corrected(node: Any, fixes: Sequence[Correction | TextFix], gender: Gender | None = None) -> Any:
+    """Every string in `node` with `fixes` applied: a theme definition (`gender` None), or the cached texts
+    vowelized for one gender."""
     if isinstance(node, str):
         for fix in fixes:
-            node = fix.apply(node)
+            node = (
+                fix.apply(node)
+                if gender is None or isinstance(fix, Correction)
+                else fix.apply_cached(node, gender)
+            )
         return node
     if isinstance(node, list):
-        return [_corrected(v, fixes) for v in node]
+        return [_corrected(v, fixes, gender) for v in node]
     if isinstance(node, dict):
-        return {k: _corrected(v, fixes) for k, v in node.items()}
+        return {k: _corrected(v, fixes, gender) for k, v in node.items()}
     return node
 
 
 def corrected_definition(definition: dict[str, Any]) -> dict[str, Any]:
-    """A theme definition with the `CORRECTIONS` of its own theme applied (unchanged when none apply)."""
-    fixes = [c for c in CORRECTIONS if c.theme == definition.get("slug")]
+    """A theme definition with the `FIXES` of its own theme applied (unchanged when none apply)."""
+    fixes = [c for c in FIXES if c.theme == definition.get("slug")]
     return _corrected(definition, fixes) if fixes else definition
 
 
@@ -231,8 +320,8 @@ def corrected_cache(
         return None
     if not cache or cache.get("hash") != source_hash(sources(Theme.model_validate(definition), gender)):
         return fixed, cache
-    fixes = [c for c in CORRECTIONS if c.theme == definition.get("slug")]
-    texts = VowelizedTexts.model_validate(_corrected(cache["texts"], fixes))
+    fixes = [c for c in FIXES if c.theme == definition.get("slug")]
+    texts = VowelizedTexts.model_validate(_corrected(cache["texts"], fixes, gender))
     source = sources(Theme.model_validate(fixed), gender)
     pairs = [
         (source.title, texts.title),
@@ -244,7 +333,8 @@ def corrected_cache(
     ]
     if not all(same_words(src, new) for src, new in pairs):
         return None
-    note = {"fixes": [f"{c.word} {c.next_word}" for c in fixes], "at": datetime.now(UTC).isoformat()}
+    names = [f"{c.word} {c.next_word}" if isinstance(c, Correction) else c.new for c in fixes]
+    note = {"fixes": names, "at": datetime.now(UTC).isoformat()}
     return fixed, {
         **cache,
         "hash": source_hash(source),

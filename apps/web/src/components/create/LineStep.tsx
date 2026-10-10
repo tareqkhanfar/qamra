@@ -41,7 +41,6 @@ export function LineStep({
   onDone: (line: Line) => void;
 }) {
   const t = useTranslations("create");
-  const tv = useTranslations("examples.variant");
   const locale = useLocale();
   const [examples, setExamples] = useState<Example[]>([]);
   useEffect(() => {
@@ -102,7 +101,7 @@ export function LineStep({
       {example && strip.length > 0 && (
         <section aria-labelledby="line-pages" className="flex flex-col gap-2">
           <h2 id="line-pages" className="text-body font-semibold text-night-900">
-            {t("line.realPages", { look: tv(example.variant) })}
+            {t("line.realPages", { look: example.variant })}
           </h2>
           <div className="grid grid-cols-3 gap-2">
             {strip.map((p) => (

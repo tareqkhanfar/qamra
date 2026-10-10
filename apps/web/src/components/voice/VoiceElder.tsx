@@ -121,7 +121,9 @@ export function VoiceElder({ token }: { token: string }) {
           </p>
         )}
         {error && <p className="text-center text-body-l text-danger">{error}</p>}
-        {done && <p className="text-center text-body-l text-success">{t("done", { child: book.child_name })}</p>}
+        {done && (
+          <p className="text-center text-body-l text-success">{t("done", nameCases(book.child_name, "child"))}</p>
+        )}
       </div>
       <audio
         ref={player}

@@ -2,6 +2,7 @@
 cover; the combined print file stores the shared pictures once; preflight passes; file names are readable."""
 
 import asyncio
+import re
 import unicodedata
 from pathlib import Path
 
@@ -70,6 +71,7 @@ def rendered(tmp_path_factory: pytest.TempPathFactory) -> tuple[ClassBookSpec, l
             portrait=_img(tmp / f"portrait{i}.jpg", "#FCEFD2", (1300, 1950)),
             portrait_line=f"{n} نَجْمٌ يُضيءُ صَفَّنا.",
             gender=("m", "f", None)[i],
+            portrait_title="هٰذِهِ أَنا" if i == 1 else "",  # جنى's own heading; the others take the book's
         )
         for i, n in enumerate(names)
     ]
@@ -104,6 +106,19 @@ def test_every_copy_has_the_shared_pages_with_its_own_portrait_second(
             and abs(float(cover.pages[0].mediabox.width) / MM - spec.wrap_width_mm) < 0.3
         )
         assert files.passed(copy.stem), {k: v.to_dict() for k, v in files.preflight[copy.stem].items()}
+
+
+def test_a_girl_says_hadhihi_ana_over_her_portrait(
+    rendered: tuple[ClassBookSpec, list[ChildCopy], ClassFiles],
+) -> None:
+    """The heading over each child's portrait is in the child's gender («هٰذِهِ أَنا» for جنى)."""
+    _, copies, files = rendered
+
+    def heading(i: int) -> str:
+        return re.sub("[\u064b-\u0652\u0670]", "", _text(PdfReader(files.interiors[copies[i].stem]), 1))
+
+    assert "هذه أنا" in heading(1) and "هذا أنا" not in heading(1)
+    assert "هذا أنا" in heading(0)
 
 
 def test_the_combined_print_file_holds_every_copy_and_shares_the_pictures(

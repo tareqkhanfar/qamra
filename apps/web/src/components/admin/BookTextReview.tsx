@@ -27,6 +27,9 @@ export type TextEdit = {
   created_at: string;
 };
 
+/** «تحقق من التذكير والتأنيث»: a word where the hero's gender may be wrong (qamra_ai.pipeline.gender_check). */
+export type GenderHint = { field: string; word: string; context: string; rule: string };
+
 export type TextReviewBook = {
   id: string;
   status: string;
@@ -53,7 +56,15 @@ export type TextReviewBook = {
   text_originals: Partial<Record<StoryField, string | null>>;
   text_edits: TextEdit[];
   class_pages: { index: number; text: string | null }[];
+  gender_check?: GenderHint[];
 };
+
+/** The row a hint belongs to: «page:3» → «page-3», «lesson» → «parents_lesson»… («review»: the whole book). */
+function hintRow(field: string): string {
+  if (field.startsWith("page:")) return `page-${field.slice(5)}`;
+  if (field.startsWith("question:")) return "parents_questions";
+  return field === "lesson" ? "parents_lesson" : field;
+}
 
 type Row = {
   key: string;
@@ -141,6 +152,11 @@ export function BookTextReview({
   ];
   const historyOf = (row: Row) =>
     book.text_edits.filter((e) => (row.field ? e.field === row.field : e.field === "page" && e.beat === row.beat));
+  const hints = book.flags.includes("gender_check") ? (book.gender_check ?? []) : [];
+  const hintsOf = (row: Row) => hints.filter((h) => hintRow(h.field) === row.key);
+  const rowLabel = (field: string) => rows.find((r) => r.key === hintRow(field))?.label ?? "";
+  const ruleLabel = (rule: string) =>
+    t.has(`words.genderCheck.rules.${rule}`) ? t(`words.genderCheck.rules.${rule}`) : rule;
 
   return (
     <section
@@ -164,6 +180,28 @@ export function BookTextReview({
         </span>
       </div>
 
+      {hints.length > 0 && (
+        <div
+          role="status"
+          className="flex flex-col gap-2 rounded-md border border-warning/30 bg-warning-bg px-4 py-3 text-small text-warning"
+        >
+          <span className="font-semibold">{t("words.genderCheck.title")}</span>
+          <span className="text-ink">
+            {t("words.genderCheck.intro", { gender: book.child.gender === "f" ? "f" : "m" })}
+          </span>
+          <ul className="flex flex-col gap-1 text-ink">
+            {hints.map((h, i) => (
+              <li key={`${h.field}:${h.word}:${i}`} className="flex flex-wrap gap-x-2">
+                <strong>{rowLabel(h.field) || ruleLabel(h.rule)}</strong>
+                <span className="text-ink-muted">{ruleLabel(h.rule)}</span>
+                <span dir={lang === "ar" ? "rtl" : "ltr"} lang={lang} className={lang === "ar" ? naskh.className : ""}>
+                  «{h.word}» — {h.context}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       {book.flags.includes("text_changed") && (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-warning/30 bg-warning-bg px-4 py-3 text-small text-warning">
           <span className="font-semibold">{t("words.changed")}</span>
@@ -204,6 +242,7 @@ export function BookTextReview({
               busy={busy}
               thumb={thumb}
               edits={historyOf(row)}
+              hints={hintsOf(row)}
               onSaved={onSaved}
               onError={onError}
             />
@@ -222,6 +261,7 @@ function TextRow({
   busy,
   thumb,
   edits,
+  hints,
   onSaved,
   onError,
 }: {
@@ -232,6 +272,7 @@ function TextRow({
   busy: boolean;
   thumb: (beat: number) => string;
   edits: TextEdit[];
+  hints: GenderHint[];
   onSaved: () => Promise<void>;
   onError: (text: string) => void;
 }) {
@@ -307,6 +348,13 @@ function TextRow({
           {row.byFamily && (
             <span className="rounded-full bg-lav-300/40 px-2 py-0.5 text-[11px] font-bold text-lav-700">
               {t("flags.parent_edited")}
+            </span>
+          )}
+          {hints.length > 0 && (
+            <span className="rounded-full bg-warning-bg px-2 py-0.5 text-[11px] font-bold text-warning">
+              {t("words.genderCheck.row", {
+                words: hints.map((h) => `«${h.word}»`).join(lang === "ar" ? "، " : ", "),
+              })}
             </span>
           )}
         </div>

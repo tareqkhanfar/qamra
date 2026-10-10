@@ -15,7 +15,9 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from qamra_ai.pipeline.assemble import AssemblyInputs, BookFiles
-from qamra_ai.pipeline.theme import CONTENT_DIR
+from qamra_ai.pipeline.classic import classic_story
+from qamra_ai.pipeline.models import Child as AIChild
+from qamra_ai.pipeline.theme import CONTENT_DIR, load_theme
 from qamra_core.db.models import (
     Book,
     BookPage,
@@ -259,6 +261,28 @@ async def test_a_story_page_without_text_fails_the_build(db: Session, storage: O
     assert result == {"status": "text_missing"} and book.status == BookStatus.failed
     assert "text_missing" in book.flags and "[5]" in (book.error or "")
     assert not db.scalars(select(BookPage).where(BookPage.book_id == book.id)).all()  # nothing drawn
+
+
+async def test_a_gender_slip_flags_the_book_for_the_text_review(db: Session, storage: ObjectStorage) -> None:
+    """«تحقق من التذكير والتأنيث»: a story that speaks to the girl as to a boy is never failed. The book is
+    flagged for the staff text review with a hint on the word; the staff's fix and «إعادة إخراج الملفات»
+    clear it."""
+    book = _book(db, storage)
+    story = classic_story(load_theme("first-day"), AIChild(name="سلمى", gender="f", age=5), "ar", "قَمّور")
+    slip = [p.model_copy(update={"text": p.text.replace("لَا تَخَافِي", "لَا تَخَفْ")}) for p in story.pages]
+    assert slip != story.pages
+    book.story = story.model_copy(update={"pages": slip}).model_dump()
+    db.commit()
+    result = await run_book_job(db, storage, book, "preview")
+    db.refresh(book)
+    assert result["status"] == "preview" and "gender_check" in book.flags, (result, book.flags)
+    assert [(h["field"], h["word"]) for h in book.generation["gender_check"]] == [("page:6", "تَخَفْ")]
+    pages = [p.model_copy(update={"text": story.pages[5].text}) if p.index == 6 else p for p in slip]
+    book.story = {**book.story, "pages": [p.model_dump() for p in pages]}  # the staff's fix of page 6
+    db.commit()
+    await rerender_book(db, storage, book)
+    db.refresh(book)
+    assert "gender_check" not in book.flags and "gender_check" not in book.generation
 
 
 def test_the_cover_photo_is_used_only_while_it_is_kept(db: Session, storage: ObjectStorage) -> None:
