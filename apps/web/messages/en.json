@@ -2916,7 +2916,8 @@
       "text_unsafe": "Flagged by the text check",
       "name_en_guessed": "English name auto-guessed",
       "name_not_traceable": "Name tracing incomplete",
-      "gender_check": "Check boy/girl wording"
+      "gender_check": "Check boy/girl wording",
+      "cutout_fallback": "Character framed (cut-out failed)"
     },
     "status": {
       "draft": "Draft",
