@@ -31,6 +31,7 @@ PREVIEW_TAG = {
 }
 PREVIEW_SHORT = {"text_candidate": "مرشَّح", "text_verified": "بانتظار المشرف"}
 TOKEN = re.compile(r"\{src:([a-z0-9-]+)\}")  # a source's wording inside a text: {src:d-eat-start}
+RIBBON_H = 12.0  # mm of the unit's ribbon below the trim (islamic-book.css: .isl-ribbon adds the bleed)
 
 
 @dataclass(frozen=True)
@@ -81,7 +82,7 @@ def chrome(ctx: PageContext, problems: list[str]) -> dict[str, Any]:
         if "{src:" in text:
             problems.append(f"a title or an instruction cannot hold a {{src:…}} token: {text!r}")
     return {
-        "ribbon": ribbon_svg(motif, style.color, ink, g.page_w),
+        "ribbon": ribbon_svg(motif, style.color, ink, g.page_w, RIBBON_H, g.bleed),
         "star": star8_svg("#C9962B", 7.4, "#FFFBEE"),
         "unit": ctx.text(style.name_ar),
         "ink": ink,
