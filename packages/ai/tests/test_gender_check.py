@@ -90,6 +90,7 @@ def test_every_theme_text_renders_whole_for_both_genders(slug: str, lang: str, g
     if theme.catalog:
         for text in (theme.catalog.name_ar, theme.catalog.tagline_ar, theme.catalog.description_ar):
             assert not _LEFTOVER.search(text), text
+            assert "بطلنا" not in text, text  # read before the child is chosen: «طفلك», never a boy's «بطلنا»
 
 
 @pytest.mark.parametrize("slug", STORIES)

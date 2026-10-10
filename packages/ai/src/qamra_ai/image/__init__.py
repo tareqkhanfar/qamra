@@ -81,6 +81,32 @@ def make_cover_image_provider(settings: Settings) -> FallbackImageProvider | Non
     )
 
 
+def make_character_image_providers(
+    settings: Settings,
+) -> tuple[FallbackImageProvider | None, FallbackImageProvider | None]:
+    """(portrait, sheet): the child's character, portrait first, each step on its own fal model
+    (`character_portrait_model`, `character_sheet_model`; Nano Banana Pro by default), falling back to the
+    page model, as the cover does. None for a step whose model is empty or the page model, and for every step
+    off fal (Gemini, OpenAI and the offline providers draw both with the page provider, same prompts)."""
+    if settings.image_provider != "fal":
+        return None, None
+    key = _secret(settings.fal_key)
+
+    def one(model: str) -> FallbackImageProvider | None:
+        model = model.strip()
+        if not model or model.removesuffix("/edit") == settings.fal_image_model.removesuffix("/edit"):
+            return None
+        from qamra_ai.image.fal import FalImageProvider
+
+        return FallbackImageProvider(
+            FalImageProvider(key, model),
+            FalImageProvider(key, settings.fal_image_model),
+            switch_after=settings.fallback_after_failures,
+        )
+
+    return one(settings.character_portrait_model), one(settings.character_sheet_model)
+
+
 def make_classic_image_provider(settings: Settings) -> FallbackImageProvider:
     """The Classic hero-edit provider (Addendum 4 §1A, §8), through the same factory and fallback.
 
@@ -117,6 +143,7 @@ __all__ = [
     "ImageRequest",
     "RefImage",
     "Upscaler",
+    "make_character_image_providers",
     "make_classic_image_provider",
     "make_cover_image_provider",
     "make_image_provider",

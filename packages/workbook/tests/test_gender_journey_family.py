@@ -349,10 +349,11 @@ def test_the_family_book_speaks_of_the_child_in_their_gender(dumps: dict[str, tu
     boy, girl = dumps["family-interior"]
     assert "هَذا أَنا!" in boy["family-p5"] and "هَذِهِ أَنا!" in girl["family-p5"]
     assert "هَذا أَنا الآنَ!" in boy["family-p111"] and "هَذِهِ أَنا الآنَ!" in girl["family-p111"]
-    # the chef adventure: «الشّيف» is masculine, so the girl is «الطَّبّاخَةُ الصَّغيرَةُ» (as her stamp)
-    assert "الطَّبّاخَةُ الصَّغيرَةُ" in girl["family-p24"] and "الشَّيْفُ الصَّغيرُ" in boy["family-p24"]
+    # the chef adventure: «الطَّبّاخُ الصَّغيرُ» / «الطَّبّاخَةُ الصَّغيرَةُ», the same word as the stamp
+    # («طَبّاخٌ صَغيرٌ» / «طَبّاخَةٌ صَغيرَةٌ»); never «الشّيف», which has no feminine
+    assert "الطَّبّاخَةُ الصَّغيرَةُ" in girl["family-p24"] and "الطَّبّاخُ الصَّغيرُ" in boy["family-p24"]
     assert not any(
-        "الشّيفُ الصَّغيرَةُ" in line or "الشَّيْفُ الصَّغيرَةُ" in line for lines in girl.values() for line in lines
+        "شّيف" in line or "شَّيْف" in line for d in (boy, girl) for lines in d.values() for line in lines
     )
     # a boy's past tense carries its fatha (never read as «اخترتُ», I chose): «اخترتَه»، «قلتَ»
     assert any("لماذا اخترتَه؟" in line for line in boy["family-p20"])

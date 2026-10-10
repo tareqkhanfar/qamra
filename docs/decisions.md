@@ -2,6 +2,16 @@
 
 Newest first. Each entry: date — decision — why.
 
+## 2026-10-10 — Every drawing kept and choosable; the parent's own words in «ما الذي لا يشبهه؟»
+
+Owner (2026-10-10): «اذا بدي ارسم كمان مرة القديمة ما تنحذف خليك معرضها … عشان المقارنات بين الصور ونمط الرسم» and «بدي تضيف كمان حقل اسمح انه اقدر ادخل كتابة كمان».
+
+- **The child's character is the drawing approved last.** Approving sets `approved_at` to now every time, also for a drawing approved before, so going back to an earlier drawing makes it the one every later book reuses (stories, activity books, the class book: all already pick `approved_at desc`). Older approved drawings stay approved: books and orders may point at them. The web's local fallbacks pick the same way (`lib/drawings.ts` `lastApproved`), and the API sends `approved_at` with each character.
+- **The character step offers only drawings in a style this book can use** (the style step's list: the line's styles; Classic, the styles with a live template for the child's look). Approving one in another style moves the flow to that style (`?style=`), so the book is drawn in it.
+- **A redraw is always a new drawing** (`redraw: true`, sent by the redraw button). Before, a redraw without chips could return the approved drawing in the same style.
+- **The note never goes into an image prompt as written.** Claude (the fast model, `character_feedback` v1) keeps only what is about how the child looks and rewrites it as a short English instruction for `character_sheet` v4. The hijab, glasses and gender stay the family's settings. The instant local screen of the custom-story brief runs first (links, phone numbers, plainly unsafe words), so personal data never reaches the text provider. An unsafe or off-topic note, or a failed text step, is ignored without an error: the redraw uses the chips. Only the outcome is logged, never the note. 200 characters, counted after squashing spaces.
+- **Drawings never approved are abandoned drafts:** after `draft_retention_days` (30) the cleanup deletes the picture and marks the row `discarded`. It still counts as one of the 3 free redraws. The parent's note goes with it, and from failed drawings too. Approved drawings stay until «احذفوا كل بيانات طفلي».
+
 ## 2026-09-29 — The template studio: theme versions, bulk actions, staff roles (Addendum 4 step 4, W8)
 
 - **Theme versions live in `theme_versions`** (definition JSON, status, author, timestamps). `themes.definition` stays the live copy that every reader already uses, so nothing else had to change.
@@ -793,6 +803,14 @@ Owner (2026-10-09): «انت بالحكايات والدوسيات ماخذ بع
 - **A gender slip in AI text never blocks a book.** Before, the safety review marked a misgendered story unsafe and the book failed. Now the review lists the words (`gender_issues`), a deterministic check reads them too (`qamra_ai.pipeline.gender_check`), and the book is flagged `gender_check` for the staff text review that every story book goes through anyway. The check prefers silence to noise: a mark decides only where it is written, a verb that can take the child as its object counts only when the name is marked as the subject, and a word that is also a noun counts only when its marks make it a verb. Its rules and lexicon are in the module.
 - **Wording fixes in live themes ship with their cache patch** (`vowelize.TEXT_FIXES`). The theme keeps its version number. The deploy patches the stored definitions and the Classic templates' cached vowelization, so no paid re-vowelization is needed.
 - **Generic texts with no child** (catalog descriptions, the home page) may keep the generic masculine «طفلكم» where a neutral wording would read worse. A text that names a child, or sits next to a known girl, follows her gender.
+
+## Names with hamzat al-wasl: told by their pattern (2026-10-10)
+
+- **A name is wasl when its first word is the article («ال», `has_article`) or the masdar of a derived verb typed with a bare alif:** افتعال (with ت → ط / د after ص ض ط ظ / ز), انفعال (not a plural in «…اء» such as «أنبياء») and استفعال (`_WASL_MASDAR`, the web's `WASL_MASDAR`). The patterns cover the common names (ابتسام، انتصار، ابتهال، اعتدال، امتثال، اعتماد، امتنان، اختيار، اشتياق، ارتقاء، ازدهار، انشراح، استقلال…) and any other name of these forms, which a fixed list would miss. Rarer shapes («استقامة», «اطمئنان») are not covered. No common Arabic name with hamzat al-qat' fits them, even typed without its hamza («اسراء», «انعام», «استبرق»). The few foreign names that do («انطوان», «انستاس», «استيفان») are exceptions (`NOT_WASL`).
+- **`NOT_ARTICLE` grew** with names typed without their hamza that the article rule read as «ال»: «الفت، الفة، الماس، الطاف، الحان، اليف» (أُلفت، أُلفة، ألماس، ألطاف، ألحان، أليف) and the foreign «البير، البرت، الفريد، الكسندر، اليكس، اليس».
+- **The parent's spelling decides:** a wasl name typed with a hamza («إبتسام») prints as typed, and the sukun before it stays, since the reader sees a hamzat al-qat'. We do not respell names.
+- **«مِنْ» before hamzat al-wasl:** a fatha before the article («مِنَ الجود»), a kasra before any other wasl («مِنِ ابتسام»). «مَنْ» (who) always takes the kasra («مَنِ الجود»). Other sukun endings take the kasra, a plural «ـمْ» takes the damma («عَلَيْكُمُ»), and a long vowel drops its sukun («فِي»).
+- **Not covered:** AI-written text (Magic stories). The model writes the name inside its own words, so the prompts' rules apply there and not this filling.
 
 ## «شبه حقيقي» v3: a realistic painted portrait, not a storybook cartoon (2026-10-10, proposal)
 

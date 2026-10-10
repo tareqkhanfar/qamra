@@ -155,3 +155,31 @@ async def test_the_gender_review_fixes_reach_the_templates_without_the_model(adb
         if slug == "graduation":
             assert "who hugged her tight" in english.pages[13].text
     assert not [c for c in await upsert_themes(adb) if c.startswith("!")]  # the next deploy: nothing to do
+
+
+async def test_the_catalog_cards_reach_the_stored_themes(adb: AsyncSession) -> None:
+    """olive-season, neighborhood-friends and moon-trip spoke of every hero as a boy in the catalog («يحمل
+    بطلنا…»); the deploy puts «طفلك» in the stored theme and in every version of it."""
+    await upsert_themes(adb)
+    rows = {}
+    for slug in ("olive-season", "neighborhood-friends", "moon-trip"):
+        row = (await adb.execute(select(ThemeRow).where(ThemeRow.slug == slug))).scalar_one()
+        old = _before_review(copy.deepcopy(row.definition), slug)
+        assert "بطلنا" in json.dumps(old["catalog"], ensure_ascii=False)
+        row.definition = old
+        for version in (
+            await adb.execute(select(ThemeVersion).where(ThemeVersion.theme_id == row.id))
+        ).scalars():
+            version.definition = old
+        rows[slug] = row
+    await adb.commit()
+
+    await upsert_themes(adb)  # the deploy
+    for slug, row in rows.items():
+        await adb.refresh(row)
+        catalog = row.definition["catalog"]
+        texts = f"{catalog['tagline_ar']} {catalog['description_ar']}"
+        assert "بطلنا" not in texts and "طفلك" in texts, slug
+        versions = (await adb.execute(select(ThemeVersion).where(ThemeVersion.theme_id == row.id))).scalars()
+        assert all("بطلنا" not in json.dumps(v.definition, ensure_ascii=False) for v in versions), slug
+    assert "يحمل طفلك سلّته الصغيرة" in rows["olive-season"].definition["catalog"]["description_ar"]

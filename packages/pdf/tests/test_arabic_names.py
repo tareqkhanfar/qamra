@@ -16,6 +16,7 @@ from qamra_pdf.arabic_names import (
     has_article,
     in_case,
     remark,
+    starts_with_wasl,
     unmark,
     with_helping_vowel,
 )
@@ -220,6 +221,7 @@ def test_a_title_finds_the_name_in_its_case() -> None:
     [
         *[("المعتصم", True), ("الْحَسَن", True), ("الليث", True), ("الجود", True), ("الين", False)],
         *[("الاء", False), ("الهام", False), ("الياس", False), ("أحمد", False), ("سلمى", False), ("", False)],
+        *[("الفت", False), ("الفة", False), ("الماس", False), ("الطاف", False)],  # أُلفت، أُلفة، ألماس، ألطاف
     ],
 )
 def test_a_name_has_the_article_or_not(name: str, article: bool) -> None:
@@ -245,6 +247,78 @@ def test_a_sukun_before_a_name_with_the_article_takes_the_helping_vowel() -> Non
     for name in ("سلمى", "الين", "أبو بكر"):  # no article: every sukun stays
         assert "هَمَسَتْ" in fill_name(text, "name", name) and "مِنْ" in fill_name(text, "name", name)
     assert with_helping_vowel("هَمَسَتْ ", "الحسن") == "هَمَسَتِ " and with_helping_vowel("هَمَسَتْ ", "سلمى") == "هَمَسَتْ "
+
+
+# ---- names that start with hamzat al-wasl without the article ----
+
+
+@pytest.mark.parametrize(
+    "name",
+    [
+        *["ابتسام", "انتصار", "ابتهال", "اعتدال", "امتثال", "اعتماد", "امتنان", "اختيار", "ارتقاء"],  # افتعال
+        *["اصطفاء", "ازدهار"],  # افتعال, the ت becomes ط / د
+        *["انشراح", "انطلاق"],  # انفعال
+        "استقلال",  # استفعال
+        *["اِبْتِسام", "ابتسام محمد", "  انتصار"],  # the parent's tashkeel, a second name, spaces
+        *["الجود", "المعتصم"],  # the article
+    ],
+)
+def test_a_name_starts_with_hamzat_al_wasl(name: str) -> None:
+    assert starts_with_wasl(name)
+
+
+@pytest.mark.parametrize(
+    "name",
+    [
+        *["أحمد", "إيمان", "آمنة", "إسراء", "أنوار", "إستبرق", "أسماء", "إخلاص", "إنصاف", "أصداء"],  # qat'
+        "إبتسام",  # a wasl name typed with a hamza: printed as written, the sukun before it kept
+        *[
+            "اسراء",
+            "انعام",
+            "ايمان",
+            "استبرق",
+            "اتقان",
+            "اسماء",
+            "انبياء",
+            "اصيل",
+            "ارجوان",
+        ],  # qat', no hamza
+        *["الين", "الهام", "الفت", "الطاف", "الحان", "البرت"],  # «ال» with no article
+        *["انطوان", "انستاس", "استيفان"],  # foreign names that fit a pattern (`NOT_WASL`)
+        *["سلمى", "محمد ابتسام", "Ibtisam", ""],
+    ],
+)
+def test_a_name_starts_with_hamzat_al_qat_or_a_letter(name: str) -> None:
+    assert not starts_with_wasl(name)
+
+
+def test_a_sukun_before_a_wasl_name_takes_the_helping_vowel() -> None:
+    """«قالَتْ ابتسام» reads «قالَتِ ابتسام»: the ت takes a kasra to join the name, as before «ال»; «مِنْ» takes a
+    kasra («مِنِ ابتسام»), not the fatha it takes before the article («مِنَ الجود»)."""
+    text = "قالَتْ {name} وَضَمَّتْ {name:acc} مِنْ {name:gen} عَلَيْكُمْ {name} أَوْ {name} فِيْ {name} لِـ{name:gen}"
+    assert fill_name(text, "name", "ابتسام") == (
+        "قالَتِ ابتسام وَضَمَّتِ ابتسام مِنِ ابتسام عَلَيْكُمُ ابتسام أَوِ ابتسام فِي ابتسام لِابتسام"
+    )
+    assert fill_name(text, "name", "الجود").startswith("قالَتِ الجود وَضَمَّتِ الجود مِنَ الجود")
+    assert fill_name("{ساعِدْ/ساعِدي} {child:acc}".replace("{ساعِدْ/ساعِدي}", "ساعِدْ"), "child", "انتصار") == (
+        "ساعِدِ انتصار"  # the boy's imperative, before a wasl name
+    )
+    assert fill_name("وَهَمَسَتْ {name}", "name", "اِبْتِهال") == "وَهَمَسَتِ اِبْتِهال"
+    for name in (
+        "إبتسام",
+        "أحمد",
+        "إيمان",
+        "آمنة",
+        "انعام",
+        "سلمى",
+        "أبو بكر",
+    ):  # no hamzat al-wasl: every sukun stays
+        filled = fill_name(text, "name", name)
+        assert filled.startswith("قالَتْ ") and "مِنْ " in filled and "عَلَيْكُمْ " in filled, name
+    assert with_helping_vowel("هَمَسَتْ ", "ابتهال") == "هَمَسَتِ "
+    assert with_helping_vowel("مِنْ ", "اعتدال") == "مِنِ " and with_helping_vowel("مِنْ ", "الحسن") == "مِنَ "
+    assert with_helping_vowel("هَمَسَتْ ", "إيمان") == "هَمَسَتْ "
+    assert with_helping_vowel("مَنْ ", "الجود") == "مَنِ "  # «مَنْ» (who) takes the kasra, «مِنْ» the fatha
 
 
 def test_ya_with_a_conjunction_is_a_vocative() -> None:

@@ -106,6 +106,8 @@ type Detail = {
   text_edits: TextEdit[];
   class_pages: { index: number; text: string | null }[];
   gender_check: GenderHint[];
+  // what the parent wrote in «ما الذي لا يشبهه؟» for this book's drawing (instruction: what the redraw used)
+  character_note?: { note: string; instruction: string | null; outcome: string | null } | null;
 };
 type Filter = "review" | "flagged" | "generating" | "approved" | "all";
 
@@ -501,6 +503,19 @@ export function AdminQueue() {
                     {t("character")}
                   </a>
                 </div>
+                {detail.character_note && (
+                  <div className="flex flex-col gap-0.5 border-t border-dashed border-line pt-2">
+                    <span className="font-semibold text-night-900">{t("characterNote")}</span>
+                    <q className="text-ink">{detail.character_note.note}</q>
+                    <span className="text-caption text-ink-muted">
+                      {detail.character_note.instruction ? (
+                        <bdi dir="ltr">{detail.character_note.instruction}</bdi>
+                      ) : (
+                        t("characterNoteUnused")
+                      )}
+                    </span>
+                  </div>
+                )}
               </div>
               <form
                 className="flex flex-col gap-2 rounded-xl border border-line bg-paper-raised p-4 text-small"

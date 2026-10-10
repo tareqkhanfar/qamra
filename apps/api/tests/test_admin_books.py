@@ -17,6 +17,8 @@ from qamra_core.db.models import (
     Book,
     BookPage,
     BookStatus,
+    Character,
+    CharacterStatus,
     Child,
     ChildPhoto,
     Consent,
@@ -341,3 +343,37 @@ async def test_activity_books_retry_with_their_own_job_and_approve_with_their_fi
     await adb.commit()
     r = await client.post(f"/api/admin/books/{book.id}/approve")
     assert r.status_code == 200 and r.json()["status"] == "approved"
+
+
+async def test_the_review_shows_what_the_parent_wrote_about_the_drawing(
+    client: AsyncClient, adb: AsyncSession
+) -> None:
+    """«ما الذي لا يشبهه؟» in the parent's words, next to the character sheet, with what the redraw used."""
+    await make_admin(client, adb)
+    book = await _seed_book(adb)
+    assert (await client.get(f"/api/admin/books/{book.id}")).json()["character_note"] is None
+
+    def drawn(params: dict[str, object]) -> Character:
+        return Character(
+            child_id=book.child_id, art_style="watercolor", status=CharacterStatus.approved, params=params
+        )
+
+    used = drawn({"note": "وجهها أدور", "note_instruction": "Face: rounder.", "note_outcome": "used"})
+    adb.add(used)
+    await adb.flush()
+    book.character_id = used.id
+    await adb.commit()
+    detail = (await client.get(f"/api/admin/books/{book.id}")).json()
+    assert detail["character_note"] == {
+        "note": "وجهها أدور",
+        "instruction": "Face: rounder.",
+        "outcome": "used",
+    }
+
+    ignored = drawn({"note": "شكرًا", "note_outcome": "off_topic"})
+    adb.add(ignored)
+    await adb.flush()
+    book.character_id = ignored.id
+    await adb.commit()
+    detail = (await client.get(f"/api/admin/books/{book.id}")).json()
+    assert detail["character_note"] == {"note": "شكرًا", "instruction": None, "outcome": "off_topic"}

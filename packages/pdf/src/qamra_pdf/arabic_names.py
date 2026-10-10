@@ -16,6 +16,12 @@ every product (story themes, activity books, certificates, covers, emails) fill 
   «لِـأبي»), «لِلمعتصم» (never «لِـالمعتصم»); before any other name the «ـ» stays («لِـسلمى»);
 - every other slot (`{child}`, a subject or a title) prints the name as typed.
 
+A name joins the word before it when it starts with hamzat al-wasl (`starts_with_wasl`): the article
+(«الجود», «المعتصم») or the masdar of a derived verb typed with a bare alif («ابتسام», «انتصار»,
+«ابتهال», «اعتدال», «امتثال», «انشراح»). A word-final sukun before it takes its helping vowel:
+«قالَتْ» + «ابتسام» → «قالَتِ ابتسام», «{ساعِدْ/ساعِدي} {child:acc}» + «انتصار» → «ساعِدِ انتصار»,
+and «مِنْ» → «مِنَ الجود» but «مِنِ ابتسام».
+
 `accusative(name)` and `genitive(name)` change only a name whose first word is «أبو», «ابو» or «ذو» followed
 by another word: «أبو بكر» → «أبا بكر» / «أبي بكر», «ابو بكر» → «ابا بكر» / «ابي بكر» (the parent's hamza
 kept), «ذو الفقار» → «ذا الفقار» / «ذي الفقار», and with the parent's tashkeel «أَبُو بَكْر» → «أَبَا بَكْر» /
@@ -55,13 +61,29 @@ _SUKUN, _DAMMA = "ْ", "ُ"
 # a word's last letter, its marks after it, and the sukun among them (a sukun before hamzat al-wasl)
 _LAST = "[^\\s\u064b-\u0652\u0670]"
 _SUKUN_END = f"({_LAST}){_M}*{_SUKUN}{_M}*"
-# Names that start with «ال» with no article in them, typed without their hamza (أَلين، آلاء، إلهام، إلياس…):
-# their alif is a hamzat al-qat', so «لـ» joins them as «لا» («لِالين», never «لِلين») and the word before them
-# keeps its sukun. Every other name that starts with «ال» + two letters or more has the article («المعتصم»،
-# «الحسن»، «الجود»، «الليث»): its alif is a hamzat al-wasl.
+# Names that start with «ال» with no article in them, typed without their hamza (أَلين، آلاء، إلهام،
+# إلياس، أُلفت…): their alif is a hamzat al-qat', so «لـ» joins them as «لا» («لِالين», never «لِلين») and
+# the word before them keeps its sukun. Every other name that starts with «ال» + two letters or more has
+# the article («المعتصم»، «الحسن»، «الجود»، «الليث»): its alif is a hamzat al-wasl.
 NOT_ARTICLE = frozenset(
     {"الين", "الاء", "الهام", "الياس", "الما", "اليسا", "اليسار"}
     | {"الينا", "اليانا", "الان", "الينور", "اليان"}
+    | {"الفت", "الفة", "الماس", "الطاف", "الحان"}  # أُلفت، أُلفة، ألماس، ألطاف، ألحان
+    | {"البير", "البرت", "الفريد", "الكسندر", "اليكس", "اليس", "اليف"}  # Albert, Alfred, Alexander, Alice…
+)
+# Names that start with hamzat al-wasl with no article: the masdar of the derived verb forms, typed
+# with a bare alif. افْتِعال: «ابتسام», «انتصار», «ابتهال», «اعتدال», «امتثال», «اعتماد», «امتنان»,
+# «اختيار», «ارتقاء» (and «اصطفاء», «ازدهار», where the ت becomes ط or د); انْفِعال: «انشراح»,
+# «انطلاق»; اسْتِفْعال: «استقلال». Not these: a name with a hamzat al-qat' («أحمد», «إيمان», «آمنة»,
+# «إسراء», «أنوار», «إستبرق»), even typed without its hamza («اسراء», «انعام», «استبرق»: not of these
+# patterns; the foreign names that fit one are `NOT_WASL`), and a wasl name typed with a hamza
+# («إبتسام»): it prints as the parent wrote it, so the sukun before it stays.
+# foreign names that fit a pattern: أنطوان، أنستاس، إستيفان
+NOT_WASL = frozenset({"انطوان", "انستاس", "استيفان"})
+_WASL_MASDAR = re.compile(
+    "^ا(?:[ء-ي]ت|[صضطظ]ط|زد)[ء-ي]ا[ء-ي]$"  # افتعال: ابتسام، انتصار، اصطفاء، ازدهار
+    "|^ان[ء-ي]{2}ا[ء-ي](?<!ء)$"  # انفعال: انشراح، انطلاق (not a plural أنبياء، أنقياء)
+    "|^است[ء-ي]{2}ا[ء-ي]$"  # استفعال: استقلال
 )
 
 
@@ -107,6 +129,17 @@ def has_article(name: str) -> bool:
     return bool(words) and words[0].startswith("ال") and len(words[0]) >= 4 and words[0] not in NOT_ARTICLE
 
 
+def starts_with_wasl(name: str) -> bool:
+    """The name starts with hamzat al-wasl, so the word before it joins it (`with_helping_vowel`): the article
+    («المعتصم», «الْحَسَن», `has_article`) or the masdar of a derived verb typed with a bare alif («ابتسام»,
+    «انتصار», «ابتهال», «اعتدال», «امتثال», «انشراح», «استقلال»); not «أحمد», «إيمان», «آمنة», «إبتسام» (typed
+    with a hamza), «الين» or «سلمى»."""
+    words = re.sub(_M, "", name).split()
+    if not words or words[0] in NOT_WASL:
+        return False
+    return has_article(name) or _WASL_MASDAR.match(words[0]) is not None
+
+
 def after_lam(form: str) -> str | None:
     """The name written onto a «ل» before it, when they join: «أبي بكر» → «أبي بكر» («لِأبي بكر», the لا
     ligature), «المعتصم» → «لمعتصم» («لِلمعتصم»: the article's alif goes), «الليث» → «ليث» («لِليث»: «ل» + «الل»
@@ -130,15 +163,16 @@ def _join_lam(text: str, marked: str, form: str) -> str:
     return re.sub(f"(ل{_M}*)ـ" + re.escape(marked), lambda m: m.group(1) + joined, text)
 
 
-def _helping_vowel(m: re.Match[str]) -> str:
-    """The vowel a word-final sukun takes before hamzat al-wasl: «مِنَ», «هُمُ» / «كُمُ» / «تُمُ», else «ِ»
-    («هَمَسَتِ», «أَوِ»); a long vowel («فِيْ») keeps its letter and loses the sukun."""
+def _helping_vowel(m: re.Match[str], article: bool = True) -> str:
+    """The vowel a word-final sukun takes before hamzat al-wasl: «مِنَ» before the article (`article`) and
+    «مِنِ» before any other wasl («مِنِ ابتسام»), «هُمُ» / «كُمُ» / «تُمُ», else «ِ» («هَمَسَتِ», «أَوِ», «مَنِ»); a
+    long vowel («فِيْ») keeps its letter and loses the sukun."""
     word, letter = m.group(1), m.group(2)
     plain = re.sub(_M, "", word + letter)
     if letter in "اى" or (letter in "وي" and not re.search(f"َ{_M}*$", word)):
         return word + letter + m.group(3)  # a long vowel: no helping vowel, the sukun goes
-    if plain in ("من", "ومن", "فمن"):
-        vowel = _FATHA
+    if plain in ("من", "ومن", "فمن") and article and _KASRA in word:
+        vowel = _FATHA  # «مِنَ الجود»; «مَنْ» (who) takes the kasra: «مَنِ الجود»
     elif letter == "م" and re.search(f"{_DAMMA}{_M}*$", word):
         vowel = _DAMMA
     else:
@@ -148,11 +182,13 @@ def _helping_vowel(m: re.Match[str]) -> str:
 
 def with_helping_vowel(before: str, name: str) -> str:
     """`before`, the text right before `name`, with the sukun on its last word turned into the helping vowel
-    when the name starts with the article: «هَمَسَتْ» + «الجود» → «هَمَسَتِ الجود», «وَضَمَّتْ» + «الحسن» →
-    «وَضَمَّتِ الحسن», «مِنْ» + «المعتصم» → «مِنَ المعتصم»; unchanged for any other name."""
-    if not has_article(name):
+    when the name starts with hamzat al-wasl (`starts_with_wasl`): «هَمَسَتْ» + «الجود» → «هَمَسَتِ الجود»,
+    «وَضَمَّتْ» + «الحسن» → «وَضَمَّتِ الحسن», «مِنْ» + «المعتصم» → «مِنَ المعتصم», «قالَتْ» + «ابتسام» →
+    «قالَتِ ابتسام», «مِنْ» + «ابتسام» → «مِنِ ابتسام»; unchanged for any other name."""
+    if not starts_with_wasl(name):
         return before
-    return re.sub(f"(\\S*?){_SUKUN_END}(\\}}?\\s+)$", _helping_vowel, before)
+    article = has_article(name)
+    return re.sub(f"(\\S*?){_SUKUN_END}(\\}}?\\s+)$", lambda m: _helping_vowel(m, article), before)
 
 
 def fill_name(text: str, slot: str, name: str) -> str:
@@ -162,10 +198,11 @@ def fill_name(text: str, slot: str, name: str) -> str:
     plain, acc, gen = "{" + slot + "}", "{" + slot + ACC + "}", "{" + slot + GEN + "}"
     if plain not in text and acc not in text and gen not in text:
         return text
-    if has_article(name):  # «هَمَسَتْ {name}» + «الجود» → «هَمَسَتِ الجود»
+    if starts_with_wasl(name):  # «هَمَسَتْ {name}» + «الجود» → «هَمَسَتِ الجود», + «ابتسام» → «هَمَسَتِ ابتسام»
         any_slot = f"(?=\\{{{re.escape(slot)}(?:{ACC}|{GEN})?\\}})"
         pattern = f"(\\S*?){_SUKUN_END}(\\}}?\\s+){any_slot}"
-        text = re.sub(pattern, _helping_vowel, text)
+        article = has_article(name)
+        text = re.sub(pattern, lambda m: _helping_vowel(m, article), text)
     form = accusative(name)
     text = text.replace(acc, form)
     if gen in text:

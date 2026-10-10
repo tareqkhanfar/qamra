@@ -121,6 +121,55 @@ def test_abandoned_drafts_deleted_after_30_days(db: Session, storage: ObjectStor
     assert not storage.exists(f"children/{child.id}/books/{old.id}/page-1.png")
 
 
+def test_drawings_never_approved_are_discarded_after_30_days(db: Session, storage: ObjectStorage) -> None:
+    """Every redraw is kept for comparing; one the parent never approved is an abandoned draft: its picture
+    and the parent's note go after 30 days, an approved drawing stays for the next books."""
+    child = _child(db)
+    note = {"attempt": 2, "fixes": ["hair"], "note": "شعره أجعد", "note_instruction": "Hair: curlier."}
+
+    def drawing(status: CharacterStatus, approved: bool = False, **params: object) -> Character:
+        c = Character(
+            child_id=child.id,
+            art_style="3d",
+            status=status,
+            approved_at=NOW - timedelta(days=40) if approved else None,
+            params=dict(params),
+        )
+        db.add(c)
+        db.flush()
+        if status in (CharacterStatus.ready, CharacterStatus.approved):
+            c.sheet_image_key = f"children/{child.id}/characters/{c.id}.png"
+            storage.put(c.sheet_image_key, b"sheet", "image/png")
+        return c
+
+    old = drawing(CharacterStatus.ready, **note)
+    chosen = drawing(CharacterStatus.approved, approved=True, **note)
+    failed = drawing(CharacterStatus.failed, **note)
+    fresh = drawing(CharacterStatus.ready, **note)
+    old_key, chosen_key, fresh_key = old.sheet_image_key, chosen.sheet_image_key, fresh.sheet_image_key
+    db.execute(
+        update(Character)
+        .where(Character.id.in_([old.id, chosen.id, failed.id]))
+        .values(updated_at=NOW - timedelta(days=31))
+    )
+    db.execute(update(Character).where(Character.id == fresh.id).values(updated_at=NOW - timedelta(days=2)))
+    db.commit()
+
+    assert cleanup_expired_media(db, storage, SETTINGS, now=NOW).characters_discarded == 1
+    for c in (old, chosen, failed, fresh):
+        db.refresh(c)
+    assert old.status == CharacterStatus.discarded and old.sheet_image_key is None
+    assert old_key and not storage.exists(old_key)
+    assert old.params == {"attempt": 2, "fixes": ["hair"]}  # the parent's words are gone with the picture
+    assert failed.status == CharacterStatus.failed and "note" not in failed.params  # still not a redraw
+    assert chosen.status == CharacterStatus.approved and chosen_key and storage.exists(chosen_key)
+    assert chosen.params["note"] == "شعره أجعد"  # the approved drawing keeps how it was asked for
+    assert fresh.status == CharacterStatus.ready and fresh_key and storage.exists(fresh_key)
+    audit = db.scalars(select(AuditLog).where(AuditLog.action == "character.draft_expired")).one()
+    assert audit.entity_id == str(old.id)
+    assert cleanup_expired_media(db, storage, SETTINGS, now=NOW).characters_discarded == 0  # idempotent
+
+
 def test_stalled_work_is_released_unless_a_job_is_still_pending(db: Session) -> None:
     """A book or character left `generating` by a dead job becomes `failed` after 2 hours; one whose job still
     waits in the queue (a long class batch) or whose order item has a pending job is left alone."""

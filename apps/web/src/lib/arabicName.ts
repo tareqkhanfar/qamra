@@ -49,6 +49,12 @@ const NOT_ARTICLE = new Set([
   "الان",
   "الينور",
   "اليان",
+  "الفت", // أُلفت
+  "الفة", // أُلفة
+  "الماس", // ألماس
+  "الطاف", // ألطاف
+  "الحان", // ألحان
+  ...["البير", "البرت", "الفريد", "الكسندر", "اليكس", "اليس", "اليف"], // Albert, Alfred, Alexander, Alice…
 ]);
 const MARKS = new RegExp(MARK, "g");
 
@@ -56,6 +62,28 @@ const MARKS = new RegExp(MARK, "g");
 export function hasArticle(name: string): boolean {
   const first = name.replace(MARKS, "").trim().split(/\s+/)[0] ?? "";
   return first.startsWith("ال") && first.length >= 4 && !NOT_ARTICLE.has(first);
+}
+
+/** Foreign names that fit a pattern (Python `NOT_WASL`): أنطوان، أنستاس، إستيفان. */
+const NOT_WASL = new Set(["انطوان", "انستاس", "استيفان"]);
+
+/**
+ * A first word that starts with hamzat al-wasl with no article (Python `_WASL_MASDAR`): the masdar of a derived
+ * verb typed with a bare alif. افتعال «ابتسام», «انتصار», «ابتهال», «اعتدال», «امتثال» (and «اصطفاء», «ازدهار»),
+ * انفعال «انشراح» (not a plural «أنبياء»), استفعال «استقلال». A hamzat al-qat' («أحمد», «إيمان», «آمنة», «إسراء»,
+ * «اسراء» typed without it) and a wasl name typed with a hamza («إبتسام») do not match.
+ */
+const WASL_MASDAR = /^ا(?:[ء-ي]ت|[صضطظ]ط|زد)[ء-ي]ا[ء-ي]$|^ان[ء-ي]{2}ا[ء-ي](?<!ء)$|^است[ء-ي]{2}ا[ء-ي]$/;
+
+/**
+ * The name starts with hamzat al-wasl, so the word before it joins it (Python `starts_with_wasl`): the article
+ * («المعتصم») or the masdar of a derived verb typed with a bare alif («ابتسام», «انتصار», «ابتهال», «اعتدال»,
+ * «امتثال», «انشراح»); not «أحمد», «إيمان», «آمنة», «إبتسام» (typed with a hamza), «الين» or «سلمى».
+ */
+export function startsWithWasl(name: string): boolean {
+  const first = name.replace(MARKS, "").trim().split(/\s+/)[0] ?? "";
+  if (first === "" || NOT_WASL.has(first)) return false;
+  return hasArticle(name) || WASL_MASDAR.test(first);
 }
 
 /**
@@ -103,13 +131,17 @@ const YA = `(?<![\\u0600-\\u06ff])(?:[وف]${MARK}*)?ي${MARK}*ا${MARK}*\\s+`;
 /** A word-final sukun, the letter before it and its marks, before a slot (Python `_SUKUN_END`). */
 const SUKUN_END = `(\\S*?)([^\\s\\u064b-\\u0652\\u0670])${MARK}*ْ${MARK}*(\\}?\\s+)`;
 
-/** The helping vowel of a word-final sukun before hamzat al-wasl (Python `_helping_vowel`). */
-function helpingVowel(word: string, letter: string, space: string): string {
+/**
+ * The helping vowel of a word-final sukun before hamzat al-wasl (Python `_helping_vowel`): «مِنَ» before the
+ * article, «مِنِ» before any other wasl («مِنِ ابتسام»).
+ */
+function helpingVowel(word: string, letter: string, space: string, article: boolean): string {
   if ("اى".includes(letter) || ("وي".includes(letter) && !new RegExp(`َ${MARK}*$`).test(word))) {
     return word + letter + space; // a long vowel («فِيْ»): the sukun goes, no helping vowel
   }
   const plain = (word + letter).replace(MARKS, "");
-  if (["من", "ومن", "فمن"].includes(plain)) return word + letter + "َ" + space; // «مِنَ»
+  // «مِنَ الجود»; «مَنْ» (who) takes the kasra: «مَنِ الجود»
+  if (article && word.includes(KASRA) && ["من", "ومن", "فمن"].includes(plain)) return word + letter + "َ" + space;
   if (letter === "م" && new RegExp(`ُ${MARK}*$`).test(word)) return word + letter + "ُ" + space; // «هُمُ»
   return word + letter + KASRA + space; // «هَمَسَتِ»
 }
@@ -118,15 +150,18 @@ function helpingVowel(word: string, letter: string, space: string): string {
  * `{slot}`, `{slot:acc}` and `{slot:gen}` in a template filled with `name`, as the Python `fill_name` does: the
  * accusative at `{slot:acc}` and right after «يا», the genitive at `{slot:gen}` (joined to a «لـ» / «لِـ» before
  * it: «لِأبي بكر», «لِلمعتصم»), the name as typed everywhere else (the template studio's previews); a word-final
- * sukun before a name with the article takes its helping vowel («هَمَسَتِ الجود»).
+ * sukun before a name that starts with hamzat al-wasl takes its helping vowel («هَمَسَتِ الجود», «قالَتِ ابتسام»).
  */
 export function fillName(text: string, slot: string, name: string): string {
   const form = accusativeName(name);
   const gen = genitiveName(name);
   let out = text;
-  if (hasArticle(name)) {
+  if (startsWithWasl(name)) {
+    const article = hasArticle(name);
     const before = new RegExp(`${SUKUN_END}(?=\\{${slot}(?::acc|:gen)?\\})`, "g");
-    out = out.replace(before, (_, word: string, letter: string, space: string) => helpingVowel(word, letter, space));
+    out = out.replace(before, (_, word: string, letter: string, space: string) =>
+      helpingVowel(word, letter, space, article),
+    );
   }
   out = out.replaceAll(`{${slot}:acc}`, form);
   const joined = afterLam(gen);

@@ -7,7 +7,11 @@ Composition → Safety → Negative (Addendum 3 §3).
 To tune the look, edit this file, not the code. Keep each section short and visual; image models follow
 concrete instructions best. Change the version line on every edit so books record which style drew them.
 
-version: 5
+v6 (2026-10-10, the likeness work): no more "rounded" characters with "slightly large heads and short limbs".
+Those words turned every real child into the same younger, rounder face. A child keeps their own face
+proportions, eye size and real age; the art style changes only how the picture is rendered.
+
+version: 6
 
 ## Style
 A premium children's picture-book illustration. The medium and rendering come from the art-style line below
@@ -16,9 +20,8 @@ by every style.
 The palette is warm moonlit-and-golden: deep indigo and night blue, moon gold and honey, and creamy whites,
 with gentle sage-green and coral accents. Light is warm with a golden glow, and every scene has depth:
 foreground, midground and background. Shapes are clean and readable, and backgrounds uncluttered.
-Characters are friendly and rounded, with expressive, happy faces and warm eyes. Children have real faces, never
-chibi or doll-like, with slightly large heads and short limbs unless the art-style line asks for natural
-proportions. Not photorealistic, not anime.
+Characters are friendly, with expressive, happy faces and warm eyes. Children have real faces with their own
+proportions, eye size and real age: never chibi, doll-like or babyish. Not photorealistic, not anime.
 
 ## Setting
 Unless the scene says otherwise, the world is Palestinian and Levantine village and city life:

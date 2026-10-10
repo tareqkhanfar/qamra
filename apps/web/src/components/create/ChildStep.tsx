@@ -276,7 +276,7 @@ export function ChildStep({
               <label htmlFor="kid-name-en" className="text-body font-semibold">
                 {t("who.nameEn")}
               </label>
-              <Hint id="kid-name-en-hint">{t("who.nameEnHint")}</Hint>
+              <Hint id="kid-name-en-hint">{t("who.nameEnHint", { gender: gender ?? "none" })}</Hint>
               <input
                 id="kid-name-en"
                 dir="auto"

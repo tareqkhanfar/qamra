@@ -153,6 +153,19 @@ def fake_translation(step: str, system: str, user: list[UserPart]) -> BaseModel:
     )
 
 
+_NOTE = re.compile(r"<parent_note>\s*(.*?)\s*</parent_note>", re.S)
+
+
+def fake_appearance(step: str, system: str, user: list[UserPart]) -> BaseModel:
+    """The parent's note kept as the instruction, as Claude returns it (character_feedback.v1)."""
+    from qamra_ai.pipeline.character_feedback import AppearanceFeedback
+
+    note = _NOTE.search(_text(user))
+    if note is None:
+        raise ValueError("fake appearance responder: unexpected prompt shape")
+    return AppearanceFeedback(safe=True, about_appearance=True, instruction=f"Appearance: {note.group(1)}")
+
+
 def default_fake_text_provider() -> FakeTextProvider:
     return FakeTextProvider(
         {
@@ -192,5 +205,6 @@ def default_fake_text_provider() -> FakeTextProvider:
             "PortraitQA": lambda *_: PortraitQA(likeness=9, safe=True, text_in_image=False, notes="ok"),
             "VowelizedTexts": fake_vowelized,
             "ThemeTranslation": fake_translation,  # the template studio's English draft
+            "AppearanceFeedback": fake_appearance,  # «ما الذي لا يشبهه؟» in the parent's words
         }
     )

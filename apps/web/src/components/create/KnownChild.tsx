@@ -92,7 +92,7 @@ export function KnownChild({
           <label htmlFor={`en-${child.id}`} className="text-body font-semibold">
             {t("who.nameEn")}
           </label>
-          <Hint id={`en-${child.id}-hint`}>{t("who.nameEnHint")}</Hint>
+          <Hint id={`en-${child.id}-hint`}>{t("who.nameEnHint", who)}</Hint>
           <input
             id={`en-${child.id}`}
             dir="auto"

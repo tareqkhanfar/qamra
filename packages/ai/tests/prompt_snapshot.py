@@ -27,6 +27,7 @@ from qamra_ai.config import Settings
 from qamra_ai.image.fake import FakeImageProvider
 from qamra_ai.pipeline.book import default_companion
 from qamra_ai.pipeline.character import character_request
+from qamra_ai.pipeline.character import portrait_request as character_portrait_request
 from qamra_ai.pipeline.classbook import Kid, load_class_template, picture_prompt
 from qamra_ai.pipeline.classic import Variant, placeholder_request, portrait_request
 from qamra_ai.pipeline.companion import companion_request, default_companion_request
@@ -41,8 +42,10 @@ from qamra_ai.pipeline.theme import ArtStyle, art_style, load_style, load_theme
 GOLDEN = Path(__file__).parent / "fixtures" / "prompt_snapshots.json"
 # every style a book can be drawn in: the store's guides and the legacy media of content/styles/styles.yaml
 STYLES = ("3d", "watercolor", "cartoon", "coloring", "crayon", "papercut", "semi-realistic")
-# earlier guide versions kept in prompts/style/history/, snapshotted as "<slug>.v<version>"
-HISTORY = (("semi-realistic", 2),)
+# earlier guide versions kept in prompts/style/history/, snapshotted as "<slug>.v<version>". The
+# semi-realistic v2 entry proved the v2/v3 comparison drew the real v2 (commit 220c5f1); with portrait first
+# (2026-10-10) the templates changed for every guide, so no kept version reproduces its old prompts any more.
+HISTORY: tuple[tuple[str, int], ...] = ()
 
 
 def snapshot_styles() -> dict[str, ArtStyle]:
@@ -90,6 +93,7 @@ def _book_prompts(style: ArtStyle, out: dict[str, str]) -> None:
                     cover=IMG if full else None,
                     cover_plate=IMG if full else None,
                     photo=IMG if full else None,
+                    portrait=IMG if full else None,
                 )
                 if full and ctx.bible is not None:
                     ctx.cast_sheets = {cid: IMG for cid in ctx.bible.cast}
@@ -112,6 +116,15 @@ def assembled_prompts(style: ArtStyle) -> dict[str, str]:
         out[f"character:{who}"] = character_request(child, [IMG], style).prompt
         out[f"character:{who}:redraw"] = character_request(
             child, [IMG, IMG], style, attempt=2, fixes=["skin", "face", "hair", "age"]
+        ).prompt
+        # portrait first (what books send): the portrait, then the sheet painted from it
+        out[f"character-portrait:{who}"] = character_portrait_request(child, [IMG], style).prompt
+        out[f"character-portrait:{who}:redraw"] = character_portrait_request(
+            child, [IMG], style, attempt=2, fixes=["face", "age"], note="The hair is shorter at the sides."
+        ).prompt
+        out[f"character:{who}:portrait-first"] = character_request(child, [IMG], style, portrait=IMG).prompt
+        out[f"character:{who}:portrait-first:redraw"] = character_request(
+            child, [IMG], style, attempt=2, fixes=["hair"], note="Straighter hair.", portrait=IMG
         ).prompt
         out[f"classic-portrait:{who}:sheet"] = portrait_request(child, style, IMG, from_sheet=True).prompt
         out[f"classic-portrait:{who}:photo"] = portrait_request(child, style, IMG, from_sheet=False).prompt

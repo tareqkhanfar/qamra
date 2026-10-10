@@ -277,6 +277,13 @@ TEXT_FIXES: tuple[TextFix, ...] = (
         "{name} shared the happiness with the family.",
         "{name} shared {his/her} joy with {his/her} family.",
     ),
+    # 2026-10-10: the catalog cards spoke of every hero as a boy («بطلنا»); they say «طفلك» to the parent, as
+    # first-day and new-sibling do (a catalog text is read before the child is chosen: no {m/f} there)
+    TextFix("olive-season", "يحمل بطلنا سلّته", "يحمل طفلك سلّته"),
+    TextFix("neighborhood-friends", "يكتشف بطلنا أنّ الفرح", "يكتشف طفلك أنّ الفرح"),
+    TextFix("neighborhood-friends", "معهم يكتشف بطلنا أن", "معهم يكتشف طفلك أن"),
+    TextFix("moon-trip", "يأخذ بطلنا إلى", "يأخذ طفلك إلى"),
+    TextFix("moon-trip", "يصنع بطلنا صاروخًا", "يصنع طفلك صاروخًا"),
 )
 FIXES: tuple[Correction | TextFix, ...] = (*CORRECTIONS, *TEXT_FIXES)
 

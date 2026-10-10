@@ -67,7 +67,7 @@ def test_the_catalog_lists_every_story_with_what_it_is_sold_as(page: Page) -> No
 def test_a_magic_only_story_page_shows_the_story_and_offers_magic(page: Page) -> None:
     page.goto(f"{BASE_URL}/ar/stories/olive-season")
     expect(page.get_by_role("heading", level=1, name="موسم الزيتون")).to_be_visible()
-    expect(page.get_by_text(re.compile("يحمل بطلنا سلّته الصغيرة"))).to_be_visible()  # the summary
+    expect(page.get_by_text(re.compile("يحمل طفلك سلّته الصغيرة"))).to_be_visible()  # the summary
     for chip in ("حبّ الأرض", "الصبر", "احترام الكبار", "3–6 سنوات"):
         expect(
             page.get_by_text(re.compile("^" + chip.replace("\u0651", "\u0651?") + "$")).first
