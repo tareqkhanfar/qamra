@@ -25,6 +25,9 @@ UNIT_AR = {
 }
 
 
+COLOR_GLOSS = {"orange": "بُرْتُقالِيّ"}  # on the Colors page the word is the colour, not the fruit
+
+
 def en_word(word: str, x: float, y: float, size: float, color: str) -> str:
     head, rest = word[:1].upper(), word[1:]
     return (
@@ -62,7 +65,8 @@ def vocab_cards(ctx: PageContext) -> Built:
         body.append(pic(pid, x + (cw - size) / 2, y + 3, size, "line" if coloring else "color"))
         p = PICTURES[pid]
         body.append(en_word(p.word_en, x + cw / 2, y + ch - 10, min(7.0, cw / 8), ctx.style.color))
-        body.append(text(p.word_ar, x + cw / 2, y + ch - 3, 3.6, cls="wb-muted", color="#676B83"))
+        gloss = COLOR_GLOSS.get(pid, p.word_ar) if coloring else p.word_ar
+        body.append(text(gloss, x + cw / 2, y + ch - 3, 3.6, cls="wb-muted", color="#676B83"))
         if coloring:
             body.append(
                 draw.el(

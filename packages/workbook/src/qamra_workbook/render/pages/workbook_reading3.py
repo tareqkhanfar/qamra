@@ -51,7 +51,7 @@ def mark_path(haraka: str, x0: float, y0: float, x1: float, y1: float) -> str:
             f"M{cx + 4} {top - 20} C{cx + 14} {top - 22} {cx + 14} {top - 8} {cx + 2} {top - 10} "
             f"L{cx - 12} {top - 2}"
         )
-    k, r, cy = 3.9, 7.0, top - 14  # a ring: four béziers
+    k, r, cy = 5.0, 9.0, top - 14  # a ring: four béziers
     return (
         f"M{cx + r} {cy} C{cx + r} {cy + k} {cx + k} {cy + r} {cx} {cy + r} "
         f"C{cx - k} {cy + r} {cx - r} {cy + k} {cx - r} {cy} "
@@ -92,7 +92,9 @@ def marked_letter(char: str, haraka: str, x: float, y: float, w: float, h: float
     if not haraka:
         return out
     moved = Stroke(mark_path(haraka, x0, y0, x1, y1)).scaled(scale, dx, dy)
-    return out + draw.path(moved.d, stroke=color, width=13 * scale * 0.9, fill="none")
+    # the sukun is a small open ring (a full-width stroke filled it into a dot: «بْ» read as a dotted letter)
+    width = 5.5 if haraka == "سكون" else 13 * 0.9
+    return out + draw.path(moved.d, stroke=color, width=width * scale, fill="none")
 
 
 def syllable(char: str, haraka: str) -> str:

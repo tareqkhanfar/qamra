@@ -603,11 +603,18 @@ def compare_task() -> Task:
         out = Drawn()
         pairs = [tuple(r.sample(range(1, 21), 2)) for _ in range(3)]
         step = box.w / 3
-        h = min(box.h - 10, 18.0)
+        # two-digit numbers side by side: each in its own box and small enough to leave a gap («١٩ ٦», never
+        # «١٩٦»)
+        h = min(box.h - 10, 18.0, step * 0.38 / 1.45)
         for k, (a, b) in enumerate(pairs):
             x = box.x + box.w - (k + 1) * step
             cx, cy = x + step / 2, box.y + box.h / 2
             out.body.append(card(x + 2, box.y + 1, step - 4, box.h - 2, r=5, fill="#FFFFFF"))
+            for side in (1, -1):
+                bx = cx + side * step * 0.23 - step * 0.2
+                out.body.append(
+                    card(bx, cy - h * 0.7, step * 0.4, h * 1.4, r=3, fill="#FFF6F2", stroke="none")
+                )
             out.body.append(numeral_any(ctx, a, cx + step * 0.23, cy, h))
             out.body.append(numeral_any(ctx, b, cx - step * 0.23, cy, h))
             out.body.append(ring_at(cx + step * 0.23 * (1 if a > b else -1), cy, step * 0.2, h * 0.62))

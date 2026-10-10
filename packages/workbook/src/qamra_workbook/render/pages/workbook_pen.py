@@ -246,7 +246,7 @@ def shapes(ctx: PageContext) -> Built:
 # the colors a child learns first, each with things that are that color
 COLOR_ROWS = {
     "أحمر": ("#E5604E", ("apple", "strawberry", "tomato")),
-    "أزرق": ("#5E86D6", ("raindrop", "fish", "hat")),
+    "أزرق": ("#5E86D6", ("raindrop", "whale", "sea")),  # blue by nature (the key coloured the fish orange)
     "أصفر": ("#F7C84A", ("sun", "banana", "corn")),
     "أخضر": ("#6FAE5F", ("leaf", "cucumber", "tree")),
 }

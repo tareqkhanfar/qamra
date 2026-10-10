@@ -31,7 +31,7 @@ from qamra_workbook.render.registry import Built, PageContext, page_type
 # the colors a KG1 child learns, each with things that are that color (drawn as line art to color)
 COLOR_TABLE = {
     "أحمر": ("#E5604E", ("apple", "strawberry", "tomato")),
-    "أزرق": ("#5E86D6", ("raindrop", "fish", "hat")),
+    "أزرق": ("#5E86D6", ("raindrop", "whale", "sea")),  # blue by nature (the key coloured the fish orange)
     "أصفر": ("#F7C84A", ("sun", "banana", "corn")),
     "أخضر": ("#6FAE5F", ("leaf", "cucumber", "tree")),
     "برتقالي": ("#F28C28", ("orange", "carrot", "pumpkin")),

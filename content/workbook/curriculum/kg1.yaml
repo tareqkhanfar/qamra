@@ -484,7 +484,7 @@ volumes:
       - {id: v2-th-test, subject: thinking, title_ar: "تقييم التفكير والتركيز", title_en: "Thinking check", title_v: "تَقْييمُ التَّفْكيرِ وَالتَّرْكيزِ"}
     pages:
       # ── V2 week 1 ────────────────────────────────────────
-      - {n: 1, week: 1, subject: intro, unit: v2-intro, type: owner-page, skill: "هذا الكتاب لـ… أرسم حول كفّي وأقارنها بكفّي في الجزء الأول", difficulty: 1}
+      - {n: 1, week: 1, subject: intro, unit: v2-intro, type: owner-page, skill: "هذا الكتاب لـ… أرسم حول كفّي وأقارنها برسمة كفّي في الجزء الأول", difficulty: 1}
       - {n: 2, week: 1, subject: intro, unit: v2-intro, type: toc, skill: "فهرس الجزء الثاني: وحداتي وصفحاتها", difficulty: 1}
       - {n: 3, week: 1, subject: intro, unit: v2-intro, type: name-trace, skill: "أتتبّع اسمي بالعربية بحروف منقّطة أصغر قليلًا", difficulty: 1, params: {script: ar, size: l}}
       - {n: 4, week: 1, subject: intro, unit: v2-intro, type: name-trace, skill: "أتتبّع اسمي بالإنجليزية بحروف منقّطة أصغر قليلًا", difficulty: 1, params: {script: en, size: l}}
