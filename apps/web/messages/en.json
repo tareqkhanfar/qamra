@@ -2743,7 +2743,7 @@
       },
       "name": "The name as it will be printed",
       "nameEn": "The name in English letters",
-      "nameEnHint": "The book has a page where your child traces their name in English. Write it the way you'd like them to learn it.",
+      "nameEnHint": "{gender, select, f {The book has a page where your child traces her name in English. Write it the way you'd like her to learn it.} m {The book has a page where your child traces his name in English. Write it the way you'd like him to learn it.} other {The book has a page where your child traces their name in English. Write it the way you'd like them to learn it.}}",
       "nameEnInvalid": "Please write the name in English letters only, with no numbers or symbols.",
       "nameEnPlaceholder": "e.g. Duha",
       "nameHint": {
