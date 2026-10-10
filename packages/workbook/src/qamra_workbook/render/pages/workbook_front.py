@@ -14,13 +14,13 @@ from markupsafe import Markup, escape
 
 from qamra_pdf.arabic_names import genitive
 from qamra_workbook.letters import ARABIC, LEFT_OPEN, RIGHT_OPEN
+from qamra_workbook.letters.hamza import hamza_mark
 from qamra_workbook.letters.model import Guides, Letter
 from qamra_workbook.names import MIN_CAP_MM, can_trace, check_name, latin_words, name_parts
 from qamra_workbook.pictures.model import strip_tashkeel
 from qamra_workbook.render import covers, draw
-from qamra_workbook.render.pages.letters import dotted_letter, letter_extent
+from qamra_workbook.render.pages.letters import dotted_letter, letter_extent, pen_lifts
 from qamra_workbook.render.pages.workbook_common import (
-    HAMZA_STROKE,
     Number,
     arabic_shape,
     glyph,
@@ -41,11 +41,10 @@ _SEATS = {
     "ئ": {
         "initial": ("ي", 56.0, 28.0),
         "medial": ("ي", 32.0, 28.0),
-        "isolated": ("ى", 104.0, 40.0),
+        "isolated": ("ى", 104.0, 38.0),
         "final": ("ى", 108.0, 86.0),
     },
 }
-_HAMZA_CENTRE, _HAMZA_BOTTOM = 45.0, 96.0  # the hamza stroke's own centre and bottom (unscaled)
 _LEFT_OPEN = LEFT_OPEN | set(ALIFS) | {"ؤ"}  # never join the next letter
 
 
@@ -53,7 +52,7 @@ def seated(char: str, form: str) -> Letter:
     """ؤ or ئ in `form`: its base letter (without dots) and a small hamza over it."""
     base_char, cx, bottom = _SEATS[char][form]
     base = ARABIC[(base_char, form)]
-    mark = HAMZA_STROKE.scaled(0.5, cx - _HAMZA_CENTRE * 0.5, bottom - _HAMZA_BOTTOM * 0.5)
+    mark = hamza_mark(cx, bottom=bottom)
     return dataclasses.replace(base, char=char, strokes=(*base.strokes, mark), dots=(), dot_r=0.0)
 
 
@@ -159,14 +158,25 @@ def arabic_name_row(
         body.append(draw.start_dot((right - (letters[0].width - sx) * scale, y + sy * scale), 1.9))
         return draw.svg(width, height, "".join(body), "name-row")
     lifted = True
-    for shape in letters:
+    lifts = pen_lifts(letters, first, number)
+    for shape, (labels, joined) in zip(letters, lifts, strict=True):
         right -= shape.width * scale
         if not shape.strokes:  # the gap between two words: the pen lifts
             lifted = True
             continue
         if mode == "dotted":
             body.append(
-                dotted_letter(shape, scale=scale, x=right, y=y, first=first and lifted, number=number)
+                dotted_letter(
+                    shape,
+                    scale=scale,
+                    x=right,
+                    y=y,
+                    first=first and lifted,
+                    number=number,
+                    number_dots=False,
+                    labels=labels,
+                    joined=joined,
+                )
             )
         else:
             body.append(glyph(shape, scale, right, y, color="#1C2140", width=11))
@@ -250,7 +260,8 @@ def name_trace(ctx: PageContext) -> Built:
             problems.append("the English name page needs the child's name in English letters (name_en)")
             name = "Name"
         name = traced_latin(name, width, 24.0)
-        rows = [en_name_row(name, width, 24.0, first=i == 0, mode="dotted", number=ctx.num) for i in range(2)]
+        # the English name's start dots are numbered 1 2 3, like the English letter pages
+        rows = [en_name_row(name, width, 24.0, first=i == 0, mode="dotted", number=str) for i in range(2)]
         rows.append(en_name_row(name, width, 24.0, first=False, mode="empty", number=ctx.num))
         model = en_name_row(name, width, 24.0, first=False, mode="solid", number=ctx.num)
         return Built({"name": name, "model": model, "rows": rows, "script": script}, None, problems)

@@ -24,6 +24,7 @@ from qamra_workbook.geometry import Point, Stroke, bounds
 from qamra_workbook.letters import ALPHABET, ARABIC, EXPECTED, HOW, NAMES, placed, word
 from qamra_workbook.letters.hand import BASE, LOW, MID, TOP
 from qamra_workbook.letters.model import Letter
+from qamra_workbook.render import marks
 
 FONTS = Path(__file__).parents[3] / "pdf" / "src" / "qamra_pdf" / "fonts"
 OUT = Path("out/letters")
@@ -129,18 +130,6 @@ def badge(point: Point, label: str, color: str, r: float) -> str:
     )
 
 
-def start_points(strokes: tuple[Stroke, ...] | list[Stroke]) -> list[Point]:
-    """Where each stroke's numbered start dot goes: its start, or a little along it when an earlier dot
-    already sits there."""
-    out: list[Point] = []
-    for s in strokes:
-        point = s.start
-        if any(math.dist(point, q) < START_R * 2 for q in out):
-            point = s.at(min(0.45, START_R * 2.6 / max(s.length, 1e-6)))[0]
-        out.append(point)
-    return out
-
-
 def guides(x0: float, x1: float) -> str:
     """The writing lines: top (ascenders), dashed tooth line, the red base line and the dotted tail line."""
 
@@ -156,18 +145,36 @@ def guides(x0: float, x1: float) -> str:
 
 
 def track(shape: Letter) -> str:
-    """The letter's body as a wide soft track with the dotted path on top, and its dots."""
-    out = [line_path(s.d, TRACK, TRACK_W) for s in shape.strokes]
+    """The letter's body as a wide soft track with the dotted path on top, and its dots. A small mark (the
+    little hamza of ك) gets a narrower track, so its head stays an open curl."""
+    widths = [TRACK_W * 0.5 if m else TRACK_W for m in shape.marks]
+    out = [line_path(s.d, TRACK, w) for s, w in zip(shape.strokes, widths, strict=True)]
     out += [line_path(s.d, LINE, LINE_W, stroke_dasharray="0.1 5.2") for s in shape.strokes]
     out += [el("circle", cx=x, cy=y, r=shape.dot_r, fill=DOT, opacity=0.35) for x, y in shape.dots]
     return "".join(out)
 
 
 def order(shape: Letter, first: int = 1) -> str:
-    """Arrows along every stroke, a green start dot numbered in writing order, then the numbered dots."""
-    out = [a for s in shape.strokes for a in arrows(s)]
-    for k, point in enumerate(start_points(shape.strokes), start=first):
-        out.append(badge(point, digits(k), START, START_R))
+    """Arrows along every stroke, a green start dot numbered in writing order, then the numbered dots. A
+    small mark has one arrow outside its shape and its start dot beside it, never on it (`render.marks`)."""
+    obstacles = [*marks.outline(shape.strokes, TRACK_W / 2, 2.0), *((d, shape.dot_r) for d in shape.dots)]
+    places = marks.badge_points(
+        shape.strokes,
+        shape.small,
+        START_R,
+        mark_radius=START_R * 0.85,
+        reach=TRACK_W * 0.25,
+        obstacles=obstacles,
+    )
+    out = []
+    for s, small in zip(shape.strokes, shape.small, strict=True):
+        if small:
+            taken = [*obstacles, *((p, START_R) for p in places)]
+            out.append(marks.side_arrow(s, ARROW_SIZE * 0.8, TRACK_W * 0.25, taken, ARROW)[0])
+        else:
+            out += arrows(s)
+    for k, (point, small) in enumerate(zip(places, shape.small, strict=True), start=first):
+        out.append(badge(point, digits(k), START, START_R * 0.85 if small else START_R))
     for k, point in enumerate(shape.dots, start=first + len(shape.strokes)):
         out.append(badge(point, digits(k), DOT, DOT_SHOWN_R))
     return "".join(out)
@@ -202,21 +209,35 @@ def word_svg(letters: list[Letter], height_mm: float) -> str:
     (marked), and a new green start dot shows every time it is lifted."""
     xs, total = placed(letters, gap=12)
     x0, x1 = -PAD, total + PAD
-    tracks, marks, joins, number = [], [], [], 1
+    tracks, signs, joins, number = [], [], [], 1
     for x, shape in zip(xs, letters, strict=True):
         moved = [s.scaled(1, x, 0) for s in shape.strokes]
-        tracks += [line_path(s.d, TRACK, TRACK_W) for s in moved]
+        tracks += [
+            line_path(s.d, TRACK, TRACK_W * 0.5 if m else TRACK_W)
+            for s, m in zip(moved, shape.marks, strict=True)
+        ]
         tracks += [line_path(s.d, LINE, LINE_W, stroke_dasharray="0.1 5.2") for s in moved]
-        marks += [a for s in moved for a in arrows(s, ARROW_EVERY * 1.6)]
-        for k, s in enumerate(moved):
+        signs += [
+            a for s, m in zip(moved, shape.small, strict=True) if not m for a in arrows(s, ARROW_EVERY * 1.6)
+        ]
+        places = mark_places(shape, moved)
+        for k in range(len(moved)):
             if k == 0 and shape.join_right is not None:
                 continue  # the pen arrives from the previous letter
-            marks.append(badge(s.start, digits(number), START, START_R))
+            signs.append(badge(places[k], digits(number), START, START_R))
             number += 1
         tracks += [el("circle", cx=px + x, cy=py, r=shape.dot_r, fill=DOT) for px, py in shape.dots]
         if shape.join_left is not None:
             joins.append((x + shape.join_left[0], shape.join_left[1]))
-    return svg(x0, x1, guides(x0, x1) + "".join(tracks) + "".join(marks) + join_marks(joins), height_mm)
+    return svg(x0, x1, guides(x0, x1) + "".join(tracks) + "".join(signs) + join_marks(joins), height_mm)
+
+
+def mark_places(shape: Letter, moved: list[Stroke]) -> list[Point]:
+    """The start dot of each stroke of a letter in a word: on its start, a small mark's beside it."""
+    obstacles = marks.outline(moved, TRACK_W / 2, 2.0)
+    return marks.badge_points(
+        moved, shape.small, START_R, mark_radius=START_R, reach=TRACK_W * 0.25, obstacles=obstacles
+    )
 
 
 CSS = """

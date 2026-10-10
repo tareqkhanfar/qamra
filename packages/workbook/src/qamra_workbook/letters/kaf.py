@@ -6,6 +6,7 @@ hamza). ك initial: one stroke, the slanted head down to the middle, back down t
 
 from __future__ import annotations
 
+from qamra_workbook.letters.hamza import hamza_mark
 from qamra_workbook.letters.hand import final, initial, isolated, medial
 
 # isolated ل: down the stem, round the bowl under the line, up on the left.
@@ -21,7 +22,8 @@ LAM_FINAL = (
 )
 # isolated ك: down the stem, along the base and up into the tail; then the mark.
 KAF = "M146 -25 L146 82 C146 93 140 97 128 97 L60 97 C42 97 28 93 24 72"
-KAF_MARK = "M104 44 C98 38 84 40 84 48 C84 56 96 58 104 55 C98 62 88 66 80 68"
+# the kaf's mark: the same little hamza as over the alif (`hamza.hamza_mark`), inside the kaf, above the base.
+KAF_MARK = hamza_mark(94, bottom=72).d
 # final ـك: arrives on the line, up the stem and back down, then the same base, tail and mark.
 KAF_FINAL = (
     "M180 97 L166 97 C159 97 156 94 155 88 L153 -25 L150 84 C150 93 144 97 132 97 L60 97 C42 97 28 93 24 72"

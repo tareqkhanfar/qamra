@@ -6,6 +6,7 @@ find-letter, en-letter, unit-review, letter-position, name-trace) are reused as 
 
 from __future__ import annotations
 
+import dataclasses
 import math
 from collections.abc import Callable
 
@@ -15,7 +16,7 @@ from qamra_workbook.geometry import Stroke, bounds
 from qamra_workbook.letters.model import Letter
 from qamra_workbook.pictures import PICTURES
 from qamra_workbook.pictures.model import strip_tashkeel
-from qamra_workbook.render import draw
+from qamra_workbook.render import draw, marks
 from qamra_workbook.render.pages.journey_kit import (
     SOFT,
     H,
@@ -33,7 +34,6 @@ from qamra_workbook.render.pages.letters import (
     ARROW_AT,
     en_letter,
     letter_extent,
-    start_points,
     tracing_row,
 )
 from qamra_workbook.render.pages.workbook_arabic import first_letter, row_svg, same_letter
@@ -122,10 +122,13 @@ def finger_letter(
     width = max(11.0, min(width, 0.2 * max(ex1 - ex0, ey1 - ey0)))  # a small loop (ه د) keeps its hole open
     r = width * 0.5
     dots = _clear_dots(shape_, width * 0.61, r)
-    # a short second stroke (the hamza of أ) is a mark: half as thick, so it stays an open shape
-    widths = [
-        width * 0.5 if k and shape_.rtl and raw.length < 60 else width for k, raw in enumerate(shape_.strokes)
-    ]
+    # a small mark (the little hamza of ك) is half as thick, so it stays an open shape; its start dot sits
+    # beside it, not on it, and it has no arrows
+    widths = [width * 0.5 if m else width for m in shape_.marks]
+    from qamra_workbook.render.pages.workbook_arabic import clear_of_body
+
+    moved = clear_of_body(list(shape_.strokes), shape_.marks, [w * 1.22 + width * 0.15 for w in widths])
+    shape_ = dataclasses.replace(shape_, strokes=tuple(moved))
     out = [draw.path(s.d, stroke=edge, width=w * 1.22) for s, w in zip(shape_.strokes, widths, strict=True)]
     out += [
         draw.el("circle", cx=x, cy=y, r=r, fill=fill, stroke=edge, stroke_width=width * 0.11) for x, y in dots
@@ -138,9 +141,16 @@ def finger_letter(
             if s.length * f > width * 0.9:  # keep arrows clear of the start dot
                 point, angle = s.at(f)
                 out.append(draw.chevron(point, angle, width * 0.42, "#FFFFFF", width * 0.12))
-    for k, (point, w) in enumerate(
-        zip(start_points(shape_.strokes, width * 0.42), widths, strict=True), start=1
-    ):
+    body = [o for s, w in zip(shape_.strokes, widths, strict=True) for o in marks.outline([s], w * 0.61, 2.0)]
+    badges = marks.badge_points(
+        shape_.strokes,
+        shape_.marks,
+        width * 0.42,
+        mark_radius=width * 0.3,
+        reach=width * 0.305,
+        obstacles=[*body, *((d, r) for d in dots)],
+    )
+    for k, (point, w) in enumerate(zip(badges, widths, strict=True), start=1):
         out.append(draw.start_dot(point, width * 0.42 if w == width else width * 0.3, number(k)))
     for k, (x, y) in enumerate(dots, start=len(shape_.strokes) + 1):
         out.append(draw.start_dot((x, y), width * 0.3, number(k)))
@@ -216,27 +226,28 @@ def partial(shape_: Letter, scale: float, dx: float, dy: float, keep: float) -> 
     """The letter with its first stroke solid up to `keep` of its length and dotted after it, its other
     strokes and dots dotted: the child completes it (level 4)."""
     first = shape_.strokes[0].scaled(scale, dx, dy)
-    pts = first.polyline
+    pts = first.dots(0.5)  # evenly spaced, so `keep` is a share of the length (a straight alif has 2 points)
     k = max(2, int(len(pts) * keep))
     out = [draw.path(draw.polyline(pts[:k]), stroke=INK, width=13 * scale)]
     rest = Stroke(draw.polyline(pts[k - 1 :]))
     out.append(draw.dotted(rest, spacing=3.2, r=1.0))
-    for s in shape_.strokes[1:]:
-        out.append(draw.dotted(s.scaled(scale, dx, dy), spacing=3.0, r=0.9))
-    out += [
-        draw.el(
-            "circle",
-            cx=dx + x * scale,
-            cy=dy + y * scale,
-            r=shape_.dot_r * scale,
-            fill="none",
-            stroke=INK,
-            stroke_width=0.6,
-            stroke_dasharray="1.2 1",
-        )
-        for x, y in shape_.dots
-    ]
+    out += later_strokes(shape_, scale, dx, dy)
     return "".join(out)
+
+
+def later_strokes(shape_: Letter, scale: float, dx: float, dy: float) -> list[str]:
+    """The strokes after the body, dotted (a small mark over its pale ghost, `render.marks`), and the
+    letter's dots as round dots to fill in."""
+    out = []
+    for s, small in zip(shape_.strokes[1:], shape_.small[1:], strict=True):
+        moved = s.scaled(scale, dx, dy)
+        if small:
+            out += [marks.ghost(moved, 0.8 * 2.4), marks.mark_dots(moved, 3.0, 0.8)]
+        else:
+            out.append(draw.dotted(moved, spacing=3.0, r=0.9))
+    r = max(shape_.dot_r * scale, 1.3)
+    out += [marks.dot_to_fill(dx + x * scale, dy + y * scale, r, ring=0.45) for x, y in shape_.dots]
+    return out
 
 
 def _row_card(y: float, h: float, model: Letter, ctx: PageContext) -> list[str]:
@@ -368,7 +379,7 @@ def _trace_caps(shape_: Letter) -> dict[str, float]:
 def journey_letter_trace(ctx: PageContext) -> Built:
     """The دوسية's letter-trace page (the letter big with a dotted centre line, then rows of dotted letters),
     sized to the letter: a small letter gets a thinner band and taller rows."""
-    from qamra_workbook.render.pages.workbook_arabic import big_track
+    from qamra_workbook.render.pages.workbook_arabic import BIG_CHIP, big_track
 
     params = ctx.page.params
     sh = shape(str(params.get("letter", "ب")))
@@ -390,7 +401,7 @@ def journey_letter_trace(ctx: PageContext) -> Built:
         )
     )
     body.append(card(5, 5, 30, 10, r=5, fill=ctx.style.tint, stroke="none"))
-    body.append(text("كَبيرٌ", 20, 12, 5, color=ctx.style.deep))
+    body.append(text(BIG_CHIP, 20, 12, 5, color=ctx.style.deep))
     y, caps = 90.0, _trace_caps(sh)
     for size in [k for k in sizes if k in caps]:
         row, height = row_svg(tracing_row(sh, width=W - 10, cap=caps[size], number=ctx.num), 5, y + 1)
@@ -441,8 +452,9 @@ def mark(kind: str, x: float, y: float, s: float, color: str, dotted: bool = Fal
     the sukun a small circle."""
     if kind == "damma":
         d = (
-            f"M{x + s * 0.4} {y - s * 0.3} C{x + s * 0.4} {y - s * 0.9} {x - s * 0.5} {y - s * 0.9}"
-            f" {x - s * 0.4} {y - s * 0.3} L{x + s * 0.5} {y + s * 0.1}"
+            # a small waw: the head round on the right, then the tail down to the left (it was mirrored)
+            f"M{x - s * 0.1} {y - s * 0.3} C{x - s * 0.1} {y - s * 0.9} {x + s * 0.6} {y - s * 0.9}"
+            f" {x + s * 0.5} {y - s * 0.3} L{x - s * 0.5} {y + s * 0.2}"
         )
     elif kind == "sukun":
         r = s * 0.4
@@ -465,11 +477,7 @@ def with_mark(
     my = dy + (y0 * scale - 6) if HARAKAT[kind][2] == "above" else dy + (y1 * scale + 6)
     out = draw.dotted(Stroke(sh.strokes[0].scaled(scale, dx, dy).d), spacing=3.2, r=1.0) if dotted else ""
     if dotted:
-        out += "".join(draw.dotted(s.scaled(scale, dx, dy), spacing=3.0, r=0.9) for s in sh.strokes[1:])
-        out += "".join(
-            draw.el("circle", cx=dx + px * scale, cy=dy + py * scale, r=sh.dot_r * scale, fill=INK)
-            for px, py in sh.dots
-        )
+        out += "".join(later_strokes(sh, scale, dx, dy))
     else:
         out = glyph(sh, scale, dx, dy, color=INK, width=13)
     return out + mark(kind, cx, my, 6.5 if dotted else 5.0, color, dotted)
@@ -962,8 +970,9 @@ def journey_finger_trace(ctx: PageContext) -> Built:
 
     params = ctx.page.params
     char = str(params.get("letter", "ب"))
-    # a finger traces the plain alif: the hamza of أ is a small mark for the pen pages that follow
-    sh = shape("ا" if char in "أإآ" else char, str(params.get("form", "isolated")))
+    # the letter whole, the hamza of أ too (a thinner mark, its start dot beside it): the page's word starts
+    # with أ, and the plain alif read as a different letter
+    sh = shape(char, str(params.get("form", "isolated")))
     word = pid(str(params.get("word", "duck")))
     pic = PICTURES[word]
     problems = [] if starts_with(word, char) else [f"{pic.word_ar} does not start with {char}"]

@@ -14,15 +14,15 @@ from markupsafe import Markup, escape
 
 from qamra_workbook.geometry import Point, Stroke
 from qamra_workbook.letters import ARABIC
-from qamra_workbook.letters.hamza import HAMZA
+from qamra_workbook.letters.hamza import MARK_GAP, hamza_mark
 from qamra_workbook.letters.model import Letter
 from qamra_workbook.pictures import PICTURES, Picture, Style, find_ar
 from qamra_workbook.pictures.model import OUTLINE, strip_tashkeel
 from qamra_workbook.pictures.workbook_words_2 import WORD_ALIASES_2
 from qamra_workbook.pictures.workbook_words_3 import WORD_ALIASES_3
 from qamra_workbook.pictures.workbook_words_kg1 import WORD_ALIASES_KG1
-from qamra_workbook.render import draw
-from qamra_workbook.render.pages.letters import letter_extent, start_points
+from qamra_workbook.render import draw, marks
+from qamra_workbook.render.pages.letters import letter_extent
 from qamra_workbook.strokes import letter as stroke_letter
 
 if TYPE_CHECKING:
@@ -71,16 +71,15 @@ def arabic_shape(char: str, form: str = "isolated") -> Letter:
         return ARABIC[(char, form)]
     # draft: educator review: the hamza's size and height above the alif
     alif = ARABIC[("ا", form)]
-    if char == "آ":
-        mark = Stroke("M6 -40 C12 -48 18 -48 24 -42 C30 -36 36 -36 44 -44")
+    g = alif.guides
+    x = alif.strokes[0].start[0] if form == "isolated" else alif.strokes[0].end[0]  # the top of the alif
+    if char == "آ":  # the madda: a small wave, written from its right end like every Arabic mark
+        mark = Stroke("M44 -56 C36 -48 30 -48 24 -54 C18 -60 12 -60 6 -52")
+    elif char == "أ":
+        mark = hamza_mark(x, bottom=g.top - MARK_GAP)
     else:
-        dy = -100 if char == "أ" else 82
-        dx = alif.strokes[0].start[0] - 45 * 0.5
-        mark = HAMZA_STROKE.scaled(0.5, dx, dy)
+        mark = hamza_mark(x, top=g.base + MARK_GAP)
     return Letter(char, form, alif.width, alif.guides, (*alif.strokes, mark), (), 0.0, *_joins(alif))
-
-
-HAMZA_STROKE = Stroke(HAMZA)
 
 
 def _joins(shape: Letter) -> tuple[Point | None, Point | None]:
@@ -150,10 +149,8 @@ def glyph(
     and `fill` are given (an outline of `edge` around a `fill` body)."""
     moved = [s.scaled(scale, dx, dy) for s in shape.strokes]
     wmm = width * scale
-    # Arabic marks (the hamza of أ, the head of ك) are small: drawn thinner so they stay open shapes
-    widths = [
-        wmm * 0.5 if i and shape.rtl and raw.length < 60 else wmm for i, raw in enumerate(shape.strokes)
-    ]
+    # small Arabic marks (the hamza of أ, the little hamza of ك) are drawn thinner so they stay open shapes
+    widths = [wmm * 0.5 if m else wmm for m in shape.marks]
     dots = [(dx + x * scale, dy + y * scale) for x, y in shape.dots]
     out = []
     if edge is not None and fill is not None:
@@ -172,15 +169,28 @@ def glyph(
     return f'<g data-glyph="{escape(shape.char)}">{"".join(out)}</g>'
 
 
-def start_marks(shape: Letter, scale: float, dx: float, dy: float, r: float, number: Number) -> str:
-    """Numbered green start dots and one arrow per stroke on a glyph drawn at (scale, dx, dy)."""
+def start_marks(
+    shape: Letter, scale: float, dx: float, dy: float, r: float, number: Number, width: float = 15.0
+) -> str:
+    """Numbered green start dots and one arrow per stroke on a glyph drawn at (scale, dx, dy) (`width` is the
+    glyph's, in letter units). A small mark gets a smaller start dot to its right, not on it, and no arrow:
+    on a model this small the mark's arrow would cover it."""
     moved = [s.scaled(scale, dx, dy) for s in shape.strokes]
+    small = shape.small
+    half = width * scale / 2
+    reach = [half * 0.5 if m else half for m in shape.marks]
+    obstacles = [o for s, h in zip(moved, reach, strict=True) for o in marks.outline([s], h, 0.6)]
+    obstacles += [((dx + x * scale, dy + y * scale), half * 1.2) for x, y in shape.dots]
+    badges = marks.badge_points(
+        moved, small, r, mark_radius=r * 0.75, reach=min(reach), obstacles=obstacles, away=0.0
+    )
     out = []
-    for s in moved:
-        point, angle = s.at(min(0.5, r * 3.2 / max(s.length, 1e-6)))
-        out.append(draw.arrow(point, angle, r * 1.3))
-    for k, point in enumerate(start_points(moved, r), start=1):
-        out.append(draw.start_dot(point, r, number(k)))
+    for s, m in zip(moved, small, strict=True):
+        if not m:
+            point, angle = s.at(min(0.5, r * 3.2 / max(s.length, 1e-6)))
+            out.append(draw.arrow(point, angle, r * 1.3))
+    for k, (point, m) in enumerate(zip(badges, small, strict=True), start=1):
+        out.append(draw.start_dot(point, r * 0.75 if m else r, number(k)))
     return "".join(out)
 
 

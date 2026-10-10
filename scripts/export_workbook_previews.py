@@ -256,7 +256,7 @@ SCOPES: dict[str, list[Scope]] = {
                     "My name: tracing it, then writing it on my own",
                 ),
                 ("p008-unit-opener", "أنا وعالم الأرقام", "Me and the world of numbers"),
-                ("p019-letter-trace", "أتتبّع حرف الألف: الكبير ثم الأصغر", "Tracing alif: big, then smaller"),
+                ("p019-letter-trace", "أتتبّع الألف: كبيرة ثم أصغر", "Tracing alif: big, then smaller"),
                 (
                     "p029-en-letter",
                     "A a: أتتبّعه وأكتبه وألوّن صورة apple",

@@ -10,7 +10,7 @@ from qamra_workbook.letters.model import Letter
 from qamra_workbook.pictures import PICTURES
 from qamra_workbook.pictures.model import strip_tashkeel
 from qamra_workbook.render import draw
-from qamra_workbook.render.pages.letters import Number, letter_extent, start_points
+from qamra_workbook.render.pages.letters import Number, dotted_letter, letter_extent, pen_lifts
 from qamra_workbook.render.pages.workbook_common import (
     INK,
     W,
@@ -321,44 +321,50 @@ def word_width(word: str, h: float) -> float:
 
 
 def dotted_word_letter(
-    shape: Letter, *, scale: float, x: float, y: float, first: bool, number: Number
+    shape: Letter,
+    *,
+    scale: float,
+    x: float,
+    y: float,
+    first: bool,
+    number: Number,
+    labels: list[str] | None = None,
+    joined: bool = False,
 ) -> str:
     """A letter of a word in fine tracing dots (the small teeth of سـ and the loops of مـ need a closer dot
-    spacing than a single big letter does); its own dots are dashed rings. Every stroke starts at a green dot,
-    and the first letter of the word carries the numbers and arrows."""
-    moved = [s.scaled(scale, x, y) for s in shape.strokes]
-    radius = 1.9 if first else 1.5
-    out = [draw.dotted(s, spacing=2.5, r=0.68) for s in moved]
-    for cx, cy in shape.dots:
-        out.append(
-            draw.el(
-                "circle",
-                cx=x + cx * scale,
-                cy=y + cy * scale,
-                r=max(shape.dot_r * scale, 1.3),
-                fill="none",
-                stroke=draw.DOT,
-                stroke_width=0.55,
-                stroke_dasharray="0.9 0.8",
-            )
-        )
-    if first:
-        for s in moved:
-            point, angle = s.at(min(0.55, 8.5 / max(s.length, 1)))
-            out.append(draw.arrow(point, angle, 2.6))
-    for k, point in enumerate(start_points(moved, radius), start=1):
-        out.append(draw.start_dot(point, radius, number(k) if first else "", font_size=2.6))
-    return "".join(out)
+    spacing than a single big letter does), drawn like a writing row's letters (`letters.dotted_letter`):
+    its own dots are round dots to fill in, a small mark has its ghost and its start dot beside it. Every
+    pen lift starts at a green dot, numbered across the word (`letters.pen_lifts`), and the first letter
+    carries the arrows."""
+    return dotted_letter(
+        shape,
+        scale=scale,
+        x=x,
+        y=y,
+        first=first,
+        number=number,
+        spacing=2.5,
+        dot=0.68,
+        mark=0.6,
+        number_dots=False,
+        labels=labels,
+        joined=joined,
+    )
 
 
 def word_row(word: str, right: float, y: float, h: float, ctx: PageContext, *, dotted: bool) -> str:
     """The word in Qamra's hand on writing lines: dotted to trace, or as a small solid model."""
     letters, top, scale, xs, total = _word_layout(word, h)
     out = []
-    for i, (shape, x) in enumerate(zip(letters, xs, strict=True)):
+    lifts = pen_lifts(letters, True, ctx.num)
+    for i, (shape, x, (labels, joined)) in enumerate(zip(letters, xs, lifts, strict=True)):
         dx, dy = right - total * scale + x * scale, y - top * scale
         if dotted:
-            out.append(dotted_word_letter(shape, scale=scale, x=dx, y=dy, first=i == 0, number=ctx.num))
+            out.append(
+                dotted_word_letter(
+                    shape, scale=scale, x=dx, y=dy, first=i == 0, number=ctx.num, labels=labels, joined=joined
+                )
+            )
         else:
             out.append(glyph(shape, scale, dx, dy, color=INK, width=12))
     return "".join(out)

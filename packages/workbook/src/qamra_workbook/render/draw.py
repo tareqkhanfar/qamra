@@ -140,9 +140,10 @@ def _turned(point: Point, angle: float) -> str:
 
 
 def arrow(point: Point, angle: float, size: float, color: str = ARROW) -> str:
-    """A small solid arrowhead pointing along `angle` (degrees)."""
+    """A small solid arrowhead pointing along `angle` (degrees): longer than it is wide, so its point reads
+    at any angle (a head as wide as long read backwards on a slanted stroke: the right side of the big ه)."""
     s = size
-    head = polyline([(s * 0.6, 0), (-s * 0.45, -s * 0.55), (-s * 0.2, 0), (-s * 0.45, s * 0.55)]) + " Z"
+    head = polyline([(s * 0.72, 0), (-s * 0.48, -s * 0.44), (-s * 0.24, 0), (-s * 0.48, s * 0.44)]) + " Z"
     return el(
         "path",
         d=head,

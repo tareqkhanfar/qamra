@@ -6,33 +6,20 @@ model the child sees and the path they trace are the same drawing.
 
 from __future__ import annotations
 
-import math
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 
 from markupsafe import Markup, escape
 
-from qamra_workbook.geometry import Stroke, bounds
+from qamra_workbook.geometry import bounds
 from qamra_workbook.pictures import get as picture
 from qamra_workbook.pictures.model import strip_tashkeel
-from qamra_workbook.render import draw
+from qamra_workbook.render import draw, marks
 from qamra_workbook.render.registry import Built, PageContext, page_type
 from qamra_workbook.strokes import Letter, letter
 
 ARROW_AT = (0.16, 0.37, 0.58, 0.78, 0.94)
 HARAKAT = ("\u064b", "\u0652")  # tanwin … sukun: they stay with the letter they sit on
 Number = Callable[[int], str]  # writes a start dot's number in the page's numerals (PageContext.num)
-
-
-def start_points(strokes: tuple[Stroke, ...] | list[Stroke], radius: float) -> list[tuple[float, float]]:
-    """Where each stroke's numbered start dot goes: its start, or a little along the stroke when an earlier
-    dot already sits there (both slants of A start at the apex)."""
-    placed: list[tuple[float, float]] = []
-    for s in strokes:
-        point = s.start
-        if any(math.dist(point, q) < radius * 1.9 for q in placed):
-            point = s.at(min(0.45, radius * 2.9 / max(s.length, 1e-6)))[0]
-        placed.append(point)
-    return placed
 
 
 def solid_letter(
@@ -44,25 +31,39 @@ def solid_letter(
     arrows: tuple[float, ...] = ARROW_AT,
     number: Number,
 ) -> str:
-    """A thick letter body (in the letter's own units) with white direction arrows and numbered start dots."""
+    """A thick letter body (in the letter's own units) with white direction arrows and numbered start dots. A
+    small mark (the little hamza of ك) is half as thick, with no arrows and its start dot beside it."""
+    widths = [width * 0.5 if m else width for m in shape.marks]
     out = []
-    for s in shape.strokes:
-        out.append(draw.path(s.d, stroke=edge, width=width + width * 0.22))
+    for s, w in zip(shape.strokes, widths, strict=True):
+        out.append(draw.path(s.d, stroke=edge, width=w + width * 0.22))
     for x, y in shape.dots:
         out.append(
             draw.el("circle", cx=x, cy=y, r=width * 0.62, fill=fill, stroke=edge, stroke_width=width * 0.11)
         )
-    for s in shape.strokes:
-        out.append(draw.path(s.d, stroke=fill, width=width))
-    for s in shape.strokes:
-        for f in arrows:
+    for s, w in zip(shape.strokes, widths, strict=True):
+        out.append(draw.path(s.d, stroke=fill, width=w))
+    for s, w in zip(shape.strokes, widths, strict=True):
+        for f in arrows if w == width else ():
             if s.length * f > width * 0.9:  # keep arrows clear of the start dot
                 point, angle = s.at(f)
                 out.append(draw.chevron(point, angle, width * 0.42, "#FFFFFF", width * 0.12))
-    for k, point in enumerate(start_points(shape.strokes, width * 0.42), start=1):
-        out.append(draw.start_dot(point, width * 0.42, number(k)))
-    for k, (x, y) in enumerate(shape.dots, start=len(shape.strokes) + 1):
-        out.append(draw.start_dot((x + width * 0.95, y), width * 0.3, number(k)))
+    body = [o for s, w in zip(shape.strokes, widths, strict=True) for o in marks.outline([s], w * 0.61, 2.0)]
+    dots = [((x, y), width * 0.62) for x, y in shape.dots]
+    badges = marks.badge_points(
+        shape.strokes,
+        shape.marks,
+        width * 0.42,
+        mark_radius=width * 0.3,
+        reach=width * 0.36,
+        obstacles=[*body, *dots],
+    )
+    for k, (point, w) in enumerate(zip(badges, widths, strict=True), start=1):
+        out.append(draw.start_dot(point, width * 0.42 if w == width else width * 0.3, number(k)))
+    taken = [*body, *((p, width * 0.42) for p in badges)]
+    spots = marks.dot_badges(list(shape.dots), width * 0.62, width * 0.3, taken, shape.strokes)
+    for k, point in enumerate(spots, start=len(shape.strokes) + 1):
+        out.append(draw.start_dot(point, width * 0.3, number(k)))
     return "".join(out)
 
 
@@ -119,37 +120,84 @@ def letter_extent(shape: Letter) -> tuple[float, float, float, float]:
     return x0, y0, x1, y1
 
 
-def dotted_letter(shape: Letter, *, scale: float, x: float, y: float, first: bool, number: Number) -> str:
-    """A letter in bold tracing dots at (x, y) (its design box's top-left), in mm. The letter's own dots are
-    dashed rings to fill in; on the first letter of a row they are numbered after the strokes."""
+DOT_R, MARK_R = 0.95, 0.7  # tracing dots on a writing row: the body's, and a small mark's (mm)
+
+
+def dotted_letter(
+    shape: Letter,
+    *,
+    scale: float,
+    x: float,
+    y: float,
+    first: bool,
+    number: Number,
+    spacing: float = 3.5,
+    dot: float = DOT_R,
+    mark: float = MARK_R,
+    number_dots: bool = True,
+    labels: Sequence[str] | None = None,
+    joined: bool = False,
+) -> str:
+    """A letter in bold tracing dots (`dot` mm, about `spacing` apart) at (x, y) (its design box's top-left),
+    in mm. Where the pen comes back along its own line (a tooth, the head of ـد) the dots are drawn once. A
+    small mark (the hamza of أ, the little hamza of ك) gets a thin pale ghost of its shape under smaller
+    (`mark`), evenly spaced dots, and its start dot beside it (`render.marks`). The letter's own dots are
+    round dots to fill in. On the first letter of a row the start dots (and, with `number_dots`, the letter's
+    dots) are numbered in writing order, and each stroke has an arrow (a small mark's sits outside its
+    shape). In a word, `labels` are the numbers of its start dots (`pen_lifts`) and a `joined` letter has
+    none on its first stroke: the pen arrives from the letter before."""
     moved = [s.scaled(scale, x, y) for s in shape.strokes]
-    radius = 1.9 if first else 1.5
-    out = [draw.dotted(s, spacing=3.5, r=0.95) for s in moved]
-    for cx, cy in shape.dots:
-        r = max(shape.dot_r * scale, 1.3)
-        out.append(
-            draw.el(
-                "circle",
-                cx=x + cx * scale,
-                cy=y + cy * scale,
-                r=r,
-                fill="none",
-                stroke=draw.DOT,
-                stroke_width=0.55,
-                stroke_dasharray="0.9 0.8",
-            )
-        )
+    small = shape.small
+    radius = 1.9 if first or any(labels or ()) else 1.5
+    dots = [(x + cx * scale, y + cy * scale) for cx, cy in shape.dots]
+    dot_r = max(shape.dot_r * scale, 1.3)
+    mark = marks.dot_size(moved, small, mark)
+    out = [marks.ghost(s, mark) for s, m in zip(moved, small, strict=True) if m]
+    body = [s for s, m in zip(moved, small, strict=True) if not m]
+    lines = iter(marks.dotted_once(body, spacing))
+    for s, m in zip(moved, small, strict=True):
+        out.append(marks.mark_dots(s, spacing, mark) if m else draw.dots(next(lines), dot))
+    dot_r = marks.dot_radius(dots, moved, dot_r, dot)
+    out += [marks.dot_to_fill(cx, cy, dot_r, ring=0.45) for cx, cy in dots]
+    obstacles = [*marks.outline(moved, dot), *((d, dot_r) for d in dots)]
+    badges = marks.badge_points(
+        moved, small, radius, mark_radius=radius * 0.8, reach=mark, obstacles=obstacles
+    )
+    shown = [k for k in range(len(moved)) if not (joined and k == 0)]
+    default = [number(n) if first else "" for n in range(1, len(shown) + 1)]
+    names = list(labels) if labels is not None else default
+    taken = [*obstacles, *((badges[k], radius) for k in shown)]
     if first:
-        for s in moved:
-            point, angle = s.at(min(0.55, 8.5 / max(s.length, 1)))
-            out.append(draw.arrow(point, angle, 2.6))
-    for k, point in enumerate(start_points(moved, radius), start=1):
-        out.append(draw.start_dot(point, radius, number(k) if first else "", font_size=2.6))
-    if first:
-        for k, (cx, cy) in enumerate(shape.dots, start=len(moved) + 1):
-            dx = max(shape.dot_r * scale, 1.3) + 2.2
-            out.append(draw.start_dot((x + cx * scale + dx, y + cy * scale), 1.5, number(k), font_size=2.1))
+        for s, m in zip(moved, small, strict=True):
+            if m:
+                arrow, centre = marks.side_arrow(s, 1.7, mark, taken)
+                taken.append((centre, 0.9))
+                out.append(arrow)
+            else:
+                point, angle = s.at(min(0.55, 8.5 / max(s.length, 1)))
+                out.append(draw.arrow(point, angle, 2.6))
+    for k, name in zip(shown, names, strict=True):
+        r = radius * 0.8 if small[k] else radius
+        out.append(draw.start_dot(badges[k], r, name, font_size=2.2 if small[k] else 2.6))
+    if first and number_dots:
+        spots = marks.dot_badges(dots, dot_r, 1.5, taken, moved)
+        for k, point in enumerate(spots, start=len(shown) + 1):
+            out.append(draw.start_dot(point, 1.5, number(k), font_size=2.1))
     return "".join(out)
+
+
+def pen_lifts(letters: Sequence[Letter], first: bool, number: Number) -> list[tuple[list[str], bool]]:
+    """For each letter of a word: the labels of its start dots, and whether the pen arrives from the letter
+    before (then its first stroke has no start dot). The start dots are numbered across the whole word in
+    writing order («أسد»: ١ the alif, ٢ its hamza, ٣ the س, and the د goes on from the س) on the `first`
+    row, and carry no number on the others."""
+    out, n = [], 1
+    for shape in letters:
+        joined = shape.join_right is not None
+        count = len(shape.strokes) - joined
+        out.append(([number(n + k) if first else "" for k in range(count)], joined))
+        n += count
+    return out
 
 
 def row_room(shape: Letter, cap: float) -> tuple[float, float]:
@@ -163,14 +211,22 @@ def row_room(shape: Letter, cap: float) -> tuple[float, float]:
 
 
 def tracing_row(
-    shape: Letter, *, width: float, cap: float, count: int | None = None, number: Number
+    shape: Letter,
+    *,
+    width: float,
+    cap: float,
+    count: int | None = None,
+    number: Number,
+    room: tuple[float, float] | None = None,
 ) -> Markup:
     """One writing row: guide lines, then `count` dotted letters (as many as fit when None); the first has
     numbered start dots and arrows, and the rest of the row is left for writing alone. Arabic rows run right
-    to left and keep room below the base line for tails (down to the descender line, drawn dashed)."""
+    to left and keep room below the base line for tails (down to the descender line, drawn dashed). `room`
+    (mm above the top line and below the base line) overrides the letter's own (`row_room`), so rows of
+    different letters side by side have their lines at the same heights."""
     g = shape.guides
     scale = cap / (g.base - g.top)
-    above, below = row_room(shape, cap)
+    above, below = room if room is not None else row_room(shape, cap)
     top = 5.0 + above
     height = top + cap + max(7.0, below + 4.0)
 
@@ -191,10 +247,21 @@ def tracing_row(
     glyph = (x1 - x0) * scale
     step = glyph + 13
     fits = int((width - 16 - glyph) // step) + 1
+    # a smaller row has its dots closer and smaller, so a short letter on it (م ه و) still shows its shape
+    spacing = min(3.5, max(2.4, cap * 0.175))
     for i in range(fits if count is None else min(count, fits)):
         x = width - 10 - i * step - x1 * scale if shape.rtl else 10 + i * step - x0 * scale
         body.append(
-            dotted_letter(shape, scale=scale, x=x, y=top - g.top * scale, first=i == 0, number=number)
+            dotted_letter(
+                shape,
+                scale=scale,
+                x=x,
+                y=top - g.top * scale,
+                first=i == 0,
+                number=number,
+                spacing=spacing,
+                dot=DOT_R * spacing / 3.5,
+            )
         )
     return draw.svg(width, height, "".join(body), "trace-row")
 
