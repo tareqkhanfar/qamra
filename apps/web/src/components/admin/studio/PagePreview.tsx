@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { naskh } from "@/components/book/fonts";
 import { nameCases } from "@/lib/arabicName";
-import { renderText, type TemplateTexts, type TextPage } from "@/lib/studio";
+import { renderText, type TextContext, type TextPage } from "@/lib/studio";
 
 // The print renderer's geometry (packages/pdf templates/_base.css.j2), in mm on a 216 mm page with bleed.
 const PAGE = 216;
@@ -25,7 +25,8 @@ function panelPlace(area: string, spread: boolean): CSSProperties {
 /**
  * The page as the book prints it, as far as the renderer allows: the art, and the words in the cream panel at
  * the page's text area, in the story font at the size the child's age sets (it shrinks to fit, down to a
- * minimum, like the PDF). English books use the mirrored art. The cover shows the title.
+ * minimum, like the PDF). English books use the mirrored art. The cover shows the title. A theme (no art, both
+ * looks) is previewed on a plain page, for a sample boy or girl.
  */
 export function PagePreview({
   src,
@@ -38,21 +39,23 @@ export function PagePreview({
   page: TextPage;
   ar: string;
   en: string;
-  texts: TemplateTexts;
+  texts: TextContext;
 }) {
   const t = useTranslations("studio.preview");
   const [lang, setLang] = useState<"ar" | "en">("ar");
   const [age, setAge] = useState<"young" | "older">("young");
+  const [picked, setPicked] = useState<"m" | "f">("f");
+  const gender = texts.gender ?? picked;
   const panel = useRef<HTMLDivElement>(null);
   const note = useRef<HTMLParagraphElement>(null);
   const [size, min] = texts.text_pt[age];
   const layout = page.beat === 0 ? "cover" : (page.layout ?? "full");
   const spread = layout === "spread";
   const mirrored = lang === "en";
-  const name = lang === "ar" ? texts.sample.name_ar : texts.sample.name_en;
+  const name = texts.names[gender][lang];
   const companion = lang === "ar" ? texts.sample.companion_ar : texts.sample.companion_en;
   const vowelized = lang === "ar" && page.vowelized && ar === page.pinned.ar ? page.vowelized : null;
-  const text = renderText(vowelized ?? (lang === "ar" ? ar : en), texts.gender, name, companion);
+  const text = renderText(vowelized ?? (lang === "ar" ? ar : en), gender, name, companion);
   let area = page.area ?? (layout === "split" ? "none" : "top");
   if (mirrored) area = area.replace(/left|right/, (s) => (s === "left" ? "right" : "left"));
 
@@ -82,6 +85,10 @@ export function PagePreview({
         {(["young", "older"] as const).map((a) => (
           <Toggle key={a} on={age === a} onClick={() => setAge(a)} label={t(`age.${a}`, { pt: texts.text_pt[a][0] })} />
         ))}
+        {texts.gender === null &&
+          (["f", "m"] as const).map((g) => (
+            <Toggle key={g} on={picked === g} onClick={() => setPicked(g)} label={t(`gender.${g}`)} />
+          ))}
       </div>
       <div style={{ containerType: "inline-size" }} className="overflow-hidden rounded-lg shadow-2">
         <div

@@ -9,6 +9,9 @@ then approves it in the flow), the story preview (`/books/{id}/preview`), a live
 Classic preview can start (`/classic-templates`), and the staff's order confirmation with the activity books
 "rendered" as placeholder PDFs (`/orders/{code}/confirm`), so the parent's download can be tested. One test
 machine signs up and orders more than any family: `/rate-limits/reset` clears its own per-address counters.
+
+The template studio's test (tests/e2e/test_admin_studio.py) signs in as staff (`/staff`: the roles asked for,
+two-step verification passed) and edits a Classic template drawn with placeholder art (`/studio-templates`).
 """
 
 import io
@@ -18,21 +21,28 @@ from datetime import UTC, date, datetime
 from decimal import Decimal
 from typing import Literal
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Response
 from PIL import Image, ImageDraw
 from pydantic import BaseModel, Field
 from rq import Queue
-from sqlalchemy import select
+from sqlalchemy import delete, select
 
+from qamra_ai.pipeline.classic_geometry import text_box
+from qamra_ai.pipeline.layout import plan_book
+from qamra_ai.pipeline.theme import Theme as ThemeDef
 from qamra_ai.pipeline.theme import fill_title
-from qamra_api.auth.router import client_ip
-from qamra_api.deps import CurrentUser, RedisDep, SessionDep, StorageDep
+from qamra_ai.pipeline.vowelize import source_hash, sources
+from qamra_api.auth import mfa
+from qamra_api.auth import service as auth
+from qamra_api.auth.router import client_ip, set_session_cookies
+from qamra_api.deps import CurrentUser, RedisDep, SessionDep, SettingsDep, StorageDep
 from qamra_api.errors import ApiError
 from qamra_api.jobs import QueueDep
 from qamra_api.routers.create import CONSENT_VERSION
 from qamra_api.store import gift_cards
 from qamra_core import downloads as dl
-from qamra_core.db.classic import ClassicTemplate, TemplateStatus
+from qamra_core.crypto import cipher_for, encrypt
+from qamra_core.db.classic import ClassicTemplate, ClassicTemplatePage, TemplateStatus
 from qamra_core.db.models import (
     Book,
     BookPage,
@@ -49,8 +59,9 @@ from qamra_core.db.models import (
     OrderStatus,
     PageStatus,
     Theme,
+    UserRole,
 )
-from qamra_core.db.store import Coupon, CouponKind, GiftCard, OrderEvent
+from qamra_core.db.store import Coupon, CouponKind, GiftCard, OrderEvent, StaffRole, UserStaffRole
 from qamra_core.storage import ObjectStorage
 from qamra_pdf.arabic_names import genitive
 
@@ -304,6 +315,147 @@ async def classic_template(body: TemplateIn, user: CurrentUser, db: SessionDep) 
     return TemplateOut(
         id=template.id,
         theme=theme.slug,
+        style=template.art_style,
+        variant=template.variant,
+        status=template.status.value,
+    )
+
+
+# ---- the template studio (tests/e2e/test_admin_studio.py) --------------------------------------------------
+
+
+class StaffIn(BaseModel):
+    roles: list[StaffRole] = Field(default_factory=lambda: [StaffRole.owner], min_length=1, max_length=8)
+
+
+class StaffOut(BaseModel):
+    id: uuid.UUID
+    roles: list[str]
+
+
+@router.post("/staff")
+async def staff(
+    body: StaffIn,
+    user: CurrentUser,
+    request: Request,
+    response: Response,
+    db: SessionDep,
+    settings: SettingsDep,
+) -> StaffOut:
+    """The signed-in test user becomes staff with `roles` (instead of the ones it had), two-step verification
+    on, and a session that passed it (what /api/auth/mfa/verify gives): the admin pages open without an
+    authenticator app."""
+    user.role = UserRole.admin
+    if user.totp_enabled_at is None:
+        user.totp_secret_ciphertext = encrypt(cipher_for(settings), mfa.new_secret())
+        user.totp_enabled_at = datetime.now(UTC)
+    await db.execute(delete(UserStaffRole).where(UserStaffRole.user_id == user.id))
+    roles = list(dict.fromkeys(body.roles))
+    for role in roles:
+        db.add(UserStaffRole(user_id=user.id, role=role, granted_at=datetime.now(UTC)))
+    session = await auth.start_session(db, user, settings, request.headers.get("user-agent"), "e2e", mfa=True)
+    set_session_cookies(response, session, settings)
+    return StaffOut(id=user.id, roles=[r.value for r in roles])
+
+
+class StudioTemplateIn(BaseModel):
+    theme: str = Field(default="new-sibling", max_length=64)
+    style: str = Field(default="cartoon", max_length=40)
+    variant: Literal["girl", "girl_hijab", "boy"] = "boy"
+    missing_box: int | None = 2  # this hero page has no hero box yet (the editor adds one)
+
+
+async def _clear_template(db: SessionDep, queue: Queue, body: StudioTemplateIn) -> Theme:
+    """The story's template at this style and look, when these fixtures made it or it is a dry run
+    (placeholder art, never sold), is removed with the drafts copied from it and their queued jobs. Any other
+    template there is left alone (409)."""
+    row = (await db.execute(select(Theme).where(Theme.slug == body.theme))).scalar_one_or_none()
+    if row is None:
+        raise ApiError("not_found", 404)
+    old = (
+        await db.execute(
+            select(ClassicTemplate).where(
+                ClassicTemplate.theme_id == row.id,
+                ClassicTemplate.art_style == body.style,
+                ClassicTemplate.variant == body.variant,
+            )
+        )
+    ).scalar_one_or_none()
+    if old is None:
+        return row
+    if not (old.generation.get("e2e_studio") or old.generation.get("offline")):
+        raise ApiError("template_exists", 409)
+    copies = select(ClassicTemplate).where(ClassicTemplate.generation["copied_from"].astext == str(old.id))
+    for t in [*(await db.execute(copies)).scalars(), old]:
+        _drop_queued(queue, t.id)
+        await db.delete(t)
+    await db.flush()
+    return row
+
+
+@router.post("/studio-templates/clear", status_code=204)
+async def clear_studio_template(
+    body: StudioTemplateIn, user: CurrentUser, db: SessionDep, queue: QueueDep
+) -> None:
+    """Removes a test or dry-run template (see `_clear_template`), so a test can make it again."""
+    await _clear_template(db, queue, body)
+    await db.commit()
+
+
+@router.post("/studio-templates", status_code=201)
+async def studio_template(
+    body: StudioTemplateIn, user: CurrentUser, db: SessionDep, storage: StorageDep, queue: QueueDep
+) -> TemplateOut:
+    """A «قمرة كلاسيك» template as the generator leaves it, in review, with placeholder art (no AI): every
+    page of the theme's live story drawn, a hero box on each hero page (but `missing_box`), the text boxes
+    where the book prints its words, and the Arabic marked vowelized (as written). Like a real run, page 1 is
+    flagged for review (a framed picture). A test or dry-run template already there is made again
+    (`_clear_template`)."""
+    row = await _clear_template(db, queue, body)
+    theme = ThemeDef.model_validate(row.definition)
+    gender: Literal["m", "f"] = "m" if body.variant == "boy" else "f"
+    texts = sources(theme, gender)
+    template = ClassicTemplate(
+        theme_id=row.id,
+        theme_version=row.version,
+        art_style=body.style,
+        variant=body.variant,
+        status=TemplateStatus.in_review,
+        flags=["pages_need_review"],
+        generation={
+            "e2e_studio": True,
+            "offline": "sketch",
+            "theme_def": row.definition,
+            "texts": {"hash": source_hash(texts), "gender": gender, "texts": texts.model_dump(), "kept": []},
+        },
+        created_by_user_id=user.id,
+    )
+    db.add(template)
+    await db.flush()
+    for beat, bp in plan_book(theme, "ar", companion_page=False).beats.items():  # as the generator lays out
+        key = f"classic/templates/{template.id}/e2e/{beat:02d}.jpg"
+        storage.put(key, _placeholder((22, 32, 74), "JPEG"), "image/jpeg")
+        hero = not bp.no_child
+        box = {"x": 0.3, "y": 0.35, "w": 0.3, "h": 0.5} if hero and beat != body.missing_box else None
+        db.add(
+            ClassicTemplatePage(
+                template_id=template.id,
+                beat=beat,
+                layout=bp.layout,
+                image_key=key,
+                raw_key=key,
+                preview_key=key,
+                has_hero=hero,
+                hero_box=box,
+                text_box=text_box(bp.layout, bp.text_area),
+                status=PageStatus.needs_review if beat == 1 else PageStatus.ok,
+                flags=["frame"] if beat == 1 else [],
+            )
+        )
+    await db.commit()
+    return TemplateOut(
+        id=template.id,
+        theme=row.slug,
         style=template.art_style,
         variant=template.variant,
         status=template.status.value,

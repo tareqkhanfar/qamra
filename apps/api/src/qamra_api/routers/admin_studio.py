@@ -4,7 +4,8 @@
   its Arabic is vowelized, and whether its texts are stale (the theme's live words changed since).
 - Bulk: copy templates' settings to another art style as drafts (drawn only when an editor clicks generate),
   publish or take several off sale, and schedule a go-live date (qamra_worker.jobs.studio, every 5 minutes).
-- The page editor's words: each page's text in the template, and in the theme version being edited.
+- The page editor's words: each page's text in the template, and in the theme version being edited; and a
+  theme's own pages (every theme, with or without templates), so its words can be edited from the theme.
 Nothing here calls an AI model. Every change is in the audit log.
 """
 
@@ -17,6 +18,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from qamra_ai.pipeline.layout import plan_book
 from qamra_ai.pipeline.theme import Theme
 from qamra_api.deps import AdminUser, SessionDep, require_admin, require_permission
 from qamra_api.errors import ApiError
@@ -102,6 +104,12 @@ def _row(t: ClassicTemplate, theme: ThemeRow, drawn: int) -> StudioTemplate:
     )
 
 
+def _classic_story(row: ThemeRow) -> bool:
+    """A story the catalog sells, written: it can have Classic templates (the custom story's base can't)."""
+    theme = Theme.model_validate(row.definition)
+    return theme.available and theme.catalog is not None
+
+
 @router.get("/templates", dependencies=[Depends(require_permission("templates.view"))])
 async def list_templates(
     db: SessionDep, theme: str | None = None, status: TemplateStatus | None = None, style: str | None = None
@@ -133,7 +141,7 @@ async def list_templates(
                 title_en=display_titles(r.definition)[1],
             )
             for r in themes
-            if Theme.model_validate(r.definition).available
+            if _classic_story(r)
         ],
         styles=[Option(slug=s.slug, title_ar=s.name_ar, title_en=s.name_en) for s in styles],
         variants=list(VARIANTS),
@@ -287,23 +295,37 @@ class TextPage(BaseModel):
     vowelized: str | None  # the template's vowelized Arabic for its look, when ready
 
 
-class TemplateTexts(BaseModel):
-    template: uuid.UUID
+class TextContext(BaseModel):
+    """What the page editor and its preview need, for a template or a theme."""
+
     theme: str
     theme_title: Words  # the catalog name, for the editor's heading
+    live_version: int
+    editing: dict[str, Any] | None  # the theme's open version: {"version", "status"}
+    text_pt: dict[str, tuple[float, float]]
+    sample: dict[str, str]  # name_ar, name_en (the template's look), companion_ar, companion_en
+    names: dict[str, Words]  # a sample child's name per gender ("m", "f"): each form is shown with its own
+    pages: list[TextPage]
+
+
+class TemplateTexts(TextContext):
+    template: uuid.UUID
     style: str
     style_title: Words
     variant: str
     gender: Literal["m", "f"]
     pinned_version: int
-    live_version: int
-    editing: dict[str, Any] | None  # the theme's open version: {"version", "status"}
     texts_stale: bool
     story_changed: bool
     vowelized: bool
-    text_pt: dict[str, tuple[float, float]]
-    sample: dict[str, str]  # name_ar, name_en, companion_ar, companion_en
-    pages: list[TextPage]
+
+
+class ThemeTexts(TextContext):
+    """A theme's own pages: the live words, and the words in its open version (what an editor changes)."""
+
+    gender: None = None  # both looks: the preview switches between them
+    available: bool  # False: a «قريبًا» story whose pages are not written yet
+    planned_pages: int | None
 
 
 def _words(definition: dict[str, Any]) -> dict[int, Words]:
@@ -311,6 +333,29 @@ def _words(definition: dict[str, Any]) -> dict[int, Words]:
     for p in definition.get("pages") or []:
         out[int(p.get("index", 0))] = Words(ar=str(p.get("text_ar") or ""), en=str(p.get("text_en") or ""))
     return out
+
+
+def sample_names(theme: Theme) -> dict[str, Words]:
+    """A sample child per gender: the theme's own sample child for its gender, else a house name."""
+    sample = theme.catalog.sample_child if theme.catalog else None
+    out = {g: Words(ar=ar, en=en) for g, (ar, en) in SAMPLE.items()}
+    if sample is not None:
+        out[sample.gender] = Words(ar=sample.name_ar, en=sample.name_en)
+    return out
+
+
+def _sample(theme: Theme, gender: Literal["m", "f"]) -> dict[str, str]:
+    name, companion = sample_names(theme)[gender], theme.default_companion
+    return {
+        "name_ar": name.ar,
+        "name_en": name.en,
+        "companion_ar": companion.name_ar if companion else "",
+        "companion_en": companion.name_en if companion else "",
+    }
+
+
+def _editing(open_: Any) -> dict[str, Any] | None:
+    return {"version": open_.version, "status": open_.status.value} if open_ else None
 
 
 @router.get("/templates/{template_id}/texts", dependencies=[Depends(require_permission("templates.view"))])
@@ -337,11 +382,6 @@ async def template_texts(template_id: uuid.UUID, db: SessionDep) -> TemplateText
     ).scalars()
     layouts = {p.beat: (p.layout, (p.text_box or {}).get("area")) for p in rows}
     parsed = Theme.model_validate(pinned_def)
-    sample = parsed.catalog.sample_child if parsed.catalog else None
-    name_ar, name_en = (
-        (sample.name_ar, sample.name_en) if sample and sample.gender == gender else SAMPLE[gender]
-    )
-    companion = parsed.default_companion
     style = (await db.execute(select(ArtStyle).where(ArtStyle.slug == t.art_style))).scalar_one_or_none()
     theme_ar, theme_en = display_titles(theme.definition)
     beats = sorted(pinned)
@@ -357,17 +397,13 @@ async def template_texts(template_id: uuid.UUID, db: SessionDep) -> TemplateText
         gender=gender,
         pinned_version=t.theme_version,
         live_version=theme.version,
-        editing={"version": open_.version, "status": open_.status.value} if open_ else None,
+        editing=_editing(open_),
         texts_stale=texts_stale(t, theme.definition),
         story_changed=_indices(pinned_def) != _indices(theme.definition),
         vowelized=ready,
         text_pt=TEXT_PT,
-        sample={
-            "name_ar": name_ar,
-            "name_en": name_en,
-            "companion_ar": companion.name_ar if companion else "",
-            "companion_en": companion.name_en if companion else "",
-        },
+        sample=_sample(parsed, gender),
+        names=sample_names(parsed),
         pages=[
             TextPage(
                 beat=b,
@@ -378,5 +414,42 @@ async def template_texts(template_id: uuid.UUID, db: SessionDep) -> TemplateText
                 vowelized=vowelized.get(b),
             )
             for b in beats
+        ],
+    )
+
+
+@router.get("/themes/{slug}/texts", dependencies=[Depends(require_permission("themes.view"))])
+async def theme_texts(slug: str, db: SessionDep) -> ThemeTexts:
+    """Every page's words of a theme, live and in its open version: the theme's own page editor (a theme
+    needs no Classic template for its words to be edited). A «قريبًا» story has no pages yet."""
+    row = (await db.execute(select(ThemeRow).where(ThemeRow.slug == slug))).scalar_one_or_none()
+    if row is None:
+        raise ApiError("not_found", 404)
+    open_ = await open_version(db, row.id)
+    theme = Theme.model_validate(row.definition)
+    live, current = _words(row.definition), _words(open_.definition if open_ else row.definition)
+    title_ar, title_en = display_titles(row.definition)
+    plan = plan_book(theme, "ar", companion_page=False).beats if theme.pages else {}  # the Arabic book's
+    return ThemeTexts(
+        theme=row.slug,
+        theme_title=Words(ar=title_ar, en=title_en),
+        live_version=row.version,
+        editing=_editing(open_),
+        text_pt=TEXT_PT,
+        sample=_sample(theme, "f"),
+        names=sample_names(theme),
+        available=theme.available,
+        planned_pages=theme.catalog.planned_pages if theme.catalog else None,
+        pages=[
+            TextPage(
+                beat=b,
+                layout=plan[b].layout,
+                area=None if plan[b].text_area == "none" else plan[b].text_area,
+                pinned=live[b],
+                current=current.get(b, live[b]),
+                vowelized=None,
+            )
+            for b in sorted(live)
+            if b in plan
         ],
     )

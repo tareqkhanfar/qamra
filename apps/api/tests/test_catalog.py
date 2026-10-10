@@ -1,8 +1,11 @@
 from decimal import Decimal
+from pathlib import Path
 
+import yaml
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from qamra_ai.pipeline.theme import CONTENT_DIR
 from qamra_api.seed import upsert_themes
 
 
@@ -14,8 +17,10 @@ async def test_theme_list_sorted_with_status(client: AsyncClient, adb: AsyncSess
     slugs = [c["slug"] for c in cards]
     assert slugs[:3] == ["first-day", "graduation", "new-sibling"]
     assert {c["status"] for c in cards[:3]} == {"available"}
-    soon = [c for c in cards if c["status"] == "coming_soon"]
-    assert len(soon) == 5 and all(c["pages"] > 0 for c in soon)
+    # every story is written and on sale (owner, 2026-10-09), olive season among them
+    assert {c["status"] for c in cards} == {"available"} and len(cards) == 8
+    olive = next(c for c in cards if c["slug"] == "olive-season")
+    assert olive["name"] == "موسم الزيتون" and 16 < olive["pages"] <= 28 and olive["classic"] == {}
     first = cards[0]
     assert first["name"] == "أوّل يوم في الروضة" and first["pages"] == 24 and first["art"]["scene"] == "garden"
     en = (await client.get("/api/themes", params={"lang": "en"})).json()
@@ -33,7 +38,24 @@ async def test_theme_detail_peek_uses_real_story_text(client: AsyncClient, adb: 
     assert d["sample_name"] == "ليان"
     assert [p["index"] for p in d["samples"]] == [1, 6, 11, 17]  # beginning, middle, end
     assert all("{" not in p["text"] and p["art"]["scene"] for p in d["samples"])
-    soon = (await client.get("/api/themes/moon-trip")).json()
+    olive = (await client.get("/api/themes/olive-season")).json()
+    assert olive["status"] == "available" and olive["sample_name"] and olive["values"][0] == "حبّ الأرض"
+    assert len(olive["samples"]) == 4 and all("{" not in p["text"] for p in olive["samples"])
+
+
+async def test_a_story_still_being_written_is_listed_as_coming_soon(
+    client: AsyncClient, adb: AsyncSession, tmp_path: Path
+) -> None:
+    """A stub (catalog only, no pages) loads as coming soon: no samples, no sample child."""
+    stub = tmp_path / "themes" / "next-story"
+    stub.mkdir(parents=True)
+    data = yaml.safe_load((CONTENT_DIR / "themes/olive-season/theme.yaml").read_text(encoding="utf-8"))
+    data = {k: v for k, v in data.items() if k not in ("pages", "cover", "for_parents", "cast")}
+    data["slug"], data["catalog"]["status"] = "next-story", "coming_soon"
+    data["catalog"].pop("sample_child", None)
+    (stub / "theme.yaml").write_text(yaml.safe_dump(data, allow_unicode=True), encoding="utf-8")
+    await upsert_themes(adb, tmp_path)
+    soon = (await client.get("/api/themes/next-story")).json()
     assert soon["status"] == "coming_soon" and soon["samples"] == [] and soon["sample_name"] is None
 
 

@@ -1498,10 +1498,15 @@
   },
   "studio": {
     "title": "Template studio",
-    "lead": "“Qamra Classic” templates for each theme × art style × look: status, pages, cost and texts. The studio calls no AI model unless you click generate.",
+    "lead": "“Qamra Classic” templates for each theme × art style × look: status, pages, cost and texts. No AI model is called until you confirm.",
     "empty": "No templates match these filters.",
+    "emptyAll": "No templates yet. Start the first one with the form above.",
+    "errors": {
+      "busy": "The previous job isn't finished yet (drawing, vowelizing or translating). Wait a moment, then try again.",
+      "moved": "The status changed in the meantime. Refresh the page and try again."
+    },
     "liveVersion": "live v{version}",
-    "versionsLink": "Theme versions",
+    "versionsLink": "Theme texts and versions",
     "select": "Select {name}",
     "bulkResult": "Done for {done}, skipped {skipped}",
     "textsStale": "Texts out of date",
@@ -1513,6 +1518,41 @@
     "vowelized": "Vowelized",
     "notVowelized": "Not vowelized",
     "themeVersion": "Text version",
+    "new": {
+      "open": "New template",
+      "title": "New template",
+      "lead": "Choose the story, the art style and the look. The template is drawn once by the image model; then you review its pages and approve it before families see it.",
+      "theme": "Story",
+      "style": "Art style",
+      "variant": "Look",
+      "offline": "Dry run with placeholder pictures",
+      "offlineNote": "To try the steps only: no image model is called, and the pictures can't be sold.",
+      "budget": "Cost cap (US dollars)",
+      "cost": "Heads-up: “Start drawing” draws every page of the template with the image model, at a real cost of up to {usd}. Drawing stops at the cap; missing pages can be finished later in the template's editor.",
+      "offlineCost": "No cost: no AI model is called.",
+      "start": "Start drawing",
+      "startOffline": "Start the dry run",
+      "cancel": "Cancel",
+      "confirm": "The image model will now draw every page of the template, at a real cost of up to {usd}. Continue?"
+    },
+    "flags": {
+      "no_hero_box": "Hero box missing",
+      "job_failed": "Last job failed",
+      "changed_after_approval": "Changed after approval",
+      "text_kept": "Some texts left unvowelized",
+      "texts_pending": "Vowelization pending"
+    },
+    "themePages": {
+      "title": "Story pages",
+      "lead": "Pick a page to edit its words for a boy, for a girl and in English. Every edit is saved in the theme's draft and reaches new books only once that version is approved and published.",
+      "nav": "Choose a page",
+      "cover": "Cover",
+      "page": "Page {n}",
+      "edited": "Edited in the draft",
+      "preview": "Preview",
+      "comingSoonTitle": "Coming soon.",
+      "comingSoon": "This story's pages aren't written yet, so there are no words to edit. They'll appear here once the story is added to the content files."
+    },
     "filters": {
       "theme": "Theme",
       "status": "Status",
@@ -1545,7 +1585,7 @@
     "tabs": {
       "label": "Studio sections",
       "templates": "Templates",
-      "themes": "Theme versions"
+      "themes": "Themes"
     },
     "nav": {
       "staff": "Staff & roles",
@@ -1566,6 +1606,10 @@
     },
     "preview": {
       "options": "Preview options",
+      "gender": {
+        "f": "Girl",
+        "m": "Boy"
+      },
       "lang": {
         "ar": "عربي",
         "en": "English"
@@ -1595,7 +1639,9 @@
       },
       "note": "Note about the change (optional)",
       "broken": "The text has an unknown placeholder or an incomplete '{…/…}' variant.",
-      "saved": "Saved in draft v{version}. Publish it in Theme versions, then refresh the template's texts.",
+      "saved": "Saved in draft v{version}. Send it to review and publish it in Themes, then refresh the template's texts.",
+      "savedTheme": "Saved in draft v{version}. When you're done, send it to review from the version list below.",
+      "pending": "Version v{version} is in review or approved: send it back to draft from the version list to edit the words.",
       "save": "Save text",
       "reset": "Undo"
     },
@@ -1610,6 +1656,10 @@
       "pages": "{drawn} of {total} pages",
       "vowelized": "Vowelized",
       "notVowelized": "Not vowelized",
+      "pageStatus": {
+        "needs_review": "Needs review",
+        "failed": "Drawing failed"
+      },
       "move": {
         "in_review": "Send to review",
         "approved": "Approve (locks pages)",
@@ -1652,10 +1702,12 @@
       "preview": "Preview"
     },
     "versions": {
-      "title": "Theme versions",
-      "lead": "Every change to a theme's texts is a new version: draft → review → approved → live, with history and rollback. Books already made keep their texts.",
+      "title": "Theme editor",
+      "lead": "Each theme's page texts and versions: every edit is saved in a draft, then review → approved → live, with history and rollback. Books already made keep their texts.",
       "done": "Done.",
       "theme": "Theme",
+      "comingSoon": "Coming soon",
+      "history": "Versions and history",
       "summary": "live v{live} · {count, plural, one {# version} other {# versions}}",
       "openVersion": "open v{version}",
       "staleTemplates": "{count, plural, one {# template with old texts} other {# templates with old texts}}",
@@ -1672,7 +1724,8 @@
       },
       "created": "Created by {who} {at}",
       "published": "published by {who} {at}",
-      "files": "content files",
+      "createdAt": "Created {at}",
+      "publishedAt": "published {at}",
       "to": {
         "in_review": "Send to review",
         "approved": "Approve",
@@ -1688,7 +1741,7 @@
       "newDraft": "New draft",
       "showChanges": "Show changes",
       "hideChanges": "Hide changes",
-      "estimate": "Estimated cost {usd} to translate {pages} pages with {model}. The translation is saved as a draft for review.",
+      "estimate": "Estimated cost {usd} to translate {pages, plural, one {# page} other {# pages}} with {model}. The translation is saved as a draft for review.",
       "translateConfirm": "Translate now",
       "cancel": "Cancel",
       "noChanges": "No difference from live v{live}.",
@@ -2137,6 +2190,9 @@
     "coverAlt": "A real cover from \"{name}\"",
     "placeholderAlt": "An illustration for \"{name}\"",
     "realPages": "Real pages",
+    "magicOnly": "Magic only",
+    "bothLines": "Classic and Magic",
+    "classicIn": "Qamra Classic in: {styles}",
     "from": "From {price}",
     "choose": "Open the story",
     "lineChosen": "You chose {line}: stories here start from {price}.",
@@ -2181,6 +2237,10 @@
         "desc": "Every page drawn afresh for your child, with a companion from their own drawing"
       },
       "unavailable": "Not offered for this story"
+    },
+    "availability": {
+      "magicOnly": "For now, this story is available only as Qamra Magic: we draw every page afresh for your child.",
+      "classicIn": "This story is available as Qamra Classic in: {styles}. As Qamra Magic, it comes in every style."
     },
     "features": {
       "classic": {

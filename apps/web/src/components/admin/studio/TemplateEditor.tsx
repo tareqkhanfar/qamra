@@ -10,7 +10,7 @@ import { usd, type Box, type TemplateDetail, type TemplateStatus, type TemplateT
 import { HeroBoxCanvas } from "./HeroBoxCanvas";
 import { PagePreview } from "./PagePreview";
 import { PageTextEditor } from "./PageTextEditor";
-import { Pill, StatusBadge, useVariantName } from "./parts";
+import { Pill, StatusBadge, useFlagName, useStudioError, useVariantName } from "./parts";
 
 type Notice = { ok: boolean; text: string } | null;
 const MOVES: Record<TemplateStatus, TemplateStatus[]> = {
@@ -31,6 +31,8 @@ export function TemplateEditor({ id }: { id: string }) {
   const te = useTranslations("errors");
   const locale = useLocale();
   const variantName = useVariantName();
+  const flagName = useFlagName();
+  const studioError = useStudioError();
   const [detail, setDetail] = useState<TemplateDetail | null>(null);
   const [texts, setTexts] = useState<TemplateTexts | null>(null);
   const [failed, setFailed] = useState<string | null>(null);
@@ -78,7 +80,7 @@ export function TemplateEditor({ id }: { id: string }) {
         texts: yes(d.texts),
       });
     }
-    return errorText(error, locale, te("unknown"));
+    return studioError(error);
   }
 
   async function run(key: string, path: string, init: { method?: string; json?: unknown }, ask?: string) {
@@ -129,7 +131,7 @@ export function TemplateEditor({ id }: { id: string }) {
           </span>
           {detail.flags.map((f) => (
             <Pill key={f} warn>
-              {f}
+              {flagName(f)}
             </Pill>
           ))}
         </div>
@@ -210,7 +212,7 @@ export function TemplateEditor({ id }: { id: string }) {
                 {!!row?.flags.length && (
                   <span
                     className="absolute end-1 top-1 size-2.5 rounded-full bg-warning"
-                    title={row.flags.join(", ")}
+                    title={row.flags.map(flagName).join("، ")}
                   />
                 )}
               </button>
@@ -224,6 +226,18 @@ export function TemplateEditor({ id }: { id: string }) {
               <span className="ms-2 text-small font-normal text-ink-muted">{t(`layout.${page.layout}`)}</span>
             )}
           </h2>
+          {page && (page.status === "needs_review" || page.status === "failed" || page.flags.length > 0) && (
+            <div className="flex flex-wrap gap-1.5">
+              {(page.status === "needs_review" || page.status === "failed") && (
+                <Pill warn>{t(`pageStatus.${page.status}`)}</Pill>
+              )}
+              {page.flags.map((f) => (
+                <Pill key={f} warn>
+                  {flagName(f)}
+                </Pill>
+              ))}
+            </div>
+          )}
           <HeroBoxCanvas
             src={page?.has_image ? image(beat, page.regen_count) : null}
             alt={t("pageImage", { n: beat })}
@@ -285,7 +299,14 @@ export function TemplateEditor({ id }: { id: string }) {
               </span>
             </div>
           )}
-          <PageTextEditor texts={texts} page={textPage} words={shownWords} setWords={setWords} onSaved={load} />
+          <PageTextEditor
+            key={textPage.beat}
+            texts={texts}
+            page={textPage}
+            words={shownWords}
+            setWords={setWords}
+            onSaved={load}
+          />
         </section>
         <aside className="flex min-w-0 flex-col gap-3 lg:col-start-2 xl:col-start-auto" aria-labelledby="preview-title">
           <h2 id="preview-title" className="text-h3 text-night-900">

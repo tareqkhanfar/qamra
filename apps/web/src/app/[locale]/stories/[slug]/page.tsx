@@ -7,7 +7,7 @@ import { StoryProduct } from "@/components/story/StoryProduct";
 import { addonMedia } from "@/lib/addonsMedia";
 import { examplesFor, getStoreCatalog, getTheme, getThemes, type ThemeCard } from "@/lib/catalog";
 import { pickExample } from "@/lib/examples";
-import { LINES, coversOf, storyFrom, type Line } from "@/lib/story";
+import { LINES, classicStylesFor, coversOf, storyFrom, type Line } from "@/lib/story";
 import { storyJsonLd, storyMetadata } from "@/lib/storySeo";
 import { StoryJsonLd } from "@/components/story/StoryJsonLd";
 
@@ -76,10 +76,15 @@ export default async function StoryPage({ params, searchParams }: Props) {
                     key={th.slug}
                     theme={th}
                     example={covers[th.slug] ?? null}
-                    from={storyFrom(catalog, th, line)}
+                    from={storyFrom(catalog, th, line) ?? storyFrom(catalog, th)}
                     currency={catalog?.currency ?? "ILS"}
                     line={line}
                     styles={styles}
+                    classic={
+                      catalog
+                        ? classicStylesFor(catalog, th).map((s) => (locale === "ar" ? s.name_ar : s.name_en))
+                        : undefined
+                    }
                   />
                 ))}
               </div>

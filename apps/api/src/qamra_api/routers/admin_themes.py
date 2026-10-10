@@ -77,6 +77,8 @@ class ThemeOut(BaseModel):
     versions: int
     templates: int
     stale_templates: int  # Classic templates whose texts differ from the live version's
+    available: bool  # False: a «قريبًا» story (its pages are not written yet)
+    pages: int  # the live story's pages
 
 
 class ThemeDetail(ThemeOut):
@@ -195,6 +197,8 @@ async def _theme_out(db: AsyncSession, row: ThemeRow, *, full: bool = False) -> 
         versions=len(versions),
         templates=len(templates),
         stale_templates=sum(texts_stale(t, row.definition) for t in templates),
+        available=Theme.model_validate(row.definition).available,
+        pages=len(row.definition.get("pages") or []),
         history=[_version_out(v, names) for v in versions] if full else [],
     )
 

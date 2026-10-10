@@ -1,8 +1,9 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import type { ReactNode } from "react";
+import { useCallback, type ReactNode } from "react";
 import { Link } from "@/i18n/navigation";
+import { errorText, type ApiErrorBody } from "@/lib/api";
 import { STATUS_TONE, type Option, type VersionStatus } from "@/lib/studio";
 
 /** draft / in review / approved / live / retired, as a small colored pill. */
@@ -35,18 +36,44 @@ export function useOptionName(): (o: Option | undefined, fallback: string) => st
   return (o, fallback) => (o ? (locale === "ar" ? o.title_ar : o.title_en) : fallback);
 }
 
+/** A template's or page's flag in words: the studio's own flags, then the review queue's (the page checks). */
+export function useFlagName(): (flag: string) => string {
+  const ts = useTranslations("studio.flags");
+  const tq = useTranslations("queue.flags");
+  return (f) => (ts.has(f) ? ts(f) : tq.has(f) ? tq(f) : f);
+}
+
+/**
+ * An API error in words: its own message, except two codes shared with books and orders, whose messages speak
+ * of a book or an order; the studio says them about its own work.
+ */
+export function useStudioError(): (error: ApiErrorBody | null) => string {
+  const t = useTranslations("studio.errors");
+  const te = useTranslations("errors");
+  const locale = useLocale();
+  return useCallback(
+    (error: ApiErrorBody | null) =>
+      error?.code === "busy"
+        ? t("busy")
+        : error?.code === "invalid_transition"
+          ? t("moved")
+          : errorText(error, locale, te("unknown")),
+    [t, te, locale],
+  );
+}
+
 /** The template looks: girl, girl with hijab, boy. */
 export function useVariantName(): (v: string) => string {
   const t = useTranslations("studio.variant");
   return (v) => (["girl", "girl_hijab", "boy"].includes(v) ? t(v) : v);
 }
 
-/** The studio's own tabs (templates · theme versions), shown above each studio page. */
+/** The studio's own tabs (themes · Classic templates), shown above each studio page. */
 export function StudioTabs({ active }: { active: "templates" | "themes" }) {
   const t = useTranslations("studio.tabs");
   const tabs = [
-    { id: "templates", href: "/admin/studio" },
     { id: "themes", href: "/admin/studio/themes" },
+    { id: "templates", href: "/admin/studio" },
   ] as const;
   return (
     <nav aria-label={t("label")} className="flex gap-2 border-b border-line">

@@ -766,3 +766,20 @@ seven published watercolor examples, and the 3D, cartoon and semi-realistic shee
   came out as a ragged block of all seven views on paper.
 - **Speed:** the border flood labels row runs instead of Pillow's per-pixel Python flood fill. Same result,
   about 30× faster, so a cut-out takes about 1 s instead of 2–4 s.
+
+## Every story written and sold as Magic; the theme editor edits a theme's own words (2026-10-10)
+
+Owner (2026-10-09): «في عندك حكايات إنت بعدك مش عاملها، مثلًا عن موسم الزيتون، ضرورية هاي جدًا… عندك محرر الثيمات ع البانيل مش شايفه شغال».
+
+- **The five coming-soon stories are written (v2) and on sale as «قمرة سحري».** They were hidden because they had no pages, not because they had no Classic template. A story with no live template is sold as Magic only, and says so on its card («سحري فقط») and page; Classic appears per style only where a live template exists (`lib/story.ts` `classicStylesFor`).
+- **Story choices:**
+  - Grandpa is «سِيدِي» / "Sido" (as grandma is «سِتِّي» / "Teta"), the new shared `grandpa` cast id with the C14 description, so the existing sheets are used.
+  - «قارب الأحلام» puts Baba in the dream boat (`{dad}` in a life jacket, on every boat page). The house style and the page QA forbid a child alone near water; with the child alone the image model would add an adult or the QA would fail most pages. The child still hears the call, decides, unties the net and has the lighthouse idea.
+  - New side characters are theme-prefixed ids (`moon_planet`, `dream_turtle`, `dream_turtle_mother`, `hara_cat`, `hara_bird`, `hara_tortoise`, `little_star`). None has a sheet yet: they are drawn from their locked descriptions.
+  - The companion's name stays «قَمّور» (shared by every theme); fully vowelized it would be «قَمُّور». To change, change it everywhere at once.
+- **Olive season's art:** one 3D cover by the Magic pipeline for the invented sample girl (no hijab), $0.08 of the $0.40 allowed. Kept without lettering in `public/samples/3d/olive-season-art*.webp`; the site sets the title in code. Static, like the style samples (no API call).
+- **The theme editor:**
+  - «محرر الثيمات» opens the themes; each theme has its pages (`GET /api/admin/studio/themes/{slug}/texts`): edit the boy, girl and English words into the theme's draft, preview with a sample boy and girl, then review → approve → publish, with rollback. No Classic template is needed.
+  - «قالب جديد» starts a Classic template (story × style × look, a cost cap, default $3), with a confirm before any paid drawing and a free dry run with placeholder pictures.
+  - Not built (owner's call): moving the text box and the font size (the PDF places text by area), editing scenes, the cover, the catalog fields, adding or removing pages; the reviewer role can't approve versions or templates (it has only `.view`); rolling a written story back to its coming-soon v1 is allowed.
+- **Preflight:** a zero-advance mark glyph (tashkeel, Ruqaa's dots) is not tested for the bleed on its own; its letter is. Its font box (an em up from a raised origin) says nothing about its ink.

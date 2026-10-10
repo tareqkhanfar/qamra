@@ -47,6 +47,20 @@ codes show their item and play its reviewed clip; the story code says kindly tha
 the page yet (a visitor gets a sign-in link, the owner «سجّلوا صوتكم لهذه الصفحة», which opens the recording
 page at that page), and plays the owner's recording once it exists; the back cover's code opens page 1.
 
+**`test_story_catalog.py`** (owner, 2026-10-09: every story on sale): `/stories` lists all eight stories, each
+card saying what it is sold as («سحري فقط», or «كلاسيك وسحري» once a live Classic template exists), with the
+Magic price for a story with no template, also on the Classic list; the «موسم الزيتون» page shows its art,
+summary, values, ages and pages, explains «سحري فقط», keeps «قمرة كلاسيك» unavailable and adds the Magic book to
+the cart in one tap; and the whole Magic flow from that page (child, consent, photo, character, story with the
+likes, preview, format, add-ons) ends with «… في موسم الزيتون» in the cart.
+
+**`test_admin_studio.py`** (the template studio, owner 2026-10-09: «محرر الثيمات … مش شايفه شغال»): a staff user
+(`/api/e2e/staff`: roles, two-step verification passed) edits a theme's page text (boy, girl, English) into a
+draft, previews it, sends it for review, approves, publishes and rolls back; edits a Classic template drawn with
+placeholder art (`/api/e2e/studio-templates`): the hero box, approve, publish, bulk actions; starts a new
+template, which asks before spending and makes a free dry run; and checks the roles (an editor edits, an admin
+is told why not). Each test fails on a script error, a 5xx, or a raw message key on the Arabic screen.
+
 The shop → quiz flow of §3 is not covered here.
 
 ## No AI, no paid calls

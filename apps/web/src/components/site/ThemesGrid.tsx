@@ -33,6 +33,7 @@ export function ThemesGrid({
   labels,
   occasionLabels,
   styles,
+  classic,
 }: {
   themes: ThemeCard[];
   covers: Record<string, Example | null>;
@@ -43,6 +44,8 @@ export function ThemesGrid({
   occasionLabels: Record<string, string>;
   /** The art styles to show on each card (see StoryCard). */
   styles?: { slug: string; name: string }[];
+  /** Per story: the style names it is sold in as «قمرة كلاسيك» ([] = «قمرة سحري» only). */
+  classic?: Record<string, string[]>;
 }) {
   const [band, setBand] = useState<number | null>(null);
   const [occasion, setOccasion] = useState<string | null>(null);
@@ -133,6 +136,7 @@ export function ThemesGrid({
                 line={line}
                 priority={i < 2}
                 styles={styles}
+                classic={classic?.[t.slug]}
               />
             </div>
           ))}

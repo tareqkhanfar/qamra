@@ -1,5 +1,5 @@
 slug: star-keeper
-version: 1
+version: 2
 title_ar: "{name} {حارس/حارسة} النجوم"
 title_en: "{name} the Star Keeper"
 # Cover lettering (Addendum 11 §2.3): gold-magic, candy-bright, night-glow, nature-fresh, heritage-tatreez
@@ -9,20 +9,398 @@ is_b2b: false
 active: true
 companion_slot: true
 
-# Catalog entry from the design canvas. The story itself is not written yet (coming soon).
+# A calm bedtime story, one night from tuck-in to dawn. The little star is «نُجَيْمَةُ» in Arabic (a feminine
+# proper name: «نُجَيْمَةُ» / «نُجَيْمَةَ», never tanween) and "Little Star" in English.
 catalog:
-  status: coming_soon
+  status: available
   name_ar: حارس النجوم
   name_en: The Star Keeper
   tagline_ar: قصة قبل النوم عن الشجاعة واللطف مع نجمة صغيرة.
   tagline_en: A bedtime story about courage and kindness with a little star.
   description_ar: >-
-    نجمة صغيرة تخاف من العتمة، وبطل يعدها بأن يبقى حارسها حتى الصباح. قصة هادئة تُقرأ قبل النوم.
+    نجمة صغيرة تخاف من العتمة، ووعدٌ بحراستها حتى الصباح. قصة هادئة تُقرأ قبل النوم.
   description_en: >-
     A little star is afraid of the dark, and our hero promises to keep watch until morning. A calm story for bedtime.
   occasions: [bedtime]
   values_ar: [اللطف, الشجاعة, الطمأنينة]
   values_en: [Kindness, Courage, Calm]
   rank: 70
-  planned_pages: 20
   art: {scene: night, outfit: "#F2B33D", skin: "#E8B98F", hair_style: long, pose: tilt}
+  peek:
+    - {scene: night, outfit: "#F2B33D", skin: "#E8B98F", hair_style: long, pose: front, kid_scale: 0.6}
+    - {scene: night, outfit: "#F2B33D", skin: "#E8B98F", hair_style: long, pose: tilt, kid_scale: 0.55, companion: blob}
+    - {scene: night, outfit: "#F2B33D", skin: "#E8B98F", hair_style: long, pose: wave, kid_scale: 0.5}
+  sample_child: {name_ar: ريم, name_en: Reem, gender: f}
+
+default_companion:
+  name_ar: قَمّور
+  name_en: Qamour
+  id: qamour  # shared sheet images: content/cast/qamour-<style>.png
+  # Locked design (Addendum 11 §4.2): always this plump crescent, never a ball. Same text as the sheets in
+  # docs/image-prompts.md (C1, C2, C7).
+  description_en: >-
+    a tiny friendly moon creature: a soft, plump crescent-moon body (a thick C shape opening to the
+    right), pale honey-gold, softly glowing from inside, about the size of a house cat. Its face sits on
+    the thick middle of the crescent: two small shiny black dot eyes, a tiny happy smile, round rosy
+    cheeks, and a small five-pointed star-shaped golden freckle on its left cheek. Two stubby little
+    arms, no legs. It floats a few centimeters above the ground with a faint trail of golden sparkles.
+    The crescent shape never changes
+  image: default-companion.png
+
+# Template syntax: {name}, {companion}; gender variants {masculine/feminine}. See first-day for layouts.
+# The whole story happens in one night (and its dawn), so every scene uses the `sleep` outfit.
+locations:
+  bedroom: >-
+    the hero's small bedroom: cream limestone walls, a deep arched window with pale-blue wooden shutters,
+    a low wooden bed with soft pillows and a dark-blue blanket bordered with red-and-cream tatreez
+    cross-stitch, a small brass lantern-style lamp on a wooden stool beside the bed, and a small rug with a
+    red-and-cream geometric pattern
+  window_nook: >-
+    the bedroom's deep arched window set in the thick limestone wall: a cushioned window seat with
+    tatreez-embroidered pillows, pale-blue wooden shutters folded open, a light cream curtain, a low
+    wrought-iron guard rail across the bottom of the opening, a wide stone sill with a terracotta pot of
+    basil, and a jasmine vine with small white flowers climbing around the arch. Beyond it, a quiet hillside
+    town of limestone houses with arched windows and flat roofs, and terraces of old olive trees
+  town: >-
+    a quiet hillside town seen from above: limestone houses with arched windows and flat roofs stepping
+    down the slope, terraces of old olive trees with silvery leaves, low dry-stone walls, and a wide open
+    sky above the hills
+
+outfits:
+  sleep:
+    - key: moons
+      en: light-blue long-sleeved pajamas with tiny golden moons and soft grey socks
+      en_f: >-
+        light-blue long-sleeved pajamas with tiny golden moons, a little ruffle at the collar, and soft grey
+        socks
+      hijab_en: a soft cream jersey sleep hijab, the simple pull-on kind worn at home
+    - key: clouds
+      en: soft lavender long-sleeved pajamas with tiny white clouds and cream socks
+      en_f: >-
+        soft lavender long-sleeved pajamas with tiny white clouds, a little ruffle at the collar, and cream
+        socks
+      hijab_en: a soft lavender jersey sleep hijab, the simple pull-on kind worn at home
+
+# Recurring side characters (Addendum 11 §4.3): one locked look per book. Scenes name them in `others`
+# as {id}; sheet images: cast/<id>-<style>.png here, or the shared content/cast/<id>-<style>.png.
+# The same id has the same description in every theme (tests check it).
+cast:
+  - id: mom
+    role: the mother
+    description_en: >-
+      a woman in her early thirties, warm light-olive skin, kind almond-shaped brown eyes, a
+      dusty-rose hijab, a long navy cardigan over a cream ankle-length dress, comfortable flat shoes
+  - id: dad
+    role: the father
+    description_en: >-
+      a man in his mid-thirties, warm olive skin, short black hair, a short neat black beard,
+      warm brown eyes and laugh lines, a light-blue button-up shirt with the sleeves rolled up, beige
+      trousers, brown leather shoes, a simple wristwatch
+  - id: little_star
+    role: the little star
+    description_en: >-
+      a tiny friendly star creature about the size of an orange, clearly smaller than the companion: a
+      soft, plump five-pointed star with rounded tips, pale silvery-white, softly glowing from inside with a
+      faint cool-blue halo. Its face sits in the middle of the star: two big round shiny black eyes with
+      tiny white sparkles, a small smile and soft pink cheeks. Its two side points move like little arms;
+      no legs, no clothes. It floats in the air with a faint trail of tiny silver sparkles. Its star shape
+      and silver color never change
+
+blurb_ar: "نجمةٌ صغيرة تخاف من العتمة، و{name} {يَعِدُها أن يبقى حارسَها/تَعِدُها أن تبقى حارستَها} حتى الصباح. حكايةٌ هادئة تُقرأ قبل النوم."
+blurb_en: "A little star is afraid of the dark, and {name} promises to keep watch until morning. A calm, gentle story for bedtime."
+
+for_parents:
+  lesson_ar: >-
+    الخوف من العتمة شعورٌ طبيعيّ عند الصغار. حين {يُطمئنُ/تُطمئنُ} {name} نجمةً خائفة، {يكتشفُ/تكتشفُ}
+    أنّ الليل هادئٌ ولطيف، وأنّ اللطف مع غيرنا يمنحنا نحن أيضًا الشجاعة والطمأنينة.
+  lesson_en: >-
+    Being afraid of the dark is normal for little ones. By comforting a frightened little star, {name}
+    discovers that the night is calm and gentle, and that kindness to others brings us courage and peace, too.
+  questions_ar:
+    - "ما الذي {يساعدُكَ/يساعدُكِ} على الهدوء قبل النوم؟"
+    - "لو جاءت نجمةٌ صغيرة خائفة إلى {نافذتِكَ/نافذتِكِ}، ماذا {كنتَ ستقولُ/كنتِ ستقولين} لها؟"
+  questions_en:
+    - "What helps you feel calm at bedtime?"
+    - "If a scared little star came to your window, what would you say to her?"
+
+cover:
+  scene: >-
+    Night. The hero stands in front of the big open arched window in pajamas, lifting the little star high
+    in both cupped hands with a brave, gentle smile. The little star shines brightly, lighting the hero's
+    face with soft silver light. Behind them, a huge round moon glows over the sleeping limestone town and
+    the olive terraces, with magical sparkles drifting in the air. The top of the picture is a calm,
+    deep-blue sky with only a few faint stars.
+  location: window_nook
+  time: night
+  outfit: sleep
+  others: "{little_star}, shining in the hero's raised hands"
+  others_count: 1
+  companion_action: floats at the hero's shoulder, glowing warmly and gazing up at the little star
+
+pages:
+  - index: 1
+    layout: full
+    text_pos: top
+    location: bedroom
+    time: night
+    outfit: sleep
+    beat: bedtime
+    scene: >-
+      Bedtime in the cozy bedroom, lit by the small warm lamp beside the bed. The hero lies tucked in under
+      the dark-blue tatreez blanket, smiling up at Mama, who leans over to tuck the blanket in; Baba stands
+      by the lamp, smiling, one hand reaching for its switch. Deep-blue night shows through the arched window.
+    others: "{mom} and {dad}"
+    others_count: 2
+    companion_action: snuggles on the pillow beside the hero, yawning
+    text_ar: "حَانَ وَقْتُ النَّوْمِ. غَطَّتْ مَامَا {name:acc} بِاللِّحَافِ وَقَالَتْ: «{تُصْبِحُ/تُصْبِحِينَ} عَلَى خَيْرٍ.» {فَقَالَ/فَقَالَتْ} {name}: «وَأَنْتِ مِنْ أَهْلِهِ يَا مَامَا.» ثُمَّ أَطْفَأَ بَابَا الضَّوْءَ."
+    text_en: "Bedtime! Mama tucked {name} in. \"Good night, sweetheart,\" she said. \"Good night, Mama!\" Then Baba switched off the light."
+  - index: 2
+    layout: split
+    location: bedroom
+    time: night
+    outfit: sleep
+    beat: a little fear of the dark
+    scene: >-
+      The bedroom in the dark, lit only by faint blue moonlight from the arched window. The hero lies in bed
+      with the blanket pulled up to the nose, eyes wide and a little worried, looking at the soft shadows on
+      the wall. At the far window, a tiny silver twinkle of light flickers on the sill.
+    companion_action: snuggles close against the hero's cheek, glowing softly like a night light
+    text_ar: "صَارَتِ الْغُرْفَةُ مُعْتِمَةً، وَالْعَتَمَةُ مُخِيفَةٌ قَلِيلًا. {شَدَّ/شَدَّتْ} {name} اللِّحَافَ حَتَّى {أَنْفِهِ/أَنْفِهَا}، وَاقْتَرَبَ {مِنْهُ/مِنْهَا} {companion}. وَفَجْأَةً… لَمَعَ ضَوْءٌ صَغِيرٌ عِنْدَ النَّافِذَةِ!"
+    text_en: "The dark room felt a little scary. {name} pulled the blanket up to {his/her} nose, and {companion} snuggled closer. Then... a tiny light twinkled at the window!"
+  - index: 3
+    layout: spread
+    text_pos: top
+    location: window_nook
+    time: night
+    outfit: sleep
+    beat: a star on the windowsill
+    scene: >-
+      A wide, magical view of the open arched window at night. The hero has tiptoed over and kneels on the
+      cushioned window seat, leaning forward in gentle surprise. On the wide stone sill, beside the pot of
+      basil, sits the little star, trembling, her silver light flickering. Beyond the window, the dark
+      hillside town sleeps under a deep-blue sky with faraway stars.
+    others: "{little_star}, trembling on the sill"
+    others_count: 1
+    companion_action: peeks over the hero's shoulder, eyes wide with wonder
+    text_ar: "{مَشَى/مَشَتْ} {name} عَلَى أَطْرَافِ {أَصَابِعِهِ/أَصَابِعِهَا} إِلَى النَّافِذَةِ… {فَرَأَى/فَرَأَتْ} نَجْمَةً صَغِيرَةً جِدًّا عَلَى حَافَّتِهَا، تَرْتَجِفُ وَنُورُهَا يَخْبُو وَيَلْمَعُ."
+    text_en: "{name} tiptoed to the window... and there, on the sill, sat a tiny star, trembling, her light flickering on and off."
+  - index: 4
+    layout: full
+    text_pos: top
+    location: window_nook
+    time: night
+    outfit: sleep
+    beat: the star's fear
+    scene: >-
+      Close-up at the window seat: the hero kneels with the chin near the sill, looking kindly at the little
+      star and listening. The little star looks up with big, shiny, teary eyes, trembling, her light dim and
+      flickering. Soft moonlight on both faces.
+    others: "{little_star}"
+    others_count: 1
+    companion_action: hovers beside the hero, listening with a worried little face
+    text_ar: "هَمَسَتِ النَّجْمَةُ: «أَنَا نُجَيْمَةُ. هَذِهِ أَوَّلُ لَيْلَةٍ لِي فِي السَّمَاءِ… وَالسَّمَاءُ كَبِيرَةٌ وَمُعْتِمَةٌ، وَأَنَا خَائِفَةٌ مِنَ الْعَتَمَةِ.»"
+    text_en: "The star whispered, \"I'm Little Star. It's my very first night in the sky... The sky is so big and dark, and I'm scared of the dark.\""
+  - index: 5
+    layout: full
+    text_pos: bottom
+    location: window_nook
+    time: night
+    outfit: sleep
+    beat: brave together
+    scene: >-
+      At the window seat, the hero smiles warmly and holds out both cupped hands; the little star floats
+      from the sill into them, still a little shy. Moonlight and the star's soft glow light the hero's face.
+    others: "{little_star}, floating into the hero's hands"
+    others_count: 1
+    companion_action: gives the little star an encouraging thumbs up
+    text_ar: "{ابْتَسَمَ/ابْتَسَمَتْ} {name} {وَقَالَ/وَقَالَتْ}: «وَأَنَا أَيْضًا أَخَافُ قَلِيلًا… لَكِنْ تَعَالَيْ نَكُنْ {شُجَاعَيْنِ/شُجَاعَتَيْنِ} مَعًا.» {وَمَدَّ/وَمَدَّتْ} {كَفَّيْهِ/كَفَّيْهَا}، فَطَارَتْ نُجَيْمَةُ إِلَيْهِمَا."
+    text_en: "{name} smiled. \"I'm a little scared of the dark too. But come, let's be brave together.\" {He/She} held out both hands, and Little Star floated right into them."
+  - index: 6
+    layout: big-moment
+    text_pos: top
+    location: window_nook
+    time: night
+    outfit: sleep
+    beat: the promise
+    scene: >-
+      A glowing, dramatic moment: the hero kneels tall on the window seat, holding the little star close to
+      the chest in both hands, face kind and serious, making a promise. A big round moon behind them draws a
+      bright rim of light around the hero; the night sky above is deep and calm.
+    others: "{little_star}, resting in the hero's hands and looking up hopefully"
+    others_count: 1
+    companion_action: stands guard beside the hero, saluting proudly with one little arm
+    text_ar: "{وَعَدَهَا/وَعَدَتْهَا} {name}: «سَأَكُونُ {حَارِسَكِ/حَارِسَتَكِ} حَتَّى الصَّبَاحِ!»"
+    text_en: "{name} promised, \"I'll watch over you until morning!\""
+  - index: 7
+    layout: full
+    text_pos: side
+    location: window_nook
+    time: night
+    outfit: sleep
+    beat: the moon
+    scene: >-
+      The hero sits on the window seat with the little star resting in one cupped hand, pointing up with the
+      other hand at a big, round, glowing moon above the hills. The little star gazes at the moon in wonder,
+      trembling less.
+    others: "{little_star}"
+    others_count: 1
+    companion_action: points at the moon too, copying the hero
+    text_ar: "{أَشَارَ/أَشَارَتْ} {name} إِلَى السَّمَاءِ: «انْظُرِي يَا نُجَيْمَةُ، هَذَا الْقَمَرُ! إِنَّهُ قِنْدِيلُ اللَّيْلِ، يَسْهَرُ مَعَنَا وَيُضِيءُ لَنَا.»"
+    text_en: "{name} pointed at the sky. \"Look, Little Star, the moon! It's the night's lantern. It stays up with us and gives us light.\""
+  - index: 8
+    layout: spread
+    text_pos: top
+    location: window_nook
+    time: night
+    outfit: sleep
+    beat: the sleeping town
+    scene: >-
+      A wide, peaceful panorama through the big open arched window: the hillside town of limestone houses
+      asleep under the moon, a few windows glowing soft amber, terraces of olive trees swaying in the night
+      breeze, and a deep-blue sky with scattered stars. In the near foreground on one side, the hero leans on
+      the window-seat cushions with the little star in open palms, both looking out calmly, the hero's face
+      in a soft three-quarter view.
+    others: "{little_star}"
+    others_count: 1
+    companion_action: rests its chin on the windowsill, gazing at the sleeping town
+    text_ar: "وَهُنَاكَ، كَانَتْ بُيُوتُ الْحَارَةِ نَائِمَةً، وَأَشْجَارُ الزَّيْتُونِ تَتَمَايَلُ مَعَ النَّسِيمِ. {هَمَسَ/هَمَسَتْ} {name}: «الْعَتَمَةُ لِحَافٌ نَاعِمٌ يُغَطِّي الْحَارَةَ لِتَنَامَ.»"
+    text_en: "Out there, the houses were sleeping and the olive trees swayed in the breeze. {name} whispered, \"The dark is a soft blanket that tucks the town in.\""
+  - index: 9
+    layout: full
+    text_pos: top
+    location: window_nook
+    time: night
+    outfit: sleep
+    beat: breathing with the breeze
+    scene: >-
+      Close-up at the window, framed by the jasmine vine with small white flowers; a soft breeze lifts the
+      curtain. The hero, eyes closed, breathes in slowly with a calm little smile; the little star in the
+      hero's hands does the same, eyes closed.
+    others: "{little_star}"
+    others_count: 1
+    companion_action: breathes in with puffed-up cheeks, eyes closed
+    text_ar: "هَبَّ نَسِيمٌ يَحْمِلُ رَائِحَةَ الْيَاسَمِينِ. {قَالَ/قَالَتْ} {name}: «تَعَالَيْ نَتَنَفَّسْ بِبُطْءٍ: نَشُمُّ الْيَاسَمِينَ… ثُمَّ نَنْفُخُ مِثْلَ النَّسِيمِ.» وَتَنَفَّسَ {companion} مَعَهُمَا."
+    text_en: "A breeze carried the smell of jasmine. \"Let's breathe slowly,\" said {name}. \"Smell the jasmine... then blow out softly, like the breeze.\" And {companion} breathed along with them."
+  - index: 10
+    layout: split
+    location: window_nook
+    time: night
+    outfit: sleep
+    beat: counting the stars
+    scene: >-
+      The hero sits on the window seat holding the little star up toward a sky full of twinkling stars,
+      counting on the other hand with one finger raised, smiling. The little star looks up at the many
+      stars, delighted; her light is steadier now.
+    others: "{little_star}"
+    others_count: 1
+    companion_action: counts on its little fingers, very serious
+    text_ar: "{رَفَعَ/رَفَعَتْ} {name} نُجَيْمَةَ نَحْوَ السَّمَاءِ: «انْظُرِي، أَخَوَاتُكِ هُنَاكَ… لَسْتِ وَحْدَكِ! تَعَالَيْ نَعُدَّهُنَّ: وَاحِدَةٌ، اثْنَتَانِ، ثَلَاثٌ…»"
+    text_en: "{name} held Little Star up to the sky. \"Look, your sisters are up there. You're not alone! Let's count them: one, two, three...\""
+  - index: 11
+    layout: full
+    text_pos: bottom
+    location: window_nook
+    time: night
+    outfit: sleep
+    beat: no longer afraid
+    scene: >-
+      The little star now shines brightly in the hero's open palms, a big soft silvery halo lighting up the
+      hero's laughing face and the whole window niche; the room's shadows behind look soft and friendly.
+      Both are laughing with joy.
+    others: "{little_star}, shining brightly and laughing"
+    others_count: 1
+    companion_action: spins happily in the bright silver light
+    text_ar: "وَمَعَ كُلِّ نَجْمَةٍ، كَانَتْ نُجَيْمَةُ تَلْمَعُ أَكْثَرَ فَأَكْثَرَ، حَتَّى قَالَتْ: «لَمْ أَعُدْ خَائِفَةً!» {فَضَحِكَ/فَضَحِكَتْ} {name}: «وَلَا أَنَا!»"
+    text_en: "With every star they counted, Little Star shone brighter and brighter. \"I'm not scared anymore!\" she said. {name} laughed. \"Me neither!\""
+  - index: 12
+    layout: full
+    text_pos: top
+    no_child: true
+    location: town
+    time: night
+    outfit: sleep
+    beat: the quiet night
+    scene: >-
+      A calm night landscape of the hillside town, with no people: limestone houses asleep with dark
+      windows, terraces of old olive trees with silvery leaves moving in a light breeze, and above the hills
+      a big round moon in a deep-blue sky full of soft stars. Peaceful, silvery-blue light.
+    text_ar: "وَهَدَأَ كُلُّ شَيْءٍ: الْقَمَرُ فِي السَّمَاءِ، وَالنَّسِيمُ فِي الشَّجَرِ، وَالْحَارَةُ فِي نَوْمٍ عَمِيقٍ."
+    text_en: "Everything grew quiet: the moon in the sky, the breeze in the trees, and the whole town fast asleep."
+  - index: 13
+    layout: full
+    text_pos: side
+    location: window_nook
+    time: night
+    outfit: sleep
+    beat: keeping watch
+    scene: >-
+      In the window niche, the hero sits wrapped in the dark-blue tatreez blanket like a little guard,
+      keeping watch over the little star, who rests glowing softly on an embroidered cushion. The hero's
+      eyelids are heavy, in the middle of a big sleepy yawn. Moonlight fills the niche.
+    others: "{little_star}, resting on a cushion"
+    others_count: 1
+    companion_action: is already fast asleep on the hero's knee
+    text_ar: "{جَلَسَ/جَلَسَتْ} {name} {مُلْتَفًّا/مُلْتَفَّةً} بِاللِّحَافِ {يَحْرُسُ/تَحْرُسُ} نُجَيْمَةَ كَمَا {وَعَدَ/وَعَدَتْ}، لَكِنَّ {عَيْنَيْهِ/عَيْنَيْهَا} صَارَتَا ثَقِيلَتَيْنِ. أَمَّا {companion} فَقَدْ غَفَا قَبْلَ الْجَمِيعِ!"
+    text_en: "{name} sat wrapped in the blanket, watching over Little Star, just as {he/she} had promised. But {his/her} eyes were getting heavy... and {companion} had already dozed off!"
+  - index: 14
+    layout: full
+    text_pos: top
+    location: bedroom
+    time: night
+    outfit: sleep
+    beat: falling asleep together
+    scene: >-
+      Back in bed under the dark-blue tatreez blanket, the hero lies on one side with eyes closing and a
+      peaceful smile, facing the little star, who sleeps on the pillow beside the hero's face, glowing softly
+      like a night light. Silver moonlight falls through the arched window.
+    others: "{little_star}, asleep on the pillow"
+    others_count: 1
+    companion_action: sleeps curled up at the foot of the bed
+    text_ar: "{أَخَذَ/أَخَذَتْ} {name} نُجَيْمَةَ إِلَى السَّرِيرِ {وَوَضَعَهَا/وَوَضَعَتْهَا} عَلَى الْوِسَادَةِ {قُرْبَهُ/قُرْبَهَا}، {وَهَمَسَ/وَهَمَسَتْ}: «بِسْمِ اللَّهِ.» فَنَامَتْ نُجَيْمَةُ، {وَنَامَ/وَنَامَتْ} {name} {مُبْتَسِمًا/مُبْتَسِمَةً}."
+    text_en: "{name} carried Little Star to bed and set her on the pillow, close by, whispering, \"Bismillah.\" Little Star fell asleep, and {name} drifted off too, smiling."
+  - index: 15
+    layout: spread
+    text_pos: top
+    location: window_nook
+    time: dawn
+    outfit: sleep
+    beat: dawn goodbye
+    scene: >-
+      Dawn: the sky over the hillside town glows soft pink and gold, the last stars fading. The little star
+      floats up from the open arched window toward the sky, waving with one point, a trail of silver
+      sparkles behind her. The hero kneels on the window seat, sleepy-eyed and smiling, waving back.
+    others: "{little_star}, flying up into the dawn sky and waving"
+    others_count: 1
+    companion_action: waves goodbye with both little arms
+    text_ar: "وَعِنْدَ الْفَجْرِ، طَارَتْ نُجَيْمَةُ عَائِدَةً إِلَى السَّمَاءِ الْوَرْدِيَّةِ وَهِيَ تُلَوِّحُ: «شُكْرًا يَا {حَارِسَ/حَارِسَةَ} النُّجُومِ!» {فَلَوَّحَ/فَلَوَّحَتْ} لَهَا {name} مِنَ النَّافِذَةِ."
+    text_en: "At dawn, Little Star flew back up into the pink sky, waving, \"Thank you, Star Keeper!\" And {name} waved back from the window."
+  - index: 16
+    layout: full
+    text_pos: top
+    location: bedroom
+    time: night
+    outfit: sleep
+    beat: the next night
+    scene: >-
+      The next night in the cozy bedroom: Baba switches off the small lamp by the bed. The hero lies tucked
+      in under the dark-blue tatreez blanket, smiling calmly with no fear, looking toward the arched window
+      where the deep-blue sky glows with soft moonlight.
+    others: "{dad}"
+    others_count: 1
+    companion_action: gives Baba a sleepy little wave from the pillow
+    text_ar: "فِي اللَّيْلَةِ التَّالِيَةِ، أَطْفَأَ بَابَا الضَّوْءَ، {فَابْتَسَمَ/فَابْتَسَمَتْ} {name}. لَمْ تَعُدِ الْعَتَمَةُ {تُخِيفُهُ/تُخِيفُهَا}، فَهِيَ لِحَافٌ نَاعِمٌ، وَالْقَمَرُ قِنْدِيلٌ يَسْهَرُ."
+    text_en: "The next night, Baba switched off the light, and {name} smiled. The dark wasn't scary anymore: it was a soft blanket, and the moon was a lantern keeping watch."
+  - index: 17
+    layout: full
+    text_pos: top
+    location: bedroom
+    time: night
+    outfit: sleep
+    beat: good night, little star
+    scene: >-
+      The quiet bedroom at night, lit by silver moonlight. The hero is falling asleep in bed with a peaceful
+      smile, eyes almost closed. Through the arched window, one small star high in the sky shines a little
+      brighter than all the others, twinkling.
+    companion_action: curls up on the pillow beside the hero, glowing softly like a night light
+    text_ar: "وَمِنْ بَعِيدٍ فِي السَّمَاءِ، لَمَعَتْ نُجَيْمَةُ كَأَنَّهَا تُلَوِّحُ. {هَمَسَ/هَمَسَتْ} {name}: «تُصْبِحِينَ عَلَى خَيْرٍ يَا نُجَيْمَةُ.» {وَنَامَ/وَنَامَتْ} {حَارِسُ/حَارِسَةُ} النُّجُومِ بِهُدُوءٍ."
+    text_en: "Far up in the sky, Little Star twinkled, as if waving. \"Good night, Little Star,\" {name} whispered. And the Star Keeper fell gently asleep."

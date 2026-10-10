@@ -306,6 +306,48 @@ def test_every_layout_renders_without_overflow_or_empty_boxes(tmp_path: Path) ->
     assert report.passed, report.to_dict()
 
 
+def test_an_english_name_in_the_display_face_stays_an_embedded_font(tmp_path: Path) -> None:
+    """«ornament-text» (the drop word) and «big-moment» set the child's name in the display face, which has
+    one weight; in English the name was asked in bold, and the synthetic bold printed as a Type 3 font."""
+    story = _img(tmp_path / "story.jpg", "#CFE0EE")
+    text = "Salma put the helmet by her pillow and fell asleep looking at the moon."
+    pages = [
+        PageSpec(1, "title", "left"),
+        PageSpec(2, "story", "right", "ornament-text", story, text, Panel("top")),
+        PageSpec(3, "story", "left", "ornament-text", story, text, Panel("bottom")),
+        PageSpec(4, "story", "right", "big-moment", story, "Salma flies!", Panel("top")),
+        PageSpec(5, "parents", "left"),
+    ]
+    spec = dataclasses.replace(_spec(tmp_path), lang="en", child_name="Salma", pages=pages, keepsake=None)
+    html = render_html("interior.html.j2", spec)
+    assert '<span class="drop"><span class="hero-name">Salma</span></span>' in html
+    book = asyncio.run(render_book(spec, tmp_path / "out", proof=False))
+    assert book.interior_pdf is not None
+    report = preflight(book.interior_pdf, width_mm=216, height_mm=216, bleed_mm=3, safe_mm=10)
+    fonts = next(c for c in report.checks if "Type 3" in c.detail or "embedded" in c.detail)
+    assert fonts.ok, fonts.detail
+
+
+@pytest.mark.parametrize("style", TITLE_STYLES)
+def test_every_cover_lettering_keeps_out_of_the_bleed(tmp_path: Path, style: str) -> None:
+    """A short title at its largest size, in every treatment. Aref Ruqaa («heritage-tatreez», olive season)
+    sets its dots as zero-advance mark glyphs raised above the letters: their font boxes (a whole em from the
+    raised origin) reached into the bleed although the ink sits ~20 mm below the edge: every cover failed."""
+    base = _spec(tmp_path)
+    spec = dataclasses.replace(
+        base,
+        title="جنى في موسم الزيتون",
+        child_name="جنى",
+        title_style=style,
+        cover=dataclasses.replace(base.cover, name="جنى في موسم الزيتون", subtitle=""),
+    )
+    book = asyncio.run(render_book(spec, tmp_path / "out", proof=False))
+    assert book.cover_pdf is not None
+    report = preflight(book.cover_pdf, width_mm=spec.wrap_width_mm, height_mm=216, bleed_mm=3, safe_mm=10)
+    bleed = next(c for c in report.checks if c.name == "text_in_bleed")
+    assert bleed.ok, (style, bleed.detail)
+
+
 def test_old_full_height_side_panel_would_count_as_empty() -> None:
     """The fill measure catches the proof's problem: a full-height panel holding three short lines."""
     from qamra_pdf.render import _FIT_JS

@@ -6,6 +6,7 @@ import type { ThemeCard } from "@/lib/catalog";
 import type { Example } from "@/lib/examples";
 import { money, type Currency } from "@/lib/store";
 import { styleThumb } from "@/lib/styleSamples";
+import { themeArt } from "@/lib/themeArt";
 
 /**
  * A story in the shop's card style (Addendum 9): its real cover when an example is published (else the
@@ -20,6 +21,7 @@ export function StoryCard({
   line,
   priority = false,
   styles = [],
+  classic,
 }: {
   theme: ThemeCard;
   example: Example | null;
@@ -29,6 +31,8 @@ export function StoryCard({
   priority?: boolean;
   /** The art styles this story can be drawn in (catalog order): a small real sample of each. */
   styles?: { slug: string; name: string }[];
+  /** The styles it is sold in as «قمرة كلاسيك» ([] = «قمرة سحري» only; undefined = not shown). */
+  classic?: string[];
 }) {
   const t = useTranslations("themes");
   const ts = useTranslations("storyShowcase");
@@ -42,6 +46,7 @@ export function StoryCard({
         <CoverArt
           example={example}
           art={theme.art}
+          picture={themeArt(theme.slug)}
           titleName={name}
           titleRest={rest}
           alt={example ? t("coverAlt", { name: theme.name }) : t("placeholderAlt", { name: theme.name })}
@@ -59,6 +64,14 @@ export function StoryCard({
           {tc("ages", { min: theme.age_min, max: theme.age_max })} · {tc("pages", { count: theme.pages })}
         </span>
         <h3 className="text-[18px] leading-tight text-night-900 md:text-[21px]">{theme.name}</h3>
+        {classic && (
+          <span
+            title={classic.length ? t("classicIn", { styles: classic.join(locale === "ar" ? "، " : ", ") }) : undefined}
+            className={`self-start rounded-full px-2.5 py-0.5 text-[12px] font-bold ${classic.length ? "bg-night-100 text-night-900" : "bg-night-900 text-amber-300"}`}
+          >
+            {classic.length ? t("bothLines") : t("magicOnly")}
+          </span>
+        )}
         <p className="line-clamp-2 text-caption leading-[1.5] text-ink-muted md:text-small">{theme.tagline}</p>
         {styles.length > 1 && (
           <span className="flex items-center gap-2 pt-0.5" title={styles.map((s) => s.name).join(" · ")}>

@@ -10,7 +10,7 @@ import { addonMedia } from "@/lib/addonsMedia";
 import { examplesFor, getStoreCatalog, getThemes } from "@/lib/catalog";
 import { pageMetadata } from "@/lib/seo";
 import { money } from "@/lib/store";
-import { LINES, coversOf, offer, storyFrom, type Line } from "@/lib/story";
+import { LINES, classicStylesFor, coversOf, offer, storyFrom, type Line } from "@/lib/story";
 
 type Props = { searchParams: Promise<{ line?: string }> };
 
@@ -34,9 +34,15 @@ export default async function StoriesPage({ searchParams }: Props) {
   const chosen = line ? offer(catalog, line) : null;
   const currency = catalog?.currency ?? "ILS";
   const covers = coversOf(examples);
-  const prices = Object.fromEntries((themes ?? []).map((th) => [th.slug, storyFrom(catalog, th, line)]));
+  // a story not sold in the chosen line still shows the price it can be ordered at (its card says «سحري فقط»)
+  const prices = Object.fromEntries(
+    (themes ?? []).map((th) => [th.slug, storyFrom(catalog, th, line) ?? storyFrom(catalog, th)]),
+  );
   const occasionLabels = tc.raw("occasions") as Record<string, string>;
   const ar = locale === "ar";
+  const classic = Object.fromEntries(
+    (themes ?? []).map((th) => [th.slug, classicStylesFor(catalog, th).map((s) => (ar ? s.name_ar : s.name_en))]),
+  );
   // the story books' art styles (catalog order), only those of the chosen line when there is one
   const styles = (catalog?.styles ?? [])
     .filter((s) => (line ? s.lines.includes(line) : s.lines.includes("classic") || s.lines.includes("magic")))
@@ -79,6 +85,7 @@ export default async function StoriesPage({ searchParams }: Props) {
             line={line}
             occasionLabels={occasionLabels}
             styles={styles}
+            classic={catalog ? classic : undefined}
             labels={{
               age: t("age"),
               all: t("all"),

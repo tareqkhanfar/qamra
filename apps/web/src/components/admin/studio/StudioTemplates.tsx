@@ -4,21 +4,40 @@ import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
-import { Link } from "@/i18n/navigation";
-import { api, errorText } from "@/lib/api";
-import { TEMPLATE_STATUSES, usd, when, type BulkResult, type StudioList, type StudioTemplate } from "@/lib/studio";
-import { Pill, Select, StatusBadge, StudioTabs, inputClass, useOptionName, useVariantName } from "./parts";
+import { Link, useRouter } from "@/i18n/navigation";
+import { api } from "@/lib/api";
+import {
+  TEMPLATE_STATUSES,
+  usd,
+  when,
+  type BulkResult,
+  type StudioList,
+  type StudioTemplate,
+  type TemplateDetail,
+} from "@/lib/studio";
+import {
+  Pill,
+  Select,
+  StatusBadge,
+  StudioTabs,
+  inputClass,
+  useFlagName,
+  useOptionName,
+  useStudioError,
+  useVariantName,
+} from "./parts";
 
 type Notice = { ok: boolean; text: string } | null;
 
 /**
  * The template studio's list (Addendum 4 §3.2): every Classic template per theme × art style × look, with its
- * status, pages, flags, one-time cost and texts; filters by theme and status; bulk copy, publish, schedule.
+ * status, pages, flags, one-time cost and texts; filters by theme and status; bulk copy, publish, schedule;
+ * and «قالب جديد», which starts drawing a template for a story × style × look (or a free dry run).
  */
 export function StudioTemplates() {
   const t = useTranslations("studio");
-  const te = useTranslations("errors");
   const locale = useLocale();
+  const studioError = useStudioError();
   const optionName = useOptionName();
   const [data, setData] = useState<StudioList | null>(null);
   const [theme, setTheme] = useState("");
@@ -28,6 +47,7 @@ export function StudioTemplates() {
   const [notice, setNotice] = useState<Notice>(null);
   const [copyStyle, setCopyStyle] = useState("");
   const [date, setDate] = useState("");
+  const [adding, setAdding] = useState(false);
 
   const load = useCallback(async () => {
     const q = new URLSearchParams();
@@ -35,12 +55,12 @@ export function StudioTemplates() {
     if (status) q.set("status", status);
     const r = await api<StudioList>(`/api/admin/studio/templates?${q}`);
     if (!r.ok) {
-      setNotice({ ok: false, text: errorText(r.error, locale, te("unknown")) });
+      setNotice({ ok: false, text: studioError(r.error) });
       return;
     }
     setData(r.data);
     setSelected((ids) => ids.filter((id) => r.data.templates.some((x) => x.id === id)));
-  }, [theme, status, locale, te]);
+  }, [theme, status, studioError]);
 
   useEffect(() => {
     void (async () => {
@@ -60,7 +80,7 @@ export function StudioTemplates() {
     const r = await api<BulkResult>(`/api/admin/studio/templates/${path}`, { json: { ids: selected, ...json } });
     setBusy(null);
     if (!r.ok) {
-      setNotice({ ok: false, text: errorText(r.error, locale, te("unknown")) });
+      setNotice({ ok: false, text: studioError(r.error) });
       return;
     }
     const reasons = [...new Set(r.data.skipped.map((s) => t(`skip.${s.reason.split(":")[0]}`)))].join("، ");
@@ -69,6 +89,7 @@ export function StudioTemplates() {
     await load();
   }
 
+  const none = !!data && data.templates.length === 0 && !theme && !status; // no template yet: the form is open
   const toggle = (id: string) => setSelected((ids) => (ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id]));
 
   return (
@@ -78,6 +99,13 @@ export function StudioTemplates() {
         <p className="text-ink-muted">{t("lead")}</p>
       </header>
       <StudioTabs active="templates" />
+      {data && (adding || none) ? (
+        <NewTemplate data={data} onCancel={none ? undefined : () => setAdding(false)} />
+      ) : (
+        <Button size="sm" variant="secondary" className="self-start" onClick={() => setAdding(true)}>
+          {t("new.open")}
+        </Button>
+      )}
       <div className="grid grid-cols-2 gap-3 md:max-w-xl">
         <Select label={t("filters.theme")} value={theme} onChange={setTheme}>
           <option value="">{t("filters.all")}</option>
@@ -97,8 +125,8 @@ export function StudioTemplates() {
         </Select>
       </div>
       {notice && <Alert tone={notice.ok ? "success" : "error"}>{notice.text}</Alert>}
-      {!data && <div className="h-48 animate-pulse rounded-xl bg-paper-sunk" aria-busy="true" />}
-      {data && groups.length === 0 && <p className="text-ink-muted">{t("empty")}</p>}
+      {!data && !notice && <div className="h-48 animate-pulse rounded-xl bg-paper-sunk" aria-busy="true" />}
+      {data && groups.length === 0 && <p className="text-ink-muted">{t(theme || status ? "empty" : "emptyAll")}</p>}
       {groups.map(([slug, rows]) => (
         <section key={slug} aria-labelledby={`theme-${slug}`} className="flex flex-col gap-2">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -162,6 +190,7 @@ function TemplateRow({
   const t = useTranslations("studio");
   const locale = useLocale();
   const variantName = useVariantName();
+  const flagName = useFlagName();
   const name = `${styleName} · ${variantName(row.variant)}`;
   const pct = row.pages_total ? Math.round((row.pages_drawn / row.pages_total) * 100) : 0;
   return (
@@ -188,7 +217,7 @@ function TemplateRow({
             {row.story_changed && <Pill warn>{t("storyChanged")}</Pill>}
             {row.flags.map((f) => (
               <Pill key={f} warn>
-                {f}
+                {flagName(f)}
               </Pill>
             ))}
             {row.publish_at && <Pill>{t("scheduledFor", { date: when(row.publish_at, locale) })}</Pill>}
@@ -323,5 +352,126 @@ function BulkBar({
         <span className="text-caption text-ink-muted">{t("copyNote")}</span>
       </div>
     </div>
+  );
+}
+
+const DEFAULT_BUDGET = "3"; // US dollars per drawing run, like a book's default cap (admin settings)
+
+/**
+ * «قالب جديد»: a story × art style × look, drawn once by the image model up to a cost cap (a real cost, asked
+ * again before it starts), or a dry run with placeholder pictures and no model call. The new template opens in
+ * its editor while its pages are drawn.
+ */
+function NewTemplate({ data, onCancel }: { data: StudioList; onCancel?: () => void }) {
+  const t = useTranslations("studio.new");
+  const router = useRouter();
+  const studioError = useStudioError();
+  const optionName = useOptionName();
+  const variantName = useVariantName();
+  const [theme, setTheme] = useState(data.themes[0]?.slug ?? "");
+  const [style, setStyle] = useState(data.styles[0]?.slug ?? "");
+  const [variant, setVariant] = useState(data.variants[0] ?? "girl");
+  const [budget, setBudget] = useState(DEFAULT_BUDGET);
+  const [offline, setOffline] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const cap = Number(budget);
+  const capOk = Number.isFinite(cap) && cap >= 0.5 && cap <= 20;
+
+  async function start() {
+    if (!offline && !window.confirm(t("confirm", { usd: usd(cap) }))) return;
+    setBusy(true);
+    setError(null);
+    const r = await api<TemplateDetail>("/api/admin/classic/templates", {
+      json: { theme, style, variant, offline, ...(offline ? {} : { budget_usd: cap.toFixed(2) }) },
+    });
+    setBusy(false);
+    if (!r.ok) return setError(studioError(r.error));
+    router.push(`/admin/studio/templates/${r.data.id}`);
+  }
+
+  return (
+    <section
+      aria-labelledby="new-template"
+      className="flex flex-col gap-3 rounded-xl border border-line bg-paper-raised p-4 md:max-w-3xl"
+    >
+      <h2 id="new-template" className="text-h3 text-night-900">
+        {t("title")}
+      </h2>
+      <p className="text-small text-ink-muted">{t("lead")}</p>
+      <div className="grid gap-3 sm:grid-cols-3">
+        <Select label={t("theme")} value={theme} onChange={setTheme}>
+          {data.themes.map((o) => (
+            <option key={o.slug} value={o.slug}>
+              {optionName(o, o.slug)}
+            </option>
+          ))}
+        </Select>
+        <Select label={t("style")} value={style} onChange={setStyle}>
+          {data.styles.map((o) => (
+            <option key={o.slug} value={o.slug}>
+              {optionName(o, o.slug)}
+            </option>
+          ))}
+        </Select>
+        <Select label={t("variant")} value={variant} onChange={setVariant}>
+          {data.variants.map((v) => (
+            <option key={v} value={v}>
+              {variantName(v)}
+            </option>
+          ))}
+        </Select>
+      </div>
+      <label className="flex min-h-11 items-start gap-2 text-small">
+        <input
+          type="checkbox"
+          checked={offline}
+          onChange={(e) => setOffline(e.target.checked)}
+          className="mt-1 size-5 shrink-0 accent-night-900"
+        />
+        <span>
+          <span className="font-semibold">{t("offline")}</span>
+          <span className="block text-ink-muted">{t("offlineNote")}</span>
+        </span>
+      </label>
+      {!offline && (
+        <label className="flex max-w-xs flex-col gap-1 text-small font-semibold">
+          {t("budget")}
+          <input
+            type="number"
+            inputMode="decimal"
+            dir="ltr"
+            min={0.5}
+            max={20}
+            step={0.5}
+            value={budget}
+            onChange={(e) => setBudget(e.target.value)}
+            aria-invalid={!capOk}
+            className={inputClass}
+          />
+        </label>
+      )}
+      <p
+        className={`rounded-md p-3 text-small ${offline ? "bg-paper-sunk text-ink-muted" : "bg-warning-bg text-night-900"}`}
+      >
+        {offline ? t("offlineCost") : t("cost", { usd: usd(capOk ? cap : 0) })}
+      </p>
+      {error && <Alert>{error}</Alert>}
+      <div className="flex flex-wrap gap-2">
+        <Button
+          size="sm"
+          disabled={!theme || !style || (!offline && !capOk)}
+          loading={busy}
+          onClick={() => void start()}
+        >
+          {offline ? t("startOffline") : t("start")}
+        </Button>
+        {onCancel && (
+          <Button size="sm" variant="ghost" onClick={onCancel}>
+            {t("cancel")}
+          </Button>
+        )}
+      </div>
+    </section>
   );
 }

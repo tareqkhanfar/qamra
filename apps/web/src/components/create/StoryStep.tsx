@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { errorText } from "@/lib/api";
 import { nameCases } from "@/lib/arabicName";
 import type { ThemeCard } from "@/lib/catalog";
+import { classicAvailable, classicVariant } from "@/lib/classic";
 import { createApi, missingEndpoint, type Book, type Character, type Child, type Line } from "@/lib/create";
 import { briefBody, briefReady, CUSTOM_THEME, customExtra, useCustomBrief } from "@/lib/customStory";
 import { money, type Catalog } from "@/lib/store";
@@ -57,7 +58,11 @@ export function StoryStep({
   const who = { ...nameCases(child.name), gender: child.gender };
   const magic = line === "magic";
   const fits = (th: ThemeCard) => th.age_min <= child.age && child.age <= th.age_max;
-  const list = themes.filter((th) => th.status === "available").sort((a, b) => Number(fits(b)) - Number(fits(a)));
+  // Classic lists only the stories with a live template in the character's style for the child's look
+  const sellable = (th: ThemeCard) => magic || classicAvailable(th, character.style, classicVariant(child));
+  const list = themes
+    .filter((th) => th.status === "available" && sellable(th))
+    .sort((a, b) => Number(fits(b)) - Number(fits(a)));
   // «حكاية خاصة» (Magic): a story of their own instead of a ready theme, when the catalog sells it
   const extra = magic ? customExtra(catalog) : null;
   const known = (slug: string | null) =>

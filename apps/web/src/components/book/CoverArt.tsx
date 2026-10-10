@@ -1,13 +1,15 @@
 import type { CSSProperties } from "react";
 import { Scene, fromArt, type SceneArt } from "@/components/art/Scene";
 import type { Example } from "@/lib/examples";
+import type { ThemeArt } from "@/lib/themeArt";
 import { fillTitle, type TitleGender } from "@/lib/themeTitle";
 import { ExampleImage } from "./ExampleImage";
 
 /**
  * A book cover as the printed one looks: the art, a soft shade at the top and the title on it (the child's name
- * big, the rest in moon-gold). A published example's real cover when there is one; otherwise the theme's
- * illustrated placeholder, with the same title treatment. Sizes follow the cover's own width.
+ * big, the rest in moon-gold). A published example's real cover when there is one; otherwise the story's
+ * own cover illustration (`lib/themeArt`), else its illustrated placeholder, with the same title treatment. Sizes
+ * follow the cover's own width.
  */
 export function CoverArt({
   example,
@@ -18,6 +20,7 @@ export function CoverArt({
   sizes,
   priority = false,
   artStyle,
+  picture = null,
   className = "",
 }: {
   example: Example | null;
@@ -28,6 +31,8 @@ export function CoverArt({
   sizes: string;
   priority?: boolean;
   artStyle?: CSSProperties;
+  /** The story's own cover illustration, used when there is no example. */
+  picture?: ThemeArt | null;
   className?: string;
 }) {
   const cover = example?.pages.find((p) => p.beat === 0);
@@ -39,6 +44,19 @@ export function CoverArt({
           alt={alt}
           sizes={sizes}
           priority={priority}
+          className="absolute inset-0 size-full object-cover"
+        />
+      ) : picture ? (
+        // eslint-disable-next-line @next/next/no-img-element -- a static 900 px sample, with a 480 px one for cards
+        <img
+          src={picture.src}
+          srcSet={`${picture.thumb} 480w, ${picture.src} 900w`}
+          sizes={sizes}
+          alt={alt}
+          width={900}
+          height={900}
+          loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : undefined}
           className="absolute inset-0 size-full object-cover"
         />
       ) : (

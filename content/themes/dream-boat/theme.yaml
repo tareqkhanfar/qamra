@@ -1,5 +1,5 @@
 slug: dream-boat
-version: 1
+version: 2
 title_ar: "{name} وقارب الأحلام"
 title_en: "{name} and the Dream Boat"
 # Cover lettering (Addendum 11 §2.3): gold-magic, candy-bright, night-glow, nature-fresh, heritage-tatreez
@@ -9,20 +9,442 @@ is_b2b: false
 active: true
 companion_slot: true
 
-# Catalog entry from the design canvas. The story itself is not written yet (coming soon).
+# A bedtime dream: the hero's toy boat grows in the moonlight, sails a calm sea, and the hero frees a little
+# sea turtle from an old net and helps her find her mother. The sea friend is «السُّلَحْفَاةُ الصَّغِيرَةُ»
+# (feminine in Arabic, "she" in English) and never needs a name. Baba ({dad}) sails in the dream boat on every
+# boat page at sea, 4–15 (house safety rule: a child is never alone near water), a calm presence on the middle
+# bench (on page 15 beside the sleepy hero at the tiller); the hero holds the tiller and makes every choice.
 catalog:
-  status: coming_soon
+  status: available
   name_ar: قارب الأحلام
   name_en: The Dream Boat
-  tagline_ar: مغامرة بحرية وصديق من الأعماق يحتاج المساعدة.
+  tagline_ar: مغامرة بحرية، وصديقة من الأعماق تحتاج إلى المساعدة.
   tagline_en: A sea adventure and a friend from the deep who needs help.
   description_ar: >-
-    قارب صغير يبحر في حلم ليلي، ونداء خافت من تحت الموج. بطلنا يتعلّم أن الشجاعة الحقيقية هي أن تساعد من يحتاجك.
+    قارب صغير يبحر في حلم ليلي، ونداء خافت من تحت الموج. حكايةٌ تعلّمنا أنّ الشجاعة الحقيقية هي أن نساعد من يحتاج إلينا.
   description_en: >-
     A little boat sails through a night dream, and a faint call rises from under the waves. Real courage is helping someone who needs you.
   occasions: [adventure]
   values_ar: [الشجاعة, التعاون, الرحمة]
   values_en: [Courage, Teamwork, Kindness]
   rank: 60
-  planned_pages: 24
   art: {scene: sea, outfit: "#E9826B", skin: "#F3CFAE", pose: front}
+  peek:
+    - {scene: sea, outfit: "#E9826B", skin: "#F3CFAE", pose: wave, kid_scale: 0.6}
+    - {scene: night, outfit: "#E9826B", skin: "#F3CFAE", pose: tilt, kid_scale: 0.55, companion: blob}
+    - {scene: sea, outfit: "#E9826B", skin: "#F3CFAE", pose: front, kid_scale: 0.5}
+  sample_child: {name_ar: مريم, name_en: Mariam, gender: f}
+
+default_companion:
+  name_ar: قَمّور
+  name_en: Qamour
+  id: qamour  # shared sheet images: content/cast/qamour-<style>.png
+  # Locked design (Addendum 11 §4.2): always this plump crescent, never a ball. Same text as the sheets in
+  # docs/image-prompts.md (C1, C2, C7).
+  description_en: >-
+    a tiny friendly moon creature: a soft, plump crescent-moon body (a thick C shape opening to the
+    right), pale honey-gold, softly glowing from inside, about the size of a house cat. Its face sits on
+    the thick middle of the crescent: two small shiny black dot eyes, a tiny happy smile, round rosy
+    cheeks, and a small five-pointed star-shaped golden freckle on its left cheek. Two stubby little
+    arms, no legs. It floats a few centimeters above the ground with a faint trail of golden sparkles.
+    The crescent shape never changes
+
+# Template syntax: {name}, {companion}; gender variants {masculine/feminine}. See first-day for layouts.
+# The dream boat is described in the `sea` and `steps` locations (and the toy boat in `bedroom`), so it
+# never changes; the plate (page 6) uses `open_sea`, which has no boat in it.
+locations:
+  bedroom: >-
+    the hero's bedroom in an old limestone house by the sea: cream stone walls, a deep arched window with
+    turquoise wooden shutters and a wide stone windowsill, looking out on the sea, a small harbor of
+    wooden fishing boats and a round stone lighthouse far away; a low bed with an embroidered blanket with
+    a blue-and-white tatreez border, a woven rug, and a small brass lantern on a wooden shelf. The hero's
+    toy boat (on the windowsill, or in the hero's hands): a little wooden sailboat painted turquoise with
+    one white stripe and a cream triangular sail with a single small golden star
+  steps: >-
+    the old waterfront right below the hero's house at night, in a gentle dream: worn limestone steps
+    going down into calm, shallow, silver water, arched stone houses with turquoise shutters and pots of
+    basil along the quay, small wooden fishing boats moored quietly, and a round stone lighthouse with a
+    warm golden light at the end of a far stone pier, under a huge full moon. At the bottom step floats
+    the hero's dream boat: a small, sturdy wooden sailboat for two, with high rounded sides and a wooden
+    middle bench, painted turquoise with one white stripe, a cream triangular sail with a single small golden star painted on it, and a little
+    brass lantern glowing at the bow
+  sea: >-
+    a calm, glassy sea at night in a gentle, magical dream: soft low ripples, a huge glowing full moon low
+    over the water, countless stars mirrored on the surface, a shining silver path of moonlight, and a few
+    tiny softly glowing fish under the clear water. Far away on the shore: an old seaside town of warm
+    limestone houses with arched windows, flat roofs and a few small domes, and a round stone lighthouse
+    with a warm golden light. The hero's dream boat: a small, sturdy wooden sailboat for two, with high
+    rounded sides and a wooden middle bench, painted turquoise with one white stripe, a cream triangular sail with a single small golden
+    star painted on it, and a little brass lantern glowing at the bow
+  open_sea: >-
+    the open sea at night in a gentle, magical dream: calm, glassy water with soft low ripples, a huge
+    glowing full moon low over the water, countless stars mirrored on the surface, a shining silver path
+    of moonlight, and a few tiny softly glowing fish under the clear water. No boats and no people
+
+# One pajama set for the whole book: at sea (the cover's group) the hero wears the same pajamas with a
+# life jacket buckled over them. One option per key, so the two groups always show the same pajamas.
+outfits:
+  sailor:
+    - key: life_jacket
+      en: >-
+        sky-blue long-sleeved pajamas with a pattern of tiny white sailboats and little golden stars, long
+        pajama trousers, bare feet, and over the pajama top a small bright coral-orange children's life
+        jacket with two white buckles, fastened snugly
+      en_f: >-
+        a sky-blue long-sleeved nightdress to the ankles with a pattern of tiny white sailboats and little
+        golden stars, over long matching pajama trousers, bare feet, and over it a small bright
+        coral-orange children's life jacket with two white buckles, fastened snugly
+      hijab_en: a soft white hijab
+  sleep:
+    - key: sailboats
+      en: >-
+        sky-blue long-sleeved pajamas with a pattern of tiny white sailboats and little golden stars, long
+        pajama trousers, bare feet
+      en_f: >-
+        a sky-blue long-sleeved nightdress to the ankles with a pattern of tiny white sailboats and little
+        golden stars, over long matching pajama trousers, bare feet
+      hijab_en: a soft white hijab
+
+# Recurring side characters (Addendum 11 §4.3): one locked look per book. Scenes name them in `others`
+# as {id}; sheet images: cast/<id>-<style>.png here, or the shared content/cast/<id>-<style>.png.
+# The same id has the same description in every theme (tests check it).
+cast:
+  - id: mom
+    role: the mother
+    description_en: >-
+      a woman in her early thirties, warm light-olive skin, kind almond-shaped brown eyes, a
+      dusty-rose hijab, a long navy cardigan over a cream ankle-length dress, comfortable flat shoes
+  - id: dad
+    role: the father
+    description_en: >-
+      a man in his mid-thirties, warm olive skin, short black hair, a short neat black beard,
+      warm brown eyes and laugh lines, a light-blue button-up shirt with the sleeves rolled up, beige
+      trousers, brown leather shoes, a simple wristwatch
+  - id: dream_turtle
+    role: the little sea turtle
+    description_en: >-
+      a young sea turtle about as long as the hero's arm, with a smooth, rounded shell in soft jade green
+      patterned with honey-gold hexagon plates and a faint silvery glow along its edge like moonlight, a
+      pale cream belly, four rounded sea-green flippers with tiny cream spots, a round friendly face with
+      big shiny dark eyes and a small smiling beak, and three tiny pale-turquoise spots in a row on top of
+      its head
+  - id: dream_turtle_mother
+    role: the mother sea turtle
+    description_en: >-
+      a big, gentle mother sea turtle about twice the size of the little turtle, with a smooth, rounded
+      shell in soft jade green patterned with honey-gold hexagon plates and a faint silvery glow along its
+      edge, a pale cream belly, broad sea-green flippers with tiny cream spots, calm, kind dark eyes, a
+      gentle smiling beak, and three small pale-turquoise spots in a row on top of her head
+
+blurb_ar: "قاربٌ صغير يكبر في ضوء القمر، ونداءٌ خافت من تحت الموج، وصديقةٌ صغيرة تحتاج إلى المساعدة. حكاية {name:gen} في ليلةٍ بحريّة لا تُنسى."
+blurb_en: "A little boat that grows in the moonlight, a faint call from under the waves, and a small friend who needs help. The story of {name}'s unforgettable night at sea."
+
+for_parents:
+  lesson_ar: >-
+    الشجاعةُ الحقيقيّة ليست ألّا نخاف أبدًا، بل أن نمدَّ يدَنا لمن يحتاج إلينا ولو خفنا قليلًا. {يتعلّمُ/تتعلّمُ}
+    {name} في هذا الحلم أنّ التعاونَ يجعل الصعبَ سهلًا، وأنّ الرحمةَ تشمل كلَّ مخلوق، حتى سلحفاةً صغيرة في البحر.
+  lesson_en: >-
+    Real courage isn't never feeling afraid; it's reaching out to someone who needs us, even when we feel
+    a little scared. In this dream, {name} learns that teamwork makes hard things easier, and that
+    kindness is for every creature, even a little turtle in the sea.
+  questions_ar:
+    - "كيف {ساعدتَ/ساعدتِ} السلحفاةَ الصغيرة؟ ومَن كان {معكَ/معكِ} في الفريق؟"
+    - "هل {تتذكّرُ/تتذكّرين} مرّةً {ساعدتَ/ساعدتِ} فيها مَن يحتاج {إليكَ/إليكِ}؟ بماذا {شعرتَ/شعرتِ}؟"
+  questions_en:
+    - "How did you help the little turtle, and who was on your team?"
+    - "Can you remember a time you helped someone who needed you? How did it feel?"
+
+cover:
+  scene: >-
+    A cinematic, heroic moment in a gentle dream: the hero kneels confidently at the bow of the little
+    dream sailboat, safely inside it in the buckled life jacket, one hand on the boat's rim and the other
+    pointing ahead with a brave, joyful smile, gliding along a shining silver path of moonlight on a calm,
+    glassy sea. A huge glowing full moon sits low on the horizon behind the sail, the little sea turtle
+    swims happily beside the boat, and soft sparkles glitter on the water. Baba sits further back on the
+    middle bench, smaller in the frame and softly lit, smiling proudly at the hero. The top third of the
+    picture is a calm, deep-indigo sky with only a few faint stars.
+  location: sea
+  time: night
+  outfit: sailor
+  others: "{dream_turtle}, swimming beside the boat, and {dad} in a coral-orange adult life jacket over his shirt, sitting further back in the boat"
+  others_count: 2
+  companion_action: floats beside the cream sail, glowing like a little golden lantern
+
+pages:
+  - index: 1
+    layout: full
+    text_pos: top
+    location: bedroom
+    time: sunset
+    outfit: sleep
+    beat: a wish by the sea
+    scene: >-
+      Sunset in the bedroom. The hero stands at the open arched window holding the little toy sailboat
+      against the chest, gazing out with a dreamy smile at small wooden fishing boats coming home to the
+      harbor and the far lighthouse just starting to glow. Warm orange-and-pink sunset light fills the room.
+    companion_action: peeks over the hero's shoulder at the fishing boats
+    text_ar: "فِي بَيْتٍ قَدِيمٍ قُرْبَ الْبَحْرِ، {وَقَفَ/وَقَفَتْ} {name} عِنْدَ النَّافِذَةِ {يُرَاقِبُ/تُرَاقِبُ} قَوَارِبَ الصَّيَّادِينَ، {وَفِي يَدِهِ/وَفِي يَدِهَا} قَارِبٌ خَشَبِيٌّ صَغِيرٌ. {هَمَسَ/هَمَسَتْ}: «يَوْمًا مَا سَأُبْحِرُ مِثْلَهُمْ!»"
+    text_en: "In an old house by the sea, {name} watched the fishing boats come home, holding a little wooden boat. \"One day, I'll sail too!\""
+  - index: 2
+    layout: split
+    location: bedroom
+    time: evening
+    outfit: sleep
+    beat: bedtime
+    scene: >-
+      Bedtime in the cozy lamp-lit bedroom. The hero kneels on the bed and carefully sets the little toy
+      sailboat on the wide stone windowsill, where a big full moon is rising over the sea. Mama sits on the
+      edge of the bed holding the embroidered blanket ready, and Baba leans in the doorway, smiling warmly.
+    others: "{mom} and {dad}"
+    others_count: 2
+    companion_action: curls up on the pillow, yawning
+    text_ar: "قَبْلَ النَّوْمِ، {وَضَعَ/وَضَعَتْ} {name} {قَارِبَهُ/قَارِبَهَا} عَلَى حَافَّةِ النَّافِذَةِ. قَالَتْ مَامَا: «{تُصْبِحُ/تُصْبِحِينَ} عَلَى خَيْرٍ.» وَقَالَ بَابَا: «لِنَرَ أَيْنَ يُبْحِرُ {قَارِبُكَ/قَارِبُكِ} اللَّيْلَةَ!»"
+    text_en: "At bedtime, {name} put the boat on the windowsill. \"Good night!\" said Mama. Baba smiled: \"Where will it sail tonight?\""
+  - index: 3
+    layout: full
+    text_pos: side
+    location: bedroom
+    time: night
+    outfit: sleep
+    beat: the boat comes alive
+    scene: >-
+      Night, in a magical dream. Silver moonlight pours through the open arched window onto the little toy
+      sailboat, which glows softly and is growing bigger and bigger, lifting gently off the windowsill in a
+      swirl of tiny silver sparkles, while a calm silver sea shines right outside. The hero sits up in bed
+      rubbing both eyes, amazed and delighted.
+    companion_action: tugs the hero's sleeve, pointing at the glowing boat
+    text_ar: "وَفِي حُلْمِ تِلْكَ اللَّيْلَةِ، لَمَسَ ضَوْءُ الْقَمَرِ الْقَارِبَ الصَّغِيرَ، فَلَمَعَ وَكَبُرَ… وَكَبُرَ! {فَرَكَ/فَرَكَتْ} {name} {عَيْنَيْهِ/عَيْنَيْهَا}، وَهَمَسَ {companion}: «قَارِبُ الْأَحْلَامِ {يَنْتَظِرُكَ/يَنْتَظِرُكِ}!»"
+    text_en: "In a dream, moonlight touched the little boat, and it grew and grew! {name} rubbed {his/her} eyes. \"The Dream Boat is waiting!\" said {companion}."
+  - index: 4
+    layout: full
+    text_pos: top
+    location: steps
+    time: night
+    outfit: sailor
+    beat: life jacket first
+    scene: >-
+      In the dream, at the bottom of the worn limestone steps below the house, the dream boat, now real and
+      big enough for two, floats on calm, shallow, silver water. Baba sits on the boat's middle bench,
+      holding the boat steady against the step and smiling warmly. The hero sits down carefully at the back
+      of the boat beside the wooden tiller, buckling the last strap of the coral-orange life jacket with a
+      proud smile.
+    others: "{dad} in a coral-orange adult life jacket over his shirt, sitting on the boat's middle bench"
+    others_count: 1
+    companion_action: hovers beside the hero, pointing at the life jacket's buckles and nodding
+    text_ar: "عِنْدَ دَرَجِ الْبَيْتِ، كَانَ بَابَا يَنْتَظِرُ فِي الْقَارِبِ. قَالَ: «سُتْرَةُ النَّجَاةِ أَوَّلًا… وَاللَّيْلَةَ {أَنْتَ الْقُبْطَانُ/أَنْتِ الْقُبْطَانَةُ}!» {فَلَبِسَهَا/فَلَبِسَتْهَا} {name} {وَجَلَسَ/وَجَلَسَتْ} عِنْدَ الدَّفَّةِ."
+    text_en: "Below the house, Baba was waiting in the boat. \"Life jacket first! And tonight, you're the captain!\" {name} buckled up and sat down at the tiller."
+  - index: 5
+    layout: spread
+    text_pos: top
+    location: sea
+    time: night
+    outfit: sailor
+    beat: sailing the moon path
+    scene: >-
+      A wide, magical panorama: the little dream sailboat glides along the shining silver path of
+      moonlight across the calm sea, its cream sail softly filled by a gentle breeze. The hero sits safely
+      at the back of the boat holding the wooden tiller, beaming with pride and wonder, while Baba sits
+      relaxed on the middle bench, smiling at the hero. Far behind them on the shore, the old seaside town
+      and the lighthouse glow warmly; stars shimmer on the water.
+    others: "{dad} in a coral-orange adult life jacket over his shirt, sitting on the middle bench"
+    others_count: 1
+    companion_action: floats beside the sail, glowing like a little lantern
+    text_ar: "{أَمْسَكَ/أَمْسَكَتْ} {name} الدَّفَّةَ، وَانْطَلَقَ الْقَارِبُ عَلَى طَرِيقٍ فِضِّيٍّ رَسَمَهُ الْقَمَرُ فَوْقَ الْمَاءِ. {هَا هُوَ يُبْحِرُ/هَا هِيَ تُبْحِرُ} أَخِيرًا، كَالصَّيَّادِينَ تَمَامًا!"
+    text_en: "{name} took the tiller, and off went the boat along a silver path drawn by the moon. Sailing at last, just like the fishermen!"
+  - index: 6
+    layout: full
+    text_pos: top
+    no_child: true
+    location: open_sea
+    time: night
+    outfit: sailor
+    beat: a faint call
+    scene: >-
+      The calm, empty sea at night, seen close to the water: the huge full moon and its silver path, the
+      stars mirrored on glassy ripples, a few tiny glowing fish, and in the middle of the picture a gentle
+      trail of small glowing bubbles rising from below to the surface. Peaceful and magical, not scary.
+    text_ar: "كَانَ الْبَحْرُ سَاكِنًا، وَالْقَمَرُ يَبْتَسِمُ فِي الْمَاءِ. وَفَجْأَةً، صَعِدَتْ فُقَّاعَاتٌ صَغِيرَةٌ، وَمَعَهَا صَوْتٌ خَافِتٌ مِنْ تَحْتِ الْمَوْجِ: «مَنْ يُسَاعِدُنِي؟»"
+    text_en: "The sea was still, and the moon smiled in the water. Then little bubbles rose, and a tiny voice called from below: \"Who can help me?\""
+  - index: 7
+    layout: full
+    text_pos: side
+    location: sea
+    time: night
+    outfit: sailor
+    beat: a brave choice
+    scene: >-
+      The hero kneels safely inside the boat, one hand cupped to an ear and the other holding the boat's
+      rim, listening carefully; the face shows a flicker of worry turning into brave determination. Behind
+      the hero, Baba sits calmly on the middle bench with a gentle, encouraging smile, leaving the choice to
+      the hero. Small glowing bubbles rise from the calm water beside the boat.
+    others: "{dad} in a coral-orange adult life jacket over his shirt, sitting calmly behind the hero"
+    others_count: 1
+    companion_action: hovers just above the water, glowing brighter and brighter to light the sea below
+    text_ar: "{شَعَرَ/شَعَرَتْ} {name} بِقَلِيلٍ مِنَ الْخَوْفِ، فَالْبَحْرُ عَمِيقٌ. {نَظَرَ/نَظَرَتْ} إِلَى بَابَا {فَابْتَسَمَ لَهُ/فَابْتَسَمَ لَهَا}، ثُمَّ {قَالَ/قَالَتْ} {name} بِشَجَاعَةٍ: «هُنَاكَ مَنْ يَحْتَاجُ إِلَيْنَا! أَضِئِ الْمَاءَ يَا {companion}!»"
+    text_en: "{name} felt a little scared. The sea was so deep! But Baba smiled, and {name} said bravely: \"Someone needs us! Light up the water, {companion}!\""
+  - index: 8
+    layout: full
+    text_pos: top
+    location: sea
+    time: night
+    outfit: sailor
+    beat: a friend in the net
+    scene: >-
+      In a pool of warm golden light beside the boat, just under the clear, calm surface, the little sea
+      turtle is caught in an old, loose fishing net with a few round cork floats, one front flipper
+      tangled. The turtle looks up at the hero with big, sad but trusting eyes; she is not hurt. The hero
+      kneels safely inside the boat, looking over the rim with a kind, caring face, while Baba sits calmly
+      on the middle bench behind, watching.
+    others: "{dream_turtle}, caught in the old net, and {dad} in a coral-orange adult life jacket over his shirt, sitting calmly behind the hero"
+    others_count: 2
+    companion_action: glows brightly above the water like a lantern, lighting up the turtle
+    text_ar: "فِي ضَوْءِ {companion:gen}، {رَأَى/رَأَتْ} {name} سُلَحْفَاةً صَغِيرَةً عَالِقَةً فِي شَبَكَةِ صَيْدٍ قَدِيمَةٍ. قَالَتِ السُّلَحْفَاةُ بِحُزْنٍ: «لَا أَسْتَطِيعُ أَنْ أَسْبَحَ!»"
+    text_en: "In {companion}'s light, {name} saw a little sea turtle caught in an old fishing net. The turtle looked up sadly: \"I can't swim!\""
+  - index: 9
+    layout: split
+    location: sea
+    time: night
+    outfit: sailor
+    beat: knot after knot
+    scene: >-
+      Close-up at the side of the boat: the little sea turtle floats calmly at the surface right against
+      the boat. The hero kneels safely inside the boat, reaching over the rim with both hands to gently
+      untie a knot of the old net from the turtle's flipper, concentrating hard. Baba sits quietly behind
+      the hero in the boat, smaller in the frame, watching with a proud smile.
+    others: "{dream_turtle} and {dad} in a coral-orange adult life jacket over his shirt, sitting behind the hero"
+    others_count: 2
+    companion_action: holds its glow close to the knots so the hero can see
+    text_ar: "{أَخَذَ/أَخَذَتْ} {name} {يَفُكُّ/تَفُكُّ} الشَّبَكَةَ بِرِفْقٍ، عُقْدَةً بَعْدَ عُقْدَةٍ. أَضَاءَ {companion} الْمَاءَ، وَبَقِيَتِ السُّلَحْفَاةُ سَاكِنَةً… كَانُوا فَرِيقًا وَاحِدًا!"
+    text_en: "Knot after knot, {name} gently untied the net. {companion} held the light, and the turtle kept very still. What a team!"
+  - index: 10
+    layout: spread
+    text_pos: top
+    location: sea
+    time: night
+    outfit: sailor
+    beat: free!
+    scene: >-
+      A joyful burst of magic: the last strand of the old net slips away and the little sea turtle swims
+      free in a happy loop around the boat, splashing a spray of glowing silver droplets into the
+      moonlight. The hero kneels safely inside the boat with both arms raised, laughing and cheering, while
+      Baba claps along from the middle bench. The calm sea sparkles all around under the huge moon.
+    others: "{dream_turtle}, swimming free, and {dad} in a coral-orange adult life jacket over his shirt on the middle bench"
+    others_count: 2
+    companion_action: twirls in the air, scattering golden sparkles
+    text_ar: "وَانْفَكَّتِ الْعُقْدَةُ الْأَخِيرَةُ! فَدَارَتِ السُّلَحْفَاةُ حَوْلَ الْقَارِبِ مِنَ الْفَرَحِ، وَتَطَايَرَتْ قَطَرَاتٌ لَامِعَةٌ. {وَصَفَّقَ/وَصَفَّقَتْ} {name}: «أَنْتِ حُرَّةٌ!»"
+    text_en: "The last knot came loose! The turtle swam happy circles around the boat, splashing shiny drops. {name} clapped: \"You're free!\""
+  - index: 11
+    layout: full
+    text_pos: bottom
+    location: sea
+    time: night
+    outfit: sailor
+    beat: no net left behind
+    scene: >-
+      The hero, kneeling safely inside the boat, pulls the old, loose fishing net up over the rim and into
+      the bottom of the boat. Beside the boat, the little sea turtle floats at the surface looking up at
+      the hero, grateful but a little sad, glancing out at the wide sea as if looking for someone. Baba
+      sits on the middle bench, watching the hero with quiet pride.
+    others: "{dream_turtle} and {dad} in a coral-orange adult life jacket over his shirt, sitting on the middle bench"
+    others_count: 2
+    companion_action: helps lift a corner of the old net into the boat
+    text_ar: "{رَفَعَ/رَفَعَتْ} {name} الشَّبَكَةَ الْقَدِيمَةَ إِلَى الْقَارِبِ، كَيْ لَا يَعْلَقَ فِيهَا أَحَدٌ بَعْدَ الْيَوْمِ. قَالَتِ السُّلَحْفَاةُ: «شُكْرًا {لَكَ/لَكِ}! لَكِنَّنِي… لَا أَجِدُ أُمِّي.»"
+    text_en: "{name} pulled the old net into the boat, so it could never catch anyone again. \"Thank you!\" said the turtle. \"But... I can't find my mama.\""
+  - index: 12
+    layout: full
+    text_pos: side
+    location: sea
+    time: night
+    outfit: sailor
+    beat: a light for mama
+    scene: >-
+      The hero kneels safely inside the boat at the bow and holds both arms up high, kind and determined; the companion shines
+      brilliantly above the hero's hands like a little golden lighthouse, its warm light spreading far
+      across the calm sea. The little sea turtle floats beside the boat, looking up with hope, and Baba
+      sits on the middle bench behind the hero, smiling at the hero's idea.
+    others: "{dream_turtle} and {dad} in a coral-orange adult life jacket over his shirt, sitting behind the hero"
+    others_count: 2
+    companion_action: shines brighter than ever, held up high in the hero's hands like a little golden lighthouse
+    text_ar: "{قَالَ/قَالَتْ} {name}: «لَا تَحْزَنِي، سَنَجِدُهَا مَعًا!» ثُمَّ {رَفَعَ/رَفَعَتْ} {companion:acc} عَالِيًا: «أَضِئْ بِقُوَّةٍ كَالْمَنَارَةِ، حَتَّى تَرَانَا أُمُّهَا!»"
+    text_en: "\"Don't be sad. We'll find your mama together!\" said {name}. \"Shine like the lighthouse, {companion}, so Mama Turtle can see us!\""
+  - index: 13
+    layout: spread
+    text_pos: top
+    location: sea
+    time: night
+    outfit: sailor
+    beat: mama turtle
+    scene: >-
+      A warm, glowing reunion on the calm moonlit sea: from the deep blue water, the big mother sea turtle
+      rises gently to the surface in a soft glow, and the little sea turtle swims to her; they touch noses
+      and press their flippers together in a loving turtle hug. The hero kneels safely inside the boat
+      close by, hands clasped at the chest, eyes shining with happiness; Baba sits behind the hero on the
+      middle bench, one hand on his heart, smiling.
+    others: "{dream_turtle}, {dream_turtle_mother} and {dad} in a coral-orange adult life jacket over his shirt, sitting behind the hero"
+    others_count: 3
+    companion_action: glows warmly overhead like a little moon
+    text_ar: "وَمِنْ أَعْمَاقِ الْبَحْرِ، صَعِدَتْ سُلَحْفَاةٌ كَبِيرَةٌ… إِنَّهَا الْأُمُّ! فَسَبَحَتْ إِلَيْهَا السُّلَحْفَاةُ الصَّغِيرَةُ وَتَعَانَقَتَا، {وَهَتَفَ/وَهَتَفَتْ} {name}: «وَجَدْنَاهَا!»"
+    text_en: "Up from the deep rose a big turtle... Mama Turtle! The little one swam into her hug, and {name} cheered: \"We found her!\""
+  - index: 14
+    layout: full
+    text_pos: bottom
+    location: sea
+    time: night
+    outfit: sailor
+    beat: a gift from the sea
+    scene: >-
+      Beside the boat, the mother sea turtle bows her head gratefully while the little sea turtle holds up
+      a small, shiny pink spiral seashell to the hero; the hero, kneeling safely inside the boat, reaches
+      out with both hands to take it, smiling with delight. Baba sits behind the hero on the middle bench,
+      smiling warmly.
+    others: "{dream_turtle_mother}, {dream_turtle} and {dad} in a coral-orange adult life jacket over his shirt, sitting behind the hero"
+    others_count: 3
+    companion_action: bows politely to the mother turtle
+    text_ar: "قَالَتِ السُّلَحْفَاةُ الْأُمُّ: «شُكْرًا {لَكَ/لَكِ}، {كُنْتَ شُجَاعًا وَرَحِيمًا/كُنْتِ شُجَاعَةً وَرَحِيمَةً}!» وَأَعْطَتِ السُّلَحْفَاةُ الصَّغِيرَةُ {name:acc} صَدَفَةً وَرْدِيَّةً {لِيَتَذَكَّرَهُمَا/لِتَتَذَكَّرَهُمَا} دَائِمًا."
+    text_en: "Mama Turtle smiled: \"Thank you! You were brave and kind.\" And the little turtle gave {name} a pink shell to remember them by."
+  - index: 15
+    layout: full
+    text_pos: top
+    location: sea
+    time: night
+    outfit: sailor
+    beat: sailing home
+    scene: >-
+      The little sailboat glides home along the moon path toward the old seaside town and the glowing
+      lighthouse, the two sea turtles swimming alongside like an escort. At the back of the boat, Baba sits
+      beside the hero, his hand resting over the hero's on the tiller; the hero sits safely, one hand still on the tiller and the pink shell held close to
+      the chest, eyes nearly closed, head leaning sleepily on Baba's shoulder. The moon is lower now and the
+      sky is starting to soften.
+    others: "{dream_turtle} and {dream_turtle_mother}, swimming beside the boat, and {dad} in a coral-orange adult life jacket over his shirt, sitting beside the hero"
+    others_count: 3
+    companion_action: curls up on the boat's rim, dozing
+    text_ar: "{أَدَارَ/أَدَارَتْ} {name} الْقَارِبَ نَحْوَ الْبَيْتِ، وَالسُّلَحْفَاتَانِ تَسْبَحَانِ بِجَانِبِهِ. وَقُرْبَ الْمَنَارَةِ، {غَفَا/غَفَتْ} عَلَى كَتِفِ بَابَا، وَالصَّدَفَةُ فِي {يَدِهِ/يَدِهَا}."
+    text_en: "Home they sailed, {name} at the tiller and the turtles swimming alongside. By the lighthouse, {name} dozed off on Baba's shoulder, shell in hand."
+  - index: 16
+    layout: full
+    text_pos: top
+    location: bedroom
+    time: dawn
+    outfit: sleep
+    beat: a shell on the pillow
+    scene: >-
+      Soft pink-and-gold dawn light through the arched window. The hero sits up in bed with sleepy,
+      delighted eyes, holding a small, shiny pink spiral seashell found on the pillow. The little toy
+      sailboat rests on the windowsill again, a few tiny drops of water sparkling on its sail.
+    companion_action: sits on the windowsill beside the toy boat, winking
+    text_ar: "عِنْدَ الْفَجْرِ، {اسْتَيْقَظَ/اسْتَيْقَظَتْ} {name} فِي {سَرِيرِهِ/سَرِيرِهَا}. هَلْ كَانَ ذَلِكَ حُلْمًا؟ لَكِنْ عَلَى الْوِسَادَةِ صَدَفَةٌ وَرْدِيَّةٌ صَغِيرَةٌ! وَغَمَزَ {companion}."
+    text_en: "At dawn, {name} woke up in bed. Just a dream? But on the pillow lay a little pink shell... and {companion} winked!"
+  - index: 17
+    layout: full
+    text_pos: side
+    location: bedroom
+    time: morning
+    outfit: sleep
+    beat: ready for tonight
+    scene: >-
+      Bright morning. The hero stands at the open arched window and places the pink seashell next to the
+      little toy sailboat on the stone windowsill, looking out with a happy, dreamy smile at the sparkling
+      blue sea, where small wooden fishing boats head out past the far lighthouse.
+    companion_action: floats at the hero's shoulder, looking out to sea
+    text_ar: "{وَضَعَ/وَضَعَتْ} {name} الصَّدَفَةَ بِجَانِبِ الْقَارِبِ الصَّغِيرِ، {وَنَظَرَ/وَنَظَرَتْ} إِلَى الْبَحْرِ {وَهَمَسَ/وَهَمَسَتْ}: «إِلَى أَيْنَ نُبْحِرُ اللَّيْلَةَ يَا {companion}؟ رُبَّمَا يَحْتَاجُ إِلَيْنَا صَدِيقٌ جَدِيدٌ!»"
+    text_en: "{name} set the shell beside the little boat. \"Where to tonight, {companion}? Maybe a new friend needs us!\""

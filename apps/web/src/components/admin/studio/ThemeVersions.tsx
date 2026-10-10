@@ -14,7 +14,8 @@ import {
   type Version,
   type VersionDetail,
 } from "@/lib/studio";
-import { Pill, Select, StatusBadge, StudioTabs } from "./parts";
+import { Pill, Select, StatusBadge, StudioTabs, useStudioError } from "./parts";
+import { ThemePages } from "./ThemePages";
 
 type Notice = { ok: boolean; text: string } | null;
 type Action = {
@@ -28,13 +29,16 @@ type Action = {
 };
 
 /**
- * Theme versions (Addendum 4 §3.1): draft → in review → approved → live, with the history and rollback. Each
- * version shows what changed against the live one. «English draft» shows its estimate before any model call.
+ * The theme editor (Addendum 4 §3.1, §3.3): a theme's pages and their words (ThemePages), and its versions:
+ * draft → in review → approved → live, with the history and rollback. Each version shows what changed against
+ * the live one. «English draft» shows its estimate before any model call; a «قريبًا» story has nothing to
+ * translate yet.
  */
 export function ThemeVersions({ initialTheme }: { initialTheme: string | null }) {
   const t = useTranslations("studio.versions");
   const te = useTranslations("errors");
   const locale = useLocale();
+  const studioError = useStudioError();
   const [themes, setThemes] = useState<ThemeSummary[] | null>(null);
   const [slug, setSlug] = useState<string | null>(initialTheme);
   const [detail, setDetail] = useState<ThemeDetail | null>(null);
@@ -82,7 +86,7 @@ export function ThemeVersions({ initialTheme }: { initialTheme: string | null })
       const problems = (r.error?.details?.problems as string[] | undefined)?.join(" · ");
       return setNotice({
         ok: false,
-        text: [errorText(r.error, locale, te("unknown")), problems].filter(Boolean).join(" — "),
+        text: [studioError(r.error), problems].filter(Boolean).join(" — "),
       });
     }
     setEstimate(null);
@@ -106,13 +110,17 @@ export function ThemeVersions({ initialTheme }: { initialTheme: string | null })
       json: { to },
       solid,
     });
-    const translate: Action = { key: `${v.version}:estimate`, label: t("translate"), path: "" };
+    const translating = v.translate?.state === "queued" || v.translate?.state === "running";
+    const translate: Action[] =
+      detail && detail.available && detail.pages > 0 && !translating
+        ? [{ key: `${v.version}:estimate`, label: t("translate"), path: "" }]
+        : [];
     const hasOpen = !!detail?.open;
     switch (v.status) {
       case "draft":
         return [
           status("in_review", true),
-          translate,
+          ...translate,
           { key: `${v.version}:discard`, label: t("discard"), path: base, method: "DELETE", ask: t("confirmDiscard") },
         ];
       case "in_review":
@@ -142,7 +150,10 @@ export function ThemeVersions({ initialTheme }: { initialTheme: string | null })
       default:
         return hasOpen
           ? []
-          : [{ key: "new", label: t("newDraft"), path: `/api/admin/themes/${current}/versions`, json: {} }, translate];
+          : [
+              { key: "new", label: t("newDraft"), path: `/api/admin/themes/${current}/versions`, json: {} },
+              ...translate,
+            ];
     }
   }
 
@@ -160,7 +171,7 @@ export function ThemeVersions({ initialTheme }: { initialTheme: string | null })
       </header>
       <StudioTabs active="themes" />
       {notice && <Alert tone={notice.ok ? "success" : "error"}>{notice.text}</Alert>}
-      {!themes && <div className="h-48 animate-pulse rounded-xl bg-paper-sunk" aria-busy="true" />}
+      {!themes && !notice && <div className="h-48 animate-pulse rounded-xl bg-paper-sunk" aria-busy="true" />}
       {themes && (
         <div className="grid gap-5 lg:grid-cols-[260px_minmax(0,1fr)]">
           <div className="lg:hidden">
@@ -181,7 +192,10 @@ export function ThemeVersions({ initialTheme }: { initialTheme: string | null })
                   aria-current={th.slug === current ? "true" : undefined}
                   className={`flex w-full flex-col gap-0.5 p-3 text-start ${th.slug === current ? "bg-night-100" : "hover:bg-paper-sunk"}`}
                 >
-                  <span className="font-semibold text-night-900">{name(th)}</span>
+                  <span className="flex flex-wrap items-center gap-1.5 font-semibold text-night-900">
+                    {name(th)}
+                    {!th.available && <Pill>{t("comingSoon")}</Pill>}
+                  </span>
                   <span className="text-caption text-ink-muted">
                     {t("summary", { live: th.live_version, count: th.versions })}
                     {th.open && ` · ${t("openVersion", { version: th.open.version })}`}
@@ -204,10 +218,18 @@ export function ThemeVersions({ initialTheme }: { initialTheme: string | null })
                 <StatusBadge status="live">
                   <span dir="ltr">v{detail.live_version}</span>
                 </StatusBadge>
+                {!detail.available && <Pill>{t("comingSoon")}</Pill>}
                 {detail.stale_templates > 0 && (
                   <Pill warn>{t("staleTemplates", { count: detail.stale_templates })}</Pill>
                 )}
               </div>
+              <ThemePages
+                key={detail.slug}
+                slug={detail.slug}
+                stamp={detail.history.map((v) => `${v.version}:${v.status}:${v.updated_at}`).join()}
+                onSaved={load}
+              />
+              <h3 className="mt-2 text-h3 text-night-900">{t("history")}</h3>
               <ol className="flex flex-col gap-3">
                 {detail.history.map((v) => (
                   <li key={v.version} className="flex flex-col gap-2 rounded-xl border border-line bg-paper-raised p-4">
@@ -228,9 +250,15 @@ export function ThemeVersions({ initialTheme }: { initialTheme: string | null })
                     </div>
                     {v.note && <p className="text-small">{v.note}</p>}
                     <p className="text-caption text-ink-muted">
-                      {t("created", { who: v.created_by ?? t("files"), at: when(v.created_at, locale) })}
+                      {v.created_by
+                        ? t("created", { who: v.created_by, at: when(v.created_at, locale) })
+                        : t("createdAt", { at: when(v.created_at, locale) })}
                       {v.published_at &&
-                        ` · ${t("published", { who: v.published_by ?? t("files"), at: when(v.published_at, locale) })}`}
+                        ` · ${
+                          v.published_by
+                            ? t("published", { who: v.published_by, at: when(v.published_at, locale) })
+                            : t("publishedAt", { at: when(v.published_at, locale) })
+                        }`}
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {actions(v).map((a) =>

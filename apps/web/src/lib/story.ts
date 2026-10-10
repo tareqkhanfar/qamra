@@ -74,6 +74,17 @@ export function styleChoices(
   });
 }
 
+/**
+ * The art styles a story can be ordered in as «قمرة كلاسيك»: styles Classic sells that have a live template
+ * for this story (any look). Empty: the story is «قمرة سحري» only, drawn page by page for the child.
+ */
+export function classicStylesFor(catalog: Catalog | null, theme?: Pick<ThemeCard, "classic"> | null): CatalogStyle[] {
+  if (!offer(catalog, "classic", theme)?.available) return [];
+  return styleChoices(catalog, "classic", theme)
+    .filter((c) => c.available)
+    .map((c) => c.style);
+}
+
 /** Where the digital copy comes free with a printed book (the `digital-copy` add-on, when it is 0 ₪). */
 export function freeDigitalCopy(catalog: Catalog | null, line: Line): CatalogAddOn | null {
   const addon = catalog?.addons.find((a) => a.slug === "digital-copy");

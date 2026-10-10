@@ -1,5 +1,5 @@
 slug: neighborhood-friends
-version: 1
+version: 2
 title_ar: "{name} وأصدقاء الحارة"
 title_en: "{name} and the Neighborhood Friends"
 # Cover lettering (Addendum 11 §2.3): gold-magic, candy-bright, night-glow, nature-fresh, heritage-tatreez
@@ -9,13 +9,16 @@ is_b2b: false
 active: true
 companion_slot: true
 
-# Catalog entry from the design canvas. The story itself is not written yet (coming soon).
+# The three friends are real animals drawn cute (never people in costumes); in the story they speak, as in
+# any children's fable. Their names are in the text only, never in an image prompt: the cat «مِشْمِشَةُ»
+# (Mishmisha, diptote), the sparrow «زَقْزُوقٌ» (Zakzouk, fully declined) and the tortoise «تُوتَةُ» (Touta,
+# diptote). The refrain counts the joys: «فَرْحَةٌ وَاحِدَةٌ صَارَتْ فَرْحَتَيْنِ» → «ثَلَاثًا» → «أَرْبَعًا».
 catalog:
-  status: coming_soon
+  status: available
   name_ar: أصدقاء الحارة
   name_en: Neighborhood Friends
-  tagline_ar: قطّة وعصفور وسلحفاة يعلّمون بطلنا معنى المشاركة.
-  tagline_en: A cat, a bird and a tortoise teach our hero what sharing means.
+  tagline_ar: مع قطّة وعصفور وسلحفاة، يكتشف بطلنا أنّ الفرح يكبر بالمشاركة.
+  tagline_en: With a cat, a sparrow and a tortoise, our hero finds that sharing makes joy grow.
   description_ar: >-
     في الحارة ثلاثة أصدقاء لا يتشابهون: قطّة سريعة، وعصفور ثرثار، وسلحفاة صبورة. معهم يكتشف بطلنا أن المشاركة تضاعف الفرح.
   description_en: >-
@@ -24,5 +27,353 @@ catalog:
   values_ar: [المشاركة, الصداقة, تقبّل الاختلاف]
   values_en: [Sharing, Friendship, Accepting differences]
   rank: 80
-  planned_pages: 16
   art: {scene: garden, outfit: "#E9826B", skin: "#8D5A3B", hair_style: short, pose: wave}
+  peek:
+    - {scene: garden, outfit: "#E9826B", skin: "#8D5A3B", hair_style: short, pose: wave, kid_scale: 0.6, companion: cat}
+    - {scene: garden, outfit: "#E9826B", skin: "#8D5A3B", hair_style: short, pose: front, kid_scale: 0.55, companion: blob}
+    - {scene: night, outfit: "#E9826B", skin: "#8D5A3B", hair_style: short, pose: tilt, kid_scale: 0.5}
+  sample_child: {name_ar: عمر, name_en: Omar, gender: m}
+
+default_companion:
+  name_ar: قَمّور
+  name_en: Qamour
+  id: qamour  # shared sheet images: content/cast/qamour-<style>.png
+  # Locked design (Addendum 11 §4.2): always this plump crescent, never a ball. Same text as the sheets in
+  # docs/image-prompts.md (C1, C2, C7).
+  description_en: >-
+    a tiny friendly moon creature: a soft, plump crescent-moon body (a thick C shape opening to the
+    right), pale honey-gold, softly glowing from inside, about the size of a house cat. Its face sits on
+    the thick middle of the crescent: two small shiny black dot eyes, a tiny happy smile, round rosy
+    cheeks, and a small five-pointed star-shaped golden freckle on its left cheek. Two stubby little
+    arms, no legs. It floats a few centimeters above the ground with a faint trail of golden sparkles.
+    The crescent shape never changes
+
+# Template syntax: {name}, {companion}; gender variants {masculine/feminine}. See first-day for layouts and
+# the name cases ({name:acc}, {name:gen}).
+# The props stay the same on every page: a small round wicker picnic basket and a red-and-cream embroidered
+# (tatreez) picnic cloth.
+locations:
+  home_door: >-
+    the hero's front door in the neighborhood alley: a pale-blue arched wooden door in a warm limestone
+    wall, two worn stone steps lined with clay pots of red geraniums, basil and mint, a jasmine vine with
+    small white flowers climbing around the arch, and a small brass lantern beside the door
+  alley: >-
+    the neighborhood alley: a narrow, gently sloping lane paved with worn limestone slabs between old
+    two-storey limestone houses with arched windows and pale-blue and green wooden shutters, a round stone
+    arch spanning the lane, clay pots of geraniums, basil and mint along the walls, jasmine and a grapevine
+    climbing over a low stone wall, small brass lanterns beside the doors, a small corner shop with an
+    arched doorway and wooden crates of oranges and cucumbers outside, an old carved stone water spout in
+    one wall above a small stone trough, and an old olive tree at the far end of the lane. No signs or
+    writing anywhere
+  olive_square: >-
+    a small sunny square at the end of the alley: a wide old olive tree with a thick, twisted silver-grey
+    trunk, knotty roots and silvery-green leaves casting cool dappled shade, a low curved limestone
+    bench-wall around it, a grapevine pergola along one side, and limestone houses with arched doors,
+    wooden shutters and clay pots of herbs and geraniums around the square
+  bedroom: >-
+    the hero's small bedroom: cream limestone walls, an arched window with pale-blue wooden shutters open
+    to a view of the moonlit rooftops of the alley, a low bed with an embroidered blanket, a small rug
+    with a red-and-cream geometric pattern
+
+outfits:
+  day:
+    - key: coral
+      en: >-
+        a coral-red long-sleeved t-shirt with a small gold crescent-moon patch, dark-blue jeans rolled
+        at the ankles and white sneakers
+      en_f: >-
+        a coral-red long-sleeved dress with a small gold crescent-moon patch over dark-blue leggings and
+        white sneakers
+      hijab_en: a soft cream hijab
+    - key: teal
+      en: a teal hoodie with a small gold star patch, beige trousers and white sneakers
+      en_f: >-
+        a teal pinafore dress over a cream long-sleeved top and beige leggings, white sneakers
+      hijab_en: a soft sage-green hijab
+  sleep:
+    - key: moons
+      en: light-blue pajamas with tiny golden moons
+
+# Recurring side characters (Addendum 11 §4.3): one locked look per book. Scenes name them in `others`
+# as {id}; sheet images: cast/<id>-<style>.png here, or the shared content/cast/<id>-<style>.png.
+# The same id has the same description in every theme (tests check it).
+cast:
+  - id: hara_cat
+    role: the ginger cat
+    description_en: >-
+      a slim, nimble young cat, drawn as a real cat (cute and friendly, on four legs, no clothes, never
+      standing like a person): soft apricot-orange fur with darker ginger tabby stripes on the back, legs
+      and tail, a white chest and chin, a white patch around the muzzle, four white paws like little
+      socks, big round emerald-green eyes, a small pink nose, long white whiskers, and a long striped tail
+      with a white tip
+  - id: hara_bird
+    role: the sparrow
+    description_en: >-
+      a small, round, cheerful house sparrow, drawn as a real bird (cute and friendly, no clothes): a
+      chestnut-brown back and wings with dark-brown streaks and one thin white wing bar, a soft grey cap,
+      pale grey-white cheeks, a small black bib under the beak, a round cream-grey belly, a short brown
+      tail, a stubby dark beak, bright shiny black eyes and thin pinkish-brown legs; about the size of a
+      child's palm
+  - id: hara_tortoise
+    role: the tortoise
+    description_en: >-
+      a small, gentle old land tortoise, drawn as a real tortoise (cute and friendly, walking on four
+      sturdy legs, no clothes): a high, rounded domed shell of olive-brown plates, each plate with a
+      golden-yellow center and fine growth rings, a smooth pale-yellow underside, a wrinkled sand-beige
+      head, neck and legs with small rounded scales, calm dark eyes with gentle half-closed lids and a
+      kind little smile; about the size of a loaf of bread
+  - id: mom
+    role: the mother
+    description_en: >-
+      a woman in her early thirties, warm light-olive skin, kind almond-shaped brown eyes, a
+      dusty-rose hijab, a long navy cardigan over a cream ankle-length dress, comfortable flat shoes
+
+blurb_ar: "سلّةُ نزهةٍ صغيرة، وقطّةٌ سريعة، وعصفورٌ ثرثار، وسلحفاةٌ صبورة. حكاية {name:gen} في الحارة، وفرحةٌ تكبرُ كلّما تقاسمناها."
+blurb_en: "A little picnic basket, a quick cat, a chatty sparrow and a patient tortoise. This is {name}'s day in the neighborhood, and a joy that grows every time it is shared."
+
+for_parents:
+  lesson_ar: >-
+    حين {يشاركُ/تشاركُ} {name} ما {يحبُّه/تحبُّه}، {يكتشفُ/تكتشفُ} أنّ الفرح يكبرُ ولا ينقص. وأصدقاءُ
+    الحارة لا يتشابهون: فيهم السريعةُ والثرثارُ والصبورةُ، ولكلٍّ منهم هديّته، والصديقُ الحقيقيّ يمشي على
+    مَهْلِ صديقه.
+  lesson_en: >-
+    When {name} shares what {he/she} loves, the joy grows instead of shrinking. The neighborhood friends
+    are all different: one is quick, one is chatty and one is patient, and each has a gift to give. A true
+    friend walks at a friend's pace.
+  questions_ar:
+    - "ما الشيءُ الذي {تحبُّ أن تشاركَه/تحبّين أن تشاركيه} مع أصدقائك؟"
+    - "أيُّ أصدقاء الحارة {يشبهُكَ/يشبهُكِ} أكثر: مشمشة السريعة، أم زقزوق الثرثار، أم توتة الصبورة؟"
+  questions_en:
+    - "What would you like to share with your friends?"
+    - "Which neighborhood friend is most like you: quick Mishmisha, chatty Zakzouk or patient Touta?"
+
+cover:
+  scene: >-
+    The hero stands in the middle of the sunlit alley under a stone arch draped with a grapevine,
+    proudly holding up the little wicker picnic basket with a big joyful smile. The sparrow perches on
+    the basket's handle, the ginger cat rubs against the hero's legs with her tail held high, and the
+    tortoise peeks up happily from beside the hero's feet. Golden light streams down the lane behind
+    them toward the old olive tree; the sky above the arch is soft and calm.
+  location: alley
+  time: afternoon
+  others: "{hara_cat}, {hara_bird} and {hara_tortoise}"
+  others_count: 3
+  companion_action: floats beside the hero's shoulder, waving happily and glowing
+
+pages:
+  - index: 1
+    layout: full
+    text_pos: top
+    location: home_door
+    time: morning
+    beat: a picnic basket from Mama
+    scene: >-
+      The hero steps out of the pale-blue arched front door onto the stone steps, holding a small round
+      wicker picnic basket covered with a red-and-cream embroidered cloth, smiling with excitement in the
+      fresh morning sun.
+    companion_action: peeks out from under the basket's cloth, eyes shining
+    text_ar: "فِي صَبَاحٍ مُشْمِسٍ، {خَرَجَ/خَرَجَتْ} {name} إِلَى الْحَارَةِ {يَحْمِلُ/تَحْمِلُ} سَلَّةَ نُزْهَةٍ مِنْ مَامَا، فِيهَا كَعْكٌ بِالسِّمْسِمِ، وَجُبْنَةٌ بَيْضَاءُ، وَخِيَارٌ أَخْضَرُ."
+    text_en: "One sunny morning, {name} stepped into the alley with Mama's picnic basket: sesame ka'ak, white cheese and cucumbers."
+  - index: 2
+    layout: split
+    location: alley
+    time: morning
+    beat: all by myself
+    scene: >-
+      The hero walks happily down the sloping alley under the stone arch, swinging the wicker picnic
+      basket and pointing ahead toward the old olive tree at the far end of the lane.
+    companion_action: floats beside the basket, tilting its head curiously
+    text_ar: "{مَشَى/مَشَتْ} {name} مَعَ {companion:gen} فِي الْحَارَةِ {يُغَنِّي/تُغَنِّي}: «تَحْتَ شَجَرَةِ الزَّيْتُونِ سَآكُلُ الْكَعْكَ، وَالْجُبْنَةَ، وَالْخِيَارَ… وَحْدِي!»"
+    text_en: "{name} walked down the alley with {companion}, singing: \"Under the olive tree, I'll eat the ka'ak, the cheese and the cucumbers... all by myself!\""
+  - index: 3
+    layout: full
+    text_pos: side
+    location: alley
+    time: morning
+    beat: the quick cat
+    scene: >-
+      The ginger cat leaps gracefully down from the top of a low stone wall covered in jasmine and lands
+      lightly right in front of the hero, who stops in surprise with wide eyes, holding the picnic basket.
+    others: "{hara_cat}"
+    others_count: 1
+    companion_action: jumps back in surprise, then giggles
+    text_ar: "هُوبْ! مِنْ فَوْقِ السُّورِ قَفَزَتْ مِشْمِشَةُ، أَسْرَعُ قِطَّةٍ فِي الْحَارَةِ، وَوَقَفَتْ أَمَامَ {name:gen}: «مِيَاوْ يَا {name}! مَا هَذِهِ الرَّائِحَةُ الطَّيِّبَةُ؟»"
+    text_en: "Hop! Down jumped Mishmisha, the quickest cat around. \"Meow, {name}! What smells so yummy?\""
+  - index: 4
+    layout: full
+    text_pos: bottom
+    location: alley
+    time: morning
+    beat: the first share
+    scene: >-
+      The hero crouches down and holds out a small piece of white cheese to the ginger cat, who sniffs it
+      happily with her tail curled up; the picnic basket sits on the paving beside them and the hero smiles
+      warmly.
+    others: "{hara_cat}"
+    others_count: 1
+    companion_action: counts on its stubby fingers, beaming
+    text_ar: "{ضَمَّ/ضَمَّتْ} {name} السَّلَّةَ: «هَذِهِ لِي!» ثُمَّ {نَظَرَ/نَظَرَتْ} إِلَى عَيْنَيْ مِشْمِشَةَ… {وَأَعْطَاهَا/وَأَعْطَتْهَا} قِطْعَةً مِنَ الْجُبْنَةِ. فَرْحَةٌ وَاحِدَةٌ صَارَتْ فَرْحَتَيْنِ!"
+    text_en: "{name} hugged the basket: \"It's mine!\" Then {he/she} looked into Mishmisha's eyes... and gave her a piece of cheese. One joy became two!"
+  - index: 5
+    layout: full
+    text_pos: top
+    location: alley
+    time: morning
+    beat: the chatty sparrow
+    scene: >-
+      The sparrow perches on the grapevine over the low stone wall, chirping with its beak wide open and
+      wings fluttering. The hero laughs and scatters sesame crumbs from a ka'ak on the top of the wall; the
+      ginger cat sits beside the hero, licking her paw.
+    others: "{hara_bird} and {hara_cat}"
+    others_count: 2
+    companion_action: catches a falling sesame seed and nibbles it
+    text_ar: "وَعَلَى الدَّالِيَةِ، زَقْزَقَ الْعُصْفُورُ زَقْزُوقٌ، وَزَقْزَقَ، وَزَقْزَقَ: «مَاذَا فِي السَّلَّةِ؟ كَعْكٌ؟ أُحِبُّ الْكَعْكَ!» {فَضَحِكَ/فَضَحِكَتْ} {name} {وَنَثَرَ/وَنَثَرَتْ} لَهُ الْفُتَاتَ. وَالْفَرْحَتَانِ صَارَتَا ثَلَاثًا!"
+    text_en: "Zakzouk the sparrow chirped and chirped: \"Ka'ak? I love ka'ak!\" {name} laughed and shared the crumbs. Two joys became three!"
+  - index: 6
+    layout: full
+    text_pos: bottom
+    location: alley
+    time: morning
+    beat: the slow tortoise
+    scene: >-
+      Among clay pots of mint and basil at the foot of a house wall, the tortoise walks very slowly along
+      the limestone paving. The hero kneels down to look at her with a thoughtful face. A few steps ahead,
+      the ginger cat looks back impatiently with her tail swishing, and the sparrow flutters above her.
+    others: "{hara_tortoise}, {hara_cat} and {hara_bird}"
+    others_count: 3
+    companion_action: hovers low beside the tortoise, looking up at the hero
+    text_ar: "بَيْنَ النَّعْنَاعِ وَالرَّيْحَانِ، {رَأَى/رَأَتْ} {name} السُّلَحْفَاةَ تُوتَةَ تَمْشِي: خُطْوَةً… خُطْوَةً… فَقَالَتْ مِشْمِشَةُ: «بَطِيئَةٌ جِدًّا! هَيَّا نَذْهَبْ بِدُونِهَا!»"
+    text_en: "Among the mint, {name} saw Touta the tortoise walking: step... by... step... Mishmisha said: \"Too slow! Let's go without her!\""
+  - index: 7
+    layout: spread
+    text_pos: top
+    location: alley
+    time: morning
+    beat: we walk together
+    scene: >-
+      A wide panorama of the sloping alley under the stone arches: the hero walks slowly beside the
+      tortoise, matching her tiny steps, carrying the picnic basket and smiling down at her. The ginger
+      cat tiptoes alongside, the sparrow hops along the low wall with its beak open in song, jasmine and
+      potted geraniums line the way, and the old olive tree waits at the far end.
+    others: "{hara_tortoise}, {hara_cat} and {hara_bird}"
+    others_count: 3
+    companion_action: floats slowly at the tortoise's pace, smelling a jasmine flower
+    text_ar: "{فَقَالَ/فَقَالَتْ} {name}: «لَا! نَمْشِي مَعَ تُوتَةَ عَلَى مَهْلِهَا.» فَمَشَى الْجَمِيعُ خُطْوَةً خُطْوَةً، وَزَقْزُوقٌ يُغَنِّي طُولَ الطَّرِيقِ."
+    text_en: "\"No!\" said {name}. \"We'll walk with Touta, at her pace.\" So everyone went step by step, and Zakzouk sang all the way."
+  - index: 8
+    layout: full
+    text_pos: top
+    location: olive_square
+    time: noon
+    beat: the tortoise's gift
+    scene: >-
+      Under the wide old olive tree, the tortoise stands among its knotty roots in a pool of cool dappled
+      shade, nodding proudly. The hero sits down beside her with a happy sigh, the picnic basket in the
+      lap; the ginger cat stretches out on the cool ground and the sparrow perches on a low branch.
+    others: "{hara_tortoise}, {hara_cat} and {hara_bird}"
+    others_count: 3
+    companion_action: fans the hero with a small olive leaf
+    text_ar: "وَعِنْدَ شَجَرَةِ الزَّيْتُونِ الْكَبِيرَةِ، قَالَتْ تُوتَةُ: «أَنَا أَعْرِفُ أَبْرَدَ ظِلٍّ فِي الْحَارَةِ… هُنَا!» {فَجَلَسَ/فَجَلَسَتْ} {name} فِي الظِّلِّ {وَقَالَ/وَقَالَتْ}: «شُكْرًا يَا تُوتَةُ!»"
+    text_en: "At the olive tree, Touta said: \"I know the coolest shade... right here!\" {name} sat down and said: \"Thank you, Touta!\""
+  - index: 9
+    layout: full
+    text_pos: side
+    location: olive_square
+    time: noon
+    beat: the cat's gift
+    scene: >-
+      A playful gust of wind lifts the red-and-cream embroidered picnic cloth out of the hero's hands; the
+      ginger cat leaps high in a flash and catches one corner of it in mid-air. The hero laughs with both
+      arms up, olive leaves swirl, and the tortoise and the sparrow watch from under the tree.
+    others: "{hara_cat}, {hara_tortoise} and {hara_bird}"
+    others_count: 3
+    companion_action: holds on to the other corner of the cloth, cheering
+    text_ar: "{نَشَرَ/نَشَرَتْ} {name} الْمِفْرَشَ الْمُطَرَّزَ… فَطَارَ مَعَ الرِّيحِ! وَبِقَفْزَةٍ سَرِيعَةٍ أَمْسَكَتْهُ مِشْمِشَةُ. فَصَفَّقَ الْجَمِيعُ: «أَحْسَنْتِ يَا مِشْمِشَةُ!»"
+    text_en: "{name} spread the cloth... whoosh, the wind took it! Mishmisha leapt and caught it. Everyone clapped: \"Well done, Mishmisha!\""
+  - index: 10
+    layout: split
+    location: olive_square
+    time: noon
+    beat: a treat for the tortoise
+    scene: >-
+      On the embroidered cloth in the olive tree's shade, the hero holds out a big round slice of cucumber
+      to the tortoise, who stretches her neck and takes a happy bite; the ginger cat and the sparrow watch
+      with delight.
+    others: "{hara_tortoise}, {hara_cat} and {hara_bird}"
+    others_count: 3
+    companion_action: claps its stubby arms
+    text_ar: "تُوتَةُ لَا تَأْكُلُ الْكَعْكَ، {فَاخْتَارَ/فَاخْتَارَتْ} لَهَا {name} أَكْبَرَ شَرِيحَةِ خِيَارٍ. قَرْمَشْ، قَرْمَشْ! وَالْفَرَحَاتُ الثَّلَاثُ صَارَتْ أَرْبَعًا!"
+    text_en: "Touta doesn't eat ka'ak, so {name} picked the biggest cucumber slice just for her. Crunch, crunch! Three joys became four!"
+  - index: 11
+    layout: full
+    text_pos: top
+    location: olive_square
+    time: afternoon
+    beat: the sparrow's gift
+    scene: >-
+      The hero stands under the olive tree with hands cupped around the mouth, calling happily. The sparrow
+      flies up over the flat limestone rooftops with its beak wide open, chirping; wooden shutters and
+      arched doors around the square begin to open. The ginger cat and the tortoise look up at the sparrow.
+    others: "{hara_bird} flying above the rooftops, {hara_cat} and {hara_tortoise}"
+    others_count: 3
+    companion_action: flies up beside the sparrow, waving
+    text_ar: "{قَالَ/قَالَتْ} {name}: «يَا زَقْزُوقُ، صَوْتُكَ عَالٍ وَجَمِيلٌ… نَادِ الْحَارَةَ كُلَّهَا!» فَطَارَ زَقْزُوقٌ فَوْقَ السُّطُوحِ يُنَادِي: «نُزْهَةٌ! نُزْهَةٌ تَحْتَ شَجَرَةِ الزَّيْتُونِ!»"
+    text_en: "\"Zakzouk,\" said {name}, \"your voice is loud and lovely. Call everyone!\" So Zakzouk flew over the rooftops, calling: \"Picnic under the olive tree!\""
+  - index: 12
+    layout: spread
+    text_pos: top
+    location: olive_square
+    time: afternoon
+    beat: the neighborhood picnic
+    scene: >-
+      A joyful neighborhood picnic on the embroidered cloth under the old olive tree. The hero sits in the
+      middle, breaking the sesame ka'ak and handing pieces around. Mama arrives smiling with a plate of
+      green grapes, and two neighbor children bring a tray of za'atar flatbread. The ginger cat nibbles a
+      bit of cheese, the sparrow pecks crumbs on the cloth, and the tortoise munches a cucumber slice.
+    others: "{mom}, two neighbor children of different looks (a boy and a girl), {hara_cat}, {hara_bird} and {hara_tortoise}"
+    others_count: 6
+    companion_action: hands a tiny piece of ka'ak to the sparrow
+    text_ar: "جَاءَتْ مَامَا بِالْعِنَبِ، وَجَاءَ الْجِيرَانُ بِالْمَنَاقِيشِ، {وَقَسَّمَ/وَقَسَّمَتْ} {name} الْكَعْكَ عَلَى الْجَمِيعِ. سَلَّةٌ صَغِيرَةٌ صَارَتْ نُزْهَةً كَبِيرَةً!"
+    text_en: "Mama brought grapes, the neighbors brought za'atar bread, and {name} shared the ka'ak. One basket became a big picnic!"
+  - index: 13
+    layout: full
+    text_pos: bottom
+    location: olive_square
+    time: sunset
+    beat: see you tomorrow
+    scene: >-
+      Golden-orange sunset in the square. The hero waves goodbye, holding the empty picnic basket; the
+      ginger cat leaps up onto the low stone wall, the sparrow flies toward a little nest in the grapevine
+      pergola, and the tortoise walks slowly home toward the olive tree's roots.
+    others: "{hara_cat}, {hara_bird} and {hara_tortoise}"
+    others_count: 3
+    companion_action: waves goodbye with both stubby arms
+    text_ar: "عِنْدَ الْغُرُوبِ، {قَالَ/قَالَتْ} {name}: «إِلَى اللِّقَاءِ يَا أَصْدِقَائِي!» فَقَفَزَتْ مِشْمِشَةُ إِلَى السُّورِ، وَطَارَ زَقْزُوقٌ إِلَى عُشِّهِ، وَمَشَتْ تُوتَةُ… عَلَى مَهْلِهَا."
+    text_en: "\"Goodbye, my friends!\" said {name} at sunset. Mishmisha leapt onto the wall, Zakzouk flew to his nest, and Touta walked home... slowly."
+  - index: 14
+    layout: full
+    text_pos: bottom
+    no_child: true
+    location: alley
+    time: night
+    beat: the alley sleeps
+    scene: >-
+      The empty alley at night under a big round silver moon: the stone arch, the grapevine on the low
+      wall, the potted plants and the old olive tree at the far end. Small brass lanterns glow warmly
+      beside the arched doors and a few windows are softly lit. Quiet and peaceful, nobody in the lane.
+    text_ar: "وَفِي اللَّيْلِ هَدَأَتِ الْحَارَةُ: فَوَانِيسُ تَلْمَعُ، وَأَقْوَاسٌ تَنَامُ، وَقَمَرٌ كَبِيرٌ يَهْمِسُ: «تُصْبِحُونَ عَلَى خَيْرٍ.»"
+    text_en: "At night, the alley grew quiet: lanterns twinkling, arches sleeping, and a big moon whispering: \"Good night, everyone.\""
+  - index: 15
+    layout: full
+    text_pos: top
+    location: bedroom
+    time: night
+    outfit: sleep
+    beat: counting joys
+    scene: >-
+      The hero is tucked in bed under the embroidered blanket, eyes almost closed, smiling sleepily and
+      counting on the fingers of one hand. Through the open arched window, a big gentle moon shines over
+      the rooftops of the alley.
+    companion_action: curls up on the pillow counting along on its stubby fingers, glowing softly like a night light
+    text_ar: "فِي {سَرِيرِهِ/سَرِيرِهَا}، {عَدَّ/عَدَّتْ} {name} مَعَ {companion:gen} فَرَحَاتِ الْيَوْمِ: وَاحِدَةٌ، اثْنَتَانِ، ثَلَاثٌ، أَرْبَعٌ… {وَنَامَ/وَنَامَتْ} {مُبْتَسِمًا/مُبْتَسِمَةً} قَبْلَ أَنْ {يُكْمِلَ/تُكْمِلَ} الْعَدَّ."
+    text_en: "In bed, {name} counted the day's joys with {companion}: one, two, three, four... and fell asleep smiling before {he/she} could finish."

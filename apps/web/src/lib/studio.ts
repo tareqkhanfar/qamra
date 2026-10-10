@@ -72,24 +72,30 @@ export type TextPage = {
   current: Words;
   vowelized: string | null;
 };
-export type TemplateTexts = {
-  template: string;
+/** What the page editor and its preview need, for a template (one look) or a theme (both looks). */
+export type TextContext = {
   theme: string;
   theme_title: Words;
+  live_version: number;
+  editing: { version: number; status: VersionStatus } | null;
+  text_pt: Record<"young" | "older", [number, number]>;
+  sample: { name_ar: string; name_en: string; companion_ar: string; companion_en: string };
+  names: Record<"m" | "f", Words>; // a sample child per gender: each form is previewed with its own name
+  gender: "m" | "f" | null; // null: a theme, the preview switches between the boy and the girl
+  pages: TextPage[];
+};
+export type TemplateTexts = TextContext & {
+  template: string;
   style: string;
   style_title: Words;
   variant: string;
   gender: "m" | "f";
   pinned_version: number;
-  live_version: number;
-  editing: { version: number; status: VersionStatus } | null;
   texts_stale: boolean;
   story_changed: boolean;
   vowelized: boolean;
-  text_pt: Record<"young" | "older", [number, number]>;
-  sample: { name_ar: string; name_en: string; companion_ar: string; companion_en: string };
-  pages: TextPage[];
 };
+export type ThemeTexts = TextContext & { available: boolean; planned_pages: number | null };
 
 export type Version = {
   version: number;
@@ -116,6 +122,8 @@ export type ThemeSummary = {
   versions: number;
   templates: number;
   stale_templates: number;
+  available: boolean; // false: a «قريبًا» story whose pages are not written yet
+  pages: number;
 };
 export type ThemeDetail = ThemeSummary & { history: Version[] };
 export type Change = { key: string; before: string | null; after: string | null };

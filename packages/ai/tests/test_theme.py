@@ -3,6 +3,7 @@ import re
 import pytest
 
 from qamra_ai.pipeline.theme import (
+    CONTENT_DIR,
     MAX_WORDS_YOUNG,
     Theme,
     fill_title,
@@ -13,7 +14,20 @@ from qamra_ai.pipeline.theme import (
     word_count,
 )
 
-MVP = ["first-day", "graduation", "new-sibling"]
+# every story on sale (owner, 2026-10-09: no story stays "coming soon"); `custom` is the custom story's base
+MVP = sorted(
+    p.parent.name for p in (CONTENT_DIR / "themes").glob("*/theme.yaml") if p.parent.name != "custom"
+)
+
+
+def test_every_story_is_written_and_on_sale() -> None:
+    assert {"first-day", "graduation", "new-sibling", "olive-season"} <= set(MVP)
+    for slug in MVP:
+        theme = load_theme(slug)
+        assert theme.catalog is not None and theme.catalog.status == "available", slug
+        assert theme.catalog.sample_child is not None, (
+            f"{slug}: the catalog's sample pages need a sample child"
+        )
 
 
 def test_gender_variants() -> None:
@@ -87,7 +101,13 @@ def test_word_limit_and_references_are_checked() -> None:
 
 
 def test_coming_soon_theme_needs_no_pages() -> None:
-    assert load_theme("moon-trip").pages == []
+    data = load_theme("olive-season").model_dump(mode="json")
+    data["catalog"]["status"] = "coming_soon"
+    data.update(pages=[], cover=None, for_parents=None)
+    assert Theme.model_validate(data).pages == []
+    data["catalog"]["status"] = "available"
+    with pytest.raises(ValueError, match="needs a cover and pages"):
+        Theme.model_validate(data)
 
 
 def test_unknown_style() -> None:

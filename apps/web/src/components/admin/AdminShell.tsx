@@ -45,7 +45,7 @@ export async function AdminShell({ active, children }: { active: Section; childr
       label: locale === "en" ? "Quote requests" : "طلبات عروض الأسعار",
     },
     { id: "reports", href: "/admin/reports", ready: true },
-    { id: "themes", href: "/admin/studio", ready: true },
+    { id: "themes", href: "/admin/studio/themes", ready: true }, // the theme editor; its tabs lead to the templates
     { id: "journeyAudio", href: "/admin/journey-audio", ready: true, label: tj("nav") },
     { id: "islamicReview", href: "/admin/islamic-review", ready: true, label: ti("nav") },
     { id: "metrics", href: "/admin/metrics", ready: true },

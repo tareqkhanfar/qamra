@@ -9,7 +9,7 @@ import { api, errorText } from "@/lib/api";
 import {
   brokenPlaceholders,
   renderText,
-  type TemplateTexts,
+  type TextContext,
   type TextPage,
   type VersionDetail,
   type Words,
@@ -22,7 +22,8 @@ const TOKENS = { ar: ["{name}", "{companion}", "{مذكر/مؤنث}"], en: ["{na
 /**
  * A page's words (Addendum 4 §3.3): the Arabic with its {boy/girl} variants and the English, from the theme.
  * Saving lands in the theme's open draft (a new version, made from the live one when needed, and audited);
- * the template's own words change only after that version goes live and its texts are refreshed.
+ * a template's own words change only after that version goes live and its texts are refreshed. Each form is
+ * shown with a sample child of its gender. `onThemePage`: the editor sits on the theme's versions page.
  */
 export function PageTextEditor({
   texts,
@@ -30,12 +31,14 @@ export function PageTextEditor({
   words,
   setWords,
   onSaved,
+  onThemePage = false,
 }: {
-  texts: TemplateTexts;
+  texts: TextContext;
   page: TextPage;
   words: Words;
   setWords: (w: Words) => void;
   onSaved: () => Promise<void>;
+  onThemePage?: boolean;
 }) {
   const t = useTranslations("studio.text");
   const te = useTranslations("errors");
@@ -46,6 +49,7 @@ export function PageTextEditor({
   const [message, setMessage] = useState<Message>(null);
   const dirty = words.ar !== page.current.ar || words.en !== page.current.en;
   const broken = brokenPlaceholders(words.ar) || brokenPlaceholders(words.en);
+  const pending = !!texts.editing && texts.editing.status !== "draft"; // in review or approved: read-only
 
   if (page.beat === 0) {
     return (
@@ -89,12 +93,12 @@ export function PageTextEditor({
       return;
     }
     setNote("");
-    setMessage({ ok: true, text: t("saved", { version: r.data.version }) });
+    setMessage({ ok: true, text: t(onThemePage ? "savedTheme" : "saved", { version: r.data.version }) });
     await onSaved();
   }
 
-  const name = texts.sample.name_ar;
   const companion = texts.sample.companion_ar;
+  const editing = texts.editing ? t("editing", { version: texts.editing.version }) : t("newDraft");
   return (
     <section
       className="flex flex-col gap-3 rounded-xl border border-line bg-paper-raised p-4"
@@ -104,10 +108,15 @@ export function PageTextEditor({
         <h3 id="page-words" className="text-h3 text-night-900">
           {t("title")}
         </h3>
-        <Link href={`/admin/studio/themes?theme=${texts.theme}`} className="text-small text-night-700 underline">
-          {texts.editing ? t("editing", { version: texts.editing.version }) : t("newDraft")}
-        </Link>
+        {onThemePage ? (
+          <span className="text-small text-ink-muted">{editing}</span>
+        ) : (
+          <Link href={`/admin/studio/themes?theme=${texts.theme}`} className="text-small text-night-700 underline">
+            {editing}
+          </Link>
+        )}
       </div>
+      {pending && texts.editing && <Alert tone="info">{t("pending", { version: texts.editing.version })}</Alert>}
       {(["ar", "en"] as const).map((lang) => (
         <div key={lang} className="flex flex-col gap-1.5">
           <label htmlFor={`words-${lang}`} className="text-small font-semibold">
@@ -141,7 +150,7 @@ export function PageTextEditor({
               {(["m", "f"] as const).map((g) => (
                 <div key={g} className="flex gap-2">
                   <dt className="shrink-0 font-semibold text-ink-muted">{t(`gender.${g}`)}</dt>
-                  <dd dir="rtl">{renderText(words.ar, g, name, companion)}</dd>
+                  <dd dir="rtl">{renderText(words.ar, g, texts.names[g].ar, companion)}</dd>
                 </div>
               ))}
             </dl>
@@ -168,7 +177,7 @@ export function PageTextEditor({
         </Alert>
       )}
       <div className="flex flex-wrap gap-2">
-        <Button size="sm" onClick={() => void save()} disabled={!dirty || broken} loading={busy}>
+        <Button size="sm" onClick={() => void save()} disabled={!dirty || broken || pending} loading={busy}>
           {t("save")}
         </Button>
         <Button size="sm" variant="ghost" onClick={() => setWords(page.current)} disabled={!dirty}>

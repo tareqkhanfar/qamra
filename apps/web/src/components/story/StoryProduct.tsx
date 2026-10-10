@@ -8,8 +8,19 @@ import { Link, useRouter } from "@/i18n/navigation";
 import { errorText } from "@/lib/api";
 import type { ThemeDetail } from "@/lib/catalog";
 import { rememberedVariant, type Example, type ExampleVariant } from "@/lib/examples";
+import { themeArt } from "@/lib/themeArt";
 import { cartApi, money, type Catalog } from "@/lib/store";
-import { LINES, createHref, freeDigitalCopy, num, offer, styleChoices, type Line, type Offer } from "@/lib/story";
+import {
+  LINES,
+  classicStylesFor,
+  createHref,
+  freeDigitalCopy,
+  num,
+  offer,
+  styleChoices,
+  type Line,
+  type Offer,
+} from "@/lib/story";
 import { AddonList, extraAddons, type AddonMedia } from "./AddonList";
 import { FormatCards, LineCards, LineChecklist, STYLE_LOOK, StyleCards } from "./Choices";
 import { StyleShowcase } from "./StyleShowcase";
@@ -62,11 +73,11 @@ export function StoryProduct({
 
   const choices = styleChoices(catalog, line, theme);
   const [pickedStyle, setPickedStyle] = useState<string | null>(null);
-  // default: the style of the real pages shown above, else the style both lines sell (the house style)
+  // default: the style of the real pages (or the story's own art) shown above, else the house style
   const usable = choices.filter((c) => c.available);
   const style = (
     usable.find((c) => c.style.slug === pickedStyle) ??
-    usable.find((c) => c.style.slug === examples[0]?.style) ??
+    usable.find((c) => c.style.slug === (examples[0]?.style ?? themeArt(theme.slug)?.style)) ??
     usable.find((c) => c.style.lines.includes("classic") && c.style.lines.includes("magic")) ??
     usable[0]
   )?.style;
@@ -96,7 +107,8 @@ export function StoryProduct({
 
   const storyPages = (example?.pages ?? []).filter((p) => p.beat > 0 && p.layout !== "spread");
   const linePages = { classic: storyPages[0], magic: storyPages[3] ?? storyPages[1] };
-  const exampleStyle = catalog?.styles.find((s) => s.slug === example?.style);
+  const picture = example ? null : themeArt(theme.slug); // the story's own cover art before any example
+  const exampleStyle = catalog?.styles.find((s) => s.slug === (example?.style ?? picture?.style));
   const styleName = (s: { name_ar: string; name_en: string } | undefined) =>
     s ? (locale === "ar" ? s.name_ar : s.name_en) : "";
   const occasion = theme.occasions[0];
@@ -108,6 +120,9 @@ export function StoryProduct({
     const formats = a.requires.format; // e.g. the hardcover upgrade only for a softcover
     return !formats || !variant?.options.format || formats.includes(variant.options.format);
   });
+  // what this story is sold as: «قمرة كلاسيك» in the styles with a live template, «قمرة سحري» in every style
+  const classicIn = classicStylesFor(catalog, theme);
+  const classicSlugs = new Set(classicIn.map((s) => s.slug));
   const lineNames = Object.fromEntries(
     offers.map((o) => [o.line, locale === "ar" ? o.product.name_ar : o.product.name_en]),
   );
@@ -134,6 +149,7 @@ export function StoryProduct({
           <CoverArt
             example={example}
             art={theme.art}
+            picture={picture}
             titleName={titleName}
             titleRest={titleRest}
             alt={example ? t("coverAlt", { title: example.title }) : t("placeholderCoverAlt")}
@@ -162,7 +178,7 @@ export function StoryProduct({
             </svg>
           </Link>
           <span className="absolute start-4 bottom-9 rounded-full bg-night-950/80 px-3 py-1.5 text-caption font-semibold text-paper lg:bottom-4">
-            {example
+            {example || picture
               ? t("realExample", { style: styleName(exampleStyle) })
               : t("styleChip", { style: styleName(style) })}
           </span>
@@ -217,6 +233,20 @@ export function StoryProduct({
           <section id="steps" className="flex scroll-mt-24 flex-col gap-2.5">
             <h2 className="text-[20px] text-night-900">{t("step1")}</h2>
             <LineCards offers={offers} value={line} onChange={setPickedLine} currency={currency} pages={linePages} />
+            {catalog && (
+              <p className="flex items-start gap-2 rounded-[14px] bg-night-100 px-3.5 py-2.5 text-small leading-[1.6] text-night-900">
+                <span aria-hidden="true" className="pt-0.5 text-amber-700">
+                  ✦
+                </span>
+                <span>
+                  {classicIn.length
+                    ? t("availability.classicIn", {
+                        styles: classicIn.map((s) => styleName(s)).join(locale === "ar" ? "، " : ", "),
+                      })
+                    : t("availability.magicOnly")}
+                </span>
+              </p>
+            )}
             <LineChecklist line={line} catalog={catalog} />
           </section>
 
@@ -242,7 +272,8 @@ export function StoryProduct({
                   styles={choices.map((c) => ({
                     slug: c.style.slug,
                     name: locale === "ar" ? c.style.name_ar : c.style.name_en,
-                    lines: c.style.lines,
+                    // for this story: «كلاسيك» only where it has a live template in this style
+                    lines: c.style.lines.filter((l) => l !== "classic" || classicSlugs.has(c.style.slug)),
                   }))}
                   value={style.slug}
                   theme={theme.slug}

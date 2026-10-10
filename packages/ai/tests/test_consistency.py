@@ -32,7 +32,14 @@ from qamra_ai.text.base import ImagePart
 
 GIRL = Child(name="ليان", gender="f", age=5, hijab=True)
 BOY = Child(name="يوسف", gender="m", age=5)
-THEMES_WITH_CAST = ("graduation", "first-day", "new-sibling")
+# every story on sale with recurring side characters (the custom story's base has none)
+THEMES_WITH_CAST = tuple(
+    sorted(
+        p.parent.name
+        for p in (CONTENT_DIR / "themes").glob("*/theme.yaml")
+        if p.parent.name != "custom" and load_theme(p.parent.name).cast
+    )
+)
 
 
 def _ctx(theme: Theme, child: Child = GIRL, *, style: str = "watercolor", **kw: object) -> BookContext:

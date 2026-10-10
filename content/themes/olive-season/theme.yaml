@@ -1,5 +1,5 @@
 slug: olive-season
-version: 1
+version: 2
 title_ar: "{name} في موسم الزيتون"
 title_en: "{name} and the Olive Season"
 # Cover lettering (Addendum 11 §2.3): gold-magic, candy-bright, night-glow, nature-fresh, heritage-tatreez
@@ -7,22 +7,407 @@ cover_title_style: heritage-tatreez
 age_range: [3, 6]
 is_b2b: false
 active: true
-companion_slot: true
 
-# Catalog entry from the design canvas. The story itself is not written yet (coming soon).
+# One harvest day, dawn to sunset: the grove, the olive press, and a sapling planted at home. Grandpa is
+# «سِيدِي» / "Sido" throughout (as grandma is «سِتِّي» / "Teta"); his grandfather planted the old tree.
 catalog:
-  status: coming_soon
+  status: available
   name_ar: موسم الزيتون
   name_en: Olive Season
   tagline_ar: يوم مع الجدّ بين أشجار الزيتون، وسرّ الحبّة الذهبية.
   tagline_en: A day with Grandpa among the olive trees, and the secret of the golden olive.
   description_ar: >-
-    في صباح موسم القطاف يحمل بطلنا سلّته الصغيرة ويمشي خلف جدّه بين الأشجار، فيكتشف أن لكل حبّة زيتون حكاية.
+    في صباح موسم القطاف، يحمل بطلنا سلّته الصغيرة ويمشي خلف جدّه بين الأشجار، فيكتشف أن لكل حبّة زيتون حكاية.
   description_en: >-
     On a harvest morning our hero carries a little basket behind Grandpa among the trees, and discovers every olive has a story.
   occasions: [values]
-  values_ar: [حب الأرض, الصبر, احترام الكبار]
+  values_ar: [حبّ الأرض, الصبر, احترام الكبار]
   values_en: [Love of the land, Patience, Respect for elders]
   rank: 50
-  planned_pages: 20
   art: {scene: garden, outfit: "#5B6FC0", skin: "#C98F63", hair_style: curly, pose: front}
+  peek:
+    - {scene: garden, outfit: "#5B6FC0", skin: "#C98F63", hair_style: curly, pose: wave, kid_scale: 0.6}
+    - {scene: garden, outfit: "#5B6FC0", skin: "#C98F63", hair_style: curly, pose: tilt, kid_scale: 0.55, companion: blob}
+    - {scene: garden, outfit: "#5B6FC0", skin: "#C98F63", hair_style: curly, pose: front, kid_scale: 0.5}
+  sample_child: {name_ar: جنى, name_en: Jana, gender: f}
+
+companion_slot: true
+default_companion:
+  name_ar: قَمّور
+  name_en: Qamour
+  id: qamour  # shared sheet images: content/cast/qamour-<style>.png
+  # Locked design (Addendum 11 §4.2): always this plump crescent, never a ball. Same text as the sheets in
+  # docs/image-prompts.md (C1, C2, C7).
+  description_en: >-
+    a tiny friendly moon creature: a soft, plump crescent-moon body (a thick C shape opening to the
+    right), pale honey-gold, softly glowing from inside, about the size of a house cat. Its face sits on
+    the thick middle of the crescent: two small shiny black dot eyes, a tiny happy smile, round rosy
+    cheeks, and a small five-pointed star-shaped golden freckle on its left cheek. Two stubby little
+    arms, no legs. It floats a few centimeters above the ground with a faint trail of golden sparkles.
+    The crescent shape never changes
+  image: default-companion.png
+
+# Template syntax: {name}, {companion}; gender variants {masculine/feminine}. See first-day for layouts and
+# the name cases ({name:acc}, {name:gen}).
+# Safety (house style): the hero never climbs the ladder (adults pick the high branches), stays well away
+# from the tea fire, and stands behind the press's low rail holding Sido's hand.
+locations:
+  home: >-
+    the family's old limestone house at the edge of the village: an arched wooden front door painted
+    pale blue, a small front garden of red earth inside a low dry-stone wall, a grapevine pergola with
+    autumn-yellow leaves, clay pots of basil and geraniums, and beyond the wall, terraced hills covered
+    with olive trees
+  path: >-
+    a narrow earth path climbing a terraced hillside: low dry-stone terrace walls on both sides,
+    silvery-green olive trees on every terrace, tufts of wild thyme and small white autumn wildflowers
+    along the edges, and a wide soft sky over the hills
+  grove: >-
+    the family's olive grove on a terraced hillside: broad terraces of red-brown earth held by low
+    dry-stone walls, rows of silvery-green olive trees heavy with green and dark-purple olives, woven
+    baskets, metal buckets and plain burlap sacks, and far away, soft hills with small limestone villages
+  old_tree: >-
+    the oldest olive tree of the family grove: a huge ancient trunk, gnarled and twisted, with deep
+    hollows and silvery bark, a wide crown of silvery-green leaves full of olives, standing on a broad
+    terrace beside a low dry-stone wall, with younger olive trees and terraced hills behind it
+  press: >-
+    the village olive press: a vaulted limestone hall with stone arches and warm hanging lamps, a huge
+    round millstone standing in a wide stone basin, stacks of round woven mats, full plain burlap sacks
+    of olives waiting in a row along the wall, and a wide spout pouring fresh golden-green oil into a
+    large copper basin behind a low wooden rail. Nothing in the hall has writing: no signs, labels or
+    printed sacks
+
+outfits:
+  day:
+    - key: red_tatreez
+      en: >-
+        a cherry-red knitted sweater with a thin cream tatreez cross-stitch band across the chest,
+        brown corduroy trousers and sturdy brown ankle boots
+      en_f: >-
+        a cherry-red knitted sweater with a thin cream tatreez cross-stitch band across the chest, a
+        long denim-blue skirt over dark leggings, and sturdy brown ankle boots
+      hijab_en: a soft cream hijab
+    - key: teal
+      en: >-
+        a deep-teal hooded sweater with a small gold olive-leaf patch, beige trousers and sturdy brown
+        ankle boots
+      en_f: >-
+        a deep-teal long-sleeved dress with a small gold olive-leaf patch over beige leggings, and
+        sturdy brown ankle boots
+      hijab_en: a soft mustard-yellow hijab
+
+# Recurring side characters (Addendum 11 §4.3): one locked look per book. Scenes name them in `others`
+# as {id}; sheet images: cast/<id>-<style>.png here, or the shared content/cast/<id>-<style>.png.
+# The same id has the same description in every theme (tests check it). Grandpa is the sheet drawn from
+# docs/image-prompts.md C14/C15 (content/cast/grandpa-<style>.jpg).
+cast:
+  - id: mom
+    role: the mother
+    description_en: >-
+      a woman in her early thirties, warm light-olive skin, kind almond-shaped brown eyes, a
+      dusty-rose hijab, a long navy cardigan over a cream ankle-length dress, comfortable flat shoes
+  - id: dad
+    role: the father
+    description_en: >-
+      a man in his mid-thirties, warm olive skin, short black hair, a short neat black beard,
+      warm brown eyes and laugh lines, a light-blue button-up shirt with the sleeves rolled up, beige
+      trousers, brown leather shoes, a simple wristwatch
+  - id: grandma
+    role: the grandmother
+    description_en: >-
+      a woman in her late sixties with gentle wrinkles and a warm smile, a white embroidered
+      headscarf, a traditional black Palestinian thobe with red cross-stitch tatreez on the chest panel
+      and sleeves, a string of olive-wood prayer beads in her hand
+  - id: grandpa
+    role: the grandfather
+    description_en: >-
+      a man in his late sixties, a short white beard and grey mustache, kind eyes behind thin round
+      glasses, a white-and-black checkered keffiyeh draped over his shoulders, a brown wool vest over a
+      white shirt, dark trousers, a wooden walking cane
+
+blurb_ar: "سلّةٌ صغيرة، وشجرةُ زيتونٍ عجوز زرعها جدُّ الجدّ، وسرٌّ ذهبيّ لا يعرفه إلّا الصبور. حكاية {name:gen} مع سِيدي في موسم الزيتون."
+blurb_en: "A little basket, an ancient olive tree planted by Sido's own grandfather, and a golden secret only the patient discover. This is {name}'s olive season with Sido."
+
+for_parents:
+  lesson_ar: >-
+    شجرةُ الزيتون تعلّمنا الصبر: نعتني بها سنين، ثمّ تعطينا ذهبَها. {يتعلّمُ/تتعلّمُ} {name} في موسم
+    القطاف أنّ كلّ حبّةٍ صغيرة مهمّة، وأنّ الأرضَ والكبارَ يستحقّون منّا الحبّ والاحترام.
+  lesson_en: >-
+    The olive tree teaches patience: we care for it for years, and then it gives us its gold. At harvest
+    time, {name} learns that every little olive counts, and that the land and our elders deserve our love
+    and respect.
+  questions_ar:
+    - "ماذا {تفعلُ/تفعلين} عندما يطول الانتظار؟"
+    - "ما الشيءُ الذي {تحبُّ/تحبّين} أن {تتعلّمَه/تتعلّميه} من سِيدي أو ستّي؟"
+  questions_en:
+    - "What can you do when waiting feels long?"
+    - "What would you like to learn from Sido or Teta?"
+
+cover:
+  scene: >-
+    A heroic, cinematic moment in warm golden autumn light. The hero stands proudly on a sunlit stone
+    terrace beside the huge ancient olive tree, holding the little woven basket brimming with glossy
+    green and purple olives up high, beaming; Sido stands a step behind, leaning on his cane and
+    smiling proudly. The old tree's gnarled trunk and lower branches frame one side, a few silvery
+    leaves drift in the air, and terraced olive hills glow in the distance. The top of the picture stays
+    open, soft golden sky.
+  location: old_tree
+  time: afternoon
+  others: "{grandpa}"
+  others_count: 1
+  companion_action: floats beside the basket, holding up one shining olive like a treasure
+
+pages:
+  - index: 1
+    layout: full
+    text_pos: top
+    location: home
+    time: dawn
+    beat: harvest morning
+    scene: >-
+      At the pale-blue front door at dawn, the hero stands eager and bright-eyed, holding a small woven
+      straw basket with both hands. Sido waits at the garden gate, leaning on his wooden cane and smiling
+      warmly; behind them the terraced olive hills glow pink and gold.
+    others: "{grandpa}"
+    others_count: 1
+    companion_action: peeks sleepily out of the little basket, rubbing its eyes
+    text_ar: "جَاءَ مَوْسِمُ الزَّيْتُونِ! مَعَ أَوَّلِ ضَوْءٍ، {حَمَلَ/حَمَلَتْ} {name} سَلَّةً صَغِيرَةً، وَنَادَى سِيدِي: «هَيَّا يَا {name}، الزَّيْتُونُ يَنْتَظِرُنَا!»"
+    text_en: "Olive season! At first light, {name} grabbed a little basket. \"Come on,\" called Sido, \"the olives are waiting!\""
+  - index: 2
+    layout: split
+    location: path
+    time: morning
+    beat: behind Sido
+    scene: >-
+      The hero walks right behind Sido up the narrow terraced path, copying his slow, careful steps,
+      the little straw basket on one arm. Sido taps the path with his wooden cane. Long soft morning
+      shadows fall across the low stone terrace walls.
+    others: "{grandpa}"
+    others_count: 1
+    companion_action: rides in the little basket, looking around with wide, curious eyes
+    text_ar: "{مَشَى/مَشَتْ} {name} خَلْفَ سِيدِي فِي الطَّرِيقِ إِلَى كَرْمِ الزَّيْتُونِ. عَصَا سِيدِي تَقُولُ: طَقْ، طَقْ… وَخُطُوَاتُ {name:gen} الصَّغِيرَةُ تَقُولُ: تِكْ، تِكْ!"
+    text_en: "{name} walked behind Sido on the path to the olive grove. Sido's cane went tap, tap... and {name}'s little feet went pitter-pat!"
+  - index: 3
+    layout: spread
+    text_pos: top
+    location: grove
+    time: morning
+    beat: spreading the cloths
+    scene: >-
+      A wide panorama of the terraced grove in golden morning light. The family spreads big cream cloth
+      sheets on the red earth under the olive trees: on the left, Mama and Baba shake out a large sheet
+      between them while Sitti smooths its edge; on the right, Sido points with his cane to the next
+      tree, and the hero proudly pulls one corner of a sheet tight with both hands.
+    others: "{mom}, {dad}, {grandma} and {grandpa}"
+    others_count: 4
+    companion_action: holds down another corner of the sheet so it does not flap
+    text_ar: "وَفِي الْكَرْمِ، فَرَشَتِ الْعَائِلَةُ الْمَفَارِشَ الْكَبِيرَةَ تَحْتَ الْأَشْجَارِ. {وَشَدَّ/وَشَدَّتْ} {name} طَرَفَ مِفْرَشٍ {وَقَالَ/وَقَالَتْ}: «لَنْ تَضِيعَ حَبَّةٌ وَاحِدَةٌ!»"
+    text_en: "The family spread big sheets under the olive trees. {name} pulled a corner tight: \"Not one olive will get lost!\""
+  - index: 4
+    layout: full
+    text_pos: side
+    location: old_tree
+    time: morning
+    beat: the old tree's secret
+    scene: >-
+      Under the oldest olive tree, Sido rests one hand on its huge gnarled trunk, smiling as if keeping
+      a secret. The hero stands close beside him, looking up at the wide silvery crown full of olives,
+      mouth open in wonder.
+    others: "{grandpa}"
+    others_count: 1
+    companion_action: floats up to peek into a hollow of the old trunk
+    text_ar: "قَالَ سِيدِي: «هَذِهِ الشَّجَرَةُ زَرَعَهَا جَدِّي، وَانْتَظَرَهَا سِنِينَ طَوِيلَةً. وَفِيهَا سِرٌّ ذَهَبِيٌّ لَا يَعْرِفُهُ إِلَّا الصَّبُورُ.» {سَأَلَ/سَأَلَتْ} {name} بِدَهْشَةٍ: «أَيُّ سِرٍّ يَا سِيدِي؟»"
+    text_en: "Sido said: \"My grandfather planted this tree. It keeps a golden secret that only the patient discover.\" \"What secret?\" asked {name}."
+  - index: 5
+    layout: full
+    text_pos: bottom
+    location: grove
+    time: morning
+    beat: one by one
+    scene: >-
+      On tiptoe under a low branch, the hero picks glossy green and purple olives by hand, one at a
+      time, and drops them into the little basket. Sido picks from the same branch beside the hero,
+      smiling. In the background Baba stands on a short wooden ladder, picking the high branches by
+      hand. A cream cloth sheet covers the ground under the tree.
+    others: "{grandpa} beside the hero, and {dad} on a short wooden ladder in the background"
+    others_count: 2
+    companion_action: catches one olive in its stubby arms and drops it into the basket
+    text_ar: "ابْتَسَمَ سِيدِي وَقَالَ: «{سَتَعْرِفُهُ/سَتَعْرِفِينَهُ} فِي آخِرِ النَّهَارِ.» ثُمَّ {بَدَأَ/بَدَأَتْ} {name} {يَقْطِفُ/تَقْطِفُ} الزَّيْتُونَ مِنَ الْأَغْصَانِ الْقَرِيبَةِ: حَبَّةً… حَبَّةً… حَبَّةً…"
+    text_en: "Sido smiled: \"You'll see at the end of the day.\" So {name} picked olives from the low branches: one... by one... by one..."
+  - index: 6
+    layout: full
+    text_pos: top
+    location: old_tree
+    time: morning
+    beat: a little sigh
+    scene: >-
+      The hero sits on a big flat stone at the foot of the old olive tree, the little basket only half
+      full on the lap, looking up at the huge gnarled trunk with a thoughtful, newly determined little
+      smile.
+    companion_action: peers into the half-full basket and scratches its head
+    text_ar: "{قَالَ/قَالَتْ} {name} {مُتَنَهِّدًا/مُتَنَهِّدَةً}: «السَّلَّةُ تَمْتَلِئُ بِبُطْءٍ!» ثُمَّ {نَظَرَ/نَظَرَتْ} إِلَى الشَّجَرَةِ الْعَجُوزِ، {وَتَذَكَّرَ/وَتَذَكَّرَتْ} صَبْرَ جَدِّ سِيدِي، {فَقَالَ/فَقَالَتْ}: «سَأَصْبِرُ أَنَا أَيْضًا!»"
+    text_en: "\"So slow!\" sighed {name}. Then {name} looked at the old tree. Sido's grandfather had waited years for it! \"I'll be patient too!\""
+  - index: 7
+    layout: full
+    text_pos: bottom
+    location: grove
+    time: morning
+    beat: the hiding olives
+    scene: >-
+      The hero kneels at the foot of a low dry-stone terrace wall, happily picking up stray olives that
+      rolled off the cloth and hid between the stones and dry leaves, and dropping them one by one into
+      the little basket.
+    companion_action: points at an olive hidden between two stones, its soft glow lighting the shady gap
+    text_ar: "{وَرَاحَ/وَرَاحَتْ} {name} {يَجْمَعُ/تَجْمَعُ} الزَّيْتُونَ، حَتَّى الْحَبَّاتِ الَّتِي هَرَبَتْ مِنَ الْمِفْرَشِ وَاخْتَبَأَتْ بَيْنَ الْحِجَارَةِ. وَكَانَ {companion} يُشِيرُ وَيَقُولُ: «هُنَا حَبَّةٌ… وَهُنَاكَ حَبَّةٌ!»"
+    text_en: "{name} gathered olives again, even the runaway ones hiding between the stones. {companion} pointed: \"One here... and one there!\""
+  - index: 8
+    layout: spread
+    text_pos: top
+    location: old_tree
+    time: noon
+    beat: lunch under the tree
+    scene: >-
+      Lunch in the shade of the old olive tree. The family sits on a cloth spread on the earth around
+      round taboon bread, a bowl of olive oil, a bowl of za'atar, olives and tomatoes. On the left, Sitti
+      pours tea from a blackened teapot into small glasses, a small fire of olive twigs smoldering in a
+      ring of stones behind her, well away from the hero, while Mama and Baba smile. On the right, the
+      hero kneels and offers Sido the first piece of bread dipped in oil and za'atar with both hands, and
+      Sido places a hand on his heart, touched.
+    others: "{grandma}, {mom}, {dad} and {grandpa}"
+    others_count: 4
+    companion_action: sits on the edge of the cloth, nibbling a tiny piece of bread with za'atar
+    text_ar: "الْغَدَاءُ تَحْتَ الشَّجَرَةِ: خُبْزُ طَابُونٍ، وَزَيْتٌ وَزَعْتَرٌ، وَشَايٌ عَلَى النَّارِ. {وَقَدَّمَ/وَقَدَّمَتْ} {name} أَوَّلَ لُقْمَةٍ لِسِيدِي، فَقَالَ: «سَلِمَتْ {يَدَاكَ/يَدَاكِ}!»"
+    text_en: "Lunch under the tree: taboon bread, oil and za'atar, and tea on the fire. {name} served Sido first. \"Bless your hands!\" said Sido."
+  - index: 9
+    layout: full
+    text_pos: side
+    location: grove
+    time: afternoon
+    beat: green rain
+    scene: >-
+      Sido gently guides the hero's hands to comb a low branch heavy with olives, the way you comb
+      hair; a shower of green and purple olives rains down onto the cream cloth sheet below. The hero
+      laughs with delight.
+    others: "{grandpa}"
+    others_count: 1
+    companion_action: holds out its stubby arms to catch the falling olives, laughing
+    text_ar: "بَعْدَ الْغَدَاءِ، عَلَّمَ سِيدِي {name:acc} كَيْفَ {يُمَشِّطُ/تُمَشِّطُ} الْغُصْنَ بِلُطْفٍ، كَمَا نُمَشِّطُ الشَّعْرَ. فَتَسَاقَطَ الزَّيْتُونُ عَلَى الْمِفْرَشِ مِثْلَ مَطَرٍ أَخْضَرَ، {وَضَحِكَ/وَضَحِكَتْ} {name} فَرَحًا!"
+    text_en: "Sido showed {name} how to comb a branch gently, like combing hair. The olives tumbled down like green rain, and {name} laughed!"
+  - index: 10
+    layout: split
+    location: grove
+    time: afternoon
+    beat: sorting with Teta
+    scene: >-
+      Sitti and the hero sit on the cloth sheet beside a heap of olives, picking out leaves and small
+      twigs. The hero pours a double handful of clean olives into a plain burlap sack, concentrating
+      hard, and Sitti smiles at the hero. Warm, low afternoon sun.
+    others: "{grandma}"
+    others_count: 1
+    companion_action: carries a single olive leaf over its head like a little umbrella
+    text_ar: "ثُمَّ {سَاعَدَ/سَاعَدَتْ} {name} سِتِّي فِي تَنْقِيَةِ الزَّيْتُونِ مِنَ الْأَوْرَاقِ: الْحَبَّاتُ إِلَى الْكِيسِ، وَالْأَوْرَاقُ إِلَى الْأَرْضِ. قَالَتْ سِتِّي: «{أَحْسَنْتَ/أَحْسَنْتِ} يَا {name}!»"
+    text_en: "Then {name} helped Teta sort the olives from the leaves: olives into the sack, leaves back to the earth. Teta said: \"Well done, {name}!\""
+  - index: 11
+    layout: full
+    text_pos: bottom
+    no_child: true
+    location: press
+    time: afternoon
+    beat: the olive press
+    scene: >-
+      The olive press seen from its wide arched doorway in the late afternoon: the vaulted limestone
+      hall glowing with warm lamps, the huge round millstone turning in its stone basin, stacks of round
+      woven mats, full sacks of olives waiting in a long row, and the wide spout pouring golden-green oil
+      into the copper basin. Only a few tiny workers far in the back.
+    text_ar: "فِي آخِرِ النَّهَارِ، وَصَلَتْ أَكْيَاسُ الزَّيْتُونِ إِلَى الْمَعْصَرَةِ. هُنَا يَدُورُ الْحَجَرُ الْكَبِيرُ وَيَدُورُ، وَتَفُوحُ رَائِحَةُ الزَّيْتِ الطَّيِّبَةُ فِي كُلِّ مَكَانٍ."
+    text_en: "At day's end, the sacks reached the olive press, where the big stone turned round and round and everything smelled of fresh oil."
+  - index: 12
+    layout: full
+    text_pos: top
+    location: press
+    time: afternoon
+    beat: waiting our turn
+    scene: >-
+      Inside the olive press, the hero sits beside Sido on a low wooden bench against the stone wall,
+      next to the family's full sacks, calmly waiting their turn and counting the long row of sacks on
+      small fingers with a patient smile. Sido looks down at the hero, proud.
+    others: "{grandpa}"
+    others_count: 1
+    companion_action: sits on top of a sack, counting along on its stubby fingers
+    text_ar: "كَانَ الِانْتِظَارُ طَوِيلًا. {جَلَسَ/جَلَسَتْ} {name} بِجَانِبِ سِيدِي {يَعُدُّ/تَعُدُّ} الْأَكْيَاسَ بِهُدُوءٍ: وَاحِدٌ، اثْنَانِ، ثَلَاثَةٌ… وَلَمْ {يَتَنَهَّدْ/تَتَنَهَّدْ} هَذِهِ الْمَرَّةَ! فَابْتَسَمَ سِيدِي {فَخُورًا بِهِ/فَخُورًا بِهَا}."
+    text_en: "The wait was long. {name} sat by Sido, quietly counting sacks: one, two, three... Not one sigh this time! Sido smiled proudly."
+  - index: 13
+    layout: spread
+    text_pos: top
+    location: press
+    time: afternoon
+    beat: the golden secret
+    scene: >-
+      The big moment, in warm golden lamplight. On the left, a shining stream of fresh golden-green oil
+      pours from the wide spout into the copper basin, glowing like liquid sunlight. On the right, the
+      hero holds Sido's hand behind the low wooden rail, leaning forward with wide, amazed eyes and an
+      open smile, the golden glow lighting both faces; Mama, Baba and Sitti watch and smile behind them.
+    others: "{grandpa}, {mom}, {dad} and {grandma}"
+    others_count: 4
+    companion_action: glows brightly with joy beside the hero, its light mixing with the shine of the oil
+    text_ar: "وَأَخِيرًا، سَالَ الزَّيْتُ الْجَدِيدُ يَلْمَعُ كَالذَّهَبِ! {فَهِمَ/فَهِمَتْ} {name} {وَصَاحَ/وَصَاحَتْ}: «هَذَا هُوَ السِّرُّ! كُلُّ حَبَّةٍ قَطَفْنَاهَا بِصَبْرٍ صَارَتْ ذَهَبًا!»"
+    text_en: "At last, the new oil poured out, shining like gold! {name} understood: \"That's the secret! Patience turned our olives into gold!\""
+  - index: 14
+    layout: full
+    text_pos: bottom
+    location: press
+    time: afternoon
+    beat: the taste of patience
+    scene: >-
+      Sitting on the bench, the hero dips a piece of warm round taboon bread into a small clay bowl of
+      fresh golden-green oil and takes a bite, eyes closed with delight. Sido holds the little bowl and
+      laughs warmly.
+    others: "{grandpa}"
+    others_count: 1
+    companion_action: tastes a tiny crumb of bread and closes its eyes with delight
+    text_ar: "{غَمَسَ/غَمَسَتْ} {name} خُبْزًا سَاخِنًا فِي الزَّيْتِ الْجَدِيدِ {وَتَذَوَّقَهُ قَائِلًا/وَتَذَوَّقَتْهُ قَائِلَةً}: «مَا أَطْيَبَهُ!» فَضَحِكَ سِيدِي وَقَالَ: «هَذَا طَعْمُ الصَّبْرِ يَا {name}.»"
+    text_en: "{name} dipped warm bread into the new oil: \"Mmm, delicious!\" Sido laughed: \"That's the taste of patience, {name}.\""
+  - index: 15
+    layout: full
+    text_pos: top
+    location: home
+    time: sunset
+    beat: a little olive tree
+    scene: >-
+      In the small front garden at sunset, Sido, leaning on his cane, hands the hero a young olive
+      sapling in a plain clay pot. The hero holds it carefully with both hands and points to a patch of
+      red earth by the low stone wall where the golden light falls.
+    others: "{grandpa}"
+    others_count: 1
+    companion_action: peeks at the sapling's tiny silvery leaves, amazed
+    text_ar: "عِنْدَ الْغُرُوبِ، فِي حَدِيقَةِ الْبَيْتِ، أَخْرَجَ سِيدِي شَجَرَةَ زَيْتُونٍ صَغِيرَةً وَقَالَ: «أَجْدَادُنَا زَرَعُوا فَأَكَلْنَا، وَنَحْنُ نَزْرَعُ لِيَأْكُلَ أَحْفَادُنَا.» {فَاخْتَارَ/فَاخْتَارَتْ} {name} لَهَا مَكَانًا تَصِلُهُ الشَّمْسُ."
+    text_en: "At sunset, Sido brought out a little olive tree: \"Our grandparents planted for us. Now it's our turn.\" {name} chose a sunny spot."
+  - index: 16
+    layout: split
+    location: home
+    time: sunset
+    beat: planting
+    scene: >-
+      The hero kneels in the red earth of the garden, pressing the soil gently around the newly planted
+      little olive sapling with both hands, a small trowel beside the hole. Sido, bending over on his
+      cane, pours water from a small watering can at its foot. The terraced olive hills glow behind them.
+    others: "{grandpa}"
+    others_count: 1
+    companion_action: pats the soil down with its stubby arms, helping
+    text_ar: "{حَفَرَ/حَفَرَتْ} {name} حُفْرَةً صَغِيرَةً، {وَزَرَعَ/وَزَرَعَتِ} الشَّجَرَةَ مَعَ سِيدِي، {وَسَقَاهَا/وَسَقَتْهَا} الْمَاءَ. ثُمَّ {هَمَسَ/هَمَسَتْ} لَهَا: «سَأَنْتَظِرُكِ بِصَبْرٍ يَا شَجَرَتِي الصَّغِيرَةَ.»"
+    text_en: "{name} dug a little hole, planted the tree with Sido and watered it. \"I'll wait for you patiently, little tree,\" {name} whispered."
+  - index: 17
+    layout: full
+    text_pos: top
+    location: home
+    time: sunset
+    beat: the golden secret goes on
+    scene: >-
+      In the last golden light, the hero stands hand in hand with Sido beside the tiny new olive tree at
+      the garden wall, both looking out at the terraced olive hills glowing gold and pink; the hero's
+      face is bright with a big dream. Behind them, at the pale-blue front door, Mama, Baba and Sitti
+      smile.
+    others: "{grandpa}, with {mom}, {dad} and {grandma} smiling at the front door behind them"
+    others_count: 4
+    companion_action: floats above the little tree, glowing like the first evening star
+    text_ar: "وَمَعَ آخِرِ ضَوْءٍ، {أَمْسَكَ/أَمْسَكَتْ} {name} بِيَدِ سِيدِي {وَقَالَ/وَقَالَتْ}: «عِنْدَمَا أَكْبَرُ، سَأَحْكِي لِأَحْفَادِي السِّرَّ الذَّهَبِيَّ!»"
+    text_en: "In the last light, {name} took Sido's hand: \"When I grow up, I'll tell my grandchildren the golden secret!\""

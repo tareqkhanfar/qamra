@@ -128,6 +128,10 @@ def preflight(
                 if not ch["text"].strip():
                     continue
                 x0, x1, top, bottom = float(ch["x0"]), float(ch["x1"]), float(ch["top"]), float(ch["bottom"])
+                if x1 - x0 < 0.01 * float(ch.get("size") or 1):
+                    # a zero-advance mark (tashkeel, Aref Ruqaa's dots) sits on its letter, which is checked
+                    # itself; its font box (a whole em up from a raised origin) says nothing about its ink
+                    continue
                 if x0 < b or top < b or x1 > pw - b or bottom > ph - b:
                     outside_trim.append(i)
                 elif x0 < margin or top < margin or x1 > pw - margin or bottom > ph - margin:

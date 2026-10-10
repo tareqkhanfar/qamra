@@ -1,5 +1,5 @@
 slug: moon-trip
-version: 1
+version: 2
 title_ar: "{name} في رحلة إلى القمر"
 title_en: "{name}'s Trip to the Moon"
 # Cover lettering (Addendum 11 §2.3): gold-magic, candy-bright, night-glow, nature-fresh, heritage-tatreez
@@ -7,22 +7,432 @@ cover_title_style: night-glow
 age_range: [4, 7]
 is_b2b: false
 active: true
-companion_slot: true
 
-# Catalog entry from the design canvas. The story itself is not written yet (coming soon).
+# The trip is a dream: the hero falls asleep beside the home-made rocket and wakes up in bed. The friend
+# is "the little planet" (الكوكب الصغير) throughout, a masculine noun in Arabic; it has no name.
 catalog:
-  status: coming_soon
+  status: available
   name_ar: رحلة إلى القمر
   name_en: A Trip to the Moon
   tagline_ar: صاروخ من ورق يأخذ بطلنا إلى كوكب ينتظر صديقًا.
   tagline_en: A paper rocket takes our hero to a planet waiting for a friend.
   description_ar: >-
-    يصنع بطلنا صاروخًا من ورق الجرائد، فيطير به ليلًا إلى كوكب صغير وحيد. هناك يتعلّم أن الصداقة تبدأ بكلمة لطيفة.
+    يصنع بطلنا صاروخًا من ورق الجرائد، فيطير به ليلًا إلى القمر، ويجد هناك كوكبًا صغيرًا وحيدًا، ويتعلّم أن الصداقة تبدأ بكلمة لطيفة.
   description_en: >-
-    Our hero builds a rocket from newspaper and flies at night to a small, lonely planet, and learns that friendship starts with one kind word.
+    Our hero builds a rocket from newspaper and flies at night to the moon, finds a small, lonely planet there, and learns that friendship starts with one kind word.
   occasions: [adventure]
   values_ar: [الشجاعة, الصداقة, الفضول العلمي]
   values_en: [Courage, Friendship, Scientific curiosity]
   rank: 40
-  planned_pages: 24
   art: {scene: space, outfit: "#A99BD6", skin: "#E8B98F", hair_style: short, pose: wave}
+  peek:
+    - {scene: night, outfit: "#A99BD6", skin: "#E8B98F", hair_style: short, pose: front, kid_scale: 0.6}
+    - {scene: space, outfit: "#A99BD6", skin: "#E8B98F", hair_style: short, pose: wave, kid_scale: 0.55, companion: blob}
+    - {scene: space, outfit: "#A99BD6", skin: "#E8B98F", hair_style: short, pose: tilt, kid_scale: 0.5}
+  sample_child: {name_ar: آدم, name_en: Adam, gender: m}
+
+companion_slot: true
+default_companion:
+  name_ar: قَمّور
+  name_en: Qamour
+  id: qamour  # shared sheet images: content/cast/qamour-<style>.png
+  # Locked design (Addendum 11 §4.2): always this plump crescent, never a ball. Same text as the sheets in
+  # docs/image-prompts.md (C1, C2, C7).
+  description_en: >-
+    a tiny friendly moon creature: a soft, plump crescent-moon body (a thick C shape opening to the
+    right), pale honey-gold, softly glowing from inside, about the size of a house cat. Its face sits on
+    the thick middle of the crescent: two small shiny black dot eyes, a tiny happy smile, round rosy
+    cheeks, and a small five-pointed star-shaped golden freckle on its left cheek. Two stubby little
+    arms, no legs. It floats a few centimeters above the ground with a faint trail of golden sparkles.
+    The crescent shape never changes
+
+# Template syntax: {name}, {companion}; gender variants {masculine/feminine}. See first-day for layouts
+# and the name cases ({name:acc}, {name:gen}, «لِـ{companion:gen}»).
+# The rocket is a recurring prop, described the same way in every scene: a long cardboard box lying on
+# its side, painted deep blue with little golden stars, a pointed red nose cone of rolled newspaper, three
+# small red fins and an open top to sit in. In the dream (pages 7–16 and the cover) it is the same rocket,
+# shiny and real. Newspapers are never drawn with readable print.
+locations:
+  bedroom: >-
+    the hero's small bedroom in an old Palestinian limestone house: cream limestone walls, a tall
+    arched window with pale-blue wooden shutters that frames the sky above olive trees and flat
+    limestone rooftops, a low bed with a red-and-cream tatreez-embroidered blanket, a small woven rug
+    and a little brass lantern on a wall shelf
+  living_room: >-
+    the family living room of the limestone house: cream stone walls with a small arched niche, floor
+    cushions with tatreez-embroidered pillows along the wall, a low round wooden table pushed aside, a
+    patterned cement-tile floor and a big arched window looking out on olive trees
+  village: >-
+    the hero's hillside village seen from just above the rooftops: flat-roofed cream limestone houses
+    with small arched windows, a few old houses with little stone domes, olive trees on old stone
+    terraces, and soft rolling hills beyond
+  space: >-
+    deep space between the Earth and the moon: a velvety deep-indigo sky full of twinkling stars, with
+    soft violet and teal clouds of star dust
+  moon: >-
+    the surface of the moon: soft silver-grey dust, round craters big and small, smooth grey boulders
+    and low grey hills under a black sky full of stars, with the round blue-and-white Earth hanging
+    small in the sky
+
+outfits:
+  day:
+    - key: mustard
+      en: >-
+        a mustard-yellow sweater with a small navy star patch, navy trousers and soft house slippers
+      en_f: >-
+        a mustard-yellow long-sleeved dress with a small navy star patch over navy leggings and soft
+        house slippers
+      hijab_en: a soft white hijab
+    - key: teal
+      en: >-
+        a teal hoodie with a small gold moon patch, light-grey trousers and soft house slippers
+      en_f: >-
+        a teal pinafore dress over a cream long-sleeved top, light-grey leggings and soft house slippers
+      hijab_en: a soft white hijab
+  explorer:  # the dream trip and the cover; the helmet never hides the face
+    - key: orange_suit
+      en: >-
+        a little space-explorer suit: a sunny-orange zip-up jumpsuit with a round silver moon patch on
+        the chest, a silver belt and white boots, and a round space helmet that is a clear glass bubble
+        with a silver collar ring, the whole face clearly visible through it with no glare
+      en_f: >-
+        a little space-explorer suit: a loose, long-sleeved, ankle-length sunny-orange zip-up jumpsuit
+        with a round silver moon patch on the chest, a silver belt and white boots, and a round space
+        helmet that is a clear glass bubble with a silver collar ring, the whole face clearly visible
+        through it with no glare
+      hijab_en: a soft white hijab, neatly wrapped under the clear helmet
+    - key: white_suit
+      en: >-
+        a little space-explorer suit: a white zip-up jumpsuit with sky-blue stripes on the sleeves and a
+        round golden star patch on the chest, a sky-blue belt and sky-blue boots, and a round space
+        helmet that is a clear glass bubble with a silver collar ring, the whole face clearly visible
+        through it with no glare
+      en_f: >-
+        a little space-explorer suit: a loose, long-sleeved, ankle-length white zip-up jumpsuit with
+        sky-blue stripes on the sleeves and a round golden star patch on the chest, a sky-blue belt and
+        sky-blue boots, and a round space helmet that is a clear glass bubble with a silver collar ring,
+        the whole face clearly visible through it with no glare
+      hijab_en: a soft sky-blue hijab, neatly wrapped under the clear helmet
+  sleep:
+    - key: moons
+      en: light-blue pajamas with tiny golden moons
+      en_f: long light-blue pajamas with tiny golden moons
+      hijab_en: a soft white hijab
+
+# Recurring side characters (Addendum 11 §4.3): one locked look per book. Scenes name them in `others`
+# as {id}; sheet images: cast/<id>-<style>.png here, or the shared content/cast/<id>-<style>.png.
+# The same id has the same description in every theme (tests check it).
+cast:
+  - id: mom
+    role: the mother
+    description_en: >-
+      a woman in her early thirties, warm light-olive skin, kind almond-shaped brown eyes, a
+      dusty-rose hijab, a long navy cardigan over a cream ankle-length dress, comfortable flat shoes
+  - id: dad
+    role: the father
+    description_en: >-
+      a man in his mid-thirties, warm olive skin, short black hair, a short neat black beard,
+      warm brown eyes and laugh lines, a light-blue button-up shirt with the sleeves rolled up, beige
+      trousers, brown leather shoes, a simple wristwatch
+  - id: moon_planet
+    role: the little planet
+    description_en: >-
+      a tiny round planet creature, about the size of a big beach ball (a little smaller than the
+      hero), a smooth soft lavender-blue sphere with a few pale periwinkle crater spots like freckles,
+      and a thin tilted ring of tiny sparkling silver pebbles circling its middle like a scarf. Its face
+      is on the front of the sphere: two big round dark-brown eyes with a white shine, a small curved
+      smile and round pink cheeks. No arms, no legs, no hair, no clothes; it floats in the air. Its glow
+      changes with its mood (faint when sad, bright when happy), but its round shape, colors, ring and
+      face never change
+
+blurb_ar: "صاروخٌ من ورق الجرائد، وحلمٌ يطير فوق الزيتون، وكوكبٌ صغير ينتظر صديقًا. حكاية {name:gen} وكلمةٍ لطيفةٍ واحدة أضاءت السماء."
+blurb_en: "A rocket made of old newspapers, a dream that flies over the olive trees, and a little planet waiting for a friend. This is {name}'s trip to the moon, and the one kind word that lit up the sky."
+
+for_parents:
+  lesson_ar: >-
+    قد تبدأ الصداقةُ بكلمةٍ لطيفةٍ واحدة. في رحلةٍ إلى القمر، {يكتشفُ/تكتشفُ} {name} أنّ الشجاعةَ أن
+    نقتربَ ممّن يبدو وحيدًا، وأنّ الفضولَ يفتحُ لنا أبوابَ العلم والدهشة.
+  lesson_en: >-
+    Friendship can begin with a single kind word. On a dream trip to the moon, {name} discovers that
+    courage means stepping closer to someone who seems lonely, and that curiosity opens the door to
+    science and wonder.
+  questions_ar:
+    - "إذا {رأيتَ/رأيتِ} صديقًا يجلس وحيدًا، ما الكلمةُ اللطيفة التي {تقولُها/تقولينها} له؟"
+    - "لو {طِرْتَ/طِرْتِ} إلى القمر، ماذا {تحبُّ أن تكتشفَ/تحبّين أن تكتشفي} هناك؟"
+  questions_en:
+    - "If you saw a friend sitting alone, what kind word would you say?"
+    - "If you could fly to the moon, what would you like to discover there?"
+
+cover:
+  scene: >-
+    A cinematic, heroic flight through deep space. The hero rides the shiny dream rocket (a long
+    rocket painted deep blue with little golden stars, a pointed red nose cone, three small red fins and
+    an open top where the hero sits), leaning forward with one arm stretched out, pointing ahead, eyes
+    bright with excitement. A huge glowing silver moon fills the lower half of the picture ahead of
+    them, the small blue Earth glows far behind, and a curving trail of golden sparkles streams from
+    the rocket's tail. The top third of the picture is a calm deep-indigo sky with only a few faint
+    stars.
+  location: space
+  time: night
+  outfit: explorer
+  companion_action: rides on the rocket's nose cone, pointing the way with one stubby arm
+
+pages:
+  - index: 1
+    layout: full
+    text_pos: top
+    location: living_room
+    time: afternoon
+    beat: curiosity
+    scene: >-
+      The hero lies on the floor cushions with a big open picture book about space (pictures of the
+      moon and the planets only, no writing), chin in hands, gazing up dreamily at a pale afternoon
+      moon that shows through the big arched window.
+    companion_action: lies on the open book, pointing at a picture of the moon
+    text_ar: "{كَانَ/كَانَتْ} {name} {يُحِبُّ/تُحِبُّ} {كِتَابَهُ/كِتَابَهَا} عَنِ الْفَضَاءِ، {وَيُقَلِّبُ/وَتُقَلِّبُ} صُوَرَهُ كُلَّ يَوْمٍ. وَكُلَّمَا طَلَعَ الْقَمَرُ {سَأَلَ/سَأَلَتْ}: «يَا تُرَى، مَنْ يَعِيشُ هُنَاكَ؟»"
+    text_en: "{name} loved looking at the pictures in a big space book. Whenever the moon came out, {name} wondered: \"Who lives up there?\""
+  - index: 2
+    layout: split
+    location: living_room
+    time: afternoon
+    beat: the big idea
+    scene: >-
+      The hero jumps up from the floor cushions with one finger raised high and eyes shining with a big
+      idea; the space book lies open on a cushion.
+    companion_action: does a happy somersault in the air
+    text_ar: "وَذَاتَ يَوْمٍ {قَفَزَ/قَفَزَتْ} {name} مِنْ {مَكَانِهِ/مَكَانِهَا} {وَقَالَ/وَقَالَتْ}: «وَجَدْتُهَا! سَأَبْنِي صَارُوخًا، وَأَطِيرُ بِهِ إِلَى الْقَمَرِ لِأَرَى بِنَفْسِي!»"
+    text_en: "One day, {name} jumped up and shouted: \"I've got it! I'll build a rocket and fly it to the moon to see for myself!\""
+  - index: 3
+    layout: spread
+    text_pos: top
+    location: living_room
+    time: afternoon
+    beat: building the rocket
+    scene: >-
+      A wide view of the living-room floor turned into a little workshop. The hero kneels beside a long
+      cardboard box lying on its side, painting it deep blue with little golden stars; a pointed nose
+      cone of rolled newspaper, three paper fins, a stack of old newspapers, paint pots and brushes lie
+      around. The newspapers show only soft grey lines, no readable letters or pictures. Baba sits on a
+      floor cushion holding the box steady and smiling at the hero.
+    others: "{dad}"
+    others_count: 1
+    companion_action: dabs a tiny golden star onto the box with a little brush
+    text_ar: "أَحْضَرَ بَابَا جَرَائِدَ قَدِيمَةً وَصُنْدُوقًا كَبِيرًا، {فَلَفَّ/فَلَفَّتْ} {name} الْوَرَقَ، {وَأَلْصَقَ/وَأَلْصَقَتْ}، {وَلَوَّنَ/وَلَوَّنَتْ}… حَتَّى صَارَ الصُّنْدُوقُ صَارُوخًا أَزْرَقَ بِنُجُومٍ ذَهَبِيَّةٍ!"
+    text_en: "Baba brought old newspapers and a cardboard box. {name} rolled, glued and painted, until the box became a blue rocket with golden stars!"
+  - index: 4
+    layout: full
+    text_pos: side
+    location: living_room
+    time: afternoon
+    beat: the helmet
+    scene: >-
+      Next to the finished home-made rocket (the long cardboard box painted deep blue with little golden
+      stars, a pointed red nose cone of rolled paper and three small red fins), the hero proudly wears a
+      home-made helmet: a small cardboard box painted silver with a big round opening cut out for the
+      face, so the whole face shows. The hero explains something with one hand raised, like a little
+      teacher.
+    companion_action: tilts its head with a curious look
+    text_ar: "ثُمَّ {صَنَعَ/صَنَعَتْ} {name} خُوذَةً مِنَ الْكَرْتُونِ. سَأَلَ {companion}: «لِمَاذَا الْخُوذَةُ؟» {فَأَجَابَ/فَأَجَابَتْ} {name}: «عَلَى الْقَمَرِ لَا يُوجَدُ هَوَاءٌ لِلتَّنَفُّسِ، لِذَلِكَ يَلْبَسُ رَائِدُ الْفَضَاءِ خُوذَةً!»"
+    text_en: "Then {name} made a cardboard helmet. \"Why a helmet?\" asked {companion}. \"There's no air to breathe on the moon,\" {name} explained, \"so space explorers wear helmets!\""
+  - index: 5
+    layout: full
+    text_pos: bottom
+    no_child: true
+    location: village
+    time: evening
+    beat: the moon rises
+    scene: >-
+      The village at dusk, seen from just above the rooftops: a big round full moon rises, glowing,
+      over the olive trees on the stone terraces and the flat-roofed limestone houses, whose arched
+      windows glow warm yellow; the sky fades from violet to deep blue with the first stars. No people.
+    text_ar: "وَفِي الْمَسَاءِ، طَلَعَ الْقَمَرُ مُسْتَدِيرًا مُضِيئًا فَوْقَ أَشْجَارِ الزَّيْتُونِ وَسُطُوحِ الْبُيُوتِ… كَأَنَّهُ يَنْتَظِرُ {زَائِرًا صَغِيرًا/زَائِرَةً صَغِيرَةً}."
+    text_en: "That evening, the moon rose round and bright over the olive trees and the rooftops... as if it were waiting for a little visitor."
+  - index: 6
+    layout: full
+    text_pos: top
+    location: bedroom
+    time: night
+    outfit: sleep
+    beat: bedtime
+    scene: >-
+      Night in the bedroom. The hero lies in bed under the embroidered blanket, smiling sleepily and
+      gazing at a big round moon that shines through the arched window over the olive trees and
+      rooftops. Mama sits on the edge of the bed, gently tucking the blanket in. The home-made rocket
+      (the long cardboard box painted deep blue with little golden stars, a pointed red nose cone and
+      three small red fins) stands beside the bed, and the silver cardboard helmet rests by the pillow.
+    others: "{mom}"
+    others_count: 1
+    companion_action: curls up on the windowsill, glowing softly like a night light
+    text_ar: "{وَضَعَ/وَضَعَتْ} {name} الْخُوذَةَ قُرْبَ الْوِسَادَةِ. قَالَتْ مَامَا: «{تُصْبِحُ/تُصْبِحِينَ} عَلَى خَيْرٍ يَا {رَائِدَ/رَائِدَةَ} الْفَضَاءِ.» {فَنَامَ وَهُوَ يَنْظُرُ/فَنَامَتْ وَهِيَ تَنْظُرُ} إِلَى الْقَمَرِ."
+    text_en: "At bedtime, {name} put the helmet by the pillow. \"Good night, little space explorer,\" whispered Mama. {name} fell asleep gazing at the moon."
+  - index: 7
+    layout: full
+    text_pos: top
+    location: village
+    time: night
+    outfit: explorer
+    beat: lift-off in the dream
+    scene: >-
+      A dream: the home-made rocket, now shiny and real (deep blue with little golden stars, a pointed
+      red nose cone, three small red fins and an open top), soars up from the hero's house over the
+      olive trees and the moonlit rooftops into the starry sky, leaving a curving trail of golden
+      sparkles. The hero sits in its open top, both arms raised high, cheering.
+    companion_action: holds on to the rocket's nose cone, its own sparkle trail streaming behind
+    text_ar: "وَفِي الْحُلْمِ، لَمَعَ الصَّارُوخُ وَالْخُوذَةُ وَصَارَا حَقِيقِيَّيْنِ! {عَدَّ/عَدَّتْ} {name}: «ثَلَاثَةٌ، اثْنَانِ، وَاحِدٌ…» وَانْطَلَقَ الصَّارُوخُ فَوْقَ أَشْجَارِ الزَّيْتُونِ إِلَى السَّمَاءِ!"
+    text_en: "In the dream, the rocket and the helmet turned shiny and real! {name} counted: \"Three, two, one... blast off!\""
+  - index: 8
+    layout: spread
+    text_pos: top
+    location: space
+    time: night
+    outfit: explorer
+    beat: the blue Earth
+    scene: >-
+      The shiny rocket glides through the stars. The hero leans over the side of its open top, looking
+      back with wonder and pointing at the big round Earth glowing in the distance: deep-blue oceans,
+      green and brown lands and white swirls of cloud. The silver moon glows small and far ahead. The
+      upper part of the sky is calm, with only small faint stars.
+    companion_action: presses its face to the rim of the rocket, gazing at the Earth
+    text_ar: "{نَظَرَ/نَظَرَتْ} {name} إِلَى الْوَرَاءِ، فَإِذَا الْأَرْضُ كُرَةٌ زَرْقَاءُ جَمِيلَةٌ! {وَقَالَ/وَقَالَتْ} لِـ{companion:gen}: «الْبِحَارُ تُغَطِّي أَكْثَرَ الْأَرْضِ، لِذَلِكَ تَبْدُو مِنْ بَعِيدٍ زَرْقَاءَ!»"
+    text_en: "Looking back, {name} saw the Earth: a big blue ball! \"Oceans cover most of it,\" {name} told {companion}, \"so from far away it looks blue!\""
+  - index: 9
+    layout: full-bleed-fade
+    text_pos: bottom
+    location: moon
+    time: night
+    outfit: explorer
+    beat: landing on the moon
+    scene: >-
+      On the moon. The rocket stands parked on the silver-grey dust in the background; the hero, in the
+      middle of a jump, floats high above the ground with arms spread wide and a delighted laugh, a line
+      of small footprints in the dust below. Bright silvery sunlight from one side and long soft shadows.
+    companion_action: floats alongside, turning a slow somersault
+    text_ar: "هَبَطَ الصَّارُوخُ بِهُدُوءٍ عَلَى سَطْحِ الْقَمَرِ. {قَفَزَ/قَفَزَتْ} {name} عَلَى الْغُبَارِ الْفِضِّيِّ، {فَارْتَفَعَ/فَارْتَفَعَتْ} عَالِيًا عَالِيًا، {خَفِيفًا/خَفِيفَةً} كَالرِّيشَةِ!"
+    text_en: "The rocket landed gently on the moon. {name} jumped on the silver dust and floated up, up, up, as light as a feather!"
+  - index: 10
+    layout: full-bleed-cloud
+    text_pos: side
+    location: moon
+    time: night
+    outfit: explorer
+    beat: a sad little sound
+    scene: >-
+      On the moon, the hero tiptoes toward a large smooth grey boulder, a little nervous but brave:
+      shoulders up, one hand stretched forward, eyes wide. A faint lavender glow shines from behind the
+      boulder; whatever is hiding there cannot be seen yet.
+    companion_action: holds on to the hero's shoulder, peeking out with one eye
+    text_ar: "فَجْأَةً {سَمِعَ/سَمِعَتْ} {name} صَوْتًا ضَعِيفًا حَزِينًا وَرَاءَ صَخْرَةٍ كَبِيرَةٍ. {خَفَقَ قَلْبُهُ/خَفَقَ قَلْبُهَا} بِسُرْعَةٍ، {لَكِنَّهُ اقْتَرَبَ/لَكِنَّهَا اقْتَرَبَتْ} بِشَجَاعَةٍ، خُطْوَةً خُطْوَةً."
+    text_en: "Suddenly, {name} heard a small, sad sound behind a big rock. {His/Her} heart beat fast, but {he/she} bravely tiptoed closer, step by step."
+  - index: 11
+    layout: full-bleed-fade  # pages 9–11 pinned so page 12's «hello» line gets the speech bubble (ar and en)
+    text_pos: top
+    location: moon
+    time: night
+    outfit: explorer
+    beat: the lonely little planet
+    scene: >-
+      Behind the big boulder floats the little planet, alone and sad: its glow faint and pale, its eyes
+      looking down, one small tear on its cheek. The hero kneels down to its level with a gentle, caring
+      face.
+    others: "{moon_planet}, sad and glowing only faintly"
+    others_count: 1
+    companion_action: peeks over the hero's shoulder with a worried little face
+    text_ar: "وَهُنَاكَ {وَجَدَ/وَجَدَتْ} {name} كَوْكَبًا صَغِيرًا، ضَوْءُهُ خَافِتٌ وَعَيْنَاهُ حَزِينَتَانِ. قَالَ الْكَوْكَبُ بِصَوْتٍ خَفِيضٍ: «لَا أَحَدَ يَزُورُنِي هُنَا… لَيْسَ لِي صَدِيقٌ وَاحِدٌ.»"
+    text_en: "There, {name} found a little planet, dim and sad. \"Nobody ever visits me,\" it whispered. \"I don't have a single friend.\""
+  - index: 12
+    layout: dialogue
+    text_pos: top
+    location: moon
+    time: night
+    outfit: explorer
+    beat: one kind word
+    scene: >-
+      The hero sits on the silver dust right beside the little planet, smiling warmly and holding up
+      one open hand in a friendly hello. The little planet looks up, surprised and hopeful, its glow just
+      beginning to brighten.
+    others: "{moon_planet}"
+    others_count: 1
+    companion_action: waves a shy hello from behind the hero
+    text_ar: "{جَلَسَ/جَلَسَتْ} {name} بِجَانِبِهِ، {وَابْتَسَمَ/وَابْتَسَمَتْ} {وَقَالَ/وَقَالَتْ} بِلُطْفٍ: «مَرْحَبًا! أَنَا {name}. هَلْ تُحِبُّ أَنْ نَكُونَ صَدِيقَيْنِ؟»"
+    text_en: "{name} sat down beside it, smiled and said kindly: \"Hello! I'm {name}. Would you like to be friends?\""
+  - index: 13
+    layout: spread
+    text_pos: top
+    location: moon
+    time: night
+    outfit: explorer
+    beat: the little planet lights up
+    scene: >-
+      The big moment: the little planet bursts into a warm, bright glow, its lavender-blue colors
+      shining, its ring of pebbles sparkling and a huge happy smile on its face. Golden light spills
+      across the silver dust and every star around twinkles brighter. The hero stands in front of it with
+      arms wide open, laughing, bathed in the glow.
+    others: "{moon_planet}, glowing brightly and smiling"
+    others_count: 1
+    companion_action: spins in the air, scattering golden sparkles
+    text_ar: "وَبِكَلِمَةٍ لَطِيفَةٍ وَاحِدَةٍ، أَضَاءَ الْكَوْكَبُ الصَّغِيرُ كُلُّهُ، وَلَمَعَتْ حَلْقَتُهُ! صَاحَ: «صَارَ عِنْدِي صَدِيقٌ!» {فَضَحِكَ/فَضَحِكَتْ} {name} مِنْ كُلِّ {قَلْبِهِ/قَلْبِهَا}."
+    text_en: "One kind word, and the whole little planet lit up! \"I have a friend!\" it cried. And {name} laughed a big, happy laugh."
+  - index: 14
+    layout: full
+    text_pos: side
+    location: moon
+    time: night
+    outfit: explorer
+    beat: playing together
+    scene: >-
+      Playtime on the moon: the hero kneels, drawing a big heart shape in the silver dust with one
+      finger, with playful footprints hopping around the craters. The glowing little planet rolls and
+      bounces beside the hero, giggling.
+    others: "{moon_planet}, glowing and giggling"
+    others_count: 1
+    companion_action: bounces from one crater rim to the next
+    text_ar: "{لَعِبَ/لَعِبَتْ} {name} مَعَ {صَدِيقِهِ/صَدِيقِهَا} الْجَدِيدِ: {قَفَزَ/قَفَزَتْ} فَوْقَ الْحُفَرِ، {وَرَسَمَ/وَرَسَمَتْ} فِي الْغُبَارِ قَلْبًا كَبِيرًا، وَتَدَحْرَجَ الْكَوْكَبُ مِنْ شِدَّةِ الضَّحِكِ!"
+    text_en: "Then they played! {name} hopped over craters and drew a big heart in the dust, while the little planet rolled with laughter."
+  - index: 15
+    layout: split
+    location: moon
+    time: night
+    outfit: explorer
+    beat: passing on the kind word
+    scene: >-
+      At the edge of a crater, the hero leans close to the glowing little planet and whispers to it,
+      one hand cupped by the mouth; the planet calls out happily toward a few tiny shy stars twinkling
+      nearby, which drift closer. The tiny stars are simple glowing sparkles with no faces.
+    others: "{moon_planet}"
+    others_count: 1
+    companion_action: waves at the tiny stars
+    text_ar: "ثُمَّ مَرَّتْ نُجُومٌ صَغِيرَةٌ خَجِلَةٌ. {هَمَسَ/هَمَسَتْ} {name} لِلْكَوْكَبِ: «قُلْ لَهَا: مَرْحَبًا!» فَقَالَهَا… فَاقْتَرَبَتِ النُّجُومُ تَلْمَعُ مِنَ الْفَرَحِ!"
+    text_en: "Some shy little stars drifted by. \"Say hello!\" {name} whispered to the planet. It did, and the stars came closer, twinkling with joy!"
+  - index: 16
+    layout: full
+    text_pos: bottom
+    location: moon
+    time: night
+    outfit: explorer
+    beat: a goodbye and a promise
+    scene: >-
+      Beside the parked rocket, the hero hugs the glowing little planet goodbye, eyes closed and smiling.
+      Far away in the black sky, the edge of the Earth glows with a thin golden line of sunrise.
+    others: "{moon_planet}"
+    others_count: 1
+    companion_action: points at the golden line of sunrise on the Earth
+    text_ar: "قَالَ {companion}: «اقْتَرَبَ الصَّبَاحُ!» {فَعَانَقَ/فَعَانَقَتْ} {name} {صَدِيقَهُ/صَدِيقَهَا} الصَّغِيرَ {وَوَعَدَهُ/وَوَعَدَتْهُ}: «سَأُلَوِّحُ لَكَ كُلَّ لَيْلَةٍ مِنْ نَافِذَتِي!»"
+    text_en: "\"Morning is coming!\" said {companion}. {name} hugged the little planet and promised: \"I'll wave to you every night from my window!\""
+  - index: 17
+    layout: full
+    text_pos: side
+    location: bedroom
+    time: morning
+    outfit: sleep
+    beat: home by morning
+    scene: >-
+      Morning in the bedroom. Golden sunlight pours in as Mama opens the pale-blue shutters of the
+      arched window. The hero sits up in bed, beaming, arms wide, telling her the big news. The home-made
+      rocket (the long cardboard box painted deep blue with little golden stars, a pointed red nose cone
+      and three small red fins) stands beside the bed, a few tiny silver sparkles of moon dust shining
+      on its nose cone.
+    others: "{mom}"
+    others_count: 1
+    companion_action: stretches on the pillow with a big sleepy smile
+    text_ar: "وَفِي الصَّبَاحِ، {اسْتَيْقَظَ/اسْتَيْقَظَتْ} {name} فِي {سَرِيرِهِ/سَرِيرِهَا} {وَنَادَى/وَنَادَتْ}: «مَامَا! صَارَ لِي صَدِيقٌ قُرْبَ الْقَمَرِ… وَكُلُّ شَيْءٍ بَدَأَ بِكَلِمَةٍ لَطِيفَةٍ!»"
+    text_en: "In the morning, {name} woke up and called: \"Mama! I made a friend near the moon, with just one kind word!\""
