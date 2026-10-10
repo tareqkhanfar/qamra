@@ -215,6 +215,23 @@ def test_a_genitive_slot_takes_abi_and_joins_lam() -> None:
     assert split_name(salma, "هَذا لِـ{child:gen}") == ("هَذا لِـ", "سلمى", "")
 
 
+def test_a_wasl_name_joins_the_sukun_before_it() -> None:
+    """A name that starts with hamzat al-wasl («ابتهال», «انتصار») turns the sukun before it into a kasra, as
+    «ال» does: «اسْأَلِ ابتهال» (the boy's imperative, a mother's name), «ساعِدِ انتصار»; never «اسْأَلْ ابتهال».
+    A name with hamzat al-qat' («إيمان») keeps the sukun."""
+    for mum, asked in (("ابتهال", "اسْأَلِ ابتهال"), ("إيمان", "اسْأَلْ إيمان")):
+        family = Family("الخطيب", (Member("ماما", mum),))
+        boy = BookSpec("family", "", Child("يوسف", "m"), (), DAY, family=family)
+        page = PageSpec("t", "drawing", 81, "jobs", "", "")
+        assert boy.personalize("{اسْأَلْ/اسْأَلي} {adult:acc} عَنِ العَمَلِ", page).startswith(asked + " ")
+    boy = BookSpec("journey", "", Child("انتصار", "m"), (), DAY)
+    assert boy.personalize("{ساعِدْ/ساعِدي} {child:acc} لِلْوُصولِ") == "ساعِدِ انتصار لِلْوُصولِ"
+    girl = BookSpec("family", "", Child("ابتسام", "f"), (), DAY)
+    ctx = PageContext(PageSpec("t", "title-page", 1, "front", "", ""), girl, ASSETS)
+    assert split_name(ctx, "هَمَسَتْ {child} لِأُمِّها") == ("هَمَسَتِ ", "ابتسام", " لِأُمِّها")
+    assert split_name(ctx, "هَذا لِـ{child:gen}") == ("هَذا لِ", "ابتسام", "")  # «لِابتسام»
+
+
 @GENDERS
 def test_the_family_book_puts_aba_bakr_and_his_grandfather_in_the_genitive(gender: str) -> None:
     text = printed(build_pages(_family_book(Child("أبو بكر", gender), GRANDPA), ASSETS))  # type: ignore[arg-type]

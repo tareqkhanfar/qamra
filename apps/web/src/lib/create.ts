@@ -9,10 +9,14 @@ export type Line = "classic" | "magic";
 
 export type Character = {
   id: string;
-  status: "generating" | "ready" | "approved" | "failed";
+  // discarded: a drawing never approved, removed by the cleanup after 30 days
+  status: "generating" | "ready" | "approved" | "failed" | "discarded";
   style: string;
   approved: boolean;
+  approved_at?: string | null; // the last approval: the child's character is the one approved last
 };
+/** One of the child's drawings, kept so the parent can compare them and go back to one (newest first). */
+export type Drawing = Character & { created_at: string; style_name_ar: string; style_name_en: string };
 export type Child = {
   id: string;
   name: string;
@@ -96,11 +100,19 @@ export const createApi = {
   frame: (photoId: string, crop: PhotoCrop) =>
     api<Child>(`/api/create/photos/${photoId}/crop`, { method: "PUT", json: crop }),
   photoBlob: (photoId: string) => fetchBlob(photoImage(photoId)),
-  // sku: the activity book it is drawn for, so the API checks that the book accepts the style
-  draw: (childId: string, style: string, fixes: Fix[] = [], sku?: string | null) =>
+  // sku: the activity book it is drawn for, so the API checks that the book accepts the style; redraw: the
+  // parent asked for a new drawing (never the approved one reused), with `note`, their own words (optional)
+  draw: (
+    childId: string,
+    style: string,
+    fixes: Fix[] = [],
+    sku?: string | null,
+    again?: { redraw: true; note?: string },
+  ) =>
     api<Character>(`/api/create/children/${childId}/characters`, {
-      json: { style, fixes, ...(sku ? { sku } : {}) },
+      json: { style, fixes, ...(sku ? { sku } : {}), ...(again ?? {}) },
     }),
+  drawings: (childId: string) => api<Drawing[]>(`/api/create/children/${childId}/characters`),
   character: (id: string) => api<Character>(`/api/create/characters/${id}`),
   approve: (id: string) => api<Character>(`/api/create/characters/${id}/approve`, { method: "POST" }),
   startBook: (input: StartBook) => api<Book>("/api/create/books", { json: input }),

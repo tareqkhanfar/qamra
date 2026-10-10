@@ -352,6 +352,15 @@ class InsertOut(BaseModel):
     label: str  # what the printer is told it is
 
 
+class CharacterNote(BaseModel):
+    """What the parent wrote in «ما الذي لا يشبهه؟» when asking for the drawing this book uses, and what the
+    redraw made of it (`instruction`: the appearance-only rewrite; None: not used, `outcome` says why)."""
+
+    note: str
+    instruction: str | None
+    outcome: str | None
+
+
 class BookDetail(BaseModel):
     id: uuid.UUID
     status: BookStatus
@@ -385,6 +394,7 @@ class BookDetail(BaseModel):
     class_pages: list[ClassPageOut]  # a class copy's shared story words (read-only)
     # «تحقق من التذكير والتأنيث»: words where the hero's gender may be wrong (field, word, context, rule)
     gender_check: list[dict[str, str]]
+    character_note: CharacterNote | None = None
 
 
 def _inserts(book: Book) -> list[InsertOut]:
@@ -489,6 +499,20 @@ async def book_detail(book_id: uuid.UUID, db: SessionDep) -> BookDetail:
         text_edits=await _text_edits(db, book.id),
         class_pages=await _class_pages(db, book),
         gender_check=[dict(h) for h in gen.get("gender_check") or [] if isinstance(h, dict)],
+        character_note=await _character_note(db, book),
+    )
+
+
+async def _character_note(db: AsyncSession, book: Book) -> CharacterNote | None:
+    character = await db.get(Character, book.character_id) if book.character_id else None
+    params = (character.params or {}) if character else {}
+    if not params.get("note"):
+        return None
+    instruction, outcome = params.get("note_instruction"), params.get("note_outcome")
+    return CharacterNote(
+        note=str(params["note"]),
+        instruction=str(instruction) if instruction else None,
+        outcome=str(outcome) if outcome else None,
     )
 
 

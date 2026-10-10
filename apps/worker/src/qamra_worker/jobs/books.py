@@ -29,6 +29,7 @@ from qamra_ai.pipeline.bible import StyleBible, build_bible
 from qamra_ai.pipeline.book import BookRun, choose_outfits, default_companion, new_seed
 from qamra_ai.pipeline.budget import Budget, BudgetExceeded
 from qamra_ai.pipeline.character import generate_character_sheet
+from qamra_ai.pipeline.character_feedback import appearance_instruction
 from qamra_ai.pipeline.companion import generate_companion_options
 from qamra_ai.pipeline.custom_story import BriefRejected, CustomBrief, write_custom_story
 from qamra_ai.pipeline.drawing import clean_drawing
@@ -246,6 +247,26 @@ def _beat_of(step: str) -> int | None:
 # ---- per-child steps ------------------------------------------------------------------------------
 
 
+# What the parent asked for a drawing (the API's) and what their note became, kept next to how it was drawn:
+# the redraw's number, the chips, their own words and the appearance-only instruction made of them.
+ASKED = ("attempt", "fixes", "note", "note_instruction", "note_outcome")
+
+
+async def _read_note(
+    db: Session, rt: Runtime, character: Character, child: Child, asked: dict[str, Any]
+) -> None:
+    """The parent's note → the redraw's instruction, saved before drawing (a retried job doesn't ask
+    again). An unsafe or off-topic note, or a failed text step, leaves the chips alone; the log has the
+    outcome only, never the note."""
+    result = await appearance_instruction(rt, ai_child(child), str(asked["note"]))
+    asked["note_outcome"] = result.outcome
+    if result.instruction:
+        asked["note_instruction"] = result.instruction
+    character.params = {**(character.params or {}), **asked}
+    db.commit()
+    log.info("character.note", character=str(character.id), outcome=result.outcome, reasons=result.reasons)
+
+
 async def _character(db: Session, storage: ObjectStorage, rt: Runtime, character: Character) -> bytes:
     if character.status in (CharacterStatus.ready, CharacterStatus.approved) and character.sheet_image_key:
         return storage.get(character.sheet_image_key)
@@ -262,7 +283,9 @@ async def _character(db: Session, storage: ObjectStorage, rt: Runtime, character
     data = [d for p in photos[:3] if (d := photo_bytes(storage, p)) is not None]  # as the parent framed it
     if not data:
         raise ValueError("no accepted photos (they may have been deleted after approval)")
-    asked: dict[str, Any] = {k: v for k, v in (character.params or {}).items() if k in ("attempt", "fixes")}
+    asked: dict[str, Any] = {k: v for k, v in (character.params or {}).items() if k in ASKED}
+    if asked.get("note") and "note_outcome" not in asked:
+        await _read_note(db, rt, character, child, asked)
     sheet = await generate_character_sheet(
         rt,
         ai_child(child),
@@ -270,6 +293,7 @@ async def _character(db: Session, storage: ObjectStorage, rt: Runtime, character
         load_style(character.art_style),
         attempt=int(asked.get("attempt", 1)),  # a redraw gets a new seed
         fixes=[str(f) for f in asked.get("fixes", [])],
+        note=str(asked["note_instruction"]) if asked.get("note_instruction") else None,
     )
     key = f"children/{child.id}/characters/{character.id}.png"
     storage.put(key, sheet.data, sheet.mime)

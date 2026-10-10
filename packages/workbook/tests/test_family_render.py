@@ -240,6 +240,8 @@ def test_section_names_are_personalized() -> None:
     girl = build_pages(book(*specs), ASSETS)
     assert [p.section_name for p in girl] == ["أَنا مَسْؤولَةٌ", "الطَّبّاخَةُ الصَّغيرَةُ"]
     assert build_pages(book(specs[0], child=Child("كرم", "m")), ASSETS)[0].section_name == "أَنا مَسْؤولٌ"
+    boy = build_pages(book(specs[1], child=Child("كرم", "m")), ASSETS)[0]
+    assert boy.section_name == "الطَّبّاخُ الصَّغيرُ"  # as his stamp, «طَبّاخٌ صَغيرٌ»
     html = book_html(book(*specs), girl, ASSETS)
     assert "أَنا مَسْؤولَةٌ" in html and "{أَنا مَسْؤولٌ/" not in html
 

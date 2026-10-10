@@ -6,7 +6,16 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { describe, it } from "node:test";
-import { accusativeName, fillName, genitiveName, hasArticle, lamName, nameCases, twoWordName } from "./arabicName.ts";
+import {
+  accusativeName,
+  fillName,
+  genitiveName,
+  hasArticle,
+  lamName,
+  nameCases,
+  startsWithWasl,
+  twoWordName,
+} from "./arabicName.ts";
 
 describe("accusativeName", () => {
   const changed: [string, string][] = [
@@ -165,6 +174,22 @@ describe("fillName", () => {
     for (const name of ["سلمى", "الين", "أبو بكر"]) assert.ok(fillName(text, "name", name).startsWith("هَمَسَتْ "));
   });
 
+  it("a word-final sukun before a wasl name («ابتسام») takes its helping vowel, as in Python", () => {
+    const text =
+      "قالَتْ {name} وَضَمَّتْ {name:acc} مِنْ {name:gen} عَلَيْكُمْ {name} أَوْ {name} فِيْ {name} لِـ{name:gen}";
+    assert.equal(
+      fillName(text, "name", "ابتسام"),
+      "قالَتِ ابتسام وَضَمَّتِ ابتسام مِنِ ابتسام عَلَيْكُمُ ابتسام أَوِ ابتسام فِي ابتسام لِابتسام",
+    );
+    assert.ok(fillName(text, "name", "الجود").startsWith("قالَتِ الجود وَضَمَّتِ الجود مِنَ الجود"));
+    assert.equal(fillName("ساعِدْ {child:acc}", "child", "انتصار"), "ساعِدِ انتصار"); // the boy's imperative
+    assert.equal(fillName("مَنْ {name}", "name", "الجود"), "مَنِ الجود"); // «مَنْ» (who): a kasra
+    for (const name of ["إبتسام", "أحمد", "إيمان", "آمنة", "انعام", "سلمى"]) {
+      const filled = fillName(text, "name", name);
+      assert.ok(filled.startsWith("قالَتْ ") && filled.includes("مِنْ ") && filled.includes("عَلَيْكُمْ "), name);
+    }
+  });
+
   it("«وَيا» and «فَيا» are vocatives, «هَيّا» is not", () =>
     assert.equal(
       fillName("وَيا {name}، فَيَا {name}، هَيّا {name}", "name", "أبو بكر"),
@@ -179,11 +204,30 @@ describe("hasArticle", () => {
     ["الليث", true],
     ["الين", false],
     ["الاء", false],
+    ["الفت", false], // أُلفت
+    ["الماس", false], // ألماس
     ["أحمد", false],
     ["", false],
   ] as const) {
     it(`«${name}» ${article ? "has" : "has no"} article`, () => assert.equal(hasArticle(name), article));
   }
+});
+
+describe("startsWithWasl", () => {
+  const wasl = [
+    ...["ابتسام", "انتصار", "ابتهال", "اعتدال", "امتثال", "اعتماد", "امتنان", "اختيار", "ارتقاء"], // افتعال
+    ...["اصطفاء", "ازدهار", "انشراح", "انطلاق", "استقلال"],
+    ...["اِبْتِسام", "ابتسام محمد", "  انتصار", "الجود", "المعتصم"],
+  ];
+  for (const name of wasl) it(`«${name}» starts with hamzat al-wasl`, () => assert.equal(startsWithWasl(name), true));
+  const other = [
+    ...["أحمد", "إيمان", "آمنة", "إسراء", "أنوار", "إستبرق", "أسماء", "إخلاص", "إنصاف", "أصداء"], // hamzat al-qat'
+    "إبتسام", // typed with a hamza: printed as written
+    ...["اسراء", "انعام", "ايمان", "استبرق", "اتقان", "اسماء", "انبياء", "اصيل", "ارجوان"], // no hamza typed
+    ...["الين", "الهام", "الفت", "الطاف", "الحان", "البرت", "سلمى", "محمد ابتسام", "Ibtisam", ""],
+    ...["انطوان", "انستاس", "استيفان"], // foreign names that fit a pattern
+  ];
+  for (const name of other) it(`«${name}» does not`, () => assert.equal(startsWithWasl(name), false));
 });
 
 describe("twoWordName", () => {
@@ -274,6 +318,7 @@ const ACCUSATIVE: Record<string, "nameAcc" | "labelAcc"> = {
   "create.character.title": "nameAcc",
   "create.character.drawing": "nameAcc",
   "create.character.approve": "nameAcc",
+  "create.character.drawingsHint": "nameAcc", // «التي تشبه أبا بكر أكثر»
   "create.activity.summary.address": "nameAcc",
   "create.activity.summary.praise": "nameAcc",
 };
@@ -372,6 +417,7 @@ const GENITIVE: Record<string, string> = {
   "create.style.bodyActivity": "nameGen", // the activity books' style step (2026-10-09)
   "create.character.alt": "nameGen",
   "create.character.keep": "nameGen",
+  "create.character.drawings": "nameGen", // «رسومات أبي بكر حتى الآن»
   "create.story.body": "nameGen",
   "create.story.suggested": "nameLam",
   "create.story.chosenTitle": "nameLam",
@@ -409,6 +455,15 @@ describe("ar.json", () => {
   const AR = strings(messages("ar"));
   const ar = new Map(AR);
   const EN = new Map(strings(messages("en")));
+
+  it("the create flow's «who» step speaks of a girl as a girl, and to the parents before the gender is chosen", () => {
+    const hint = ar.get("create.who.nameEnHint") ?? "";
+    assert.match(hint, /^\{gender, select, f \{[^}]*طفلتكم اسمها[^}]*\} m \{[^}]*طفلكم اسمه[^}]*\} other \{[^}]*\}\}$/);
+    assert.doesNotMatch(hint.split("other {")[1] ?? "", /طفلكم|اسمه|يتعلّم/); // neutral: no «his»
+    assert.match(EN.get("create.who.nameEnHint") ?? "", /f \{[^}]*her name[^}]*\} m \{[^}]*his name[^}]*\} other/);
+    assert.doesNotMatch(ar.get("create.who.body") ?? "", /(?<![؀-ۿ])لها?(?![؀-ۿ])/); // read before the gender
+    assert.doesNotMatch(ar.get("create.child.nameHint") ?? "", /تنادونه|تنادونها/);
+  });
 
   it("no vocative of a name variable as typed: «يا {name}», «يا {label}», «يا {child}»", () => {
     const vocative = /(?<![؀-ۿ])ي[ً-ْٰ]*ا[ً-ْٰ]*\s*\{(name|label|child)\}/;
