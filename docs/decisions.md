@@ -863,3 +863,51 @@ code and a comparison script are ready, and the comparison runs only with his bu
 - **After approval:** merge (the guide is live as soon as it deploys; migration `968a4be3c42d` updates the
   row's record to v3), redraw the site's semi-realistic samples (about $0.55), and decide what to do with
   characters already drawn in v2 (they are reused until the parent asks for a new drawing).
+
+## Likeness trial: the child on the sheet must be the child in the photo (2026-10-10, findings)
+
+The owner's live test with a real 5-year-old's photo gave, in every style, a generic, rounder, younger child
+(Nano Banana 2 at 1K, `character_sheet.v3`). Trial on the production prompt path
+(`scripts/likeness_trial.py`; the photo was a CLI argument only, nothing of it is in the repo), Nano Banana
+Pro edit, four styles, two candidates:
+
+- **N1**, one step: the sheet at 2K with the likeness-tuned `character_sheet.v5` (the style renders, never
+  reshapes the face; no "must look N, not older"; hair, face shape and proportions, skin tone and real age
+  spelled out, `prompts/likeness.v1.j2`).
+- **N2**, portrait first: a large head-and-shoulders portrait in the style (`character_portrait.v1`, 1K),
+  then the v5 sheet from [photo + portrait] at 2K.
+
+Spend: $1.80 for 12 calls (`likeness:` rows), plus $1.00 for the semi-realistic grid: $2.80 of a $3.50 cap.
+
+- **What we saw** (likeness out of 10, by eye):
+
+  | style | live (NB2, v3) | N1 | N2 portrait | N2 sheet |
+  |---|---|---|---|---|
+  | 3D | 3 | 4 | 6 | 6 |
+  | semi-realistic v3 | – | 7 | 8 | 7–8 |
+  | cartoon | – | 3 | 5 | 5 |
+  | watercolor | 3 | 4 | 6 (style drifted to sepia ink, looks older) | 5 |
+
+- **The diagnosis holds, with one correction.**
+  - (a) The toddler cues are real, but they live in the style guides as much as in the sheet prompt. The 3D and
+    cartoon guides ask for "big expressive / friendly eyes" and "slightly large heads", and the house style
+    asks for "rounded" characters with "slightly large heads". v5's "the style never changes the face" does
+    not beat those: N1 is still round-faced and young in 3D, cartoon and watercolor.
+  - (b) A small face holds little identity: N1 at 2K (faces of about 250 px) stays generic. A portrait whose
+    face fills the frame holds clearly more, and the sheet painted from it keeps most of it.
+  - (c) Pro is better than Nano Banana 2, but the model alone (N1) is not enough in the stylized styles.
+  - The realistic style fights the face least: semi-realistic v3 was the closest in every column.
+- **Side effects:** removing "not older" let some portraits age (cartoon and watercolor N2 read 7–8). The
+  watercolor portrait drifted to a dark sepia ink sketch. One semi-realistic N2 sheet left the feet bare.
+- **Recommendation (not switched):**
+  - **Portrait first** for every style on Nano Banana Pro: portrait 1K $0.15, then the sheet 2K $0.15, so
+    **$0.30 per child per style** against $0.08 today.
+  - Show the parent the portrait first («هل هذا طفلكم؟»): a redraw then costs $0.15, and the portrait can also
+    serve the cover, the portrait page and the activity books' owner page.
+  - Before that, a v6 of the prompts: "exactly his age, neither younger nor older"; the portrait "in full
+    warm color, never a monochrome or sepia sketch"; shoes kept in all three views.
+  - Tone down the face cues in the 3D and cartoon guides: keep the stylized rendering, but the child's own
+    face proportions and eye size. This changes those styles' look, so it is the owner's call.
+  - Then pass the portrait as one more likeness reference to the pages (no extra cost on Nano Banana).
+- **The auto-framing** (another branch) cannot frame a close-up photo whose face fills most of the width: the
+  framed cut-out fails the face check, and the whole photo is used, as `frame_photo` does.

@@ -1,0 +1,12 @@
+{#- Likeness rules shared by character_sheet.v5 and character_portrait.v1 (likeness trial, 2026-10-10): the
+    child's own face, hair and age come from the photo; the art style only renders them. -#}
+{%- set he = 'He' if gender == 'm' else 'She' -%}
+{%- set his = 'his' if gender == 'm' else 'her' -%}
+LIKENESS (top priority: the parent must recognize their own child at once)
+- Face: keep the photo's face shape and length, jaw and chin, cheeks, the shape, color and spacing of the eyes, the eyebrows, nose, mouth and smile, the ears, and distinctive features such as freckles, dimples, moles or missing teeth. Paint {{ his }} own face proportions, not a generic cute face; the eyes no bigger than in the photo, at most a little larger where the style asks for it.
+- Hair: exactly as in the photo: the same color, length, direction and parting, the same texture (straight, wavy or curly) and the same shape at the front (fringe, quiff, or hair swept up, back or to the side). Never curlier, longer, darker or tidier than in the photo.
+- Skin tone: exactly the photo's, neither lighter nor darker.
+- Age: {{ he }} is {{ age }} years old. Paint {{ his }} real age and proportions, a {{ age }}-year-old {{ 'boy' if gender == 'm' else 'girl' }}, never younger: not a toddler, not a baby face.
+{%- if glasses %}
+- Glasses: {{ he | lower }} wears glasses; keep the same frame shape and color.
+{%- endif %}

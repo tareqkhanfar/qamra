@@ -340,6 +340,13 @@ async def draw(rows: list[Row], ref: bytes, kind: RefKind, cap: float) -> list[d
             try:
                 image = await providers[c.model].generate(req)
             except Exception as e:  # one failure never stops the grid; it is logged at full price
+                if exhausted(
+                    e
+                ):  # the account is empty or locked: nothing was billed, and nothing more is sent
+                    ledger_row({**base, "usd": 0.0, "error": "fal_exhausted", "s": round(time.time() - t, 1)})
+                    print(f"✗ {c.id}: fal says the balance is exhausted or the account locked: STOPPED")
+                    results.append({"id": c.id, "status": "fal_exhausted"})
+                    return await _close(providers, results, cap)
                 ledger_row({**base, "error": type(e).__name__, "s": round(time.time() - t, 1)})
                 print(f"✗ {c.id}: {type(e).__name__}: {str(e)[:160]}")
                 results.append({"id": c.id, "status": "failed", "error": type(e).__name__})
@@ -350,6 +357,18 @@ async def draw(rows: list[Row], ref: bytes, kind: RefKind, cap: float) -> list[d
             ledger_row({**base, "file": rel, "s": round(time.time() - t, 1)})
             print(f"✓ {c.id}: ${c.usd:.2f} ({time.time() - t:.0f}s) → {rel}")
             results.append({"id": c.id, "status": "ok", "file": rel, "usd": c.usd})
+    return await _close(providers, results, cap)
+
+
+def exhausted(e: Exception) -> bool:
+    """fal's "Exhausted balance" / "User is locked" (a 403): the shared account is empty."""
+    text = str(e).lower()
+    return "exhausted" in text or "locked" in text
+
+
+async def _close(
+    providers: dict[str, FalImageProvider], results: list[dict[str, Any]], cap: float
+) -> list[dict[str, Any]]:
     for p in providers.values():
         close = getattr(p, "aclose", None)
         if close is not None:
@@ -415,6 +434,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--photo", type=Path, default=PHOTO, help="the AI-made photo of an invented child")
     p.add_argument("--tala-sheet", type=Path, default=TALA_SHEET, help="تالا's published watercolor sheet")
     p.add_argument("--show-prompts", action="store_true", help="write every prompt to out/…/prompts/")
+    p.add_argument(
+        "--ledger",
+        type=Path,
+        default=LEDGER,
+        help="the shared spend ledger (a worktree: the main checkout's)",
+    )
     args = p.parse_args(argv)
     if args.run and args.max_usd is None:
         p.error("--run needs --max-usd")
@@ -448,7 +473,9 @@ def reference(args: argparse.Namespace) -> bytes:
 
 
 def main(argv: list[str] | None = None) -> int:
+    global LEDGER
     args = parse_args(argv)
+    LEDGER = args.ledger
     kind: RefKind = args.ref
     keys = [k.strip().upper() for k in args.rows.split(",") if k.strip()]
     rows = [r for r in ROWS if r.key in keys]
