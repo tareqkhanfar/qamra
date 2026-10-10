@@ -14,6 +14,7 @@ from markupsafe import Markup
 from qamra_workbook.render.islamic_content import RolePlay, Story
 from qamra_workbook.render.islamic_figures import cast_names
 from qamra_workbook.render.pages.islamic_common import (
+    answer_lines,
     choice,
     chrome,
     claim,
@@ -120,8 +121,8 @@ def story(ctx: PageContext) -> Built:
         "labels": {"lesson": "أَتَعَلَّمُ"},
     }
     answer = None
-    if question is not None:
-        answer = ["الجواب: " + "، ".join(str(c["text"]) for c in question["choices"] if c["ok"])]
+    if question is not None and page.question is not None:
+        answer = answer_lines(ctx, page.question.text, question["choices"])
     return Built(data, answer, problems)
 
 

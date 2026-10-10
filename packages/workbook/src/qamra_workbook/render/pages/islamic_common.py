@@ -226,6 +226,28 @@ def rich(ctx: PageContext, text: str, problems: list[str]) -> str | Markup:
     return Markup("").join(parts)
 
 
+def plain(ctx: PageContext, text: str) -> str:
+    """A text as printed for this child, in plain words for the answer key: each `{src:ID}` replaced by that
+    source's wording (the page itself, built with `rich`, gates and marks it), personalized like `rich`."""
+    if "{src:" not in text:
+        return ctx.text(text)
+    parts = []
+    for i, piece in enumerate(TOKEN.split(text)):
+        if i % 2 == 0:
+            parts.append(ctx.text(piece))
+            continue
+        got, _ = _resolve(ctx, piece)
+        parts.append(got.text if got is not None and got.text else "…")
+    return "".join(parts)
+
+
+def answer_lines(ctx: PageContext, question: str, choices: list[dict[str, Any]]) -> list[str]:
+    """The answer key of a question: the question itself, then its right answer (a bare «الجواب: اللهُ»
+    under the page's title could read as the answer to the title)."""
+    right = "، ".join(str(c["text"]) for c in choices if c["ok"])
+    return [plain(ctx, question), f"الجواب: {right}"]
+
+
 def claim(ctx: PageContext, value: Claim | str, problems: list[str]) -> dict[str, Any]:
     """A short text: personalized (`{child}`, `{masc/fem}`, `{src:ID}`) marked when drafted."""
     if isinstance(value, str):

@@ -30,7 +30,7 @@ units:
       - {t: "أُصَلِّي عَلَى نَبِيِّي ﷺ", c: [c-salawat], r: [c-love-allah], s: [q-33-56], p: [story, draw]}
   - id: u-follow
     lessons:
-      - {t: "أَقْتَدِي بِنَبِيِّي", c: [c-follow-prophet], r: [c-love-allah], s: [q-33-21, q-3-31, h-bukhari-6203], p: [story, choose]}
+      - {t: "أَقْتَدِي بِنَبِيِّي ﷺ", c: [c-follow-prophet], r: [c-love-allah], s: [q-33-21, q-3-31, h-bukhari-6203], p: [story, choose]}
       - {t: "يَتَبَسَّمُ وَيُسَامِحُ", c: [c-prophet-kind, c-forgive], s: [h-tirmidhi-1956, h-bukhari-3560, h-bukhari-6038], p: [sira-story, wwyd, coloring]}
       - {t: "يُسَاعِدُ فِي الْبَيْتِ", c: [c-help-home, c-follow-prophet], r: [c-helping], s: [h-bukhari-676], p: [story, draw]}
   - id: u-house
@@ -54,7 +54,7 @@ units:
       - {t: "أَصْدُقُ", c: [c-honesty], s: [h-bukhari-6094], p: [story, wwyd, true-false]}
       - {t: "أُحْسِنُ إِلَى وَالِدَيَّ", c: [c-kind-parents], s: [q-17-23, h-bukhari-5971], p: [story, wwyd, coloring]}
       - {t: "أُشَارِكُ وَأُسَاعِدُ", c: [c-sharing, c-helping], s: [h-bukhari-5392, h-muslim-2699, h-bukhari-13], p: [story, wwyd]}
-      - {t: "أَقُولُ: شُكْرًا وَآسِفٌ", c: [c-forgive, c-thanks], s: [h-tirmidhi-2499, q-2-222], p: [story, wwyd]}
+      - {t: "أَقُولُ: شُكْرًا وَ{آسِفٌ/آسِفَةٌ}", c: [c-forgive, c-thanks], s: [h-tirmidhi-2499, q-2-222], p: [story, wwyd]}
 cumulative:
   - {after: u-follow, c: [c-allah-creator, c-blessings, c-thanks, c-prophet-who, c-prophet-mercy], p: [self-test]}
   - {after: u-manners1, c: [c-allah-names, c-dhikr-eat, c-dhikr-wake, c-dhikr-sleep, c-honesty, c-shahada], p: [self-test, self-test]}

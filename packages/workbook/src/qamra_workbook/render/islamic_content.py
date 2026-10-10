@@ -166,6 +166,9 @@ class Dhikr(Base):
     type: Literal["dhikr"]
     when: str
     dhikr: Quote
+    # the label over the framed wording, «أَقُولُ» by default; a verse that commands the dhikr rather than being
+    # what the child says is introduced as such («قَالَ اللهُ تَعَالَى»), and `manner` says what the child says
+    heading: str = ""
     why: Claim
     manner: Claim
     scene: Scene

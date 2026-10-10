@@ -17,6 +17,7 @@ from qamra_workbook.render.islamic_content import Dhikr, ProphetStory, SiraStory
 from qamra_workbook.render.islamic_figures import listeners
 from qamra_workbook.render.pages.islamic_common import (
     SPEAKERS,
+    answer_lines,
     choice,
     chrome,
     claim,
@@ -91,8 +92,7 @@ def told_story(ctx: PageContext, page: ProphetStory | SiraStory) -> Built:
         "refs": references(ctx, ids),
         "labels": {"lesson": "أَتَعَلَّمُ", "question": ctx.text("{فَكِّرْ/فَكِّرِي}")},
     }
-    answer = ["الجواب: " + "، ".join(c["text"] for c in question["choices"] if c["ok"])]
-    return Built(data, answer, problems)
+    return Built(data, answer_lines(ctx, page.question.text, question["choices"]), problems)
 
 
 @islamic_page("prophet-story")
@@ -129,11 +129,11 @@ def dhikr_situation(ctx: PageContext) -> Built:
         "days": [ctx.num(i) for i in range(1, WEEK + 1)],
         "labels": {
             "when": "مَتَى؟",
-            "say": "أَقُولُ",
+            "say": ctx.text(page.heading) if page.heading else "أَقُولُ",
             "why": "لِمَاذَا؟",
             "manner": "وَهَكَذَا أَتَأَدَّبُ",
             "home": "فِي الْبَيْتِ",
-            "listen": "اسْمَعْ وَكَرِّرْ",
+            "listen": ctx.text("{اسْمَعْ وَكَرِّرْ/اسْمَعِي وَكَرِّرِي}"),
         },
         "refs": references(ctx, ids),
     }

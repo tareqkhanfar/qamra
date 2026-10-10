@@ -446,6 +446,10 @@ scene). Always `sacred_text: none`; never a source.
   audio: {kind: human-voice, note: "بصوت بشري مسجّل؛ لا TTS لنص ديني"}
 ```
 
+The frame is introduced by «أَقُولُ»: it holds what the child says. When the framed wording is a verse that
+commands the dhikr rather than the words the child says (the salawat page: 33:56), give `heading: قَالَ اللهُ تَعَالَى`
+and let `manner` say what the child says.
+
 ### wwyd (the sample s04)
 
 ```yaml

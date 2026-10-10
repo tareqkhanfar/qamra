@@ -36,6 +36,7 @@ from qamra_workbook.render.pages.islamic_common import (
     page_of,
     picture,
     picture_problems,
+    plain,
     references,
     rich,
     sacred,
@@ -50,9 +51,49 @@ BOARD = (186.0, 120.0)
 MAZE_SIZES = {"small": (4, 4), "medium": (5, 5), "large": (6, 6)}
 
 
+# what the answer key calls each of the series' icons (`isl:<icon>`), as a library picture has its `word_ar`
+GLYPH_WORDS: dict[str, str] = {
+    "balloon": "الْبَالُونُ",
+    "beads": "الْمِسْبَحَةُ",
+    "book-stand": "الْمُصْحَفُ",
+    "books": "الْكُتُبُ",
+    "coin-heart": "النُّقُودُ وَالْقَلْبُ",
+    "crescent": "الْهِلَالُ",
+    "cube": "الْكَعْبَةُ",
+    "cup-spoon": "الْكُوبُ وَالْمِلْعَقَةُ",
+    "dome": "قُبَّةُ الْمَسْجِدِ",
+    "earth-leaf": "الْأَرْضُ وَالنَّبَاتُ",
+    "five-columns": "الْأَعْمِدَةُ الْخَمْسَةُ",
+    "footprints": "آثَارُ الْأَقْدَامِ",
+    "gift": "الْهَدِيَّةُ",
+    "heart-house": "الْبَيْتُ وَالْقَلْبُ",
+    "key": "الْمِفْتَاحُ",
+    "lantern": "الْفَانُوسُ",
+    "night-stars": "النُّجُومُ فِي اللَّيْلِ",
+    "palm": "النَّخْلَةُ",
+    "prayer-mat": "سَجَّادَةُ الصَّلَاةِ",
+    "question-cloud": "عَلَامَةُ السُّؤَالِ",
+    "ribbon": "الشَّرِيطُ",
+    "rosette": "الزَّخْرَفَةُ",
+    "scales": "الْمِيزَانُ",
+    "ship": "السَّفِينَةُ",
+    "six-stars": "النُّجُومُ السِّتُّ",
+    "staff-sea": "الْعَصَا وَالْبَحْرُ",
+    "star": "النَّجْمَةُ",
+    "sun": "الشَّمْسُ",
+    "sun-moon": "الشَّمْسُ وَالْقَمَرُ",
+    "tulip": "الزَّهْرَةُ",
+    "water-drop": "قَطْرَةُ الْمَاءِ",
+    "whale": "الْحُوتُ",
+    "wheat": "سَنَابِلُ الْقَمْحِ",
+}
+
+
 def word_of(picture_id: str) -> str:
+    """A picture in words (the answer key): a library picture's word, or the series' icon's (never its id)."""
     if picture_id.startswith(GLYPH_PREFIX):
-        return picture_id[len(GLYPH_PREFIX) :]
+        name = picture_id[len(GLYPH_PREFIX) :]
+        return GLYPH_WORDS.get(name, name)
     return library_picture(picture_id).word_ar
 
 
@@ -139,7 +180,7 @@ def side(ctx: PageContext, value: Any, problems: list[str], i: int) -> dict[str,
 def _describe(ctx: PageContext, value: Any) -> str:
     """A side in words, for the answer key: its text, its source's title, or its picture's word."""
     if value.t:
-        return ctx.text(value.t)
+        return plain(ctx, value.t)
     if value.source:
         src = context_of(ctx).resolver.register.by_id.get(value.source)
         return src.title_ar if src else value.source
@@ -317,5 +358,5 @@ def cut_paste(ctx: PageContext) -> Built:
         "cols": 2 if len(page.pieces) == 4 else 3,
         "labels": {"paste": "أُلْصِقُ هُنَا", "cut": "أَقُصُّ عَلَى الْخَطِّ"},
     }
-    answer = [f"{slots[i]}: {ctx.text(p.t) or word_of(p.pic)}" for i, p in enumerate(page.pieces)]
+    answer = [f"{slots[i]}: {plain(ctx, p.t) or word_of(p.pic)}" for i, p in enumerate(page.pieces)]
     return Built(data, answer, problems)

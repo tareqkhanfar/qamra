@@ -15,6 +15,7 @@ from qamra_workbook.render.islamic_content import (
     UnitClosing,
 )
 from qamra_workbook.render.pages.islamic_common import (
+    answer_lines,
     choice,
     chrome,
     claim,
@@ -66,9 +67,7 @@ def pillar_card(ctx: PageContext) -> Built:
         },
         "refs": references(ctx, [*source_ids(page.idea), *page.question.sources]),
     }
-    return Built(
-        data, ["الجواب: " + "، ".join(c["text"] for c in data["question"]["choices"] if c["ok"])], problems
-    )
+    return Built(data, answer_lines(ctx, page.question.text, data["question"]["choices"]), problems)
 
 
 @islamic_page("my-day-with-allah")

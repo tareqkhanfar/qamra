@@ -10,7 +10,7 @@ units:
   - id: u-manners2
     lessons:
       - {t: "أَحْفَظُ لِسَانِي", c: [c-tongue], s: [h-bukhari-6018, h-bukhari-10, q-49-11], p: [story, wwyd, true-false]}
-      - {t: "أَمِينٌ عَلَى مَا عِنْدِي", c: [c-trust], s: [q-4-58, h-abudawud-3535], p: [story, wwyd, match]}
+      - {t: "{أَمِينٌ/أَمِينَةٌ} عَلَى مَا عِنْدِي", c: [c-trust], s: [q-4-58, h-abudawud-3535], p: [story, wwyd, match]}
       - {t: "أَسْتَأْذِنُ قَبْلَ أَنْ أَدْخُلَ", c: [c-permission], s: [h-bukhari-6245, q-24-27], p: [story, role-play, true-false]}
       - {t: "أَرْحَمُ الْجَمِيعَ", c: [c-mercy, c-animals, c-respect-elders], s: [h-abudawud-4941, h-tirmidhi-1919, h-bukhari-2363, h-bukhari-5997], p: [story, wwyd, coloring]}
       - {t: "صَدِيقِي وَجَارِي", c: [c-friends, c-neighbors], s: [q-49-10, h-bukhari-6014, h-bukhari-6064], p: [story, wwyd, match]}
@@ -36,7 +36,7 @@ units:
       - {t: "لَوْ وَجَدْتُ شَيْئًا لَيْسَ لِي", c: [c-wdif-found, c-trust], s: [q-4-58, s-found-item], p: [wdif, story, choose]}
       - {t: "لَوْ نَسِيتُ الصَّلَاةَ", c: [c-wdif-forgot], s: [h-bukhari-597], p: [wdif, wwyd, order-steps]}
       - {t: "لَوْ كَذَبْتُ مَرَّةً أُخْرَى", c: [c-wdif-lie, c-forgive], s: [h-tirmidhi-2499, q-2-222, h-bukhari-6094], p: [wdif, story, draw]}
-      - {t: "لَوْ ظَلَمْتُ صَدِيقِي", c: [c-wdif-friend], s: [q-49-10, h-bukhari-6064], p: [wdif, wwyd, match]}
+      - {t: "لَوْ ظَلَمْتُ {صَدِيقِي/صَدِيقَتِي}", c: [c-wdif-friend], s: [q-49-10, h-bukhari-6064], p: [wdif, wwyd, match]}
       - {t: "لَوْ غَضِبْتُ", c: [c-wdif-anger], s: [h-bukhari-6114, d-anger-refuge, h-abudawud-4782], p: [wdif, story, draw]}
   - id: u-surahs2
     lessons:

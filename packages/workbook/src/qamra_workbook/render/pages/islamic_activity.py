@@ -28,6 +28,7 @@ from qamra_workbook.render.pages.islamic_common import (
     islamic_page,
     page_of,
     picture_problems,
+    plain,
     references,
     rich,
     scene,
@@ -111,7 +112,7 @@ def order_cards(ctx: PageContext, require_art: bool) -> Built:
         "refs": references(ctx, ids),
     }
     answer = [
-        f"{ctx.num(s.n)}) {ctx.text(s.t)}" + (f" ×{ctx.num(s.times)}" if s.times else "") for s in steps
+        f"{ctx.num(s.n)}) {plain(ctx, s.t)}" + (f" ×{ctx.num(s.times)}" if s.times else "") for s in steps
     ]
     return Built(data, answer, problems)
 
