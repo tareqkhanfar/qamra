@@ -238,7 +238,7 @@ def test_a_recipe_carries_its_safety_box() -> None:
 def test_section_names_are_personalized() -> None:
     specs = (page(60, "memory-page", "responsible"), page(30, "memory-page", "chef"))
     girl = build_pages(book(*specs), ASSETS)
-    assert [p.section_name for p in girl] == ["أَنا مَسْؤولَةٌ", "الشّيفُ الصَّغيرَةُ"]
+    assert [p.section_name for p in girl] == ["أَنا مَسْؤولَةٌ", "الطَّبّاخَةُ الصَّغيرَةُ"]
     assert build_pages(book(specs[0], child=Child("كرم", "m")), ASSETS)[0].section_name == "أَنا مَسْؤولٌ"
     html = book_html(book(*specs), girl, ASSETS)
     assert "أَنا مَسْؤولَةٌ" in html and "{أَنا مَسْؤولٌ/" not in html

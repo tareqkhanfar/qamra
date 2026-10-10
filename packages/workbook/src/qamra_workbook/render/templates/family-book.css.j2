@@ -454,6 +454,10 @@
 .tally-boxes { flex: 1; display: flex; flex-wrap: wrap; gap: 1.2mm; }
 .tally-boxes span { width: 8.4mm; height: 8.4mm; flex: none; border-radius: 2mm; border: 0.45mm solid var(--c); background: #FFFFFF; }
 .tally-boxes span.lvl2 { border-style: dashed; border-color: #E8C77F; }
+/* a family of 6 and the child: 7 rows still fit the 21 × 28 page */
+.tally.many { gap: 0.8mm; padding: 2.4mm 4mm; }
+.tally.many .tally-boxes span { width: 6.6mm; height: 6.6mm; border-radius: 1.6mm; }
+.tally.many .tally-row b { font-size: 10.5pt; }
 .score { flex: 1; min-height: 0; display: grid; grid-template-columns: 34mm repeat(var(--rounds), 1fr) 22mm; grid-auto-rows: auto; gap: 1.5mm;
          align-content: space-evenly; padding: 3.5mm 4mm; }
 .sc-head { font: 700 9.5pt var(--body); color: var(--deep); text-align: center; background: var(--tint); border-radius: 2.5mm; padding: 1.4mm 0;

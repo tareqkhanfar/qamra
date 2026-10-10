@@ -146,7 +146,7 @@ def qamra_count(n: int, numerals: Numerals = "hindi") -> str:
         return "قَمْرَةٌ واحِدَةٌ"
     if n == 2:
         return "قَمْرَتانِ"
-    return f"{format_number(n, numerals)} {'قَمْراتٍ' if 3 <= n <= 10 else 'قَمْرَةً'}"
+    return f"{format_number(n, numerals)} {'قَمَراتٍ' if 3 <= n <= 10 else 'قَمْرَةً'}"
 
 
 def note_art(color: str, deep: str) -> Markup:

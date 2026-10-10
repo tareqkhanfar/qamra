@@ -97,7 +97,7 @@ def test_the_journey_greets_and_helps_aba_bakr(stage: int, gender: str) -> None:
     interior, _ = stage_specs(Child("أبو بكر", gender), stage, name_en="Abu Bakr", day=DAY)  # type: ignore[arg-type]
     text = printed(build_pages(interior, ASSETS))
     assert not WRONG.search(text)
-    assert "رائِعٌ يا أبا بكر!" in text  # «ماذا تَعَلَّمْتُ؟» pages
+    assert ("رائِعٌ يا أبا بكر!" if gender == "m" else "رائِعَةٌ يا أبا بكر!") in text  # «ماذا تَعَلَّمْتُ؟»
     assert ("ساعِدْ أبا بكر لِلْوُصولِ" if gender == "m" else "ساعِدي أبا بكر لِلْوُصولِ") in text  # the maze
     assert "أبو بكر" in text  # the owner page and the map keep the name as typed
     if stage in (1, 2):
@@ -110,7 +110,7 @@ def test_the_journey_greets_and_helps_aba_bakr(stage: int, gender: str) -> None:
 def test_the_journey_keeps_a_girls_name(stage: int) -> None:
     interior, _ = stage_specs(Child("سلمى", "f"), stage, name_en="Salma", day=DAY)
     text = printed(build_pages(interior, ASSETS))
-    assert "رائِعٌ يا سلمى!" in text and "ساعِدي سلمى لِلْوُصولِ" in text
+    assert "رائِعَةٌ يا سلمى!" in text and "ساعِدي سلمى لِلْوُصولِ" in text
 
 
 def _family_book(child: Child, family: Family | None = None) -> BookSpec:
@@ -227,7 +227,9 @@ def test_the_family_book_puts_aba_bakr_and_his_grandfather_in_the_genitive(gende
     assert "احكوا لأبي بكر عن" in text and "وتشجيع لأبي بكر." in text  # «لـ{child:gen}»: the لا ligature
     assert "مع أبي بكر في المطبخ" in text and "اطلبوا من أبي بكر أن" in text and "بكلمات أبي بكر" in text
     assert "وَنُحَضِّرُ مَعَ أبي أحمد" in text and "من أبي أحمد ويدًا بيد" in text
-    assert "أَحْكي لِأبي أحمد" in text and "مُقابَلَةٌ مَعَ أبي أحمد" in text and "نَتَّصِلُ بِـأبي أحمد" in text
+    assert "أَحْكي لِأبي أحمد" in text and "نَتَّصِلُ بِـأبي أحمد" in text
+    # the interview (p81, with ماما) and its preview on the opener name the same grown-up
+    assert "مُقابَلَةٌ مَعَ ماما" in text and "مُقابَلَةٌ مَعَ أبي أحمد" not in text
     assert "'members': 'مَعَ أبي أحمد وماما'" in text  # the certificate
     assert ("يبقى أبو بكر" if gender == "m" else "تبقى أبو بكر") in text  # a subject: as typed
     assert "اشكروا أبا بكر على" in text  # the accusative is unchanged

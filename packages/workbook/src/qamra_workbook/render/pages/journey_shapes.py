@@ -352,7 +352,7 @@ def rule_coloring(ctx: PageContext) -> Built:
             row, col = divmod(k, 3)
             x = W - 16 - (col + 1) * (size + 10)
             body += _coloring_answer(w, x, 56 + row * (size + 12), size, k < count)
-        key.append(f"يلوّن {ctx.num(count)} فقط")
+        key.append(f"نلوّن {ctx.num(count)} فقط")
     elif rule == "key":
         legend = {str(k): str(v) for k, v in dict(params.get("key", {})).items()}
         parts = [

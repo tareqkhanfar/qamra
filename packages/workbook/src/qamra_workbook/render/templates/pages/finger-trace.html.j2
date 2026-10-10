@@ -1,6 +1,6 @@
 <div class="finger-page">
   <div class="finger-card">
-    <div class="finger-hint">{{ icon('hand') }}<span>ابدأ من النقطة الخضراء</span></div>
+    <div class="finger-hint">{{ icon('hand') }}<span>{{ 'ابْدَئي مِنَ النُّقْطَةِ الخَضْراءِ' if book.child.gender == 'f' else 'ابْدَأْ مِنَ النُّقْطَةِ الخَضْراءِ' }}</span></div>
     {{ d.letter }}
   </div>
   <div class="finger-bottom">
@@ -8,6 +8,7 @@
       <div class="word-pic">{{ d.pic }}</div>
       <div class="word-text">{{ d.word }}</div>
     </div>
-    {{ ui.qr_card(p, 'اسمع صوت الحرف', 'امسحوا الرمز ليسمع الطفل «' ~ d.char ~ '» والكلمة.') }}
+    {% set girl = book.child.gender == 'f' %}
+    {{ ui.qr_card(p, 'اسْمَعي صَوْتَ الحَرْفِ' if girl else 'اسْمَعْ صَوْتَ الحَرْفِ', 'امسحوا الرمز ' ~ ('لتسمع طفلتكم' if girl else 'ليسمع طفلكم') ~ ' «' ~ d.char ~ '» والكلمة.') }}
   </div>
 </div>

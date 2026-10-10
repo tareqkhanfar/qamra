@@ -22,7 +22,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 from qamra_pdf.arabic_names import fill_name
-from qamra_workbook.family import SKILLS, FamilyPlan, Placed
+from qamra_workbook.family import SKILLS, FamilyPlan, Placed, book_pages
 from qamra_workbook.journey import JourneyPage
 
 Lang = Literal["ar", "en"]
@@ -441,9 +441,23 @@ def from_family(placed: Placed, plan: FamilyPlan) -> PageSpec:
             ahead = [
                 a for a in plan.activities if a.section == section.id and a.pages[0].type != "memory-page"
             ]
+            # each title names the grown-up of the activity's own first page («مُقابَلَةٌ مَعَ {adult:gen}»
+            # previews the interview with the person the interview page names, a man or a woman alike)
+            first: dict[str, Placed] = {}
+            for placed_page in book_pages(plan):
+                if placed_page.activity is not None:
+                    first.setdefault(placed_page.activity.id, placed_page)
             params.setdefault(
                 "inside",
-                [{"icon": OPENER_ICONS.get(a.pages[0].type, "star"), "text": a.title} for a in ahead[:3]],
+                [
+                    {
+                        "icon": OPENER_ICONS.get(a.pages[0].type, "star"),
+                        "text": a.title,
+                        "page": first[a.id].n if a.id in first else 0,
+                        **{k: v for k, v in a.pages[0].params.items() if k in ("adult", "member")},
+                    }
+                    for a in ahead[:3]
+                ],
             )
     tags = None
     if activity is not None:

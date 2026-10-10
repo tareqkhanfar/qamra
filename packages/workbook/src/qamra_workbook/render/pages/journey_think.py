@@ -155,7 +155,7 @@ def memory_recall(ctx: PageContext) -> Built:
         if w in answer:
             body.append(ring_at(x + size / 2, top + y + size / 2, size / 2 + 3, size / 2 + 3))
     names = "، ".join(PICTURES[pid(w)].word_ar for w in answer)
-    return Built({"svg": svg(body)}, [("اختفت: " if shown else "رأى: ") + names], problems)
+    return Built({"svg": svg(body)}, [("اختفت: " if shown else ctx.text("{رأى/رأت}: ")) + names], problems)
 
 
 @page_type("whats-missing")
@@ -496,6 +496,29 @@ def hidden_picture(ctx: PageContext) -> Built:
     return Built({"svg": svg(body)}, key, [] if 3 <= len(hidden) <= 6 else ["hide 3–6 things"])
 
 
+# a coloured shape as the answer key names it: «دائرة حمراء»، «مثلث أزرق» (the colour agrees with the shape)
+_SHAPE_AR = {
+    "circle": ("دائرة", True),
+    "square": ("مربع", False),
+    "triangle": ("مثلث", False),
+    "rectangle": ("مستطيل", False),
+    "star": ("نجمة", True),
+    "heart": ("قلب", False),
+}
+_COLOUR_AR = {
+    "red": ("أحمر", "حمراء"),
+    "blue": ("أزرق", "زرقاء"),
+    "yellow": ("أصفر", "صفراء"),
+    "green": ("أخضر", "خضراء"),
+    "pink": ("وردي", "وردية"),
+}
+
+
+def _shape_colour(shape: str, colour: str) -> str:
+    name, feminine = _SHAPE_AR.get(shape, (shape, False))
+    return f"{name} {_COLOUR_AR.get(colour, (colour, colour))[1 if feminine else 0]}"
+
+
 @page_type("journey-classify-shapes")
 def classify_shapes(ctx: PageContext) -> Built:
     """Sort by shape and colour at once: coloured shapes above, a box per shape × colour below."""
@@ -528,5 +551,5 @@ def classify_shapes(ctx: PageContext) -> Built:
         )
         body.append(filled(k, centers[j], (box_top + box_bottom) / 2, 18, colors[c]))
         body += [hook(centers[j], box_top - 4, 2), hook(centers[j], box_bottom + 4, 2)]
-    key = [f"{ctx.num(2)} من كل نوع: " + "، ".join(f"{k}/{c}" for k, c in groups)]
+    key = [f"{ctx.num(2)} من كل نوع: " + "، ".join(_shape_colour(k, c) for k, c in groups)]
     return Built({"svg": svg(body)}, key)

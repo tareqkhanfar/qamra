@@ -201,13 +201,23 @@ def story_finish(ctx: PageContext) -> Built:
 # ---- the interview -----------------------------------------------------------------------------------------
 
 
+FEMININE_FIGURES = frozenset({"woman", "grandma", "girl"})  # how `Member.drawn_as` tells a woman or a girl
+
+
 @page_type("interview-template")
 def interview_template(ctx: PageContext) -> Built:
     """The child interviews a grown-up about their work: ⭐ questions, then ⭐⭐ ones, each with room to draw
     or write the answer, and a portrait of the person interviewed."""
     params = ctx.page.params
     problems: list[str] = []
-    family_of(ctx, problems)
+    family = family_of(ctx, problems)
+    # «ارْسُمِ الضَّيْفَ» or «الضَّيْفَةَ»: the person interviewed, as the page names them (`{adult}`)
+    guest = family.pick(family.adults, ctx.page.number, str(params.get("adult", ""))) if family else None
+    feminine = (
+        guest is not None
+        and guest.drawn_as in FEMININE_FIGURES
+        and "{adult" in str(params.get("who", "{adult}"))
+    )
     questions = [dict(q) for q in params.get("questions", [])]
     if not 3 <= len(questions) <= 6:
         problems.append(f"an interview has 3–6 questions, not {len(questions)}")
@@ -223,5 +233,6 @@ def interview_template(ctx: PageContext) -> Built:
             for i, q in enumerate(questions)
         ],
         "reporter": ctx.text("{الصَّحَفِيُّ/الصَّحَفِيَّةُ}: {child}"),
+        "guest": "الضَّيْفَةَ" if feminine else "الضَّيْفَ",
     }
     return Built(data, None, problems)

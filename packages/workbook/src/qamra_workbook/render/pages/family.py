@@ -10,6 +10,7 @@ seven different days in the challenge.
 
 from __future__ import annotations
 
+import dataclasses
 import math
 import re
 from collections.abc import Mapping, Sequence
@@ -31,7 +32,7 @@ from qamra_workbook.render.pages.thinking import shape_kind
 from qamra_workbook.render.registry import Built, PageContext, page_type
 from qamra_workbook.render.sections import FAMILY as FAMILY_SECTIONS
 from qamra_workbook.render.sections import section_style
-from qamra_workbook.render.spec import CITY_FALLBACK_VOWELIZED, Family, Member
+from qamra_workbook.render.spec import CITY_FALLBACK_VOWELIZED, Family, Member, PageSpec
 
 
 @dataclass(frozen=True)
@@ -392,6 +393,15 @@ def family_group(
     return draw.svg(width, height, "".join(body + front), "family-group"), tags
 
 
+def named(ctx: PageContext, item: Mapping[str, Any]) -> PageSpec:
+    """The page a preview of an activity speaks for: the activity's own first page (`page`, and its `adult`
+    or `member`), so the opener names the grown-up that page names; else the opener itself."""
+    if not item.get("page"):
+        return ctx.page
+    who = {k: item[k] for k in ("adult", "member") if k in item}
+    return dataclasses.replace(ctx.page, number=int(item["page"]), params={**ctx.page.params, **who})
+
+
 @page_type("section-opener", frame="full")
 def section_opener(ctx: PageContext) -> Built:
     """Two facing pages: the right-hand one (read first) tells the story, the left-hand one shows the family
@@ -403,7 +413,10 @@ def section_opener(ctx: PageContext) -> Built:
     style = ctx.style
     badge = Badge(style.id, str(ctx.page.params.get("badge", style.name_ar)), style.icon, style.color)
     inside = [
-        {"icon": str(x.get("icon", "star")), "text": ctx.text(str(x["text"]))}
+        {
+            "icon": str(x.get("icon", "star")),
+            "text": ctx.num(ctx.book.personalize(str(x["text"]), named(ctx, x))),
+        }
         for x in ctx.page.params.get("inside", [])
     ]
     group, tags = Markup(""), list[dict[str, Any]]()

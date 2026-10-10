@@ -15,7 +15,8 @@ from qamra_workbook.render.pages.workbook_common import ring_at
 from qamra_workbook.render.registry import Built, PageContext, page_type
 from qamra_workbook.render.spec import Figure
 
-QR_NOTE = "للأهل: امسحوا الرمز بالهاتف ليسمع الطفل، أو اقرؤوا الكلمات بصوتكم."
+# for the grown-up, with the child's gender (`ctx.text`): «ليسمع طفلكم» / «لتسمع طفلتكم»
+QR_NOTE = "للأهل: امسحوا الرمز بالهاتف {ليسمع طفلكم/لتسمع طفلتكم}، أو اقرؤوا الكلمات بصوتكم."
 
 
 def _audio_problem(ctx: PageContext) -> list[str]:
@@ -64,7 +65,7 @@ def listen_rows(ctx: PageContext) -> Built:
                     ).replace('class="key-ring"', "" if example else 'class="key-ring"')
                 )
     key = [f"{ctx.num(i + 1)}: {PICTURES[pid(a)].word_ar}" for i, a in enumerate(answers)]
-    return Built({"svg": svg(body), "qr_note": QR_NOTE}, key, problems)
+    return Built({"svg": svg(body), "qr_note": ctx.text(QR_NOTE)}, key, problems)
 
 
 def speaker(cx: float, cy: float, s: float, waves: int) -> str:
@@ -109,7 +110,7 @@ def _two_choice_rows(
             if (k == 0) == yes:
                 body.append(ring_at(cx, y + h / 2, 27, h / 2 - 3))
         key.append(f"{ctx.num(i + 1)}: {names[0] if yes else names[1]}")
-    return Built({"svg": svg(body), "qr_note": QR_NOTE}, key, _audio_problem(ctx))
+    return Built({"svg": svg(body), "qr_note": ctx.text(QR_NOTE)}, key, _audio_problem(ctx))
 
 
 @page_type("loud-soft")
@@ -160,10 +161,12 @@ def same_different(ctx: PageContext) -> Built:
     """Each row plays two sounds: circle the twins (the same) or the two different shapes."""
     pairs = [(str(a), str(b)) for a, b in ctx.page.params.get("pairs", [])]
     rows = [{"same": a == b} for a, b in pairs]
-    built = _two_choice_rows(ctx, rows, "same", _same, _different, ("متشابهان", "مختلفان"))
+    # the key agrees with what the title compares: two sounds («متشابهان») or two words («متشابهتان»)
+    same, different = (str(x) for x in ctx.page.params.get("names", ("متشابهان", "مختلفان")))
+    built = _two_choice_rows(ctx, rows, "same", _same, _different, (same, different))
     built.answer = [
         f"{ctx.num(i + 1)}: {PICTURES[pid(a)].word_ar} و{PICTURES[pid(b)].word_ar} — "
-        f"{'متشابهان' if a == b else 'مختلفان'}"
+        f"{same if a == b else different}"
         for i, (a, b) in enumerate(pairs)
     ]
     return built
@@ -275,17 +278,19 @@ def claps(ctx: PageContext) -> Built:
                     draw.el("circle", cx=cx, cy=y + h / 2, r=6.4, fill=ctx.style.color, class_="key-ring")
                 )
         key.append(f"{PICTURES[w].word_ar}: {ctx.num(counts[i])}")
-    return Built({"svg": svg(body), "qr_note": QR_NOTE}, key, problems)
+    return Built({"svg": svg(body), "qr_note": ctx.text(QR_NOTE)}, key, problems)
 
 
 @page_type("journey-rhyme")
 def rhyme(ctx: PageContext) -> Built:
     """Each row: three pictures; colour the two whose names end the same way (`pairs` lists the rhyming
-    pair, `odd` the third)."""
+    pair, `odd` the third; `words`: the pair's words as the audio says them, «قَمَر، شَجَر», when a picture's
+    own name does not rhyme, «شَجَرَة»)."""
     pairs = [[pid(str(a)), pid(str(b))] for a, b in ctx.page.params.get("pairs", [])]
     odd = [pid(str(o)) for o in ctx.page.params.get("odd", [])]
     problems = _audio_problem(ctx) + ([] if len(odd) == len(pairs) else ["one odd picture per pair"])
     odd = (odd + ["apple"] * len(pairs))[: len(pairs)]
+    words = [[str(x) for x in pair] for pair in ctx.page.params.get("words", [])]
     body, key = [], []
     for i, ((y, h), pair) in enumerate(zip(rows_of(len(pairs)), pairs, strict=True)):
         body.append(card(0, y, W, h, r=8))
@@ -298,8 +303,9 @@ def rhyme(ctx: PageContext) -> Built:
                 body.append(
                     picture(w, x, y + (h - size) / 2, size).replace("<svg", '<svg class="key-ring"', 1)
                 )
-        key.append(f"{PICTURES[pair[0]].word_ar} و{PICTURES[pair[1]].word_ar}")
-    return Built({"svg": svg(body), "qr_note": QR_NOTE}, key, problems)
+        said = words[i] if i < len(words) else [PICTURES[w].word_ar for w in pair]
+        key.append(f"{said[0]} و{said[1]}")
+    return Built({"svg": svg(body), "qr_note": ctx.text(QR_NOTE)}, key, problems)
 
 
 FIGURES: dict[str, Figure] = {

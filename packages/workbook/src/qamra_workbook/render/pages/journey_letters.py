@@ -52,7 +52,8 @@ from qamra_workbook.render.pages.workbook_front import arabic_name_row, spell
 from qamra_workbook.render.registry import Built, PageContext, page_type
 
 LINE = "#C9B994"
-QR_NOTE = "للأهل: امسحوا الرمز ليسمع الطفل، أو اقرؤوا بصوتكم."
+# for the grown-up, with the child's gender (`ctx.text`): «ليسمع طفلكم» / «لتسمع طفلتكم»
+QR_NOTE = "للأهل: امسحوا الرمز {ليسمع طفلكم/لتسمع طفلتكم}، أو اقرؤوا بصوتكم."
 
 
 def shape(char: str, form: str = "isolated") -> Letter:
@@ -196,7 +197,7 @@ def first_sound(ctx: PageContext) -> Built:
             if k == 0 and ctx.page.example:
                 body.append(ring_at(x + size / 2, y + size / 2, size / 2 + 3, size / 2 + 3, color="#2FA36B"))
     key_text = "تبدأ بالصوت نفسه: " + "، ".join(PICTURES[w].word_ar for w in words)
-    return Built({"svg": svg(body), "qr_note": QR_NOTE}, [key_text], problems)
+    return Built({"svg": svg(body), "qr_note": ctx.text(QR_NOTE)}, [key_text], problems)
 
 
 @page_type("journey-en-letter")
@@ -350,7 +351,7 @@ def letter_progression(ctx: PageContext, level: int) -> Built:
         key.append(f"{ctx.num(i + 1)}: {char}")
     if params.get("target") == "dictation" and not ctx.page.audio:
         problems.append("a dictation page carries an audio QR")
-    return Built({"svg": svg(body), "qr_note": QR_NOTE}, key, problems)
+    return Built({"svg": svg(body), "qr_note": ctx.text(QR_NOTE)}, key, problems)
 
 
 def _trace_caps(shape_: Letter) -> dict[str, float]:
@@ -497,7 +498,9 @@ def harakat(ctx: PageContext) -> Built:
         body.append(card(0, 140, W, 60, r=8))
         body.append(text("أَقْرَأُ ثُمَّ أَكْتُبُ:", W - 8, 154, 5.2, cls="wb-label", color="#676B83", anchor="end"))
         body.append(draw.path(f"M{W - 8} 190 L8 190", stroke=LINE, width=0.9))
-        return Built({"svg": svg(body), "qr_note": QR_NOTE}, ["يقرأ: " + "، ".join(examples)], problems)
+        return Built(
+            {"svg": svg(body), "qr_note": ctx.text(QR_NOTE)}, ["نقرأ: " + "، ".join(examples)], problems
+        )
     pitch = (H - 52) / len(letters)
     for i, char in enumerate(letters):
         y = 52 + i * pitch
@@ -511,7 +514,7 @@ def harakat(ctx: PageContext) -> Built:
                 with_mark(char, kind, W - 100 - k * 36, y + 4, 32, pitch - 13, ctx.style.color, dotted=True)
             )
         body.append(draw.start_dot((W - 100 + 4, y + 10), 1.6))
-    return Built({"svg": svg(body), "qr_note": QR_NOTE}, ["يقرأ: " + "، ".join(examples)], problems)
+    return Built({"svg": svg(body), "qr_note": ctx.text(QR_NOTE)}, ["نقرأ: " + "، ".join(examples)], problems)
 
 
 def _word_start(word_id: str, syllable: str) -> bool:
@@ -559,7 +562,9 @@ def syllables(ctx: PageContext) -> Built:
             )
             body.append(row)
             key.append(result)
-        return Built({"svg": svg(body), "qr_note": QR_NOTE}, ["الكلمات: " + "، ".join(key)], problems)
+        return Built(
+            {"svg": svg(body), "qr_note": ctx.text(QR_NOTE)}, ["الكلمات: " + "، ".join(key)], problems
+        )
     examples = [str(e) for e in params.get("examples", [])]
     matches = [pid(str(w)) for w in params.get("pictures", [])]
     if len(matches) != len(examples):
@@ -583,7 +588,7 @@ def syllables(ctx: PageContext) -> Built:
         [order.index(i) for i in range(len(examples))],
     )
     key = [f"{s} ← {PICTURES[w].word_ar}" for s, w in zip(examples, matches, strict=True)]
-    return Built({"svg": svg(body), "qr_note": QR_NOTE}, key, problems)
+    return Built({"svg": svg(body), "qr_note": ctx.text(QR_NOTE)}, key, problems)
 
 
 # ---- reading and writing words (§4.9), English words and sentences (§4.11) ----------------------------
@@ -902,7 +907,7 @@ def alphabet(ctx: PageContext) -> Built:
                 color="#1C2140",
             )
         )
-        return Built({"svg": svg(body), "qr_note": QR_NOTE}, ["الحروف الثمانية والعشرون"], problems)
+        return Built({"svg": svg(body), "qr_note": ctx.text(QR_NOTE)}, ["الحروف الثمانية والعشرون"], problems)
     start, end = str(params.get("from", "A")).upper(), str(params.get("to", "T")).upper()
     missing = {str(m).upper() for m in params.get("missing", [])}
     letters = [chr(c) for c in range(ord(start), ord(end) + 1)]

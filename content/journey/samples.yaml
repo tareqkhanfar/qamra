@@ -32,7 +32,7 @@ samples:
       type: journey-map
       title: "خريطة رحلة {child:gen}"
       instruction: "{لوّن/لوّني} نجمة كل محطة {تنهيها/تنهينها}"
-      skill: "يتعرّف محطات رحلته التسع ويتابع تقدّمه بنفسه"
+      skill: "{يتعرّف/تتعرّف} محطات {رحلته/رحلتها} التسع {ويتابع تقدّمه بنفسه/وتتابع تقدّمها بنفسها}"
       goals: [independence]
       difficulty: 1
       params:
@@ -45,7 +45,7 @@ samples:
       type: odd-one-out
       title: "مَنِ المختلف؟"
       instruction: "{ضع/ضعي} دائرة حول المختلف"
-      skill: "التمييز البصري: يجد الصورة المختلفة بين أربع"
+      skill: "التمييز البصري: {يجد/تجد} الصورة المختلفة بين أربع"
       goals: [observation, visual_discrimination]
       difficulty: 1
       example: true
@@ -58,7 +58,7 @@ samples:
       type: maze
       title: "{ساعد/ساعدي} {child:acc} للوصول إلى الحديقة"
       instruction: "{ارسم/ارسمي} الطريق بالقلم"
-      skill: "التآزر البصري الحركي: يتبع طريقًا دون لمس الجدران"
+      skill: "التآزر البصري الحركي: {يتبع/تتبع} طريقًا دون لمس الجدران"
       goals: [visual_motor, pen_control, attention]
       difficulty: 2
       params: {seed: 19, cols: 5, rows: 5, goal: garden}
@@ -83,7 +83,7 @@ samples:
       type: pattern-complete
       title: "{أكمل/أكملي} النمط"
       instruction: "ماذا يأتي بعد ذلك؟ {ارسمه/ارسميه}"
-      skill: "الأنماط: يكمل نمطًا من عنصرين"
+      skill: "الأنماط: {يكمل/تكمل} نمطًا من عنصرين"
       goals: [logic, sequencing]
       difficulty: 1
       example: true
@@ -96,7 +96,7 @@ samples:
       type: smart-coloring
       title: "{لوّن/لوّني} كل الدوائر"
       instruction: "{لوّن/لوّني} الدوائر فقط مثل النموذج"
-      skill: "التلوين الذكي: يلوّن حسب قاعدة ويميّز الدائرة"
+      skill: "التلوين الذكي: {يلوّن/تلوّن} حسب قاعدة {ويميّز/وتميّز} الدائرة"
       goals: [visual_discrimination, classification, fine_motor]
       difficulty: 1
       example: true
@@ -109,7 +109,7 @@ samples:
       type: quantity-first
       title: "كم تفاحة؟"
       instruction: "{عُدّ/عُدّي} {وضع/وضعي} دائرة حول الرقم"
-      skill: "بعد العدّ: يتعرّف على الأرقام 1–5 بالنظر ويطابقها بالكمية، دون كتابتها"
+      skill: "بعد العدّ: {يتعرّف/تتعرّف} على الأرقام 1–5 بالنظر {ويطابقها/وتطابقها} بالكمية، دون كتابتها"
       goals: [numbers, attention, visual_discrimination]
       difficulty: 2
       example: true
@@ -122,7 +122,7 @@ samples:
       type: listen-and-choose
       title: "{اسمع/اسمعي} {واختر/واختاري}"
       instruction: "{ضع/ضعي} دائرة حول الحيوان الذي {تسمعه/تسمعينه}"
-      skill: "التمييز السمعي: يعرف الحيوان من صوته"
+      skill: "التمييز السمعي: {يعرف/تعرف} الحيوان من صوته"
       goals: [auditory_discrimination, attention]
       difficulty: 1
       audio: true
@@ -135,7 +135,7 @@ samples:
       type: finger-trace
       title: "حرف الباء"
       instruction: "{مرّر/مرّري} إصبعك على الحرف"
-      skill: "حرف جديد واحد: يرى الباء ويسمعها ويتتبعها بإصبعه في اتجاه الكتابة"
+      skill: "حرف جديد واحد: {يرى الباء ويسمعها ويتتبعها بإصبعه/ترى الباء وتسمعها وتتتبعها بإصبعها} في اتجاه الكتابة"
       goals: [arabic, writing_readiness, visual_motor]
       difficulty: 2
       audio: true
@@ -161,7 +161,7 @@ samples:
       type: spot-difference
       title: "{جِد/جِدي} الفروق الخمسة"
       instruction: "{ضع/ضعي} دائرة حول كل فرق"
-      skill: "الانتباه والملاحظة: يقارن صورتين ويجد 5 فروق"
+      skill: "الانتباه والملاحظة: {يقارن/تقارن} صورتين {ويجد/وتجد} 5 فروق"
       goals: [attention, observation, visual_discrimination]
       difficulty: 4
       params: {seed: 97, count: 5}

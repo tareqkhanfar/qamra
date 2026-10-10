@@ -1,5 +1,6 @@
 <div class="listen">
-  {{ ui.qr_card(p, 'امسح الرمز واسمع', 'للأهل: امسحوا الرمز بالهاتف ليسمع الطفل الصوت، أو قلّدوا صوت أحد الحيوانات.') }}
+  {% set girl = book.child.gender == 'f' %}
+  {{ ui.qr_card(p, 'امْسَحي الرَّمْزَ وَاسْمَعي' if girl else 'امْسَحِ الرَّمْزَ وَاسْمَعْ', 'للأهل: امسحوا الرمز بالهاتف ' ~ ('لتسمع طفلتكم' if girl else 'ليسمع طفلكم') ~ ' الصوت، أو قلّدوا صوت أحد الحيوانات.') }}
   <div class="listen-grid n{{ d.cards|length }}">
   {% for card in d.cards %}
     <div class="listen-card">{{ card.pic }}{% if card.hit and solved %}{{ d.ring('answer') }}{% endif %}</div>

@@ -40,7 +40,7 @@ pages:
   13: {title: "أَرْبَعُ صُوَرٍ", instruction: "{انْظُرْ/انْظُري} جَيِّدًا {وَتَذَكَّرْ/وَتَذَكَّري}، ثُمَّ {اقْلِبِ/اقْلِبي} الصَّفْحَةَ", params: {items: [cat, tree, ball, car]}}  # draft: educator review
   14: {title: "أَيُّ صورَةٍ اخْتَفَتْ؟", instruction: "{ضَعْ/ضَعي} دائِرَةً حَوْلَ الصّورَةِ الَّتي اخْتَفَتْ", params: {shown: [cat, tree, car], choices: [ball, apple, duck], answer: [ball]}}  # draft: educator review
   15: {title: "ما نَأْكُلُهُ وَما نَلْبَسُهُ", instruction: "نَأْكُلُهُ أَمْ نَلْبَسُهُ؟ {صِلْ/صِلي} كُلَّ صورَةٍ بِسَلَّتِها", params: {groups: [{label: "نَأْكُلُهُ", icon: plate}, {label: "نَلْبَسُهُ", icon: sun-hat}], items: [[apple, 0], [hat, 1], [bread, 0], [shoe, 1], [banana, 0], [sock, 1]]}}  # draft: educator review
-  16: {title: "ماذا تَعَلَّمْتُ؟", instruction: "{حُلَّ/حُلّي} المُهِمّاتِ، ثُمَّ {لَوِّنْ/لَوِّني} نَجْمَةً لِكُلِّ واحِدَةٍ", params: {tasks: [odd-one-out, big-small, gone], cheer: "رائِعٌ يا {child}!"}}  # draft: educator review
+  16: {title: "ماذا تَعَلَّمْتُ؟", instruction: "{حُلَّ/حُلّي} المُهِمّاتِ، ثُمَّ {لَوِّنْ/لَوِّني} نَجْمَةً لِكُلِّ واحِدَةٍ", params: {tasks: [odd-one-out, big-small, gone], cheer: "{رائِعٌ/رائِعَةٌ} يا {child}!"}}  # draft: educator review
 
   # ---- 👀 عيني تقود يدي
   17: {type: journey-opener, title: "أُلاحِظُ: عَيْني تَقودُ يَدي", instruction: "{خُذْ بَطَلَكَ/خُذي بَطَلَتَكِ} إلى «أُلاحِظُ»", params: {stop: ألاحظ, inside: ["أَتْبَعُ الطَّريقَ بِعَيْني ثُمَّ بِقَلَمي", "أَحُلُّ مَتاهَةً", "أَجِدُ الظِّلَّ وَالطَّريقَ الأَقْصَرَ"]}}  # draft: educator review
@@ -52,7 +52,7 @@ pages:
   23: {title: "أَيْنَ ظِلّي؟", instruction: "{قارِنِ/قارِني} الأَشْكالَ، ثُمَّ {صِلْ/صِلي} كُلَّ طِفْلٍ بِظِلِّهِ", params: {items: [{figure: boy, outfit: "#6E95DB", prop: ball, name: "ولد وكرة"}, {figure: girl, outfit: "#E98AA6", prop: balloon, name: "بنت وبالون"}, {figure: boy, outfit: "#86BF72", prop: kite, name: "ولد وطائرة ورقية"}]}}  # draft: educator review
   24: {title: "الطَّريقُ الأَقْصَرُ", instruction: "أَيُّ طَريقٍ أَقْصَرُ إلى الرَّوْضَةِ؟ {لَوِّنْهُ/لَوِّنيهِ}", params: {to: school}}  # draft: educator review
   25: {title: "لِمَنِ البالونُ؟", instruction: "{اتْبَعْ/اتْبَعي} كُلَّ خَيْطٍ {بِإِصْبَعِكَ/بِإِصْبَعِكِ} حَتّى صاحِبِهِ", params: {from: [red, blue], to: [boy, girl]}}  # draft: educator review
-  26: {title: "ماذا تَعَلَّمْتُ؟", instruction: "{ارْسُمِ/ارْسُمي} الطَّريقَ أَوَّلًا، ثُمَّ {صِلِ/صِلي} الصُّوَرَ", params: {tasks: [trace-path, connect-pairs], cheer: "رائِعٌ يا {child}!"}}  # draft: educator review
+  26: {title: "ماذا تَعَلَّمْتُ؟", instruction: "{ارْسُمِ/ارْسُمي} الطَّريقَ أَوَّلًا، ثُمَّ {صِلِ/صِلي} الصُّوَرَ", params: {tasks: [trace-path, connect-pairs], cheer: "{رائِعٌ/رائِعَةٌ} يا {child}!"}}  # draft: educator review
 
   # ---- 👂 أسمع وأميّز (every page plays its audio item; the scripts are what staff record, in order)
   27: {type: journey-opener, title: "أَسْمَعُ: أَسْمَعُ وَأُمَيِّزُ", instruction: "{امْشِ بِإِصْبَعِكَ/امْشي بِإِصْبَعِكِ} عَلى الطَّريقِ إلى «أَسْمَعُ»", params: {stop: أسمع, inside: ["أُمَيِّزُ أَصْواتَ الحَيَواناتِ وَالأَشْياءِ", "العالي وَالمُنْخَفِضُ، السَّريعُ وَالبَطيءُ", "أَسْمَعُ الكَلِمَةَ وَأَجِدُ صورَتَها"]}}  # draft: educator review
@@ -83,7 +83,7 @@ pages:
     title: "{اسْمَعِ/اسْمَعي} الكَلِمَةَ"
     instruction: "في كُلِّ صَفٍّ {لَوِّنْ/لَوِّني} صورَةَ ما {تَسْمَعُهُ/تَسْمَعينَهُ}"
     params: {rows: [[ball, moon], [cat, duck], [tree, sun]], answers: [ball, cat, sun], style: line}
-    audio: {title: "اسْمَعِ الكَلِمَةَ", say: "كُرَة. قِطَّة. شَمْس.", show: ["كُرَة", "قِطَّة", "شَمْس"], tts: true}
+    audio: {title: "أَسْمَعُ الكَلِمَةَ", say: "كُرَة. قِطَّة. شَمْس.", show: ["كُرَة", "قِطَّة", "شَمْس"], tts: true}
   33:  # draft: educator review
     type: same-different
     title: "مُتَشابِهانِ أَمْ مُخْتَلِفانِ؟"
@@ -93,7 +93,7 @@ pages:
   34:  # draft: educator review
     title: "ماذا تَعَلَّمْتُ؟"
     instruction: "ثَلاثَةُ أَصْواتٍ: {أَشِرْ/أَشيري} إلى صورَةِ كُلِّ صَوْتٍ"
-    params: {tasks: [animal-sound, loud-soft, word], cheer: "رائِعٌ يا {child}!"}
+    params: {tasks: [animal-sound, loud-soft, word], cheer: "{رائِعٌ/رائِعَةٌ} يا {child}!"}
     audio: {say: "الأول: بقرة تخور. الثاني: طبل عالٍ. الثالث: كلمة «شَمْس».", show: ["بَقَرَة", "طَبْل", "شَمْس"]}
 
   # ---- ✋ أدرّب يدي (writing level 1: lines)
@@ -110,7 +110,7 @@ pages:
   45: {title: "نِصْفُ الصّورَةِ", instruction: "نِصْفُ كُلِّ صورَةٍ مُنَقَّطٌ: {أَكْمِلْهُ/أَكْمِليهِ} بِالقَلَمِ", params: {items: [balloon, apple, sun]}}  # draft: educator review
   46: {title: "ماذا نَسِيَ الرَّسّامُ؟", instruction: "{ابْحَثْ/ابْحَثي} عَمّا يَنْقُصُ كُلَّ صورَةٍ {وَارْسُمْهُ/وَارْسُميهِ}", params: {items: [{picture: sun, drop: [0], missing: "الأشعّة"}, {picture: cat, drop: [8], missing: "الشوارب"}, {picture: flower, drop: [0, 1], missing: "الساق والأوراق"}]}}  # draft: educator review
   47: {type: spiral-path, title: "بَيْتُ الحَلَزونِ", instruction: "{ساعِدِ/ساعِدي} الحَلَزونَ: {امْشِ/امْشي} داخِلَ الطَّريقِ إلى الوَرَقَةِ", params: {from: snail, to: leaf}}  # draft: educator review
-  48: {title: "ماذا تَعَلَّمْتُ؟", instruction: "مَطَرٌ وَعُشْبٌ وَأَمْواجٌ: {ارْسُمْها/ارْسُميها} بِالتَّرْتيبِ", params: {tasks: [beach, pen-lines], cheer: "رائِعٌ يا {child}!"}}  # draft: educator review
+  48: {title: "ماذا تَعَلَّمْتُ؟", instruction: "مَطَرٌ وَعُشْبٌ وَأَمْواجٌ: {ارْسُمْها/ارْسُميها} بِالتَّرْتيبِ", params: {tasks: [beach, pen-lines], cheer: "{رائِعٌ/رائِعَةٌ} يا {child}!"}}  # draft: educator review
 
   # ---- 🔺 الأشكال والألوان (writing level 2: shapes)
   49: {type: journey-opener, title: "أُمْسِكُ القَلَمَ: الأَشْكالُ وَالأَلْوانُ", instruction: "{انْقُلْ بَطَلَكَ/انْقُلي بَطَلَتَكِ} إلى «أُمْسِكُ القَلَمَ»", params: {stop: "أمسك القلم", inside: ["أُمْسِكُ القَلَمَ بِثَلاثِ أَصابِعَ", "أَتَعَرَّفُ سِتَّةَ أَشْكالٍ", "أَتَعَرَّفُ تِسْعَةَ أَلْوانٍ"]}}  # draft: educator review
@@ -132,7 +132,7 @@ pages:
   65: {title: "وَرْدِيٌّ وَأَسْوَدُ وَأَبْيَضُ", instruction: "{فَكِّرْ/فَكِّري} في لَوْنِ كُلِّ شَيْءٍ، ثُمَّ {لَوِّنْهُ/لَوِّنيهِ}", params: {colors: [pink, black, white], items: [rose, cat, sheep]}}  # draft: educator review
   66: {title: "صَناديقُ الأَلْوانِ", instruction: "لِكُلِّ لَوْنٍ صُنْدوقٌ: {صِلْ/صِلي} كُلَّ شَيْءٍ بِصُنْدوقِهِ", params: {groups: [{label: "أَحْمَرُ", color: red}, {label: "أَصْفَرُ", color: yellow}, {label: "أَخْضَرُ", color: green}], items: [[apple, 0], [banana, 1], [cucumber, 2], [strawberry, 0], [lemon, 1], [leaf, 2]]}}  # draft: educator review
   67: {type: shape-hunt, title: "أَشْكالٌ في الحَديقَةِ", instruction: "أَشْكالٌ تَخْتَبِئُ في الحَديقَةِ: {لَوِّنْها/لَوِّنيها} حَسَبَ المِفْتاحِ", params: {key: {circle: yellow, square: blue, triangle: red, rectangle: green, star: orange, heart: pink}}}  # draft: educator review
-  68: {title: "ماذا تَعَلَّمْتُ؟", instruction: "{ارْسُمْ/ارْسُمي} شَكْلًا {تُحِبُّهُ/تُحِبّينَهُ}، ثُمَّ {لَوِّنْهُ/لَوِّنيهِ}", params: {tasks: [shapes, draw-shape], cheer: "رائِعٌ يا {child}!"}}  # draft: educator review
+  68: {title: "ماذا تَعَلَّمْتُ؟", instruction: "{ارْسُمْ/ارْسُمي} شَكْلًا {تُحِبُّهُ/تُحِبّينَهُ}، ثُمَّ {لَوِّنْهُ/لَوِّنيهِ}", params: {tasks: [shapes, draw-shape], cheer: "{رائِعٌ/رائِعَةٌ} يا {child}!"}}  # draft: educator review
 
   # ---- 🔵 الأنماط والتسلسل
   69: {type: journey-opener, title: "أُمْسِكُ القَلَمَ: الأَنْماطُ وَالتَّسَلْسُلُ", instruction: "مُلْصَقٌ جَديدٌ! {ضَعْهُ/ضَعيهِ} في دائِرَةِ الخَريطَةِ", params: {stop: "أمسك القلم", inside: ["أُكْمِلُ النَّمَطَ", "أُرَتِّبُ صُوَرَ القِصَّةِ", "أَصْنَعُ نَمَطي بِنَفْسي"]}}  # draft: educator review
@@ -141,7 +141,7 @@ pages:
   72: {title: "أَغْسِلُ يَدَيَّ", instruction: "كَيْفَ نَغْسِلُ أَيْدِيَنا؟ {رَتِّبِ/رَتِّبي} الصُّوَرَ بِالنِّقاطِ", params: {story: handwash}}  # draft: educator review
   73: {type: bead-pattern, title: "عِقْدٌ مُلَوَّنٌ", instruction: "أَحْمَرُ، أَصْفَرُ، أَزْرَقُ… {أَكْمِلْ/أَكْمِلي} تَلْوينَ العِقْدِ", params: {sequence: [red, yellow, blue, red, yellow, "__", "__"]}}  # draft: educator review
   74: {title: "نَمَطي أَنا", instruction: "{اصْنَعْ/اصْنَعي} نَمَطًا مِنْ مُلْصَقاتِ النُّجومِ وَالقُلوبِ", params: {slots: 8, stickers: [star, heart]}}  # draft: educator review
-  75: {title: "ماذا تَعَلَّمْتُ؟", instruction: "مُهِمَّتانِ: {أَكْمِلِ/أَكْمِلي} النَّمَطَ، ثُمَّ {رَتِّبِ/رَتِّبي} الصُّوَرَ", params: {tasks: [pattern, sequence], cheer: "رائِعٌ يا {child}!"}}  # draft: educator review
+  75: {title: "ماذا تَعَلَّمْتُ؟", instruction: "مُهِمَّتانِ: {أَكْمِلِ/أَكْمِلي} النَّمَطَ، ثُمَّ {رَتِّبِ/رَتِّبي} الصُّوَرَ", params: {tasks: [pattern, sequence], cheer: "{رائِعٌ/رائِعَةٌ} يا {child}!"}}  # draft: educator review
 
   # ---- 🎨 التلوين الذكي
   76: {type: journey-opener, title: "أُمْسِكُ القَلَمَ: التَّلْوينُ الذَّكِيُّ", instruction: "{لَوِّنْ/لَوِّني} نَجْمَةَ هَذِهِ المَحَطَّةِ عَلى الخَريطَةِ", params: {stop: "أمسك القلم", inside: ["أُلَوِّنُ حَسَبَ القاعِدَةِ", "أُلَوِّنُ مِثْلَ النَّموذَجِ", "أُكْمِلُ التَّلْوينَ"]}}  # draft: educator review
@@ -152,7 +152,7 @@ pages:
   81: {type: mirror-coloring, title: "{أَكْمِلِ/أَكْمِلي} التَّلْوينَ", instruction: "{لَوِّنْ/لَوِّني} نِصْفَ الفَراشَةِ الأَبْيَضَ مِثْلَ النِّصْفِ المُلَوَّنِ", params: {picture: butterfly, colored_half: right}}  # draft: educator review
   82: {type: rule-coloring, title: "كُلُّ شَكْلٍ بِلَوْنِهِ", instruction: "{انْظُرْ/انْظُري} إلى المِفْتاحِ، ثُمَّ {لَوِّنِ/لَوِّني} الأَشْكالَ", params: {rule: key, key: {circle: yellow, triangle: red, square: blue}}}  # draft: educator review
   83: {type: rule-coloring, title: "حَقيبَةُ الرَّوْضَةِ", instruction: "ماذا نَأْخُذُ إلى الرَّوْضَةِ؟ {لَوِّنْهُ/لَوِّنيهِ} فَقَطْ", params: {rule: category, items: [backpack, crayons, lunchbox, pillow, fridge, book], take: [backpack, crayons, lunchbox, book]}}  # draft: educator review
-  84: {title: "ماذا تَعَلَّمْتُ؟", instruction: "{لَوِّنْ/لَوِّني} حَسَبَ القاعِدَةِ، ثُمَّ مِثْلَ النَّموذَجِ", params: {tasks: [rule-coloring, like-model], cheer: "رائِعٌ يا {child}!"}}  # draft: educator review
+  84: {title: "ماذا تَعَلَّمْتُ؟", instruction: "{لَوِّنْ/لَوِّني} حَسَبَ القاعِدَةِ، ثُمَّ مِثْلَ النَّموذَجِ", params: {tasks: [rule-coloring, like-model], cheer: "{رائِعٌ/رائِعَةٌ} يا {child}!"}}  # draft: educator review
 
   # ---- 🔤 الحروف العربية + ✍️ الكتابة (no letters in stage 1: direction, dots, the boat curve on a line)
   85: {type: journey-opener, title: "أَتَتَبَّعُ وَأَكْتُبُ", instruction: "{أَوْصِلْ بَطَلَكَ/أَوْصِلي بَطَلَتَكِ} إلى «أَتَتَبَّعُ» ثُمَّ «أَكْتُبُ»", params: {here: [أتتبع, أكتب], inside: ["عَيْني وَإِصْبَعي مِنَ اليَمينِ إلى اليَسارِ", "قَوارِبُ وَنِقاطٌ", "أَرْسُمُ عَلى السَّطْرِ"]}}  # draft: educator review
@@ -162,7 +162,7 @@ pages:
   89: {title: "قِطارُ الأَشْكالِ", instruction: "{تَتَبَّعْ/تَتَبَّعي} شَكْلَ كُلِّ عَرَبَةٍ في القِطارِ", params: {level: 2, target: [circle, square, triangle, rectangle], sizes: [medium], line: true, train: true}}  # draft: educator review
   90: {title: "قَوارِبُ عَلى السَّطْرِ", instruction: "مِنَ اليَمينِ {تَتَبَّعِ/تَتَبَّعي} القَوارِبَ عَلى السَّطْرِ", params: {level: 2, target: boat-curve, rows: 3, sizes: [big, medium, medium]}}  # draft: educator review
   91: {type: draw-myself, title: "أَرْسُمُ نَفْسي", instruction: "{ارْسُمْ وَجْهَكَ وَجِسْمَكَ/ارْسُمي وَجْهَكِ وَجِسْمَكِ} يا {child}"}  # draft: educator review
-  92: {title: "ماذا تَعَلَّمْتُ؟", instruction: "{اتْبَعِ/اتْبَعي} الطَّريقَ مِنَ اليَمينِ، ثُمَّ {ارْسُمِ/ارْسُمي} القَوارِبَ", params: {tasks: [right-to-left, boats-dots, boat-on-line], cheer: "رائِعٌ يا {child}!"}}  # draft: educator review
+  92: {title: "ماذا تَعَلَّمْتُ؟", instruction: "{اتْبَعِ/اتْبَعي} الطَّريقَ مِنَ اليَمينِ، ثُمَّ {ارْسُمِ/ارْسُمي} القَوارِبَ", params: {tasks: [right-to-left, boats-dots, boat-on-line], cheer: "{رائِعٌ/رائِعَةٌ} يا {child}!"}}  # draft: educator review
 
   # ---- 🔠 الإنجليزية (by ear: words heard and pointed at, no letters yet)
   93: {type: journey-opener, title: "أَقْرَأُ: Hello", instruction: "هَيّا إلى «أَقْرَأُ»! {خُذْ بَطَلَكَ مَعَكَ/خُذي بَطَلَتَكِ مَعَكِ}", params: {stop: أقرأ, inside: ["أَسْمَعُ أَسْماءَ الحَيَواناتِ بِالإِنْجِليزِيَّةِ", "أَسْمَعُ الأَلْوانَ وَأُلَوِّنُ"]}}  # draft: educator review
@@ -195,7 +195,7 @@ pages:
   106: {title: "فَوْقَ وَتَحْتَ", instruction: "ماذا يوجَدُ فَوْقَ الطّاوِلَةِ؟ {لَوِّنْهُ/لَوِّنيهِ}", params: {concept: above-below, above: [ball, apple], below: [cat, shoe]}}  # draft: educator review
   107: {title: "قَريبٌ وَبَعيدٌ", instruction: "{جِدِ/جِدي} الشَّجَرَةَ القَريبَةَ مِنَ البَيْتِ {وَلَوِّنْها/وَلَوِّنيها}", params: {item: tree}}  # draft: educator review
   108: {title: "داخِلَ وَخارِجَ", instruction: "{ضَعْ/ضَعي} دائِرَةً حَوْلَ القِطَّةِ الَّتي داخِلَ الصُّنْدوقِ", params: {concept: inside-outside}}  # draft: educator review
-  109: {title: "ماذا تَعَلَّمْتُ؟", instruction: "{عُدَّ/عُدّي} كُلَّ مَجْموعَةٍ {وَصِلْها/وَصِليها} بِرَقْمِها", params: {tasks: [counting, numerals, above-below], cheer: "رائِعٌ يا {child}!"}}  # draft: educator review
+  109: {title: "ماذا تَعَلَّمْتُ؟", instruction: "{عُدَّ/عُدّي} كُلَّ مَجْموعَةٍ {وَصِلْها/وَصِليها} بِرَقْمِها", params: {tasks: [counting, numerals, above-below], cheer: "{رائِعٌ/رائِعَةٌ} يا {child}!"}}  # draft: educator review
 
   # ---- 🧩 ألعاب التفكير
   110: {type: journey-opener, title: "أَحُلُّ وَأُبْدِعُ: أَلْعابُ التَّفْكيرِ", instruction: "{ابْقَ/ابْقَيْ} في «أَحُلُّ وَأُبْدِعُ»: حانَ وَقْتُ الأَلْعابِ!", params: {stop: "أحل وأبدع", inside: ["أَجِدُ الفُروقَ", "أُطابِقُ القِطْعَةَ وَالظِّلَّ", "أَحُلُّ الحَزّورَةَ"]}}  # draft: educator review
@@ -203,9 +203,9 @@ pages:
   112: {title: "أَيْنَ هَذِهِ القِطْعَةُ؟", instruction: "{انْظُرْ/انْظُري} إلى كُلِّ قِطْعَةٍ {وَصِلْها/وَصِليها} بِصورَتِها", params: {items: ["duck:beak", "house:window", "car:wheel"]}}  # draft: educator review
   113: {title: "حَزّورَةٌ", instruction: "{اسْمَعِ/اسْمَعي} الحَزّورَةَ {وَفَكِّرْ/وَفَكِّري}، ثُمَّ {حَوِّطِ/حَوِّطي} الجَوابَ", params: {riddle: "أَنا صَفْراءُ وَطَويلَةٌ، يُحِبُّني القِرْدُ", answer: banana, choices: [apple, banana, carrot]}}  # draft: educator review
   114: {title: "ظِلالُ الحَيَواناتِ", instruction: "لِمَنْ هَذا الظِّلُّ؟ {صِلْ/صِلي} كُلَّ حَيَوانٍ بِظِلِّهِ", params: {items: [camel, giraffe, rabbit, elephant]}}  # draft: educator review
-  115: {title: "ماذا تَعَلَّمْتُ؟", instruction: "{جِدِ/جِدي} الفَرْقَ أَوَّلًا، ثُمَّ {صِلِ/صِلي} الظِّلَّ", params: {tasks: [spot-difference, shadow], cheer: "رائِعٌ يا {child}!"}}  # draft: educator review
+  115: {title: "ماذا تَعَلَّمْتُ؟", instruction: "{جِدِ/جِدي} الفَرْقَ أَوَّلًا، ثُمَّ {صِلِ/صِلي} الظِّلَّ", params: {tasks: [spot-difference, shadow], cheer: "{رائِعٌ/رائِعَةٌ} يا {child}!"}}  # draft: educator review
 
   # ---- ⭐ المراجعة والشهادة
   116: {type: journey-opener, title: "خَطُّ النِّهايَةِ", instruction: "{انْقُلْ بَطَلَكَ/انْقُلي بَطَلَتَكِ} إلى خَطِّ النِّهايَةِ", params: {stop: finish, inside: ["أُراجِعُ ما تَعَلَّمْتُهُ", "أَنالُ شَهادَتي الصَّغيرَةَ", "المَحَطَّةُ الثّانِيَةُ تَنْتَظِرُني"]}}  # draft: educator review
-  117: {title: "ماذا تَعَلَّمْتُ في رِحْلَتي؟", instruction: "مُهِمَّةٌ مِنْ كُلِّ مَحَطَّةٍ: {حُلَّها/حُلّيها} واحِدَةً واحِدَةً", params: {tasks: [odd-one-out, loud-soft, pen-lines, shapes, pattern, right-to-left, counting, numerals], cheer: "رائِعٌ يا {child}!"}}  # draft: educator review
+  117: {title: "ماذا تَعَلَّمْتُ في رِحْلَتي؟", instruction: "مُهِمَّةٌ مِنْ كُلِّ مَحَطَّةٍ: {حُلَّها/حُلّيها} واحِدَةً واحِدَةً", params: {tasks: [odd-one-out, loud-soft, pen-lines, shapes, pattern, right-to-left, counting, numerals], cheer: "{رائِعٌ/رائِعَةٌ} يا {child}!"}}  # draft: educator review
   118: {type: certificate, title: "شَهادَةُ المَحَطَّةِ الأولى", instruction: "{أَحْسَنْتَ/أَحْسَنْتِ} يا {child}!", params: {line: "لَقَدْ {أَنْهَيْتَ/أَنْهَيْتِ} المَحَطَّةَ الأولى مِنْ «رِحْلَتي الأولى لِلتَّعَلُّمِ»"}}  # draft: educator review

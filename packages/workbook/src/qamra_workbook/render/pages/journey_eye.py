@@ -184,6 +184,20 @@ def _crosses(a: list[tuple[float, float]], b: list[tuple[float, float]]) -> bool
     return False
 
 
+# a colour as the answer key names it (the colour keys are English ids): with a masculine noun («البالون
+# الأحمر») or a feminine one («الطائرة الحمراء»)
+COLOUR_AR = {
+    "red": ("الأحمر", "الحمراء"),
+    "blue": ("الأزرق", "الزرقاء"),
+    "yellow": ("الأصفر", "الصفراء"),
+    "green": ("الأخضر", "الخضراء"),
+}
+
+
+def colour_ar(colour: str, feminine: bool = False) -> str:
+    return COLOUR_AR.get(colour, (colour, colour))[1 if feminine else 0]
+
+
 @page_type("overlapping-paths")
 def overlapping_paths(ctx: PageContext) -> Built:
     """Balloons at the top, children at the bottom, strings that cross: follow each string to its owner."""
@@ -215,7 +229,7 @@ def overlapping_paths(ctx: PageContext) -> Built:
             )
         )
     crossed = n < 2 or _crosses(strings[0].polyline, strings[1].polyline)
-    key = [f"البالون {c}: للطفل {ctx.num(owner[k] + 1)} من اليمين" for k, c in enumerate(colors)]
+    key = [f"البالون {colour_ar(c)}: للطفل {ctx.num(owner[k] + 1)} من اليمين" for k, c in enumerate(colors)]
     return Built({"svg": svg(body)}, key, [] if crossed else ["the strings must cross"])
 
 
@@ -327,6 +341,9 @@ def tangled(ctx: PageContext) -> Built:
             problems = [] if crossed else ["the strings must cross"]
             key = [f"{ctx.text('{child} {يصل/تصل}')} إلى: {PICTURES[pid(answer)].word_ar}"]
     else:
-        key = [f"الطائرة {c}: للطفل {ctx.num(owner[k] + 1)} من اليمين" for k, c in enumerate(colors)]
+        key = [
+            f"الطائرة {colour_ar(c, True)}: للطفل {ctx.num(owner[k] + 1)} من اليمين"
+            for k, c in enumerate(colors)
+        ]
         problems = [] if crossed else ["the strings must cross"]
     return Built({"svg": svg(body)}, key, problems)

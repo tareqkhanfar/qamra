@@ -10,7 +10,7 @@
     </div>
     <div class="deck-levels">{% for level, n in d.levels %}<span class="dl">{{ stars(level) }}<b>{{ n }}</b></span>{% endfor %}<span class="dl note">{{ icon('scissors') }}البِطاقاتُ فِي وَرَقَةِ القَصِّ</span></div>
   </div>
-  <div class="tally fcard">
+  <div class="tally fcard{{ ' many' if d.players|length > 5 }}">
     <span class="label">{{ icon('trophy') }}كَمْ زَوْجًا وَجَدَ كُلُّ لاعِبٍ؟</span>
     {% for pl in d.players %}
     <div class="tally-row{{ ' me' if pl.child }}"><b data-fit="8" data-fit-wrap>{{ pl.name }}</b><div class="tally-boxes">{% for b in d.boxes %}<span class="{{ 'lvl2' if b >= d.simple }}"></span>{% endfor %}</div></div>

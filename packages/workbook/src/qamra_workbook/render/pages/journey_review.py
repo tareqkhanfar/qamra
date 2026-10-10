@@ -1,6 +1,7 @@
 """«ماذا تعلمت؟» (Addendum 6 §4.13): a section's closing review. It mixes short versions of the section's
 missions (and earlier ones) in panels, each with a star the child colours when they can do it, and ends with
-the child's character and «رائع يا {child}!». Mini tasks draw in a box and add their answer to the key."""
+the child's character and «{رائِعٌ/رائِعَةٌ} يا {child}!» (in the child's gender). Mini tasks draw in a box and
+add their answer to the key."""
 
 from __future__ import annotations
 
@@ -147,7 +148,13 @@ def loud_soft(ctx: PageContext, box: Box) -> tuple[list[str], str]:
 
 def word(ctx: PageContext, box: Box) -> tuple[list[str], str]:
     body, cells = _row(["sun", "moon"], box, "line")
-    return [*body, _ring(cells[0])], "الكلمة: شمس"
+    return [*body, _ring(cells[0])], "شمس"  # the key reads «أَسْمَعُ الكَلِمَةَ: شمس»
+
+
+def same_different_mini(ctx: PageContext, box: Box) -> tuple[list[str], str]:
+    """Two words heard one after the other: alike or not? (the key answers the panel's question)"""
+    body, _cells = _row(["sun", "moon"], box, "line")
+    return body, "شَمْس وقَمَر — مختلفتان"
 
 
 def strokes(kind: str) -> Mini:
@@ -441,7 +448,7 @@ def what_i_learned(ctx: PageContext) -> Built:
         body += drawn
         if answer:
             key.append(f"{label}: {answer}")
-    cheer = ctx.text(str(ctx.page.params.get("cheer", "رائِعٌ يا {child}!")))
+    cheer = ctx.text(str(ctx.page.params.get("cheer", "{رائِعٌ/رائِعَةٌ} يا {child}!")))
     body.append(card(0, area + 2, W, 204 - area - 2, r=10, fill=SOFT, stroke="none"))
     body.append(character_image(ctx, W - 36, 204, 36))
     body.append(
@@ -480,7 +487,7 @@ def memory_mini(n: int) -> Mini:
     def mini(ctx: PageContext, box: Box) -> tuple[list[str], str]:
         words = ["moon", "key", "apple", "cat", "ball", "sun"][:n]
         body, _ = _row(words, box)
-        return body, "يتذكّر الصور ثم يقلب الصفحة"
+        return body, "نتذكّر الصور ثم نقلب الصفحة"
 
     return mini
 
@@ -693,7 +700,7 @@ def harakat_mini(ctx: PageContext, box: Box) -> tuple[list[str], str]:
         text(s, x + w - (i + 0.5) * w / 4, y + h * 0.68, h * 0.55, cls="wb-word", color="#1C2140")
         for i, s in enumerate(("بَ", "بُ", "بِ", "بْ"))
     ]
-    return out, "يقرأ: بَ بُ بِ بْ"
+    return out, "نقرأ: بَ بُ بِ بْ"
 
 
 def read_mini(ctx: PageContext, box: Box) -> tuple[list[str], str]:
@@ -926,7 +933,10 @@ MINIS.update(
         "memory-6": ("أَتَذَكَّرُ", memory_mini(6)),
         "classify": ("أُصَنِّفُ", classify_mini),
         "maze": ("المَتاهَةُ", maze_mini),
-        "same-different": ("مُتَشابِهانِ أَمْ مُخْتَلِفانِ؟", word),
+        "same-different": (
+            "مُتَشابِهَتانِ أَمْ مُخْتَلِفَتانِ؟",
+            same_different_mini,
+        ),  # two words (stage 2), as the page title
         "syllables": ("أُصَفِّقُ لِلْمَقاطِعِ", claps_mini),
         "first-sound": ("الصَّوْتُ الأَوَّلُ", first_sound_mini),
         "small-waves": ("أَمْواجٌ صَغيرَةٌ", waves_mini),
@@ -956,7 +966,7 @@ MINIS.update(
         "joins": ("جُسورٌ صَغيرَةٌ", joins_mini),
         "build-shape": ("أَبْني بِالأَشْكالِ", build_mini),
         "mix-colors": ("أَمْزُجُ الأَلْوانَ", mix_mini),
-        "growing-pattern": ("نَمَطٌ يَكْبَرُ", growing_mini),
+        "growing-pattern": ("نَمَطٌ يَكْبُرُ", growing_mini),
         "number-key": ("أُلَوِّنُ حَسَبَ الرَّقْمِ", key_mini("number")),
         "letter-key": ("أُلَوِّنُ حَسَبَ الحَرْفِ", key_mini("letter")),
         "position": ("مَكانُ الحَرْفِ", position_mini),
@@ -1047,7 +1057,9 @@ def observation_checklist(ctx: PageContext) -> Built:
     problems = [] if 4 <= len(skills) <= 14 else ["list 4–14 skills"]
     body = [card(0, 0, W, 16, r=6, fill=SOFT, stroke="none")]
     body.append(text("المهارة", W - 8, 11, 5, cls="wb-label", color="#676B83", anchor="end"))
-    body.append(text("أتقنها · تقريبًا · ليس بعد", 40, 11, 4.4, cls="wb-label", color="#676B83"))
+    body.append(
+        text(ctx.text("{أتقنها/أتقنتها} · تقريبًا · ليس بعد"), 40, 11, 4.4, cls="wb-label", color="#676B83")
+    )
     pitch = min(11.5, (H - 44) / max(len(skills), 1))
     for i, skill in enumerate(skills):
         y = 18 + i * pitch
