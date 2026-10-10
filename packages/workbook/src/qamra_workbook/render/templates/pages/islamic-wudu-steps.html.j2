@@ -6,7 +6,7 @@
   <div class="isl-body wu">
     <section class="wu-grid">
       {% for cd in d.cards %}
-      <article class="wu-card card{{ ' flag' if cd.flag }}"><span class="wu-slot"></span><div class="wu-art">{{ cd.art }}</div><p class="wu-t">{{ cd.text }}</p>{% if cd.times %}<span class="wu-times">×{{ cd.times }}</span>{% endif %}</article>
+      <article class="wu-card card{{ ' flag' if cd.flag }}"><span class="wu-slot"></span>{% if cd.art %}<div class="wu-art">{{ cd.art }}</div>{% endif %}<p class="wu-t">{{ cd.text }}</p>{% if cd.times %}<span class="wu-times">×{{ cd.times }}</span>{% endif %}</article>
       {% endfor %}
     </section>
     {% if d.parent %}<aside class="wu-parent"><b>{{ icon('heart', 'ico', 2.2) }}{{ d.labels.parent }}</b><p>{{ d.parent }}</p></aside>{% endif %}

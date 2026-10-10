@@ -7,7 +7,7 @@
     <p class="wd-intro{{ ' ai' if d.intro.ai }}">{{ d.intro.text }}</p>
     <section class="wd-grid">
       {% for s in d.steps %}
-      <article class="card wd-step"><span class="wd-n">{{ s.n }}</span><div class="wd-pic-box">{{ s.picture }}</div><p class="wd-t">{{ s.text }}</p>{% if s.dua %}<div class="wd-dua">{{ isl.sacred(s.dua, c) }}</div>{% endif %}</article>
+      <article class="card wd-step"><span class="wd-n">{{ s.n }}</span>{% if s.picture %}<div class="wd-pic-box">{{ s.picture }}</div>{% endif %}<p class="wd-t">{{ s.text }}</p>{% if s.dua %}<div class="wd-dua">{{ isl.sacred(s.dua, c) }}</div>{% endif %}</article>
       {% endfor %}
     </section>
     {{ isl.sacred(d.quote, c) }}

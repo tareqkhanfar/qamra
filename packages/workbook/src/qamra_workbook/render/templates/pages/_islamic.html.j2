@@ -15,7 +15,7 @@
 {%- endmacro %}
 
 {% macro refs(c, list) -%}
-{% if list %}<div class="isl-refs"><span>المراجع:</span>{% for r in list %}<bdi dir="auto">{{ r }}</bdi>{% endfor %}</div>{% endif %}
+{% if list %}<div class="isl-refs"><span>المراجع:</span>{% for r in list %}<bdi dir="{{ 'ltr' if r[:1] in '0123456789٠١٢٣٤٥٦٧٨٩' else 'rtl' }}">{{ r }}</bdi>{% endfor %}</div>{% endif %}
 {%- endmacro %}
 
 {% macro foot(p, c) -%}
@@ -36,7 +36,7 @@
   {% if b.placeholder %}
   <div class="sacred-hole"><i>{{ icon('alert', 'ico', 2) }}</i><p>{{ b.notice }}</p><small>{{ b.title }}{% if b.reference %} · <bdi dir="ltr">{{ b.reference }}</bdi>{% endif %}</small></div>
   {% elif b.quran %}
-  <div class="sacred-text{{ ' stacked' if stacked }}"{% if fit %} data-fit="14"{% endif %}>{% for l in b.lines %}<span class="ayah{{ ' basmala' if l.n == '' }}">{{ l.text }}{% if l.n != '' %}<span class="ay-no">{{ l.n }}</span>{% endif %}</span> {% endfor %}</div>
+  <div class="sacred-text{{ ' stacked' if stacked }}"{% if fit %} data-fit="14"{% endif %}>{% for l in b.lines %}<span class="ayah{{ ' basmala' if l.n == '' }}">{% if l.n != '' %}{% set w = l.text.rsplit(' ', 1) %}{% if w|length == 2 %}{{ w[0] }} {% endif %}<span class="ay-end">{{ w[-1] }}<span class="ay-no">{{ l.n }}</span></span>{% else %}{{ l.text }}{% endif %}</span> {% endfor %}</div>
   {% else %}
   <div class="sacred-text">{{ b.text }}</div>
   {% endif %}

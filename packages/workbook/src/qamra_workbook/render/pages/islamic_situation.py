@@ -18,6 +18,8 @@ from qamra_workbook.render.pages.islamic_common import (
     claim,
     islamic_page,
     page_of,
+    picture,
+    picture_problems,
     references,
     rich,
     sacred,
@@ -28,8 +30,6 @@ from qamra_workbook.render.pages.islamic_common import (
 from qamra_workbook.render.registry import Built, PageContext
 
 WEEK = 7
-# a picture for each step of «ماذا أفعل لو…؟», from the picture library (no person)
-STEP_PICTURES = ("wind", "mouth", "chair", "heart", "star", "sprout")
 
 
 @islamic_page("what-would-you-do")
@@ -63,7 +63,11 @@ def what_do_i_do_if(ctx: PageContext) -> Built:
     assert isinstance(page, Wdif)
     problems: list[str] = []
     steps: list[dict[str, Any]] = []
-    for i, step in enumerate(page.steps):
+    for step in page.steps:
+        # each step names its own picture (`art`: a library picture or isl:<icon>); they used to be given by
+        # position (wind, mouth, chair, heart), which only fitted the anger page
+        found = picture_problems([step.art], f"step {step.n}") if step.art else []
+        problems += found
         block = None
         if step.dua:
             block = sacred(ctx, Quote(source=step.dua), "dhikr", problems)
@@ -71,7 +75,7 @@ def what_do_i_do_if(ctx: PageContext) -> Built:
             {
                 "n": ctx.num(step.n),
                 "text": rich(ctx, step.t, problems),
-                "picture": ctx.pic(STEP_PICTURES[i % len(STEP_PICTURES)], "color", "wd-pic"),
+                "picture": picture(step.art, css_class="wd-pic") if step.art and not found else "",
                 "dua": block,
             }
         )

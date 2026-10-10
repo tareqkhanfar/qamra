@@ -114,6 +114,7 @@ def unit_closing(ctx: PageContext) -> Built:
     ids = [s for t in [*page.learned, page.apply, *page.apply_choices, page.challenge] for s in source_ids(t)]
     if page.dhikr is not None:
         ids.append(page.dhikr.source)
+    verse = page.dhikr is not None and page.dhikr.source.startswith("q-")
     data: dict[str, Any] = {
         "chrome": chrome(ctx, problems),
         "learned": [rich(ctx, t, problems) for t in page.learned],
@@ -127,7 +128,10 @@ def unit_closing(ctx: PageContext) -> Built:
         "labels": {
             "learned": "مَاذَا تَعَلَّمْتُ؟",
             "apply": "مَاذَا سَأُطَبِّقُ هَذَا الْأُسْبُوعَ؟",
-            "dhikr": "ذِكْرُ الْوَحْدَةِ",
+            # a verse is not called a dhikr: the tab over a Quran frame says «آيَةُ الْوَحْدَةِ»
+            "dhikr": "آيَةُ الْوَحْدَةِ" if verse else "ذِكْرُ الْوَحْدَةِ",
+            # the stars are the week's days, not things to count («خَمْسَةَ أَشْيَاءَ» over stars ١–٧ misled)
+            "week": "نَجْمَةٌ لِكُلِّ يَوْمٍ مِنْ أَيَّامِ الْأُسْبُوعِ",
             "challenge": "تَحَدٍّ صَغِيرٌ مَعَ أُمِّي وَأَبِي",
         },
         "refs": references(ctx, ids),

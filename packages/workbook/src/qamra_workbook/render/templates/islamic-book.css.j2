@@ -52,7 +52,10 @@
 .tick { width: 8mm; height: 8mm; border: 0.7mm solid var(--c); border-radius: 50%; background: #FFFFFF; flex: none; }
 .star-outline { width: 11mm; height: 11mm; }
 .stars-row { display: flex; gap: 2mm; align-items: center; }
-.write-line { border-bottom: 0.45mm dashed #CDBF9F; height: 9mm; }
+/* a line to write on: dark enough to print and to see (it was a pale beige dash that read as a footer rule),
+   with room above the footer */
+.write-line { flex: none; border-bottom: 0.5mm solid #9C8A66; height: 11mm; margin-inline: 4mm; }
+.write-line:last-child { margin-bottom: 4mm; }
 .pill { display: inline-flex; align-items: center; gap: 1.6mm; height: 7.4mm; padding: 0 3mm; border-radius: 3.7mm; background: var(--tint); color: var(--deep); font: 700 10pt/1 var(--ui); }
 .pill .ico { width: 4.4mm; height: 4.4mm; color: var(--c); }
 
@@ -87,6 +90,12 @@
 
 /* ---- the parent page */
 .pg { gap: 4.6mm; padding-top: 6mm; }
+/* the parent page: five cards, the care note and the references must clear the footer (they printed over the
+   unit's name and under the folio on the longer pages); the cards share the room and their text fits */
+.pg.pg-parent { gap: 3mm; padding-top: 3mm; }
+.pg-parent .pg-card { padding-block: 2.4mm; }
+.pg-parent .pg-text p { font-size: 12pt; line-height: 1.85; }
+.pg-parent .isl-refs { margin-bottom: 1mm; }
 .pg-card { display: flex; gap: 4mm; align-items: flex-start; background: #FFFFFF; border: 0.5mm solid var(--line); border-inline-start: 2.2mm solid var(--c);
            border-radius: 4mm; padding: 5mm 6mm 4.6mm 5mm; box-shadow: 0 0.8mm 0 var(--line-soft); }
 .pg-ico { flex: none; width: 11mm; height: 11mm; border-radius: 50%; background: var(--c); color: var(--on); display: flex; align-items: center; justify-content: center; }
@@ -213,6 +222,7 @@
 .wd-pic-box .wd-pic { width: 100%; height: 100%; }
 .wd-t { font: 700 15.5pt/1.85 var(--kitab); color: var(--ink); }
 .wd-dua { grid-column: 1 / -1; }
+.wd-step:not(:has(.wd-pic-box)) { grid-template-columns: 1fr; }
 .wd-dua .sacred { margin: 0; }
 .wd-dua .sacred.is-placeholder { padding: 2mm 3mm 1.8mm; }
 .wd-dua .sacred-hole { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 1mm 2mm; }
@@ -238,6 +248,8 @@
 .wu-art { flex: none; width: 27mm; height: 27mm; }
 .wu-art svg { width: 100%; height: 100%; }
 .wu-t { flex: 1; font: 700 15pt/1.75 var(--kitab); color: var(--ink); }
+/* a card without a picture: the text takes the whole card (it was squeezed into half, breaking a dhikr) */
+.wu-card:not(:has(.wu-art)) { justify-content: center; text-align: center; padding-inline: 6mm; }
 .wu-times { position: absolute; bottom: 2mm; inset-inline-end: 3mm; min-width: 11mm; height: 6.4mm; padding: 0 2mm; border-radius: 3.2mm; background: var(--tint); color: var(--deep);
             font: 800 10pt/6.4mm var(--title); text-align: center; }
 .wu-card.flag { box-shadow: 0 0 0 0.7mm #E8A317, 0 0.9mm 0 var(--line-soft); }
@@ -285,7 +297,7 @@
 .pp-fields { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 2.6mm; }
 .pf dt { font: 700 9pt var(--ui); color: var(--muted); }
 .pf dd { font: 800 19pt/1.5 var(--kitab); color: var(--green); border-bottom: 0.45mm solid var(--line); min-height: 10mm; white-space: nowrap; overflow: hidden; }
-.pf.sign dd { height: 11mm; border-bottom-style: dashed; }
+.pf.sign dd { height: 11mm; border-bottom: 0.5mm solid #9C8A66; }
 .pp-strip { height: 6.4mm; background: #EEF5F0; display: flex; align-items: center; justify-content: space-around; border-top: 0.4mm dashed #BFD8CB; padding-inline: 4mm; }
 .pp-strip .ico { width: 3.6mm; height: 3.6mm; color: #8FB9A8; }
 .pp-block { flex: none; display: flex; flex-direction: column; gap: 2.4mm; }
@@ -311,7 +323,7 @@
 .ic-corner svg { width: 100%; height: 100%; }
 .ic-corner.tl { left: 0; top: 0; } .ic-corner.tr { right: 0; top: 0; }
 .ic-corner.bl { left: 0; bottom: 0; } .ic-corner.br { right: 0; bottom: 0; }
-.ic-body { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; padding: 16mm 16mm 12mm; gap: 2.2mm; }
+.ic-body { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; padding: 16mm 16mm 18mm; gap: 2.2mm; }
 .ic-top { display: flex; align-items: center; gap: 3.4mm; }
 .ic-top svg { width: 7mm; height: 7mm; }
 .ic-top b { font: 800 13pt/1.4 var(--kitab); color: var(--green); }
@@ -327,7 +339,7 @@
 .ic-sign > div { display: flex; flex-direction: column; align-items: center; gap: 0.8mm; min-width: 62mm; }
 .ic-label { font: 700 9.5pt var(--ui); color: var(--muted); }
 .ic-value { font: 700 14pt/1.7 var(--kitab); color: var(--ink); border-bottom: 0.4mm solid var(--line); min-width: 62mm; text-align: center; min-height: 9mm; }
-.ic-value.blank { border-bottom-style: dashed; }
+.ic-value.blank { border-bottom: 0.5mm solid #9C8A66; }
 
 /* ---- the surah page */
 .su { gap: 3.4mm; padding-top: 4mm; --vh: 92mm; --th: 76mm; }
@@ -362,6 +374,11 @@
 .sacred.fixed.quran { padding-block: 3.2mm 2.6mm; }
 .sacred.fixed .sacred-ref, .sacred.fixed .sacred-credit { margin-top: 0.4mm; line-height: 1.3; }
 .sacred.fixed.quran .sacred-text { line-height: 2.1; }
+/* the ayah's number stays with its last word (it dropped alone onto a line, Al-Asr 3); the reference keeps
+   clear of the low marks of the last line (the kasratan of «فَجٍّ» sat on «٢٢:٢٧») */
+.ay-end { white-space: nowrap; }
+.sacred.quran .sacred-ref { margin-top: 2.2mm; }
+.sacred.fixed.quran .sacred-ref { margin-top: 1.8mm; }
 .sacred.fixed .sacred-hole { width: 100%; }
 .pp-how, .pp-h { padding-inline: 1.4mm; }
 .pp-how { font: 600 11pt/1.6 var(--kitab); color: var(--ink-2); }

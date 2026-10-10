@@ -10,7 +10,7 @@
       {% if d.apply_choices %}<div class="uc-choices">{% for t in d.apply_choices %}<div class="ur-choice"><span class="tick"></span><span class="ur-ct">{{ t }}</span></div>{% endfor %}</div>{% endif %}</div></section>{% endif %}
     {% if d.dhikr %}<section class="uc-dhikr"><div class="dk-say-l">{{ d.labels.dhikr }}</div>{{ isl.sacred(d.dhikr, c) }}{% if d.dhikr_when %}<p class="uc-when">{{ icon('clock', 'ico', 2.2) }}{{ d.dhikr_when }}</p>{% endif %}</section>{% endif %}
     {% if d.challenge %}<section class="pg-card"><div class="pg-ico">{{ icon('family', 'ico', 2.2) }}</div><div class="pg-text"><h2>{{ d.labels.challenge }}</h2><p>{{ d.challenge }}</p>
-      <div class="dk-days">{% for n in d.days %}<span>{{ icon('star', 'star-outline', 1.5) }}<i>{{ n }}</i></span>{% endfor %}</div></div></section>{% endif %}
+      <div class="dk-days">{% for n in d.days %}<span>{{ icon('star', 'star-outline', 1.5) }}</span>{% endfor %}</div><p class="uc-week">{{ d.labels.week }}</p></div></section>{% endif %}
     {{ isl.refs(c, d.refs) }}
   </div>
   {{ isl.foot(p, c) }}

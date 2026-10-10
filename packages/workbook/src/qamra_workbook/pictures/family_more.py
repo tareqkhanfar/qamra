@@ -331,8 +331,8 @@ _T = [  # toys
             body("a", rect(12, 56, 34, 34, 3)),
             body("b", rect(54, 56, 34, 34, 3)),
             body("c", rect(33, 20, 34, 34, 3)),
-            ink(p("M24 66 L34 66 L29 80 Z"), c(71, 73, 6)),
-            line(p("M41 30 L59 30 M50 30 L50 46")),
+            # a shape on each block (triangle, circle, square): the top one bore a Latin «T»
+            ink(p("M24 66 L34 66 L29 80 Z"), c(71, 73, 6), rect(44, 31, 12, 12, 1.5)),
         ),
         a=RED,
         b=BLUE,

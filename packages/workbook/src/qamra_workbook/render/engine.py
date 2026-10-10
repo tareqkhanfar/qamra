@@ -240,6 +240,13 @@ _FIT_JS = """
     }
     if (over(el)) out.push(pageOf(el) + ': ' + el.textContent.trim().slice(0, 60));
   }
+  // «قلبي يعرف الله»: a page body taller than its room ran its last lines (the references) over the footer;
+  // it is drawn a little smaller, down to 80 %, and a page that still does not fit is refused
+  for (const body of document.querySelectorAll('.isl-body')) {
+    const tall = () => body.scrollHeight > body.clientHeight + 1;
+    for (let z = 0.98; tall() && z >= 0.8; z -= 0.02) body.style.zoom = String(z);
+    if (tall()) out.push(pageOf(body) + ': taller than its page');
+  }
   const works = document.querySelectorAll('.frame-mission > .safe > .work, .frame-sheet > .safe > .work');
   for (const work of works) {
     const tall = () => work.scrollHeight > work.clientHeight + 2;

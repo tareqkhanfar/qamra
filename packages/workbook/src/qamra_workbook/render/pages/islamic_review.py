@@ -69,7 +69,7 @@ def unit_review(ctx: PageContext) -> Built:
 PARENT_SECTIONS = (
     ("learned", "ما الذي تعلّمه طفلكم؟", "cap"),
     ("explain", "كيف نشرح الفكرة؟", "talk"),
-    ("ask", "سؤال نسأله له", "bulb"),
+    ("ask", "{سؤال نطرحه عليه/سؤال نطرحه عليها}", "bulb"),
     ("together", "نشاط نفعله معًا", "family"),
     ("habit", "كيف نجعلها عادة يومية؟", "clock"),
 )
@@ -83,7 +83,7 @@ def parent_guide(ctx: PageContext) -> Built:
     sections: list[dict[str, Any]] = []
     for key, label, icon in PARENT_SECTIONS:
         value = getattr(page, key)
-        sections.append({"label": label, "icon": icon, **claim(ctx, value, problems)})
+        sections.append({"label": ctx.text(label), "icon": icon, **claim(ctx, value, problems)})
     ids = [s for key, _, _ in PARENT_SECTIONS for s in source_ids(getattr(page, key))]
     data: dict[str, Any] = {
         "chrome": chrome(ctx, problems),
