@@ -73,6 +73,12 @@ PREVIEW_BEATS = (0, 1, 2, 3)  # the cover and three pages, like a real preview
 ACTIVITY_THEME = "e2e-activity-book"  # the hidden theme the placeholder activity books hang on
 
 
+def _put_portrait(storage: ObjectStorage, character: Character, child_id: uuid.UUID) -> None:
+    """A placeholder portrait next to the placeholder sheet (portrait first), under the child's prefix."""
+    character.portrait_image_key = f"children/{child_id}/characters/{character.id}-portrait.png"
+    storage.put(character.portrait_image_key, _placeholder((120, 80, 60), "PNG", 384), "image/png")
+
+
 def _placeholder(color: tuple[int, int, int], fmt: str, side: int = 512) -> bytes:
     """A night sky with a moon: clearly not a real drawing."""
     img = Image.new("RGB", (side, side), color)
@@ -182,6 +188,7 @@ async def preview_book(body: BookIn, user: CurrentUser, db: SessionDep, storage:
         await db.flush()
         character.sheet_image_key = f"children/{child.id}/characters/{character.id}.png"
         storage.put(character.sheet_image_key, _placeholder((34, 48, 106), "PNG"), "image/png")
+        _put_portrait(storage, character, child.id)
     book = Book(
         child_id=child.id,
         character_id=character.id,
@@ -233,6 +240,7 @@ async def character_ready(
         _drop_queued(queue, character.id)
         character.sheet_image_key = f"children/{child.id}/characters/{character.id}.png"
         storage.put(character.sheet_image_key, _placeholder((34, 48, 106), "PNG"), "image/png")
+        _put_portrait(storage, character, child.id)
         character.status = CharacterStatus.ready
         character.provider, character.model = "e2e", "placeholder"
         await db.commit()

@@ -74,7 +74,8 @@ class FreeCoverSink:
 
 
 def reference(db: Session, storage: ObjectStorage, child: Child, style: str) -> tuple[str, bytes, str] | None:
-    """(kind, image, label): the identity portrait, else the approved character sheet, else the photo."""
+    """(kind, image, label): the identity portrait, else the approved character's portrait, else its sheet,
+    else the photo."""
     portrait = db.scalar(
         select(ChildPortrait).where(ChildPortrait.child_id == child.id, ChildPortrait.art_style == style)
     )
@@ -89,6 +90,9 @@ def reference(db: Session, storage: ObjectStorage, child: Child, style: str) -> 
         )
         .order_by(Character.approved_at.desc())
     ).first()
+    # portrait first (2026-10-10): the approved character's own portrait in the style is the face at its largest
+    if (data := get_bytes(storage, sheet.portrait_image_key if sheet else None)) is not None:
+        return "portrait", data, "the child's portrait in this style"
     if (data := get_bytes(storage, sheet.sheet_image_key if sheet else None)) is not None:
         return "sheet", data, "the child's character reference sheet (use the front view)"
     photo = db.scalars(

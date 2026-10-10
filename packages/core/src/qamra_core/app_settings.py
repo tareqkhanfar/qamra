@@ -417,6 +417,54 @@ _DEFS: list[SettingDef] = [
         "with the primary model.",
         max_length=120,
     ),
+    # Portrait first (owner's decision, 2026-10-10): the child's character is a portrait, then the sheet
+    SettingDef(
+        "character_portrait_model",
+        "ai_models",
+        Kind.text,
+        "fal-ai/nano-banana-pro/edit",
+        "نموذج fal لصورة الطفل المرسومة",
+        "fal model for the child's portrait",
+        "يرسم صورة وجه الطفل وكتفيه بأسلوب الكتاب قبل ورقة الشخصية، ومنها تُرسَم الورقة. "
+        "اتركه فارغًا لاستخدام النموذج الأساسي.",
+        "Draws the child's head-and-shoulders portrait in the book's style before the character sheet, which "
+        "is drawn from it. Leave it empty to use the primary model.",
+        max_length=120,
+    ),
+    SettingDef(
+        "character_sheet_model",
+        "ai_models",
+        Kind.text,
+        "fal-ai/nano-banana-pro/edit",
+        "نموذج fal لورقة الشخصية",
+        "fal model for the character sheet",
+        "يرسم ورقة الشخصية (ثلاث وقفات كاملة) من صورة الطفل ومن صورته المرسومة. "
+        "اتركه فارغًا لاستخدام النموذج الأساسي.",
+        "Draws the character sheet (three full-length views) from the child's photo and portrait. Leave it "
+        "empty to use the primary model.",
+        max_length=120,
+    ),
+    SettingDef(
+        "character_portrait_resolution",
+        "ai_models",
+        Kind.choice,
+        "1K",
+        "دقة صورة الطفل المرسومة",
+        "Portrait resolution",
+        choices=("1K", "2K"),
+    ),
+    SettingDef(
+        "character_sheet_resolution",
+        "ai_models",
+        Kind.choice,
+        "2K",
+        "دقة ورقة الشخصية",
+        "Character sheet resolution",
+        "الدقة الأعلى تعطي الوجه تفاصيل أكثر، وتعطي صورة الطفل المقصوصة في الدوسيات دقة أفضل للطباعة.",
+        "A higher resolution gives the face more detail, and the cut-out of the child in the activity books "
+        "more pixels for print.",
+        choices=("1K", "2K"),
+    ),
     SettingDef(
         "fal_upscale_model",
         "ai_models",

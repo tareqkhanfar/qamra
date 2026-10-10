@@ -28,7 +28,7 @@ from qamra_ai.pipeline.assemble import AssemblyInputs, BookFiles, assemble_book,
 from qamra_ai.pipeline.bible import StyleBible, build_bible
 from qamra_ai.pipeline.book import BookRun, choose_outfits, default_companion, new_seed
 from qamra_ai.pipeline.budget import Budget, BudgetExceeded
-from qamra_ai.pipeline.character import generate_character_sheet
+from qamra_ai.pipeline.character import generate_character
 from qamra_ai.pipeline.character_feedback import appearance_instruction
 from qamra_ai.pipeline.companion import generate_companion_options
 from qamra_ai.pipeline.custom_story import BriefRejected, CustomBrief, write_custom_story
@@ -286,7 +286,9 @@ async def _character(db: Session, storage: ObjectStorage, rt: Runtime, character
     asked: dict[str, Any] = {k: v for k, v in (character.params or {}).items() if k in ASKED}
     if asked.get("note") and "note_outcome" not in asked:
         await _read_note(db, rt, character, child, asked)
-    sheet = await generate_character_sheet(
+    # portrait first (2026-10-10): the portrait, then the sheet painted from the photos and it; a redraw makes
+    # both again. Both from the photos as the parent framed them.
+    drawn_pair = await generate_character(
         rt,
         ai_child(child),
         data,
@@ -295,8 +297,12 @@ async def _character(db: Session, storage: ObjectStorage, rt: Runtime, character
         fixes=[str(f) for f in asked.get("fixes", [])],
         note=str(asked["note_instruction"]) if asked.get("note_instruction") else None,
     )
+    sheet, portrait = drawn_pair.sheet, drawn_pair.portrait
     key = f"children/{child.id}/characters/{character.id}.png"
+    portrait_key = f"children/{child.id}/characters/{character.id}-portrait.png"
+    storage.put(portrait_key, portrait.data, portrait.mime)
     storage.put(key, sheet.data, sheet.mime)
+    character.portrait_image_key = portrait_key
     character.sheet_image_key = key
     character.status = CharacterStatus.ready
     character.provider = str(sheet.params.get("provider", rt.image.name))[:32]
@@ -305,6 +311,16 @@ async def _character(db: Session, storage: ObjectStorage, rt: Runtime, character
     character.params = {**asked, **drawn}  # keeps what the parent asked for next to how it was drawn
     db.commit()
     return sheet.data
+
+
+def _portrait(storage: ObjectStorage, character: Character) -> bytes | None:
+    """The character's portrait in the style (portrait first), or None: drawn before 2026-10-10, or cleaned up."""
+    if not character.portrait_image_key:
+        return None
+    try:
+        return storage.get(character.portrait_image_key)
+    except ObjectNotFound:
+        return None
 
 
 async def _companion(
@@ -579,6 +595,7 @@ async def run_book_job(db: Session, storage: ObjectStorage, book: Book, mode: st
     if character is None:
         raise ValueError("the book has no character")
     sheet = await _character(db, storage, rt, character)
+    portrait = _portrait(storage, character)
     if character.status == CharacterStatus.ready and book.is_sample:
         character.status = CharacterStatus.approved  # samples: the admin reviews the whole book instead
         character.approved_at = datetime.now(UTC)
@@ -684,6 +701,7 @@ async def run_book_job(db: Session, storage: ObjectStorage, book: Book, mode: st
         plates=S3PlateStore(storage),
         on_page=lambda r: job.save_page(r, mode),
         bible=book_bible(book, theme, child, style, companion),
+        portrait=portrait,
     )
     load_group_refs(job, ctx, rows)
     wanted = [b for b in beats_for(ctx, rt.settings.preview_pages) if b not in done]
@@ -859,6 +877,7 @@ async def redraw_pages(db: Session, storage: ObjectStorage, book: Book, beats: l
     if character is None or not character.sheet_image_key:
         raise ValueError("character sheet missing")
     sheet = storage.get(character.sheet_image_key)
+    portrait = _portrait(storage, character)
     companion: CompanionSpec | None = default_companion(theme, book_lang(book))
     companion_sheet = drawing = None
     comp_row = db.get(Companion, book.companion_id) if book.companion_id else None
@@ -886,6 +905,7 @@ async def redraw_pages(db: Session, storage: ObjectStorage, book: Book, beats: l
         cover_qa=cover_qa,  # the same QA prefix as the book's run, so its cache is reused
         plates=S3PlateStore(storage),
         bible=book_bible(book, theme, child, style, companion),
+        portrait=portrait,
     )
     load_group_refs(job, ctx, rows)
     if 0 in beats:

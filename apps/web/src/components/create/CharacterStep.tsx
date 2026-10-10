@@ -7,7 +7,15 @@ import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { errorText } from "@/lib/api";
 import { nameCases } from "@/lib/arabicName";
-import { characterImage, createApi, type Character, type Child, type Drawing, type Fix } from "@/lib/create";
+import {
+  characterImage,
+  characterPortrait,
+  createApi,
+  type Character,
+  type Child,
+  type Drawing,
+  type Fix,
+} from "@/lib/create";
 import { lastApproved, NOTE_MAX, offered, tidyNote } from "@/lib/drawings";
 import { ACTIVITY_LINES } from "@/lib/shop";
 import { Chip, Frame, Lead } from "./Frame";
@@ -167,7 +175,25 @@ export function CharacterStep({
       ) : (
         <>
           <Lead title={t("character.title", who)} body={t(`character.where.${kind}`, { ...who, places })} />
+          {selected.has_portrait && (
+            // portrait first (2026-10-10): the face, large, is what the parent checks first
+            <figure className="flex flex-col gap-2 overflow-hidden rounded-3xl border-2 border-night-900 bg-paper-raised p-2">
+              {/* eslint-disable-next-line @next/next/no-img-element -- private image through the API, no-store */}
+              <img
+                src={characterPortrait(selected.id)}
+                alt={t("character.portraitAlt", who)}
+                className="aspect-square w-full rounded-2xl object-cover"
+              />
+              <figcaption className="flex flex-col gap-0.5 px-2 pb-1 text-center">
+                <strong className="text-body-l text-night-900">{t("character.portraitAsk", who)}</strong>
+                <span className="text-small text-ink-muted">{t("character.portraitHint", who)}</span>
+              </figcaption>
+            </figure>
+          )}
           <figure className="flex flex-col gap-2 overflow-hidden rounded-3xl border border-line bg-paper-raised p-2">
+            {selected.has_portrait && (
+              <span className="px-2 pt-1 text-small font-semibold text-night-900">{t("character.sheetTitle")}</span>
+            )}
             {/* eslint-disable-next-line @next/next/no-img-element -- private image through the API, no-store */}
             <img
               src={characterImage(selected.id)}
@@ -218,14 +244,20 @@ export function CharacterStep({
                   className={`flex w-[96px] shrink-0 flex-col gap-1.5 rounded-2xl bg-paper-raised p-1.5 text-start transition ${on ? "border-[3px] border-amber-500 shadow-[0_8px_24px_rgba(242,179,61,0.25)]" : "border-[1.5px] border-line"}`}
                 >
                   <span className="relative block h-[100px] w-full overflow-hidden rounded-xl bg-paper-sunk">
-                    {/* the sheet is three full figures side by side: the thumbnail shows the front view */}
-                    {/* eslint-disable-next-line @next/next/no-img-element -- private image through the API, no-store */}
-                    <img
-                      src={characterImage(d.id)}
-                      alt=""
-                      loading="lazy"
-                      className="absolute top-0 left-0 h-[150px] w-auto max-w-none"
-                    />
+                    {d.has_portrait ? (
+                      // the drawing's portrait: the face the parent compares
+                      // eslint-disable-next-line @next/next/no-img-element -- private image through the API, no-store
+                      <img src={characterPortrait(d.id)} alt="" loading="lazy" className="size-full object-cover" />
+                    ) : (
+                      // older drawings: the sheet is three full figures side by side, the thumbnail shows the front view
+                      // eslint-disable-next-line @next/next/no-img-element -- private image through the API, no-store
+                      <img
+                        src={characterImage(d.id)}
+                        alt=""
+                        loading="lazy"
+                        className="absolute top-0 left-0 h-[150px] w-auto max-w-none"
+                      />
+                    )}
                   </span>
                   <span className="line-clamp-2 text-caption font-semibold text-night-900">{styleName(d)}</span>
                   {d.id === inUse?.id && (

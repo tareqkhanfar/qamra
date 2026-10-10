@@ -14,6 +14,8 @@ export type Character = {
   style: string;
   approved: boolean;
   approved_at?: string | null; // the last approval: the child's character is the one approved last
+  // portrait first (2026-10-10): the child's portrait in the style, shown large before the sheet (older: none)
+  has_portrait?: boolean;
 };
 /** One of the child's drawings, kept so the parent can compare them and go back to one (newest first). */
 export type Drawing = Character & { created_at: string; style_name_ar: string; style_name_en: string };
@@ -181,6 +183,7 @@ export function missingEndpoint(r: ApiResult<unknown>): boolean {
 
 /** Private images come through the API with the parent's cookies (never a public URL). */
 export const characterImage = (id: string) => `/api/create/characters/${id}/image`;
+export const characterPortrait = (id: string) => `/api/create/characters/${id}/portrait`;
 export const photoImage = (id: string) => `/api/create/photos/${id}/image`; // the guardian's own, never cached
 export const pageImage = (bookId: string, beat: number) => `/api/create/books/${bookId}/pages/${beat}/image`;
 

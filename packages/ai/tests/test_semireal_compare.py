@@ -67,7 +67,7 @@ def test_the_grid_is_nine_calls_for_one_dollar(tmp_path: Path, monkeypatch: pyte
     assert by_id["E:page"].endpoint == "fal-ai/nano-banana-2/edit"
     # v2 rows send exactly the v2 production prompt; v3 rows the new guide and its sheet line
     v2 = art_style(history_guide("semi-realistic", 2))
-    assert by_id["A:sheet"].prompt == character_request(m.GIRL, [ref], v2).prompt
+    assert by_id["A:sheet"].prompt == character_request(m.GIRL, [ref], v2, version=4).prompt  # as drawn
     assert by_id["A:sheet"].refs == ["photo of the child (1)"]
     assert "full-length character sheet" in by_id["B:sheet"].prompt
     assert "Realistic painting in the manner" in by_id["E:page"].prompt

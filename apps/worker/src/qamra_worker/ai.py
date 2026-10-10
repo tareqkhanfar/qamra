@@ -10,6 +10,7 @@ from pydantic import SecretStr
 
 from qamra_ai.config import Settings as AISettings
 from qamra_ai.image import (
+    make_character_image_providers,
     make_classic_image_provider,
     make_cover_image_provider,
     make_image_provider,
@@ -44,6 +45,10 @@ def ai_settings(resolved: Resolved, core: CoreSettings, *, offline: bool | str =
         fal_image_model=v["fal_image_model"],
         fal_fallback_model=v["fal_fallback_model"],
         cover_image_model=str(v.get("cover_image_model") or ""),
+        character_portrait_model=str(v.get("character_portrait_model") or ""),
+        character_sheet_model=str(v.get("character_sheet_model") or ""),
+        character_portrait_resolution=v.get("character_portrait_resolution") or "1K",
+        character_sheet_resolution=v.get("character_sheet_resolution") or "2K",
         fal_upscale_model=v["fal_upscale_model"],
         fallback_after_failures=int(v["fallback_after_failures"]),
         gemini_image_model=v["gemini_image_model"],
@@ -82,10 +87,13 @@ def make_classic_runtime(settings: AISettings) -> Runtime:
 
 
 def make_runtime(settings: AISettings) -> Runtime:
+    portrait, sheet = make_character_image_providers(settings)  # portrait first: each step's own model
     return Runtime(
         settings=settings,
         text=make_text_provider(settings),
         image=make_image_provider(settings),
         upscaler=make_upscaler(settings),
         cover_image=make_cover_image_provider(settings),
+        portrait_image=portrait,
+        sheet_image=sheet,
     )

@@ -53,6 +53,9 @@ def test_a_character_is_drawn_for_the_child_and_costed_to_the_child(
     assert result == {"status": "ready"}
     assert character.sheet_image_key == f"children/{child.id}/characters/{character.id}.png"
     assert storage.get(character.sheet_image_key)
+    # portrait first: the portrait is drawn before the sheet and stored next to it, under the child's prefix
+    assert character.portrait_image_key == f"children/{child.id}/characters/{character.id}-portrait.png"
+    assert storage.get(character.portrait_image_key)
     costs = db.scalars(select(GenerationCost).where(GenerationCost.child_id == child.id)).all()
     assert costs and all(c.book_id is None for c in costs)  # a child's character isn't charged to a book
 
@@ -80,13 +83,13 @@ def test_the_character_is_drawn_from_the_parents_framing(
     db.add(character)
     db.commit()
     sent: list[list[bytes]] = []
-    real = books.generate_character_sheet
+    real = books.generate_character
 
     async def spy(rt: Any, ai: Any, photos: list[bytes], *args: Any, **kwargs: Any) -> Any:
         sent.append(photos)
         return await real(rt, ai, photos, *args, **kwargs)
 
-    monkeypatch.setattr(books, "generate_character_sheet", spy)
+    monkeypatch.setattr(books, "generate_character", spy)  # the portrait and the sheet: the same photos
     assert asyncio.run(draw_character(db, storage, character, offline="fake")) == {"status": "ready"}
     [[reference]] = sent
     with Image.open(io.BytesIO(reference)) as im:
@@ -149,7 +152,12 @@ def test_the_parents_note_is_rewritten_and_drawn_into_the_redraw(
     assert params["note"] == "شعره أجعد وأغمق" and params["note_outcome"] == "used"
     assert params["note_instruction"] == "Appearance: شعره أجعد وأغمق" and params["fixes"] == ["hair"]
     steps = db.scalars(select(GenerationCost.step).where(GenerationCost.child_id == character.child_id))
-    assert set(steps) == {"character:feedback", "character:2"}  # the note's reading is costed to the child
+    # the note's reading, the portrait and the sheet are costed to the child
+    assert set(steps) == {"character:feedback", "portrait:2", "character:2"}
+    image = getattr(made[0].image, "primary", made[0].image)
+    assert isinstance(image, FakeImageProvider)
+    portrait_prompt = image.requests[0].prompt  # the portrait is drawn first, with the same fixes and note
+    assert image.requests[0].step == "portrait:2" and "- Appearance: شعره أجعد وأغمق" in portrait_prompt
 
 
 def test_a_failed_text_step_or_a_screened_note_leaves_the_chips_alone(
@@ -165,7 +173,7 @@ def test_a_failed_text_step_or_a_screened_note_leaves_the_chips_alone(
     character = _redraw(db, storage, {"attempt": 3, "fixes": ["age"], "note": "عيونه أوسع"})
     assert asyncio.run(draw_character(db, storage, character, offline="fake")) == {"status": "ready"}
     prompt = _prompt(made[0])
-    assert "- Age:" in prompt and "عيونه" not in prompt and "Appearance" not in prompt
+    assert "Age: the child looked older than" in prompt and "عيونه" not in prompt and "Appearance" not in prompt
     assert character.params["note_outcome"] == "failed" and "note_instruction" not in character.params
 
     screened = _again(db, character.child_id, {"attempt": 4, "note": "رقمنا 0599123456"})
