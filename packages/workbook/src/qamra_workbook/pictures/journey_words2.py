@@ -528,7 +528,7 @@ MORE = (
             body("armor", rect(28, 46, 44, 40, 8)),
             body("armor", rect(34, 84, 12, 12, 3), rect(54, 84, 12, 12, 3)),
             body("shield", p("M6 46 L34 46 L34 66 C34 76 26 82 20 84 C14 82 6 76 6 66 Z")),
-            body("cross", p("M18 52 L22 52 L22 76 L18 76 Z M10 60 L30 60 L30 64 L10 64 Z")),
+            body("cross", c(20, 64, 6)),  # a round boss on the shield (it was a cross)
             body("helmet", p("M32 40 C32 14 68 14 68 40 Z")),
             body("skin", rect(36, 30, 28, 12, 2)),
             ink(e(44, 36, 2.2, 2.6), e(56, 36, 2.2, 2.6)),

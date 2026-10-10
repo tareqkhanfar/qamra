@@ -56,7 +56,7 @@ def shape_journey(ctx: PageContext) -> Built:
     body.append(card(W - 62, 6, 56, 66, r=8, fill=ctx.style.tint, stroke="none"))
     body.append(filled(kind, W - 34, 32, 36, ctx.style.color))
     body.append(text(SHAPE_NAMES.get(kind, kind), W - 34, 66, 7.5, cls="wb-title", color=ctx.style.deep))
-    sizes = (30.0, 24.0, 18.0) if kind == "rectangle" else (38.0, 30.0, 22.0)
+    sizes = (26.0, 20.0, 14.0) if kind == "rectangle" else (38.0, 30.0, 22.0)  # 1.5× wide: no overlap
     for k, size in enumerate(sizes):
         body.append(
             traced(
@@ -315,6 +315,23 @@ def _coloring_answer(w: str, x: float, y: float, s: float, yes: bool) -> list[st
     return out
 
 
+# a ship of shapes (stage 2): sails are triangles, the hull squares, portholes circles, a star on the mast
+SHIP = [
+    ("triangle", 112, 66, 46),
+    ("triangle", 70, 74, 34),
+    ("square", 138, 120, 30),
+    ("square", 108, 120, 30),
+    ("square", 78, 120, 30),
+    ("square", 48, 120, 30),
+    ("circle", 138, 120, 12),
+    ("circle", 108, 120, 12),
+    ("circle", 78, 120, 12),
+    ("circle", 48, 120, 12),
+    ("star", 112, 30, 18),
+    ("circle", 26, 30, 20),
+]
+
+
 @page_type("rule-coloring")
 def rule_coloring(ctx: PageContext) -> Built:
     """Colour by a rule: only the big ones (`rule: big`), only `count` of them (`rule: count`), each shape in
@@ -355,24 +372,29 @@ def rule_coloring(ctx: PageContext) -> Built:
         key.append(f"نلوّن {ctx.num(count)} فقط")
     elif rule == "key":
         legend = {str(k): str(v) for k, v in dict(params.get("key", {})).items()}
-        parts = [
-            ("square", 150, 110, 40),
-            ("triangle", 150, 68, 40),
-            ("square", 100, 110, 40),
-            ("triangle", 100, 68, 40),
-            ("square", 50, 110, 40),
-            ("circle", 150, 140, 16),
-            ("circle", 100, 140, 16),
-            ("circle", 50, 140, 16),
-            ("circle", 20, 70, 18),
-        ]
+        parts = (
+            SHIP
+            if params.get("scene") == "ship"
+            else [
+                ("square", 150, 110, 40),
+                ("triangle", 150, 68, 40),
+                ("square", 100, 110, 40),
+                ("triangle", 100, 68, 40),
+                ("square", 50, 110, 40),
+                ("circle", 150, 140, 16),
+                ("circle", 100, 140, 16),
+                ("circle", 50, 140, 16),
+                ("circle", 20, 70, 18),
+            ]
+        )
         for kind, cx, cy, s in parts:
             body.append(filled(kind, cx, cy, s, "#FFFFFF"))
             if kind in legend:
                 body.append(filled(kind, cx, cy, s, COLORS[legend[kind]][0], "key-ring"))
+        step = min(60.0, W / max(len(legend), 1))
         for k, (kind, c) in enumerate(legend.items()):
-            cx = W - 30 - k * 60
-            body.append(card(cx - 26, 164, 52, 36, r=8))
+            cx = W - step / 2 - k * step
+            body.append(card(cx - (step - 8) / 2, 164, step - 8, 36, r=8))
             body.append(filled(kind, cx + 10, 182, 16, COLORS[c][0]))
             body.append(text(COLORS[c][1], cx - 12, 185, 4.6, cls="wb-label", color=STEP))
         key.append("، ".join(f"{SHAPE_NAMES[k]}: {COLORS[c][1]}" for k, c in legend.items()))

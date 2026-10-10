@@ -600,10 +600,23 @@ def front_behind(ctx: PageContext) -> Built:
         card(0, 0, W, 142, r=10, fill="#F4F9FD", stroke="none"),
         card(0, 112, W, 30, r=8, fill="#DDEFD6", stroke="none"),
     ]
-    body.append(picture("cat", 88, 72, 44, "line"))  # behind the tree: the trunk hides the left of its face
+    body.append(picture("cat", 52, 62, 44, "line"))  # behind the tree: its right half hides behind the trunk
     body.append(picture("tree", 38, 2, 110))
-    body.append(picture("cat", 52, 86, 44, "line"))  # in front of the tree: whole, lower, over the trunk
-    body.append(picture("cat", 52, 86, 44).replace("<svg", '<svg class="key-ring"', 1))
+    body.append(  # a wide trunk over the middle of that cat's face, so it clearly hides behind it
+        draw.el(
+            "rect",
+            x=85,
+            y=62,
+            width=16,
+            height=50,
+            rx=1.5,
+            fill="#A8744F",
+            stroke="#2B2E4A",
+            stroke_width=0.9,
+        )
+    )
+    body.append(picture("cat", 76, 88, 44, "line"))  # in front of the tree: whole, over the trunk's foot
+    body.append(picture("cat", 76, 88, 44).replace("<svg", '<svg class="key-ring"', 1))
     body.append(card(0, 148, W, 56, r=10, fill="#FFF6F2", stroke="none"))
     body.append(
         text(
@@ -623,5 +636,5 @@ def front_behind(ctx: PageContext) -> Built:
     body.append(text("يَسار", 14, 200, 4.6, cls="wb-label", color="#8C90A6", anchor="start"))
     body.append(text("يَمين", W - 14, 200, 4.6, cls="wb-label", color="#8C90A6", anchor="end"))
     return Built(
-        {"svg": svg(body)}, ["القطة التي أمام الشجرة: التي على يسار الجذع وتغطّيه؛ على يمين الشجرة: الكرة"]
+        {"svg": svg(body)}, ["القطّة التي أمام الشجرة هي الكاملة التي تغطّي أسفل الجذع؛ والكرة على يمين الشجرة"]
     )

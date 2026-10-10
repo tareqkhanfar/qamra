@@ -93,6 +93,10 @@ def journey_opener(ctx: PageContext) -> Built:
                 stroke_dasharray="2.4 1.8",
             )
         )
+        # the dashed circle is where this stop's sticker goes (the sticker sheet has one per opener)
+        body.append(
+            text("مُلْصَقي", x + (14 if x < MAP_W / 2 else -14), y - 21, 3.4, cls="wb-label", color="#E27D63")
+        )
         # 32 mm tall: the head stays under the name of the stop on the row above (it hid it at 40)
         body.append(character_image(ctx, x - 9, y - 1, 32))
     inside = [ctx.text(str(t)) for t in ctx.page.params.get("inside", [])]
@@ -104,7 +108,7 @@ def journey_opener(ctx: PageContext) -> Built:
         top = MAP_H * 0.8 + 6
         area.append(card(0, top, W, 204 - top, r=10, fill=SOFT, stroke="none"))
         area.append(
-            text("في هَذِهِ المَحَطَّةِ", W - 10, top + 11, 5.2, cls="wb-label", color="#676B83", anchor="end")
+            text("فِي هَذِهِ المَحَطَّةِ", W - 10, top + 11, 5.2, cls="wb-label", color="#676B83", anchor="end")
         )
         for k, line in enumerate(inside[:3]):
             y = top + 22 + k * 9

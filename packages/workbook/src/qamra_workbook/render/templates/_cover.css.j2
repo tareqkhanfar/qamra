@@ -59,7 +59,8 @@
 .cv-badges { position: absolute; height: 9.5mm; display: flex; justify-content: center; gap: 2.4mm; z-index: 3; }
 .cv-badge { display: inline-flex; align-items: center; gap: 1.6mm; height: 9.5mm; padding: 0 3.4mm 0 1.4mm;
             border-radius: 4.75mm; background: #FFFFFF; box-shadow: 0 .7mm 1.8mm rgba(10, 14, 40, .25);
-            font: 700 10.5pt/1 var(--body); white-space: nowrap; }
+            font: 700 10.5pt/1 var(--body); white-space: nowrap;
+            font-feature-settings: "liga" 0, "dlig" 0; }  /* the display font's «في» ligature drops the ya's dots */
 .cv-badge i { width: 6.8mm; height: 6.8mm; border-radius: 50%; display: flex; align-items: center; justify-content: center;
               color: #FFFFFF; flex: none; }
 .cv-badge .ico { width: 4.2mm; height: 4.2mm; }

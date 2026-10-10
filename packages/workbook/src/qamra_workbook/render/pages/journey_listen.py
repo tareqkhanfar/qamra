@@ -418,7 +418,8 @@ def vocab_cards(ctx: PageContext) -> Built:
             label = w
         else:
             body.append(picture(w, x, y, size))
-            label = PICTURES[pid(w)].word_en
+            # `labels` prints the word exactly as the recording says it («teddy», not «teddy bear»)
+            label = str(dict(ctx.page.params.get("labels", {})).get(w, PICTURES[pid(w)].word_en))
         body.append(
             text(
                 label,

@@ -379,9 +379,10 @@ def above(ctx: PageContext, box: Box) -> tuple[list[str], str]:
 
 def difference(ctx: PageContext, box: Box) -> tuple[list[str], str]:
     x, y, w, h = box
-    s = h - 6
+    s = min(h - 6, (w - 30) / 2)  # two separate pictures side by side, even in a narrow panel
     return [
         picture("house", x + w - s - 6, y + 3, s),
+        draw.path(f"M{x + w / 2} {y + 4} L{x + w / 2} {y + h - 4}", stroke="#D8C9AC", width=0.8),
         picture("house", x + 6, y + 3, s),
         picture("sun", x + 6 + s * 0.62, y, s * 0.34),
         ring_at(x + 6 + s * 0.79, y + s * 0.17, s * 0.2, s * 0.2),
@@ -508,6 +509,18 @@ def classify_mini(ctx: PageContext, box: Box) -> tuple[list[str], str]:
         )
     ]
     out += [_box(x + w - (i + 1) * w / 2 + 6, y + h * 0.62, w / 2 - 12, h * 0.34) for i in range(2)]
+    # each box shows what goes in it (a circle, a triangle), so sorting by shape is the one right answer
+    out += [
+        draw.el(
+            "path",
+            d=shape_of(k, x + w - (i + 0.5) * w / 2, y + h * 0.79, h * 0.2).d + " Z",
+            fill="none",
+            stroke="#8C90A6",
+            stroke_width=0.8,
+            stroke_linejoin="round",
+        )
+        for i, k in enumerate(("circle", "triangle"))
+    ]
     return out, "دوائر معًا ومثلثات معًا"
 
 
@@ -582,6 +595,14 @@ def letters_mini(chars: tuple[str, ...], style: str) -> Mini:
         return out, "، ".join(chars)
 
     return mini
+
+
+def find_jim_mini(ctx: PageContext, box: Box) -> tuple[list[str], str]:
+    """ح ج خ side by side: the child circles the jim (the dot inside)."""
+    out, _ = letters_mini(("ح", "ج", "خ"), "find")(ctx, box)
+    x, y, w, h = box
+    out.append(ring_at(x + w - 1.5 * w / 3, y + h / 2, min(w / 6, h / 2) - 1, h / 2 - 1))
+    return out, "الجيم: الحرف الأوسط"
 
 
 def complete_mini(chars: tuple[str, ...]) -> Mini:
@@ -972,13 +993,13 @@ MINIS.update(
         "syllables": ("أُصَفِّقُ لِلْمَقاطِعِ", claps_mini),
         "first-sound": ("الصَّوْتُ الأَوَّلُ", first_sound_mini),
         "small-waves": ("أَمْواجٌ صَغيرَةٌ", waves_mini),
-        "find-shapes": ("أَجِدُ الأَشْكالَ", shapes),
+        "find-shapes": ("أَتَتَبَّعُ الأَشْكالَ", shapes),
         "sort-colors": ("أُلَوِّنُ بِالأَلْوانِ", sort_colors_mini),
         "pattern-abb": ("أُكْمِلُ النَّمَطَ", pattern),
         "first-sound-coloring": ("أُلَوِّنُ حَسَبَ الصَّوْتِ", first_sound_mini),
         "key-coloring": ("أُلَوِّنُ حَسَبَ المِفْتاحِ", key_shapes_mini),
         "name": ("أُسَمّي الحَرْفَ", letters_mini(("أ", "ب", "ت", "ث"), "hollow")),
-        "find": ("أَجِدُ الحَرْفَ", letters_mini(("ج", "ح", "خ"), "find")),
+        "find": ("أُحَوِّطُ الجيمَ", find_jim_mini),
         "write": ("أَكْتُبُ الحَرْفَ", write_mini),
         "trace": ("أَتَتَبَّعُ", letters_mini(("د", "ذ", "ر"), "trace")),
         "complete": ("أُكْمِلُ الحَرْفَ", complete_mini(("س", "ش"))),
