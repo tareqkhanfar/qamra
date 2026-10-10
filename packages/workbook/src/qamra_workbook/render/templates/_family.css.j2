@@ -63,7 +63,7 @@
 .pass-body { display: flex; gap: 5mm; padding: 4mm 5mm 3.5mm; }
 .pass-photo { position: relative; width: 34mm; height: 42mm; flex: none; border-radius: 4mm; overflow: hidden;
               background: linear-gradient(#E3E6F5, #F5F6FC); border: 0.6mm solid #C9CFEA; }
-.pass-photo img { position: absolute; left: 50%; top: 2.2mm; width: 50mm; transform: translateX(-50%); }
+.pass-photo img { position: absolute; left: 50%; top: 2mm; width: 42mm;  /* the whole face, to the chin, for any character sheet */ transform: translateX(-50%); }
 .pass-photo-stamp { position: absolute; left: 1.6mm; top: 1.6mm;  /* in the corner over the hair, never on the face */ width: 8mm; height: 8mm; border-radius: 50%; background: #F2B33D;
                     color: #FFFFFF; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 0.6mm #FFFFFF; }
 .pass-photo-stamp .ico { width: 5mm; height: 5mm; }
@@ -422,8 +422,8 @@
 .coin { position: relative; width: 26mm; height: 26mm; zoom: 0.9; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .coin .coin-art { position: absolute; inset: 0; width: 100%; height: 100%; }
 .coin b { position: relative; font: 800 17pt/1 var(--title); color: #3D4262; margin-top: 3.2mm; }
-.coin small { position: relative; font: 700 6.5pt/1.1 var(--body); color: #3D4262; }
-.coin em { position: relative; font: 700 5.5pt/1.1 var(--body); font-style: normal; color: #3D4262; margin-top: 0.2mm; }
+.coin small { position: relative; font: 700 8.5pt/1.1 var(--body);  /* ≥ 7.5 pt printed (the coin is zoomed 0.9) */ color: #3D4262; }
+.coin em { position: relative; font: 700 7.8pt/1.1 var(--body); font-style: normal; color: #3D4262; margin-top: 0.2mm; }
 .cut-note { display: inline-flex; align-items: center; gap: 1.5mm; }
 .price-tags { display: flex; flex-direction: column; gap: 2mm; }
 .tags-row { display: flex; justify-content: space-between; }

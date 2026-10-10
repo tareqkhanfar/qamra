@@ -514,6 +514,7 @@
 .compare-boxes b { font: 800 11pt var(--title); color: var(--deep); }
 .found { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 2mm; padding: 3mm 4mm; background: var(--tint); border-color: transparent; }
 .found-nums { display: flex; flex-wrap: wrap; gap: 1.6mm; direction: rtl; }
+.found-nums:has(> span:nth-child(7)) { gap: 1mm; } .found-nums:has(> span:nth-child(7)) span { width: 7.6mm; height: 7.6mm; }  /* 8 finds stay on one row */
 .found-nums span { width: 9mm; height: 9mm; border-radius: 50%; background: #FFFFFF; border: 0.5mm solid var(--c); display: flex; align-items: center;
                    justify-content: center; font: 800 12pt/1 var(--title); color: var(--deep); padding-top: 0.8mm; }
 
@@ -734,8 +735,8 @@
 .qcard .mem-level { top: auto; bottom: 3.4mm; }
 .card-grid.roles { grid-template-columns: repeat(3, 1fr); grid-auto-rows: 1fr; gap: 3mm; }
 .ccard.role { padding: 4mm 4mm 3.5mm; gap: 1.5mm; }
-.role-art { flex: 1; min-height: 0; width: 100%; display: flex; justify-content: center; background: #FFFFFF; border-radius: 4mm; padding-top: 2mm; }
-.role-art svg { height: 100%; max-height: 52mm; width: auto; aspect-ratio: 60 / 70; }
+.role-art { flex: 1; min-height: 0; width: 100%; display: flex; justify-content: center; background: var(--tint, #F3E4F6);  /* a white coat shows */ border-radius: 4mm; padding-top: 2mm; }
+.role-art svg { height: 100%; max-height: 52mm; width: auto; aspect-ratio: 60 / 80; }  /* room above the head for a hat */
 .role-name { font: 800 16pt/1.2 var(--title); color: var(--ink); }
 .role-says { display: flex; flex-direction: column; gap: 1mm; width: 100%; }
 .role-says span { font: 600 9.5pt/1.35 var(--body); color: var(--ink-2); background: #FFFFFF; border-radius: 3mm; padding: 1mm 2.5mm; text-align: center; }
@@ -747,7 +748,8 @@
 .puppet > svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 .pp-head { position: absolute; left: 50%; top: 11mm; width: 30mm; height: 30mm; transform: translateX(-50%); }
 .pp-band { position: absolute; left: 2mm; right: 2mm; display: flex; align-items: center; gap: 2mm; }
-.pp-glue { width: 10mm; flex: none; align-self: stretch; display: flex; align-items: center; justify-content: center; font: 700 6pt/1.2 var(--body);
+/* the label sits on the light glue strip (the band's left end, under the cut line's inside) */
+.pp-glue { order: 2; width: 10mm; flex: none; align-self: stretch; display: flex; align-items: center; justify-content: center; font: 700 7pt/1.15 var(--body);
            color: var(--muted); text-align: center; }
 .pp-band b { flex: 1; text-align: center; font: 800 12pt var(--title); color: var(--deep); }
 .card-grid.memory .ccard { padding: 2.6mm 2.4mm 2.2mm; gap: 0.6mm; }

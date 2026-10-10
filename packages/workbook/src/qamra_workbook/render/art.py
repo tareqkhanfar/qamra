@@ -67,6 +67,11 @@ ICONS: dict[str, str] = {
         "3.9 10.8 •M12 18.2 A1.6 1.6 0 1 0 12.01 18.2 Z"
     ),
     "letter-a": "M6 20 L12 4 L18 20 M8.6 14 L15.4 14",
+    # a reporter's microphone: the rounded head with its grille, the handle, a cable curling away
+    "mic": (
+        "M9 3.5 A3.5 3.5 0 0 1 16 3.5 L16 10 A3.5 3.5 0 0 1 9 10 Z M9 6 L16 6 M9 8.5 L16 8.5 M11 13.4 L11 20 "
+        "A1.5 1.5 0 0 0 14 20 L14 13.4 M12.5 21.5 C12.5 23 9 23 7 21"
+    ),
     "speaker": (
         "M4 9 L8 9 L13 5 L13 19 L8 15 L4 15 Z M16.5 9 C18 10.5 18 13.5 16.5 15 M19 6.5 C22 9.5 22 14.5 19"
         " 17.5"

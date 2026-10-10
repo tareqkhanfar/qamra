@@ -87,7 +87,9 @@ def role_cards(ctx: PageContext) -> Built:
     home."""
     roles = []
     for r in (dict(x) for x in ctx.page.params.get("roles", [])):
-        bust = draw.svg(60, people.BUST_H, people.job_bust(str(r["job"]), 1.2), "bust")
+        figure = ctx.text(str(r["figure"])) if r.get("figure") else None  # «{man/woman}»: a boy's set and a girl's
+        art = people.job_bust(str(r["job"]), 1.2, figure)  # type: ignore[arg-type]
+        bust = draw.svg(60, people.BUST_H + 10, f'<g transform="translate(0 10)">{art}</g>', "bust")  # a hat fits
         roles.append(
             {
                 "art": bust,

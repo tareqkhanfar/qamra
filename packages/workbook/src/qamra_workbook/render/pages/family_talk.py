@@ -35,8 +35,9 @@ def face_svg(feeling: str, size: float = 22) -> Markup:
     return draw.svg(size, size, people.feeling_face(kind, size / 2, size / 2, size / 2 - 0.8), "face")
 
 
-def bust_svg(job: str) -> Markup:
-    return draw.svg(60, people.BUST_H, people.job_bust(job, edge_mm=1.2), "bust")
+def bust_svg(job: str, figure: str | None = None) -> Markup:
+    """`figure` (a man or a woman) overrides the job's default, so a child's set of roles is balanced."""
+    return draw.svg(60, people.BUST_H, people.job_bust(job, edge_mm=1.2, figure=figure), "bust")  # type: ignore[arg-type]
 
 
 def harbour() -> Markup:
@@ -107,7 +108,10 @@ def picture_talk(ctx: PageContext) -> Built:
         data["kind"] = ctx.text(str(params.get("kind", "")))
     else:  # roles
         data["roles"] = [
-            {"art": bust_svg(str(x["job"])), "label": ctx.text(str(x["label"]))}
+            {
+                "art": bust_svg(str(x["job"]), ctx.text(str(x["figure"])) if x.get("figure") else None),
+                "label": ctx.text(str(x["label"])),
+            }
             for x in params.get("roles", [])
         ]
         data["places"] = [ctx.text(str(x)) for x in params.get("places", [])]

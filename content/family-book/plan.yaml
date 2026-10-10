@@ -1682,11 +1682,11 @@ activities:
         params:
           mode: roles
           roles:
-            - {job: doctor, label: "الطَّبيبَةُ"}
-            - {job: seller, label: "البائِعَةُ"}
-            - {job: chef, label: "الطّاهِيَةُ"}
+            - {job: doctor, figure: "{man/woman}", label: "{الطَّبيبُ/الطَّبيبَةُ}"}  # 3 men, 3 women for every child
+            - {job: seller, figure: "{man/woman}", label: "{البائِعُ/البائِعَةُ}"}
+            - {job: chef, figure: "{woman/man}", label: "{الطّاهِيَةُ/الطّاهي}"}
             - {job: builder, label: "البَنّاءُ"}
-            - {job: farmer, label: "المُزارِعُ"}
+            - {job: farmer, figure: "{woman/man}", label: "{المُزارِعَةُ/المُزارِعُ}"}
             - {job: teacher, label: "المُعَلِّمَةُ"}
           places: [البَيْتُ, السّوقُ, الحَديقَةُ, المَدْرَسَةُ, العِيادَةُ]
   - id: act-puppets
@@ -1759,6 +1759,7 @@ back:
       - "بعد كل يوم، {دعوه/دعوها} {يلوّن/تلوّن} النجمة {ويلصق/وتلصق} ملصقًا."
       - "في اليوم السابع، احتفلوا معًا بالمكافأة!"
     params:
+      member: relative  # the call goes to someone who lives apart: a grandparent, an aunt or uncle
       days:
         - {icon: chef, text: "نَطْبُخُ مَعًا"}
         - {icon: book, text: "نَقْرَأُ قِصَّةً"}
@@ -1861,11 +1862,12 @@ inserts:  # each insert is a print file (out/family-book/inserts/<id>-<size>.pdf
         params:  # draft: educator review (the role lines)
           section: act
           roles:
-            - {job: doctor, label: "الطَّبيبَةُ", lines: ["سَلامَتُك! أَيْنَ يُؤْلِمُك؟", "هَيّا نَسْمَعُ دَقّاتِ القَلْبِ."]}
-            - {job: seller, label: "البائِعَةُ", prop: basket, lines: ["أَهْلًا! ماذا نَحْتاجُ اليَوْمَ؟", "هَذا بِقَمْرَتَيْنِ."]}
-            - {job: chef, label: "الطّاهِيَةُ", prop: spoon, lines: ["نَغْسِلُ أَيْدِيَنا أَوَّلًا!", "الطَّبْخَةُ جاهِزَةٌ، بِالهَناءِ!"]}
+            # three men and three women for every child; the boy's set and the girl's swap three of them
+            - {job: doctor, figure: "{man/woman}", label: "{الطَّبيبُ/الطَّبيبَةُ}", lines: ["سَلامَتُك! أَيْنَ يُؤْلِمُك؟", "هَيّا نَسْمَعُ دَقّاتِ القَلْبِ."]}
+            - {job: seller, figure: "{man/woman}", label: "{البائِعُ/البائِعَةُ}", prop: basket, lines: ["أَهْلًا! ماذا نَحْتاجُ اليَوْمَ؟", "هَذا بِقَمْرَتَيْنِ."]}
+            - {job: chef, figure: "{woman/man}", label: "{الطّاهِيَةُ/الطّاهي}", prop: spoon, lines: ["نَغْسِلُ أَيْدِيَنا أَوَّلًا!", "الطَّبْخَةُ جاهِزَةٌ، بِالهَناءِ!"]}
             - {job: builder, label: "البَنّاءُ", prop: blocks, lines: ["نَبْني بَيْتًا قَوِيًّا.", "حَجَرٌ فَوْقَ حَجَرٍ!"]}
-            - {job: farmer, label: "المُزارِعُ", prop: watering-can, lines: ["نَزْرَعُ البُذورَ وَنَسْقيها.", "الزَّيْتونُ نَضِجَ!"]}
+            - {job: farmer, figure: "{woman/man}", label: "{المُزارِعَةُ/المُزارِعُ}", prop: watering-can, lines: ["نَزْرَعُ البُذورَ وَنَسْقيها.", "الزَّيْتونُ نَضِجَ!"]}
             - {job: teacher, label: "المُعَلِّمَةُ", prop: book, lines: ["صَباحُ الخَيْرِ يا أَبْطالُ!", "مَنْ يَعْرِفُ الجَوابَ؟"]}
       - type: puppets
         title: "دُمى الأَصابِعِ"

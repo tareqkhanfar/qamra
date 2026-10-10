@@ -579,9 +579,11 @@ def _hat(kind: str, cx: float, top: float) -> str:
     return ""
 
 
-def job_bust(job: str, edge_mm: float = 0.0) -> str:
-    """The head and shoulders of someone at work (figure units: 60 wide, `BUST_H` tall)."""
+def job_bust(job: str, edge_mm: float = 0.0, figure: Figure | None = None) -> str:
+    """The head and shoulders of someone at work (figure units: 60 wide, `BUST_H` tall); `figure` draws a
+    man or a woman in that job instead of the job's default."""
     kind, outfit, hat = JOBS.get(job, ("adult", OUTFITS[0], ""))
+    kind = figure or kind
     figure = person(kind, outfit)
     head_top = 20.0 - 11.0
     extra = ""

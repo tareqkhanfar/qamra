@@ -187,6 +187,11 @@ ROLE_FIGURES: dict[str, Figure] = {
 ADULT_FIGURES: frozenset[Figure] = frozenset({"woman", "man", "grandma", "grandpa", "adult"})
 NO_ADULT = "أحد الكبار"  # {adult} when the family lists no grown-up
 GRANDPARENT = "grandparent"  # a page's `adult`/`member` param: a grandparent, by whatever name, when there is one
+# `member: relative`: someone who usually lives apart (to phone or visit): a grandparent, then an aunt or uncle;
+# without one, «أَحَدِ الأَقارِبِ» (the text already has it in the genitive: «نَتَّصِلُ بِـ{member:gen}»)
+RELATIVE = "relative"
+RELATIVE_ROLES = frozenset({"خالتو", "خالتي", "خالة", "عمتو", "عمتي", "عمة", "خالو", "خالي", "خال", "عمو", "عمي", "عم"})
+NO_RELATIVE = "أَحَدِ الأَقارِبِ"
 
 
 @dataclass(frozen=True)
@@ -262,10 +267,13 @@ class Family:
         for m in among:
             if wanted and wanted in (_TASHKEEL.sub("", m.role).strip(), _TASHKEEL.sub("", m.name).strip()):
                 return m
-        if wanted == GRANDPARENT:  # whatever the family calls them: ستّي، تيتا، سيدو، جدّي…
+        if wanted in (GRANDPARENT, RELATIVE):  # whatever the family calls them: ستّي، تيتا، سيدو، جدّي…
             elders = [m for m in among if m.drawn_as in ("grandma", "grandpa")]
             if elders:
                 return elders[key % len(elders)]
+        if wanted == RELATIVE:
+            kin = [m for m in among if _TASHKEEL.sub("", m.role).replace("ّ", "").strip() in RELATIVE_ROLES]
+            return kin[key % len(kin)] if kin else None
         return among[key % len(among)]
 
     def city_in(self, text: str) -> str:
@@ -285,6 +293,8 @@ class Family:
         # `{adult:k}`: «you» said to that grown-up («طُفولَتُ{adult:k}» → «طُفولَتُكِ» to تيتا, «طُفولَتُكَ» to سيدو)
         text = text.replace("{adult:k}", you_suffix(grown_up))
         text = fill_name(text, "adult", grown_up.label if grown_up else NO_ADULT)
+        if anyone is None and _TASHKEEL.sub("", member).strip() == RELATIVE:
+            return fill_name(text, "member", NO_RELATIVE)
         return fill_name(text, "member", anyone.label if anyone else NO_ADULT)
 
 
