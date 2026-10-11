@@ -10,8 +10,7 @@ import random
 from qamra_workbook.pictures import PICTURES
 from qamra_workbook.render import draw
 from qamra_workbook.render.foundation_kg1 import ENGLISH_PICTURES_KG1, LETTER_PICTURES_KG1, LOOKALIKE_KG1
-from qamra_workbook.render.pages.letters import tracing_row
-from qamra_workbook.render.pages.workbook_arabic import row_svg
+from qamra_workbook.render.pages.workbook_arabic import letter_grid
 from qamra_workbook.render.pages.workbook_common import (
     INK,
     W,
@@ -53,7 +52,6 @@ from qamra_workbook.render.pages.workbook_review import (
     stack,
     trace_numbers,
     write_first_letter,
-    write_letters,
 )
 from qamra_workbook.render.pages.workbook_review2 import (
     _place_words,
@@ -121,7 +119,9 @@ def pen_task(skill: str) -> tuple[str, Task, float]:
         return label, pen_row2("spiral" if skill == "spiral" else "narrow-path"), 1.0
     if skill in ("shape", "dot-to-dot", "trace-path", "vertical", "diagonal"):
         return label, pen_row({"shape": "shapes", "dot-to-dot": "triangle"}.get(skill, skill)), 1.0
-    return label, kg1_pen_row({"grid-copy": "connected", "sharp-turns": "zigzag"}.get(skill, skill)), 1.0
+    if skill == "grid-copy":  # a review box has no room for the dot grid: a joined line, named as what it is
+        return PEN_LABELS_KG1["connected"], kg1_pen_row("connected"), 1.0
+    return label, kg1_pen_row({"sharp-turns": "zigzag"}.get(skill, skill)), 1.0
 
 
 def circle_letter(letters: list[str]) -> Task:
@@ -168,21 +168,27 @@ def circle_letter(letters: list[str]) -> Task:
     return task
 
 
-def trace_letters(letters: list[str]) -> Task:
-    """A dotted row per letter (up to three): trace, do not write alone."""
+TRACE_MOST = 20.0  # the cap height of a review's tracing rows (mm), at most
+
+
+def trace_letters(letters: list[str], count: int | None = None) -> Task:
+    """Every letter of the review (up to six) on dotted writing lines (`workbook_arabic.letter_grid`): trace,
+    do not write alone (with `count`: that many dotted copies, then room to write it once alone)."""
 
     def task(ctx: PageContext, box: Box, r: random.Random) -> Drawn:
-        out = Drawn()
-        chosen = letters[:3]
-        pitch = box.h / len(chosen)
-        for i, char in enumerate(chosen):
-            shape = shape_of(char)
-            cap = min(16.0, (pitch - 12) * (0.6 if shape.rtl else 0.75))
-            row, _ = row_svg(
-                tracing_row(shape, width=box.w, cap=cap, number=ctx.num), box.x, box.y + i * pitch
-            )
-            out.body.append(row)
-        return out
+        rows, cap = letter_grid(
+            [shape_of(c) for c in letters[:6]],
+            box.x,
+            box.y,
+            box.w,
+            box.h,
+            rtl=ctx.page.lang != "en",
+            count=count,
+            number=ctx.num,
+            most=TRACE_MOST,
+        )
+        problems = [f"the tracing rows of {''.join(letters)} are only {cap:.0f} mm high"] if cap < 10 else []
+        return Drawn(rows, [], problems)
 
     return task
 
@@ -228,6 +234,7 @@ def circle_first_letter(letters: list[str]) -> Task:
             pool = [c for c in letters if c != char] + [
                 c for c in everyone(char) if c != char and c not in letters
             ]
+            pool = [c for c in pool if {c, char} != {"ت", "ث"}]  # «تلّاجة، تعلب»: no ث picture in a ت row
             for other in pool:
                 wrong += pictures_for(other, r, 1, used | set(wrong))
                 if len(wrong) == 2:
@@ -279,8 +286,9 @@ def kg1_review(ctx: PageContext, r: random.Random) -> Drawn | None:
             ctx,
             [
                 ("أُحَوِّطُ الحَرْفَ نَفْسَهُ", circle_letter(letters[:3]), 1.0),
-                ("أُحَوِّطُ الصّورَةَ الَّتي تَبْدَأُ بِالحَرْفِ", circle_first_letter(with_pictures(letters, r)[:3]), 1.0),
-                ("أَتَتَبَّعُ الحَرْفَ", trace_letters(letters), 0.9),
+                # the first three letters, then the last three: a group of four or five is asked whole
+                ("أُحَوِّطُ الصّورَةَ الَّتي تَبْدَأُ بِالحَرْفِ", circle_first_letter(with_pictures(letters, r)[-3:]), 1.0),
+                ("أَتَتَبَّعُ الحَرْفَ", trace_letters(letters), 1.2),
             ],
             r,
         )
@@ -291,7 +299,7 @@ def kg1_review(ctx: PageContext, r: random.Random) -> Drawn | None:
             [
                 ("أَعُدُّ وَأَكْتُبُ", count_write_any(sorted(r.sample([n for n in numbers if n >= 2], 4))), 1.3),
                 ("أَتَتَبَّعُ الأَعْدادَ", trace_numbers_any(numbers[-5:]), 0.8),
-                ("أَكْتُبُ العَدَدَ النّاقِصَ", order_numbers(list(range(max(1, top - 4), top + 1))), 0.8),
+                ("أَكْتُبُ العَدَدَيْنِ النّاقِصَيْنِ", order_numbers(list(range(max(1, top - 4), top + 1))), 0.8),
             ],
             r,
         )
@@ -309,7 +317,9 @@ def kg1_review(ctx: PageContext, r: random.Random) -> Drawn | None:
         extra = {"related": ("أَصِلُ ما يُناسِبُ", related_task()), "sequence": ("أُرَتِّبُ القِصَّةَ", sequence_task())}
         extra["pattern"] = ("أُكْمِلُ النَّمَطَ", pattern_abc_task())
         tasks: dict[str, Task] = {}
-        for k in [*keys, "matching", "pattern", "classify", "odd-one-out"]:
+        # a filler is a skill already met: V1's first review (p36) comes before the first pattern page (p47)
+        taught = ["pattern"] if int(params.get("volume", 1)) > 1 else []
+        for k in [*keys, "matching", *taught, "classify", "odd-one-out"]:
             found = extra.get(k) or THINKING.get(k)
             if found and found[0] not in tasks and len(tasks) < 4:
                 tasks[found[0]] = found[1]
@@ -432,8 +442,9 @@ def kg1_assessment(ctx: PageContext, r: random.Random) -> Drawn | None:
             ),
             (
                 "أَكْتُبُ الحَرْفَ" if write else "أَتَتَبَّعُ الحَرْفَ",
-                write_letters(write) if write else trace_letters(letters[:3]),
-                1.1,
+                # one dotted, then one alone: the letters stay big enough to write
+                trace_letters(write, count=1) if write else trace_letters(letters[:3]),
+                1.4,
             ),
         ]
     elif subject == "math" and numbers:

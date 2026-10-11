@@ -127,7 +127,7 @@ def test_numbers_follow_the_book_numerals() -> None:
 
 def test_openers_take_their_title_from_the_plan() -> None:
     opener = next(p for p in volume(range(8, 9)).pages)
-    assert opener.title == "أنا وعالم الأرقام"
+    assert opener.title == "أَنا وَعالَمُ الأَرْقامِ"  # the plan's «أنا وعالم الأرقام», vowelized for the child
 
 
 def test_the_whole_volume_prints_without_overflow_and_passes_preflight(tmp_path: Path) -> None:

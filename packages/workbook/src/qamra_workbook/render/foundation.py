@@ -17,7 +17,12 @@ import datetime as dt
 from typing import Any
 
 from qamra_workbook.curriculum import SUBJECT_AR, Curriculum, Page, Volume
-from qamra_workbook.render.foundation_text import objective_as_child, page_texts
+from qamra_workbook.render.foundation_text import (
+    OPENER_SAY_TITLE,
+    objective_as_child,
+    opener_title,
+    page_texts,
+)
 from qamra_workbook.render.spec import BookSpec, Child, Geometry, Lang, Numerals, PageSpec
 
 PRODUCT = "foundation"
@@ -80,7 +85,10 @@ def plan_params(page: Page, plan: Curriculum, volume: Volume, name_en: str) -> d
     match page.type:
         case "unit-opener":
             # in the child's voice under «في هذا الجزء سأتعلّم» (the plan writes them about the child)
-            extra["objectives"] = [objective_as_child(o) for o in volume.objectives.get(page.subject, [])]
+            objectives = volume.objectives.get(page.subject, [])
+            if "objective_numbers" in page.params:  # an opener late in the volume: only what is still to come
+                objectives = [objectives[int(k) - 1] for k in page.params["objective_numbers"]]
+            extra["objectives"] = [objective_as_child(o) for o in objectives]
             extra["subject_ar"] = SUBJECT_AR[page.subject]
         case "toc":
             extra["units"] = toc_entries(volume)
@@ -143,7 +151,8 @@ def from_curriculum(page: Page, plan: Curriculum, volume: Volume, name_en: str =
         or page_texts(page.subject, page.type, said, params["unit_title"])
     )
     if page.type == "unit-opener" and ":" in page.skill:  # «أنا وعالم الأرقام: أتعرّف على ما سأتعلّمه»
-        title = page.skill.split(":")[0].strip()
+        title = opener_title(page.skill.split(":")[0].strip())
+        instruction = OPENER_SAY_TITLE.get(title, instruction)
     return PageSpec(
         id=page_id(plan.level, volume.volume, page.n),
         type=engine_type(page, plan.level),

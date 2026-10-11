@@ -56,7 +56,7 @@ LETTER_WORDS = {
     "ح": ("horse", "bag", "dove"),
     "خ": ("sheep", "tent", "cucumber"),
     "د": ("bear", "hen", "rooster", "bucket"),
-    "ذ": ("corn", "tail"),
+    "ذ": ("corn",),  # the «tail» is a whole cat: a child says «قطّة»
 }
 
 
@@ -150,6 +150,11 @@ def arabic_find(ctx: PageContext) -> Built:
             problems.append(f"no picture starts with {t}")
             continue
         word = r.choice(choices_pool)
+        chosen = str(dict(params.get("pictures", {})).get(t, ""))  # a page may name the picture it wants
+        if chosen:
+            if chosen not in PICTURES or not same_letter(first_letter(PICTURES[chosen].word_ar), t):
+                problems.append(f"«{chosen}» is not a picture that starts with {t}")
+            word = chosen
         used.add(word)
         options = [t, *r.sample([c for c in [*targets, *others] if c != t], 2)]
         r.shuffle(options)

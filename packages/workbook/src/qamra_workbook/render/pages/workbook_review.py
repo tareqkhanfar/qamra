@@ -15,8 +15,8 @@ from dataclasses import dataclass, field
 from qamra_workbook.letters.model import Letter
 from qamra_workbook.pictures import PICTURES
 from qamra_workbook.render import draw
-from qamra_workbook.render.pages.letters import row_room, tracing_row
-from qamra_workbook.render.pages.workbook_arabic import row_svg
+from qamra_workbook.render.pages.letters import row_room
+from qamra_workbook.render.pages.workbook_arabic import letter_grid
 from qamra_workbook.render.pages.workbook_common import (
     INK,
     W,
@@ -93,19 +93,15 @@ def pictures_for(letter: str, r: random.Random, count: int = 1, avoid: set[str] 
 
 
 def write_letters(letters: list[str]) -> Task:
-    """A short writing row per letter: two dotted letters, then room to write it alone."""
+    """A short writing row per letter: two dotted letters, then room to write it alone; with four letters or
+    more, two or three to a row (`letter_grid`), so the letters stay big enough to show their shape."""
 
     def task(ctx: PageContext, box: Box, r: random.Random) -> Drawn:
-        out = Drawn()
-        pitch = box.h / len(letters)
-        for i, char in enumerate(letters):
-            shape = shape_of(char)
-            cap = min(22.0, cap_for(shape, pitch - 1))
-            row, _ = row_svg(
-                tracing_row(shape, width=box.w, cap=cap, count=2, number=ctx.num), box.x, box.y + i * pitch
-            )
-            out.body.append(row)
-        return out
+        shapes = [shape_of(c) for c in letters]
+        rows, _ = letter_grid(
+            shapes, box.x, box.y, box.w, box.h, rtl=ctx.page.lang != "en", count=2, number=ctx.num, most=22.0
+        )
+        return Drawn(rows)
 
     return task
 
@@ -125,7 +121,9 @@ def circle_first_letter(letters: list[str]) -> Task:
                 out.problems.append(f"no picture starts with {char}")
                 continue
             used.add(right[0])
-            others = [c for c in letters if c != char] or ["م"]
+            # ت and ث never stand in for each other: a Palestinian child says «تلّاجة، تعلب، توم», so a ث
+            # picture in the ت row is a second right answer (and the ث row has none)
+            others = [c for c in letters if c != char and {c, char} != {"ت", "ث"}] or ["ب", "م"]
             wrong: list[str] = []
             for other in others * 2:
                 wrong += pictures_for(other, r, 1, used | set(wrong))
@@ -314,6 +312,9 @@ def count_write(counts: list[int]) -> Task:
                     stroke="#B8B2A6",
                     dash="2 1.4",
                 )
+            )
+            out.body.append(
+                text(ctx.num(n), x + step / 2, box.y + gh + 18, 12, cls="key-line", color="#E0483A")
             )
         out.answer.append("أعدّ وأكتب: " + "، ".join(ctx.num(n) for n in counts))
         return out
@@ -609,6 +610,8 @@ def pattern_row() -> Task:
                         dash="2 1.4",
                     )
                 )
+                y = box.y + box.h / 2 - size / 2  # the key draws the missing picture in its box
+                out.body.append(pic(thing, cx - size / 2 + 2, y + 2, size - 4, class_="key-line"))
         out.problems += row.problems()
         out.answer.append("النمط: " + " ثم ".join(PICTURES[t].word_ar for t in row.answer))
         return out

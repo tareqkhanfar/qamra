@@ -13,15 +13,16 @@ from qamra_workbook.pictures.model import strip_tashkeel
 from qamra_workbook.render import draw
 from qamra_workbook.render.foundation_kg1 import HARAKA_AR, LETTER_PICTURES_KG1, LOOKALIKE_KG1
 from qamra_workbook.render.foundation_text import letter_name, letters_head
-from qamra_workbook.render.pages.letters import dotted_letter, letter_extent, tracing_row
+from qamra_workbook.render.pages.letters import dotted_letter, letter_extent, pen_lifts, tracing_row
 from qamra_workbook.render.pages.workbook_arabic import (
+    BIG_CHIP,
     big_track,
     first_letter,
     row_svg,
     same_letter,
     word_markup,
 )
-from qamra_workbook.render.pages.workbook_arabic2 import alone_row
+from qamra_workbook.render.pages.workbook_arabic2 import alone_row, differ_by_dots
 from qamra_workbook.render.pages.workbook_common import (
     INK,
     W,
@@ -91,7 +92,7 @@ def kg1_letter_trace(ctx: PageContext) -> Built:
     body = [card(0, 0, W, big, r=7)]
     body.append(big_track(shape, 20, 2, 146, big - 4, ctx.num, ctx.style.color, most=0.85))
     body.append(card(5, 5, 30, 10, r=5, fill=ctx.style.tint, stroke="none"))
-    body.append(text("كَبيرٌ", 20, 12, 5, color=ctx.style.deep))
+    body.append(text(BIG_CHIP, 20, 12, 5, color=ctx.style.deep))
     rows = [s for s in sizes[1:] if s in CAPS] or ["l"]
     if len(rows) == 1:
         rows = rows * 2
@@ -179,7 +180,7 @@ def kg1_letters_write(ctx: PageContext) -> Built:
     guided, alone = int(params.get("guided", 2)), int(params.get("independent", 1))
     per = guided + alone
     cap = fitting_cap(shape_of(chars[0]), per * len(chars), 204 - 26, (16.0, 14.0, 12.0, 11.0, 10.0), 3.0)
-    body = model_header(ctx, chars, 0, 22, "الحَرْفانِ يَخْتَلِفانِ بِالنِّقاطِ فَقَطْ")
+    body = model_header(ctx, chars, 0, 22, differ_by_dots(chars))
     y = 26.0
     for char in chars:
         rows, y = writing_rows(ctx, char, guided, alone, cap, y, 3.0, letters_head([char]))
@@ -241,13 +242,19 @@ def kg1_harakat(ctx: PageContext) -> Built:
         body.append(syllable(ctx, char, targets[k % len(targets)], x, 13, big, color))
     pitch = (204 - 54) / len(chars)
     answer = []
+    r = ctx.rng("harakat")
+    columns = list(range(len(HARAKAT)))  # the vowel heard sits in a different column on each row
+    r.shuffle(columns)
     for i, char in enumerate(chars):
         y = 54 + i * pitch
         target = targets[i % len(targets)]
         body.append(card(0, y, W, pitch - 5, r=7))
         body.append(text(letters_head([char]), W - 8, y + 9, 4.8, anchor="end", color=ctx.style.deep))
         size = min(pitch - 17, 36.0)
-        for k, kind in enumerate(HARAKAT):
+        order = [h for h in HARAKAT if h != target]
+        r.shuffle(order)
+        order.insert(columns[i % len(columns)], target)
+        for k, kind in enumerate(order):
             x = W - 30 - (k + 1) * (size + 12)
             top = y + 11
             body.append(card(x, top, size, size, r=6, fill="#FFFDF6"))
@@ -260,19 +267,33 @@ def kg1_harakat(ctx: PageContext) -> Built:
 
 
 def dotted_word(
-    ctx: PageContext, word: str, right: float, y: float, h: float
+    ctx: PageContext, word: str, right: float, y: float, h: float, first: bool = True
 ) -> tuple[str, float, tuple[float, float]]:
     """The word in tracing dots, from its highest mark to its lowest tail `h` mm tall, its right edge at
-    `right` and its top at `y`: the SVG, its width and the y of its top and base lines."""
+    `right` and its top at `y`: the SVG, its width and the y of its top and base lines. A start dot shows
+    each time the pen is lifted, numbered across the word on the `first` copy (`letters.pen_lifts`)."""
     letters = word_shapes(word)
     g = letters[0].guides
     top = min(letter_extent(s)[1] for s in letters)
     scale = h / (max(letter_extent(s)[3] for s in letters) - top)
     xs, total = placed(letters, gap=12.0)
     out = []
-    for i, (shape, x) in enumerate(zip(letters, xs, strict=True)):
+    lifts = pen_lifts(letters, first, ctx.num)
+    for i, (shape, x, (labels, joined)) in enumerate(zip(letters, xs, lifts, strict=True)):
         dx, dy = right - total * scale + x * scale, y - top * scale
-        out.append(dotted_letter(shape, scale=scale, x=dx, y=dy, first=i == 0, number=ctx.num))
+        out.append(
+            dotted_letter(
+                shape,
+                scale=scale,
+                x=dx,
+                y=dy,
+                first=first and i == 0,
+                number=ctx.num,
+                number_dots=False,
+                labels=labels,
+                joined=joined,
+            )
+        )
     return "".join(out), total * scale, (max(y, y + (g.top - top) * scale), y + (g.base - top) * scale)
 
 
@@ -300,7 +321,7 @@ def kg1_word_write(ctx: PageContext) -> Built:
             body.append(draw.path(draw.d_path(("M", (6, gy)), ("L", (W - 6, gy))), stroke=color, width=0.5))
         body.append(part)
         if width + 16 < (W - 20) / 2:
-            body.append(dotted_word(ctx, word, W - 10 - width - 16, top, band)[0])
+            body.append(dotted_word(ctx, word, W - 10 - width - 16, top, band, first=False)[0])
     return Built({"svg": svg(body)}, None, problems)
 
 

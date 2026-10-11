@@ -182,12 +182,17 @@ def letter_intro_say(params: Mapping[str, Any]) -> str:
 
 
 def letter_trace_say(params: Mapping[str, Any], count: int = 1) -> str:
-    """Trace the dotted letter(s) from the green dot along the arrows, big first and then smaller."""
-    sizes = (
-        "أَوَّلًا {تَتَبَّعِ/تَتَبَّعي} الحَرْفَ الكَبيرَ، ثُمَّ الأَصْغَرَ"
-        if count == 1
-        else "أَوَّلًا {تَتَبَّعِ/تَتَبَّعي} الحَرْفَيْنِ الكَبيرَيْنِ، ثُمَّ الحُروفَ الصَّغيرَةَ"
-    )
+    """Trace the dotted letter(s) from the green dot along the arrows, big first and then smaller. A size word
+    describes the letter by its name, and a letter's name is feminine (as the chip «كَبيرَةٌ» on the big letter
+    and the plan's «كبيرة ثم أصغر»): «الباءَ الكَبيرَةَ، ثُمَّ الصَّغيرَةَ»."""
+    chars = [str(c) for c in params.get("letters", [params.get("letter", "")])][:count]
+    names = [vowelled_letter_name(c, "a") for c in chars if c]
+    if count == 1 and names:
+        sizes = f"أَوَّلًا {{تَتَبَّعِ/تَتَبَّعي}} {names[0]} الكَبيرَةَ، ثُمَّ الصَّغيرَةَ"
+    elif count == 2 and len(names) == 2:
+        sizes = f"أَوَّلًا {{تَتَبَّعِ/تَتَبَّعي}} {joined(names)} الكَبيرَتَيْنِ، ثُمَّ الصَّغيرَةَ"
+    else:
+        sizes = "أَوَّلًا {تَتَبَّعِ/تَتَبَّعي} الحُروفَ الكَبيرَةَ، ثُمَّ الصَّغيرَةَ"
     return pick(
         (
             "{ابْدَأْ/ابْدَئي} مِنَ النُّقْطَةِ الخَضْراءِ، ثُمَّ {اتْبَعِ/اتْبَعي} الأَسْهُمَ",
@@ -267,8 +272,9 @@ EN_WRITE = (  # traced, written on a row, and the picture colored
     ("بَعْدَ التَّتَبُّعِ: {اكْتُبِ/اكْتُبي} الحَرْفَ كَبيرًا وَصَغيرًا", "Trace, then write it big and small."),
 )
 EN_FIND = (
-    ("في كُلِّ صَفٍّ {حَوِّطِ/حَوِّطي} الحَرْفَ المَطْلوبَ", "Circle the letter in each row."),
-    ("{ابْحَثْ/ابْحَثي} عَنِ الحَرْفِ، ثُمَّ {حَوِّطْهُ/حَوِّطيهِ}", "Find the letter, then circle it."),
+    # every row holds the letter two or three times, big and small: the child circles each one
+    ("{حَوِّطِ/حَوِّطي} الحَرْفَ الكَبيرَ وَالصَّغيرَ في كُلِّ صَفٍّ", "Circle every big and small letter."),
+    ("{ابْحَثْ/ابْحَثي} عَنِ الحَرْفِ، {وَحَوِّطْهُ/وَحَوِّطيهِ} كُلَّ مَرَّةٍ", "Find the letter; circle each one."),
     ("صَفًّا صَفًّا: {حَوِّطِ/حَوِّطي} الحَرْفَ كُلَّما {رَأَيْتَهُ/رَأَيْتِهِ}", "Circle the letter wherever you see it."),
 )
 EN_MATCH = (
@@ -322,6 +328,8 @@ NUMBER_INTRO_ZERO = "الصَّحْنُ فارِغٌ: لا شَيْءَ! {حَو
 def number_intro_say(params: Mapping[str, Any]) -> str:
     """Meet a number: count the pictures, color as many stars, circle the numeral."""
     n = int(params.get("number", 1))
+    if n == 1:  # one picture: nothing to count yet
+        return "{انْظُرْ/انْظُري} إلى الصّورَةِ، ثُمَّ {لَوِّنْ/لَوِّني} " + stars(n)
     options = [
         "{عُدَّ/عُدّي} الصُّوَرَ، ثُمَّ {لَوِّنْ/لَوِّني} " + stars(n),
         "كَمْ صورَةً؟ {عُدَّ/عُدّي}، ثُمَّ {لَوِّنْ/لَوِّني} " + stars(n),
@@ -426,6 +434,27 @@ OPENER_SAY = {  # one a volume: the unit openers greet the subject
     ),
 }
 OPENER_DEFAULT = "هَيّا نَبْدَأْ رِحْلَةً جَديدَةً!"
+# an opener titled by its plan line («أنا وعالم الأرقام: …») prints the title vowelized for the child
+OPENER_TITLES = {
+    "أتابع رحلة الحروف مع شخصيتي": "أُتابِعُ رِحْلَةَ الحُروفِ",
+    "أبدأ مع شخصيتي": "أَسْمَعُ الحَرَكاتِ",  # KG1 V3: the opener of the vowels, after all 28 letters
+    "أنا وعالم الأرقام": "أَنا وَعالَمُ الأَرْقامِ",
+    "أنا وعالم الحروف": "أَنا وَعالَمُ الحُروفِ",
+    "أنا والإنجليزية": "أَنا وَالإِنْجِليزِيَّةُ",
+    "أنا والحروف من جديد": "أَنا وَالحُروفُ مِنْ جَديدٍ",
+    "أنا والأرقام من جديد": "أَنا وَالأَرْقامُ مِنْ جَديدٍ",
+    "أنا والإنجليزية من جديد": "أَنا وَالإِنْجِليزِيَّةُ مِنْ جَديدٍ",
+    "أكمل حروفي ثم أبدأ القراءة": "أُكْمِلُ حُروفي ثُمَّ أَبْدَأُ القِراءَةَ",
+    "أعداد أكبر وجمع وطرح": "أَعْدادٌ أَكْبَرُ وَجَمْعٌ وَطَرْحٌ",
+    "آخر الحروف وكلماتي الأولى": "آخِرُ الحُروفِ وَكَلِماتي الأُولى",
+}
+OPENER_SAY_TITLE = {"أَسْمَعُ الحَرَكاتِ": "هَيّا نَسْمَعْ حَرَكاتِ الحُروفِ!"}  # not «نُكْمِلْ رِحْلَةَ الحُروفِ»
+
+
+def opener_title(head: str) -> str:
+    """The opener's title from its plan line, vowelized (one without a vowelized title prints as written)."""
+    return OPENER_TITLES.get(head, head)
+
 
 # The plan's objectives are written for the educator about «the child», in the masculine («يتعرّف على تسعة
 # حروف…», «يكتب وحده…»). Under the opener's «في هذا الجزء سأتعلّم» the child says them, so they print in
@@ -610,7 +639,8 @@ def spot_difference_say(params: Mapping[str, Any]) -> str:
 
 MEMORY_SAY = (
     "{احْفَظِ/احْفَظي} الصُّوَرَ، ثُمَّ {غَطِّها/غَطّيها} {وَحَوِّطْ/وَحَوِّطي} ما {رَأَيْتَ/رَأَيْتِ}",
-    "{انْظُرْ/انْظُري} إلى الصُّوَرِ، ثُمَّ {غَطِّها/غَطّيها} {وَتَذَكَّرْ/وَتَذَكَّري} أَماكِنَها",
+    # the page asks what was seen («أُحَوِّطُ ما رَأَيْتُ»), never where: no «تَذَكَّري أَماكِنَها»
+    "{تَذَكَّرِ/تَذَكَّري} الصُّوَرَ، ثُمَّ {غَطِّها/غَطّيها} {وَحَوِّطْ/وَحَوِّطي} ما {رَأَيْتَ/رَأَيْتِ}",
 )
 PATTERN_SAY = (
     "{لاحِظْ/لاحِظي} ما يَتَكَرَّرُ، ثُمَّ {أَكْمِلِ/أَكْمِلي} الصَّفَّ",
@@ -633,7 +663,7 @@ REVIEW_SAY = {  # a review page holds a few exercise cards, each with its own sh
         "{راجِعْ/راجِعي} ما {قَرَأْتَهُ/قَرَأْتِهِ}، {وَأَكْمِلِ/وَأَكْمِلي} التَّمارينَ",
     ),
     "numbers": (
-        "{عُدَّ/عُدّي} جَيِّدًا قَبْلَ أَنْ {تَكْتُبَ/تَكْتُبي} الجَوابَ",
+        "{عُدَّ/عُدّي} جَيِّدًا قَبْلَ أَنْ {تُجيبَ/تُجيبي}",
         "{حُلَّ/حُلّي} تَمارينَ الأَعْدادِ واحِدًا بَعْدَ واحِدٍ",
     ),
     "math": ("{راجِعْ/راجِعي} ما {تَعَلَّمْتَ/تَعَلَّمْتِ}، ثُمَّ {حُلَّ/حُلّي} التَّمارينَ",),
