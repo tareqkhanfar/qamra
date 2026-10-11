@@ -321,7 +321,8 @@ def mixed_connect(ctx: PageContext) -> Built:
 
 @page_type("problem-drawing")
 def problem_drawing(ctx: PageContext) -> Built:
-    """A river between the duck and its pond: draw how it crosses (a bridge, a boat…), then tell why."""
+    """A river between the rabbit and the other bank: draw how it crosses (a bridge, a boat…), then tell
+    why. A rabbit, not a duck: a duck simply swims across."""
     body = [card(0, 0, W, 204, r=8)]
     body.append(draw.el("rect", x=0, y=0, width=W, height=204, rx=8, fill="#EEF6E8"))
     body.append(
@@ -337,13 +338,13 @@ def problem_drawing(ctx: PageContext) -> Built:
             fill="#8EC1EC",
         )
     )
-    body.append(pic("duck", 18, 80, 44))
+    body.append(pic("rabbit", 18, 80, 44))
     body.append(pic("tree", 140, 20, 40))
     body.append(pic("flower", 146, 130, 28))
     body.append(card(W - 100, 184, 96, 16, r=8, fill="#FFFFFF", stroke="none"))
     body.append(
         text(
-            "كَيْفَ تَعْبُرُ البَطَّةُ إلى الضِّفَّةِ الأُخْرى؟ أَرْسُمُ الحَلَّ", W - 8, 194.2, 5, anchor="end", color=ctx.style.deep
+            "كَيْفَ يَعْبُرُ الأَرْنَبُ إلى الضِّفَّةِ الأُخْرى؟ أَرْسُمُ الحَلَّ", W - 8, 194.2, 5, anchor="end", color=ctx.style.deep
         )
     )
     return Built({"svg": svg(body)}, ["أي حلّ معقول: جسر، قارب، طوف من الأغصان…"], [])

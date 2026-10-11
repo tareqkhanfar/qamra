@@ -94,12 +94,13 @@ def letter_position_say(params: dict[str, Any]) -> str:
 
 
 def hidden_say(params: dict[str, Any], plural: str, singular: str) -> str:
-    """«ابْحَثْ عَنْ ٥ أَشْياءَ مَخْفِيَّةٍ، وَلَوِّنْها» (the count from the plan)."""
+    """«ابْحَثْ عَنْ ٥ صُوَرٍ في الجَدْوَلِ، وَلَوِّنْها» (the count from the plan): the page is a grid of
+    pictures with the ones to find shown on top, not a scene with things hidden in it."""
     things = counted(params.get("hidden", params.get("count", 5)), plural, singular)
     return pick(
         (
-            "{ابْحَثْ/ابْحَثي} عَنْ " + things + "، {وَلَوِّنْها/وَلَوِّنيها}",
-            "في الصّورَةِ " + things + ": {جِدْها/جِديها} {وَلَوِّنْها/وَلَوِّنيها}",
+            "{ابْحَثْ/ابْحَثي} عَنْ " + things + " في الجَدْوَلِ، {وَلَوِّنْها/وَلَوِّنيها}",
+            "{جِدِ/جِدي} الصُّوَرَ الَّتي في الأَعْلى، {وَلَوِّنْها/وَلَوِّنيها}",
         ),
         turn(params),
     )
@@ -138,7 +139,7 @@ def texts_v2(subject: str, kind: str, params: dict[str, Any], unit_title: str) -
         case "coloring" if params.get("mode") == "color-by-letter":
             return "أُلَوِّنُ حَسَبَ الحَرْفِ", pick(COLOR_BY_LETTER, turn(params)), ""
         case "coloring" if "hidden" in params:
-            return "أَيْنَ اخْتَبَأَتْ؟", hidden_say(params, "أَشْياءَ مَخْفِيَّةٍ", "شَيْئًا مَخْفِيًّا"), ""
+            return "أَجِدُ الصُّوَرَ", hidden_say(params, "صُوَرٍ", "صورَةً"), ""
         case "classify" if params.get("by") == "category":
             return (
                 "أُصَنِّفُ في مَجْموعاتٍ",

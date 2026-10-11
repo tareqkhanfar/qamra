@@ -95,7 +95,19 @@ def stars(n: int, x: float, y: float, w: float) -> str:
                 stroke_linejoin="round",
             )
         )
-    return f'<g data-stars="{n}">{"".join(out)}</g>'
+    key = [  # the answer key colours the first `n` (the child colours any `n`)
+        draw.el(
+            "path",
+            d=draw.star_points(x + w - (k % 5 + 0.5) * w / 5, y + 9 + (k // 5) * 18, 8, 3.6),
+            fill="#E5604E",
+            stroke=INK,
+            stroke_width=0.7,
+            stroke_linejoin="round",
+            class_="key-line",
+        )
+        for k in range(n)
+    ]
+    return f'<g data-stars="{n}">{"".join(out)}</g>' + "".join(key)
 
 
 @page_type("number-intro-ten")
@@ -225,6 +237,7 @@ def number_write_ten(ctx: PageContext) -> Built:
         body.append(card(x + 6, y + 14, 56, 204 - y - 20, r=5, fill="#FFF6F2", stroke="none"))
         body.append(group_any(thing, n, x + 8, y + 16, 52, 204 - y - 24))
         body.append(card(x + 66, y + 24, 22, 26, r=4, fill="#FFFFFF", stroke="#D8C9AC", dash="2 1.4"))
+        body.append(text(ctx.num(n), x + 77, y + 43, 14, cls="key-line", color="#E0483A"))
     return Built({"svg": svg(body)}, [f"في المربّعين: {ctx.num(n)} و{ctx.num(n)}"], [])
 
 
@@ -341,13 +354,14 @@ def number_train(ctx: PageContext) -> Built:
             seq = numbers[-5:]
         blank = r.randrange(1, 4)
         body.append(card(0, y + 1, W, 47, r=7))
-        # draft: educator review: the engine on the left, the numbers growing rightwards as numerals read
-        body.append(draw.el("rect", x=6, y=y + 10, width=26, height=24, rx=4, fill=ctx.style.color))
-        body.append(draw.el("rect", x=20, y=y + 4, width=10, height=8, rx=2, fill=ctx.style.deep))
-        body.append(draw.el("circle", cx=12, cy=y + 38, r=4, fill=INK))
-        body.append(draw.el("circle", cx=26, cy=y + 38, r=4, fill=INK))
+        # the engine on the right and the numbers growing leftwards, as the book reads (and as its other
+        # number rows run): read from the right, ١ ٢ ٣ counts up
+        body.append(draw.el("rect", x=W - 32, y=y + 10, width=26, height=24, rx=4, fill=ctx.style.color))
+        body.append(draw.el("rect", x=W - 30, y=y + 4, width=10, height=8, rx=2, fill=ctx.style.deep))
+        body.append(draw.el("circle", cx=W - 12, cy=y + 38, r=4, fill=INK))
+        body.append(draw.el("circle", cx=W - 26, cy=y + 38, r=4, fill=INK))
         for k, n in enumerate(seq):
-            x = 40 + k * 29
+            x = W - 66 - k * 29
             body.append(
                 draw.el(
                     "rect",
@@ -365,7 +379,7 @@ def number_train(ctx: PageContext) -> Built:
             body.append(draw.el("circle", cx=x + 6, cy=y + 38, r=3.2, fill=INK))
             body.append(draw.el("circle", cx=x + 20, cy=y + 38, r=3.2, fill=INK))
             body.append(
-                draw.path(draw.d_path(("M", (x - 3, y + 22)), ("L", (x, y + 22))), stroke=INK, width=1)
+                draw.path(draw.d_path(("M", (x + 26, y + 22)), ("L", (x + 29, y + 22))), stroke=INK, width=1)
             )
             if k != blank:
                 body.append(numeral_any(ctx, n, x + 13, y + 22, 16))

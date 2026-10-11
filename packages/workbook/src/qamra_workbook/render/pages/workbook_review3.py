@@ -428,7 +428,7 @@ def river_task() -> Task:
         out = Drawn()
         cx = box.x + box.w / 2
         out.body.append(draw.el("rect", x=cx - 12, y=box.y, width=24, height=box.h, fill="#8EC1EC"))
-        out.body.append(pic("duck", box.x + box.w - 24, box.y + box.h / 2 - 10, 20))
+        out.body.append(pic("rabbit", box.x + box.w - 24, box.y + box.h / 2 - 10, 20))  # ducks swim
         out.body.append(pic("flower", box.x + 4, box.y + box.h / 2 - 10, 20))
         out.answer.append("أي حلّ معقول للعبور")
         return out
@@ -575,13 +575,17 @@ def review_sections_v3(ctx: PageContext, r: random.Random) -> Drawn | None:
             for s in skills
         ]
         return stack(ctx, pen_tasks, r)
-    if subject == "thinking" and ("cause-effect" in skills or "problem-solving" in skills):
+    # Volume 3's thinking review; Volume 2's (memory, connect, sequence, problem-solving) is
+    # `review_sections_v2`'s four tasks (it showed only the river here, half a page)
+    if subject == "thinking" and (
+        "cause-effect" in skills or ("problem-solving" in skills and "memory" not in skills)
+    ):
         tasks2 = {
             "classify": ("أُصَنِّفُ بِالأَلْوانِ", mini_classify()),
             "pattern": ("أُكْمِلُ النَّمَطَ المُتَزايِدَ", growing_task()),
             "cause-effect": ("السَّبَبُ وَالنَّتيجَةُ", causes_task()),
             "maze": ("أَحُلُّ المَتاهَةَ", mini_maze()),
-            "problem-solving": ("أَرْسُمُ حَلًّا: كَيْفَ تَعْبُرُ البَطَّةُ؟", river_task()),
+            "problem-solving": ("أَرْسُمُ حَلًّا: كَيْفَ يَعْبُرُ الأَرْنَبُ؟", river_task()),
         }
         return grid(ctx, [tasks2[s] for s in skills if s in tasks2][:4], r)
     if subject == "mixed" and "arabic" in params.get("covers", []):

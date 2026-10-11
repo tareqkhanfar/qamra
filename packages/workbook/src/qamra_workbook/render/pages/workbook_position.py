@@ -168,16 +168,48 @@ def _crayon_legend(x: float, y: float, first: str, second: str) -> str:
 def above_below(ctx: PageContext, y0: float, h: float) -> tuple[list[str], list[str]]:
     """A table with things on it and under it, to colour red (above) and blue (below)."""
     body = [card(0, y0, W, h, r=7), _crayon_legend(W - 6, y0 + 8, "فَوْقَ", "تَحْتَ")]
-    top, size = y0 + 14, min(h - 20, 74.0)
+    # the table's legs end inside the card; the things «on» it stand on its top (y 34 of 100), the things
+    # «under» it stand on the floor between its legs (x 24–76, y 90): nothing floats or sticks to the top
+    top, size = y0 + 12, min((h - 16) / 1.3, 74.0)
     tx = W / 2 - size * 0.7
     body.append(pic("table", tx, top, size * 1.4, "color"))
     on = ("cat", "ball")
     under = ("dog", "basket")
-    small = size * 0.36
+    small, low = size * 0.36, size * 0.3
+    key = []
     for k, thing in enumerate(on):
-        body.append(pic(thing, tx + size * 0.35 + k * size * 0.4, top + size * 0.34 - small, small, "line"))
+        x, y = tx + size * 0.35 + k * size * 0.4, top + size * 0.476 - small
+        body.append(pic(thing, x, y, small, "line"))
+        key.append(
+            draw.el(
+                "ellipse",
+                cx=x + small / 2,
+                cy=y + small / 2,
+                rx=small * 0.6,
+                ry=small * 0.6,
+                fill="none",
+                stroke=RED,
+                stroke_width=1.1,
+                class_="key-line",
+            )
+        )
     for k, thing in enumerate(under):
-        body.append(pic(thing, tx + size * 0.4 + k * size * 0.36, top + size * 0.58, small, "line"))
+        x, y = tx + size * 0.38 + k * size * 0.33, top + size * 1.26 - low
+        body.append(pic(thing, x, y, low, "line"))
+        key.append(
+            draw.el(
+                "ellipse",
+                cx=x + low / 2,
+                cy=y + low / 2,
+                rx=low * 0.6,
+                ry=low * 0.6,
+                fill="none",
+                stroke=BLUE_,
+                stroke_width=1.1,
+                class_="key-line",
+            )
+        )
+    body += key
     answer = [
         "فوق الطاولة (أحمر): " + "، ".join(PICTURES[t].word_ar for t in on),
         "تحت الطاولة (أزرق): " + "، ".join(PICTURES[t].word_ar for t in under),
@@ -297,6 +329,20 @@ def right_left(ctx: PageContext) -> tuple[list[str], list[str]]:
         body.append(pic(mid, W / 2 - 17, y + 5, 34))
         body.append(pic(right, W / 2 + 34, y + 9, 26, "line"))
         body.append(pic(left, W / 2 - 60, y + 9, 26, "line"))
+        for cx, color in ((W / 2 + 47, RED), (W / 2 - 47, BLUE_)):  # the key: right red, left blue
+            body.append(
+                draw.el(
+                    "ellipse",
+                    cx=cx,
+                    cy=y + 22,
+                    rx=16,
+                    ry=16,
+                    fill="none",
+                    stroke=color,
+                    stroke_width=1.1,
+                    class_="key-line",
+                )
+            )
         answer.append(f"يمين: {PICTURES[right].word_ar}، يسار: {PICTURES[left].word_ar}")
     return body, answer
 

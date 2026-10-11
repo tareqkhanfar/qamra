@@ -126,23 +126,25 @@ ANIMALS = (
         "جَمَل",
         "camel",
         "animal",
-        (
-            body("main", rect(27, 60, 6, 32, 2.5), rect(36, 60, 6, 32, 2.5), rect(57, 60, 6, 32, 2.5)),
-            body("main", rect(66, 60, 6, 32, 2.5)),
-            line(p("M20 52 C15 55 14 62 16 68")),
+        (  # one smooth hump, a long curved neck, a long face and thin knobbly legs (it read as a sheep)
             body(
                 "main",
                 p(
-                    "M19 52 C19 42 27 38 35 38 C38 24 58 22 62 38 C68 40 73 45 74 52 L74 60 C74 65 70 67 "
-                    "65 67 L25 67 C21 67 19 60 19 52 Z"
+                    "M16 56 C16 44 24 40 32 40 C36 26 52 22 58 38 C62 46 66 48 70 44 L72 26 "
+                    "C72 18 80 16 88 20 C92 22 92 28 88 30 L80 30 L80 50 C80 60 74 66 66 66 L24 66 "
+                    "C18 66 16 62 16 56 Z"
                 ),
             ),
-            body("main", p("M63 50 C67 40 69 30 72 22 L81 23 C81 32 78 44 73 56 Z")),
-            body("main", p("M70 21 C72 14 83 13 88 17 C93 20 94 27 89 30 L78 30 C73 30 70 26 70 21 Z")),
-            body("main", p("M73 16 L72 10 L78 14 Z")),
-            ink(e(82, 20, 2, 2.4)),
-            glint(c(82.7, 19.2, 0.8)),
-            line(p("M89 25 L91 25")),
+            body(
+                "main",
+                rect(22, 64, 6, 28, 2),
+                rect(32, 64, 6, 28, 2),
+                rect(58, 64, 6, 28, 2),
+                rect(68, 64, 6, 28, 2),
+            ),
+            line(p("M14 54 C8 58 8 66 12 70")),
+            ink(c(82, 24, 1.5)),
+            line(p("M89 27 L86 28")),
         ),
         main=SAND,
     ),
@@ -180,23 +182,21 @@ ANIMALS = (
         "حَمامَة",
         "dove",
         "bird",
-        (
-            body("main", p("M24 58 L8 50 L11 66 Z")),
+        (  # a dove: long tail, round head, small beak, folded wing (the old one read as a chick)
+            body("main", p("M10 54 L30 50 L34 62 L12 70 Z")),
             body(
                 "main",
-                p(
-                    "M20 60 C20 45 33 37 47 38 C53 30 63 26 71 30 C77 33 79 40 77 46 C76 64 64 74 48 74 "
-                    "C36 74 22 70 20 60 Z"
-                ),
+                p("M28 50 C34 38 52 34 64 40 C72 44 76 54 72 62 C66 72 46 74 34 66 C30 62 28 56 28 50 Z"),
             ),
-            body("wing", p("M33 52 C41 43 58 45 62 58 C52 63 40 62 33 52 Z")),
-            body("beak", p("M77 42 L88 45 L77 49 Z")),
-            line(p("M44 74 L42 83 M40 83 L45 83 M54 74 L55 83 M52 83 L58 83")),
-            *eyes((68, 36), (68, 36), 2.4),
-            cheeks((63, 45), (63, 45), 3),
+            body("main", c(70, 34, 10)),
+            body("beak", p("M79 33 L90 36 L79 39 Z")),
+            body("wing", p("M38 50 C46 44 58 46 62 54 C54 58 44 58 38 50 Z")),
+            line(p("M44 52 L54 53 M42 55 L52 56")),
+            ink(c(72, 31, 1.8)),
+            line(p("M46 72 L44 82 M56 72 L58 82")),
         ),
         main=WHITE,
-        wing="#DDE3EE",
+        wing="#C9D4E8",
         beak=ORANGE,
     ),
 )

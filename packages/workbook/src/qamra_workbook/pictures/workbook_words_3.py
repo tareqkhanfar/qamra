@@ -13,7 +13,6 @@ from qamra_workbook.pictures.icons import (
     GOLD,
     GRAY,
     LEAF,
-    LEAF_DARK,
     ORANGE,
     PINK,
     PURPLE,
@@ -200,15 +199,22 @@ ARABIC_WORDS = (
         "فُسْتان",
         "dress",
         "clothes",
-        (
-            body("main", p("M38 8 L62 8 L66 28 L58 34 L58 44 L84 90 L16 90 L42 44 L42 34 L34 28 Z")),
-            body("belt", rect(40, 40, 20, 6, 2)),
-            line(p("M32 68 L68 68 M26 80 L74 80")),
-            body("dots", c(46, 58, 2), c(58, 62, 2), c(38, 74, 2), c(64, 74, 2), c(52, 86, 2)),
+        (  # a girl's dress: short sleeves, a waist with a bow, a wide skirt (the old one read as a flask)
+            body(
+                "main",
+                p(
+                    "M38 14 C42 18 58 18 62 14 L72 20 L80 32 L70 38 L66 32 L64 46 L36 46 L34 32 "
+                    "L30 38 L20 32 L28 20 Z"
+                ),
+            ),
+            body("main", p("M36 46 L64 46 L86 88 C70 94 30 94 14 88 Z")),
+            body("belt", rect(35, 44, 30, 6, 2)),
+            body("bow", p("M50 47 L42 42 L42 52 Z"), p("M50 47 L58 42 L58 52 Z")),
+            line(p("M30 74 C44 80 56 80 70 74")),
         ),
         main=PINK,
-        belt=PURPLE,
-        dots=WHITE,
+        belt=CORAL,
+        bow=CORAL,
     ),
     _pic(
         "glass",
@@ -267,12 +273,13 @@ ARABIC_WORDS = (
         "لَوْز",
         "almonds",
         "food",
-        (
-            body("main", e(34, 40, 12, 20, -25), e(64, 46, 12, 20, 20), e(50, 70, 12, 20, -5)),
-            line(p("M30 26 L38 54 M60 32 L68 60 M50 56 L50 84")),
-            shine(e(28, 34, 3, 6, -25), e(58, 40, 3, 6, 20)),
+        (  # almonds: flat teardrops with a point and fine pitted lines (the old ones read as coffee beans)
+            body("main", p("M30 18 C40 26 44 44 38 56 C34 64 22 64 20 54 C16 42 22 28 30 18 Z")),
+            body("main", p("M64 14 C74 24 78 42 70 54 C66 60 56 60 54 50 C50 38 56 24 64 14 Z")),
+            body("main", p("M46 44 C58 52 62 70 54 82 C50 88 38 88 36 78 C32 66 38 52 46 44 Z")),
+            line(p("M28 30 C26 38 26 46 28 54 M62 26 C60 34 60 42 62 50 M46 56 C44 64 44 72 46 80")),
         ),
-        main=TAN,
+        main="#C8935A",
     ),
     _pic(
         "tiger",
@@ -372,25 +379,22 @@ ARABIC_WORDS = (
         "يَمامَة",
         "dove",
         "bird",
-        (
-            body("main", p("M24 58 L8 50 L11 66 Z")),
+        (  # a dove: long tail, round head, small beak, folded wing (the old one read as a chick)
+            body("main", p("M10 54 L30 50 L34 62 L12 70 Z")),
             body(
                 "main",
-                p(
-                    "M20 60 C20 45 33 37 47 38 C53 30 63 26 71 30 C77 33 79 40 77 46 "
-                    "C76 64 64 74 48 74 C36 74 22 70 20 60 Z"
-                ),
+                p("M28 50 C34 38 52 34 64 40 C72 44 76 54 72 62 C66 72 46 74 34 66 C30 62 28 56 28 50 Z"),
             ),
-            body("wing", p("M33 52 C41 43 58 45 62 58 C52 63 40 62 33 52 Z")),
-            body("beak", p("M77 42 L88 45 L77 49 Z")),
-            line(p("M44 74 L42 83 M40 83 L45 83 M54 74 L55 83 M52 83 L58 83")),
-            *eyes((68, 36), (68, 36), 2.4),
-            body("ring", p("M56 46 C62 44 70 44 74 48 L72 52 C68 50 62 50 57 51 Z")),
+            body("main", c(70, 34, 10)),
+            body("beak", p("M79 33 L90 36 L79 39 Z")),
+            body("wing", p("M38 50 C46 44 58 46 62 54 C54 58 44 58 38 50 Z")),
+            line(p("M44 52 L54 53 M42 55 L52 56")),
+            ink(c(72, 31, 1.8)),
+            line(p("M46 72 L44 82 M56 72 L58 82")),
         ),
-        main="#E9D9C2",
-        wing="#D6C3A5",
+        main="#D9C8B4",
+        wing="#B89F84",
         beak=ORANGE,
-        ring=BLACK,
     ),
     _pic(
         "berries",
@@ -622,12 +626,19 @@ FAMILY = (
         "طِفْل",
         "baby",
         "family",
-        _bust(
-            "M40 30 C42 22 48 18 50 22 C52 18 58 22 60 30 Z", (body("skin", e(50, 62, 20, 14)),), big=False
+        (  # a baby in a onesie, a curl of hair and a dummy-free smile (the old chin read as a beard)
+            body("main", p("M28 92 C26 74 34 60 50 60 C66 60 74 74 72 92 Z")),
+            body("skin", c(50, 38, 20)),
+            body("skin", c(30, 40, 4), c(70, 40, 4)),
+            line(p("M48 18 C44 12 52 10 52 16")),
+            *eyes((43, 38), (57, 38), 2.6),
+            line(p("M45 48 Q50 52 55 48")),
+            cheeks((38, 46), (62, 46), 3),
+            body("button", c(50, 72, 1.6), c(50, 80, 1.6)),
         ),
         skin=SKIN,
-        hair=DARK_BROWN,
-        shirt=YELLOW,
+        main=SKY,
+        button=WHITE,
     ),
 )
 
@@ -722,19 +733,26 @@ ENGLISH_A = (
         "تين",
         "fig",
         "fruit",
-        (
-            body("stem", p("M48 6 L52 6 L54 22 L46 22 Z")),
+        (  # a whole fig and a cut half with its pink seeds (the round patch on the old one read as a snout)
             body(
                 "main",
-                p("M50 18 C68 22 82 44 80 64 C78 82 64 92 50 92 C36 92 22 82 20 64 C18 44 32 22 50 18 Z"),
+                p("M30 22 C22 30 10 44 12 60 C14 74 24 82 34 82 C44 82 54 74 54 60 C56 44 40 30 32 22 Z"),
             ),
-            body("inner", e(50, 66, 14, 12)),
-            ink(c(44, 64, 1.5), c(56, 64, 1.5), c(50, 72, 1.5)),
-            shine(e(34, 44, 3, 8, 15)),
+            body("stem", p("M30 22 L29 12 L34 11 L33 22 Z")),
+            shine(e(22, 50, 2.5, 7, 15)),
+            body(
+                "main",
+                p("M58 46 C70 38 88 44 90 62 C90 76 80 84 70 84 C60 84 52 76 52 64 C52 56 54 50 58 46 Z"),
+            ),
+            body(
+                "flesh",
+                p("M60 52 C70 46 84 50 84 63 C84 74 77 78 70 78 C63 78 58 72 58 64 C58 59 58 55 60 52 Z"),
+            ),
+            ink(c(66, 60, 1), c(72, 56, 1), c(76, 64, 1), c(68, 68, 1), c(74, 72, 1), c(64, 66, 1)),
         ),
         main=PURPLE,
-        inner=PINK,
-        stem=LEAF_DARK,
+        stem=BROWN,
+        flesh=PINK,
     ),
     _pic(
         "foot",

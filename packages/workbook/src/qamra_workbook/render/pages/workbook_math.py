@@ -123,6 +123,18 @@ def number_intro(ctx: PageContext) -> Built:
                 stroke_linejoin="round",
             )
         )
+        if k < n:  # the answer key colours the stars the child colours
+            body.append(
+                draw.el(
+                    "path",
+                    d=draw.star_points(cx, 136, 12, 5.4),
+                    fill=ctx.style.color,
+                    stroke=INK,
+                    stroke_width=0.8,
+                    stroke_linejoin="round",
+                    class_="key-line",
+                )
+            )
     # find the numeral
     body.append(card(0, 158, W, 46, r=7))
     body.append(text(f"أُحَوِّطُ العَدَدَ {ctx.num(n)}", W - 8, 170, 5.2, anchor="end", color=ctx.style.deep))
@@ -190,6 +202,7 @@ def number_write(ctx: PageContext) -> Built:
         else:
             body.append(group(thing, count, x + 8, y + 16, 48, 204 - y - 24))
         body.append(card(x + 62, y + 22, 24, 26, r=4, fill="#FFFFFF", stroke="#D8C9AC", dash="2 1.4"))
+        body.append(text(ctx.num(count), x + 74, y + 41, 14, cls="key-line", color="#E0483A"))
         answer.append(f"{ctx.num(count)}")
     problems = [] if y <= 160 else [f"the writing rows need {y:.0f} mm"]
     return Built({"svg": svg(body)}, ["في المربّعين: " + " و".join(answer)], problems)

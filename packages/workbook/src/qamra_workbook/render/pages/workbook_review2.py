@@ -88,6 +88,9 @@ def count_write_any(counts: list[int]) -> Task:
                     dash="2 1.4",
                 )
             )
+            out.body.append(
+                text(ctx.num(n), x + step / 2, box.y + gh + 18, 12, cls="key-line", color="#E0483A")
+            )
         out.answer.append("أعدّ وأكتب: " + "، ".join(ctx.num(n) for n in counts))
         return out
 
@@ -125,10 +128,8 @@ def order_numbers(seq: list[int], blanks: int = 2) -> Task:
         gone = sorted(r.sample(range(1, len(seq) - 1), blanks))
         step = box.w / len(seq)
         w, h = min(step - 3, 18.0), min(box.h - 2, 22.0)
-        for k, n in enumerate(
-            seq
-        ):  # draft: educator review: sequences run left to right, as numerals are read
-            cx = box.x + (k + 0.5) * step
+        for k, n in enumerate(seq):  # right to left, as the book reads: from the right ٤ ٥ ٦ counts up
+            cx = box.x + box.w - (k + 0.5) * step
             blank = k in gone
             out.body.append(
                 draw.el(
@@ -287,7 +288,10 @@ def pattern_abc_task() -> Task:
                         dash="2 1.4",
                     )
                 )
-        out.answer.append("النمط: دائرة ثم مربع ثم مثلث")
+                shape = Shape(shape_kind(kind), cx, cy, size * 0.7, size * 0.7)  # the key's answer in the box
+                drawn = draw.shape(shape, fill=SHAPE_COLORS[kind], width=0.9)
+                out.body.append(f'<g class="key-line">{drawn}</g>')
+        out.answer.append("النمط: دائرة ثم مربّع")  # the two blanks (the third shape is not asked)
         return out
 
     return task

@@ -572,7 +572,7 @@ volumes:
       - {n: 79, week: 8, subject: pen, unit: v2-pen-02, type: coloring, skill: "ألوّن مساحات صغيرة بدقة دون أن أخرج من الحدود", difficulty: 2, params: {area: small}}
       - {n: 80, week: 8, subject: math, unit: v2-ma-02, type: position-words, skill: "أميّز أمام وخلف: من يقف أمام الشجرة؟", difficulty: 2, params: {concept: front-behind}}
       - {n: 81, week: 8, subject: arabic, unit: v2-ar-05, type: find-letter, skill: "أميّز الطاء من الظاء بالنقطة", difficulty: 2, params: {letters: [ط, ظ]}}
-      - {n: 82, week: 8, subject: thinking, unit: v2-th-02, type: coloring, skill: "أبحث عن ٥ أشياء مختبئة في الصورة وألوّنها", difficulty: 2, params: {mode: hidden, count: 5}}
+      - {n: 82, week: 8, subject: thinking, unit: v2-th-02, type: coloring, skill: "أجد ٥ صور بين صور كثيرة وألوّنها", difficulty: 2, params: {mode: hidden, count: 5}}
       - {n: 83, week: 8, subject: english, unit: v2-en-02, type: en-letter, skill: "أتعرّف على P وp وأتتبّعهما ثم أكتبهما: pencil", difficulty: 1, params: {letter: P, word: pencil}}
       - {n: 84, week: 8, subject: arabic, unit: v2-ar-05, type: match-letter-picture, skill: "أصل الطاء والظاء بصورهما وكلماتهما", difficulty: 2, params: {letters: [ط, ظ], words: [طائرة ورقية, طاولة, ظرف]}}
       - {n: 85, week: 8, subject: math, unit: v2-ma-03, type: count-and-circle, skill: "أعدّ الأشياء وأضع دائرة حول ٩ أو ١٠", difficulty: 2, params: {numbers: [9, 10]}}

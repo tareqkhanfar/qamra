@@ -153,7 +153,7 @@ def hidden_pictures(ctx: PageContext) -> Built:
         if thing in targets:
             body.append(ring_at(cx, cy, size / 2 + 2, size / 2 + 2))
     return Built(
-        {"svg": svg(body)}, ["الأشياء المخفية: " + "، ".join(PICTURES[t].word_ar for t in targets)], []
+        {"svg": svg(body)}, ["الصور المطلوبة: " + "، ".join(PICTURES[t].word_ar for t in targets)], []
     )
 
 

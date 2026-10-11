@@ -366,7 +366,7 @@ def texts_kg1(subject: str, kind: str, params: dict[str, Any], unit_title: str) 
             found = counted(p.get("count", 5), "نُجومٍ مُخْتَبِئَةٍ", "نَجْمَةً مُخْتَبِئَةً")
             return "أَيْنَ اخْتَبَأَتِ النُّجومُ؟", f"في الصّورَةِ {found}: {{لَوِّنْها/لَوِّنيها}}", ""
         case "coloring" if p.get("mode") == "hidden":
-            return "أَيْنَ اخْتَبَأَتْ؟", hidden_say(p, "أَشْياءَ مَخْفِيَّةٍ", "شَيْئًا مَخْفِيًّا"), ""
+            return "أَجِدُ الصُّوَرَ", hidden_say(p, "صُوَرٍ", "صورَةً"), ""
         case "coloring" if p.get("mode") == "color-by-code":
             return (
                 "أُلَوِّنُ حَسَبَ الرَّمْزِ",

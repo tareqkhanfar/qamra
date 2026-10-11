@@ -279,7 +279,7 @@ def texts_v3(subject: str, kind: str, params: dict[str, Any], unit_title: str) -
         case "connect" if subject == "mixed":
             return "أَصِلُ ما تَعَلَّمْتُ", "{صِلِ/صِلي} الحَرْفَ وَالعَدَدَ وَالكَلِمَةَ بِما يُناسِبُها", ""
         case "drawing" if params.get("mode") == "problem-solving":
-            return "أُفَكِّرُ وَأَرْسُمُ حَلًّا", "كَيْفَ تَعْبُرُ البَطَّةُ النَّهْرَ؟ {فَكِّرْ/فَكِّري}، ثُمَّ {ارْسُمْ/ارْسُمي}", ""
+            return "أُفَكِّرُ وَأَرْسُمُ حَلًّا", "كَيْفَ يَعْبُرُ الأَرْنَبُ النَّهْرَ؟ {فَكِّرْ/فَكِّري}، ثُمَّ {ارْسُمْ/ارْسُمي}", ""
         case "cut-and-paste" if params.get("mode") == "build-words":
             return "أَبْني الكَلِمَةَ", f"{CUT}، {{وَأَلْصِقْها/وَأَلْصِقيها}} {{لِتَبْنِيَ/لِتَبْني}} اسْمَ كُلِّ صورَةٍ", ""
         case "certificate":

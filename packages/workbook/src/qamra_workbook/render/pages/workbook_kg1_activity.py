@@ -146,6 +146,18 @@ def coded_picture(
     counts = dict.fromkeys(codes, 0)
     for (cx, cy), code in zip(spots, assigned, strict=True):
         counts[code] += 1
+        body.append(  # the answer key colours the cell with its code's colour
+            draw.el(
+                "rect",
+                x=cx - half,
+                y=cy - half,
+                width=cell,
+                height=cell,
+                fill=CODE_COLORS[codes.index(code) % len(CODE_COLORS)][0],
+                opacity=0.55,
+                class_="key-line",
+            )
+        )
         body.append(
             draw.el(
                 "rect",
