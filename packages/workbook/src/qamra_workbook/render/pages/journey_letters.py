@@ -216,6 +216,13 @@ def journey_en_letter(ctx: PageContext) -> Built:
     built = en_letter(ctx)
     if ctx.page.params.get("position") == "end":
         built.problems = [p for p in built.problems if "does not start with" not in p]
+        word = PICTURES[pid(str(ctx.page.params.get("word", "box")))].word_en
+        word = word[:1].upper() + word[1:]  # «Box», as the page prints it
+        cut = word.lower().rfind(str(ctx.page.params.get("letter", "x")).lower())
+        if cut >= 0:  # the letter the page teaches is coloured, not the word's first one (x in «Box»)
+            built.data["word"] = Markup('{}<span style="color: {}">{}</span>{}').format(
+                word[:cut], ctx.style.color, word[cut], word[cut + 1 :]
+            )
     return built
 
 
