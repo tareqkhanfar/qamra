@@ -1,6 +1,6 @@
-"""Portrait first (owner's decision, 2026-10-10): the child's portrait in the style is stored next to the sheet,
-shown to the guardian only (private, never cached), listed with every drawing, and removed with «حذف كل بيانات
-الطفل»."""
+"""Portrait first (owner's decision, 2026-10-10): the child's portrait in the style is stored next to the
+sheet, shown to the guardian only (private, never cached), listed with every drawing, and removed with
+«حذف كل بيانات الطفل»."""
 
 from pathlib import Path
 
@@ -27,7 +27,9 @@ async def _child(client: AsyncClient) -> str:
     return child_id
 
 
-async def _drawn(adb: AsyncSession, storage: ObjectStorage, character_id: str, *, portrait: bool) -> Character:
+async def _drawn(
+    adb: AsyncSession, storage: ObjectStorage, character_id: str, *, portrait: bool
+) -> Character:
     """What the worker does: the portrait, then the sheet, both under the child's prefix."""
     character = await adb.get(Character, character_id)
     assert character is not None
@@ -59,7 +61,9 @@ async def test_the_guardian_sees_the_portrait_first_privately(
     assert status["has_portrait"] is True and status["status"] == "ready"
     image = await client.get(f"/api/create/characters/{new_id}/portrait")
     assert image.status_code == 200 and image.content == b"portrait"
-    assert image.headers["cache-control"] == "private, no-store" and image.headers["content-type"] == "image/png"
+    assert (
+        image.headers["cache-control"] == "private, no-store" and image.headers["content-type"] == "image/png"
+    )
     [listed] = (await client.get(f"/api/create/children/{child_id}/characters")).json()
     assert listed["id"] == new_id and listed["has_portrait"] is True  # the strip's thumbnail
 

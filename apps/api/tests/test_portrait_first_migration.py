@@ -1,5 +1,5 @@
-"""Migration 2351cdc1195c (portrait first, 2026-10-10): `characters.portrait_image_key`, and the style rows' record
-of the 3D, cartoon and watercolor guides moving from v2 to v3."""
+"""Migration 2351cdc1195c (portrait first, 2026-10-10): `characters.portrait_image_key`, and the style
+rows' record of the 3D, cartoon and watercolor guides moving from v2 to v3."""
 
 import importlib.util
 from pathlib import Path

@@ -314,7 +314,8 @@ async def _character(db: Session, storage: ObjectStorage, rt: Runtime, character
 
 
 def _portrait(storage: ObjectStorage, character: Character) -> bytes | None:
-    """The character's portrait in the style (portrait first), or None: drawn before 2026-10-10, or cleaned up."""
+    """The character's portrait in the style (portrait first), or None: drawn before 2026-10-10, or
+    cleaned up."""
     if not character.portrait_image_key:
         return None
     try:

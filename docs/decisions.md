@@ -942,3 +942,40 @@ Spend: $1.80 for 12 calls (`likeness:` rows), plus $1.00 for the semi-realistic 
   - Then pass the portrait as one more likeness reference to the pages (no extra cost on Nano Banana).
 - **The auto-framing** (another branch) cannot frame a close-up photo whose face fills most of the width: the
   framed cut-out fails the face check, and the whole photo is used, as `frame_photo` does.
+
+## Portrait first, in production (2026-10-10)
+
+The owner approved the likeness trial's direction. What was built, and the choices made:
+
+- **Two steps per character, each with its own model:**
+  - the portrait first: `character_portrait.v2`, a head-and-shoulders portrait in the style, full warm color,
+    the exact age;
+  - then the sheet: `character_sheet.v6`, painted from the photo and the portrait, with shoes in all three
+    views.
+  - Admin settings: `character_portrait_model` and `character_sheet_model` (default
+    `fal-ai/nano-banana-pro/edit`), `character_portrait_resolution` 1K and `character_sheet_resolution` 2K.
+  - On fal, a failing Pro falls back to the page model, as covers do. Gemini and OpenAI draw both steps with
+    their own model and the same prompts.
+  - Both use the photo as the parent framed it; a close-up falls back to the whole photo, as the framing does.
+- **Storage:** a nullable column, `characters.portrait_image_key` (migration `2351cdc1195c`, after
+  `968a4be3c42d` → `3d041b8fdbf1`). A column rather than `params`, so the cleanup and the API can test it
+  plainly. The key sits under the child's prefix, `children/{child}/characters/{id}-portrait.png`, so
+  «حذف كل بيانات الطفل» removes it. The 30-day cleanup of drawings never approved deletes it with the sheet.
+  Characters drawn before have none, and the web falls back to the sheet.
+- **A redraw draws both again.** Free redraws and failures count as before: it is one character job.
+- **Where the portrait is used:**
+  - every story picture of the hero, covers included, next to the sheet (`page_image.v5`);
+  - the free cover: after the Classic identity portrait, before the sheet.
+  - Activity books print a cut-out of the sheet, with no AI call to pass it to. The four 2K sheets of the
+    verification all cut out cleanly.
+  - Class books and Classic are unchanged.
+- **Parents:** the character step shows the portrait large with «هل هذا طفلكم؟ / هل هذه طفلتكم؟», the sheet
+  below it, and the portrait as each drawing's thumbnail in the strip. A language reviewer suggested
+  «هل تشبه هذه الصورة طفلكم؟» (a painting is not the child); the owner's wording was kept.
+- **Style guides:**
+  - house v6: no "rounded" characters or "slightly large heads and short limbs";
+  - 3D, cartoon and watercolor v3: the child keeps their own face, eye size and age;
+  - semi-realistic v3 adopted.
+- **Cost per child per style:** $0.30 on fal (portrait $0.15 + sheet $0.15), against $0.08 before.
+- **Production never pads a photo:** clean_image, crop_photo and the adapters only crop, scale and re-encode.
+  The black bars in the trial's comparison came from the comparison tool alone (fixed).

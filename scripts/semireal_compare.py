@@ -214,7 +214,11 @@ def _rt() -> Runtime:
 
 def sheet_request(row: Row, ref: bytes) -> ImageRequest:
     return character_request(
-        GIRL, [ref], style_of(row.version), resolution=SHEET_RES[row.sheet_model], version=4  # the grid's sheet
+        GIRL,
+        [ref],
+        style_of(row.version),
+        resolution=SHEET_RES[row.sheet_model],
+        version=4,  # the grid's sheet
     )
 
 

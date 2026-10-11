@@ -173,7 +173,9 @@ def test_a_failed_text_step_or_a_screened_note_leaves_the_chips_alone(
     character = _redraw(db, storage, {"attempt": 3, "fixes": ["age"], "note": "عيونه أوسع"})
     assert asyncio.run(draw_character(db, storage, character, offline="fake")) == {"status": "ready"}
     prompt = _prompt(made[0])
-    assert "Age: the child looked older than" in prompt and "عيونه" not in prompt and "Appearance" not in prompt
+    assert (
+        "Age: the child looked older than" in prompt and "عيونه" not in prompt and "Appearance" not in prompt
+    )
     assert character.params["note_outcome"] == "failed" and "note_instruction" not in character.params
 
     screened = _again(db, character.child_id, {"attempt": 4, "note": "رقمنا 0599123456"})

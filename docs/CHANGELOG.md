@@ -1,5 +1,14 @@
 # Changelog
 
+## Portrait first: the child's face, drawn large, before the character sheet, in every style (2026-10-10)
+- **Why:** Tareq's live test with a real 5-year-old's photo gave a generic, younger, rounder child in every style.
+- **Drawing:** a portrait in the style (`character_portrait.v2`, Nano Banana Pro 1K), then the sheet from the photo and the portrait (`character_sheet.v6`, Nano Banana Pro 2K). Admin settings `character_portrait_model`, `character_sheet_model` and their resolutions. Pages and covers take the portrait next to the sheet (`page_image.v5`); the free cover prefers it to the sheet.
+- **Styles:** house style v6 (no "rounded", no "slightly large heads"); 3D, cartoon and watercolor v3 (the child keeps their own face, eye size and age); semi-realistic v3.
+- **Data:** `characters.portrait_image_key` (migration `2351cdc1195c`), included in delete-all and the 30-day cleanup. Private no-store route `GET /api/create/characters/{id}/portrait`; `has_portrait` on characters.
+- **Web:** the character step shows the portrait large («هل هذا طفلكم؟») with the sheet below it; the drawings strip and the child card show the portrait.
+- **Cost:** $0.30 per character, from $0.08. The paid verification on the owner's test photo cost $1.36 (`likeness-v6:` rows).
+- Tests: `test_likeness_prompts.py`, the golden prompt snapshots (rewritten on purpose), `test_character_portrait.py`, `test_portrait_first_migration.py`, the worker's `test_character_job.py` and `test_maintenance.py`, web `arabicName.test.ts`.
+
 ## «شبه حقيقي» v3: a realistic painted portrait instead of a storybook cartoon (2026-10-10, for approval)
 - **Why:** Tareq: «الصورة الشبه واقعية … كانت أشبه بالكرتون.» The diagnosis and the model prices are in `docs/decisions.md`. Nothing was drawn: no fal spend.
 - **Guide v3** (`prompts/style/semi-realistic.md`, v2 kept in `prompts/style/history/`): a fine-art oil-portrait look, natural proportions and eye size, real tones in the face, hair in strands, real fabric folds, soft painterly light, never a photograph. It replaces the house style's Style paragraph and Negative list for this style only (`## House style`, `## House negative`: no "picture-book illustration", "rounded", "slightly large heads", "No photorealism") and adds a sheet line (`## Sheet`: a clothed three-view sheet in this style, take only the face, hair and complexion from a drawn reference, even light, crisp edges for the cut-out).

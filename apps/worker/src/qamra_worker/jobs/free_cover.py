@@ -90,7 +90,7 @@ def reference(db: Session, storage: ObjectStorage, child: Child, style: str) -> 
         )
         .order_by(Character.approved_at.desc())
     ).first()
-    # portrait first (2026-10-10): the approved character's own portrait in the style is the face at its largest
+    # portrait first (2026-10-10): the approved character's portrait in the style: the face at its largest
     if (data := get_bytes(storage, sheet.portrait_image_key if sheet else None)) is not None:
         return "portrait", data, "the child's portrait in this style"
     if (data := get_bytes(storage, sheet.sheet_image_key if sheet else None)) is not None:
