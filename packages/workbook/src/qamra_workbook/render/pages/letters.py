@@ -266,6 +266,16 @@ def tracing_row(
     return draw.svg(width, height, "".join(body), "trace-row")
 
 
+def target_in_word(word: str, char: str, color: str) -> Markup:
+    """The word with the letter the page teaches in `color`: its first letter (A in «Apple»), or where the
+    letter comes later (the x of «Box»)."""
+    cut = word.lower().find(char.lower())
+    cut = max(cut, 0)
+    return Markup('{}<span style="color: {}">{}</span>{}').format(
+        word[:cut], color, word[cut], word[cut + 1 :]
+    )
+
+
 @page_type("en-letter")
 def en_letter(ctx: PageContext) -> Built:
     params = ctx.page.params
@@ -299,9 +309,7 @@ def en_letter(ctx: PageContext) -> Built:
             f"{model}</svg>"
         ),
         "pic": ctx.pic(word, "line" if params.get("color_in") else "color"),
-        "word": Markup('<span style="color: {}">{}</span>{}').format(
-            ctx.style.color, pic.word_en[:1].upper(), pic.word_en[1:]
-        ),
+        "word": target_in_word(pic.word_en[:1].upper() + pic.word_en[1:], char, ctx.style.color),
         "word_ar": pic.word_ar,
         "rows": [
             tracing_row(capital, width=176, cap=cap, number=ctx.num),

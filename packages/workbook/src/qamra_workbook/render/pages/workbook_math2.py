@@ -7,6 +7,8 @@ Registered under `…-ten` names; `foundation_v2` routes a plan page here when i
 
 from __future__ import annotations
 
+import functools
+
 from qamra_workbook.digits import digit_shapes
 from qamra_workbook.puzzles.counting import LAYOUTS
 from qamra_workbook.render import draw
@@ -110,20 +112,41 @@ def stars(n: int, x: float, y: float, w: float) -> str:
     return f'<g data-stars="{n}">{"".join(out)}</g>' + "".join(key)
 
 
+def numbered_on(ctx: PageContext, before: int, k: int) -> str:
+    """Start dot `k` of a later digit, numbered on after the `before` strokes of the digits before it."""
+    return ctx.num(k + before)
+
+
 @page_type("number-intro-ten")
 def number_intro_ten(ctx: PageContext) -> Built:
     n = int(ctx.page.params.get("number", 6))
     r = ctx.rng("intro")
     thing = GROUP_PICTURES[n % len(GROUP_PICTURES)]
     body = [card(0, 0, W, 96, r=8)]
+    from qamra_workbook.render.pages.letters import letter_extent
+    from qamra_workbook.render.pages.workbook_common import start_marks
+
     shapes = digit_shapes(n, ctx.numerals)
     dw = 62.0 if len(shapes) == 1 else 34.0
-    for k, shape in enumerate(shapes):
-        scale, dx, dy = fit_lines(shape, W - 72 + k * (dw + 4) - (0 if len(shapes) == 1 else 2), 6, dw, 70)
+    # one size for every digit, set side by side a digit's gap apart and centred: «١٠» reads as one number,
+    # not as ١ and ٠ in two boxes; its start dots are numbered on, in writing order
+    fits = [fit_lines(shape, 0, 6, dw, 70) for shape in shapes]
+    scale = min(f[0] for f in fits)
+    widths = [(letter_extent(s)[2] - letter_extent(s)[0]) * scale for s in shapes]
+    gap = 6.0 + 17 * scale  # clear of each other, the marker's width included
+    x = W - 72 + (62 + 4 - sum(widths) - gap * (len(shapes) - 1)) / 2
+    done = 0
+    for shape, w in zip(shapes, widths, strict=True):
+        x0, _, _, _ = letter_extent(shape)
+        dx = x - x0 * scale
+        g = shape.guides
+        low = g.low if g.low is not None else g.base
+        top, bottom = min(g.top, letter_extent(shape)[1]), max(low, letter_extent(shape)[3])
+        dy = 6 + (70 - (bottom - top) * scale) / 2 - top * scale
         body.append(glyph(shape, scale, dx, dy, color=ctx.style.color, width=17))
-        from qamra_workbook.render.pages.workbook_common import start_marks
-
-        body.append(start_marks(shape, scale, dx, dy, 3, ctx.num))
+        body.append(start_marks(shape, scale, dx, dy, 3, functools.partial(numbered_on, ctx, done)))
+        done += len(shape.strokes)
+        x += w + gap
     body.append(text(NUMBER_NAMES[n], W - 40, 90, 8.5, cls="wb-word", color=ctx.style.deep))
     body.append(card(6, 6, 100, 66, r=6, fill="#FFF6F2", stroke="none"))
     body.append(group_any(thing, n, 9, 8, 94, 62))

@@ -236,7 +236,12 @@ def letter_intro(ctx: PageContext) -> Built:
     color = ctx.style.color
     body = [card(0, 0, W, 118, r=7)]
     scale, dx, dy = fit_capped(shape, 30, 8, 126, 104, 10, 0.62)
-    body.append(glyph(shape, scale, dx, dy, width=24, edge=INK, fill="#FFFFFF"))
+    # a small letter's outline is thinner, so both holes of ه stay open (a band as wide as for ب closed the
+    # left one, and the outline read as ٥)
+    x0, y0, x1, y1 = letter_extent(shape)
+    body.append(
+        glyph(shape, scale, dx, dy, width=min(24.0, 0.2 * max(x1 - x0, y1 - y0)), edge=INK, fill="#FFFFFF")
+    )
     body.append(card(W - 44, 6, 38, 13, r=6.5, fill=ctx.style.tint, stroke="none"))
     body.append(text(letters_head([char]), W - 25, 15, 6.2, cls="wb-title", color=ctx.style.deep))
     body.append(draw.el("circle", cx=16, cy=16, r=9, fill=ctx.style.tint))

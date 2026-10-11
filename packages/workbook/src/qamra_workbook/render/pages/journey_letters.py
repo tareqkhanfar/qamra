@@ -34,6 +34,7 @@ from qamra_workbook.render.pages.letters import (
     ARROW_AT,
     en_letter,
     letter_extent,
+    target_in_word,
     tracing_row,
 )
 from qamra_workbook.render.pages.workbook_arabic import first_letter, row_svg, same_letter
@@ -217,12 +218,8 @@ def journey_en_letter(ctx: PageContext) -> Built:
     if ctx.page.params.get("position") == "end":
         built.problems = [p for p in built.problems if "does not start with" not in p]
         word = PICTURES[pid(str(ctx.page.params.get("word", "box")))].word_en
-        word = word[:1].upper() + word[1:]  # «Box», as the page prints it
-        cut = word.lower().rfind(str(ctx.page.params.get("letter", "x")).lower())
-        if cut >= 0:  # the letter the page teaches is coloured, not the word's first one (x in «Box»)
-            built.data["word"] = Markup('{}<span style="color: {}">{}</span>{}').format(
-                word[:cut], ctx.style.color, word[cut], word[cut + 1 :]
-            )
+        letter = str(ctx.page.params.get("letter", "x"))
+        built.data["word"] = target_in_word(word[:1].upper() + word[1:], letter, ctx.style.color)
     return built
 
 

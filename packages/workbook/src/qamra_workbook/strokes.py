@@ -44,11 +44,10 @@ SMALL_A = Letter(
     ),
 )
 
-LETTERS: dict[tuple[str, str], Letter] = {
-    **ARABIC,
-    **LATIN,
-    **{(x.char, x.form): x for x in (CAPITAL_A, SMALL_A)},
-}
+# The samples A and a are not the pages' letters: LATIN has them on the same lines as B…z (with the descender
+# line), so they print at the same size and on the same base line (the samples, without it, came out ~1.5×
+# bigger and below the line on every page that fits a letter to its lines).
+LETTERS: dict[tuple[str, str], Letter] = {**ARABIC, **LATIN}
 
 
 def letter(char: str, form: str) -> Letter:
