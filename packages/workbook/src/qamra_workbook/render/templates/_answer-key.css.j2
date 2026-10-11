@@ -7,6 +7,7 @@
 .key-title p { font: 600 10pt var(--body); color: var(--muted); }
 .key-sheet-no { font: 800 12pt var(--title); color: var(--muted); }
 .key-grid { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 5mm; }
+.key-sheet.tall .key-grid { grid-template-rows: 1fr; }
 .key-card { min-height: 0; display: flex; flex-direction: column; gap: 2.5mm; border: 0.5mm solid var(--line);
             border-radius: 5mm; padding: 3.5mm; }
 {% set k = 0.3 %}

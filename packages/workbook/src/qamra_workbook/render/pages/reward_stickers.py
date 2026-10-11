@@ -241,10 +241,12 @@ def islamic_needs(pages: Sequence[Any], volume: str = "") -> IslamicNeeds:
         volume = volume or str(getattr(model, "volume", ""))
         if isinstance(model, Passport):
             units = tuple(volume_units(model.volume))
-            passports.append(PassportPage(p.number, p.title, model.layout, units, model.challenge_stars))
+            stars = model.challenge_stars or len(units)
+            passports.append(PassportPage(p.number, p.title, model.layout, units, stars))
             continue
         for text in _strings(model.model_dump()):
-            found = BOARD_ASK.search(strip_tashkeel(text))
+            # read a {masculine/feminine} variant in one gender («{يلصق الطفل/تلصق الطفلة} نجمة»)
+            found = BOARD_ASK.search(strip_tashkeel(re.sub(r"\{([^{}/]*)/[^{}]*\}", r"\1", text)))
             if not found:
                 continue
             kind: BoardKind = "leaf" if found[1] == "ورقة" else "star"

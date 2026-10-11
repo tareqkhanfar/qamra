@@ -1139,7 +1139,10 @@ def back_data(ctx: PageContext, b: Back, box: Box | None = None) -> dict[str, An
     src = scene_source(b.part)
     out_dir = ctx.assets.character.parent if ctx.assets.character else REPO / "out" / "covers" / "assets"
     band = uri(plate(src, out_dir, box.w, band_h, band=0.66)) if src else ""
-    hero_h = round(HERO_BACK * h, 1)
+    # the child stands on the band (its feet at band_h + 12) with the head inside the safe area: on the
+    # Islamic back, whose band is short, the hair crossed the trim
+    room = band_h + 12 - box.top if b.series == "islamic" else HERO_BACK * h
+    hero_h = round(min(HERO_BACK * h, room), 1)
     child, aspect = hero(ctx, hero_h, waving=True)
     thumb_files = [Path(p) for p in ctx.page.params.get("thumbs", [])][:3]
     thumbs = [uri(p) for p in thumb_files]

@@ -248,7 +248,7 @@ class Passport(Base):
     gendered_title: str = ""
     photo_slot: str = "reader"
     stamps_from: str = "units.yaml"
-    challenge_stars: int = 8
+    challenge_stars: int | None = None  # one star per unit challenge (the volume's units) unless set
     # passport: the identity card, the units' stamps and the challenges' stars; journey-card: the stamps and
     # the stars only, bigger (the volume's back page «بطاقة رحلة الإيمان»)
     layout: Literal["passport", "journey-card"] = "passport"

@@ -178,16 +178,48 @@ def book_html(book: BookSpec, pages: Sequence[RenderedPage], assets: Assets, *, 
 def answer_key_html(book: BookSpec, pages: Sequence[RenderedPage], assets: Assets) -> str:
     keyed = [p for p in pages if p.built.answer]
     per_sheet = 4
-    sheets = [keyed[i : i + per_sheet] for i in range(0, len(keyed), per_sheet)]
+    if book.product == "islamic":
+        sheets = _islamic_key_sheets(keyed)
+    else:
+        sheets = [keyed[i : i + per_sheet] for i in range(0, len(keyed), per_sheet)]
     return _render(
         "answer-key.html.j2",
         book=book,
         sheets=sheets,
+        tall={i for i, s in enumerate(sheets) if book.product == "islamic" and any(map(_long_key, s))},
         assets=assets,
         g=book.geometry,
         solved=True,
         names=case_names(book),
     )
+
+
+# «قلبي يعرف الله»: a page whose answers are long (five pairs to match, six steps with their dhikr) gets a
+# card of the sheet's full height, two to a sheet; the others go four to a sheet. In a quarter card the long
+# answers ran off the page (the key's fit check now refuses a card that overflows).
+KEY_LONG = 150  # characters of answer text a quarter card holds
+
+
+def _long_key(page: RenderedPage) -> bool:
+    answer = page.built.answer or []
+    return sum(len(line) for line in answer) > KEY_LONG or len(answer) > 5
+
+
+def _islamic_key_sheets(keyed: Sequence[RenderedPage]) -> list[list[RenderedPage]]:
+    sheets: list[list[RenderedPage]] = []
+    small: list[RenderedPage] = []
+    tall: list[RenderedPage] = []
+    for p in keyed:
+        group, size = (tall, 2) if _long_key(p) else (small, 4)
+        group.append(p)
+        if len(group) == size:
+            sheets.append(list(group))
+            group.clear()
+    if tall:
+        sheets.append(list(tall))
+    if small:
+        sheets.append(list(small))
+    return sorted(sheets, key=lambda s: keyed.index(s[0]))
 
 
 # Shrink every `[data-fit]` box's text until it fits (down to its minimum), then list what still overflows:
@@ -247,12 +279,34 @@ _FIT_JS = """
     for (let z = 0.98; tall() && z >= 0.8; z -= 0.02) body.style.zoom = String(z);
     if (tall()) out.push(pageOf(body) + ': taller than its page');
   }
+  // the Islamic answer key: a card whose answers run past it is set smaller, down to 60 %, and refused if it
+  // still does not fit (the answers ran off the page)
+  for (const card of document.querySelectorAll('.key-sheet.islamic .key-card')) {
+    const text = card.querySelector('.key-text');
+    const tall = () => card.scrollHeight > card.clientHeight + 1;
+    for (let z = 0.95; tall() && text && z >= 0.6; z -= 0.05) text.style.zoom = String(z);
+    if (tall()) out.push('key: ' + card.textContent.trim().slice(0, 40));
+  }
   const works = document.querySelectorAll('.frame-mission > .safe > .work, .frame-sheet > .safe > .work');
   for (const work of works) {
     const tall = () => work.scrollHeight > work.clientHeight + 2;
     const page = work.closest('[data-page]') || work;
     for (let i = 1; tall() && i < steps; i++) shorten(page, lists, i);  // a dialogue…, in every case
     if (tall()) out.push(pageOf(work) + ': taller than its work area');
+  }
+  return out;
+}
+"""
+
+
+IMAGES_READY_JS = """
+async () => {
+  const out = [];
+  for (const img of document.images) {
+    try { await img.decode(); } catch (e) { /* reported below */ }
+    if (!img.complete || img.naturalWidth === 0 || img.naturalHeight === 0) {
+      out.push((img.closest('[data-page]')?.dataset.page || '?') + ': ' + img.src.split('/').pop());
+    }
   }
   return out;
 }
@@ -271,6 +325,11 @@ async def print_pdf(html: str, html_path: Path, pdf_path: Path, geometry: Geomet
             page = await browser.new_page()
             await page.goto(html_path.resolve().as_uri(), wait_until="load")
             await page.evaluate("document.fonts.ready.then(() => true)")
+            # every picture whole before printing: a cover once printed the child cut at the chest (the PNG
+            # half decoded); a picture that still fails to decode stops the print
+            broken: list[str] = await page.evaluate(IMAGES_READY_JS)
+            if broken:
+                raise PageProblems("pictures not loaded: " + "; ".join(broken))
             overflowing: list[str] = await page.evaluate(COVER_FIT_JS)  # the covers' lettering first
             overflowing += await page.evaluate(_FIT_JS)
             if overflowing:

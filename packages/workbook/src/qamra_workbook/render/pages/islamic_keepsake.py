@@ -75,7 +75,8 @@ def muslim_passport(ctx: PageContext) -> Built:
         "name": child.name,
         "date": "",  # a line the family fills in: the print date is not the day the journey starts
         "stamps": stamps,
-        "stars": [ctx.num(i) for i in range(1, page.challenge_stars + 1)],
+        # one star per unit challenge (V3 offered 8 for its 7 units)
+        "stars": [ctx.num(i) for i in range(1, (page.challenge_stars or len(units)) + 1)],
         "star": star8_svg(GOLD, 9.0, "#1F5A46"),
         "labels": {
             "series": "قلبي يعرف الله",

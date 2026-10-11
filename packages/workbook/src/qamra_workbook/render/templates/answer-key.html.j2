@@ -13,11 +13,11 @@
 <body data-names='{{ names|default([])|tojson }}'>
 {% for sheet in sheets %}
 {% set vowelized = book.product in ('foundation', 'journey') %}
-<section class="page key-sheet{{ ' vowelized' if vowelized }}" dir="rtl" style="--c: #E2A32A; --tint: #FCEFD2; --deep: #8A5A08;">
+<section class="page key-sheet{{ ' vowelized' if vowelized }}{{ ' islamic' if book.product == 'islamic' }}{{ ' tall' if loop.index0 in tall }}" dir="rtl" style="--c: #E2A32A; --tint: #FCEFD2; --deep: #8A5A08;">
   <div class="safe">
     <header class="key-head">
       <div class="key-title">{{ mascot('mascot') }}<div><h1>مفتاح الإجابات</h1><p>{{ book.title_ar }} · للأهل والمعلمين</p></div></div>
-      <div class="key-sheet-no">{{ book.num(loop.index) }} / {{ book.num(loop.length) }}</div>
+      <div class="key-sheet-no">{{ book.num(loop.index) }} مِنْ {{ book.num(loop.length) }}</div>
     </header>
     <div class="key-grid">
     {% for p in sheet %}
