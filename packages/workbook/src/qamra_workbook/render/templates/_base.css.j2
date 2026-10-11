@@ -1,7 +1,8 @@
-/* Static font instances from qamra_pdf (SIL OFL). Baloo Bhaijaan 2 for titles, IBM Plex Sans Arabic for
+/* Static font instances from qamra_pdf (SIL OFL). Baloo Bhaijaan 2 for titles (our OFL copy «Qamra Display»,
+   scripts/build_display_font.py: its hamza reads as «ء» at small sizes), IBM Plex Sans Arabic for
    instructions and labels, Noto Naskh Arabic for vowelized words. Chromium embeds them as TrueType. */
-@font-face { font-family: "Baloo Bhaijaan 2"; src: url("{{ fonts }}/BalooBhaijaan2-Medium.ttf") format("truetype"); font-weight: 400 600; }
-@font-face { font-family: "Baloo Bhaijaan 2"; src: url("{{ fonts }}/BalooBhaijaan2-ExtraBold.ttf") format("truetype"); font-weight: 700 900; }
+@font-face { font-family: "Baloo Bhaijaan 2"; src: url("{{ fonts }}/QamraDisplay-Medium.ttf") format("truetype"); font-weight: 400 600; }
+@font-face { font-family: "Baloo Bhaijaan 2"; src: url("{{ fonts }}/QamraDisplay-ExtraBold.ttf") format("truetype"); font-weight: 700 900; }
 @font-face { font-family: "Noto Naskh Arabic"; src: url("{{ fonts }}/NotoNaskhArabic-Regular.ttf") format("truetype"); font-weight: 400 600; }
 @font-face { font-family: "Noto Naskh Arabic"; src: url("{{ fonts }}/NotoNaskhArabic-Bold.ttf") format("truetype"); font-weight: 700 900; }
 @font-face { font-family: "IBM Plex Sans Arabic"; src: url("{{ fonts }}/IBMPlexSansArabic-Regular.ttf") format("truetype"); font-weight: 400 500; }

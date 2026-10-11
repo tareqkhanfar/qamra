@@ -241,7 +241,7 @@ def mark_places(shape: Letter, moved: list[Stroke]) -> list[Point]:
 
 
 CSS = """
-@font-face { font-family: "Baloo Bhaijaan 2"; src: url("{fonts}/BalooBhaijaan2-ExtraBold.ttf");
+@font-face { font-family: "Baloo Bhaijaan 2"; src: url("{fonts}/QamraDisplay-ExtraBold.ttf");
   font-weight: 800; }
 @font-face { font-family: "Plex"; src: url("{fonts}/IBMPlexSansArabic-Regular.ttf"); font-weight: 400; }
 @font-face { font-family: "Plex"; src: url("{fonts}/IBMPlexSansArabic-SemiBold.ttf"); font-weight: 600; }

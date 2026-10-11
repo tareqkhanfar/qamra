@@ -1,8 +1,10 @@
 /* Static font instances only: Chromium embeds variable fonts as Type 3, which print RIPs dislike.
    Story text: Noto Naskh Arabic (full tashkeel, SIL OFL: commercial embedding allowed). Baloo Bhaijaan 2
    only for titles and the cover (Addendum 3 §4). IBM Plex Sans Arabic for small labels and folios. */
-@font-face { font-family: "Baloo Bhaijaan 2"; src: url("{{ fonts }}/BalooBhaijaan2-Medium.ttf") format("truetype"); font-weight: 400 600; }
-@font-face { font-family: "Baloo Bhaijaan 2"; src: url("{{ fonts }}/BalooBhaijaan2-ExtraBold.ttf") format("truetype"); font-weight: 700 900; }
+/* "Baloo Bhaijaan 2" is served from our OFL copy «Qamra Display» (scripts/build_display_font.py: a hamza that
+   reads as «ء», not a fatha, at small sizes) */
+@font-face { font-family: "Baloo Bhaijaan 2"; src: url("{{ fonts }}/QamraDisplay-Medium.ttf") format("truetype"); font-weight: 400 600; }
+@font-face { font-family: "Baloo Bhaijaan 2"; src: url("{{ fonts }}/QamraDisplay-ExtraBold.ttf") format("truetype"); font-weight: 700 900; }
 @font-face { font-family: "Noto Naskh Arabic"; src: url("{{ fonts }}/NotoNaskhArabic-Regular.ttf") format("truetype"); font-weight: 400 600; }
 @font-face { font-family: "Noto Naskh Arabic"; src: url("{{ fonts }}/NotoNaskhArabic-Bold.ttf") format("truetype"); font-weight: 700 900; }
 @font-face { font-family: "IBM Plex Sans Arabic"; src: url("{{ fonts }}/IBMPlexSansArabic-Regular.ttf") format("truetype"); font-weight: 400 500; }

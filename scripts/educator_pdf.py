@@ -22,7 +22,7 @@ FOOTER = (
 )
 CSS = """
 @font-face { font-family: "Baloo Bhaijaan 2"; font-weight: 700 900;
-             src: url("{fonts}/BalooBhaijaan2-ExtraBold.ttf"); }
+             src: url("{fonts}/QamraDisplay-ExtraBold.ttf"); }
 @font-face { font-family: "IBM Plex Sans Arabic"; font-weight: 400 500;
              src: url("{fonts}/IBMPlexSansArabic-Regular.ttf"); }
 @font-face { font-family: "IBM Plex Sans Arabic"; font-weight: 600 900;

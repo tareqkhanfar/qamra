@@ -824,3 +824,16 @@ Owner (2026-10-10): «لما اجي ارفق صورة الطفل اعطيني ص
 - **The original comes back to the guardian only through the API** (`GET /api/create/photos/{id}/image`, `Cache-Control: private, no-store`, an AuditLog row `photo.viewed` per view, never the bytes), like the character sheet. No signed URL: the browser never holds a storage link. The device that uploaded the photo shows its own copy from memory (`PICKED`, this visit only), so the original is downloaded back only on another device or after a reload. Once deleted, the API says `photo_gone` (410) and the editor asks kindly for a new photo.
 - **The editor is a plain component, no library** (`PhotoEditor.tsx`, the maths in `lib/photoCrop.ts`): pointer events for mouse, touch and pinch; a slider and ± buttons; a quarter turn; reset; arrows and +/− on the keyboard. The photo always covers the frame. The web unit tests use the repo's `node --test` (no vitest in this app).
 - **Not done:** the kindergarten invite's photo step (`InviteSteps.tsx`) and the free cover's form keep their simple upload. Both now get the framing around the face from the API, but no editor. Easy to add if the owner wants it.
+
+## 2026-10-11 — «Qamra Display»: Baloo Bhaijaan 2 with a hamza that reads as «ء»
+
+At 9–12 pt and on pale fills (the family book's name plates, «أبو عبد الرحمن»; small titles), Baloo Bhaijaan
+2's hamza over or under a letter is a short slanted stroke that reads as a fatha. The books now use our OFL copy
+of the font, «Qamra Display» (`scripts/build_display_font.py` → `QamraDisplay-{Medium,ExtraBold}.ttf`): the
+marks `hamzaabove.ar` (أ ؤ ئ لأ and the hamza+vowel marks are built from it) and `hamzabelow.ar` (إ) are redrawn
+as the font's own lone «ء», 1.4× the old mark's height, at the same place, and a vowel over (or under) it moves to
+clear it (the hamza+vowel glyphs and the GPOS anchors); nothing else changes. Baloo's license
+names no Reserved Font Name; the copy is renamed anyway, as the OFL asks, and keeps the license and copyright
+notice (`OFL-QamraDisplay.txt`). The CSS keeps the family label "Baloo Bhaijaan 2" and serves it from the new
+files, so every page and cover picks it up without template changes. The website still loads Baloo from Google
+Fonts (`next/font`): its titles are large, where the hamza reads; revisit if a small one shows the problem.

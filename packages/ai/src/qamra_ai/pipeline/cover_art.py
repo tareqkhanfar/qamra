@@ -14,7 +14,7 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont, features
 import qamra_pdf
 
 FONT_DIR = Path(qamra_pdf.__file__).parent / "fonts"
-TITLE_FONT = FONT_DIR / "BalooBhaijaan2-ExtraBold.ttf"
+TITLE_FONT = FONT_DIR / "QamraDisplay-ExtraBold.ttf"
 BODY_FONT = FONT_DIR / "IBMPlexSansArabic-SemiBold.ttf"
 COVER_PX = 1024
 STORY = (1080, 1920)

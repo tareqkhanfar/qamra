@@ -39,6 +39,7 @@ The provider's terms cover commercial use of outputs. Each is used only with ter
 | Font | License |
 |---|---|
 | Baloo Bhaijaan 2 | SIL Open Font License 1.1 |
+| Qamra Display (our modified Baloo Bhaijaan 2: the hamza marks redrawn as «ء»; `scripts/build_display_font.py`, `OFL-QamraDisplay.txt`) | SIL Open Font License 1.1 (no Reserved Font Name; renamed as the OFL asks of a modified version, copyright notice kept) |
 | Noto Naskh Arabic | SIL Open Font License 1.1 |
 | IBM Plex Sans Arabic | SIL Open Font License 1.1 |
 | Amiri Quran 1.003 | SIL Open Font License 1.1 (the Quran text of «قلبي يعرف الله», Addendum 10) |
