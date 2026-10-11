@@ -50,6 +50,10 @@ git archive --format=tar HEAD | "${SSH[@]}" "mkdir -p $DIR && tar -x -C $DIR && 
 # through the admin is never replaced)
 "${SSH[@]}" "cd $DIR && docker compose $FILES exec -T worker python -m qamra_worker.journey_voices 2>&1 | tail -3" || true
 
+# every build leaves the previous images behind (they filled the 145 GB disk on 2026-10-11): drop the unused
+# untagged ones and build cache older than a day; images a container uses are never removed
+"${SSH[@]}" "docker image prune -f 2>&1 | tail -1; docker builder prune -f --filter until=24h 2>&1 | tail -1; df -h / | tail -1" || true
+
 echo
 "${SSH[@]}" "cd $DIR && docker compose $FILES ps --format 'table {{.Name}}\t{{.Status}}'"
 "${SSH[@]}" "cd $DIR && P=\$(grep -E '^QAMRA_WEB_PORT=' .env | cut -d= -f2); \
