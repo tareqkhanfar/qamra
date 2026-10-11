@@ -1,0 +1,29 @@
+{#- v2 (production, 2026-10-10): portrait first. A large head-and-shoulders portrait of the child in the book's style,
+    the face filling the frame, drawn before the full-length sheet (character_sheet.v6), which is painted from it
+    and the photo. v2 after the trial (v1): the book's full warm color (a watercolor portrait drifted to a sepia
+    ink sketch), the exact age (likeness.v2), and a redraw's fixes and the parent's note. -#}
+STYLE (rendering only)
+{{ style }}
+Painting medium: {{ medium }}
+This style decides only how the picture is rendered: medium, palette, light, edges and how much detail is shown. It never changes this child's face, head shape, features, hair or age.
+
+TASK
+Paint a large head-and-shoulders portrait of the child in the reference photo{{ 's' if n_photos > 1 else '' }}, in this book's style and in its full warm color: never a monochrome, sepia or ink sketch. The face fills the frame: from the top of the hair to the chin the head takes about 60% of the picture's height, centered, facing the viewer, with the photo's own natural expression. A plain, softly lit warm cream background and a plain cream top. Every picture of the book is painted from this portrait, so the face must be exactly this child.
+
+{% include "likeness.v2.j2" %}
+{% if fixes or note %}
+The parent saw the previous drawing and said it did not look like their child. Fix this:
+{% for fix in fixes %}- {{ fix }}
+{% endfor %}{% if note %}- {{ note }}
+{% endif %}{% endif %}
+{% if hijab %}
+The parent chose a hijab: a simple soft sage-green hijab neatly covering the hair, with the face fully visible.
+{%- else %}
+No hijab or head covering.
+{%- endif %}
+
+NEGATIVE
+{{ negative }}
+- No generic or default cute face, no baby face, no added curls, no hair that differs from the photo.
+- No monochrome, sepia or ink-sketch rendering: the portrait is in the book's full color.
+Do not copy the photo's background, lighting or clothes.

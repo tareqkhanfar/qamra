@@ -53,7 +53,9 @@ async def test_the_note_goes_through_the_feedback_prompt_into_the_redraw_prompt(
     chips_only = character_request(GIRL, [b"x"], STYLE, attempt=2, fixes=["skin"])
     assert "Face: rounder" not in chips_only.prompt
     note_only = character_request(GIRL, [b"x"], STYLE, attempt=2, note=result.instruction)
-    assert "did not look like their child" in note_only.prompt and "Skin tone:" not in note_only.prompt
+    # the skin chip's line, not v6's likeness block (which always names the skin tone)
+    assert "did not look like their child" in note_only.prompt
+    assert "Skin tone: match the photo's skin tone" not in note_only.prompt
 
 
 async def test_an_unsafe_note_is_ignored(rt: Runtime) -> None:

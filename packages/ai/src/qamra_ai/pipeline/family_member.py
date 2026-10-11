@@ -7,7 +7,7 @@ from dataclasses import dataclass
 
 from qamra_ai import prompts
 from qamra_ai.image.base import ImageRequest, RefImage, Resolution, sniff_mime
-from qamra_ai.pipeline.style import house_style, negatives
+from qamra_ai.pipeline.style import house_for, negatives
 from qamra_ai.pipeline.theme import ArtStyle
 
 # the store's relations (qamra_api.store.workbooks.RELATIONS) as the prompt names them
@@ -54,7 +54,7 @@ def member_request(
 ) -> ImageRequest:
     if not 1 <= len(photos) <= 3:
         raise ValueError("a family member's sheet needs 1–3 photos")
-    h = house_style()
+    h = house_for(style)
     prompt = prompts.render(
         "family_member_sheet",
         version=1,

@@ -142,6 +142,8 @@ def test_drawings_never_approved_are_discarded_after_30_days(db: Session, storag
         if status in (CharacterStatus.ready, CharacterStatus.approved):
             c.sheet_image_key = f"children/{child.id}/characters/{c.id}.png"
             storage.put(c.sheet_image_key, b"sheet", "image/png")
+            c.portrait_image_key = f"children/{child.id}/characters/{c.id}-portrait.png"  # portrait first
+            storage.put(c.portrait_image_key, b"portrait", "image/png")
         return c
 
     old = drawing(CharacterStatus.ready, **note)
@@ -149,6 +151,7 @@ def test_drawings_never_approved_are_discarded_after_30_days(db: Session, storag
     failed = drawing(CharacterStatus.failed, **note)
     fresh = drawing(CharacterStatus.ready, **note)
     old_key, chosen_key, fresh_key = old.sheet_image_key, chosen.sheet_image_key, fresh.sheet_image_key
+    old_portrait, chosen_portrait = old.portrait_image_key, chosen.portrait_image_key
     db.execute(
         update(Character)
         .where(Character.id.in_([old.id, chosen.id, failed.id]))
@@ -162,6 +165,8 @@ def test_drawings_never_approved_are_discarded_after_30_days(db: Session, storag
         db.refresh(c)
     assert old.status == CharacterStatus.discarded and old.sheet_image_key is None
     assert old_key and not storage.exists(old_key)
+    assert old.portrait_image_key is None and old_portrait and not storage.exists(old_portrait)  # with it
+    assert chosen_portrait and storage.exists(chosen_portrait)  # an approved drawing keeps its portrait
     assert old.params == {"attempt": 2, "fixes": ["hair"]}  # the parent's words are gone with the picture
     assert failed.status == CharacterStatus.failed and "note" not in failed.params  # still not a redraw
     assert chosen.status == CharacterStatus.approved and chosen_key and storage.exists(chosen_key)

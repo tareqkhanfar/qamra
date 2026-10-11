@@ -63,6 +63,9 @@ class BookInputs:
     spec: PrintSpec | None = None
     bible: StyleBible | None = None  # a resumed book's stored bible
     photo: bytes | None = None  # the child's photo while still stored (cover likeness only)
+    portrait: bytes | None = (
+        None  # the character's portrait in the style: every hero picture's face reference
+    )
 
 
 @dataclass
@@ -132,6 +135,7 @@ async def run_book(
         on_page=on_page,
         bible=bible,
         photo=inp.photo,
+        portrait=inp.portrait,
     )
     wanted = beats if beats is not None else beats_for(ctx, rt.settings.preview_pages)
     run.pages = await generate_pages(rt, ctx, wanted)

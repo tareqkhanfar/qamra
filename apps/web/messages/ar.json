@@ -2564,6 +2564,10 @@
       "failed": "لم ينجح الرسم هذه المرة.",
       "alt": "شخصية {nameGen} المرسومة",
       "views": "من الأمام · تلويح · مشي",
+      "portraitAlt": "صورة {nameGen} بأسلوب الكتاب",
+      "portraitAsk": "{gender, select, f {هل هذه طفلتكم؟} other {هل هذا طفلكم؟}}",
+      "portraitHint": "الوجه أولًا: من هذه الصورة نرسم {nameAcc} في الكتاب.",
+      "sheetTitle": "ورقة الشخصية",
       "wrong": "{gender, select, f {ما الذي لا يشبهها؟} other {ما الذي لا يشبهه؟}}",
       "wrongHint": "(يساعدنا في إعادة الرسم)",
       "fixes": {

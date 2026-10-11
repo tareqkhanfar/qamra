@@ -7,10 +7,12 @@
   once accepted, becomes that group's outfit reference. A cover plate (a fixed background per theme and
   style), when one exists, is the cover's scene; the child's photo, while still stored, sharpens the cover's
   likeness (it goes only to the image model, never to QA).
+- The character's portrait in the style (portrait first, 2026-10-10) goes with the sheet on every picture
+  of the hero, the cover included: the portrait for the face, the sheet for the body and full-length look.
 - The companion's sheet (a content file, or drawn once from its locked description) and the side
   characters' sheets go with every page they appear on, within the provider's reference limit.
 - Prompts follow the addendum's order: style → setting → scene → characters → outfit → composition →
-  negatives (`prompts/page_image.v4.j2` + `prompts/style/qamra_style.md`).
+  negatives (`prompts/page_image.v5.j2` + `prompts/style/qamra_style.md`).
 - Every attempt gets a Haiku QA check (`page_qa.v5`). Only failing pages are redrawn, at most
   `page_max_regenerations` times, each told what the last review found; then the best safe attempt is
   kept and flagged for a human.
@@ -65,7 +67,7 @@ QA_MAX_SIDE = 1024  # the page under inspection
 QA_REF_MAX_SIDE = 1536
 _DRAW_ERRORS = (ContentBlocked, ProviderError, ProviderConfigError, InvalidOutput)
 DEFAULT_MAX_REFS = 8  # providers that do not say how many reference images they take
-PAGE_PROMPT = ("page_image", 4)
+PAGE_PROMPT = ("page_image", 5)  # v5: the portrait as a likeness reference; v4 text without one
 QA_PROMPT = ("page_qa", 5)
 QA_BRIEF = ("page_qa_brief", 2)
 
@@ -91,7 +93,7 @@ class BookContext:
     lang: Lang
     theme: Theme
     style: ArtStyle
-    house: HouseStyle
+    house: HouseStyle  # the house style; merged with the style's own house sections on creation
     plan: BookPlan
     character_sheet: bytes
     outfits: dict[str, str]  # scene group → locked outfit line (rebuilt from the bible)
@@ -108,10 +110,15 @@ class BookContext:
     cast_sheets: dict[str, bytes] = field(default_factory=dict)  # cast id → sheet image (content files)
     cover_plate: bytes | None = None  # the cover's background plate (Addendum 11 §2.1)
     photo: bytes | None = None  # the child's photo while still stored: the cover only, never sent to QA
+    portrait: bytes | None = (
+        None  # the character's portrait in the style (portrait first): every hero picture
+    )
     group_refs: dict[str, tuple[int, bytes]] = field(default_factory=dict)  # group → (beat, accepted image)
     content_dir: Path = CONTENT_DIR
 
     def __post_init__(self) -> None:
+        # a style whose guide replaces house sections («شبه حقيقي» v3) paints, and is judged, with them
+        self.house = self.house.for_style(self.style)
         if self.bible is None:
             self.bible = build_bible(
                 self.theme,
@@ -238,6 +245,12 @@ def page_request(
                 "hero", 0, ctx.character_sheet, "THE HERO: character reference sheet of the child (likeness)"
             )
         )
+        if (
+            ctx.portrait is not None
+        ):  # portrait first: the face's likeness reference, kept right after the sheet
+            cands.append(
+                _ref("portrait", 1, ctx.portrait, "THE HERO's portrait in this book's style: the face")
+            )
     if kind == "cover" and ctx.cover_plate is not None:
         cands.append(
             _ref(
@@ -304,6 +317,7 @@ def page_request(
         time=scene.time,
         hero=hero,
         photo_ref=at.get("photo"),
+        portrait_ref=at.get("portrait"),
         plate_ref=at.get("plate"),
         style_ref=at.get("cover"),
         cover_outfit=cover_group,

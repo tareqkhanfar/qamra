@@ -837,3 +837,158 @@ names no Reserved Font Name; the copy is renamed anyway, as the OFL asks, and ke
 notice (`OFL-QamraDisplay.txt`). The CSS keeps the family label "Baloo Bhaijaan 2" and serves it from the new
 files, so every page and cover picks it up without template changes. The website still loads Baloo from Google
 Fonts (`next/font`): its titles are large, where the hamza reads; revisit if a small one shows the problem.
+
+## «شبه حقيقي» v3: a realistic painted portrait, not a storybook cartoon (2026-10-10, proposal)
+
+Tareq: «الصورة الشبه واقعية … كانت أشبه بالكرتون.» Nothing was drawn for this (no fal spend): the guide, the
+code and a comparison script are ready, and the comparison runs only with his budget.
+
+- **Why v2 looked like a cartoon** (in order of weight):
+  1. **The reference.** The site's samples were drawn from a crop of تالا's published *watercolor* sheet
+     (`scripts/style_samples.py`), and an edit model keeps the rendering of its reference: FLUX.2 pro returned
+     the sheet unchanged, Nano Banana 2's first tries were near-copies of the watercolor sheet, and the
+     published one keeps its poses, outfit and proportions. The sheet then fixes every
+     page ("keep exactly the same face … and body proportions", plus the cover as the page's style reference)
+     and the activity books' cut-out. Customers' photos are a better start, but the prompt cues below still apply.
+  2. **The house style comes first in every prompt** and says "a premium children's picture-book illustration",
+     "friendly and rounded" characters, "slightly large heads and short limbs unless the art-style line asks for
+     natural proportions" (the words are still in the prompt), "Not photorealistic" and "No photorealism".
+  3. **v2's own words**: "children's-book illustration, like a classic hand-painted storybook portrait", "a head
+     only slightly larger than life", "hair painted in soft, glossy clumps", "clean, readable silhouettes", and
+     a negative "no photographic detail" that forbade the very detail that reads as real.
+  4. **The sheet prompt**: "a picture-book CHARACTER REFERENCE SHEET" with three views side by side is the
+     animation model-sheet format.
+  5. **The model**: Nano Banana 2 at 1K for the sheet, as for every style.
+- **v3** (`prompts/style/semi-realistic.md`; v2 kept in `prompts/style/history/`): a fine-art oil-portrait
+  look carried through the scene, natural proportions and eye size, real tones in the face, hair in strands,
+  real fabric folds, soft painterly light, visible brushwork, "never a photograph". It describes the face by
+  its complexion and tones only, and avoids life-drawing words ("figure study", "painted from life",
+  "anatomy"): words about skin or "glamorous" children made the model refuse sheets before.
+- **The house merge is per style.** A guide may carry `## House style` and `## House negative`, which replace
+  those two house sections for that style only (`HouseStyle.for_style`, `house_for`), and `## Sheet`, a line
+  added to its character-sheet prompt (`character_sheet.v4`, otherwise the v3 text). `BookContext` merges on
+  creation, so the pages, the cover and the page QA use it. The merged version is «5+semi-realistic.v3»: books
+  record it, and the companion-sheet cache never mixes it with the plain house. Its house negative is the
+  house's list without "No photorealism" (a test fails if the house list changes and the guide does not).
+- **Every other style is byte-identical.** `packages/ai/tests/prompt_snapshot.py` builds every image prompt a
+  style sends (sheets, every page and cover of two books, companion and family sheets, Classic, class book,
+  page QA). The golden digests were committed before the change (0bd49a6); the other six styles still match
+  them, and v2 from the history file still sends exactly what v2 sent.
+- **Models (recommendation, not switched).** Models are global admin settings; nothing per style was added.
+  - Character sheet: **Nano Banana Pro edit at 2K, $0.15** (fal: $0.15 at 1K and 2K) instead of Nano
+    Banana 2 at 1K ($0.08): +$0.07 once per child, the strongest likeness of the two, and the printed cut-out
+    gets twice the pixels (the activity cover prints it 125 mm tall at 300 DPI, 1476 px; a 1K sheet's figure
+    is about 700 px).
+  - Cover: Nano Banana Pro ($0.15), the existing `cover_image_model` setting (Addendum 11 §6.4).
+  - Pages: stay on Nano Banana 2 (0.5K preview $0.06, 1K final $0.08 plus the upscale), painted from the
+    realistic sheet. Pro pages would cost $2.40–3.00 a book.
+  - Not FLUX.2 pro edit ($0.03 first MP + $0.015 per extra MP of input and output, about $0.06 a call here):
+    it copied the reference back unchanged on 2026-10-09. Not GPT Image 2.5 on fal (sunburst edit $0.053 at
+    1024² "high", plus input image tokens at $8/M): cheap, but our fal adapter does not set its size or
+    quality and would price it at the $0.15 "unknown" rate; a candidate for a later round.
+  - If the grid confirms it, the smallest change is to let a guide ask for the cover model on its sheet.
+- **The comparison** (`scripts/semireal_compare.py`, dry run by default): rows v2/v3 × Nano Banana 2/Pro, plus
+  v3 with the Pro sheet and a Nano Banana 2 page; columns sheet, story page (new-sibling beat 13, without the
+  companion), activity cut-out (local). 9 calls, **$1.00** at fal's prices rounded up to the cent;
+  `--max-usd` caps every run together, failed calls are logged at full price, and finished cells are reused.
+  - **The reference is a photo, as in an order** (not تالا's watercolor crop, itself one cause of the cartoon
+    look): the invented girl of the site's AI-made photo `photos/hero-reading.jpg`, head and shoulders, box
+    (1175, 560, 1687, 1072). It goes through what an upload goes through (`clean_image`, then `check_photo`:
+    one face, score 0.94, face 30% of the width), and the fal adapter re-encodes it as for every order.
+  - The first box asked for, (1175, 560, 1625, 1060), is 450 × 500 px: the upload check refuses it
+    (`too_small`, the minimum side is 512). The same corner at 512 × 512 keeps the mother's face out and
+    passes. The open book's Arabic title is in the crop's lower edge; the prompts forbid copying text.
+  - `--ref tala` keeps the current samples' reference, for the same grid on what the site shows today.
+- **Left as they are** (shared with other styles, or not sold in this style): the page template's
+  "picture-book page", the house Composition's "stage it like a picture book", the sheet template's first line
+  (the v3 sheet line follows it), the Classic portrait prompt (Classic is not sold in this style), and the page
+  QA's "false if photorealistic" (a soft `style` flag worth 0.05; watch it on the first v3 books). The theme
+  companion «قمّور» is a dot-eyed mascot by design and will look stylized next to a realistic child.
+- **After approval:** merge (the guide is live as soon as it deploys; migration `968a4be3c42d` updates the
+  row's record to v3), redraw the site's semi-realistic samples (about $0.55), and decide what to do with
+  characters already drawn in v2 (they are reused until the parent asks for a new drawing).
+
+## Likeness trial: the child on the sheet must be the child in the photo (2026-10-10, findings)
+
+The owner's live test with a real 5-year-old's photo gave, in every style, a generic, rounder, younger child
+(Nano Banana 2 at 1K, `character_sheet.v3`). Trial on the production prompt path
+(`scripts/likeness_trial.py`; the photo was a CLI argument only, nothing of it is in the repo), Nano Banana
+Pro edit, four styles, two candidates:
+
+- **N1**, one step: the sheet at 2K with the likeness-tuned `character_sheet.v5` (the style renders, never
+  reshapes the face; no "must look N, not older"; hair, face shape and proportions, skin tone and real age
+  spelled out, `prompts/likeness.v1.j2`).
+- **N2**, portrait first: a large head-and-shoulders portrait in the style (`character_portrait.v1`, 1K),
+  then the v5 sheet from [photo + portrait] at 2K.
+
+Spend: $1.80 for 12 calls (`likeness:` rows), plus $1.00 for the semi-realistic grid: $2.80 of a $3.50 cap.
+
+- **What we saw** (likeness out of 10, by eye):
+
+  | style | live (NB2, v3) | N1 | N2 portrait | N2 sheet |
+  |---|---|---|---|---|
+  | 3D | 3 | 4 | 6 | 6 |
+  | semi-realistic v3 | – | 7 | 8 | 7–8 |
+  | cartoon | – | 3 | 5 | 5 |
+  | watercolor | 3 | 4 | 6 (style drifted to sepia ink, looks older) | 5 |
+
+- **The diagnosis holds, with one correction.**
+  - (a) The toddler cues are real, but they live in the style guides as much as in the sheet prompt. The 3D and
+    cartoon guides ask for "big expressive / friendly eyes" and "slightly large heads", and the house style
+    asks for "rounded" characters with "slightly large heads". v5's "the style never changes the face" does
+    not beat those: N1 is still round-faced and young in 3D, cartoon and watercolor.
+  - (b) A small face holds little identity: N1 at 2K (faces of about 250 px) stays generic. A portrait whose
+    face fills the frame holds clearly more, and the sheet painted from it keeps most of it.
+  - (c) Pro is better than Nano Banana 2, but the model alone (N1) is not enough in the stylized styles.
+  - The realistic style fights the face least: semi-realistic v3 was the closest in every column.
+- **Side effects:** removing "not older" let some portraits age (cartoon and watercolor N2 read 7–8). The
+  watercolor portrait drifted to a dark sepia ink sketch. One semi-realistic N2 sheet left the feet bare.
+- **Recommendation (not switched):**
+  - **Portrait first** for every style on Nano Banana Pro: portrait 1K $0.15, then the sheet 2K $0.15, so
+    **$0.30 per child per style** against $0.08 today.
+  - Show the parent the portrait first («هل هذا طفلكم؟»): a redraw then costs $0.15, and the portrait can also
+    serve the cover, the portrait page and the activity books' owner page.
+  - Before that, a v6 of the prompts: "exactly his age, neither younger nor older"; the portrait "in full
+    warm color, never a monochrome or sepia sketch"; shoes kept in all three views.
+  - Tone down the face cues in the 3D and cartoon guides: keep the stylized rendering, but the child's own
+    face proportions and eye size. This changes those styles' look, so it is the owner's call.
+  - Then pass the portrait as one more likeness reference to the pages (no extra cost on Nano Banana).
+- **The auto-framing** (another branch) cannot frame a close-up photo whose face fills most of the width: the
+  framed cut-out fails the face check, and the whole photo is used, as `frame_photo` does.
+
+## Portrait first, in production (2026-10-10)
+
+The owner approved the likeness trial's direction. What was built, and the choices made:
+
+- **Two steps per character, each with its own model:**
+  - the portrait first: `character_portrait.v2`, a head-and-shoulders portrait in the style, full warm color,
+    the exact age;
+  - then the sheet: `character_sheet.v6`, painted from the photo and the portrait, with shoes in all three
+    views.
+  - Admin settings: `character_portrait_model` and `character_sheet_model` (default
+    `fal-ai/nano-banana-pro/edit`), `character_portrait_resolution` 1K and `character_sheet_resolution` 2K.
+  - On fal, a failing Pro falls back to the page model, as covers do. Gemini and OpenAI draw both steps with
+    their own model and the same prompts.
+  - Both use the photo as the parent framed it; a close-up falls back to the whole photo, as the framing does.
+- **Storage:** a nullable column, `characters.portrait_image_key` (migration `2351cdc1195c`, after
+  `968a4be3c42d` → `3d041b8fdbf1`). A column rather than `params`, so the cleanup and the API can test it
+  plainly. The key sits under the child's prefix, `children/{child}/characters/{id}-portrait.png`, so
+  «حذف كل بيانات الطفل» removes it. The 30-day cleanup of drawings never approved deletes it with the sheet.
+  Characters drawn before have none, and the web falls back to the sheet.
+- **A redraw draws both again.** Free redraws and failures count as before: it is one character job.
+- **Where the portrait is used:**
+  - every story picture of the hero, covers included, next to the sheet (`page_image.v5`);
+  - the free cover: after the Classic identity portrait, before the sheet.
+  - Activity books print a cut-out of the sheet, with no AI call to pass it to. The four 2K sheets of the
+    verification all cut out cleanly.
+  - Class books and Classic are unchanged.
+- **Parents:** the character step shows the portrait large with «هل هذا طفلكم؟ / هل هذه طفلتكم؟», the sheet
+  below it, and the portrait as each drawing's thumbnail in the strip. A language reviewer suggested
+  «هل تشبه هذه الصورة طفلكم؟» (a painting is not the child); the owner's wording was kept.
+- **Style guides:**
+  - house v6: no "rounded" characters or "slightly large heads and short limbs";
+  - 3D, cartoon and watercolor v3: the child keeps their own face, eye size and age;
+  - semi-realistic v3 adopted.
+- **Cost per child per style:** $0.30 on fal (portrait $0.15 + sheet $0.15), against $0.08 before.
+- **Production never pads a photo:** clean_image, crop_photo and the adapters only crop, scale and re-encode.
+  The black bars in the trial's comparison came from the comparison tool alone (fixed).

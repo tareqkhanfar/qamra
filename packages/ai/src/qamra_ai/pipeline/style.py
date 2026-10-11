@@ -3,16 +3,26 @@
 The house style holds what every book shares: setting, people, composition, safety and negatives. Each art
 style (Addendum 4 §2) has its own guide, `prompts/style/<slug>.md`, with its look, look-specific negatives and
 QA thresholds. The guides seed the `art_styles` table, where the admin edits them from then on.
+
+A guide may also replace two house sections for its own style only (`## House style`, `## House negative`)
+and add a line to its character-sheet prompt (`## Sheet`): «شبه حقيقي» v3 does, because the house's
+picture-book wording pulls a realistic painting back to a cartoon. Every other style gets the house as it is
+(`house_for`). Earlier guide versions live in `prompts/style/history/` (not loaded as styles).
 """
 
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from functools import lru_cache
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from qamra_ai.prompts import PROMPTS_DIR
 
+if TYPE_CHECKING:
+    from qamra_ai.pipeline.theme import ArtStyle
+
 STYLE_FILE: Path = PROMPTS_DIR / "style" / "qamra_style.md"
+HISTORY_DIR: Path = STYLE_FILE.parent / "history"  # earlier guide versions, e.g. semi-realistic.v2.md
 SECTIONS = ("style", "setting", "people", "composition", "safety", "negative")
 _HEADING = re.compile(r"^## +(.+?)\s*$", re.M)
 _VERSION = re.compile(r"^version:\s*(\S+)\s*$", re.M)
@@ -32,6 +42,21 @@ class HouseStyle:
     def prompt_id(self) -> str:
         return f"qamra_style.v{self.version}"
 
+    def for_style(self, art: "ArtStyle") -> "HouseStyle":
+        """The house as one art style uses it: the style's guide may replace the Style section and the
+        Negative list for itself. A style that replaces neither gets this same object, so its prompts stay
+        byte-identical. The merged version names the guide («5+semi-realistic.v3»): what a book records, and
+        the companion-sheet cache key, never mix the merged house with the plain one."""
+        if not (art.house_style or art.house_negative):
+            return self
+        base = self.version.split("+", 1)[0]
+        return replace(
+            self,
+            version=f"{base}+{art.slug}.v{art.version}",
+            style=art.house_style or self.style,
+            negative=art.house_negative or self.negative,
+        )
+
 
 def parse_style(text: str) -> HouseStyle:
     version = _VERSION.search(text)
@@ -47,6 +72,11 @@ def parse_style(text: str) -> HouseStyle:
 @lru_cache
 def house_style() -> HouseStyle:
     return parse_style(STYLE_FILE.read_text(encoding="utf-8"))
+
+
+def house_for(art: "ArtStyle") -> HouseStyle:
+    """The house style merged with one art style's own house sections (`HouseStyle.for_style`)."""
+    return house_style().for_style(art)
 
 
 def negatives(house: HouseStyle, style_negative: str = "") -> str:
@@ -72,6 +102,9 @@ class StyleGuide:
     likeness_min: int
     look: str
     negative: str
+    house_style: str = ""  # replaces the house's Style section for this style only
+    house_negative: str = ""  # replaces the house's Negative list for this style only
+    sheet: str = ""  # added to this style's character-sheet prompt
 
 
 def parse_style_guide(text: str) -> StyleGuide:
@@ -91,13 +124,25 @@ def parse_style_guide(text: str) -> StyleGuide:
         likeness_min=int(fields.get("likeness_min", "7")),
         look=sections["look"],
         negative=sections.get("negative", ""),
+        house_style=sections.get("house style", ""),
+        house_negative=sections.get("house negative", ""),
+        sheet=sections.get("sheet", ""),
     )
 
 
 def style_guides() -> list[StyleGuide]:
-    """Every art-style guide under `prompts/style/` (all files except the house style)."""
+    """Every art-style guide under `prompts/style/` (all files except the house style; not `history/`)."""
     return [
         parse_style_guide(path.read_text(encoding="utf-8"))
         for path in sorted(STYLE_FILE.parent.glob("*.md"))
         if path != STYLE_FILE
     ]
+
+
+def history_guide(slug: str, version: int) -> StyleGuide:
+    """An earlier version of a guide (`prompts/style/history/<slug>.v<version>.md`), e.g. to draw a
+    before/after comparison."""
+    guide = parse_style_guide((HISTORY_DIR / f"{slug}.v{version}.md").read_text(encoding="utf-8"))
+    if (guide.slug, guide.version) != (slug, version):
+        raise ValueError(f"history/{slug}.v{version}.md says {guide.slug} v{guide.version}")
+    return guide

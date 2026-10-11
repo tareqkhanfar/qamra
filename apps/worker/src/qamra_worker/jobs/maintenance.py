@@ -146,9 +146,10 @@ def cleanup_expired_media(
         character.params = {k: v for k, v in (character.params or {}).items() if k not in NOTE_KEYS}
         if character.status != CharacterStatus.ready:
             continue
-        if character.sheet_image_key:
-            storage.delete(character.sheet_image_key)  # storage first: a crash leaves a row to retry
-        character.sheet_image_key = None
+        for key in (character.sheet_image_key, character.portrait_image_key):
+            if key:
+                storage.delete(key)  # storage first: a crash leaves a row to retry
+        character.sheet_image_key = character.portrait_image_key = None
         character.status = CharacterStatus.discarded
         _audit(db, "character.draft_expired", "character", character.id)
         summary.characters_discarded += 1

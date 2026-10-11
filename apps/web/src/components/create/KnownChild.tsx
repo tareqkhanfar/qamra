@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Kid } from "@/components/art/Kid";
 import { nameCases } from "@/lib/arabicName";
-import { characterImage, type Character, type Child } from "@/lib/create";
+import { characterImage, characterPortrait, type Character, type Child } from "@/lib/create";
 import { isArabicName, isLatinName } from "@/lib/flows";
 import { Hint, inputClass } from "./EditChild";
 import { Chip } from "./Frame";
@@ -59,7 +59,7 @@ export function KnownChild({
           {ready ? (
             // eslint-disable-next-line @next/next/no-img-element -- private image through the API, no-store
             <img
-              src={characterImage(ready.id)}
+              src={ready.has_portrait ? characterPortrait(ready.id) : characterImage(ready.id)}
               alt={t("who.known.alt", who)}
               className={`size-full object-cover transition ${redraw ? "opacity-40" : ""}`}
             />

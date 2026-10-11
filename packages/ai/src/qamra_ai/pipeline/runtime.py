@@ -3,6 +3,7 @@
 import io
 from collections.abc import Callable
 from dataclasses import dataclass, field
+from typing import Literal
 
 from PIL import Image
 
@@ -19,6 +20,8 @@ from qamra_ai.image.base import GeneratedImage, ImageProvider, ImageRequest
 from qamra_ai.image.upscale import LocalUpscaler, Upscaled, Upscaler
 from qamra_ai.pipeline.budget import Budget
 from qamra_ai.text.base import Effort, StructuredResult, System, T, TextProvider, UserPart
+
+Role = Literal["page", "cover", "portrait", "sheet"]
 
 # Rough token sizes for the budget guard's reservations (actual usage is recorded afterwards).
 ESTIMATES = {
@@ -42,6 +45,9 @@ class Runtime:
     image: ImageProvider
     upscaler: Upscaler = field(default_factory=LocalUpscaler)
     cover_image: ImageProvider | None = None  # the cover's own model (Addendum 11 §6.4); None = `image`
+    # the child's character, portrait first: each step's own model (`character_*_model`); None = `image`
+    portrait_image: ImageProvider | None = None
+    sheet_image: ImageProvider | None = None
     ledger: CostLedger = field(default_factory=CostLedger)
     budget: Budget | None = None  # None: no cap (per-child steps, scripts)
     on_cost: Callable[[CostEntry], None] | None = None  # e.g. write a GenerationCost row right away
@@ -93,10 +99,15 @@ class Runtime:
 
     # ---- calls ------------------------------------------------------------------------------
 
-    async def draw(self, req: ImageRequest, *, cover: bool = False) -> GeneratedImage:
-        """Image call (retries + fallback live in the provider); cost recorded and budgeted. `cover` uses
-        the cover's own model when one is configured."""
-        image = (self.cover_image or self.image) if cover else self.image
+    def provider_for(self, role: Role = "page") -> ImageProvider:
+        """The provider of one kind of picture: its own model when one is configured, else `image`."""
+        own = {"cover": self.cover_image, "portrait": self.portrait_image, "sheet": self.sheet_image}
+        return own.get(role) or self.image
+
+    async def draw(self, req: ImageRequest, *, cover: bool = False, role: Role = "page") -> GeneratedImage:
+        """Image call (retries + fallback live in the provider); cost recorded and budgeted. `cover` (or
+        `role="cover"`), `"portrait"` and `"sheet"` use that step's own model when one is configured."""
+        image = self.provider_for("cover" if cover else role)
         if self.budget is None:
             result = await image.generate(req)
         else:

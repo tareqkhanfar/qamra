@@ -1,5 +1,22 @@
 # Changelog
 
+## Portrait first: the child's face, drawn large, before the character sheet, in every style (2026-10-10)
+- **Why:** Tareq's live test with a real 5-year-old's photo gave a generic, younger, rounder child in every style.
+- **Drawing:** a portrait in the style (`character_portrait.v2`, Nano Banana Pro 1K), then the sheet from the photo and the portrait (`character_sheet.v6`, Nano Banana Pro 2K). Admin settings `character_portrait_model`, `character_sheet_model` and their resolutions. Pages and covers take the portrait next to the sheet (`page_image.v5`); the free cover prefers it to the sheet.
+- **Styles:** house style v6 (no "rounded", no "slightly large heads"); 3D, cartoon and watercolor v3 (the child keeps their own face, eye size and age); semi-realistic v3.
+- **Data:** `characters.portrait_image_key` (migration `2351cdc1195c`), included in delete-all and the 30-day cleanup. Private no-store route `GET /api/create/characters/{id}/portrait`; `has_portrait` on characters.
+- **Web:** the character step shows the portrait large («هل هذا طفلكم؟») with the sheet below it; the drawings strip and the child card show the portrait.
+- **Cost:** $0.30 per character, from $0.08. The paid verification on the owner's test photo cost $1.36 (`likeness-v6:` rows).
+- Tests: `test_likeness_prompts.py`, the golden prompt snapshots (rewritten on purpose), `test_character_portrait.py`, `test_portrait_first_migration.py`, the worker's `test_character_job.py` and `test_maintenance.py`, web `arabicName.test.ts`.
+
+## «شبه حقيقي» v3: a realistic painted portrait instead of a storybook cartoon (2026-10-10, for approval)
+- **Why:** Tareq: «الصورة الشبه واقعية … كانت أشبه بالكرتون.» The diagnosis and the model prices are in `docs/decisions.md`. Nothing was drawn: no fal spend.
+- **Guide v3** (`prompts/style/semi-realistic.md`, v2 kept in `prompts/style/history/`): a fine-art oil-portrait look, natural proportions and eye size, real tones in the face, hair in strands, real fabric folds, soft painterly light, never a photograph. It replaces the house style's Style paragraph and Negative list for this style only (`## House style`, `## House negative`: no "picture-book illustration", "rounded", "slightly large heads", "No photorealism") and adds a sheet line (`## Sheet`: a clothed three-view sheet in this style, take only the face, hair and complexion from a drawn reference, even light, crisp edges for the cut-out).
+- **Code:** `HouseStyle.for_style` / `house_for` (the sheet, companion, family-member, Classic and class-book prompts; `BookContext` merges for the pages, cover and QA), `ArtStyle` carries the guide's version and sections, `character_sheet.v4` (v3 plus the style's sheet line), books record the merged house id («qamra_style.v5+semi-realistic.v3»). Migration `968a4be3c42d` updates the style row's record of the look to v3.
+- **Every other style sends byte-identical prompts:** golden digests of 380 prompt groups (`packages/ai/tests/prompt_snapshot.py`) committed before the change; the history v2 still reproduces v2's prompts.
+- **Comparison, ready to run** (`scripts/semireal_compare.py`, dry run by default): v2 against v3 on Nano Banana 2 and Nano Banana Pro, plus the proposed mix (Pro sheet, Nano Banana 2 page), each with a sheet, a story page and the activity-book cut-out. The reference is a photo, as in an order: the invented girl of the site's AI-made `photos/hero-reading.jpg`, cropped to her head and shoulders (512 × 512) and sent through the upload's `clean_image` and photo check; `--ref tala` keeps the current samples' watercolor-sheet crop. 9 calls, $1.00 at fal's prices; `--run --max-usd X` draws, logs every call (failed ones too) to `out/design-images/ledger.jsonl` and builds `out/semireal-compare/grid.png`.
+- Tests: `test_style_prompt_snapshots.py`, `test_prompts.py` (v3 wording, no cartoon cues or refusal words in any semi-realistic prompt, the merged house, the cache key), `test_semireal_compare.py` (the plan and its price, offline), `apps/api/tests/test_semi_realistic_style.py` and `test_semi_realistic_v3_record.py` (the migration).
+
 ## The parent places the child's photo in the oval, and can change it after the drawing (2026-10-10)
 - **Why:** Tareq: «لما اجي ارفق صورة الطفل اعطيني صلاحيات اللي اقدر اغير من مكان الصورة … يتطابق مع الدائرة … كمان بدي امكانية لتعديل الصورة بعد الارفاق وبعد الرسم.»
 - **On upload:** the API frames the photo around the face it finds, so the face lands in the oval by itself. A child a little far from the camera now passes once framed.

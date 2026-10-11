@@ -46,6 +46,12 @@ class Settings(BaseSettings):
     fal_fallback_model: str = "fal-ai/flux-2-pro/edit"
     # The cover's own fal model (Addendum 11 §6.4, e.g. "fal-ai/nano-banana-pro"); empty = the page model.
     cover_image_model: str = ""
+    # The child's character, portrait first (2026-10-10): each step's fal model and resolution. Empty = the
+    # page model. Other providers (Gemini, OpenAI) draw both steps with their own model and the same prompts.
+    character_portrait_model: str = "fal-ai/nano-banana-pro/edit"
+    character_sheet_model: str = "fal-ai/nano-banana-pro/edit"
+    character_portrait_resolution: ResolutionName = "1K"
+    character_sheet_resolution: ResolutionName = "2K"
     fal_upscale_model: str = "fal-ai/seedvr/upscale/image"
     fallback_after_failures: int = 2
     gemini_image_model: str = "gemini-3.1-flash-image"

@@ -299,6 +299,10 @@ class Character(IdMixin, TimestampMixin, Base):
         str_enum(CharacterStatus, "character_status"), default=CharacterStatus.generating
     )
     sheet_image_key: Mapped[str | None] = mapped_column(String(300))
+    # portrait first (2026-10-10): the child's head-and-shoulders portrait in the style, drawn before the
+    # sheet and stored next to it; the parent sees it first and every picture of the hero takes it. None on
+    # characters drawn before, and after the 30-day cleanup.
+    portrait_image_key: Mapped[str | None] = mapped_column(String(300))
     regen_count: Mapped[int] = mapped_column(SmallInteger, default=0)
     approved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     provider: Mapped[str | None] = mapped_column(String(32))

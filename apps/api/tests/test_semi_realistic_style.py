@@ -28,6 +28,7 @@ SEMI = "semi-realistic"
 STYLES = ["3d", "watercolor", "cartoon", SEMI]  # the site's order: a parent who is not asked still gets 3D
 ACTIVITY_SKUS = ("wb-kg2-v1-color-spiral", "journey-s1-spiral", "family-wireo", "islamic-v1-softcover")
 REVISION, PREVIOUS = "a58eeffa5362", "6a87cac7a912"
+V3_REVISION = "968a4be3c42d"  # guide v3, a realistic painted portrait (2026-10-10)
 
 
 @pytest.fixture(autouse=True)
@@ -141,9 +142,9 @@ async def test_the_cart_line_keeps_the_chosen_style(client: AsyncClient, adb: As
 # ---- the migration ---------------------------------------------------------------------------------------
 
 
-def _migration() -> ModuleType:
-    [path] = (Path(MIGRATIONS_DIR) / "versions").glob(f"*_{REVISION}_*.py")
-    spec = importlib.util.spec_from_file_location("semi_realistic_migration", path)
+def _migration(revision: str = REVISION) -> ModuleType:
+    [path] = (Path(MIGRATIONS_DIR) / "versions").glob(f"*_{revision}_*.py")
+    spec = importlib.util.spec_from_file_location(f"semi_realistic_migration_{revision}", path)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -183,9 +184,8 @@ async def test_the_migration_goes_down_and_up(adb: AsyncSession) -> None:
         "active": True,
         "likeness_min": 8,
     }
-    assert {
-        k: v for k, v in (await _row(adb)).items() if k != "updated_at"
-    } == after  # the seed, from the guide
+    seeded = {k: v for k, v in (await _row(adb)).items() if k != "updated_at"}
+    assert seeded == {**after, "version": 3}  # the seed, from the guide (v3 since 2026-10-10)
     await adb.run_sync(run, PREVIOUS, False)
     before = await _row(adb)
     assert {k: before[k] for k in ("name_ar", "version", "lines", "active", "sort")} == {
@@ -200,3 +200,32 @@ async def test_the_migration_goes_down_and_up(adb: AsyncSession) -> None:
     assert {k: v for k, v in up.items() if k != "updated_at"} == after
     await adb.run_sync(again)  # idempotent: a row already at version 2 is not touched
     assert await _row(adb) == up
+    await adb.run_sync(run, V3_REVISION, True)  # and on to guide v3, as the seed has it
+    assert {k: v for k, v in (await _row(adb)).items() if k != "updated_at"} == seeded
+
+
+async def _record(adb: AsyncSession) -> tuple[int, str, str]:
+    row = (
+        await adb.execute(
+            text("SELECT version, prompt, negative FROM art_styles WHERE slug = :slug"), {"slug": SEMI}
+        )
+    ).one()
+    return int(row.version), str(row.prompt), str(row.negative)
+
+
+async def test_guide_v3_migration_records_the_guide_and_goes_back_to_v2(adb: AsyncSession) -> None:
+    """«شبه حقيقي» v3 (2026-10-10): the row's record of the look and negatives follows the guide; down puts
+    v2's record back. Idempotent both ways."""
+
+    def step(session: Session, forward: bool) -> None:
+        _migration(V3_REVISION).record(session.connection(), forward=forward)
+
+    module = _migration(V3_REVISION)
+    await adb.run_sync(step, False)
+    assert await _record(adb) == (2, module.V2["prompt"], module.V2["negative"])
+    await adb.run_sync(step, False)  # a row already at v2 is left alone
+    assert (await _record(adb))[0] == 2
+    await adb.run_sync(step, True)
+    assert await _record(adb) == (3, module.V3["prompt"], module.V3["negative"])
+    await adb.run_sync(step, True)
+    assert (await _record(adb))[0] == 3

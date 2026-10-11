@@ -93,6 +93,9 @@ class CharacterOut(BaseModel):
     # the last time the parent approved it: the child's character is the one approved last (a parent can go
     # back to an earlier drawing), so later books reuse that one
     approved_at: datetime | None = None
+    # portrait first (2026-10-10): the child's portrait in the style, shown large before the sheet; drawings
+    # made before have none (`/characters/{id}/portrait`)
+    has_portrait: bool = False
 
 
 class DrawingOut(CharacterOut):
@@ -149,6 +152,7 @@ def _character_out(c: Character) -> CharacterOut:
         style=c.art_style,
         approved=c.approved_at is not None,
         approved_at=c.approved_at,
+        has_portrait=bool(c.portrait_image_key),
     )
 
 
@@ -738,6 +742,22 @@ async def character_image(
         media_type="image/png",
         headers={"Cache-Control": "private, no-store"},
     )
+
+
+@router.get("/characters/{character_id}/portrait")
+async def character_portrait(
+    character_id: uuid.UUID, user: CurrentUser, db: SessionDep, storage: StorageDep
+) -> Response:
+    """The child's portrait in the style (portrait first), for the guardian only: through the API with the
+    parent's cookies and never cached, like the sheet."""
+    character = await _my_character(db, user, character_id)
+    if not character.portrait_image_key:
+        raise ApiError("not_ready", 409)
+    try:
+        data = storage.get(character.portrait_image_key)
+    except ObjectNotFound as e:
+        raise ApiError("not_ready", 409) from e
+    return Response(data, media_type="image/png", headers={"Cache-Control": "private, no-store"})
 
 
 @router.post("/characters/{character_id}/approve")

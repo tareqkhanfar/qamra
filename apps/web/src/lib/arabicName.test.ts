@@ -316,6 +316,7 @@ const ACCUSATIVE: Record<string, "nameAcc" | "labelAcc"> = {
   "create.line.classicPages": "nameAcc",
   "create.style.title": "nameAcc",
   "create.character.title": "nameAcc",
+  "create.character.portraitHint": "nameAcc",
   "create.character.drawing": "nameAcc",
   "create.character.approve": "nameAcc",
   "create.character.drawingsHint": "nameAcc", // «التي تشبه أبا بكر أكثر»
@@ -416,6 +417,7 @@ const GENITIVE: Record<string, string> = {
   "create.style.next": "nameGen",
   "create.style.bodyActivity": "nameGen", // the activity books' style step (2026-10-09)
   "create.character.alt": "nameGen",
+  "create.character.portraitAlt": "nameGen",
   "create.character.keep": "nameGen",
   "create.character.drawings": "nameGen", // «رسومات أبي بكر حتى الآن»
   "create.story.body": "nameGen",

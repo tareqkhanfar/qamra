@@ -2564,6 +2564,10 @@
       "failed": "The drawing didn't work this time.",
       "alt": "{name}'s drawn character",
       "views": "Front · waving · walking",
+      "portraitAlt": "{name}'s portrait in the book's style",
+      "portraitAsk": "Is this your child?",
+      "portraitHint": "Face first: we draw {name} from this portrait throughout the book.",
+      "sheetTitle": "Character sheet",
       "wrong": "{gender, select, f {What doesn't look like her?} other {What doesn't look like him?}}",
       "wrongHint": "(helps us redraw)",
       "fixes": {

@@ -1,0 +1,38 @@
+{#- v5 (likeness trial, 2026-10-10; production stays on v4 until the owner approves): live sheets from real photos
+    came out as a generic, younger, rounder child. v5 says the art style renders and never reshapes the face,
+    drops "must look N, not older" (it pushed toward a toddler), spells out the hair (color, length, direction,
+    texture, the shape at the front), face shape and proportions, skin tone and real age, and can take the
+    child's approved portrait in the style as a second reference (portrait first). -#}
+STYLE (rendering only)
+{{ style }}
+Painting medium: {{ medium }}
+This style decides only how the picture is rendered: medium, palette, light, edges and how much detail is shown. It never changes this child's face, head shape, features, hair or age.
+
+TASK
+Create a CHARACTER REFERENCE SHEET of the child in the reference photo{{ 's' if n_photos > 1 else '' }}. It is reused for every page of every book, so it must be clear and exact.
+{%- if portrait %}
+Image {{ n_photos + 1 }} is the approved portrait of this same child in this book's style: paint the sheet's face exactly like that portrait (the same face, features, hair and rendering), with the photo{{ 's' if n_photos > 1 else '' }} as the final word on likeness.
+{%- endif %}
+
+Layout: three full-body views of the same child side by side on a plain warm cream background, evenly spaced, same scale:
+1. front view, standing, gentle smile, arms relaxed
+2. three-quarter view, waving
+3. side view, walking
+{% if sheet %}{{ sheet }}
+{% endif %}
+{% include "likeness.v1.j2" %}
+{% if fixes %}
+The parent saw the previous drawing and said it did not look like their child. Fix this:
+{% for fix in fixes %}- {{ fix }}
+{% endfor %}{% endif %}
+CLOTHING
+A plain, modest reference outfit: a soft cream long-sleeved top, night-blue trousers and simple shoes; the same in all three views (each book dresses the child in its own outfit later).
+{% if hijab %}The parent chose a hijab: a simple soft sage-green hijab neatly covering the hair, with the face fully visible, the same in all three views.{% else %}No hijab or head covering.{% endif %}
+
+PEOPLE
+{{ people }}
+
+NEGATIVE
+{{ negative }}
+- No generic or default cute face, no baby face, no added curls, no hair that differs from the photo.
+Do not copy the photo's background, lighting or clothing brand logos.

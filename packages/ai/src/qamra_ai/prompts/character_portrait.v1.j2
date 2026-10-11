@@ -1,0 +1,22 @@
+{#- v1 (likeness trial, 2026-10-10): portrait first. A large head-and-shoulders portrait of the child in the book's
+    style, the face filling the frame, so the likeness is settled on a big face before the full-length sheet
+    (character_sheet.v5 with `portrait`) is painted from it. -#}
+STYLE (rendering only)
+{{ style }}
+Painting medium: {{ medium }}
+This style decides only how the picture is rendered: medium, palette, light, edges and how much detail is shown. It never changes this child's face, head shape, features, hair or age.
+
+TASK
+Paint a large head-and-shoulders portrait of the child in the reference photo{{ 's' if n_photos > 1 else '' }}, in this book's style. The face fills the frame: from the top of the hair to the chin the head takes about 60% of the picture's height, centered, facing the viewer, with the photo's own natural expression. A plain, softly lit warm cream background and a plain cream top. Every picture of the book is painted from this portrait, so the face must be exactly this child.
+
+{% include "likeness.v1.j2" %}
+{% if hijab %}
+The parent chose a hijab: a simple soft sage-green hijab neatly covering the hair, with the face fully visible.
+{%- else %}
+No hijab or head covering.
+{%- endif %}
+
+NEGATIVE
+{{ negative }}
+- No generic or default cute face, no baby face, no added curls, no hair that differs from the photo.
+Do not copy the photo's background, lighting or clothes.
