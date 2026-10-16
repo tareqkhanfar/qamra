@@ -1,9 +1,20 @@
 "use client";
 
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useState, type FormEvent } from "react";
 import { Alert } from "@/components/ui/Alert";
 import { api, errorText } from "@/lib/api";
+import {
+  checkFields,
+  focusFirstInvalid,
+  onlyFields,
+  problemTexts,
+  serverFieldErrors,
+  type FieldErrors,
+  type Rule,
+  withoutField,
+} from "@/lib/fieldErrors";
+import { normalizePhone, toAsciiDigits } from "@/lib/phone";
 
 type Labels = {
   fields: Record<"org" | "city" | "person" | "role" | "rolePh" | "phone" | "count" | "date" | "notes", string>;
@@ -17,30 +28,49 @@ type Labels = {
 };
 
 const input =
-  "min-h-[52px] w-full rounded-[14px] border-[1.5px] border-line bg-white px-4 text-body text-ink outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-100";
+  "min-h-[52px] w-full rounded-[14px] border-[1.5px] border-line bg-white px-4 text-body text-ink outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-100 aria-[invalid=true]:border-danger";
+
+const ORDER = ["org_name", "city", "contact_name", "contact_role", "phone", "children_count", "event_date", "notes"];
+const RULES: Record<string, Rule> = {
+  org_name: { required: true },
+  contact_name: { required: true },
+  phone: { required: "phoneMissing", phone: true }, // ٠٥٩٩… and ۰۵۹۹… are fine
+  children_count: { int: [1, 500] }, // «٢٥» too
+};
 
 /** Kindergarten demo request (design: Kindergartens › #demo). */
 export function LeadForm({ labels }: { labels: Labels }) {
   const locale = useLocale();
+  const te = useTranslations("errors");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<FieldErrors>({}); // messages under the fields
   const [done, setDone] = useState(false);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const f = new FormData(e.currentTarget);
+    const element = e.currentTarget;
+    const f = new FormData(element);
     const text = (k: string) => String(f.get(k) ?? "").trim();
-    const count = text("children_count");
+    const mark = (marked: FieldErrors) => {
+      setErrors(marked);
+      setError(te("checkFields"));
+      focusFirstInvalid(element, ORDER, marked);
+    };
+    const problems = checkFields(Object.fromEntries(ORDER.map((k) => [k, text(k)])), RULES);
+    if (Object.keys(problems).length) return mark(problemTexts(problems, te));
+    const count = toAsciiDigits(text("children_count"));
     const month = text("event_month");
     setBusy(true);
     setError(null);
+    setErrors({});
     const res = await api("/api/leads", {
       json: {
         org_name: text("org_name"),
         city: text("city") || null,
         contact_name: text("contact_name"),
         contact_role: text("contact_role") || null,
-        phone: text("phone"),
+        phone: normalizePhone(text("phone")) ?? text("phone"),
         children_count: count ? Number(count) : null,
         event_date: month ? `${month}-01` : null,
         notes: text("notes") || null,
@@ -52,8 +82,19 @@ export function LeadForm({ labels }: { labels: Labels }) {
       setDone(true);
       return;
     }
-    setError(errorText(res.error, locale, res.status === 0 ? labels.network : labels.unknown));
+    const marked = onlyFields(serverFieldErrors(res.error, locale, { event_date: "event_month" }), ORDER);
+    if (Object.keys(marked).length) mark(marked);
+    else setError(errorText(res.error, locale, res.status === 0 ? labels.network : labels.unknown));
   }
+
+  const invalid = (name: string) =>
+    errors[name] ? { "aria-invalid": true as const, "aria-describedby": `lead-${name}-error` } : {};
+  const message = (name: string) =>
+    errors[name] && (
+      <span id={`lead-${name}-error`} className="text-caption font-semibold text-danger">
+        {errors[name]}
+      </span>
+    );
 
   if (done) {
     return (
@@ -74,6 +115,8 @@ export function LeadForm({ labels }: { labels: Labels }) {
   return (
     <form
       onSubmit={onSubmit}
+      onInput={(e) => setErrors((current) => withoutField(current, (e.target as HTMLInputElement).name))}
+      noValidate
       className="grid gap-5 rounded-2xl border border-line bg-paper-raised p-5 sm:grid-cols-2 md:p-9"
     >
       {error && (
@@ -83,7 +126,8 @@ export function LeadForm({ labels }: { labels: Labels }) {
       )}
       <label className="flex flex-col gap-1.5 text-[15px] font-semibold">
         {L.org}
-        <input name="org_name" required maxLength={200} className={input} />
+        <input name="org_name" required maxLength={200} className={input} {...invalid("org_name")} />
+        {message("org_name")}
       </label>
       <label className="flex flex-col gap-1.5 text-[15px] font-semibold">
         {L.city}
@@ -95,7 +139,15 @@ export function LeadForm({ labels }: { labels: Labels }) {
       </label>
       <label className="flex flex-col gap-1.5 text-[15px] font-semibold">
         {L.person}
-        <input name="contact_name" required maxLength={120} autoComplete="name" className={input} />
+        <input
+          name="contact_name"
+          required
+          maxLength={120}
+          autoComplete="name"
+          className={input}
+          {...invalid("contact_name")}
+        />
+        {message("contact_name")}
       </label>
       <label className="flex flex-col gap-1.5 text-[15px] font-semibold">
         {L.role}
@@ -106,20 +158,31 @@ export function LeadForm({ labels }: { labels: Labels }) {
         <input
           name="phone"
           required
+          type="tel"
           dir="ltr"
           inputMode="tel"
           autoComplete="tel"
-          maxLength={32}
+          maxLength={40}
           className={`${input} rtl:text-right`}
+          {...invalid("phone")}
         />
+        {message("phone")}
       </label>
       <label className="flex flex-col gap-1.5 text-[15px] font-semibold">
         {L.count}
-        <input name="children_count" type="number" min={1} max={500} inputMode="numeric" className={input} />
+        <input
+          name="children_count"
+          inputMode="numeric"
+          maxLength={4}
+          className={input}
+          {...invalid("children_count")}
+        />
+        {message("children_count")}
       </label>
       <label className="flex flex-col gap-1.5 text-[15px] font-semibold">
         {L.date}
-        <input name="event_month" type="month" className={input} />
+        <input name="event_month" type="month" className={input} {...invalid("event_month")} />
+        {message("event_month")}
       </label>
       <label className="flex flex-col gap-1.5 text-[15px] font-semibold sm:col-span-2">
         {L.notes}

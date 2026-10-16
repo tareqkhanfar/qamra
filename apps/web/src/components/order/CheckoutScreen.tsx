@@ -1,13 +1,24 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useShowPrices } from "@/components/site/Prices";
 import { Alert } from "@/components/ui/Alert";
 import { Spinner } from "@/components/ui/Button";
 import { Link, useRouter } from "@/i18n/navigation";
 import { api, errorText } from "@/lib/api";
 import { priceWording, type ThemeCard } from "@/lib/catalog";
+import {
+  checkFields,
+  focusFirstInvalid,
+  onlyFields,
+  problemTexts,
+  serverFieldErrors,
+  type FieldErrors,
+  type Rule,
+  withoutField,
+} from "@/lib/fieldErrors";
+import { normalizePhone } from "@/lib/phone";
 import { bundleLabel, completeHref, lineSummary, orderApi, type OrderCart, type OrderItem } from "@/lib/order";
 import {
   cartApi,
@@ -22,7 +33,16 @@ import { LineText, useSummaryText } from "./LineSummary";
 import { BottomBar, ctaClass, FlowHeader } from "./parts";
 
 const field =
-  "min-h-[52px] w-full rounded-[14px] border-[1.5px] border-line bg-white px-4 text-body outline-none focus:border-night-900";
+  "min-h-[52px] w-full rounded-[14px] border-[1.5px] border-line bg-white px-4 text-body outline-none focus:border-night-900 aria-[invalid=true]:border-danger";
+
+/** The checkout's fields in the page's order, and what each must be before we send it (the API checks again). */
+const ORDER = ["name", "phone", "city", "address"] as const;
+const RULES: Record<(typeof ORDER)[number], Rule> = {
+  name: { required: true, min: [2, "nameShort"] },
+  phone: { required: "phoneMissing", phone: true }, // ٠٥٩٩… and ۰۵۹۹… are fine
+  city: { required: "city" },
+  address: { required: true, min: [5, "addressShort"] }, // long enough is enough: no "gibberish" check
+};
 
 /** «إتمام الطلب» (design Create10): where to deliver, cash on delivery, and the server's order summary. */
 export function CheckoutScreen() {
@@ -42,6 +62,8 @@ export function CheckoutScreen() {
   const [busy, setBusy] = useState(false);
   const [zoning, setZoning] = useState(false); // the city's delivery fee is on its way from the server
   const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<FieldErrors>({}); // messages under the fields
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     let alive = true;
@@ -76,6 +98,7 @@ export function CheckoutScreen() {
 
   async function pickCity(value: string) {
     setCity(value);
+    setErrors((e) => withoutField(e, "city"));
     const zone = cities.find((c) => c.city === value)?.zone;
     if (!zone) return;
     setZoning(true);
@@ -85,27 +108,43 @@ export function CheckoutScreen() {
     else setError(errorText(r.error, locale, r.status === 0 ? te("network") : te("unknown")));
   }
 
+  function mark(marked: FieldErrors) {
+    setErrors(marked);
+    setError(te("checkFields"));
+    focusFirstInvalid(formRef.current, ORDER, marked);
+  }
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    const problems = checkFields({ ...form, city }, RULES);
+    if (Object.keys(problems).length) return mark(problemTexts(problems, te));
     if (!chosen) return;
     setBusy(true);
     setError(null);
-    const r = await cartApi.checkout({ ...form, zone: chosen.slug, city, accept_terms: true });
+    setErrors({});
+    const phone = normalizePhone(form.phone) ?? form.phone;
+    const r = await cartApi.checkout({ ...form, phone, zone: chosen.slug, city, accept_terms: true });
     if (r.ok) {
-      orderPhone.set(r.data.code, form.phone);
+      orderPhone.set(r.data.code, phone);
       router.push(`/order/${r.data.code}?placed=1`);
       return;
     }
     setBusy(false);
-    setError(errorText(r.error, locale, r.status === 0 ? te("network") : te("unknown")));
+    const marked = onlyFields(serverFieldErrors(r.error, locale, { zone: "city" }), ORDER); // the city sets the zone
+    if (Object.keys(marked).length) mark(marked);
+    else setError(errorText(r.error, locale, r.status === 0 ? te("network") : te("unknown")));
     if (r.error?.code === "gift_card_changed" || r.error?.code === "details_missing") {
       const fresh = await orderApi.cart(); // show the new total before the parent confirms again
       if (fresh.ok) setCart(fresh.data);
     }
   }
 
-  const set = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+  const set = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [key]: e.target.value });
+    setErrors((e) => withoutField(e, key));
+  };
+  const invalid = (key: string) =>
+    errors[key] ? { "aria-invalid": true as const, "aria-describedby": `o-${key}-error` } : {};
   // the last step of every order, whatever its books: no "n of N" (a cart can hold several books, §c.9)
   const header = (
     <FlowHeader
@@ -143,7 +182,12 @@ export function CheckoutScreen() {
   const w = (key: string) => t(priceWording(key, prices, (k) => t.has(k))); // no price wording while hidden
   const waiting = cart.items.find((i) => i.needs_details); // checkout refuses it until the child is added
   return (
-    <form onSubmit={submit} className="mx-auto flex min-h-dvh w-full max-w-[640px] flex-col bg-paper">
+    <form
+      ref={formRef}
+      onSubmit={submit}
+      noValidate
+      className="mx-auto flex min-h-dvh w-full max-w-[640px] flex-col bg-paper"
+    >
       {header}
       <main className="flex flex-col gap-5 px-4 pt-5 pb-[130px]">
         {waiting && (
@@ -159,9 +203,11 @@ export function CheckoutScreen() {
         <section className="flex flex-col gap-3.5">
           <h2 className="text-[20px] text-night-900">{cart.gift ? t("checkout.whereGift") : t("checkout.where")}</h2>
           {cart.gift && <p className="-mt-2 text-small text-ink-muted">{w("checkout.giftNote")}</p>}
-          <Field id="o-name" label={t("checkout.name")}>
+          <Field id="o-name" label={t("checkout.name")} error={errors.name}>
             <input
               id="o-name"
+              name="name"
+              {...invalid("name")}
               className={field}
               value={form.name}
               onChange={set("name")}
@@ -170,9 +216,11 @@ export function CheckoutScreen() {
               minLength={2}
             />
           </Field>
-          <Field id="o-phone" label={t("checkout.phone")} hint={t("checkout.phoneHint")}>
+          <Field id="o-phone" label={t("checkout.phone")} hint={t("checkout.phoneHint")} error={errors.phone}>
             <input
               id="o-phone"
+              name="phone"
+              {...invalid("phone")}
               className={`${field} text-right`}
               dir="ltr"
               type="tel"
@@ -203,9 +251,11 @@ export function CheckoutScreen() {
                 </select>
               </Field>
             )}
-            <Field id="o-city" label={t("checkout.city")}>
+            <Field id="o-city" label={t("checkout.city")} error={errors.city}>
               <select
                 id="o-city"
+                name="city"
+                {...invalid("city")}
                 className={`${field} px-3`}
                 value={city}
                 onChange={(e) => void pickCity(e.target.value)}
@@ -220,9 +270,11 @@ export function CheckoutScreen() {
               </select>
             </Field>
           </div>
-          <Field id="o-addr" label={t("checkout.address")}>
+          <Field id="o-address" label={t("checkout.address")} error={errors.address}>
             <textarea
-              id="o-addr"
+              id="o-address"
+              name="address"
+              {...invalid("address")}
               rows={2}
               className={`${field} resize-none py-3`}
               placeholder={t("checkout.addressPlaceholder")}
@@ -307,7 +359,7 @@ export function CheckoutScreen() {
       </main>
 
       <BottomBar column>
-        <button type="submit" disabled={busy || zoning || !chosen || !cart.zone || !!waiting} className={ctaClass}>
+        <button type="submit" disabled={busy || zoning || !!waiting} className={ctaClass}>
           {busy ? (
             <Spinner />
           ) : prices ? (
@@ -327,14 +379,32 @@ export function CheckoutScreen() {
   );
 }
 
-function Field({ id, label, hint, children }: { id: string; label: string; hint?: string; children: React.ReactNode }) {
+function Field({
+  id,
+  label,
+  hint,
+  error,
+  children,
+}: {
+  id: string;
+  label: string;
+  hint?: string;
+  error?: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="flex flex-col gap-1.5">
       <label htmlFor={id} className="text-small font-semibold">
         {label}
       </label>
       {children}
-      {hint && <span className="text-xs text-ink-muted">{hint}</span>}
+      {error ? (
+        <span id={`${id}-error`} className="text-caption font-semibold text-danger">
+          {error}
+        </span>
+      ) : (
+        hint && <span className="text-xs text-ink-muted">{hint}</span>
+      )}
     </div>
   );
 }

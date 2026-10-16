@@ -8,6 +8,27 @@ import { Button, buttonClasses } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
 import { Link, useRouter } from "@/i18n/navigation";
 import { api, errorText, safeNext, type MfaChallenge, type User } from "@/lib/api";
+import {
+  checkFields,
+  focusFirstInvalid,
+  onlyFields,
+  problemTexts,
+  serverFieldErrors,
+  type FieldErrors,
+  type Rule,
+  withoutField,
+} from "@/lib/fieldErrors";
+import { toAsciiDigits } from "@/lib/phone";
+
+const ORDER = ["full_name", "email", "password"] as const;
+const RULES: Record<"login" | "register", Partial<Record<(typeof ORDER)[number], Rule>>> = {
+  login: { email: { required: true, email: true }, password: { required: true } },
+  register: {
+    full_name: { required: true },
+    email: { required: true, email: true },
+    password: { required: true, min: [8, "passwordShort"] },
+  },
+};
 
 export function AuthForm({ mode, googleEnabled = false }: { mode: "login" | "register"; googleEnabled?: boolean }) {
   const t = useTranslations("auth");
@@ -21,13 +42,13 @@ export function AuthForm({ mode, googleEnabled = false }: { mode: "login" | "reg
   const switchHref = `${mode === "login" ? "/register" : "/login"}${keepNext}`;
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(params.get("error") === "google_failed" ? t("googleFailed") : null);
-  const [badFields, setBadFields] = useState<string[]>([]);
+  const [errors, setErrors] = useState<FieldErrors>({}); // messages under the fields
   const [mfaStep, setMfaStep] = useState(false);
   const tm = useTranslations("mfa");
 
   async function onCode(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const code = String(new FormData(e.currentTarget).get("code") ?? "").trim();
+    const code = toAsciiDigits(String(new FormData(e.currentTarget).get("code") ?? "")).trim(); // ١٢٣ → 123
     setBusy(true);
     setError(null);
     const res = await api<User>("/api/auth/mfa/verify", { json: { code } });
@@ -43,7 +64,16 @@ export function AuthForm({ mode, googleEnabled = false }: { mode: "login" | "reg
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const form = new FormData(e.currentTarget);
+    const element = e.currentTarget;
+    const form = new FormData(element);
+    const mark = (marked: FieldErrors) => {
+      setErrors(marked);
+      setError(te("checkFields"));
+      focusFirstInvalid(element, ORDER, marked);
+    };
+    const values = Object.fromEntries(ORDER.map((k) => [k, String(form.get(k) ?? "")]));
+    const problems = checkFields(values, RULES[mode] as Record<string, Rule>);
+    if (Object.keys(problems).length) return mark(problemTexts(problems, te));
     const body: Record<string, string> = {
       email: String(form.get("email") ?? ""),
       password: String(form.get("password") ?? ""),
@@ -54,6 +84,7 @@ export function AuthForm({ mode, googleEnabled = false }: { mode: "login" | "reg
     }
     setBusy(true);
     setError(null);
+    setErrors({});
     const res = await api<User | MfaChallenge>(`/api/auth/${mode}`, { json: body });
     if (res.ok && "mfa_required" in res.data) {
       setBusy(false);
@@ -66,13 +97,15 @@ export function AuthForm({ mode, googleEnabled = false }: { mode: "login" | "reg
       return;
     }
     setBusy(false);
-    setError(errorText(res.error, locale, res.status === 0 ? te("network") : te("unknown")));
-    const fields = res.error?.details?.fields ?? [];
-    const code = res.error?.code;
-    setBadFields(code === "weak_password" ? ["password"] : code === "email_taken" ? ["email"] : fields);
+    const marked = onlyFields(serverFieldErrors(res.error, locale), ORDER);
+    if (Object.keys(marked).length) mark(marked);
+    else setError(errorText(res.error, locale, res.status === 0 ? te("network") : te("unknown")));
   }
 
-  const bad = (f: string) => badFields.includes(f);
+  const clear = (e: FormEvent<HTMLFormElement>) => {
+    const name = (e.target as HTMLInputElement).name;
+    if (name) setErrors((current) => withoutField(current, name));
+  };
   if (mfaStep)
     return (
       <form onSubmit={onCode} className="flex flex-col gap-4" noValidate>
@@ -105,7 +138,7 @@ export function AuthForm({ mode, googleEnabled = false }: { mode: "login" | "reg
       </form>
     );
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
+    <form onSubmit={onSubmit} onInput={clear} className="flex flex-col gap-4" noValidate>
       {error && <Alert>{error}</Alert>}
       {mode === "register" && (
         <TextField
@@ -115,7 +148,7 @@ export function AuthForm({ mode, googleEnabled = false }: { mode: "login" | "reg
           autoComplete="name"
           required
           maxLength={120}
-          invalid={bad("full_name")}
+          error={errors.full_name}
         />
       )}
       <TextField
@@ -126,7 +159,7 @@ export function AuthForm({ mode, googleEnabled = false }: { mode: "login" | "reg
         inputMode="email"
         required
         ltr
-        invalid={bad("email")}
+        error={errors.email}
       />
       <TextField
         name="password"
@@ -138,7 +171,7 @@ export function AuthForm({ mode, googleEnabled = false }: { mode: "login" | "reg
         minLength={mode === "register" ? 8 : undefined}
         maxLength={128}
         revealLabels={{ show: t("showPassword"), hide: t("hidePassword") }}
-        invalid={bad("password")}
+        error={errors.password}
       />
       <Button
         type="submit"

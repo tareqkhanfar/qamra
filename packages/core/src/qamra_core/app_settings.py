@@ -16,6 +16,8 @@ from dataclasses import dataclass
 from decimal import Decimal, InvalidOperation
 from typing import Any
 
+from qamra_core.phone import normalize_phone
+
 
 class Kind(enum.StrEnum):
     text = "text"
@@ -1015,7 +1017,6 @@ if len(REGISTRY) != len(_DEFS):
 if any(d.group not in {g.id for g in GROUPS} for d in _DEFS):
     raise RuntimeError("setting with an unknown group in the registry")
 
-_PHONE = re.compile(r"^\+?[0-9]{7,15}$")
 _EMAIL = re.compile(r"^[^@\s]{1,64}@[^@\s]{1,190}\.[A-Za-z]{2,24}$")
 
 
@@ -1075,10 +1076,10 @@ def validate(defn: SettingDef, raw: Any) -> Any:
     if k == Kind.choice and value not in defn.choices:
         raise SettingError(defn.key, f"must be one of {', '.join(defn.choices)}")
     if k == Kind.phone:
-        compact = re.sub(r"[ ()-]", "", value)
-        if not _PHONE.match(compact):
+        phone = normalize_phone(value)  # Arabic digits, spaces and dashes are fine (qamra_core.phone)
+        if phone is None:
             raise SettingError(defn.key, "invalid phone number")
-        return compact
+        return phone
     if k == Kind.email and not _EMAIL.match(value):
         raise SettingError(defn.key, "invalid email")
     if k == Kind.url and not value.startswith("https://"):

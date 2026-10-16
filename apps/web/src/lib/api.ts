@@ -6,7 +6,8 @@
 export type ApiErrorBody = {
   code: string;
   message: { ar: string; en: string };
-  details?: { fields?: string[] } & Record<string, unknown>;
+  /** `fields`: the field names; `field_errors`: each field's own message (lib/fieldErrors reads both). */
+  details?: { fields?: string[]; field_errors?: Record<string, { ar: string; en: string }> } & Record<string, unknown>;
 };
 
 export type ApiResult<T> =

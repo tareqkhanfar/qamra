@@ -14,8 +14,8 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "This email is already registered. Try signing in.",
     ),
     "weak_password": (
-        "كلمة المرور قصيرة. استخدموا 8 أحرف على الأقل.",
-        "Password is too short. Use at least 8 characters.",
+        "كلمة المرور قصيرة جدًّا. استخدموا 8 أحرف على الأقل.",
+        "The password is too short. Use at least 8 characters.",
     ),
     "not_authenticated": ("سجّلوا الدخول للمتابعة.", "Please sign in to continue."),
     "token_expired": ("انتهت الجلسة. سجّلوا الدخول مرة أخرى.", "Your session expired. Please sign in again."),
@@ -132,7 +132,10 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "This add-on can't go with this book.",
     ),
     "unknown_zone": ("اختاروا منطقة التوصيل من القائمة.", "Choose a delivery area from the list."),
-    "unknown_city": ("اختاروا المدينة من القائمة.", "Choose your city from the list."),
+    "unknown_city": (
+        "هذه المدينة ليست ضمن منطقة التوصيل المختارة. اختاروا المدينة من القائمة.",
+        "This city isn't in the chosen delivery area. Choose the city from the list.",
+    ),
     "items_unavailable": (
         "بعض ما في السلة لم يعد متوفرًا. راجعوا السلة من فضلكم.",
         "Some items in your cart are no longer available. Please review your cart.",
@@ -497,10 +500,163 @@ class ApiError(Exception):
 
 def error_body(code: str, details: dict[str, Any] | None = None) -> dict[str, Any]:
     ar, en = MESSAGES.get(code, MESSAGES["internal_error"])
-    body: dict[str, Any] = {"code": code, "message": {"ar": ar, "en": en}}
+    message = {"ar": ar, "en": en}
+    marked = (details or {}).get("field_errors")
+    if code == "invalid_input" and marked:
+        # a page that doesn't mark fields still says what is wrong: the first field's own message
+        message = dict(next(iter(marked.values())))
+    body: dict[str, Any] = {"code": code, "message": message}
     if details:
         body["details"] = details
     return {"error": body}
+
+
+# ---- field-level messages (422s) --------------------------------------------------------------------------
+#
+# Besides `details.fields` (the field names, unchanged since Phase 1), every 422 about the input carries
+# `details.field_errors`: field → {"ar", "en"}, so a form shows each message under its own field. The message
+# is picked by the field's own name (the last part of its path) and the kind of problem; numbers come from the
+# model's limits. Other fields get the generic message for the kind.
+
+Message = tuple[str, str]
+
+_NAME: dict[str, Message] = {
+    "missing": ("اكتبوا الاسم.", "Enter the name."),
+    "too_short": ("الاسم قصير جدًّا. اكتبوا حرفين على الأقل.", "The name is too short. Use at least 2 letters."),
+}
+_ORG: dict[str, Message] = {
+    "missing": ("اكتبوا اسم الروضة أو المؤسسة.", "Enter the name of the kindergarten or organization."),
+    "too_short": ("الاسم قصير جدًّا. اكتبوا حرفين على الأقل.", "The name is too short. Use at least 2 letters."),
+}
+_COUNT: dict[str, Message] = {
+    "invalid": ("اكتبوا عددًا صحيحًا بالأرقام.", "Enter a whole number using digits."),
+    "too_small": ("العدد يجب أن يكون {n} على الأقل.", "The number must be at least {n}."),
+    "too_big": ("العدد يجب ألّا يزيد على {n}.", "The number can't be more than {n}."),
+}
+_DATE: dict[str, Message] = {
+    "invalid": ("التاريخ غير صحيح.", "The date isn't valid."),
+    "past": ("اختاروا تاريخًا لم يمضِ بعد.", "Choose a date that hasn't passed yet."),
+}
+_PHONE: dict[str, Message] = {
+    "missing": ("اكتبوا رقم الجوال.", "Enter a mobile number."),
+    "invalid": (
+        "رقم الجوال غير صحيح. اكتبوه مثل 0599123456",
+        "This mobile number isn't valid. Write it like 0599123456",
+    ),
+}
+
+FIELD_MESSAGES: dict[str, dict[str, Message]] = {
+    "phone": _PHONE,
+    "name": _NAME,
+    "full_name": _NAME,
+    "contact_name": _NAME,
+    "parent_name": _NAME,
+    "school_name": _ORG,
+    "org_name": _ORG,
+    "address": {
+        "missing": ("اكتبوا العنوان.", "Enter the address."),
+        "too_short": (
+            "اكتبوا العنوان بتفصيل أكثر (٥ أحرف على الأقل).",
+            "Write the address in more detail (at least 5 characters).",
+        ),
+    },
+    "city": {
+        "missing": ("اختاروا المدينة.", "Choose the city."),
+        "too_short": ("اكتبوا اسم المدينة كاملًا.", "Enter the city's full name."),
+        "invalid": ("اختاروا المدينة من القائمة.", "Choose the city from the list."),
+    },
+    "zone": {
+        "missing": ("اختاروا منطقة التوصيل.", "Choose the delivery area."),
+        "invalid": ("اختاروا منطقة التوصيل من القائمة.", "Choose a delivery area from the list."),
+    },
+    "email": {
+        "missing": ("اكتبوا البريد الإلكتروني.", "Enter an email address."),
+        "invalid": (
+            "البريد الإلكتروني غير صحيح. اكتبوه مثل name@example.com",
+            "This email address isn't valid. Write it like name@example.com",
+        ),
+    },
+    "password": {
+        "missing": ("اكتبوا كلمة المرور.", "Enter the password."),
+        "too_long": ("كلمة المرور طويلة جدًّا.", "The password is too long."),
+    },
+    "accept_terms": {"*": ("وافقوا على شروط الطلب للمتابعة.", "Please accept the order terms to continue.")},
+    "quantity": _COUNT,
+    "children_count": _COUNT,
+    "qty": _COUNT,
+    "desired_date": _DATE,
+    "event_date": _DATE,
+}
+GENERIC_MESSAGES: dict[str, Message] = {
+    "missing": ("هذا الحقل مطلوب.", "This field is required."),
+    "too_short": ("هذا قصير جدًّا. أكملوه من فضلكم.", "This is too short. Please complete it."),
+    "too_long": ("هذا أطول من المسموح. اختصروه قليلًا.", "This is too long. Please shorten it."),
+    "too_small": ("القيمة يجب أن تكون {n} على الأقل.", "The value must be at least {n}."),
+    "too_big": ("القيمة يجب ألّا تزيد على {n}.", "The value can't be more than {n}."),
+    "invalid": ("هذه القيمة غير صحيحة.", "This value isn't valid."),
+}
+_KINDS = {
+    "missing": "missing",
+    "string_too_short": "too_short",
+    "too_short": "too_short",
+    "string_too_long": "too_long",
+    "too_long": "too_long",
+    "greater_than_equal": "too_small",
+    "greater_than": "too_small",
+    "less_than_equal": "too_big",
+    "less_than": "too_big",
+}
+_LOCATIONS = {"body", "query", "path", "header", "cookie"}
+
+
+def field_message(field: str, kind: str, n: Any = None) -> dict[str, str]:
+    """{"ar", "en"} for one field's problem (`field` may be a dotted path: its last name decides)."""
+    name = next((p for p in reversed(field.split(".")) if not p.isdigit()), field)
+    own = FIELD_MESSAGES.get(name) or (_PHONE if name.endswith("phone") else {})
+    ar, en = own.get(kind) or own.get("*") or GENERIC_MESSAGES.get(kind) or GENERIC_MESSAGES["invalid"]
+    if n is not None:
+        ar, en = ar.format(n=n), en.format(n=n)
+    return {"ar": ar, "en": en}
+
+
+def _kind(error: Any) -> tuple[str, Any]:
+    kind = _KINDS.get(str(error.get("type")), "invalid")
+    ctx = error.get("ctx") or {}
+    value = error.get("input")
+    if kind in ("too_short", "invalid") and isinstance(value, str) and not value.strip():
+        kind = "missing"  # an empty answer is a missing one, whatever check caught it
+    if str(ctx.get("error", "")) == "empty":
+        kind = "missing"
+    n = next((ctx[k] for k in ("ge", "gt", "le", "lt") if k in ctx), None)
+    return kind, n
+
+
+def validation_details(errors: list[Any]) -> dict[str, Any]:
+    """`fields` (sorted names, as before) and `field_errors` (each field's first problem, in form order)."""
+    marked: dict[str, dict[str, str]] = {}
+    for error in errors:
+        loc = [str(p) for p in error.get("loc", ())]
+        if loc and loc[0] in _LOCATIONS:
+            loc = loc[1:]
+        if not loc:
+            continue
+        field = ".".join(loc)
+        if field not in marked:
+            marked[field] = field_message(field, *_kind(error))
+    return {"fields": sorted(marked), "field_errors": marked}
+
+
+def field_error(
+    field: str, kind: str = "invalid", *, code: str = "invalid_input", status: int = 422, **extra: Any
+) -> ApiError:
+    """A refusal about one field, marked under it: `invalid_input` with the field's own message, or another
+    code (e.g. `unknown_city`) whose message is shown under the field."""
+    if code == "invalid_input":
+        message = field_message(field, kind)
+    else:
+        ar, en = MESSAGES[code]
+        message = {"ar": ar, "en": en}
+    return ApiError(code, status, {"fields": [field], "field_errors": {field: message}, **extra})
 
 
 _STATUS_CODES = {
@@ -520,8 +676,9 @@ def install_error_handlers(app: FastAPI) -> None:
 
     @app.exception_handler(RequestValidationError)
     async def _validation(_: Request, exc: RequestValidationError) -> JSONResponse:
-        fields = sorted({".".join(str(p) for p in e["loc"][1:]) for e in exc.errors() if len(e["loc"]) > 1})
-        return JSONResponse(error_body("invalid_input", {"fields": fields}), status_code=422)
+        return JSONResponse(
+            error_body("invalid_input", validation_details(list(exc.errors()))), status_code=422
+        )
 
     @app.exception_handler(StarletteHTTPException)
     async def _http(_: Request, exc: StarletteHTTPException) -> JSONResponse:

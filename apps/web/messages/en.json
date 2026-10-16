@@ -2006,7 +2006,25 @@
     "network": "We couldn't connect. Check your internet and try again.",
     "unknown": "Something went wrong. Please try again in a moment.",
     "notFoundTitle": "We couldn't find this page",
-    "backHome": "Back to home"
+    "backHome": "Back to home",
+    "checkFields": "Please check the fields marked in red.",
+    "fields": {
+      "required": "This field is required.",
+      "phone": "This mobile number isn't valid. Write it like 0599123456",
+      "phoneMissing": "Enter a mobile number.",
+      "email": "This email address isn't valid. Write it like name@example.com",
+      "number": "Enter a whole number using digits.",
+      "numberMin": "The number must be at least {n}.",
+      "numberMax": "The number can't be more than {n}.",
+      "choose": "Choose from the list.",
+      "city": "Choose the city.",
+      "addressShort": "Write the address in more detail (at least 5 characters).",
+      "nameShort": "The name is too short. Use at least 2 letters.",
+      "passwordShort": "The password is too short. Use at least 8 characters.",
+      "tooShort": "This is too short. Please complete it.",
+      "tooLong": "This is too long. Please shorten it.",
+      "terms": "Please accept the terms to continue."
+    }
   },
   "common": {
     "ages": "Ages {min}–{max}",

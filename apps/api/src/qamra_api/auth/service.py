@@ -7,7 +7,7 @@ from datetime import UTC, datetime, timedelta
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from qamra_api.errors import ApiError
+from qamra_api.errors import ApiError, field_error
 from qamra_api.security import (
     MIN_PASSWORD_LENGTH,
     create_access_token,
@@ -52,11 +52,11 @@ def audit(
     )
 
 
-def check_password_strength(password: str, email: str = "") -> None:
+def check_password_strength(password: str, email: str = "", field: str = "password") -> None:
     if len(password) < MIN_PASSWORD_LENGTH:
-        raise ApiError("weak_password", 422)
+        raise field_error(field, code="weak_password")
     if is_common_password(password) or (email and password.lower() == email.lower().split("@")[0]):
-        raise ApiError("common_password", 422)
+        raise field_error(field, code="common_password")
 
 
 async def register(
@@ -70,7 +70,7 @@ async def register(
 ) -> User:
     check_password_strength(password, email)
     if await find_user_by_email(db, email) is not None:
-        raise ApiError("email_taken", 409)
+        raise field_error("email", code="email_taken", status=409)
     user = User(
         email=normalize_email(email),
         password_hash=hash_password(password),
@@ -86,8 +86,8 @@ async def register(
 
 async def change_password(db: AsyncSession, user: User, current: str, new: str) -> None:
     if user.password_hash is None or not verify_password(current, user.password_hash):
-        raise ApiError("wrong_password", 403)
-    check_password_strength(new, user.email)
+        raise field_error("current_password", code="wrong_password", status=403)
+    check_password_strength(new, user.email, "new_password")
     user.password_hash = hash_password(new)
     await db.execute(
         update(RefreshToken)

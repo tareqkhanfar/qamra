@@ -213,6 +213,8 @@ export function TrackForm({ initialCode = "" }: { initialCode?: string }) {
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           type="tel"
+          inputMode="tel"
+          autoComplete="tel"
           dir="ltr"
           required
         />

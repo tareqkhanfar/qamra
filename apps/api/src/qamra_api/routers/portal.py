@@ -22,7 +22,7 @@ from qamra_api.errors import ApiError
 from qamra_api.portal.access import School, SchoolAdmin, SchoolMember, class_book_of, own_classroom
 from qamra_api.portal.status import class_states, stage_counts
 from qamra_api.uploads import read_upload
-from qamra_api.validation import PHONE
+from qamra_api.validation import OptionalPhone, Phone
 from qamra_core.db.models import (
     AuditLog,
     Book,
@@ -50,7 +50,7 @@ class SignupIn(BaseModel):
     school_name: str = Field(min_length=2, max_length=200)
     contact_name: str = Field(min_length=2, max_length=120)
     city: str = Field(min_length=2, max_length=100)
-    phone: str = Field(max_length=32)
+    phone: Phone
     email: EmailStr
     password: str = Field(max_length=128)
     address: str | None = Field(default=None, max_length=300)
@@ -58,14 +58,6 @@ class SignupIn(BaseModel):
     locale: Locale = Locale.ar
 
     _names = field_validator("school_name", "contact_name", "city")(_squash)
-
-    @field_validator("phone")
-    @classmethod
-    def _phone(cls, v: str) -> str:
-        v = v.strip()
-        if not PHONE.match(v):
-            raise ValueError("invalid phone")
-        return v
 
 
 class OrgOut(BaseModel):
@@ -226,15 +218,8 @@ async def me(school: SchoolMember, db: SessionDep) -> MeOut:
 class OrgIn(BaseModel):
     name: str | None = Field(default=None, min_length=2, max_length=200)
     city: str | None = Field(default=None, min_length=2, max_length=100)
-    phone: str | None = Field(default=None, max_length=32)
+    phone: OptionalPhone
     address: str | None = Field(default=None, max_length=300)
-
-    @field_validator("phone")
-    @classmethod
-    def _phone(cls, v: str | None) -> str | None:
-        if v is not None and not PHONE.match(v.strip()):
-            raise ValueError("invalid phone")
-        return v.strip() if v else v
 
 
 @router.patch("/org")
