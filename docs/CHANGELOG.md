@@ -1,5 +1,11 @@
 # Changelog
 
+## No staff texts or price templates in a public page's source (2026-10-16)
+- **Why:** the root layout's `NextIntlClientProvider` had no `messages`, so every page shipped the whole of `messages/{ar,en}.json` to the browser: the admin's costs, margins and printer prices («السعر العام {retail} · تكلفتنا {cost} ₪», «سعر النسخة (₪)»…) and, with prices hidden, the price templates («يبدأ من {price} ₪»), readable in the page source.
+- **Web:** the root layout ships only the namespaces client components on public pages use (`src/lib/clientMessages.ts`), without the staff-only parts of them (`portal.admin`, `portal.priceLists`, `orderPath.admin`/`orders`/`slip`, `examples.admin`, `journeyAudio.admin`, `quiz.admin`); while `show_prices` is off, every price message in them is shipped empty. The admin's messages come from the new `app/[locale]/admin/layout.tsx`, and only to a verified admin session (role admin, two-step verification passed, checked server-side with `/api/auth/me`); anyone else gets the public messages and the gate's two lines. When the server saw an expired access cookie, `AdminGate` refreshes the page once the browser has renewed it. Public pages ship ~72 KB of messages instead of ~124 KB (Arabic).
+- **Messages:** `admin.adminLink` moved to `account.adminLink`; the kindergarten portal's «في المطبعة» is «قيد الطباعة» («Being printed»). The stories and activity-book pages no longer pass a default «ILS» currency to the browser while the API sends none.
+- Tests: web `clientMessages.test.ts` (every namespace a component outside /admin uses is shipped, none of the staff's; no cost, margin, printer or price text while prices are hidden); E2E `test_prices_hidden.py` reads the raw source of the public pages in Arabic and English; every E2E test now fails on a next-intl error in the browser console (MISSING_MESSAGE…).
+
 ## Prices hidden from customers; staff keep them (2026-10-16)
 - **Why:** Tareq: «ما بدي الزباين يعرفوا الاسعار» for now; prices stay in the system for the admin.
 - **Setting:** «إظهار الأسعار للزبائن» (`show_prices`, group الأسعار), **off by default**. Switch it on in the admin settings to show every price again.

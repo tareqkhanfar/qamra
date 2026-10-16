@@ -1,7 +1,7 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { useMessages, useTranslations } from "next-intl";
+import { useCallback, useEffect, useState, useTransition, type ReactNode } from "react";
 import { MfaSetup } from "@/components/MfaSetup";
 import { Button } from "@/components/ui/Button";
 import { usePathname, useRouter } from "@/i18n/navigation";
@@ -20,6 +20,11 @@ export function AdminGate({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const [state, setState] = useState<State>({ kind: "loading" });
+  // admin/layout.tsx ships the staff's messages only when the server saw a verified admin session; when it didn't
+  // (an access cookie the browser has since renewed, or two-step verification just passed), fetch the page again
+  const staffMessages = "printCosts" in useMessages();
+  const [refreshing, startRefresh] = useTransition();
+  const [refreshed, setRefreshed] = useState(false);
 
   const check = useCallback(async () => {
     const res = await api<User>("/api/auth/me");
@@ -41,9 +46,19 @@ export function AdminGate({ children }: { children: ReactNode }) {
     })();
   }, [check]);
 
-  if (state.kind === "loading") return <div className="h-64 animate-pulse rounded-xl bg-paper-sunk" aria-busy="true" />;
+  useEffect(() => {
+    if (state.kind !== "ok" || staffMessages || refreshed) return;
+    startRefresh(() => {
+      setRefreshed(true);
+      router.refresh();
+    });
+  }, [state.kind, staffMessages, refreshed, router]);
+
+  const waiting = state.kind === "ok" && !staffMessages && (refreshing || !refreshed);
+  if (state.kind === "loading" || waiting)
+    return <div className="h-64 animate-pulse rounded-xl bg-paper-sunk" aria-busy="true" />;
   if (state.kind === "setup") return <MfaSetup hasPassword={state.user.has_password} onDone={() => void check()} />;
-  if (state.kind === "again")
+  if (state.kind === "again" || (state.kind === "ok" && !staffMessages))
     return (
       <div className="mx-auto mt-10 flex max-w-md flex-col items-center gap-3 text-center">
         <h1 className="text-h2 text-night-900">{t("againTitle")}</h1>

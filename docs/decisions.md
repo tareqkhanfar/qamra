@@ -1023,3 +1023,16 @@ The owner approved the likeness trial's direction. What was built, and the choic
 - **Sample reference:** the style samples keep the invented تالا, drawn from the crop of her watercolor sheet as
   the earlier samples were (never a real child's photo). A watercolor reference may pull a little of its look
   into other styles; the new semi-realistic portrait still came out as a painted, realistic face.
+
+## The browser gets only the messages its page needs (2026-10-16)
+
+- **An allowlist, not a denylist:** `src/lib/clientMessages.ts` lists the namespaces client components outside
+  /admin use; a new namespace is private until listed, and `clientMessages.test.ts` fails when a public component
+  uses one that isn't (server components read every message from the request config, so they need nothing).
+- **Price messages are emptied, not removed, while prices are hidden:** the screens already skip their prices
+  then, and an empty string can never raise next-intl's MISSING_MESSAGE or show a raw key if one is still asked
+  for (a catalog cached a few seconds after the switch, say). A price message: a currency or an amount
+  placeholder (`{price}`, `{amount}`, `{unit}`…), plus the three `{total}` messages that are money.
+- **The admin's messages need a verified admin session on the server:** the admin pages were gated only in the
+  browser, so their source was open to anyone. A nested provider replaces the root one's messages, so the admin
+  layout gives the whole file to a verified admin and the public set plus the gate's lines to anyone else.

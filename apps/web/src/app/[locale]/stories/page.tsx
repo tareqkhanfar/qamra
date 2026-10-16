@@ -83,7 +83,7 @@ export default async function StoriesPage({ searchParams }: Props) {
             themes={themes}
             covers={covers}
             prices={prices}
-            currency={currency}
+            currency={catalog?.currency}
             line={line}
             occasionLabels={occasionLabels}
             styles={styles}

@@ -28,7 +28,7 @@ export function ThemesGrid({
   themes,
   covers,
   prices,
-  currency,
+  currency = "ILS",
   line,
   labels,
   occasionLabels,
@@ -38,7 +38,8 @@ export function ThemesGrid({
   themes: ThemeCard[];
   covers: Record<string, Example | null>;
   prices: Record<string, number | null>;
-  currency: Currency;
+  /** None while prices are hidden (the API sends no currency): nothing is priced then. */
+  currency?: Currency;
   line: string | null;
   labels: Labels;
   occasionLabels: Record<string, string>;

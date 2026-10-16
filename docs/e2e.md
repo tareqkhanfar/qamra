@@ -82,7 +82,12 @@ and the tests above check prices, so `conftest.py` turns it on for the run (`PUT
 **`test_prices_hidden.py`** turns it off for its own tests and back on after: the public pages show no price
 (nor «الأسعار» in the menu or footer, and /pricing leads to the shop), and an order from the format step through
 the add-ons, the cart (no discount-code field), the checkout («نتواصل معكم لتأكيد التفاصيل») and the order page
-shows none, while the order keeps its price for the staff.
+shows none, while the order keeps its price for the staff. It also reads the raw source of the public pages
+(Arabic and English): no currency, price template, cost, margin or printer text, and none of the staff's
+message namespaces (`src/lib/clientMessages.ts`).
+
+**next-intl errors.** `conftest.py` listens to the browser console of every context a test opens: a test whose
+pages log MISSING_MESSAGE (or another next-intl error) fails, with the page and the message.
 
 ## No AI, no paid calls
 

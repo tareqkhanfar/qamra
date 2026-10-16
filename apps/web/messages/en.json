@@ -553,7 +553,7 @@
       "review": "Ready to review",
       "approved": "Approved — ready to order",
       "ordered": "Ordered",
-      "printing": "At the printer",
+      "printing": "Being printed",
       "failed": "Drawing stopped"
     },
     "progress": {
@@ -681,7 +681,7 @@
       "locked": {
         "generating": "We're drawing the class books now; you can edit when it's done.",
         "ordered": "This class's books are ordered; changes now go through our team.",
-        "printing": "The class books are at the printer."
+        "printing": "The class books are being printed."
       },
       "story": "1. The story",
       "storyPages": "Class scenes: {n}",
@@ -797,7 +797,7 @@
         "confirmed": "Confirmed",
         "generating": "Being prepared",
         "review": "In review",
-        "printing": "At the printer",
+        "printing": "Being printed",
         "shipped": "On its way",
         "delivered": "Delivered",
         "cancelled": "Cancelled",
@@ -1999,7 +1999,8 @@
       "printed": "Delivered",
       "failed": "Couldn't draw"
     },
-    "profile": "Profile"
+    "profile": "Profile",
+    "adminLink": "Admin panel"
   },
   "errors": {
     "network": "We couldn't connect. Check your internet and try again.",
@@ -2833,8 +2834,7 @@
     "unsaved": "Unsaved changes",
     "on": "On",
     "off": "Off",
-    "backToSite": "Back to the site",
-    "adminLink": "Admin panel"
+    "backToSite": "Back to the site"
   },
   "music": {
     "play": "Play music",
