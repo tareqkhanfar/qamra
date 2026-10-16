@@ -115,6 +115,7 @@ tests/e2e       Playwright flows of the order path
 
 - Photos, drawings, recordings and family members' photos live under `children/{child_id}/` in a private bucket. Browsers only get signed URLs that expire within 15 minutes; the code enforces the cap.
 - Original photos and drawings are deleted 24 h after the character or companion is approved; the free cover's photo 24 h after upload; drafts abandoned for 30 days. The `maintenance` cron runs every 15 minutes and writes every deletion to the audit log without PII.
+- Opt-in exception (2026-10-16): a guardian may choose, with its own versioned consent, to keep the child's photo for later books. It then stays (encrypted, private) until `kept_photo_retention_months` (admin, default 12) after its last use; turning the choice off deletes it within 24 h, and the parent can delete it at once from «أطفالي». See `docs/decisions.md`.
 - Deleting a child removes all of that child's rows and files in one cascade, including their likeness on a class book's shared pages. Order items and costs keep their rows, with the link set to NULL.
 - Only sample books of invented children can be public examples or Classic templates; backups never contain children's photos.
 - Never commit real children's photos or drawings. `out/` and `.env` are gitignored.

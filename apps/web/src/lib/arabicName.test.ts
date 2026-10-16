@@ -444,6 +444,12 @@ const GENITIVE: Record<string, string> = {
   "create.who.known.confirm": "nameLam",
   "store.cart.bookFor": "nameGen",
   "orders.by": "nameGen",
+  "photoKeep.title": "nameGen",
+  "photoKeep.accept": "nameGen",
+  "photoKeep.using": "nameGen",
+  "photoKeep.keptLine": "nameGen",
+  "photoKeep.status.none": "nameLam",
+  "photoKeep.deleteConfirm": "nameGen",
 };
 
 /** A name variable as typed right after a preposition, or after a greeting: it needs its case variable. */

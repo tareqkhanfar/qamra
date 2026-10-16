@@ -9,6 +9,7 @@ import {
   ACTIVITY_LINES,
   agesFor,
   asksNameEn,
+  asksPhoto,
   canShow,
   formatPlan,
   isArabicName,
@@ -271,6 +272,26 @@ describe("the plan pins the count while the parent passes steps", () => {
     // later the URL has the drawn style (stylePreset would now read true): the style step is still counted
     const later = { ...picked, child: PHOTOGRAPHED, stylePreset: true, character: { approved: false }, plan };
     assert.deepEqual(progress(stepsFor(later), "character"), { n: 6, total: 12 });
+  });
+
+  it("a photo the guardian chose to keep: a new drawing shows the photo step with it, never a new upload", () => {
+    const kept = { consent: true, photos: 1, photoKept: true };
+    assert.equal(asksPhoto(kept), true);
+    assert.equal(asksPhoto(PHOTOGRAPHED), false); // saved in the last 24 hours: drawn from directly
+    assert.equal(asksPhoto(CONSENTED), true);
+    assert.equal(asksPhoto(null), true);
+    // a new workbook for a child with a ready character, in another style
+    const ready = state({ productLine: "workbook", child: kept, reusable: true });
+    const plan = planFor({ ...ready, reusable: false }, false);
+    assert.equal(formatPlan(plan), "photo,style,character");
+    assert.deepEqual(stepsFor({ ...ready, plan }), ["child", "photo", "style", "character", "summary"]);
+    assert.ok(canShow("photo", { ...ready, plan }));
+    // a story for that child, with a style preset by the story page
+    const story = state({ productLine: "classic", child: kept, stylePreset: true });
+    assert.deepEqual(stepsFor(story), ["child", "photo", "character", "story", "writing", "format", "addons"]);
+    // a ready character is still reused as it is: no photo step at all
+    const reuse = state({ productLine: "magic", child: kept, reusable: true });
+    assert.deepEqual(planFor(reuse, false), ["reuse"]);
   });
 
   it("parsePlan ignores unknown words", () => {

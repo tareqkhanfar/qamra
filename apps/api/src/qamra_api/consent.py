@@ -2,6 +2,7 @@
 one versioned record per acceptance, with when and from where, before any photo is uploaded."""
 
 import uuid
+from typing import Any
 
 from fastapi import Request
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -17,8 +18,10 @@ def record_consent(
     child_id: uuid.UUID,
     version: str,
     scope: str = "photo_processing",
+    data: dict[str, Any] | None = None,
 ) -> None:
-    """Adds the consent and its audit entry to the session (the caller commits)."""
+    """Adds the consent and its audit entry to the session (the caller commits). `data`: more facts for the
+    audit entry (e.g. the retention the text named)."""
     db.add(
         Consent(
             child_id=child_id,
@@ -35,6 +38,6 @@ def record_consent(
             action="consent.given",
             entity_type="child",
             entity_id=str(child_id),
-            data={"version": version, "scope": scope},
+            data={"version": version, "scope": scope, **(data or {})},
         )
     )

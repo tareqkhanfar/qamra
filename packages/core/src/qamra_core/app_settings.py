@@ -970,6 +970,21 @@ _DEFS: list[SettingDef] = [
         max=24,
     ),
     SettingDef(
+        "kept_photo_retention_months",
+        "privacy",
+        Kind.number,
+        12,
+        "حذف الصور المحفوظة بطلب الأهل بعد (أشهر)",
+        "Delete photos parents chose to keep after (months)",
+        "للأهل الذين اختاروا الاحتفاظ بصورة طفلهم لكتب قادمة: تُحذف بعد هذه المدة من آخر استخدام."
+        " الحد الأقصى 24 شهرًا.",
+        "For parents who chose to keep their child's photo for future books: the photo is deleted this many"
+        " months after its last use. Maximum 24 months.",
+        public=True,
+        min=1,
+        max=24,
+    ),
+    SettingDef(
         "draft_retention_days",
         "privacy",
         Kind.number,

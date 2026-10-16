@@ -2,6 +2,10 @@
 abandoned drafts after 30 days (a photo whose character was never approved is one too). Runs every 15
 minutes from `rq cron`.
 
+A photo the guardian chose to keep for later books (qamra_core.photo_keep, owner 2026-10-16) is exempt
+from both rules while the choice is on; it is deleted `kept_photo_retention_months` (admin setting,
+default 12) after its last use, and the choice ends with it.
+
 The child's drawings are all kept so the parent can compare them and go back to one (owner, 2026-10-10); a
 drawing never approved is an abandoned draft too: after the same 30 days its picture is deleted and the row is
 marked `discarded` (it still counts as one of the child's redraws). Approved drawings stay for the next books
@@ -21,9 +25,10 @@ from rq import get_current_job
 from rq.job import Job
 from rq.queue import Queue
 from rq.registry import DeferredJobRegistry, ScheduledJobRegistry, StartedJobRegistry
-from sqlalchemy import and_, or_, select, update
+from sqlalchemy import and_, func, or_, select, update
 from sqlalchemy.orm import Session
 
+from qamra_core.crypto import cipher_for
 from qamra_core.db.models import (
     AuditLog,
     Book,
@@ -32,13 +37,16 @@ from qamra_core.db.models import (
     CharacterStatus,
     ChildPhoto,
     Companion,
+    Consent,
     FamilyMember,
     Order,
     OrderItem,
     OrderStatus,
     PhotoStatus,
 )
+from qamra_core.photo_keep import KEEP_SCOPE, RETENTION_SETTING, add_months, keeps_photo
 from qamra_core.settings import CoreSettings
+from qamra_core.settings_store import load_sync
 from qamra_core.storage import ObjectStorage
 from qamra_worker import context
 from qamra_worker.queues import ALL
@@ -55,6 +63,7 @@ class CleanupSummary:
     characters_discarded: int = 0  # drawings never approved, 30 days on
     family_photos_deleted: int = 0  # the illustrated-family add-on's photos, 24 h after approval
     stalled_released: int = 0  # books and characters left `generating` by a job that died
+    kept_photos_expired: int = 0  # photos kept at the guardian's choice, past their retention
 
 
 NOTE_KEYS = ("note", "note_instruction")  # «ما الذي لا يشبهه؟» in the parent's words, and its rewrite
@@ -68,12 +77,66 @@ def _audit(db: Session, action: str, entity_type: str, entity_id: object) -> Non
     db.add(AuditLog(actor_user_id=None, action=action, entity_type=entity_type, entity_id=str(entity_id)))
 
 
+def _delete_photo(db: Session, storage: ObjectStorage, photo: ChildPhoto, now: datetime, action: str) -> None:
+    if photo.storage_key:
+        storage.delete(photo.storage_key)  # storage first: a crash leaves a row to retry, never a file
+    photo.storage_key = None
+    photo.crop = None  # the framing goes with the photo it framed
+    photo.status = PhotoStatus.deleted
+    photo.deleted_at = now
+    _audit(db, action, "child_photo", photo.id)
+
+
+def _expire_kept_photos(db: Session, storage: ObjectStorage, now: datetime, months: int) -> int:
+    """Kept photos not used for `months`: deleted, and the guardian's choice ends with the last one."""
+    oldest = add_months(now, -months)
+    photos = db.scalars(
+        select(ChildPhoto)
+        .where(
+            keeps_photo(ChildPhoto.child_id),
+            ChildPhoto.deleted_at.is_(None),
+            ChildPhoto.storage_key.is_not(None),
+            func.coalesce(ChildPhoto.last_used_at, ChildPhoto.created_at) < oldest,
+        )
+        .with_for_update(skip_locked=True)
+    ).all()
+    children = set()
+    for photo in photos:
+        _delete_photo(db, storage, photo, now, "photo.kept_expired")
+        children.add(photo.child_id)
+    db.flush()
+    for child_id in children:
+        left = db.scalar(
+            select(func.count())
+            .select_from(ChildPhoto)
+            .where(ChildPhoto.child_id == child_id, ChildPhoto.storage_key.is_not(None))
+        )
+        if left:
+            continue
+        for consent in db.scalars(
+            select(Consent).where(
+                Consent.child_id == child_id, Consent.scope == KEEP_SCOPE, Consent.withdrawn_at.is_(None)
+            )
+        ):
+            consent.withdrawn_at = now
+            _audit(db, "photo_keep.expired", "child", child_id)
+    db.commit()
+    return len(photos)
+
+
 def cleanup_expired_media(
-    db: Session, storage: ObjectStorage, settings: CoreSettings, now: datetime | None = None
+    db: Session,
+    storage: ObjectStorage,
+    settings: CoreSettings,
+    now: datetime | None = None,
+    kept_months: int | None = None,
 ) -> CleanupSummary:
+    """`kept_months`: the kept photos' retention; None reads the admin setting."""
     now = now or datetime.now(UTC)
     summary = CleanupSummary()
     cutoff = now - timedelta(days=settings.draft_retention_days)
+    if kept_months is None:
+        kept_months = int(load_sync(db, cipher_for(settings)).values[RETENTION_SETTING])
 
     # A photo whose character was never approved has no deletion date (approval sets it): after the same 30
     # days as an abandoned draft it is due now, unless an open order still needs it (Classic paints from it).
@@ -93,6 +156,7 @@ def cleanup_expired_media(
             ChildPhoto.deleted_at.is_(None),
             ChildPhoto.updated_at < cutoff,
             ~open_order,
+            ~keeps_photo(ChildPhoto.child_id),  # kept at the guardian's choice: only its own retention
         )
         .values(delete_after=now)
         .execution_options(synchronize_session=False)
@@ -100,19 +164,18 @@ def cleanup_expired_media(
 
     photos = db.scalars(
         select(ChildPhoto)
-        .where(ChildPhoto.delete_after <= now, ChildPhoto.deleted_at.is_(None))
+        .where(
+            ChildPhoto.delete_after <= now,
+            ChildPhoto.deleted_at.is_(None),
+            ~keeps_photo(ChildPhoto.child_id),  # the 24-hour rule applies only while the choice is off
+        )
         .with_for_update(skip_locked=True)
     ).all()
     for photo in photos:
-        if photo.storage_key:
-            storage.delete(photo.storage_key)  # storage first: a crash leaves a row to retry, never a file
-        photo.storage_key = None
-        photo.crop = None  # the framing goes with the photo it framed
-        photo.status = PhotoStatus.deleted
-        photo.deleted_at = now
-        _audit(db, "photo.auto_deleted", "child_photo", photo.id)
+        _delete_photo(db, storage, photo, now, "photo.auto_deleted")
         summary.photos_deleted += 1
     db.commit()
+    summary.kept_photos_expired = _expire_kept_photos(db, storage, now, kept_months)
 
     companions = db.scalars(
         select(Companion)

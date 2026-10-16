@@ -27,7 +27,7 @@ from qamra_core.db.models import Theme as ThemeRow
 from qamra_core.db.portal import ChildInvite, ClassBook
 
 router = APIRouter(prefix="/api/invite", tags=["invite"])
-INVITE_CONSENT_VERSION = "school-2026-09"  # the text on the invite page (messages: invite.consent)
+INVITE_CONSENT_VERSION = "school-2026-10"  # the text on the invite page (messages: invite.consent)
 LOOKUPS_PER_IP_PER_HOUR = 60
 DEFAULT_STYLE = "watercolor"
 

@@ -12,6 +12,7 @@ import { drawingFor } from "@/lib/drawings";
 import { sameCrop, toCrop, viewAt, type PhotoCrop, type Size } from "@/lib/photoCrop";
 import { ACTIVITY_LINES } from "@/lib/shop";
 import { Frame, Lead } from "./Frame";
+import { KeepPhotoChoice } from "./KeepPhotoChoice";
 import { PhotoEditor } from "./PhotoEditor";
 
 const CHECKS = ["one", "front", "light", "close"] as const;
@@ -54,6 +55,11 @@ export type PhotoChange = "photo" | "position" | null;
  * delete and what happens next. `edit`: opened from the character step to change the photo («تعديل الصورة»):
  * it opens on the kept photo in the editor, or says kindly that it was deleted and asks for a new one. The
  * kindergarten invite uses it too (`productLine` "class", no `back`: the consent before it is done for good).
+ *
+ * Once a photo is saved, the optional «احتفظوا بالصورة» box (KeepPhotoChoice, owner 2026-10-16) lets the guardian
+ * keep it for later books; never pre-ticked, and not on the invite (the school's consent covers one class book;
+ * the choice stays in «أطفالي»). A later flow for a child whose photo is kept opens here on that photo
+ * («نستخدم الصورة المحفوظة»), to use it as it is, move it or change it, never to upload it again.
  */
 export function PhotoStep({
   child,
@@ -71,6 +77,7 @@ export function PhotoStep({
   onDone: (c: Child, change: PhotoChange) => void;
 }) {
   const t = useTranslations("create");
+  const tk = useTranslations("photoKeep");
   const te = useTranslations("errors");
   const locale = useLocale();
   const input = useRef<HTMLInputElement>(null);
@@ -89,6 +96,7 @@ export function PhotoStep({
   const [savedCrop, setSavedCrop] = useState<PhotoCrop | null>(kept?.crop ?? null); // the API's
   const [natural, setNatural] = useState<Size | null>(null);
   const [change, setChange] = useState<PhotoChange>(null);
+  const [keeping, setKeeping] = useState(!!child.photo_kept); // the guardian's «احتفظوا بالصورة» choice
   const who = { ...nameCases(child.name), gender: child.gender };
   const kind = drawingFor(productLine, ACTIVITY_LINES);
   const activity = kind === "activity";
@@ -330,6 +338,9 @@ export function PhotoStep({
         </button>
       )}
       {state === "gone" && <Alert tone="info">{t("photo.gone", who)}</Alert>}
+      {state === "ok" && !edit && kept && child.photo_kept && keeping && change === null && (
+        <Alert tone="info">{tk("using", who)}</Alert>
+      )}
       {note && <Alert tone="success">{note}</Alert>}
 
       {state !== "idle" && state !== "gone" && state !== "loading" && (
@@ -362,6 +373,9 @@ export function PhotoStep({
       )}
       {error && <Alert>{error}</Alert>}
       {fixable && <p className="text-small text-ink-muted">{t("photo.editor.retry")}</p>}
+      {photoId && !edit && productLine !== "class" && state !== "gone" && state !== "loading" && (
+        <KeepPhotoChoice child={child} onChange={(k) => setKeeping(k.keep)} />
+      )}
 
       {!edit && (
         <div className="flex flex-col gap-2.5">
@@ -392,7 +406,7 @@ export function PhotoStep({
         {(
           [
             ["lock", t("photo.private")],
-            ["clock", t("photo.keep", who)],
+            ["clock", keeping ? tk("keptLine", who) : t("photo.keep", who)],
             ...(edit ? [] : [["next", t(`photo.next.${kind}`, who)]]),
           ] as const
         ).map(([icon, text]) => (

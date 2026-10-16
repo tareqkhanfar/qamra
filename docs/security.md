@@ -52,7 +52,7 @@ Last full review: 2026-09-28. No system can be proven free of vulnerabilities. T
 - **Validation:**
   - Every setting is checked against its type and limits, and a save is all-or-nothing.
   - Links must be `https://`, so `javascript:` links are impossible.
-  - Privacy retention can't exceed the policy (photos 24 h, drafts 30 days).
+  - Privacy retention can't exceed the policy (photos 24 h, drafts 30 days, photos parents chose to keep 24 months).
 - **Audit:** every change is recorded with who changed which keys, never the values.
 
 ## Browser protections
@@ -97,7 +97,7 @@ Last full review: 2026-09-28. No system can be proven free of vulnerabilities. T
 - **Database access** goes through SQLAlchemy only (no string-built SQL).
 - **Child data:**
   - Stored encrypted at rest. The bundled SeaweedFS encrypts every volume (`-s3.encryptVolumeData`); R2 in production encrypts every object. Per-object SSE-S3 is off (`S3_SSE=none`) because SeaweedFS 4.47 corrupts SSE objects over 8 MB, which print PDFs are. See `docs/decisions.md`.
-  - Original photos and drawings are deleted automatically; the cleanup job runs every 15 minutes.
+  - Original photos and drawings are deleted automatically; the cleanup job runs every 15 minutes. A photo the guardian opted to keep for later books (its own consent, off by default) is deleted `kept_photo_retention_months` after its last use, within 24 h of the choice being turned off, or at once on request.
   - Deleting a child cascades to all their data.
   - Audit logs hold no personal data.
 
@@ -113,7 +113,7 @@ Last full review: 2026-09-28. No system can be proven free of vulnerabilities. T
 ## What the new features do for privacy
 
 - **Uploads:** photos, drawings, family members' photos, logos and recordings are type- and size-checked, re-encoded without metadata, and stored privately under the child's prefix (logos under the lead's). Browsers get signed URLs of ≤ 15 minutes; audio and printer files use 10-minute links whose tokens the request logs mask.
-- **Deletion:** originals go 24 h after approval (photos, drawings, family photos) or after upload (the free cover); recordings, companions, family members and class-book likenesses go with «حذف بيانات الطفل».
+- **Deletion:** originals go 24 h after approval (photos, drawings, family photos) or after upload (the free cover), unless the guardian opted to keep the child's photo for later books (then 12 months after its last use by default); recordings, companions, family members and class-book likenesses go with «حذف بيانات الطفل».
 - **Public pages:** only sample books of invented children can be public examples or Classic templates; share, listen and invite pages are `noindex`/`no-referrer` and carry no ids or names.
 - **Payments and codes:** cash on delivery only; gift-card codes are random, logged by their last 4 characters, and redeemed atomically with a DB check.
 - **Staff:** roles are edited only by owners for the owner role, never by the user for themselves, and every change is audited; the audit log holds no personal data.

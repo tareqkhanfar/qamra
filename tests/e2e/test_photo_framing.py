@@ -65,7 +65,7 @@ def test_framing_on_upload_after_upload_and_after_the_drawing(page: Page, tmp_pa
         page,
         "POST",
         f"/api/create/children/{child['id']}/consent",
-        {"accept": True, "version": "parent-2026-09"},
+        {"accept": True, "version": "parent-2026-10"},
     )
     page.goto(f"{BASE_URL}/ar/create?step=photo&child={child['id']}&line=magic&style=3d")
     use = page.get_by_role("button", name="استخدموا هذه الصورة")

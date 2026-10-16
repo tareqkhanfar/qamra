@@ -11,6 +11,7 @@ import { Link, useRouter } from "@/i18n/navigation";
 import { api, errorText, type User } from "@/lib/api";
 import { nameCases } from "@/lib/arabicName";
 import { MyCompanions } from "@/components/create/companion/MyCompanions";
+import { KeepPhotoChoice } from "@/components/create/KeepPhotoChoice";
 import { DownloadsSection } from "@/components/order/DownloadButton";
 import { createApi } from "@/lib/create";
 import { downloadsApi, type DownloadLine } from "@/lib/downloads";
@@ -221,6 +222,16 @@ export function AccountView() {
             <span className="text-small font-semibold text-amber-700">{t("newChild")}</span>
           </Link>
         </div>
+        {activeChild && (
+          <div className="px-4">
+            {/* «احتفظوا بالصورة»: what we hold of the child's photo, the optional keep choice, «احذفوا الصورة الآن» */}
+            <KeepPhotoChoice
+              key={activeChild.id}
+              child={{ id: activeChild.id, name: activeChild.first_name, gender: activeChild.gender }}
+              variant="account"
+            />
+          </div>
+        )}
         {activeChild && (
           <div className="px-4">
             <Button

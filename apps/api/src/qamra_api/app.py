@@ -44,6 +44,7 @@ from qamra_api.routers.journey_audio import admin_router as journey_audio_admin_
 from qamra_api.routers.journey_audio import router as journey_audio_router
 from qamra_api.routers.leads import admin_router as admin_leads_router
 from qamra_api.routers.leads import router as leads_router
+from qamra_api.routers.photo_keep import router as photo_keep_router
 from qamra_api.routers.portal import router as portal_router
 from qamra_api.routers.portal_book import router as portal_book_router
 from qamra_api.routers.portal_children import router as portal_children_router
@@ -128,6 +129,7 @@ def create_app(settings: ApiSettings | None = None, *, manage_resources: bool = 
     app.include_router(store_router)
     app.include_router(admin_orders_router)
     app.include_router(create_router)
+    app.include_router(photo_keep_router)  # «احتفظوا بالصورة»: the guardian's optional choice (2026-10-16)
     app.include_router(companions_router)  # W3: «ارسم صاحبك» in the parent flow
     app.include_router(admin_catalog_router)
     app.include_router(admin_print_costs_router)
