@@ -78,6 +78,22 @@ def _money(key: str, label_ar: str, label_en: str, default: str, public: bool = 
 
 _DEFS: list[SettingDef] = [
     # ---- pricing
+    # Tareq, 2026-10-16: customers see no price for now; the prices stay in the system for staff. While off,
+    # the API strips every price from customer responses (qamra_api.price_visibility), and the site, the
+    # emails and the WhatsApp messages show none.
+    SettingDef(
+        "show_prices",
+        "pricing",
+        Kind.boolean,
+        False,
+        "إظهار الأسعار للزبائن",
+        "Show prices to customers",
+        "عند إيقافه لا يرى الزبائن أي سعر أو مجموع في الموقع ولا في الرسائل ولا في الفواتير، "
+        "وتبقى الأسعار ظاهرة للإدارة فقط.",
+        "When off, customers see no price or total on the site, in messages or on invoices; "
+        "only staff see the prices.",
+        public=True,
+    ),
     _money("price_digital_ils", "نسخة رقمية (₪)", "Digital copy (₪)", "49"),
     _money("price_softcover_ils", "غلاف ورقي (₪)", "Softcover (₪)", "89"),
     _money("price_hardcover_ils", "غلاف مقوّى (₪)", "Hardcover (₪)", "119"),

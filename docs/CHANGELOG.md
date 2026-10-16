@@ -1,5 +1,13 @@
 # Changelog
 
+## Prices hidden from customers; staff keep them (2026-10-16)
+- **Why:** Tareq: «ما بدي الزباين يعرفوا الاسعار» for now; prices stay in the system for the admin.
+- **Setting:** «إظهار الأسعار للزبائن» (`show_prices`, group الأسعار), **off by default**. Switch it on in the admin settings to show every price again.
+- **API:** `qamra_api/price_visibility.py`: while off, every customer-facing JSON response (everything but `/api/admin/…`) loses its price, total, discount and currency fields; the catalog leaves out unpriced variants; catalog words about price are swapped (`content/store/no_price_wording.yaml`); `/api/pricing` is empty; the school's invoice PDF is 404; the packing slip has no prices. Admin endpoints unchanged.
+- **Messages:** the order emails and the prepared WhatsApp «shipped» message leave the amount out («الدفع نقدًا عند الاستلام»).
+- **Web:** no price anywhere a customer looks (home, stories, story page, shop, activity books, how it works, kindergartens, quiz, create flow, add-ons, cart, checkout, order page, kindergarten portal order, JSON-LD); no discount-code field; /pricing redirects to /shop and leaves the menu, footer and sitemap; `…NoPrice` wording for quotes and price comparisons. `useShowPrices()` / `getPricesShown()`.
+- Tests: `apps/api/tests/test_price_visibility.py`, the worker's `test_notify.py`, web `prices.test.ts`, E2E `test_prices_hidden.py` (the rest of the E2E suite runs with prices shown).
+
 ## Portrait first: the child's face, drawn large, before the character sheet, in every style (2026-10-10)
 - **Why:** Tareq's live test with a real 5-year-old's photo gave a generic, younger, rounder child in every style.
 - **Drawing:** a portrait in the style (`character_portrait.v2`, Nano Banana Pro 1K), then the sheet from the photo and the portrait (`character_sheet.v6`, Nano Banana Pro 2K). Admin settings `character_portrait_model`, `character_sheet_model` and their resolutions. Pages and covers take the portrait next to the sheet (`page_image.v5`); the free cover prefers it to the sheet.

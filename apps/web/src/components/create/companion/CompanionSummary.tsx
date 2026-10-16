@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { useShowPrices } from "@/components/site/Prices";
 import { nameCases } from "@/lib/arabicName";
 import { companionAddOn, companionApi, companionImage, type Companion } from "@/lib/companion";
 import type { Child, Line } from "@/lib/create";
@@ -26,6 +27,7 @@ export function CompanionSummary({
 }) {
   const t = useTranslations("companion.summary");
   const locale = useLocale();
+  const prices = useShowPrices(); // hidden from customers: «مشمول» rather than «مجاني», and no amount
   const [comp, setComp] = useState<Companion | null>(null);
   const offer = companionAddOn(catalog, line);
 
@@ -44,8 +46,8 @@ export function CompanionSummary({
   if (!offer) return null;
   const shown = companionId && comp?.id === companionId && comp.approved ? comp : null;
   const price = offer.free
-    ? t("free")
-    : offer.price
+    ? t(prices ? "free" : "freeNoPrice")
+    : prices && offer.price
       ? `+${money(offer.price, catalog?.currency ?? "ILS", locale)}`
       : null;
   return (

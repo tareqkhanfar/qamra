@@ -4,13 +4,14 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useFlowFrame } from "@/components/create/Frame";
+import { useShowPrices } from "@/components/site/Prices";
 import { Alert } from "@/components/ui/Alert";
 import { Spinner } from "@/components/ui/Button";
 import { useRouter } from "@/i18n/navigation";
 import { addonMedia, includedItems } from "@/lib/addonsMedia";
 import { errorText } from "@/lib/api";
 import { nameCases } from "@/lib/arabicName";
-import type { ThemeCard } from "@/lib/catalog";
+import { priceWording, type ThemeCard } from "@/lib/catalog";
 import type { Book, Child } from "@/lib/create";
 import { lineSummary, orderApi, toggleAddOn, type AddOnOffer, type AddOnsStep as Step } from "@/lib/order";
 import { money, type Catalog } from "@/lib/store";
@@ -125,6 +126,7 @@ export function ItemAddOns({
   const t = useTranslations("orderPath");
   const locale = useLocale();
   const s = useItemAddOns(itemId, onSaved);
+  const prices = useShowPrices();
   if (!s.step) {
     return s.error ? (
       <Alert>{s.error}</Alert>
@@ -141,7 +143,15 @@ export function ItemAddOns({
       <WithTheBook product={step.item.product} />
       {step.addons.length === 0 && <p className="text-small text-ink-muted">{t("addons.none")}</p>}
       {step.addons.map((a) => (
-        <Card key={a.slug} a={a} on={s.chosen.has(a.slug)} onTap={s.tap} amount={amount} offers={step.addons} />
+        <Card
+          key={a.slug}
+          a={a}
+          on={s.chosen.has(a.slug)}
+          onTap={s.tap}
+          amount={amount}
+          offers={step.addons}
+          prices={prices}
+        />
       ))}
       <p aria-live="polite" className="text-caption text-ink-muted empty:hidden">
         {s.said}
@@ -193,6 +203,7 @@ export function AddOnsStep({
   const [lost, setLost] = useState<string | null>(null);
   const [leaving, setLeaving] = useState(false);
   const s = useItemAddOns(itemId ?? found);
+  const prices = useShowPrices(); // hidden from customers (`show_prices` off): no amounts on this step
   const flow = useFlowFrame(); // inside the wizard: this story's «الخطوة n من N»
 
   useEffect(() => {
@@ -265,6 +276,7 @@ export function AddOnsStep({
   const more = step.addons.filter((a) => !a.featured);
   const count = step.addons.filter((a) => a.on && !a.included).length;
   const summary = lineSummary(item, { product: name(item), theme: theme?.name, style: style ? name(style) : null });
+  const w = (key: string) => t(priceWording(key, prices, (k) => t.has(k))); // no «free» claims while hidden
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-[640px] flex-col bg-paper">
       {header}
@@ -273,10 +285,10 @@ export function AddOnsStep({
           <BookThumb art={theme?.art ?? null} hijab={child.hijab} size={72} />
           <LineText
             summary={summary}
-            extra={[pages ? t("pages", { n: pages }) : null, digital ? t("addons.withDigital") : null]}
+            extra={[pages ? t("pages", { n: pages }) : null, digital ? w("addons.withDigital") : null]}
             className="grow"
           />
-          <strong className="text-body whitespace-nowrap text-ink">{amount(item.unit_price)}</strong>
+          {prices && <strong className="text-body whitespace-nowrap text-ink">{amount(item.unit_price)}</strong>}
         </div>
 
         <div className="flex flex-col gap-1">
@@ -286,7 +298,15 @@ export function AddOnsStep({
         <WithTheBook product={item.product} />
 
         {main.map((a) => (
-          <Card key={a.slug} a={a} on={s.chosen.has(a.slug)} onTap={s.tap} amount={amount} offers={step.addons} />
+          <Card
+            key={a.slug}
+            a={a}
+            on={s.chosen.has(a.slug)}
+            onTap={s.tap}
+            amount={amount}
+            offers={step.addons}
+            prices={prices}
+          />
         ))}
 
         {more.length > 0 && (
@@ -299,7 +319,15 @@ export function AddOnsStep({
             </summary>
             <div className="flex flex-col gap-2.5 pb-3.5">
               {more.map((a) => (
-                <Card key={a.slug} a={a} on={s.chosen.has(a.slug)} onTap={s.tap} amount={amount} offers={step.addons} />
+                <Card
+                  key={a.slug}
+                  a={a}
+                  on={s.chosen.has(a.slug)}
+                  onTap={s.tap}
+                  amount={amount}
+                  offers={step.addons}
+                  prices={prices}
+                />
               ))}
             </div>
           </details>
@@ -310,7 +338,7 @@ export function AddOnsStep({
             <svg className="size-5 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M5 12l5 5L20 7" stroke="#2E7A52" strokeWidth="2.2" strokeLinecap="round" />
             </svg>
-            {t("addons.digitalIncluded")}
+            {w("addons.digitalIncluded")}
           </div>
         )}
         <p aria-live="polite" className="text-caption text-ink-muted empty:hidden">
@@ -324,9 +352,11 @@ export function AddOnsStep({
           <span className="text-xs text-ink-muted">
             {count ? t("addons.countLabel", { n: count }) : t("addons.bookOnly")}
           </span>
-          <strong className={`text-[19px] text-ink transition ${s.saving ? "opacity-50" : ""}`} aria-live="polite">
-            {amount(item.subtotal)}
-          </strong>
+          {prices && (
+            <strong className={`text-[19px] text-ink transition ${s.saving ? "opacity-50" : ""}`} aria-live="polite">
+              {amount(item.subtotal)}
+            </strong>
+          )}
         </div>
         <button type="button" onClick={() => void toCart()} disabled={leaving} className={ctaClass}>
           {leaving ? <Spinner /> : t("addons.toCart")}
@@ -359,12 +389,14 @@ function Card({
   onTap,
   amount,
   offers,
+  prices,
 }: {
   a: AddOnOffer;
   on: boolean;
   onTap: (a: AddOnOffer) => void;
   amount: (v: string) => string;
   offers: AddOnOffer[];
+  prices: boolean; // its price only while prices are shown to customers («مشمول» stays)
 }) {
   const t = useTranslations("orderPath");
   const ar = useLocale() === "ar";
@@ -401,7 +433,11 @@ function Card({
         {reason && <span className="text-caption font-semibold text-warning">{reason}</span>}
       </div>
       <div className="flex shrink-0 flex-col items-center gap-1.5">
-        <strong className="text-[15px] whitespace-nowrap">{a.included ? t("free") : `+${amount(a.price)}`}</strong>
+        {prices ? (
+          <strong className="text-[15px] whitespace-nowrap">{a.included ? t("free") : `+${amount(a.price)}`}</strong>
+        ) : (
+          a.included && <strong className="text-[15px] whitespace-nowrap">{t("addons.included")}</strong>
+        )}
         <CheckBox on={on} />
       </div>
     </button>

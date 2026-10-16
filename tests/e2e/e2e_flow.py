@@ -1,8 +1,10 @@
 """Helpers of the order-path E2E tests: the site's API from the page, the create flow's steps (with the test
 fixtures standing in for the image model and the worker), and the checkout form."""
 
+import json
 import os
 import re
+import urllib.request
 from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qs, urlsplit
@@ -25,6 +27,18 @@ def call(page: Page, method: str, path: str, body: Any = None) -> Any:
     r = page.evaluate(FETCH, [method, path, body])
     assert r["status"] < 300, f"{method} {path} → {r}"
     return r["body"]
+
+
+def show_prices(on: bool) -> None:
+    """The admin switch «إظهار الأسعار للزبائن» (`show_prices`, off by default), through the test fixtures."""
+    req = urllib.request.Request(
+        f"{BASE_URL}/api/e2e/settings/show-prices",
+        data=json.dumps({"on": on}).encode(),
+        method="PUT",
+        headers={"X-Qamra-Client": "e2e", "Content-Type": "application/json"},
+    )
+    with urllib.request.urlopen(req) as r:  # nosec B310: the test site's own URL
+        assert r.status == 204, r.status
 
 
 def preview_book(page: Page, **body: Any) -> dict[str, Any]:

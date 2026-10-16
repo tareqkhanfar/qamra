@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import type { CSSProperties } from "react";
 import { Kid } from "@/components/art/Kid";
 import { ExampleImage } from "@/components/book/ExampleImage";
+import { useShowPrices } from "@/components/site/Prices";
 import type { ExamplePage, ExampleVariant } from "@/lib/examples";
 import { money, type Currency } from "@/lib/store";
 import { addonFor, num, type Line, type Offer, type StyleChoice } from "@/lib/story";
@@ -41,6 +42,7 @@ export function LineCards({
 }) {
   const t = useTranslations("themeDetail.lines");
   const locale = useLocale();
+  const prices = useShowPrices();
   return (
     <div role="radiogroup" aria-label={t("label")} className="grid grid-cols-2 gap-2.5">
       {offers.map((o) => {
@@ -76,11 +78,13 @@ export function LineCards({
             <strong className="mt-auto text-[17px]">
               {!o.available
                 ? t("unavailable")
-                : o.from === null
-                  ? "—"
-                  : o.formats.length > 1
-                    ? t("from", { price: money(o.from, currency, locale) })
-                    : money(o.from, currency, locale)}
+                : !prices // hidden from customers (`show_prices` off): no price, no dash
+                  ? null
+                  : o.from === null
+                    ? "—"
+                    : o.formats.length > 1
+                      ? t("from", { price: money(o.from, currency, locale) })
+                      : money(o.from, currency, locale)}
             </strong>
           </button>
         );
@@ -132,6 +136,7 @@ export function StyleCards({
   const t = useTranslations("themeDetail.styles");
   const tv = useTranslations("examples.variant");
   const locale = useLocale();
+  const prices = useShowPrices();
   return (
     <div role="radiogroup" aria-label={t("label")} className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
       {choices.map(({ style, available, looks, modifier }) => {
@@ -145,9 +150,11 @@ export function StyleCards({
             ? t("onlyLooks", { looks: looks.map((l) => tv(l)).join("، ") })
             : on
               ? t("chosen")
-              : modifier > 0
-                ? t("plus", { price: money(modifier, currency, locale) })
-                : t("samePrice");
+              : !prices // no price comparison while prices are hidden from customers
+                ? null
+                : modifier > 0
+                  ? t("plus", { price: money(modifier, currency, locale) })
+                  : t("samePrice");
         return (
           <button
             key={style.slug}
@@ -199,6 +206,7 @@ export function FormatCards({
 }) {
   const t = useTranslations("themeDetail.formats");
   const locale = useLocale();
+  const prices = useShowPrices();
   return (
     <div role="radiogroup" aria-label={t("label")} className="flex flex-col gap-2.5">
       {formats.map((v) => {
@@ -236,9 +244,11 @@ export function FormatCards({
               </span>
               <span className="text-caption text-ink-muted">{desc}</span>
             </span>
-            <strong className="text-[17px] whitespace-nowrap">
-              {money(num(v.price) + modifier, currency, locale)}
-            </strong>
+            {prices && (
+              <strong className="text-[17px] whitespace-nowrap">
+                {money(num(v.price) + modifier, currency, locale)}
+              </strong>
+            )}
           </button>
         );
       })}
@@ -250,6 +260,7 @@ export function FormatCards({
 export function LineChecklist({ line, catalog }: { line: Line; catalog: Catalog | null }) {
   const t = useTranslations("themeDetail.features");
   const locale = useLocale();
+  const prices = useShowPrices();
   const currency = catalog?.currency ?? "ILS";
   const companion = addonFor(catalog, "drawing-companion", line);
   const dedication = addonFor(catalog, "dedication-page", line);
@@ -258,7 +269,9 @@ export function LineChecklist({ line, catalog }: { line: Line; catalog: Catalog 
   if (companion?.included) items.push({ ok: true, text: t("companion") });
   if (dedication?.included) items.push({ ok: true, text: t("dedication") });
   if (line === "magic") items.push({ ok: true, text: t("magic.text") });
-  if (companion && !companion.included && companion.offered && companion.addon.price)
+  if (companion && !companion.included && companion.offered && !prices)
+    items.push({ ok: false, text: t("companionExtraPlain") }); // an extra, with no price while they are hidden
+  else if (companion && !companion.included && companion.offered && companion.addon.price)
     items.push({ ok: false, text: t("companionExtra", { price: money(companion.addon.price, currency, locale) }) });
   return <LineFeatures items={items.slice(0, 5)} />;
 }

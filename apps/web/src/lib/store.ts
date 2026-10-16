@@ -152,8 +152,16 @@ export const cartApi = {
     api<Tracked>(`/api/store/orders/${encodeURIComponent(code)}?phone=${encodeURIComponent(phone)}`),
 };
 
-/** "69 ₪" / "13 د.أ" (Latin digits for prices, as the design does). */
-export function money(amount: string | number, currency: Currency, locale: string): string {
+/**
+ * "69 ₪" / "13 د.أ" (Latin digits for prices, as the design does). "" for an amount the API left out: while prices
+ * are hidden from customers (`show_prices` off) it sends none, and a forgotten spot then shows nothing.
+ */
+export function money(
+  amount: string | number | null | undefined,
+  currency: Currency | undefined,
+  locale: string,
+): string {
+  if (amount === null || amount === undefined || amount === "" || Number.isNaN(Number(amount))) return "";
   const value = formatAmount(String(amount));
   if (currency === "JOD") return locale === "ar" ? `${value} د.أ` : `${value} JD`;
   return `${value} ₪`;

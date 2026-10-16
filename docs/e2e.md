@@ -70,6 +70,13 @@ is told why not). Each test fails on a script error, a 5xx, or a raw message key
 
 The shop → quiz flow of §3 is not covered here.
 
+**Prices (owner, 2026-10-16: hidden from customers for now).** The admin switch `show_prices` is off by default,
+and the tests above check prices, so `conftest.py` turns it on for the run (`PUT /api/e2e/settings/show-prices`).
+**`test_prices_hidden.py`** turns it off for its own tests and back on after: the public pages show no price
+(nor «الأسعار» in the menu or footer, and /pricing leads to the shop), and an order from the format step through
+the add-ons, the cart (no discount-code field), the checkout («نتواصل معكم لتأكيد التفاصيل») and the order page
+shows none, while the order keeps its price for the staff.
+
 ## No AI, no paid calls
 
 The tests never draw anything. What a paid step would make comes from test-only fixtures, `/api/e2e/*`

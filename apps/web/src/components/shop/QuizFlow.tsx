@@ -47,7 +47,9 @@ export function QuizFlow({ faith = false }: { faith?: boolean }) {
   const name = (p: QuizPick) => (locale === "ar" ? p.name_ar : p.name_en);
   const why = (p: QuizPick) => (locale === "ar" ? p.why_ar : p.why_en);
   const price = (p: QuizPick) =>
-    p.from_price === null ? "" : t("from", { price: money(p.from_price, p.currency, locale) });
+    p.from_price === null || p.from_price === undefined // none set, or hidden from customers
+      ? ""
+      : t("from", { price: money(p.from_price, p.currency, locale) });
   const option =
     "flex min-h-16 w-full items-center justify-between gap-3 rounded-[18px] border-[1.5px] border-line bg-paper-raised px-5 text-start text-[18px] font-semibold text-night-900 transition hover:border-night-500 disabled:opacity-60";
   const back = (to: Step) => (

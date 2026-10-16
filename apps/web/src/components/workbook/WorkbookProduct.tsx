@@ -2,10 +2,12 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useState, type ReactNode } from "react";
+import { useShowPrices } from "@/components/site/Prices";
 import { ArrowForward } from "@/components/ui/Button";
 import { Link } from "@/i18n/navigation";
 import type { AddonMedia, IncludedItem } from "@/lib/addonsMedia";
 import { nameCases } from "@/lib/arabicName";
+import { priceWording } from "@/lib/catalog";
 import { money, type CatalogAddOn, type CatalogProduct, type Currency } from "@/lib/store";
 import { groups, initialPicks, isSet, partsFor, resolve, soldAges, soldOptions, type Picks } from "@/lib/workbook";
 import { AddWorkbook } from "./AddWorkbook";
@@ -65,6 +67,8 @@ export function WorkbookProduct({
   const t = useTranslations("workbook");
   const ts = useTranslations("workbookShowcase");
   const locale = useLocale();
+  const prices = useShowPrices(); // hidden from customers (`show_prices` off): no price, no quote wording
+  const w = (key: string) => t(priceWording(key, prices, (k) => t.has(k)));
   const [state, setState] = useState(() => resolve(product, initialPicks(product, query)));
   const { variant, picks } = state;
   const line = product.line;
@@ -294,7 +298,7 @@ export function WorkbookProduct({
 
             {line === "family" && (
               <a href="#family-quote" className="text-small font-semibold text-amber-700 underline">
-                {t("bulk")}
+                {w("bulk")}
               </a>
             )}
             {line === "family" && familyCharacters && (
@@ -322,8 +326,8 @@ export function WorkbookProduct({
             </Link>
 
             <Link href="/kindergartens" className="flex flex-col gap-1 rounded-[20px] bg-night-900 p-4 text-paper">
-              <strong className="text-body">{t(line === "family" ? "b2b.familyTitle" : "b2b.title")}</strong>
-              <span className="text-small text-night-100">{t(line === "family" ? "b2b.familyBody" : "b2b.body")}</span>
+              <strong className="text-body">{w(line === "family" ? "b2b.familyTitle" : "b2b.title")}</strong>
+              <span className="text-small text-night-100">{w(line === "family" ? "b2b.familyBody" : "b2b.body")}</span>
             </Link>
           </div>
         </main>
@@ -333,9 +337,11 @@ export function WorkbookProduct({
         <div className="mx-auto flex max-w-[1100px] items-center gap-3 px-4 md:px-10">
           <div className="flex flex-col">
             <span className="text-xs text-ink-muted">{summary || name}</span>
-            <strong className="text-[19px]" aria-live="polite">
-              {price === null ? "—" : money(price, currency, locale)}
-            </strong>
+            {prices && (
+              <strong className="text-[19px]" aria-live="polite">
+                {price === null ? "—" : money(price, currency, locale)}
+              </strong>
+            )}
           </div>
           <AddWorkbook sku={variant?.sku ?? null} />
         </div>

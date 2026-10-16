@@ -3,6 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useState, type ReactNode } from "react";
 import { ItemAddOns } from "@/components/order/AddOnsStep";
+import { useShowPrices } from "@/components/site/Prices";
 import { Alert } from "@/components/ui/Alert";
 import { ArrowForward, Button } from "@/components/ui/Button";
 import { Link } from "@/i18n/navigation";
@@ -98,6 +99,7 @@ export function SummaryStep({
 }) {
   const t = useTranslations("create");
   const locale = useLocale();
+  const prices = useShowPrices(); // the price row only while prices are shown to customers
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const line = product.line as string;
@@ -230,9 +232,11 @@ export function SummaryStep({
             )}
           </Row>
         )}
-        <Row label={t("activity.summary.price")}>
-          {variant.price !== null ? money(variant.price, currency, locale) : "—"}
-        </Row>
+        {prices && (
+          <Row label={t("activity.summary.price")}>
+            {variant.price !== null ? money(variant.price, currency, locale) : "—"}
+          </Row>
+        )}
       </dl>
 
       <AgeCheck name={child.name} gender={child.gender} age={child.age} ages={ages} href={productHref} />

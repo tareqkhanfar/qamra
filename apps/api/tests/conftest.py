@@ -1,4 +1,5 @@
 from collections.abc import AsyncIterator
+from dataclasses import replace
 
 import pytest
 from fakeredis import FakeAsyncRedis, FakeRedis
@@ -9,7 +10,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from qamra_api.app import create_app
 from qamra_api.deps import get_session
 from qamra_api.settings import ApiSettings
+from qamra_core.app_settings import REGISTRY
 from qamra_core.storage import ObjectStorage
+
+
+@pytest.fixture(autouse=True)
+def prices_shown_by_default(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Customers see no prices by default (`show_prices` off, Tareq 2026-10-16). The store tests check the
+    prices, so the suite runs with the switch on; test_price_visibility.py stores the setting to test off."""
+    monkeypatch.setitem(REGISTRY, "show_prices", replace(REGISTRY["show_prices"], default=True))
 
 
 @pytest.fixture

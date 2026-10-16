@@ -12,6 +12,7 @@ from qamra_api.auth.router import router as auth_router
 from qamra_api.deps import require_client_header
 from qamra_api.errors import install_error_handlers
 from qamra_api.logging import RequestLogMiddleware
+from qamra_api.price_visibility import PriceGuardMiddleware, price_visibility
 from qamra_api.routers.admin_books import router as admin_books_router
 from qamra_api.routers.admin_catalog import router as admin_catalog_router
 from qamra_api.routers.admin_classic import router as admin_classic_router
@@ -104,13 +105,14 @@ def create_app(settings: ApiSettings | None = None, *, manage_resources: bool = 
         title=f"{settings.brand_name_en} API",
         version="0.1.0",
         lifespan=lifespan,
-        dependencies=[Depends(require_client_header)],
+        dependencies=[Depends(require_client_header), Depends(price_visibility)],
         docs_url="/api/docs" if settings.env != "prod" else None,
         redoc_url=None,
         openapi_url="/api/openapi.json" if settings.env != "prod" else None,
     )
     app.state.settings = settings
     install_error_handlers(app)
+    app.add_middleware(PriceGuardMiddleware)  # customers see no price while `show_prices` is off
     app.add_middleware(SecurityHeadersMiddleware)
     app.add_middleware(RequestLogMiddleware)
     app.include_router(health_router)

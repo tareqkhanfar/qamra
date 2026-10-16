@@ -5,8 +5,8 @@ import { PageShell } from "@/components/site/PageShell";
 import { Arrow } from "@/components/site/blocks";
 import { Alert } from "@/components/ui/Alert";
 import { buttonClasses } from "@/components/ui/Button";
-import { Link } from "@/i18n/navigation";
-import { getStoreCatalog } from "@/lib/catalog";
+import { Link, redirect } from "@/i18n/navigation";
+import { getPricesShown, getStoreCatalog } from "@/lib/catalog";
 import { priceFamilies, type PriceFamily, type PriceRow } from "@/lib/pricing";
 import { pageMetadata } from "@/lib/seo";
 import { ACTIVITY_LINES } from "@/lib/shop";
@@ -32,6 +32,8 @@ const STORY_COVERS: Record<string, string> = {
  * Every price comes from the catalog API (only what is on sale: hidden variants and add-ons never reach it).
  */
 export default async function PricingPage() {
+  // while customers see no prices (`show_prices` off, Tareq 2026-10-16) there is no prices page: the shop instead
+  if (!(await getPricesShown())) redirect({ href: "/shop", locale: await getLocale() });
   const [t, te, locale, catalog] = await Promise.all([
     getTranslations("pricingPage"),
     getTranslations("errors"),

@@ -7,7 +7,7 @@ import uuid
 from datetime import datetime
 from decimal import Decimal
 
-from fastapi import APIRouter, Response
+from fastapi import APIRouter, Request, Response
 from pydantic import BaseModel, Field
 from sqlalchemy import select
 
@@ -17,6 +17,7 @@ from qamra_api.errors import ApiError
 from qamra_api.jobs import QueueDep, enqueue
 from qamra_api.portal.access import SchoolAdmin, class_book_of, own_classroom
 from qamra_api.portal.ordering import ClassQuote, class_quote, item_costs
+from qamra_api.price_visibility import hidden
 from qamra_api.routers.admin_orders import issue_invoice
 from qamra_api.store.router import _new_code, _quote_json
 from qamra_core.db.models import AuditLog, Order, OrderItem, OrderStatus, PaymentMethod
@@ -238,7 +239,11 @@ async def orders(school: SchoolAdmin, db: SessionDep) -> list[OrderRow]:
 
 
 @router.get("/orders/{code}/invoice.pdf")
-async def invoice_pdf(code: str, school: SchoolAdmin, db: SessionDep, storage: StorageDep) -> Response:
+async def invoice_pdf(
+    code: str, request: Request, school: SchoolAdmin, db: SessionDep, storage: StorageDep
+) -> Response:
+    if hidden(request):  # the invoice shows the prices: staff print it from the admin while they are hidden
+        raise ApiError("not_found", 404)
     order = (await db.execute(select(Order).where(Order.code == code.strip().upper()))).scalar_one_or_none()
     if order is None or order.organization_id != school.org.id:
         raise ApiError("not_found", 404)

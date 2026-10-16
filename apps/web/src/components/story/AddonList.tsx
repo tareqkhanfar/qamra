@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { useShowPrices } from "@/components/site/Prices";
 import { money, type Catalog, type CatalogAddOn } from "@/lib/store";
 import { num } from "@/lib/story";
 
@@ -29,7 +30,10 @@ export function extraAddons(catalog: Catalog | null, line: string): CatalogAddOn
   );
 }
 
-/** One row per add-on: its picture, name, a line about it and its price («+20 ₪», «50% من سعر الكتاب»). */
+/**
+ * One row per add-on: its picture, name, a line about it and its price («+20 ₪», «50% من سعر الكتاب»); no price
+ * while prices are hidden from customers (`show_prices` off).
+ */
 export function AddonList({
   addons,
   catalog,
@@ -53,6 +57,7 @@ export function AddonList({
   const locale = useLocale();
   const ar = locale === "ar";
   const currency = catalog?.currency ?? "ILS";
+  const prices = useShowPrices();
   const [all, setAll] = useState(false);
   if (!addons.length) return null;
   const folded = !all && initial !== undefined && addons.length > initial + 1;
@@ -66,8 +71,9 @@ export function AddonList({
             : media[a.slug]
               ? { src: media[a.slug]!.src, alt: "" }
               : null;
-          const price =
-            a.percent !== null
+          const price = !prices
+            ? null
+            : a.percent !== null
               ? t("percent", { percent: num(a.percent) })
               : a.price !== null && num(a.price) > 0
                 ? t("plus", { price: money(a.price, currency, locale) })
@@ -122,9 +128,11 @@ export function AddonList({
                   </span>
                 )}
               </span>
-              <strong className="shrink-0 text-[15px] whitespace-nowrap">
-                <bdi dir={a.percent === null ? "ltr" : undefined}>{price}</bdi>
-              </strong>
+              {price && (
+                <strong className="shrink-0 text-[15px] whitespace-nowrap">
+                  <bdi dir={a.percent === null ? "ltr" : undefined}>{price}</bdi>
+                </strong>
+              )}
             </li>
           );
         })}

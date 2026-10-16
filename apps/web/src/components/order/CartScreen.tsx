@@ -52,7 +52,7 @@ export function CartScreen() {
       if (worlds.ok) setThemes(worlds.data);
       if (children.ok) setKids(children.data);
       const [store] = await Promise.all([
-        api<Catalog>(`/api/store/catalog?currency=${c.data.currency}`),
+        api<Catalog>(`/api/store/catalog?currency=${c.data.currency ?? "ILS"}`), // none while prices are hidden
         refreshOffers(),
       ]);
       if (alive && store.ok) setCatalog(store.data);

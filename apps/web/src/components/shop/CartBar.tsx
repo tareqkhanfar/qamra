@@ -2,13 +2,18 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { useShowPrices } from "@/components/site/Prices";
 import { Link } from "@/i18n/navigation";
 import { cartApi, money, type Cart } from "@/lib/store";
 
-/** Design Shop: the sticky cart bar (count and total from the cart API); hidden while the cart is empty. */
+/**
+ * Design Shop: the sticky cart bar (count and total from the cart API); hidden while the cart is empty. The total
+ * only while prices are shown to customers.
+ */
 export function CartBar() {
   const t = useTranslations("shop");
   const locale = useLocale();
+  const prices = useShowPrices();
   const [cart, setCart] = useState<Cart | null>(null);
   useEffect(() => {
     let alive = true;
@@ -26,7 +31,7 @@ export function CartBar() {
       <div className="mx-auto flex max-w-[1200px] items-center gap-3 px-4 md:px-10">
         <div className="flex flex-col">
           <span className="text-xs text-ink-muted">{t("inCart", { n: cart.count })}</span>
-          <strong className="text-[17px]">{money(cart.total, cart.currency, locale)}</strong>
+          {prices && <strong className="text-[17px]">{money(cart.total, cart.currency, locale)}</strong>}
         </div>
         <Link
           href="/cart"

@@ -66,10 +66,12 @@ export default async function StoriesPage({ searchParams }: Props) {
         {chosen && (
           <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-[20px] bg-night-900 px-4 py-3.5 text-paper">
             <span className="text-small">
-              {t("lineChosen", {
-                line: locale === "ar" ? chosen.product.name_ar : chosen.product.name_en,
-                price: chosen.from === null ? "—" : money(chosen.from, currency, locale),
-              })}
+              {chosen.from === null // no price set, or prices hidden from customers
+                ? t("lineChosenPlain", { line: locale === "ar" ? chosen.product.name_ar : chosen.product.name_en })
+                : t("lineChosen", {
+                    line: locale === "ar" ? chosen.product.name_ar : chosen.product.name_en,
+                    price: money(chosen.from, currency, locale),
+                  })}
             </span>
             <Link href="/stories" className="min-h-11 content-center text-small font-bold text-amber-300 underline">
               {t("lineAll")}

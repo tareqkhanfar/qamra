@@ -41,7 +41,11 @@ export function workbookJsonLd(
   currency: Currency,
   description?: string,
 ): Record<string, unknown> {
-  const prices = product.variants.filter((v) => v.price !== null).map((v) => Number(v.price));
+  // no Offer while prices are hidden from customers (the API sends none, `show_prices` off)
+  const prices = product.variants
+    .filter((v) => v.price !== null && v.price !== undefined)
+    .map((v) => Number(v.price))
+    .filter(Number.isFinite);
   const ages = soldAges(product);
   const url = `${SITE}/${locale}/workbooks/${product.slug}`;
   const cover = PREVIEWS[product.slug]?.[0];

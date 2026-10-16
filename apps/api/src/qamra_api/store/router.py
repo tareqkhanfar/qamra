@@ -15,6 +15,7 @@ from qamra_api import notify, ratelimit, runtime_settings
 from qamra_api.auth.router import client_ip
 from qamra_api.deps import OptionalUser, RedisDep, SessionDep, SettingsDep
 from qamra_api.errors import ApiError
+from qamra_api.price_visibility import hidden
 from qamra_api.store import gift_cards
 from qamra_api.store.addons import available
 from qamra_api.store.cart import (
@@ -134,7 +135,9 @@ class CatalogOut(BaseModel):
     zones: list[ZoneOut]
 
 
-def _catalog_out(c: Catalog, currency: Currency) -> CatalogOut:
+def _catalog_out(c: Catalog, currency: Currency, *, prices_hidden: bool = False) -> CatalogOut:
+    """`prices_hidden`: the prices are about to be stripped (`show_prices` off), so what has no price here
+    (not sold in this currency) is left out, rather than looking for sale once the price is gone."""
     products = []
     for p in sorted(c.products.values(), key=lambda x: x.sort):
         variants = [
@@ -142,6 +145,8 @@ def _catalog_out(c: Catalog, currency: Currency) -> CatalogOut:
             for v in c.variants.values()
             if v.product_id == p.id
         ]
+        if prices_hidden:
+            variants = [v for v in variants if v.price is not None]
         priced = [v.price for v in variants if v.price is not None]
         products.append(
             ProductOut(
@@ -190,6 +195,7 @@ def _catalog_out(c: Catalog, currency: Currency) -> CatalogOut:
                 step=a.step,
             )
             for a in sorted(c.addons.values(), key=lambda x: x.sort)
+            if not prices_hidden or c.addon_prices.get((a.id, currency)) is not None or a.percent is not None
         ],
         zones=[
             ZoneOut(
@@ -210,8 +216,8 @@ def _catalog_out(c: Catalog, currency: Currency) -> CatalogOut:
 
 
 @router.get("/catalog")
-async def catalog(db: SessionDep, currency: Literal["ILS", "JOD"] = "ILS") -> CatalogOut:
-    return _catalog_out(await load_catalog(db), Currency(currency))
+async def catalog(request: Request, db: SessionDep, currency: Literal["ILS", "JOD"] = "ILS") -> CatalogOut:
+    return _catalog_out(await load_catalog(db), Currency(currency), prices_hidden=hidden(request))
 
 
 # ---- the cart ---------------------------------------------------------------------------------------------

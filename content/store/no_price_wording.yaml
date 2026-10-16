@@ -1,0 +1,19 @@
+# While prices are hidden from customers (the admin setting `show_prices` is off), these texts replace the
+# catalog's own wording where it speaks of price («بنص السعر», «مجانية», «توفير», «بأسعار الروضات»). The API swaps
+# them into every customer response by the product's or add-on's slug (qamra_api.price_visibility); staff screens
+# and orders keep the admin's wording. null clears the field (a badge). Keys: name_ar/en, description_ar/en,
+# badge_ar/en.
+extra-copy:
+  description_ar: نسخة أخرى من الكتاب نفسه، للإهداء أو للاحتفاظ بها
+  description_en: Another copy of the same book, to give as a gift or to keep
+  badge_ar: null
+  badge_en: null
+digital-copy:
+  name_ar: نسخة رقمية مع المطبوع
+  name_en: Digital copy with the printed book
+classic-class-book:
+  description_ar: كتاب لكل طفل في الصف، بغلافه وصورته.
+  description_en: One book per child, with their own cover and portrait page.
+magic-class-book:
+  description_ar: لكل طفل كتاب مرسوم له بالكامل.
+  description_en: Every child gets a book illustrated just for them.

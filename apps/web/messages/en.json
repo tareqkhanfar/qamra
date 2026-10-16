@@ -102,7 +102,9 @@
         "three": "It goes with {name} on every page, and the last page, \"How my friend was born\", shows the original drawing."
       },
       "free": "Free in the Magic book, and the companion stays for your next books.",
+      "freeNoPrice": "Included in the Magic book, and the companion stays for your next books.",
       "paid": "An add-on of {amount} on a Classic book, and the companion stays for your next books.",
+      "paidNoPrice": "An optional add-on for a Classic book, and the companion stays for your next books.",
       "mine": "{name}'s companions from earlier books",
       "start": "Photograph {name}'s drawing",
       "use": "Continue with {name}",
@@ -112,6 +114,7 @@
       "with": "{name} goes along in the story",
       "none": "No companion from {name}'s drawing",
       "free": "Free in the Magic book",
+      "freeNoPrice": "Included in the Magic book",
       "change": "Change",
       "add": "Add a companion"
     },
@@ -363,7 +366,8 @@
       "eyebrow": "For kindergartens and schools",
       "title": "A graduation book for every child, and activity books with your school's logo",
       "price": "From {price} per child for orders of {n} children or more",
-      "cta": "Ask for a quote"
+      "cta": "Ask for a quote",
+      "ctaNoPrice": "Contact us"
     },
     "trust": {
       "privacy": "We delete your child's photo automatically",
@@ -686,6 +690,7 @@
         "magic": "Magic: every child in the story",
         "magicBody": "We draw each child with friends in the story pages, plus a personal cover and a \"This is me\" page.",
         "classic": "Classic: the affordable one",
+        "classicNoPrice": "Classic: the quickest",
         "classicBody": "The story pages are drawn for the class; each child gets a personal cover, their own page and the friends page."
       },
       "appearances": "How many times does each child appear?",
@@ -786,6 +791,7 @@
       "deliveryNote": "Every book is wrapped with the child's name on it.",
       "history": "The kindergarten's orders",
       "orderLine": "{n, plural, one {# copy} other {# copies}} · {total}",
+      "orderLineNoPrice": "{n, plural, one {# copy} other {# copies}}",
       "status": {
         "new": "New",
         "confirmed": "Confirmed",
@@ -809,12 +815,14 @@
       "priceList": "Prices from: {name}",
       "retail": "the standard price",
       "placed": "Order {code} placed. The invoice is in your orders, and we'll contact you to confirm the delivery date.",
+      "placedNoPrice": "Order {code} placed. We'll contact you to confirm the details and the delivery date.",
       "cod": "Cash on delivery to {school}.",
       "notes": "Notes for the order (optional)",
       "accept": "We reviewed the books and accept the order terms.",
       "acceptRequired": "Please accept the order terms to continue.",
       "cta": "Confirm the order ({n, plural, one {# copy} other {# copies}})",
-      "nothing": "Approve the children's books first on the review page."
+      "nothing": "Approve the children's books first on the review page.",
+      "confirmDetails": "We'll contact you to confirm the details."
     },
     "invite": {
       "pageTitle": "An invite from the kindergarten",
@@ -1038,12 +1046,16 @@
       "islamic": "{pdf, select, true {A PDF to print at home, with your child's name and character.} other {A printed perfect-bound book, with your child's name and character.}}"
     },
     "bulk": "10 copies or more? Ask for a quote",
+    "bulkNoPrice": "10 copies or more? Contact us",
     "quiz": "Not sure which book fits your child? Answer 3 questions",
     "b2b": {
       "familyTitle": "For kindergartens and organizations: a family-day gift with your logo",
       "familyBody": "Special prices for quantities, with your logo on the back cover.",
+      "familyBodyNoPrice": "Bulk orders, with your logo on the back cover.",
       "title": "For kindergartens: with your logo and class pricing",
-      "body": "Special prices for 20 children or more, each volume delivered at the start of its term."
+      "titleNoPrice": "For kindergartens: a book for every child in the class, with your logo",
+      "body": "Special prices for 20 children or more, each volume delivered at the start of its term.",
+      "bodyNoPrice": "For classes of 20 children or more, with each volume delivered at the start of its term."
     },
     "add": "Add to cart",
     "start": "Start your child's book now",
@@ -1131,7 +1143,9 @@
       "lead": "All optional. You can continue without them.",
       "more": "More extras ({n})",
       "withDigital": "with a free digital copy",
+      "withDigitalNoPrice": "with a digital copy",
       "digitalIncluded": "The digital copy comes free with the printed book",
+      "digitalIncludedNoPrice": "The digital copy comes with the printed book",
       "countLabel": "{n, plural, one {Book + 1 extra} other {Book + # extras}}",
       "bookOnly": "Book only",
       "toCart": "Add to cart",
@@ -1142,7 +1156,8 @@
       "missing": "This book isn't in your cart yet. Go back and choose its format first.",
       "backToFormat": "Choose the format",
       "none": "No extras for this book right now.",
-      "withBook": "Included with the book: {items}"
+      "withBook": "Included with the book: {items}",
+      "included": "Included"
     },
     "cart": {
       "title": "Cart ({n})",
@@ -1187,6 +1202,7 @@
     "gift": {
       "title": "This order is a gift",
       "body": "We deliver it to another address and hide the prices",
+      "bodyNoPrice": "We deliver it to another address, with your message",
       "label": "Your message on the card",
       "placeholder": "{gender, select, f {Happy birthday to the hero of our story, {name}…} m {Happy birthday to the hero of our story, {name}…} other {Many happy returns, with all our love…}}",
       "hint": "Up to {max} characters. The recipient's address is at the next step."
@@ -1212,6 +1228,7 @@
       "where": "Where should we deliver the book?",
       "whereGift": "Where should we deliver the gift?",
       "giftNote": "Enter the recipient's address. The parcel has no prices, and your message goes with it.",
+      "giftNoteNoPrice": "Enter the recipient's address, and your message goes with the gift.",
       "name": "Recipient's name",
       "phone": "Mobile number",
       "phoneHint": "The courier will call before arriving",
@@ -1225,12 +1242,14 @@
       "payment": "Payment",
       "cod": "Cash on delivery",
       "codBody": "Pay the courier in cash when the book arrives",
+      "codBodyNoPrice": "Pay the courier in cash when the book arrives. We'll contact you to confirm the details.",
       "withAddons": "{n, plural, one {with 1 extra} other {with # extras}}",
       "discounts": "Discounts",
       "deliveryTo": "Delivery ({city})",
       "chooseCityFirst": "Choose a city",
       "eta": "Arrives in {min}–{max} working days",
       "confirm": "Place order · {total} on delivery",
+      "confirmNoPrice": "Place order",
       "terms": "By placing the order you accept the",
       "termsLink": "order terms",
       "lastStep": "Last step: address and payment",
@@ -1290,6 +1309,7 @@
       "addons": "Extras",
       "copies": "{n, plural, one {1 copy} other {# copies}}",
       "hidden": "Gift order: no prices in the parcel. The cash-on-delivery amount is on the waybill only.",
+      "hiddenAll": "Prices are hidden from customers for now: no prices in the parcel. The cash-on-delivery amount is on the waybill only.",
       "subtotal": "Subtotal",
       "discount": "Discount",
       "delivery": "Delivery",
@@ -1810,7 +1830,9 @@
   "familyQuote": {
     "title": "“My Adventures with My Family” for your organization",
     "lead": "Kindergartens, schools, associations and companies: ask for a quote for 10 copies or more, with your logo on the back cover.",
+    "leadNoPrice": "Kindergartens, schools, associations and companies: order 10 copies or more, with your logo on the back cover.",
     "request": "This is a request for a quote, not an order: we send you a price, then we agree together.",
+    "requestNoPrice": "This is a request, not an order: we contact you, then we agree on the details together.",
     "org": "Organization",
     "city": "City",
     "person": "Contact person",
@@ -1823,8 +1845,10 @@
     "logo": "Your logo for the back cover (optional): PNG or JPG, up to 5 MB",
     "logoPrivate": "The logo stays private and is printed on your copies only.",
     "submit": "Send the quote request",
+    "submitNoPrice": "Send the request",
     "sending": "Sending…",
     "done": "We got your request. We'll send you a quote within one working day; nothing has been ordered.",
+    "doneNoPrice": "We got your request. We'll contact you within one working day; nothing has been ordered.",
     "tooBig": "The logo is larger than 5 MB."
   },
   "adminLeads": {
@@ -2071,7 +2095,9 @@
       "kg": {
         "title": "Kindergartens",
         "body": "A graduation book for every child in the class, with a school page and class pricing.",
-        "cta": "Request a quote"
+        "bodyNoPrice": "A graduation book for every child in the class, with a school page.",
+        "cta": "Request a quote",
+        "ctaNoPrice": "Contact us"
       }
     },
     "from": "From {price}",
@@ -2169,6 +2195,7 @@
     "forKg": "Kindergartens",
     "gradBooks": "Graduation books",
     "quote": "Request a quote",
+    "quoteNoPrice": "Contact us",
     "portal": "Kindergarten sign-in",
     "how": "How it works",
     "pricing": "Pricing",
@@ -2196,6 +2223,7 @@
     "from": "From {price}",
     "choose": "Open the story",
     "lineChosen": "You chose {line}: stories here start from {price}.",
+    "lineChosenPlain": "You chose {line}.",
     "lineAll": "All types",
     "age": "Age:",
     "all": "All",
@@ -2254,7 +2282,8 @@
       },
       "companion": "Your child's drawing becomes their companion on every page",
       "dedication": "A dedication page in your name",
-      "companionExtra": "Companion from their drawing: an extra {price}"
+      "companionExtra": "Companion from their drawing: an extra {price}",
+      "companionExtraPlain": "Companion from their drawing: an optional extra"
     },
     "styles": {
       "label": "Art style",
@@ -2358,6 +2387,7 @@
     ],
     "formTitle": "Let's prepare your class's graduation books",
     "formLead": "Leave your details and we'll contact you within one working day to show you a printed sample and class prices.",
+    "formLeadNoPrice": "Leave your details and we'll contact you within one working day to show you a printed sample and agree on the details.",
     "whatsapp": "WhatsApp",
     "email": "Email",
     "fields": {
@@ -3227,6 +3257,7 @@
       "total": "Total",
       "checkout": "Continue to checkout",
       "unavailable": "Some items are no longer available and aren't counted in the total.",
+      "unavailableNoPrice": "Some items are no longer available.",
       "summary": "Order summary",
       "discounts": "Discounts",
       "extras": "Add a special touch",
@@ -3538,7 +3569,9 @@
     ],
     "kgTitle": "For kindergartens: with your logo",
     "kgBody": "Class pricing from 20 children, with each volume delivered at the start of its term.",
+    "kgBodyNoPrice": "For classes of 20 children or more, with each volume delivered at the start of its term.",
     "kgCta": "Request a quote",
+    "kgCtaNoPrice": "Contact us",
     "storiesTitle": "And a story they star in?",
     "storiesBody": "A printed storybook in your child's name and likeness, in the art style you choose.",
     "storiesCta": "Browse the stories",
@@ -3713,6 +3746,16 @@
         "a": "We reprint it for free when the fault is ours. Message us with a photo of the page."
       }
     ],
+    "faqNoPrice": {
+      "1": {
+        "q": "How long until the book arrives?",
+        "a": "Once you approve the pages we print the book and send it. Delivery time depends on your zone, and we confirm it with you when we confirm the order; you follow your order step by step from your account."
+      },
+      "2": {
+        "q": "Where do you deliver?",
+        "a": "We deliver to your door in West Bank cities and in Jerusalem, and we contact you to confirm the address and the delivery time."
+      }
+    },
     "closingTitle": "Ready?",
     "closingBody": "Choose a story or an activity book, and leave the rest to us.",
     "ctaStories": "Browse the stories",
@@ -3879,6 +3922,7 @@
       "percent": "{percent}% of the book's price",
       "free": "Free",
       "includedIn": "Included in {line}",
+      "includedInPlain": "Included in {line}",
       "onlyIn": "Only with {line}",
       "showAll": "Show all extras ({count})"
     },
@@ -3895,12 +3939,18 @@
       "stylesOne": "Art style: {styles}",
       "stylesMany": "Art styles: {styles}",
       "included": "Included in the price",
+      "includedPlain": "Included with the book",
       "classic": {
         "tagline": "Beautiful ready-made art, with your child drawn in as the hero",
         "points": [
           "The story's pictures are ready-made and reviewed, and we draw your child's features into every page where they appear",
           "Their name on every page, with the right “he” or “she” throughout",
           "Ready to preview within minutes, at a lower price"
+        ],
+        "pointsNoPrice": [
+          "The story's pictures are ready-made and reviewed, and we draw your child's features into every page where they appear",
+          "Their name on every page, with the right “he” or “she” throughout",
+          "Ready to preview within minutes"
         ]
       },
       "magic": {

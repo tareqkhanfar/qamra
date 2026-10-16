@@ -19,7 +19,7 @@ import uuid
 from collections.abc import Iterator
 
 import pytest
-from e2e_flow import BASE_URL, call
+from e2e_flow import BASE_URL, call, show_prices
 from playwright.sync_api import Browser, Page, Playwright, expect, sync_playwright
 
 expect.set_options(timeout=30_000)  # a dev stack (or one on a remote database) can take a few seconds
@@ -29,6 +29,14 @@ expect.set_options(timeout=30_000)  # a dev stack (or one on a remote database) 
 def playwright() -> Iterator[Playwright]:
     with sync_playwright() as p:
         yield p
+
+
+@pytest.fixture(scope="session", autouse=True)
+def prices_shown() -> Iterator[None]:
+    """These tests check the prices, so the run shows them (the admin switch `show_prices` is off by default,
+    Tareq 2026-10-16); test_prices_hidden.py hides them for its own tests and shows them again after."""
+    show_prices(True)
+    yield
 
 
 @pytest.fixture(scope="session")

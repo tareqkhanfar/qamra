@@ -4,12 +4,18 @@ import { MoonMark } from "@/components/Logo";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { brandName } from "@/config/brand";
 import { Link } from "@/i18n/navigation";
+import { getPricesShown } from "@/lib/catalog";
 
 type Variant = "dark" | "light";
 
 /** Site header. `dark` sits inside the night-blue hero (landing); `light` is the paper header elsewhere. */
 export async function SiteNav({ variant = "light" }: { variant?: Variant }) {
-  const [t, locale, jar] = await Promise.all([getTranslations("nav"), getLocale(), cookies()]);
+  const [t, locale, jar, prices] = await Promise.all([
+    getTranslations("nav"),
+    getLocale(),
+    cookies(),
+    getPricesShown(),
+  ]);
   const signedIn = jar.has("qamra_at");
   const dark = variant === "dark";
   // the launch IA: what we sell first (stories, activity books, kindergartens), then prices and the process
@@ -17,7 +23,7 @@ export async function SiteNav({ variant = "light" }: { variant?: Variant }) {
     { href: "/stories", label: t("themes") },
     { href: "/workbooks", label: t("workbooks") },
     { href: "/kindergartens", label: t("kindergartens") },
-    { href: "/pricing", label: t("pricing") },
+    ...(prices ? [{ href: "/pricing", label: t("pricing") }] : []), // no prices page while they are hidden
     { href: "/how-it-works", label: t("how") },
   ];
   const linkColor = dark ? "text-night-100 hover:text-amber-300" : "text-night-900 hover:text-amber-700";

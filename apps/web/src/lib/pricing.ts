@@ -50,7 +50,7 @@ export function priceRows(product: CatalogProduct, bundles: Record<string, strin
   const rows = new Map<string, PriceRow>();
   const highest = new Map<string, number>();
   for (const v of product.variants) {
-    if (v.price === null) continue;
+    if (v.price === null || v.price === undefined) continue; // none set, or hidden from customers
     const price = Number(v.price);
     const unit = unitOf(v, bundles);
     const format = v.options.format ?? "";

@@ -132,7 +132,9 @@ export function PackingSlip({ id }: { id: string }) {
       </section>
 
       {slip.prices_hidden ? (
-        <p className="rounded-lg bg-paper-sunk px-3 py-2 text-small text-ink-muted print:hidden">{t("hidden")}</p>
+        <p className="rounded-lg bg-paper-sunk px-3 py-2 text-small text-ink-muted print:hidden">
+          {t(slip.gift ? "hidden" : "hiddenAll")}
+        </p>
       ) : (
         <section className="ms-auto flex w-full max-w-xs flex-col gap-1 text-small">
           <Line label={t("subtotal")} value={amount(slip.subtotal)} />

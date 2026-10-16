@@ -3,10 +3,12 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { Scene } from "@/components/art/Scene";
+import { useShowPrices } from "@/components/site/Prices";
 import { Alert } from "@/components/ui/Alert";
 import { Button, buttonClasses } from "@/components/ui/Button";
 import { Link, useRouter } from "@/i18n/navigation";
 import { errorText, type ApiResult } from "@/lib/api";
+import { priceWording } from "@/lib/catalog";
 import { portalApi, type ClassBook } from "@/lib/portal";
 import { usePortal } from "./PortalShell";
 import { SchoolPage } from "./SchoolPage";
@@ -16,6 +18,7 @@ export function BookSetup({ classId }: { classId: string }) {
   const t = useTranslations("portal.setup");
   const te = useTranslations("errors");
   const locale = useLocale();
+  const prices = useShowPrices(); // «الأوفر» compares prices: another word while they are hidden
   const router = useRouter();
   const { me, reload } = usePortal();
   const [book, setBook] = useState<ClassBook | null>(null);
@@ -124,7 +127,7 @@ export function BookSetup({ classId }: { classId: string }) {
                     className="mt-1 size-5 accent-night-900"
                   />
                   <span className="flex flex-col">
-                    <strong>{t(`lines.${l}`)}</strong>
+                    <strong>{t(priceWording(`lines.${l}`, prices, (k) => t.has(k)))}</strong>
                     <span className="text-small text-ink-muted">{t(`lines.${l}Body`)}</span>
                   </span>
                 </label>

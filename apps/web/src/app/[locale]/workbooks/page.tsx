@@ -7,7 +7,7 @@ import { PageShell } from "@/components/site/PageShell";
 import { Photo } from "@/components/site/Photo";
 import { CtaBand, SECTION, SectionHead, Steps, type Step } from "@/components/site/blocks";
 import { Link } from "@/i18n/navigation";
-import { getStoreCatalog } from "@/lib/catalog";
+import { getPricesShown, getStoreCatalog, priceWording } from "@/lib/catalog";
 import { workbooksListJsonLd } from "@/lib/pageSeo";
 import { pageMetadata } from "@/lib/seo";
 import { ACTIVITY_LINES } from "@/lib/shop";
@@ -29,13 +29,15 @@ const ORDER = ["workbook", "journey", "family", "islamic"];
 
 /** The activity books hub: the three books side by side, how one is made, and the kindergarten offer. */
 export default async function WorkbooksPage() {
-  const [t, tn, te, catalog, locale] = await Promise.all([
+  const [t, tn, te, catalog, locale, prices] = await Promise.all([
     getTranslations("workbooksHub"),
     getTranslations("nav"),
     getTranslations("errors"),
     getStoreCatalog(),
     getLocale(),
+    getPricesShown(),
   ]);
+  const w = (key: string) => t(priceWording(key, prices, (k) => t.has(k))); // no quote wording while hidden
   const books = (catalog?.products ?? [])
     .filter((p) => (ACTIVITY_LINES as readonly string[]).includes(p.line))
     .sort((a, b) => ORDER.indexOf(a.line) - ORDER.indexOf(b.line));
@@ -73,9 +75,9 @@ export default async function WorkbooksPage() {
         <div className="grid gap-4 md:grid-cols-2 md:gap-6">
           <Link href="/kindergartens" className="flex flex-col gap-2 rounded-[24px] bg-night-950 p-6 text-paper md:p-8">
             <h2 className="text-[22px] leading-snug md:text-[26px]">{t("kgTitle")}</h2>
-            <p className="text-small text-night-100 md:text-body">{t("kgBody")}</p>
+            <p className="text-small text-night-100 md:text-body">{w("kgBody")}</p>
             <span className="mt-2 flex min-h-11 items-center self-start rounded-full bg-amber-500 px-[18px] text-[15px] font-bold text-night-950">
-              {t("kgCta")}
+              {w("kgCta")}
             </span>
           </Link>
           <Link
@@ -94,7 +96,8 @@ export default async function WorkbooksPage() {
         title={t("ctaTitle")}
         body={t("ctaBody")}
         primary={{ href: "/quiz", label: t("ctaQuiz") }}
-        secondary={{ href: "/pricing", label: tn("pricing") }}
+        // no prices page while prices are hidden from customers: every book in the shop instead
+        secondary={prices ? { href: "/pricing", label: tn("pricing") } : { href: "/shop", label: tn("allBooks") }}
       />
       <div className="h-12 md:h-20" />
     </PageShell>
