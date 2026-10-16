@@ -52,7 +52,8 @@ def fake_resolver(*, quran: bool = True) -> Resolver:
     spans: dict[str, list[str]] = {}
     for src in reg.of_kind("dua"):
         assert src.dua is not None
-        spans.setdefault(src.dua.from_, []).append(f"{src.dua.start} فَقَطْ {src.dua.end}")
+        gaps = " ".join(f"{g.start} وَ {g.end}" for g in src.dua.omit)  # the stretches left out of it
+        spans.setdefault(src.dua.from_, []).append(f"{src.dua.start} فَقَطْ {gaps} {src.dua.end}")
     for page in raw:
         for req in checks.wording_requests(page):
             if req.span is not None and reg.by_id[req.source].kind == "hadith":

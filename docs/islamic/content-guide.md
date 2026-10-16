@@ -68,7 +68,18 @@ Open `out/islamic/<v>/contact-sheet.png` (or the PNGs in `png/`) after rendering
     (a lesson, a scene's sentence, a «why») has `ai_drafted: true` and its `sources`. The explanation never replaces
     the source's wording: the wording is printed by id, the explanation beside it.
 11. **The parents' pages** (`parent-guide`, the `tip` of a role-play, `care_note`) speak to the family: warm,
-    short, practical, no pressure («نشجّع ولا نُلزم»).
+    short, practical, gentle. On prayer they agree with «مروا أولادكم بالصلاة لسبع» (`h-abudawud-495`): before
+    seven the child prays with the family as they like; from seven the family teaches prayer and asks for it,
+    gently and with encouragement. A parents' line about the child is in the child's gender
+    («{الطفل/الطفلة}»).
+12. **No false statement about the Prophet ﷺ or a prophet is printed**, not even as the wrong option of a quiz or
+    a «خطأ» statement: ask about the child's own behaviour after stating what he did («كان نبينا ﷺ يساعد أهله.
+    كيف أقتدي به؟»), so every wrong option is about the child.
+13. **Excerpts start where the phrase starts** («وَقُل رَّبِّ…», «إِنَّ الصِّدْقَ…»), and a verse's reference names
+    exactly the ayat printed (the engine narrows a spanned verse's citation by itself).
+14. **References**: child pages print no bare list of references; the reference under a verse or hadith reads in
+    full («سورة الأعراف: ٣١», «صحيح البخاري: ٥٣٧٦»), and the unit's parents' page lists «مصادر هذه الوحدة»,
+    each source with what it supports (its `label_ar` in the register: a few plain words, never its wording).
 
 ## 2. The keys: where a page goes
 

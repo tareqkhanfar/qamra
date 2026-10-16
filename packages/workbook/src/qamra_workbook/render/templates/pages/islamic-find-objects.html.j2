@@ -7,7 +7,6 @@
     <figure class="fo-board">{{ d.board }}{% if solved %}{{ d.rings }}{% endif %}</figure>
     <section class="fo-list">{% for it in d.finds %}<div class="fo-item card">{{ it.art }}<span>{{ it.word }}</span><i class="tick"></i></div>{% endfor %}</section>
     {% if d.closing %}<section class="hn-close card"><p{{ ' class=ai' if d.closing.ai }}>{{ d.closing.text }}</p></section>{% endif %}
-    {{ isl.refs(c, d.refs) }}
   </div>
   {{ isl.foot(p, c) }}
 </div>

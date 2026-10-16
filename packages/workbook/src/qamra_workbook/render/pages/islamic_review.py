@@ -22,6 +22,7 @@ from qamra_workbook.render.pages.islamic_common import (
     references,
     rich,
     source_ids,
+    unit_sources,
 )
 from qamra_workbook.render.registry import Built, PageContext
 
@@ -90,6 +91,8 @@ def parent_guide(ctx: PageContext) -> Built:
         "sections": sections,
         "care": rich(ctx, page.care_note, problems),
         "refs": references(ctx, ids),
+        # the whole unit's sources (the volume passes them), else this page's own
+        "sources": unit_sources(ctx, list(ctx.page.params.get("unit_sources") or ids)),
         "preview": context_of(ctx).mode == "preview",
     }
     return Built(data, None, problems)

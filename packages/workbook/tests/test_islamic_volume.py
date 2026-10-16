@@ -267,7 +267,7 @@ def test_no_depiction_on_sira_and_prophet_pages_and_no_person_picture_anywhere(r
 
 def test_every_backdrop_composes_with_the_cast_and_its_props() -> None:
     class Cast:
-        def figure(self, who: str, x: float, y_feet: float, height: float) -> str:
+        def figure(self, who: str, x: float, y_feet: float, height: float, barefoot: bool = False) -> str:
             return f'<rect data-who="{who}" x="{x}" y="{y_feet - height}" width="1" height="{height}"/>'
 
     for name, back in BACKDROPS.items():

@@ -25,7 +25,12 @@ SHOE = "#7A5240"
 EYE = "#2F2A3A"
 MOUTH = "#8A4637"
 OUTFITS = ("#E98AA6", "#6E95DB", "#86BF72", "#F2A65A", "#A58BD8", "#5DB7A8")
-SCARVES = ("#8FB9A8", "#C9A7D8", "#9C6B98", "#A9C4E8")  # none near a skin tone (a peach scarf read as a bald head)
+SCARVES = (
+    "#8FB9A8",
+    "#C9A7D8",
+    "#9C6B98",
+    "#A9C4E8",
+)  # none near a skin tone (a peach scarf read as a bald head)
 BOX_W, BOX_H, FEET = 60.0, 120.0, 118.0
 
 Feeling = Literal[
@@ -206,12 +211,16 @@ def _baby(outfit: str) -> Drawing:
     return Drawing(marks, draw.path(curl, stroke=HAIR, width=1.6) + face(cx, hy + 1, r))
 
 
-def person(kind: Figure, outfit: str, *, scarf: str | None = None) -> Drawing:
-    """A friendly flat figure in the 60 × 120 box, feet on y = 118, facing the reader."""
+def person(
+    kind: Figure, outfit: str, *, scarf: str | None = None, barefoot: bool = False, draped: bool = False
+) -> Drawing:
+    """A friendly flat figure in the 60 × 120 box, feet on y = 118, facing the reader; `barefoot` (the prayer
+    hall, a prayer mat) draws bare feet in place of the shoes; `draped` gives a headscarf its fall over the
+    shoulders, its hem and a fold (a pale scarf alone read as hair)."""
     if kind == "baby":
         return _baby(outfit)
     if kind == "child":  # a young relative the family did not describe further: short hair, trousers
-        return person("boy", outfit, scarf=scarf)
+        return person("boy", outfit, scarf=scarf, barefoot=barefoot, draped=draped)
     cx = BOX_W / 2
     old = kind in ("grandma", "grandpa")
     child = kind in ("girl", "boy")
@@ -234,6 +243,12 @@ def person(kind: Figure, outfit: str, *, scarf: str | None = None) -> Drawing:
             ("C", (cx + r * 1.55, hy + r * 0.4, cx + r * 1.5, hy - r * 1.32, cx, hy - r * 1.32)),
         )
         back, front = [Mark(hood + " Z", scarf)], []
+        # the cloth falls over the neck and the shoulders: with the hood alone, a pale scarf read as hair
+        drape = draw.d_path(
+            ("M", (cx - r * 1.3, hy + r * 0.9)),
+            ("C", (cx - r * 1.55, hy + r * 2.2, cx - r * 0.9, shoulder + 9, cx, shoulder + 11)),
+            ("C", (cx + r * 0.9, shoulder + 9, cx + r * 1.55, hy + r * 2.2, cx + r * 1.3, hy + r * 0.9)),
+        )
     marks: list[Mark] = []
     if skirt:  # legs under the dress
         for s in (-1, 1):
@@ -256,8 +271,11 @@ def person(kind: Figure, outfit: str, *, scarf: str | None = None) -> Drawing:
             ("Q", (cx - 10, feet, cx - 10, feet - 2)),
         )
         marks.append(Mark(d + " Z", LEGS))
-    for s in (-1, 1):  # shoes, arms, hands
-        marks.append(Mark(_oval(cx + s * 5.8, feet + 0.8, 5, 2.9), SHOE))
+    for s in (-1, 1):  # shoes (or bare feet), arms, hands
+        if barefoot:
+            marks.append(Mark(_oval(cx + s * 5.6, feet + 1.0, 4.2, 2.5), SKIN))
+        else:
+            marks.append(Mark(_oval(cx + s * 5.8, feet + 0.8, 5, 2.9), SHOE))
         marks.append(Mark(_line(cx + s * 9.6, shoulder + 3.5, cx + s * 14.6, shoulder + arm), sleeve, 5.8))
         marks.append(Mark(_oval(cx + s * 15, shoulder + arm + 2.4, 3.1), SKIN))
     marks += back
@@ -289,14 +307,47 @@ def person(kind: Figure, outfit: str, *, scarf: str | None = None) -> Drawing:
             ("L", (cx - 11, waist + 1)),
         )
     marks.append(Mark(torso + " Z", outfit))
+    if scarf and draped:
+        marks.append(Mark(drape + " Z", scarf))
     marks.append(Mark(_oval(cx, hy + r * 0.08, r * 0.84, r * 0.93) if scarf else _oval(cx, hy, r), SKIN))
     marks += front
     details = ""
+    if barefoot:  # little toes, so the feet read as bare
+        for s in (-1, 1):
+            for i in range(3):
+                details += draw.el(
+                    "circle",
+                    cx=cx + s * (3.4 + i * 1.6),
+                    cy=feet - 0.6 + i * 0.25,
+                    r=0.62,
+                    fill=shade(SKIN, 0.86),
+                )
     if not skirt:  # a collar
         collar = draw.d_path(
             ("M", (cx - 3.6, shoulder - 0.4)), ("L", (cx, shoulder + 3)), ("L", (cx + 3.6, shoulder - 0.4))
         )
         details += draw.path(collar, stroke=shade(outfit, 0.78), width=1.1)
+    if scarf and draped:  # the scarf's hem round the face, and its edge and one fold on the chest
+        rim = shade(scarf, 0.78)
+        details += draw.el(
+            "ellipse",
+            cx=cx,
+            cy=hy + r * 0.08,
+            rx=r * 0.9,
+            ry=r * 0.99,
+            fill="none",
+            stroke=rim,
+            stroke_width=1.1,
+        )
+        details += draw.path(hood + " Z", stroke=rim, width=0.7)
+        details += draw.path(drape, stroke=rim, width=0.7)
+        details += draw.path(
+            draw.d_path(
+                ("M", (cx - r * 0.5, shoulder + 3)), ("Q", (cx, shoulder + 7.5, cx + r * 0.5, shoulder + 3))
+            ),
+            stroke=rim,
+            width=0.6,
+        )
     details += face(cx, hy + (r * 0.08 if scarf else 0), r * (0.9 if scarf else 1), glasses=old)
     if kind == "grandpa":  # a moustache
         m = draw.d_path(

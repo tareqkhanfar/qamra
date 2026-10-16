@@ -93,6 +93,9 @@ def books() -> dict[tuple[str, str], dict[str, Any]]:
     return out
 
 
+IN_THE_ANSWER_KEY = frozenset({"u-blessings/l3-3"})
+
+
 def page_text(books: dict[tuple[str, str], dict[str, Any]], vid: str, gender: str, key: str) -> str:
     book = books[vid, gender]
     pid = next(pid for pid, k in book["keys"].items() if k == key)
@@ -154,7 +157,7 @@ def test_this_is_me_agrees_with_the_child(books: dict[tuple[str, str], dict[str,
         ("V5", "u-whatif2/l4-3", "لَوْ ظَلَمْتُ صَدِيقِي", "لَوْ ظَلَمْتُ صَدِيقَتِي"),
         # a choice about the girl's friends («صَدِيقَاتِكِ»): «يَنْظُرْنَ»
         ("V5", "u-halal/l2-2", "حِينَ لَا يَنْظُرُونَ", "حِينَ لَا يَنْظُرْنَ"),
-        # feedback to the reader: the reader's mother, not the speaker's
+        # feedback to the reader (in the answer key since the feedback left the page): the reader's mother
         ("V1", "u-blessings/l3-3", "وَشُكْرُ أُمِّكَ", "وَشُكْرُ أُمِّكِ"),
         # the parents' question to this child («سؤال نسأله له»)
         ("V1", "u-follow/parent", "ماذا فعلتَ اليوم", "ماذا فعلتِ اليوم"),
@@ -169,8 +172,13 @@ def test_this_is_me_agrees_with_the_child(books: dict[tuple[str, str], dict[str,
 def test_the_lines_the_audit_fixed_print_in_the_childs_gender(
     books: dict[tuple[str, str], dict[str, Any]], vid: str, key: str, boy: str, girl: str
 ) -> None:
-    assert boy in page_text(books, vid, "m", key) and girl not in page_text(books, vid, "m", key)
-    assert girl in page_text(books, vid, "f", key) and boy not in page_text(books, vid, "f", key)
+    def text(gender: str) -> str:
+        if key in IN_THE_ANSWER_KEY:  # a «ماذا كنت ستفعل؟» feedback: the answer key prints it
+            return " ".join(t for _, t in printed(books[vid, gender]["answer-key"]))
+        return page_text(books, vid, gender, key)
+
+    assert boy in text("m") and girl not in text("m")
+    assert girl in text("f") and boy not in text("f")
 
 
 def test_a_boys_imperative_keeps_its_sukun_before_a_word_without_wasl(

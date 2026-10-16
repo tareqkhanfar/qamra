@@ -12,7 +12,6 @@
     {% if d.skills %}<section class="ur-block"><h2 class="ur-label">{{ icon('heart', 'ico', 2.2) }}{{ d.labels.parent }}</h2>
       {% for s in d.skills %}<div class="card fa-row"><div class="fa-t"><b>{{ s.skill }}</b><p>{{ s.text }}</p></div><div class="fa-stars">{{ isl.outline_stars(d.stars, 'star-outline') }}</div></div>{% endfor %}</section>{% endif %}
     {% if d.note %}<p class="as-note">{{ d.note }}</p>{% endif %}
-    {{ isl.refs(c, d.refs) }}
   </div>
   {{ isl.foot(p, c) }}
 </div>

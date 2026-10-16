@@ -8,7 +8,6 @@
     <article class="dy-row"><span class="dy-n">{{ m.n }}</span><div class="dy-pic-box">{{ m.pic }}</div><div class="dy-t"><b>{{ m.when }}</b><p>{{ m.text }}</p></div>{% if d.tick %}<span class="tick"></span>{% endif %}</article>
     {% endfor %}
     {% if d.closing %}<section class="hn-close card"><p{{ ' class=ai' if d.closing.ai }}>{{ d.closing.text }}</p></section>{% endif %}
-    {{ isl.refs(c, d.refs) }}
   </div>
   {{ isl.foot(p, c) }}
 </div>

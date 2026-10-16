@@ -16,7 +16,7 @@ from typing import Any
 
 from markupsafe import Markup, escape
 
-from qamra_workbook.islamic_sources import APPROVED, NOTICE, Resolved, SourceError, Span
+from qamra_workbook.islamic_sources import APPROVED, NOTICE, Resolved, SourceError, Span, cite
 from qamra_workbook.pictures.islamic import SCENES, ribbon_svg, scene_svg, star8_svg
 from qamra_workbook.pictures.islamic_backdrops import composed_problems, composed_svg, prop_known, prop_svg
 from qamra_workbook.render.islamic_content import AnyPage, Choice, Claim, IslamicContext, Quote, Scene
@@ -190,7 +190,7 @@ def sacred(ctx: PageContext, quote: Quote, kind: str, problems: list[str]) -> di
             {"n": ctx.num(n) if n else "", "text": t}
             for n, t in (got.lines if got and got.kind == "quran" else ())
         ],
-        "reference": ctx.num(got.reference) if got and got.reference else "",
+        "reference": cite(got.reference, ctx.num) if got and got.reference else "",
         "quran": bool(got and got.kind == "quran"),
         "placeholder": text is None,
         "notice": got.notice
@@ -290,7 +290,9 @@ def choices(
 
 
 def references(ctx: PageContext, ids: list[str]) -> list[str]:
-    """The citations under a page («21:87», «صحيح البخاري 6094»), in order, without repeats."""
+    """The citations a page stands on («سورة الأنبياء: ٨٧», «صحيح البخاري: ٦٠٩٤»), in order, without
+    repeats. Child pages no longer print them as a bare line: the unit's parents' page lists them, each with
+    what it supports (`unit_sources`)."""
     isl = context_of(ctx)
     out: dict[str, None] = {}
     for source_id in ids:
@@ -298,8 +300,44 @@ def references(ctx: PageContext, ids: list[str]) -> list[str]:
             continue
         got, _ = _resolve(ctx, source_id)
         if got is not None and got.reference:
-            out[ctx.num(got.reference)] = None
+            out[cite(got.reference, ctx.num)] = None
     return list(out)
+
+
+def cited_sources(ctx: PageContext, ids: list[str]) -> list[str]:
+    """The sources behind `ids` as the parents' list names them: a dua by the hadith it is cut from, a
+    ruling by the verses and hadiths it rests on; in order, without repeats, only those with a reference."""
+    register = context_of(ctx).resolver.register.by_id
+    out: dict[str, None] = {}
+    for source_id in ids:
+        src = register.get(source_id)
+        if src is None:
+            continue
+        if src.kind == "dua" and src.dua is not None:
+            out[src.dua.from_] = None
+        elif src.kind in ("ruling", "sira"):
+            out.update(dict.fromkeys(b for b in src.basis if b in register))
+        else:
+            out[source_id] = None
+    return [i for i in out if (got := _resolve(ctx, i)[0]) is not None and got.reference]
+
+
+def unit_sources(ctx: PageContext, ids: list[str]) -> list[dict[str, str]]:
+    """«مصادر هذه الوحدة» on the parents' page: each source with what it supports (its `label_ar`, else its
+    title) and its citation in full."""
+    register = context_of(ctx).resolver.register.by_id
+    out: list[dict[str, str]] = []
+    seen: set[str] = set()
+    for source_id in cited_sources(ctx, ids):
+        got, _ = _resolve(ctx, source_id)
+        assert got is not None
+        ref = cite(got.reference, ctx.num)
+        if ref in seen:
+            continue
+        seen.add(ref)
+        src = register[source_id]
+        out.append({"label": src.label_ar or src.title_ar, "ref": ref})
+    return out
 
 
 def tokens_in(text: str) -> list[str]:

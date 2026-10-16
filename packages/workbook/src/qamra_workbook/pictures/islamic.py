@@ -199,6 +199,20 @@ def _nested(pic_id: str, x: float, y: float, size: float) -> str:
     )
 
 
+def _turned(pic_id: str, x: float, y: float, size: float, angle: float) -> str:
+    """A library picture placed like `_nested`, turned `angle` degrees about its centre."""
+    c = size / 2
+    return f'<g transform="rotate({angle:g} {x + c:g} {y + c:g})">{_nested(pic_id, x, y, size)}</g>'
+
+
+def _arc_arrow(d: str, head: str) -> str:
+    """A motion arrow (the hand moving): a curved line and its head."""
+    return (
+        f'<path d="{d}" fill="none" stroke="#4A90C8" stroke-width="3" stroke-linecap="round" '
+        f'stroke-dasharray="1 6"/><path d="{head}" fill="#4A90C8" stroke="none"/>'
+    )
+
+
 def _drops(*spots: tuple[float, float, float]) -> str:
     return "".join(_nested("raindrop", x, y, s) for x, y, s in spots)
 
@@ -247,9 +261,16 @@ WUDU_ICONS: dict[str, str] = {
     "hands": _nested("faucet", 2, 2, 58) + _nested("hand", 28, 34, 66) + _drops((66, 6, 18), (78, 22, 15)),
     "mouth": _nested("mouth", 8, 24, 84) + _drops((12, 4, 22), (70, 2, 20)),
     "nose": _nested("nose", 12, 12, 76) + _drops((70, 8, 22), (4, 60, 18)),
-    "face": _nested("face", 10, 14, 80) + _drops((4, 2, 22), (74, 2, 22)),
+    # washing the face: both hands bring the water to it (the head card is a hand passing over the hair)
+    "face": _nested("face", 18, 8, 66)
+    + _turned("hand", -2, 44, 40, 28)
+    + _turned("hand", 62, 44, 40, -28)
+    + _drops((6, 2, 18), (78, 2, 18)),
     "arms": _forearm() + _drops((2, 8, 22), (30, 4, 18)),
-    "head": _nested("head", 10, 20, 80) + _drops((6, 2, 20), (72, 4, 22)),
+    "head": _nested("head", 14, 28, 72)
+    + _turned("hand", 30, 21, 44, 90)
+    + _arc_arrow("M14 22 Q50 -2 88 22", "M88 22 L80 23 L86 15 Z")
+    + _drops((2, 44, 14)),
     "feet": _nested("foot", 4, 12, 62) + _nested("foot", 38, 22, 58) + _drops((70, 2, 22)),
 }
 

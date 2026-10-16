@@ -32,10 +32,11 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import sys
 import unicodedata
 from collections import Counter
-from collections.abc import Iterable, Mapping
+from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass, field, replace
 from datetime import date
 from pathlib import Path
@@ -88,6 +89,141 @@ COLLECTION_AR: dict[str, str] = {
 }
 
 
+# the surahs' names (Hafs mushaf order), for a citation a reader can read: «سورة الأعراف: ٣١», not «7:31»
+SURAH_AR: tuple[str, ...] = (
+    "الفاتحة",
+    "البقرة",
+    "آل عمران",
+    "النساء",
+    "المائدة",
+    "الأنعام",
+    "الأعراف",
+    "الأنفال",
+    "التوبة",
+    "يونس",
+    "هود",
+    "يوسف",
+    "الرعد",
+    "إبراهيم",
+    "الحجر",
+    "النحل",
+    "الإسراء",
+    "الكهف",
+    "مريم",
+    "طه",
+    "الأنبياء",
+    "الحج",
+    "المؤمنون",
+    "النور",
+    "الفرقان",
+    "الشعراء",
+    "النمل",
+    "القصص",
+    "العنكبوت",
+    "الروم",
+    "لقمان",
+    "السجدة",
+    "الأحزاب",
+    "سبأ",
+    "فاطر",
+    "يس",
+    "الصافات",
+    "ص",
+    "الزمر",
+    "غافر",
+    "فصلت",
+    "الشورى",
+    "الزخرف",
+    "الدخان",
+    "الجاثية",
+    "الأحقاف",
+    "محمد",
+    "الفتح",
+    "الحجرات",
+    "ق",
+    "الذاريات",
+    "الطور",
+    "النجم",
+    "القمر",
+    "الرحمن",
+    "الواقعة",
+    "الحديد",
+    "المجادلة",
+    "الحشر",
+    "الممتحنة",
+    "الصف",
+    "الجمعة",
+    "المنافقون",
+    "التغابن",
+    "الطلاق",
+    "التحريم",
+    "الملك",
+    "القلم",
+    "الحاقة",
+    "المعارج",
+    "نوح",
+    "الجن",
+    "المزمل",
+    "المدثر",
+    "القيامة",
+    "الإنسان",
+    "المرسلات",
+    "النبأ",
+    "النازعات",
+    "عبس",
+    "التكوير",
+    "الانفطار",
+    "المطففين",
+    "الانشقاق",
+    "البروج",
+    "الطارق",
+    "الأعلى",
+    "الغاشية",
+    "الفجر",
+    "البلد",
+    "الشمس",
+    "الليل",
+    "الضحى",
+    "الشرح",
+    "التين",
+    "العلق",
+    "القدر",
+    "البينة",
+    "الزلزلة",
+    "العاديات",
+    "القارعة",
+    "التكاثر",
+    "العصر",
+    "الهمزة",
+    "الفيل",
+    "قريش",
+    "الماعون",
+    "الكوثر",
+    "الكافرون",
+    "النصر",
+    "المسد",
+    "الإخلاص",
+    "الفلق",
+    "الناس",
+)
+_QURAN_REF = re.compile(r"^(\d+):(\d+)(?:-(\d+))?$")
+_NUMBERED_REF = re.compile(r"^(.*\D)\s+(\d+)$")
+
+
+def cite(reference: str, num: Callable[[str], str] = str) -> str:
+    """A reference as printed: «7:31» → «سورة الأعراف: ٣١», «2:183-185» → «سورة البقرة: ١٨٣–١٨٥»,
+    «صحيح البخاري 5376» → «صحيح البخاري: ٥٣٧٦» (`num` writes the digits in the book's numerals)."""
+    quran = _QURAN_REF.match(reference)
+    if quran:
+        surah, first, last = quran.groups()
+        ayat = num(first) + (f"–{num(last)}" if last and last != first else "")
+        return f"سورة {SURAH_AR[int(surah) - 1]}: {ayat}"
+    numbered = _NUMBERED_REF.match(reference)
+    if numbered:
+        return f"{numbered.group(1).strip()}: {num(numbered.group(2))}"
+    return reference
+
+
 class SourceError(ValueError):
     """The register or a corpus is wrong, or a marker was not found: the build stops (never a silent
     guess).
@@ -118,10 +254,20 @@ class HadithRef(_Model):
     number: int = Field(ge=1)
 
 
+class OmitRef(_Model):
+    """A stretch inside a dua's span that is not part of the words said (e.g. the Prophet's ﷺ explanation in
+    the middle of the tashahhud): search markers, inclusive, never printed."""
+
+    start: str
+    end: str
+
+
 class DuaRef(_Model):
     from_: str = Field(alias="from")  # the id of the hadith this span is cut from
     start: str
     end: str
+    # stretches of the span left out of the words said; what remains is verbatim, joined with one space
+    omit: list[OmitRef] = Field(default_factory=list)
 
 
 class Source(_Model):
@@ -139,6 +285,9 @@ class Source(_Model):
         ""  # a point where scholars differ or the age needs care: goes to the review queue
     )
     status: Status = "proposed"
+    # what the source supports, in a few plain words for the parents' list «مصادر هذه الوحدة» (never its
+    # wording); the title is printed when there is none
+    label_ar: str = ""
     reviewed_by: str = ""
     reviewed_on: date | None = None
     # the sha256 of the wording the scholar saw (hadith, dua): a later fetch that changes it fails loudly
@@ -309,11 +458,8 @@ class Span:
         return cls(raw.start, raw.end)  # a Span (also one from this module run as __main__)
 
 
-def cut(text: str, span: Span) -> tuple[str, int]:
-    """The ORIGINAL slice of `text` (harakat kept) from the first match of `span.start` to the first match of
-    `span.end` that finishes at or after the start marker's end (so the two markers may be the same words).
-    Also returns how many places the start marker matches (the first is used). Raises `SourceError` when a
-    marker is empty or not found."""
+def bounds(text: str, span: Span) -> tuple[int, int, int]:
+    """Where `cut` slices `text`: (begin, stop, how many places the start marker matches)."""
     folded, index = letters_map(text)
     first, last = letters(span.start), letters(span.end)
     if not first or not last:
@@ -332,7 +478,36 @@ def cut(text: str, span: Span) -> tuple[str, int]:
     begin, stop = index[i], index[j + len(last) - 1] + 1
     while stop < len(text) and unicodedata.category(text[stop]) == "Mn":  # the harakat of the last letter
         stop += 1
-    return text[begin:stop], folded.count(first)
+    return begin, stop, folded.count(first)
+
+
+def cut(text: str, span: Span) -> tuple[str, int]:
+    """The ORIGINAL slice of `text` (harakat kept) from the first match of `span.start` to the first match of
+    `span.end` that finishes at or after the start marker's end (so the two markers may be the same words).
+    Also returns how many places the start marker matches (the first is used). Raises `SourceError` when a
+    marker is empty or not found."""
+    begin, stop, count = bounds(text, span)
+    return text[begin:stop], count
+
+
+def cut_out(text: str, span: Span) -> str:
+    """`text` without the stretch between the markers (inclusive) and the punctuation that closes it; the two
+    sides, each verbatim, are joined with one space."""
+    begin, stop, _ = bounds(text, span)
+    while stop < len(text) and unicodedata.category(text[stop])[0] in "PZC":  # «،», spaces, RLM marks
+        stop += 1
+    return text[:begin].rstrip() + " " + text[stop:]
+
+
+# the formula after the Prophet's ﷺ name as the hadith corpus spells it (no harakat), and with the standard
+# tashkeel (Addendum 10: the vowelled hadiths must not carry it bare)
+SALAWAT_BARE = "صلى الله عليه وسلم"
+SALAWAT = "صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ"
+
+
+def vowel_salawat(text: str) -> str:
+    """The bare formula «صلى الله عليه وسلم» in a hadith's text with its standard tashkeel; nothing else."""
+    return text.replace(SALAWAT_BARE, SALAWAT)
 
 
 def sha256(text: str) -> str:
@@ -492,6 +667,28 @@ class Resolved:
         return self.has_text and self.status in APPROVED
 
 
+def _ayat_of(base: Resolved, begin: int, stop: int) -> tuple[tuple[tuple[int, str], ...], str]:
+    """The lines and the reference of the stretch [begin, stop) of a Quran source's text (its lines joined
+    with one space): the citation names exactly the ayat the stretch touches («17:24», «97:3»). Whole ayat
+    keep their numbers; a part of an ayah is one line, numbered only when it runs to the ayah's end."""
+    surah = base.reference.split(":", 1)[0]
+    offset, touched = 0, []
+    for number, text in base.lines:
+        start, end = offset, offset + len(text)
+        offset = end + 1
+        if number and start < stop and begin < end:
+            touched.append((number, text, start, end))
+    if not touched:
+        return ((0, base.text[begin:stop] if base.text else ""),), base.reference
+    first, last = touched[0][0], touched[-1][0]
+    reference = f"{surah}:{first}" + (f"-{last}" if last != first else "")
+    if begin <= touched[0][2] and stop >= touched[-1][3]:  # whole ayat
+        return tuple((n, t) for n, t, _, _ in touched), reference
+    words = (base.text or "")[begin:stop]
+    ends = len(touched) == 1 and stop >= touched[0][3]
+    return ((first if ends else 0, words),), reference
+
+
 class Resolver:
     """Source id → `Resolved`, from the register and its corpora (the Tanzil file, the fetched candidates)."""
 
@@ -551,9 +748,13 @@ class Resolver:
         base = self._resolve_base(source_id)
         if span is None or base.text is None:
             return base
-        words, _ = cut(base.text, Span.of(span))
+        begin, stop, _ = bounds(base.text, Span.of(span))
+        words = base.text[begin:stop]
         provenance = f"{base.provenance} · words cut between two markers"
-        return replace(base, text=words, lines=((0, words),), provenance=provenance)
+        if base.kind != "quran":
+            return replace(base, text=words, lines=((0, words),), provenance=provenance)
+        lines, reference = _ayat_of(base, begin, stop)
+        return replace(base, text=words, lines=lines, provenance=provenance, reference=reference)
 
     # -- one source, whole --------------------------------------------------------------------------------
 
@@ -626,11 +827,12 @@ class Resolver:
             return self._missing(src, f"reference check {cand.reference_check}{note}", label)
         if at_least(src.status, "text_verified") and src.approved_sha256 and src.approved_sha256 != cand.sha:
             raise SourceError(f"{src.id}: the text changed since it was verified (sha256 differs)")
+        text = vowel_salawat(cand.text)
         return self._make(
             src,
             status=_higher(src.status, "text_candidate"),
-            text=cand.text,
-            lines=((0, cand.text),),
+            text=text,
+            lines=((0, text),),
             provenance=(
                 f"{cand.dataset} · {cand.edition} · {cand.dataset_number or cand.number}"
                 f"{' (' + cand.numbering + ')' if cand.numbering == 'arabicnumber' else ''} "
@@ -652,6 +854,8 @@ class Resolver:
             )
         try:
             words, _ = cut(whole.text, Span(ref.start, ref.end))
+            for gap in ref.omit:
+                words = cut_out(words, Span(gap.start, gap.end))
         except SourceError as err:
             raise SourceError(f"{src.id}: {err}") from None
         return self._make(

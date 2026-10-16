@@ -31,6 +31,7 @@ from qamra_workbook.pictures.islamic_scenes import (
     vgrad,
     wave,
 )
+from qamra_workbook.pictures.model import OUTLINE
 
 W, H = 180.0, 104.0
 # A scene fills its box from the bottom (slice, YMax): the widest box (54 mm high, 180 mm wide, ~3.4:1)
@@ -41,7 +42,9 @@ PERSON_CATEGORIES = frozenset({"person", "people", "family", "action"})
 PERSON_PICTURES = frozenset(k for k, p in PICTURES.items() if p.category in PERSON_CATEGORIES)
 # body parts: allowed as props on everyday pages (the wudu cards use them), never on a prophet's page
 BODY_PICTURES = frozenset(k for k, p in PICTURES.items() if p.category == "body")
-SKY_PROPS = frozenset({"sun", "moon", "star", "cloud", "kite"})  # in the sky, never on the grass or the sand
+SKY_PROPS = frozenset(
+    {"sun", "moon", "star", "cloud", "kite", "isl:crescent"}
+)  # in the sky, never on the grass or the sand
 GLYPH_PREFIX = "isl:"  # a prop that is one of the series' icons: isl:lantern, isl:prayer-mat…
 GLYPH_COLORS = ("#1F7A5A", "#C9962B", "#5B6FC0", "#C0265B", "#14606E", "#D9822B")
 
@@ -61,18 +64,43 @@ class Backdrop:
     sky: tuple[tuple[float, float, float], ...] = ()  # where a sun, a moon, a star, a cloud or a kite goes
 
 
+WUDU_PREFIX = "wudu:"  # a wudu card's picture (`islamic.WUDU_ICONS`): wudu:face, wudu:head…
+
+
 def prop_known(prop: str) -> bool:
     if prop.startswith(GLYPH_PREFIX):
-        return prop[len(GLYPH_PREFIX) :] in UNIT_GLYPHS
+        from qamra_workbook.pictures.islamic_objects import OBJECTS
+
+        return prop[len(GLYPH_PREFIX) :] in UNIT_GLYPHS or prop[len(GLYPH_PREFIX) :] in OBJECTS
+    if prop.startswith(WUDU_PREFIX):
+        from qamra_workbook.pictures.islamic import WUDU_ICONS
+
+        return prop[len(WUDU_PREFIX) :] in WUDU_ICONS
     return prop in PICTURES
 
 
 def prop_svg(prop: str, x: float, y: float, size: float, i: int = 0) -> str:
-    """A prop placed with its top-left at (x, y): a library picture, or a series icon on a soft disc."""
+    """A prop placed with its top-left at (x, y): a library picture, a series thing as it stands in a scene
+    (`islamic_objects`: the prayer mat on the floor, the lantern, the sheaf…), or else a series icon on a soft
+    disc."""
+    if prop.startswith(WUDU_PREFIX):  # the wudu cards' pictures (the library's head and face look alike)
+        from qamra_workbook.pictures.islamic import WUDU_ICONS
+
+        inner = WUDU_ICONS[prop[len(WUDU_PREFIX) :]]
+        return (
+            f'<svg x="{n(x)}" y="{n(y)}" width="{n(size)}" height="{n(size)}" viewBox="0 0 100 100" '
+            f'stroke="{OUTLINE}">{inner}</svg>'
+        )
     if prop.startswith(GLYPH_PREFIX):
         from qamra_workbook.pictures.islamic import glyph_svg
+        from qamra_workbook.pictures.islamic_objects import AS_PICTURE, object_svg
 
         name = prop[len(GLYPH_PREFIX) :]
+        drawn = object_svg(name, x, y, size)
+        if drawn is not None:
+            return drawn
+        if name in AS_PICTURE:
+            return pic(AS_PICTURE[name], x, y, size)
         color = GLYPH_COLORS[i % len(GLYPH_COLORS)]
         k = size / 24
         return (
@@ -411,6 +439,9 @@ BACKDROPS: dict[str, Backdrop] = {
         ),
     )
 }
+# where the cast are barefoot: the prayer hall, and any room with a prayer mat laid out
+BAREFOOT = frozenset({"mosque-inside"})
+BAREFOOT_PROPS = frozenset({"isl:prayer-mat"})
 HEIGHTS = {"huda": 1.0, "reem": 0.86, "salem": 0.74, "reader": 0.9, "naanaa": 0.36}
 
 
@@ -459,9 +490,10 @@ def compose(backdrop: str, props: Sequence[str], figures: Sequence[str], uid: st
         placed.append(prop_svg(prop, x, y, size, i))
     if not back.props_front:
         out += placed
+    barefoot = backdrop in BAREFOOT or any(p in BAREFOOT_PROPS for p in props)  # shoes off to pray
     for who, x, height in people:
         assert kit is not None
-        out.append(kit.figure(who, x, back.floor, height))
+        out.append(kit.figure(who, x, back.floor, height, barefoot=barefoot))
     if back.front is not None:
         out.append(back.front(uid))
     if back.props_front:

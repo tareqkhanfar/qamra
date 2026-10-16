@@ -10,8 +10,8 @@
       <div class="pg-text"><h2>{{ s.label }}</h2><p{% if s.ai %} class="ai"{% endif %}>{{ s.text }}</p></div>
     </section>
     {% endfor %}
+    {{ isl.sources(d.sources) }}
     <aside class="pg-care"><div class="pg-care-ico">{{ icon('book', 'ico', 2) }}</div><p>{{ d.care }}</p></aside>
-    {{ isl.refs(c, d.refs) }}
   </div>
   {{ isl.foot(p, c) }}
 </div>

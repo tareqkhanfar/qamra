@@ -39,33 +39,35 @@ corpus:
 
 sources:
   # ---- القرآن الكريم (ranges; wording from the Tanzil file)
-  - {id: q-112, kind: quran, title_ar: "سورة الإخلاص", quran: {surah: 112, from: 1, to: 4}, topic: tawhid, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
-  - {id: q-21-87, kind: quran, title_ar: "دعاء يونس عليه السلام في الظلمات", quran: {surah: 21, from: 87, to: 87}, topic: dua, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
-  - {id: q-21-88, kind: quran, title_ar: "استجابة الله ليونس عليه السلام", quran: {surah: 21, from: 88, to: 88}, topic: dua, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-112, kind: quran, title_ar: "سورة الإخلاص", label_ar: "سورة الإخلاص", quran: {surah: 112, from: 1, to: 4}, topic: tawhid, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-21-87, kind: quran, title_ar: "دعاء يونس عليه السلام في الظلمات", label_ar: "دعاء يونس عليه السلام", quran: {surah: 21, from: 87, to: 87}, topic: dua, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-21-88, kind: quran, title_ar: "استجابة الله ليونس عليه السلام", label_ar: "نجاة يونس عليه السلام", quran: {surah: 21, from: 88, to: 88}, topic: dua, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
   - id: q-37-139-148
     kind: quran
     title_ar: خبر يونس عليه السلام في سورة الصافات
+    label_ar: "قصة يونس عليه السلام"
     quran: {surah: 37, from: 139, to: 148}
     topic: prophet-yunus
     scholar_decision: "قصّة يونس للأطفال: نقتصر على ما في الآيات (السفينة، الحوت، التسبيح، النجاة، شجرة اليقطين)، ولا نذكر مدّة المكث ولا تفاصيل لم تثبت"
     status: owner_approved
     reviewed_on: 2026-10-07
     approval_note: "owner decision 2026-10-07"
-  - {id: q-5-6, kind: quran, title_ar: "آية الوضوء", quran: {surah: 5, from: 6, to: 6}, topic: wudu, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
-  - {id: q-16-18, kind: quran, title_ar: "نِعَم الله لا تُحصى", quran: {surah: 16, from: 18, to: 18}, topic: blessings, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
-  - {id: q-6-1, kind: quran, title_ar: "الحمد لله الذي خلق السماوات والأرض", quran: {surah: 6, from: 1, to: 1}, topic: creation, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
-  - {id: q-39-62, kind: quran, title_ar: "الله خالق كل شيء", quran: {surah: 39, from: 62, to: 62}, topic: creation, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
-  - {id: q-2-172, kind: quran, title_ar: "الأكل من الطيبات وشكر الله", quran: {surah: 2, from: 172, to: 172}, topic: gratitude, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
-  - {id: q-14-7, kind: quran, title_ar: "وعد الله للشاكرين", quran: {surah: 14, from: 7, to: 7}, topic: gratitude, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
-  - {id: q-1-2, kind: quran, title_ar: "الحمد لله رب العالمين", quran: {surah: 1, from: 2, to: 2}, topic: gratitude, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
-  - {id: q-2-186, kind: quran, title_ar: "الله قريب يجيب الدعاء", quran: {surah: 2, from: 186, to: 186}, topic: dua, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
-  - {id: q-2-222, kind: quran, title_ar: "الله يحب التوّابين", quran: {surah: 2, from: 222, to: 222}, topic: repentance, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
-  - {id: q-41-34, kind: quran, title_ar: "ادفع بالتي هي أحسن", quran: {surah: 41, from: 34, to: 34}, topic: anger, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-5-6, kind: quran, title_ar: "آية الوضوء", label_ar: "الوضوء", quran: {surah: 5, from: 6, to: 6}, topic: wudu, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-16-18, kind: quran, title_ar: "نِعَم الله لا تُحصى", label_ar: "نعم الله الكثيرة", quran: {surah: 16, from: 18, to: 18}, topic: blessings, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-6-1, kind: quran, title_ar: "الحمد لله الذي خلق السماوات والأرض", label_ar: "حمد الله الخالق", quran: {surah: 6, from: 1, to: 1}, topic: creation, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-39-62, kind: quran, title_ar: "الله خالق كل شيء", label_ar: "الله خالق الأشياء كلها", quran: {surah: 39, from: 62, to: 62}, topic: creation, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-2-172, kind: quran, title_ar: "الأكل من الطيبات وشكر الله", label_ar: "الأكل من الطيبات وشكر الله", quran: {surah: 2, from: 172, to: 172}, topic: gratitude, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-14-7, kind: quran, title_ar: "وعد الله للشاكرين", label_ar: "شكر النعمة", quran: {surah: 14, from: 7, to: 7}, topic: gratitude, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-1-2, kind: quran, title_ar: "الحمد لله رب العالمين", label_ar: "حمد الله", quran: {surah: 1, from: 2, to: 2}, topic: gratitude, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-2-186, kind: quran, title_ar: "الله قريب يجيب الدعاء", label_ar: "الله قريب يجيب الدعاء", quran: {surah: 2, from: 186, to: 186}, topic: dua, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-2-222, kind: quran, title_ar: "الله يحب التوّابين", label_ar: "محبة الله للتائبين", quran: {surah: 2, from: 222, to: 222}, topic: repentance, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
+  - {id: q-41-34, kind: quran, title_ar: "ادفع بالتي هي أحسن", label_ar: "مقابلة الإساءة بالإحسان", quran: {surah: 41, from: 34, to: 34}, topic: anger, status: owner_approved, reviewed_on: 2026-10-07, approval_note: "owner decision 2026-10-07"}
 
   # ---- الحديث الشريف (collection + number; the grading column is the drafter's belief, to be verified)
   - id: h-bukhari-159
     kind: hadith
     title_ar: وضوء عثمان رضي الله عنه كما رأى النبي ﷺ يتوضأ
+    label_ar: "صفة الوضوء"
     hadith: {collection: bukhari, number: 159}
     expect: [مضمض, المرفقين, برأسه]
     grading_claimed: "متفق عليه (البخاري ١٥٩ ومسلم ٢٢٦)"
@@ -78,6 +80,7 @@ sources:
   - id: h-abudawud-101
     kind: hadith
     title_ar: التسمية في أول الوضوء
+    label_ar: "التسمية قبل الوضوء"
     hadith: {collection: abudawud, number: 101}
     expect: [وضوء, اسم]
     grading_claimed: "اختُلف في تصحيحه"
@@ -90,6 +93,7 @@ sources:
   - id: h-bukhari-5376
     kind: hadith
     title_ar: «يا غلام سمِّ الله وكل بيمينك وكل مما يليك»
+    label_ar: "التسمية والأكل باليمين"
     hadith: {collection: bukhari, number: 5376}
     expect: [الله, بيمينك, يليك]
     grading_claimed: "متفق عليه (البخاري ٥٣٧٦ ومسلم ٢٠٢٢)"
@@ -101,6 +105,7 @@ sources:
   - id: h-abudawud-3767
     kind: hadith
     title_ar: التسمية عند الأكل
+    label_ar: "التسمية قبل الطعام"
     hadith: {collection: abudawud, number: 3767}
     expect: [اسم, أوله, آخره]
     grading_claimed: "صحّحه الألباني (للتحقق)"
@@ -112,6 +117,7 @@ sources:
   - id: h-bukhari-6094
     kind: hadith
     title_ar: «الصدق يهدي إلى البر»
+    label_ar: "الصدق"
     hadith: {collection: bukhari, number: 6094}
     expect: [الصدق, البر]
     grading_claimed: "متفق عليه (البخاري ٦٠٩٤ ومسلم ٢٦٠٧)"
@@ -123,6 +129,7 @@ sources:
   - id: h-bukhari-6114
     kind: hadith
     title_ar: «ليس الشديد بالصُّرَعة»
+    label_ar: "ضبط النفس عند الغضب"
     hadith: {collection: bukhari, number: 6114}
     expect: [الشديد, الصرعة, الغضب]
     grading_claimed: "متفق عليه (البخاري ٦١١٤ ومسلم ٢٦٠٩)"
@@ -134,6 +141,7 @@ sources:
   - id: h-bukhari-3282
     kind: hadith
     title_ar: الاستعاذة عند الغضب
+    label_ar: "الاستعاذة عند الغضب"
     hadith: {collection: bukhari, number: 3282}
     expect: [أعوذ, الشيطان, احمر]
     grading_claimed: "متفق عليه (البخاري ٣٢٨٢ ومسلم ٢٦١٠)"
@@ -145,6 +153,7 @@ sources:
   - id: h-muslim-2610
     kind: hadith
     title_ar: الاستعاذة عند الغضب
+    label_ar: "الاستعاذة عند الغضب"
     hadith: {collection: muslim, number: 2610}
     expect: [أعوذ, الشيطان, الرجيم, يغضب]
     grading_claimed: "متفق عليه (البخاري ٣٢٨٢ ومسلم ٢٦١٠)"
@@ -156,6 +165,7 @@ sources:
   - id: h-abudawud-4782
     kind: hadith
     title_ar: الجلوس عند الغضب
+    label_ar: "تهدئة الغضب بالجلوس"
     hadith: {collection: abudawud, number: 4782}
     expect: [غضب, فليجلس]
     grading_claimed: "صحّحه الألباني (للتحقق)"

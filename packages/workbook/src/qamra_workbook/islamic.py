@@ -27,6 +27,7 @@ FORMS = ("story", "activity", "question", "situation", "review", "home")
 RANGE = (96, 120)  # Addendum 10 §1: a volume is ~96–120 pages (the seasonal book is smaller)
 SEASONAL_RANGE = (48, 80)
 MIN_FORMS = 5  # a concept should reach at least this many of the six forms across the series
+PAGE_MULTIPLE = 4  # the printer binds sheets of four pages: every volume's page count is a multiple of it
 
 
 @dataclass
@@ -170,6 +171,8 @@ def problems(plan: Plan) -> list[str]:
         low, high = SEASONAL_RANGE if vid == "R" else RANGE
         if not low <= total <= high:
             found.append(f"{vid}: {total} pages, outside the {low}–{high} range")
+        if total % PAGE_MULTIPLE:
+            found.append(f"{vid}: {total} pages, not a multiple of {PAGE_MULTIPLE} (the printer's sheets)")
         for unit in v["units"]:
             uid = unit["id"]
             if uid not in plan.units:

@@ -13,7 +13,6 @@
           {% for r in d.rows %}<span class="su-ay">{{ r }}</span>{% for n in d.days %}<span class="su-cell">{{ icon('star', 'star-outline', 1.6) }}</span>{% endfor %}{% endfor %}</div></div>
     </section>
     <aside class="pg-care su-care"><div class="pg-care-ico">{{ icon('book', 'ico', 2) }}</div><p>{{ d.care }}</p></aside>
-    {{ isl.refs(c, d.refs) }}
   </div>
   {{ isl.foot(p, c) }}
 </div>

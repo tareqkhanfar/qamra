@@ -106,6 +106,13 @@
 .pg-care-ico { flex: none; width: 8mm; height: 8mm; color: var(--deep); }
 .pg-care-ico .ico { width: 100%; height: 100%; }
 .pg-care p { font: 500 10.5pt/1.75 var(--ui); color: var(--ink-2); }
+.pg-sources { margin-top: auto; padding: 2.4mm 4mm 2.6mm; border-radius: 3.4mm; background: #FFFFFF; border: 0.35mm solid #E6DCC6; }
+.pg-sources h2 { font: 700 9.6pt/1.4 var(--ui); color: var(--deep); margin: 0 0 1.2mm; }
+.pg-sources ul { list-style: none; margin: 0; padding: 0; column-count: 2; column-gap: 6mm; }
+.pg-sources li { font: 500 8.4pt/1.6 var(--ui); color: var(--ink-2); break-inside: avoid; padding-inline-start: 2.6mm; position: relative; }
+.pg-sources li::before { content: ""; position: absolute; inset-inline-start: 0; top: 2.3mm; width: 1.1mm; height: 1.1mm; border-radius: 50%; background: var(--deep); opacity: 0.55; }
+.pg-sources li bdi { color: var(--ink-3, #7A7466); white-space: nowrap; }
+.pg-sources + .pg-care { margin-top: 2.6mm; }
 .isl-refs { flex: none; display: flex; flex-wrap: wrap; gap: 0 2.6mm; padding-inline: 1.2mm; font: 500 7.4pt/1.6 var(--ui); color: var(--muted); }
 .isl-refs span { font-weight: 700; }
 

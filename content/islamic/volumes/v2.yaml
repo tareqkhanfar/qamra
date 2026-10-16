@@ -22,7 +22,7 @@ units:
       - {t: "أَقِفُ بَيْنَ يَدَيِ اللهِ", c: [c-prayer-steps], s: [h-bukhari-631, s-prayer-hands, s-prayer-clothing], p: [story, order-steps, find-objects]}
       - {t: "أَرْكَعُ وَأَسْجُدُ", c: [c-prayer-steps, c-prayer-words], s: [d-ruku, d-sujud, d-rising, d-between-sujud], p: [order-steps, dhikr, match]}
       - {t: "أَجْلِسُ وَأُسَلِّمُ", c: [c-prayer-steps, c-prayer-words], s: [d-tashahhud, q-33-56, s-prayer-rakaat], p: [order-steps, dhikr, true-false]}
-      - {t: "أُصَلِّي مَعَ أَهْلِي", c: [c-prayer-steps, c-family-love], r: [c-surah-fatiha, c-surah-ikhlas, c-surah-kawthar], s: [s-prayer-age, h-abudawud-495], p: [story, role-play]}
+      - {t: "أُصَلِّي مَعَ أَهْلِي", c: [c-prayer-steps, c-family-love], r: [c-surah-fatiha, c-surah-ikhlas, c-surah-kawthar], s: [s-prayer-age, h-abudawud-495], p: [story, role-play, draw]}
   - id: u-quran1
     lessons:
       - {t: "الْقُرْآنُ كَلَامُ اللهِ", c: [c-quran-what], s: [q-96-1-5, q-2-185], p: [story, find-objects, choose]}

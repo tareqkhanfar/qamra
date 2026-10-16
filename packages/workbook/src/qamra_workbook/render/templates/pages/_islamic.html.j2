@@ -18,6 +18,11 @@
 {% if list %}<div class="isl-refs"><span>المراجع:</span>{% for r in list %}<bdi dir="{{ 'ltr' if r[:1] in '0123456789٠١٢٣٤٥٦٧٨٩' else 'rtl' }}">{{ r }}</bdi>{% endfor %}</div>{% endif %}
 {%- endmacro %}
 
+{# the parents' page: what each source of the unit supports, with its citation in full #}
+{% macro sources(list) -%}
+{% if list %}<section class="pg-sources"><h2>مصادر هذه الوحدة</h2><ul>{% for s in list %}<li><span>{{ s.label }}</span> — <bdi dir="rtl">{{ s.ref }}</bdi></li>{% endfor %}</ul></section>{% endif %}
+{%- endmacro %}
+
 {% macro foot(p, c) -%}
 <footer class="isl-foot">
   <span class="isl-foot-unit">{{ c.unit }}</span>
@@ -34,13 +39,13 @@
   {% if b.tag %}<div class="sacred-tag">{{ b.tag }}</div>{% endif %}
   {% if b.label %}<figcaption class="sacred-label">{{ b.label }}</figcaption>{% endif %}
   {% if b.placeholder %}
-  <div class="sacred-hole"><i>{{ icon('alert', 'ico', 2) }}</i><p>{{ b.notice }}</p><small>{{ b.title }}{% if b.reference %} · <bdi dir="ltr">{{ b.reference }}</bdi>{% endif %}</small></div>
+  <div class="sacred-hole"><i>{{ icon('alert', 'ico', 2) }}</i><p>{{ b.notice }}</p><small>{{ b.title }}{% if b.reference %} · <bdi dir="rtl">{{ b.reference }}</bdi>{% endif %}</small></div>
   {% elif b.quran %}
   <div class="sacred-text{{ ' stacked' if stacked }}"{% if fit %} data-fit="14"{% endif %}>{% for l in b.lines %}<span class="ayah{{ ' basmala' if l.n == '' }}">{% if l.n != '' %}{% set w = l.text.rsplit(' ', 1) %}{% if w|length == 2 %}{{ w[0] }} {% endif %}<span class="ay-end">{{ w[-1] }}<span class="ay-no">{{ l.n }}</span></span>{% else %}{{ l.text }}{% endif %}</span> {% endfor %}</div>
   {% else %}
   <div class="sacred-text">{{ b.text }}</div>
   {% endif %}
-  {% if not b.placeholder and b.reference %}<div class="sacred-ref"><bdi dir="ltr">{{ b.reference }}</bdi></div>{% endif %}
+  {% if not b.placeholder and b.reference %}<div class="sacred-ref"><bdi dir="rtl">{{ b.reference }}</bdi></div>{% endif %}
   {% if b.quran and not b.placeholder %}<div class="sacred-credit">نص القرآن الكريم من مشروع تنزيل · <bdi dir="ltr">tanzil.net</bdi></div>{% endif %}
 </figure>
 {%- endmacro %}
