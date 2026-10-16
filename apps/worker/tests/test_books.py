@@ -26,6 +26,7 @@ from qamra_core.db.models import (
     CharacterStatus,
     Child,
     ChildPhoto,
+    Consent,
     Gender,
     GenerationCost,
     Locale,
@@ -34,6 +35,7 @@ from qamra_core.db.models import (
     Theme,
     User,
 )
+from qamra_core.photo_keep import KEEP_SCOPE
 from qamra_core.storage import ObjectStorage
 from qamra_worker.jobs import books as books_job
 from qamra_worker.jobs.books import (
@@ -290,7 +292,18 @@ def test_the_cover_photo_is_used_only_while_it_is_kept(db: Session, storage: Obj
     child = db.get(Child, book.child_id)
     assert child is not None and cover_photo(db, storage, child) == FIXTURE.read_bytes()
     photo = db.scalars(select(ChildPhoto).where(ChildPhoto.child_id == child.id)).one()
+    assert photo.last_used_at is not None  # the retention of a kept photo counts from its last use
     photo.delete_after = datetime.now(UTC) - timedelta(minutes=1)  # due for deletion: never used again
+    db.commit()
+    assert cover_photo(db, storage, child) is None
+    # unless the guardian chose to keep it for later books (qamra_core.photo_keep)
+    keep = Consent(
+        child_id=child.id, guardian_user_id=child.guardian_user_id, consent_text_version="k", scope=KEEP_SCOPE
+    )
+    db.add(keep)
+    db.commit()
+    assert cover_photo(db, storage, child) == FIXTURE.read_bytes()
+    keep.withdrawn_at = datetime.now(UTC)
     db.commit()
     assert cover_photo(db, storage, child) is None
 

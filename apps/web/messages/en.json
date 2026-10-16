@@ -848,7 +848,7 @@
       "consent": {
         "title": "Consent of {name}'s parent",
         "p1": "We use the photo only to draw {name}'s character; nobody sees it, not even the kindergarten.",
-        "p2": "We delete the original photo automatically within 24 hours of your approving the character.",
+        "p2": "We delete the original photo automatically within 24 hours of your approving the character, unless you later choose, from “My children”, to keep it for future books.",
         "p3": "The drawn character (not the photo) appears in the class book, so also in {name}'s classmates' copies, and {school} sees it to review the book.",
         "p4": "You can delete all of {name}'s data at any time from your account.",
         "accept": "I am {name}'s parent and I agree to the above for the class book at {school}.",
@@ -2450,7 +2450,7 @@
       "twoWordsUse": "Use <ar>«{suggestion}»</ar>"
     },
     "consent": {
-      "version": "parent-2026-09",
+      "version": "parent-2026-10",
       "title": "Before we ask for {name}'s photo, here is our promise",
       "p1": {
         "title": "Only for drawing",
@@ -2458,7 +2458,7 @@
       },
       "p2": {
         "title": "Deleted automatically",
-        "body": "We delete the original photo within 24 hours of you approving the character."
+        "body": "We delete the original photo within 24 hours of you approving the character, unless you choose to keep it for future books, a separate option you can turn off at any time."
       },
       "p3": {
         "title": "Nobody sees it",
@@ -2605,7 +2605,7 @@
         "other": "on selected pages of the book"
       },
       "onApprove": "When you approve:",
-      "keep": "{gender, select, f {We keep {name}'s character for her future books and delete her original photo within 24 hours.} other {We keep {name}'s character for his future books and delete his original photo within 24 hours.}}",
+      "keep": "{gender, select, f {We keep {name}'s character for her future books and delete her original photo within 24 hours, unless you choose to keep it.} other {We keep {name}'s character for his future books and delete his original photo within 24 hours, unless you choose to keep it.}}",
       "next": {
         "story": "We move on to choosing the story, and draw you a free preview before you order.",
         "activity": "You review what we will print before we add it to the cart.",
@@ -3147,7 +3147,7 @@
       },
       {
         "h": "Storage and deletion",
-        "p": "Original photos are stored encrypted in private storage and are only opened through links that expire within 15 minutes. Originals and the drawing are deleted automatically within 24 hours of approving the character; abandoned drafts after 30 days. You can ask us to delete all of your child's data at any time, and we delete the photos, character and books immediately."
+        "p": "Original photos are stored encrypted in private storage and are only opened through links that expire within 15 minutes. Originals and the drawing are deleted automatically within 24 hours of approving the character, except for a photo you choose to keep (see the next section), and abandoned drafts are deleted after 30 days. You can ask us to delete all of your child's data at any time, and we delete the photos, character and books immediately."
       },
       {
         "h": "Who sees the photos",
@@ -3166,8 +3166,12 @@
         "p": "You can ask for a copy of your data or have it deleted at any time by contacting us by email or support WhatsApp."
       }
     ],
+    "keep": {
+      "h": "Keeping the photo for future books (optional)",
+      "p": "If you wish, we can keep your child's original photo so we can draw their future books, or redraw their character in a new art style, without you having to upload it again. This option is separate from the first consent and is only on if you choose it yourself; we keep a record of your consent and its date. The photo stays encrypted and private under the same rules, and we delete it automatically {months, plural, one {# month} other {# months}} after it was last used. You can turn this off from “My children” and we delete the photo within 24 hours, or delete it from there right away at any time."
+    },
     "links": "Terms we rely on",
-    "updated": "Last updated: September 28, 2026"
+    "updated": "Last updated: October 16, 2026"
   },
   "store": {
     "lines": {
@@ -3649,7 +3653,7 @@
     "privacy": [
       {
         "title": "Deleted automatically",
-        "body": "The original photo is deleted from our servers within 24 hours of approving your child's character."
+        "body": "The original photo is deleted from our servers within 24 hours of approving your child's character, unless you choose to keep it for future books."
       },
       {
         "title": "Guardian consent",
@@ -3717,7 +3721,7 @@
       },
       {
         "q": "What happens to my child's photo?",
-        "a": "We use it only to draw their character, and it is deleted automatically within 24 hours of approving the character. We never use it to train any model and never share it."
+        "a": "We use it only to draw your child's character and books, and it is deleted automatically within 24 hours of approving the character, unless you choose to keep it for future books (you can delete it whenever you like). We never use it to train any model and never share it."
       },
       {
         "q": "How are the activity books personalized?",
@@ -4019,5 +4023,23 @@
     "moreComing": "We're still preparing the other parts, and we'll email you when they're all ready.",
     "signIn": "To download the file, sign in with the account you used to place the order.",
     "signInButton": "Sign in"
+  },
+  "photoKeep": {
+    "version": "photo-keep-2026-10",
+    "title": "{name}'s original photo",
+    "accept": "{gender, select, f {I agree that {name}'s original photo may be kept and used to draw her future books, so I don't have to upload it again.} other {I agree that {name}'s original photo may be kept and used to draw his future books, so I don't have to upload it again.}}",
+    "hint": "Optional, and off unless you choose it. The photo stays encrypted and private, and we delete it automatically {months, plural, one {# month} other {# months}} after it was last used. You can delete it or turn this off at any time from “My children”.",
+    "using": "We're using {name}'s saved photo, so there's no need to upload it again. You can change it or adjust its position.",
+    "keptLine": "{gender, select, f {As you asked, we keep {name}'s original photo for her future books; you can delete it at any time from “My children”.} other {As you asked, we keep {name}'s original photo for his future books; you can delete it at any time from “My children”.}}",
+    "status": {
+      "kept": "Kept for future books, as you asked. We delete it automatically on {date} unless it is used before then.",
+      "due": "We delete it automatically on {date}.",
+      "afterApproval": "We delete it automatically within 24 hours of you approving the character.",
+      "none": "We don't keep any original photo of {name}."
+    },
+    "turnedOff": "Keeping the photo is now turned off.",
+    "deleteNow": "Delete the photo now",
+    "deleteConfirm": "{gender, select, f {We'll permanently delete {name}'s original photo now; her drawn character and books stay. Are you sure?} other {We'll permanently delete {name}'s original photo now; his drawn character and books stay. Are you sure?}}",
+    "deleted": "The original photo was deleted."
   }
 }

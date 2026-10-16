@@ -55,10 +55,11 @@ from qamra_core.db.models import (
 )
 from qamra_core.db.models import Theme as ThemeRow
 from qamra_core.db.store import ArtStyle, Cart, CartItem, CartStatus, CatalogProduct, OrderEvent, Variant
+from qamra_core.photo_keep import KEEP_SCOPE, keeps_photo
 from qamra_core.storage import ObjectNotFound, ObjectStorage, child_prefix
 
 router = APIRouter(prefix="/api/create", tags=["create"])
-CONSENT_VERSION = "parent-2026-09"  # the consent text shown on step 2 (messages: create.consent)
+CONSENT_VERSION = "parent-2026-10"  # the consent text shown on step 2 (messages: create.consent)
 MAX_CHARACTERS = 4  # the first drawing and 3 free redraws per child
 PREVIEWS_PER_DAY = 3  # Magic previews cost real money: per parent, per day
 UPLOADS_PER_HOUR = 20
@@ -143,6 +144,9 @@ class ChildOut(BaseModel):
     interests: list[str] = Field(default_factory=list)  # the likes, then the note (as saved)
     name_latin: str | None = None  # the name in English letters (activity books' English name page)
     photo: PhotoOut | None = None  # the newest kept photo; None once deleted (24 h after the approval)
+    # the guardian chose to keep the photo for later books (routers/photo_keep.py): later flows show the photo
+    # step with it instead of asking for a new one
+    photo_kept: bool = False
 
 
 def _character_out(c: Character) -> CharacterOut:
@@ -158,7 +162,11 @@ def _character_out(c: Character) -> CharacterOut:
 
 async def _child_out(db: SessionDep, child: Child) -> ChildOut:
     consent = (
-        await db.execute(select(func.count()).select_from(Consent).where(Consent.child_id == child.id))
+        await db.execute(
+            select(func.count())
+            .select_from(Consent)
+            .where(Consent.child_id == child.id, Consent.scope != KEEP_SCOPE)
+        )
     ).scalar_one()
     kept = (
         (
@@ -195,6 +203,7 @@ async def _child_out(db: SessionDep, child: Child) -> ChildOut:
         redraws_left=max(0, MAX_CHARACTERS - sum(c.status != CharacterStatus.failed for c in characters)),
         interests=list(child.interests or []),
         name_latin=child.name_latin,
+        photo_kept=bool((await db.execute(select(keeps_photo(child.id)))).scalar()),
         photo=(
             PhotoOut(id=kept[0].id, crop=Framing.model_validate(framing.as_dict()) if framing else None)
             if kept

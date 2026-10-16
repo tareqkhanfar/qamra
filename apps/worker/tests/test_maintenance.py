@@ -14,6 +14,7 @@ from qamra_core.db.models import (
     ChildPhoto,
     Companion,
     CompanionType,
+    Consent,
     Currency,
     Gender,
     Locale,
@@ -25,6 +26,7 @@ from qamra_core.db.models import (
     Theme,
     User,
 )
+from qamra_core.photo_keep import KEEP_CONSENT_VERSION, KEEP_SCOPE, add_months
 from qamra_core.settings import CoreSettings
 from qamra_core.storage import ObjectStorage
 from qamra_worker.jobs.maintenance import cleanup_expired_media, ping, release_stalled
@@ -47,8 +49,24 @@ def _child_named(db: Session, email: str) -> Child:
     return child
 
 
+def _keep(db: Session, child: Child, *, withdrawn: datetime | None = None) -> Consent:
+    """The guardian's choice to keep the photo for later books (qamra_core.photo_keep)."""
+    consent = Consent(
+        child_id=child.id,
+        guardian_user_id=child.guardian_user_id,
+        consent_text_version=KEEP_CONSENT_VERSION,
+        scope=KEEP_SCOPE,
+        withdrawn_at=withdrawn,
+    )
+    db.add(consent)
+    db.flush()
+    return consent
+
+
 def test_expired_photos_are_deleted_from_storage_and_marked(db: Session, storage: ObjectStorage) -> None:
+    """The 24-hour rule (CLAUDE.md §3.1) while the keep choice is off (never made, or taken back)."""
     child = _child(db)
+    _keep(db, child, withdrawn=NOW - timedelta(hours=1))  # taken back: the usual rule again
     due_key, later_key = f"children/{child.id}/photos/due.jpg", f"children/{child.id}/photos/later.jpg"
     for key in (due_key, later_key):
         storage.put(key, b"photo", "image/jpeg")
@@ -124,6 +142,85 @@ def test_photos_never_approved_are_deleted_after_30_days(db: Session, storage: O
     db.commit()
     assert cleanup_expired_media(db, storage, SETTINGS, now=NOW).photos_deleted == 1
     assert not storage.exists(keys[ordered.id]) and storage.exists(keys[recent.id])
+
+
+def test_a_kept_photo_outlives_the_24_hours_and_the_30_days(db: Session, storage: ObjectStorage) -> None:
+    """The guardian chose to keep it: neither the approval's 24 hours nor the abandoned-draft rule
+    delete it."""
+    approved, abandoned = _child(db), _child_named(db, "b@example.com")
+    keys = {}
+    for child in (approved, abandoned):
+        _keep(db, child)
+        keys[child.id] = f"children/{child.id}/photos/p.jpg"
+        storage.put(keys[child.id], b"photo", "image/jpeg")
+    db.add_all(
+        [
+            ChildPhoto(
+                child_id=approved.id,
+                storage_key=keys[approved.id],
+                status=PhotoStatus.accepted,
+                delete_after=NOW - timedelta(days=20),
+                last_used_at=NOW - timedelta(days=21),
+            ),
+            ChildPhoto(child_id=abandoned.id, storage_key=keys[abandoned.id], status=PhotoStatus.accepted),
+        ]
+    )
+    db.flush()
+    db.execute(update(ChildPhoto).values(updated_at=NOW - timedelta(days=45)))
+    db.commit()
+
+    summary = cleanup_expired_media(db, storage, SETTINGS, now=NOW, kept_months=12)
+    assert summary.photos_deleted == 0 and summary.kept_photos_expired == 0
+    assert all(storage.exists(k) for k in keys.values())
+    photo = db.scalars(select(ChildPhoto).where(ChildPhoto.child_id == abandoned.id)).one()
+    assert photo.delete_after is None  # not marked as an abandoned draft either
+
+
+def test_a_kept_photo_is_deleted_after_its_retention(db: Session, storage: ObjectStorage) -> None:
+    """`kept_photo_retention_months` after the last use; the choice ends with the photo."""
+    stale, used, fresh = _child(db), _child_named(db, "b@example.com"), _child_named(db, "c@example.com")
+    consents = {c.id: _keep(db, c) for c in (stale, used, fresh)}
+    photos = {}
+    for child, uploaded, last in (
+        (stale, NOW - timedelta(days=500), None),  # never used since the upload, 16 months ago
+        (used, NOW - timedelta(days=500), NOW - timedelta(days=60)),  # a new book two months ago
+        (fresh, NOW - timedelta(days=10), None),
+    ):
+        key = f"children/{child.id}/photos/p.jpg"
+        storage.put(key, b"photo", "image/jpeg")
+        photo = ChildPhoto(
+            child_id=child.id,
+            storage_key=key,
+            status=PhotoStatus.accepted,
+            delete_after=uploaded + timedelta(hours=24),
+            last_used_at=last,
+        )
+        db.add(photo)
+        db.flush()
+        photo.created_at = uploaded
+        photos[child.id] = photo
+    db.commit()
+
+    summary = cleanup_expired_media(db, storage, SETTINGS, now=NOW, kept_months=12)
+    assert summary.kept_photos_expired == 1 and summary.photos_deleted == 0
+    for p in photos.values():
+        db.refresh(p)
+    gone = photos[stale.id]
+    assert gone.storage_key is None and gone.status == PhotoStatus.deleted and gone.deleted_at == NOW
+    assert not storage.exists(f"children/{stale.id}/photos/p.jpg")
+    assert photos[used.id].storage_key and photos[fresh.id].storage_key
+    for consent in consents.values():
+        db.refresh(consent)
+    assert consents[stale.id].withdrawn_at == NOW  # a later upload asks again
+    assert consents[used.id].withdrawn_at is None and consents[fresh.id].withdrawn_at is None
+    actions = [a.action for a in db.scalars(select(AuditLog).order_by(AuditLog.created_at)).all()]
+    assert actions == ["photo.kept_expired", "photo_keep.expired"]
+    assert cleanup_expired_media(db, storage, SETTINGS, now=NOW, kept_months=12).kept_photos_expired == 0
+
+    # the admin shortens the retention: the photo used two months ago goes too
+    assert cleanup_expired_media(db, storage, SETTINGS, now=NOW, kept_months=1).kept_photos_expired == 1
+    # the admin setting is read when the caller gives none (default 12 months)
+    assert cleanup_expired_media(db, storage, SETTINGS, now=add_months(NOW, 13)).kept_photos_expired == 1
 
 
 def test_original_drawing_deleted_cleaned_version_kept(db: Session, storage: ObjectStorage) -> None:

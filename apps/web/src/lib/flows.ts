@@ -67,8 +67,11 @@ export type FlowState = {
   kind: Kind;
   /** classic | magic | workbook | journey | family | islamic; null: a story whose type is not chosen yet. */
   productLine: string | null;
-  /** The child the book is for (null: not chosen yet). */
-  child: { consent: boolean; photos: number } | null;
+  /**
+   * The child the book is for (null: not chosen yet). `photoKept`: the guardian chose to keep the photo for later
+   * books, so a new drawing shows the photo step with it («نستخدم الصورة المحفوظة») instead of skipping it.
+   */
+  child: { consent: boolean; photos: number; photoKept?: boolean } | null;
   /**
    * The server's "needs" answer (activity) / an approved character in the wanted style (story). An activity book
    * whose parent asked for a new character in another style («ارسموا شخصية جديدة بأسلوب آخر») is not reusable.
@@ -104,6 +107,14 @@ export function tracesName(line: string | null): boolean {
   return isActivityLine(line) && TRACING_LINES.includes(line);
 }
 
+/**
+ * Whether a new drawing goes through the photo step: no photo yet, or a photo the guardian chose to keep (shown
+ * so it can be changed or moved). A photo saved in the last 24 hours (not kept) is drawn from directly.
+ */
+export function asksPhoto(child: { photos: number; photoKept?: boolean } | null | undefined): boolean {
+  return !child?.photos || !!child.photoKept;
+}
+
 /** `plan=consent,photo,character` → the tokens it pins (unknown words are ignored). */
 export function parsePlan(value: string | null | undefined): PlanToken[] {
   if (!value) return [];
@@ -119,7 +130,7 @@ function drawingNow(s: FlowState): Set<DrawStep> {
   const out = new Set<DrawStep>();
   if (s.reusable) return out;
   if (!s.child?.consent) out.add("consent");
-  if (!s.child?.photos) out.add("photo");
+  if (asksPhoto(s.child)) out.add("photo");
   if (!s.stylePreset) out.add("style");
   out.add("character");
   return out;

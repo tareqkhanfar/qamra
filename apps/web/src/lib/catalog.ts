@@ -110,6 +110,8 @@ export type PublicSettings = {
   /** The free cover (Addendum 9): «شوف غلاف طفلك خلال دقيقة», off by default. */
   free_cover?: boolean;
   family_characters_enabled?: boolean; // the illustrated-family add-on (W4), off by default
+  /** A photo kept at the guardian's choice is deleted this many months after its last use (default 12). */
+  kept_photo_retention_months?: number;
 };
 
 export const getPublicSettings = () => get<PublicSettings>("/api/settings/public", 0);

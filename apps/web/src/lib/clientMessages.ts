@@ -30,6 +30,7 @@ export const PUBLIC_CLIENT_NAMESPACES = [
   "nav",
   "orderPath",
   "password",
+  "photoKeep",
   "portal",
   "quiz",
   "reader",

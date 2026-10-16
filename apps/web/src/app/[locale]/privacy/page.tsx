@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { PageShell } from "@/components/site/PageShell";
+import { getPublicSettings } from "@/lib/catalog";
 import { pageMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -15,10 +16,22 @@ const TERMS = [
   { label: "fal.ai — Data Processing Addendum", href: "https://fal.ai/legal/data-processing-addendum" },
 ];
 
-/** Privacy page (Addendum 3 §6.5): what happens to children's photos, and the providers' terms. */
+/** The sections the optional «keep the photo» section follows («التخزين والحذف» is the third). */
+const KEEP_AFTER = 3;
+
+/**
+ * Privacy page (Addendum 3 §6.5): what happens to children's photos, and the providers' terms. The optional
+ * «keep the photo» choice (2026-10-16) follows «التخزين والحذف», with the retention the admin set.
+ */
 export default async function PrivacyPage() {
-  const t = await getTranslations("privacyPage");
-  const sections = t.raw("sections") as { h: string; p: string }[];
+  const [t, site] = await Promise.all([getTranslations("privacyPage"), getPublicSettings()]);
+  const raw = t.raw("sections") as { h: string; p: string }[];
+  const months = site?.kept_photo_retention_months ?? 12;
+  const sections = [
+    ...raw.slice(0, KEEP_AFTER),
+    { h: t("keep.h"), p: t("keep.p", { months }) },
+    ...raw.slice(KEEP_AFTER),
+  ];
   return (
     <PageShell>
       <article className="mx-auto flex max-w-3xl flex-col gap-8 px-4 py-10 md:py-16">

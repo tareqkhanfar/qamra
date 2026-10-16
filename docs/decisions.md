@@ -314,7 +314,7 @@ Full reasoning is in `docs/plans/addendum-04.md` §2.
 **The parent create flow (Addendum 4, step 2d; design Create1–Create9)**
 - **One full-screen wizard at `/create`.** The step and the ids (child, character, book) live in the URL, so a reload, the back button and the account page's links all resume in the right place. Everything else lives in the API. Checkout and the order page are the store's own pages (design steps 11 and 12).
 - **Step 4 is the book type (Classic or Magic),** side by side, with Magic suggested gently (Addendum 4 §7). The styles offered next are the ones that type can draw. An approved character that the type can draw is reused, so a second book costs no new drawing.
-- **The consent text is versioned in the web messages** (`create.consent.version`, now `parent-2026-09`). The API accepts only the current version, so a page showing an old text gets a "reload" answer instead of recording the wrong consent.
+- **The consent text is versioned in the web messages** (`create.consent.version`, now `parent-2026-10`). The API accepts only the current version, so a page showing an old text gets a "reload" answer instead of recording the wrong consent.
 - **"Change the photo" replaces it.** The earlier photo is deleted from storage at once, so the next drawing never mixes an old photo with the new one. A photo uploaded after a character was already approved gets its 24-hour deletion time immediately.
 - **Redraws can say what was wrong** (skin tone, face, hijab or hair, looks older). The choice is saved on the character and reaches the image model through character prompt v3. v3 is identical to v2 when nothing was ticked. Each redraw also gets a new seed. A drawing that failed on our side doesn't use up one of the parent's 3 free redraws.
 - **The optional "something special" note** (design Create1) is stored with the interests, and the story prompt weaves it in the same way.
@@ -1072,3 +1072,41 @@ The owner approved the likeness trial's direction. What was built, and the choic
 - **The admin's messages need a verified admin session on the server:** the admin pages were gated only in the
   browser, so their source was open to anyone. A nested provider replaces the root one's messages, so the admin
   layout gives the whole file to a verified admin and the public set plus the gate's lines to anyone else.
+
+## Parents may keep the child's photo for later books, opt-in only (2026-10-16)
+
+Policy change asked by the owner: «اعطي خيار صلاحية للأهالي إنهم مثلًا إذا بدهم يخلّو صورة ابنهم ع الموقع، عشان إذا
+بدهم يتم استخدام نفس الصورة لدوسيات أخرى لاحقًا.» CLAUDE.md §3.1's 24-hour rule stays the default; it now
+applies only while this choice is off.
+
+- **Opt-in, separate and never pre-ticked.** A box of its own on the photo step (once a photo is saved) and in
+  «أطفالي» per child. Ticking it records its own consent row: `scope = photo_keep`, version
+  `photo-keep-2026-10` (web messages `photoKeep.version`, `photoKeep.accept` + `photoKeep.hint`), with time, IP
+  and user agent, and the retention the text named in the audit entry. It needs the photo consent first.
+  Unticking it sets `consents.withdrawn_at` (audited as `consent.withdrawn`). Not offered on the kindergarten
+  invite's photo step: the school's consent covers one class book; those parents can choose it in «أطفالي».
+- **While on:** the original stays where it was (encrypted, private, under `children/{id}/photos/`, opened only
+  through the guardian's private no-store route or ≤ 15-minute signed URLs for the image model). The cleanup skips
+  it for both the 24-hour rule and the 30-day abandoned-draft rule. Its own limit:
+  `kept_photo_retention_months` (admin setting, privacy group, default 12, at most 24, public so the privacy
+  page names it) after its last use: `child_photos.last_used_at`, set when a drawing or cover is made from it
+  (`photo_bytes` in the worker) and when the choice is turned on; the upload time when never used. At that limit
+  the cleanup deletes it (`photo.kept_expired`) and ends the choice (`photo_keep.expired`), so a later upload asks
+  again.
+- **Turning it off** schedules the deletion within `photo_retention_hours` (24 h), even when the 24-hour date
+  had already passed (a grace, so a mistaken tap can be undone). A photo whose character is not approved yet
+  keeps the usual rules (24 h after the approval, or with the abandoned drafts).
+- **«احذفوا الصورة الآن»** (`DELETE /api/create/children/{id}/photos`, «أطفالي»): the originals go from storage
+  at once, the drawings and books stay, and the choice ends. «حذف بيانات الطفل» still removes everything,
+  consents included, immediately.
+- **Reuse:** `ChildOut.photo_kept`. A new drawing for that child (a new book, a workbook, another style) goes
+  through the photo step showing the kept photo («نستخدم الصورة المحفوظة»), to use it as is, move it or change
+  it; no new upload. A ready character is still reused without any photo step.
+- **Texts that changed with it:** the parent consent's point 2 (version `parent-2026-09` → `parent-2026-10`), the
+  invite consent's point 2 (`school-2026-09` → `school-2026-10`), the character step's keep line, the how-it-works
+  privacy point and FAQ, and the privacy page (storage and deletion, plus a new «الاحتفاظ بالصورة لكتب قادمة
+  (اختياري)» section). Shorter marketing lines («صور الأطفال تُحذف تلقائيًا بعد اعتماد الشخصية») describe the
+  default and stay.
+- **Backups still exclude every original photo** (`infra/scripts/backup.sh`), kept or not: a lost kept photo is
+  re-uploaded, never restored.
+- No new third party: the photo goes only to the image provider, as before, and only when a drawing is made.

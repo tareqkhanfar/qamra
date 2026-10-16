@@ -270,6 +270,9 @@ class Consent(IdMixin, Base):
     accepted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     ip: Mapped[str | None] = mapped_column(String(45))
     user_agent: Mapped[str | None] = mapped_column(String(300))
+    # when the guardian took it back (the optional "keep the photo" choice, qamra_core.photo_keep); a consent
+    # to process the photo is never withdrawn here: deleting the child's data removes it with the child
+    withdrawn_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
 class ChildPhoto(IdMixin, TimestampMixin, Base):
@@ -288,6 +291,9 @@ class ChildPhoto(IdMixin, TimestampMixin, Base):
     # upload (a newer framing, like a newer photo, lets the next redraw draw again).
     crop: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
     crop_saved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    # the last time a drawing or a cover was made from it, or the guardian chose to keep it: a kept photo
+    # (qamra_core.photo_keep) is deleted `kept_photo_retention_months` after it. None: never used yet.
+    last_used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
 class Character(IdMixin, TimestampMixin, Base):

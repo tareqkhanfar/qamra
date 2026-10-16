@@ -30,6 +30,7 @@ import {
 import {
   agesFor,
   asksNameEn,
+  asksPhoto,
   canShow,
   formatPlan,
   isActivityLine,
@@ -135,6 +136,9 @@ function toFamily(given: FamilyPayload): Family {
 }
 
 const EMPTY_FAMILY: FamilyPayload = { name: "", city: "", members: [] };
+
+/** The child's photo facts for `asksPhoto`: a kept photo still shows the photo step. */
+const photoState = (c: Child) => ({ photos: c.photos, photoKept: !!c.photo_kept });
 
 /** The server's "needs" answer is for a product, a child and the characters it has approved (and when). */
 function needsKeyOf(sku: string | null, child: Child | null): string {
@@ -450,7 +454,7 @@ export function CreateWizard() {
     return {
       kind: activity ? "activity" : "story",
       productLine,
-      child: c ? { consent: c.consent, photos: c.photos } : null,
+      child: c ? { consent: c.consent, photos: c.photos, photoKept: !!c.photo_kept } : null,
       reusable,
       character: c && c.id === child?.id && usedCharacter ? { approved: usedCharacter.approved } : null,
       book: shownBook ? { status: shownBook.status, line: shownBook.line } : null,
@@ -527,7 +531,8 @@ export function CreateWizard() {
     const base = { child: c.id, line: value, book: null, plan: formatPlan(pin) };
     if (ready) go({ ...base, step: storyOrCompanion(value), character: ready.id, style: ready.style });
     else if (!c.consent) go({ ...base, step: "consent", character: null });
-    else if (!c.photos) go({ ...base, step: "photo", character: null });
+    else if (asksPhoto(photoState(c)))
+      go({ ...base, step: "photo", character: null }); // none yet, or the kept one
     else void styleOrDraw(c, value, pin);
   }
 
@@ -559,16 +564,16 @@ export function CreateWizard() {
     const base = { child: c.id, book: null, plan: formatPlan(pin) };
     if (reuse) go({ ...base, step: asksFamily ? "family" : "summary", character: reuse, style: null });
     else if (!c.consent) go({ ...base, step: "consent", character: null, style: null });
-    else if (!c.photos) go({ ...base, step: "photo", character: null, style: null });
+    else if (asksPhoto(photoState(c))) go({ ...base, step: "photo", character: null, style: null });
     else go({ ...base, step: "style", character: null, style: null }); // a photo saved in the last 24 hours
     return null;
   }
 
   /** Consent given: the photo, or the drawing (a story's type is chosen before the consent now). */
   function afterConsent(c: Child) {
-    if (activity) go({ step: c.photos ? "style" : "photo", child: c.id });
+    if (activity) go({ step: asksPhoto(photoState(c)) ? "photo" : "style", child: c.id });
     else if (!storyLine) go({ step: "line", child: c.id });
-    else if (!c.photos && !readyStory(c, storyLine)) go({ step: "photo", child: c.id });
+    else if (asksPhoto(photoState(c)) && !readyStory(c, storyLine)) go({ step: "photo", child: c.id });
     else void styleOrDraw(c, storyLine);
   }
 
@@ -831,15 +836,17 @@ export function CreateWizard() {
             onEditFamily={asksFamily ? () => go({ step: "family" }) : undefined}
             onNewCharacter={() => {
               // a new drawing, in a style the parent picks: a new photo unless one was saved in the last 24 hours
+              // (the photo step still shows a photo the guardian chose to keep)
               const c = child!;
+              const photoStep = asksPhoto(photoState(c));
               const pin: PlanToken[] = [
                 ...(c.consent ? [] : (["consent"] as PlanToken[])),
-                ...(c.photos ? [] : (["photo"] as PlanToken[])),
+                ...(photoStep ? (["photo"] as PlanToken[]) : []),
                 "style",
                 "character",
               ];
               go({
-                step: !c.consent ? "consent" : !c.photos ? "photo" : "style",
+                step: !c.consent ? "consent" : photoStep ? "photo" : "style",
                 character: null,
                 style: null,
                 plan: formatPlan(pin),

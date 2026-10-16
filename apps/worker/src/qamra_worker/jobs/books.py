@@ -72,6 +72,7 @@ from qamra_core.db.models import (
     SafetyStatus,
 )
 from qamra_core.db.models import Theme as ThemeRow
+from qamra_core.photo_keep import keeps_photo
 from qamra_core.settings_store import Resolved, load_sync
 from qamra_core.storage import ObjectNotFound, ObjectStorage
 from qamra_pdf import Brand
@@ -505,21 +506,26 @@ def book_bible(
 
 
 def photo_bytes(storage: ObjectStorage, photo: ChildPhoto | None) -> bytes | None:
-    """A child's photo as the image model gets it: the parent's framing of the original (head and shoulders,
-    upright: `qamra_ai.pipeline.photo_crop`), else the whole photo. None once the photo is deleted."""
+    """A child's photo as the image model gets it: the parent's framing of the original (head and
+    shoulders, upright: `qamra_ai.pipeline.photo_crop`), else the whole photo. None once the photo is
+    deleted. Marks the photo used (the caller commits): a photo kept at the guardian's choice is deleted a
+    set time after its last use (qamra_core.photo_keep)."""
     if photo is None or not photo.storage_key:
         return None
     try:
         data = storage.get(photo.storage_key)
     except ObjectNotFound:
         return None
+    photo.last_used_at = datetime.now(UTC)
     return crop_photo(data, photo.crop)
 
 
 def cover_photo(db: Session, storage: ObjectStorage, child: Child) -> bytes | None:
     """The child's first accepted photo while it is still kept (Addendum 11 §1: the cover's likeness
-    reference). It goes to the image model only, like the character sheet's photos, never to QA."""
+    reference). It goes to the image model only, like the character sheet's photos, never to QA. A photo the
+    guardian chose to keep is still kept after its 24-hour date."""
     now = datetime.now(UTC)
+    chosen = bool(db.scalar(select(keeps_photo(child.id))))
     for photo in db.scalars(
         select(ChildPhoto)
         .where(
@@ -530,7 +536,7 @@ def cover_photo(db: Session, storage: ObjectStorage, child: Child) -> bytes | No
         )
         .order_by(ChildPhoto.created_at)
     ).all():
-        kept = photo.delete_after is None or photo.delete_after > now
+        kept = chosen or photo.delete_after is None or photo.delete_after > now
         if kept and (data := photo_bytes(storage, photo)) is not None:
             return data
     return None

@@ -35,6 +35,20 @@ export type Child = {
   name_latin?: string | null; // the name in English letters, as the activity books print it
   // the newest kept photo and the parent's framing of it (null: none kept, e.g. deleted 24 h after the approval)
   photo?: StoredPhoto | null;
+  // the guardian chose to keep the photo for later books (off by default): later flows show the photo step with it
+  photo_kept?: boolean;
+};
+/**
+ * The guardian's optional choice to keep the child's original photo for later books (`/photo-keep`, owner
+ * 2026-10-16): off by default, its own versioned consent; `months`: the retention after the last use (admin).
+ * `photo.deletes_at`: when the cleanup deletes it as things stand (null: 24 hours after the approval).
+ */
+export type PhotoKeep = {
+  keep: boolean;
+  since: string | null;
+  version: string;
+  months: number;
+  photo: { id: string; deletes_at: string | null } | null;
 };
 /** The child's kept photo: its original comes through `photoImage`; `crop` null means the whole photo. */
 export type StoredPhoto = { id: string; crop: PhotoCrop | null };
@@ -125,6 +139,12 @@ export const createApi = {
   toCart: (id: string, sku: string, addons: { slug: string; qty?: number }[], item?: string | null) =>
     api<Cart>(`/api/create/books/${id}/cart`, { json: { sku, addons, ...(item ? { item_id: item } : {}) } }),
   deleteChild: (id: string) => api<void>(`/api/create/children/${id}`, { method: "DELETE" }),
+  photoKeep: (childId: string) => api<PhotoKeep>(`/api/create/children/${childId}/photo-keep`),
+  // version: the choice's text the page showed (messages: photoKeep.version), needed to turn it on
+  setPhotoKeep: (childId: string, keep: boolean, version?: string) =>
+    api<PhotoKeep>(`/api/create/children/${childId}/photo-keep`, { method: "PUT", json: { keep, version } }),
+  // «احذفوا الصورة الآن»: the originals, now (the drawings and books stay); the keep choice ends with them
+  deletePhotos: (childId: string) => api<void>(`/api/create/children/${childId}/photos`, { method: "DELETE" }),
   updateChild: (id: string, patch: ChildPatch) =>
     api<Child>(`/api/create/children/${id}`, { method: "PATCH", json: patch }),
   // style: the parent's pick on the style step (the character it draws in, and the only one it reuses)

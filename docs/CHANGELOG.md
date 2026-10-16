@@ -1,5 +1,21 @@
 # Changelog
 
+## Parents may keep the child's photo for later books (opt-in, 2026-10-16)
+- **Choice:** «أوافق على الاحتفاظ بصورة … الأصلية لاستخدامها في رسم كتبها القادمة…», off by default, on the photo step
+  and in «أطفالي»; its own versioned consent (`photo_keep`, `photo-keep-2026-10`) with time and IP; turning it off
+  withdraws it. API: `GET|PUT /api/create/children/{id}/photo-keep`, `DELETE /api/create/children/{id}/photos`
+  («احذفوا الصورة الآن»); `ChildOut.photo_kept`.
+- **Retention:** a kept photo is exempt from the 24-hour and 30-day rules and is deleted
+  `kept_photo_retention_months` (new admin setting, default 12, max 24) after its last use; off again → deleted
+  within 24 h; «حذف بيانات الطفل» deletes it at once.
+- **Reuse:** later flows open the photo step on the kept photo («نستخدم الصورة المحفوظة»: use it, move it or change
+  it) instead of asking for a new upload (`asksPhoto` in `lib/flows.ts`).
+- **Texts:** parent consent `parent-2026-10`, invite consent `school-2026-10`, privacy page (new section),
+  how-it-works, the character step's keep line; reviewed by a language-review pass.
+- Migration `d29a66aa61c0` (after `2351cdc1195c`): `consents.withdrawn_at`, `child_photos.last_used_at`.
+- Tests: API `test_photo_keep.py`; worker `test_maintenance.py` (kept photo outlives the 24 h and 30 days, retention,
+  the 24-hour rule only while off) and `test_books.py` (cover photo); web `flows.test.ts`.
+
 ## Classic: only the hero's head is edited; no more violet patches (2026-10-16)
 - **Why:** the per-order proof (book `17fb9eb8`, graduation × watercolor) came back with a visible rectangle on
   every page: a violet wash, added lanterns and leaves, the green gown turned blue, and page 3 edited the wrong
