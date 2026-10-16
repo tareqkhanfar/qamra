@@ -306,3 +306,227 @@ leaves room for a redraw rate up to ~45%. A stop means "look before spending mor
   shows the 2026-10-09 top-up almost spent, so expect a top-up before any of this.
 - The real Anthropic cost of the hero-box calls ($0.003 is an estimate), and the page count of each new
   story. Re-run the formula with its N once each v2 story is final.
+
+## 6. 2026-10-16: runbook for «موسم الزيتون» × watercolor (all three looks) and its example books
+
+Prepared on 2026-10-16. **No paid call was made.** Everything below waits for the owner's fal top-up.
+
+### 6.1 Server state, checked read-only on 2026-10-16
+
+| Item | Finding |
+|---|---|
+| Deployed code | `31a2799` (`/opt/qamra/REVISION`), the same as `addendum-4` HEAD. |
+| olive-season theme | Live version **3** (`theme_versions`: v1 retired, v2 an empty studio draft, v3 live from the file). `catalog.status: available`, 17 story pages + cover = **18 images**, one child-free page (beat 11, the olive press). The live definition matches `content/themes/olive-season/theme.yaml`: the vowelize source hashes are the same on both sides (girl `8a5a2c2272d5562e`, boy `93b42a71a828b44a`). |
+| Story words | Final v3 (written and language-reviewed on 2026-10-10; «طفلك» catalog fix in `TEXT_FIXES`). The page texts in the yaml are already fully vowelized by hand. |
+| Vowelized words cache | **None for olive-season.** The cache lives in a Classic template (`generation.texts`), and no olive-season template exists yet. The first template job vowelizes once per gender: Sonnet, ≈ $0.05 per gender, ≈ $0.10 for both. girl_hijab borrows the girl's copy (same hash). |
+| Classic templates | 7, all watercolor and live: first-day × 3 looks, graduation × 3 looks, new-sibling × girl. **None for olive-season.** graduation girl/boy carry a stale `no_hero_box` flag, but every hero page has a box. |
+| Side characters | `cast`: mom, dad, grandma, grandpa. All four have `content/cast/<id>-watercolor.jpg` in the worker image, and so does «قمّور». |
+| Cover plate | None (`content/themes/olive-season/plates/` does not exist). It is optional: the cover is drawn as usual. |
+| Styles | watercolor is the only style with `classic` in `art_styles.lines`. |
+| Settings (admin, resolved in the worker) | `image_provider` fal, `fal_image_model` nano-banana-2, `cover_image_model` empty ($0.08 covers), `final_mode` 1k_upscale, `page_max_regenerations` 2, `book_budget_usd` **$3.00**, portrait and sheet on nano-banana-pro/edit ($0.30 per character since 2026-10-10), `classic_fal_model` klein 4B, Classic cap 2₪ = $0.54. `fal_key` and `anthropic_api_key` are set. |
+| Worker | One worker on `generation, pdf, maintenance, default`. Queues empty, idle. |
+| Admin users | `admin@qamra.app` active with 2FA; `ops-bot` inactive (it stays off). |
+| Public examples | 7: first-day × 3, graduation × 3, new-sibling × girl. None for olive-season, so the site shows its 3D cover art (`apps/web/src/lib/themeArt.ts`). |
+| olive-season books | None on the server. |
+
+### 6.2 How to run admin actions without a login
+
+- The admin API needs a 2FA session, and `ops-bot` stays off.
+- The cleanest path is to run the **same routers in-process inside the api container**, with FastAPI's `TestClient`. Only `require_admin` is overridden, by a lookup of `admin@qamra.app`.
+- Everything else is unchanged: the validation, the permission check, the audit rows (attributed to `admin@qamra.app`) and the RQ jobs. Nothing is copied to the server, because the script goes through stdin.
+- Note: this skips the admin's password and 2FA. It needs root on the server, which can already reach the database. The owner may prefer the browser (§4.2), and the steps are the same.
+- **Tested at no cost on 2026-10-16:** `get /api/admin/classic/templates` → 200. A POST to `/api/admin/classic/templates`, `/api/admin/samples` and `/api/admin/classic/samples` with an unknown story → 404 before any write. `save` of a template page image → 200. The `Q` wrapper below passes JSON with Arabic intact (tested).
+- The script is in §6.7. Save it as `qamra_admin.py` outside the repo (e.g. the scratchpad).
+
+```sh
+export QAMRA_SSHPASS=… SSH_ASKPASS=<scratchpad>/askpass.sh SSH_ASKPASS_REQUIRE=force DISPLAY=:1
+# printf %q keeps the JSON's quotes and the Arabic names intact through the remote shell
+Q() { ssh root@62.84.179.155 "cd /opt/qamra && docker compose exec -T api python - $(printf '%q ' "$@")" < qamra_admin.py 2>&1 | grep -v '^{"'; }
+Q get /api/admin/classic/templates                      # free
+```
+
+### 6.3 Before any paid step (free)
+
+1. **Top-ups.**
+   - The owner confirms the fal top-up (dashboard balance ≥ the approved cap + the $3 kept for live orders).
+   - The Anthropic credit must cover ≈ $1.
+2. **Worker idle.** Check with `docker compose exec -T worker sh -c 'rq info --url $REDIS_URL'`. No other paid job should run in parallel, so the per-step costs stay readable.
+3. **Spend before the run.** Note it with this SQL, to compare afterwards:
+   `SELECT round(sum(usd)::numeric,4) FROM generation_costs WHERE created_at > now() - interval '1 hour';`
+4. **Stop rule.**
+   - Run one paid step at a time, and read its cost before the next.
+   - Stop and report if a step costs more than 1.25 × its estimate, or if the run total passes the cap.
+
+### 6.4 (a) The per-order proof: one Classic book on graduation × watercolor
+
+This is the go/no-go for the klein hero edit with real providers, which has never run. It goes **before** the
+olive-season spend, because the olive templates will be the same kind (made from a sample book).
+
+| Step | Command | ≈ Cost |
+|---|---|---|
+| a1. An invented girl and her Classic book (final) | `Q sample classic '{"theme":"graduation","name":"ريم","gender":"f","age":5,"style":"watercolor","mode":"final"}' '{"gender":"f","age":5,"skin":"fair","hair":"light brown wavy","top":"pink","seed":15}'` | face $0.08 + identity portrait (klein + QA) ≈ $0.02 + 17 hero edits with QA ≈ $0.26 + auto-redraws ≈ $0.05 = **≈ $0.41** (the 2₪ guard stops the book at $0.54) |
+| a2. Wait | `Q wait-book <book_id>` | — |
+| a3. Look | `Q save /api/admin/books/<id>/files/interior.pdf /tmp/proof-interior.pdf`, then `docker compose cp api:/tmp/proof-interior.pdf .` (also `cover.pdf`). Or the admin UI: «الكتب». Check likeness to the face, the seams around the box, one hero per page, and the vowelized words. | — |
+| a4. Optional | The same for a hijab girl (`"hijab":true`, seed 11) and a boy (seed 13, `"glasses":true`). These are two more risks: hijab framing and glasses. | +$0.82 |
+
+- One book is enough to show the edit works. Three books cover the three looks: **$1.25**, instead of $3 for five.
+- If a1 fails on likeness or seams, stop. Don't spend on olive-season templates until the edit is fixed.
+
+### 6.5 (b) + (c) olive-season × watercolor × girl, girl_hijab, boy, each from a Magic sample book
+
+**Recommendation: make each template from an approved Magic sample book of an invented child.** All 7 live
+templates were made this way. Each sample book is a full «قمرة سحري» book, so it is also the public example
+of its look. The money buys both the template and a Magic-quality example.
+
+- A **generated** template (§4.2) costs about the same ($2.07–2.16) and gives no example.
+- **About (c):** a $0.5 example would be a *Classic* sample book: the template's art with a pasted face, not
+  Magic quality. A Magic book costs ≈ $2.2.
+
+Per look, in this order: girl first (the hardest review; her words serve girl_hijab), then girl_hijab, then boy.
+
+| Step | Command | ≈ Cost |
+|---|---|---|
+| b1. Invented face + Magic sample book (final) | girl: `Q sample magic '{"theme":"olive-season","name":"زينة","gender":"f","age":5,"style":"watercolor","mode":"final"}' '{"gender":"f","age":5,"skin":"light olive","hair":"dark brown","top":"light blue","seed":31}'`. girl_hijab: `"name":"رهف"`, `"hijab":true` in both JSONs, `"top":"yellow"`, seed 32. boy: `"name":"عمر","gender":"m"`, face `{"gender":"m","age":5,"hair":"black","top":"green","seed":33}`. | face $0.08 + character $0.30 (Pro portrait + Pro 2K sheet) + story ≈ $0.08 + 18 images × ($0.08 + upscale $0.007 + QA $0.003) = $1.63 + 15% auto-redraws ≈ $0.22 = **≈ $2.3** (the book's own cap is $3.00) |
+| b2. Wait (≈ 15 min) | `Q wait-book <book_id>` | — |
+| b3. Review the book | In the admin UI («الكتب» → the book): every page for the same face, hijab, outfit, «قمّور», grandpa (keffiyeh, cane, glasses) and no text in the art. Bad pages: «إعادة الرسم». Run a language-review agent on the page texts (`Q get /api/admin/books/<id>`). | manual redraws ≈ $0.09 each; budget 2 per look |
+| b4. Approve the book | `Q post /api/admin/books/<id>/approve` | — |
+| b5. Publish it as the look's example | `Q post /api/admin/books/<id>/example '{"synthetic_child":true}'` | — |
+| b6. Book → template | `Q post /api/admin/classic/templates/from-book '{"book_id":"<id>","synthetic_child":true}'`, then `Q wait-template <template_id>` | hero boxes 17 × $0.003 ≈ $0.05 + vowelize ≈ $0.05 (girl and boy only) = **≈ $0.10** |
+| b7. Review the template | The studio (`/ar/admin/studio/templates/<id>`): the hero boxes (fix with `PATCH …/pages/{beat}`, free) and «✓ مشكّل». Run a language-review agent on the vowelized words (`Q get /api/admin/classic/templates/<id>` → `texts`). | — |
+| b8. Approve, then publish | `Q post /api/admin/classic/templates/<id>/status '{"to":"in_review"}'` if it is still a draft. Then `'{"to":"approved"}'` (locks the pages; refused until every page, box and vowelized word is there), then `'{"to":"live"}'`. | — |
+
+**Totals**
+
+| Scope | Expected | Range | Cap (stop and report) |
+|---|---|---|---|
+| (a) one proof book | $0.41 | $0.35–0.54 | $0.54 (the 2₪ guard) |
+| (a) optional 2 more looks | +$0.82 | — | +$1.10 |
+| (b + c) one look (template + example) | $2.40 | $2.1–2.8 | $3.20 per look |
+| (b + c) three looks | **$7.2**, plus ≈ $0.5 manual redraws | $6.3–8.4 | **$8.5** |
+| **All: (a) single + (b + c)** | **≈ $7.6–8.1** | — | **$9.0** |
+
+- About $0.8 of it is Anthropic (stories, QA, boxes, vowelization); the rest is fal.
+- **fal top-up asked:** ≥ $9 for this work, on top of the $3 kept for live orders. Add $1.10 if the optional proofs are wanted.
+- **Cheaper variant:** girl from a sample book, girl_hijab and boy generated (§4.2: `POST /api/admin/classic/templates` with `budget_usd` 2.5). It costs ≈ $6.6 and gives only one olive example.
+
+### 6.6 What the site shows afterwards (all free, no deploy)
+
+- **Examples:** `GET https://qamra.app/api/examples?lang=ar&theme=olive-season` lists the published books.
+  - The story page, cards and landing take them within ≈ 60 s (Next data cache).
+  - The real watercolor cover replaces the 3D art of `themeArt.ts`. That file can stay: it is the fallback.
+  - The story page shows the example of the visitor's look.
+- **Classic:** once each template is live, `GET /api/themes?lang=ar` shows olive-season with
+  `"classic": {"watercolor": ["girl", "girl_hijab", "boy"]}`. The checks in §4.3 apply.
+- **Spend:** read it per step with the SQL in §4.3 and
+  `SELECT step, count(*), sum(usd) FROM generation_costs WHERE book_id = '<id>' GROUP BY 1;`.
+  Add each row to the spend ledger.
+
+### 6.7 `qamra_admin.py` (the in-process admin helper of §6.2; not part of the repo)
+
+```python
+"""Admin API calls in-process in the api container, as admin@qamra.app, with no login (no password, no 2FA).
+
+The same routers, checks, audit rows and RQ jobs as the admin site; only `require_admin` is replaced by a
+lookup of the admin user. Run it through stdin, so nothing is copied to the server:
+
+  ssh root@62.84.179.155 'cd /opt/qamra && docker compose exec -T api python - get /api/admin/classic/templates' < qamra_admin.py
+
+  get PATH                      GET, print the JSON
+  save PATH FILE                GET bytes (a page image, a PDF) into FILE inside the container; then
+                                `docker compose cp api:FILE .` on the host
+  post PATH [JSON]              POST with a JSON body (paid when the route enqueues a paid job)
+  sample magic|classic FORM FACE
+                                FACE = a FaceIn JSON ({"gender":"f","age":5,"seed":21,...}): draws the invented face
+                                ($0.08), then POSTs /api/admin/samples (magic) or /api/admin/classic/samples (classic)
+                                with FORM (JSON: theme, name, gender, age, hijab, style, mode). Prints the book id.
+  wait-book ID                  polls the book every 20 s until it leaves `generating`; prints progress and cost
+  wait-template ID              the same for a Classic template's job
+"""
+
+import json
+import sys
+import time
+from typing import Any
+
+from fastapi.testclient import TestClient
+from sqlalchemy import select
+
+from qamra_api.app import create_app
+from qamra_api.deps import SessionDep, require_admin
+from qamra_core.db.models import User
+
+ADMIN = "admin@qamra.app"
+H = {"X-Qamra-Client": "ops-inproc"}
+
+
+async def as_admin(session: SessionDep) -> User:
+    return (await session.execute(select(User).where(User.email == ADMIN, User.is_active))).scalar_one()
+
+
+def show(r: Any) -> Any:
+    try:
+        body = r.json()
+    except ValueError:
+        body = r.text[:500]
+    print(r.status_code, json.dumps(body, ensure_ascii=False, default=str)[:4000])
+    if r.status_code >= 400:
+        sys.exit(1)
+    return body
+
+
+def form_of(d: dict[str, Any]) -> dict[str, str]:
+    return {k: (str(v).lower() if isinstance(v, bool) else str(v)) for k, v in {**d, "consent": True}.items()}
+
+
+def main(argv: list[str]) -> None:
+    app = create_app()
+    app.dependency_overrides[require_admin] = as_admin
+    with TestClient(app, base_url="http://localhost") as c:
+        cmd, *rest = argv
+        if cmd == "get":
+            show(c.get(rest[0], headers=H))
+        elif cmd == "save":
+            r = c.get(rest[0], headers=H)
+            if r.status_code != 200:
+                show(r)
+            with open(rest[1], "wb") as f:
+                f.write(r.content)
+            print(r.status_code, rest[1], len(r.content), "bytes")
+        elif cmd == "post":
+            show(c.post(rest[0], json=json.loads(rest[1]) if len(rest) > 1 else None, headers=H))
+        elif cmd == "sample":
+            line, form, spec = rest[0], json.loads(rest[1]), json.loads(rest[2])
+            assert line in ("magic", "classic")
+            face_id = show(c.post("/api/admin/classic/synthetic-faces", json=spec, headers=H))["id"]
+            for _ in range(60):
+                r = c.get(f"/api/admin/classic/synthetic-faces/{face_id}", headers=H)
+                if r.status_code == 200:
+                    break
+                time.sleep(5)
+            else:
+                sys.exit(f"face {face_id} not drawn in 5 minutes (is the worker up?)")
+            path = "/api/admin/samples" if line == "magic" else "/api/admin/classic/samples"
+            files = [("photos", ("face.png", r.content, "image/png"))]
+            show(c.post(path, data=form_of(form), files=files, headers=H))
+        elif cmd in ("wait-book", "wait-template"):
+            url = f"/api/admin/books/{rest[0]}" if cmd == "wait-book" else f"/api/admin/classic/templates/{rest[0]}"
+            while True:
+                r = c.get(url, headers=H)
+                d = r.json() if r.status_code == 200 else {}
+                if cmd == "wait-book":
+                    prog = (d.get("generation") or {}).get("progress")
+                    print(time.strftime("%H:%M:%S"), d.get("status"), prog, d.get("cost_usd"), d.get("flags"), flush=True)
+                    if d.get("status") not in (None, "generating"):
+                        break
+                else:
+                    keys = ("status", "job", "pages_drawn", "cost_usd", "flags")
+                    print(time.strftime("%H:%M:%S"), {k: d.get(k) for k in keys}, flush=True)
+                    if d.get("job") not in (None, "queued", "running"):
+                        break
+                time.sleep(20)
+        else:
+            sys.exit(__doc__)
+
+
+main(sys.argv[1:])
+```

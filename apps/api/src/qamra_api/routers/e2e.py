@@ -40,6 +40,7 @@ from qamra_api.deps import CurrentUser, RedisDep, SessionDep, SettingsDep, Stora
 from qamra_api.errors import ApiError
 from qamra_api.jobs import QueueDep
 from qamra_api.routers.create import CONSENT_VERSION
+from qamra_api.routers.portal_children import new_invite
 from qamra_api.store import gift_cards
 from qamra_core import downloads as dl
 from qamra_core.crypto import cipher_for, encrypt
@@ -52,6 +53,7 @@ from qamra_core.db.models import (
     CharacterStatus,
     Child,
     ChildPhoto,
+    Classroom,
     Consent,
     Currency,
     Gender,
@@ -59,11 +61,14 @@ from qamra_core.db.models import (
     Order,
     OrderItem,
     OrderStatus,
+    Organization,
+    OrgStatus,
     PageStatus,
     PhotoStatus,
     Theme,
     UserRole,
 )
+from qamra_core.db.portal import ClassBook
 from qamra_core.db.store import Coupon, CouponKind, GiftCard, OrderEvent, StaffRole, UserStaffRole
 from qamra_core.storage import ObjectStorage
 from qamra_pdf.arabic_names import genitive
@@ -489,6 +494,42 @@ async def studio_template(
         variant=template.variant,
         status=template.status.value,
     )
+
+
+class InviteIn(BaseModel):
+    child_name: str = Field(default="سلمى", max_length=40)
+    gender: Literal["m", "f"] = "f"
+    style: str = Field(default="watercolor", max_length=40)
+
+
+class InviteTokenOut(BaseModel):
+    token: str
+
+
+@router.post("/invites", status_code=201)
+async def school_invite(body: InviteIn, db: SessionDep) -> InviteTokenOut:
+    """What a kindergarten sets up before a parent opens the link (tests/e2e/test_invite_flow.py): an approved
+    school, a class whose book is drawn in `style`, a child on its list, and that child's invite link."""
+    org = Organization(name="روضة الاختبار", status=OrgStatus.approved, approved_at=datetime.now(UTC))
+    db.add(org)
+    await db.flush()
+    room = Classroom(organization_id=org.id, name="البراعم")
+    db.add(room)
+    await db.flush()
+    gender = Gender.f if body.gender == "f" else Gender.m
+    child = Child(
+        organization_id=org.id,
+        classroom_id=room.id,
+        first_name=body.child_name,
+        gender=gender,
+        birth_year=date.today().year - 5,
+    )
+    db.add(child)
+    await db.flush()
+    invite = new_invite(child, room, 7, {})
+    db.add_all([invite, ClassBook(classroom_id=room.id, organization_id=org.id, art_style=body.style)])
+    await db.commit()
+    return InviteTokenOut(token=invite.token)
 
 
 @router.post("/rate-limits/reset", status_code=204)

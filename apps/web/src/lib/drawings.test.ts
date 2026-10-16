@@ -1,7 +1,7 @@
 /** The child's drawings (lib/drawings.ts): which one later books reuse, which ones the character step offers. */
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { lastApproved, offered, tidyNote, type DrawingLike } from "./drawings.ts";
+import { CLASS_BOOK, drawingFor, lastApproved, offered, tidyNote, type DrawingLike } from "./drawings.ts";
 
 const d = (id: string, style: string, approved_at: string | null = null): DrawingLike => ({
   id,
@@ -62,5 +62,15 @@ describe("tidyNote", () => {
   it("squashes the spaces as the API counts them, and sends nothing when empty", () => {
     assert.equal(tidyNote("  شعره\n  أجعد  "), "شعره أجعد");
     assert.equal(tidyNote(" \n "), undefined);
+  });
+});
+
+describe("drawingFor", () => {
+  const lines = ["workbook", "journey", "family", "islamic"];
+  it("tells an activity book, the kindergarten's class book and a story apart", () => {
+    assert.equal(drawingFor("journey", lines), "activity");
+    assert.equal(drawingFor(CLASS_BOOK, lines), "class");
+    assert.equal(drawingFor("magic", lines), "story");
+    assert.equal(drawingFor(null, lines), "story");
   });
 });

@@ -41,12 +41,12 @@ from PIL import Image
 
 from qamra_ai.config import Settings
 from qamra_ai.cost import CostEntry
-from qamra_ai.image import make_image_provider, make_upscaler
+from qamra_ai.image import make_character_image_providers, make_image_provider, make_upscaler
 from qamra_ai.image.base import GeneratedImage
 from qamra_ai.pipeline.assemble import AssemblyInputs, assemble_book
 from qamra_ai.pipeline.book import BookInputs, BookRun, default_companion, run_book
 from qamra_ai.pipeline.budget import Budget
-from qamra_ai.pipeline.character import generate_character_sheet
+from qamra_ai.pipeline.character import generate_character
 from qamra_ai.pipeline.models import Child
 from qamra_ai.pipeline.pages import PageResult
 from qamra_ai.pipeline.plates import DirPlateStore
@@ -71,28 +71,30 @@ CARTOON_ADAM = "out/style-samples/cartoon-first-day-adam/proof.pdf"
 CARTOON_TALA = "out/style-samples/cartoon-new-sibling-tala/proof.pdf"
 ADAM_3D = "out/style-samples/3d-first-day-adam/proof.pdf"
 TALA_3D = "out/style-samples/3d-new-sibling-tala/proof.pdf"  # p1 is a rejected cover, never exported
-# «شبه حقيقي» (2026-10-09, `semireal:` rows in the ledger): the sheet was drawn from a head-and-shoulders
-# crop of تالا's published sheet (a whole sheet as the reference is copied back unchanged), then the cover and
-# pages with `draw --sheet`. The bassinet page (three tries) put the baby under the text box and the news page
-# drew the companion twice: neither is exported.
-SEMI_TALA = "out/style-samples/semi-realistic-new-sibling-tala/proof.pdf"
-# The same invented child's character sheet per style, and the activity-book cover and «هذا الكتاب لـ…»
-# page with her cut-out, rendered locally (no AI):
-#   python -m qamra_workbook.render.workbook --level kg1 --volume 1 --cover --pages 1-1 --name تالا \
-#       --name-en Tala --gender f --sheet <sheet> --out out/style-samples/activity/<style>
-# Watercolor has no activity sample yet: until cut-out v3 (2026-10-09) that sheet's paper grain defeated the
-# cut-out (the whole sheet was pasted); it now cuts cleanly, so one can be rendered and added to ACTIVITY.
+# «شبه حقيقي» (2026-10-09, `semireal:` rows) was drawn from a crop of تالا's watercolor sheet on
+# Nano Banana 2 and looked like a cartoon. Redrawn 2026-10-16 on the production path (`samples-v3:` rows,
+# $1.44 of a $1.50 cap, `draw --ref <the same crop> --no-companion`): her portrait, then her sheet, on
+# Nano Banana Pro (portrait first: character_portrait.v2 + character_sheet.v6), then the pages on Nano
+# Banana 2 with the portrait as the face reference (page_image.v5), with the style guides customers now
+# get (3D, cartoon and watercolor v3: the child's own face; semi-realistic v3).
+# - Semi-realistic: the sheet, the cover and the «smile» page.
+# - 3D: the sheet and the «smile» page (that proof's p1 is the old rejected cover, never exported).
+# - Cartoon and watercolor: the sheet only.
+# Every other story page is still a 2026-10-09 (or earlier) drawing.
+SEMI_TALA = "out/style-samples/semi-realistic-new-sibling-tala-v3/proof.pdf"
+TALA_3D_V3 = "out/style-samples/3d-new-sibling-tala-v3/proof.pdf"
+# The same invented child's character sheet per style (2026-10-16), and the activity-book cover and
+# «هذا الكتاب لـ…» page with her cut-out, rendered locally (no AI):
+#   python -m qamra_workbook.render.workbook --level kg1 --volume 1 --cover --pages 1-1 --name تالا
+#       --name-en Tala --gender f --sheet <sheet> --out out/style-samples/activity-v3/<style>
+# The new watercolor sheet cuts out cleanly, so watercolor has activity samples too.
 SHEETS = {
-    "3d": "out/style-samples/src/3d-new-sibling-tala/character.png",
-    "watercolor": "out/style-samples/src/watercolor-tala-sheet.png",
-    "cartoon": "out/style-samples/src/cartoon-new-sibling-tala/character.png",
-    "semi-realistic": "out/style-samples/src/semi-realistic-new-sibling-tala/character.png",
+    "3d": "out/style-samples/3d-new-sibling-tala-v3/character-sheet.png",
+    "watercolor": "out/style-samples/watercolor-tala-sheet-v3/character-sheet.png",
+    "cartoon": "out/style-samples/cartoon-tala-sheet-v3/character-sheet.png",
+    "semi-realistic": "out/style-samples/semi-realistic-new-sibling-tala-v3/character-sheet.png",
 }
-ACTIVITY = {  # style → the render folder's page-range suffix
-    "3d": "p1-1",
-    "cartoon": "p1-1",
-    "semi-realistic": "p1-3",
-}
+ACTIVITY = ("3d", "cartoon", "semi-realistic", "watercolor")
 
 # What the site shows: style/name ← (a proof PDF and its 1-based page) or a picture file. The alt texts and
 # the order live in styleSamples.ts; this list only makes the files.
@@ -101,7 +103,7 @@ SAMPLES: list[tuple[str, str, str, int | None]] = [
     ("3d", "first-day-blocks", ADAM_3D, 3),
     ("3d", "first-day-yard", ADAM_3D, 4),
     ("3d", "new-sibling-bassinet", TALA_3D, 3),
-    ("3d", "new-sibling-smile", TALA_3D, 4),
+    ("3d", "new-sibling-smile", TALA_3D_V3, 3),
     ("3d", "graduation-cover", GRAD_3D, 1),
     ("3d", "graduation-mirror", GRAD_3D, 3),
     ("3d", "graduation-album", GRAD_3D, 4),
@@ -140,8 +142,8 @@ SAMPLES: list[tuple[str, str, str, int | None]] = [
     ("semi-realistic", "new-sibling-smile", SEMI_TALA, 3),
     *((style, "character", sheet, None) for style, sheet in SHEETS.items()),
     *(
-        (style, name, f"out/style-samples/activity/{style}/png-kg1-v1-{pages}{folder}/{file}.png", None)
-        for style, pages in ACTIVITY.items()
+        (style, name, f"out/style-samples/activity-v3/{style}/png-kg1-v1-p1-1{folder}/{file}.png", None)
+        for style in ACTIVITY
         for name, folder, file in (
             ("activity-cover", "-cover", "workbook-cover-front"),
             ("activity-owner", "", "p001-owner-page"),
@@ -157,6 +159,18 @@ def _ledger_row(entry: CostEntry, tag: str, prefix: str = "samples") -> None:
     row = {"id": f"{prefix}:{tag}:{entry.step}", "model": entry.model, "usd": round(entry.usd, 4)}
     with LEDGER.open("a", encoding="utf-8") as f:
         f.write(json.dumps(row, ensure_ascii=False) + "\n")
+
+
+def _spent(prefix: str) -> float:
+    """What the ledger already holds for this prefix (`--total-cap` covers every run of a round together)."""
+    if not LEDGER.exists():
+        return 0.0
+    total = 0.0
+    for line in LEDGER.read_text(encoding="utf-8").splitlines():
+        row = json.loads(line) if line.strip() else {}
+        if str(row.get("id", "")).startswith(f"{prefix}:"):
+            total += float(row.get("usd", 0))
+    return total
 
 
 def _child(args: argparse.Namespace) -> Child:
@@ -206,34 +220,50 @@ async def draw(args: argparse.Namespace) -> int:
         return 2
     theme, style, child = load_theme(args.theme), load_style(args.style), _child(args)
     tag = f"{args.style}:{args.theme}"
+    budget = args.budget
+    if args.total_cap is not None:  # the round's cap: what earlier runs with this prefix spent counts too
+        budget = min(budget, round(args.total_cap - _spent(args.ledger), 4))
+        if budget <= 0:
+            print(f"the round's cap (${args.total_cap:.2f}) is spent")
+            return 2
     image = make_image_provider(settings)
+    portrait_image, sheet_image = make_character_image_providers(settings)  # production: portrait first
     rt = Runtime(
         settings=settings,
         text=make_text_provider(settings),
         image=image,
         upscaler=make_upscaler(settings),
-        budget=Budget(cap_usd=args.budget),
+        portrait_image=portrait_image,
+        sheet_image=sheet_image,
+        budget=Budget(cap_usd=budget),
         on_cost=lambda e: _ledger_row(e, tag, args.ledger),
     )
     out = OUT / f"{time.strftime('%Y%m%d-%H%M%S')}-{args.style}-{args.theme}"
     out.mkdir(parents=True, exist_ok=True)
-    print(f"→ {out} (budget ${args.budget:.2f})")
+    print(f"→ {out} (budget ${budget:.2f})")
     try:
+        portrait = args.portrait.read_bytes() if args.portrait else None
         if args.sheet:
             sheet = args.sheet.read_bytes()
         else:
-            sheet = (await generate_character_sheet(rt, child, [args.ref.read_bytes()], style)).data
+            # as an order draws it (2026-10-10): the portrait in the style, then the sheet from the reference
+            # and that portrait (character_portrait / character_sheet, each on its own model)
+            drawn = await generate_character(rt, child, [args.ref.read_bytes()], style)
+            sheet, portrait = drawn.sheet.data, drawn.portrait.data
             (out / "character-sheet.png").write_bytes(sheet)
+            (out / "portrait.png").write_bytes(portrait)
         inputs = BookInputs(
             child=child,
             lang="ar",
             theme=theme,
             style=style,
             character_sheet=sheet,
-            companion=default_companion(theme, "ar"),
+            # --no-companion: the child alone (no companion sheet to draw for a style the cache lacks)
+            companion=None if args.no_companion else default_companion(theme, "ar"),
             seed=args.seed,
             cover=args.cover.read_bytes() if args.cover else None,  # an earlier run's cover: no new cover
             plates=DirPlateStore(OUT / "plate-cache"),
+            portrait=portrait,  # every hero picture's face reference, as in an order
         )
         beats = sorted(set(args.beats) if args.cover else {0, *args.beats})
         run = await run_book(rt, inputs, mode="preview", beats=beats)
@@ -372,6 +402,15 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
             s.add_argument("--cover", type=Path, help="an earlier run's cover (beat-00.png): no cover call")
             s.add_argument(
                 "--ledger", default="samples", help="the ledger rows' prefix (a budget of its own)"
+            )
+            s.add_argument(
+                "--portrait", type=Path, help="the portrait drawn with --sheet's sheet (the pages' face)"
+            )
+            s.add_argument("--no-companion", action="store_true", help="draw the child without «قمّور»")
+            s.add_argument(
+                "--total-cap",
+                type=float,
+                help="a cap in USD for every run with this --ledger prefix together (the ledger counts)",
             )
         else:
             s.add_argument("--images", type=Path, required=True)

@@ -186,11 +186,16 @@ ROLE_FIGURES: dict[str, Figure] = {
 }
 ADULT_FIGURES: frozenset[Figure] = frozenset({"woman", "man", "grandma", "grandpa", "adult"})
 NO_ADULT = "أحد الكبار"  # {adult} when the family lists no grown-up
-GRANDPARENT = "grandparent"  # a page's `adult`/`member` param: a grandparent, by whatever name, when there is one
-# `member: relative`: someone who usually lives apart (to phone or visit): a grandparent, then an aunt or uncle;
-# without one, «أَحَدِ الأَقارِبِ» (the text already has it in the genitive: «نَتَّصِلُ بِـ{member:gen}»)
+GRANDPARENT = (
+    "grandparent"  # a page's `adult`/`member` param: a grandparent, by whatever name, when there is one
+)
+# `member: relative`: someone who usually lives apart (to phone or visit): a grandparent, then an aunt or
+# uncle; without one, «أَحَدِ الأَقارِبِ» (the text already has it in the genitive:
+# «نَتَّصِلُ بِـ{member:gen}»)
 RELATIVE = "relative"
-RELATIVE_ROLES = frozenset({"خالتو", "خالتي", "خالة", "عمتو", "عمتي", "عمة", "خالو", "خالي", "خال", "عمو", "عمي", "عم"})
+RELATIVE_ROLES = frozenset(
+    {"خالتو", "خالتي", "خالة", "عمتو", "عمتي", "عمة", "خالو", "خالي", "خال", "عمو", "عمي", "عم"}
+)
 NO_RELATIVE = "أَحَدِ الأَقارِبِ"
 
 
@@ -223,7 +228,8 @@ _MEN: frozenset[Figure] = frozenset({"man", "grandpa", "boy"})
 
 
 def you_suffix(member: Member | None) -> str:
-    """The «you» suffix said to `member`: «كِ» to a woman, «كَ» to a man, a bare «ك» when the role does not say."""
+    """The «you» suffix said to `member`: «كِ» to a woman, «كَ» to a man, a bare «ك» when the role does not
+    say."""
     if member is None:
         return "ك"
     return "كِ" if member.drawn_as in _WOMEN else "كَ" if member.drawn_as in _MEN else "ك"

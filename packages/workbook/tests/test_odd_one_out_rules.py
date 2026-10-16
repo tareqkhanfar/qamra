@@ -6,6 +6,7 @@ the odd picture is the only one outside it. KG1's first volume only shows differ
 from __future__ import annotations
 
 from collections.abc import Iterator
+from itertools import pairwise
 from pathlib import Path
 
 import pytest
@@ -108,4 +109,4 @@ def test_in_the_workbooks_no_row_puts_its_answer_where_the_row_above_did() -> No
     """«دوسية التأسيس» (`spread`): the odd picture moves, so a child learns the rule and not the place."""
     for seed in range(40):
         rows = generate_odd_rows(seed, ["same", "same", "category", "category"], [4] * 4, spread=True)
-        assert all(a.odd != b.odd for a, b in zip(rows, rows[1:], strict=False)), seed
+        assert all(a.odd != b.odd for a, b in pairwise(rows)), seed

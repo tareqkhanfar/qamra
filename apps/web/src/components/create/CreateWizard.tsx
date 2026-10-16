@@ -47,7 +47,7 @@ import { cartApi, type Catalog, type CatalogProduct, type CatalogVariant } from 
 import { fillTitle } from "@/lib/themeTitle";
 import { FamilyStep } from "./activity/FamilyStep";
 import { SummaryStep } from "./activity/SummaryStep";
-import { CharacterStep } from "./CharacterStep";
+import { CharacterStep, photoSavedNotice } from "./CharacterStep";
 import { ChildStep } from "./ChildStep";
 import { ConsentStep } from "./ConsentStep";
 import { FormatStep } from "./FormatStep";
@@ -478,9 +478,7 @@ export function CreateWizard() {
   const editingPhoto = step === "photo" && q.edit === "photo" && !!shownCharacter;
   const photoNotice =
     step === "character" && photoSaved && photoSaved.character === shownCharacter?.id
-      ? (child?.redraws_left ?? 0) > 0
-        ? t(`character.photoSaved.${photoSaved.change}`)
-        : t("character.photoSaved.noRedraws")
+      ? photoSavedNotice(t, photoSaved.change, child?.redraws_left ?? 0)
       : undefined;
   const frame = { title: frameTitle, ...count, close: q.item ? "/cart" : "/account", notice: photoNotice };
 

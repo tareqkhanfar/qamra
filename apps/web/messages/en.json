@@ -835,7 +835,6 @@
       "register": "Create a parent account",
       "login": "I have an account: sign in",
       "mineTitle": "{name}'s book",
-      "stepsLabel": "Consent, photo, character",
       "doneTitle": "Thank you! Your steps are done.",
       "doneBody": "You approved {name}'s character. {school} now prepares the class book, and we'll delete the original photo within 24 hours.",
       "consent": {
@@ -848,35 +847,9 @@
         "required": "Please confirm your consent to continue.",
         "cta": "I agree, next"
       },
-      "photo": {
-        "title": "A clear photo of {name}",
-        "body": "One photo with the face clearly visible. We check it right away and tell you if we need another.",
-        "tips": {
-          "one": "One child in the photo",
-          "front": "Face to the front",
-          "light": "Good light, close up"
-        },
-        "pick": "Choose a photo",
-        "checking": "Checking the photo…",
-        "private": "The photo is private and encrypted, and deleted within 24 hours of approving the character."
-      },
       "character": {
         "drawTitle": "We're drawing {name}'s character",
-        "draw": "Draw the character",
-        "failed": "The drawing didn't finish this time. Please try again.",
-        "drawing": "Drawing {name} now…",
-        "drawingHint": "It takes a minute or two. You can stay here.",
-        "title": "Is this {name}?",
-        "alt": "{name}'s drawn character",
-        "approve": "Yes, approve the character",
-        "wrong": "{gender, select, f {Not quite like her?} other {Not quite like him?}}",
-        "fixes": {
-          "skin": "Skin tone",
-          "face": "Face",
-          "hair": "Hair",
-          "age": "Age"
-        },
-        "redraw": "Redraw ({n} left)"
+        "draw": "Draw the character"
       }
     },
     "priceLists": {
@@ -1911,7 +1884,7 @@
   },
   "meta": {
     "title": "{brand} — Your child's story, by moonlight",
-    "description": "Printed books in your child's name: stories they star in, and workbooks and activity books with their character. Free preview, cash on delivery."
+    "description": "Printed books in your child's name: stories they star in, and activity books with their character. Free preview, cash on delivery."
   },
   "brand": {
     "tagline": "Your child's story, by moonlight."
@@ -2039,7 +2012,7 @@
   },
   "landing": {
     "title": "Printed books in your child's name",
-    "lead": "Stories they star in, and workbooks and activity books with their character. You choose the book, we draw your child into it, print it and deliver it to your door.",
+    "lead": "Stories they star in, and activity books with their character. You choose the book, we draw your child into it, print it and deliver it to your door.",
     "ctaStories": "Browse the stories",
     "ctaWorkbooks": "Activity books",
     "privacyLine": "Your child's photo is deleted automatically once the character is approved",
@@ -2158,7 +2131,7 @@
     "stickyNote": "Free preview"
   },
   "footer": {
-    "about": "Printed books in your child's name: stories they star in, and workbooks and activity books with their character. From Palestine.",
+    "about": "Printed books in your child's name: stories they star in, and activity books with their character. From Palestine.",
     "products": "Products",
     "stories": "Stories",
     "foundation": "Foundation workbook",
@@ -2504,7 +2477,8 @@
       "keep": "{gender, select, f {Once you approve the drawing, we keep {name}'s character for her future books and delete the original photo within 24 hours.} other {Once you approve the drawing, we keep {name}'s character for his future books and delete the original photo within 24 hours.}}",
       "next": {
         "story": "Next we draw {name}'s character in the style you choose, and we don't go on until you approve it.",
-        "activity": "Next you choose the art style, then we draw {name}'s character, and we don't go on until you approve it."
+        "activity": "Next you choose the art style, then we draw {name}'s character, and we don't go on until you approve it.",
+        "class": "Next we draw {name}'s character in the class book's art style, and we don't go on until you approve it."
       },
       "adjust": "Adjust position",
       "editTitle": "Edit {name}'s photo",
@@ -2589,7 +2563,8 @@
       "noRedraws": "The free redraws are used up. Message us if the character isn't right.",
       "where": {
         "story": "This is how {name} will appear in the story.",
-        "activity": "This is how {name} will appear {places}."
+        "activity": "This is how {name} will appear {places}.",
+        "class": "{gender, select, f {This is how {name} will appear in the class book with her friends.} other {This is how {name} will appear in the class book with his friends.}}"
       },
       "places": {
         "workbook": "on the first page of the workbook and at the start of each unit",
@@ -2602,7 +2577,8 @@
       "keep": "{gender, select, f {We keep {name}'s character for her future books and delete her original photo within 24 hours.} other {We keep {name}'s character for his future books and delete his original photo within 24 hours.}}",
       "next": {
         "story": "We move on to choosing the story, and draw you a free preview before you order.",
-        "activity": "You review what we will print before we add it to the cart."
+        "activity": "You review what we will print before we add it to the cart.",
+        "class": "{gender, select, f {Her character goes into the class book. The kindergarten never sees her original photo.} other {His character goes into the class book. The kindergarten never sees his original photo.}}"
       },
       "redrawRule": "Each child gets 3 free redraws, and any attempt that fails because of a fault on our side doesn't count.",
       "editPhoto": "Edit the photo",
@@ -3054,7 +3030,13 @@
           "text_review": "text check note"
         }
       }
-    }
+    },
+    "characterTitle": "The child's character in this book",
+    "portrait": "Face portrait in the book's style",
+    "portraitHint": "Drawn first; the character sheet and every page showing the child are drawn from it.",
+    "noPortrait": "This character was drawn before we started making face portraits, so it has only the character sheet.",
+    "openFull": "Open full size",
+    "likenessRef": "Compare the child's face on the page with this portrait."
   },
   "metrics": {
     "title": "Cost & quality",

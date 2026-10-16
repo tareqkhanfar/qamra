@@ -1008,3 +1008,21 @@ The owner approved the likeness trial's direction. What was built, and the choic
   be found it is drawn as it is.
 - **Page counts:** padded with drawing pages inside lessons (V2 u-prayer, V3 u-fasting, V4 u-nuh and u-yunus, R
   u-eid1): no new sacred text to review.
+
+## The invite and the free cover reuse the parent flow's steps; staff see the portrait (2026-10-16)
+
+- **The invite renders `PhotoStep` and `CharacterStep` themselves** (with `productLine` "class", `lib/drawings`
+  `CLASS_BOOK`), not copies: the parent is the child's guardian once the link is claimed, so the create API's
+  photo, framing, drawings, portrait, redraw and approve endpoints already apply. Only the first drawing goes
+  through `POST /api/invite/{token}/character` (the class's style); a redraw is the create flow's, in the style
+  of the drawing shown, and the strip offers only drawings in the class's style (`usable`), so the class book
+  never gets another style. The step texts that differ for a class book have a `class` variant.
+- **The consent stays before any upload:** the invite's photo step opens only after its consent. The free cover
+  shows the picked photo in the editor from the device (an object URL) and uploads it only when the form is sent
+  with the consent, with the framing; a refusal keeps the photo on the device to move and send again.
+- **Staff's views of the child's likeness are audited:** the admin sheet and portrait routes are `private,
+  no-store` (the sheet was cacheable for 5 minutes) and write `admin.character_viewed` (ids and which picture,
+  never the image), like the guardian's `photo.viewed`. The detail loads them only when the book has them.
+- **Sample reference:** the style samples keep the invented تالا, drawn from the crop of her watercolor sheet as
+  the earlier samples were (never a real child's photo). A watercolor reference may pull a little of its look
+  into other styles; the new semi-realistic portrait still came out as a painted, realistic face.

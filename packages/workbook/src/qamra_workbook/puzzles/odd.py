@@ -201,7 +201,7 @@ def generate_odd_rows(
     r.shuffle(pairs)
     choices = list(groups or GROUPS)
     used: set[str] = set()
-    rows = []
+    rows: list[OddRow] = []
     for i, (rule, size) in enumerate(zip(rules, sizes, strict=True)):
         name = ""
         if rule == "same":

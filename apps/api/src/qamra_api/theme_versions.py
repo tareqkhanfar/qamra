@@ -24,6 +24,14 @@ V = ThemeVersionStatus
 _LEFTOVER = re.compile(r"[{}]")
 
 
+def is_story(row: ThemeRow) -> bool:
+    """A story theme. Each activity book hangs its orders on a theme row of its own, made by its order job
+    (`{"product": line, "engine": ...}`; the e2e fixtures' `{"e2e": true}`): not a story, so never in the
+    themes editor or the template studio."""
+    definition = row.definition or {}
+    return "product" not in definition and "e2e" not in definition
+
+
 def theme_columns(theme: Theme) -> dict[str, Any]:
     """The catalog columns of `themes` that follow the definition."""
     return {

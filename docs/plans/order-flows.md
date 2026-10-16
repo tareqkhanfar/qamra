@@ -1258,6 +1258,10 @@ How they were made (`scripts/style_samples.py`; ledger rows `semireal:`; **$1.26
   drawn for تالا.
 - **Watercolor has no activity sample:** that sheet's paper grain defeats the cut-out (the whole sheet is
   pasted). Production watercolor characters should be checked for the same problem.
+- **Redrawn 2026-10-16** on the production path (portrait first, the v3 guides; `samples-v3:` rows, $1.44 of a
+  $1.50 cap), from the same crop of تالا's sheet: every style's character sheet, the semi-realistic cover and
+  «smile» page, the 3D «smile» page. The activity pages were re-rendered from the new sheets; the new watercolor
+  sheet cuts out cleanly, so watercolor has them too. The other story pages are still the older drawings.
 - **Where they show:** in `lib/styleSamples.ts` under two new kinds, `character` and `activity`. They are shown
   only for activity books (`samplesForStyle(style, null, { activity: true })`), contained in their tile. The
   stories page's style switcher and the story style step show the new style's story pages.
