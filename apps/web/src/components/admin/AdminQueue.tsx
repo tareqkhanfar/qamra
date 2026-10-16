@@ -108,6 +108,8 @@ type Detail = {
   gender_check: GenderHint[];
   // what the parent wrote in «ما الذي لا يشبهه؟» for this book's drawing (instruction: what the redraw used)
   character_note?: { note: string; instruction: string | null; outcome: string | null } | null;
+  // the book's character: its pictures come through the private admin routes (no-store, every view audited)
+  character?: { style: string; has_sheet: boolean; has_portrait: boolean } | null;
 };
 type Filter = "review" | "flagged" | "generating" | "approved" | "all";
 
@@ -423,6 +425,8 @@ export function AdminQueue() {
               </div>
             )}
 
+            {detail.character?.has_sheet && <CharacterPanel bookId={detail.id} character={detail.character} />}
+
             {(detail.text_editable || detail.class_pages.length > 0) && (
               <BookTextReview
                 key={detail.id}
@@ -575,6 +579,7 @@ export function AdminQueue() {
         <PageDrawer
           page={open}
           bookId={detail.id}
+          portrait={!!detail.character?.has_portrait}
           cacheKey={cacheKey}
           onClose={() => setOpen(null)}
           onRedraw={async () => {
@@ -671,15 +676,71 @@ function PageCell({ slot, page, thumb, label, kindLabel, flagLabel, selectLabel,
   );
 }
 
+/**
+ * The book's character as the parent approved it: the portrait (portrait first, 2026-10-10) large, next to the
+ * sheet painted from it. Characters drawn before have only the sheet.
+ */
+function CharacterPanel({ bookId, character }: { bookId: string; character: NonNullable<Detail["character"]> }) {
+  const t = useTranslations("queue");
+  const sheet = `/api/admin/books/${bookId}/character`;
+  const portrait = `/api/admin/books/${bookId}/character/portrait`;
+  return (
+    <section
+      aria-labelledby="character-title"
+      className="flex flex-col gap-3 rounded-xl border border-line bg-paper-raised p-4 text-small"
+    >
+      <h3 id="character-title" className="text-body font-semibold text-night-900">
+        {t("characterTitle")}
+      </h3>
+      <div className={`grid gap-3 ${character.has_portrait ? "md:grid-cols-[2fr_3fr]" : ""}`}>
+        {character.has_portrait && (
+          <figure className="flex flex-col gap-1.5">
+            <a href={portrait} target="_blank" rel="noreferrer" aria-label={`${t("portrait")}: ${t("openFull")}`}>
+              {/* eslint-disable-next-line @next/next/no-img-element -- private image streamed by the admin API */}
+              <img
+                src={portrait}
+                alt={t("portrait")}
+                loading="lazy"
+                className="aspect-square w-full rounded-lg border-2 border-night-900 bg-paper object-cover"
+              />
+            </a>
+            <figcaption className="flex flex-col gap-0.5">
+              <strong className="text-night-900">{t("portrait")}</strong>
+              <span className="text-caption text-ink-muted">{t("portraitHint")}</span>
+            </figcaption>
+          </figure>
+        )}
+        <figure className="flex flex-col gap-1.5">
+          <a href={sheet} target="_blank" rel="noreferrer" aria-label={`${t("character")}: ${t("openFull")}`}>
+            {/* eslint-disable-next-line @next/next/no-img-element -- private image streamed by the admin API */}
+            <img
+              src={sheet}
+              alt={t("character")}
+              loading="lazy"
+              className="aspect-[3/2] w-full rounded-lg border border-line bg-paper object-contain"
+            />
+          </a>
+          <figcaption className="flex flex-col gap-0.5">
+            <strong className="text-night-900">{t("character")}</strong>
+            {!character.has_portrait && <span className="text-caption text-ink-muted">{t("noPortrait")}</span>}
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+  );
+}
+
 function PageDrawer({
   page,
   bookId,
+  portrait,
   cacheKey,
   onClose,
   onRedraw,
   busy,
 }: {
   page: Page;
+  portrait: boolean; // the character has a portrait: shown beside the page, for the likeness
   bookId: string;
   cacheKey: number;
   onClose: () => void;
@@ -712,12 +773,26 @@ function PageDrawer({
       aria-modal="true"
     >
       <div className="flex max-h-[95dvh] w-full max-w-4xl flex-col gap-4 overflow-auto rounded-xl bg-paper-raised p-5 md:grid md:grid-cols-[1.2fr_1fr]">
-        {/* eslint-disable-next-line @next/next/no-img-element -- private image streamed by the admin API */}
-        <img
-          src={`/api/admin/books/${bookId}/pages/${page.beat}/image?v=raw&k=${cacheKey}`}
-          alt=""
-          className="w-full rounded-md border border-line object-contain"
-        />
+        <div className="flex flex-col gap-2">
+          {/* eslint-disable-next-line @next/next/no-img-element -- private image streamed by the admin API */}
+          <img
+            src={`/api/admin/books/${bookId}/pages/${page.beat}/image?v=raw&k=${cacheKey}`}
+            alt=""
+            className="w-full rounded-md border border-line object-contain"
+          />
+          {portrait && (
+            <figure className="flex items-center gap-3 text-small">
+              {/* eslint-disable-next-line @next/next/no-img-element -- private image streamed by the admin API */}
+              <img
+                src={`/api/admin/books/${bookId}/character/portrait`}
+                alt={t("portrait")}
+                loading="lazy"
+                className="size-24 shrink-0 rounded-md border border-line object-cover"
+              />
+              <figcaption className="text-ink-muted">{t("likenessRef")}</figcaption>
+            </figure>
+          )}
+        </div>
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <h3 className="text-h3 text-night-900">

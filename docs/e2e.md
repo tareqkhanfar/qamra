@@ -61,6 +61,13 @@ refused, then framed to one and accepted; after the drawing, «تعديل الص
 reload and saving returns to the character with its note; once the original is deleted
 (`/api/e2e/photos/{id}/expire`, the 24-hour job at once) the editor says so and takes a new photo.
 
+**`test_invite_flow.py`** (owner 2026-10-16: the invite and the free cover get the parent flow's steps): a
+kindergarten invite (`/api/e2e/invites`: an approved school, a class drawn in watercolor, a child and its link)
+is accepted, the consent given (1 of 3), the photo placed in the oval (2 of 3), the drawing started at once and
+shown portrait first (3 of 3); a redraw with «ما الذي لا يشبهها؟» in the parent's words, «تعديل الصورة» and back
+with its note, then the first drawing chosen from the strip and approved. The free cover (its admin switch turned
+on by a second, staff session) places the photo in the oval on the device and sends the framing with the consent.
+
 **`test_admin_studio.py`** (the template studio, owner 2026-10-09: «محرر الثيمات … مش شايفه شغال»): a staff user
 (`/api/e2e/staff`: roles, two-step verification passed) edits a theme's page text (boy, girl, English) into a
 draft, previews it, sends it for review, approves, publishes and rolls back; edits a Classic template drawn with

@@ -43,3 +43,18 @@ export function offered<T extends DrawingLike>(
 export function tidyNote(text: string): string | undefined {
   return text.split(/\s+/).filter(Boolean).join(" ") || undefined;
 }
+
+/** The kindergarten invite's book (the `productLine` of the photo and character steps on the invite page). */
+export const CLASS_BOOK = "class";
+
+/**
+ * What the photo and character steps say about where the drawing goes: an activity book (`activityLines`, lib/shop
+ * `ACTIVITY_LINES`), the class book of a kindergarten invite, or a story (any other line, or none chosen yet).
+ */
+export function drawingFor(
+  productLine: string | null | undefined,
+  activityLines: readonly string[],
+): "story" | "activity" | "class" {
+  if (productLine === CLASS_BOOK) return "class";
+  return activityLines.includes(productLine ?? "") ? "activity" : "story";
+}

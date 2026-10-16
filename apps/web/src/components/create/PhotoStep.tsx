@@ -8,6 +8,7 @@ import { Button, Spinner } from "@/components/ui/Button";
 import { errorText, type ApiResult } from "@/lib/api";
 import { nameCases } from "@/lib/arabicName";
 import { createApi, type Child } from "@/lib/create";
+import { drawingFor } from "@/lib/drawings";
 import { sameCrop, toCrop, viewAt, type PhotoCrop, type Size } from "@/lib/photoCrop";
 import { ACTIVITY_LINES } from "@/lib/shop";
 import { Frame, Lead } from "./Frame";
@@ -51,7 +52,8 @@ export type PhotoChange = "photo" | "position" | null;
  * finds, and «تعديل موضع الصورة» moves, zooms and turns it; the API checks the framed part again. The lead says
  * where this product shows the character (order-flows §c.5); the card at the end says what we keep, what we
  * delete and what happens next. `edit`: opened from the character step to change the photo («تعديل الصورة»):
- * it opens on the kept photo in the editor, or says kindly that it was deleted and asks for a new one.
+ * it opens on the kept photo in the editor, or says kindly that it was deleted and asks for a new one. The
+ * kindergarten invite uses it too (`productLine` "class", no `back`: the consent before it is done for good).
  */
 export function PhotoStep({
   child,
@@ -62,10 +64,10 @@ export function PhotoStep({
   onDone,
 }: {
   child: Child;
-  productLine?: string | null; // classic|magic|workbook|journey|family|islamic (null: a story, type not chosen)
+  productLine?: string | null; // classic|magic|workbook|journey|family|islamic|class (null: a story, not chosen)
   title?: string; // the frame title; the wizard's FlowFrameContext wins when present
   edit?: boolean;
-  back: () => void;
+  back?: () => void;
   onDone: (c: Child, change: PhotoChange) => void;
 }) {
   const t = useTranslations("create");
@@ -88,7 +90,8 @@ export function PhotoStep({
   const [natural, setNatural] = useState<Size | null>(null);
   const [change, setChange] = useState<PhotoChange>(null);
   const who = { ...nameCases(child.name), gender: child.gender };
-  const activity = (ACTIVITY_LINES as readonly string[]).includes(productLine ?? "");
+  const kind = drawingFor(productLine, ACTIVITY_LINES);
+  const activity = kind === "activity";
   // where this activity book prints the character (checked against the renderers, 2026-10-07)
   const places = t(
     t.has(`character.places.${productLine}`) ? `character.places.${productLine}` : "character.places.other",
@@ -214,7 +217,7 @@ export function PhotoStep({
     setCrop(savedCrop);
     setError(null);
     setFailed([]);
-    if (edit) back();
+    if (edit) back?.();
     else setState("ok");
   }
 
@@ -390,7 +393,7 @@ export function PhotoStep({
           [
             ["lock", t("photo.private")],
             ["clock", t("photo.keep", who)],
-            ...(edit ? [] : [["next", t(activity ? "photo.next.activity" : "photo.next.story", who)]]),
+            ...(edit ? [] : [["next", t(`photo.next.${kind}`, who)]]),
           ] as const
         ).map(([icon, text]) => (
           <li key={icon} className="flex items-start gap-2.5">

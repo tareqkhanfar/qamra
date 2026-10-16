@@ -24,7 +24,7 @@ from qamra_api.deps import AdminUser, SessionDep, require_admin, require_permiss
 from qamra_api.errors import ApiError
 from qamra_api.routers.admin_classic import texts_ready
 from qamra_api.routers.admin_themes import texts_stale
-from qamra_api.theme_versions import display_titles, open_version
+from qamra_api.theme_versions import display_titles, is_story, open_version
 from qamra_core.db.classic import ClassicTemplate, ClassicTemplatePage, TemplateJob, TemplateStatus
 from qamra_core.db.models import AuditLog
 from qamra_core.db.models import Theme as ThemeRow
@@ -106,6 +106,8 @@ def _row(t: ClassicTemplate, theme: ThemeRow, drawn: int) -> StudioTemplate:
 
 def _classic_story(row: ThemeRow) -> bool:
     """A story the catalog sells, written: it can have Classic templates (the custom story's base can't)."""
+    if not is_story(row):
+        return False
     theme = Theme.model_validate(row.definition)
     return theme.available and theme.catalog is not None
 
@@ -423,7 +425,7 @@ async def theme_texts(slug: str, db: SessionDep) -> ThemeTexts:
     """Every page's words of a theme, live and in its open version: the theme's own page editor (a theme
     needs no Classic template for its words to be edited). A «قريبًا» story has no pages yet."""
     row = (await db.execute(select(ThemeRow).where(ThemeRow.slug == slug))).scalar_one_or_none()
-    if row is None:
+    if row is None or not is_story(row):
         raise ApiError("not_found", 404)
     open_ = await open_version(db, row.id)
     theme = Theme.model_validate(row.definition)

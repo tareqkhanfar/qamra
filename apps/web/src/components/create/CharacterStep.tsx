@@ -16,12 +16,24 @@ import {
   type Drawing,
   type Fix,
 } from "@/lib/create";
-import { lastApproved, NOTE_MAX, offered, tidyNote } from "@/lib/drawings";
+import { drawingFor, lastApproved, NOTE_MAX, offered, tidyNote } from "@/lib/drawings";
 import { ACTIVITY_LINES } from "@/lib/shop";
 import { Chip, Frame, Lead } from "./Frame";
 
 const FIXES: Fix[] = ["skin", "face", "hair", "age"];
 const POLL_MS = 3000;
+
+/**
+ * The note over the character step once «تعديل الصورة» saved a change: the next «أعيدوا الرسم» draws from it (or,
+ * with no free redraw left, only that it was saved). `t`: the "create" messages.
+ */
+export function photoSavedNotice(
+  t: (key: string) => string,
+  change: "photo" | "position",
+  redrawsLeft: number,
+): string {
+  return redrawsLeft > 0 ? t(`character.photoSaved.${change}`) : t("character.photoSaved.noRedraws");
+}
 
 /**
  * Step 6 (design Create5): the drawn character; approve it, or redraw with what didn't look right (the chips and,
@@ -47,10 +59,10 @@ export function CharacterStep({
 }: {
   child: Child;
   character: Character;
-  productLine?: string | null; // classic|magic|workbook|journey|family|islamic (null: a story)
+  productLine?: string | null; // classic|magic|workbook|journey|family|islamic|class (null: a story)
   usable?: readonly string[] | null; // the styles this book can use (null: any): drawings in others aren't offered
   title?: string; // the frame title; the wizard's FlowFrameContext wins when present
-  back: () => void;
+  back?: () => void; // none on the kindergarten invite
   onChange: (c: Character) => void;
   onApproved: (c: Character) => void;
   onEditPhoto?: () => void; // «تعديل الصورة»: the photo's framing (or a new photo); never redraws by itself
@@ -69,7 +81,7 @@ export function CharacterStep({
   const [picked, setPicked] = useState<{ key: string; id: string } | null>(null);
   const who = { ...nameCases(child.name), gender: child.gender };
   const drawing = character.status === "generating";
-  const kind = (ACTIVITY_LINES as readonly string[]).includes(productLine ?? "") ? "activity" : "story";
+  const kind = drawingFor(productLine, ACTIVITY_LINES);
   const places = t(
     t.has(`character.places.${productLine}`) ? `character.places.${productLine}` : "character.places.other",
   );

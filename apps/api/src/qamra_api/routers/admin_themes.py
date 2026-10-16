@@ -29,6 +29,7 @@ from qamra_api.theme_versions import (
     display_titles,
     ensure_live,
     history,
+    is_story,
     new_draft,
     open_version,
     problems,
@@ -161,7 +162,7 @@ def changes(before: dict[str, Any], after: dict[str, Any]) -> list[Change]:
 
 async def _theme(db: AsyncSession, slug: str) -> ThemeRow:
     row = (await db.execute(select(ThemeRow).where(ThemeRow.slug == slug))).scalar_one_or_none()
-    if row is None:
+    if row is None or not is_story(row):
         raise ApiError("not_found", 404)
     return row
 
@@ -238,7 +239,9 @@ def _audit(admin: AdminUser, action: str, row: ThemeRow, **data: Any) -> AuditLo
 @router.get("", dependencies=[Depends(require_permission("themes.view"))])
 async def list_themes(db: SessionDep) -> list[ThemeOut]:
     rows = (await db.execute(select(ThemeRow).order_by(ThemeRow.slug))).scalars().all()
-    return [ThemeOut(**(await _theme_out(db, r)).model_dump(exclude={"history"})) for r in rows]
+    return [
+        ThemeOut(**(await _theme_out(db, r)).model_dump(exclude={"history"})) for r in rows if is_story(r)
+    ]
 
 
 @router.get("/{slug}", dependencies=[Depends(require_permission("themes.view"))])
