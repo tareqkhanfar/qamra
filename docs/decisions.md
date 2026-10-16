@@ -1072,3 +1072,38 @@ The owner approved the likeness trial's direction. What was built, and the choic
 - **The admin's messages need a verified admin session on the server:** the admin pages were gated only in the
   browser, so their source was open to anyone. A nested provider replaces the root one's messages, so the admin
   layout gives the whole file to a verified admin and the public set plus the gate's lines to anyone else.
+
+## Free character drawings come back with time (2026-10-16)
+
+The owner got stuck on the style step: each child had 4 drawings (the first + 3 redraws) for good, then «تواصلوا
+معنا». He asked for drawings that come back after a while, e.g. every two hours. Each drawing costs ≈ $0.30
+(Nano Banana Pro portrait + sheet), so some guard stays.
+
+- **Rolling window, not a reset clock:** each drawing comes back `free_draws_window_hours` (default **2**) after it
+  was asked for; at most `free_draws_per_window` (default **3**) in any such window. No midnight or "every
+  2 hours on the hour" reset that rewards waiting for the boundary, and the time we show is exact (the oldest
+  drawing in the window + 2 h).
+- **Daily ceiling, per child and per account:** `free_draws_daily_cap` (default **12** in 24 h). 12 × $0.30 ≈ $3.6
+  a day is the most one account can spend on drawings, about one book's AI cost. The account's count comes from
+  `character.drawn` audit rows (ids only), so deleting a child and adding it again gives nothing back; the child's
+  count comes from its characters. One number for both caps keeps the admin simple (three settings in «الجودة
+  والتكلفة»).
+- **Every drawing counts, the first one too** (the old rule counted 1 + 3). With 3 in 2 h a new child gets the
+  first drawing and two redraws at once, and more as the hours pass. Reusing the approved character is not a
+  drawing; a drawing that failed on our side never counts (as before); one the cleanup removed still does.
+- **Staff are never limited, in any flow** (owner: «اذا انا بحساب الادمن دايما يقدر يعمل»): an `admin` account (the
+  owner's among them) draws the child's character, the companion and the family as often as needed, has no
+  previews-per-day cap and no hourly photo-upload cap. Past drawings don't matter for them, so the owner's test
+  children are open right after the deploy. Parents' existing drawings do count in the window from the first
+  minute (no one is blocked for longer than the window or the day).
+- **One place:** `qamra_api.draw_limits`; the story and activity-book steps and the kindergarten invite all draw
+  through `create.draw_character`. The refusal is `free_draws_used` (429) with `details.reset_at`; the
+  companion's and the family member's own limits keep `redraws_used` (they don't come back with time).
+- **The site:** the style step shows how many are left; with none left it shows «وستتاح لكم رسمة جديدة بعد
+  {time} (عند الساعة {clock})» on the parent's own clock (lib/drawLimits) and continues with the child's newest
+  drawing (in this style, else another one the book can use), where the strip of earlier drawings can be approved
+  without a free drawing. The line says «رسمة جديدة», not «تتجدّد»: with a rolling window one drawing comes back at
+  that time, not all of them (the language review's point). The button comes back on its own when the time
+  passes; the API decides.
+- **Not changed:** the companion's 4 rounds and the family member's 4 drawings stay per item (behind their own
+  features); the class book's free page redraws stay per class.

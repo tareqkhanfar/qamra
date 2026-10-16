@@ -25,6 +25,7 @@ from sqlalchemy import func, select
 from qamra_ai.pipeline.drawing import clean_drawing
 from qamra_api import ratelimit, runtime_settings
 from qamra_api.deps import CurrentUser, RedisDep, SessionDep, SettingsDep, StorageDep
+from qamra_api.draw_limits import guardian_unlimited, is_unlimited
 from qamra_api.errors import ApiError
 from qamra_api.jobs import QueueDep, enqueue
 from qamra_api.store.catalog import load_catalog
@@ -124,7 +125,10 @@ async def companion_out(db: SessionDep, comp: Companion) -> CompanionOut:
         type_other=comp.type_other,
         traits=[t for t in (comp.traits or "").split(", ") if t],
         options=len(latest(comp)) if comp.status == CompanionStatus.ready else 0,
-        redraws_left=max(0, MAX_ROUNDS - rounds_used(comp)),
+        # a staff account's drawings never run out (qamra_api.draw_limits)
+        redraws_left=MAX_ROUNDS
+        if await guardian_unlimited(db, comp.child_id)
+        else max(0, MAX_ROUNDS - rounds_used(comp)),
         original=comp.drawing_key is not None,
         paper_found=bool(params.get("paper_found")),
         box=Box.model_validate(params["box"]) if params.get("box") else None,
@@ -204,7 +208,10 @@ async def upload_drawing(
 ) -> CompanionOut:
     """A photo of the child's drawing (camera or gallery): stored privately, cleaned for the next step."""
     child = await own_child(db, user, child_id)
-    if await ratelimit.hit(redis, f"rl:drawings:{user.id}", 3600) > UPLOADS_PER_HOUR:
+    if (
+        not is_unlimited(user)
+        and await ratelimit.hit(redis, f"rl:drawings:{user.id}", 3600) > UPLOADS_PER_HOUR
+    ):
         raise ApiError("too_many_attempts", 429)
     consented = (
         await db.execute(select(func.count()).select_from(Consent).where(Consent.child_id == child.id))
@@ -337,7 +344,7 @@ async def draw_companion(
         and (comp.params.get("error") or {}).get("code") == "drawing_rejected"
     ):
         raise ApiError("invalid_drawing", 422)  # the review said no: another drawing is needed, not a redraw
-    if rounds_used(comp) >= MAX_ROUNDS:
+    if rounds_used(comp) >= MAX_ROUNDS and not is_unlimited(user):
         raise ApiError("redraws_used", 429)
     style = await _style(db, comp, body.style)
     comp.name = body.name

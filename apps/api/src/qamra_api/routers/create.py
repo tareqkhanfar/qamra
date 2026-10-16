@@ -21,7 +21,7 @@ from qamra_ai.pipeline.classic import classic_budget_usd
 from qamra_ai.pipeline.custom_story import CUSTOM_THEME, CustomBrief, screen_brief
 from qamra_ai.pipeline.photo_crop import MIN_FRACTION, PhotoCrop, frame_photo, image_size
 from qamra_ai.pipeline.theme import Theme
-from qamra_api import ratelimit, runtime_settings
+from qamra_api import draw_limits, ratelimit, runtime_settings
 from qamra_api.classic import CLASSIC_JOB, live_template, resume_classic_draft
 from qamra_api.consent import record_consent
 from qamra_api.deps import CurrentUser, RedisDep, SessionDep, SettingsDep, StorageDep
@@ -52,6 +52,7 @@ from qamra_core.db.models import (
     OrderItem,
     OrderStatus,
     PhotoStatus,
+    User,
 )
 from qamra_core.db.models import Theme as ThemeRow
 from qamra_core.db.store import ArtStyle, Cart, CartItem, CartStatus, CatalogProduct, OrderEvent, Variant
@@ -59,7 +60,6 @@ from qamra_core.storage import ObjectNotFound, ObjectStorage, child_prefix
 
 router = APIRouter(prefix="/api/create", tags=["create"])
 CONSENT_VERSION = "parent-2026-09"  # the consent text shown on step 2 (messages: create.consent)
-MAX_CHARACTERS = 4  # the first drawing and 3 free redraws per child
 PREVIEWS_PER_DAY = 3  # Magic previews cost real money: per parent, per day
 UPLOADS_PER_HOUR = 20
 FRAMINGS_PER_HOUR = 60  # each saved framing runs the photo check again
@@ -139,7 +139,14 @@ class ChildOut(BaseModel):
     consent: bool
     photos: int
     characters: list[CharacterOut]
+    # free drawings (qamra_api.draw_limits): how many the parent may ask for now, and when the next one
+    # comes back (None: all are there); each of the `redraws_total` comes back `redraws_window_hours` after
+    # it was used. A staff guardian is never limited (`redraws_unlimited`).
     redraws_left: int
+    redraws_reset_at: datetime | None = None
+    redraws_total: int = 0
+    redraws_window_hours: int = 0
+    redraws_unlimited: bool = False
     interests: list[str] = Field(default_factory=list)  # the likes, then the note (as saved)
     name_latin: str | None = None  # the name in English letters (activity books' English name page)
     photo: PhotoOut | None = None  # the newest kept photo; None once deleted (24 h after the approval)
@@ -181,6 +188,8 @@ async def _child_out(db: SessionDep, child: Child) -> ChildOut:
         .all()
     )
     framing = PhotoCrop.parse(kept[0].crop) if kept else None
+    guardian = await db.get(User, child.guardian_user_id) if child.guardian_user_id else None
+    free = await draw_limits.for_child(db, child.id, guardian, datetime.now(UTC))
     return ChildOut(
         id=child.id,
         name=child.first_name,
@@ -192,7 +201,11 @@ async def _child_out(db: SessionDep, child: Child) -> ChildOut:
         photos=len(kept),
         # a drawing the cleanup removed is gone for the parent, but it still counts as one of the redraws
         characters=[_character_out(c) for c in characters if c.status != CharacterStatus.discarded],
-        redraws_left=max(0, MAX_CHARACTERS - sum(c.status != CharacterStatus.failed for c in characters)),
+        redraws_left=free.left,
+        redraws_reset_at=free.reset_at,
+        redraws_total=free.per_window,
+        redraws_window_hours=free.window_hours,
+        redraws_unlimited=free.unlimited,
         interests=list(child.interests or []),
         name_latin=child.name_latin,
         photo=(
@@ -451,7 +464,9 @@ async def upload_photos(
     without it the photo is framed around the face found. The check runs on the framed cut-out, and the
     original is kept with the framing as numbers, never a second, cropped copy."""
     child = await _my_child(db, user, child_id)
-    if await ratelimit.hit(redis, f"rl:photos:{user.id}", 3600) > UPLOADS_PER_HOUR:
+    if not draw_limits.is_unlimited(user) and (
+        await ratelimit.hit(redis, f"rl:photos:{user.id}", 3600) > UPLOADS_PER_HOUR
+    ):
         raise ApiError("too_many_attempts", 429)
     consented = (
         await db.execute(select(func.count()).select_from(Consent).where(Consent.child_id == child.id))
@@ -568,7 +583,9 @@ async def frame_photo_again(
     an upload; a framing that fails keeps the one saved before. It never redraws by itself: the next
     «ارسم من جديد» uses it (`draw_character` sees the newer framing)."""
     photo, child = await _my_photo(db, user, photo_id)
-    if await ratelimit.hit(redis, f"rl:photo-frames:{user.id}", 3600) > FRAMINGS_PER_HOUR:
+    if not draw_limits.is_unlimited(user) and (
+        await ratelimit.hit(redis, f"rl:photo-frames:{user.id}", 3600) > FRAMINGS_PER_HOUR
+    ):
         raise ApiError("too_many_attempts", 429)
     original = _original(storage, photo)
     framing = body.crop()
@@ -655,15 +672,23 @@ async def draw_character(
     ).scalar_one()
     if not photos:
         raise ApiError("photo_required", 409)
+    # the free drawings come back with time (qamra_api.draw_limits); the account's row is locked so two
+    # taps at once can't both take the last one
+    await db.execute(select(User.id).where(User.id == user.id).with_for_update())
+    free = await draw_limits.for_child(db, child.id, user, datetime.now(UTC))
+    if free.left <= 0:
+        raise ApiError(
+            "free_draws_used",
+            429,
+            {"reset_at": free.reset_at.isoformat() if free.reset_at else None, "total": free.per_window},
+        )
     drawn = (
         await db.execute(
             select(func.count())
             .select_from(Character)
             .where(Character.child_id == child.id, Character.status != CharacterStatus.failed)
         )
-    ).scalar_one()  # a drawing that failed on our side is not one of the parent's redraws
-    if drawn >= MAX_CHARACTERS:
-        raise ApiError("redraws_used", 429)
+    ).scalar_one()  # a drawing that failed on our side is not one of the parent's drawings
     asked: dict[str, Any] = {"attempt": drawn + 1, "fixes": sorted(set(body.fixes))}  # what didn't look right
     if body.note:
         asked["note"] = body.note  # the parent's words; the worker adds what it made of them
@@ -671,6 +696,8 @@ async def draw_character(
         child_id=child.id, art_style=body.style, status=CharacterStatus.generating, params=asked
     )
     db.add(character)
+    await db.flush()
+    db.add(draw_limits.drawn_log(user.id, character.id, child.id))  # counts for the account's 24 hours
     await db.commit()
     enqueue(queue, "qamra_worker.jobs.create.generate_character", str(character.id))
     return _character_out(character)
@@ -932,7 +959,8 @@ async def start_book(
             .where(Book.created_by_user_id == user.id, Book.created_at >= since, Book.is_sample.is_(False))
         )
     ).scalar_one()
-    if previews >= PREVIEWS_PER_DAY:  # every preview costs real money, Classic ones too
+    # every preview costs real money, Classic ones too; staff test as much as they need
+    if previews >= PREVIEWS_PER_DAY and not draw_limits.is_unlimited(user):
         raise ApiError("too_many_previews", 429)
     values = (await runtime_settings.current(db, settings)).values
     classic = {"template_id": str(template.id), "budget_pinned": True} if template else {}

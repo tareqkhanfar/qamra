@@ -1,5 +1,23 @@
 # Changelog
 
+## Free character drawings come back with time; staff never limited (2026-10-16)
+- **Why:** the owner was stuck on the style step with «استخدمتم إعادات الرسم المجانية لهذا الطفل…»: 4 drawings
+  per child for good.
+- **Rule** (`qamra_api.draw_limits`): 3 free drawings in any rolling 2 hours per child (each one back 2 h after it
+  was used), and at most 12 in 24 h per child and per account. Admin settings `free_draws_per_window` (3),
+  `free_draws_window_hours` (2), `free_draws_daily_cap` (12). A failed drawing never counts; reusing the approved
+  character isn't a drawing. Enforced in `create.draw_character`, which the story, activity-book and invite
+  steps all use; the account's drawings are kept as `character.drawn` audit rows.
+- **API:** the child now carries `redraws_reset_at`, `redraws_total`, `redraws_window_hours`,
+  `redraws_unlimited`; a refusal is `free_draws_used` (429) with `details.reset_at`.
+- **Staff:** an admin account is never limited: child characters (past drawings included), companions, family
+  members, previews per day and the hourly photo-upload caps.
+- **Site:** the style step shows the drawings left and, with none left, when the next one comes back (time left
+  and the clock) and continues with an earlier drawing; the character step and the invite say the same and keep
+  the strip of earlier drawings usable. Texts in ar/en, reviewed.
+- Tests: API `test_draw_limits.py` (the window, both daily caps, deleting a child, failed drawings, the invite,
+  staff in every flow); web `drawLimits.test.ts` (the wait and the clock in both languages).
+
 ## Classic: only the hero's head is edited; no more violet patches (2026-10-16)
 - **Why:** the per-order proof (book `17fb9eb8`, graduation × watercolor) came back with a visible rectangle on
   every page: a violet wash, added lanterns and leaves, the green gown turned blue, and page 3 edited the wrong

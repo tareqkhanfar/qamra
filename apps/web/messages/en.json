@@ -2560,7 +2560,8 @@
       "popular": "Most chosen",
       "extra": "+{amount}",
       "cta": "Draw {name}'s character",
-      "next": "Next we draw {name}'s character in a minute or two, and we don't go on until you approve it."
+      "next": "Next we draw {name}'s character in a minute or two, and we don't go on until you approve it.",
+      "useEarlier": "Continue with one of {name}'s earlier drawings"
     },
     "character": {
       "title": "Does this look like {name}?",
@@ -2590,8 +2591,7 @@
       "noteHint": "{gender, select, f {We only use the parts about how she looks.} other {We only use the parts about how he looks.}}",
       "otherStyle": "You chose a drawing in the “{style}” style, so every picture in the story will be in that style.",
       "approve": "{gender, select, f {Yes, that's {name}} other {Yes, that's {name}}}",
-      "redraw": "Redraw · {left} of 3 left",
-      "noRedraws": "The free redraws are used up. Message us if the character isn't right.",
+      "redraw": "Redraw · {left} of {total} left",
       "where": {
         "story": "This is how {name} will appear in the story.",
         "activity": "This is how {name} will appear {places}.",
@@ -2611,13 +2611,14 @@
         "activity": "You review what we will print before we add it to the cart.",
         "class": "{gender, select, f {Her character goes into the class book. The kindergarten never sees her original photo.} other {His character goes into the class book. The kindergarten never sees his original photo.}}"
       },
-      "redrawRule": "Each child gets 3 free redraws, and any attempt that fails because of a fault on our side doesn't count.",
+      "redrawRule": "Each child has {total, plural, one {# free drawing} other {# free drawings}}, and each drawing becomes available again {hours, plural, one {an hour} other {# hours}} after it's used. Any attempt that fails because of an error on our end doesn't count.",
       "editPhoto": "Edit the photo",
       "photoSaved": {
         "position": "The photo's new position is saved. We'll use it when you tap “Redraw”.",
         "photo": "The new photo is saved. We'll draw from it when you tap “Redraw”.",
         "noRedraws": "Your change to the photo is saved."
-      }
+      },
+      "redrawFree": "Redraw"
     },
     "story": {
       "title": "Where is {name} going?",
@@ -2799,6 +2800,13 @@
         "workbook": "In Arabic letters: your child will trace it and write it on the “My name” pages."
       },
       "title": "Who is this book for?"
+    },
+    "drawLimit": {
+      "left": "Free drawings left now: {left} of {total}.",
+      "noneLeft": "You've used up your free drawings for now. Your next one will be available in {time} (at {clock}). In the meantime, you can pick one of {name}'s earlier drawings.",
+      "noneLeftAlone": "You've used up your free drawings for now. Your next one will be available in {time} (at {clock}).",
+      "soon": "You've used up your free drawings for now; your next one will be available shortly. In the meantime, you can pick one of {name}'s earlier drawings.",
+      "soonAlone": "You've used up your free drawings for now; your next one will be available shortly."
     }
   },
   "admin": {

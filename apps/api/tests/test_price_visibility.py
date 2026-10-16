@@ -222,7 +222,10 @@ async def test_catalog_wording_about_price_is_swapped_while_hidden(
     await _show(adb, False)
     addons = {a["slug"]: a for a in (await client.get("/api/store/catalog")).json()["addons"]}
     extra, digital = addons["extra-copy"], addons["digital-copy"]
-    assert extra["description_ar"] == "نسخة أخرى من الكتاب نفسه، للإهداء أو للاحتفاظ بها" and extra["description_en"]
+    assert (
+        extra["description_ar"] == "نسخة أخرى من الكتاب نفسه، للإهداء أو للاحتفاظ بها"
+        and extra["description_en"]
+    )
     assert digital["name_ar"] == "نسخة رقمية مع المطبوع" and "Free" not in digital["name_en"]
     words = json.dumps(addons, ensure_ascii=False)
     assert not any(w in words for w in ("السعر", "مجاني", "توفير", "price", "Free", "Save"))
