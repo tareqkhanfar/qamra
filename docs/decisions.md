@@ -1145,3 +1145,37 @@ The owner got stuck on the style step: each child had 4 drawings (the first + 3 
   passes; the API decides.
 - **Not changed:** the companion's 4 rounds and the family member's 4 drawings stay per item (behind their own
   features); the class book's free page redraws stay per class.
+
+## Phone numbers typed on Arabic keyboards; 422s name their fields (2026-10-16)
+
+The owner kept getting «بعض البيانات غير صحيحة» at checkout (`POST /api/store/checkout` → 422). Cause, confirmed by
+a test: the phone check was `^\+?[0-9 ()-]{7,20}$`, ASCII digits only, and an Arabic keyboard types ٠٥٩٩… (or
+۰۵۹۹… on a Persian layout); the 422 named no field, and the site showed only the generic line.
+
+- **One normalizer:** `qamra_core.phone.normalize_phone` (and its twin `apps/web/src/lib/phone.ts`): Arabic-Indic and
+  Persian digits → ASCII; spaces, dashes, dots, brackets and direction marks ignored. Stored forms: local numbers
+  keep their zero, digits only (`0599123456`, landline `022981234`; a bare `599123456` from Excel gets its zero
+  back); international ones start with `+` and keep the country code as typed (`00970…`, `970…`, `+970 0599…` →
+  `+970599…`; `+972…` stays `+972…`, since both serve Palestinian mobiles). Jordan (`07…`, `+962…`) and other
+  countries' `+` numbers are accepted. A local `05…` number is **not** turned into `+970`/`+972`: we can't know
+  which one the customer uses. `phone_key` (the last nine digits) is what all forms of one number share: order
+  tracking and the coupons' first-order / per-customer checks match on it.
+- **Everywhere:** checkout, kindergarten sign-up and school details, demo requests, family-book quotes, the school's
+  children list (CSV), admin phone settings; also two-factor codes typed in Arabic digits (they used to fail) and
+  numbers sent as text in Arabic digits (`children_count`, the quote's `quantity`).
+- **Field messages:** every 422 from validation keeps `details.fields` (the sorted list of names, unchanged so
+  existing pages keep working) and adds `details.field_errors`: field → `{ar, en}`, by field name and kind of
+  problem (`qamra_api.errors.FIELD_MESSAGES`). The owner asked for the map under `details.fields`; that would have
+  broken every page that reads the list, so the map has its own key. Refusals about one field with their own code
+  (`unknown_city`, `unknown_zone`, `terms_required`, `weak_password`, `common_password`, `email_taken`,
+  `wrong_password`, `invalid_setting`) carry the same two keys. When an `invalid_input` has field messages, its
+  top-level `message` is the first field's message, so pages that mark nothing still say what is wrong.
+- **The site:** checkout, sign-in/sign-up, change password, kindergarten sign-up, the demo request and the quote
+  form check the obvious things first (required fields, the phone after normalizing, lengths, e-mail, whole
+  numbers), show each message under its field (red border, `aria-invalid`, `aria-describedby`), focus the first
+  one, and show «راجعوا الحقول المعلّمة بالأحمر.» on top; the server's own message stays the fallback when no field
+  can be marked. Forms use `noValidate` so the browser's own bubbles (in the browser's language) don't take over.
+  Number inputs are text with `inputMode="numeric"` (a `type="number"` input drops Arabic digits).
+- **Addresses:** any text of 5 or more characters is accepted (the owner's «ضضضضضضضضض» included): no "gibberish"
+  check. **City and zone:** the checkout's city must be one of the chosen zone's cities; the refusal now says so
+  («هذه المدينة ليست ضمن منطقة التوصيل المختارة…») under the city; an unknown zone is marked on the city too.

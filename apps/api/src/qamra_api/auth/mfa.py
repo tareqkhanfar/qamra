@@ -15,6 +15,8 @@ from datetime import UTC, datetime
 
 import pyotp
 
+from qamra_core.phone import ascii_digits
+
 RECOVERY_ALPHABET = "abcdefghjkmnpqrstuvwxyz23456789"  # no look-alikes (0/o, 1/l/i)
 RECOVERY_COUNT = 10
 
@@ -28,7 +30,8 @@ def provisioning_uri(secret: str, account: str, issuer: str) -> str:
 
 
 def _digits(code: str) -> str:
-    return "".join(ch for ch in code if ch.isdigit())
+    """«١٢٣ ٤٥٦» from an Arabic keyboard is 123456; anything but ASCII digits is dropped."""
+    return "".join(ch for ch in ascii_digits(code) if ch in "0123456789")
 
 
 def match_step(secret: str, code: str, last_step: int | None, now: float | None = None) -> int | None:
@@ -47,7 +50,7 @@ def match_step(secret: str, code: str, last_step: int | None, now: float | None 
 
 
 def hash_recovery(code: str) -> str:
-    normalized = "".join(ch for ch in code.lower() if ch.isalnum())
+    normalized = "".join(ch for ch in ascii_digits(code).lower() if ch.isascii() and ch.isalnum())
     return hashlib.sha256(normalized.encode()).hexdigest()
 
 

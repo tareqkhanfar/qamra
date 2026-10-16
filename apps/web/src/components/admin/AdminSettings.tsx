@@ -6,6 +6,7 @@ import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { useRouter } from "@/i18n/navigation";
 import { api, errorText } from "@/lib/api";
+import { serverFieldErrors } from "@/lib/fieldErrors";
 
 type Kind = "text" | "number" | "money" | "decimal" | "boolean" | "choice" | "secret" | "phone" | "email" | "url";
 type Setting = {
@@ -38,7 +39,12 @@ export function AdminSettings() {
   const [tab, setTab] = useState<string>("pricing");
   const [draft, setDraft] = useState<Draft>({});
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState<{ tone: "success" | "error"; text: string; field?: string } | null>(null);
+  const [message, setMessage] = useState<{
+    tone: "success" | "error";
+    text: string;
+    field?: string;
+    fieldText?: string; // shown under that field (e.g. «رقم الجوال غير صحيح…»)
+  } | null>(null);
 
   useEffect(() => {
     let alive = true;
@@ -88,7 +94,9 @@ export function AdminSettings() {
       return;
     }
     const fieldKey = res.error?.details?.fields?.[0];
-    setMessage({ tone: "error", text: errorText(res.error, locale, te("unknown")), field: fieldKey });
+    const fieldText = fieldKey ? serverFieldErrors(res.error, locale)[fieldKey] : undefined;
+    setMessage({ tone: "error", text: errorText(res.error, locale, te("unknown")), field: fieldKey, fieldText });
+    if (fieldKey) requestAnimationFrame(() => document.getElementById(`setting-${fieldKey}`)?.focus());
   }
 
   const set = (key: string, value: string | number | boolean | null) => setDraft((d) => ({ ...d, [key]: value }));
@@ -172,6 +180,7 @@ export function AdminSettings() {
                     onChange={(e) => set(s.key, e.target.value)}
                     className={field}
                     aria-invalid={invalid || undefined}
+                    aria-describedby={invalid && message?.fieldText ? `${id}-error` : undefined}
                   >
                     {s.choices.map((c) => (
                       <option key={c}>{c}</option>
@@ -194,6 +203,7 @@ export function AdminSettings() {
                       onChange={(e) => set(s.key, e.target.value)}
                       className={`${field} rtl:text-right`}
                       aria-invalid={invalid || undefined}
+                      aria-describedby={invalid && message?.fieldText ? `${id}-error` : undefined}
                     />
                     {s.configured && (
                       <button
@@ -228,7 +238,13 @@ export function AdminSettings() {
                     }
                     className={`${field} ${["phone", "email", "url", "money", "decimal", "number"].includes(s.kind) ? "rtl:text-right" : ""} ${invalid ? "border-danger" : ""}`}
                     aria-invalid={invalid || undefined}
+                    aria-describedby={invalid && message?.fieldText ? `${id}-error` : undefined}
                   />
+                )}
+                {invalid && message?.fieldText && (
+                  <span id={`${id}-error`} className="text-caption font-semibold text-danger">
+                    {message.fieldText}
+                  </span>
                 )}
                 {s.configured && s.kind !== "secret" && (
                   <button

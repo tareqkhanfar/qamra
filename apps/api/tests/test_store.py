@@ -113,7 +113,7 @@ async def test_checkout_freezes_prices_and_costs(client: AsyncClient, adb: Async
     assert (
         order.status == OrderStatus.new
         and order.currency == Currency.ILS
-        and order.phone == CHECKOUT["phone"]
+        and order.phone == "+970591234567"  # stored normalized (qamra_core.phone)
     )
     assert order.pricing["coupon"] == "EID10" and order.cost_ils > 0
     line = (await adb.execute(select(OrderItem).where(OrderItem.order_id == order.id))).scalar_one()
@@ -121,7 +121,7 @@ async def test_checkout_freezes_prices_and_costs(client: AsyncClient, adb: Async
     assert line.costs["print"] == "14.00" and line.title["name_ar"] == "قمرة كلاسيك"
     digital = next(a for a in line.addons if a["slug"] == "digital-copy")
     assert digital["unit_price"] == "0.00" and digital["name_ar"]  # names and prices frozen for invoices
-    assert (await adb.execute(select(CouponRedemption))).scalar_one().phone == CHECKOUT["phone"]
+    assert (await adb.execute(select(CouponRedemption))).scalar_one().phone == "+970591234567"
     assert (await adb.execute(select(OrderEvent))).scalar_one().to_status == OrderStatus.new
 
     # the same phone can't use a first-order coupon twice

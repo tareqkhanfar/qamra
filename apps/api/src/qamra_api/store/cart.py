@@ -18,6 +18,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from qamra_api.settings import ApiSettings
 from qamra_core.db.models import Currency, Order, OrderStatus, User
 from qamra_core.db.store import Cart, CartItem, CartStatus, Coupon, CouponKind, CouponRedemption
+from qamra_core.phone import phone_key
 from qamra_core.pricing import CouponRule
 
 COOKIE = "qamra_cart"
@@ -141,10 +142,6 @@ def clean_personalization(raw: dict[str, Any]) -> dict[str, Any]:
     return out
 
 
-def _digits(phone: str) -> str:
-    return "".join(ch for ch in phone if ch.isdigit())[-9:]
-
-
 async def coupon_rule(
     db: AsyncSession,
     code: str,
@@ -170,8 +167,9 @@ async def coupon_rule(
     who = []
     if user_id is not None:
         who.append(Order.user_id == user_id)
-    if phone:
-        who.append(Order.phone == phone)
+    key = phone_key(phone)  # 0599…, +970599… and +972599… are one customer
+    if len(key) == 9:
+        who.append(Order.phone.endswith(key, autoescape=True))
     if who and coupon.first_order_only:
         previous = (
             await db.execute(
@@ -186,8 +184,8 @@ async def coupon_rule(
         mine = []
         if user_id is not None:
             mine.append(CouponRedemption.user_id == user_id)
-        if phone:
-            mine.append(CouponRedemption.phone == phone)
+        if len(key) == 9:
+            mine.append(CouponRedemption.phone.endswith(key, autoescape=True))
         used = (
             await db.execute(
                 select(func.count())
@@ -208,4 +206,5 @@ async def coupon_rule(
 
 
 def same_phone(a: str, b: str) -> bool:
-    return len(_digits(a)) >= 7 and _digits(a) == _digits(b)
+    """One number however it was typed: Arabic digits, 0599… or +970599… (the last nine digits)."""
+    return len(phone_key(a)) >= 7 and phone_key(a) == phone_key(b)

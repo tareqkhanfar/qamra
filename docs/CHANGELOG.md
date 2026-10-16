@@ -1,5 +1,19 @@
 # Changelog
 
+## Phone numbers in Arabic digits; each wrong field gets its own message (2026-10-16)
+- **Bug:** checkout answered «بعض البيانات غير صحيحة» to a phone typed on an Arabic keyboard (٠٥٩٩…/۰۵۹۹…): the check
+  took ASCII digits only, and the 422 never said which field.
+- **Phones:** one normalizer (`qamra_core.phone`, `lib/phone.ts`) for checkout, kindergarten sign-up and details,
+  demo requests, quotes, the school's CSV, admin phone settings; Arabic/Persian digits, spaces, dashes accepted;
+  stored as `0599123456` or `+970599123456` (970/972 kept as typed). Tracking and coupon checks match a number in
+  any form. Two-factor codes in Arabic digits work too.
+- **422s:** `details.field_errors` (field → ar/en message) next to the unchanged `details.fields` list; the
+  top-level message of an `invalid_input` is the first field's.
+- **Site:** checkout, sign-in/up, change password, kindergarten sign-up, demo request and quote forms check before
+  sending, show each message under its field, focus the first one, and say «راجعوا الحقول المعلّمة بالأحمر.».
+- Tests: core `test_phone.py`; API `test_phone_fields.py`; web `fieldErrors.test.ts`. Texts reviewed by a
+  language-review pass.
+
 ## Parents may keep the child's photo for later books (opt-in, 2026-10-16)
 - **Choice:** «أوافق على الاحتفاظ بصورة … الأصلية لاستخدامها في رسم كتبها القادمة…», off by default, on the photo step
   and in «أطفالي»; its own versioned consent (`photo_keep`, `photo-keep-2026-10`) with time and IP; turning it off

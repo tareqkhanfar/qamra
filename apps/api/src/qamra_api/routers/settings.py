@@ -7,7 +7,7 @@ from pydantic import BaseModel
 
 from qamra_api import runtime_settings
 from qamra_api.deps import AdminUser, SessionDep, SettingsDep, require_permission
-from qamra_api.errors import ApiError
+from qamra_api.errors import MESSAGES, ApiError, field_message
 from qamra_core import settings_store
 from qamra_core.app_settings import GROUPS, REGISTRY, Kind, SettingError, mask
 from qamra_core.crypto import cipher_for
@@ -91,6 +91,14 @@ async def update_settings(
     try:
         await settings_store.save(db, cipher_for(settings), body.values, user.id)
     except SettingError as e:
-        raise ApiError("invalid_setting", 422, {"fields": [e.key], "reason": e.reason}) from e
+        phone = e.key in REGISTRY and REGISTRY[e.key].kind == Kind.phone
+        message = (
+            field_message("phone", "invalid")
+            if phone
+            else dict(zip(("ar", "en"), MESSAGES["invalid_setting"], strict=True))
+        )
+        raise ApiError(
+            "invalid_setting", 422, {"fields": [e.key], "reason": e.reason, "field_errors": {e.key: message}}
+        ) from e
     runtime_settings.invalidate()
     return await _view(db, settings, lang)

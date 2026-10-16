@@ -16,9 +16,9 @@ from sqlalchemy import select
 from qamra_api import ratelimit, runtime_settings
 from qamra_api.auth.router import client_ip
 from qamra_api.deps import AdminUser, RedisDep, SessionDep, SettingsDep, StorageDep, require_permission
-from qamra_api.errors import ApiError
+from qamra_api.errors import ApiError, field_error
 from qamra_api.store.catalog import BULK_MIN_QTY, load_catalog, quantity_table, tiers_estimated
-from qamra_api.validation import PHONE
+from qamra_api.validation import AsciiDigits, Phone, check_phone
 from qamra_core.db.models import AuditLog, Lead, LeadStatus, Locale
 
 router = APIRouter(prefix="/api/leads", tags=["leads"])
@@ -30,19 +30,11 @@ class LeadIn(BaseModel):
     city: str | None = Field(default=None, max_length=100)
     contact_name: Text
     contact_role: str | None = Field(default=None, max_length=120)
-    phone: str = Field(max_length=32)
-    children_count: int | None = Field(default=None, ge=1, le=500)
+    phone: Phone
+    children_count: Annotated[int | None, AsciiDigits] = Field(default=None, ge=1, le=500)
     event_date: date | None = None
     notes: str | None = Field(default=None, max_length=2000)
     locale: Locale = Locale.ar
-
-    @field_validator("phone")
-    @classmethod
-    def _phone(cls, v: str) -> str:
-        v = v.strip()
-        if not PHONE.match(v):
-            raise ValueError("invalid phone")
-        return v
 
     @field_validator("org_name", "contact_name")
     @classmethod
@@ -108,7 +100,7 @@ def clean_logo(data: bytes) -> tuple[bytes, tuple[int, int]]:
 def _text(value: str | None, field: str, *, required: bool = False) -> str | None:
     text = " ".join((value or "").split()) or None
     if required and not text:
-        raise ApiError("invalid_input", 422, {"fields": [field]})
+        raise field_error(field, "missing")
     return text
 
 
@@ -126,8 +118,8 @@ async def request_family_quote(
     storage: StorageDep,
     org_name: Annotated[str, Form(max_length=200)],
     contact_name: Annotated[str, Form(max_length=120)],
-    phone: Annotated[str, Form(max_length=32)],
-    quantity: Annotated[int, Form(ge=BULK_MIN_QTY, le=5000)],
+    phone: Annotated[str, Form(max_length=40)],
+    quantity: Annotated[int, AsciiDigits, Form(ge=BULK_MIN_QTY, le=5000)],
     city: Annotated[str | None, Form(max_length=100)] = None,
     contact_role: Annotated[str | None, Form(max_length=120)] = None,
     email: Annotated[str | None, Form(max_length=200)] = None,
@@ -139,13 +131,15 @@ async def request_family_quote(
     """An organization asks for a price for many copies, with its logo for the back cover (optional)."""
     if await ratelimit.hit(redis, f"rl:leads:{client_ip(request)}", 3600) > settings.leads_per_ip_per_hour:
         raise ApiError("too_many_attempts", 429)
-    if not PHONE.match(phone.strip()):
-        raise ApiError("invalid_input", 422, {"fields": ["phone"]})
+    try:
+        phone = check_phone(phone)
+    except ValueError as e:
+        raise field_error("phone", "missing" if str(e) == "empty" else "invalid") from e
     mail = _text(email, "email")
     if mail and not EMAIL.match(mail):
-        raise ApiError("invalid_input", 422, {"fields": ["email"]})
+        raise field_error("email")
     if desired_date is not None and desired_date < date.today():
-        raise ApiError("invalid_input", 422, {"fields": ["desired_date"]})
+        raise field_error("desired_date", "past")
     cleaned = clean_logo(await logo.read(LOGO_MAX_BYTES + 1)) if logo is not None and logo.filename else None
     lead = Lead(
         kind=QUOTE_KIND,
@@ -153,7 +147,7 @@ async def request_family_quote(
         city=_text(city, "city"),
         contact_name=_text(contact_name, "contact_name", required=True),
         contact_role=_text(contact_role, "contact_role"),
-        phone=phone.strip(),
+        phone=phone,
         event_date=desired_date,
         notes=(notes or "").strip() or None,
         locale=locale,

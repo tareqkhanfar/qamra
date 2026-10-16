@@ -14,7 +14,7 @@ from dataclasses import dataclass, field
 from datetime import date
 from typing import Any
 
-from qamra_api.validation import PHONE
+from qamra_core.phone import ascii_digits, normalize_phone
 
 MAX_CHILDREN = 60
 MAX_FILE = 512 * 1024
@@ -39,7 +39,6 @@ GIRLS = {"f", "female", "girl", "g", "أنثى", "انثى", "بنت", "بنت/�
 TEMPLATE_HEADER = ["اسم الطفل", "الجنس", "سنة الميلاد", "اسم ولي الأمر", "جوال ولي الأمر", "بريد ولي الأمر"]
 TEMPLATE_EXAMPLE = ["يوسف", "ولد", "2021", "خليل يوسف", "0599123456", ""]
 
-_DIGITS = str.maketrans("٠١٢٣٤٥٦٧٨٩۰۱۲۳۴۵۶۷۸۹", "01234567890123456789")
 _EMAIL = re.compile(r"^[^@\s]{1,64}@[^@\s]{1,190}\.[A-Za-z]{2,24}$")
 _NAME = re.compile(r"^[\w؀-ۿ' .-]+$")
 
@@ -106,7 +105,7 @@ def parse_csv(text: str) -> list[dict[str, str]]:
 
 
 def _year(value: str, today: int) -> int | None:
-    digits = value.translate(_DIGITS).strip()
+    digits = ascii_digits(value).strip()
     if not digits.isdigit():
         return None
     number = int(digits)
@@ -115,11 +114,6 @@ def _year(value: str, today: int) -> int | None:
     if today - AGE_MAX <= number <= today - AGE_MIN:  # a birth year
         return number
     return None
-
-
-def phone_digits(value: str) -> str:
-    """Arabic-Indic digits to ASCII, and only what a phone number is made of."""
-    return re.sub(r"[^\d+]", "", value.translate(_DIGITS))
 
 
 def check_row(values: dict[str, Any], row: int, today: int | None = None) -> Row:
@@ -149,12 +143,11 @@ def check_row(values: dict[str, Any], row: int, today: int | None = None) -> Row
     out.parent_name = parent or None
     if not parent:
         out.warnings.append(_msg("اسم ولي الأمر فارغ.", "The parent's name is empty."))
-    phone = phone_digits(str(values.get("phone") or ""))
+    phone = str(values.get("phone") or "").strip()
     email = str(values.get("email") or "").strip().lower()
     if phone:
-        if PHONE.match(phone) and len(phone.lstrip("+")) >= 9:
-            out.phone = phone
-        else:
+        out.phone = normalize_phone(phone)  # Arabic digits, spaces, dashes; Excel's dropped zero comes back
+        if out.phone is None:
             out.errors.append(
                 _msg("رقم الجوال ناقص أو غير صحيح.", "The phone number is incomplete or wrong.")
             )

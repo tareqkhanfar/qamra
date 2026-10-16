@@ -14,7 +14,7 @@ from sqlalchemy import func, select
 from qamra_api import notify, ratelimit, runtime_settings
 from qamra_api.auth.router import client_ip
 from qamra_api.deps import OptionalUser, RedisDep, SessionDep, SettingsDep
-from qamra_api.errors import ApiError
+from qamra_api.errors import ApiError, field_error
 from qamra_api.price_visibility import hidden
 from qamra_api.store import gift_cards
 from qamra_api.store.addons import available
@@ -44,7 +44,7 @@ from qamra_api.store.catalog import (
 )
 from qamra_api.store.payments import provider_for
 from qamra_api.store.workbooks import FamilyIn, family_personalization, line_gaps, orderable
-from qamra_api.validation import PHONE
+from qamra_api.validation import Phone
 from qamra_core import settings_store
 from qamra_core.db.models import AuditLog, Book, Currency, Order, OrderItem, OrderStatus
 from qamra_core.db.store import (
@@ -691,21 +691,13 @@ async def set_zone(body: ZoneIn, request: Request, db: SessionDep, user: Optiona
 
 class CheckoutIn(BaseModel):
     name: str = Field(min_length=2, max_length=80)
-    phone: str = Field(max_length=32)
+    phone: Phone
     zone: str = Field(max_length=64)
     city: str = Field(min_length=2, max_length=60)
     address: str = Field(min_length=5, max_length=300)
     notes: str | None = Field(default=None, max_length=500)
     payment: Literal["cod", "card"] = "cod"  # card: a disabled gateway stub for now (store.payments)
     accept_terms: bool
-
-    @field_validator("phone")
-    @classmethod
-    def _phone(cls, v: str) -> str:
-        v = v.strip()
-        if not PHONE.match(v):
-            raise ValueError("invalid phone")
-        return v
 
     @field_validator("name", "city", "address")
     @classmethod
@@ -759,7 +751,7 @@ async def checkout(
     settings: SettingsDep,
 ) -> PlacedOut:
     if not body.accept_terms:
-        raise ApiError("terms_required", 422)
+        raise field_error("accept_terms", code="terms_required")
     payer = provider_for(body.payment)  # cash on delivery; the card stub is refused here
     if await ratelimit.hit(redis, f"rl:checkout:{client_ip(request)}", 3600) > CHECKOUTS_PER_IP_PER_HOUR:
         raise ApiError("too_many_attempts", 429)
@@ -769,9 +761,9 @@ async def checkout(
     c = await load_catalog(db)
     zone = c.zones.get(body.zone)
     if zone is None:
-        raise ApiError("unknown_zone", 404)
-    if zone.cities and body.city not in zone.cities:
-        raise ApiError("unknown_city", 422)
+        raise field_error("zone", code="unknown_zone", status=404)
+    if zone.cities and body.city not in zone.cities:  # the city must be one of the chosen zone's
+        raise field_error("city", code="unknown_city")
     cart.zone_id, cart.currency = zone.id, zone.currency
     rows, missing, q, coupon = await _priced(db, c, cart, phone=body.phone)
     if not rows:
