@@ -372,6 +372,19 @@ olive-season spend, because the olive templates will be the same kind (made from
 - One book is enough to show the edit works. Three books cover the three looks: **$1.25**, instead of $3 for five.
 - If a1 fails on likeness or seams, stop. Don't spend on olive-season templates until the edit is fixed.
 
+**Result of (a), run 2026-10-16: FAILED; olive-season was not started.**
+
+- **The run:** book `17fb9eb8-7dda-4d71-b9ab-6af1886d4734`, invented girl «ريم», graduation × watercolor × girl. It cost **$0.617**: face $0.08, klein edits ≈ $0.47, Haiku QA ≈ $0.06. It hit the 2₪ guard (`budget_exceeded`).
+- **QA:** 13 of 17 hero pages came back `needs_review`, mostly for `seams`. The likeness is mostly 7–8, but page 3 scored 2: the wrong child was edited.
+- **What the pages show:**
+  - The klein crop comes back as a visible rectangle: a violet/indigo wash, with lanterns and leaves painted into the background.
+  - The hero's outfit is recoloured (the green gown turns blue).
+- **Likely cause:**
+  - The edit prompt carries the watercolor guide, which asks for "deep indigo and violet shadows … foreground framing elements (leaves, arches, lanterns)" (`prompts/style/watercolor.md:14-16`).
+  - The 7 templates were drawn before that guide, so the edit "restyles" its crop instead of matching the page.
+- **Fix before any olive spend:** the edit must keep the page's palette and add nothing, so it should not get the style's mood paragraph.
+- **Live Classic orders hit the same problem today.**
+
 ### 6.5 (b) + (c) olive-season × watercolor × girl, girl_hijab, boy, each from a Magic sample book
 
 **Recommendation: make each template from an approved Magic sample book of an invented child.** All 7 live
