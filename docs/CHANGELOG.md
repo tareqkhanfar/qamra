@@ -1,5 +1,22 @@
 # Changelog
 
+## Classic: only the hero's head is edited; no more violet patches (2026-10-16)
+- **Why:** the per-order proof (book `17fb9eb8`, graduation × watercolor) came back with a visible rectangle on
+  every page: a violet wash, added lanterns and leaves, the green gown turned blue, and page 3 edited the wrong
+  child.
+- **Edit:** `classic_edit.v2` carries no style guide; it changes the face and all the hair only and keeps the
+  clothes, what is on the head, the pose and the page's palette. The crop is the head with room around it.
+- **Portrait:** `classic_portrait.v2` (the medium only, a plain background); older portraits are painted again
+  once, and the free cover no longer uses them.
+- **Blend:** `qamra_ai.pipeline.classic_blend`: the edit is aligned to the template (klein zooms), colour-matched
+  around the head, and blended through a soft head-and-hair mask; every other pixel stays the template's.
+- **Hero boxes:** `hero_box.v2` reads figure and head boxes off a labelled grid with the page's outfit, on the main
+  model; `POST /api/admin/classic/templates/{id}/boxes` finds them again on a live template (status kept, flag
+  `boxes_refreshed`). A moved figure box keeps its head box while the head is still inside it.
+- Local proof with real klein (fake QA): `docs/plans/classic-templates.md` §6.8; $0.351 of fal. Not deployed.
+- Tests: `test_classic_blend.py` (pixels outside the mask unchanged, feathered mask, the wash taken off, the old
+  ponytail gone, alignment), new cases in `test_classic.py`, `test_classic_job.py`, `test_admin_classic.py`.
+
 ## Activity books, last QA items: review rows a child names, pictures that read right, journey and family fixes (2026-10-16)
 - **«دوسية التأسيس» review rows** («أُحَوِّطُ الصّورَةَ الَّتي تَبْدَأُ بِالحَرْفِ», every volume): KG2 V2 p067 showed six stars for «سِتَّة» in the س row. The rows now ask about the plan's own letter words (`workbook_find.LETTER_WORDS` covers ر–ي, `ENGLISH_LETTER_WORDS` A–Z), never a number, colour, shape or verb picture, nor one a Palestinian child names with another letter (`AMBIGUOUS`: «طابة»، «مخدّة»، «بسّة»، «قرع»، «شنطة»، «جاجة»، «سطل», a face/head, a shadow, a hoopoe…). Every row's answer is chosen first; the wrong choices come from the page's other letters, then letters not on the page: three pictures a row, none twice on a page (not even the same drawing under two ids). Small review writing rows drop to one dotted letter when two would print as scattered dots.
 - **Pictures redrawn in code:** labneh (a plate with the spoon's swirl, olive oil, mint and olives), bread (a scored loaf before a round of Arabic bread, was a potato), milk (a cow-spotted carton and a glass of white milk, was water), cucumber (striped, bumpy, with its flower). «ارسم ما ينقص» (KG2 V2 p095, p111): the missing part is left out of the drawing (`without`), no white box over the car or the table.

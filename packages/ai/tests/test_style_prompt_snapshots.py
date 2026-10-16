@@ -10,7 +10,9 @@ scenes and the page QA. History of the golden file:
     one, QA, companion, family, Classic and class-book prompts are unchanged.
   - 3d, watercolor, cartoon: every group (house style v6 and their guides v3).
   - coloring, crayon, papercut: every group but the Classic portrait (house style v6).
-  - new groups everywhere: the character portrait and the portrait-first sheet."""
+  - new groups everywhere: the character portrait and the portrait-first sheet.
+- 2026-10-16 (the Classic violet patches): only the Classic portrait, in every style
+  (`classic_portrait.v2`: the style's medium line instead of its whole guide); the rest byte-identical."""
 
 import json
 

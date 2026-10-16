@@ -19,7 +19,7 @@ Rect = tuple[int, int, int, int]
 MIN_SIDE = 0.04  # a box smaller than 4% of the page on a side is not a hero
 EDIT_MAX_MP = 0.6  # the edit is billed per megapixel: 0.6 MP keeps a page near $0.015 (plan §3)
 EDIT_MIN_MP = 0.35  # small crops are enlarged so the model has enough face to work with
-EDIT_MULTIPLE = 16  # FLUX.2 sizes are multiples of 16
+EDIT_MULTIPLE = 32  # klein returns multiples of 32 (asked 784 px, it drew 800): ask for what it draws
 MARGIN = 0.15  # context around the hero box, per side, as a fraction of the box
 FEATHER = 0.06  # feather width as a fraction of the crop's shorter side
 MAX_TONE_SHIFT = 24  # the most the edit's colors are moved (per channel, 0–255) to match the page
@@ -27,23 +27,52 @@ MAX_TONE_SHIFT = 24  # the most the edit's colors are moved (per channel, 0–25
 
 @dataclass(frozen=True)
 class HeroBox:
+    """The hero's whole figure; `head` (optional) is the head with its hair, hijab or cap. Only the head is
+    repainted: a template without a head box gets one estimated from the figure (`head_of`)."""
+
     x: float
     y: float
     w: float
     h: float
+    head: "HeroBox | None" = None
 
-    def to_dict(self) -> dict[str, float]:
-        return {"x": round(self.x, 4), "y": round(self.y, 4), "w": round(self.w, 4), "h": round(self.h, 4)}
+    def to_dict(self) -> dict[str, Any]:
+        out: dict[str, Any] = {
+            "x": round(self.x, 4),
+            "y": round(self.y, 4),
+            "w": round(self.w, 4),
+            "h": round(self.h, 4),
+        }
+        if self.head is not None:
+            out["head"] = self.head.to_dict()
+        return out
 
     @classmethod
     def from_dict(cls, data: dict[str, Any] | None) -> "HeroBox | None":
         if not data:
             return None
-        return normalize_box(data.get("x"), data.get("y"), data.get("w"), data.get("h"))
+        box = normalize_box(data.get("x"), data.get("y"), data.get("w"), data.get("h"))
+        head = data.get("head")
+        if box is None or not isinstance(head, dict):
+            return box
+        return box.with_head(normalize_box(head.get("x"), head.get("y"), head.get("w"), head.get("h")))
+
+    def with_head(self, head: "HeroBox | None") -> "HeroBox":
+        """This figure box with `head`, kept only when it lies (mostly) inside the figure."""
+        if head is not None and head.overlap(self) < 0.6:
+            head = None
+        return HeroBox(self.x, self.y, self.w, self.h, head)
+
+    def overlap(self, other: "HeroBox") -> float:
+        """The share of this box's area that lies inside `other`."""
+        ix = max(0.0, min(self.x + self.w, other.x + other.w) - max(self.x, other.x))
+        iy = max(0.0, min(self.y + self.h, other.y + other.h) - max(self.y, other.y))
+        return ix * iy / (self.w * self.h) if self.w * self.h > 0 else 0.0
 
     def mirrored(self) -> "HeroBox":
         """The same box on the horizontally flipped page (English books use mirrored templates)."""
-        return HeroBox(round(1 - self.x - self.w, 6), self.y, self.w, self.h)
+        head = self.head.mirrored() if self.head is not None else None
+        return HeroBox(round(1 - self.x - self.w, 6), self.y, self.w, self.h, head)
 
     def rect(self, width: int, height: int) -> Rect:
         return (
@@ -103,6 +132,29 @@ def crop_rect(box: HeroBox, width: int, height: int, margin: float = MARGIN) -> 
     mx = round((right - left) * margin)
     my = round((bottom - top) * margin)
     return (max(0, left - mx), max(0, top - my), min(width, right + mx), min(height, bottom + my))
+
+
+HEAD_SHARE = 0.42  # without a stored head box: the head and hair are the top 42% of the hero's figure
+HEAD_GROW = (0.6, 0.5, 0.6, 0.8)  # the edit's crop around the head: left, top, right, bottom (× head size)
+
+
+def head_of(box: HeroBox) -> HeroBox:
+    """The head box: the stored one, else the top of the figure box (a coarse guess the QA double-checks)."""
+    if box.head is not None:
+        return box.head
+    return HeroBox(box.x + box.w * 0.08, box.y, box.w * 0.84, box.h * HEAD_SHARE)
+
+
+def head_crop_rect(head: HeroBox, width: int, height: int, grow: tuple[float, ...] = HEAD_GROW) -> Rect:
+    """The klein crop: the head with room for the neck, shoulders and the scene around it, on the page."""
+    left, top, right, bottom = head.rect(width, height)
+    hw, hh = right - left, bottom - top
+    return (
+        max(0, left - round(hw * grow[0])),
+        max(0, top - round(hh * grow[1])),
+        min(width, right + round(hw * grow[2])),
+        min(height, bottom + round(hh * grow[3])),
+    )
 
 
 def edit_size(
