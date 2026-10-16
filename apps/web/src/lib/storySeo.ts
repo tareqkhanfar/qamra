@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { brandName } from "@/config/brand";
 import { examplesFor, getTheme, type ThemeDetail } from "@/lib/catalog";
 import { pickExample, type Example } from "@/lib/examples";
-import { absolute, alternates, SITE } from "@/lib/seo";
+import { absolute, alternates, SHARE_IMAGE, SITE } from "@/lib/seo";
 import type { Catalog } from "@/lib/store";
 import { storyFrom } from "@/lib/story";
 import { themeArt } from "@/lib/themeArt";
@@ -17,7 +17,11 @@ export async function storyMetadata(slug: string, locale: string): Promise<Metad
   const cover = pickExample(examples, slug)?.cover ?? themeArt(slug)?.src; // else the story's own cover art
   const title = `${theme.name} | ${brandName(locale)}`;
   const description = clip(theme.tagline || theme.description);
-  const images = cover ? [{ url: absolute(cover), alt: theme.name }] : undefined;
+  const images = [
+    cover
+      ? { url: absolute(cover), alt: theme.name }
+      : { ...SHARE_IMAGE, url: absolute(SHARE_IMAGE.url), alt: theme.name },
+  ];
   return {
     title,
     description,
@@ -31,7 +35,7 @@ export async function storyMetadata(slug: string, locale: string): Promise<Metad
       description,
       images,
     },
-    twitter: { card: cover ? "summary_large_image" : "summary", title, description, images: images?.map((i) => i.url) },
+    twitter: { card: "summary_large_image", title, description, images: images.map((i) => i.url) },
   };
 }
 

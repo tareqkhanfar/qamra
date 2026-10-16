@@ -142,6 +142,22 @@ text_review_waiting:
       - "Review the text, edit it if needed, then press “Confirm text & approve book”. The book won't reach the family or the printer until you confirm."
     button: { label: "Open the review queue", link: queue_url }
 
+order_new_staff:
+  ar:
+    subject: "طلب جديد {{ code }}{% if school %} من روضة{% endif %} — {{ total }}"
+    lines:
+      - "وصل طلب جديد رقم {{ code }}{% if name %} باسم {{ name }}{% endif %}{% if city %} من {{ city }}{% endif %}."
+      - "عدد النسخ: {{ copies }}، والمجموع: {{ total }} (الدفع عند الاستلام)."
+      - "تواصلوا مع العميل لتأكيد الطلب والعنوان، ثم أكّدوه من لوحة الإدارة."
+    button: { label: "افتحوا قائمة الطلبات", link: orders_url }
+  en:
+    subject: "New order {{ code }}{% if school %} from a kindergarten{% endif %} — {{ total }}"
+    lines:
+      - "A new order, {{ code }}, has arrived{% if name %} under the name {{ name }}{% endif %}{% if city %} from {{ city }}{% endif %}."
+      - "Copies: {{ copies }}. Total: {{ total }} (cash on delivery)."
+      - "Contact the customer to confirm the order and the address, then confirm it in the admin panel."
+    button: { label: "Open the order list", link: orders_url }
+
 printer_batch:
   ar:
     subject: "دفعة طباعة {{ code }} — عدد النسخ: {{ copies }}"

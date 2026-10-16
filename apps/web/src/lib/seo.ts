@@ -5,6 +5,10 @@ import { routing } from "@/i18n/routing";
 
 export const SITE = `https://${brand.domain}`;
 
+/** The share card of a page without its own picture (1200×630, the brand's cover): a shared link always shows
+ * a picture on Facebook, Instagram and WhatsApp. */
+export const SHARE_IMAGE = { url: "/og/qamra.jpg", width: 1200, height: 630 };
+
 /** Canonical for this language, hreflang for both, and x-default → Arabic (the default language). */
 export function alternates(path: string, locale: string): Metadata["alternates"] {
   const at = (l: string) => `${SITE}/${l}${path === "/" ? "" : path}`;
@@ -19,7 +23,8 @@ export function alternates(path: string, locale: string): Metadata["alternates"]
 
 /**
  * Title ("page | brand"), description, canonical + hreflang and the share cards for a public page. `bare` keeps
- * the title as given (the home's already carries the brand); `image` is the picture a shared link shows.
+ * the title as given (the home's already carries the brand); `image` is the picture a shared link shows (the
+ * brand's share card when none is given).
  */
 export function pageMetadata({
   path,
@@ -39,7 +44,11 @@ export function pageMetadata({
   const name = brandName(locale);
   const full = bare ? title : `${title} | ${name}`;
   description = description.length <= 160 ? description : `${description.slice(0, 159).trimEnd()}…`;
-  const images = image ? [{ url: absolute(image.url), alt: image.alt }] : undefined;
+  const images = [
+    image
+      ? { url: absolute(image.url), alt: image.alt }
+      : { ...SHARE_IMAGE, url: absolute(SHARE_IMAGE.url), alt: name },
+  ];
   return {
     title: full,
     description,
@@ -54,10 +63,10 @@ export function pageMetadata({
       images,
     },
     twitter: {
-      card: image ? "summary_large_image" : "summary",
+      card: "summary_large_image",
       title: full,
       description,
-      images: images?.map((i) => i.url),
+      images: images.map((i) => i.url),
     },
   };
 }

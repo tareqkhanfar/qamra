@@ -861,6 +861,17 @@ _DEFS: list[SettingDef] = [
         "Order placed, status changes, preview and book ready. Without an SMTP server they are only logged.",
     ),
     SettingDef(
+        "order_alert_email",
+        "notifications",
+        Kind.email,
+        "",
+        "بريد تنبيهات الطلبات الجديدة",
+        "New order alert email",
+        "تصله رسالة عن كل طلب جديد من الموقع أو من بوابة الروضات، فيها مجموعه. فارغ = لا رسائل.",
+        "Gets an email for every new order from the website or the kindergarten portal, with its total. "
+        "Empty = no emails.",
+    ),
+    SettingDef(
         "review_alert_email",
         "notifications",
         Kind.email,

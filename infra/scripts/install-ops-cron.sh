@@ -4,7 +4,8 @@
 #   infra/scripts/install-ops-cron.sh
 #
 # Settings for both jobs go in /etc/default/qamra-ops (created here with comments), for example
-# QAMRA_PROD=1, BACKUP_RCLONE_REMOTE=r2backup:qamra-backups, ALERT_WEBHOOK_URL=https://hooks.slack.com/…
+# QAMRA_PROD=1, BACKUP_RCLONE_REMOTE=r2backup:qamra-backups, ALERT_WEBHOOK_URL=https://hooks.slack.com/… or
+# ALERT_TELEGRAM_BOT_TOKEN + ALERT_TELEGRAM_CHAT_ID (monitor.sh).
 set -euo pipefail
 [[ $EUID -eq 0 ]] || { echo "run as root"; exit 1; }
 APP_DIR="${APP_DIR:-/opt/qamra}"
@@ -14,7 +15,9 @@ if [[ ! -f /etc/default/qamra-ops ]]; then
 # Qamra ops jobs (backup.sh, monitor.sh). Uncomment what applies.
 # QAMRA_PROD=1                                   # use compose.prod.yaml too
 # BACKUP_RCLONE_REMOTE=r2backup:qamra-backups    # off-site copy (rclone config in /root/.config/rclone)
-# ALERT_WEBHOOK_URL=https://hooks.slack.com/services/…
+# ALERT_WEBHOOK_URL=https://hooks.slack.com/services/…   # Slack- or Discord-compatible webhook
+# ALERT_TELEGRAM_BOT_TOKEN=123456:ABC…            # a bot made with @BotFather
+# ALERT_TELEGRAM_CHAT_ID=123456789                # the owner's chat with that bot
 CONF
   chmod 600 /etc/default/qamra-ops
 fi

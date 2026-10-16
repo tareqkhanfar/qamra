@@ -1,6 +1,6 @@
 """Customer emails (Phase 2): the order placed, its status changes (confirmed, printing, shipped, delivered),
 a book's preview and its finished files with the reader link (once staff confirmed its words); and the staff
-alert that a story waits for its text review.
+alerts: a new order arrived (website or kindergarten portal), and a story waits for its text review.
 
 Enqueued by the API (checkout, the order status change, print batches) and by the book job. The recipient is
 the account that owns the order or the book; guest orders have no email address, so nothing is sent.
@@ -168,12 +168,56 @@ def review_alert(
     return deliver(db, sender, note, to, rendered).value
 
 
+def order_alert(
+    db: Session, sender: EmailSender, order_id: str, base_url: str, values: dict[str, Any]
+) -> str:
+    """Staff: a new order arrived (the website's checkout or a kindergarten's class order), so someone calls
+    to confirm it. Once per order, to `order_alert_email`; nothing when that is empty. Staff always see the
+    total, whatever `show_prices` says to customers."""
+    order = db.get(Order, uuid.UUID(order_id))
+    if order is None:
+        return "missing"
+    note = claim(db, f"order:{order.id}:staff_alert", "order_new_staff", order_id=order.id)
+    if note is None:
+        return "duplicate"
+    to = str(values.get("order_alert_email") or "").strip()
+    if not to:
+        finish(db, note, NotificationStatus.skipped, "no_order_alert_email")
+        return NotificationStatus.skipped.value
+    lang = "ar"  # staff read Arabic; the admin opens in Arabic
+    items = db.scalars(select(OrderItem).where(OrderItem.order_id == order.id)).all()
+    shipping = order.shipping or {}
+    rendered = render(
+        "order_new_staff",
+        lang,
+        {
+            **base_values(values, lang),
+            "code": order.code,
+            "name": str(shipping.get("name") or ""),
+            "city": str(shipping.get("city") or ""),
+            "school": order.source == "portal",
+            "copies": sum(i.quantity for i in items),
+            "total": money(order.total, order.currency.value),
+            "orders_url": f"{base_url}/{lang}/admin/orders",
+        },
+        [Item(_item_label(i, lang)) for i in items],
+    )
+    return deliver(db, sender, note, to, rendered).value
+
+
 # ---- RQ entry points ------------------------------------------------------------------------------------
 
 
 def sender_and_values(db: Session) -> tuple[EmailSender, dict[str, Any]]:
     values = dict(resolved_settings(db).values)
     return sender_from_settings(values, brand().name_ar), values
+
+
+def send_order_alert(order_id: str) -> str:
+    context.init_process()
+    with context.db_session() as db:
+        sender, values = sender_and_values(db)
+        return order_alert(db, sender, order_id, get_settings().web_base_url.rstrip("/"), values)
 
 
 def send_order_email(order_id: str, event: str) -> str:

@@ -8,7 +8,8 @@
 #   passphrase in $BACKUP_PASSPHRASE_FILE → $BACKUP_DIR/db-YYYYmmdd-HHMM.dump.gpg
 # - Object store: a copy of the bucket WITHOUT children's original photos and drawings (they must be gone
 #   within 24h of approval, CLAUDE.md §3.1, so backups never keep them), tarred and encrypted the same way.
-# - Retention: the 14 newest daily backups, plus Sunday backups for 8 weeks.
+# - Retention: the 14 newest daily database backups, plus Sunday ones for 8 weeks. The object archives are big
+#   (1.6 GB on 2026-10-16) and change little from day to day: the 7 newest, plus Sunday ones for 4 weeks.
 # - Off-site: when BACKUP_RCLONE_REMOTE is set (e.g. "r2backup:qamra-backups"), each file is copied there
 #   with rclone (docker image rclone/rclone, config in /root/.config/rclone).
 # Restore: docs/runbooks/backups.md and infra/scripts/restore.sh.
@@ -21,6 +22,8 @@ DEST="${BACKUP_DIR:-/var/backups/qamra}"
 PASSFILE="${BACKUP_PASSPHRASE_FILE:-/root/.qamra-backup-passphrase}"
 KEEP_DAILY="${KEEP_DAILY:-14}"
 KEEP_WEEKLY_DAYS="${KEEP_WEEKLY_DAYS:-56}"
+KEEP_OBJECTS_DAILY="${KEEP_OBJECTS_DAILY:-7}"
+KEEP_OBJECTS_WEEKLY_DAYS="${KEEP_OBJECTS_WEEKLY_DAYS:-28}"
 compose=(docker compose --project-directory "$APP_DIR" -f "$APP_DIR/compose.yaml")
 [[ "${QAMRA_PROD:-0}" == 1 ]] && compose+=(-f "$APP_DIR/compose.prod.yaml")
 
@@ -58,14 +61,16 @@ if [[ "${BACKUP_OBJECTS:-1}" == 1 ]] && "${compose[@]}" ps --services --status r
   files+=("$objects")
 fi
 
-# retention: keep the newest $KEEP_DAILY of each kind; older ones only if taken on a Sunday and younger than
-# $KEEP_WEEKLY_DAYS days
+# retention: keep the newest $keep of each kind; older ones only if taken on a Sunday and younger than $weeks
+# days (the disk filled up on 2026-10-11)
 for kind in db objects; do
+  keep="$KEEP_DAILY" weeks="$KEEP_WEEKLY_DAYS"
+  [[ "$kind" == objects ]] && keep="$KEEP_OBJECTS_DAILY" weeks="$KEEP_OBJECTS_WEEKLY_DAYS"
   mapfile -t all < <(ls -1t "$DEST"/"$kind"-*.gpg 2>/dev/null || true)
-  for f in "${all[@]:$KEEP_DAILY}"; do
+  for f in "${all[@]:$keep}"; do
     day="$(basename "$f" | sed -E 's/^[a-z]+-([0-9]{8}).*/\1/')"
     age=$(( ( $(date -u +%s) - $(date -u -d "$day" +%s) ) / 86400 ))
-    if [[ "$(date -u -d "$day" +%u)" != 7 || $age -gt $KEEP_WEEKLY_DAYS ]]; then
+    if [[ "$(date -u -d "$day" +%u)" != 7 || $age -gt $weeks ]]; then
       rm -f "$f" && echo "  removed old $(basename "$f")"
     fi
   done

@@ -1,5 +1,6 @@
 """Privacy cleanup (CLAUDE.md §3, Addendum 1 §1): originals are deleted after approval + 24h,
-abandoned drafts after 30 days. Runs every 15 minutes from `rq cron`.
+abandoned drafts after 30 days (a photo whose character was never approved is one too). Runs every 15
+minutes from `rq cron`.
 
 The child's drawings are all kept so the parent can compare them and go back to one (owner, 2026-10-10); a
 drawing never approved is an abandoned draft too: after the same 30 days its picture is deleted and the row is
@@ -20,7 +21,7 @@ from rq import get_current_job
 from rq.job import Job
 from rq.queue import Queue
 from rq.registry import DeferredJobRegistry, ScheduledJobRegistry, StartedJobRegistry
-from sqlalchemy import and_, or_, select
+from sqlalchemy import and_, or_, select, update
 from sqlalchemy.orm import Session
 
 from qamra_core.db.models import (
@@ -32,7 +33,9 @@ from qamra_core.db.models import (
     ChildPhoto,
     Companion,
     FamilyMember,
+    Order,
     OrderItem,
+    OrderStatus,
     PhotoStatus,
 )
 from qamra_core.settings import CoreSettings
@@ -70,6 +73,30 @@ def cleanup_expired_media(
 ) -> CleanupSummary:
     now = now or datetime.now(UTC)
     summary = CleanupSummary()
+    cutoff = now - timedelta(days=settings.draft_retention_days)
+
+    # A photo whose character was never approved has no deletion date (approval sets it): after the same 30
+    # days as an abandoned draft it is due now, unless an open order still needs it (Classic paints from it).
+    open_order = (
+        select(OrderItem.id)
+        .join(Order, Order.id == OrderItem.order_id)
+        .where(
+            OrderItem.child_id == ChildPhoto.child_id,
+            Order.status.not_in([OrderStatus.delivered, OrderStatus.cancelled]),
+        )
+        .exists()
+    )
+    db.execute(
+        update(ChildPhoto)
+        .where(
+            ChildPhoto.delete_after.is_(None),
+            ChildPhoto.deleted_at.is_(None),
+            ChildPhoto.updated_at < cutoff,
+            ~open_order,
+        )
+        .values(delete_after=now)
+        .execution_options(synchronize_session=False)
+    )
 
     photos = db.scalars(
         select(ChildPhoto)
@@ -114,7 +141,6 @@ def cleanup_expired_media(
         summary.family_photos_deleted += 1
     db.commit()
 
-    cutoff = now - timedelta(days=settings.draft_retention_days)
     drafts = db.scalars(
         select(Book)
         .where(Book.status == BookStatus.draft, Book.updated_at < cutoff)

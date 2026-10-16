@@ -7,8 +7,10 @@
   - every container's state and health;
   - the disk (alert above 85%);
   - the last backup (alert after 26 hours);
-  - the job queues (alert above 100 waiting jobs).
-- **Alerts:** set `ALERT_WEBHOOK_URL` in `/etc/default/qamra-ops` (a Slack-compatible incoming webhook). It posts once when something breaks, and once when it's healthy again.
+  - the job queues (alert above 100 waiting jobs);
+  - an empty fal balance («User is locked. Reason: Exhausted balance» in the worker log within the last hour): every drawing fails until someone tops up.
+- **Alerts:** set `ALERT_WEBHOOK_URL` (a Slack- or Discord-compatible incoming webhook) and/or `ALERT_TELEGRAM_BOT_TOKEN` + `ALERT_TELEGRAM_CHAT_ID` (a bot made with @BotFather; the chat id from `https://api.telegram.org/bot<token>/getUpdates` after sending the bot a message) in `/etc/default/qamra-ops`. It posts once when something breaks, once when it's healthy again, and «قمرة: طلب جديد QM-…» for every new order (the code only, never a child's name).
+- **New orders by email:** Admin → Settings → «بريد تنبيهات الطلبات الجديدة» gets an email per order with its total (needs SMTP).
 - **Outside view:** add a free uptime check (e.g. UptimeRobot) on `https://<domain>/healthz` from outside the server; it also catches the whole server going down.
 - **Errors:** with `SENTRY_DSN` set, API and worker exceptions go to Sentry without personal data (`send_default_pii=False`).
 - **Money:** Admin → Cost & conversion (AI cost per book, the budget stops) and Admin → التقارير (sales, margins, orders under the floor).

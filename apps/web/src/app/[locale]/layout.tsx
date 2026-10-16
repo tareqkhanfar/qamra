@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Baloo_Bhaijaan_2, IBM_Plex_Sans_Arabic } from "next/font/google";
 import { locale as rootLocale } from "next/root-params";
 import { connection } from "next/server";
-import { NextIntlClientProvider } from "next-intl";
+import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
 import { MusicPlayer } from "@/components/site/MusicPlayer";
 import { PricesProvider } from "@/components/site/Prices";
@@ -27,9 +27,18 @@ const plex = IBM_Plex_Sans_Arabic({
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
+// Only /ar and /en: any other first segment (a missing file such as /favicon.ico, which the proxy skips) is a
+// 404, not a server error from loading messages for a locale that doesn't exist.
+export const dynamicParams = false;
+
+/** The page's language; anything else (the name of a missing file, see dynamicParams) renders the Arabic 404. */
+async function pageLocale(): Promise<string> {
+  const param = await rootLocale();
+  return hasLocale(routing.locales, param) ? param : routing.defaultLocale;
+}
 
 export async function generateMetadata(): Promise<Metadata> {
-  const locale = await rootLocale();
+  const locale = await pageLocale();
   const t = await getTranslations({ locale, namespace: "meta" });
   return {
     title: t("title", { brand: brandName(locale) }),
@@ -42,7 +51,7 @@ export const viewport: Viewport = { themeColor: "#FBF6EC", width: "device-width"
 
 export default async function LocaleLayout({ children }: { children: React.ReactNode }) {
   await connection(); // every page renders per request: needed for the CSP nonce and live admin settings
-  const locale = await rootLocale();
+  const locale = await pageLocale();
   const [site, tm, messages] = await Promise.all([
     getPublicSettings(),
     getTranslations({ locale, namespace: "music" }),

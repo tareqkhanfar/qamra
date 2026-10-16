@@ -2,9 +2,13 @@
 # Is Qamra healthy? (Phase 6). Run every 5 minutes by install-ops-cron.sh; safe to run by hand.
 #
 # Checks the edge and the API through the edge, every container's state and health, free disk, the age of
-# the last backup, and the job queues. Prints the problems and exits 1 when there are any. When
-# ALERT_WEBHOOK_URL is set (Slack-compatible JSON {"text": …}), it posts only when the state changes
-# (healthy → problem, or problem → healthy), so a long outage sends two messages, not hundreds.
+# the last backup, the job queues, and an empty fal balance (the image provider refuses every drawing). Prints
+# the problems and exits 1 when there are any. It alerts only when the state changes (healthy → problem, or
+# problem → healthy), so a long outage sends two messages, not hundreds; and it announces each new order.
+# Alert channels (in /etc/default/qamra-ops; either or both):
+# - ALERT_WEBHOOK_URL: a Slack- or Discord-compatible webhook (JSON {"text": …, "content": …});
+# - ALERT_TELEGRAM_BOT_TOKEN + ALERT_TELEGRAM_CHAT_ID: a Telegram bot (made with @BotFather) and the owner's
+#   chat with it. No child's name or photo is ever sent: only the order code.
 set -uo pipefail
 [[ -f /etc/default/qamra-ops ]] && . /etc/default/qamra-ops
 
@@ -39,12 +43,33 @@ elif [[ -f /etc/cron.d/qamra-ops ]]; then
   problems+=("no successful backup yet")
 fi
 
+# fal answers "User is locked. Reason: Exhausted balance" to every drawing once the balance is empty: books
+# and characters fail until someone tops up. A failure in the last hour keeps the problem raised.
+if "${compose[@]}" logs --since 60m worker 2>/dev/null | grep -q "Exhausted balance"; then
+  problems+=("fal balance exhausted: drawing has stopped (top up at fal.ai/dashboard/billing)")
+fi
+
 redis=("${compose[@]}" exec -T redis sh -c)
 while read -r queue; do
   [[ -z "$queue" ]] && continue
   len="$("${redis[@]}" "REDISCLI_AUTH=\"\$REDIS_PASSWORD\" redis-cli llen $queue" 2>/dev/null | tr -dc 0-9)"
   (( ${len:-0} > QUEUE_MAX )) && problems+=("${queue#rq:queue:} queue has $len waiting jobs")
 done < <("${redis[@]}" 'REDISCLI_AUTH="$REDIS_PASSWORD" redis-cli --scan --pattern "rq:queue:*"' 2>/dev/null)
+
+alert() {  # $1: the message; sent to every configured channel, never fails the check
+  local text="${1//\"/\'}"
+  if [[ -n "${ALERT_WEBHOOK_URL:-}" ]]; then
+    curl -fsS -m 10 -H 'Content-Type: application/json' \
+      -d "$(printf '{"text": "%s", "content": "%s"}' "$text" "$text")" "$ALERT_WEBHOOK_URL" -o /dev/null || true
+  fi
+  if [[ -n "${ALERT_TELEGRAM_BOT_TOKEN:-}" && -n "${ALERT_TELEGRAM_CHAT_ID:-}" ]]; then
+    curl -fsS -m 10 "https://api.telegram.org/bot${ALERT_TELEGRAM_BOT_TOKEN}/sendMessage" \
+      --data-urlencode "chat_id=${ALERT_TELEGRAM_CHAT_ID}" --data-urlencode "text=$1" -o /dev/null || true
+  fi
+}
+channel=0
+[[ -n "${ALERT_WEBHOOK_URL:-}" || ( -n "${ALERT_TELEGRAM_BOT_TOKEN:-}" && -n "${ALERT_TELEGRAM_CHAT_ID:-}" ) ]] \
+  && channel=1
 
 mkdir -p "$STATE_DIR"
 now="ok"; (( ${#problems[@]} )) && now="problem"
@@ -56,13 +81,26 @@ if (( ${#problems[@]} )); then
 else
   echo "$stamp ✓ healthy"
 fi
-if [[ -n "${ALERT_WEBHOOK_URL:-}" && "$now" != "$before" ]]; then
+if (( channel )) && [[ "$now" != "$before" ]]; then
   if [[ "$now" == problem ]]; then
-    text="قمرة ($(hostname)): $(IFS='; '; echo "${problems[*]}")"
+    alert "قمرة ($(hostname)): $(IFS='; '; echo "${problems[*]}")"
   else
-    text="قمرة ($(hostname)): all healthy again"
+    alert "قمرة ($(hostname)): all healthy again"
   fi
-  curl -fsS -m 10 -H 'Content-Type: application/json' \
-    -d "$(printf '{"text": "%s"}' "${text//\"/\'}")" "$ALERT_WEBHOOK_URL" -o /dev/null || true
+fi
+
+# New orders since the last run (the first run only remembers the time): the owner hears at once, without SMTP.
+if (( channel )); then
+  since="$(cat "$STATE_DIR/orders-since" 2>/dev/null || true)"
+  until="$(date -u +%s)"
+  if [[ -n "$since" ]]; then
+    codes="$("${compose[@]}" exec -T postgres psql -U qamra -d qamra -At -c \
+      "select code from orders where created_at > to_timestamp($since) and created_at <= to_timestamp($until)
+       order by created_at" 2>/dev/null)" || until="$since"  # the database didn't answer: try again next run
+    while read -r code; do
+      [[ -n "$code" ]] && alert "قمرة: طلب جديد $code — ${SITE_URL:-https://qamra.app}/ar/admin/orders"
+    done <<< "$codes"
+  fi
+  echo "$until" > "$STATE_DIR/orders-since"
 fi
 [[ "$now" == ok ]]

@@ -1,7 +1,8 @@
 """Customer emails from the API: enqueued on the worker's default queue, sent by `qamra_worker.jobs.notify`.
 
 Only these order moments email the customer (the rest stay in the order history): placed, confirmed,
-printing, shipped, delivered; and a book's "ready to read" once staff confirm its words («تأكيد»). An email
+printing, shipped, delivered; and a book's "ready to read" once staff confirm its words («تأكيد»). Every new
+order (website or kindergarten portal) also alerts the staff. An email
 is never worth failing a checkout or a status change, so a queue error is logged and swallowed. The job
 itself makes sure each order and status (and each book) is emailed once.
 """
@@ -33,7 +34,14 @@ def _enqueue(connection: Redis, func_path: str, *args: object) -> None:
 
 
 def order_placed(connection: Redis, order_id: uuid.UUID) -> None:
+    """The customer's "we've received your order" email, and the staff's new-order alert."""
     _enqueue(connection, "qamra_worker.jobs.notify.send_order_email", str(order_id), "placed")
+    order_alert(connection, order_id)
+
+
+def order_alert(connection: Redis, order_id: uuid.UUID) -> None:
+    """Staff: a new order to call about (`order_alert_email`; once per order). A class order has only this."""
+    _enqueue(connection, "qamra_worker.jobs.notify.send_order_alert", str(order_id))
 
 
 def order_statuses(connection: Redis, order_id: uuid.UUID, statuses: Iterable[OrderStatus]) -> None:

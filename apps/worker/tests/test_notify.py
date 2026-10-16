@@ -29,7 +29,14 @@ from qamra_core.db.models import (
     Theme,
     User,
 )
-from qamra_worker.jobs.notify import BOOK_EVENTS, ORDER_EVENTS, book_email, order_email, review_alert
+from qamra_worker.jobs.notify import (
+    BOOK_EVENTS,
+    ORDER_EVENTS,
+    book_email,
+    order_alert,
+    order_email,
+    review_alert,
+)
 from qamra_worker.notify import queue as notify_queue
 from qamra_worker.notify.email import (
     EmailMessage,
@@ -137,6 +144,9 @@ def test_every_template_renders_in_both_languages() -> None:
         "account_url": f"{BASE}/ar/account#downloads",
         "manifest_url": f"{BASE}/api/printer/t/manifest.csv",
         "queue_url": f"{BASE}/ar/admin/queue",
+        "orders_url": f"{BASE}/ar/admin/orders",
+        "city": "البيرة",
+        "school": False,
         "date": "2026-09-29",
         "books": 2,
         "copies": 3,
@@ -309,6 +319,23 @@ def test_staff_hear_once_that_a_story_waits_for_its_text_review(db: Session) -> 
     sample = _book(db, _parent(db, "admin@example.com"), sample=True)
     assert review_alert(db, sender, str(sample.id), BASE, staff) == "missing"
     assert len(sender.outbox) == 1
+
+
+def test_staff_hear_once_of_every_new_order_with_its_total(db: Session) -> None:
+    order, guest = _order(db, _parent(db)), _order(db, None, code="QM-MAIL02")
+    sender = FakeEmailSender()
+    staff = {**VALUES, "show_prices": False, "order_alert_email": "orders@qamra.test"}
+    assert order_alert(db, sender, str(order.id), BASE, staff) == "sent"
+    assert order_alert(db, sender, str(order.id), BASE, staff) == "duplicate"
+    assert order_alert(db, sender, str(guest.id), BASE, staff) == "sent"  # a guest order too
+    mail = sender.outbox[0]
+    assert mail.to == "orders@qamra.test" and "QM-MAIL01" in mail.subject
+    assert "139 ₪" in mail.subject and "139 ₪" in mail.text  # staff see the total even with prices hidden
+    assert "أم سلمى" in mail.text and "البيرة" in mail.text and "قمرة سحري" in mail.text
+    assert f"{BASE}/ar/admin/orders" in mail.text and "0591234567" not in mail.text
+    other = _order(db, None, code="QM-MAIL03")
+    assert order_alert(db, sender, str(other.id), BASE, VALUES) == "skipped"  # no address set: nothing
+    assert len(sender.outbox) == 2
 
 
 class _FakeSMTP:

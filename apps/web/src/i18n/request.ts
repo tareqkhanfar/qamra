@@ -13,6 +13,9 @@ export default getRequestConfig(async ({ locale }) => {
       notFound();
     }
   }
+  // A missing file the proxy skips (/favicon.ico) reaches the [locale] layout with its name as the locale:
+  // its 404 page renders in Arabic instead of failing to load «favicon.ico.json» (a 500).
+  if (!hasLocale(routing.locales, locale)) locale = routing.defaultLocale;
   return {
     locale,
     messages: (await import(`../../messages/${locale}.json`)).default,

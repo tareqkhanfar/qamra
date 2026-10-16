@@ -1,4 +1,5 @@
 from datetime import UTC, datetime, timedelta
+from decimal import Decimal
 
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
@@ -13,8 +14,13 @@ from qamra_core.db.models import (
     ChildPhoto,
     Companion,
     CompanionType,
+    Currency,
     Gender,
     Locale,
+    Order,
+    OrderItem,
+    OrderStatus,
+    PaymentMethod,
     PhotoStatus,
     Theme,
     User,
@@ -28,7 +34,11 @@ SETTINGS = CoreSettings(_env_file=None)  # type: ignore[call-arg]
 
 
 def _child(db: Session) -> Child:
-    parent = User(email="p@example.com", full_name="P")
+    return _child_named(db, "p@example.com")
+
+
+def _child_named(db: Session, email: str) -> Child:
+    parent = User(email=email, full_name="P")
     db.add(parent)
     db.flush()
     child = Child(guardian_user_id=parent.id, first_name="سليم", gender=Gender.m, birth_year=2020)
@@ -69,6 +79,51 @@ def test_expired_photos_are_deleted_from_storage_and_marked(db: Session, storage
     assert audit.entity_id == str(due.id) and audit.data == {}
     # idempotent
     assert cleanup_expired_media(db, storage, SETTINGS, now=NOW).photos_deleted == 0
+
+
+def test_photos_never_approved_are_deleted_after_30_days(db: Session, storage: ObjectStorage) -> None:
+    """No approval, no deletion date: it goes with the abandoned drafts unless an open order needs it."""
+    abandoned, recent, ordered = (
+        _child(db),
+        _child_named(db, "b@example.com"),
+        _child_named(db, "c@example.com"),
+    )
+    keys = {}
+    for child in (abandoned, recent, ordered):
+        key = f"children/{child.id}/photos/p.jpg"
+        storage.put(key, b"photo", "image/jpeg")
+        db.add(ChildPhoto(child_id=child.id, storage_key=key, status=PhotoStatus.accepted))
+        keys[child.id] = key
+    db.flush()
+    order = Order(
+        code="QM-TEST01",
+        status=OrderStatus.new,
+        payment_method=PaymentMethod.cod,
+        currency=Currency.ILS,
+        subtotal=Decimal("0"),
+        total=Decimal("0"),
+    )
+    db.add(order)
+    db.flush()
+    db.add(OrderItem(order_id=order.id, child_id=ordered.id, unit_price=Decimal("0")))
+    db.execute(
+        update(ChildPhoto)
+        .where(ChildPhoto.child_id.in_([abandoned.id, ordered.id]))
+        .values(updated_at=NOW - timedelta(days=31))
+    )
+    db.execute(
+        update(ChildPhoto).where(ChildPhoto.child_id == recent.id).values(updated_at=NOW - timedelta(days=2))
+    )
+    db.commit()
+
+    assert cleanup_expired_media(db, storage, SETTINGS, now=NOW).photos_deleted == 1
+    assert not storage.exists(keys[abandoned.id])
+    assert storage.exists(keys[recent.id]) and storage.exists(keys[ordered.id])
+
+    order.status = OrderStatus.cancelled  # the order no longer needs it
+    db.commit()
+    assert cleanup_expired_media(db, storage, SETTINGS, now=NOW).photos_deleted == 1
+    assert not storage.exists(keys[ordered.id]) and storage.exists(keys[recent.id])
 
 
 def test_original_drawing_deleted_cleaned_version_kept(db: Session, storage: ObjectStorage) -> None:

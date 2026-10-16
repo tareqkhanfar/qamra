@@ -23,10 +23,16 @@ x-app-env: &app-env
   BRAND_DOMAIN: ${BRAND_DOMAIN:-qamra.app}
   LOG_JSON: "true"
 
+# Container logs are capped (the disk filled up on 2026-10-11; the object store alone logs ~8 MB a day).
+x-logging: &logging
+  driver: json-file
+  options: { max-size: "20m", max-file: "5" }
+
 x-hardened: &hardened
   security_opt: ["no-new-privileges:true"]
   cap_drop: [ALL]
   restart: unless-stopped
+  logging: *logging
 
 x-app: &app
   <<: *hardened
@@ -38,6 +44,7 @@ x-app: &app
 services:
   postgres:
     image: postgres:16-alpine
+    logging: *logging
     security_opt: ["no-new-privileges:true"]
     mem_limit: 1g
     environment:
@@ -58,6 +65,7 @@ services:
 
   redis:
     image: redis:7-alpine
+    logging: *logging
     command: ["sh", "-c", "exec redis-server --appendonly yes --requirepass \"$$REDIS_PASSWORD\""]
     environment:
       REDIS_PASSWORD: ${REDIS_PASSWORD:-qamra-dev-redis}
@@ -77,6 +85,7 @@ services:
   # Local S3 (production uses Cloudflare R2). MinIO no longer publishes images; see docs/decisions.md.
   s3:
     image: chrislusf/seaweedfs:4.47
+    logging: *logging
     security_opt: ["no-new-privileges:true"]
     mem_limit: 2g  # print PDFs are ~30 MB; 512m truncated large reads; 1g was OOM-killed nightly (02:36) on the test server
     environment:
@@ -159,6 +168,7 @@ services:
 
   edge:
     image: nginx:1.30-alpine
+    logging: *logging
     security_opt: ["no-new-privileges:true"]
     cap_drop: [ALL]
     cap_add: [CHOWN, SETUID, SETGID, NET_BIND_SERVICE]

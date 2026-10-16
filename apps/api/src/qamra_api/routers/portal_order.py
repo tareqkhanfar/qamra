@@ -11,7 +11,7 @@ from fastapi import APIRouter, Request, Response
 from pydantic import BaseModel, Field
 from sqlalchemy import select
 
-from qamra_api import runtime_settings
+from qamra_api import notify, runtime_settings
 from qamra_api.deps import SessionDep, SettingsDep, StorageDep
 from qamra_api.errors import ApiError
 from qamra_api.jobs import QueueDep, enqueue
@@ -114,6 +114,7 @@ async def place_order(
     db: SessionDep,
     settings: SettingsDep,
     queue: QueueDep,
+    request: Request,
 ) -> PlacedOut:
     """One order for the class: an item per approved copy at the price list's tier, one invoice."""
     if not body.accept_terms:
@@ -188,6 +189,7 @@ async def place_order(
     cb.order_id, cb.status = order.id, ClassBookStatus.ordered
     await db.commit()
     enqueue(queue, "qamra_worker.jobs.invoices.render_invoice", str(invoice.id))
+    notify.order_alert(request.app.state.rq_redis, order.id)  # staff call the school to confirm
     return PlacedOut(
         code=order.code,
         status=order.status.value,

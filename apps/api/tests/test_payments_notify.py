@@ -21,6 +21,7 @@ CHECKOUT = {
     "accept_terms": True,
 }
 EMAIL = "qamra_worker.jobs.notify.send_order_email"
+ALERT = "qamra_worker.jobs.notify.send_order_alert"
 
 
 async def _place(client: AsyncClient, adb: AsyncSession, **extra: object) -> AsyncClient:
@@ -58,6 +59,8 @@ async def test_cash_on_delivery_is_unchanged_and_emails_the_customer(
     assert order.payment_method == PaymentMethod.cod and order.payment_status == PaymentStatus.unpaid
     assert order.user_id is not None and str(order.user_id) == me["id"]
     assert _emails(app) == [(str(order.id), "placed")]
+    alerts = [j.args for j in Queue("default", connection=app.state.rq_redis).jobs if j.func_name == ALERT]
+    assert alerts == [(str(order.id),)]  # and the staff hear about the new order
     r = await _place(client, adb, payment="cod")
     assert r.status_code == 201 and len(_emails(app)) == 2
 

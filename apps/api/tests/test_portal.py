@@ -200,6 +200,10 @@ async def test_from_sign_up_to_one_order_and_one_invoice(
     assert len(items) == 4 and all(i.book_id for i in items) and orders[0].shipping["name"] == "روضة القمر"
     invoices = (await adb.execute(select(func.count()).select_from(Invoice))).scalar_one()
     assert invoices == 1 and placed["invoice"].startswith("INV-")
+    alerts = [
+        j.args for j in Queue("default", connection=app.state.rq_redis).jobs if "order_alert" in j.func_name
+    ]
+    assert alerts == [(str(orders[0].id),)]  # staff hear of the class order to call the school
     again = await client.post(f"{base}/order", json={"accept_terms": True})
     assert again.json()["error"]["code"] == "already_ordered"
     listed = (await client.get("/api/portal/orders")).json()

@@ -5,7 +5,7 @@
 | What | How | Where | Kept |
 |---|---|---|---|
 | Database (`qamra`) | `pg_dump -Fc`, gpg AES-256 | `/var/backups/qamra/db-*.dump.gpg` (+ off-site) | 14 daily + Sundays for 8 weeks |
-| Object store | an rclone copy of the bucket **without children's original photos and drawings**, tar + gpg | `/var/backups/qamra/objects-*.tar.gpg` (+ off-site) | same |
+| Object store | an rclone copy of the bucket **without children's original photos and drawings**, tar + gpg | `/var/backups/qamra/objects-*.tar.gpg` (+ off-site) | 7 daily + Sundays for 4 weeks (1.6 GB each) |
 
 - **Schedule:** `infra/scripts/backup.sh` runs every night at 02:30 UTC, from `/etc/cron.d/qamra-ops` (installed by `infra/scripts/install-ops-cron.sh`). Log: `/var/log/qamra-backup.log`. It writes `/var/backups/qamra/last-success`, and the monitor alerts when that is older than 26 hours.
 - **The passphrase** is in `/root/.qamra-backup-passphrase`. **Keep a copy outside the server** (a password manager). Without it no backup can be decrypted.
@@ -27,7 +27,7 @@ sudo infra/scripts/restore.sh --check FILE       # a specific one
 
 It restores into a scratch database, compares the row counts of users, children, books, orders and invoices with the live database, and drops the scratch database. Differences mean rows were written after the backup was taken.
 
-Last drill: 2026-09-28 on the test server; the row counts matched.
+Last drill: 2026-10-16 on the test server; the row counts matched, except one child and one book written after the night's backup.
 
 ## Disaster recovery
 
