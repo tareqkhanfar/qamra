@@ -311,6 +311,8 @@ async def test_parents_cannot_reach_admin_books(client: AsyncClient) -> None:
     await register(client)
     assert (await client.get("/api/admin/books")).status_code == 403
     assert (await client.get("/api/admin/metrics")).status_code == 403
+    book = uuid.uuid4()
+    assert (await client.get(f"/api/admin/books/{book}/character/portrait")).status_code == 403
 
 
 async def test_activity_books_retry_with_their_own_job_and_approve_with_their_file_names(
@@ -377,3 +379,45 @@ async def test_the_review_shows_what_the_parent_wrote_about_the_drawing(
     await adb.commit()
     detail = (await client.get(f"/api/admin/books/{book.id}")).json()
     assert detail["character_note"] == {"note": "شكرًا", "instruction": None, "outcome": "off_topic"}
+
+
+async def test_the_review_shows_the_portrait_next_to_the_sheet_privately_and_audited(
+    client: AsyncClient, adb: AsyncSession, storage: ObjectStorage
+) -> None:
+    """Portrait first: staff see the portrait the sheet was painted from, next to the sheet. Both come through
+    the admin API only, never cached, and each view is written to the audit log."""
+    await make_admin(client, adb)
+    book = await _seed_book(adb)
+    assert (await client.get(f"/api/admin/books/{book.id}")).json()["character"] is None
+    assert (await client.get(f"/api/admin/books/{book.id}/character/portrait")).status_code == 404
+
+    character = Character(child_id=book.child_id, art_style="watercolor", status=CharacterStatus.approved)
+    adb.add(character)
+    await adb.flush()
+    base = f"children/{book.child_id}/characters/{character.id}"
+    character.sheet_image_key = f"{base}.png"
+    storage.put(character.sheet_image_key, _blank_png(), "image/png")
+    book.character_id = character.id
+    await adb.commit()
+    detail = (await client.get(f"/api/admin/books/{book.id}")).json()
+    assert detail["character"] == {"style": "watercolor", "has_sheet": True, "has_portrait": False}
+    # drawn before portrait first: no portrait
+    assert (await client.get(f"/api/admin/books/{book.id}/character/portrait")).status_code == 404
+
+    character.portrait_image_key = f"{base}-portrait.png"
+    storage.put(character.portrait_image_key, _blank_png(), "image/png")
+    await adb.commit()
+    assert (await client.get(f"/api/admin/books/{book.id}")).json()["character"]["has_portrait"] is True
+    for path, view in (("character/portrait", "portrait"), ("character", "sheet")):
+        r = await client.get(f"/api/admin/books/{book.id}/{path}")
+        assert r.status_code == 200 and r.headers["content-type"] == "image/png"
+        cache = r.headers["cache-control"]
+        assert "private" in cache and "no-store" in cache and "max-age" not in cache
+        rows = (
+            await adb.execute(
+                select(AuditLog).where(
+                    AuditLog.action == "admin.character_viewed", AuditLog.entity_id == str(book.id)
+                )
+            )
+        ).scalars()
+        assert view in [row.data["view"] for row in rows]

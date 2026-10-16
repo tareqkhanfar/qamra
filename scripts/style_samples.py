@@ -71,18 +71,20 @@ CARTOON_ADAM = "out/style-samples/cartoon-first-day-adam/proof.pdf"
 CARTOON_TALA = "out/style-samples/cartoon-new-sibling-tala/proof.pdf"
 ADAM_3D = "out/style-samples/3d-first-day-adam/proof.pdf"
 TALA_3D = "out/style-samples/3d-new-sibling-tala/proof.pdf"  # p1 is a rejected cover, never exported
-# «شبه حقيقي» (2026-10-09, `semireal:` rows) was drawn from a crop of تالا's watercolor sheet on Nano Banana 2 and
-# looked like a cartoon. Redrawn 2026-10-16 on the production path (`samples-v3:` rows, $1.44 of a $1.50 cap,
-# `draw --ref <the same crop> --no-companion`): her portrait, then her sheet, on Nano Banana Pro (portrait first,
-# character_portrait.v2 + character_sheet.v6), then the pages on Nano Banana 2 with the portrait as the face
-# reference (page_image.v5), with the style guides customers now get (3D, cartoon and watercolor v3: the child's
-# own face; semi-realistic v3). Semi-realistic: sheet, cover and the «smile» page; 3D: sheet and the «smile»
-# page (that proof's p1 is the old rejected cover laid out again, never exported); cartoon and watercolor: the
-# sheet only. Every other story page is still a 2026-10-09 (or earlier) drawing.
+# «شبه حقيقي» (2026-10-09, `semireal:` rows) was drawn from a crop of تالا's watercolor sheet on
+# Nano Banana 2 and looked like a cartoon. Redrawn 2026-10-16 on the production path (`samples-v3:` rows,
+# $1.44 of a $1.50 cap, `draw --ref <the same crop> --no-companion`): her portrait, then her sheet, on
+# Nano Banana Pro (portrait first: character_portrait.v2 + character_sheet.v6), then the pages on Nano
+# Banana 2 with the portrait as the face reference (page_image.v5), with the style guides customers now
+# get (3D, cartoon and watercolor v3: the child's own face; semi-realistic v3).
+# - Semi-realistic: the sheet, the cover and the «smile» page.
+# - 3D: the sheet and the «smile» page (that proof's p1 is the old rejected cover, never exported).
+# - Cartoon and watercolor: the sheet only.
+# Every other story page is still a 2026-10-09 (or earlier) drawing.
 SEMI_TALA = "out/style-samples/semi-realistic-new-sibling-tala-v3/proof.pdf"
 TALA_3D_V3 = "out/style-samples/3d-new-sibling-tala-v3/proof.pdf"
-# The same invented child's character sheet per style (2026-10-16), and the activity-book cover and «هذا الكتاب
-# لـ…» page with her cut-out, rendered locally (no AI):
+# The same invented child's character sheet per style (2026-10-16), and the activity-book cover and
+# «هذا الكتاب لـ…» page with her cut-out, rendered locally (no AI):
 #   python -m qamra_workbook.render.workbook --level kg1 --volume 1 --cover --pages 1-1 --name تالا
 #       --name-en Tala --gender f --sheet <sheet> --out out/style-samples/activity-v3/<style>
 # The new watercolor sheet cuts out cleanly, so watercolor has activity samples too.

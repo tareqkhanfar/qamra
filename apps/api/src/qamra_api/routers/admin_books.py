@@ -352,6 +352,14 @@ class InsertOut(BaseModel):
     label: str  # what the printer is told it is
 
 
+class CharacterView(BaseModel):
+    """Which pictures of the book's character the review can show (each through its private admin route)."""
+
+    style: str
+    has_sheet: bool
+    has_portrait: bool  # drawn portrait first (2026-10-10); older characters have only the sheet
+
+
 class CharacterNote(BaseModel):
     """What the parent wrote in «ما الذي لا يشبهه؟» when asking for the drawing this book uses, and what the
     redraw made of it (`instruction`: the appearance-only rewrite; None: not used, `outcome` says why)."""
@@ -395,6 +403,7 @@ class BookDetail(BaseModel):
     # «تحقق من التذكير والتأنيث»: words where the hero's gender may be wrong (field, word, context, rule)
     gender_check: list[dict[str, str]]
     character_note: CharacterNote | None = None
+    character: CharacterView | None = None
 
 
 def _inserts(book: Book) -> list[InsertOut]:
@@ -500,6 +509,18 @@ async def book_detail(book_id: uuid.UUID, db: SessionDep) -> BookDetail:
         class_pages=await _class_pages(db, book),
         gender_check=[dict(h) for h in gen.get("gender_check") or [] if isinstance(h, dict)],
         character_note=await _character_note(db, book),
+        character=await _character(db, book),
+    )
+
+
+async def _character(db: AsyncSession, book: Book) -> CharacterView | None:
+    character = await db.get(Character, book.character_id) if book.character_id else None
+    if character is None:
+        return None
+    return CharacterView(
+        style=character.art_style,
+        has_sheet=bool(character.sheet_image_key),
+        has_portrait=bool(character.portrait_image_key),
     )
 
 
@@ -601,11 +622,54 @@ async def page_image(
     return _stream(storage, stored, "image/jpeg" if v == "print" else "image/png")
 
 
-@router.get("/books/{book_id}/character", dependencies=[Depends(require_permission("books.view"))])
-async def character_sheet(book_id: uuid.UUID, db: SessionDep, storage: StorageDep) -> Response:
+async def _character_view(
+    db: AsyncSession,
+    storage: ObjectStorage,
+    admin: User,
+    book_id: uuid.UUID,
+    view: Literal["sheet", "portrait"],
+) -> Response:
+    """The child's drawn likeness for the review (the sheet, or the portrait drawn first): never cached, and
+    every view is in the audit log (who, which book, which picture; never the image)."""
     book = await _book(db, book_id)
     character = await db.get(Character, book.character_id) if book.character_id else None
-    return _stream(storage, character.sheet_image_key if character else None, "image/png")
+    key = (
+        (character.sheet_image_key if view == "sheet" else character.portrait_image_key)
+        if character
+        else None
+    )
+    if not key:
+        raise ApiError("not_found", 404)
+    try:
+        data = storage.get(key)
+    except ObjectNotFound as e:
+        raise ApiError("not_found", 404) from e
+    db.add(
+        AuditLog(
+            actor_user_id=admin.id,
+            action="admin.character_viewed",
+            entity_type="book",
+            entity_id=str(book.id),
+            data={"view": view, "character": str(character.id) if character else None},
+        )
+    )
+    await db.commit()
+    return Response(data, media_type="image/png", headers={"Cache-Control": "private, no-store"})
+
+
+@router.get("/books/{book_id}/character", dependencies=[Depends(require_permission("books.view"))])
+async def character_sheet(
+    book_id: uuid.UUID, admin: AdminUser, db: SessionDep, storage: StorageDep
+) -> Response:
+    return await _character_view(db, storage, admin, book_id, "sheet")
+
+
+@router.get("/books/{book_id}/character/portrait", dependencies=[Depends(require_permission("books.view"))])
+async def character_portrait(
+    book_id: uuid.UUID, admin: AdminUser, db: SessionDep, storage: StorageDep
+) -> Response:
+    """The portrait the sheet was painted from (portrait first, 2026-10-10): the face staff compare first."""
+    return await _character_view(db, storage, admin, book_id, "portrait")
 
 
 def _mockup_key(book: Book, which: str) -> str | None:

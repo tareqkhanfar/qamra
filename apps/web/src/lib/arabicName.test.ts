@@ -304,7 +304,6 @@ const ACCUSATIVE: Record<string, "nameAcc" | "labelAcc"> = {
   "portal.dash.hello": "nameAcc", // «صباح الخير، أبا أحمد»: a greeting calls the person
   "portal.board.message": "nameAcc",
   "portal.invite.lead": "nameAcc",
-  "portal.invite.character.drawing": "nameAcc",
   "portal.planner.holding": "nameAcc",
   "portal.planner.putHere": "nameAcc",
   "orderPath.gift.placeholder": "nameAcc",
@@ -372,10 +371,7 @@ const GENITIVE: Record<string, string> = {
   "portal.invite.consent.p3": "nameGen",
   "portal.invite.consent.p4": "nameGen",
   "portal.invite.consent.accept": "nameGen",
-  "portal.invite.photo.title": "nameLam",
   "portal.invite.character.drawTitle": "nameGen",
-  "portal.invite.character.title": "nameGen",
-  "portal.invite.character.alt": "nameGen",
   "workbook.cover.workbook": "nameGen",
   "workbook.cover.journey": "nameGen",
   "workbook.cover.family": "nameGen",
@@ -406,6 +402,7 @@ const GENITIVE: Record<string, string> = {
   "create.photo.keep": "nameGen",
   "create.photo.next.story": "nameGen",
   "create.photo.next.activity": "nameGen",
+  "create.photo.next.class": "nameGen",
   "create.photo.editTitle": "nameGen", // «تعديل صورة {nameGen}»: PhotoStep passes nameCases
   "create.photo.gone": "nameGen",
   "create.line.title": "nameLam",

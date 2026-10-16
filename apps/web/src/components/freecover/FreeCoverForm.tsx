@@ -1,7 +1,8 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { PhotoEditor } from "@/components/create/PhotoEditor";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { Link, useRouter } from "@/i18n/navigation";
@@ -11,13 +12,17 @@ import type { ThemeCard } from "@/lib/catalog";
 import { classicAvailable, classicVariant } from "@/lib/classic";
 import { createApi, type Child } from "@/lib/create";
 import { freeCoverApi } from "@/lib/freeCover";
+import { toCrop, viewAt, type PhotoCrop, type Size } from "@/lib/photoCrop";
 
 const AGES = [3, 4, 5, 6, 7, 8];
 const STYLE = "watercolor";
 
 /**
  * «شوف غلاف طفلك خلال دقيقة» (Addendum 9): the name, the look, the guardian's consent and one photo, through the
- * create flow's own endpoints; then one small cover drawn from the story's ready illustrations.
+ * create flow's own endpoints; then one small cover drawn from the story's ready illustrations. The photo is placed
+ * in the oval with the create flow's editor (PhotoEditor): on this device only until the parent sends the form
+ * with the consent; the API then checks the framed part, and a refusal that moving the photo can fix keeps it here
+ * to move and send again.
  */
 export function FreeCoverForm({ initialTheme }: { initialTheme: string | null }) {
   const t = useTranslations("freeCover");
@@ -34,6 +39,10 @@ export function FreeCoverForm({ initialTheme }: { initialTheme: string | null })
   const [hijab, setHijab] = useState(false);
   const [theme, setTheme] = useState<string | null>(initialTheme);
   const [photo, setPhoto] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null); // an object URL of `photo`, never sent anywhere
+  const [crop, setCrop] = useState<PhotoCrop | null>(null);
+  const [natural, setNatural] = useState<Size | null>(null);
+  const input = useRef<HTMLInputElement>(null);
   const [consent, setConsent] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -58,6 +67,21 @@ export function FreeCoverForm({ initialTheme }: { initialTheme: string | null })
       alive = false;
     };
   }, [locale, router, initialTheme]);
+
+  useEffect(
+    () => () => {
+      if (preview) URL.revokeObjectURL(preview);
+    },
+    [preview],
+  );
+
+  function choose(file: File | undefined) {
+    if (!file) return;
+    setPhoto(file);
+    setPreview(URL.createObjectURL(file)); // shown on this device only
+    setCrop(null);
+    setNatural(null);
+  }
 
   const child = children.find((c) => c.id === picked) ?? null;
   const look = classicVariant(child ?? { gender: gender ?? "f", hijab: (gender ?? "f") === "f" && hijab });
@@ -96,10 +120,21 @@ export function FreeCoverForm({ initialTheme }: { initialTheme: string | null })
     if (!current.consent) {
       const r = await createApi.consent(current.id, tc("consent.version"));
       if (!r.ok) return fail(r);
+      const given = { ...current, consent: true }; // a photo refused below is sent again without asking twice
+      current = given;
+      setChildren((list) => list.map((c) => (c.id === given.id ? given : c)));
     }
     if (needsPhoto && photo) {
-      const r = await createApi.photo(current.id, photo);
-      if (!r.ok) return fail(r);
+      // the framing on screen (the centred photo when it was not moved), checked by the API on the framed part
+      const frame = crop ?? (natural ? toCrop(viewAt(natural, 0)) : null);
+      const r = await createApi.photo(current.id, photo, frame);
+      if (!r.ok) {
+        setBusy(false);
+        const d = r.error?.details as { ar?: string; en?: string } | undefined;
+        const friendly = d?.ar && d?.en ? (locale === "ar" ? d.ar : d.en) : null;
+        return setError(friendly ?? errorText(r.error, locale, r.status === 0 ? te("network") : te("unknown")));
+      }
+      setChildren((list) => list.map((c) => (c.id === r.data.id ? r.data : c)));
     }
     const r = await freeCoverApi.request(current.id, chosen.slug, locale);
     if (!r.ok) return fail(r);
@@ -207,16 +242,43 @@ export function FreeCoverForm({ initialTheme }: { initialTheme: string | null })
       </fieldset>
 
       {needsPhoto && (
-        <label className="flex cursor-pointer flex-col gap-2 rounded-2xl border-[1.5px] border-dashed border-line bg-paper-raised p-4">
+        <div className="flex flex-col gap-2">
           <span className="text-body font-semibold">{t("photo")}</span>
-          <span className="text-small text-ink-muted">{photo ? photo.name : t("photoHint")}</span>
+          <span className="text-small text-ink-muted">{t("photoHint")}</span>
           <input
+            ref={input}
             type="file"
-            accept="image/*"
-            className="text-small"
-            onChange={(e) => setPhoto(e.target.files?.[0] ?? null)}
+            accept="image/jpeg,image/png,image/webp"
+            className="sr-only"
+            aria-label={tc("photo.pick")}
+            onChange={(e) => {
+              choose(e.target.files?.[0]);
+              e.target.value = "";
+            }}
           />
-        </label>
+          <PhotoEditor src={preview} crop={crop} editable={!!photo} onChange={setCrop} onNatural={setNatural}>
+            <span className="absolute start-3.5 top-3.5 rounded-full bg-night-950/80 px-3 py-1.5 text-caption font-semibold text-paper">
+              {tc("photo.guide")}
+            </span>
+            {photo ? (
+              <button
+                type="button"
+                onClick={() => input.current?.click()}
+                className="absolute end-2.5 top-2.5 min-h-11 rounded-full bg-paper/95 px-3.5 text-small font-semibold text-night-900"
+              >
+                {tc("photo.change")}
+              </button>
+            ) : (
+              <Button
+                onClick={() => input.current?.click()}
+                size="lg"
+                className="absolute inset-x-6 bottom-6 mx-auto w-fit"
+              >
+                {tc("photo.pick")}
+              </Button>
+            )}
+          </PhotoEditor>
+        </div>
       )}
 
       {needsConsent && (
