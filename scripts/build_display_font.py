@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import shutil
 from pathlib import Path
+from typing import Any
 
 from fontTools.pens.recordingPen import DecomposingRecordingPen
 from fontTools.pens.transformPen import TransformPen
@@ -45,7 +46,7 @@ def redraw(font: TTFont, mark: str, *, above: bool) -> float:
     glyf[mark].recalcBounds(glyf)
     width, _ = font["hmtx"][mark]
     font["hmtx"][mark] = (width, glyf[mark].xMin)
-    return glyf[mark].yMax - old.yMax if above else glyf[mark].yMin - old.yMin
+    return float(glyf[mark].yMax - old.yMax if above else glyf[mark].yMin - old.yMin)
 
 
 def make_room(font: TTFont, mark: str, delta: float, *, above: bool) -> None:
@@ -64,7 +65,10 @@ def make_room(font: TTFont, mark: str, delta: float, *, above: bool) -> None:
                     g_c.recalcBounds(glyf)
                     if (g_c.yMin > 300) if above else (g_c.yMax < 100):  # a vowel, not the letter's body
                         c.y += round(delta)
-    moved = lambda a: a is not None and ((a.YCoordinate > 400) if above else (a.YCoordinate < 0))  # noqa: E731
+
+    def moved(a: Any) -> bool:  # an anchor above (or below) the new hamza
+        return a is not None and bool((a.YCoordinate > 400) if above else (a.YCoordinate < 0))
+
     for lookup in font["GPOS"].table.LookupList.Lookup:
         for st in lookup.SubTable:
             kind = type(st).__name__

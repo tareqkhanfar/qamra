@@ -25,7 +25,12 @@ SHOE = "#7A5240"
 EYE = "#2F2A3A"
 MOUTH = "#8A4637"
 OUTFITS = ("#E98AA6", "#6E95DB", "#86BF72", "#F2A65A", "#A58BD8", "#5DB7A8")
-SCARVES = ("#8FB9A8", "#C9A7D8", "#9C6B98", "#A9C4E8")  # none near a skin tone (a peach scarf read as a bald head)
+SCARVES = (
+    "#8FB9A8",
+    "#C9A7D8",
+    "#9C6B98",
+    "#A9C4E8",
+)  # none near a skin tone (a peach scarf read as a bald head)
 BOX_W, BOX_H, FEET = 60.0, 120.0, 118.0
 
 Feeling = Literal[
@@ -583,12 +588,11 @@ def job_bust(job: str, edge_mm: float = 0.0, figure: Figure | None = None) -> st
     """The head and shoulders of someone at work (figure units: 60 wide, `BUST_H` tall); `figure` draws a
     man or a woman in that job instead of the job's default."""
     kind, outfit, hat = JOBS.get(job, ("adult", OUTFITS[0], ""))
-    kind = figure or kind
-    figure = person(kind, outfit)
+    drawn = person(figure or kind, outfit)
     head_top = 20.0 - 11.0
     extra = ""
     if job == "doctor":  # the stethoscope on the white coat
         extra = draw.path("M24 36 C24 48 36 48 36 36 M30 46 L30 52", stroke="#4A5078", width=1.3) + draw.el(
             "circle", cx=30, cy=54, r=2.6, fill="#CFD2DC", stroke=OUTLINE, stroke_width=0.6
         )
-    return figure.svg(edge_mm) + extra + _hat(hat, 30.0, head_top)
+    return drawn.svg(edge_mm) + extra + _hat(hat, 30.0, head_top)

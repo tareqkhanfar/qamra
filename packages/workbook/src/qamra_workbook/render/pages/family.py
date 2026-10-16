@@ -205,7 +205,8 @@ def passport(ctx: PageContext) -> Built:
         "name": ctx.book.child.name,
         "family": family.name if family else "",
         "city": family.city if family else "",
-        "date": "",  # written by the family when the adventures start, like the certificate's: not the print date
+        # written by the family when the adventures start, like the certificate's: not the print date
+        "date": "",
         "slots": [
             {"label": ctx.text(b.label), "svg": seal(b, filled=False), "color": b.color, "n": ctx.num(i)}
             for i, b in enumerate(stamps, start=1)
