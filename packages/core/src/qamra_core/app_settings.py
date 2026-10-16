@@ -716,6 +716,46 @@ _DEFS: list[SettingDef] = [
         min=0.01,
         max=1,
     ),
+    # ---- free character drawings (owner, 2026-10-16): they come back with time instead of running out for
+    # good; each one costs about $0.30 (portrait + sheet). Staff accounts are never limited.
+    SettingDef(
+        "free_draws_per_window",
+        "quality",
+        Kind.number,
+        3,
+        "الرسمات المجانية لكل طفل في كل فترة",
+        "Free drawings per child in each period",
+        "تشمل رسم شخصية الطفل أو إعادة رسمها. ولا تُحسَب الرسمة التي تفشل بسبب خطأ من جهتنا.",
+        "Covers drawing the child's character or redrawing it. A drawing that fails because of an error on "
+        "our end doesn't count.",
+        min=1,
+        max=20,
+    ),
+    SettingDef(
+        "free_draws_window_hours",
+        "quality",
+        Kind.number,
+        2,
+        "طول الفترة (بالساعات)",
+        "Period length (hours)",
+        "تعود كل رسمة متاحةً بعد هذا العدد من الساعات من استخدامها.",
+        "Each drawing becomes available again this many hours after it's used.",
+        min=1,
+        max=24,
+    ),
+    SettingDef(
+        "free_draws_daily_cap",
+        "quality",
+        Kind.number,
+        12,
+        "أقصى عدد للرسمات خلال 24 ساعة",
+        "Max drawings per 24 hours",
+        "سقفٌ يُطبَّق على كل طفل وعلى كل حساب، حتى لا يرفع شخصٌ واحد التكلفة كثيرًا. ولا يُطبَّق على حسابات الإدارة.",
+        "A cap applied to each child and to each account, so no one person can run up the cost. Staff "
+        "accounts are never limited.",
+        min=1,
+        max=100,
+    ),
     # ---- class books (Addendum 1 §2)
     SettingDef(
         "class_book_min_appearances",

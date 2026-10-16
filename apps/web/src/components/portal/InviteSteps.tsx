@@ -2,12 +2,14 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { DrawLimitNote, useNow } from "@/components/create/DrawLimit";
 import { Frame, Lead } from "@/components/create/Frame";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { errorText } from "@/lib/api";
 import { nameCases } from "@/lib/arabicName";
 import type { Child } from "@/lib/create";
+import { drawsLeft } from "@/lib/drawLimits";
 import { inviteApi, type Invite } from "@/lib/portal";
 
 const POINTS = ["p1", "p2", "p3", "p4"] as const;
@@ -78,26 +80,33 @@ export function DrawStart({
   child,
   busy,
   error,
+  blockedUntil = null,
   onDraw,
 }: {
   child: Child;
   busy: boolean;
   error: string | null;
+  blockedUntil?: string | null; // the API said no free drawing is left until then (lib/drawLimits)
   onDraw: () => void;
 }) {
   const t = useTranslations("portal.invite.character");
   const tc = useTranslations("create");
+  const now = useNow();
+  const out = drawsLeft(child, now, blockedUntil) <= 0;
   return (
     <Frame
       title={child.name}
       label={tc("steps.character")}
       footer={
-        <Button size="lg" className="grow" loading={busy} onClick={onDraw}>
+        <Button size="lg" className="grow" loading={busy} onClick={onDraw} disabled={out}>
           {t("draw")}
         </Button>
       }
     >
       <Lead title={t("drawTitle", nameCases(child.name))} />
+      {out && (
+        <DrawLimitNote child={child} now={now} resetAt={blockedUntil ?? child.redraws_reset_at} earlier={false} />
+      )}
       {error && <Alert>{error}</Alert>}
     </Frame>
   );

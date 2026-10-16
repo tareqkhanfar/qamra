@@ -11,10 +11,12 @@ import { nameCases } from "@/lib/arabicName";
 import type { ThemeCard } from "@/lib/catalog";
 import { classicStyles, classicVariant } from "@/lib/classic";
 import { createApi, type Character, type Child } from "@/lib/create";
+import { blockedUntilOf, drawsLeft } from "@/lib/drawLimits";
 import { variantOf } from "@/lib/examples";
 import type { Kind } from "@/lib/flows";
 import { money, type Catalog } from "@/lib/store";
 import { containedSample, styleThumb } from "@/lib/styleSamples";
+import { DrawLimitNote, useNow } from "./DrawLimit";
 import { Check, Frame, Lead } from "./Frame";
 
 /** How a style's card hints at its look when there is no real page in that style yet. */
@@ -43,6 +45,11 @@ const LOOK: Record<string, { bg: string; fx: string }> = {
  *   and owner page first in the gallery. The style only changes the child's character: the activity pages are
  *   drawn once for everyone. The first style the child has no character in is preselected (the parent came for
  *   a new one); the API reuses an approved character in the chosen style unless a newer photo was given.
+ *
+ * The free drawings come back with time (lib/drawLimits). With none left now, the step says when the next one comes
+ * back and goes on with the child's newest drawing in the chosen style (else in another style this book can use),
+ * where the parent can choose among the earlier ones; a drawing in the chosen style can always be taken instead of
+ * drawing again.
  */
 export function StyleStep({
   kind = "story",
@@ -98,6 +105,9 @@ export function StyleStep({
   );
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // the API said none are left until then (the child's own count may be older)
+  const [blockedUntil, setBlockedUntil] = useState<string | null>(null);
+  const now = useNow();
   const look = variantOf(child);
   const themeNames = Object.fromEntries(themes.map((th) => [th.slug, th.name]));
   const nameOf = (s: { name_ar: string; name_en: string }) => (locale === "ar" ? s.name_ar : s.name_en);
@@ -108,9 +118,19 @@ export function StyleStep({
     setError(null);
     const r = await createApi.draw(child.id, style, [], activity ? sku : null);
     setBusy(false);
-    if (r.ok) onDrawing(r.data);
+    if (r.ok) return onDrawing(r.data);
+    const until = blockedUntilOf(r.error);
+    if (until)
+      setBlockedUntil(until); // the line below says when, in the parent's own clock
     else setError(errorText(r.error, locale, r.status === 0 ? te("network") : te("unknown")));
   }
+
+  // the child's drawings that came out, newest first (the API lists them in drawing order)
+  const done = child.characters.filter((c) => c.status === "ready" || c.status === "approved").reverse();
+  const sameStyle = done.find((c) => c.style === style) ?? null;
+  const earlier = sameStyle ?? done.find((c) => styles.some((s) => s.slug === c.style)) ?? null;
+  const left = drawsLeft(child, now, blockedUntil);
+  const out = left <= 0;
 
   return (
     <Frame
@@ -118,9 +138,22 @@ export function StyleStep({
       label={t("steps.style")}
       back={back}
       footer={
-        <Button onClick={draw} loading={busy} size="lg" className="grow" disabled={!styles.length}>
-          {t("style.cta", who)}
-        </Button>
+        out && earlier ? (
+          <Button onClick={() => onDrawing(earlier)} size="lg" className="grow">
+            {t("style.useEarlier", who)}
+          </Button>
+        ) : (
+          <div className="flex grow flex-col gap-2">
+            <Button onClick={draw} loading={busy} size="lg" disabled={!styles.length || out}>
+              {t("style.cta", who)}
+            </Button>
+            {sameStyle && (
+              <Button variant="secondary" onClick={() => onDrawing(sameStyle)} disabled={busy}>
+                {t("style.useEarlier", who)}
+              </Button>
+            )}
+          </div>
+        )
       }
     >
       <Lead
@@ -239,6 +272,12 @@ export function StyleStep({
         })}
       </div>
       {styles.length > 0 && <p className="rounded-2xl bg-paper-sunk p-4 text-small text-ink">{t("style.next", who)}</p>}
+      {styles.length > 0 && !child.redraws_unlimited && !out && child.redraws_total ? (
+        <p className="text-small text-ink-muted">{t("drawLimit.left", { left, total: child.redraws_total })}</p>
+      ) : null}
+      {out && (
+        <DrawLimitNote child={child} now={now} resetAt={blockedUntil ?? child.redraws_reset_at} earlier={!!earlier} />
+      )}
       {error && <Alert>{error}</Alert>}
     </Frame>
   );

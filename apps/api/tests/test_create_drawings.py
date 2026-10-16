@@ -72,7 +72,7 @@ async def test_every_drawing_is_kept_and_listed_newest_first(
     await register(client)
     child_id = await _child(client)
     first = await _draw(client, child_id, style="3d")
-    await _drawn(adb, storage, first["id"], minutes_ago=30)
+    await _drawn(adb, storage, first["id"], minutes_ago=150)  # out of the 2-hour window
     second = await _draw(client, child_id, style="3d", fixes=["hair"], note="  شعره\n  أجعد  ", redraw=True)
     await _drawn(adb, storage, second["id"], minutes_ago=20)
     other = await _draw(client, child_id, style="watercolor", redraw=True)  # another style, to compare
@@ -99,7 +99,7 @@ async def test_every_drawing_is_kept_and_listed_newest_first(
     for d in listed:  # each one through the private image route
         image = await client.get(f"/api/create/characters/{d['id']}/image")
         assert image.status_code == 200 and image.headers["cache-control"] == "private, no-store"
-    # the first drawing and 3 redraws are used; the one that failed on our side is not counted
+    # 3 drawings in the last 2 hours (the first is older); the one that failed on our side is not counted
     assert (await client.get("/api/create/children")).json()[0]["redraws_left"] == 0
 
 

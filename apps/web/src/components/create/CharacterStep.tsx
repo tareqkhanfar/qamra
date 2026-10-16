@@ -16,8 +16,10 @@ import {
   type Drawing,
   type Fix,
 } from "@/lib/create";
+import { blockedUntilOf, drawsLeft } from "@/lib/drawLimits";
 import { drawingFor, lastApproved, NOTE_MAX, offered, tidyNote } from "@/lib/drawings";
 import { ACTIVITY_LINES } from "@/lib/shop";
+import { DrawLimitNote, useNow } from "./DrawLimit";
 import { Chip, Frame, Lead } from "./Frame";
 
 const FIXES: Fix[] = ["skin", "face", "hair", "age"];
@@ -38,8 +40,9 @@ export function photoSavedNotice(
 /**
  * Step 6 (design Create5): the drawn character; approve it, or redraw with what didn't look right (the chips and,
  * optionally, the parent's own words). It says where this product shows the character, what approving does (kept
- * for the next books, the photo deleted within 24 h) and the free-redraw rule (3 per child; a drawing that failed
- * on our side doesn't count).
+ * for the next books, the photo deleted within 24 h) and the free-drawing rule (lib/drawLimits: 3 per child, each
+ * back 2 hours after it was used; a drawing that failed on our side doesn't count). With none left now it says when
+ * the next one comes back, and the strip of earlier drawings stays usable: approving one needs no free drawing.
  *
  * Every drawing of the child stays (owner, 2026-10-10): the earlier ones, in any style this book can use
  * (`usable`), show as a strip under the picture, newest first, so the parent can compare them and go back to one.
@@ -79,6 +82,9 @@ export function CharacterStep({
   const [drawings, setDrawings] = useState<Drawing[] | null>(null);
   // the drawing tapped in the strip, for this drawing in this state (a new drawing, or a finished one, shows itself)
   const [picked, setPicked] = useState<{ key: string; id: string } | null>(null);
+  // the API said none are left until then (the child's own count may be older)
+  const [blockedUntil, setBlockedUntil] = useState<string | null>(null);
+  const now = useNow();
   const who = { ...nameCases(child.name), gender: child.gender };
   const drawing = character.status === "generating";
   const kind = drawingFor(productLine, ACTIVITY_LINES);
@@ -139,10 +145,21 @@ export function CharacterStep({
       setFixes([]);
       setNote("");
       onChange(r.data);
-    } else setError(errorText(r.error, locale, r.status === 0 ? te("network") : te("unknown")));
+      return;
+    }
+    const until = blockedUntilOf(r.error);
+    if (until)
+      setBlockedUntil(until); // the line below says when, in the parent's own clock
+    else setError(errorText(r.error, locale, r.status === 0 ? te("network") : te("unknown")));
   }
 
-  const left = Math.max(0, child.redraws_left);
+  const left = drawsLeft(child, now, blockedUntil);
+  const unlimited = !!child.redraws_unlimited;
+  const total = child.redraws_total ?? left;
+  const others = list.some((d) => d.id !== selected.id); // earlier drawings to choose from meanwhile
+  const limitNote = (
+    <DrawLimitNote child={child} now={now} resetAt={blockedUntil ?? child.redraws_reset_at} earlier={others} />
+  );
   return (
     <Frame
       title={title ?? t("bookOf", who)}
@@ -166,7 +183,7 @@ export function CharacterStep({
                   <path d="M20 4v5h-5" />
                 </g>
               </svg>
-              {t("character.redraw", { left })}
+              {unlimited ? t("character.redrawFree") : t("character.redraw", { left, total })}
             </Button>
           </div>
         ) : selected.status === "failed" ? (
@@ -183,7 +200,10 @@ export function CharacterStep({
           <p className="text-body text-ink-muted">{t("character.drawingHint")}</p>
         </div>
       ) : selected.status === "failed" ? (
-        <Alert>{t("character.failed")}</Alert>
+        <>
+          <Alert>{t("character.failed")}</Alert>
+          {!left && limitNote}
+        </>
       ) : (
         <>
           <Lead title={t("character.title", who)} body={t(`character.where.${kind}`, { ...who, places })} />
@@ -326,7 +346,7 @@ export function CharacterStep({
               </div>
             </details>
           ) : (
-            <p className="text-small text-ink-muted">{t("character.noRedraws")}</p>
+            limitNote
           )}
           <section
             aria-labelledby="on-approve"
@@ -342,7 +362,11 @@ export function CharacterStep({
               <li>{t("character.keep", who)}</li>
               <li>{t(`character.next.${kind}`, who)}</li>
             </ul>
-            {left > 0 && <p className="border-t border-dashed border-line pt-2">{t("character.redrawRule")}</p>}
+            {left > 0 && !unlimited && (
+              <p className="border-t border-dashed border-line pt-2">
+                {t("character.redrawRule", { total, hours: child.redraws_window_hours ?? 2 })}
+              </p>
+            )}
           </section>
         </>
       )}

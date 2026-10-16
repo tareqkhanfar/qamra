@@ -16,6 +16,7 @@ from sqlalchemy import func, select
 from qamra_api import ratelimit, runtime_settings
 from qamra_api.auth.router import client_ip
 from qamra_api.deps import CurrentUser, RedisDep, SessionDep, SettingsDep, StorageDep
+from qamra_api.draw_limits import is_unlimited
 from qamra_api.errors import ApiError
 from qamra_api.jobs import QueueDep, enqueue
 from qamra_api.routers.create import UPLOADS_PER_HOUR, _my_child
@@ -44,7 +45,8 @@ class MemberOut(BaseModel):
     drawings_left: int
 
 
-def _out(m: FamilyMember) -> MemberOut:
+def _out(m: FamilyMember, unlimited: bool = False) -> MemberOut:
+    """`unlimited`: a staff account (qamra_api.draw_limits), whose drawings never run out."""
     return MemberOut(
         id=m.id,
         relation=m.relation,
@@ -55,7 +57,7 @@ def _out(m: FamilyMember) -> MemberOut:
         has_photo=m.photo_key is not None,
         status=m.status,
         approved=m.approved_at is not None,
-        drawings_left=max(0, MAX_DRAWINGS - m.regen_count),
+        drawings_left=MAX_DRAWINGS if unlimited else max(0, MAX_DRAWINGS - m.regen_count),
     )
 
 
@@ -78,7 +80,7 @@ async def list_members(child_id: uuid.UUID, user: CurrentUser, db: SessionDep) -
     rows = await db.execute(
         select(FamilyMember).where(FamilyMember.child_id == child.id).order_by(FamilyMember.created_at)
     )
-    return [_out(m) for m in rows.scalars()]
+    return [_out(m, is_unlimited(user)) for m in rows.scalars()]
 
 
 @router.post("/children/{child_id}/family", status_code=201)
@@ -106,7 +108,7 @@ async def add_member(
     )
     db.add(member)
     await db.commit()
-    return _out(member)
+    return _out(member, is_unlimited(user))
 
 
 class ConsentIn(BaseModel):
@@ -134,7 +136,7 @@ async def give_consent(
         )
     )
     await db.commit()
-    return _out(member)
+    return _out(member, is_unlimited(user))
 
 
 @router.post("/family/{member_id}/photo")
@@ -149,7 +151,7 @@ async def upload_photo(
 ) -> MemberOut:
     await _enabled(db, settings)
     member = await _member(db, user, member_id)
-    if await ratelimit.hit(redis, f"rl:photos:{user.id}", 3600) > UPLOADS_PER_HOUR:
+    if not is_unlimited(user) and await ratelimit.hit(redis, f"rl:photos:{user.id}", 3600) > UPLOADS_PER_HOUR:
         raise ApiError("too_many_attempts", 429)
     if member.consented_at is None:
         raise ApiError("consent_required", 409)
@@ -163,7 +165,7 @@ async def upload_photo(
     approved = member.approved_at is not None  # a new photo of an approved member: deleted on schedule
     member.photo_delete_after = datetime.now(UTC) + timedelta(hours=retention) if approved else None
     await db.commit()
-    return _out(member)
+    return _out(member, is_unlimited(user))
 
 
 class DrawIn(BaseModel):
@@ -196,13 +198,13 @@ async def draw_member(
         raise ApiError("invalid_style", 422)
     if not member.photo_key:
         raise ApiError("photo_required", 409)
-    if member.regen_count >= MAX_DRAWINGS:
+    if member.regen_count >= MAX_DRAWINGS and not is_unlimited(user):
         raise ApiError("redraws_used", 429)
     member.regen_count += 1
     member.art_style, member.status, member.approved_at = style, FamilyMemberStatus.generating, None
     await db.commit()
     enqueue(queue, JOB, str(member.id))
-    return _out(member)
+    return _out(member, is_unlimited(user))
 
 
 @router.get("/family/{member_id}/image")
@@ -240,7 +242,7 @@ async def approve_member(
         )
     )
     await db.commit()
-    return _out(member)
+    return _out(member, is_unlimited(user))
 
 
 @router.delete("/family/{member_id}", status_code=204)

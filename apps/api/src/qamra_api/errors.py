@@ -212,6 +212,14 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "استخدمتم إعادات الرسم المجانية لهذا الطفل. تواصلوا معنا إن احتجتم المساعدة.",
         "You've used the free redraws for this child. Contact us if you need help.",
     ),
+    # the child's character: the free drawings come back with time (qamra_api.draw_limits); `details.reset_at`
+    # says when, and the site shows that time in the parent's own clock
+    "free_draws_used": (
+        "استخدمتم كل الرسمات المجانية المتاحة حاليًا، وستتاح لكم رسمة جديدة بعد وقت قصير. "
+        "وحتى ذلك الحين يمكنكم اختيار رسمة سابقة إن وُجدت.",
+        "You've used up your free drawings for now; your next one will be available shortly. In the "
+        "meantime, you can pick an earlier drawing if there is one.",
+    ),
     "character_not_approved": (
         "اعتمدوا شخصية الطفل أولًا.",
         "Please approve your child's character first.",

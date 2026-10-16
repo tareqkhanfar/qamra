@@ -7,7 +7,7 @@ from rq import Queue
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from qamra_api.routers.create import CONSENT_VERSION, MAX_CHARACTERS
+from qamra_api.routers.create import CONSENT_VERSION
 from qamra_api.seed import upsert_themes
 from qamra_api.seed_store import seed_store
 from qamra_core.db.classic import ClassicTemplate, TemplateStatus
@@ -71,7 +71,8 @@ async def test_from_child_to_cart(
     await sell_every_addon(adb)  # the gift box is switched off in the seed (no stock)
     await register(client)
     child = await _child(client)
-    assert child["consent"] is False and child["redraws_left"] == MAX_CHARACTERS
+    assert child["consent"] is False and child["redraws_left"] == child["redraws_total"] == 3
+    assert child["redraws_reset_at"] is None and child["redraws_window_hours"] == 2
 
     assert await _photo(client, child["id"]) == 409  # no photo before the guardian's consent
     stale = await client.post(

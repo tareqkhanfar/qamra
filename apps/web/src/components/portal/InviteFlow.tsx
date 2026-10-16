@@ -13,6 +13,7 @@ import { api, errorText, type User } from "@/lib/api";
 import { nameCases } from "@/lib/arabicName";
 import type { Character, Child } from "@/lib/create";
 import { CLASS_BOOK } from "@/lib/drawings";
+import { blockedUntilOf } from "@/lib/drawLimits";
 import { inviteApi, type Invite } from "@/lib/portal";
 import { ConsentPart, DrawStart } from "./InviteSteps";
 
@@ -37,6 +38,7 @@ export function InviteFlow({ token }: { token: string }) {
   const [photoSaved, setPhotoSaved] = useState<{ character: string; change: NonNullable<PhotoChange> } | null>(null);
   const [starting, setStarting] = useState(false);
   const [startError, setStartError] = useState<string | null>(null);
+  const [blockedUntil, setBlockedUntil] = useState<string | null>(null); // no free drawing left until then
 
   const load = useCallback(async () => {
     const [i, me] = await Promise.all([inviteApi.open(token), api<User>("/api/auth/me")]);
@@ -61,22 +63,27 @@ export function InviteFlow({ token }: { token: string }) {
   }
 
   const setChild = (child: Child) => setInvite((i) => (i ? { ...i, child } : i));
-  /** A drawing started or changed (a new one counts as one of the free redraws, as the API counts it). */
+  /**
+   * A drawing started or changed. A new one is one of the free drawings: counted here at once, then the API's own
+   * count and the time the next one comes back (lib/drawLimits) come with the invite again.
+   */
   const onCharacter = useCallback(
-    (c: Character) =>
-      setInvite((i) =>
-        i?.child
-          ? {
-              ...i,
-              child: {
-                ...i.child,
-                characters: [...i.child.characters.filter((x) => x.id !== c.id), c],
-                redraws_left: i.child.redraws_left - (i.child.characters.some((x) => x.id === c.id) ? 0 : 1),
-              },
-            }
-          : i,
-      ),
-    [],
+    (c: Character) => {
+      setInvite((i) => {
+        if (!i?.child) return i;
+        const isNew = !i.child.characters.some((x) => x.id === c.id);
+        return {
+          ...i,
+          child: {
+            ...i.child,
+            characters: [...i.child.characters.filter((x) => x.id !== c.id), c],
+            redraws_left: Math.max(0, i.child.redraws_left - (isNew ? 1 : 0)),
+          },
+        };
+      });
+      void load();
+    },
+    [load],
   );
   /** Approving (maybe an earlier drawing): the child's character is now that one. */
   const onApproved = useCallback(
@@ -95,7 +102,10 @@ export function InviteFlow({ token }: { token: string }) {
     setStartError(null);
     const r = await inviteApi.draw(token);
     setStarting(false);
-    if (r.ok) onCharacter(r.data);
+    if (r.ok) return onCharacter(r.data);
+    const until = blockedUntilOf(r.error);
+    if (until)
+      setBlockedUntil(until); // the step says when the next one comes back
     else setStartError(errorText(r.error, locale, r.status === 0 ? te("network") : te("unknown")));
   }
 
@@ -226,7 +236,13 @@ export function InviteFlow({ token }: { token: string }) {
           onApproved={onApproved}
         />
       ) : (
-        <DrawStart child={child} busy={starting} error={startError} onDraw={() => void draw()} />
+        <DrawStart
+          child={child}
+          busy={starting}
+          error={startError}
+          blockedUntil={blockedUntil}
+          onDraw={() => void draw()}
+        />
       )}
     </FlowFrameContext.Provider>
   );

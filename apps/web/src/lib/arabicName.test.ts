@@ -413,6 +413,9 @@ const GENITIVE: Record<string, string> = {
   "create.style.cta": "nameGen",
   "create.style.next": "nameGen",
   "create.style.bodyActivity": "nameGen", // the activity books' style step (2026-10-09)
+  "create.style.useEarlier": "nameGen", // «تابعوا بإحدى رسمات أبي بكر السابقة» (free drawings, 2026-10-16)
+  "create.drawLimit.noneLeft": "nameGen",
+  "create.drawLimit.soon": "nameGen",
   "create.character.alt": "nameGen",
   "create.character.portraitAlt": "nameGen",
   "create.character.keep": "nameGen",

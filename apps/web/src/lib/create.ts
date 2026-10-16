@@ -29,7 +29,13 @@ export type Child = {
   consent: boolean;
   photos: number;
   characters: Character[];
+  // the free drawings, which come back with time (lib/drawLimits): left now, when the next one is back (null:
+  // all are there), how many, after how many hours each one comes back, and staff (never limited)
   redraws_left: number;
+  redraws_reset_at?: string | null;
+  redraws_total?: number;
+  redraws_window_hours?: number;
+  redraws_unlimited?: boolean;
   // optional until the API sends them (docs/plans/order-flows.md §d chunk 8)
   interests?: string[]; // what the child likes and the «شيء مميز» note (Magic's story step)
   name_latin?: string | null; // the name in English letters, as the activity books print it
