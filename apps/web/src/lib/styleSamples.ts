@@ -205,7 +205,10 @@ const SIBLING_TALA = {
   ],
 } satisfies Record<string, Row>;
 
-/** تالا’s character sheet in each style (the same invented child as the new-sibling pages). */
+/**
+ * تالا’s character sheet in each style (the same invented child as the new-sibling pages), drawn 2026-10-16 as an
+ * order draws it: her portrait in the style, then the sheet (scripts/style_samples.py).
+ */
 const CHARACTER: Row = [
   "character",
   null,
@@ -295,7 +298,8 @@ const ROWS: Record<SampleStyle, Row[]> = {
     SIBLING_TALA.smile,
     ...GRADUATION,
     COMPANION,
-    CHARACTER, // no activity pages: this sheet's paper grain defeats the cut-out (scripts/style_samples.py)
+    CHARACTER,
+    ...ACTIVITY, // since the 2026-10-16 sheet, which cuts out cleanly
   ],
   cartoon: [
     FIRST_DAY_ADAM.cover,
@@ -308,8 +312,8 @@ const ROWS: Record<SampleStyle, Row[]> = {
     CHARACTER,
     ...ACTIVITY,
   ],
-  // drawn 2026-10-09 (`semireal:` rows in the ledger); the bassinet and news pages were rejected (the baby under
-  // the text box; the companion drawn twice), so the story has its cover and one page so far
+  // redrawn 2026-10-16 on the production path (portrait first, semi-realistic v3; `samples-v3:` rows in the
+  // ledger): the cover and one page so far
   "semi-realistic": [SIBLING_TALA.cover, SIBLING_TALA.smile, CHARACTER, ...ACTIVITY],
 };
 
