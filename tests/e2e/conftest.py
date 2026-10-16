@@ -20,7 +20,15 @@ from collections.abc import Iterator
 
 import pytest
 from e2e_flow import BASE_URL, call, show_prices
-from playwright.sync_api import Browser, Page, Playwright, expect, sync_playwright
+from playwright.sync_api import (
+    Browser,
+    BrowserContext,
+    ConsoleMessage,
+    Page,
+    Playwright,
+    expect,
+    sync_playwright,
+)
 
 expect.set_options(timeout=30_000)  # a dev stack (or one on a remote database) can take a few seconds
 
@@ -39,11 +47,37 @@ def prices_shown() -> Iterator[None]:
     yield
 
 
+# next-intl's errors in the browser: a message the page asked for and didn't get (the public pages ship only
+# their own namespaces, and no price template while prices are hidden: src/lib/clientMessages.ts)
+INTL_ERRORS = ("MISSING_MESSAGE", "INSUFFICIENT_PATH", "INVALID_MESSAGE", "FORMATTING_ERROR")
+intl_errors: list[str] = []
+
+
+def watch_intl_errors(context: BrowserContext) -> BrowserContext:
+    def on_console(msg: ConsoleMessage) -> None:
+        if any(code in msg.text for code in INTL_ERRORS):
+            intl_errors.append(f"{msg.page.url if msg.page else '?'}: {msg.text[:300]}")
+
+    context.on("console", on_console)
+    return context
+
+
 @pytest.fixture(scope="session")
 def browser(playwright: Playwright) -> Iterator[Browser]:
     browser = playwright.chromium.launch()
+    new_context = browser.new_context
+    # every context a test opens (its own, a guest's, a second staff session) reports next-intl's errors
+    browser.new_context = lambda *a, **k: watch_intl_errors(new_context(*a, **k))  # type: ignore[method-assign]
     yield browser
     browser.close()
+
+
+@pytest.fixture(autouse=True)
+def no_missing_messages() -> Iterator[None]:
+    """Fails a test whose pages logged a next-intl error (a missing or broken message)."""
+    intl_errors.clear()
+    yield
+    assert not intl_errors, "next-intl errors in the browser:\n" + "\n".join(intl_errors)
 
 
 @pytest.fixture

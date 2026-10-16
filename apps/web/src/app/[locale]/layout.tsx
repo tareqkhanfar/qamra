@@ -3,13 +3,14 @@ import { Baloo_Bhaijaan_2, IBM_Plex_Sans_Arabic } from "next/font/google";
 import { locale as rootLocale } from "next/root-params";
 import { connection } from "next/server";
 import { NextIntlClientProvider } from "next-intl";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { MusicPlayer } from "@/components/site/MusicPlayer";
 import { PricesProvider } from "@/components/site/Prices";
 import { RevealObserver } from "@/components/site/RevealObserver";
 import { brandName } from "@/config/brand";
 import { routing } from "@/i18n/routing";
 import { getPublicSettings, pricesShown } from "@/lib/catalog";
+import { publicClientMessages } from "@/lib/clientMessages";
 import "../globals.css";
 
 const baloo = Baloo_Bhaijaan_2({
@@ -42,7 +43,12 @@ export const viewport: Viewport = { themeColor: "#FBF6EC", width: "device-width"
 export default async function LocaleLayout({ children }: { children: React.ReactNode }) {
   await connection(); // every page renders per request: needed for the CSP nonce and live admin settings
   const locale = await rootLocale();
-  const [site, tm] = await Promise.all([getPublicSettings(), getTranslations({ locale, namespace: "music" })]);
+  const [site, tm, messages] = await Promise.all([
+    getPublicSettings(),
+    getTranslations({ locale, namespace: "music" }),
+    getMessages({ locale }),
+  ]);
+  const prices = pricesShown(site);
   return (
     <html
       lang={locale}
@@ -51,8 +57,9 @@ export default async function LocaleLayout({ children }: { children: React.React
       data-motion={site?.animations_enabled === false ? "off" : undefined}
     >
       <body className="min-h-dvh bg-paper antialiased">
-        <NextIntlClientProvider>
-          <PricesProvider show={pricesShown(site)}>{children}</PricesProvider>
+        {/* only what public client components use: the staff's messages come from admin/layout.tsx */}
+        <NextIntlClientProvider messages={publicClientMessages(messages, { prices })}>
+          <PricesProvider show={prices}>{children}</PricesProvider>
           <RevealObserver />
           {site?.music_enabled && (
             <MusicPlayer volume={site.music_volume} labels={{ play: tm("play"), pause: tm("pause") }} />

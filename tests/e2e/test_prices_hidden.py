@@ -82,3 +82,21 @@ def test_an_order_from_the_format_to_the_order_page_without_a_price(page: Page) 
     expect(page.get_by_text(code).first).to_be_visible()
     no_price(page)
     assert Decimal(order(page, code)["total"]) > 0  # the order keeps its price for the staff
+
+
+# what a page's source (its HTML and the messages it ships) never holds while prices are hidden: a currency, a
+# price template, our costs, margins or the printer (Tareq, 2026-10-16: src/lib/clientMessages.ts)
+SOURCE = re.compile(r"₪|شيكل|JOD|ILS|تكلفتنا|هامش|المطبعة")
+STAFF = r"admin|printCosts|catalogAdmin|printBatches|studio|queue|priceLists"
+STAFF_NAMESPACES = re.compile(rf'\\?"({STAFF})\\?":\{{')
+
+
+def test_the_page_source_holds_no_price_template_cost_or_staff_message(page: Page) -> None:
+    more = ["/cart", "/checkout", "/login", "/register", "/track", "/create", "/account", "/portal"]
+    for locale in ("ar", "en"):
+        for path in PUBLIC + more:
+            res = page.request.get(f"{BASE_URL}/{locale}{path}")
+            assert res.ok, f"/{locale}{path}: {res.status}"
+            html = res.text()
+            assert not SOURCE.search(html), f"/{locale}{path}: {sorted(set(SOURCE.findall(html)))}"
+            assert not STAFF_NAMESPACES.search(html), f"/{locale}{path}: {STAFF_NAMESPACES.findall(html)}"

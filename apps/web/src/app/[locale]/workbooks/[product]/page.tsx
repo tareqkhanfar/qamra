@@ -76,7 +76,7 @@ export default async function WorkbookPage({ params, searchParams }: Props) {
       />
       <WorkbookProduct
         product={product}
-        currency={catalog?.currency ?? "ILS"}
+        currency={catalog?.currency}
         query={picks}
         photo={
           photo ? (

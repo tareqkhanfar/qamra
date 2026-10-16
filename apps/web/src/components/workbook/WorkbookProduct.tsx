@@ -45,7 +45,7 @@ const chip = (on: boolean, off: boolean) =>
  */
 export function WorkbookProduct({
   product,
-  currency,
+  currency = "ILS",
   query,
   photo = null,
   familyCharacters = false,
@@ -55,7 +55,8 @@ export function WorkbookProduct({
   addonMedia = {},
 }: {
   product: CatalogProduct;
-  currency: Currency;
+  /** None while prices are hidden (the API sends no currency): nothing is priced then. */
+  currency?: Currency;
   query: Picks;
   photo?: ReactNode; // the book's lifestyle photo (components/site/Photo), when Tareq has added it
   familyCharacters?: boolean; // the illustrated-family add-on is switched on

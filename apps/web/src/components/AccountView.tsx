@@ -59,7 +59,6 @@ export function AccountView() {
   const tr = useTranslations("reader");
   const tn = useTranslations("nav");
   const te = useTranslations("errors");
-  const ta = useTranslations("admin");
   const locale = useLocale();
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
@@ -179,7 +178,7 @@ export function AccountView() {
         <div className="flex items-center gap-1">
           {user.role === "admin" && (
             <Link href="/admin/settings" className={buttonClasses("solid", "sm")}>
-              {ta("adminLink")}
+              {t("adminLink")}
             </Link>
           )}
           <Button variant="ghost" size="sm" onClick={logout} loading={leaving}>
