@@ -20,7 +20,7 @@ from qamra_ai.errors import QamraError
 from qamra_ai.pipeline import cover_art
 from qamra_ai.pipeline.assemble import split_title
 from qamra_ai.pipeline.budget import Budget, BudgetExceeded
-from qamra_ai.pipeline.classic import free_cover_edit
+from qamra_ai.pipeline.classic import PORTRAIT_PROMPT_ID, free_cover_edit
 from qamra_ai.pipeline.classic_geometry import HeroBox, mirror
 from qamra_ai.pipeline.models import Lang
 from qamra_ai.pipeline.theme import load_style
@@ -79,7 +79,9 @@ def reference(db: Session, storage: ObjectStorage, child: Child, style: str) -> 
     portrait = db.scalar(
         select(ChildPortrait).where(ChildPortrait.child_id == child.id, ChildPortrait.art_style == style)
     )
-    if (data := get_bytes(storage, portrait.image_key if portrait else None)) is not None:
+    current = portrait is not None and (portrait.params or {}).get("prompt") == PORTRAIT_PROMPT_ID
+    # an older identity portrait (classic_portrait.v1) carries painted arches and lanterns: not a reference
+    if (data := get_bytes(storage, portrait.image_key if portrait and current else None)) is not None:
         return "portrait", data, "the child's identity portrait"
     sheet = db.scalars(
         select(Character)

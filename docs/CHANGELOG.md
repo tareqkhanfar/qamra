@@ -1,5 +1,22 @@
 # Changelog
 
+## Classic: only the hero's head is edited; no more violet patches (2026-10-16)
+- **Why:** the per-order proof (book `17fb9eb8`, graduation × watercolor) came back with a visible rectangle on
+  every page: a violet wash, added lanterns and leaves, the green gown turned blue, and page 3 edited the wrong
+  child.
+- **Edit:** `classic_edit.v2` carries no style guide; it changes the face and all the hair only and keeps the
+  clothes, what is on the head, the pose and the page's palette. The crop is the head with room around it.
+- **Portrait:** `classic_portrait.v2` (the medium only, a plain background); older portraits are painted again
+  once, and the free cover no longer uses them.
+- **Blend:** `qamra_ai.pipeline.classic_blend`: the edit is aligned to the template (klein zooms), colour-matched
+  around the head, and blended through a soft head-and-hair mask; every other pixel stays the template's.
+- **Hero boxes:** `hero_box.v2` reads figure and head boxes off a labelled grid with the page's outfit, on the main
+  model; `POST /api/admin/classic/templates/{id}/boxes` finds them again on a live template (status kept, flag
+  `boxes_refreshed`). A moved figure box keeps its head box while the head is still inside it.
+- Local proof with real klein (fake QA): `docs/plans/classic-templates.md` §6.8; $0.351 of fal. Not deployed.
+- Tests: `test_classic_blend.py` (pixels outside the mask unchanged, feathered mask, the wash taken off, the old
+  ponytail gone, alignment), new cases in `test_classic.py`, `test_classic_job.py`, `test_admin_classic.py`.
+
 ## Launch readiness: new-order alerts, unapproved photos, share cards, capped logs (2026-10-16)
 - **New orders reach the owner:** every order (website checkout and kindergarten class order) enqueues `send_order_alert`, an Arabic email to the new admin setting «بريد تنبيهات الطلبات الجديدة» (`order_alert_email`, empty = none) with the code, the customer's name and city, the items and the total (staff always see it, prices hidden or not). It needs SMTP. Without SMTP, `infra/scripts/monitor.sh` announces «قمرة: طلب جديد QM-…» (the code only) on the alert channel.
 - **Alert channels:** `monitor.sh` also posts to a Telegram bot (`ALERT_TELEGRAM_BOT_TOKEN` + `ALERT_TELEGRAM_CHAT_ID`), and its webhook JSON carries both `text` (Slack) and `content` (Discord). New check: an empty fal balance («Exhausted balance» in the worker log within the hour).

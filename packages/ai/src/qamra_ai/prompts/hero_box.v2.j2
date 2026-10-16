@@ -1,0 +1,16 @@
+You locate the hero of a picture-book page. Image 1 is the hero's character reference sheet ({{ 'a boy' if gender == 'm' else 'a girl' }}{% if hijab %} in a hijab{% endif %}). Image 2 is the page, with a thin grid: its lines are labelled in percent of the page's width (x, along the top and bottom) and height (y, along the sides).
+
+Scene of the page: {{ scene }}
+{% if outfit %}On this page the hero wears: {{ outfit }}
+{% endif %}
+
+Find the hero in image 2: the child who matches the reference sheet{% if outfit %} and wears that outfit{% endif %}, not a classmate, sibling, adult, a reflection in a mirror, a picture on the wall or the small companion creature. Several children may look alike: the hero is the one the scene is about (doing the scene's main action), usually larger and closer to the center than the others. If you cannot tell, pick the child doing the main action of the scene.
+
+Fill in, in this order:
+- found: false if the hero is not on the page.
+- clues: one short sentence on how you told the hero apart (outfit, hair, hijab, action, position).
+- x, y, w, h: the hero's whole visible figure, from the top of the head (or hijab, or cap) to the lowest visible part, including both hands. x, y = the top-left corner; w, h = width and height. All in percent of the page (0–100), read off the grid.
+- head_x, head_y, head_w, head_h: the hero's head only, in percent: the hair (or hijab, or cap) and the face down to the chin, with any long hair that falls beside the face. Not the shoulders.
+- notes: one short sentence, e.g. "standing left of center, waving".
+
+Be precise to about 1 percent: read the grid lines on both sides of each edge.

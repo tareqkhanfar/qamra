@@ -27,6 +27,7 @@ from qamra_ai.pipeline.assemble import plan_pages
 from qamra_ai.pipeline.book import choose_outfits, default_companion, new_seed
 from qamra_ai.pipeline.budget import Budget, BudgetExceeded
 from qamra_ai.pipeline.classic import (
+    PORTRAIT_PROMPT_ID,
     ClassicContext,
     HeroEdit,
     PageJob,
@@ -240,13 +241,19 @@ async def find_boxes(
     hero: AIChild,
     sheet: bytes,
     beats: list[int] | None = None,
-) -> None:
-    """The hero's box on every drawn hero page that has none yet (on the print image the edit will crop)."""
+    *,
+    refresh: bool = False,
+) -> int:
+    """The hero's figure and head boxes on every drawn hero page that has none yet (on the print image the
+    edit will crop). `refresh`: find them again on every hero page, also on locked pages (a box is not art);
+    a page whose new search fails keeps its old box. Returns how many pages got a new box."""
     theme = template_theme(template)
+    outfits = dict(template.generation.get("outfits") or {})
+    found = 0
     for beat, row in sorted(template_pages(db, template).items()):
         if beats is not None and beat not in beats:
             continue
-        if not row.has_hero or row.hero_box is not None or not row.image_key:
+        if not row.has_hero or (row.hero_box is not None and not refresh) or not row.image_key:
             continue
         data = get_bytes(storage, row.image_key)
         if data is None:
@@ -254,18 +261,28 @@ async def find_boxes(
         scene = theme.cover if beat == 0 else theme.pages[beat - 1]
         try:
             box = await find_hero_box(
-                rt, data, sheet, hero, scene.scene if scene else "", step=f"qa:{label_of(beat)}:box"
+                rt,
+                data,
+                sheet,
+                hero,
+                scene.scene if scene else "",
+                step=f"qa:{label_of(beat)}:box",
+                outfit=outfits.get(scene.outfit, "") if scene else "",
             )
         except BudgetExceeded:
             _set_flags_on(template, ["budget_exceeded"])
             db.commit()
-            return
+            return found
         except QamraError as e:
             log.warning("classic.hero_box_failed", template=str(template.id), beat=beat, error=str(e)[:200])
             box = None
+        if box is None and refresh and row.hero_box is not None:
+            continue  # keep the old box rather than lose it
         row.hero_box = box.to_dict() if box else None
         row.flags = [f for f in (row.flags or []) if f != "no_hero_box"] + ([] if box else ["no_hero_box"])
+        found += box is not None
         db.commit()
+    return found
 
 
 def _set_flags_on(template: ClassicTemplate, add: list[str], remove: tuple[str, ...] = ()) -> None:
@@ -481,6 +498,42 @@ async def run_template_from_book(
     return finish_template(db, template, plan, budget_hit=False)
 
 
+BOX_REFRESH_BUDGET_USD = 0.6  # 18 pages × ≈ $0.012 on the main model, with room for a retry
+
+
+def template_hero(db: Session, storage: ObjectStorage, template: ClassicTemplate) -> tuple[AIChild, bytes]:
+    """(the template's hero, its reference sheet): the sample book's child, or the placeholder hero."""
+    if template.source == "sample_book" and template.source_book_id is not None:
+        book = db.get(Book, template.source_book_id)
+        child = db.get(Child, book.child_id) if book is not None else None
+        character = db.get(Character, book.character_id) if book is not None and book.character_id else None
+        sheet = get_bytes(storage, character.sheet_image_key if character else None)
+        if child is not None and sheet is not None:
+            return ai_child(child), sheet
+    sheet = get_bytes(storage, template.generation.get("placeholder_key"))
+    if sheet is None:
+        raise ValueError("the template's hero sheet is missing (sample book or placeholder)")
+    return placeholder_child(parse_variant(template.variant), template_theme(template)), sheet
+
+
+async def run_template_boxes(
+    db: Session, storage: ObjectStorage, template: ClassicTemplate
+) -> dict[str, Any]:
+    """Find every hero page's figure and head boxes again (hero_box v2: a labelled grid, the page's outfit,
+    the head box). For templates whose boxes came from the first, coarse search. The art is not touched, so
+    the template keeps its status; `boxes_refreshed` asks an editor to glance at the boxes in the studio."""
+    offline = template.generation.get("offline") or False
+    rt = make_runtime(ai_settings(resolved_settings(db), get_settings(), offline=offline))
+    rt.on_cost = TemplateCostSink(db, template)
+    rt.budget = Budget(cap_usd=BOX_REFRESH_BUDGET_USD)
+    hero, sheet = template_hero(db, storage, template)
+    found = await find_boxes(db, storage, rt, template, hero, sheet, refresh=True)
+    _set_flags_on(template, ["boxes_refreshed"])
+    template.job, template.error = TemplateJob.idle, None
+    db.commit()
+    return {"status": template.status.value, "boxes": found, "cost_usd": float(template.cost_usd or 0)}
+
+
 # ---- the identity portrait -----------------------------------------------------------------------------
 
 
@@ -515,9 +568,10 @@ async def ensure_portrait(
             ChildPortrait.child_id == child.id, ChildPortrait.art_style == book.art_style
         )
     )
-    stored = get_bytes(storage, row.image_key if row else None)
+    current = row is not None and (row.params or {}).get("prompt") == PORTRAIT_PROMPT_ID
+    stored = get_bytes(storage, row.image_key if row and current else None)
     if stored is not None:
-        return stored
+        return stored  # an older portrait (classic_portrait.v1 painted arches and lanterns) is painted again
     source = portrait_source(db, storage, book, child)
     if source is None:
         raise LookupError("no character sheet or photo to paint the portrait from")
@@ -531,6 +585,7 @@ async def ensure_portrait(
     row.provider = str(image.params.get("provider", rt.image.name))[:32]
     row.model = str(image.params.get("model", rt.image.model))[:100]
     row.params = {
+        "prompt": PORTRAIT_PROMPT_ID,
         "seed": image.params.get("seed"),
         "likeness": qa.likeness if qa else None,
         "notes": (qa.notes if qa else "unchecked")[:200],
@@ -1005,6 +1060,11 @@ def synthetic_face(key: str, spec: dict[str, Any]) -> dict[str, Any]:
         )
         db.commit()
         return {"key": key, "usd": image.cost.usd}
+
+
+def template_boxes(template_id: str) -> dict[str, Any]:
+    """Admin: find the template's hero boxes again (figure + head)."""
+    return _template_entry(template_id, run_template_boxes)
 
 
 def vowelize_template(template_id: str, refresh: bool = False) -> dict[str, Any]:

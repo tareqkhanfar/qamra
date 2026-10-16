@@ -385,6 +385,20 @@ olive-season spend, because the olive templates will be the same kind (made from
 - **Fix before any olive spend:** the edit must keep the page's palette and add nothing, so it should not get the style's mood paragraph.
 - **Live Classic orders hit the same problem today.**
 
+**Fix (2026-10-16, branch `worktree-agent-a284ca24a231be358`, not deployed): see §6.8.** Three causes, not one:
+
+1. The edit prompt carried the watercolor guide (violet, lanterns, leaves) → `classic_edit.v2` has no style text.
+2. The **identity portrait** carried it too: the proof child's stored portrait has a violet arch, lanterns and
+   leaves, and klein copied them from it → `classic_portrait.v2` (medium only, plain cream background); a v1
+   portrait is painted again on the child's next Classic book (≈ $0.016).
+3. The whole crop was pasted back, and klein repaints all of it (it also returned some crops zoomed in by up to
+   27%) → only the head and hair are blended back (aligned, colour-matched, soft mask); clothes and scene stay
+   the template's.
+
+And the boxes: the stored boxes are coarse round guesses from Haiku (graduation girl: `{x .35, y .25, w .3,
+h .55}` on half the pages); page 3's is on a background child, page 1's misses the hero's head. → `hero_box.v2`
+(a labelled grid, the page's outfit, a head box, the main model) and `POST …/templates/{id}/boxes`.
+
 ### 6.5 (b) + (c) olive-season × watercolor × girl, girl_hijab, boy, each from a Magic sample book
 
 **Recommendation: make each template from an approved Magic sample book of an invented child.** All 7 live
@@ -433,6 +447,50 @@ Per look, in this order: girl first (the hardest review; her words serve girl_hi
 - **Spend:** read it per step with the SQL in §4.3 and
   `SELECT step, count(*), sum(usd) FROM generation_costs WHERE book_id = '<id>' GROUP BY 1;`.
   Add each row to the spend ledger.
+
+### 6.8 2026-10-16: the Classic edit fix and how to prove it on the server
+
+**What changed** (code; nothing deployed, nothing changed on the server):
+
+| Area | Before | Now |
+|---|---|---|
+| Edit prompt | `classic_edit.v1` with the full style guide | `classic_edit.v2`: face and all the hair only; keep clothes, accessories, whatever is on the head, pose and gaze; add nothing; the page's own palette and simple face drawing; image 2 is identity only |
+| Portrait | `classic_portrait.v1` with the style guide (arches, lanterns) | `classic_portrait.v2`: the style's medium line only, plain cream background, white top; v1 portraits are redrawn once (`child_portraits.params.prompt`); the free cover ignores v1 portraits |
+| Crop | the figure box + 15% | the head box grown (`HEAD_GROW`), sizes in multiples of 32 (klein's own) |
+| Paste | the whole crop with a feathered rectangle | `classic_blend.blend_head`: align (affine, ≤ 45% zoom), Lab mean/std match in a ring around the head, a soft rounded head mask grown over hair that changed (old ponytail gone, new curls), gated by the hair colour; never past the crop or the edit's real pixels |
+| Hero boxes | Haiku, bare page, figure only | `hero_box.v2` on the main model: a labelled 10% grid, the page's outfit, figure + head box (≈ $0.012 a page, once) |
+| Re-finding boxes | not possible on locked pages | `POST /api/admin/classic/templates/{id}/boxes` (job `template_boxes`, cap $0.60): every hero page, locked too; status unchanged; flag `boxes_refreshed` |
+
+**Local proof** (real klein on fal, fake QA; the template's print pages and the proof child's face downloaded
+read-only from the server): cover + pages 1, 2, 3, 6. Boxes: figure and head read off the gridded pages by hand,
+the way `hero_box.v2` is asked for them (page 3 on the right child). Side-by-sides in the scratchpad
+`olive/fix/pair*.jpg` (template | edit) and `close*.jpg` (the head region).
+
+- **No rectangle, no violet, nothing added, the gown and cap stay the template's** on all five.
+- The face is drawn a little more detailed than the classmates (freckles, finer eyes). Parents see their child;
+  an illustrator would notice.
+- **klein varies:** across the tuning rounds it once added a beret (twice before the "bare head" line), once
+  drew a broken face (page 6, a one-eyed tilt). The page QA (`anatomy`, `same_scene`, likeness) and one redraw
+  handle that: the redraw of page 6 was clean.
+- **Template issue, not the edit:** graduation page 1 shows the hero in a mirror; the reflection keeps the
+  template's child. That page needs a template redraw (no face in the mirror) or a second head box.
+- Small leftovers seen at 100% zoom: page 2's tassel came back shorter; a soft double edge on the shutter
+  next to the cap.
+- Spend: $0.351 (1 portrait + 24 klein edits over 7 rounds), ledger rows `classic-fix:*`.
+
+**After deploy, in this order** (the Q helper of §6.2):
+
+1. Find the boxes again on the 7 live templates, one first:
+   `Q post /api/admin/classic/templates/2e561063-98b8-459a-aa8b-0a80084e60d2/boxes` (graduation × girl),
+   `Q wait-template 2e561063-…`, then look at the boxes in the studio. ≈ $0.20 a template, $1.40 for all 7
+   (Anthropic). **Do this right after the deploy:** with the old coarse boxes the head is guessed from the
+   figure box and misses (page 1's guess lands on the wall), so books would come back unchanged and flagged.
+2. Set «ميزانية كتاب كلاسيك» to **2.50₪** (≈ $0.67). A book is ≈ $0.31 for the first pass (portrait $0.016 +
+   17 × (klein $0.0145 + Haiku QA $0.0025)) and ≈ $0.40 with the expected redraws; a full redraw round is
+   $0.60, which 2₪ ($0.54) cuts short (the failed proof stopped there with 3 pages skipped).
+3. The proof: `Q sample classic '{"theme":"graduation","name":"ريم","gender":"f","age":5,"style":"watercolor","mode":"final"}' '{"gender":"f","age":5,"skin":"fair","hair":"light brown wavy","top":"pink","seed":15}'`
+   (≈ $0.08 face + ≈ $0.40), `Q wait-book <id>`, then the pages and their QA (§6.4 a3). Pass: no `seams`
+   flags on more than 2 pages, every page one hero with likeness ≥ 7.
 
 ### 6.7 `qamra_admin.py` (the in-process admin helper of §6.2; not part of the repo)
 

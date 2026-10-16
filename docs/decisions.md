@@ -1040,6 +1040,26 @@ The owner approved the likeness trial's direction. What was built, and the choic
   the earlier samples were (never a real child's photo). A watercolor reference may pull a little of its look
   into other styles; the new semi-realistic portrait still came out as a painted, realistic face.
 
+## The Classic hero edit only takes the head (2026-10-16)
+
+- **The edit gets no style text.** The page it edits is the style. The style guides are written for new art
+  (v3 watercolor asks for violet shadows and framing lanterns); the templates predate them, and klein followed the
+  words over the picture. The identity portrait gets the medium line only, for the same reason: klein copies its
+  reference's background too.
+- **Only the head and hair come back.** klein repaints its whole crop, drifts in colour and sometimes zooms. The
+  head crop is aligned (an affine ECC fit, accepted only when plausible: ≤ 45% zoom, no shear) and colour-matched
+  in a ring around the head; the mask is the head box, grown over hair that changed and is hair-coloured before
+  or after (an old ponytail, new curls), not over a companion's arm or a window. Clothes stay the template's
+  even when klein recolours them. Hands keep the template's skin (only the neck is in the mask): a mismatch there
+  showed less than a second pasted area would.
+- **Boxes from the main model on a grid.** A head box is now needed, and Haiku's boxes were round guesses (one on
+  the wrong child). Sonnet with a labelled 10% grid and the page's outfit, once per template page (≈ $0.012). A
+  template without a head box still works: the head is taken as the top 42% of the figure box, which is only as
+  good as that box.
+- **The page QA stays as it is** (`classic_qa.v1`): it already flags seams, scene changes and broken faces, and one
+  automatic redraw follows. The proposed Classic cap is 2.50₪ (a full redraw round fits); the default stays 2₪
+  until the owner sets it.
+
 ## The browser gets only the messages its page needs (2026-10-16)
 
 - **An allowlist, not a denylist:** `src/lib/clientMessages.ts` lists the namespaces client components outside

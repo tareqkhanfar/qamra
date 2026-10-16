@@ -252,7 +252,7 @@ async def test_a_whole_book_fits_two_shekels(settings: Settings) -> None:
 async def test_hero_box_and_portrait_with_fakes(settings: Settings, face_png: bytes) -> None:
     rt = _rt(settings, PricedEdits())
     box = await find_hero_box(rt, _page_png(), face_png, _child(), "scene", step="qa:1:box")
-    assert box == HeroBox(0.3, 0.3, 0.35, 0.6)
+    assert box == HeroBox(0.3, 0.3, 0.35, 0.6, HeroBox(0.35, 0.3, 0.25, 0.22))  # the figure and its head
     portrait, qa = await make_portrait(rt, _child(), load_style("watercolor"), face_png, from_sheet=False)
     assert qa is not None and qa.likeness == 9 and Image.open(io.BytesIO(portrait.data)).size == (768, 768)
 
@@ -267,3 +267,50 @@ def test_classic_text_fills_the_name_and_the_gender_forms() -> None:
     assert len(girl.parents_questions) == 2 and "ليان" in girl.blurb and "نحبُّكِ" in girl.dedication
     english = classic_story(theme, Child(name="Layan", gender="f", age=5), "en", "Qamour")
     assert english.title == "Layan's Graduation Day" and "we love you" in english.dedication
+
+
+async def test_the_edit_and_portrait_prompts_carry_no_style_mood(settings: Settings, face_png: bytes) -> None:
+    """The violet patches of 2026-10-16: the watercolor guide's mood (indigo and violet shadows, leaves,
+    arches, lanterns) made the edit restyle its crop. The edit gets no style text at all; the portrait only
+    the medium."""
+    style = load_style("watercolor")
+    image = PricedEdits()
+    rt = _rt(settings, image)
+    await edit_pages(rt, _ctx(), _jobs(1))
+    await make_portrait(rt, _child(), style, face_png, from_sheet=False)
+    edit = next(r for r in image.requests if r.step.startswith("hero:"))
+    portrait = next(r for r in image.requests if r.step.startswith("portrait:"))
+    for req in (edit, portrait):
+        assert not any(word in req.prompt for word in ("indigo", "violet", "golden-hour"))
+        assert style.guide.split(":", 1)[1].strip()[:40] not in req.prompt  # the mood after the medium
+    assert (
+        "Premium watercolor and gouache" in portrait.prompt
+        and "plain flat cream background" in portrait.prompt
+    )
+    assert "Premium watercolor" not in edit.prompt and "keep the hijab of image 1 exactly" in edit.prompt
+    assert "image 1's own palette" in edit.prompt
+
+
+async def test_the_edit_crops_the_head_not_the_figure(settings: Settings) -> None:
+    image = PricedEdits()
+    rt = _rt(settings, image)
+    head = HeroBox(0.4, 0.2, 0.2, 0.15)
+    await edit_pages(rt, _ctx(), [PageJob(1, _page_png(), HeroBox(0.3, 0.2, 0.4, 0.7, head), "s")])
+    req = image.requests[0]
+    assert req.size is not None and req.size[0] % 32 == 0 and req.size[1] % 32 == 0  # what klein draws
+    with Image.open(io.BytesIO(req.refs[0].data)) as crop:
+        assert crop.size == req.size
+    # the crop is the head grown by HEAD_GROW, far smaller than the figure box with its margin
+    w, h = 0.2 * (1 + 0.6 + 0.6) * 1200, 0.15 * (1 + 0.5 + 0.8) * 1200
+    assert abs(req.size[0] / req.size[1] - w / h) < 0.08
+
+
+async def test_hero_boxes_are_read_off_a_grid_by_the_main_model(settings: Settings, face_png: bytes) -> None:
+    rt = _rt(settings, PricedEdits())
+    box = await find_hero_box(
+        rt, _page_png(), face_png, _child(), "scene", step="qa:1:box", outfit="a sage-green gown"
+    )
+    assert box is not None and box.head is not None
+    call = rt.text.calls[-1]  # type: ignore[attr-defined]
+    assert call["model"] == settings.text_model and "a sage-green gown" in call["system"]
+    assert "grid" in call["system"] and any("grid" in p for p in call["user"] if isinstance(p, str))

@@ -119,6 +119,20 @@ async def test_review_lock_and_publish(
     }  # percent
     bad = await client.patch(f"{base}/pages/3", json={"hero_box": {"x": 0.5, "y": 0.5, "w": 0.0, "h": 0.2}})
     assert bad.status_code == 422
+    page3 = (
+        await adb.execute(
+            select(ClassicTemplatePage).where(
+                ClassicTemplatePage.template_id == t.id, ClassicTemplatePage.beat == 3
+            )
+        )
+    ).scalar_one()
+    head = {"x": 0.15, "y": 0.22, "w": 0.15, "h": 0.12}
+    page3.hero_box = {**page3.hero_box, "head": head}
+    await adb.commit()
+    r = await client.patch(f"{base}/pages/3", json={"hero_box": {"x": 0.12, "y": 0.2, "w": 0.3, "h": 0.6}})
+    assert r.json()["hero_box"]["head"] == head  # a moved figure box keeps the head still inside it
+    r = await client.patch(f"{base}/pages/3", json={"hero_box": {"x": 0.6, "y": 0.3, "w": 0.3, "h": 0.6}})
+    assert "head" not in r.json()["hero_box"]  # a head left outside is dropped (estimated from the figure)
 
     page1 = (
         await adb.execute(
@@ -163,6 +177,13 @@ async def test_review_lock_and_publish(
     assert r.status_code == 200 and r.json()["locked"] is False
     refreshed = (await client.get(base)).json()
     assert refreshed["status"] == "in_review" and "changed_after_approval" in refreshed["flags"]
+
+    # finding the hero boxes again (figure + head) is a template job; the art does not change
+    queued = await client.post(f"{base}/boxes")
+    assert queued.status_code == 202 and queued.json()["status"] == "in_review"
+    job = _queue(app).jobs[-1]
+    assert job.func_name == "qamra_worker.jobs.classic.template_boxes" and job.args == (str(t.id),)
+    assert (await client.post(f"{base}/boxes")).status_code == 409  # still queued
 
 
 async def _sample_book(adb: AsyncSession, theme: ThemeRow, admin_email: str, **over: object) -> Book:

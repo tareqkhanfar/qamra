@@ -4,20 +4,21 @@
   placeholder hero (`placeholder_request`). The hero's box on each page is found once by the fast vision
   model (`find_hero_box`).
 - Per child: one identity portrait in the book's style, a klein edit of the character sheet or photo.
-- Per book: every page with the hero is cropped around the hero box, edited with FLUX.2 [klein] 4B (the crop
-  plus the portrait), pasted back with a feathered edge and checked by the fast model (likeness, seams,
-  stray text). Every page gets its first edit before any page is redrawn, so a tight budget is spent evenly.
+- Per book: every page with the hero is cropped around the hero's head, edited with FLUX.2 [klein] 4B (the
+  crop plus the portrait, with no style text: the page itself is the style), and only the head and hair are
+  blended back, colour-matched, through a soft mask (`classic_blend`); the clothes and the rest of the page
+  stay the template's. The fast model checks each page (likeness, seams, stray text). Every page gets its
+  first edit before any page is redrawn, so a tight budget is spent evenly.
 - Text comes from the theme's page templates: the name and gender forms are filled in, no AI call.
 """
 
 import asyncio
-import io
 import json
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from decimal import ROUND_DOWN, Decimal
 
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 from pydantic import BaseModel
 
 from qamra_ai import prompts
@@ -25,12 +26,14 @@ from qamra_ai.cost import fal_cost, fal_unknown_price
 from qamra_ai.errors import ContentBlocked, InvalidOutput, ProviderConfigError, ProviderError, QamraError
 from qamra_ai.image.base import GeneratedImage, ImageRequest, RefImage, sniff_mime
 from qamra_ai.pipeline.budget import BudgetExceeded
+from qamra_ai.pipeline.classic_blend import HEAD_FEATHER, blend_head
 from qamra_ai.pipeline.classic_geometry import (
     FEATHER,
     HeroBox,
     Rect,
-    crop_rect,
     edit_size,
+    head_crop_rect,
+    head_of,
     normalize_box,
     open_rgb,
     paste_back,
@@ -52,6 +55,13 @@ PORTRAIT_PX = 768  # the identity portrait (≈0.56 MP: a klein edit of about $0
 PORTRAIT_REF_PX = 512  # what each hero edit gets of it (0.25 MP of billed input)
 QA_PX = 640
 CLASSIC_REDRAWS = 1  # automatic redraws per page, after every page had its first edit
+EDIT_PROMPT = 2  # classic_edit.v2: no style guide (v1 carried it, and the edit restyled its crop)
+PORTRAIT_PROMPT = 2  # classic_portrait.v2: a plain portrait, no style mood (v1 painted arches and lanterns)
+PORTRAIT_PROMPT_ID = f"classic_portrait.v{PORTRAIT_PROMPT}"
+HERO_BOX_PROMPT = 2  # hero_box.v2: on a labelled grid, with the head box and the page's outfit
+BOX_PX = 1024
+SEAM_SOFTER = 1.6  # a redraw after a seam: the mask's soft edge this much wider
+GRID_STEPS = 10
 LIKENESS_MIN = 7
 _DRAW_ERRORS = (ContentBlocked, ProviderError, ProviderConfigError, InvalidOutput)
 DEDICATION: dict[Lang, str] = {
@@ -90,10 +100,15 @@ def placeholder_child(variant: Variant, theme: Theme) -> Child:
 
 class HeroBoxOut(BaseModel):
     found: bool
+    clues: str = ""  # how the hero was told apart (written first, before the numbers)
     x: float
     y: float
     w: float
     h: float
+    head_x: float | None = None
+    head_y: float | None = None
+    head_w: float | None = None
+    head_h: float | None = None
     notes: str = ""
 
 
@@ -150,6 +165,16 @@ def evaluate_classic(qa: ClassicQA, *, likeness_min: int, threshold: float) -> Q
 # ---- image requests ------------------------------------------------------------------------------------
 
 
+def medium_line(style: ArtStyle) -> str:
+    """The style's medium only: the guide's first clause («Premium watercolor and gouache children's
+    picture-book painting on warm textured paper»), without its palette, light and framing mood."""
+    first = style.guide.strip().split("\n\n", 1)[0].replace("\n", " ")
+    for stop in (":", ". "):
+        if stop in first:
+            first = first.split(stop, 1)[0]
+    return first.strip().rstrip(".")
+
+
 def placeholder_request(variant: Variant, style: ArtStyle, theme: Theme, seed: int) -> ImageRequest:
     """Text to image: the neutral placeholder hero's reference sheet for one template variant."""
     h = house_for(style)
@@ -173,8 +198,9 @@ def portrait_request(
 ) -> ImageRequest:
     prompt = prompts.render(
         "classic_portrait",
+        version=PORTRAIT_PROMPT,
         from_sheet=from_sheet,
-        medium=style.guide,
+        medium=medium_line(style),
         glasses=child.glasses,
         gender=child.gender,
         age=child.age,
@@ -212,14 +238,14 @@ def hero_edit_request(
 ) -> ImageRequest:
     c = ctx.child
     prompt = prompts.render(
-        "classic_edit", medium=ctx.style.guide, hijab=c.hijab, glasses=c.glasses, gender=c.gender, age=c.age
+        "classic_edit", version=EDIT_PROMPT, hijab=c.hijab, glasses=c.glasses, gender=c.gender, age=c.age
     )
     label = "cover" if beat == 0 else str(beat)
     return ImageRequest(
         step=f"hero:{label}:a{attempt}",
         prompt=prompt,
         refs=[
-            RefImage(crop, "image/png", "the picture-book page to edit"),
+            RefImage(crop, "image/png", "the picture-book page to edit (around the hero's head)"),
             RefImage(ctx.portrait_ref, "image/jpeg", f"the child who becomes the hero ({ctx.ref_label})"),
         ],
         size=size,
@@ -230,33 +256,77 @@ def hero_edit_request(
 # ---- the fast vision model: hero box, portrait check ------------------------------------------------
 
 
-async def find_hero_box(
-    rt: Runtime, page: bytes, sheet: bytes, child: Child, scene: str, *, step: str
-) -> HeroBox | None:
-    """The hero's box on a template page, asked once of the fast vision model (docs/decisions.md).
+def with_grid(page: bytes, px: int = BOX_PX, steps: int = GRID_STEPS) -> tuple[bytes, int, int]:
+    """(the page as a JPEG of at most `px`, with a labelled 10 % grid, its width, its height).
 
-    The image model returns no layout data, so the box is found on the finished page: the hero's reference
-    sheet tells the hero apart from classmates. The answer is normalized and clipped; the crop margin absorbs
-    a few percent of error, and an editor can move the box in the template studio.
+    Vision models place boxes much more precisely when they can read positions off a ruler than when they
+    guess fractions of a bare picture (the first boxes were coarse, round guesses, one on the wrong child)."""
+    img = open_rgb(downscale(page, px))
+    w, h = img.size
+    layer = Image.new("RGBA", img.size, (0, 0, 0, 0))
+    draw = ImageDraw.Draw(layer)
+    size = max(11, min(w, h) // 48)
+    font = ImageFont.load_default(size=size)
+    for i in range(1, steps):
+        x, y = round(w * i / steps), round(h * i / steps)
+        draw.line((x, 0, x, h), fill=(255, 0, 160, 110), width=1)
+        draw.line((0, y, w, y), fill=(255, 0, 160, 110), width=1)
+        label = str(i * 100 // steps)
+        for xy in ((x + 2, 2), (2, y + 2), (x + 2, h - size - 4), (w - size * 2 - 4, y + 2)):
+            box = draw.textbbox(xy, label, font=font)
+            draw.rectangle(box, fill=(255, 255, 255, 200))
+            draw.text(xy, label, fill=(200, 0, 120, 255), font=font)
+    out = Image.alpha_composite(img.convert("RGBA"), layer).convert("RGB")
+    return to_jpeg(out, quality=88, dpi=None), w, h
+
+
+async def find_hero_box(
+    rt: Runtime,
+    page: bytes,
+    sheet: bytes,
+    child: Child,
+    scene: str,
+    *,
+    step: str,
+    outfit: str = "",
+) -> HeroBox | None:
+    """The hero's figure and head boxes on a template page, asked once per page (docs/decisions.md).
+
+    The image model returns no layout data, so the boxes are found on the finished page: the hero's
+    reference sheet and the page's outfit tell the hero apart from classmates, and a labelled grid lets the
+    model read the position instead of guessing it. Asked of the main model (a one-time cost per template
+    page, ≈ $0.01): the fast model's boxes were coarse and once on the wrong child. The answer is normalized
+    and clipped; an editor can still move the box in the template studio.
     """
-    small = await asyncio.to_thread(downscale, page, 1024)
-    with Image.open(io.BytesIO(small)) as im:
-        width, height = im.size
+    gridded, width, height = await asyncio.to_thread(with_grid, page)
     system = prompts.render(
-        "hero_box", gender=child.gender, hijab=child.hijab, width=width, height=height, scene=scene
+        "hero_box",
+        version=HERO_BOX_PROMPT,
+        gender=child.gender,
+        hijab=child.hijab,
+        scene=scene,
+        outfit=outfit,
     )
     user: list[UserPart] = [
         "Image 1: the hero's character reference sheet.",
         ImagePart(await asyncio.to_thread(downscale, sheet, 768), "image/jpeg"),
-        "Image 2: the page.",
-        ImagePart(small, "image/jpeg"),
+        "Image 2: the page, with a grid labelled in percent of its width (x) and height (y).",
+        ImagePart(gridded, "image/jpeg"),
     ]
     answer = await rt.ask(
-        step=step, system=system, user=user, schema=HeroBoxOut, fast=True, kind="check", max_tokens=600
+        step=step, system=system, user=user, schema=HeroBoxOut, kind="check", effort="low", max_tokens=1200
     )
     if not answer.found:
         return None
-    return normalize_box(answer.x, answer.y, answer.w, answer.h, width=width, height=height)
+    figure = normalize_box(answer.x, answer.y, answer.w, answer.h, width=width, height=height)
+    if figure is None:
+        return None
+    head = None
+    if None not in (answer.head_x, answer.head_y, answer.head_w, answer.head_h):
+        head = normalize_box(
+            answer.head_x, answer.head_y, answer.head_w, answer.head_h, width=width, height=height
+        )
+    return figure.with_head(head)
 
 
 class PortraitQA(BaseModel):
@@ -360,13 +430,21 @@ def _rank(c: Candidate) -> tuple[float, ...]:
     return (float(v.passed), float(qa.safe if qa else True), -hard, v.score)
 
 
-def _prepare(template: bytes, box: HeroBox | None) -> tuple[Rect, bytes, tuple[int, int]]:
-    """(crop rectangle, the crop sized for the model as PNG, that size)."""
+def _prepare(template: bytes, box: HeroBox | None) -> tuple[Rect, Rect | None, bytes, tuple[int, int]]:
+    """(crop rectangle, the head's rectangle (None: no box, the whole page), the crop sized for the model
+    as PNG, that size). The crop is the hero's head with room around it, not the whole figure: the clothes
+    are never sent to be repainted, and the face gets more of the model's pixels."""
     page = open_rgb(template)
-    rect = crop_rect(box, page.width, page.height) if box is not None else (0, 0, page.width, page.height)
+    if box is None:
+        rect: Rect = (0, 0, page.width, page.height)
+        head = None
+    else:
+        hbox = head_of(box)
+        rect = head_crop_rect(hbox, page.width, page.height)
+        head = hbox.rect(page.width, page.height)
     size = edit_size(rect[2] - rect[0], rect[3] - rect[1])
     crop = page.crop(rect).resize(size, Image.Resampling.LANCZOS)
-    return rect, to_png(crop), size
+    return rect, head, to_png(crop), size
 
 
 def _grow(rect: Rect, width: int, height: int, frac: float = 0.06) -> Rect:
@@ -374,10 +452,18 @@ def _grow(rect: Rect, width: int, height: int, frac: float = 0.06) -> Rect:
     return (max(0, rect[0] - dx), max(0, rect[1] - dy), min(width, rect[2] + dx), min(height, rect[3] + dy))
 
 
-def _compose(template: bytes, edited: bytes, rect: Rect, feather: float) -> tuple[bytes, bytes, bytes]:
-    """(finished print page JPEG, the region before, the region after) — the last two small, for QA."""
+def _compose(
+    template: bytes, edited: bytes, rect: Rect, head: Rect | None, soft: float
+) -> tuple[bytes, bytes, bytes]:
+    """(finished print page JPEG, the region before, the region after) — the last two small, for QA.
+
+    With a head: only the head and hair are blended in (`classic_blend`). Without a box (flagged
+    `whole_page_edit`) the whole edited page replaces the template, as before."""
     page = open_rgb(template)
-    out = paste_back(page, open_rgb(edited), rect, feather)
+    if head is None:
+        out = paste_back(page, open_rgb(edited), rect, FEATHER * soft)
+    else:
+        out, _ = blend_head(page, open_rgb(edited), rect, head, HEAD_FEATHER * soft)
     view = _grow(rect, page.width, page.height)
     before = page.crop(view)
     after = out.crop(view)
@@ -399,10 +485,10 @@ def qa_parts(ctx: ClassicContext, before: bytes, after: bytes, brief: str) -> li
 
 
 async def _attempt(
-    rt: Runtime, ctx: ClassicContext, job: PageJob, res: HeroEdit, n: int, why: Why | None, feather: float
+    rt: Runtime, ctx: ClassicContext, job: PageJob, res: HeroEdit, n: int, why: Why | None, soft: float
 ) -> Candidate | None:
-    """One klein edit + paste + QA. Provider errors are recorded on the attempt; a budget stop propagates."""
-    rect, crop, size = await asyncio.to_thread(_prepare, job.template, job.box)
+    """One klein edit + blend + QA. Provider errors are recorded on the attempt; a budget stop propagates."""
+    rect, head, crop, size = await asyncio.to_thread(_prepare, job.template, job.box)
     req = hero_edit_request(ctx, job.beat, crop, size, n)
     record = Attempt(attempt=n, seed=req.seed, why=why)
     res.attempts.append(record)
@@ -414,7 +500,7 @@ async def _attempt(
         record.error = f"{type(e).__name__}: {str(e)[:200]}"
         return None
     record.fallback = "fallback_from" in image.params
-    page, before, after = await asyncio.to_thread(_compose, job.template, image.data, rect, feather)
+    page, before, after = await asyncio.to_thread(_compose, job.template, image.data, rect, head, soft)
     label = "the front cover" if job.beat == 0 else f"page {job.beat}"
     c = ctx.child
     brief = prompts.render(
@@ -489,14 +575,14 @@ async def edit_pages(
     best: dict[int, Candidate | None] = {j.beat: None for j in jobs}
     sem = asyncio.Semaphore(max(1, rt.settings.image_concurrency))
 
-    async def run(job: PageJob, n: int, why: Why | None, feather: float) -> None:
+    async def run(job: PageJob, n: int, why: Why | None, soft: float) -> None:
         res = results[job.beat]
         async with sem:
             if rt.budget is not None and rt.budget.exceeded:
                 res.flags.append("budget")
                 return
             try:
-                candidate = await _attempt(rt, ctx, job, res, n, why, feather)
+                candidate = await _attempt(rt, ctx, job, res, n, why, soft)
             except BudgetExceeded:
                 res.flags.append("budget")
                 return
@@ -513,8 +599,8 @@ async def edit_pages(
     first_why: Why | None = "manual" if manual else None
     cover = [j for j in jobs if j.beat == 0]
     if cover:  # the cover first: a book cannot be put together without it, whatever the budget allows
-        await run(cover[0], cover[0].first_attempt, first_why, FEATHER)
-    await asyncio.gather(*(run(j, j.first_attempt, first_why, FEATHER) for j in jobs if j.beat != 0))
+        await run(cover[0], cover[0].first_attempt, first_why, 1.0)
+    await asyncio.gather(*(run(j, j.first_attempt, first_why, 1.0) for j in jobs if j.beat != 0))
     pending = []
     for job in jobs:
         cand = best[job.beat]
@@ -529,17 +615,17 @@ async def edit_pages(
         if not pending:
             break
 
-        def feather_for(job: PageJob) -> float:
+        def softness_for(job: PageJob) -> float:  # a seam seen: a wider soft edge on the redraw
             cand = best[job.beat]
             seams = cand is not None and cand[2] is not None and "seams" in cand[2].flags
-            return FEATHER * 1.6 if seams else FEATHER
+            return SEAM_SOFTER if seams else 1.0
 
         def why_for(job: PageJob) -> Why:
             return "error" if best[job.beat] is None else "qa"
 
         await asyncio.gather(
             *(
-                run(j, j.first_attempt + len(results[j.beat].attempts), why_for(j), feather_for(j))
+                run(j, j.first_attempt + len(results[j.beat].attempts), why_for(j), softness_for(j))
                 for j in pending
             )
         )

@@ -42,6 +42,7 @@ from qamra_worker.jobs.classic import (
     classic_redraw_pages,
     classic_rerender,
     ensure_texts,
+    run_template_boxes,
     run_template_from_book,
     run_template_job,
     setup_classic,
@@ -123,7 +124,9 @@ async def test_a_generated_template(db: Session, storage: ObjectStorage) -> None
     assert sorted(pages) == list(range(18))
     assert all(p.image_key and p.preview_key and storage.exists(p.image_key) for p in pages.values())
     assert pages[7].has_hero is False and pages[7].hero_box is None  # the empty hall: no hero
-    assert pages[1].hero_box == {"x": 0.3, "y": 0.3, "w": 0.35, "h": 0.6}  # the fake vision model's box
+    assert pages[1].hero_box == {  # the fake vision model's figure and head boxes
+        "x": 0.3, "y": 0.3, "w": 0.35, "h": 0.6, "head": {"x": 0.35, "y": 0.3, "w": 0.25, "h": 0.22}
+    }  # fmt: skip
     assert pages[4].text_box is None and pages[1].text_box and pages[1].text_box["area"] == "top"
     assert t.generation["placeholder_key"] and t.generation["seed"]
     steps = {
@@ -186,6 +189,19 @@ async def test_a_template_from_an_approved_sample_book(db: Session, storage: Obj
     assert t.generation["source_cost_usd"] == 1.9 and t.generation["seed"] == 5
     assert not any(k.startswith(f"children/{child.id}") for p in pages.values() for k in [p.image_key or ""])
 
+    # the boxes found again (hero_box v2, e.g. for a live template): the art and the status stay
+    pages[1].hero_box = {"x": 0.1, "y": 0.1, "w": 0.2, "h": 0.3}  # an old, coarse box without a head
+    pages[1].locked = True
+    t.status = TemplateStatus.live
+    db.commit()
+    result = await run_template_boxes(db, storage, t)
+    assert result["boxes"] == sum(p.has_hero for p in pages.values()) and result["status"] == "live"
+    db.refresh(pages[1])
+    assert pages[1].hero_box["head"] == {"x": 0.35, "y": 0.3, "w": 0.25, "h": 0.22}  # a locked page too
+    assert "boxes_refreshed" in t.flags and t.job.value == "idle"
+    boxes = select(GenerationCost).where(GenerationCost.step.like("tpl:qa:%:box"))
+    assert db.scalars(boxes).first() is not None  # a one-time template cost
+
 
 async def _live_template(
     db: Session, storage: ObjectStorage, theme: ThemeRow, variant: str
@@ -219,7 +235,7 @@ async def test_a_classic_book_preview_then_final(db: Session, storage: ObjectSto
     assert pages[1].text.startswith("اَلْيَوْمَ") and "text_not_vowelized" not in book.flags  # vowelized once
     portrait = db.scalar(select(ChildPortrait).where(ChildPortrait.child_id == child.id))
     assert portrait is not None and portrait.image_key.startswith(f"children/{child.id}/")
-    assert portrait.source == "photo"
+    assert portrait.source == "photo" and portrait.params["prompt"] == "classic_portrait.v2"
     photos = db.scalars(select(ChildPhoto).where(ChildPhoto.child_id == child.id)).all()
     assert all(p.delete_after is not None for p in photos)  # the photo did its job: deletion scheduled
 
@@ -241,7 +257,16 @@ async def test_a_classic_book_preview_then_final(db: Session, storage: ObjectSto
     }
     assert {"portrait", "hero", "qa"} <= steps
 
+    # a portrait from classic_portrait.v1 (painted arches and lanterns) is painted again before new edits
+    portrait.params = {"seed": 1}
+    db.commit()
+    painted = select(GenerationCost).where(
+        GenerationCost.book_id == book.id, GenerationCost.step.like("portrait:%")
+    )
+    before = len(db.scalars(painted).all())
     redone = await classic_redraw_pages(db, storage, book, [2, 7])  # page 7 has no hero: nothing to redo
+    db.refresh(portrait)
+    assert len(db.scalars(painted).all()) == before + 1 and portrait.params["prompt"] == "classic_portrait.v2"
     assert redone["redrawn"] == [2] and redone["status"] == "in_review"
     page2 = _pages(db, book)[2]
     assert (

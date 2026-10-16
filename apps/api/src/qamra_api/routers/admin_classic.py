@@ -20,7 +20,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from qamra_ai.pipeline.classic import VARIANTS, classic_budget_usd, parse_variant, variant_for
-from qamra_ai.pipeline.classic_geometry import normalize_box
+from qamra_ai.pipeline.classic_geometry import HeroBox, normalize_box
 from qamra_ai.pipeline.theme import Theme
 from qamra_ai.pipeline.vowelize import source_hash, sources, with_current_texts
 from qamra_api import runtime_settings
@@ -55,6 +55,7 @@ TEMPLATE_JOB = "qamra_worker.jobs.classic.generate_template"
 FROM_BOOK_JOB = "qamra_worker.jobs.classic.template_from_book"
 FACE_JOB = "qamra_worker.jobs.classic.synthetic_face"
 TEXTS_JOB = "qamra_worker.jobs.classic.vowelize_template"
+BOXES_JOB = "qamra_worker.jobs.classic.template_boxes"
 SAMPLE_CONSENT_VERSION = "sample-2026-09"  # the same written-consent rule as the Magic samples
 S = TemplateStatus
 MOVES: dict[TemplateStatus, tuple[TemplateStatus, ...]] = {
@@ -417,7 +418,8 @@ async def edit_page(
         box = normalize_box(body.hero_box.x, body.hero_box.y, body.hero_box.w, body.hero_box.h)
         if box is None:
             raise ApiError("invalid_input", 422, {"fields": ["hero_box"]})
-        page.hero_box = box.to_dict()
+        old = HeroBox.from_dict(page.hero_box)
+        page.hero_box = box.with_head(old.head if old else None).to_dict()  # the head, if still inside
         page.flags = [f for f in (page.flags or []) if f != "no_hero_box"]
         changes["hero_box"] = page.hero_box
     if body.has_hero is not None:
@@ -474,6 +476,24 @@ async def change_status(
     db.add(_audit(admin, "classic.template_status", t, {"from": before.value, "to": body.to.value}))
     await db.commit()
     return await _out(db, t, pages=True)
+
+
+@router.post(
+    "/templates/{template_id}/boxes", status_code=202, dependencies=[Depends(require_permission("templates"))]
+)
+async def refresh_boxes(
+    template_id: uuid.UUID, admin: AdminUser, db: SessionDep, queue: QueueDep
+) -> TemplateOut:
+    """Find every hero page's figure and head boxes again (≈ $0.01 a page on the main model). The art does
+    not change, so the template keeps its status; the studio shows the new boxes for a glance."""
+    t = await _template(db, template_id)
+    if t.job in (TemplateJob.queued, TemplateJob.running):
+        raise ApiError("busy", 409)
+    t.job = TemplateJob.queued
+    db.add(_audit(admin, "classic.template_boxes", t))
+    await db.commit()
+    enqueue(queue, BOXES_JOB, str(t.id))
+    return await _out(db, t)
 
 
 class TextsIn(BaseModel):
