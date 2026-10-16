@@ -14,7 +14,7 @@ from qamra_workbook.puzzles.coloring import Shape
 from qamra_workbook.render import draw
 from qamra_workbook.render.pages.letters import dotted_letter
 from qamra_workbook.render.pages.thinking import SHAPE_COLORS, shape_kind
-from qamra_workbook.render.pages.workbook_activity2 import MISSING, STORY
+from qamra_workbook.render.pages.workbook_activity2 import MISSING, STORY, pic_without
 from qamra_workbook.render.pages.workbook_common import (
     INK,
     W,
@@ -26,6 +26,7 @@ from qamra_workbook.render.pages.workbook_common import (
     ring_at,
     text,
 )
+from qamra_workbook.render.pages.workbook_find import ENGLISH_LETTER_WORDS
 from qamra_workbook.render.pages.workbook_math import GROUP_PICTURES, plate
 from qamra_workbook.render.pages.workbook_math2 import group_any, numeral_any
 from qamra_workbook.render.pages.workbook_pen import PAIRS, traced
@@ -395,13 +396,9 @@ def missing_task() -> Task:
         out = Drawn()
         step = box.w / 2
         size = min(step - 10, box.h - 2)
-        for k, (thing, (px, py, pw, ph), name) in enumerate(MISSING[:2]):
+        for k, (thing, cut, name) in enumerate(MISSING[:2]):
             ox, oy = box.x + box.w - (k + 1) * step + (step - size) / 2, box.y + (box.h - size) / 2
-            out.body.append(pic(thing, ox, oy, size))
-            s = size / 100
-            out.body.append(
-                draw.el("rect", x=ox + px * s, y=oy + py * s, width=pw * s, height=ph * s, fill="#FFFFFF")
-            )
+            out.body.append(pic_without(thing, cut, ox, oy, size))
             out.body.append(pic(thing, ox, oy, size, class_="key-ring"))
             out.answer.append(f"{PICTURES[thing].word_ar}: {name}")
         return out
@@ -665,18 +662,7 @@ def assessment_sections_v2(ctx: PageContext, r: random.Random) -> Drawn | None:
 
 
 # the English words of the I–R units, first for the reviews (the library also has kitchen, lunchbox…)
-ENGLISH_WORDS = {
-    "I": ("insect", "ice-cream"),
-    "J": ("jar", "jacket", "jug"),
-    "K": ("kite", "key"),
-    "L": ("lion", "leaf", "lemon"),
-    "M": ("moon", "monkey", "milk"),
-    "N": ("nest", "nose"),
-    "O": ("octopus", "olive", "orange"),
-    "P": ("parrot", "pencil", "pear"),
-    "Q": ("queen", "quilt"),
-    "R": ("rabbit", "ring", "rose"),
-}
+ENGLISH_WORDS = {c: ENGLISH_LETTER_WORDS[c] for c in "IJKLMNOPQR"}
 
 
 def circle_english(letters: list[str]) -> Task:

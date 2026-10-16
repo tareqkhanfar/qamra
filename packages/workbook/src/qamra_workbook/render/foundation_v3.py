@@ -177,7 +177,7 @@ def texts_v3(subject: str, kind: str, params: dict[str, Any], unit_title: str) -
             return (
                 "I can read",
                 "{اقْرَأْ/اقْرَئي} كُلَّ جُمْلَةٍ، ثُمَّ {صِلْها/صِليها} بِصورَتِها",
-                "Read each sentence, then match its picture.",
+                "Match each sentence to its picture.",
             )
         case "sentence-read" if params.get("personal"):
             return (

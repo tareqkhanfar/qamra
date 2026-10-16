@@ -3,23 +3,29 @@ the twin-letter writing page, the Volume 2 pen and thinking pages), its pictures
 
 import asyncio
 import dataclasses
+import random
 import re
 from pathlib import Path
 
 import pytest
 from pypdf import PdfReader
 from qamra_workbook.curriculum import load
-from qamra_workbook.pictures import LibraryStore
+from qamra_workbook.pictures import PICTURES, LibraryStore
+from qamra_workbook.pictures.model import Picture
 from qamra_workbook.render.engine import book_html, build_pages, print_pdf
 from qamra_workbook.render.foundation import volume_book
 from qamra_workbook.render.pages import (  # noqa: F401  (registers the builders)
     workbook_position,
     workbook_review2,
 )
+from qamra_workbook.render.pages.workbook_activity2 import MISSING, without
 from qamra_workbook.render.pages.workbook_common import picture_id
+from qamra_workbook.render.pages.workbook_find import AMBIGUOUS, LETTER_WORDS, NOT_A_FIRST_SOUND
 from qamra_workbook.render.pages.workbook_math2 import layout10
 from qamra_workbook.render.pages.workbook_pen2 import spiral
 from qamra_workbook.render.pages.workbook_position import position_of, word_shapes
+from qamra_workbook.render.pages.workbook_review import Box, circle_first_letter
+from qamra_workbook.render.pages.workbook_review2 import missing_task
 from qamra_workbook.render.registry import REGISTRY, Assets, PageContext
 from qamra_workbook.render.spec import BookSpec, Child, PageSpec
 from qamra_workbook.render.workbook import printed_word_problems
@@ -103,6 +109,48 @@ def test_place_words_and_the_twin_writing_page() -> None:
     assert problems
     svg, _, problems = built(one("letters-write", letters=["ر", "ز"], guided=1, independent=1))
     assert problems == [] and svg.count('class="trace-row"') == 4  # a guided and an alone row per letter
+
+
+def test_review_rows_ask_about_things_a_child_names_by_the_letter() -> None:
+    """KG2 V2 p067: six stars stood for «سِتَّة» in the س row; a row came out with one picture; a picture was
+    a wrong choice in one row and the answer in the next."""
+    page = one("unit-review", letters=["ر", "ز", "س", "ش"])
+    ctx = PageContext(page, dataclasses.replace(volume(range(0)), pages=(page,)), ASSETS)
+    seen: list[str] = []
+    original = Picture.inner
+
+    def spy(self: Picture, *args: object, **kwargs: object) -> str:
+        seen.append(self.id)
+        return original(self, *args, **kwargs)  # type: ignore[arg-type]
+
+    for seed in range(40):
+        seen.clear()
+        Picture.inner = spy  # type: ignore[method-assign]
+        try:
+            out = circle_first_letter(["ر", "ز", "س", "ش"])(ctx, Box(0, 0, 180, 120), random.Random(seed))
+        finally:
+            Picture.inner = original  # type: ignore[method-assign]
+        assert out.problems == []
+        assert len(seen) == 12 and len(set(seen)) == 12, seen  # three a row, none twice
+        assert not {s for s in seen if PICTURES[s].category in NOT_A_FIRST_SOUND or s in AMBIGUOUS}
+        answers = dict(line.split(": ") for line in out.answer)
+        for char, word in answers.items():  # the plan's own words for the letter
+            assert picture_id(word) in LETTER_WORDS[char]
+
+
+def test_the_missing_part_is_left_out_not_painted_over() -> None:
+    """KG2 V2 p111: a white box over the car's body; the table's top cut by the patch for its leg."""
+    page = one("missing-part", "thinking")
+    svg, answer, problems = built(page)
+    ctx = PageContext(page, dataclasses.replace(volume(range(0)), pages=(page,)), ASSETS)
+    review = missing_task()(ctx, Box(0, 0, 90, 60), random.Random(1))
+    for drawn in (svg, "".join(review.body)):
+        assert not re.search(r'<rect [^>]*fill="#FFFFFF"/>', drawn)  # no white patch over a drawing
+    assert problems == [] and "سَيّارَة: العجلة" in answer and "سَيّارَة: العجلة" in review.answer
+    car = without("car", MISSING[0][1])
+    assert "28" not in "".join(p.elements for p in car.parts if "circle" in p.elements)
+    with pytest.raises(ValueError):
+        without("car", ('<circle cx="1" cy="1" r="1"/>',))
 
 
 def test_spirals_start_outside_and_the_pen_check_takes_the_new_skills() -> None:

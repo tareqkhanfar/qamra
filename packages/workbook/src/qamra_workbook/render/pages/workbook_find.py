@@ -46,6 +46,50 @@ LOOKALIKE = {
 }
 
 
+# a picture a child could name by something else (ten stars, a color, a shape, a verb) never stands
+# for a letter
+NOT_A_FIRST_SOUND = frozenset({"number", "color", "shape", "action"})
+
+# pictures a child names two ways (a face is also a head, a twig of olives is olives, «غزال» is a deer or a
+# goat) or not at all in English (a hoopoe): never a review row's answer or wrong choice from the library
+# A Palestinian child also says «طابة» (ball), «مخدّة» (pillow), «بسّة» (cat), «قرع» (pumpkin), «شنطة» (bag),
+# «جاجة» (hen), «سطل» (bucket): such a picture is a second answer in another letter's row, and no answer of
+# its own; a shadow, «a toy» and a hoopoe are not named at once
+AMBIGUOUS = frozenset(
+    {"head", "face", "eating", "almonds", "hoopoe", "gazelle", "fruit-bowl", "uniform", "olive-leaf"}
+    | {"ball", "pillow", "cat", "pumpkin", "bag", "hen", "bucket", "shadow", "toy"}
+)
+# the English words a review row asks about: the plan's letter words and other things a child names in
+# English at once (no «insect», «quilt», «uniform», «zaatar»)
+ENGLISH_LETTER_WORDS: dict[str, tuple[str, ...]] = {
+    "A": ("apple", "ant"),
+    "B": ("ball", "bee", "book"),
+    "C": ("cat", "car", "cup"),
+    "D": ("dog", "duck", "door"),
+    "E": ("egg", "elephant"),
+    "F": ("fish", "frog", "flower"),
+    "G": ("goat", "grapes", "gift"),
+    "H": ("hat", "house", "horse", "hand"),
+    "I": ("ice-cream",),
+    "J": ("jar", "jacket", "jug"),
+    "K": ("kite", "key"),
+    "L": ("lion", "lemon", "leaf"),
+    "M": ("moon", "milk", "monkey"),
+    "N": ("nest", "nose"),
+    "O": ("octopus", "orange"),
+    "P": ("parrot", "pencil", "pear"),
+    "Q": ("queen",),
+    "R": ("rabbit", "ring", "rose"),
+    "S": ("sun", "sock", "sheep"),
+    "T": ("tent", "tree", "tiger"),
+    "U": ("umbrella",),
+    "V": ("van", "vase"),
+    "W": ("window", "watch"),
+    "X": ("xylophone",),
+    "Y": ("yo-yo", "yogurt"),
+    "Z": ("zebra",),
+}
+
 # the pictures a find page shows for a letter: the plan's letter words first (the child met them already)
 LETTER_WORDS = {
     "أ": ("rabbit", "lion", "jug"),
@@ -57,6 +101,27 @@ LETTER_WORDS = {
     "خ": ("sheep", "tent", "cucumber"),
     "د": ("bear", "hen", "rooster", "bucket"),
     "ذ": ("corn",),  # the «tail» is a whole cat: a child says «قطّة»
+    # Volumes 2 and 3 (KG2's letter-intro words): a review row asks about the words the child met, not a
+    # library picture a child names otherwise («لِحاف» is «حِرام» at home, six stars are not «سِتَّة»)
+    "ر": ("pomegranate", "feather"),
+    "ز": ("giraffe", "olive"),
+    "س": ("fish", "car"),
+    "ش": ("sun", "tree"),
+    "ص": ("rocket", "whistle"),
+    "ض": ("frog", "tooth"),
+    "ط": ("kite", "table"),
+    "ظ": ("envelope", "shadow"),
+    "ع": ("grapes", "bird"),
+    "غ": ("cloud", "washer"),
+    "ف": ("elephant", "butterfly"),
+    "ق": ("moon", "cat"),
+    "ك": ("book", "ball"),
+    "ل": ("lemon", "toy"),
+    "م": ("banana", "key"),
+    "ن": ("bee", "star"),
+    "ه": ("hoopoe", "crescent"),
+    "و": ("rose", "pillow"),
+    "ي": ("hand", "pumpkin"),
 }
 
 

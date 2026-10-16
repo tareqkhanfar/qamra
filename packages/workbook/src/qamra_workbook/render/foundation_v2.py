@@ -73,7 +73,7 @@ def engine_type_v2(page: Page) -> str | None:
 
 # draft: educator review: the titles and instructions below have not been through the educator yet
 POSITION_TEXTS = {
-    "above-below": ("فَوْقَ وَتَحْتَ", "{لَوِّنْ/لَوِّني} ما فَوْقُ بِالأَحْمَرِ، وَما تَحْتُ بِالأَزْرَقِ"),
+    "above-below": ("فَوْقَ وَتَحْتَ", "{لَوِّنْ/لَوِّني} ما فَوْقَ الطّاوِلَةِ وَما تَحْتَها"),
     "front-behind": ("أَمامَ وَخَلْفَ", "ما الَّذي في الأَمامِ؟ {حَوِّطْهُ/حَوِّطيهِ}"),
     "right-left": ("يَمينٌ وَيَسارٌ", "{لَوِّنِ/لَوِّني} الصّورَةَ اليُمْنى بِالأَحْمَرِ، وَاليُسْرى بِالأَزْرَقِ"),
 }
@@ -87,6 +87,10 @@ COLOR_BY_LETTER = (  # a picture in cells, each cell a letter; the legend gives 
     "{سَمِّ/سَمّي} الحَرْفَ، ثُمَّ {لَوِّنْ/لَوِّني} ما حَوْلَهُ بِلَوْنِهِ",
 )
 CUT = "{قُصَّ/قُصّي} الصُّوَرَ"
+PATTERN_ABC_SAY = (  # each row ends in two empty boxes (the first row is solved)
+    "ما الشَّيْئانِ التّالِيانِ؟ {ارْسُمْهُما/ارْسُميهِما} في مَكانَيْهِما",
+    "{ارْسُمِ/ارْسُمي} الشَّيْئَيْنِ النّاقِصَيْنِ في آخِرِ كُلِّ صَفٍّ",
+)
 
 
 def letter_position_say(params: dict[str, Any]) -> str:
@@ -158,6 +162,8 @@ def texts_v2(subject: str, kind: str, params: dict[str, Any], unit_title: str) -
             return "ماذا يَنْقُصُ؟", "{أَكْمِلْ/أَكْمِلي} كُلَّ صورَةٍ بِرَسْمِ ما يَنْقُصُها", ""
         case "connect" if not params.get("words") and int(params.get("pairs", 4)) >= 5:
             return "ما الَّذي يُناسِبُهُ؟", "{صِلْ/صِلي} كُلَّ صورَةٍ بِما يُناسِبُها", ""
+        case "pattern-complete" if str(params.get("pattern", "")) == "ABC":  # two blanks in each row
+            return "أُكْمِلُ النَّمَطَ", pick(PATTERN_ABC_SAY, turn(params)), ""
         case "pattern-complete" if params.get("kind") == "number-sequence":
             return "قِطارُ الأَعْدادِ", "أَيُّ عَدَدٍ ناقِصٌ؟ {اكْتُبْهُ/اكْتُبيهِ} في كُلِّ قِطارٍ", ""
         case "compare" if max(_numbers(params), default=0) > 5:

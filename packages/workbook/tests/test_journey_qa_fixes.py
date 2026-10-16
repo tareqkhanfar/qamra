@@ -43,3 +43,16 @@ def test_memory_and_riddle_answers_are_not_always_first() -> None:
         answer = params["answer"]
         first = params["choices"][0]
         assert first not in (answer if isinstance(answer, list) else [answer]), (stage, n)
+
+
+def test_the_lemon_page_prints_the_word_its_title_and_clip_say() -> None:
+    """Stage 3 p48: the title and the clip say «لَيْمون», the picture's label said «لَيْمونَة»."""
+    page = _pages(3, {48})[48]
+    assert "لَيْمونَة" not in str(page.built.data["word"])  # type: ignore[attr-defined]
+    assert page.built.problems == []  # type: ignore[attr-defined]
+
+
+def test_stage_one_arabic_stop_is_not_called_the_arabic_letters() -> None:
+    """Stage 1 has no letter yet: its Arabic stop prepares reading; stages 2–3 keep «الحروف العربية»."""
+    assert _pages(1, {85})[85].section_name == "الاستعداد للقراءة"  # type: ignore[attr-defined]
+    assert _pages(3, {48})[48].section_name == "الحروف العربية"  # type: ignore[attr-defined]

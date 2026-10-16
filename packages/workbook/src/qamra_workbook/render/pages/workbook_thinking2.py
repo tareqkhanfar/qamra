@@ -201,4 +201,7 @@ def pattern_abc(ctx: PageContext) -> Built:
                 )
         if i:
             answer.append(f"الصف {ctx.num(i)}: {_name(triple[0])} ثم {_name(triple[1])}")
+        else:  # the solved row is marked as the example, as on the other pattern pages
+            body.append(card(W - 22, y + 3, 18, 7, r=3.5, fill=ctx.style.tint, stroke="none"))
+            body.append(text("مثال", W - 13, y + 8, 3.8, color=ctx.style.deep))
     return Built({"svg": svg(body)}, answer, [])

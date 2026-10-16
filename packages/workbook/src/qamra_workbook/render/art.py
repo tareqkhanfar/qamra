@@ -66,6 +66,11 @@ ICONS: dict[str, str] = {
         "M19.5 7.5 C19.8 10.8 20 13.6 18 14.8 C16.5 15.7 14.5 15.8 11.5 15.8 L8 15.8 C5.6 15.8 4.2 14.6 "
         "3.9 10.8 •M12 18.2 A1.6 1.6 0 1 0 12.01 18.2 Z"
     ),
+    # «ي»: the last letter, for the stage that ends the alphabet («ب» stands for the first half)
+    "letter-ya": (
+        "M17.5 4.5 C14 4.5 11.8 6.6 12.8 8.8 C13.8 10.8 18.8 10.6 19.6 13.4 C20.3 16.4 16 17.6 11.5 17.6 "
+        "C7 17.6 4.3 16 3.9 12 •M10 21.2 A1.5 1.5 0 1 0 10.01 21.2 Z M14.5 21.2 A1.5 1.5 0 1 0 14.51 21.2 Z"
+    ),
     "letter-a": "M6 20 L12 4 L18 20 M8.6 14 L15.4 14",
     # a reporter's microphone: the rounded head with its grille, the handle, a cable curling away
     "mic": (

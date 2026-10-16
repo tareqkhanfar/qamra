@@ -401,22 +401,44 @@ MORE = (
         main=LEAF,
         ground="#C9A77C",
     ),
-    _pic(
+    _pic(  # a scene, not a wavy panel (that read as a flag): the sun, a sailing boat, two rows of waves
+        # (the sun on the left: a colour page pins its colour dot on the top right corner)
         "sea",
         "بَحْر",
         "sea",
         "nature",
         (
-            body(  # one closed water shape (two open pieces filled as a triangle and left a white wedge)
-                "main",
+            body("sun", c(20, 20, 9)),
+            line(
                 p(
-                    "M6 40 C18 32 30 32 42 40 C54 48 66 48 78 40 C84 36 90 34 94 36 L94 88 "
-                    "C94 92 92 94 88 94 L12 94 C8 94 6 92 6 88 Z"
+                    "M20 5 L20 8 M20 32 L20 35 M5 20 L8 20 M32 20 L35 20"
+                    " M9.4 9.4 L11.5 11.5 M28.5 28.5 L30.6 30.6 M9.4 30.6 L11.5 28.5 M28.5 11.5 L30.6 9.4"
+                )
+            ),
+            body(  # the far water: crests along the horizon
+                "far",
+                p(
+                    "M4 60 C10 54 16 54 22 60 C28 54 34 54 40 60 C46 54 52 54 58 60 C64 54 70 54 76 60"
+                    " C82 54 88 54 96 60 L96 92 C96 94 94 96 92 96 L8 96 C6 96 4 94 4 92 Z"
                 ),
             ),
-            line(p("M16 58 Q24 52 32 58 Q40 64 48 58 M52 72 Q60 66 68 72 Q76 78 84 72 M14 82 Q20 78 26 82")),
+            body("sail", p("M60 18 L60 48 L78 48 Z")),
+            body("hull", p("M44 50 L84 50 C82 56 78 59 72 59 L54 59 C49 59 46 56 44 50 Z")),
+            line(p("M60 16 L60 50")),
+            body(  # the near water, a deeper blue
+                "main",
+                p(
+                    "M4 76 C11 69 18 69 25 76 C32 69 39 69 46 76 C53 69 60 69 67 76 C74 69 81 69 88 76"
+                    " C91 73 94 72 96 73 L96 92 C96 94 94 96 92 96 L8 96 C6 96 4 94 4 92 Z"
+                ),
+            ),
+            line(p("M14 87 Q19 83 24 87 M54 88 Q59 84 64 88 M78 85 Q82 82 86 85")),
         ),
         main=BLUE,
+        far=SKY,
+        sun=YELLOW,
+        sail=WHITE,
+        hull=BROWN,
     ),
 )
 

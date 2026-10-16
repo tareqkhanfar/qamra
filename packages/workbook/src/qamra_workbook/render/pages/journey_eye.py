@@ -313,6 +313,11 @@ def tangled(ctx: PageContext) -> Built:
                     "kite", x1 - 18, 8, 36, a=hexes[k % 4], b=hexes[k % 4], c=hexes[k % 4], d=hexes[k % 4]
                 )
             )
+    if child_start:  # swap the places (before they are drawn) so the child's string ends at the answer
+        answer = str(ctx.page.params.get("answer", ends[owner[0]]))
+        if ends[owner[0]] != answer and answer in ends:
+            j = ends.index(answer)
+            ends[owner[0]], ends[j] = ends[j], ends[owner[0]]
     for k, end in enumerate(ends):
         if end in ("boy", "girl", "ولد", "بنت"):
             body.append(
@@ -332,18 +337,12 @@ def tangled(ctx: PageContext) -> Built:
         any(_crosses(strings[a].polyline, strings[b].polyline) for b in range(n) if b != a) for a in range(n)
     )
     if child_start:
-        answer = str(ctx.page.params.get("answer", ends[owner[0]]))
         key = [f"{ctx.text('{child} {يصل/تصل}')} إلى: {PICTURES[pid(ends[owner[0]])].word_ar}"]
         problems = (
             []
             if crossed and ends[owner[0]] == answer
             else ["the child's string must lead to the answer and cross the others"]
         )
-        if ends[owner[0]] != answer and answer in ends:  # swap so the child's string ends at the answer
-            j = ends.index(answer)
-            ends[owner[0]], ends[j] = ends[j], ends[owner[0]]
-            problems = [] if crossed else ["the strings must cross"]
-            key = [f"{ctx.text('{child} {يصل/تصل}')} إلى: {PICTURES[pid(answer)].word_ar}"]
     else:
         key = [
             f"الطائرة {colour_ar(c, True)}: للطفل {ctx.num(owner[k] + 1)} من اليمين"

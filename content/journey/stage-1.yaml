@@ -147,7 +147,7 @@ pages:
   76: {type: journey-opener, title: "أُمْسِكُ القَلَمَ: التَّلْوينُ الذَّكِيُّ", instruction: "{لَوِّنْ/لَوِّني} نَجْمَةَ هَذِهِ المَحَطَّةِ عَلى الخَريطَةِ", params: {stop: "أمسك القلم", inside: ["أُلَوِّنُ حَسَبَ القاعِدَةِ", "أُلَوِّنُ مِثْلَ النَّموذَجِ", "أُكْمِلُ التَّلْوينَ"]}}  # draft: educator review
   77: {title: "{لَوِّنْ/لَوِّني} كُلَّ الدَّوائِرِ", instruction: "أَيْنَ الدَّوائِرُ؟ {لَوِّنْها/لَوِّنيها} كُلَّها بِالأَحْمَرِ", params: {seed: 52, target: circle, color: "#E5604E"}}  # draft: educator review
   78: {type: rule-coloring, title: "الكَبيرُ فَقَطْ", instruction: "{انْظُرْ/انْظُري} إلى كُلِّ اثْنَيْنِ {وَلَوِّنِ/وَلَوِّني} الكَبيرَ فَقَطْ", params: {rule: big, pairs: [elephant, tree, house, ball]}}  # draft: educator review
-  79: {title: "{لَوِّنْ/لَوِّني} مِثْلَ النَّموذَجِ", instruction: "سَمَكَتانِ: الأولى مُلَوَّنَةٌ. {لَوِّنِ/لَوِّني} الثّانِيَةَ مِثْلَها", params: {words: [fish]}}  # draft: educator review
+  79: {title: "{لَوِّنْ/لَوِّني} مِثْلَ النَّموذَجِ", instruction: "سَمَكَتانِ: الأُولى مُلَوَّنَةٌ. {لَوِّنِ/لَوِّني} الثّانِيَةَ مِثْلَها", params: {words: [fish]}}  # draft: educator review
   80: {type: rule-coloring, title: "ثَلاثُ تُفّاحاتٍ", instruction: "{عُدَّ/عُدّي} ثَلاثَ تُفّاحاتٍ {وَلَوِّنْها/وَلَوِّنيها}، لا أَكْثَرَ", params: {rule: count, items: apple, shown: 5, count: 3}}  # draft: educator review
   81: {type: mirror-coloring, title: "{أَكْمِلِ/أَكْمِلي} التَّلْوينَ", instruction: "{لَوِّنْ/لَوِّني} نِصْفَ الفَراشَةِ الأَبْيَضَ مِثْلَ النِّصْفِ المُلَوَّنِ", params: {picture: butterfly, colored_half: right}}  # draft: educator review
   82: {type: rule-coloring, title: "كُلُّ شَكْلٍ بِلَوْنِهِ", instruction: "{انْظُرْ/انْظُري} إلى المِفْتاحِ، ثُمَّ {لَوِّنِ/لَوِّني} الأَشْكالَ", params: {rule: key, key: {circle: yellow, triangle: red, square: blue}}}  # draft: educator review
@@ -179,7 +179,7 @@ pages:
   96:  # draft: educator review
     title: "What did I learn?"
     instruction: "{اسْتَمِعْ/اسْتَمِعي} جَيِّدًا، ثُمَّ {أَشِرْ/أَشيري} إلى ما {تَسْمَعُهُ/تَسْمَعينَهُ}"
-    params: {lang: en, instruction_en: "Listen carefully, then point.", tasks: [animals, colors], cheer: "Well done, {child}!"}
+    params: {lang: en, instruction_en: "Listen carefully, then point.", tasks: [animals, colors], cheer: "Well done!"}
     audio: {lang: en, say: "One: cat. Two: red, blue.", show: [cat, red, blue], tts: true}
 
   # ---- 🔢 الرياضيات (quantities 1–5 first; the numerals 1–5 seen and matched, never written)
@@ -208,4 +208,4 @@ pages:
   # ---- ⭐ المراجعة والشهادة
   116: {type: journey-opener, title: "خَطُّ النِّهايَةِ", instruction: "{انْقُلْ بَطَلَكَ/انْقُلي بَطَلَتَكِ} إلى خَطِّ النِّهايَةِ", params: {stop: finish, inside: ["أُراجِعُ ما تَعَلَّمْتُهُ", "أَنالُ شَهادَتي الصَّغيرَةَ", "المَحَطَّةُ الثّانِيَةُ تَنْتَظِرُني"]}}  # draft: educator review
   117: {title: "ماذا تَعَلَّمْتُ في رِحْلَتي؟", instruction: "مُهِمَّةٌ مِنْ كُلِّ مَحَطَّةٍ: {حُلَّها/حُلّيها} واحِدَةً واحِدَةً", params: {tasks: [odd-one-out, loud-soft, pen-lines, shapes, pattern, right-to-left, counting, numerals], cheer: "{رائِعٌ/رائِعَةٌ} يا {child}!"}}  # draft: educator review
-  118: {type: certificate, title: "شَهادَةُ المَحَطَّةِ الأولى", instruction: "{أَحْسَنْتَ/أَحْسَنْتِ} يا {child}!", params: {line: "لَقَدْ {أَنْهَيْتَ/أَنْهَيْتِ} المَحَطَّةَ الأولى مِنْ «رِحْلَتي الأولى لِلتَّعَلُّمِ»"}}  # draft: educator review
+  118: {type: certificate, title: "شَهادَةُ المَحَطَّةِ الأُولى", instruction: "{أَحْسَنْتَ/أَحْسَنْتِ} يا {child}!", params: {line: "لَقَدْ {أَنْهَيْتَ/أَنْهَيْتِ} المَحَطَّةَ الأُولى مِنْ «رِحْلَتي الأُولى لِلتَّعَلُّمِ»"}}  # draft: educator review

@@ -25,6 +25,7 @@ from qamra_workbook.render.pages.workbook_common import (
     text,
 )
 from qamra_workbook.render.pages.workbook_english3 import en_word
+from qamra_workbook.render.pages.workbook_find import ENGLISH_LETTER_WORDS
 from qamra_workbook.render.pages.workbook_math import GROUP_PICTURES
 from qamra_workbook.render.pages.workbook_math2 import numeral_any
 from qamra_workbook.render.pages.workbook_math3 import (
@@ -71,18 +72,7 @@ from qamra_workbook.render.registry import Built, PageContext, page_type
 
 V3_LETTERS = ["ف", "ق", "ك", "ل", "م", "ن", "ه", "و", "ي"]
 # the S–Z words join the English review pool (Volume 2's dispatcher then serves those pages too)
-ENGLISH_WORDS.update(
-    {
-        "S": ("sun", "sock", "sheep"),
-        "T": ("tent", "tiger", "tree"),
-        "U": ("umbrella", "uniform"),
-        "V": ("van", "vase"),
-        "W": ("window", "washer"),
-        "X": ("xylophone",),
-        "Y": ("yo-yo", "yogurt"),
-        "Z": ("zebra", "zaatar"),
-    }
-)
+ENGLISH_WORDS.update({c: ENGLISH_LETTER_WORDS[c] for c in "STUVWXYZ"})
 UNIT_WORDS = {
     "Numbers": ("one", "two", "three"),
     "Colors": ("red", "blue", "green"),
@@ -270,6 +260,21 @@ def sums_task(subtract: bool, top: int = 10, rows: int = 2) -> Task:
             out.body.append(divider(box.x + 100, y + 4, y + pitch - 4))
             out.body.append(sentence_row(ctx, sentence_tokens(a, b, subtract), box.x + 108, y + pitch / 2, h))
             out.answer.append(sentence_key(ctx, a, b, subtract))
+        return out
+
+    return task
+
+
+def add_and_subtract_task(top: int = 10) -> Task:
+    """One sum, then one take-away under it: a review box titled «أَجْمَعُ وَأَطْرَحُ» holds both."""
+    add, take = sums_task(False, top, 1), sums_task(True, top, 1)
+
+    def task(ctx: PageContext, box: Box, r: random.Random) -> Drawn:
+        half = box.h / 2
+        out = add(ctx, Box(box.x, box.y, box.w, half), r)
+        below = take(ctx, Box(box.x, box.y + half, box.w, half), r)
+        out.body += below.body
+        out.answer += below.answer
         return out
 
     return task
@@ -593,7 +598,7 @@ def review_sections_v3(ctx: PageContext, r: random.Random) -> Drawn | None:
             ctx,
             [
                 ("أَقْرَأُ وَأُحَوِّطُ الصّورَةَ", words_task(["بَاب", "فِيل"]), 0.9),
-                ("أَجْمَعُ وَأَطْرَحُ", sums_task(False, 10, 1), 0.75),
+                ("أَجْمَعُ وَأَطْرَحُ", add_and_subtract_task(), 1.4),
                 ("Match the words", vocab_task(["Animals", "Fruits", "Toys"]), 0.95),
                 ("أُكْمِلُ النَّمَطَ", growing_task(), 0.85),
             ],

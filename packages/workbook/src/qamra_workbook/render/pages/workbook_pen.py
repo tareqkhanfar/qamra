@@ -10,6 +10,7 @@ import math
 
 from qamra_workbook.geometry import Stroke
 from qamra_workbook.letters import ARABIC
+from qamra_workbook.pictures import PICTURES
 from qamra_workbook.render import draw
 from qamra_workbook.render.pages.workbook_common import INK, W, card, pic, picture_id, picture_of, svg, text
 from qamra_workbook.render.registry import Built, PageContext, page_type
@@ -136,7 +137,10 @@ def trace_path(ctx: PageContext) -> Built:
     body.append(draw.path(road.d, stroke="#E5CD9E", width=17))
     body.append(draw.path(road.d, stroke="#F6E7C8", width=14.4))
     body.append(traced(road, spacing=4.6, r=1.3, start=3))
-    body.append(pic(start, 128, 0, 42))
+    start_pic = pic(start, 128, 0, 42)
+    if PICTURES[start].category == "vehicle":  # drawn facing right: the road leaves it to the left
+        start_pic = f'<g transform="translate({2 * 128 + 42} 0) scale(-1 1)">{start_pic}</g>'
+    body.append(start_pic)
     body.append(pic(end, 18, 160, 42))
     return Built({"svg": svg(body)}, None, [])
 

@@ -1008,7 +1008,7 @@ activities:
       - type: story-finish
         title: "عِنْدَما أَشْعُرُ… أَسْتَطيعُ…"  # four feelings on the page, not anger alone
         instruction: "لِكُلِّ شُعورٍ، ماذا {تَسْتَطيعُ/تَسْتَطيعينَ} أَنْ {تَفْعَلَ/تَفْعَلي}؟ {ارْسُمْ/ارْسُمي} أَوْ {قُلْ/قولي}"
-        parent: ["أفكار لطيفة: أعدّ إلى خمسة، أشرب ماء، أطلب حضنًا، أرسم غضبي."]
+        parent: ["أفكار لطيفة: أعدّ إلى خمسة، أشرب ماء، أطلب حضنًا، أرسم شعوري."]
         params:  # draft: educator review
           mode: sentences
           simple: 2
@@ -1227,7 +1227,8 @@ activities:
     pages:
       - type: memory-page
         title: "ذِكْرى اليَوْمِ: حِكاياتُنا"
-        instruction: "مَعَ مَنْ {تَحَدَّثْتَ/تَحَدَّثْتِ} اليَوْمَ؟ {ارْسُمْهُ/ارْسُميهِ} وَأَنْتُما تَتَحَدَّثانِ"
+        # «وَأَنْتُما»: the child is in the drawing too; «مَعَهُ» follows «مَنْ», right for a woman as well
+        instruction: "مَعَ مَنْ {تَحَدَّثْتَ/تَحَدَّثْتِ} اليَوْمَ؟ {ارْسُمْ نَفْسَكَ/ارْسُمي نَفْسَكِ} مَعَهُ وَأَنْتُما تَتَحَدَّثانِ"
         parent: ["اكتبوا أجمل جملة {قالها/قالتها} {child} هذا الأسبوع."]
         params: {stars: 5}
 

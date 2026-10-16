@@ -158,12 +158,20 @@ def memory_recall(ctx: PageContext) -> Built:
     return Built({"svg": svg(body)}, [("اختفت: " if shown else ctx.text("{رأى/رأت}: ")) + names], problems)
 
 
+def deranged(ctx: PageContext, seed: str, n: int) -> list[int]:
+    """The left column's order: shuffled until no picture sits straight across from its own."""
+    order, rng = list(range(n)), ctx.rng(seed)
+    rng.shuffle(order)
+    while n > 1 and any(order[i] == i for i in range(n)):
+        rng.shuffle(order)
+    return order
+
+
 @page_type("whats-missing")
 def whats_missing(ctx: PageContext) -> Built:
     """Each picture misses a part (right); join it to the part (left)."""
     cuts = [CUTS[k] for k in words(ctx, "items")]
-    order = list(range(len(cuts)))
-    ctx.rng("missing").shuffle(order)
+    order = deranged(ctx, "missing", len(cuts))
     answer = [order.index(i) for i in range(len(cuts))]
     body = join_columns(
         lambda i, x, y, s: cuts[i].without(x, y, s),
@@ -179,8 +187,7 @@ def whats_missing(ctx: PageContext) -> Built:
 def part_to_whole(ctx: PageContext) -> Built:
     """A piece of each picture (right); join it to the whole picture (left)."""
     cuts = [CUTS[k] for k in words(ctx, "items")]
-    order = list(range(len(cuts)))
-    ctx.rng("whole").shuffle(order)
+    order = deranged(ctx, "whole", len(cuts))
     answer = [order.index(i) for i in range(len(cuts))]
     body = join_columns(
         lambda i, x, y, s: cuts[i].crop(x, y, s),

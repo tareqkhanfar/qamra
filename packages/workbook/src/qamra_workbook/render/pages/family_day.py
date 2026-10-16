@@ -14,7 +14,9 @@ from qamra_workbook.render import draw
 from qamra_workbook.render.pages.family import uri
 from qamra_workbook.render.registry import Built, PageContext, page_type
 
-WEEK = ("السَّبْتُ", "الأَحَدُ", "الاثْنَيْنِ", "الثُّلاثاءُ", "الأَرْبِعاءُ", "الخَميسُ", "الجُمُعَةُ")
+# chart labels, read in pause (no case ending), so Monday is not the one genitive among nominatives;
+# «الاثْنَيْن» with no kasra on the lam: in the لا ligature it sat under the alif and read as «الإثنين»
+WEEK = ("السَّبْت", "الأَحَد", "الاثْنَيْن", "الثُّلاثاء", "الأَرْبِعاء", "الخَميس", "الجُمُعَة")
 
 # ---- pictogram moves --------------------------------------------------------------------------------------
 

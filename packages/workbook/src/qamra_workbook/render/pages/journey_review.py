@@ -69,14 +69,24 @@ def big_small(ctx: PageContext, box: Box) -> tuple[list[str], str]:
 
 
 def gone(ctx: PageContext, box: Box) -> tuple[list[str], str]:
+    """The three pictures, then the same row with one gone: side by side in a wide panel (an arrow from
+    right to left), one above the other in a squarer one (an arrow down), whichever draws them bigger."""
     x, y, w, h = box
-    top, _ = _row(["sun", "ball", "cat"], (x + w / 2, y, w / 2, h))
-    shown, cells = _row(["sun", "sun", "cat"], (x, y, w / 2, h))
+    side = min(h - 6, (w / 2 - 8) / 3 - 4)
+    stacked = min(h / 2 - 8, (w - 8) / 3 - 4)
+    if stacked > side:
+        half = h / 2
+        top, _ = _row(["sun", "ball", "cat"], (x, y, w, half - 2))
+        shown, cells = _row(["sun", "sun", "cat"], (x, y + half + 2, w, half - 2))
+        arrow = draw.arrow((x + w / 2, y + half + 0.5), 90, 3.5)
+    else:
+        top, _ = _row(["sun", "ball", "cat"], (x + w / 2, y, w / 2, h))
+        shown, cells = _row(["sun", "sun", "cat"], (x, y, w / 2, h))
+        arrow = draw.arrow((x + w / 2, y + h / 2), 180, 3.5)
     sx, sy, s = cells[1]
     hole = card(sx, sy, s, s, r=3, fill="#FFFFFF", stroke="#8C90A6", dash="2.4 2")
     mark = text("؟", sx + s / 2, sy + s * 0.72, s * 0.6, cls="wb-title", color="#8C90A6")
     missing = picture("ball", sx, sy, s).replace("<svg", '<svg class="key-ring"', 1)
-    arrow = draw.arrow((x + w / 2, y + h / 2), 180, 3.5)
     return [*top, arrow, shown[0], shown[2], hole, mark, missing], "اختفت الكرة"
 
 
@@ -206,10 +216,14 @@ def shapes(ctx: PageContext, box: Box) -> tuple[list[str], str]:
     ], ""
 
 
-def pattern(ctx: PageContext, box: Box) -> tuple[list[str], str]:
+def pattern(
+    ctx: PageContext,
+    box: Box,
+    seq: tuple[str, ...] = ("circle", "triangle", "circle", "triangle", "circle", "?"),
+) -> tuple[list[str], str]:
+    """Shapes in a pattern, right to left, with the last one to draw (a triangle in both patterns)."""
     x, y, w, h = box
     s = min(h - 10, w / 6 - 4)
-    seq = ["circle", "triangle", "circle", "triangle", "circle", "?"]
     out = []
     for k, kind in enumerate(seq):
         cx = x + w - (k + 0.5) * w / 6
@@ -230,6 +244,11 @@ def pattern(ctx: PageContext, box: Box) -> tuple[list[str], str]:
         else:
             out.append(filled(kind, cx, y + h / 2, s, "#5E86D6" if kind == "circle" else "#EE8A6E"))
     return out, "النمط: مثلث"
+
+
+def pattern_abb(ctx: PageContext, box: Box) -> tuple[list[str], str]:
+    """A B B A B ?: one circle, two triangles, again."""
+    return pattern(ctx, box, ("circle", "triangle", "triangle", "circle", "triangle", "?"))
 
 
 def sequence(ctx: PageContext, box: Box) -> tuple[list[str], str]:
@@ -478,14 +497,22 @@ def story_mini(story: str, steps: int) -> Mini:
         from qamra_workbook.render.pages.journey_think import _story_panel
 
         x, y, w, h = box
+        cols = (steps + 1) // 2
         s = min(h - 12, w / steps - 6)
+        two_rows = min(h / 2 - 11, w / cols - 8) > s  # a squarer panel: two rows of bigger pictures
+        if two_rows:
+            s = min(h / 2 - 11, w / cols - 8)
+        else:
+            cols = steps
+        pitch = (h + 1) / 2 if two_rows else h
         out = []
         order = list(range(steps))
         ctx.rng("mini-story").shuffle(order)
         for k, step in enumerate(order):
-            cx = x + w - (k + 0.5) * w / steps
-            out.append(nested(_story_panel(story, step), cx - s / 2, y + 1, s))
-            out.append(_box(cx - 6, y + s + 3, 12, 7))
+            r, c = divmod(k, cols)
+            cx, top = x + w - (c + 0.5) * w / cols, y + 1 + r * pitch
+            out.append(nested(_story_panel(story, step), cx - s / 2, top, s))
+            out.append(_box(cx - 6, top + s + 2, 12, 7))
         return out, "الترتيب: " + "، ".join(ctx.num(order.index(i) + 1) for i in range(steps))
 
     return mini
@@ -525,20 +552,31 @@ def classify_mini(ctx: PageContext, box: Box) -> tuple[list[str], str]:
 
 
 def maze_mini(ctx: PageContext, box: Box) -> tuple[list[str], str]:
+    """A small maze: the way in is an opening in its right wall beside the rabbit, the way out an opening in
+    its left wall beside the carrot (in at the top, down between the two walls, out at the bottom)."""
     x, y, w, h = box
-    s = h - 6
-    x0 = x + w / 2 - s / 2
-    out = [card(x0, y + 3, s, s, r=2, fill="#FFFFFF", stroke="#4F8A45", width=1.2)]
-    out.append(
-        draw.path(
-            f"M{x0 + s * 0.33} {y + 3} L{x0 + s * 0.33} {y + 3 + s * 0.66}"
-            f" M{x0 + s * 0.66} {y + 3 + s * 0.33} L{x0 + s * 0.66} {y + 3 + s}",
-            stroke="#4F8A45",
-            width=1.2,
-        )
+    s = min(h - 6, w - 36)  # room for the rabbit and the carrot on either side
+    x0, y0 = x + w / 2 - s / 2, y + 3 + (h - 6 - s) / 2
+    x1, y1 = x0 + s, y0 + s
+    gap_in, gap_out = (y0 + s * 0.04, y0 + s * 0.28), (y0 + s * 0.72, y0 + s * 0.96)
+    walls = (
+        f"M{x1} {gap_in[1]} L{x1} {y1} L{x0} {y1} L{x0} {gap_out[1]}"
+        f" M{x0} {gap_out[0]} L{x0} {y0} L{x1} {y0} L{x1} {gap_in[0]}"
+        f" M{x0 + s * 0.33} {y0} L{x0 + s * 0.33} {y0 + s * 0.66}"
+        f" M{x0 + s * 0.66} {y0 + s * 0.33} L{x0 + s * 0.66} {y1}"
     )
-    out.append(picture("rabbit", x + w / 2 + s / 2 + 2, y + 2, 12))
-    out.append(picture("carrot", x + w / 2 - s / 2 - 14, y + h - 14, 12))
+    out = [
+        draw.el("rect", x=x0, y=y0, width=s, height=s, fill="#FFFFFF"),
+        draw.path(walls, stroke="#4F8A45", width=1.2),
+    ]
+    p = min(14.0, (w - s) / 2 - 3)
+    out.append(picture("rabbit", x1 + 2, sum(gap_in) / 2 - p / 2, p))
+    out.append(picture("carrot", x0 - p - 2, sum(gap_out) / 2 - p / 2, p))
+    route = (
+        f"M{x1 + 1} {sum(gap_in) / 2} L{x0 + s * 0.5} {sum(gap_in) / 2} L{x0 + s * 0.5} {y0 + s * 0.84}"
+        f" L{x0 - 1} {y0 + s * 0.84}"
+    )
+    out.append(draw.path(route, stroke="#E5604E", width=1.4, class_="key-line"))
     return out, ""
 
 
@@ -717,14 +755,19 @@ def hidden_mini(ctx: PageContext, box: Box) -> tuple[list[str], str]:
 
 
 def riddle_mini(ctx: PageContext, box: Box) -> tuple[list[str], str]:
+    """The clue on top, three pictures big enough to circle under it (the camel is stage 3's p114 riddle,
+    the octopus stage 2's p117: this one is the elephant)."""
     x, y, w, h = box
-    body, cells = _row(["camel", "cat", "fish"], (x, y, w * 0.6, h))
+    wide = w > 2.2 * h  # a full-width panel: the clue beside the pictures, else above them
+    row = (x, y, w * 0.65, h) if wide else (x, y + 9, w, h - 9)
+    body, cells = _row(["fish", "elephant", "cat"], row)
+    clue_y = y + h / 2 + 2 if wide else y + 5
     out = [
-        text("لي سَنامٌ", x + w - 4, y + h / 2 + 2, 5.2, cls="wb-word", color="#1C2140", anchor="end"),
+        text("لِي خُرْطومٌ طَويلٌ", x + w - 4, clue_y, 5.2, cls="wb-word", color="#1C2140", anchor="end"),
         *body,
-        _ring(cells[0]),
+        _ring(cells[1]),
     ]
-    return out, "الجمل"
+    return out, "الفيل"
 
 
 def position_mini(ctx: PageContext, box: Box) -> tuple[list[str], str]:
@@ -746,13 +789,14 @@ def harakat_mini(ctx: PageContext, box: Box) -> tuple[list[str], str]:
 
 
 def read_mini(ctx: PageContext, box: Box) -> tuple[list[str], str]:
+    """The word on the right, its picture and another one in the rest of the card (sized to fit it)."""
     x, y, w, h = box
-    s = h - 6
+    size = min(h * 0.5, w * 0.13)
+    body, cells = _row(["moon", "cat"], (x, y, w * 0.62, h))
     out = [
-        text("قَمَر", x + w - 24, y + h * 0.66, h * 0.5, cls="wb-word", color="#1C2140"),
-        picture("moon", x + w - 60 - s, y + 3, s),
-        picture("cat", x + w - 68 - 2 * s, y + 3, s),
-        ring_at(x + w - 60 - s / 2, y + h / 2, s / 2 + 1, s / 2),
+        text("قَمَر", x + w * 0.81, y + h / 2 + size * 0.3, size, cls="wb-word", color="#1C2140"),
+        *body,
+        _ring(cells[0]),
     ]
     return out, "قمر ← القمر"
 
@@ -995,7 +1039,7 @@ MINIS.update(
         "small-waves": ("أَمْواجٌ صَغيرَةٌ", waves_mini),
         "find-shapes": ("أَتَتَبَّعُ الأَشْكالَ", shapes),
         "sort-colors": ("أُلَوِّنُ بِالأَلْوانِ", sort_colors_mini),
-        "pattern-abb": ("أُكْمِلُ النَّمَطَ", pattern),
+        "pattern-abb": ("أُكْمِلُ النَّمَطَ", pattern_abb),
         "first-sound-coloring": ("أُلَوِّنُ حَسَبَ الصَّوْتِ", first_sound_mini),
         "key-coloring": ("أُلَوِّنُ حَسَبَ المِفْتاحِ", key_shapes_mini),
         "name": ("أُسَمّي الحَرْفَ", letters_mini(("أ", "ب", "ت", "ث"), "hollow")),

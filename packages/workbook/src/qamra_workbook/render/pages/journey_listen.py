@@ -292,7 +292,8 @@ def claps(ctx: PageContext) -> Built:
 
 @page_type("journey-rhyme")
 def rhyme(ctx: PageContext) -> Built:
-    """Each row: three pictures; colour the two whose names end the same way (`pairs` lists the rhyming
+    """Each row: three pictures, right to left in the order the audio says them (the pair, then `odd`);
+    colour the two whose names end the same way (`pairs` lists the rhyming
     pair, `odd` the third; `words`: the pair's words as the audio says them, «قَمَر، شَجَر», when a picture's
     own name does not rhyme, «شَجَرَة»)."""
     pairs = [[pid(str(a)), pid(str(b))] for a, b in ctx.page.params.get("pairs", [])]
@@ -304,8 +305,7 @@ def rhyme(ctx: PageContext) -> Built:
     for i, ((y, h), pair) in enumerate(zip(rows_of(len(pairs)), pairs, strict=True)):
         body.append(card(0, y, W, h, r=8))
         body.append(dots_mark(i + 1, W - 12, y + h / 2))
-        row = [*pair, odd[i]]
-        ctx.rng(f"rhyme{i}").shuffle(row)
+        row = [*pair, odd[i]]  # right to left in the order the audio says them: the pair, then the odd one
         for w, x, size in _row_cards(row, y, h):
             body.append(picture(w, x, y + (h - size) / 2, size, "line"))
             if w in pair:

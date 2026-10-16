@@ -461,8 +461,21 @@ def count_frame(ctx: PageContext) -> Built:
             r, c = divmod(j, 5)
             body.append(picture(thing, W - 8 - (c + 1) * (size + 2.5), top + r * (size + 3), size))
         body.append(draw.arrow((W - 8 - 5 * (size + 2.5) - 6, y + pitch / 2), 180, 4, "#E5CD9E"))
-        body.append(ten_frame(8, y + pitch / 2 - 7, 68, 0, ctx.style.color))
+        # the frame (its counters only in the answer key), then an empty circle in every cell to colour:
         body.append(ten_frame(8, y + pitch / 2 - 7, 68, n, ctx.style.color, "key-ring"))
+        cw = 68 / 5  # the instruction says «لَوِّنْ دَوائِرَ»
+        body += [
+            draw.el(
+                "circle",
+                cx=8 + 68 - (j % 5 + 0.5) * cw,
+                cy=y + pitch / 2 - 7 + (j // 5 + 0.5) * cw,
+                r=cw * 0.34,
+                fill="none",
+                stroke="#B9B2A4",
+                stroke_width=0.5,
+            )
+            for j in range(10)
+        ]
         key.append(f"{PICTURES[thing].word_ar}: {ctx.num(n)}")
     return Built({"svg": svg(body)}, key, [] if all(6 <= n <= 10 for n in numbers) else ["6–10 here"])
 

@@ -40,7 +40,7 @@ def journey_owner(ctx: PageContext) -> Built:
     data = {
         "name": genitive(ctx.book.child.name),
         "character": ctx.assets.character.resolve().as_uri() if ctx.assets.character else "",
-        "level_title": "رِحْلَتي الأولى لِلتَّعَلُّمِ",
+        "level_title": "رِحْلَتي الأُولى لِلتَّعَلُّمِ",
         "volume_title": str(ctx.page.params.get("subtitle", stage_name(stage))),
         "lines": [str(line) for line in ctx.page.params.get("lines", ["عُمْري", "بَدَأْتُ رِحْلَتي في"])],
     }

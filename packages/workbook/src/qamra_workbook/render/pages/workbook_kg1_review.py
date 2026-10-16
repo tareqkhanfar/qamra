@@ -29,6 +29,7 @@ from qamra_workbook.render.pages.workbook_kg1_math import sums_task
 from qamra_workbook.render.pages.workbook_kg1_pen import kg1_pen_row
 from qamra_workbook.render.pages.workbook_review import (
     CHECKLIST_AR,
+    COLOR_LABEL,
     LEVELS_AR,
     OBSERVE_AR,
     THINKING,
@@ -110,7 +111,7 @@ THINKING_KG1 |= {"pattern-complete": "pattern", "sequence": "sequence", "puzzle"
 def pen_task(skill: str) -> tuple[str, Task, float]:
     label = PEN_LABELS_KG1.get(skill, skill)
     if skill == "coloring":
-        return label, color_names(), 1.0
+        return COLOR_LABEL, color_names(), 1.0
     if skill == "maze":
         return label, mini_maze(), 1.2
     if skill == "drawing":

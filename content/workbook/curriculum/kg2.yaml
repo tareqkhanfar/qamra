@@ -123,7 +123,7 @@ volumes:
       pen: ["يرسم خطوطًا أفقية وعمودية ومائلة ومتعرّجة ومنحنية على الخطوط المنقّطة دون أن يخرج عنها كثيرًا", "يرسم الدوائر والحلقات ويتتبّع مسارًا منحنيًا من البداية إلى النهاية", "يصل النقاط المرقّمة من ١ إلى ١٠ بالترتيب", "يلوّن داخل الحدود ويتتبّع الدائرة والمربع والمثلث"]
       arabic: ["يميّز الصوت الأول في الكلمة المنطوقة", "يتعرّف على الحروف من الألف إلى الذال شكلًا وصوتًا ويربط كل حرف بصورتين تبدآن به", "يتتبّع كل حرف منقّط من الحجم الكبير إلى الأصغر بدءًا من نقطة البداية", "يكتب الحرف مستقلًّا على السطر من اليمين إلى اليسار بعد الكتابة الموجّهة", "يجد الحرف بين حروف أخرى ويميّز الحروف المتشابهة بالنقاط (ب/ت/ث، ج/ح/خ، د/ذ)"]
       math: ["يسمّي الألوان الأساسية ويقارن بين الأشياء: كبير/صغير، طويل/قصير، كثير/قليل", "يتعرّف على الأعداد من ١ إلى ٥ ويقرؤها، ثم الصفر بمعنى «لا شيء»", "يتتبّع الأعداد من ١ إلى ٥ والصفر ويكتبها", "يعدّ مجموعة حتى ٥ أشياء ويطابقها مع العدد", "يقارن بين مجموعتين ويحدّد الأكثر والأقل"]
-      english: ["يتعرّف على الحروف من A إلى H كبيرة وصغيرة", "يتتبّع الحروف A–H ويكتبها", "يربط كل حرف بصورة وكلمة تبدأ به (apple, ball, cat…)", "يجد الحرف بين حروف أخرى ويطابق الحرف الكبير مع الصغير"]
+      english: ["يتعرّف على الحروف من A إلى H كبيرة وصغيرة", "يتتبّع الحروف A–H ويكتبها", "يربط كل حرف بصورة وكلمة تبدأ به، مثل: apple، ball، cat", "يجد الحرف بين حروف أخرى ويطابق الحرف الكبير مع الصغير"]
       thinking: ["يطابق الصور المتشابهة ويصل بين الصور المترابطة", "يجد الشيء المختلف ويصنّف الأشياء حسب اللون أو النوع", "يكمل نمطًا بسيطًا من نوع AB ويحلّ متاهة بسيطة", "يلاحظ ٣ فروق بين صورتين ويتذكّر ما رآه"]
     units:
       - {id: v1-intro, subject: intro, title_ar: "صفحاتي الأولى", title_en: "My first pages", title_v: "صَفَحاتي الأُولى"}
@@ -159,7 +159,7 @@ volumes:
       - {n: 8, week: 1, subject: math, unit: v1-ma-01, type: unit-opener, skill: "أنا وعالم الأرقام: أتعرّف على ما سأتعلّمه", difficulty: 1}
       - {n: 9, week: 1, subject: math, unit: v1-ma-01, type: coloring, skill: "أعرف الألوان: ألوّن كل شيء بلونه الصحيح", difficulty: 1, params: {colors: [أحمر, أزرق, أصفر, أخضر]}}
       - {n: 10, week: 1, subject: pen, unit: v1-pen-01, type: trace-path, skill: "أتتبّع الطريق المستقيم لأوصل الأرنب إلى الجزرة", difficulty: 1, params: {path: straight, words: [أرنب, جزرة]}}
-      - {n: 11, week: 1, subject: math, unit: v1-ma-01, type: compare, skill: "أميّز الكبير من الصغير وألوّن الكبير", difficulty: 1, params: {concept: big-small}}
+      - {n: 11, week: 1, subject: math, unit: v1-ma-01, type: compare, skill: "أميّز الكبير من الصغير وأحوّط الكبير", difficulty: 1, params: {concept: big-small}}
       - {n: 12, week: 2, subject: pen, unit: v1-pen-01, type: pen-lines, skill: "أرسم خطوطًا مائلة على النقاط", difficulty: 2, params: {line: diagonal}}
       - {n: 13, week: 2, subject: arabic, unit: v1-ar-01, type: unit-opener, skill: "أنا وعالم الحروف: أتعرّف على ما سأتعلّمه", difficulty: 1}
       - {n: 14, week: 2, subject: arabic, unit: v1-ar-01, type: connect, skill: "أسمع أول صوت في الكلمة وأصل الصورتين اللتين تبدآن بالصوت نفسه", difficulty: 1, params: {words: [سمكة, سيارة, فيل, فراشة, قمر, قطة]}}
@@ -191,7 +191,7 @@ volumes:
       - {n: 40, week: 4, subject: pen, unit: v1-pen-02, type: trace-path, skill: "أتتبّع طريقًا منحنيًا لأوصل النحلة إلى الوردة", difficulty: 2, params: {path: curve, words: [نحلة, وردة]}}
       - {n: 41, week: 4, subject: math, unit: v1-ma-02, type: number-intro, skill: "أتعرّف على العدد اثنين: رقمه وكميّته واسمه", difficulty: 1, params: {number: 2}}
       - {n: 42, week: 4, subject: math, unit: v1-ma-02, type: number-trace, skill: "أتتبّع العدد اثنين بدءًا من نقطة البداية", difficulty: 1, params: {number: 2}}
-      - {n: 43, week: 4, subject: thinking, unit: v1-th-01, type: unit-review, skill: "أراجع: أطابق الصور وأجد المختلف وأحلّ المتاهة وألاحظ الفروق", difficulty: 2, params: {skills: [matching, odd-one-out, maze, spot-difference]}}
+      - {n: 43, week: 4, subject: thinking, unit: v1-th-01, type: unit-review, skill: "أراجع: أطابق الصور وأجد المختلف وأحلّ المتاهة وأكمل النمط", difficulty: 2, params: {skills: [matching, odd-one-out, maze, spot-difference]}}
       - {n: 44, week: 4, subject: english, unit: v1-en-01, type: en-letter, skill: "أتعرّف على الحرف C c وأتتبّعه وأكتبه وألوّن صورة cat", difficulty: 1, params: {letter: C, word: cat}}
       - {n: 45, week: 5, subject: arabic, unit: v1-ar-02, type: letter-intro, skill: "أتعرّف على حرف التاء وألوّنه مع صورتي تفاحة وتاج", difficulty: 2, params: {letter: ت, words: [تفاحة, تاج]}}
       - {n: 46, week: 5, subject: arabic, unit: v1-ar-02, type: letter-trace, skill: "أتتبّع التاء: كبيرة ثم أصغر، وأضع نقطتيها فوقها", difficulty: 2, params: {letter: ت, sizes: [xl, l, m]}}
@@ -214,7 +214,7 @@ volumes:
       - {n: 63, week: 6, subject: arabic, unit: v1-ar-02, type: match-letter-picture, skill: "أصل حرفي التاء والثاء بصورهما وكلماتهما", difficulty: 2, params: {letters: [ت, ث], words: [تمر, تفاحة, ثعلب, ثلاجة]}}
       - {n: 64, week: 6, subject: arabic, unit: v1-ar-02, type: unit-review, skill: "أراجع حرفي التاء والثاء وأميّز بينهما وبين الباء", difficulty: 2, params: {letters: [ت, ث]}}
       - {n: 65, week: 6, subject: english, unit: v1-en-01, type: unit-review, skill: "أراجع الحروف A B C: أقرأ وأكتب وأطابق", difficulty: 2, params: {letters: [A, B, C]}}
-      - {n: 66, week: 6, subject: thinking, unit: v1-th-02, type: memory, skill: "أنظر إلى الصورة ثم أغطّيها وأتذكّر ما رأيت", difficulty: 2, params: {items: 4}}
+      - {n: 66, week: 6, subject: thinking, unit: v1-th-02, type: memory, skill: "أنظر إلى الصور ثم أغطّيها وأتذكّر ما رأيت", difficulty: 2, params: {items: 4}}
       - {n: 67, week: 7, subject: math, unit: v1-ma-02, type: number-quantity-match, skill: "أصل كل عدد بالمجموعة المناسبة له (١–٣)", difficulty: 2, params: {numbers: [1, 2, 3]}}
       - {n: 68, week: 7, subject: pen, unit: v1-pen-02, type: unit-review, skill: "أراجع المنحنيات والدوائر وتتبّع المسارات", difficulty: 2, params: {skills: [curve, loops, trace-path, dot-to-dot, coloring]}}
       - {n: 69, week: 7, subject: arabic, unit: v1-ar-03, type: letter-intro, skill: "أتعرّف على حرف الجيم وألوّنه مع صورتي جمل وجزرة", difficulty: 2, params: {letter: ج, words: [جمل, جزرة]}}
@@ -287,7 +287,7 @@ volumes:
       pen: ["يرسم الحلزونات ويتتبّع مسارًا ضيّقًا دون أن يلمس الحواف", "يرسم أشكالًا صغيرة بين سطرين استعدادًا للكتابة على السطر", "يصل النقاط بترتيب الحروف الهجائية"]
       arabic: ["يميّز شكل الحرف في أول الكلمة ووسطها وآخرها للحروف التي تعلّمها", "يتعرّف على الحروف من الراء إلى الغين شكلًا وصوتًا ويربط كل حرف بصورتين تبدآن به", "يتتبّع كل حرف ويكتبه مستقلًّا ويميّز بين الحرفين المتشابهين بالنقاط (ر/ز، س/ش، ص/ض، ط/ظ، ع/غ)", "يجد الحرف بين حروف أخرى ويصل الحرف بالصورة والكلمة"]
       math: ["يتعرّف على الأعداد من ٦ إلى ١٠ ويتتبّعها ويكتبها", "يعدّ مجموعة حتى ١٠ أشياء ويطابقها مع العدد", "يقارن بين عددين حتى ١٠ ويرتّب الأعداد من ١ إلى ١٠", "يسمّي الدائرة والمربع والمثلث والمستطيل", "يستخدم كلمات المواقع: فوق/تحت، داخل/خارج، أمام/خلف، يمين/يسار", "يكمل نمطًا من ثلاثة عناصر (ABC)"]
-      english: ["يتعرّف على الحروف من I إلى R كبيرة وصغيرة", "يتتبّع الحروف I–R ويكتبها", "يربط كل حرف بصورة وكلمة تبدأ به (insect, jar, kite…)", "يجد الحرف بين حروف أخرى ويطابقه مع صورته"]
+      english: ["يتعرّف على الحروف من I إلى R كبيرة وصغيرة", "يتتبّع الحروف I–R ويكتبها", "يربط كل حرف بصورة وكلمة تبدأ به، مثل: ice cream، jacket، key", "يجد الحرف بين حروف أخرى ويطابقه مع صورته"]
       thinking: ["يجد الشيء المختلف ويشرح سبب اختلافه", "يصنّف الصور في مجموعات حسب النوع", "يرتّب صور قصة قصيرة حسب تسلسل أحداثها", "يحلّ متاهة متوسطة ويلاحظ ٥ فروق بين صورتين", "يتذكّر أيّ الصور اختفت من مجموعة من ٦ صور"]
     units:
       - {id: v2-intro, subject: intro, title_ar: "صفحاتي الأولى", title_en: "My first pages", title_v: "صَفَحاتي الأُولى"}
@@ -366,7 +366,7 @@ volumes:
       - {n: 51, week: 5, subject: thinking, unit: v2-th-01, type: coloring, skill: "أجد ٥ صور بين صور كثيرة وألوّنها", difficulty: 3, params: {hidden: 5}}
       - {n: 52, week: 5, subject: english, unit: v2-en-02, type: en-letter, skill: "أتعرّف على الحرف L l وأتتبّعه وأكتبه وألوّن صورة lion", difficulty: 2, params: {letter: L, word: lion}}
       - {n: 53, week: 5, subject: math, unit: v2-ma-02, type: shapes, skill: "أتعرّف على الدائرة والمربع والمثلث والمستطيل وألوّن كل شكل بلونه", difficulty: 2, params: {shapes: [circle, square, triangle, rectangle]}}
-      - {n: 54, week: 5, subject: arabic, unit: v2-ar-03, type: find-letter, skill: "أجد السين والشين بين الحروف وأعدّ النقاط", difficulty: 3, params: {letters: [س, ش], distractors: [ص, ث]}}
+      - {n: 54, week: 5, subject: arabic, unit: v2-ar-03, type: find-letter, skill: "أجد السين والشين بين الحروف وألوّنها، وأحوّط الحرف الذي تبدأ به الصورة", difficulty: 3, params: {letters: [س, ش], distractors: [ص, ث]}}
       - {n: 55, week: 5, subject: arabic, unit: v2-ar-03, type: match-letter-picture, skill: "أصل حرفي السين والشين بصورهما وكلماتهما", difficulty: 3, params: {letters: [س, ش], words: [سلحفاة, ساعة, شمعة, شوكة]}}
       - {n: 56, week: 5, subject: math, unit: v2-ma-02, type: position-words, skill: "أحدّد ما فوق وما تحت، وما داخل الصندوق وما خارجه", difficulty: 2, params: {concept: [above-below, inside-outside]}}
       - {n: 57, week: 5, subject: english, unit: v2-en-02, type: en-letter, skill: "أتعرّف على الحرف M m وأتتبّعه وأكتبه وألوّن صورة moon", difficulty: 2, params: {letter: M, word: moon}}
@@ -374,10 +374,10 @@ volumes:
       - {n: 59, week: 6, subject: arabic, unit: v2-ar-03, type: coloring, skill: "أسبوع المراجعة: ألوّن الصورة حسب الحرف، ر ز س ش", difficulty: 2, params: {mode: color-by-letter, letters: [ر, ز, س, ش]}}
       - {n: 60, week: 6, subject: english, unit: v2-en-02, type: find-letter, skill: "أجد الحروف L وM وN بين الحروف وأحوّط الحرف الصحيح", difficulty: 3, params: {letters: [L, M, N]}}
       - {n: 61, week: 6, subject: math, unit: v2-ma-02, type: pattern-complete, skill: "أكمل نمط الأشكال والألوان المكوّن من ثلاثة عناصر (أ ب ج أ ب ج …)", difficulty: 3, params: {level: 2, pattern: ABC}}
-      - {n: 62, week: 6, subject: thinking, unit: v2-th-01, type: unit-review, skill: "أراجع: أجد المختلف وأصنّف وأحلّ المتاهة وألاحظ الفروق", difficulty: 3, params: {skills: [odd-one-out, classify, maze, spot-difference]}}
+      - {n: 62, week: 6, subject: thinking, unit: v2-th-01, type: unit-review, skill: "أراجع: أجد المختلف وأصنّف وأحلّ المتاهة وأطابق الصور", difficulty: 3, params: {skills: [odd-one-out, classify, maze, spot-difference]}}
       - {n: 63, week: 6, subject: english, unit: v2-en-02, type: match-letter-picture, skill: "أصل الحروف L وM وN بصور تبدأ بها", difficulty: 3, params: {letters: [L, M, N], words: [leaf, monkey, nose]}}
       - {n: 64, week: 6, subject: pen, unit: v2-pen-01, type: pen-lines, skill: "أرسم أشكالًا صغيرة بين سطرين دون أن أخرج عنهما", difficulty: 3, params: {line: between-lines}}
-      - {n: 65, week: 6, subject: thinking, unit: v2-th-02, type: connect, skill: "أصل كل شيء بما يرتبط به: المفتاح بالقفل، والفرشاة بالمعجون…", difficulty: 3, params: {pairs: 5}}
+      - {n: 65, week: 6, subject: thinking, unit: v2-th-02, type: connect, skill: "أصل كل شيء بما يرتبط به: النحلة بالزهرة، والأرنب بالجزرة…", difficulty: 3, params: {pairs: 5}}
       - {n: 66, week: 6, subject: english, unit: v2-en-02, type: unit-review, skill: "أراجع الحروف L M N: أقرأ وأكتب وأطابق", difficulty: 3, params: {letters: [L, M, N]}}
       - {n: 67, week: 6, subject: arabic, unit: v2-ar-03, type: unit-review, skill: "أسبوع المراجعة: أراجع حروف هذا الجزء حتى الآن، ر ز س ش", difficulty: 3, params: {letters: [ر, ز, س, ش]}}
       - {n: 68, week: 7, subject: arabic, unit: v2-ar-04, type: letter-intro, skill: "أتعرّف على حرف الصاد وألوّنه مع صورتي صاروخ وصفّارة", difficulty: 3, params: {letter: ص, words: [صاروخ, صفارة]}}
@@ -434,7 +434,7 @@ volumes:
       - {n: 119, week: 11, subject: mixed, unit: v2-mix, type: unit-review, skill: "مراجعة شاملة: الحروف من الراء إلى الغين، والأعداد حتى عشرة، والأشكال والمواقع، والحروف I–R", difficulty: 4, params: {covers: [ر–غ, 0–10, shapes, positions, I–R]}}
       - {n: 120, week: 11, subject: pen, unit: v2-pen-test, type: assessment, skill: "تقييم مهارات القلم: أتتبّع حلزونًا وأشكالًا صغيرة بين سطرين، ويلاحظ الكبير مسكة قلمي وضغطي واتجاه خطّي", difficulty: 4, params: {checklist: [grip, pressure, direction], tracing: [spiral, between-lines]}}
       - {n: 121, week: 11, subject: arabic, unit: v2-ar-test, type: assessment, skill: "تقييم العربية: أقرأ الحروف من الراء إلى الغين وأكتبها وأميّز أشكالها في الكلمة", difficulty: 4, params: {covers: [ر, ز, س, ش, ص, ض, ط, ظ, ع, غ, positions]}}
-      - {n: 122, week: 11, subject: math, unit: v2-ma-test, type: assessment, skill: "تقييم الرياضيات: أعدّ وأكتب وأرتّب الأعداد حتى عشرة، وأسمّي الأشكال والمواقع", difficulty: 4, params: {covers: [6–10, ordering, shapes, positions, patterns]}}
+      - {n: 122, week: 11, subject: math, unit: v2-ma-test, type: assessment, skill: "تقييم الرياضيات: أعدّ وأكتب الأعداد حتى ١٠، وأكمل الأعداد الناقصة، وأميّز المثلثات والدوائر", difficulty: 4, params: {covers: [6–10, ordering, shapes, positions, patterns]}}
       - {n: 123, week: 11, subject: english, unit: v2-en-test, type: assessment, skill: "تقييم الإنجليزية: أقرأ الحروف I–R وأكتبها وأربطها بصورها", difficulty: 4, params: {covers: [I, J, K, L, M, N, O, P, Q, R]}}
       - {n: 124, week: 11, subject: thinking, unit: v2-th-test, type: assessment, skill: "تقييم التفكير: أصنّف وأرتّب القصة وأتذكّر وأحلّ المتاهة", difficulty: 4, params: {covers: [classify, sequence, memory, maze]}}
   - volume: 3
@@ -446,7 +446,7 @@ volumes:
       pen: ["يرسم خطوط الوصل بين الحروف بخط ثابت", "يصل النقاط من ١ إلى ٢٠ بالترتيب", "يتتبّع مسارات طويلة فيها منعطفات ويلوّن الأجزاء الصغيرة بدقّة"]
       arabic: ["يتعرّف على الحروف من الفاء إلى الياء ويكتبها، فيكتمل عنده الحروف الثمانية والعشرون", "يقرأ الحرف مع الفتحة والضمة والكسرة والسكون", "يقرأ المقاطع القصيرة والطويلة (المدّ) ويركّب مقطعًا من حرف وحركة", "يقرأ كلمات بسيطة من ثلاثة أو أربعة حروف ويصلها بصورها، وكلمات قليلة مألوفة تبدأ بـ«ال» في آخر الجزء", "يكتب كلمات قصيرة على الخط المنقّط ثم وحده", "يقرأ جملة قصيرة من كلمتين ويصلها بصورتها"]
       math: ["يعدّ حتى ٢٠ ويقرأ الأعداد ١١–٢٠ ويتتبّعها، ويرى العشرات والآحاد بالصور فقط", "يقارن بين عددين حتى ٢٠ ويكمل الأعداد الناقصة على خط الأعداد", "يجمع مجموعتين من الصور حتى ١٠ ويكتب جملة الجمع", "يطرح بالصور حتى ١٠ ويكتب جملة الطرح", "يحلّ مسألة مصوّرة بسيطة ويختار بين الجمع والطرح"]
-      english: ["يتعرّف على الحروف من S إلى Z كبيرة وصغيرة ويكتبها", "يسمّي كلمات من عشر مجموعات مفردات: الأعداد، الألوان، الأشكال، العائلة، أعضاء الجسم، الحيوانات، الفواكه، الطعام، الألعاب، أدوات المدرسة", "يقرأ كلمات إنجليزية قصيرة مثل cat وsun وbus ويصلها بصورها", "يقرأ جملة قصيرة جدًّا مثل I see a cat ويصلها بصورتها"]
+      english: ["يتعرّف على الحروف من S إلى Z كبيرة وصغيرة ويكتبها", "يسمّي كلمات من عشر مجموعات مفردات: الأعداد، الألوان، الأشكال، العائلة، أعضاء الجسم، الحيوانات، الفواكه، الطعام، الألعاب، أدوات المدرسة", "يقرأ كلمات إنجليزية قصيرة ويصلها بصورها، مثل: cat، sun، bus", "يقرأ جملة قصيرة جدًّا مثل I see a cat ويصلها بصورتها"]
       thinking: ["يحلّ متاهات صعبة ويلاحظ ٧ فروق بين صورتين", "يصنّف الأشياء حسب صفتين معًا (اللون والشكل)", "يكمل نمطًا متزايدًا ويتذكّر ترتيب ٥ صور", "يربط السبب بالنتيجة ويرسم حلًّا لمشكلة بسيطة"]
     units:
       - {id: v3-intro, subject: intro, title_ar: "صفحاتي الأولى", title_en: "My first pages", title_v: "صَفَحاتي الأُولى"}
@@ -504,7 +504,7 @@ volumes:
       - {n: 25, week: 3, subject: arabic, unit: v3-ar-02, type: letter-intro, skill: "أتعرّف على حرف الكاف وألوّنه مع صورتي كتاب وكرة", difficulty: 3, params: {letter: ك, words: [كتاب, كرة]}}
       - {n: 26, week: 3, subject: arabic, unit: v3-ar-02, type: letter-intro, skill: "أتعرّف على حرف اللام وألوّنه مع صورتي ليمون ولعبة", difficulty: 3, params: {letter: ل, words: [ليمون, لعبة]}}
       - {n: 27, week: 3, subject: math, unit: v3-ma-01, type: count-and-circle, skill: "أعدّ الأشياء حتى ٢٠ بالصور (عشرة وآحاد) وأحوّط العدد الصحيح", difficulty: 4, params: {numbers: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20], tens_ones: pictures}}
-      - {n: 28, week: 3, subject: english, unit: v3-en-01, type: match-letter-picture, skill: "أصل الحروف S وT وU وV بصور تبدأ بها", difficulty: 3, params: {letters: [S, T, U, V], words: [sock, tiger, uniform, vase]}}
+      - {n: 28, week: 3, subject: english, unit: v3-en-01, type: match-letter-picture, skill: "أصل الحروف S، T، U، V بصور تبدأ بها", difficulty: 3, params: {letters: [S, T, U, V], words: [sock, tiger, uniform, vase]}}
       - {n: 29, week: 3, subject: arabic, unit: v3-ar-02, type: letter-trace, skill: "أتتبّع الكاف واللام: كبيرتين ثم أصغر، وأنتبه إلى طول كل منهما", difficulty: 3, params: {letters: [ك, ل], sizes: [l, m]}}
       - {n: 30, week: 3, subject: thinking, unit: v3-th-01, type: odd-one-out, skill: "أعرف اسم المجموعة وأجد ما لا ينتمي إليها", difficulty: 4, params: {level: 3}}
       - {n: 31, week: 3, subject: math, unit: v3-ma-01, type: compare, skill: "أقارن بين عددين حتى ٢٠ وأحوّط الأكبر", difficulty: 4, params: {concept: bigger-smaller, range: 20}}
@@ -542,7 +542,7 @@ volumes:
       - {n: 63, week: 6, subject: math, unit: v3-ma-02, type: unit-review, skill: "أراجع الجمع بالصور حتى ١٠", difficulty: 4, params: {skills: [addition], max: 10}}
       - {n: 64, week: 6, subject: pen, unit: v3-pen-01, type: trace-path, skill: "أتتبّع مسارًا طويلًا فيه منعطفات حادّة ومنحنيات", difficulty: 4, params: {path: complex}}
       - {n: 65, week: 6, subject: arabic, unit: v3-ar-04, type: letter-write, skill: "أكتب الهاء والواو والياء: سطر موجّه ثم سطر مستقل لكل حرف", difficulty: 4, params: {letters: [ه, و, ي], guided: 1, independent: 1}}
-      - {n: 66, week: 6, subject: thinking, unit: v3-th-01, type: unit-review, skill: "أراجع: أحلّ المتاهة وأجد المختلف وألاحظ الفروق وأتذكّر", difficulty: 4, params: {skills: [maze, odd-one-out, spot-difference, memory]}}
+      - {n: 66, week: 6, subject: thinking, unit: v3-th-01, type: unit-review, skill: "أراجع: أحلّ المتاهة وأجد المختلف وأطابق الصور وأكمل النمط", difficulty: 4, params: {skills: [maze, odd-one-out, spot-difference, memory]}}
       - {n: 67, week: 6, subject: english, unit: v3-en-03, type: vocab-unit, skill: "أتعلّم أسماء الأعداد بالإنجليزية من one إلى ten", difficulty: 3, params: {unit: Numbers, words: [one, two, three, four, five, six, seven, eight, nine, ten]}}
       - {n: 68, week: 6, subject: arabic, unit: v3-ar-04, type: find-letter, skill: "أجد الهاء والواو والياء بين الحروف وأحوّط الحرف الصحيح", difficulty: 4, params: {letters: [ه, و, ي], distractors: [ر, ز, ن]}}
       - {n: 69, week: 6, subject: arabic, unit: v3-ar-04, type: match-letter-picture, skill: "أصل الهاء والواو والياء بصورها وكلماتها", difficulty: 4, params: {letters: [ه, و, ي], words: [هاتف, وزة, يمامة]}}
@@ -572,7 +572,7 @@ volumes:
       - {n: 93, week: 8, subject: math, unit: v3-ma-04, type: picture-subtract, skill: "مسألة مصوّرة: كان عندي بعض الأشياء ثم أعطيتُ منها، كم بقي؟", difficulty: 5, params: {max: 10, mode: story}}
       - {n: 94, week: 9, subject: english, unit: v3-en-04, type: vocab-unit, skill: "أتعلّم أسماء الفواكه بالإنجليزية", difficulty: 4, params: {unit: Fruits, words: [apple, banana, orange, strawberry, lemon, fig]}}
       - {n: 95, week: 9, subject: arabic, unit: v3-ar-06, type: unit-review, skill: "أراجع المقاطع القصيرة والطويلة وأقرؤها بطلاقة", difficulty: 4, params: {skills: [short-syllables, long-syllables, build]}}
-      - {n: 96, week: 9, subject: thinking, unit: v3-th-02, type: connect, skill: "أصل السبب بنتيجته: المطر والمظلة، والشمس والقبعة…", difficulty: 4, params: {pairs: 4, mode: cause-effect}}
+      - {n: 96, week: 9, subject: thinking, unit: v3-th-02, type: connect, skill: "أصل السبب بنتيجته: المطر بالمظلة، والبذرة بالشجرة…", difficulty: 4, params: {pairs: 4, mode: cause-effect}}
       - {n: 97, week: 9, subject: english, unit: v3-en-04, type: vocab-unit, skill: "أتعلّم أسماء الطعام بالإنجليزية", difficulty: 4, params: {unit: Food, words: [bread, rice, milk, egg, cheese, soup]}}
       - {n: 98, week: 9, subject: arabic, unit: v3-ar-07, type: word-read, skill: "أقرأ كلمات من ثلاثة حروف مفتوحة وأحوّط صورها", difficulty: 4, params: {words: [كَتَبَ, رَسَمَ, أَكَلَ]}}
       - {n: 99, week: 9, subject: math, unit: v3-ma-04, type: picture-add, skill: "أجمع بالقفز على خط الأعداد حتى ١٠", difficulty: 5, params: {max: 10, mode: number-line}}

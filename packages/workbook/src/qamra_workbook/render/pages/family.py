@@ -299,9 +299,30 @@ def spread_art(ctx: PageContext) -> Markup:
         draw.path(road, stroke="#FFFFFF", width=0.9, stroke_dasharray="3 3.6", opacity=0.9),
         nested_picture("tree", gutter + 168, h - 118, 48),
     ]
-    for x, y, color in ((gutter + 40, h - 136, "#E4769D"), (gutter + 52, h - 144, "#F2B33D")):
-        body += _balloon(x, y, color, gutter + 54, h - 100)
-    body += _balloon(gutter + 63, h - 134, "#2E9FD6", gutter + 54, h - 100)
+    # three balloons tied to the bow of a gift box that stands on the middle hill (a string held by nobody
+    # would leave them meeting in mid-air)
+    gift_x, gift_y, gift = gutter + 47, h - 85, 15.0
+    knot = (gift_x + gift * 0.5, gift_y + gift * 0.29)
+    for x, y, color in (
+        (gutter + 40, h - 136, "#E4769D"),
+        (gutter + 52, h - 144, "#F2B33D"),
+        (gutter + 63, h - 134, "#2E9FD6"),
+    ):
+        body += _balloon(x, y, color, *knot)
+    body += [
+        draw.el(
+            "ellipse", cx=gift_x + gift / 2, cy=gift_y + gift * 0.88, rx=gift * 0.4, ry=1.1, fill="#7FB86A"
+        ),
+        draw.el(
+            "svg",
+            picture("gift").inner("color", {"main": "#9B7FD4", "lid": "#B9A3E8", "ribbon": "#F2B33D"}),
+            x=gift_x,
+            y=gift_y,
+            width=gift,
+            height=gift,
+            viewBox="0 0 100 100",
+        ),
+    ]
     body.append(nested_picture("butterfly", gutter + 142, h - 50, 14))
     for x, dy in (
         (gutter + 34, 34),
@@ -325,7 +346,9 @@ def spread_art(ctx: PageContext) -> Markup:
 
 def _balloon(x: float, y: float, color: str, hand_x: float, hand_y: float) -> list[str]:
     """A balloon on a string held at (hand_x, hand_y)."""
-    string = draw.path(f"M{x + 7} {y + 15} Q{x + 4} {y + 24} {hand_x} {hand_y}", stroke="#8E93AB", width=0.35)
+    string = draw.path(
+        f"M{x + 7.7} {y + 15.4} Q{x + 4} {y + 24} {hand_x} {hand_y}", stroke="#8E93AB", width=0.35
+    )
     balloon = picture("balloon").inner("color", {"main": color})
     return [string, draw.el("svg", balloon, x=x, y=y, width=16, height=16, viewBox="0 0 100 100")]
 

@@ -65,6 +65,9 @@
               color: #FFFFFF; flex: none; }
 .cv-badge .ico { width: 4.2mm; height: 4.2mm; }
 .cv-badge > span { display: block; max-width: 66mm; overflow: hidden; }
+/* the body font joins «في» by a required ligature (rlig: switching it off breaks «لا») into a dotless ya:
+   the journey's «مهمّة واحدة في كل صفحة» is set in the naskh, which keeps the dots */
+.cv-journey .cv-badge > span { font: 700 11pt/1.2 var(--naskh); padding-bottom: .4mm; }
 
 /* ---- the back ------------------------------------------------------------------------------------------- */
 .cvk-band { position: absolute; left: 0; right: 0; top: 0; overflow: hidden; }

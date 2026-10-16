@@ -232,6 +232,20 @@ MATCH_LETTER = (  # three columns: the letter, its picture, the picture's word
     "{قُلِ/قولي} اسْمَ الصّورَةِ، ثُمَّ {صِلْها/صِليها} بِحَرْفِها وَكَلِمَتِها",
     "{صِلْ/صِلي} كُلَّ حَرْفٍ بِصورَتِهِ، وَكُلَّ صورَةٍ بِكَلِمَتِها",
 )
+# the third wording counts the pictures: two for each letter («بِصورَتَيْهِ»), or one letter with two and
+# another with one (د: دُبّ، دَجاجَة; ذ: ذُرَة), when the line starts from the picture
+MATCH_LETTER_TWO = "{صِلْ/صِلي} كُلَّ حَرْفٍ بِصورَتَيْهِ، وَكُلَّ صورَةٍ بِكَلِمَتِها"
+MATCH_LETTER_MIXED = "{صِلْ/صِلي} كُلَّ صورَةٍ بِحَرْفِها الأَوَّلِ وَبِكَلِمَتِها"
+
+
+def match_letter_say(params: Mapping[str, Any], letters: list[str]) -> str:
+    words = len(params.get("words", []))
+    third = MATCH_LETTER[2]
+    if letters and words == 2 * len(letters):
+        third = MATCH_LETTER_TWO
+    elif letters and words != len(letters):
+        third = MATCH_LETTER_MIXED
+    return pick((*MATCH_LETTER[:2], third), turn(params))
 
 
 def arabic_texts(kind: str, params: dict[str, Any]) -> Texts | None:
@@ -248,7 +262,7 @@ def arabic_texts(kind: str, params: dict[str, Any]) -> Texts | None:
         case "find-letter":
             return f"أَيْنَ {letters_head(letters)}؟", pick(FIND_LETTER, turn(params)), ""
         case "match-letter-picture":
-            return "الحَرْفُ وَالصّورَةُ وَالكَلِمَةُ", pick(MATCH_LETTER, turn(params)), ""
+            return "الحَرْفُ وَالصّورَةُ وَالكَلِمَةُ", match_letter_say(params, letters), ""
         case "classify":
             return "أَيْنَ أَضَعُها؟", "{قُلِ/قولي} اسْمَ الصّورَةِ، {وَصِلْها/وَصِليها} بِحَرْفِها الأَوَّلِ", ""
         case "connect":
@@ -278,7 +292,8 @@ EN_FIND = (
     ("صَفًّا صَفًّا: {حَوِّطِ/حَوِّطي} الحَرْفَ كُلَّما {رَأَيْتَهُ/رَأَيْتِهِ}", "Circle the letter wherever you see it."),
 )
 EN_MATCH = (
-    ("أَيُّ صورَةٍ تَبْدَأُ بِهذا الحَرْفِ؟ {صِلْهُما/صِليهِما}", "Match each letter to its picture."),
+    # three columns (the letter, its picture, the picture's word): the line names all three
+    ("لِكُلِّ حَرْفٍ صورَةٌ وَكَلِمَةٌ: {صِلْهُ بِهِما/صِليهِ بِهِما}", "Match letters to their pictures and words."),
     ("{قُلِ/قولي} اسْمَ الصّورَةِ، ثُمَّ {صِلْها/صِليها} بِحَرْفِها", "Name the picture, then match it."),
 )
 EN_REVIEW = (
@@ -659,7 +674,7 @@ REVIEW_SAY = {  # a review page holds a few exercise cards, each with its own sh
         "{أَكْمِلِ/أَكْمِلي} التَّمارينَ، {وَتَذَكَّرْ/وَتَذَكَّري} شَكْلَ كُلِّ حَرْفٍ",
     ),
     "reading": (
-        "هَلْ {تَذْكُرُ/تَذْكُرينَ} ما {قَرَأْتَهُ/قَرَأْتِهِ}؟ {أَجِبْ/أَجيبي} عَنِ الأَسْئِلَةِ",
+        "هَلْ {تَذْكُرُ/تَذْكُرينَ} ما {تَعَلَّمْتَهُ/تَعَلَّمْتِهِ}؟ {أَكْمِلِ/أَكْمِلي} التَّمارينَ",
         "{راجِعْ/راجِعي} ما {قَرَأْتَهُ/قَرَأْتِهِ}، {وَأَكْمِلِ/وَأَكْمِلي} التَّمارينَ",
     ),
     "numbers": (

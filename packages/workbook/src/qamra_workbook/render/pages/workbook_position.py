@@ -76,7 +76,10 @@ def letter_position(ctx: PageContext) -> Built:
     # the forms: each target letter at the beginning, in the middle and at the end
     head_h = 12 + 16 * len(targets)
     body.append(card(0, 0, W, head_h, r=7, fill=ctx.style.tint, stroke="none"))
-    for k, label in enumerate(("في الأَوَّلِ", "في الوَسَطِ", "في الآخِرِ")):
+    fi = (
+        "فِي" if ctx.book.product == "journey" else "في"
+    )  # each book's own way with «في» (the journey vowels it)
+    for k, label in enumerate((f"{fi} الأَوَّلِ", f"{fi} الوَسَطِ", f"{fi} الآخِرِ")):
         body.append(text(label, W - 50 - k * 44, 8.5, 4.6, color=ctx.style.deep))
     for i, t in enumerate(targets):
         y = 12.0 + i * 16
