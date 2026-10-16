@@ -19,6 +19,7 @@ from rq import Queue
 from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from qamra_api.routers.admin_islamic import plan
 from qamra_api.seed_store import seed_store
 from qamra_core.db.islamic import (
     IslamicReviewer,
@@ -355,7 +356,8 @@ async def test_the_review_pages_show_the_rendered_previews(
     assert (await client.post(f"{REVIEW}/volumes/R/previews")).json()["error"]["code"] == "previews_busy"
 
     # what the worker leaves: one PNG per page in private storage
-    keys = [f"islamic/review/R/{run}/p{n:03d}.png" for n in range(1, 72)]
+    pages = len(plan().pages["R"])  # the planned count (72 since the pages-in-fours rule), never a literal
+    keys = [f"islamic/review/R/{run}/p{n:03d}.png" for n in range(1, pages + 1)]
     for key in keys:
         storage.put(key, b"\x89PNG-page", "image/png")
     await adb.execute(
