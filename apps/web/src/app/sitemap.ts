@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getStoreCatalog, getThemes } from "@/lib/catalog";
+import { getPricesShown, getStoreCatalog, getThemes } from "@/lib/catalog";
 import { entry } from "@/lib/seo";
 import { ACTIVITY_LINES } from "@/lib/shop";
 
@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic"; // the stories and books come from the a
 
 /** The public store: home, stories on sale (one page each), activity books, pricing, how it works, kindergartens. */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [themes, catalog] = await Promise.all([getThemes("ar"), getStoreCatalog()]);
+  const [themes, catalog, prices] = await Promise.all([getThemes("ar"), getStoreCatalog(), getPricesShown()]);
   const stories = (themes ?? []).filter((t) => t.status === "available").map((t) => entry(`/stories/${t.slug}`, 0.9));
   const workbooks = (catalog?.products ?? [])
     .filter((p) => (ACTIVITY_LINES as readonly string[]).includes(p.line))
@@ -18,7 +18,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...stories,
     entry("/workbooks", 0.9),
     ...workbooks,
-    entry("/pricing", 0.8),
+    ...(prices ? [entry("/pricing", 0.8)] : []), // no prices page while they are hidden
     entry("/how-it-works", 0.7, "monthly"),
     entry("/kindergartens", 0.7, "monthly"),
     entry("/shop", 0.6),

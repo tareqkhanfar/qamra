@@ -73,15 +73,26 @@ export type ShopSummary = {
   /** Per product: can it be ordered now (admin switch). */
   orderable?: Record<string, boolean>;
 };
-export const getShopSummary = (currency: "ILS" | "JOD" = "ILS") =>
-  get<ShopSummary>(`/api/shop/summary?currency=${currency}`);
+export async function getShopSummary(currency: "ILS" | "JOD" = "ILS"): Promise<ShopSummary | null> {
+  const [summary, prices] = await Promise.all([
+    get<ShopSummary>(`/api/shop/summary?currency=${currency}`),
+    getPricesShown(),
+  ]);
+  // kept up to a minute in the data cache: a price cached before the admin hid them never shows
+  return summary && !prices ? { ...summary, class_book_from: null } : summary;
+}
 
 /** Admin-managed public settings (prices, contact details, site switches). */
 export type PublicSettings = {
-  price_digital_ils: string;
-  price_softcover_ils: string;
-  price_hardcover_ils: string;
-  delivery_fee_ils: string;
+  /**
+   * «إظهار الأسعار للزبائن» (Tareq, 2026-10-16: off for now). While off the API sends customers no price, total or
+   * currency (nor the price settings below), and the site shows none: see `pricesShown`.
+   */
+  show_prices?: boolean;
+  price_digital_ils?: string;
+  price_softcover_ils?: string;
+  price_hardcover_ils?: string;
+  delivery_fee_ils?: string;
   /** Calls (the owner's number, +970); WhatsApp is on +972. Digits with a leading "+". */
   support_phone?: string;
   support_whatsapp: string;
@@ -102,6 +113,23 @@ export type PublicSettings = {
 };
 
 export const getPublicSettings = () => get<PublicSettings>("/api/settings/public", 0);
+
+/**
+ * May customers see prices? Only while the admin has `show_prices` on; unknown settings (the API is down) count as
+ * off, so a price never shows by mistake. Client components read it with `useShowPrices()` (site/Prices.tsx).
+ */
+export const pricesShown = (site: Pick<PublicSettings, "show_prices"> | null | undefined): boolean =>
+  site?.show_prices === true;
+
+/**
+ * A message key, or its `…NoPrice` wording while prices are hidden, when it has one: the same line without
+ * prices, quotes or price comparisons («اطلبوا عرض سعر» → «تواصلوا معنا»).
+ */
+export const priceWording = (key: string, prices: boolean, has: (key: string) => boolean): string =>
+  !prices && has(`${key}NoPrice`) ? `${key}NoPrice` : key;
+
+/** Server components: the switch, read from the API (uncached, like the other admin settings). */
+export const getPricesShown = async (): Promise<boolean> => pricesShown(await getPublicSettings());
 
 /** wa.me link for a stored phone number (digits only). */
 export const whatsappLink = (phone: string) => `https://wa.me/${phone.replace(/\D/g, "")}`;

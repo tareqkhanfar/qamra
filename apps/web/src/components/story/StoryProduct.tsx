@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useState, useSyncExternalStore, type ReactNode } from "react";
 import { BookViewer } from "@/components/book/BookViewer";
 import { CoverArt, splitTemplate } from "@/components/book/CoverArt";
+import { useShowPrices } from "@/components/site/Prices";
 import { Link, useRouter } from "@/i18n/navigation";
 import { errorText } from "@/lib/api";
 import type { ThemeDetail } from "@/lib/catalog";
@@ -65,6 +66,7 @@ export function StoryProduct({
   const [adding, setAdding] = useState(false);
   const [addError, setAddError] = useState<string | null>(null);
   const currency = catalog?.currency ?? "ILS";
+  const prices = useShowPrices(); // the sticky bar's price only while prices are shown to customers
   const offers = LINES.map((l) => offer(catalog, l, theme)).filter((o): o is Offer => o !== null);
   const firstLine = offers.find((o) => o.available)?.line ?? "magic";
   const [pickedLine, setPickedLine] = useState<Line | null>(initialLine);
@@ -348,9 +350,11 @@ export function StoryProduct({
         <div className="mx-auto flex max-w-[1200px] items-center gap-3 px-4 lg:px-10">
           <div className="flex flex-col">
             <span className="text-xs text-ink-muted">{summary}</span>
-            <strong className="text-[19px]" aria-live="polite">
-              {price === null ? tc("priceTbd") : money(price, currency, locale)}
-            </strong>
+            {prices && (
+              <strong className="text-[19px]" aria-live="polite">
+                {price === null ? tc("priceTbd") : money(price, currency, locale)}
+              </strong>
+            )}
           </div>
           <button
             type="button"

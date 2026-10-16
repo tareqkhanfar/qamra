@@ -10,7 +10,7 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { FamilyQuoteForm } from "@/components/workbook/FamilyQuoteForm";
 import { brandName } from "@/config/brand";
 import { Link } from "@/i18n/navigation";
-import { getShopSummary } from "@/lib/catalog";
+import { getPricesShown, getShopSummary, priceWording } from "@/lib/catalog";
 import { pageMetadata } from "@/lib/seo";
 import { money } from "@/lib/store";
 
@@ -31,11 +31,12 @@ const WHO_STYLE = {
 
 export default async function KindergartensPage() {
   const locale = await getLocale();
-  const [t, tn, te, summary] = await Promise.all([
+  const [t, tn, te, summary, prices] = await Promise.all([
     getTranslations("kg"),
     getTranslations("nav"),
     getTranslations("errors"),
     getShopSummary(),
+    getPricesShown(),
   ]);
   const perChild =
     summary?.class_book_from && summary.class_book_min_qty
@@ -256,7 +257,9 @@ export default async function KindergartensPage() {
         >
           <div className="flex flex-col gap-4">
             <h2 className="text-[30px] text-night-900 md:text-[44px]">{t("formTitle")}</h2>
-            <p className="text-body-l leading-[1.75] text-ink-muted">{t("formLead")}</p>
+            <p className="text-body-l leading-[1.75] text-ink-muted">
+              {t(priceWording("formLead", prices, (k) => t.has(k)))}
+            </p>
             <Photo
               name="kindergarten-teacher"
               alt={t("teacherAlt")}

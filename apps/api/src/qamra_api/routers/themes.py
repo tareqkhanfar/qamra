@@ -4,7 +4,7 @@ import re
 from decimal import Decimal
 from typing import Any, Literal
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from pydantic import BaseModel
 from sqlalchemy import select
 
@@ -13,6 +13,7 @@ from qamra_ai.pipeline.theme import CatalogArt, Theme, render_template
 from qamra_api.classic import classic_availability
 from qamra_api.deps import SessionDep
 from qamra_api.errors import ApiError
+from qamra_api.price_visibility import hidden
 from qamra_api.store.catalog import load_catalog
 from qamra_core.db.models import Currency
 from qamra_core.db.models import Theme as ThemeRow
@@ -192,8 +193,11 @@ class Price(BaseModel):
 
 
 @router.get("/pricing")
-async def pricing(db: SessionDep, currency: Literal["ILS", "JOD"] = "ILS") -> list[Price]:
-    """The Classic book's formats from the store catalog; the full catalog is /api/store/catalog."""
+async def pricing(request: Request, db: SessionDep, currency: Literal["ILS", "JOD"] = "ILS") -> list[Price]:
+    """The Classic book's formats from the store catalog; the full catalog is /api/store/catalog. Nothing
+    while prices are hidden from customers (`show_prices`)."""
+    if hidden(request):
+        return []
     catalog = await load_catalog(db)
     formats = {
         v.options.get("format"): catalog.price(v, Currency(currency))

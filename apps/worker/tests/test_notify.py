@@ -41,7 +41,11 @@ from qamra_worker.notify.email import (
 from qamra_worker.notify.templates import Item, messages, render
 
 BASE = "https://qamra.test"
-VALUES: dict[str, Any] = {"email_notifications_enabled": True, "support_email": "help@qamra.test"}
+VALUES: dict[str, Any] = {
+    "email_notifications_enabled": True,
+    "support_email": "help@qamra.test",
+    "show_prices": True,
+}
 
 
 @pytest.fixture(autouse=True)
@@ -198,6 +202,29 @@ def test_english_accounts_get_english(db: Session) -> None:
     order_email(db, sender, str(order.id), "shipped", BASE, VALUES)
     assert sender.outbox[0].subject == "Order QM-MAIL01 is on its way 🚚"
     assert f"{BASE}/en/order/QM-MAIL01" in sender.outbox[0].text and 'dir="ltr"' in sender.outbox[0].html
+
+
+def test_while_prices_are_hidden_order_emails_carry_no_amount(db: Session) -> None:
+    """`show_prices` off (the default, Tareq 2026-10-16): the placed and shipped emails have no total."""
+    hidden = {**VALUES, "show_prices": False}
+    ar, en = (
+        _order(db, _parent(db), "QM-HIDE01"),
+        _order(db, _parent(db, "dad@example.com", Locale.en), "QM-HIDE02"),
+    )
+    sender = FakeEmailSender()
+    for order in (ar, en):
+        for event in ("placed", "shipped"):
+            assert order_email(db, sender, str(order.id), event, BASE, hidden) == "sent"
+    placed_ar, shipped_ar, placed_en, shipped_en = sender.outbox
+    for mail in sender.outbox:
+        assert not any(
+            sign in mail.text or sign in mail.html for sign in ("₪", "139", "JD", "المبلغ", "Amount")
+        )
+    assert (
+        "وصلنا طلبكم رقم QM-HIDE01." in placed_ar.text
+        and "We've received your order QM-HIDE02." in placed_en.text
+    )
+    assert "الدفع نقدًا عند الاستلام." in shipped_ar.text and "Payment is cash on delivery." in shipped_en.text
 
 
 def test_guest_orders_and_switched_off_emails_are_skipped(db: Session) -> None:

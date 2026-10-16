@@ -14,15 +14,19 @@ const FORMAT_ORDER = ["softcover", "hardcover", "digital"];
 export type Offer = {
   line: Line;
   product: CatalogProduct;
-  formats: CatalogVariant[]; // priced variants, softcover → hardcover → digital
-  from: number | null; // the cheapest printed copy (what the cards call "from"), else the cheapest one
+  formats: CatalogVariant[]; // the variants on sale, softcover → hardcover → digital
+  /** The cheapest printed copy (what the cards call "from"), else the cheapest one; null without prices. */
+  from: number | null;
   available: boolean; // false: no live Classic template for this story yet
 };
 
 export const num = (v: string | number | null | undefined) => (v === null || v === undefined ? 0 : Number(v));
 
+/** Hidden prices (`show_prices` off) reach the site as no `price` at all: the variant is on sale, with no number. */
+const hasPrice = (v: { price?: string | null }) => v.price !== null && v.price !== undefined;
+
 function fromPrice(variants: CatalogVariant[]): number | null {
-  const priced = variants.filter((v) => v.price !== null);
+  const priced = variants.filter(hasPrice);
   const printed = priced.filter((v) => PRINTED.includes(v.options.format ?? ""));
   const pool = printed.length ? printed : priced;
   return pool.length ? Math.min(...pool.map((v) => num(v.price))) : null;
@@ -88,7 +92,7 @@ export function classicStylesFor(catalog: Catalog | null, theme?: Pick<ThemeCard
 /** Where the digital copy comes free with a printed book (the `digital-copy` add-on, when it is 0 ₪). */
 export function freeDigitalCopy(catalog: Catalog | null, line: Line): CatalogAddOn | null {
   const addon = catalog?.addons.find((a) => a.slug === "digital-copy");
-  return addon && addon.lines.includes(line) && num(addon.price) === 0 ? addon : null;
+  return addon && addon.lines.includes(line) && hasPrice(addon) && num(addon.price) === 0 ? addon : null;
 }
 
 export function addonFor(catalog: Catalog | null, slug: string, line: Line) {

@@ -269,8 +269,13 @@ export const inviteApi = {
   draw: (token: string, fixes: string[] = []) => api<Character>(`/api/invite/${token}/character`, { json: { fixes } }),
 };
 
-/** "0.00 ₪" / "0.00 د.أ". */
-export function money(amount: string | number | null, currency: string, locale: string): string {
+/** "0.00 ₪" / "0.00 د.أ"; "" for an amount the API left out (prices hidden from customers, `show_prices` off). */
+export function money(
+  amount: string | number | null | undefined,
+  currency: string | undefined,
+  locale: string,
+): string {
+  if (amount === undefined) return "";
   if (amount === null) return "—";
   const value = Number(amount).toLocaleString(locale === "ar" ? "ar-EG" : "en-US", { minimumFractionDigits: 2 });
   return currency === "JOD" ? `${value} ${locale === "ar" ? "د.أ" : "JD"}` : `${value} ₪`;

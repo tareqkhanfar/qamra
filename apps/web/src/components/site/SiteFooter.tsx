@@ -1,7 +1,7 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { brandName } from "@/config/brand";
 import { Link } from "@/i18n/navigation";
-import { getPublicSettings } from "@/lib/catalog";
+import { getPublicSettings, priceWording, pricesShown } from "@/lib/catalog";
 import { ContactLinks } from "./ContactLinks";
 
 /**
@@ -24,12 +24,12 @@ export async function SiteFooter() {
   ];
   const kg = [
     { href: "/kindergartens", label: t("gradBooks") },
-    { href: "/kindergartens#demo", label: t("quote") },
+    { href: "/kindergartens#demo", label: t(priceWording("quote", pricesShown(site), (k) => t.has(k))) },
     { href: "/login?next=/portal", label: t("portal") },
   ];
   const about = [
     { href: "/how-it-works", label: t("how") },
-    { href: "/pricing", label: t("pricing") },
+    ...(pricesShown(site) ? [{ href: "/pricing", label: t("pricing") }] : []), // hidden with the prices
     { href: "/privacy", label: t("privacy") },
   ];
   return (

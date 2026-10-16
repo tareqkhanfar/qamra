@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
+import { useShowPrices } from "@/components/site/Prices";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { errorText } from "@/lib/api";
@@ -9,11 +10,13 @@ import { money, portalApi, portalFiles, type OrderRow, type Quote } from "@/lib/
 import { usePortal } from "./PortalShell";
 
 /** The class order (design ClassPrint, PortalOrder): wholesale tiers, one order and one invoice, delivered to
- * the school, cash on delivery. */
+ * the school, cash on delivery. While prices are hidden from customers (`show_prices` off): the copies only, no
+ * tiers, amounts or invoices (the API sends none). */
 export function OrderView({ classId }: { classId: string }) {
   const t = useTranslations("portal.order");
   const te = useTranslations("errors");
   const locale = useLocale();
+  const prices = useShowPrices();
   const { me, reload } = usePortal();
   const [quote, setQuote] = useState<Quote | null>(null);
   const [orders, setOrders] = useState<OrderRow[]>([]);
@@ -66,7 +69,7 @@ export function OrderView({ classId }: { classId: string }) {
           </div>
           {quote.children.length > 0 && <p className="text-caption text-ink-muted">{quote.children.join("، ")}</p>}
         </section>
-        {quote.tiers.length > 0 && (
+        {prices && quote.tiers.length > 0 && (
           <section className="flex flex-col gap-3">
             <h2 className="text-h3 text-night-900">{t("tiers")}</h2>
             <div className="grid gap-3 sm:grid-cols-3">
@@ -116,10 +119,12 @@ export function OrderView({ classId }: { classId: string }) {
                   {o.code}
                 </span>
                 <span className="text-small">
-                  {t("orderLine", { n: o.copies, total: money(o.total, o.currency, locale) })}
+                  {prices
+                    ? t("orderLine", { n: o.copies, total: money(o.total, o.currency, locale) })
+                    : t("orderLineNoPrice", { n: o.copies })}
                 </span>
                 <span className="text-caption text-ink-muted">{t(`status.${o.status}`)}</span>
-                {o.invoice_ready ? (
+                {!prices ? null : o.invoice_ready ? (
                   <a
                     href={portalFiles.invoice(o.code)}
                     target="_blank"
@@ -139,18 +144,27 @@ export function OrderView({ classId }: { classId: string }) {
       <aside className="flex flex-col gap-3 self-start rounded-xl border border-line bg-paper-raised p-5 xl:sticky xl:top-6">
         <h2 className="text-h3 text-night-900">{t("summary")}</h2>
         <dl className="flex flex-col gap-2 text-small">
-          <Line label={t("booksLine", { n: quote.copies, unit: m(quote.unit_price) })} value={m(quote.subtotal)} />
+          {prices ? (
+            <Line label={t("booksLine", { n: quote.copies, unit: m(quote.unit_price) })} value={m(quote.subtotal)} />
+          ) : (
+            <Line label={t("copies")} value={String(quote.copies)} />
+          )}
           <Line label={t("included")} value={t("free")} />
-          {Number(quote.discount) > 0 && <Line label={t("discount")} value={`− ${m(quote.discount)}`} />}
-          <Line label={t("shipping")} value={Number(quote.shipping) ? m(quote.shipping) : t("free")} />
-          <Line label={t("total")} value={m(quote.total)} strong />
+          {prices && Number(quote.discount) > 0 && <Line label={t("discount")} value={`− ${m(quote.discount)}`} />}
+          {prices && <Line label={t("shipping")} value={Number(quote.shipping) ? m(quote.shipping) : t("free")} />}
+          {prices && <Line label={t("total")} value={m(quote.total)} strong />}
         </dl>
-        <p className="text-caption text-ink-muted">{t("priceList", { name: quote.price_list ?? t("retail") })}</p>
+        {prices && (
+          <p className="text-caption text-ink-muted">{t("priceList", { name: quote.price_list ?? t("retail") })}</p>
+        )}
         {quote.ordered || placed ? (
-          <Alert tone="success">{t("placed", { code: quote.ordered ?? placed ?? "" })}</Alert>
+          <Alert tone="success">
+            {t(prices ? "placed" : "placedNoPrice", { code: quote.ordered ?? placed ?? "" })}
+          </Alert>
         ) : (
           <>
             <p className="text-small">{t("cod", { school: me.org.name })}</p>
+            {!prices && <p className="text-small text-ink-muted">{t("confirmDetails")}</p>}
             <label htmlFor="notes" className="text-small font-semibold">
               {t("notes")}
             </label>

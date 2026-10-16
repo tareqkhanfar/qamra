@@ -76,12 +76,16 @@ export function StoryLines({ catalog, examples }: { catalog: Catalog | null; exa
               >
                 {t(`stories.${line}`)}
               </span>
-              <span className={`mt-auto pt-1 text-caption ${dark ? "text-ink-dark-muted" : "text-ink-muted"}`}>
-                {o.formats.length > 1 ? t("from") : t("stories.hardcover")}
-              </span>
-              <strong className={`font-display text-[20px] ${dark ? "text-amber-300" : "text-night-900"}`}>
-                {price(o.from)}
-              </strong>
+              {o.from !== null && ( // no price while prices are hidden from customers
+                <>
+                  <span className={`mt-auto pt-1 text-caption ${dark ? "text-ink-dark-muted" : "text-ink-muted"}`}>
+                    {o.formats.length > 1 ? t("from") : t("stories.hardcover")}
+                  </span>
+                  <strong className={`font-display text-[20px] ${dark ? "text-amber-300" : "text-night-900"}`}>
+                    {price(o.from)}
+                  </strong>
+                </>
+              )}
             </div>
           </Link>
         );

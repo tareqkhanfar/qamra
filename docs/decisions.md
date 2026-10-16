@@ -2,6 +2,19 @@
 
 Newest first. Each entry: date — decision — why.
 
+## 2026-10-16 — Prices hidden from customers, kept for staff (admin switch `show_prices`)
+
+Owner (2026-10-16): «بدي توقف الاسعار لو سمحت من الموقع … وتخلي الاسعار داخلية للادارة فقط ع النظام، ما بدي الزباين يعرفوا الاسعار.»
+
+- **One switch, off by default:** «إظهار الأسعار للزبائن» (`show_prices`, admin → Settings → الأسعار, public). Turning it on brings every price back without a deploy; nothing about the prices themselves changes. Orders still record their prices from the price list.
+- **Enforced on the server, once:** every `/api/…` response except `/api/admin/…` (and the test-only `/api/e2e/…`) is customer-facing. While the switch is off, `qamra_api/price_visibility.py` strips the price fields from their JSON at any depth (`price*`, `*discount*`, `currency`, `subtotal`, `*_ils/_jod/_usd`, …; `total`, `amount`, `fee`, `shipping`, `base`, `percent`, `balance` only when they hold a decimal, so counts like a voice invite's `total: 3` stay). It fails closed: an early error on a customer path is stripped too. New endpoints are covered without code.
+- **The catalog leaves out what has no price** (not sold in the currency) while prices are hidden, so the site's «on sale = listed» logic keeps working without the numbers.
+- **Catalog wording that gives the price away** («نفس الكتاب بنص السعر تقريبًا», «نسخة رقمية مجانية مع المطبوع», the «توفير» badge, «بأسعار الروضات») is replaced in customer responses by `content/store/no_price_wording.yaml`, by slug. Staff screens and orders keep the admin's own words.
+- **Not JSON:** the school's invoice PDF answers 404 to the school (staff print it from the admin); the order emails and the prepared WhatsApp messages say «الدفع نقدًا عند الاستلام» instead of the amount; the packing slip has no prices (it goes in the box).
+- **The site:** no price, total, discount, «من X», price comparison or add-on amount anywhere a customer looks; no discount-code field; the prices page is out of the menu, the footer and the sitemap, and /pricing leads to the shop. Lines that spoke of a quote or class prices have a `…NoPrice` wording («تواصلوا معنا»). Checkout and the school's order say «نتواصل معكم لتأكيد التفاصيل». Server components read the switch per request (`getPricesShown`), client components through `useShowPrices()`; unknown settings count as off.
+- **Kept on purpose:** «معاينة مجانية», «إعادة طباعة مجانية إذا الخطأ منّا», the free redraws and «غلاف مجاني» are promises about the service, not prices. Say the word if they should go too.
+- **Tests:** the API suite runs with the switch on (its tests check prices); `test_price_visibility.py` covers it off and on. The E2E suite turns prices on for its run (`/api/e2e/settings/show-prices`), and `tests/e2e/test_prices_hidden.py` walks the public pages and an order from the format step to the order page with them hidden.
+
 ## 2026-10-10 — Every drawing kept and choosable; the parent's own words in «ما الذي لا يشبهه؟»
 
 Owner (2026-10-10): «اذا بدي ارسم كمان مرة القديمة ما تنحذف خليك معرضها … عشان المقارنات بين الصور ونمط الرسم» and «بدي تضيف كمان حقل اسمح انه اقدر ادخل كتابة كمان».

@@ -2,7 +2,8 @@
 
 For a gift order it carries no price at all (not the books, the add-ons, the discounts or the total) and it
 prints the parent's card message; the courier's waybill carries the cash-on-delivery amount. Anything else
-the recipient would see (the invoice) stays out of a gift parcel.
+the recipient would see (the invoice) stays out of a gift parcel. While customers see no prices at all
+(`show_prices` off, Tareq 2026-10-16) every slip leaves them out the same way.
 """
 
 import uuid
@@ -14,8 +15,9 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from sqlalchemy import select
 
-from qamra_api.deps import SessionDep, require_permission
+from qamra_api.deps import SessionDep, SettingsDep, require_permission
 from qamra_api.errors import ApiError
+from qamra_api.price_visibility import prices_shown
 from qamra_core.db.models import Book, Order, OrderItem
 from qamra_core.printing import item_copies, item_format
 
@@ -84,7 +86,7 @@ def _addons(addons: list[Any]) -> list[SlipAddOn]:
 
 
 @router.get("/{order_id}/packing-slip", dependencies=[Depends(require_permission("orders.view"))])
-async def packing_slip(order_id: uuid.UUID, db: SessionDep) -> PackingSlipOut:
+async def packing_slip(order_id: uuid.UUID, db: SessionDep, settings: SettingsDep) -> PackingSlipOut:
     order = await db.get(Order, order_id)
     if order is None:
         raise ApiError("not_found", 404)
@@ -95,7 +97,8 @@ async def packing_slip(order_id: uuid.UUID, db: SessionDep) -> PackingSlipOut:
         if ids
         else {}
     )
-    hide = order.gift
+    # the slip goes in the box: no prices on a gift, nor while customers see none (`show_prices` off)
+    hide = order.gift or not await prices_shown(db, settings)
     lines = []
     for i in items:
         options = {str(k): str(v) for k, v in (i.title.get("options") or {}).items()}
@@ -135,7 +138,8 @@ async def packing_slip(order_id: uuid.UUID, db: SessionDep) -> PackingSlipOut:
             phone=order.shipping.get("phone"),
             city=order.shipping.get("city"),
             address=order.shipping.get("address"),
-            notes=None if hide else order.shipping.get("notes"),  # a note to the courier, not the recipient
+            # a note to the courier, not the gift's recipient
+            notes=None if order.gift else order.shipping.get("notes"),
         ),
         items=lines,
         currency=order.currency.value,

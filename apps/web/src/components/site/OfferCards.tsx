@@ -3,7 +3,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { Scene } from "@/components/art/Scene";
 import { ExampleImage } from "@/components/book/ExampleImage";
 import { Link } from "@/i18n/navigation";
-import type { ShopSummary } from "@/lib/catalog";
+import { getPricesShown, priceWording, type ShopSummary } from "@/lib/catalog";
 import { storyPages, type Example } from "@/lib/examples";
 import { ACTIVITY_LINES, productFrom } from "@/lib/shop";
 import { money, type Catalog } from "@/lib/store";
@@ -32,7 +32,8 @@ export async function OfferCards({
   examples: Example[];
   summary: ShopSummary | null;
 }) {
-  const [t, locale] = await Promise.all([getTranslations("landing"), getLocale()]);
+  const [t, locale, prices] = await Promise.all([getTranslations("landing"), getLocale(), getPricesShown()]);
+  const w = (key: string) => t(priceWording(key, prices, (k) => t.has(k))); // no quote wording while prices are hidden
   const currency = catalog?.currency ?? "ILS";
   const price = (n: number | string | null | undefined) => (n == null ? null : money(n, currency, locale));
   const classic = offer(catalog, "classic");
@@ -128,7 +129,7 @@ export async function OfferCards({
               <span className="text-caption font-semibold text-ink-muted">{t("story")}</span>
             )}
             <h3 className="text-[18px] leading-tight text-night-900 md:text-[22px]">{t(`offers.${o.key}.title`)}</h3>
-            <p className="text-caption leading-[1.5] text-ink-muted md:text-small">{t(`offers.${o.key}.body`)}</p>
+            <p className="text-caption leading-[1.5] text-ink-muted md:text-small">{w(`offers.${o.key}.body`)}</p>
             <div className="mt-auto flex flex-col gap-1 pt-2">
               <strong className="font-display text-[18px] text-night-900">
                 {o.key === "kg"
@@ -136,7 +137,7 @@ export async function OfferCards({
                   : o.price && t("from", { price: o.price })}
               </strong>
               <span className="text-small font-bold text-amber-700">
-                {t(`offers.${o.key}.cta`)} <Arrow />
+                {w(`offers.${o.key}.cta`)} <Arrow />
               </span>
             </div>
           </div>

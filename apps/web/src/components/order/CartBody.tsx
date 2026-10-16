@@ -2,10 +2,11 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useState, type ReactNode } from "react";
+import { useShowPrices } from "@/components/site/Prices";
 import { Alert } from "@/components/ui/Alert";
 import { Link } from "@/i18n/navigation";
 import { nameCases } from "@/lib/arabicName";
-import type { ThemeCard } from "@/lib/catalog";
+import { priceWording, type ThemeCard } from "@/lib/catalog";
 import type { Child } from "@/lib/create";
 import {
   bundleLabel,
@@ -51,6 +52,8 @@ export function CartBody(props: {
   const tc = useTranslations("store.cart");
   const locale = useLocale();
   const [code, setCode] = useState("");
+  // while prices are hidden from customers (`show_prices` off): no amounts, no totals, no discount codes
+  const prices = useShowPrices();
   const amount = (v: string | number) => money(v, cart.currency, locale);
   const minus = (v: string) => `−${amount(v)}`;
   const bundle = locale === "ar" ? cart.bundle_name_ar : cart.bundle_name_en;
@@ -60,9 +63,11 @@ export function CartBody(props: {
   return (
     <main className="flex flex-col gap-4 px-4 pt-5 pb-[150px]">
       {props.error && <Alert>{props.error}</Alert>}
-      {cart.unavailable.length > 0 && <Alert tone="info">{tc("unavailable")}</Alert>}
+      {cart.unavailable.length > 0 && (
+        <Alert tone="info">{tc(priceWording("unavailable", prices, (k) => tc.has(k)))}</Alert>
+      )}
       {cart.items.map((item) => (
-        <Line key={item.id} item={item} {...props} amount={amount} />
+        <Line key={item.id} item={item} {...props} amount={amount} prices={prices} />
       ))}
 
       {offer && (
@@ -91,7 +96,7 @@ export function CartBody(props: {
           <CheckBox on={cart.gift} size={28} />
           <span className="flex grow flex-col">
             <strong className="text-body">{t("gift.title")}</strong>
-            <span className="text-caption text-ink-muted">{t("gift.body")}</span>
+            <span className="text-caption text-ink-muted">{t(priceWording("gift.body", prices, (k) => t.has(k)))}</span>
           </span>
         </button>
         {cart.gift && (
@@ -122,6 +127,20 @@ export function CartBody(props: {
         )}
       </section>
 
+      {prices && <CodeEntry {...props} code={code} setCode={setCode} />}
+
+      {prices && <Summary cart={cart} amount={amount} minus={minus} bundle={bundle} />}
+    </main>
+  );
+}
+
+/** The discount code or gift card, and what is applied: only while prices are shown to customers. */
+function CodeEntry(props: Parameters<typeof CartBody>[0] & { code: string; setCode: (code: string) => void }) {
+  const { cart, busy, code, setCode } = props;
+  const t = useTranslations("orderPath");
+  const tc = useTranslations("store.cart");
+  return (
+    <>
       <form
         className="flex gap-2"
         onSubmit={async (e) => {
@@ -169,41 +188,55 @@ export function CartBody(props: {
           onRemove={props.onClearCard}
         />
       )}
+    </>
+  );
+}
 
-      <section aria-label={t("cart.summary")} className="flex flex-col gap-2 px-0.5 py-1 text-[15px]">
-        <Row label={t("cart.subtotal")} value={amount(cart.subtotal)} />
-        {Number(cart.sale_discount) > 0 && <Row good label={t("cart.sale")} value={minus(cart.sale_discount)} />}
-        {cart.bundle && (
-          <Row
-            good
-            label={t("cart.bundle", { name: bundleLabel(bundle ?? cart.bundle), pct: Number(cart.bundle_pct ?? 0) })}
-            value={minus(cart.bundle_discount)}
-          />
-        )}
-        {cart.coupon && (
-          <Row good label={t("cart.coupon", { code: cart.coupon })} value={minus(cart.coupon_discount)} />
-        )}
-        {Number(cart.gift_card_amount) > 0 && (
-          <Row good label={t("cart.giftCard")} value={minus(cart.gift_card_amount)} />
-        )}
+/** The cart's totals, from the server: only while prices are shown to customers. */
+function Summary({
+  cart,
+  amount,
+  minus,
+  bundle,
+}: {
+  cart: OrderCart;
+  amount: (v: string | number) => string;
+  minus: (v: string) => string;
+  bundle: string | null | undefined;
+}) {
+  const t = useTranslations("orderPath");
+  return (
+    <section aria-label={t("cart.summary")} className="flex flex-col gap-2 px-0.5 py-1 text-[15px]">
+      <Row label={t("cart.subtotal")} value={amount(cart.subtotal)} />
+      {Number(cart.sale_discount) > 0 && <Row good label={t("cart.sale")} value={minus(cart.sale_discount)} />}
+      {cart.bundle && (
         <Row
-          muted
-          label={t("cart.shipping")}
-          value={
-            cart.zone
-              ? Number(cart.shipping) > 0
-                ? amount(cart.shipping)
-                : t("cart.freeShipping")
-              : t("cart.shippingNext")
-          }
+          good
+          label={t("cart.bundle", { name: bundleLabel(bundle ?? cart.bundle), pct: Number(cart.bundle_pct ?? 0) })}
+          value={minus(cart.bundle_discount)}
         />
-        {Number(cart.cod_fee) > 0 && <Row label={t("cart.codFee")} value={amount(cart.cod_fee)} />}
-        <div className="flex justify-between border-t border-line pt-2.5 text-[18px] font-bold text-ink">
-          <span>{t("cart.total")}</span>
-          <span>{amount(cart.total)}</span>
-        </div>
-      </section>
-    </main>
+      )}
+      {cart.coupon && <Row good label={t("cart.coupon", { code: cart.coupon })} value={minus(cart.coupon_discount)} />}
+      {Number(cart.gift_card_amount) > 0 && (
+        <Row good label={t("cart.giftCard")} value={minus(cart.gift_card_amount)} />
+      )}
+      <Row
+        muted
+        label={t("cart.shipping")}
+        value={
+          cart.zone
+            ? Number(cart.shipping) > 0
+              ? amount(cart.shipping)
+              : t("cart.freeShipping")
+            : t("cart.shippingNext")
+        }
+      />
+      {Number(cart.cod_fee) > 0 && <Row label={t("cart.codFee")} value={amount(cart.cod_fee)} />}
+      <div className="flex justify-between border-t border-line pt-2.5 text-[18px] font-bold text-ink">
+        <span>{t("cart.total")}</span>
+        <span>{amount(cart.total)}</span>
+      </div>
+    </section>
   );
 }
 
@@ -241,6 +274,7 @@ function Line({
   onRemove,
   onAddOns,
   amount,
+  prices,
 }: {
   item: OrderItem;
   catalog: Catalog | null;
@@ -250,6 +284,7 @@ function Line({
   onRemove: (id: string) => void;
   onAddOns: () => void;
   amount: (v: string | number) => string;
+  prices: boolean; // the line's amounts only while prices are shown to customers
 }) {
   const t = useTranslations("orderPath");
   const locale = useLocale();
@@ -287,19 +322,19 @@ function Line({
               </span>
             ))}
         </LineText>
-        <strong className="text-body whitespace-nowrap text-ink">{amount(item.base)}</strong>
+        {prices && <strong className="text-body whitespace-nowrap text-ink">{amount(item.base)}</strong>}
       </div>
       {item.addons.length > 0 && (
         <div className="flex flex-col gap-1.5 border-t border-dashed border-line pt-2.5 text-small">
           {item.addons.map((a) => {
-            const free = a.included || Number(a.amount) === 0;
+            const free = prices && (a.included || Number(a.amount) === 0);
             return (
               <div key={a.slug} className={`flex justify-between gap-3 ${free ? "text-success" : ""}`}>
                 <span>
                   {name(a)}
                   {a.qty > 1 && ` × ${a.qty}`}
                 </span>
-                <span className="whitespace-nowrap">{free ? t("free") : `+${amount(a.amount)}`}</span>
+                {prices && <span className="whitespace-nowrap">{free ? t("free") : `+${amount(a.amount)}`}</span>}
               </div>
             );
           })}

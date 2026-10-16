@@ -4,6 +4,8 @@
 # {{ child }}, {{ title }}, and the links track_url, reader_url, create_url, account_url, manifest_url.
 # A person's name in Arabic takes its case (qamra_pdf.arabic_names): `{{ name | acc }}` when it is called
 # («مرحبًا أبا أحمد»), `{{ child | gen }}` after a preposition or a possessed noun («كتاب أبي بكر»).
+# {{ total }} is empty while customers see no prices (the admin setting `show_prices` is off): wrap it in
+# `{% if total %}…{% endif %}`; a line left empty is dropped.
 # Only what the recipient already owns goes in: their order, their child's book. Never another family's data.
 
 order_placed:
@@ -11,14 +13,14 @@ order_placed:
     subject: "استلمنا طلبكم {{ code }} 🌙"
     lines:
       - "مرحبًا {{ name | acc }}،"
-      - "شكرًا لأنكم اخترتم {{ brand }}! وصلنا طلبكم رقم {{ code }}، والمبلغ عند الاستلام {{ total }}."
+      - "شكرًا لأنكم اخترتم {{ brand }}! وصلنا طلبكم رقم {{ code }}{% if total %}، والمبلغ عند الاستلام {{ total }}{% endif %}."
       - "سنتواصل معكم قريبًا لتأكيد العنوان، ثم نبدأ العمل على الكتاب."
     button: { label: "تتبّعوا الطلب", link: track_url }
   en:
     subject: "We've received your order {{ code }} 🌙"
     lines:
       - "Hello {{ name }},"
-      - "Thank you for choosing {{ brand }}! Your order {{ code }} is in, and the amount due on delivery is {{ total }}."
+      - "{% if total %}Thank you for choosing {{ brand }}! Your order {{ code }} is in, and the amount due on delivery is {{ total }}.{% else %}Thank you for choosing {{ brand }}! We've received your order {{ code }}.{% endif %}"
       - "We'll contact you soon to confirm the address, then we'll start on the book."
     button: { label: "Track your order", link: track_url }
 
@@ -56,14 +58,14 @@ order_shipped:
     lines:
       - "مرحبًا {{ name | acc }}،"
       - "خرج طلبكم {{ code }} مع المندوب، وسيتصل بكم قبل الوصول."
-      - "المبلغ عند الاستلام: {{ total }}."
+      - "{% if total %}المبلغ عند الاستلام: {{ total }}.{% else %}الدفع نقدًا عند الاستلام.{% endif %}"
     button: { label: "تتبّعوا الطلب", link: track_url }
   en:
     subject: "Order {{ code }} is on its way 🚚"
     lines:
       - "Hello {{ name }},"
       - "Order {{ code }} is out with the courier, who will call before arriving."
-      - "Amount due on delivery: {{ total }}."
+      - "{% if total %}Amount due on delivery: {{ total }}.{% else %}Payment is cash on delivery.{% endif %}"
     button: { label: "Track your order", link: track_url }
 
 order_delivered:

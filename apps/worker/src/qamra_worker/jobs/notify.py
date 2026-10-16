@@ -96,7 +96,8 @@ def order_email(
             **base_values(values, lang),
             "name": str(order.shipping.get("name") or user.full_name),
             "code": order.code,
-            "total": money(order.total, order.currency.value),
+            # empty while customers see no prices (`show_prices` off): the wording then leaves the amount out
+            "total": money(order.total, order.currency.value) if values.get("show_prices") else "",
             "track_url": f"{base_url}/{lang}/order/{order.code}",
         },
         [Item(_item_label(i, lang)) for i in items],

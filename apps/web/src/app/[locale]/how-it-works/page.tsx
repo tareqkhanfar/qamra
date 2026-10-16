@@ -8,7 +8,7 @@ import { PageShell } from "@/components/site/PageShell";
 import { Photo } from "@/components/site/Photo";
 import { Arrow, CtaBand, Faq, SECTION, SectionHead, Steps, type QA, type Step } from "@/components/site/blocks";
 import { Link } from "@/i18n/navigation";
-import { getStoreCatalog } from "@/lib/catalog";
+import { getPricesShown, getStoreCatalog } from "@/lib/catalog";
 import { faqJsonLd } from "@/lib/pageSeo";
 import { pageMetadata } from "@/lib/seo";
 import { money } from "@/lib/store";
@@ -21,9 +21,10 @@ export async function generateMetadata(): Promise<Metadata> {
 /** How it works: the story-book flow with the privacy promises, the activity-book flow, «صوت أهلي», the FAQ. */
 export default async function HowItWorksPage() {
   const locale = await getLocale();
-  const [t, catalog] = await Promise.all([getTranslations("howPage"), getStoreCatalog()]);
+  const [t, catalog, prices] = await Promise.all([getTranslations("howPage"), getStoreCatalog(), getPricesShown()]);
   const currency = catalog?.currency ?? "ILS";
-  const zones = (catalog?.zones ?? []).filter((z) => z.currency === currency);
+  // (while prices are hidden the API sends no currency: every active zone counts)
+  const zones = (catalog?.zones ?? []).filter((z) => !z.currency || z.currency === currency);
   const eta = zones.length
     ? { min: Math.min(...zones.map((z) => z.eta_days[0])), max: Math.max(...zones.map((z) => z.eta_days[1])) }
     : { min: 2, max: 7 };
@@ -33,7 +34,9 @@ export default async function HowItWorksPage() {
   }));
   const activitySteps = t.raw("activitySteps") as Step[];
   const privacy = t.raw("privacy") as { title: string; body: string }[];
-  const faq = t.raw("faq") as QA[];
+  // while prices are hidden there is no prices page to point to: those answers have their own wording
+  const noPrice = (prices || !t.has("faqNoPrice") ? {} : t.raw("faqNoPrice")) as Record<string, QA>;
+  const faq = (t.raw("faq") as QA[]).map((qa, i) => noPrice[String(i)] ?? qa);
   const voice = catalog?.addons.find((a) => a.slug === "family-voice") ?? null;
   const shield = (
     <svg
@@ -158,7 +161,7 @@ export default async function HowItWorksPage() {
             <div className="flex flex-col gap-3 p-6 md:p-10">
               <h2 className="text-[28px] md:text-[36px]">{t("voiceTitle")}</h2>
               <p className="text-[15px] leading-[1.75] text-night-100 md:text-body-l">{t("voiceBody")}</p>
-              {voice.price !== null && (
+              {voice.price !== null && voice.price !== undefined && (
                 <strong className="font-display text-[20px] text-amber-300">
                   {t("voicePrice", { price: money(voice.price, currency, locale) })}
                 </strong>

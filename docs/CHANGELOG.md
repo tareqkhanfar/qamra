@@ -1,5 +1,13 @@
 # Changelog
 
+## Prices hidden from customers; staff keep them (2026-10-16)
+- **Why:** Tareq: «ما بدي الزباين يعرفوا الاسعار» for now; prices stay in the system for the admin.
+- **Setting:** «إظهار الأسعار للزبائن» (`show_prices`, group الأسعار), **off by default**. Switch it on in the admin settings to show every price again.
+- **API:** `qamra_api/price_visibility.py`: while off, every customer-facing JSON response (everything but `/api/admin/…`) loses its price, total, discount and currency fields; the catalog leaves out unpriced variants; catalog words about price are swapped (`content/store/no_price_wording.yaml`); `/api/pricing` is empty; the school's invoice PDF is 404; the packing slip has no prices. Admin endpoints unchanged.
+- **Messages:** the order emails and the prepared WhatsApp «shipped» message leave the amount out («الدفع نقدًا عند الاستلام»).
+- **Web:** no price anywhere a customer looks (home, stories, story page, shop, activity books, how it works, kindergartens, quiz, create flow, add-ons, cart, checkout, order page, kindergarten portal order, JSON-LD); no discount-code field; /pricing redirects to /shop and leaves the menu, footer and sitemap; `…NoPrice` wording for quotes and price comparisons. `useShowPrices()` / `getPricesShown()`.
+- Tests: `apps/api/tests/test_price_visibility.py`, the worker's `test_notify.py`, web `prices.test.ts`, E2E `test_prices_hidden.py` (the rest of the E2E suite runs with prices shown).
+
 ## The kindergarten invite and the free cover get the parent flow's photo and drawing steps; staff see the portrait (2026-10-16)
 - **The invite** (`/invite/{token}`): after the consent, the steps are the create flow's own `PhotoStep` and `CharacterStep` (`productLine` "class"), inside the same frame with «الخطوة n من 3»: the photo placed in the oval (drag, zoom, turn), the drawing started at once in the class's style, the portrait first («هل هذه طفلتكم؟») above the sheet, «تعديل الصورة» after the drawing, the strip of earlier drawings in the class's style to choose from, and «ما الذي لا يشبهها؟» with the parent's own words. The invite's own photo and drawing parts are gone (no duplicated logic); its first drawing still goes through `POST /api/invite/{token}/character`, which picks the class's style. New texts: `create.photo.next.class`, `create.character.where.class`, `create.character.next.class`.
 - **The free cover:** the photo is placed in the oval with the same editor (`PhotoEditor`), on the device only until the form is sent with the consent; the framing goes with the upload and the API checks the framed part. A photo it refuses keeps the editor open to move and send again, without asking for the consent twice.

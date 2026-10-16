@@ -33,6 +33,7 @@ from qamra_ai.pipeline.layout import plan_book
 from qamra_ai.pipeline.theme import Theme as ThemeDef
 from qamra_ai.pipeline.theme import fill_title
 from qamra_ai.pipeline.vowelize import source_hash, sources
+from qamra_api import runtime_settings
 from qamra_api.auth import mfa
 from qamra_api.auth import service as auth
 from qamra_api.auth.router import client_ip, set_session_cookies
@@ -46,6 +47,7 @@ from qamra_core import downloads as dl
 from qamra_core.crypto import cipher_for, encrypt
 from qamra_core.db.classic import ClassicTemplate, ClassicTemplatePage, TemplateStatus
 from qamra_core.db.models import (
+    AppSetting,
     Book,
     BookPage,
     BookStatus,
@@ -539,6 +541,21 @@ async def reset_rate_limits(request: Request, redis: RedisDep) -> None:
     keys = [key async for key in redis.scan_iter(match=f"rl:*:{client_ip(request)}")]
     if keys:
         await redis.delete(*keys)
+
+
+class ShowPricesIn(BaseModel):
+    on: bool
+
+
+@router.put("/settings/show-prices", status_code=204)
+async def show_prices(body: ShowPricesIn, db: SessionDep) -> None:
+    """The admin switch «إظهار الأسعار للزبائن» (`show_prices`, off by default): the order-path tests check
+    the prices, so they turn it on; tests/e2e/test_prices_hidden.py turns it off and looks for any price."""
+    row = await db.get(AppSetting, "show_prices") or AppSetting(key="show_prices")
+    row.value = body.on
+    db.add(row)
+    await db.commit()
+    runtime_settings.invalidate()
 
 
 class CodeOut(BaseModel):

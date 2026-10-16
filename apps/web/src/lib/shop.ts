@@ -13,9 +13,12 @@ export const WORKBOOK_PAGES = true;
 
 const PRINTED = ["softcover", "hardcover", "spiral"];
 
-/** The cheapest single printed copy (a volume or a stage, not a set), else the cheapest variant. */
+/**
+ * The cheapest single printed copy (a volume or a stage, not a set), else the cheapest variant; null when the
+ * catalog carries no price (none set, or prices hidden from customers: the API then sends none).
+ */
 export function productFrom(product: CatalogProduct): number | null {
-  const priced = product.variants.filter((v) => v.price !== null);
+  const priced = product.variants.filter((v) => v.price !== null && v.price !== undefined);
   const single = priced.filter((v) => !Object.values(v.options).includes("set"));
   const printed = single.filter((v) => PRINTED.includes(v.options.format ?? ""));
   const pool = printed.length ? printed : single.length ? single : priced;
@@ -44,7 +47,7 @@ export const quizApi = {
 /** Where a quiz pick leads: the stories, or the product's page once it exists (null: not yet). */
 export function pickHref(p: QuizPick): string | null {
   if (p.kind === "stories") return "/stories";
-  if (!WORKBOOK_PAGES || !p.from_price) return null; // a product that isn't in the catalog has no page
+  if (!WORKBOOK_PAGES || !p.available) return null; // a product that isn't in the catalog has no page
   const q = new URLSearchParams(p.options).toString();
   return `/workbooks/${p.slug}${q ? `?${q}` : ""}`;
 }

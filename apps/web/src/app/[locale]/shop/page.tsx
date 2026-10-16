@@ -8,7 +8,15 @@ import { StoryLines } from "@/components/shop/StoryLines";
 import { PageShell } from "@/components/site/PageShell";
 import { Arrow } from "@/components/site/blocks";
 import { Link } from "@/i18n/navigation";
-import { examplesFor, getPublicSettings, getShopSummary, getStoreCatalog, getThemes } from "@/lib/catalog";
+import {
+  examplesFor,
+  getPublicSettings,
+  getShopSummary,
+  getStoreCatalog,
+  getThemes,
+  priceWording,
+  pricesShown,
+} from "@/lib/catalog";
 import { pageMetadata } from "@/lib/seo";
 import { ACTIVITY_LINES, WORKBOOK_PAGES, productFrom } from "@/lib/shop";
 import { money } from "@/lib/store";
@@ -210,7 +218,7 @@ export default async function ShopPage() {
             </span>
           )}
           <span className="mt-1.5 flex min-h-11 items-center self-start rounded-full bg-amber-500 px-[18px] text-[15px] font-bold text-night-950">
-            {t("b2b.cta")}
+            {t(priceWording("b2b.cta", pricesShown(site), (k) => t.has(k)))}
           </span>
         </Link>
 

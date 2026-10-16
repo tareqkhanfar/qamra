@@ -37,7 +37,15 @@ export function briefBody(b: CustomBrief) {
 
 export type CustomBriefBody = ReturnType<typeof briefBody>;
 
-/** The extra price of a custom story over the Magic book (both from the catalog, the admin's prices). */
+/** The catalog sells custom stories: the product is listed with a variant (with or without its prices). */
+export function customSold(catalog: Catalog | null): boolean {
+  return !!catalog?.products.find((p) => p.slug === CUSTOM_PRODUCT)?.variants.length;
+}
+
+/**
+ * The extra price of a custom story over the Magic book (both from the catalog, the admin's prices); null without
+ * prices (none set, or hidden from customers).
+ */
 export function customExtra(catalog: Catalog | null): number | null {
   const low = (slug: string) => {
     const prices = (catalog?.products.find((p) => p.slug === slug)?.variants ?? [])

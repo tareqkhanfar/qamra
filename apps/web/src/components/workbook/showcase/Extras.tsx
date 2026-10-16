@@ -2,6 +2,7 @@
 
 /* eslint-disable @next/next/no-img-element -- small static photos from /public (public/included, public/addons) */
 import { useLocale, useTranslations } from "next-intl";
+import { useShowPrices } from "@/components/site/Prices";
 import type { AddonMedia, IncludedItem } from "@/lib/addonsMedia";
 import { money, type CatalogAddOn, type Currency } from "@/lib/store";
 
@@ -24,7 +25,8 @@ export function extrasFor(addons: CatalogAddOn[], line: string, options: Record<
 
 /**
  * What comes with the book, with photos (stickers, card sheets, the certificate…), and the optional extras the
- * cart offers for the chosen variant, each with its photo and price (owner's request, 2026-10-07).
+ * cart offers for the chosen variant, each with its photo and price (owner's request, 2026-10-07; no price while
+ * prices are hidden from customers).
  */
 export function Extras({
   included,
@@ -47,6 +49,7 @@ export function Extras({
 }) {
   const t = useTranslations("workbookShowcase");
   const locale = useLocale();
+  const prices = useShowPrices(); // the extras without their price while prices are hidden from customers
   const ar = locale === "ar";
   const extras = extrasFor(addons, line, options);
   if (!included.length && !extras.length) return null;
@@ -132,9 +135,11 @@ export function Extras({
                     <strong className="text-[15px] leading-snug text-night-900">{ar ? a.name_ar : a.name_en}</strong>
                     {description && <span className="text-caption leading-[1.5] text-ink-muted">{description}</span>}
                   </div>
-                  <span className="shrink-0 rounded-full bg-success-bg px-2.5 py-1 text-caption font-bold text-success">
-                    {price(a)}
-                  </span>
+                  {prices && (
+                    <span className="shrink-0 rounded-full bg-success-bg px-2.5 py-1 text-caption font-bold text-success">
+                      {price(a)}
+                    </span>
+                  )}
                 </li>
               );
             })}

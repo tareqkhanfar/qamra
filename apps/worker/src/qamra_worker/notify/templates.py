@@ -92,7 +92,7 @@ def render(
         return text_env.from_string(source).render(**values).strip()
 
     subject = " ".join(fill(spec["subject"]).split())  # one header line, whatever the values hold
-    lines = [fill(line) for line in spec["lines"]]
+    lines = [text for text in (fill(line) for line in spec["lines"]) if text]  # a line may be all `{% if %}`
     button = None
     if spec.get("button"):
         button = {"label": fill(spec["button"]["label"]), "url": str(values[spec["button"]["link"]])}

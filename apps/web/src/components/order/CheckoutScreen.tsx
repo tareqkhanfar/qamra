@@ -2,11 +2,12 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
+import { useShowPrices } from "@/components/site/Prices";
 import { Alert } from "@/components/ui/Alert";
 import { Spinner } from "@/components/ui/Button";
 import { Link, useRouter } from "@/i18n/navigation";
 import { api, errorText } from "@/lib/api";
-import type { ThemeCard } from "@/lib/catalog";
+import { priceWording, type ThemeCard } from "@/lib/catalog";
 import { bundleLabel, completeHref, lineSummary, orderApi, type OrderCart, type OrderItem } from "@/lib/order";
 import {
   cartApi,
@@ -30,6 +31,7 @@ export function CheckoutScreen() {
   const text = useSummaryText();
   const locale = useLocale();
   const router = useRouter();
+  const prices = useShowPrices(); // hidden from customers (`show_prices` off): no amounts, no total
   const [cart, setCart] = useState<OrderCart | null>(null);
   const [zones, setZones] = useState<CatalogZone[]>([]);
   const [styles, setStyles] = useState<CatalogStyle[]>([]);
@@ -138,6 +140,7 @@ export function CheckoutScreen() {
     return lineSummary(item, { product: name(item), theme: theme?.name, style: style ? name(style) : null });
   };
   const discount = Number(cart.sale_discount) + Number(cart.coupon_discount);
+  const w = (key: string) => t(priceWording(key, prices, (k) => t.has(k))); // no price wording while hidden
   const waiting = cart.items.find((i) => i.needs_details); // checkout refuses it until the child is added
   return (
     <form onSubmit={submit} className="mx-auto flex min-h-dvh w-full max-w-[640px] flex-col bg-paper">
@@ -155,7 +158,7 @@ export function CheckoutScreen() {
         )}
         <section className="flex flex-col gap-3.5">
           <h2 className="text-[20px] text-night-900">{cart.gift ? t("checkout.whereGift") : t("checkout.where")}</h2>
-          {cart.gift && <p className="-mt-2 text-small text-ink-muted">{t("checkout.giftNote")}</p>}
+          {cart.gift && <p className="-mt-2 text-small text-ink-muted">{w("checkout.giftNote")}</p>}
           <Field id="o-name" label={t("checkout.name")}>
             <input
               id="o-name"
@@ -238,7 +241,7 @@ export function CheckoutScreen() {
             <input type="radio" name="pay" defaultChecked className="size-[22px] accent-night-900" />
             <span className="flex flex-col">
               <strong className="text-body">{t("checkout.cod")}</strong>
-              <span className="text-caption text-ink-muted">{t("checkout.codBody")}</span>
+              <span className="text-caption text-ink-muted">{w("checkout.codBody")}</span>
             </span>
           </label>
         </section>
@@ -248,7 +251,7 @@ export function CheckoutScreen() {
           className="flex flex-col gap-3 rounded-[20px] border border-line bg-paper-raised p-4"
         >
           {cart.items.map((item) => {
-            const paid = item.addons.filter((a) => !a.included && Number(a.amount) > 0).length;
+            const paid = item.addons.filter((a) => !a.included && (!prices || Number(a.amount) > 0)).length;
             return (
               <div key={item.id} className="flex items-start justify-between gap-3">
                 <LineText
@@ -256,42 +259,44 @@ export function CheckoutScreen() {
                   qty={item.qty}
                   extra={[paid ? t("checkout.withAddons", { n: paid }) : null]}
                 />
-                <span className="text-[15px] whitespace-nowrap">{amount(item.subtotal)}</span>
+                {prices && <span className="text-[15px] whitespace-nowrap">{amount(item.subtotal)}</span>}
               </div>
             );
           })}
-          <div className="flex flex-col gap-2 border-t border-dashed border-line pt-3 text-[15px]">
-            {cart.bundle && Number(cart.bundle_discount) > 0 && (
+          {prices && ( // the discounts, delivery and total only while prices are shown to customers
+            <div className="flex flex-col gap-2 border-t border-dashed border-line pt-3 text-[15px]">
+              {cart.bundle && Number(cart.bundle_discount) > 0 && (
+                <Row
+                  good
+                  label={t("cart.bundle", {
+                    name: bundleLabel((locale === "ar" ? cart.bundle_name_ar : cart.bundle_name_en) ?? cart.bundle),
+                    pct: Number(cart.bundle_pct ?? 0),
+                  })}
+                  value={`−${amount(cart.bundle_discount)}`}
+                />
+              )}
+              {discount > 0 && <Row good label={t("checkout.discounts")} value={`−${amount(discount)}`} />}
+              {Number(cart.gift_card_amount) > 0 && (
+                <Row good label={t("cart.giftCard")} value={`−${amount(cart.gift_card_amount)}`} />
+              )}
               <Row
-                good
-                label={t("cart.bundle", {
-                  name: bundleLabel((locale === "ar" ? cart.bundle_name_ar : cart.bundle_name_en) ?? cart.bundle),
-                  pct: Number(cart.bundle_pct ?? 0),
-                })}
-                value={`−${amount(cart.bundle_discount)}`}
+                label={city ? t("checkout.deliveryTo", { city }) : t("cart.shipping")}
+                value={
+                  zoning
+                    ? "…"
+                    : cart.zone
+                      ? Number(cart.shipping) + Number(cart.cod_fee) > 0
+                        ? amount(Number(cart.shipping) + Number(cart.cod_fee))
+                        : t("cart.freeShipping")
+                      : t("checkout.chooseCityFirst")
+                }
               />
-            )}
-            {discount > 0 && <Row good label={t("checkout.discounts")} value={`−${amount(discount)}`} />}
-            {Number(cart.gift_card_amount) > 0 && (
-              <Row good label={t("cart.giftCard")} value={`−${amount(cart.gift_card_amount)}`} />
-            )}
-            <Row
-              label={city ? t("checkout.deliveryTo", { city }) : t("cart.shipping")}
-              value={
-                zoning
-                  ? "…"
-                  : cart.zone
-                    ? Number(cart.shipping) + Number(cart.cod_fee) > 0
-                      ? amount(Number(cart.shipping) + Number(cart.cod_fee))
-                      : t("cart.freeShipping")
-                    : t("checkout.chooseCityFirst")
-              }
-            />
-            <div className="flex justify-between text-[17px] font-bold text-ink">
-              <span>{t("cart.total")}</span>
-              <span>{amount(cart.total)}</span>
+              <div className="flex justify-between text-[17px] font-bold text-ink">
+                <span>{t("cart.total")}</span>
+                <span>{amount(cart.total)}</span>
+              </div>
             </div>
-          </div>
+          )}
           {chosen && (
             <span className="text-caption text-ink-muted">
               {t("checkout.eta", { min: chosen.eta_days[0], max: chosen.eta_days[1] })}
@@ -303,7 +308,13 @@ export function CheckoutScreen() {
 
       <BottomBar column>
         <button type="submit" disabled={busy || zoning || !chosen || !cart.zone || !!waiting} className={ctaClass}>
-          {busy ? <Spinner /> : t("checkout.confirm", { total: amount(cart.total) })}
+          {busy ? (
+            <Spinner />
+          ) : prices ? (
+            t("checkout.confirm", { total: amount(cart.total) })
+          ) : (
+            t("checkout.confirmNoPrice")
+          )}
         </button>
         <span className="text-center text-xs text-ink-muted">
           {t("checkout.terms")}{" "}

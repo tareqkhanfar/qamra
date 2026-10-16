@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { MoonPhase } from "@/components/art/MoonPhase";
 import { DownloadButton } from "@/components/order/DownloadButton";
 import { LineText } from "@/components/order/LineSummary";
+import { useShowPrices } from "@/components/site/Prices";
 import { Alert } from "@/components/ui/Alert";
 import { buttonClasses, Spinner } from "@/components/ui/Button";
 import { Link, useRouter } from "@/i18n/navigation";
@@ -42,6 +43,7 @@ export function OrderView({ code, placed }: { code: string; placed: boolean }) {
   const tp = useTranslations("store.placed");
   const tc = useTranslations("store.cart");
   const locale = useLocale();
+  const prices = useShowPrices(); // the order's total only while prices are shown to customers
   const [order, setOrder] = useState<Tracked | null>(null);
   const [missing, setMissing] = useState(false);
   const [styles, setStyles] = useState<CatalogStyle[]>([]);
@@ -131,10 +133,12 @@ export function OrderView({ code, placed }: { code: string; placed: boolean }) {
             </p>
           ),
         )}
-        <p className="flex justify-between border-t border-line pt-2 font-bold">
-          <span>{t("total")}</span>
-          <span>{money(order.total, order.currency, locale)}</span>
-        </p>
+        {prices && (
+          <p className="flex justify-between border-t border-line pt-2 font-bold">
+            <span>{t("total")}</span>
+            <span>{money(order.total, order.currency, locale)}</span>
+          </p>
+        )}
       </section>
       <Link href="/" className={buttonClasses("secondary", "md", "self-center")}>
         {tp("home")}

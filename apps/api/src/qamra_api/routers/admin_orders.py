@@ -186,8 +186,16 @@ def _money(amount: Decimal, currency: str) -> str:
     return f"{value} ₪" if currency == "ILS" else f"{value} JD"
 
 
-def whatsapp_links(order: Order, base_url: str = "https://qamra.app") -> dict[str, str]:
-    """wa.me links with each template filled in, in Arabic (the store's customers write Arabic first)."""
+def _wording(texts: dict[str, str], show_prices: bool) -> str:
+    return texts.get("ar", "") if show_prices else texts.get("ar_no_price") or texts.get("ar", "")
+
+
+def whatsapp_links(
+    order: Order, base_url: str = "https://qamra.app", *, show_prices: bool = True
+) -> dict[str, str]:
+    """wa.me links with each template filled in, in Arabic (the store's customers write Arabic first). While
+    customers see no prices (`show_prices` off), a template's `ar_no_price` wording replaces the one with the
+    total."""
     phone = "".join(ch for ch in (order.phone or "") if ch.isdigit())
     if phone.startswith("0"):
         phone = ("962" if order.currency.value == "JOD" else "970") + phone[1:]
@@ -200,7 +208,7 @@ def whatsapp_links(order: Order, base_url: str = "https://qamra.app") -> dict[st
         "track_url": f"{base_url}/ar/track",
     }
     return {
-        status: f"https://wa.me/{phone}?text={urlquote(texts.get('ar', '').format(**values))}"
+        status: f"https://wa.me/{phone}?text={urlquote(_wording(texts, show_prices).format(**values))}"
         for status, texts in load_messages().items()
     }
 
@@ -283,7 +291,7 @@ async def _detail(db: SessionDep, order: Order, values: dict[str, Any]) -> Order
         invoice=InvoiceOut(number=invoice.number, issued_at=invoice.created_at, ready=bool(invoice.pdf_key))
         if invoice
         else None,
-        messages=whatsapp_links(order),
+        messages=whatsapp_links(order, show_prices=bool(values.get("show_prices"))),
         revenue_ils=revenue,
         margin_pct=margin,
         margin_floor_pct=int(values.get("margin_floor_pct") or 35),

@@ -5,10 +5,11 @@ import { connection } from "next/server";
 import { NextIntlClientProvider } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { MusicPlayer } from "@/components/site/MusicPlayer";
+import { PricesProvider } from "@/components/site/Prices";
 import { RevealObserver } from "@/components/site/RevealObserver";
 import { brandName } from "@/config/brand";
 import { routing } from "@/i18n/routing";
-import { getPublicSettings } from "@/lib/catalog";
+import { getPublicSettings, pricesShown } from "@/lib/catalog";
 import "../globals.css";
 
 const baloo = Baloo_Bhaijaan_2({
@@ -51,7 +52,7 @@ export default async function LocaleLayout({ children }: { children: React.React
     >
       <body className="min-h-dvh bg-paper antialiased">
         <NextIntlClientProvider>
-          {children}
+          <PricesProvider show={pricesShown(site)}>{children}</PricesProvider>
           <RevealObserver />
           {site?.music_enabled && (
             <MusicPlayer volume={site.music_volume} labels={{ play: tm("play"), pause: tm("pause") }} />

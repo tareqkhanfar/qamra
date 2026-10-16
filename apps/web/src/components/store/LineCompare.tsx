@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { useShowPrices } from "@/components/site/Prices";
 import { joinWords } from "@/components/story/StyleShowcase";
 import { AddonList, extraAddons, includedAddons, type AddonMedia } from "@/components/story/AddonList";
 import { SampleLightbox } from "@/components/story/SampleLightbox";
@@ -43,6 +44,8 @@ export function LineCompare({
   const locale = useLocale();
   const ar = locale === "ar";
   const currency = catalog?.currency ?? "ILS";
+  // while prices are hidden from customers (`show_prices` off): no amounts, and no wording that compares prices
+  const prices = useShowPrices();
   const name = (x: { name_ar: string; name_en: string }) => (ar ? x.name_ar : x.name_en);
 
   const offers = LINES.map((l) => offer(catalog, l)).filter((o) => o !== null);
@@ -79,7 +82,7 @@ export function LineCompare({
     const own = sells.find((s) => s.slug === chosen.slug) ?? sells[0];
     const sample = own ? pageIn(own.slug, theme, magicPage?.scene) : null;
     const points = [
-      ...(t.raw(`${line}.points`) as string[]),
+      ...(t.raw(!prices && t.has(`${line}.pointsNoPrice`) ? `${line}.pointsNoPrice` : `${line}.points`) as string[]),
       sells.length
         ? t(sells.length > 1 ? "stylesMany" : "stylesOne", { styles: joinWords(sells.map(name), locale) })
         : null,
@@ -99,7 +102,8 @@ export function LineCompare({
   const tag = (a: (typeof extras)[number]) => {
     const offered = offers.map((o) => o.line).filter((l) => extraAddons(catalog, l).some((b) => b.slug === a.slug));
     const inside = offers.map((o) => o.line).filter((l) => a.included_lines.includes(l));
-    if (inside.length) return te("includedIn", { line: joinWords(inside.map(lineName), locale) });
+    if (inside.length)
+      return te(prices ? "includedIn" : "includedInPlain", { line: joinWords(inside.map(lineName), locale) });
     if (offered.length === 1 && offers.length > 1) return te("onlyIn", { line: lineName(offered[0]!) });
     return null;
   };
@@ -217,7 +221,7 @@ export function LineCompare({
                 {included.length > 0 && (
                   <div className={`rounded-md px-3 py-2.5 ${dark ? "bg-night-800" : "bg-success-bg/60"}`}>
                     <p className={`mb-1 text-caption font-bold ${dark ? "text-amber-300" : "text-success"}`}>
-                      {t("included")}
+                      {t(prices ? "included" : "includedPlain")}
                     </p>
                     <ul className="flex flex-col gap-1 text-small leading-[1.5]">
                       {included.map((item) => (
@@ -235,7 +239,8 @@ export function LineCompare({
                       key={v.sku}
                       className={`rounded-full px-2.5 py-1 ${dark ? "bg-night-800 text-night-100" : "bg-paper-sunk"}`}
                     >
-                      {tf(v.options.format)} · {v.price ? money(v.price, currency, locale) : "—"}
+                      {tf(v.options.format)}
+                      {prices && <> · {v.price ? money(v.price, currency, locale) : "—"}</>}
                     </span>
                   ))}
                 </div>

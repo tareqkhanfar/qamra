@@ -2,8 +2,10 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useState, type FormEvent } from "react";
+import { useShowPrices } from "@/components/site/Prices";
 import { Alert } from "@/components/ui/Alert";
 import { errorText, upload } from "@/lib/api";
+import { priceWording } from "@/lib/catalog";
 
 const input =
   "min-h-[52px] w-full rounded-[14px] border-[1.5px] border-line bg-white px-4 text-body text-ink outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-100";
@@ -14,6 +16,8 @@ export function FamilyQuoteForm() {
   const locale = useLocale();
   const t = useTranslations("familyQuote");
   const te = useTranslations("errors");
+  const prices = useShowPrices(); // while prices are hidden the form asks for a request, not a quote
+  const w = (key: string) => t(priceWording(key, prices, (k) => t.has(k)));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
@@ -34,7 +38,7 @@ export function FamilyQuoteForm() {
     else setError(errorText(r.error, locale, r.status === 0 ? te("network") : te("unknown")));
   }
 
-  if (done) return <Alert tone="success">{t("done")}</Alert>;
+  if (done) return <Alert tone="success">{w("done")}</Alert>;
   const field = (name: string, label: string, props: Record<string, unknown> = {}) => (
     <label className="flex flex-col gap-1.5 text-small font-semibold text-night-900">
       {label}
@@ -49,8 +53,8 @@ export function FamilyQuoteForm() {
     >
       <div className="flex flex-col gap-2 sm:col-span-2">
         <h2 className="text-[24px] text-night-900">{t("title")}</h2>
-        <p className="text-body text-ink">{t("lead")}</p>
-        <p className="bg-amber-50 text-amber-800 rounded-[14px] px-4 py-3 text-small font-bold">{t("request")}</p>
+        <p className="text-body text-ink">{w("lead")}</p>
+        <p className="bg-amber-50 text-amber-800 rounded-[14px] px-4 py-3 text-small font-bold">{w("request")}</p>
       </div>
       {field("org_name", t("org"), { required: true, maxLength: 200 })}
       {field("city", t("city"), { maxLength: 100 })}
@@ -79,7 +83,7 @@ export function FamilyQuoteForm() {
         disabled={busy}
         className="min-h-14 rounded-full bg-amber-500 px-8 text-[17px] font-bold text-night-950 hover:shadow-lamp disabled:opacity-60 sm:col-span-2 sm:justify-self-start"
       >
-        {busy ? t("sending") : t("submit")}
+        {busy ? t("sending") : w("submit")}
       </button>
     </form>
   );

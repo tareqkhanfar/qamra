@@ -1,5 +1,7 @@
 # Customer messages per order status (Addendum 4 §5), filled with {name}, {code}, {total}, {track_url}; the
 # Arabic greeting calls the customer by name, so it takes the accusative {name_acc} («مرحبًا أبا أحمد»).
+# A message with the total also has an `ar_no_price` / `en_no_price` wording, used while customers see no
+# prices (the admin setting `show_prices` is off).
 # Staff send them from the order page: WhatsApp opens with the message ready (no paid provider needed yet).
 confirmed:
   ar: "مرحبًا {name_acc} 🌙 تأكّد طلبكم {code} من قمرة، وبدأنا العمل على الكتاب. تتبّعوا الطلب هنا: {track_url}"
@@ -13,6 +15,8 @@ printing:
 shipped:
   ar: "طلبكم {code} في الطريق إليكم 🚚 سيتصل بكم المندوب قبل الوصول. المبلغ عند الاستلام: {total}"
   en: "Order {code} is on its way 🚚 The courier will call before arriving. Amount due on delivery: {total}"
+  ar_no_price: "طلبكم {code} في الطريق إليكم 🚚 سيتصل بكم المندوب قبل الوصول، والدفع نقدًا عند الاستلام."
+  en_no_price: "Your order {code} is on its way 🚚 The courier will call before arriving. Payment is cash on delivery."
 delivered:
   ar: "وصل كتابكم 🎉 نتمنى أن يسعد به طفلكم! شاركونا صورة إن أحببتم."
   en: "Your book has arrived 🎉 We hope your child loves it! Share a photo with us if you like."

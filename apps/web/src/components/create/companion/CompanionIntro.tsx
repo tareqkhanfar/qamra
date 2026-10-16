@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { Companion as CompanionArt } from "@/components/art/Companion";
+import { useShowPrices } from "@/components/site/Prices";
 import { Drawing } from "@/components/art/Drawing";
 import { Button } from "@/components/ui/Button";
 import { brandName } from "@/config/brand";
@@ -38,6 +39,7 @@ export function CompanionIntro({
 }) {
   const t = useTranslations("companion.intro");
   const tc = useTranslations("create");
+  const prices = useShowPrices(); // hidden from customers (`show_prices` off): no amount, no «free»
   const locale = useLocale();
   const who = { ...nameCases(child.name), gender: child.gender };
   const picked = mine.find((c) => c.id === chosen) ?? null;
@@ -107,7 +109,11 @@ export function CompanionIntro({
         ))}
       </ol>
       <p className="text-caption leading-relaxed text-ink-muted">
-        {price === null ? t("free") : t("paid", { amount: money(price, currency, locale) })}
+        {!prices
+          ? t(price === null ? "freeNoPrice" : "paidNoPrice")
+          : price === null
+            ? t("free")
+            : t("paid", { amount: money(price, currency, locale) })}
       </p>
       {mine.length > 0 && (
         <section className="flex flex-col gap-2.5" aria-labelledby="my-companions">

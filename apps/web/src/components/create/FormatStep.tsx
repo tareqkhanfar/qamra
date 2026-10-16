@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Scene, fromArt } from "@/components/art/Scene";
+import { useShowPrices } from "@/components/site/Prices";
 import { Alert } from "@/components/ui/Alert";
 import { ArrowForward, Button } from "@/components/ui/Button";
 import { ExampleImage } from "@/components/book/ExampleImage";
@@ -45,6 +46,7 @@ export function FormatStep({
   const t = useTranslations("create");
   const te = useTranslations("errors");
   const locale = useLocale();
+  const prices = useShowPrices(); // hidden from customers (`show_prices` off): no total, no add-on amounts
   const currency = catalog?.currency ?? "ILS";
   // a custom story is its own product (magic-custom-story); every other book is sold by its line
   const product = catalog?.products.find((p) => p.slug === (book.custom ? CUSTOM_PRODUCT : PRODUCT[book.line]));
@@ -109,10 +111,12 @@ export function FormatStep({
       back={back}
       footer={
         <div className="flex grow items-center gap-3">
-          <div className="flex flex-col">
-            <span className="text-caption text-ink-muted">{t("format.total")}</span>
-            <strong className="font-display text-[20px] text-night-900">{money(total, currency, locale)}</strong>
-          </div>
+          {prices && (
+            <div className="flex flex-col">
+              <span className="text-caption text-ink-muted">{t("format.total")}</span>
+              <strong className="font-display text-[20px] text-night-900">{money(total, currency, locale)}</strong>
+            </div>
+          )}
           <Button variant="primary" size="lg" className="grow" onClick={order} loading={busy} disabled={!variant}>
             {t("format.cta")} <ArrowForward />
           </Button>
@@ -232,9 +236,11 @@ export function FormatStep({
                   </span>
                 )}
               </div>
-              <span className="text-small font-semibold whitespace-nowrap">
-                +{money(a.price ?? 0, currency, locale)}
-              </span>
+              {prices && (
+                <span className="text-small font-semibold whitespace-nowrap">
+                  +{money(a.price ?? 0, currency, locale)}
+                </span>
+              )}
             </label>
           ))}
         </fieldset>

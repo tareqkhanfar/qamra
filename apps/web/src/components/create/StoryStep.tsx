@@ -10,7 +10,7 @@ import { nameCases } from "@/lib/arabicName";
 import type { ThemeCard } from "@/lib/catalog";
 import { classicAvailable, classicVariant } from "@/lib/classic";
 import { createApi, missingEndpoint, type Book, type Character, type Child, type Line } from "@/lib/create";
-import { briefBody, briefReady, CUSTOM_THEME, customExtra, useCustomBrief } from "@/lib/customStory";
+import { briefBody, briefReady, CUSTOM_THEME, customExtra, customSold, useCustomBrief } from "@/lib/customStory";
 import { money, type Catalog } from "@/lib/store";
 import { fillTitle } from "@/lib/themeTitle";
 import { CompanionSummary } from "./companion/CompanionSummary";
@@ -64,9 +64,11 @@ export function StoryStep({
     .filter((th) => th.status === "available" && sellable(th))
     .sort((a, b) => Number(fits(b)) - Number(fits(a)));
   // «حكاية خاصة» (Magic): a story of their own instead of a ready theme, when the catalog sells it
-  const extra = magic ? customExtra(catalog) : null;
+  // (sold even while prices are hidden from customers: then there is no extra to show, only the badge)
+  const sold = magic && customSold(catalog);
+  const extra = sold ? customExtra(catalog) : null;
   const known = (slug: string | null) =>
-    (slug === CUSTOM_THEME && extra !== null) || (!!slug && list.some((th) => th.slug === slug));
+    (slug === CUSTOM_THEME && sold) || (!!slug && list.some((th) => th.slug === slug));
   const [theme, setTheme] = useState<string | null>(known(initial) ? initial : (list[0]?.slug ?? null));
   // a story chosen on its page (or earlier in this flow) is one card with «تغيير», not the whole list again
   const [browsing, setBrowsing] = useState(!known(initial));
@@ -132,7 +134,7 @@ export function StoryStep({
     }
   }
 
-  const customCard = extra !== null && (browsing || custom) && (
+  const customCard = sold && (browsing || custom) && (
     <button
       type="button"
       role="radio"
@@ -148,7 +150,7 @@ export function StoryStep({
       </span>
       <div className="flex grow flex-col gap-1">
         <span className="self-start rounded-full bg-amber-500 px-2 py-0.5 text-[11px] font-bold text-night-950">
-          {extra > 0 ? `+${money(extra, catalog?.currency ?? "ILS", locale)}` : tcs("badge")}
+          {extra !== null && extra > 0 ? `+${money(extra, catalog?.currency ?? "ILS", locale)}` : tcs("badge")}
         </span>
         <h2 className="text-[18px] leading-snug text-paper">{tcs("title")}</h2>
         <p className="text-caption text-night-100">{tcs("tagline", who)}</p>
