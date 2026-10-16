@@ -160,12 +160,12 @@ def _barefoot_reader(image: str, feet: Feet, x: float, y: float, width: float, h
         rx = max(width * leg * 0.5, height * 0.018)
         ry = max((ground - hem_y) * 0.5, height * 0.011)
         shapes.append((x + width * centre, ground - ry, rx, ry))
-    edge = max(height * 0.008, 0.25)
+    edge = max(height * 0.004, 0.18)
     for cx, cy, rx, ry in shapes:  # the white edge first, under both feet
         parts.append(
             f'<ellipse cx="{cx:.2f}" cy="{cy:.2f}" rx="{rx + edge:.2f}" ry="{ry + edge:.2f}" fill="#FFFFFF"/>'
         )
-    tone = people.shade(feet.skin, 1.12)  # the face's median is in its shade: the feet a little lighter
+    tone = feet.skin
     for cx, cy, rx, ry in shapes:
         parts.append(f'<ellipse cx="{cx:.2f}" cy="{cy:.2f}" rx="{rx:.2f}" ry="{ry:.2f}" fill="{tone}"/>')
         for i in range(3):  # little toes
