@@ -94,6 +94,36 @@ async def test_a_theme_s_pages_are_editable_without_a_template(
     }
 
 
+async def test_the_activity_books_theme_rows_are_not_stories(client: AsyncClient, adb: AsyncSession) -> None:
+    """An activity book's order job hangs its books on a theme row of its own (`{"product": ...}`): the themes
+    list and the studio skip it instead of failing on it (both were a 500 once an activity book was
+    ordered)."""
+    await _theme(adb)
+    adb.add(
+        ThemeRow(
+            slug="foundation-workbook-orders",
+            title_ar="دوسية التأسيس",
+            title_en="Foundation workbook",
+            age_min=4,
+            age_max=6,
+            active=False,
+            definition={"product": "workbook", "engine": "qamra_workbook.render.workbook"},
+        )
+    )
+    await adb.commit()
+    await make_admin(client, adb, roles=("editor",))
+    r = await client.get("/api/admin/themes")
+    assert r.status_code == 200, r.text
+    slugs = {t["slug"] for t in r.json()}
+    assert SLUG in slugs and "foundation-workbook-orders" not in slugs
+    assert (await client.get("/api/admin/themes/foundation-workbook-orders")).status_code == 404
+    studio = await client.get("/api/admin/studio/templates")
+    assert studio.status_code == 200, studio.text
+    assert "foundation-workbook-orders" not in {t["slug"] for t in studio.json()["themes"]}
+    texts = await client.get("/api/admin/studio/themes/foundation-workbook-orders/texts")
+    assert texts.status_code == 404
+
+
 async def test_a_coming_soon_story_says_it_has_no_pages(client: AsyncClient, adb: AsyncSession) -> None:
     soon = await _coming_soon(adb, await _theme(adb))
     await make_admin(client, adb, roles=("editor",))

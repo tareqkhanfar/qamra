@@ -2,11 +2,11 @@
 steps (owner, 2026-10-16: the invite and the free cover get what the parent flow has): on a 390 px phone, in
 Arabic, no AI (the drawings are finished with placeholder art by `/api/e2e/characters/{id}/ready`).
 
-- The invite: consent (1 of 3) → the photo placed in the oval (2 of 3) → the drawing in the class's style, the
-  portrait first («هل هذه طفلتكم؟») → a redraw with «ما الذي لا يشبهها؟» in the parent's words → «تعديل الصورة»
-  and back with its note → the earlier drawing chosen from the strip and approved → done.
-- The free cover: the photo is placed in the oval on this device, and the framing goes with it once the form is
-  sent with the consent.
+- The invite: consent (1 of 3) → the photo placed in the oval (2 of 3) → the drawing in the class's style,
+  the portrait first («هل هذه طفلتكم؟») → a redraw with «ما الذي لا يشبهها؟» in the parent's words →
+  «تعديل الصورة» and back with its note → the earlier drawing chosen from the strip and approved → done.
+- The free cover: the photo is placed in the oval on this device, and the framing goes with it once the form
+  is sent with the consent.
 """
 
 import re
@@ -42,9 +42,9 @@ def _ready_newest(page: Page, name: str) -> str:
 
 
 def test_the_invite_uses_the_create_flows_photo_and_drawing_steps(page: Page) -> None:
-    token = call(page, "POST", "/api/e2e/invites", {"child_name": "سلمى", "gender": "f", "style": "watercolor"})[
-        "token"
-    ]
+    token = call(
+        page, "POST", "/api/e2e/invites", {"child_name": "سلمى", "gender": "f", "style": "watercolor"}
+    )["token"]
     page.goto(f"{BASE_URL}/ar/invite/{token}")
     page.get_by_role("button", name="متابعة لكتاب سلمى").click()
 
@@ -111,7 +111,12 @@ def _free_cover_on(page: Page) -> None:
     admin = staff.new_page()
     admin.goto(f"{BASE_URL}/ar/login")
     email = f"e2e-staff-{uuid.uuid4().hex[:10]}@example.com"
-    call(admin, "POST", "/api/auth/register", {"email": email, "password": "moonlight-2026", "full_name": "طاقم"})
+    call(
+        admin,
+        "POST",
+        "/api/auth/register",
+        {"email": email, "password": "moonlight-2026", "full_name": "طاقم"},
+    )
     call(admin, "POST", "/api/e2e/staff", {"roles": ["owner"]})
     call(admin, "PUT", "/api/admin/settings", {"values": {"free_cover": True}})
     staff.close()
