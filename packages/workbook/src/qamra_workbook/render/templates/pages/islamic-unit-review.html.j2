@@ -18,7 +18,6 @@
         <div class="ur-choices">{% for ch in d.choose.choices %}<div class="ur-choice"><span class="tick"></span><span class="ur-ct">{% if ch.placeholder %}<span class="hole">{{ ch.notice }}</span>{% else %}{{ ch.text }}{% endif %}</span>{% if ch.tag %}<i class="opt-tag">{{ ch.tag }}</i>{% endif %}</div>{% endfor %}</div></div>
     </section>
     <section class="ur-stars card"><p>{{ d.stars_text }}</p>{{ isl.outline_stars(d.star_count, 'star-outline big') }}</section>
-    {{ isl.refs(c, d.refs) }}
   </div>
   {{ isl.foot(p, c) }}
 </div>

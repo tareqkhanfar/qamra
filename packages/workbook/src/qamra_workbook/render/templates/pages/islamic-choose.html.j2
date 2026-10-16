@@ -11,7 +11,6 @@
       <div class="ch-choices k{{ q.choices|length }}">{% for ch in q.choices %}<div class="ur-choice"><span class="tick"></span><span class="ur-ct">{% if ch.placeholder %}<span class="hole">{{ ch.notice }}</span>{% else %}{{ ch.text }}{% endif %}</span>{% if ch.tag %}<i class="opt-tag">{{ ch.tag }}</i>{% endif %}</div>{% endfor %}</div>
     </section>
     {% endfor %}
-    {{ isl.refs(c, d.refs) }}
   </div>
   {{ isl.foot(p, c) }}
 </div>

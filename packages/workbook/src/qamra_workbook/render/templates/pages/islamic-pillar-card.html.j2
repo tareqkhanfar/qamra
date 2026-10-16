@@ -8,7 +8,6 @@
     <section class="card pl-idea"><p{{ ' class=ai' if d.idea.ai }}>{{ d.idea.text }}</p></section>
     <section class="card ur-choose"><p class="ur-q">{{ d.question.text }}</p>
       <div class="ur-choices">{% for ch in d.question.choices %}<div class="ur-choice"><span class="tick"></span><span class="ur-ct">{% if ch.placeholder %}<span class="hole">{{ ch.notice }}</span>{% else %}{{ ch.text }}{% endif %}</span></div>{% endfor %}</div></section>
-    {{ isl.refs(c, d.refs) }}
   </div>
   {{ isl.foot(p, c) }}
 </div>

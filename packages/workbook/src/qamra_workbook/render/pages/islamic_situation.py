@@ -53,7 +53,10 @@ def what_would_you_do(ctx: PageContext) -> Built:
         ),
         "labels": {"role": "تَمْثِيلٌ"},
     }
+    # the gentle word about each choice gave the answer away under the choices: it is the grown-up's, in
+    # the answer key, to say after the child has chosen
     answer = ["الأجمل: " + "، ".join(c["text"] for c in ticks if c["ok"])]
+    answer += [f"{c['text']}: {c['feedback']}" for c in ticks if c["feedback"]]
     return Built(data, answer, problems)
 
 

@@ -14,7 +14,7 @@ from typing import Any
 from markupsafe import Markup
 
 from qamra_workbook.pictures import get as library_picture
-from qamra_workbook.pictures.islamic_backdrops import GLYPH_PREFIX, prop_svg
+from qamra_workbook.pictures.islamic_backdrops import GLYPH_PREFIX, WUDU_PREFIX, prop_svg
 from qamra_workbook.puzzles import generate_maze
 from qamra_workbook.render import draw
 from qamra_workbook.render.islamic_content import (
@@ -53,12 +53,14 @@ MAZE_SIZES = {"small": (4, 4), "medium": (5, 5), "large": (6, 6)}
 
 # what the answer key calls each of the series' icons (`isl:<icon>`), as a library picture has its `word_ar`
 GLYPH_WORDS: dict[str, str] = {
+    "ark": "السَّفِينَةُ",
     "balloon": "الْبَالُونُ",
     "beads": "الْمِسْبَحَةُ",
     "book-stand": "الْمُصْحَفُ",
     "books": "الْكُتُبُ",
     "coin-heart": "النُّقُودُ وَالْقَلْبُ",
     "crescent": "الْهِلَالُ",
+    "creation": "مِنْ خَلْقِ اللهِ",
     "cube": "الْكَعْبَةُ",
     "cup-spoon": "الْكُوبُ وَالْمِلْعَقَةُ",
     "dome": "قُبَّةُ الْمَسْجِدِ",
@@ -81,6 +83,7 @@ GLYPH_WORDS: dict[str, str] = {
     "staff-sea": "الْعَصَا وَالْبَحْرُ",
     "star": "النَّجْمَةُ",
     "sun": "الشَّمْسُ",
+    "suhoor": "السَّحُورُ",
     "sun-moon": "الشَّمْسُ وَالْقَمَرُ",
     "tulip": "الزَّهْرَةُ",
     "water-drop": "قَطْرَةُ الْمَاءِ",
@@ -89,11 +92,27 @@ GLYPH_WORDS: dict[str, str] = {
 }
 
 
+# the wudu cards' pictures (`wudu:<part>`) in words, for the answer key
+WUDU_WORDS: dict[str, str] = {
+    "speech-bubble": "التَّسْمِيَةُ",
+    "hands": "الْيَدَانِ",
+    "mouth": "الْفَمُ",
+    "nose": "الْأَنْفُ",
+    "face": "الْوَجْهُ",
+    "arms": "الذِّرَاعَانِ",
+    "head": "الرَّأْسُ",
+    "feet": "الْقَدَمَانِ",
+}
+
+
 def word_of(picture_id: str) -> str:
     """A picture in words (the answer key): a library picture's word, or the series' icon's (never its id)."""
     if picture_id.startswith(GLYPH_PREFIX):
         name = picture_id[len(GLYPH_PREFIX) :]
         return GLYPH_WORDS.get(name, name)
+    if picture_id.startswith(WUDU_PREFIX):
+        name = picture_id[len(WUDU_PREFIX) :]
+        return WUDU_WORDS.get(name, name)
     return library_picture(picture_id).word_ar
 
 

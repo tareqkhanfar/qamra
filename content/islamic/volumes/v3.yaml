@@ -28,7 +28,7 @@ units:
     lessons:
       - {t: "الصِّيَامُ عِبَادَةُ حُبٍّ", c: [c-fasting, c-ramadan], s: [q-2-183, h-bukhari-1894], p: [pillar-card, story, true-false]}
       - {t: "أَصُومُ بِقَدْرِ طَاقَتِي", c: [c-fasting-kids], s: [h-bukhari-1960, s-fasting-kids], p: [story, wwyd, match]}
-      - {t: "أَصُومُ بِأَخْلَاقِي أَيْضًا", c: [c-fasting, c-tongue], s: [h-bukhari-1894, h-bukhari-6018], p: [story, choose]}
+      - {t: "أَصُومُ بِأَخْلَاقِي أَيْضًا", c: [c-fasting, c-tongue], s: [h-bukhari-1894, h-bukhari-6018], p: [story, choose, draw]}
   - id: u-hajj
     lessons:
       - {t: "رِحْلَةُ الْحَجِّ", c: [c-hajj], s: [q-3-97, q-22-27, h-bukhari-1521], p: [pillar-card, story, find-objects]}

@@ -8,12 +8,11 @@
     <figure class="wy-scene">{{ d.scene }}</figure>
     <section class="wy-choices">
       {% for ch in d.choices %}
-      <article class="card wy-choice"><span class="tick"></span><div><p class="wy-t">{{ ch.text }}</p><p class="wy-f">{{ icon('heart' if ch.ok else 'wind', 'ico', 2.2) }}<span>{{ ch.feedback }}</span></p></div></article>
+      <article class="card wy-choice"><span class="tick"></span><div><p class="wy-t">{{ ch.text }}</p></div></article>
       {% endfor %}
     </section>
     {{ isl.sacred(d.quote, c) }}
     <section class="wy-role"><span class="pill">{{ icon('mask', 'ico', 2.2) }}{{ d.labels.role }}</span><p>{{ d.role_play }}</p></section>
-    {{ isl.refs(c, d.refs) }}
   </div>
   {{ isl.foot(p, c) }}
 </div>

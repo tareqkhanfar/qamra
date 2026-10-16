@@ -1,5 +1,15 @@
 # Changelog
 
+## «قلبي يعرف الله»: the last open items before print (2026-10-16)
+- **Sacred text shown as said:** the tashahhud (`d-tashahhud`) leaves out the Prophet's ﷺ explanation inside the hadith (`dua.omit`, verbatim on both sides); excerpts start where the phrase starts («وَقُل رَّبِّ…» ×2, «إِنَّ الصِّدْقَ…»), 33:56 is shown whole; the bare «صلى الله عليه وسلم» inside a vowelled hadith gets its tashkeel; Ibrahim's du'a (14:41) moved from the body text into the Quran frame of the story next to it.
+- **References:** a spanned verse cites exactly the ayat printed (`Resolver.resolve`); every reference reads in full («سورة الأعراف: ٣١», «صحيح البخاري: ٥٣٧٦»); the bare «المراجع:» line is gone from the child pages, and each unit's parents' page lists «مصادر هذه الوحدة» with what each source supports (`label_ar` in the register).
+- **No false statement about the Prophet ﷺ or a prophet:** the «خطأ» statements and the wrong options about his deeds, sayings, mission or revelation (and the prophets' conduct) became questions about the child after a true statement; a test guards it.
+- **Child's gender and the parents:** «يرحمك الله» is said to a brother in both copies; the parents' notes about the child follow the child's gender (care notes, tips, lines); the prayer guidance agrees with «مروا أولادكم بالصلاة لسبع»; the after-meal du'a cites `d-after-eat`; the «ماذا كنت ستفعل؟» feedback moved to the answer key.
+- **Pictures (code):** the cast are barefoot in the prayer hall and on a prayer mat (the reader's drawn shoes cut at the hem, bare feet in the child's skin tone); the grandmother's scarf is a cream draped scarf over a sage coat; scene things stand in the scene (prayer mat on the floor, lantern, rahl, sheaf, Kaaba, beads) instead of floating on discs; the Kaaba (icon and object) has its band and door; a lantern without a cross; distinct head (a hand passing over the hair) and face (two hands) wudu cards; a suhoor bowl instead of a second crescent; «خالق كل شيء» with a scene of creation, not a sun; Nuh's wooden ark (building, animals two by two, waves, the mountain), the 11 stars with the sun and the moon, the well, the basket on the river, the sea split, Makkah's valley, al-Safa, the cave, a garden; the gourd shore without a palm.
+- **Pictures (paid, $0.32 of the $2.00 cap):** the V1 openers F13, F15 and F17 redrawn barefoot (F13 also without the glowing cloud), Nano Banana 2 edit 1K, logged in `out/design-images/ledger.jsonl`.
+- **Page counts:** V2 120, V3 112, V4 100, R 72 (drawing pages that belong in their lessons); the build refuses a count that is not a multiple of 4 (`page-count`); the spine follows.
+- Tests: `test_islamic_final.py`; the fake resolver knows the omitted stretches.
+
 ## Prices hidden from customers; staff keep them (2026-10-16)
 - **Why:** Tareq: «ما بدي الزباين يعرفوا الاسعار» for now; prices stay in the system for the admin.
 - **Setting:** «إظهار الأسعار للزبائن» (`show_prices`, group الأسعار), **off by default**. Switch it on in the admin settings to show every price again.

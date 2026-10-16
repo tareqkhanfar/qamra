@@ -484,6 +484,16 @@ def volume_extra(plan: islamic.Plan, volume: str, slot: Slot) -> dict[str, Any]:
     return extra
 
 
+def unit_source_ids(content: VolumeContent, unit: str) -> list[str]:
+    """Every source id the unit's written pages cite, in book order: the parents' page lists them
+    («مصادر هذه الوحدة») in place of a bare line of references under every child page."""
+    out: dict[str, None] = {}
+    for slot in content.slots:
+        if slot.page.unit == unit and slot.key in content.raw:
+            out.update(dict.fromkeys(checks.page_ids(content.raw[slot.key])))
+    return list(out)
+
+
 def missing_page(volume: str, slot: Slot) -> Missing:
     p = slot.page
     return Missing(
@@ -509,7 +519,10 @@ def volume_specs(
         if only is not None and not any(slot.key == o or slot.key.startswith(o) for o in only):
             continue
         page: AnyPage = content.pages.get(slot.key) or missing_page(content.volume, slot)
-        specs.append(page_spec(page, slot.page.n, context, volume_extra(plan, content.volume, slot)))
+        extra = volume_extra(plan, content.volume, slot)
+        if slot.page.kind == "parent":
+            extra["unit_sources"] = unit_source_ids(content, slot.page.unit or "")
+        specs.append(page_spec(page, slot.page.n, context, extra))
     return specs
 
 
@@ -675,6 +688,7 @@ def check_volume(
         content.problems += text_problems(key, raw)
     content.problems += closing_problems(content)
     content.problems += planned_source_warnings(content)
+    content.problems += page_count_problems(content)
     if print_build:
         content.problems += [
             Problem("missing", s.key, f"no content for this {s.page.type!r} page") for s in content.missing
@@ -695,6 +709,27 @@ def check_volume(
                 key = next((k for k in written if page_id(volume, k) == pid), pid)
                 content.problems.append(Problem("page", key, message.strip()))
     return content
+
+
+# the printer binds the interior in sheets of four pages: a volume's page count is a multiple of this
+PAGE_MULTIPLE = 4
+
+
+def page_count_problems(content: VolumeContent) -> list[Problem]:
+    """A volume whose page count is not a multiple of four cannot be bound as it is: the build refuses it (pad
+    it with pages that belong in the book: a drawing page, a page of notes, a du'a from an approved
+    source)."""
+    count = len(content.slots)
+    if count % PAGE_MULTIPLE == 0:
+        return []
+    short = PAGE_MULTIPLE - count % PAGE_MULTIPLE
+    return [
+        Problem(
+            "page-count",
+            content.volume,
+            f"{count} pages: the printer needs a multiple of {PAGE_MULTIPLE} ({short} more page(s))",
+        )
+    ]
 
 
 def _at(key: str, problem: Problem) -> Problem:

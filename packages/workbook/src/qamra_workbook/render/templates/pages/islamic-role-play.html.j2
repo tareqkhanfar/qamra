@@ -14,7 +14,6 @@
       {% for s in d.script %}<div class="rp-say"><span class="rp-tag r{{ s.n }}">{{ s.role }}</span><p>{{ s.text }}</p></div>{% endfor %}</section>
     <aside class="wu-parent"><b>{{ icon('heart', 'ico', 2.2) }}{{ d.labels.parent }}</b><p>{{ d.tip }}</p></aside>
     {% if d.stars %}<section class="ur-stars card"><p>{{ d.stars }}</p>{{ isl.outline_stars(3, 'star-outline big') }}</section>{% endif %}
-    {{ isl.refs(c, d.refs) }}
   </div>
   {{ isl.foot(p, c) }}
 </div>

@@ -26,7 +26,7 @@ units:
       - {t: "لَيْلَةٌ مُبَارَكَةٌ", c: [c-laylat-alqadr], s: [q-97, h-bukhari-2017], p: [story, find-objects, choose]}
   - id: u-eid1
     lessons:
-      - {t: "أَسْتَعِدُّ لِلْعِيدِ", c: [c-eid-manners], s: [h-bukhari-977], p: [story, find-objects, choose]}
+      - {t: "أَسْتَعِدُّ لِلْعِيدِ", c: [c-eid-manners], s: [h-bukhari-977], p: [story, find-objects, choose, draw]}
       - {t: "التَّكْبِيرُ", c: [c-takbir], s: [q-2-185, s-eid-takbir], p: [story, match, choose]}
       - {t: "صَلَاةُ الْعِيدِ مَعَ أَهْلِي", c: [c-eid-manners], s: [h-bukhari-977], p: [story, order-steps]}
   - id: u-eid2

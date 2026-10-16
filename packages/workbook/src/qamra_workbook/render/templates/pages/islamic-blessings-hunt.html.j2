@@ -8,7 +8,6 @@
     <section class="hn-list">{% for it in d.finds %}<div class="hn-item card">{{ it.art }}<span>{{ it.word }}</span><i class="tick"></i></div>{% endfor %}</section>
     <section class="hn-close card"><p{{ ' class=ai' if d.closing.ai }}>{{ d.closing.text }}</p></section>
     <section class="hn-draw"><span class="pill">{{ icon('crayon', 'ico', 2.2) }}{{ d.draw_box }}</span><div class="hn-box"></div></section>
-    {{ isl.refs(c, d.refs) }}
   </div>
   {{ isl.foot(p, c) }}
 </div>

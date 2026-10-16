@@ -1006,6 +1006,22 @@ The owner approved the likeness trial's direction. What was built, and the choic
 - **Production never pads a photo:** clean_image, crop_photo and the adapters only crop, scale and re-encode.
   The black bars in the trial's comparison came from the comparison tool alone (fixed).
 
+## «قلبي يعرف الله»: the last open items (2026-10-16)
+- **What counts as «a false statement about the Prophet ﷺ»:** every «خطأ» statement about him or any prophet, and
+  every quiz option that, with its question, says something false about his deeds, sayings, traits, mission,
+  revelation or the events of his life (and a prophet's conduct). These now state the true fact and ask about the
+  child. Plain recall quizzes about the other prophets' stories (who/where/how many: «من أمر نوحًا…؟», «أين وضعت أم
+  موسى طفلها؟») keep their wrong options: they are options to reject, not statements; and the name questions
+  («ما اسم نبينا ﷺ؟»). `test_islamic_final.test_no_false_statement_about_a_prophet_is_printed` guards the rule.
+- **The tashahhud:** the Prophet's ﷺ explanation inside Bukhari 831 is dropped from the words said (`dua.omit`),
+  not moved to the parents' page: a paraphrase there would retype hadith wording.
+- **The reader barefoot:** the child's character sheet is drawn with shoes and each order has its own; redrawing
+  it barefoot would be a paid call per order. In the prayer hall and on a prayer mat the reader is cut at the hem
+  of its legs and stands on bare feet drawn in its own skin tone (`islamic_figures.bare_feet`); when its legs cannot
+  be found it is drawn as it is.
+- **Page counts:** padded with drawing pages inside lessons (V2 u-prayer, V3 u-fasting, V4 u-nuh and u-yunus, R
+  u-eid1): no new sacred text to review.
+
 ## The invite and the free cover reuse the parent flow's steps; staff see the portrait (2026-10-16)
 
 - **The invite renders `PhotoStep` and `CharacterStep` themselves** (with `productLine` "class", `lib/drawings`

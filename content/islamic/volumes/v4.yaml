@@ -18,7 +18,7 @@ units:
     lessons:
       - {t: "نُوحٌ وَالسَّفِينَةُ", c: [c-nuh], s: [q-11-37-44], p: [prophet-story, maze, choose]}
       - {t: "نُوحٌ يَصْبِرُ", c: [c-nuh, c-qadar], s: [q-11-37-44, q-2-216], p: [prophet-story, wwyd, true-false]}
-      - {t: "أُلَوِّنُ وَأَحْكِي", c: [c-nuh], p: [coloring]}
+      - {t: "أُلَوِّنُ وَأَحْكِي", c: [c-nuh], p: [coloring, draw]}
   - id: u-ibrahim
     lessons:
       - {t: "إِبْرَاهِيمُ يَنْظُرُ إِلَى النُّجُومِ", c: [c-ibrahim, c-allah-creator], s: [q-6-75-79, q-39-62], p: [prophet-story, find-objects, choose]}
@@ -39,7 +39,7 @@ units:
   - id: u-yunus
     lessons:
       - {t: "يُونُسُ وَالْحُوتُ", c: [c-yunus], s: [q-37-139-148, q-21-87, q-21-88], p: [prophet-story, find-objects, choose]}
-      - {t: "اللهُ يَسْمَعُ دُعَائِي", c: [c-yunus, c-allah-near], s: [q-2-186, q-2-222], p: [wwyd, true-false]}
+      - {t: "اللهُ يَسْمَعُ دُعَائِي", c: [c-yunus, c-allah-near], s: [q-2-186, q-2-222], p: [wwyd, true-false, draw]}
   - id: u-sira
     lessons:
       - {t: "صَادِقٌ لَمْ يُجَرِّبُوا عَلَيْهِ كَذِبًا", c: [c-sira, c-prophet-honest], s: [h-bukhari-4770], p: [sira-story, wwyd, true-false]}

@@ -22,7 +22,7 @@ from qamra_workbook.pictures.model import OUTLINE
 class Kit(Protocol):
     """Who can stand in a scene with people: the recurring characters and the reader."""
 
-    def figure(self, who: str, x: float, y_feet: float, height: float) -> str: ...
+    def figure(self, who: str, x: float, y_feet: float, height: float, barefoot: bool = False) -> str: ...
 
 
 @dataclass(frozen=True)
@@ -289,10 +289,18 @@ def shore_gourd_sunrise(uid: str, kit: Kit | None) -> str:
         path("M0 104 L0 92 C40 86 100 94 180 86 L180 104 Z", "#EBCF98", opacity=0.9),
     ]
     out.append(path("M0 78 C30 71 70 77 110 74 C140 73 160 66 180 64", stroke="#FFFFFF", sw=1.6, opacity=0.9))
-    out += [
-        pic("palm", 138, 40, 44),
-        path("M140 92 C150 90 160 91 170 93", stroke="#D9BE86", sw=1, opacity=0.8),
-    ]
+    # the gourd plant is the scene's tree: no palm on this shore (a palm stood where the gourd should be)
+    out.append(path("M140 92 C150 90 160 91 170 93", stroke="#D9BE86", sw=1, opacity=0.8))
+    out.append(path("M112 96 C120 84 132 80 146 78 C158 76 168 70 184 72", stroke="#5E9B45", sw=1.8))
+    for x, y, s, r in (
+        (104, 76, 26, -25),
+        (120, 66, 28, 20),
+        (138, 62, 30, -15),
+        (156, 58, 28, 25),
+        (166, 70, 24, -30),
+    ):
+        out.append(pic("leaf", x, y, s, rotate=r))
+    out += [pic("pumpkin", 126, 82, 18), pic("pumpkin", 150, 78, 15)]
     vine = "M-4 99 C14 90 30 92 46 86 C60 81 72 84 84 80 C94 77 102 80 100 85 C98 88 94 86 96 83"
     out.append(path(vine, stroke="#5E9B45", sw=1.8))
     for x, y, s, r in (
@@ -516,3 +524,9 @@ SCENES.update(
     }
 )
 __all__ = ["BLESSING_SPOTS", "SCENES", "Kit", "Scene", "scene_svg"]
+
+
+# the drawn scenes of the prophets' stories and the sira (they import this module's helpers)
+from qamra_workbook.pictures.islamic_story_scenes import SCENES_EXTRA  # noqa: E402
+
+SCENES.update(SCENES_EXTRA)

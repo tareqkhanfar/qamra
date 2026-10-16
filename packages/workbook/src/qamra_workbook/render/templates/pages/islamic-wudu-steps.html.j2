@@ -10,7 +10,6 @@
       {% endfor %}
     </section>
     {% if d.parent %}<aside class="wu-parent"><b>{{ icon('heart', 'ico', 2.2) }}{{ d.labels.parent }}</b><p>{{ d.parent }}</p></aside>{% endif %}
-    {{ isl.refs(c, d.refs) }}
   </div>
   {{ isl.foot(p, c) }}
 </div>

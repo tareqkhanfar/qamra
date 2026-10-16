@@ -13,7 +13,6 @@
     {{ isl.sacred(d.quote, c) }}
     <section class="wd-mean card"><i>{{ icon('bulb', 'ico', 2.2) }}</i><p{{ ' class=ai' if d.meaning.ai }}>{{ d.meaning.text }}</p></section>
     <section class="wd-track card"><p>{{ d.tracker }}</p><div class="dk-days">{% for n in d.days %}<span>{{ icon('star', 'star-outline', 1.5) }}<i>{{ n }}</i></span>{% endfor %}</div></section>
-    {{ isl.refs(c, d.refs) }}
   </div>
   {{ isl.foot(p, c) }}
 </div>

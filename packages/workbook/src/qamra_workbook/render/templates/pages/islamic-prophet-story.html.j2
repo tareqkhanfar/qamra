@@ -17,7 +17,6 @@
     <section class="st-lesson card"><i>{{ icon('bulb', 'ico', 2.2) }}</i><div><b>{{ d.labels.lesson }}</b><p{{ ' class=ai' if d.lesson.ai }}>{{ d.lesson.text }}</p></div></section>
     <section class="st-q card"><p class="st-qt"><i>{{ icon('target', 'ico', 2.2) }}</i><span>{{ d.question.text }}</span></p>
       <div class="st-choices">{% for ch in d.question.choices %}<div class="st-choice"><span class="tick"></span><span>{% if ch.placeholder %}<span class="hole">{{ ch.notice }}</span>{% else %}{{ ch.text }}{% endif %}</span></div>{% endfor %}</div></section>
-    {{ isl.refs(c, d.refs) }}
   </div>
   {{ isl.foot(p, c) }}
 </div>

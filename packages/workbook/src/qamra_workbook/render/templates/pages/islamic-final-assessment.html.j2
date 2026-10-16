@@ -9,7 +9,6 @@
     <section class="card fa-row"><div class="fa-t"><b>{{ s.skill }}</b><p>{{ s.text }}</p></div><div class="fa-stars"><small>{{ d.labels.parent }}</small>{{ isl.outline_stars(d.stars, 'star-outline big') }}</div></section>
     {% endfor %}
     {% if d.note %}<p class="wd-intro">{{ d.note }}</p>{% endif %}
-    {{ isl.refs(c, d.refs) }}
   </div>
   {{ isl.foot(p, c) }}
 </div>
