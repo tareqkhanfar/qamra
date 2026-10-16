@@ -350,7 +350,7 @@ volumes:
       - {n: 51, week: 6, subject: arabic, unit: v1-ar-02, type: letter-trace, skill: "أتتبّع الثاء المنقّطة: كبيرة ثم أصغر", difficulty: 2, params: {letter: ث, sizes: [xl, l]}}
       - {n: 52, week: 6, subject: math, unit: v1-ma-02, type: number-trace, skill: "أتتبّع العدد ٣ المنقّط", difficulty: 1, params: {number: 3}}
       - {n: 53, week: 6, subject: english, unit: v1-en-01, type: en-letter, skill: "أتعرّف على C وc وأتتبّعهما مع كلمة cat", difficulty: 1, params: {letter: C, word: cat}}
-      - {n: 54, week: 6, subject: arabic, unit: v1-ar-02, type: letter-write, skill: "أكتب التاء والثاء بالتتبّع ثم وحدي: سطر لكل حرف", difficulty: 2, params: {letters: [ت, ث], guided: 2, independent: 1}}
+      - {n: 54, week: 6, subject: arabic, unit: v1-ar-02, type: letter-write, skill: "أكتب التاء والثاء بالتتبّع ثم وحدي: سطر لكل حرف", difficulty: 2, params: {letters: [ت, ث], guided: 1, independent: 1}}
       - {n: 55, week: 6, subject: pen, unit: v1-pen-03, type: pen-lines, skill: "أرسم حلزونًا من الخارج إلى الداخل", difficulty: 2, params: {line: spiral, size: xl}}
       - {n: 56, week: 6, subject: math, unit: v1-ma-02, type: count-and-circle, skill: "أعدّ الأشياء وأضع دائرة حول العدد الصحيح (١–٣)", difficulty: 2, params: {numbers: [1, 2, 3]}}
       - {n: 57, week: 6, subject: arabic, unit: v1-ar-02, type: find-letter, skill: "أميّز الباء والتاء والثاء بعدد النقاط ومكانها", difficulty: 2, params: {letters: [ب, ت, ث]}}
@@ -408,7 +408,7 @@ volumes:
       - {n: 104, week: 11, subject: arabic, unit: v1-ar-04, type: letter-trace, skill: "أتتبّع الذال المنقّطة: كبيرة ثم أصغر", difficulty: 2, params: {letter: ذ, sizes: [xl, l]}}
       - {n: 105, week: 11, subject: pen, unit: v1-pen-04, type: maze, skill: "أجد طريقي في متاهة سهلة بممرات واسعة", difficulty: 2, params: {level: 1}}
       - {n: 106, week: 11, subject: math, unit: v1-ma-03, type: unit-review, skill: "أراجع العددين ٤ و٥ والصفر", difficulty: 2, params: {numbers: [4, 5, 0]}}
-      - {n: 107, week: 11, subject: arabic, unit: v1-ar-04, type: letter-write, skill: "أكتب الدال والذال بالتتبّع ثم وحدي: سطر لكل حرف", difficulty: 2, params: {letters: [د, ذ], guided: 2, independent: 1}}
+      - {n: 107, week: 11, subject: arabic, unit: v1-ar-04, type: letter-write, skill: "أكتب الدال والذال بالتتبّع ثم وحدي: سطر لكل حرف", difficulty: 2, params: {letters: [د, ذ], guided: 1, independent: 1}}
       - {n: 108, week: 11, subject: pen, unit: v1-pen-04, type: pen-lines, skill: "أرسم خطًا داخل ممر دون أن ألمس جانبيه", difficulty: 2, params: {line: lane}}
       - {n: 109, week: 11, subject: arabic, unit: v1-ar-04, type: find-letter, skill: "أجد الدال والذال بين الحروف وأفرّق بينهما", difficulty: 2, params: {letters: [د, ذ]}}
       - {n: 110, week: 11, subject: pen, unit: v1-pen-04, type: dot-to-dot, skill: "أصل النقاط بالترتيب من ١ إلى ٥ لتظهر الصورة", difficulty: 2, params: {to: 5}}
@@ -417,10 +417,10 @@ volumes:
       - {n: 112, week: 12, subject: arabic, unit: v1-ar-04, type: unit-review, skill: "أراجع حرفي الدال والذال", difficulty: 2, params: {letters: [د, ذ]}}
       - {n: 113, week: 12, subject: pen, unit: v1-pen-04, type: unit-review, skill: "أراجع التحكّم بقلمي: متاهة وممر ونقاط", difficulty: 2, params: {skills: [maze, lane, dot-to-dot]}}
       - {n: 114, week: 12, subject: mixed, unit: v1-mix, type: coloring, skill: "ألوّن الصورة حسب الرمز: حروف عربية وأعداد", difficulty: 2, params: {mode: color-by-code, letters: [أ, ب, ت], numbers: [2, 3, 4]}}
-      - {n: 115, week: 12, subject: mixed, unit: v1-mix, type: unit-review, skill: "مراجعة شاملة: حروفي العربية والإنجليزية وأعدادي وألواني", difficulty: 2, params: {covers: [arabic, math, english]}}
+      - {n: 115, week: 12, subject: mixed, unit: v1-mix, type: unit-review, skill: "مراجعة شاملة: حروفي العربية والإنجليزية وأعدادي", difficulty: 2, params: {covers: [arabic, math, english]}}
       - {n: 116, week: 12, subject: pen, unit: v1-pen-test, type: assessment, skill: "تقييم مهارات القلم: أتتبّع موجة ودائرة، ويلاحظ الكبير مسكة قلمي وضغطي واتجاه خطّي", difficulty: 2, params: {checklist: [grip, pressure, direction], tracing: [wave, circle]}}
       - {n: 117, week: 12, subject: arabic, unit: v1-ar-test, type: assessment, skill: "تقييم العربية: أتعرّف على الحروف من الألف إلى الذال، وأكتب وحدي أ ب ت ث د ذ", difficulty: 2, params: {letters: [أ, ب, ت, ث, ج, ح, خ, د, ذ], write: [أ, ب, ت, ث, د, ذ]}}
-      - {n: 118, week: 12, subject: math, unit: v1-ma-test, type: assessment, skill: "تقييم الرياضيات: أعدّ حتى ٥ وأعرف الصفر وأقارن وأسمّي الألوان", difficulty: 2, params: {numbers: [1, 2, 3, 4, 5, 0], covers: [colors, compare]}}
+      - {n: 118, week: 12, subject: math, unit: v1-ma-test, type: assessment, skill: "تقييم الرياضيات: أعدّ حتى ٥ وأكتب العدد، وأتتبّع الأرقام من ٠ إلى ٥، وأحوّط المجموعة الأكثر", difficulty: 2, params: {numbers: [1, 2, 3, 4, 5, 0], covers: [colors, compare]}}
       - {n: 119, week: 12, subject: english, unit: v1-en-test, type: assessment, skill: "تقييم الإنجليزية: أتعرّف على الحروف من A إلى H", difficulty: 2, params: {letters: [A, B, C, D, E, F, G, H]}}
       - {n: 120, week: 12, subject: thinking, unit: v1-th-test, type: assessment, skill: "تقييم التفكير: أطابق وأصنّف وأجد المختلف وأكمل النمط", difficulty: 2, params: {covers: [connect, classify, odd-one-out, pattern-complete, memory]}}
 
@@ -503,7 +503,7 @@ volumes:
       - {n: 16, week: 2, subject: pen, unit: v2-pen-01, type: pen-lines, skill: "أرسم حلقات متصلة مثل خيط الصوف", difficulty: 2, params: {line: loop, size: l}}
       - {n: 17, week: 2, subject: math, unit: v2-ma-01, type: number-intro, skill: "أتعرّف على العدد ٧: سبعة أشياء", difficulty: 1, params: {number: 7}}
       - {n: 18, week: 2, subject: thinking, unit: v2-th-01, type: odd-one-out, skill: "أجد الشيء الذي لا ينتمي إلى مجموعته", difficulty: 2, params: {level: 2}}
-      - {n: 19, week: 2, subject: arabic, unit: v2-ar-01, type: letter-write, skill: "أكتب الراء والزاي بالتتبّع ثم وحدي: سطر لكل حرف", difficulty: 2, params: {letters: [ر, ز], guided: 2, independent: 1}}
+      - {n: 19, week: 2, subject: arabic, unit: v2-ar-01, type: letter-write, skill: "أكتب الراء والزاي بالتتبّع ثم وحدي: سطر لكل حرف", difficulty: 2, params: {letters: [ر, ز], guided: 1, independent: 1}}
       - {n: 20, week: 2, subject: english, unit: v2-en-01, type: en-letter, skill: "أتعرّف على K وk وأتتبّعهما ثم أكتبهما: kite", difficulty: 1, params: {letter: K, word: kite}}
       - {n: 21, week: 2, subject: arabic, unit: v2-ar-01, type: find-letter, skill: "أميّز الراء من الزاي بالنقطة", difficulty: 2, params: {letters: [ر, ز]}}
       - {n: 22, week: 2, subject: math, unit: v2-ma-01, type: number-trace, skill: "أتتبّع العدد ٧ المنقّط", difficulty: 2, params: {number: 7}}

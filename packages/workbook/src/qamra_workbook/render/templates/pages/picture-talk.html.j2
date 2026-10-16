@@ -31,6 +31,6 @@
     <div class="role-thumbs">{% for r in d.roles %}<div class="role-thumb"><div class="rt-art">{{ r.art }}</div><b>{{ r.label }}</b><span class="check-box"></span></div>{% endfor %}</div>
   </div>
   <div class="places fcard"><span class="label">{{ icon('home') }}أَيْنَ المَشْهَدُ؟</span><div class="place-chips">{% for pl in d.places %}<span><i class="check-box"></i>{{ pl }}</span>{% endfor %}</div></div>
-  <div class="scene-parts">{% for part in d.parts %}<div class="spart fcard lvl2"><span class="label">{{ stars(2) }}{{ book.num(loop.index) }}. {{ part }}</span><div class="spart-draw"></div></div>{% endfor %}</div>
+  <div class="scene-parts">{% for part in d.parts %}<div class="spart fcard lvl2"><span class="label">{{ stars(2) }}<span class="pill-num">{{ book.num(loop.index) }}</span>{{ part }}</span><div class="spart-draw"></div></div>{% endfor %}</div>
 {% endif %}
 </div>

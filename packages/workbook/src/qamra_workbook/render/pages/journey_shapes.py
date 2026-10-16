@@ -56,11 +56,17 @@ def shape_journey(ctx: PageContext) -> Built:
     body.append(card(W - 62, 6, 56, 66, r=8, fill=ctx.style.tint, stroke="none"))
     body.append(filled(kind, W - 34, 32, 36, ctx.style.color))
     body.append(text(SHAPE_NAMES.get(kind, kind), W - 34, 66, 7.5, cls="wb-title", color=ctx.style.deep))
-    sizes = (26.0, 20.0, 14.0) if kind == "rectangle" else (38.0, 30.0, 22.0)  # 1.5× wide: no overlap
+    sizes = (24.0, 18.0, 13.0) if kind == "rectangle" else (36.0, 28.0, 20.0)  # the rectangle is 1.5× wide
+    widths = [size * (1.5 if kind == "rectangle" else 1.0) for size in sizes]
+    gap = (W - 78 - sum(widths)) / 2  # between x = 8 and the model's card, with equal gaps: no shapes touch
+    centers, right = [], W - 70
+    for width in widths:
+        centers.append(right - width / 2)
+        right -= width + gap
     for k, size in enumerate(sizes):
         body.append(
             traced(
-                shape_of(kind, (W - 92, W - 136, W - 166)[k], 40, size),
+                shape_of(kind, centers[k], 40, size),
                 spacing=3.8,
                 r=1.1,
                 start=2.3,
@@ -113,8 +119,9 @@ def color_journey(ctx: PageContext) -> Built:
         body.append(text(name, W - 128, 42, 13, cls="wb-title", color="#1C2140", anchor="end"))
         from qamra_workbook.render.pages.journey_think import grid
 
-        for w, (x, y, size) in zip(items, grid(len(items), 2, h=H - 72), strict=True):
-            body.append(card(x - 4, 72 + y - 4, size + 8, size + 8, r=8))
+        # the cards keep a gutter between them (the grid's gap is wider than their margin)
+        for w, (x, y, size) in zip(items, grid(len(items), 2, h=H - 72, gap=12.0), strict=True):
+            body.append(card(x - 2, 72 + y - 2, size + 4, size + 4, r=8))
             body.append(colored(w, x, 72 + y, size, color))
             body.append(
                 draw.el(
@@ -577,10 +584,10 @@ def shape_city(ctx: PageContext) -> Built:
 def shape_build(ctx: PageContext) -> Built:
     """Two models built from shapes (a house, a rocket) and a big empty space to build one's own."""
     body = [card(0, 0, W, 70, r=10, fill=SOFT, stroke="none")]
-    house = [
-        ("square", 40, 44, 28, "#F7C84A"),
-        ("triangle", 40, 22, 32, "#E5604E"),
-        ("rectangle", 40, 52, 8, "#A8734D"),
+    house = [  # the roof's base (y 34) is the wall's top, a little wider; the door stands on the floor (y 60)
+        ("square", 40, 47, 26, "#F7C84A"),
+        ("triangle", 40, 19, 30, "#E5604E"),
+        ("rectangle", 40, 54, 8, "#A8734D"),
     ]
     rocket = [
         ("rectangle", 120, 40, 14, "#5E86D6"),

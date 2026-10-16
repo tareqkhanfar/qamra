@@ -43,6 +43,7 @@ from qamra_workbook.render.pages.workbook_common import (
 )
 from qamra_workbook.render.pages.workbook_find import (
     CRAYONS,
+    NOT_A_FIRST_SOUND,
     _deranged,
     _grid_problems,
     _x,
@@ -53,9 +54,6 @@ from qamra_workbook.render.pages.workbook_position import word_shapes, written_w
 from qamra_workbook.render.registry import Built, PageContext, page_type
 
 CAPS = {"xl": 28.0, "l": 24.0, "m": 18.0, "s": 14.0}
-# a picture a child could name by something else (ten stars, a color, a shape, a verb) never stands
-# for a letter
-NOT_A_FIRST_SOUND = frozenset({"number", "color", "shape", "action"})
 HARAKAT = ("fatha", "damma", "kasra")
 
 
@@ -179,7 +177,9 @@ def kg1_letters_write(ctx: PageContext) -> Built:
     chars = [str(c) for c in params.get("letters", ["ت", "ث"])]
     guided, alone = int(params.get("guided", 2)), int(params.get("independent", 1))
     per = guided + alone
-    cap = fitting_cap(shape_of(chars[0]), per * len(chars), 204 - 26, (16.0, 14.0, 12.0, 11.0, 10.0), 3.0)
+    # as big as the rows allow: a small letter (د، ت) at a 10 mm cap printed as a few scattered dots
+    caps = (22.0, 20.0, 18.0, 16.0, 14.0, 12.0, 11.0, 10.0)
+    cap = min(fitting_cap(shape_of(c), per * len(chars), 204 - 26, caps, 3.0) for c in chars)
     body = model_header(ctx, chars, 0, 22, differ_by_dots(chars))
     y = 26.0
     for char in chars:

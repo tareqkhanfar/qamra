@@ -108,6 +108,16 @@ def tab_top(style: SectionStyle, trim_h: float, bleed: float) -> float:
     return bleed + TAB_MARGIN + style.slot * step
 
 
+# a section printed under another name in one stage: stage 1 of the journey prepares the eye and the finger
+# for reading, with no letter yet, so its Arabic stop is not «الحروف العربية»
+STAGE_NAMES = {("journey", 1, "arabic"): "الاستعداد للقراءة"}
+
+
+def section_name(style: SectionStyle, product: str, stage: int | None) -> str:
+    """The section's name as its chip prints it in this stage."""
+    return STAGE_NAMES.get((product, stage or 0, style.id), style.name_ar)
+
+
 def section_style(section_id: str, product: str = "journey") -> SectionStyle:
     table = BOOK_SECTIONS.get(product, SECTIONS)
     key = ALIASES.get(section_id, section_id) if table is SECTIONS else section_id

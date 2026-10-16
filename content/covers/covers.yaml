@@ -121,7 +121,7 @@ journey:
     journey-3:
       blocks: [ض, ن, ي, "3", "+", "4"]
       inside:
-        - {icon: letter-ba, text: "آخر 14 حرفًا: من الضاد إلى الياء"}
+        - {icon: letter-ya, text: "آخر 14 حرفًا: من الضاد إلى الياء"}
         - {icon: ear, text: "الحركات والمقاطع"}
         - {icon: book, text: "قراءة الكلمات والجمل القصيرة"}
         - {icon: write, text: "أكتب على السطر ثم وحدي"}

@@ -12,11 +12,13 @@ import random
 from collections.abc import Callable
 from dataclasses import dataclass, field
 
+from qamra_workbook.curriculum import REPLACED_WORDS
 from qamra_workbook.letters.model import Letter
 from qamra_workbook.pictures import PICTURES
+from qamra_workbook.pictures.model import strip_tashkeel
 from qamra_workbook.render import draw
 from qamra_workbook.render.pages.letters import row_room
-from qamra_workbook.render.pages.workbook_arabic import letter_grid
+from qamra_workbook.render.pages.workbook_arabic import first_letter, letter_grid, same_letter
 from qamra_workbook.render.pages.workbook_common import (
     INK,
     W,
@@ -32,7 +34,13 @@ from qamra_workbook.render.pages.workbook_common import (
     svg,
     text,
 )
-from qamra_workbook.render.pages.workbook_find import words_starting
+from qamra_workbook.render.pages.workbook_find import (
+    AMBIGUOUS,
+    ENGLISH_LETTER_WORDS,
+    LETTER_WORDS,
+    NOT_A_FIRST_SOUND,
+    words_starting,
+)
 from qamra_workbook.render.registry import Built, PageContext, page_type
 
 
@@ -78,29 +86,104 @@ def cap_for(shape: Letter, height: float) -> float:
     return cap if below * cap + 4 >= 7 else (height - 12) / (1 + above)
 
 
+def _english(letter: str) -> bool:
+    return "A" <= letter.upper() <= "Z"
+
+
 def pictures_for(letter: str, r: random.Random, count: int = 1, avoid: set[str] | None = None) -> list[str]:
-    """Pictures whose word starts with `letter`: Arabic via the letter's words, English via the word."""
-    if "A" <= letter.upper() <= "Z":
-        pool = [
+    """Pictures whose word starts with `letter`: the words the plan taught for it first (Arabic: the letter's
+    words, English: `ENGLISH_LETTER_WORDS`), then the library's. Never a picture a child names by something
+    else (six stars for «سِتَّة», a colour, a shape, a verb, a face that is also a head), nor a word decision 7
+    replaced."""
+    if _english(letter):
+        known = [p for p in ENGLISH_LETTER_WORDS.get(letter.upper(), ()) if not avoid or p not in avoid]
+        pool = known or [
             pid
             for pid, p in PICTURES.items()
-            if p.word_en[:1].upper() == letter.upper() and " " not in p.word_en
+            if p.word_en[:1].upper() == letter.upper() and " " not in p.word_en and pid not in AMBIGUOUS
         ]
     else:
-        pool = list(words_starting(letter))
-    pool = [p for p in pool if not avoid or p not in avoid]
+        pool = [p for p in words_starting(letter) if p not in AMBIGUOUS] or [
+            p for p in words_starting(letter, frozenset(LETTER_WORDS.get(letter, ()))) if p not in AMBIGUOUS
+        ]
+    pool = [
+        p
+        for p in pool
+        if (not avoid or p not in avoid)
+        and PICTURES[p].category not in NOT_A_FIRST_SOUND
+        and strip_tashkeel(PICTURES[p].word_ar) not in REPLACED_WORDS
+    ]
     return r.sample(pool, min(count, len(pool)))
+
+
+def _starts_with(pid: str, letter: str) -> bool:
+    picture = PICTURES[pid]
+    if _english(letter):
+        return picture.word_en[:1].upper() == letter.upper()
+    return same_letter(first_letter(picture.word_ar), letter)
+
+
+def _distractors(
+    char: str, letters: list[str], r: random.Random, taken: set[str], count: int = 2
+) -> list[str]:
+    """`count` wrong choices for the `char` row: pictures of the page's other letters first, then of letters
+    not on the page (their taught words only), never one shown elsewhere on the page or drawn the same."""
+    # ت and ث never stand in for each other: a Palestinian child says «تلّاجة، تعلب، توم», so a ث picture
+    # in the ت row is a second right answer (and the ث row has none)
+    twins = {char, *({"ت", "ث"} if char in "تث" else set())}
+    on_page = [c for c in dict.fromkeys(letters) if c not in twins]
+    known = ENGLISH_LETTER_WORDS if _english(char) else LETTER_WORDS
+    off_page = [c for c in known if c not in letters and c not in twins]
+    r.shuffle(on_page)
+    r.shuffle(off_page)
+    wrong: list[str] = []
+    for other in [*on_page, *off_page]:
+        avoid = taken | set(wrong)
+        pool = (
+            pictures_for(other, r, 3, avoid)
+            if other in on_page
+            else [p for p in known[other] if p not in avoid and p not in AMBIGUOUS]
+        )
+        pool = [p for p in pool if not _starts_with(p, char) and not _same_drawing(p, avoid)]
+        if pool:
+            wrong.append(r.choice(pool))
+        if len(wrong) == count:
+            break
+    return wrong
+
+
+def _same_drawing(pid: str, shown: set[str]) -> bool:
+    """`pid` draws or names the same thing as a picture already shown (two ids for one drawing)."""
+    picture = PICTURES[pid]
+    return any(
+        PICTURES[q].parts == picture.parts
+        or strip_tashkeel(PICTURES[q].word_ar) == strip_tashkeel(picture.word_ar)
+        for q in shown
+        if q != pid
+    )
+
+
+SMALL_REVIEW_CAP = 12.0  # mm: below this a review's dotted letters print as a few scattered dots
 
 
 def write_letters(letters: list[str]) -> Task:
     """A short writing row per letter: two dotted letters, then room to write it alone; with four letters or
-    more, two or three to a row (`letter_grid`), so the letters stay big enough to show their shape."""
+    more, two or three to a row (`letter_grid`), so the letters stay big enough to show their shape. When
+    two dotted copies would print the letters small (wide letters, four of them in a small card), one dotted
+    letter and room for one alone, twice the size."""
 
     def task(ctx: PageContext, box: Box, r: random.Random) -> Drawn:
         shapes = [shape_of(c) for c in letters]
-        rows, _ = letter_grid(
-            shapes, box.x, box.y, box.w, box.h, rtl=ctx.page.lang != "en", count=2, number=ctx.num, most=22.0
-        )
+        rtl = ctx.page.lang != "en"
+
+        def grid(count: int) -> tuple[list[str], float]:
+            return letter_grid(
+                shapes, box.x, box.y, box.w, box.h, rtl=rtl, count=count, number=ctx.num, most=22.0
+            )
+
+        rows, cap = grid(2)
+        if cap < SMALL_REVIEW_CAP:
+            rows, _ = grid(1)
         return Drawn(rows)
 
     return task
@@ -113,23 +196,23 @@ def circle_first_letter(letters: list[str]) -> Task:
         out = Drawn()
         rtl = ctx.page.lang != "en"
         pitch = box.h / len(letters)
-        used: set[str] = set()
+        # every row's answer first (a letter with one picture keeps it), then the wrong choices around them:
+        # a picture shows once on the page, never a wrong choice in one row and the answer in the next
+        answers: dict[str, list[str]] = {}
+        for char in letters:
+            answers[char] = pictures_for(char, r, 1, {a for rights in answers.values() for a in rights})
+        used = {a for rights in answers.values() for a in rights}
         for i, char in enumerate(letters):
             y = box.y + i * pitch
-            right = pictures_for(char, r, 1, used)
+            right = answers[char]
             if not right:
                 out.problems.append(f"no picture starts with {char}")
                 continue
-            used.add(right[0])
-            # ت and ث never stand in for each other: a Palestinian child says «تلّاجة، تعلب، توم», so a ث
-            # picture in the ت row is a second right answer (and the ث row has none)
-            others = [c for c in letters if c != char and {c, char} != {"ت", "ث"}] or ["ب", "م"]
-            wrong: list[str] = []
-            for other in others * 2:
-                wrong += pictures_for(other, r, 1, used | set(wrong))
-                if len(wrong) == 2:
-                    break
+            wrong = _distractors(char, letters, r, used)
+            if len(wrong) < 2:
+                out.problems.append(f"the {char} row has {len(wrong) + 1} pictures (3 wanted)")
             choices = right + wrong
+            used.update(choices)  # a picture shows once on the page (not a wrong choice, then a right one)
             r.shuffle(choices)
             size = min(pitch - 4, 34.0)
             lx = box.x + box.w - 14 if rtl else box.x + 14
@@ -253,12 +336,10 @@ def match_capitals(letters: list[str]) -> Task:
     return task
 
 
-# the score box's three marks: the child mastered the skill, needs a little practice, needs more practice
-SCORE_AR = (
-    "{أتقن/أتقنت} المهارة",
-    "{يحتاج/تحتاج} قليلًا من التدريب",
-    "{يحتاج/تحتاج} تدريبًا أكثر",
-)  # draft: educator review
+# the grown-ups' three marks, the same on every assessment page (the score box under the exercises and the
+# pen checklist's columns), in the child's gender: mastered the skill, improving, needs practice
+LEVELS_AR = ("{أتقن/أتقنت} المهارة", "{يتحسّن/تتحسّن}", "{يحتاج/تحتاج} تدريبًا")  # draft: educator review
+SCORE_AR = LEVELS_AR
 
 
 def score_box(ctx: PageContext, y: float) -> list[str]:
@@ -817,11 +898,16 @@ def _thinking(skills: list[str]) -> list[tuple[str, Task]]:
     return list(out.items())[:6]
 
 
+# a pen review's colouring box says what to do (each picture has a crayon dot of its colour), not just «أَلْوانٌ»
+COLOR_LABEL = "أُلَوِّنُ كُلَّ صورَةٍ بِلَوْنِ نُقْطَتِها"
+
+
 def _pen_task(skill: str) -> tuple[str, Task, float]:
     if skill == "coloring":
-        return PEN_LABELS[skill], color_names(), 1.0
-    kind = {"dot-to-dot": "triangle"}.get(skill, skill)
-    return PEN_LABELS.get(skill, skill), pen_row(kind), 1.0
+        return COLOR_LABEL, color_names(), 1.0
+    if skill == "dot-to-dot":  # the curves-and-circles review (KG2 V1): circles on dots, not a triangle
+        return PEN_LABELS["circle"], pen_row("circle"), 1.0
+    return PEN_LABELS.get(skill, skill), pen_row(skill), 1.0
 
 
 def review_sections(ctx: PageContext, r: random.Random) -> Drawn:
@@ -914,9 +1000,8 @@ CHECKLIST_AR = {  # draft: educator review
     "direction": "الاتجاه: من البداية الخضراء، ومن اليمين إلى اليسار",
 }
 # The grown-ups' lines talk about the child, in the child's gender (`for_child`): the observation note and the
-# checklist's columns (the child mastered the row's skill, is improving, needs practice)
+# checklist's columns (`LEVELS_AR`: the child mastered the row's skill, is improving, needs practice)
 OBSERVE_AR = "للمعلّمة أو الأهل: لاحظوا {الطفل وهو يتتبّع/الطفلة وهي تتتبّع}، ثم ضعوا علامة"
-LEVELS_AR = ("{أتقنها/أتقنتها}", "{يتحسّن/تتحسّن}", "{يحتاج تدريبًا/تحتاج تدريبًا}")  # draft: educator review
 
 
 def pen_check(ctx: PageContext, r: random.Random) -> Drawn:

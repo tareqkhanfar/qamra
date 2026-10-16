@@ -341,9 +341,12 @@ def en_name_row(name: str, width: float, cap: float, *, first: bool, mode: str, 
         for s in word:
             x0, _, x1, _ = letter_extent(s)
             if mode == "dotted":
+                # numbered strokes on the capitals only: on a small «a» or «n» the badges covered half the
+                # letter; the small letters keep their start dots
+                numbered = first and s.form == "capital"
                 body.append(
                     dotted_letter(
-                        s, scale=scale, x=x - x0 * scale, y=top - 10 * scale, first=first, number=number
+                        s, scale=scale, x=x - x0 * scale, y=top - 10 * scale, first=numbered, number=number
                     )
                 )
             else:

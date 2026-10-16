@@ -26,7 +26,21 @@ from qamra_workbook.pictures.icons import (
     TAN,
     WHITE,
 )
-from qamra_workbook.pictures.model import Part, Picture, body, c, e, glint, ink, line, p, rect, shine, tint
+from qamra_workbook.pictures.model import (
+    Part,
+    Picture,
+    body,
+    c,
+    e,
+    glint,
+    ink,
+    line,
+    p,
+    rect,
+    scallop_d,
+    shine,
+    tint,
+)
 
 OIL = "#D9BE3A"
 OLIVE = "#6F8F2F"
@@ -45,6 +59,12 @@ def _pic(
 _BOWL = "M12 52 L88 52 C88 74 71 88 50 88 C29 88 12 74 12 52 Z"
 _MOUND = "M18 52 C22 36 37 29 50 30 C63 29 78 36 82 52 Z"
 _SESAME = ((34, 46, 20), (43, 40, -30), (52, 44, 40), (60, 39, -10), (67, 46, 30), (47, 49, 0), (28, 50, -40))
+# the labneh spread on its plate: a soft, slightly uneven round (a scalloped edge read as rice)
+_SPREAD = (
+    "M16 56 C16 49 20 46.5 25 45.5 S36 42.5 42 42.5 S58 42 63 43.5 S75 48 76 54 S73 64.5 66 67 "
+    "S52 70 46 70 S30 69 24 66.5 S16 61 16 56 Z"
+)
+_GLASS_FOOT = "L86 88 C86 89.6 85 90.5 83.4 90.5 L69.6 90.5 C68 90.5 67 89.6 67 88 Z"  # the milk glass
 _RIM = tuple((math.cos(math.radians(a)), math.sin(math.radians(a))) for a in range(0, 360, 30))
 _GRAPES = (
     (29, 32),
@@ -60,23 +80,40 @@ _GRAPES = (
 )
 
 _H = [
-    _pic(
+    _pic(  # labneh as it is served at home: spread on a plate, a spoon's swirl, olive oil in the middle,
+        # mint and olives on the side (the old bowl with a white mound read as yogurt or rice)
         "labneh",
         "لَبْنَة",
         "labneh",
         "food",
         (
-            body("bowl", p(_BOWL)),
-            body("main", p(_MOUND)),
-            line(p("M33 45 C38 37 57 36 63 43"), p("M42 47 C46 42 53 42 57 46")),
-            body("oil", p("M39 50 C45 47.5 55 47.5 61 50 C55 52 45 52 39 50 Z")),
-            body("leaf", p("M60 33 C63 24 73 22 78 25 C75 32 67 35 60 33 Z")),
-            glint(c(30, 68, 2.6), c(50, 76, 2.6), c(70, 68, 2.6), c(40, 63, 1.8), c(60, 63, 1.8)),
-            shine(e(24, 64, 3, 6, 25)),
+            body("plate", e(50, 60, 46, 26)),
+            body("well", e(50, 61, 37, 19)),
+            body("side", f'<path d="{_SPREAD}" transform="translate(0 3.5)"/>'),
+            body("main", p(_SPREAD)),
+            line(
+                p("M54.5 56.5 A8.5 4.2 0 0 0 37.5 56.5 A12.5 6.2 0 0 0 62.5 56.5 A17 8.4 0 0 0 28.5 56.5"),
+            ),
+            body(
+                "oil",
+                p(
+                    "M37 56.5 C37 52.5 43 51.5 47 51.8 C52 52 56 53.5 55.5 56.5 C55 59.5 50 60.5 45.5 60.3 "
+                    "C40.5 60 37 59 37 56.5 Z"
+                ),
+            ),
+            shine(e(42.5, 54.6, 3.2, 1.2)),
+            body("olive", e(80, 67, 5.2, 4, 20), e(72, 75, 5.2, 4, -15)),
+            glint(c(78.3, 65.6, 1.2), c(70.3, 73.8, 1.2)),
+            body("leaf", p("M58 47 C60 40 68 37 73 39 C71 45 64 49 58 47 Z")),
+            body("leaf", p("M57 47 C52 41 54 35 58 33 C61 38 61 43 57 47 Z")),
+            shine(e(24, 52, 3, 7, 60)),
         ),
-        bowl=BOWL_BLUE,
-        main="#FFFBF0",
+        plate=BOWL_BLUE,
+        well="#DCEBF7",
+        side="#E9E1CC",
+        main="#FFFDF7",
         oil=OIL,
+        olive=OLIVE,
         leaf=LEAF,
     ),
     _pic(
@@ -126,48 +163,52 @@ _H = [
         main=ZAATAR,
         leaf=LEAF_DARK,
     ),
-    _pic(
+    _pic(  # a crusty loaf with its scores before a round of Arabic bread (a spotted oval read as a potato)
         "bread",
         "خُبْز",
         "bread",
         "food",
         (
+            body("flat", e(42, 43, 34, 14)),
+            tint("#B06A2E", e(26, 40, 4, 2, -8), e(46, 35, 5, 2.2, 6), e(62, 41, 4, 1.8, 0)),
             body(
                 "main",
-                p("M10 58 C10 41 29 31 50 31 C71 31 90 41 90 58 C90 74 71 82 50 82 C29 82 10 74 10 58 Z"),
+                p(
+                    "M21 82 C16.5 82 14 79 14 75 L14 66 C14 53 29 46 50 46 C71 46 86 53 86 66 L86 75 "
+                    "C86 79 83.5 82 79 82 Z"
+                ),
             ),
-            line(p("M22 56 C30 47 70 47 78 56")),
-            tint(
-                "#B06A2E",
-                e(33, 47, 5, 2.6, -10),
-                e(60, 44, 6, 3, 8),
-                e(70, 63, 5, 2.6, 0),
-                e(40, 68, 6, 3, 5),
-            ),
-            shine(e(36, 40, 10, 3, -8)),
+            body("score", e(33, 59, 7.5, 2.4, -32), e(50, 56, 7.5, 2.4, -32), e(67, 59, 7.5, 2.4, -32)),
+            line(p("M16 73 C35 77 65 77 84 73")),
+            shine(e(30, 52, 9, 2.4, -12)),
         ),
-        main="#EBC285",
+        flat="#EBCB98",
+        main="#C98A44",
+        score="#F3D7A6",
     ),
-    _pic(
+    _pic(  # a carton with cow spots and a glass of white milk (a blue carton with a drop read as water)
         "milk",
         "حَليب",
         "milk",
         "drink",
         (
-            body("cap", rect(54, 10, 9, 8, 2)),
-            body("top", p("M40 17 L60 17 L70 35 L30 35 Z")),
-            body("main", p("M30 35 L70 35 L70 88 C70 90.5 68 92 66 92 L34 92 C32 92 30 90.5 30 88 Z")),
-            body("band", rect(30, 50, 40, 27)),
-            body(
-                "drop", p("M50 54 C50 54 42.5 62.5 42.5 67 A7.5 7.5 0 0 0 57.5 67 C57.5 62.5 50 54 50 54 Z")
+            body("cap", rect(43, 11, 8, 7, 2)),
+            body("top", p("M28 18 L54 18 L60 33 L22 33 Z")),
+            body("main", p("M22 33 L60 33 L60 86 C60 88.5 58 90 56 90 L26 90 C24 90 22 88.5 22 86 Z")),
+            ink(
+                p("M27 43 C30 39 37 40 38 44 C39 48 34 51 30 50 C27 49 25 46 27 43 Z"),
+                p("M45 52 C49 49 56 51 56 56 C56 61 50 62 47 60 C44 58 43 55 45 52 Z"),
+                p("M28 66 C31 63 36 65 35 69 C34 72 30 73 28 71 C26 70 26 68 28 66 Z"),
+                p("M47 74 C50 72 55 74 54 78 C53 81 49 81 47 79 C46 78 46 76 47 74 Z"),
             ),
-            shine(rect(35, 38, 3.5, 10, 1.75), rect(35, 80, 3.5, 8, 1.75)),
+            body("glass", p(f"M64 46 L89 46 {_GLASS_FOOT}")),
+            body("main", p(f"M64.8 57 L88.2 57 {_GLASS_FOOT}")),
+            shine(rect(26, 36, 3, 9, 1.5), rect(70, 60, 2.6, 24, 1.3)),
         ),
         cap=BLUE,
         top="#DCE9F7",
         main=WHITE,
-        band="#7FB2E5",
-        drop=WHITE,
+        glass="#D5E4F1",
     ),
     _pic(
         "candy",
@@ -249,7 +290,8 @@ _H = [
         main=RED,
         leaf=LEAF,
     ),
-    _pic(
+    _pic(  # a long, bent, striped cucumber with its bumps and a yellow flower at the tip (a smooth capsule
+        # read as a pill)
         "cucumber",
         "خِيارَة",
         "cucumber",
@@ -258,19 +300,33 @@ _H = [
             body(
                 "main",
                 p(
-                    "M17 75 C11 69 13 58 22 52 L65 22 C74 16 84 19 87 28 C89 36 85 42 77 47 L33 77 "
-                    "C27 80 21 79 17 75 Z"
+                    "M14 78 C8 72 10 62 19 56 C33 47 47 36 60 25 C68 18 80 17 86 24 C91 31 88 39 80 44 "
+                    "C66 53 51 65 36 76 C28 82 19 83 14 78 Z"
                 ),
             ),
-            tint(LEAF_DARK, c(30, 64, 1.6), c(42, 55, 1.6), c(55, 47, 1.6), c(67, 38, 1.6), c(47, 62, 1.5)),
-            body("tip", e(82, 28, 4.4, 3.4, -35)),
-            # bumps and a curly tendril, so the outline reads as a cucumber and not a pill
-            line(p("M30 59 l3 -2.5 M44 50 l3 -2.5 M58 41 l3 -2.5 M38 68 l3 -2.5 M52 59 l3 -2.5")),
-            line(p("M17 75 C12 78 9 84 13 86 C16 87 16 83 13 83")),
-            shine(p("M24 60 C38 50 54 39 70 29 C72 28 73 30 71 31 C56 41 40 52 26 62 C24 63 23 61 24 60 Z")),
+            tint(
+                "#C9E59A",
+                p("M20 68 C34 58 50 46 66 33 C68 32 69 34 67 35 C51 48 35 60 22 70 C20 71 19 69 20 68 Z"),
+            ),
+            ink(
+                c(26, 63, 1.4),
+                c(38, 56, 1.4),
+                c(50, 47, 1.4),
+                c(62, 38, 1.4),
+                c(74, 30, 1.4),
+                c(31, 72, 1.4),
+                c(44, 64, 1.4),
+                c(57, 54, 1.4),
+                c(70, 44, 1.4),
+            ),
+            body("stem", p("M85 24 C88 20 90 17 93 16 C94 18 92 22 88 26 Z")),
+            body("flower", p(scallop_d(15, 79, 6.5, 6.5, 5, 0.7))),
+            body("heart", c(15, 79, 2.2)),
         ),
-        main="#6FAE4E",
-        tip="#B7D97A",
+        main="#4F9A3A",
+        stem=LEAF_DARK,
+        flower="#F6D04D",
+        heart="#E3A21A",
     ),
     _pic(
         "grapes",

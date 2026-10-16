@@ -53,7 +53,8 @@ def row_strokes(target: str, xr: float, xl: float, y: float, h: float) -> list[S
         posts = [
             Stroke(f"M{xr - k * span / 5} {y - h / 2} L{xr - k * span / 5} {y + h / 2}") for k in range(6)
         ]
-        rails = [Stroke(f"M{xr} {y + f * h} L{xl} {y + f * h}") for f in (-0.2, 0.2)]
+        # the rails stick out past the end posts, so their start dots are not stacked on the right post's
+        rails = [Stroke(f"M{xr + 5} {y + f * h} L{xl - 5} {y + f * h}") for f in (-0.2, 0.2)]
         return [*posts, *rails]
     hops, d = 4, [f"M{xr} {y if target == 'waves' else y + h / 3}"]
     step = span / hops
@@ -95,7 +96,10 @@ def write_progression(ctx: PageContext) -> Built:
             body.append(card(0, i * pitch + 2, W, pitch - 6, r=8))
             xr, xl = (W - 40 if start else W - 12), (40 if end else 12)
             if start:
-                body.append(picture(str(start), W - 36, y - 15, 30))
+                markup = picture(str(start), W - 36, y - 15, 30)
+                if PICTURES[pid(str(start))].category == "vehicle":  # drawn facing right: it drives left
+                    markup = f'<g transform="translate({2 * (W - 21)} 0) scale(-1 1)">{markup}</g>'
+                body.append(markup)
             if end:
                 body.append(picture(str(end), 6, y - 15, 30))
             for stroke in row_strokes(kind, xr, xl, y, min(pitch - 22, 30.0)):
@@ -309,12 +313,12 @@ def boat_trace(ctx: PageContext) -> Built:
     return Built({"svg": svg(body)})
 
 
-BRIDGE_PAIRS = (
-    ("bee", "flower"),
-    ("rabbit", "carrot"),
-    ("bird", "nest"),
-    ("car", "house"),
-    ("cat", "ball"),
+BRIDGE_PAIRS = (  # not the pen-lines pairs (bee and flower, …): the next page draws those
+    ("monkey", "banana"),
+    ("mouse", "cheese"),
+    ("bear", "honey"),
+    ("hen", "egg"),
+    ("key", "door"),
 )
 
 

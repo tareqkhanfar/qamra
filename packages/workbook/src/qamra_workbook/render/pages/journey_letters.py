@@ -487,6 +487,13 @@ def with_mark(
     return out + mark(kind, cx, my, 6.5 if dotted else 5.0, color, dotted)
 
 
+def mark_start(char: str, x: float, y: float, w: float, h: float) -> tuple[float, float]:
+    """Where the letter `with_mark` draws in this box starts (its first stroke's first point)."""
+    sh = shape(char)
+    scale, dx, dy = fit(sh, x, y + 8, w, h - 16, pad=1.0)
+    return Stroke(sh.strokes[0].scaled(scale, dx, dy).d).start
+
+
 @page_type("journey-harakat")
 def harakat(ctx: PageContext) -> Built:
     """Meet a haraka: its name and mark, then three letters carrying it (read them, trace one), or the
@@ -520,12 +527,11 @@ def harakat(ctx: PageContext) -> Built:
         body.append(card(W - 46, y + 4, 42, pitch - 13, r=6, fill=ctx.style.tint, stroke="none"))
         body.append(with_mark(char, kind, W - 44, y + 4, 38, pitch - 13, ctx.style.color))
         ex = examples[i] if i < len(examples) else char + sign
-        body.append(text(ex, W - 66, y + pitch / 2 + 6, 16, cls="wb-word", color="#1C2140"))
-        for k in range(2):
-            body.append(
-                with_mark(char, kind, W - 100 - k * 36, y + 4, 32, pitch - 13, ctx.style.color, dotted=True)
-            )
-        body.append(draw.start_dot((W - 100 + 4, y + 10), 1.6))
+        body.append(text(ex, W - 62, y + pitch / 2 + 6, 16, cls="wb-word", color="#1C2140"))
+        for k in range(2):  # clear of the typed letter, each with its green dot where its stroke starts
+            lx = W - 114 - k * 40
+            body.append(with_mark(char, kind, lx, y + 4, 32, pitch - 13, ctx.style.color, dotted=True))
+            body.append(draw.start_dot(mark_start(char, lx, y + 4, 32, pitch - 13), 1.6))
     return Built({"svg": svg(body), "qr_note": ctx.text(QR_NOTE)}, ["نقرأ: " + "، ".join(examples)], problems)
 
 
@@ -980,6 +986,10 @@ def journey_finger_trace(ctx: PageContext) -> Built:
     word = pid(str(params.get("word", "duck")))
     pic = PICTURES[word]
     problems = [] if starts_with(word, char) else [f"{pic.word_ar} does not start with {char}"]
+    # the word as the page's title and its sound clip say it («لَيْمون», the picture's own label «لَيْمونَة»)
+    label = str(params.get("label", "")) or pic.word_ar
+    if strip_tashkeel(label)[:3] != strip_tashkeel(pic.word_ar)[:3]:
+        problems.append(f"the label «{label}» does not name the picture «{pic.word_ar}»")
     if not ctx.page.audio:
         problems.append("a finger-trace page carries an audio QR (the letter's sound)")
     body, box = finger_letter(sh, fill="#F7C84A", edge=ctx.style.deep, width=20, number=ctx.num)
@@ -989,6 +999,6 @@ def journey_finger_trace(ctx: PageContext) -> Built:
         "letter": letter_svg,
         "char": char,
         "pic": ctx.pic(word),
-        "word": highlight_first(pic.word_ar, ctx.style.color),
+        "word": highlight_first(label, ctx.style.color),
     }
     return Built(data, None, problems)

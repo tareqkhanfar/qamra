@@ -115,7 +115,7 @@ def picture_talk(ctx: PageContext) -> Built:
             for x in params.get("roles", [])
         ]
         data["places"] = [ctx.text(str(x)) for x in params.get("places", [])]
-        data["parts"] = [ctx.text(str(x)) for x in params.get("parts", ["البِدايَةُ", "المُشْكِلَةُ", "الحَلُّ"])]
+        data["parts"] = [ctx.text(str(x)) for x in params.get("parts", ["البِدايَة", "المُشْكِلَة", "الحَلّ"])]
     return Built(data, None, problems)
 
 

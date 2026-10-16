@@ -28,7 +28,7 @@ from qamra_workbook.names import shorter_names
 from qamra_workbook.render import art
 from qamra_workbook.render.covers import COVER_FIT_JS
 from qamra_workbook.render.registry import Assets, Built, PageContext, PageType, lookup
-from qamra_workbook.render.sections import PATTERNS, SectionStyle, section_style, tab_top
+from qamra_workbook.render.sections import PATTERNS, SectionStyle, section_name, section_style, tab_top
 from qamra_workbook.render.spec import (
     BookSpec,
     Geometry,
@@ -129,7 +129,7 @@ def build_pages(book: BookSpec, assets: Assets) -> list[RenderedPage]:
                 book.folio(spec.number),
                 audio_qr(book, spec),
                 parent,
-                ctx.text(ctx.style.name_ar),
+                ctx.text(section_name(ctx.style, book.product, spec.stage)),
                 ctx.numerals,
                 ctx.text(spec.skill),
                 ctx.text(spec.instruction_en),

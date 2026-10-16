@@ -379,20 +379,21 @@ MORE_WORDS = (
         window=SKY_LIGHT,
         wheel=SLATE,
     ),
-    _pic(
+    _pic(  # from the side (two discs, the string between them): the front view read as a target
         "yo-yo",
-        "يويو",
+        "يُويُو",
         "yo-yo",
         "toy",
         (
-            line(p("M50 8 L50 30 M50 8 C40 8 40 4 46 4 C52 4 52 10 50 8")),
-            body("main", c(50, 58, 30)),
-            body("rim", c(50, 58, 20)),
-            ink(c(50, 58, 4)),
-            shine(e(38, 46, 5, 8, -30)),
+            body("main", e(36, 64, 12, 30), e(64, 64, 12, 30)),
+            body("rim", e(31, 64, 6, 23), e(69, 64, 6, 23)),
+            body("hub", rect(46, 58, 8, 12, 2)),
+            line(c(50, 9, 4.5), p("M50 13.5 L50 62")),
+            shine(e(29, 50, 2.4, 7)),
         ),
         main=RED,
         rim=CORAL,
+        hub=SLATE,
     ),
     _pic(
         "zebra",

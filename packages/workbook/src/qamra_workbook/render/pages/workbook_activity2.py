@@ -3,8 +3,11 @@ part, find hidden things in a busy picture, and colour by letter (the review wee
 
 from __future__ import annotations
 
+import dataclasses
+
 from qamra_workbook.geometry import Stroke
 from qamra_workbook.pictures import PICTURES
+from qamra_workbook.pictures.model import Picture, c, p, rect
 from qamra_workbook.render import art, draw
 from qamra_workbook.render.pages.workbook_common import (
     INK,
@@ -24,13 +27,38 @@ from qamra_workbook.render.registry import Built, PageContext, page_type
 # draft: educator review: the story «المطر ينزل فتنبت الزهرة»
 STORY = ("cloud", "raindrop", "sprout", "flower")
 ORDER_AR = ("أَوَّلًا", "ثُمَّ", "بَعْدَ ذَلِكَ", "أَخيرًا")
-# what is missing: the picture, the patch that hides a part (x, y, w, h in the 100-box), the part's name
-MISSING = (
-    ("car", (14, 58, 28, 26), "العجلة"),
-    ("house", (38, 62, 24, 30), "الباب"),
-    ("table", (70, 46, 18, 46), "الرِّجل"),
-    ("umbrella", (44, 56, 14, 40), "المقبض"),
+# what is missing: the picture, the drawing's elements left out (the part is not drawn at all, so the thing
+# reads as missing it, never as a white patch over the drawing), the part's name
+MISSING: tuple[tuple[str, tuple[str, ...], str], ...] = (
+    ("car", (c(28, 70, 11), c(28, 70, 4.5)), "العجلة"),
+    ("house", (p("M42 90 L42 73 C42 66 58 66 58 73 L58 90 Z"), c(54, 80, 1.6)), "الباب"),
+    ("table", (rect(76, 48, 8, 42, 2),), "الرِّجل"),
+    ("umbrella", (p("M50 45 L50 80 C50 89 39 89 39 81"),), "المقبض"),
 )
+
+
+def without(thing: str, cut: tuple[str, ...]) -> Picture:
+    """The library picture with the `cut` elements left out (a part left empty goes too)."""
+    picture = PICTURES[thing]
+    parts = []
+    for part in picture.parts:
+        elements = part.elements
+        for element in cut:
+            elements = elements.replace(element, "")
+        if elements:
+            parts.append(dataclasses.replace(part, elements=elements))
+    missing = [x for x in cut if not any(x in part.elements for part in picture.parts)]
+    if missing:
+        raise ValueError(f"«{thing}» has no {missing} to leave out (was the picture redrawn?)")
+    return dataclasses.replace(picture, parts=tuple(parts))
+
+
+def pic_without(thing: str, cut: tuple[str, ...], x: float, y: float, size: float) -> str:
+    """`pic`, with a part missing: the child draws it in."""
+    inner = without(thing, cut).inner("color")
+    return draw.el("svg", inner, x=x, y=y, width=size, height=size, viewBox="0 0 100 100")
+
+
 HIDDEN_POOL = (
     "apple",
     "star",
@@ -112,17 +140,13 @@ def story_sequence(ctx: PageContext) -> Built:
 def missing_part(ctx: PageContext) -> Built:
     """Four things with a part missing: draw it so the thing works again (the key shows the whole thing)."""
     body, answer = [], []
-    for k, (thing, (px, py, pw, ph), name) in enumerate(MISSING):
+    for k, (thing, cut, name) in enumerate(MISSING):
         row, col = divmod(k, 2)
         x, y = W - (col + 1) * (W / 2) + 4, row * 102
         body.append(card(x, y + 2, W / 2 - 8, 96, r=7))
         size = 70.0
         ox, oy = x + (W / 2 - 8 - size) / 2, y + 8
-        body.append(pic(thing, ox, oy, size))
-        s = size / 100
-        body.append(
-            draw.el("rect", x=ox + px * s, y=oy + py * s, width=pw * s, height=ph * s, fill="#FFFFFF")
-        )
+        body.append(pic_without(thing, cut, ox, oy, size))
         body.append(pic(thing, ox, oy, size, class_="key-ring"))
         body.append(text("ماذا يَنْقُصُ؟", x + W / 4 - 4, y + 90, 4.6, color=ctx.style.deep))
         answer.append(f"{PICTURES[thing].word_ar}: {name}")
