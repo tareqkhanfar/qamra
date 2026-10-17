@@ -139,7 +139,9 @@ def test_a_dot_family_shares_its_main_stroke(chars: str, forms: tuple[str, ...])
 
 def test_the_samples_keep_their_shapes() -> None:
     assert letter("ب", "isolated") is BA
-    assert BA.strokes[0].d == "M176 36 C177 56 180 78 169 88 C159 96 147 97 130 97 L62 97 C42 97 27 93 22 70"
+    assert BA.strokes[0].d == (
+        "M176 36 C177 56 180 78 169 88 C159 96 147 97 130 97 L68 97 C44 98 26 93 21 77 C18 67 19 55 23 44"
+    )
     assert BA.dots == ((100, 124),) and BA.dot_r == 8 and BA.width == 200
     assert letter("A", "capital").strokes[2].d == "M34 60 L66 60"
     assert len(letter("a", "small").strokes) == 2

@@ -17,35 +17,38 @@ from qamra_workbook.letters.hand import (
     two,
 )
 
-# isolated ب ت ث: from the top of the right tooth down, along the bowl to the left and up into the tail
-# (the sample ب, unchanged).
-BOWL = "M176 36 C177 56 180 78 169 88 C159 96 147 97 130 97 L62 97 C42 97 27 93 22 70"
+# The tail of ب ت ث (and of ف ك): from the line it curls up on the left to about the tooth line, so the
+# isolated and final forms never read as the initial «بـ».
+TAIL = "L68 97 C44 98 26 93 21 77 C18 67 19 55 23 44"
+# isolated ب ت ث: from the top of the right tooth down, along the bowl to the left and up into the tail.
+BOWL = f"M176 36 C177 56 180 78 169 88 C159 96 147 97 130 97 {TAIL}"
 # final ـب ـت ـث: arrives on the right, up the tooth and back down, then the same bowl.
-BOWL_FINAL = (
-    "M200 97 L192 97 C184 97 179 93 178 85 L176 36 L173 84 C171 94 160 97 144 97 L62 97 C42 97 27 93 22 70"
-)
+BOWL_FINAL = f"M200 97 L192 97 C184 97 179 93 178 85 L176 36 L173 84 C171 94 160 97 144 97 {TAIL}"
 # initial بـ تـ ثـ نـ يـ: down the tooth, then left along the line to the join.
 TOOTH_INITIAL = "M56 36 C57 58 59 79 51 89 C45 95 37 97 27 97 L0 97"
 # medial ـبـ ـتـ ـثـ ـنـ ـيـ: arrives on the right, up the tooth and back down, on to the left join.
 TOOTH_MEDIAL = "M64 97 L50 97 C42 97 36 93 35 85 L32 36 L29 85 C28 93 22 97 14 97 L0 97"
-# isolated ن: down the right horn into a round bowl under the line, up to the line on the left.
-NOON = "M104 40 C105 66 108 94 104 112 C99 136 82 148 62 148 C40 148 24 134 22 112 C21 104 23 97 27 91"
+# isolated ن: down the right horn into a round bowl under the line, up to the line on the left. The bowl is
+# about two thirds of the tooth height deep: less than the bowl of ق (`fa.QAF`), as in print.
+NOON = "M104 40 C105 64 107 90 104 106 C100 128 84 140 62 140 C40 140 24 128 22 110 C21 102 23 96 27 90"
 # final ـن: arrives on the right, up the horn and back down into the same bowl.
 NOON_FINAL = (
-    "M150 97 L142 97 C134 97 129 93 128 85 L126 40 L123 84 C122 96 122 104 118 116 "
-    "C112 138 96 148 76 148 C54 148 38 134 36 112 C35 104 37 97 41 91"
+    "M150 97 L142 97 C134 97 129 93 128 85 L126 40 L123 84 C122 96 121 104 118 112 "
+    "C112 130 96 140 76 140 C54 140 38 128 36 110 C35 102 37 96 41 90"
 )
-# isolated ي: a small head curling left, down across to the right, then the wide belly under the line,
-# ending up on the left.
+# isolated ي: a small head curling left, down across to the right, then a shallow wide belly just under the
+# line, ending up on the left. The two dots go under the belly (as in print and school handwriting), so it
+# stays shallow enough for them to fit above the descender line.
 YA = (
-    "M122 52 C108 44 88 50 88 64 C88 78 104 84 118 92 C132 100 138 116 130 130 "
-    "C120 146 92 150 66 148 C42 146 24 136 22 114 C21 106 23 100 26 94"
+    "M122 50 C108 42 88 48 88 62 C88 76 104 82 118 90 C132 98 137 110 127 118 "
+    "C115 127 92 128 66 126 C42 124 26 116 22 100 C21 95 22 91 24 87"
 )
 # final ـي: arrives on the right, turns sharply back down to the right, then the same belly to the left.
 YA_FINAL = (
-    "M150 97 L98 97 C106 104 120 112 126 124 C132 136 124 147 100 149 "
-    "C76 151 46 150 32 141 C22 134 21 114 26 100"
+    "M150 97 L98 97 C106 102 118 106 124 113 C130 121 122 128 100 129 "
+    "C76 131 46 130 32 122 C22 116 21 104 26 94"
 )
+UNDER_YA = 146  # the two dots under the belly of the isolated and final ي
 
 LETTERS = (
     isolated("ب", 200, BOWL, dots=one(100, BELOW)),
@@ -60,22 +63,23 @@ LETTERS = (
     initial("ث", 80, TOOTH_INITIAL, dots=three(48, OVER_TOOTH + 4)),
     medial("ث", 64, TOOTH_MEDIAL, dots=three(32, OVER_TOOTH + 4)),
     final("ث", 200, BOWL_FINAL, dots=three(100, ABOVE + 2)),
-    isolated("ن", 130, NOON, dots=one(63, 70)),
+    isolated("ن", 130, NOON, dots=one(63, 72)),
     initial("ن", 80, TOOTH_INITIAL, dots=one(50, OVER_TOOTH)),
     medial("ن", 64, TOOTH_MEDIAL, dots=one(32, OVER_TOOTH)),
-    final("ن", 150, NOON_FINAL, dots=one(77, 70)),
-    isolated("ي", 150, YA, dots=two(70, 121)),
+    final("ن", 150, NOON_FINAL, dots=one(77, 72)),
+    isolated("ي", 150, YA, dots=two(78, UNDER_YA)),
     initial("ي", 80, TOOTH_INITIAL, dots=two(42, BELOW)),
     medial("ي", 64, TOOTH_MEDIAL, dots=two(32, BELOW)),
-    final("ي", 150, YA_FINAL, dots=two(72, 126)),
+    final("ي", 150, YA_FINAL, dots=two(78, UNDER_YA + 1)),
 )
 
 
 # How each letter is written, in words, for the educator's review sheet.
 HOW = {
     "ب": (
-        "من رأس السنّ ننزل إلى السطر ونمشي عليه إلى اليسار ثم نصعد قليلًا، والنقطة تحته في النهاية. "
-        "في وسط الكلمة وآخرها يصل القلم على السطر فنصعد إلى السنّ ثم ننزل."
+        "من رأس السنّ ننزل إلى السطر ونمشي عليه إلى اليسار ثم نرفع الطرف إلى أعلى، "
+        "ونضع النقطة تحت الحرف في النهاية. "
+        "في وسط الكلمة وآخرها يأتي القلم على السطر فنصعد إلى السنّ ثم ننزل."
     ),
     "ت": ("مثل الباء تمامًا، ثم نقطتان فوقه: اليمنى أولًا."),
     "ث": ("مثل الباء تمامًا، ثم ثلاث نقاط فوقه: اثنتان من اليمين إلى اليسار، ثم الثالثة فوقهما."),
@@ -84,8 +88,8 @@ HOW = {
         "في أول الكلمة ووسطها سنّ مثل الباء والنقطة فوقها."
     ),
     "ي": (
-        "من الأعلى رأس صغير يلتفّ إلى اليسار، ثم نعبر إلى اليمين وننزل في بطن واسع تحت السطر إلى "
-        "اليسار. النقطتان داخل البطن: اليمنى أولًا. في أول الكلمة ووسطها سنّ مثل الباء ونقطتان "
+        "نبدأ من الأعلى برأس صغير يلتفّ إلى اليسار، ثم نعبر إلى اليمين وننزل في بطن واسع تحت السطر إلى "
+        "اليسار. النقطتان تحت البطن: اليمنى أولًا. في أول الكلمة ووسطها سنّ مثل سنّ الباء ونقطتان "
         "تحتها."
     ),
 }
