@@ -89,10 +89,18 @@ class Exhausted(RuntimeError):
     """The fal balance ran out, or this run reached its cap: stop every call."""
 
 
+# Letter names said alone that the voice blurred without their marks (heard back on 2026-10-17: «تاء» as
+# «شكرا», «ثاء» as «سات», «قاف» as «كاف»; with the marks as written).
+SAY_AS = {"تاء": "تَاءْ", "ثاء": "ثَاءْ", "قاف": "قَافْ"}
+
+
 def spoken(word: str, lang: str) -> str:
     """What the voice gets for one word: an English letter alone in quotes, so «A» is the letter's name and
-    not the article «uh» (heard back on 2026-10-17: «A» and «A.» read as «uh», «"A."» as the letter)."""
-    return f'"{word}."' if lang == "en" and re.fullmatch(r"[A-Za-z]", word) else word
+    not the article «uh» (heard back on 2026-10-17: «A» and «A.» read as «uh», «"A."» as the letter); a few
+    Arabic letter names with their marks (`SAY_AS`)."""
+    if lang == "en" and re.fullmatch(r"[A-Za-z]", word):
+        return f'"{word}."'
+    return SAY_AS.get(word, word)
 
 
 def fal_key() -> str:
