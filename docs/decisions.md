@@ -1179,3 +1179,50 @@ a test: the phone check was `^\+?[0-9 ()-]{7,20}$`, ASCII digits only, and an Ar
 - **Addresses:** any text of 5 or more characters is accepted (the owner's «ضضضضضضضضض» included): no "gibberish"
   check. **City and zone:** the checkout's city must be one of the chosen zone's cities; the refusal now says so
   («هذه المدينة ليست ضمن منطقة التوصيل المختارة…») under the city; an unknown zone is marked on the city too.
+
+## The activity books read in Scheherazade New (2026-10-17)
+
+The owner found the workbooks' body text "too Arial" (IBM Plex Sans Arabic) and asked us to pick the best font for
+3–6-year-olds reading fully vowelized Arabic. Compared on the same pages (ليان): A IBM Plex Sans Arabic, B Noto Naskh
+Arabic, C Scheherazade New; Readex Pro and Vazirmatn were looked at too and dropped (both geometric sans, the same
+"Arial" feel). Side-by-side images: `~/Downloads/qamra-font-compare/`.
+
+- **Choice: Scheherazade New (SIL, OFL 1.1)** for every Arabic text the child or a parent reads in the four activity
+  books: instructions, words and sentences to read, dialogues, labels, parents' boxes, footers, answer keys
+  (`--body` and `--naskh` in `_base.css.j2`; «قلبي يعرف الله» uses them for `--kitab` and `--ui`). Why: school-book
+  Naskh letter forms like the ones children meet in Palestinian and Jordanian KG/grade-1 books; the largest and
+  clearest harakat of the three, placed well clear of the letters, shadda + vowel stacked cleanly, tanween and sukun
+  easy to tell apart. Noto Naskh has the same forms but small, light marks; Plex is a sans.
+- **Titles stay Qamra Display.** Latin letters, digits (١٢٣ and 123) and Western punctuation (! ? : . «») stay in IBM
+  Plex Sans Arabic through the font's `unicode-range`, so English pages and numbers look as before and Scheherazade's
+  wide-set colon and guillemets don't open gaps in Arabic lines. The Arabic comma, semicolon and question mark come
+  from Plex too, for the same reason.
+- **Sizing without touching the layout:** at the same point size Scheherazade looks about 10 % smaller than Plex and
+  has very tall vertical metrics (2.0 em line box against Plex's 1.5 em), which made the engine's fit checks shrink and
+  refuse boxes (the family book's parents' box was refused at 8.5 pt). The `@font-face` rules set `size-adjust: 110%`
+  (same apparent size as Plex) and `ascent-override: 94%; descent-override: 42%; line-gap-override: 0%` (the same
+  1.5 em line box as Plex), so every box keeps its height. The font files are unmodified, so no OFL rename is needed.
+- **Footer skill line:** `max-width` 70 → 80 mm (still ≥ 6 mm clear of the centered page number) and
+  `text-wrap: balance`: the Naskh is a little wider, and a wrapped line now never leaves one word alone.
+- **Boxes that clip their text** (`_reading_font.css.j2`, loaded after every product's CSS, covers and answer keys
+  included): Scheherazade's harakat and descenders reach further past the line box than Plex's, so boxes with
+  `overflow: hidden` cut them («فى» for «في» in the parents' box, «سالم» without its kasra, the bottom of «بستّي»,
+  the hamza of «أنشطة» on the covers' badges). One-line labels that clip only to cut a too-long line now clip
+  sideways only (`overflow: clip visible`); boxes with a capped height (parents' box list, safety notes, fixed
+  hadith boxes) clip 1.6 mm further out (`overflow-clip-margin`; the covers' subtitle 2.5 mm), enough for the marks,
+  never for an extra line. «قلبي يعرف الله» answer keys: the engine's key fit (`_FIT_JS`) now also sets a card's
+  text smaller when its last line runs into the card's padding (it sat on the card's edge, 1–4 mm in the page's
+  safe margin, on 1–7 sheets per volume; three volumes already had one such sheet with Noto Naskh). «قلبي يعرف الله»: a story-grid caption that wraps to two lines takes the room it needs from its
+  picture (its fixed strip ran the first line into the picture, already with Noto Naskh), and the character names
+  of «مَنْ في الكِتاب؟» get 0.8 mm below them. The owner page's three lines sit 1 mm in from the safe edge
+  (preflight saw «رَوْضَتي» 0.1 mm in the margin). The covers' design is untouched; they take the font through
+  `--body`/`--naskh` and the same clip rules.
+- **Checked:** every page of every volume (دوسية التأسيس KG1/KG2 × 3 with covers and answer keys, رحلتي الأولى stages
+  1–3, مغامراتي مع عائلتي with its inserts, قلبي يعرف الله V1–V5 and R with covers, keys and sticker sheets) for
+  «ليان» and «يوسف» (the boy's renders use the girl's sample picture: only the text is under test), audited after
+  the engine's fit pass against the same pages in the old fonts: no page refused, no new text outside its box, no
+  ink cut by a clipping box (measured with the shaped glyphs' real extents), no word broken across lines, fewer
+  footers on two lines than before; every PDF passes preflight, and the only warnings left are the sticker sheets'
+  (as before the change). The Islamic books' existing auto-fit (`.isl-body` zoom ≥ 0.8) now draws one interior page
+  (R, «أزور وأهنّئ») at 96 % and two parent pages at 94 % instead of 96 %; answer-key cards (for grown-ups) are set
+  at 85–95 % more often, a few at 70–80 %. Accepted.

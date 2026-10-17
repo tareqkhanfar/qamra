@@ -42,6 +42,7 @@ The provider's terms cover commercial use of outputs. Each is used only with ter
 | Qamra Display (our modified Baloo Bhaijaan 2: the hamza marks redrawn as «ء»; `scripts/build_display_font.py`, `OFL-QamraDisplay.txt`) | SIL Open Font License 1.1 (no Reserved Font Name; renamed as the OFL asks of a modified version, copyright notice kept) |
 | Noto Naskh Arabic | SIL Open Font License 1.1 |
 | IBM Plex Sans Arabic | SIL Open Font License 1.1 |
+| Scheherazade New 4.500 (SIL Global; `ScheherazadeNew-Regular/SemiBold/Bold.ttf`, unmodified static files from Google Fonts, fetched 2026-10-17; `OFL-ScheherazadeNew.txt`) | SIL Open Font License 1.1, © 1994-2026 SIL Global, Reserved Font Names «Scheherazade» and «SIL» (we ship the files unmodified; sizing is done in CSS with `size-adjust` and metric overrides, so no rename is needed). The activity books' reading font |
 | Amiri Quran 1.003 | SIL Open Font License 1.1 (the Quran text of «قلبي يعرف الله», Addendum 10) |
 
 ### Display and handwriting fonts (Addendum 11: cover lettering, dedication)

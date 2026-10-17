@@ -9,6 +9,7 @@
 {% include "_answer-key.css.j2" %}
 {% if book.product == 'family' %}{% include "_family.css.j2" %}{% endif %}
 {% if book.product == 'islamic' %}{% include "islamic-book.css.j2" %}{% endif %}
+{% include "_reading_font.css.j2" %}
 </style></head>
 <body data-names='{{ names|default([])|tojson }}'>
 {% for sheet in sheets %}

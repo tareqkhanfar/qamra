@@ -1,10 +1,11 @@
 /* ==== «قلبي يعرف الله» (Addendum 10): the Islamic education series. Loaded after the base CSS for product `islamic`;
-   every rule is scoped to `.isl`, so nothing leaks into the other products. Vowelised text is Noto Naskh Arabic (it has
-   every harakat mark and U+FDFA); verses are Amiri Quran (SIL OFL). ==== */
+   every rule is scoped to `.isl`, so nothing leaks into the other products. Text and labels are Scheherazade New, the
+   books' reading font (the base `--naskh`/`--body`; it has every harakat mark and U+FDFA); verses are Amiri Quran
+   (SIL OFL). ==== */
 @font-face { font-family: "Amiri Quran"; src: url("{{ fonts }}/AmiriQuran-Regular.ttf") format("truetype"); }
 
 .isl { --green: #1F5A46; --green-soft: #E3F0E8; --gold: #C9962B; --gold-soft: #FBF0D5; --cream: #FFF9EC; --shell: #FFFBF3;
-       --kitab: "Noto Naskh Arabic", "IBM Plex Sans Arabic", serif; --ui: "IBM Plex Sans Arabic", "Noto Naskh Arabic", sans-serif;
+       --kitab: var(--naskh); --ui: var(--body);
        position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; font-family: var(--kitab); color: var(--ink); }
 .page:has(.isl) { --shell: #FFFBF3; background: #FFFBF3; }
 /* no lone word on a paragraph's last line («اللهُ.» after «إِنْ شَاءَ», a ﷺ under its name); a verse keeps the
