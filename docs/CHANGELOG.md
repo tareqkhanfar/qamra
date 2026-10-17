@@ -7,7 +7,11 @@
   (`unicode-range`). Files and licence in `packages/pdf/src/qamra_pdf/fonts` (`ScheherazadeNew-*.ttf`,
   `OFL-ScheherazadeNew.txt`), `docs/licenses.md`.
 - **Fit:** `size-adjust: 110%` and Plex-like ascent/descent overrides keep every box's height; the footer skill line
-  may run to 80 mm and wraps balanced. Covers pick the font up only where they already use `--body`.
+  may run to 80 mm and wraps balanced. Boxes that clipped the bigger harakat and descenders (labels, parents' box,
+  cover badges and subtitle, Islamic name tags and story captions) clip sideways only or 1.6 mm further out
+  (`_reading_font.css.j2`). Covers keep their design and pick the font up through `--body`/`--naskh`. Islamic
+  story captions on two lines take room from their picture; Islamic answer-key cards whose last line ran into
+  their padding (and the safe margin) are set smaller by the engine's key fit.
 - **Checked:** every page of every volume for «ليان» and «يوسف», after the fit pass, against the old fonts: nothing
   refused or out of its box, no broken words; preflight passes. Decision and details in `docs/decisions.md`.
 - Test: `packages/workbook/tests/test_reading_font.py`.

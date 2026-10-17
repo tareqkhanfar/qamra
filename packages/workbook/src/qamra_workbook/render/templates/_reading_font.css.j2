@@ -1,0 +1,33 @@
+/* Room for the reading font's ink (Scheherazade New, _base.css.j2). Its harakat and descenders (a kasra under a
+   final ي, the dots of ي, a hamza with a damma over an alef) reach further past the line box than Plex's did, so a
+   box that clips its text cut them off: «فى» for «في», «سالم» without its kasra. Loaded after every product's CSS.
+   Each rule keeps what the clip was for. */
+
+/* one-line labels that clip only to cut a too-long line at the side: they now clip sideways only */
+.tl-who span, .who-name, .slot-label, .st-badge > span, .stickers .st-badge > span, .cc-band span, .st-rt b,
+.stone-cap b, .strat > span:last-child, .toc-extra b, .fc-t h2, .pt-role, .pf dd, .iv-mic small, .fcert-members,
+.cv-badge > span, .cvk-made span, .cvk-books span, .rs-owner b, .rs-name-in b,
+.key-sheet.vowelized .key-name { overflow: clip visible; }
+
+/* boxes whose height is capped (a line too many is cut, and the fit pass shrinks the text first): the cut moves
+   1.6 mm out, enough for the marks of the first and last line, never for a whole extra line */
+.parent-box ul, .safe-note span, .hunt-safety > span:last-child, .sacred.fixed .sacred-text {
+  overflow: clip; overflow-clip-margin: 1.6mm;
+}
+/* the covers' subtitle: a hamza with a damma over its first line's alef rises 2.5 mm over the box («أُمْسِكُ») */
+.cv-sub { overflow: clip; overflow-clip-margin: 2.5mm; }
+
+/* «قلبي يعرف الله» story grid: a caption that wraps to two lines takes the room it needs from the picture above it
+   (its fixed 13.4 mm strip ran the first line into the picture and cut the last line's marks), keeping the line
+   spacing that leaves the harakat of the two lines apart, and 1.8 mm under the last line for its kasras; a one-line
+   caption keeps its strip */
+.st-cap { height: auto; min-height: 13.4mm; padding-bottom: 1.8mm; }
+
+/* «قلبي يعرف الله» answer keys: the rows keep their share of the sheet, so a card with long answers never grows
+   past the safe area; the engine sets its text smaller instead (engine._FIT_JS, `.key-sheet.islamic .key-card`,
+   down to 60 %, now also when the last line only runs into the card's padding) */
+.key-sheet.islamic .key-grid { grid-template-rows: repeat(2, minmax(0, 1fr)); }
+.key-sheet.islamic.tall .key-grid { grid-template-rows: minmax(0, 1fr); }
+
+/* «قلبي يعرف الله» «مَنْ في الكِتاب؟»: a name's kasra sat on the marks of the line under it */
+.fc-t h2 { margin-bottom: 0.8mm; }

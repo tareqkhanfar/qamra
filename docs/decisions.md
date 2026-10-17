@@ -1204,9 +1204,25 @@ Arabic, C Scheherazade New; Readex Pro and Vazirmatn were looked at too and drop
   1.5 em line box as Plex), so every box keeps its height. The font files are unmodified, so no OFL rename is needed.
 - **Footer skill line:** `max-width` 70 → 80 mm (still ≥ 6 mm clear of the centered page number) and
   `text-wrap: balance`: the Naskh is a little wider, and a wrapped line now never leaves one word alone.
+- **Boxes that clip their text** (`_reading_font.css.j2`, loaded after every product's CSS, covers and answer keys
+  included): Scheherazade's harakat and descenders reach further past the line box than Plex's, so boxes with
+  `overflow: hidden` cut them («فى» for «في» in the parents' box, «سالم» without its kasra, the bottom of «بستّي»,
+  the hamza of «أنشطة» on the covers' badges). One-line labels that clip only to cut a too-long line now clip
+  sideways only (`overflow: clip visible`); boxes with a capped height (parents' box list, safety notes, fixed
+  hadith boxes) clip 1.6 mm further out (`overflow-clip-margin`; the covers' subtitle 2.5 mm), enough for the marks,
+  never for an extra line. «قلبي يعرف الله» answer keys: the engine's key fit (`_FIT_JS`) now also sets a card's
+  text smaller when its last line runs into the card's padding (it sat on the card's edge, 1–4 mm in the page's
+  safe margin, on 1–7 sheets per volume; three volumes already had one such sheet with Noto Naskh). «قلبي يعرف الله»: a story-grid caption that wraps to two lines takes the room it needs from its
+  picture (its fixed strip ran the first line into the picture, already with Noto Naskh), and the character names
+  of «مَنْ في الكِتاب؟» get 0.8 mm below them. The owner page's three lines sit 1 mm in from the safe edge
+  (preflight saw «رَوْضَتي» 0.1 mm in the margin). The covers' design is untouched; they take the font through
+  `--body`/`--naskh` and the same clip rules.
 - **Checked:** every page of every volume (دوسية التأسيس KG1/KG2 × 3 with covers and answer keys, رحلتي الأولى stages
-  1–3, مغامراتي مع عائلتي with its inserts, قلبي يعرف الله V1–V5 and R) for «ليان» and «يوسف», audited after the
-  engine's fit pass against the same pages in the old fonts: no page refused, no new text outside its box or clipped,
-  no word broken across lines, fewer footers on two lines than before; preflight passes for every PDF. The Islamic
-  books' existing auto-fit (`.isl-body` zoom ≥ 0.8) now draws one interior page (R, «أزور وأهنّئ») at 96 % and two
-  parent pages at 94 % instead of 96 %; answer keys (for grown-ups) shrink a little more in places. Accepted.
+  1–3, مغامراتي مع عائلتي with its inserts, قلبي يعرف الله V1–V5 and R with covers, keys and sticker sheets) for
+  «ليان» and «يوسف» (the boy's renders use the girl's sample picture: only the text is under test), audited after
+  the engine's fit pass against the same pages in the old fonts: no page refused, no new text outside its box, no
+  ink cut by a clipping box (measured with the shaped glyphs' real extents), no word broken across lines, fewer
+  footers on two lines than before; every PDF passes preflight, and the only warnings left are the sticker sheets'
+  (as before the change). The Islamic books' existing auto-fit (`.isl-body` zoom ≥ 0.8) now draws one interior page
+  (R, «أزور وأهنّئ») at 96 % and two parent pages at 94 % instead of 96 %; answer-key cards (for grown-ups) are set
+  at 85–95 % more often, a few at 70–80 %. Accepted.

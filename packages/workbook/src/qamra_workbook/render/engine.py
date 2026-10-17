@@ -281,9 +281,19 @@ _FIT_JS = """
   }
   // the Islamic answer key: a card whose answers run past it is set smaller, down to 60 %, and refused if it
   // still does not fit (the answers ran off the page)
+  // — or only into its padding: the last line then sat on the card's edge, in the page's safe margin
   for (const card of document.querySelectorAll('.key-sheet.islamic .key-card')) {
     const text = card.querySelector('.key-text');
-    const tall = () => card.scrollHeight > card.clientHeight + 1;
+    const intoPadding = () => {
+      if (!text) return false;
+      const cs = getComputedStyle(card);
+      const inner = card.getBoundingClientRect().bottom - parseFloat(cs.paddingBottom)
+        - parseFloat(cs.borderBottomWidth);
+      const lines = document.createRange();
+      lines.selectNodeContents(text);
+      return lines.getBoundingClientRect().bottom > inner + 1;
+    };
+    const tall = () => card.scrollHeight > card.clientHeight + 1 || intoPadding();
     for (let z = 0.95; tall() && text && z >= 0.6; z -= 0.05) text.style.zoom = String(z);
     if (tall()) out.push('key: ' + card.textContent.trim().slice(0, 40));
   }

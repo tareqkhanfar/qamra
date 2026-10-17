@@ -66,6 +66,7 @@ def test_arabic_prints_in_scheherazade_latin_in_plex_all_truetype(tmp_path: Path
     pages = build_pages(book, ASSETS)
     html = book_html(book, pages, ASSETS)
     assert 'font-family: "Scheherazade New"' in html and "unicode-range" in html
+    assert "overflow: clip visible" in html  # _reading_font.css.j2: labels clip sideways only
     pdf = asyncio.run(print_pdf(html, tmp_path / "b.html", tmp_path / "b.pdf", book.geometry))
     fonts = _fonts(pdf)
     assert any(name.startswith("ScheherazadeNew") for name in fonts), fonts  # the instructions
