@@ -1,28 +1,37 @@
-"""و: a small head sitting on the line, then a tail down to the left under it. It never joins the next
-letter, so it has isolated and final forms only."""
+"""و: a round closed head sitting on the line (about as tall as the tooth line), then a long tail that goes
+down from its right side and sweeps to the left under the line. It never joins the next letter, so it has
+isolated and final forms only.
+
+The head is round and the tail starts under its right side and ends well to the left of it: a narrow head
+on a short slanted tail reads as «ر».
+"""
 
 from __future__ import annotations
 
 from qamra_workbook.letters.hand import final, isolated
 
-# isolated و: from the neck up the left side of the head, round clockwise back to the neck, then the tail.
+# isolated و: from the neck on the line at the head's lower right, left along its bottom, up its left side,
+# round the top clockwise, down its right side through the neck, then the tail down and to the left.
 WAW = (
-    "M66 96 C54 90 50 74 58 64 C66 54 84 56 88 70 C92 82 84 92 72 98 "
-    "C64 104 56 118 48 128 C40 136 32 140 22 142"
+    "M82 96 C72 99 56 99 49 89 C42 79 43 61 54 53 C65 45 83 47 89 60 C94 72 90 87 83 97 "
+    "C80 110 77 122 68 132 C57 143 38 148 16 148"
 )
-# final ـو: arrives on the line under the head, goes round it the same way, then the tail.
+# final ـو: arrives along the line to the neck, then the same head and tail.
 WAW_FINAL = (
-    "M120 97 L96 97 C86 97 76 97 70 96 C58 90 54 74 62 64 C70 54 88 56 92 70 C96 82 88 92 76 98 "
-    "C68 104 60 118 52 128 C44 136 36 140 26 142"
+    "M124 97 L86 97 C76 99 60 99 53 89 C46 79 47 61 58 53 C69 45 87 47 93 60 C98 72 94 87 87 97 "
+    "C84 110 81 122 72 132 C61 143 42 148 20 148"
 )
 
 LETTERS = (
-    isolated("و", 100, WAW),
-    final("و", 120, WAW_FINAL),
+    isolated("و", 104, WAW),
+    final("و", 124, WAW_FINAL),
 )
 
 
 # How each letter is written, in words, for the educator's review sheet.
 HOW = {
-    "و": ("من السطر نصعد ونرسم الرأس مع عقارب الساعة، ثم ننزل بذيل إلى اليسار تحت السطر."),
+    "و": (
+        "من السطر نرسم رأسًا مستديرًا باتجاه عقارب الساعة ونغلقه، ثم ننزل بذيل طويل تحت السطر "
+        "ونسحبه إلى اليسار."
+    ),
 }

@@ -6,6 +6,7 @@ hamza). ك initial: one stroke, the slanted head down to the middle, back down t
 
 from __future__ import annotations
 
+from qamra_workbook.letters.ba import TAIL
 from qamra_workbook.letters.hamza import hamza_mark
 from qamra_workbook.letters.hand import final, initial, isolated, medial
 
@@ -20,14 +21,12 @@ LAM_FINAL = (
     "M140 97 L124 97 C117 97 114 94 113 88 L111 -25 L108 94 C108 124 94 146 70 148 "
     "C46 150 30 136 28 114 C27 104 29 97 33 91"
 )
-# isolated ك: down the stem, along the base and up into the tail; then the mark.
-KAF = "M146 -25 L146 82 C146 93 140 97 128 97 L60 97 C42 97 28 93 24 72"
+# isolated ك: down the stem, along the base and up into the tail of ب (`ba.TAIL`); then the mark.
+KAF = f"M146 -25 L146 82 C146 93 140 97 128 97 {TAIL}"
 # the kaf's mark: the same little hamza as over the alif (`hamza.hamza_mark`), inside the kaf, above the base.
 KAF_MARK = hamza_mark(94, bottom=72).d
 # final ـك: arrives on the line, up the stem and back down, then the same base, tail and mark.
-KAF_FINAL = (
-    "M180 97 L166 97 C159 97 156 94 155 88 L153 -25 L150 84 C150 93 144 97 132 97 L60 97 C42 97 28 93 24 72"
-)
+KAF_FINAL = f"M180 97 L166 97 C159 97 156 94 155 88 L153 -25 L150 84 C150 93 144 97 132 97 {TAIL}"
 # initial كـ: the head from its top right down to the middle, back down to the line, then along it.
 KAF_INITIAL = "M100 -20 C82 -6 58 16 40 36 C56 54 76 72 88 86 C92 92 88 97 80 97 L0 97"
 # medial ـكـ: the line from join to join, then the head drawn down onto it.

@@ -37,11 +37,11 @@ WORD_GAP = 60.0  # the space between the words of a compound name, in letter uni
 # ؤ and ئ: the waw, the tooth of ي or the body of ى with a small hamza over it. (base letter, form) → where
 # the hamza's centre and bottom go in the base letter's units. draft: educator review (size and height)
 _SEATS = {
-    "ؤ": {"isolated": ("و", 71.0, 48.0), "final": ("و", 75.0, 48.0)},
+    "ؤ": {"isolated": ("و", 69.0, 38.0), "final": ("و", 73.0, 38.0)},
     "ئ": {
         "initial": ("ي", 56.0, 28.0),
         "medial": ("ي", 32.0, 28.0),
-        "isolated": ("ى", 104.0, 38.0),
+        "isolated": ("ى", 104.0, 36.0),
         "final": ("ى", 108.0, 86.0),
     },
 }
