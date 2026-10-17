@@ -24,7 +24,7 @@ from qamra_worker.journey_voices import (
 
 MP3_HEADS = (b"ID3", b"\xff\xfb", b"\xff\xf3", b"\xff\xf2")
 MIN_TIMED = 89  # every clip can play word by word (2026-10-17)
-MIN_TAPPABLE = 270  # of 278 shown words and letters, 273 tappable (2026-10-17)
+MIN_TAPPABLE = 278  # every shown word and letter (2026-10-17)
 
 
 def test_every_audio_item_ships_its_reviewed_clip() -> None:

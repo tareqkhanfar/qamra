@@ -1256,4 +1256,9 @@ calm pauses between the words rather than a slowed voice.
 - **Shown entries said part by part:** the alphabet page shows one entry «أ ب ت …»; its times give the piece of each
   letter (`show[i]` is a list), and the page draws one button per letter.
 - **No fake sounds:** a sound item's word plays that item's own sound effect, cut from its clip.
-
+- **The last five (same day):** new takes for «تاء», «ثاء», «قاف» (said with their marks: without them the voice
+  blurred them, heard «شكرا», «سات», «كاف») and «Van»; «كلمة شَمْس» split at its pause. «Van» is heard «van» in its
+  take alone but «Fun» inside the clip, so it was checked by its waveform: one loud stretch of 0.82 s against
+  0.31–0.76 s for the other letter pages' words, no inner pause: one clean word. It is accepted by hand for that
+  clip's sha256 only. All 278 shown words and letters are tappable; a word that can't be played alone is shown
+  greyed with no button rather than as a button that does nothing.

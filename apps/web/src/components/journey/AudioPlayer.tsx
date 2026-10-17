@@ -98,6 +98,7 @@ export function AudioPlayer({ code }: { code: string }) {
     }
     return [{ key: `${i}`, text: word, step: wordStep(times, i, pace, lang) }];
   });
+  const tappable = chips.some((c) => c.step);
   const steps = (): StepPlayer | null => {
     const a = audio.current;
     if (!a) return null;
@@ -153,8 +154,7 @@ export function AudioPlayer({ code }: { code: string }) {
     void load();
   };
   const dir = lang === "ar" ? "rtl" : "ltr";
-  const wordClass =
-    "min-w-20 rounded-lg border-[1.5px] px-5 py-3 font-display text-[30px] leading-[1.6] font-bold text-night-900";
+  const wordClass = "min-w-20 rounded-lg border-[1.5px] px-5 py-3 font-display text-[30px] leading-[1.6] font-bold";
 
   return (
     <div className="mx-auto flex min-h-dvh max-w-xl flex-col bg-paper">
@@ -167,7 +167,11 @@ export function AudioPlayer({ code }: { code: string }) {
           <ul lang={lang} dir={dir} className="flex flex-wrap justify-center gap-3">
             {chips.map(({ key, text, step }) => {
               const on = lit.has(key);
-              const look = on ? "border-amber-500 bg-amber-100 shadow-md" : "border-line bg-paper-raised";
+              const look = on
+                ? "border-amber-500 bg-amber-100 text-night-900 shadow-md"
+                : step || !tappable
+                  ? "border-line bg-paper-raised text-night-900"
+                  : "border-dashed border-line bg-transparent text-ink-muted"; // not playable alone: no button
               return (
                 <li key={key}>
                   {step ? (
@@ -190,7 +194,7 @@ export function AudioPlayer({ code }: { code: string }) {
             })}
           </ul>
         )}
-        {chips.some((c) => c.step) && <p className="-mt-2 text-small text-ink-muted">{t("tapWord")}</p>}
+        {tappable && <p className="-mt-2 text-small text-ink-muted">{t("tapWord")}</p>}
         {item.audio ? (
           <div className="mt-auto flex flex-col items-center gap-4">
             <audio

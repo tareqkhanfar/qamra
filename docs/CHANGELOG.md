@@ -1,5 +1,16 @@
 # Changelog
 
+## QR audio: the last five words can be tapped too (2026-10-17)
+- «ت», «ث» and «ق» on the alphabet page and «Van» got new takes (same voice and settings, one call each; the
+  letter names with their marks, `SAY_AS` in `scripts/journey_voices.py`), spliced into their clips. Whisper heard
+  the three letters right; it still hears «Van» as «Fun» inside the clip (it heard «van» in the take alone), and
+  the piece is one clean 0.82 s word like the other letter pages' words, so it is accepted for that exact clip
+  (`ACCEPTED` in `scripts/journey_word_times.py`, tied to the clip's sha256).
+- Stage 1 «كلمة شَمْس»: the word times split a piece at its own pauses when a shown word is said only inside it,
+  so «شَمْس» plays alone (no new audio).
+- All 278 shown words and letters can be tapped. A word that can't be played alone now shows greyed with a dashed
+  border and no button (none today). Spend: $0.0018 (4 calls), $0.065 for the whole feature.
+
 ## QR audio: word by word with pauses, and every word a button (2026-10-17)
 - **Owner:** «سريع شوي لدرجة ما بنلحق نسمع، خاصة تبعات الإنجليزي» and «بدي لما أعمل click على اسم معين يجيبلي الصوت
   ويلفظ الاسم اللي ضغطت عليه», then «خذ راحتك بخروج الصوت، وأعطِ مهلة بين كل اسم واسم».

@@ -15,7 +15,9 @@ for a piece missed there or heard as a neighbour, alone. A piece passes when wha
 without the tashkeel (an English letter by its name: «C» is heard «see») and not clearly another piece of the
 clip. A clip passes when at most one piece is heard as another piece (two or more mean a shifted cut) and at
 least 70 % of its pieces pass (a two-piece clip: one); single syllables such as «تُ» are often not heard at
-all and stay in the word-by-word playback. A shown word is offered on a tap only when its own piece passed.
+all and stay in the word-by-word playback. A shown word is offered on a tap only when its own piece passed;
+a shown word said only inside a longer piece («كلمة شَمْس») gets that piece split at its own pauses, when every
+part is heard back alone.
 
 The player at /a/<code> uses the result to play the item word by word with a pause between the words, and to
 play one word when the child taps it: `show[i]` is the piece of the clip that says the item's i-th shown word
@@ -55,6 +57,10 @@ MIN_CUT = 0.15  # the shortest pause that may separate two pieces (s)
 PAD = 0.12  # each piece keeps up to this much of the pause around it (s)
 PASS = 0.6  # the similarity a heard piece needs
 MOSTLY = 0.7  # the share of a clip's spoken pieces that must pass
+# Pieces a person accepted although Whisper keeps mishearing them, for one exact clip (its sha256): «Van» was
+# heard «van» in its take alone, but «Fun»/«from» inside the clip; it is one clean loud stretch of 0.82 s,
+# like the other letter pages' words (0.31–0.76 s, «Yo-yo» 0.76 s), so it is one word (2026-10-17).
+ACCEPTED = {("dwrtprom", "Van"): "a6abcd2aadc053c15aacf1af119097a8b65e980da23741748d242029991fcc15"}
 PIECES = re.compile(r"\s*[.،,:؛؟?!]\s*")
 # A letter shown alone is said by its name in the scripts («أ» → «أَلِف»).
 _LETTERS = "أ ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي"
@@ -302,6 +308,16 @@ def untappable(item: dict[str, Any], ps: list[Piece], show: list[Shown]) -> list
     return out
 
 
+def row(p: Piece, s: float, e: float, heard: str) -> dict[str, Any]:
+    score = 1.0 if p.sound else heard_as(p.text, heard)
+    return {
+        "text": p.text,
+        "ms": [round(s * 1000), round(e * 1000)],
+        "heard": heard,
+        "score": round(score, 2),
+    }
+
+
 def main() -> None:
     from faster_whisper import WhisperModel  # local, free; installed by `uv run --with faster-whisper`
 
@@ -322,6 +338,12 @@ def main() -> None:
         segs, _ = model.transcribe(audio, language=lang, word_timestamps=True, beam_size=5, vad_filter=False)
         return [(w.word, w.start, w.end) for s in segs for w in (s.words or [])]
 
+    def alone(x: np.ndarray, lang: str, s: float, e: float) -> str:
+        """What Whisper hears in a stretch of a clip played on its own."""
+        quiet = np.zeros(int(0.3 * SR), dtype=np.float32)
+        cut_out = np.concatenate([quiet, x[int(s * SR) : int(e * SR)], quiet])
+        return " ".join(w for w, *_ in listen(cut_out, lang)).strip()
+
     for item in items:
         code, lang = str(item["code"]), str(item["lang"])
         path = CLIPS / f"{code}.mp3"
@@ -341,25 +363,42 @@ def main() -> None:
             heard = "" if p.sound else heard_in(words, s, e)
             if not p.sound and (heard_as(p.text, heard) < PASS or elsewhere(ps, p.text, heard)):
                 # missed in the whole clip, or heard as a neighbour (Whisper's times spread): hear it alone
-                quiet = np.zeros(int(0.3 * SR), dtype=np.float32)
-                alone = " ".join(
-                    w for w, *_ in listen(np.concatenate([quiet, x[int(s * SR) : int(e * SR)], quiet]), lang)
-                )
-                heard = alone.strip() or heard
-            score = 1.0 if p.sound else heard_as(p.text, heard)
-            rows.append(
-                {
-                    "text": p.text,
-                    "ms": [round(s * 1000), round(e * 1000)],
-                    "heard": heard,
-                    "score": round(score, 2),
-                }
+                heard = alone(x, lang, s, e) or heard
+            rows.append(row(p, s, e, heard))
+        # A shown word said only inside a longer piece («كلمة شَمْس»): split that piece at its own pauses
+        # when every part is heard back alone.
+        peak = float(frame_rms(x).max())
+        for w in map(str, item["show"]):
+            if code in SOUNDS or any(matches(w, p.text) for p in ps if not p.sound):
+                continue
+            k = next(
+                (i for i, p in enumerate(ps) if not p.sound and any(matches(w, t) for t in p.text.split())),
+                -1,
             )
+            if k < 0 or len(ps[k].text.split()) < 2:
+                continue
+            s, e = spans[k]
+            tokens = ps[k].text.split()
+            inner = cut(islands(x[int(s * SR) : int(e * SR)], peak), len(tokens), e - s)
+            if inner is None:
+                continue
+            parts = [(s + a, s + b) for a, b in inner]
+            heard_parts = [alone(x, lang, a, b) for a, b in parts]
+            if all(heard_as(t, h) >= PASS for t, h in zip(tokens, heard_parts, strict=True)):
+                ps[k : k + 1] = [Piece(t) for t in tokens]
+                spans[k : k + 1] = parts
+                rows[k : k + 1] = [
+                    row(Piece(t), a, b, h) for t, (a, b), h in zip(tokens, parts, heard_parts, strict=True)
+                ]
         # A piece heard as another piece of the clip, clearly better than as itself: not offered on a tap.
         # Two or more such pieces mean a shifted cut (one alone is Whisper mixing up «قاف» and «كاف»).
         confused = [not p.sound and elsewhere(ps, p.text, r["heard"]) for p, r in zip(ps, rows, strict=True)]
         shifted = [r["text"] for r, c in zip(rows, confused, strict=True) if c]
-        ok = [p.sound or (r["score"] >= PASS and not c) for p, r, c in zip(ps, rows, confused, strict=True)]
+        sha = hashlib.sha256(path.read_bytes()).hexdigest()
+        ok = [
+            p.sound or (r["score"] >= PASS and not c) or ACCEPTED.get((code, p.text)) == sha
+            for p, r, c in zip(ps, rows, confused, strict=True)
+        ]
         show = show_map(item, ps, ok)
         speech = [o for p, o in zip(ps, ok, strict=True) if not p.sound]
         # Most pieces heard; a two-piece clip («R. Rabbit.») is anchored by one heard piece.
@@ -390,7 +429,7 @@ def main() -> None:
         )
         if passed:
             times[code] = {
-                "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                "sha256": sha,
                 "duration_ms": durations.get(code, round(len(x) / SR * 1000)),
                 "segments": [r["ms"] for r in rows],
                 "show": show,
