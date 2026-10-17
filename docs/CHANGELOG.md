@@ -1,5 +1,17 @@
 # Changelog
 
+## The activity books read in Scheherazade New (2026-10-17)
+- **Font:** the Arabic text children and parents read in «دوسية التأسيس», «رحلتي الأولى للتعلّم», «مغامراتي مع
+  عائلتي» and «قلبي يعرف الله» is now Scheherazade New (SIL, OFL 1.1): school-book Naskh with large, clear harakat.
+  Titles stay Qamra Display; Latin letters, digits and Western punctuation stay IBM Plex Sans Arabic
+  (`unicode-range`). Files and licence in `packages/pdf/src/qamra_pdf/fonts` (`ScheherazadeNew-*.ttf`,
+  `OFL-ScheherazadeNew.txt`), `docs/licenses.md`.
+- **Fit:** `size-adjust: 110%` and Plex-like ascent/descent overrides keep every box's height; the footer skill line
+  may run to 80 mm and wraps balanced. Covers pick the font up only where they already use `--body`.
+- **Checked:** every page of every volume for «ليان» and «يوسف», after the fit pass, against the old fonts: nothing
+  refused or out of its box, no broken words; preflight passes. Decision and details in `docs/decisions.md`.
+- Test: `packages/workbook/tests/test_reading_font.py`.
+
 ## Phone numbers in Arabic digits; each wrong field gets its own message (2026-10-16)
 - **Bug:** checkout answered «بعض البيانات غير صحيحة» to a phone typed on an Arabic keyboard (٠٥٩٩…/۰۵۹۹…): the check
   took ASCII digits only, and the 422 never said which field.

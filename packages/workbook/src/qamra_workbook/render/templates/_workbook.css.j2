@@ -38,7 +38,8 @@
 .own-hand svg { position: absolute; inset: 6mm 8mm 16mm; width: calc(100% - 16mm); height: calc(100% - 22mm); }
 .own-hand span { position: relative; font: 600 10.5pt var(--body); color: var(--muted); }
 .own-child { height: 118mm; }
-.own-lines { width: 100%; display: flex; gap: 6mm; margin-top: 6mm; }
+/* 1 mm in from the safe edge: the Naskh's first letter («رَوْضَتي») sets its box 0.1 mm past where it starts */
+.own-lines { width: 100%; display: flex; gap: 6mm; margin-top: 6mm; padding-inline: 1mm; }
 .own-line { flex: 1; display: flex; align-items: flex-end; gap: 2mm; font: 700 12pt var(--body); color: var(--ink-2); }
 .own-line i { flex: 1; border-bottom: 0.4mm dashed var(--line); height: 8mm; }
 
