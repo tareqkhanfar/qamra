@@ -5,6 +5,7 @@ volumes' perfect-bound wrap with its spine. Every cover passes the print preflig
 import asyncio
 import dataclasses
 import datetime as dt
+import math
 from pathlib import Path
 from typing import Any
 
@@ -84,6 +85,80 @@ def test_a_scene_is_cropped_to_the_cover_at_300_dpi(tmp_path: Path) -> None:
     band = covers.plate(src, tmp_path, 216.0, 80.0, band=0.66)
     with Image.open(full) as a, Image.open(band) as b:
         assert a.size == (2551, 3579) and b.size == (2551, 945)
+
+
+# ---- telling the series and their parts apart (2026-10-17) ------------------------------------------------
+
+
+def _series(part: str) -> str:
+    return "foundation" if part.startswith("kg") else part.split("-")[0]
+
+
+def test_every_part_has_its_own_shade_and_the_levels_and_volumes_differ() -> None:
+    assert set(covers.TONES) == set(PARTS)
+    by_series: dict[str, set[str]] = {}
+    for part in PARTS:
+        by_series.setdefault(_series(part), set()).add(covers.TONES[part])
+    # KG1 and KG2 apart (their three volumes share their level's shade), every stage and volume its own
+    assert len(by_series["foundation"]) == 2 and covers.TONES["kg1-v1"] != covers.TONES["kg2-v1"]
+    assert len(by_series["journey"]) == 3 and len(by_series["islamic"]) == 6
+    # no two series share a shade
+    shades = [s for found in by_series.values() for s in found]
+    assert len(shades) == len(set(shades))
+
+
+def test_the_title_card_ink_reads_on_its_shade() -> None:
+    for part in PARTS:
+        look = covers.look_for(_series(part), part)
+        assert look.panel == look.spine == covers.TONES[part]
+        assert covers.contrast(look.panel_ink, look.panel) >= 4.5, part
+        assert covers.contrast(look.ribbon_ink, look.ribbon[1]) >= 4.5, part
+
+
+def test_the_part_numbers() -> None:
+    numbers = {part: covers.part_number(part) for part in PARTS}
+    assert numbers["kg1-v1"] == 1 and numbers["kg2-v3"] == 3 and numbers["journey-2"] == 2
+    assert numbers["islamic-v5"] == 5 and numbers["islamic-r"] is None and numbers["family"] is None
+    for series in ("foundation", "journey", "islamic"):
+        assert covers.series_copy(series)["number_label"]
+    assert not covers.LOOKS["family"].badge  # one book: no number
+
+
+CMYK_PROFILE = Path("/usr/share/color/icc/ghostscript/default_cmyk.icc")
+
+
+@pytest.mark.skipif(not CMYK_PROFILE.is_file(), reason="no CMYK profile on this machine")
+def test_the_shades_stay_inside_the_press_gamut() -> None:
+    """Each shade survives the trip to CMYK and back (ΔE < 4): no screen-only color that prints dull."""
+    from PIL import ImageCms
+
+    srgb, lab = ImageCms.createProfile("sRGB"), ImageCms.createProfile("LAB")
+    cmyk = ImageCms.getOpenProfile(str(CMYK_PROFILE))
+    out = ImageCms.buildTransform(srgb, cmyk, "RGB", "CMYK", renderingIntent=1)
+    back = ImageCms.buildTransform(cmyk, srgb, "CMYK", "RGB", renderingIntent=1)
+    to_lab = ImageCms.buildTransform(srgb, lab, "RGB", "LAB")
+
+    def lab_of(img: Image.Image) -> tuple[float, float, float]:
+        L, a, b = ImageCms.applyTransform(img, to_lab).getpixel((0, 0))  # type: ignore[misc]
+        return L * 100 / 255, a, b
+
+    colors = {*covers.TONES.values(), *covers.LOOKS["foundation"].part_badges, covers.MOON}
+    for color in colors:
+        img = Image.new("RGB", (1, 1), color)
+        trip = ImageCms.applyTransform(ImageCms.applyTransform(img, out), back)
+        assert math.dist(lab_of(img), lab_of(trip)) < 4.0, color
+
+
+def test_a_front_carries_its_frame_and_its_number(tmp_path: Path) -> None:
+    book, cover, *_ = volume_specs(GIRL, "kg1", 2, name_en="Layan", pages=range(1, 4))
+    pages = build_pages(cover, assets_for(book, tmp_path))
+    front = next(p for p in pages if p.spec.type == "workbook-cover-front").built.data["cv"]
+    back = next(p for p in pages if p.spec.type == "workbook-cover-back").built.data["cv"]
+    assert covers.TONES["kg1-v2"] in str(front["frame"]) and covers.TONES["kg1-v2"] in str(back["frame"])
+    badge = str(front["number"]["svg"])
+    assert ">٢</text>" in badge and ">الجزء</text>" in badge
+    assert covers.LOOKS["foundation"].part_badges[1] in badge  # part 2: gold
+    assert front["age_right"] is not None  # the age moves beside the brand, the number takes the corner
 
 
 # ---- the perfect-bound wrap --------------------------------------------------------------------------------
@@ -187,6 +262,10 @@ def test_an_islamic_volume_gets_one_wrap_with_its_spine(tmp_path: Path) -> None:
     [page] = build_pages(cover, assets_for(book, tmp_path))
     front, back = page.built.data["front"], page.built.data["back"]
     assert front["ribbon"]["text"] == "ليان" and front["subtitle"] == "رِحْلَةُ الْمُسْلِمَةِ الصَّغِيرَةِ"
+    # «رمضان والعيد» has no number: the crescent on the front, nothing at the spine's head; night blue
+    spine = page.built.data["spine"]
+    assert spine["numeral"] == "" and spine["color"] == covers.TONES["islamic-r"]
+    assert "<text" not in str(front["number"]["svg"])
     assert any(x["this"] for x in back["extra"]["books"]) and "راجعه" not in str(back)  # no reviewer claim
     result = _render(cover, book, tmp_path)
     assert result["passed"] and all(c["ok"] for c in result["checks"]), result  # type: ignore[union-attr]
@@ -268,7 +347,9 @@ def test_the_v4_wrap_sets_the_honorific_small_and_the_back_title_thin(tmp_path: 
     for title in (front, back):
         assert title["hon"]["ratio"] == pytest.approx(0.58, abs=0.01)
         assert "Noto Naskh Arabic" in title["hon"]["font"] and title["hon"]["loaded"]
-        assert title["hon"]["fill"] == covers.LOOKS["islamic"].outline
+    # solid: in the card's ink on the front's colored card, in the outline's color on the back's paper
+    assert front["hon"]["fill"] == covers.look_for("islamic", "islamic-v4").panel_ink
+    assert back["hon"]["fill"] == covers.LOOKS["islamic"].outline
     # the back: a small title gets a thin outline in proportion to its size and only a hint of extrusion
     assert back["fs"] < covers.SMALL_TITLE_MM
     assert back["reach"] == pytest.approx(full * back["fs"] / covers.FULL_EFFECT_MM, rel=0.08)

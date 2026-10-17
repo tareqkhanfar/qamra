@@ -5,11 +5,12 @@
 # adjective («١٢٠ صفحة ملوّنة», covers.pages_phrase); {units} the number of units with its noun. Numbers
 # are written in Latin digits here and printed in the book's numerals.
 # Facts only: every line names something the part really holds (docs/plans/cover-scenes.md).
-# draft: language review 2026-10-09
+# draft: language review 2026-10-09; number labels 2026-10-17
 
 foundation:
   # the volume's subtitle (vowelized) comes from the curriculum plan; the series line from workbook.BLURB
   ribbon: "دوسية {child:gen}"
+  number_label: "الجزء"  # over the volume's big number on the front (covers.number_badge_svg)
   badges:
     - {icon: book, text: "{pages}"}
     - {icon: pencil, text: "القلم والحروف والأعداد"}
@@ -84,6 +85,7 @@ foundation:
 
 journey:
   ribbon: "رحلة {child:gen}"  # from content/journey/stage-*.yaml cover.front.kicker when it is set
+  number_label: "المحطة"  # over the stage's big number on the front
   binding: "تجليد حلزوني يُفتح مسطّحًا"
   badges:
     - {icon: book, text: "{pages}"}
@@ -155,6 +157,7 @@ islamic:
   # the volume's title, level, goal and units come from content/islamic (plan.yaml, units.yaml)
   series: "قَلْبِي يَعْرِفُ اللهَ"  # «الله» as units.yaml writes it
   kicker: "{رِحْلَةُ الْمُسْلِمِ الصَّغِيرِ/رِحْلَةُ الْمُسْلِمَةِ الصَّغِيرَةِ}"
+  number_label: "الْمُجَلَّدُ"  # over the volume's big number on the front («رمضان والعيد» shows a crescent)
   badges:
     - {icon: book, text: "{pages}"}
     - {icon: star, text: "{units}"}

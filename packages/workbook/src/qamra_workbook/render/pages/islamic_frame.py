@@ -389,6 +389,6 @@ def cover_wrap(ctx: PageContext) -> Built:
     data = {
         "front": covers.front_data(ctx, front, front_box),
         "back": covers.back_data(ctx, back, back_box),
-        "spine": covers.spine_data(ctx, covers.LOOKS["islamic"], x, width, lines),
+        "spine": covers.spine_data(ctx, covers.look_for("islamic", front.part), x, width, lines, front.part),
     }
     return Built(data, None, problems)
