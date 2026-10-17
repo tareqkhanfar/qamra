@@ -1226,3 +1226,34 @@ Arabic, C Scheherazade New; Readex Pro and Vazirmatn were looked at too and drop
   (as before the change). The Islamic books' existing auto-fit (`.isl-body` zoom ≥ 0.8) now draws one interior page
   (R, «أزور وأهنّئ») at 96 % and two parent pages at 94 % instead of 96 %; answer-key cards (for grown-ups) are set
   at 85–95 % more often, a few at 70–80 %. Accepted.
+
+## QR audio pace and tappable words from offline word times (2026-10-17)
+
+The owner found the QR clips too fast (English most of all) and wanted to tap a word and hear it, then asked for
+calm pauses between the words rather than a slowed voice.
+
+- **Pauses, not playbackRate:** slowing a clip below ~0.9 smears speech, so the default plays the clip piece by
+  piece with a pause between the pieces (1 s Arabic, 1.3 s English); «أبطأ» lengthens the pauses (1.7 s / 2 s) and
+  plays at 0.9 with `preservesPitch`; «عادي» is the clip as recorded. One `<audio>` element seeks to a piece, plays
+  it, stops at its end (checked each animation frame) and waits the pause (`lib/journeyPlayback.ts`, `StepPlayer`):
+  no new audio and no Web Audio decode (which can't keep the pitch when slowed).
+- **Word times instead of a clip per word:** the cheapest correct way. A clip is cut at its pauses (the n−1 longest
+  quiet stretches for n pieces of the script; sound items where `journey_voices.py` joined their parts, since slow
+  drum beats have pauses of their own), and every piece is heard back by Whisper running on this machine
+  (`faster-whisper` large-v3-turbo: free; fal's Whisper would have cost about $0.20). A clip is accepted when at
+  least 70 % of its pieces are heard as their text and at most one is heard as a neighbour (two or more = a
+  shifted cut); a shown word is tappable only when its own piece was heard. Results: all 89 clips, 408 pieces,
+  273 of 278 shown words and letters.
+- **Served only with their clip:** the API gives `words` only when the stored clip is the shipped TTS clip with
+  the same length as in `words.json`; a person's upload or the on-the-fly narrator plays whole. The deploy loader
+  checks sha256 and length of every entry against the shipped clips and exits 1 on a stale one.
+- **Rushed clips remade, $0.063:** clips whose words ran together (no pause to cut at: 32 English, 2 Arabic, and
+  the alphabet's 28 names, 23.7 s in one breath) were remade word by word with the same voice, as earlier fixes
+  were. A lone English letter is sent as `"A."` (heard back: «A» and «A.» were read «uh»). «Van» was taken three
+  times and never heard back as «Van» (Whisper hears «Fun»/«from»); it plays in the word-by-word playback but is
+  not offered on a tap. «R» and «Z» are said the British way («ar», «zed») and were heard as such on a second
+  take. Words that are not said alone (stage 1 «كلمة شَمْس») are not tappable rather than playing extra words.
+- **Shown entries said part by part:** the alphabet page shows one entry «أ ب ت …»; its times give the piece of each
+  letter (`show[i]` is a list), and the page draws one button per letter.
+- **No fake sounds:** a sound item's word plays that item's own sound effect, cut from its clip.
+

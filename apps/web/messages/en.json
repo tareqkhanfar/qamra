@@ -1882,6 +1882,10 @@
       "home": "Go to {brand}",
       "play": "Play the sound",
       "pause": "Pause the sound",
+      "playWord": "Hear “{word}”",
+      "tapWord": "Tap a word to hear it on its own.",
+      "pace": "Pace",
+      "paces": { "natural": "Normal", "steady": "Word by word", "slow": "Slower" },
       "narrator": "Read by the narrator",
       "recorded": "Recorded voice",
       "noAudio": "The sound is being recorded. Read the words to your child for now, and try the code again later."

@@ -1,6 +1,8 @@
 """The audio QR codes of «رحلتي الأولى للتعلّم» (Addendum 6 §4.8): a public player with no child data, audio
 through signed links that expire, staff-only uploads, and the TTS fallback (off unless a provider is on)."""
 
+import json
+
 from api_helpers import make_admin, register
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -27,7 +29,16 @@ async def test_the_player_shows_the_words_until_an_item_has_audio(client: AsyncC
     body = r.json()
     assert body["audio"] is None and body["source"] is None  # no error: the page shows the words
     assert body["show"] == ["بَقَرَة", "قِطَّة", "دِيك"] and body["lang"] == "ar"
-    assert set(body) == {"code", "lang", "title", "show", "audio", "source"}  # nothing about any child
+    assert set(body) == {
+        "code",
+        "lang",
+        "title",
+        "show",
+        "audio",
+        "source",
+        "words",
+    }  # nothing about any child
+    assert body["words"] is None
     for bad in ("zzzzzzzz", "ABC", "a" * 40, "abc-1234"):
         assert (await client.get(f"/api/a/{bad}")).status_code == 404
 
@@ -101,3 +112,30 @@ async def test_the_narrator_reads_words_once_a_provider_is_on(
     clip = await adb.get(AudioClip, words)
     assert clip is not None and clip.source == "tts:fake" and storage.exists(clip.storage_key)  # made once
     assert (await client.get(f"/api/a/{SOUNDS}")).json()["audio"] is None  # sounds are never narrated
+
+
+async def test_word_times_come_only_with_the_shipped_clip(
+    client: AsyncClient, adb: AsyncSession, storage: ObjectStorage
+) -> None:
+    """The player gets where each word sits in the clip (content/journey/clips/words.json) only with the very
+    clip they were made from: a shipped clip of the same length, never a person's recording."""
+    words = _code(WORDS)  # «كُرَة. قِطَّة. شَمْس.»
+    durations = json.loads((journey_audio.WORD_TIMES.parent / "durations.json").read_text(encoding="utf-8"))
+    times = json.loads(journey_audio.WORD_TIMES.read_text(encoding="utf-8"))["items"][words]
+    storage.put("journey-audio/test.mp3", b"ID3 shipped", "audio/mpeg")
+    clip = AudioClip(code=words, storage_key="journey-audio/test.mp3", mime="audio/mpeg")
+    clip.duration_ms, clip.source = durations[words], "tts:elevenlabs"
+    adb.add(clip)
+    await adb.commit()
+    body = (await client.get(f"/api/a/{words}")).json()
+    assert body["words"] == {"segments": times["segments"], "show": times["show"]}
+    assert len(body["words"]["show"]) == len(body["show"]) == 3
+    assert all(isinstance(i, int) for i in body["words"]["show"])  # every shown word can be tapped
+
+    clip.duration_ms = durations[words] + 40  # another take: the times would cut it wrong
+    await adb.commit()
+    assert (await client.get(f"/api/a/{words}")).json()["words"] is None
+    clip.duration_ms, clip.source = durations[words], "upload"  # a person's recording: played whole
+    await adb.commit()
+    body = (await client.get(f"/api/a/{words}")).json()
+    assert body["source"] == "recording" and body["words"] is None

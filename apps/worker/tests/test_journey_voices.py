@@ -12,9 +12,19 @@ from sqlalchemy.orm import Session
 from qamra_core.db.audio import AudioClip, clip_key
 from qamra_core.db.models import AuditLog
 from qamra_core.storage import ObjectStorage
-from qamra_worker.journey_voices import CLIPS, SOURCE, catalog_codes, load_clips
+from qamra_worker.journey_voices import (
+    CLIPS,
+    SOURCE,
+    WORD_TIMES,
+    catalog_codes,
+    catalog_items,
+    check_word_times,
+    load_clips,
+)
 
 MP3_HEADS = (b"ID3", b"\xff\xfb", b"\xff\xf3", b"\xff\xf2")
+MIN_TIMED = 89  # every clip can play word by word (2026-10-17)
+MIN_TAPPABLE = 270  # of 278 shown words and letters, 273 tappable (2026-10-17)
 
 
 def test_every_audio_item_ships_its_reviewed_clip() -> None:
@@ -91,3 +101,42 @@ def test_a_narrator_clip_made_on_the_fly_is_replaced_by_the_reviewed_one(
     assert load_clips(db, storage, folder=folder).loaded == [code]
     clip = db.get(AudioClip, code)
     assert clip is not None and clip.source == SOURCE and not storage.exists(key)
+
+
+def test_word_times_match_every_shipped_clip_they_describe() -> None:
+    """words.json (scripts/journey_word_times.py): made from the clips in this commit, one piece for each
+    shown word the page lets a child tap, and the pieces in order inside the clip."""
+    timed, stale = check_word_times()
+    assert stale == []  # a clip changed without its times: make them again
+    times = json.loads((CLIPS / WORD_TIMES).read_text(encoding="utf-8"))["items"]
+    assert sorted(timed) == sorted(times) and len(timed) >= MIN_TIMED
+    shown = {str(i["code"]): i for i in catalog_items()}
+    tappable = sum(
+        k is not None
+        for code in timed
+        for s in times[code]["show"]
+        for k in (s if isinstance(s, list) else [s])
+    )
+    assert tappable >= MIN_TAPPABLE
+    for code in timed:
+        segments = times[code]["segments"]
+        assert all(200 <= e - s <= 6000 for s, e in segments), code  # a word or a sound, never the whole clip
+        assert len(times[code]["show"]) == len(shown[code]["show"]), code
+
+
+def test_the_loader_reports_word_times_made_from_another_clip(
+    db: Session, storage: ObjectStorage, tmp_path: Path
+) -> None:
+    times = json.loads((CLIPS / WORD_TIMES).read_text(encoding="utf-8"))["items"]
+    good, changed, retake = list(times)[:3]
+    folder = _small_folder(tmp_path, [good, changed, retake])
+    copied = {code: dict(times[code]) for code in (good, changed, retake)}
+    copied[changed]["sha256"] = "0" * 64  # the clip was regenerated, its times were not
+    copied[retake]["duration_ms"] += 50
+    (folder / WORD_TIMES).write_text(json.dumps({"items": copied}), encoding="utf-8")
+
+    report = load_clips(db, storage, folder=folder, write=False)
+    assert report.timed == [good] and sorted(report.stale_times) == sorted([changed, retake])
+    assert any("stale word times: 2" in line for line in report.lines(check=True))
+    (folder / WORD_TIMES).unlink()  # no times shipped: every item plays whole, nothing is stale
+    assert check_word_times(folder) == ([], [])

@@ -1,6 +1,7 @@
 /** The audio QR codes of «رحلتي الأولى للتعلّم» (API: routers/journey_audio.py). */
 
 import { api, upload } from "@/lib/api";
+import type { WordTimes } from "@/lib/journeyPlayback";
 
 export type AudioItem = {
   code: string;
@@ -9,6 +10,8 @@ export type AudioItem = {
   show: string[];
   audio: string | null;
   source: "recording" | "narrator" | null;
+  /** Where each word sits in the clip (shipped clips only): word by word, and one word on a tap. */
+  words?: WordTimes | null;
 };
 export type AudioClip = {
   code: string;
