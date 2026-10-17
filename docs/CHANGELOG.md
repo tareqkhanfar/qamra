@@ -12,6 +12,26 @@
   refused or out of its box, no broken words; preflight passes. Decision and details in `docs/decisions.md`.
 - Test: `packages/workbook/tests/test_reading_font.py`.
 
+## Activity-book covers you can tell apart at a glance (2026-10-17)
+- **Owner:** «الدوسيات الغلاف تبعهم حاسسهم كثير شبيهات ببعض… عشان التمييز بكون أفضل للعين.» Every series had the same
+  white title card on the same warm scene; the parts differed by a small pill.
+- **Series:** a full-bleed frame (8 mm inside the trim, outside the safe area) and a colored title card in the
+  series' hue, its own keyline and corner ornament, on front, back and spine: «دوسية التأسيس» blue (white line,
+  gold sparkles), «رحلتي الأولى للتعلّم» warm orange (dashed trail line, flags, teal name ribbon), «مغامراتي مع
+  عائلتي» raspberry (dotted line, hearts), «قلبي يعرف الله» calm jewel tones with a double gold line and gold
+  eight-pointed stars. The name ribbon is moon gold (journey: teal).
+- **Parts:** a shade per level or volume (`covers.TONES`: KG1 azure / KG2 royal blue; stages amber, orange,
+  brick red; Islamic V1 emerald, V2 teal, V3 olive, V4 amethyst, V5 maroon, R night blue) and the part's number
+  big in the front's top-left corner (round sticker «الجزء ١/٢/٣» in coral, gold, green for the foundation
+  volumes; night «المحطة ١–٣»; the Islamic gold star «الْمُجَلَّدُ ١–٥», a crescent for «رمضان والعيد»). The age pill
+  moves beside the brand. The Islamic spine takes the volume's shade with its number on a gold disc at the head.
+- **Kept:** scenes, characters, titles and every line of copy; the subtitle's ink follows the card (white, or a
+  dark shade of the hue where white would not read); ﷺ on a dark card is set in the card's ink. Shades checked for
+  contrast and through a CMYK profile (ΔE < 4). No AI calls.
+- New words «الجزء», «المحطة», «الْمُجَلَّدُ» (covers.yaml `number_label`) went through a language-review pass.
+- Tests: `test_covers.py` (shades per part, ink contrast, numbers, gamut, frame and medallion on a front, R's
+  wrap). Site previews of the four products and the print sample pack's cover PDFs re-rendered.
+
 ## Phone numbers in Arabic digits; each wrong field gets its own message (2026-10-16)
 - **Bug:** checkout answered «بعض البيانات غير صحيحة» to a phone typed on an Arabic keyboard (٠٥٩٩…/۰۵۹۹…): the check
   took ASCII digits only, and the 422 never said which field.

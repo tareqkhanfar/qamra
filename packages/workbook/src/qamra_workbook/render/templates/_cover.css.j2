@@ -17,6 +17,12 @@
 .cv-islamic .cv-veil { background: linear-gradient(to bottom, rgba(8, 20, 40, .18), rgba(8, 20, 40, 0) 34%),
                                    linear-gradient(to top, rgba(8, 20, 30, .32), rgba(8, 20, 30, 0) 13%); }
 
+/* the series' frame in the part's shade (covers.frame_svg), over the scene and under everything else */
+.cv-frame { position: absolute; left: 0; top: 0; z-index: 1; pointer-events: none; }
+/* the part's number, big, over the card's top-left corner (covers.number_badge_svg) */
+.cv-num { position: absolute; z-index: 4; filter: drop-shadow(0 .8mm 1.4mm rgba(10, 14, 40, .35)); }
+.cv-num svg { display: block; overflow: visible; }
+
 /* the brand and the age, on white pills at the top */
 .cv-brand { position: absolute; display: flex; align-items: center; gap: 1.3mm; height: 9.5mm; padding: 0 3.6mm 0 2.2mm;
             border-radius: 4.75mm; background: #FFFFFF; box-shadow: 0 .7mm 1.8mm rgba(20, 24, 60, .22);
@@ -138,5 +144,10 @@
                  display: flex; align-items: center; gap: 2.4mm; font-family: var(--title); font-weight: 800; color: #FFF8E6; line-height: 1; }
 .cv-spine-text .nm { color: #F6C35A; }
 .cv-spine-text .dot { width: 1.1mm; height: 1.1mm; border-radius: 50%; background: #F6C35A; display: inline-block; }
+/* the part's number at the spine's head: night on a moon-gold disc, as wide as the spine allows */
+.cv-spine-num { position: absolute; left: 50%; top: calc(var(--bleed) + 13mm); transform: translateX(-50%);
+                display: flex; align-items: center; justify-content: center; width: 1.15em; height: 1.15em;
+                border-radius: 50%; background: #F6C35A; color: #16204A; font: 800 1em/1 var(--title);
+                padding-bottom: .08em; box-sizing: border-box; }
 .cv-spine-moon { position: absolute; left: 50%; bottom: calc(var(--bleed) + 10mm); transform: translateX(-50%); }
 .cv-spine-moon .mascot { width: 5mm; height: 5mm; display: block; }
