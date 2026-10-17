@@ -17,6 +17,11 @@ part's real content, three real pages of the volume, «يأتي مع الكتا�
 pages and binding, and qamra.app. The Islamic volumes are perfect-bound: their cover is one wrap
 [front | spine | back] with the spine sized from the page count (`spine_mm`).
 
+Telling them apart (2026-10-17, «الدوسيات الغلاف تبعهم حاسسهم كثير شبيهات ببعض»): each series has its own
+color family and frame (`Look`: keyline, corner ornament, medallion) and each part its own shade of it
+(`TONES`) on a full-bleed frame, the title card and the spine; the part's number sits big in the front's
+top-left corner (`number_badge_svg`) and at the spine's head.
+
 Every word the covers add is in `content/covers/covers.yaml`. Print rules: the scene and the pages are
 resampled to 300 DPI at their printed size, every letter stays vector (outlines are filled copies, never an
 SVG stroke, which Chromium would print as a Type 3 font), and text keeps to the safe area.
@@ -105,6 +110,16 @@ class Look:
     soft: str  # light cards on the back
     blocks: tuple[str, ...]  # toy block colors, cycled
     spine: str = "#1F5A46"
+    # the series' frame (2026-10-17, «الدوسيات الغلاف تبعهم حاسسهم كثير شبيهات ببعض»): the title card and the
+    # full-bleed frame take the part's own shade (`TONES`); these say how the series draws them
+    panel_ink: str = "#FFFFFF"  # the subtitle on the colored card
+    frame_line: str = "#FFFFFF"  # the keyline inside the frame
+    frame_dash: str = ""  # its dash pattern ("" solid)
+    frame_double: bool = False  # a second, thinner line inside it (the Islamic series)
+    motif: Literal["sparkle", "flag", "heart", "khatam"] = "sparkle"  # the frame's corner ornament
+    badge: Literal["circle", "khatam", ""] = "circle"  # the part number's medallion ("" no number)
+    # the medallion's color per part number (1, 2, 3…), the same in every level; () keeps it night blue
+    part_badges: tuple[str, ...] = ()
 
 
 LOOKS: dict[str, Look] = {
@@ -122,9 +137,9 @@ LOOKS: dict[str, Look] = {
         panel="#FFFFFF",
         panel_edge="#F2B33D",
         panel_shape="notebook",
-        ribbon=("#2B3A85", "#16204A"),
-        ribbon_fold="#0D1433",
-        ribbon_ink="#FFFFFF",
+        ribbon=("#FFCB52", "#EBA336"),
+        ribbon_fold="#9A6410",
+        ribbon_ink="#16204A",
         pill="#16204A",
         pill_ink="#FFFFFF",
         pill_alt="#F2B33D",
@@ -134,18 +149,20 @@ LOOKS: dict[str, Look] = {
         paper="#FFF9EE",
         soft="#FFFFFF",
         blocks=("#F0643C", "#2E9FD6", "#F2B21E", "#2FA36B", "#8C6CCB", "#E4769D"),
+        motif="sparkle",
+        part_badges=("#E4573D", "#F2B33D", "#2FA36B"),  # part 1 coral, 2 gold, 3 green (KG1 and KG2 alike)
     ),
     "journey": Look(
         font="Baloo Bhaijaan 2",
-        words=(("#8FF0E2", "#0E9C8C"), ("#FFC37A", "#F07B1E"), ("#C7F08A", "#4BAF3A")),
-        name_word=("#FFC37A", "#F07B1E"),
+        words=(("#8FF0E2", "#0E9C8C"), ("#A9DCFF", "#3A7FDB"), ("#C7F08A", "#4BAF3A")),
+        name_word=("#A9DCFF", "#3A7FDB"),
         outline="#163A4C",
         keyline="#FFFFFF",
         panel="#FFFFFF",
         panel_edge="#0E9C8C",
         panel_shape="trail",
-        ribbon=("#FF9A3D", "#E8701A"),
-        ribbon_fold="#A84A0C",
+        ribbon=("#17A99B", "#0B7D72"),
+        ribbon_fold="#05463F",
         ribbon_ink="#FFFFFF",
         pill="#163A4C",
         pill_ink="#FFFFFF",
@@ -156,6 +173,8 @@ LOOKS: dict[str, Look] = {
         paper="#F6FBF8",
         soft="#FFFFFF",
         blocks=("#F07B1E", "#0E9C8C", "#F2B21E", "#5A79CF", "#E4675A", "#4BAF3A"),
+        frame_dash="3.2 2.2",
+        motif="flag",
     ),
     "family": Look(
         font="Baloo Bhaijaan 2",
@@ -166,9 +185,9 @@ LOOKS: dict[str, Look] = {
         panel="#FFFFFF",
         panel_edge="#E4497F",
         panel_shape="house",
-        ribbon=("#2E9FD6", "#1D74B5"),
-        ribbon_fold="#114A78",
-        ribbon_ink="#FFFFFF",
+        ribbon=("#FFCB52", "#EBA336"),
+        ribbon_fold="#9A6410",
+        ribbon_ink="#3A1830",
         pill="#3A1830",
         pill_ink="#FFFFFF",
         pill_alt="#F08A3E",
@@ -178,6 +197,9 @@ LOOKS: dict[str, Look] = {
         paper="#FFF8F3",
         soft="#FFFFFF",
         blocks=("#E4497F", "#F08A3E", "#2E9FD6"),
+        frame_dash="0.01 2.1",
+        motif="heart",
+        badge="",
     ),
     "islamic": Look(
         font="Baloo Bhaijaan 2",
@@ -188,21 +210,91 @@ LOOKS: dict[str, Look] = {
         panel="#FFFBF0",
         panel_edge="#C9962B",
         panel_shape="arch",
-        ribbon=("#2A7A5E", "#1F5A46"),
-        ribbon_fold="#103326",
-        ribbon_ink="#FFFFFF",
-        pill="#1F5A46",
-        pill_ink="#FFFFFF",
-        pill_alt="#C9962B",
-        pill_alt_ink="#FFFFFF",
+        ribbon=("#F7D27A", "#DCA63E"),
+        ribbon_fold="#7E5A12",
+        ribbon_ink="#173B30",
+        pill="#FFF6DC",
+        pill_ink="#173B30",
+        pill_alt="#F2C35A",
+        pill_alt_ink="#173B30",
         accent="#C9962B",
         ink="#173B30",
         paper="#FFFAF0",
         soft="#FFFFFF",
         blocks=("#C9962B",),
         spine="#1F5A46",
+        panel_ink="#FFF3D6",
+        frame_line="#E8BE5A",
+        frame_double=True,
+        motif="khatam",
+        badge="khatam",
     ),
 }
+
+
+# Each part's own shade of its series' color: the full-bleed frame, the title card and the spine. One hue
+# family per series (on the brand's night, moon gold and paper), a distinct shade per level or volume, so two
+# parts side by side never look the same. Mid-tone, moderately saturated colors that a CMYK press reproduces
+# (no screen-only blues or greens: `tests/test_covers.py` round-trips each through a CMYK profile, ΔE < 4).
+TONES: dict[str, str] = {
+    # «دوسية التأسيس»: blue; KG1 a clear azure, KG2 a deep royal blue (the three volumes share their level's)
+    **dict.fromkeys(("kg1-v1", "kg1-v2", "kg1-v3"), "#1A72BA"),
+    **dict.fromkeys(("kg2-v1", "kg2-v2", "kg2-v3"), "#3A4A98"),
+    # «رحلتي الأولى للتعلّم»: warm orange, deepening stage by stage
+    "journey-1": "#E99837",
+    "journey-2": "#E26C39",
+    "journey-3": "#C94A3A",
+    # «مغامراتي مع عائلتي»: raspberry
+    "family": "#C93A6E",
+    # «قلبي يعرف الله»: calm jewel tones with gold; Ramadan and Eid on the night blue
+    "islamic-v1": "#1C7350",
+    "islamic-v2": "#0E6B73",
+    "islamic-v3": "#516C3F",
+    "islamic-v4": "#4A3B7E",
+    "islamic-v5": "#7A2F45",
+    "islamic-r": "#303A6A",
+}
+FRAME_MM = 8.0  # the frame's width inside the trim (the safe area starts at 12 mm)
+HINGE_FRAME_MM = 4.0  # beside the spine: the spine's color runs on a little, so a drifting fold never shows
+
+
+def tone(series: str, part: str) -> str:
+    return TONES.get(part) or TONES.get(f"{series}-{part}") or LOOKS[series].spine
+
+
+def look_for(series: str, part: str) -> Look:
+    """The series' look in the part's shade: the title card, its edge, the spine and the headings."""
+    import dataclasses
+
+    base = LOOKS[series]
+    main = tone(series, part)
+    # the subtitle stays legible: white (cream) on a deep shade, else a very dark shade of the card's own hue
+    ink = base.panel_ink if contrast(base.panel_ink, main) >= 4.5 else _shade(main, -0.8)
+    return dataclasses.replace(
+        base, panel=main, panel_edge=_shade(main, -0.32), spine=main, accent=main, panel_ink=ink
+    )
+
+
+def _luminance(color: str) -> float:
+    def channel(v: int) -> float:
+        c = v / 255
+        return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+
+    r, g, b = (int(color[i : i + 2], 16) for i in (1, 3, 5))
+    return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b)
+
+
+def contrast(a: str, b: str) -> float:
+    """The WCAG contrast ratio of two colors (1–21)."""
+    la, lb = sorted((_luminance(a), _luminance(b)), reverse=True)
+    return (la + 0.05) / (lb + 0.05)
+
+
+def part_number(part: str) -> int | None:
+    """The part's number on its front and spine (kg1-v2 → 2, journey-3 → 3, islamic-v4 → 4); None for a book
+    without one (the family book, «رمضان والعيد», which shows the crescent instead)."""
+    found = re.search(r"(?:-v|journey-)(\d+)$", part)
+    return int(found.group(1)) if found else None
 
 
 @functools.cache
@@ -386,6 +478,7 @@ def title_svg(
     depth: float = 1.6,
     cap: float = 0.0,
     full: float = FULL_EFFECT_MM,
+    sign_fill: str = "",
 ) -> Markup:
     """The title as sticker letters (mm units): each word in its own gradient, a white keyline, a dark outline
     and a toy-block extrusion below. Font sizes and line positions are set in the browser
@@ -395,7 +488,8 @@ def title_svg(
     `keyline`, `outline` and `depth` (mm) are the effect at a font size of `full` mm or more; a smaller title
     gets them in proportion to its size (thin lines at print size, never a smudge), and below
     `SMALL_TITLE_MM` only a hint of the extrusion and the soft shadow. An honorific sign (ﷺ, ﷻ…) is set apart
-    (`qamra_pdf.lettering.HONORIFIC`): smaller, in Naskh, solid, raised, outside every outline layer."""
+    (`qamra_pdf.lettering.HONORIFIC`): smaller, in Naskh, solid, raised, outside every outline layer, in
+    `sign_fill` (default the outline's color: on the colored title card, the card's ink)."""
     defs, color_texts, base_ids = [], [], []
     gradients: dict[tuple[str, str], str] = {}
 
@@ -436,7 +530,8 @@ def title_svg(
                 spans += " "
             for run, sign in runs:
                 if sign:
-                    spans += str(honorific_tspan((" " if lone and j else "") + run, look.outline))
+                    fill_ = sign_fill or look.outline
+                    spans += str(honorific_tspan((" " if lone and j else "") + run, fill_))
                 else:
                     spans += f'<tspan fill="url(#{gradient(pair)})">{escape(run)}</tspan>'
         color_texts.append(
@@ -612,18 +707,18 @@ def panel_svg(look: Look, w: float, h: float, uid: str) -> Markup:
         draw.el("path", d=d, fill=look.outline, opacity=0.16, transform=f"translate({e * 0.4} {e + 1.6})")
     )
     body.append(draw.el("path", d=d, fill=look.panel_edge, transform=f"translate(0 {e})"))
-    body.append(draw.el("path", d=d, fill=look.panel))
+    body.append(draw.el("path", d=d, fill=look.panel, stroke=look.frame_line, stroke_width=1.1))
     if shape == "notebook":  # spiral rings along the top edge
         n = 13
         for j in range(n):
             x = w * 0.08 + (w * 0.84) * j / (n - 1)
-            body.append(draw.el("ellipse", cx=x, cy=4.2, rx=1.5, ry=1.5, fill="#E7DCC8"))
+            body.append(draw.el("ellipse", cx=x, cy=4.2, rx=1.5, ry=1.5, fill=_shade(look.panel, -0.45)))
             body.append(
                 draw.el(
                     "path",
                     d=f"M{x - 1.1} 4.4 C{x - 1.3} -1.8 {x + 1.3} -1.8 {x + 1.1} 4.4",
                     fill="none",
-                    stroke="#8A8FA8",
+                    stroke="#E4E8F2",
                     stroke_width=0.9,
                     stroke_linecap="round",
                 )
@@ -639,10 +734,10 @@ def panel_svg(look: Look, w: float, h: float, uid: str) -> Markup:
                 height=h - 2 * inset,
                 rx=r - 2,
                 fill="none",
-                stroke=look.panel_edge,
+                stroke="#FFFFFF",
                 stroke_width=0.7,
                 stroke_dasharray="2.4 2",
-                opacity=0.55,
+                opacity=0.7,
             )
         )
     elif shape == "arch":  # a gold double line inside the arch
@@ -651,14 +746,14 @@ def panel_svg(look: Look, w: float, h: float, uid: str) -> Markup:
                 "path",
                 d=d,
                 fill="none",
-                stroke=look.panel_edge,
-                stroke_width=0.8,
+                stroke=look.frame_line,
+                stroke_width=0.6,
                 transform=f"translate({w * 0.02} {h * 0.03}) scale(0.96 0.94)",
                 opacity=0.9,
             )
         )
     elif shape == "house":
-        body.append(draw.el("path", d=draw.star_points(w / 2, 8.2, 2.4, 1.0), fill=look.panel_edge))
+        body.append(draw.el("path", d=draw.star_points(w / 2, 8.2, 2.4, 1.0), fill="#F2B33D"))
     return Markup(  # nosec B704 (numbers and colors only)
         f'<svg class="cvp-svg" viewBox="-1 -2 {w + 7:.2f} {h + 10:.2f}" width="{w + 7:.2f}mm" '
         f'height="{h + 10:.2f}mm" aria-hidden="true">{"".join(body)}</svg>'
@@ -710,6 +805,186 @@ def ribbon_svg(look: Look, w: float, h: float, uid: str) -> Markup:
     return Markup(  # nosec B704 (numbers and colors only)
         f'<svg class="cvr-svg" viewBox="0 0 {w:.2f} {h + fold:.2f}" width="{w:.2f}mm" '
         f'height="{h + fold:.2f}mm" aria-hidden="true">{"".join(body)}</svg>'
+    )
+
+
+def frame_bands(g: Geometry, box: Box) -> tuple[float, float, float, float]:
+    """The frame's width (mm) from each edge of `box` (left, top, right, bottom): the bleed and `FRAME_MM` on
+    an outer edge, `HINGE_FRAME_MM` beside the spine (an edge whose text keeps only the hinge's distance)."""
+
+    def side(dist: float) -> float:
+        return g.bleed + FRAME_MM if dist >= g.inset - 0.01 else HINGE_FRAME_MM
+
+    return side(box.left), side(box.top), side(box.right), side(box.bottom)
+
+
+def _rounded(x: float, y: float, w: float, h: float, r: float) -> str:
+    return (
+        f"M{x + r:.2f} {y:.2f} H{x + w - r:.2f} Q{x + w:.2f} {y:.2f} {x + w:.2f} {y + r:.2f} "
+        f"V{y + h - r:.2f} Q{x + w:.2f} {y + h:.2f} {x + w - r:.2f} {y + h:.2f} H{x + r:.2f} "
+        f"Q{x:.2f} {y + h:.2f} {x:.2f} {y + h - r:.2f} V{y + r:.2f} Q{x:.2f} {y:.2f} {x + r:.2f} {y:.2f} Z"
+    )
+
+
+def _khatam(cx: float, cy: float, r: float) -> str:
+    """An eight-pointed star (two squares, one turned 45°) as one outline."""
+    pts = []
+    for i in range(16):
+        a = math.radians(-90 + 22.5 * i)
+        rr = r if i % 2 == 0 else r * 0.76
+        pts.append(f"{cx + rr * math.cos(a):.2f} {cy + rr * math.sin(a):.2f}")
+    return "M" + " L".join(pts) + " Z"
+
+
+def motif_svg(kind: str, cx: float, cy: float, size: float, color: str, ground: str) -> str:
+    """The series' corner ornament, centered on (cx, cy), `size` mm across."""
+    r = size / 2
+    if kind == "khatam":
+        return draw.el("path", d=_khatam(cx, cy, r), fill=color) + draw.el(
+            "circle", cx=cx, cy=cy, r=r * 0.32, fill=ground
+        )
+    if kind == "heart":
+        return draw.el("path", d=draw.heart_path(cx, cy + r * 0.05, size, size * 0.9), fill=color)
+    if kind == "flag":  # a trail marker: a pole and a pennant
+        return draw.el(
+            "path",
+            d=f"M{cx - r * 0.55:.2f} {cy - r:.2f} L{cx + r * 0.85:.2f} {cy - r * 0.55:.2f} "
+            f"L{cx - r * 0.55:.2f} {cy - r * 0.08:.2f} Z",
+            fill=color,
+        ) + draw.el(
+            "rect", x=cx - r * 0.72, y=cy - r * 1.02, width=r * 0.2, height=r * 2.04, rx=r * 0.1, fill=color
+        )
+    return draw.el("path", d=draw.star_points(cx, cy, r, r * 0.36, 4), fill=color)  # a sparkle
+
+
+def frame_svg(look: Look, w: float, h: float, bands: tuple[float, float, float, float]) -> Markup:
+    """The series' full-bleed frame (mm) in the part's shade: a band around the scene with rounded inner
+    corners, the series' keyline (solid, a trail's dashes, dots, or the Islamic double gold line) and its
+    ornament in the corners that are not beside the spine."""
+    left, top, right, bottom = bands
+    rad = 6.0
+    iw, ih = w - left - right, h - top - bottom
+    body = [
+        draw.el(
+            "path",
+            d=f"M0 0 H{w:.2f} V{h:.2f} H0 Z " + _rounded(left, top, iw, ih, rad),
+            fill=look.panel,
+            fill_rule="evenodd",
+        ),
+        # a darker lip where the band meets the picture
+        draw.el(
+            "path",
+            d=_rounded(left - 0.35, top - 0.35, iw + 0.7, ih + 0.7, rad + 0.35),
+            fill="none",
+            stroke=look.panel_edge,
+            stroke_width=0.7,
+        ),
+    ]
+    k = 2.2  # the keyline, inside the band
+    line: dict[str, float | str] = {
+        "stroke": look.frame_line,
+        "fill": "none",
+        "stroke_width": 0.75,
+        "stroke_linecap": "round",
+    }
+    if look.frame_dash:
+        line["stroke_dasharray"] = look.frame_dash
+        line["stroke_width"] = 0.9 if look.frame_dash.startswith("0.01") else 0.75
+    body.append(draw.el("path", d=_rounded(left - k, top - k, iw + 2 * k, ih + 2 * k, rad + k), **line))
+    if look.frame_double:
+        k2 = 3.4
+        body.append(
+            draw.el(
+                "path",
+                d=_rounded(left - k2, top - k2, iw + 2 * k2, ih + 2 * k2, rad + k2),
+                fill="none",
+                stroke=look.frame_line,
+                stroke_width=0.35,
+                opacity=0.85,
+            )
+        )
+    size = 6.4
+    for x, y, ok in (
+        (left - k, top - k, left > HINGE_FRAME_MM and top > HINGE_FRAME_MM),
+        (w - right + k, top - k, right > HINGE_FRAME_MM and top > HINGE_FRAME_MM),
+        (left - k, h - bottom + k, left > HINGE_FRAME_MM and bottom > HINGE_FRAME_MM),
+        (w - right + k, h - bottom + k, right > HINGE_FRAME_MM and bottom > HINGE_FRAME_MM),
+    ):
+        if ok:
+            gold = "#F2B33D" if look.motif in ("sparkle", "khatam") else "#FFFFFF"
+            body.append(draw.el("circle", cx=x, cy=y, r=size * 0.62, fill=look.panel))
+            body.append(motif_svg(look.motif, x, y, size, gold, look.panel))
+    return Markup(  # nosec B704 (numbers and colors only)
+        f'<svg class="cv-frame" viewBox="0 0 {w:.2f} {h:.2f}" width="{w:.2f}mm" height="{h:.2f}mm" '
+        f'aria-hidden="true">{"".join(body)}</svg>'
+    )
+
+
+NIGHT, MOON = "#16204A", "#F2B33D"
+
+
+def number_badge_svg(look: Look, numeral: str, label: str, size: float, fill: str = NIGHT) -> Markup:
+    """The part's number, big (mm): a medallion (a round sticker, or the Islamic eight-pointed star), night
+    blue or `fill`, with the numeral (moon gold on night, else night or white, whichever reads best) under its
+    small label. Without a numeral it holds the crescent («رمضان والعيد»). Letters are filled text, never a
+    stroke."""
+    r = size / 2
+    c = r + 0.6
+    body = []
+    if fill == NIGHT:
+        digit, word, ring = MOON, "#FFFFFF", MOON
+    else:
+        digit = word = "#FFFFFF" if contrast("#FFFFFF", fill) >= 3.0 else NIGHT
+        ring = "#FFFFFF"
+    star = look.badge == "khatam"
+    if star:  # the eight-pointed star in gold around a night medallion
+        body.append(draw.el("path", d=_khatam(c, c, r + 0.4), fill=MOON))
+        body.append(draw.el("path", d=_khatam(c, c, r - 0.8), fill=NIGHT))
+        body.append(draw.el("circle", cx=c, cy=c, r=r * 0.7, fill="none", stroke=MOON, stroke_width=0.4))
+    else:
+        body.append(draw.el("circle", cx=c, cy=c, r=r + 0.4, fill="#FFFFFF"))
+        body.append(draw.el("circle", cx=c, cy=c, r=r - 1.2, fill=fill))
+        body.append(
+            draw.el(
+                "circle",
+                cx=c,
+                cy=c,
+                r=r - 2.6,
+                fill="none",
+                stroke=ring,
+                stroke_width=0.45,
+                stroke_dasharray=look.frame_dash or "none",
+                opacity=0.9,
+            )
+        )
+    if numeral:
+        fs = size * (0.46 if star else 0.56)
+        body.append(
+            f'<text x="{c:.2f}" y="{c - r * (0.3 if star else 0.42):.2f}" font-family="{look.font}" '
+            f'font-weight="800" font-size="{size * (0.12 if star else 0.15):.2f}" text-anchor="middle" '
+            f'direction="rtl" fill="{word}">{escape(label)}</text>'
+        )
+        body.append(
+            f'<text x="{c:.2f}" y="{c + fs * (0.62 if star else 0.52):.2f}" font-family="{look.font}" '
+            f'font-weight="800" font-size="{fs:.2f}" text-anchor="middle" fill="{digit}">'
+            f"{escape(numeral)}</text>"
+        )
+    else:  # a crescent and a star
+        m = r * 0.5
+        body.append(
+            draw.el(
+                "path",
+                d=f"M{c + m * 0.35:.2f} {c - m:.2f} A{m:.2f} {m:.2f} 0 1 0 {c + m * 0.35:.2f} {c + m:.2f} "
+                f"A{m * 1.25:.2f} {m * 1.25:.2f} 0 0 1 {c + m * 0.35:.2f} {c - m:.2f} Z",
+                fill=MOON,
+            )
+        )
+        star_d = draw.star_points(c + m * 0.55, c - m * 0.15, m * 0.32, m * 0.13)
+        body.append(draw.el("path", d=star_d, fill=MOON))
+    return Markup(  # nosec B704 (the words are escaped)
+        f'<svg class="cv-num-svg" viewBox="0 0 {2 * c:.2f} {2 * c:.2f}" width="{2 * c:.2f}mm" '
+        f'height="{2 * c:.2f}mm" role="img" aria-label="{escape(label)} {escape(numeral)}">'
+        f"{''.join(body)}</svg>"
     )
 
 
@@ -1017,7 +1292,7 @@ def front_data(ctx: PageContext, f: Front, box: Box | None = None) -> dict[str, 
     """The front's layout (mm, within `box`, default the whole page) and its pieces."""
     g = ctx.book.geometry
     box = box or Box.page(g)
-    look = LOOKS[f.series]
+    look = look_for(f.series, f.part)
     h = box.h
     scale = h / 303.0
     uid = f"cv-{ctx.page.id}"
@@ -1063,11 +1338,32 @@ def front_data(ctx: PageContext, f: Front, box: Box | None = None) -> dict[str, 
     hero_w = hero_h * aspect
     block = round(23.0 * scale, 1)
     blocks = blocks_layout(f.blocks, look, box, feet, hero_w, block, ctx.book.numerals)
-    title = title_svg(lines, look, width=panel_w - 14, height=title_h, uid=uid, name=name)
+    title = title_svg(
+        lines, look, width=panel_w - 14, height=title_h, uid=uid, name=name, sign_fill=look.panel_ink
+    )
+    # the part's number, big, in the top-left corner over the card's corner; the age moves beside the brand
+    number = part_number(f.part)
+    size = 42.0 if look.badge == "khatam" else 39.0  # the star's points need a little more
+    badge_d = round(size * min(1.0, scale + 0.04), 1) if look.badge else 0.0
+    numbered = None
+    if badge_d:
+        label = str(series_copy(f.series).get("number_label", ""))
+        numeral = ctx.num(number) if number is not None else ""
+        fill = NIGHT
+        if look.part_badges and number:
+            fill = look.part_badges[(number - 1) % len(look.part_badges)]
+        numbered = {
+            "svg": number_badge_svg(look, numeral, label if numeral else "", badge_d, fill),
+            "x": box.left - 6.0,
+            "y": brand_top - 6.5,
+        }
     return {
         "series": f.series,
         "box": box,
         "scene": scene,
+        "frame": frame_svg(look, box.w, box.h, frame_bands(g, box)),
+        "number": numbered,
+        "age_right": box.right + 30.0 if numbered else None,
         "uid": uid,
         "brand_top": brand_top,
         "panel": {
@@ -1132,7 +1428,7 @@ class Back:
 def back_data(ctx: PageContext, b: Back, box: Box | None = None) -> dict[str, Any]:
     g = ctx.book.geometry
     box = box or Box.page(g)
-    look = LOOKS[b.series]
+    look = look_for(b.series, b.part)
     h = box.h
     uid = f"cvb-{ctx.page.id}"
     band_h = round(BAND.get(b.series, 0.27) * h, 1)
@@ -1168,6 +1464,7 @@ def back_data(ctx: PageContext, b: Back, box: Box | None = None) -> dict[str, An
     return {
         "series": b.series,
         "box": box,
+        "frame": frame_svg(look, box.w, box.h, frame_bands(g, box)),
         "uid": uid,
         "band": band,
         "band_h": band_h,
@@ -1193,7 +1490,12 @@ def back_data(ctx: PageContext, b: Back, box: Box | None = None) -> dict[str, An
     }
 
 
-def spine_data(ctx: PageContext, look: Look, x: float, width: float, lines: Sequence[str]) -> dict[str, Any]:
+def spine_data(
+    ctx: PageContext, look: Look, x: float, width: float, lines: Sequence[str], part: str = ""
+) -> dict[str, Any]:
+    """The spine in the part's shade, its lines along it and, at its head, the part's number as big as the
+    spine allows, so the volumes read apart on a shelf."""
+    number = part_number(part) if part else None
     return {
         "x": x,
         "w": width,
@@ -1201,6 +1503,8 @@ def spine_data(ctx: PageContext, look: Look, x: float, width: float, lines: Sequ
         "text": width >= SPINE_TEXT_MIN_MM,
         "lines": list(lines),
         "font_pt": round(min(11.0, max(6.0, width * 0.62 / 0.3528 * 0.62)), 1),
+        "numeral": ctx.num(number) if number is not None else "",
+        "num_mm": round(min(8.0, (width - 0.6) / 1.15), 2),  # the disc is 1.15 em
     }
 
 

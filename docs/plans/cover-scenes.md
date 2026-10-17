@@ -66,6 +66,19 @@ for this work). **22 calls, $3.30** (`cover-scenes:` rows of `out/design-images/
   lanterns and food; V4 tells the prophets' stories through a ship, a whale, a gourd, wheat and a well, with
   no figure.
 
+## Series colors and part numbers (2026-10-17)
+
+The scenes stay; what tells the covers apart is code (`covers.TONES`, `Look`, `frame_svg`, `number_badge_svg`):
+a full-bleed frame and the title card in the part's shade of its series' hue, the series' own keyline and
+corner ornament, and the part's number big in the front's top-left corner and at the Islamic spine's head.
+
+| Series | Hue and frame | Parts |
+| --- | --- | --- |
+| دوسية التأسيس | blue, white line, gold sparkles, gold ribbon | KG1 `#1A72BA`, KG2 `#3A4A98`; number sticker coral / gold / green for parts 1 / 2 / 3 |
+| رحلتي الأولى للتعلّم | orange, dashed trail line, flags, teal ribbon | stage 1 `#E99837`, 2 `#E26C39`, 3 `#C94A3A`; night sticker |
+| مغامراتي مع عائلتي | raspberry `#C93A6E`, dotted line, hearts, gold ribbon | one book: no number |
+| قلبي يعرف الله | jewel tones, double gold line, gold eight-pointed stars, gold ribbon | V1 `#1C7350`, V2 `#0E6B73`, V3 `#516C3F`, V4 `#4A3B7E`, V5 `#7A2F45`, R `#303A6A`; gold star «الْمُجَلَّدُ», crescent for R |
+
 ## Review before installing
 
 Read every image at full size and at phone size. Reject and redraw when:
