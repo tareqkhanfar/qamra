@@ -57,6 +57,11 @@ def _item(code: str) -> dict[str, Any]:
     return found
 
 
+class WordTimes(BaseModel):
+    segments: list[tuple[int, int]]  # the clip's spoken pieces in order: [start_ms, end_ms]
+    show: list[int | list[int | None] | None]  # each shown word's piece (or its parts' pieces: «أ ب ت …»)
+
+
 class PlayerOut(BaseModel):
     code: str
     lang: str
@@ -64,6 +69,7 @@ class PlayerOut(BaseModel):
     show: list[str]
     audio: str | None  # a signed link, or none yet (the player shows the words)
     source: Literal["recording", "narrator"] | None
+    words: WordTimes | None = None  # where each word sits in the clip (only the shipped clips have it)
 
 
 @router.get("/{code}")
@@ -76,16 +82,26 @@ async def player(
     secret = settings.jwt_secret.get_secret_value()
     audio: str | None = None
     source: Literal["recording", "narrator"] | None = None
+    words: WordTimes | None = None
     if clip is not None:
         audio, source = (
             catalog.audio_link(secret, code),
             "recording" if clip.source == "upload" else "narrator",
         )
+        times = catalog.word_times(code, clip.source, clip.duration_ms)
+        if times is not None and len(times["show"]) == len(item["show"]):
+            words = WordTimes.model_validate(times)
     elif await _narrator(db, settings, item) is not None:
         audio, source = catalog.audio_link(secret, code), "narrator"
     response.headers.update(NO_STORE)
     return PlayerOut(
-        code=code, lang=item["lang"], title=item["title"], show=list(item["show"]), audio=audio, source=source
+        code=code,
+        lang=item["lang"],
+        title=item["title"],
+        show=list(item["show"]),
+        audio=audio,
+        source=source,
+        words=words,
     )
 
 

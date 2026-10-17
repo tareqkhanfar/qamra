@@ -15,6 +15,7 @@ No AI and no paid call (docs/e2e.md): placeholder art, the shipped clips, and a 
 """
 
 import base64
+import json
 import os
 import re
 from pathlib import Path
@@ -108,6 +109,19 @@ def test_a_journey_pages_qr_plays_its_sound(
     expect(page.get_by_role("button", name="تشغيل الموسيقى")).to_have_count(0)  # no lullaby over the sound
     play.click()
     expect(page.get_by_role("button", name="أوقفوا الصوت")).to_be_visible()  # the browser plays it
+
+    # Word by word by default; each shown word the clip says alone is a button that plays just that word.
+    from qamra_api.journey_audio import word_times
+
+    durations = json.loads((CLIPS / "durations.json").read_text(encoding="utf-8"))
+    times = word_times(code, "tts:elevenlabs", durations[code])
+    assert times is not None, code
+    expect(page.get_by_role("radio", name="كلمةً كلمةً")).to_be_checked()
+    tappable = [w for w, s in zip(expected["show"], times["show"], strict=True) if isinstance(s, int)]
+    assert tappable, code
+    word = page.get_by_role("button", name=f"اسمعوا «{tappable[-1]}»")
+    word.click()
+    expect(word).to_have_attribute("aria-current", "true")  # lit while it plays
 
 
 # ---- a story book with «أصوات العائلة» --------------------------------------------------------------------

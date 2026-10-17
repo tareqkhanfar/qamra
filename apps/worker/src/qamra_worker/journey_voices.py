@@ -11,17 +11,25 @@ content/journey/audio.yaml (a test keeps them in step). They were made once by s
 shipped clip when it has no audio, or when its generated clip differs from the shipped file; a recording a
 person uploaded («صوتيات الرحلة» in the admin) is never replaced. Every load is in the audit log, and running
 it again changes nothing. Without a clip an item still opens: the player shows its words.
+
+Next to the clips, words.json (scripts/journey_word_times.py) says where each word sits in a clip, so the
+player can play an item word by word with pauses and play one word on a tap. The API reads it from the
+content folder and serves it only with the clip it was made from (same length); this loader checks that every
+entry still matches its shipped clip (sha256, length, the item's shown words) and reports the stale ones:
+a stale entry fails the run and `--check` (make the times again after changing a clip).
 """
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 import uuid
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any
 
 import yaml
 from sqlalchemy import select
@@ -34,6 +42,7 @@ from qamra_core.storage import ObjectNotFound, ObjectStorage
 
 CATALOG = CONTENT_DIR / "journey" / "audio.yaml"
 CLIPS = CONTENT_DIR / "journey" / "clips"
+WORD_TIMES = "words.json"
 SOURCE = "tts:elevenlabs"
 MIME = "audio/mpeg"
 
@@ -44,6 +53,8 @@ class Report:
     current: list[str] = field(default_factory=list)  # the shipped clip is already in storage
     kept: list[str] = field(default_factory=list)  # a person's recording: never replaced
     no_clip: list[str] = field(default_factory=list)  # nothing shipped for the item (the player shows words)
+    timed: list[str] = field(default_factory=list)  # word times that match their shipped clip
+    stale_times: list[str] = field(default_factory=list)  # word times made from another clip: not served
 
     def lines(self, check: bool) -> list[str]:
         out = [
@@ -53,12 +64,57 @@ class Report:
         ]
         if self.no_clip:
             out.append(f"no clip shipped (words only): {len(self.no_clip)}: {' '.join(self.no_clip)}")
+        out.append(f"word times (tap a word, word by word): {len(self.timed)}")
+        if self.stale_times:
+            out.append(f"stale word times: {len(self.stale_times)}: {' '.join(self.stale_times)}")
         return out
 
 
-def catalog_codes(path: Path = CATALOG) -> list[str]:
+def catalog_items(path: Path = CATALOG) -> list[dict[str, Any]]:
     raw = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    return [str(item["code"]) for item in raw.get("items", [])]
+    return [dict(item) for item in raw.get("items", [])]
+
+
+def catalog_codes(path: Path = CATALOG) -> list[str]:
+    return [str(item["code"]) for item in catalog_items(path)]
+
+
+def _times_ok(entry: dict[str, Any], clip: Path, duration_ms: int | None, shown: int) -> bool:
+    """A words.json entry still describes this clip: same bytes and length, ordered pieces inside the clip,
+    and one (or no) piece for each word the item shows."""
+    if not clip.is_file() or duration_ms is None or entry.get("duration_ms") != duration_ms:
+        return False
+    if entry.get("sha256") != hashlib.sha256(clip.read_bytes()).hexdigest():
+        return False
+    segments, show = entry.get("segments") or [], entry.get("show") or []
+    end = 0
+    for seg in segments:
+        if len(seg) != 2 or not (end <= seg[0] < seg[1] <= duration_ms):
+            return False
+        end = seg[1]
+    pieces = [k for s in show for k in (s if isinstance(s, list) else [s])]  # «أ ب ت …»: a piece per part
+    return len(show) == shown and all(
+        k is None or (isinstance(k, int) and 0 <= k < len(segments)) for k in pieces
+    )
+
+
+def check_word_times(folder: Path = CLIPS, catalog: Path = CATALOG) -> tuple[list[str], list[str]]:
+    """The items whose word times match their shipped clip, and the stale ones (see the docstring)."""
+    path = folder / WORD_TIMES
+    if not path.is_file():
+        return [], []
+    times: dict[str, Any] = json.loads(path.read_text(encoding="utf-8")).get("items") or {}
+    durations: dict[str, int] = json.loads((folder / "durations.json").read_text(encoding="utf-8"))
+    items = {str(i["code"]): i for i in catalog_items(catalog)}
+    timed: list[str] = []
+    stale: list[str] = []
+    for code, entry in times.items():
+        item = items.get(code)
+        ok = item is not None and _times_ok(
+            entry, folder / f"{code}.mp3", durations.get(code), len(item.get("show") or [])
+        )
+        (timed if ok else stale).append(code)
+    return timed, stale
 
 
 def _stored(storage: ObjectStorage, key: str) -> bytes | None:
@@ -80,6 +136,7 @@ def load_clips(
     durations: dict[str, int] = json.loads((folder / "durations.json").read_text(encoding="utf-8"))
     existing = {c.code: c for c in db.scalars(select(AudioClip)).all()}
     report = Report()
+    report.timed, report.stale_times = check_word_times(folder, catalog)
     for code in catalog_codes(catalog):
         clip, path = existing.get(code), folder / f"{code}.mp3"
         if clip is not None and not clip.source.startswith("tts:"):
@@ -130,7 +187,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     with context.db_session() as db:
         report = load_clips(db, context.storage(), folder=args.dir, write=not args.check)
     print("\n".join(report.lines(args.check)))
-    return 1 if report.no_clip or (args.check and report.loaded) else 0  # --check: 0 = all in place
+    failed = report.no_clip or report.stale_times or (args.check and report.loaded)
+    return 1 if failed else 0  # --check: 0 = all in place
 
 
 if __name__ == "__main__":

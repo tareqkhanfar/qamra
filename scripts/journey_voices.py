@@ -33,7 +33,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / "content/journey/audio.yaml"
 OUT = ROOT / "out/journey-audio"
-LEDGER = ROOT / "out/design-images/ledger.jsonl"
+LEDGER = Path(os.environ.get("FAL_LEDGER") or ROOT / "out/design-images/ledger.jsonl")  # every paid call
 TTS = "fal-ai/elevenlabs/tts/multilingual-v2"
 SFX = "fal-ai/elevenlabs/sound-effects/v2"
 STT = "fal-ai/whisper"
@@ -79,7 +79,20 @@ SOUNDS: dict[str, list[tuple[str, list[Part]]]] = {
         ("الثّالِثُ", [("say", "شَمْس", 0.0)]),
     ],
 }
-WORDS = re.compile(r"\s*[.،:]\s*")  # word-by-word clips: each word alone, a short pause between them
+WORDS = re.compile(r"\s*[.،,:؟?!]\s*")  # word-by-word clips: each word alone, a pause between them
+STT_ON = True
+CAP_USD = 0.50  # this run stops before spending more (the fal balance is shared with live orders)
+_spent = 0.0
+
+
+class Exhausted(RuntimeError):
+    """The fal balance ran out, or this run reached its cap: stop every call."""
+
+
+def spoken(word: str, lang: str) -> str:
+    """What the voice gets for one word: an English letter alone in quotes, so «A» is the letter's name and
+    not the article «uh» (heard back on 2026-10-17: «A» and «A.» read as «uh», «"A."» as the letter)."""
+    return f'"{word}."' if lang == "en" and re.fullmatch(r"[A-Za-z]", word) else word
 
 
 def fal_key() -> str:
@@ -102,10 +115,27 @@ def similarity(a: str, b: str) -> float:
     return difflib.SequenceMatcher(None, plain(a), plain(b)).ratio()
 
 
-def log(entry: str, usd: float) -> None:
+def log(entry: str, usd: float, model: str = "") -> None:
+    global _spent
+    _spent += usd
     LEDGER.parent.mkdir(parents=True, exist_ok=True)
     with LEDGER.open("a") as f:
-        f.write(json.dumps({"id": entry, "usd": round(usd, 4)}) + "\n")
+        f.write(json.dumps({"id": entry, "model": model, "usd": round(usd, 4)}) + "\n")
+
+
+def budget(usd: float) -> None:
+    """Before a call: stop when it would take this run past its cap."""
+    if _spent + usd > CAP_USD:
+        raise Exhausted(f"cap ${CAP_USD:.2f} reached (spent ${_spent:.4f})")
+
+
+async def call(client: fal_client.AsyncClient, model: str, arguments: dict[str, Any]) -> Any:
+    try:
+        return await client.subscribe(model, arguments=arguments)
+    except Exception as e:  # fal raises plain errors; a spent balance stops everything
+        if "exhausted balance" in str(e).lower():
+            raise Exhausted("fal: Exhausted balance") from e
+        raise
 
 
 async def fetch(url: str) -> bytes:
@@ -116,9 +146,11 @@ async def fetch(url: str) -> bytes:
 
 
 async def speak(client: fal_client.AsyncClient, text: str, lang: str, voice: str) -> bytes:
-    res = await client.subscribe(
+    budget(len(text) * 0.1 / 1000)
+    res = await call(
+        client,
         TTS,
-        arguments={
+        {
             "text": text,
             "voice": voice,
             "language_code": lang,
@@ -128,30 +160,35 @@ async def speak(client: fal_client.AsyncClient, text: str, lang: str, voice: str
             "apply_text_normalization": "off",
         },
     )
-    log(f"tts:{lang}", len(text) * 0.1 / 1000)
+    log(f"tts:{lang}", len(text) * 0.1 / 1000, TTS)
     return await fetch(res["audio"]["url"])
 
 
 async def effect(client: fal_client.AsyncClient, prompt: str, seconds: float) -> bytes:
-    res = await client.subscribe(
+    budget(seconds * 0.002)
+    res = await call(
+        client,
         SFX,
-        arguments={
+        {
             "text": prompt,
             "duration_seconds": seconds,
             "prompt_influence": 0.6,
             "output_format": "mp3_44100_128",
         },
     )
-    log("sfx", seconds * 0.002)
+    log("sfx", seconds * 0.002, SFX)
     return await fetch(res["audio"]["url"])
 
 
 async def transcribe(client: fal_client.AsyncClient, data: bytes, lang: str) -> str:
+    if not STT_ON:  # checked afterwards, for free, by scripts/journey_word_times.py
+        return ""
     uri = "data:audio/mpeg;base64," + base64.b64encode(data).decode()
-    res = await client.subscribe(
-        STT, arguments={"audio_url": uri, "task": "transcribe", "language": lang, "chunk_level": "none"}
+    budget(0.002)
+    res = await call(
+        client, STT, {"audio_url": uri, "task": "transcribe", "language": lang, "chunk_level": "none"}
     )
-    log("stt", 0.002)
+    log("stt", 0.002, STT)
     return str(res.get("text") or "")
 
 
@@ -227,8 +264,14 @@ async def one(
             (OUT / "parts").mkdir(parents=True, exist_ok=True)
             paths = []
             for k, w in enumerate(pieces):
-                path = OUT / "parts" / f"{code}-w{k}.mp3"
-                path.write_bytes(await speak(client, w, lang, voice))
+                path, marker = OUT / "parts" / f"{code}-w{k}.mp3", OUT / "parts" / f"{code}-w{k}.txt"
+                if not (
+                    path.exists()
+                    and marker.exists()
+                    and marker.read_text(encoding="utf-8") == spoken(w, lang) + voice
+                ):
+                    path.write_bytes(await speak(client, spoken(w, lang), lang, voice))  # else: made before
+                    marker.write_text(spoken(w, lang) + voice, encoding="utf-8")
                 paths.append(path)
             concat(paths, out, gap=0.55)
             data = out.read_bytes()
@@ -239,7 +282,7 @@ async def one(
                 "lang": lang,
                 "say": item["say"],
                 "heard": heard,
-                "similarity": round(similarity(item["say"], heard), 2),
+                "similarity": round(similarity(item["say"], heard), 2) if heard else None,
                 "duration_ms": duration_ms(out),
             }
         data = await speak(client, item["say"], lang, voice)
@@ -258,12 +301,18 @@ async def one(
 
 
 async def main() -> None:
+    global CAP_USD, STT_ON
     ap = argparse.ArgumentParser()
     ap.add_argument("--only", nargs="*", default=[])
-    ap.add_argument("--voice", default="Sarah")
+    ap.add_argument("--voice", default="Charlotte")  # the voice of every shipped clip
     ap.add_argument("--trial", action="store_true", help="two Arabic words items only, to compare voices")
     ap.add_argument("--words", action="store_true", help="speak each word alone with a pause between them")
+    ap.add_argument(
+        "--no-stt", action="store_true", help="skip the paid Whisper check (journey_word_times checks)"
+    )
+    ap.add_argument("--cap", type=float, default=CAP_USD, help="stop before this run spends more (USD)")
     a = ap.parse_args()
+    CAP_USD, STT_ON = a.cap, not a.no_stt
     os.environ["FAL_KEY"] = fal_key()
     items = yaml.safe_load(CATALOG.read_text(encoding="utf-8"))["items"]
     if a.only:
@@ -285,7 +334,7 @@ async def main() -> None:
     (OUT / f"{name}-{a.voice}.json").write_text(
         json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8"
     )
-    low = [r for r in report if r.get("similarity", 1) < 0.6 or "error" in r]
+    low = [r for r in report if (r.get("similarity") or 1) < 0.6 or "error" in r]
     print(f"{len(report)} clips, {len(low)} to listen to")
     for r in report:
         print(r.get("code"), r.get("similarity", r.get("kind")), "|", r.get("heard", r.get("error", ""))[:80])

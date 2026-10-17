@@ -1,5 +1,31 @@
 # Changelog
 
+## QR audio: word by word with pauses, and every word a button (2026-10-17)
+- **Owner:** «سريع شوي لدرجة ما بنلحق نسمع، خاصة تبعات الإنجليزي» and «بدي لما أعمل click على اسم معين يجيبلي الصوت
+  ويلفظ الاسم اللي ضغطت عليه», then «خذ راحتك بخروج الصوت، وأعطِ مهلة بين كل اسم واسم».
+- **Pace, not a slowed voice:** the page at `/a/<code>` plays an item word by word: each spoken piece of the clip,
+  then a pause (1 s in Arabic, 1.3 s in English), the word on the page lit while it is said. Three choices,
+  remembered per device (localStorage, safe when blocked): 🐇 «عادي» (the clip as recorded), 🚶 «كلمةً كلمةً»
+  (the default) and 🐢 «أبطأ» (1.7 s / 2 s pauses, rate 0.9 with the pitch kept; never slower, it smears the words).
+  An item without word times (a person's recording, the narrator) plays whole as before.
+- **Tap a word:** every shown word the clip says alone is a big button that plays just that word (the alphabet
+  page's 28 letters one by one); sound items play that animal's or object's sound. 273 of the 278 shown words
+  and letters are tappable; not tappable (Whisper couldn't confirm them): «ت», «ث», «ق» of the alphabet page,
+  «Van», and «شَمْس» of stage 1's «كلمة شَمْس» (never said alone).
+- **Word times, made once offline:** `scripts/journey_word_times.py` cuts each clip at its pauses (the sound items
+  where their parts were joined), hears every piece back with a local Whisper (large-v3-turbo, free) and writes
+  `content/journey/clips/words.json` (pieces in ms, the piece of each shown word, the clip's sha256 and length).
+  The API returns them with the item only for that very clip (`words` in `GET /api/a/{code}`);
+  `python -m qamra_worker.journey_voices` checks them on every deploy and fails on stale ones.
+- **Rushed clips remade word by word:** 35 clips whose words ran together (all English «X. Word.» letters and
+  word lists, 2 Arabic, the 28-letter alphabet) were made again one word per call with the same voice
+  (ElevenLabs Multilingual v2 «Charlotte» via fal) and joined with 0.55 s pauses; an English letter alone is sent
+  as `"A."` so it is read as the letter, not «uh». Spend: $0.063 (151 TTS calls, in the ledger).
+  `scripts/journey_voices.py`: a $0.50 cap per run, stops on «Exhausted balance», reuses parts already paid for,
+  `--no-stt` (the free local check replaces the paid Whisper), default voice Charlotte.
+- Tests: `apps/web/src/lib/journeyPlayback.test.ts`, `apps/worker/tests/test_journey_voices.py`,
+  `apps/api/tests/test_journey_audio.py`, `tests/e2e/test_qr_codes.py`.
+
 ## The activity books read in Scheherazade New (2026-10-17)
 - **Font:** the Arabic text children and parents read in «دوسية التأسيس», «رحلتي الأولى للتعلّم», «مغامراتي مع
   عائلتي» and «قلبي يعرف الله» is now Scheherazade New (SIL, OFL 1.1): school-book Naskh with large, clear harakat.
