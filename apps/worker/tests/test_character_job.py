@@ -4,6 +4,7 @@ import uuid
 from pathlib import Path
 from typing import Any
 
+import numpy as np
 import pytest
 from PIL import Image
 from sqlalchemy import select
@@ -12,6 +13,7 @@ from sqlalchemy.orm import Session
 import qamra_worker.jobs.books as books
 from qamra_ai.config import Settings as AISettings
 from qamra_ai.image.fake import FakeImageProvider
+from qamra_ai.pipeline.photo_color import to_linear, to_srgb
 from qamra_ai.pipeline.runtime import Runtime
 from qamra_core.db.models import (
     Character,
@@ -152,8 +154,8 @@ def test_the_parents_note_is_rewritten_and_drawn_into_the_redraw(
     assert params["note"] == "شعره أجعد وأغمق" and params["note_outcome"] == "used"
     assert params["note_instruction"] == "Appearance: شعره أجعد وأغمق" and params["fixes"] == ["hair"]
     steps = db.scalars(select(GenerationCost.step).where(GenerationCost.child_id == character.child_id))
-    # the note's reading, the portrait and the sheet are costed to the child
-    assert set(steps) == {"character:feedback", "portrait:2", "character:2"}
+    # the note's reading, the likeness notes, the portrait and the sheet are costed to the child
+    assert set(steps) == {"character:feedback", "character:likeness", "portrait:2", "character:2"}
     image = getattr(made[0].image, "primary", made[0].image)
     assert isinstance(image, FakeImageProvider)
     portrait_prompt = image.requests[0].prompt  # the portrait is drawn first, with the same fixes and note
@@ -177,8 +179,79 @@ def test_a_failed_text_step_or_a_screened_note_leaves_the_chips_alone(
         "Age: the child looked older than" in prompt and "عيونه" not in prompt and "Appearance" not in prompt
     )
     assert character.params["note_outcome"] == "failed" and "note_instruction" not in character.params
+    # the likeness notes failed too: drawn without them
+    assert character.params["likeness_notes_outcome"] == "failed" and "likeness_notes" not in character.params
+    assert "WHAT THIS CHILD LOOKS LIKE" not in prompt
 
     screened = _again(db, character.child_id, {"attempt": 4, "note": "رقمنا 0599123456"})
     assert asyncio.run(draw_character(db, storage, screened, offline="fake")) == {"status": "ready"}
     assert screened.params["note_outcome"] == "screened"
     assert "0599" not in _prompt(made[-1]) and "did not look like" not in _prompt(made[-1])
+
+
+def test_the_likeness_notes_are_read_once_kept_and_drawn_into_both_steps(
+    db: Session, storage: ObjectStorage, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Before drawing, the text model describes how the child looks from the photo (2026-10-19); the notes go
+    into the portrait and the sheet, stay on the character, and a retried job doesn't ask again."""
+    made = _spy(monkeypatch)
+    character = _redraw(db, storage, {"attempt": 1})
+    assert asyncio.run(draw_character(db, storage, character, offline="fake")) == {"status": "ready"}
+    notes = character.params["likeness_notes"]
+    assert character.params["likeness_notes_outcome"] == "used" and notes["skin"] == "light olive"
+    image = getattr(made[0].image, "primary", made[0].image)
+    assert isinstance(image, FakeImageProvider)
+    assert len(image.requests) == 2
+    for req in image.requests:  # the portrait, then the sheet
+        assert "- Hair: dark brown, short, swept up at the front" in req.prompt
+        assert "- Skin tone: light olive" in req.prompt
+    calls = [c for c in made[0].text.calls if c["schema"] == "LikenessNotes"]  # type: ignore[attr-defined]
+    assert [c["step"] for c in calls] == ["character:likeness"]
+    steps = set(db.scalars(select(GenerationCost.step).where(GenerationCost.child_id == character.child_id)))
+    assert "character:likeness" in steps
+
+    # a retried job: the notes saved before drawing are reused, not asked again
+    character.status, character.sheet_image_key = CharacterStatus.generating, None
+    db.commit()
+    assert asyncio.run(draw_character(db, storage, character, offline="fake")) == {"status": "ready"}
+    assert not [c for c in made[-1].text.calls if c["schema"] == "LikenessNotes"]  # type: ignore[attr-defined]
+    assert "- Skin tone: light olive" in _prompt(made[-1])
+
+
+def test_the_reference_has_its_light_made_neutral_and_the_original_stays(
+    db: Session, storage: ObjectStorage, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A photo under yellow street light reaches the image model with its light made neutral (2026-10-19)."""
+    parent = User(email="dad@example.com", full_name="أبو علي")
+    db.add(parent)
+    db.flush()
+    child = Child(guardian_user_id=parent.id, first_name="علي", gender=Gender.m, birth_year=2021)
+    db.add(child)
+    db.flush()
+    rgb = np.asarray(Image.open(FIXTURE).convert("RGB"), dtype=np.float64) / 255.0
+    lit = to_srgb(to_linear(rgb) * np.array([1.0, 0.78, 0.42]))  # sodium street light
+    buf = io.BytesIO()
+    Image.fromarray((lit * 255).round().astype(np.uint8)).save(buf, format="PNG")
+    key = f"children/{child.id}/photos/p1.png"
+    storage.put(key, buf.getvalue(), "image/png")
+    db.add(ChildPhoto(child_id=child.id, storage_key=key, status=PhotoStatus.accepted))
+    character = Character(child_id=child.id, art_style="watercolor", status=CharacterStatus.generating)
+    db.add(character)
+    db.commit()
+    sent: list[list[bytes]] = []
+    real = books.generate_character
+
+    async def spy(rt: Any, ai: Any, photos: list[bytes], *args: Any, **kwargs: Any) -> Any:
+        sent.append(photos)
+        return await real(rt, ai, photos, *args, **kwargs)
+
+    monkeypatch.setattr(books, "generate_character", spy)
+    assert asyncio.run(draw_character(db, storage, character, offline="fake")) == {"status": "ready"}
+    [[reference]] = sent
+
+    def blue_over_red(data: bytes) -> float:
+        px = np.asarray(Image.open(io.BytesIO(data)).convert("RGB"), dtype=np.float64)
+        return float(px[..., 2].mean() / px[..., 0].mean())
+
+    assert blue_over_red(reference) > blue_over_red(buf.getvalue()) * 1.15  # much less yellow
+    assert storage.get(key) == buf.getvalue()  # the stored original is never changed

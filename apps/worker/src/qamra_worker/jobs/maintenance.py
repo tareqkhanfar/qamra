@@ -67,6 +67,9 @@ class CleanupSummary:
 
 
 NOTE_KEYS = ("note", "note_instruction")  # «ما الذي لا يشبهه؟» in the parent's words, and its rewrite
+# What an unapproved drawing says about the child in words after 30 days: the note, and the likeness notes
+# read from the photo (how the child looks); the outcomes stay with the costs
+WORDS_KEYS = (*NOTE_KEYS, "likeness_notes")
 STALLED_AFTER = timedelta(hours=2)  # longer than any job's timeout (1 h) plus its retries' waits
 STALLED_ERROR = (
     "stalled: no result after 2 hours and no job left for it (the worker restarted or ran out of memory)"
@@ -224,15 +227,18 @@ def cleanup_expired_media(
             or_(
                 Character.status == CharacterStatus.ready,
                 # a failed drawing has no picture and stays failed (it is not one of the redraws), but the
-                # parent's words it was asked with go after the same 30 days
-                and_(Character.status == CharacterStatus.failed, Character.params.has_key("note")),
+                # parent's words it was asked with, and the likeness notes, go after the same 30 days
+                and_(
+                    Character.status == CharacterStatus.failed,
+                    or_(Character.params.has_key("note"), Character.params.has_key("likeness_notes")),
+                ),
             ),
         )
         .with_for_update(skip_locked=True)
     ).all()
     for character in drawings:
-        # the parent's own words go; the chips and how it was drawn stay with the costs
-        character.params = {k: v for k, v in (character.params or {}).items() if k not in NOTE_KEYS}
+        # the parent's own words and the likeness notes go; the chips and how it was drawn stay with the costs
+        character.params = {k: v for k, v in (character.params or {}).items() if k not in WORDS_KEYS}
         if character.status != CharacterStatus.ready:
             continue
         for key in (character.sheet_image_key, character.portrait_image_key):

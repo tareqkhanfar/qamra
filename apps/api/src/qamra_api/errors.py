@@ -522,11 +522,17 @@ Message = tuple[str, str]
 
 _NAME: dict[str, Message] = {
     "missing": ("اكتبوا الاسم.", "Enter the name."),
-    "too_short": ("الاسم قصير جدًّا. اكتبوا حرفين على الأقل.", "The name is too short. Use at least 2 letters."),
+    "too_short": (
+        "الاسم قصير جدًّا. اكتبوا حرفين على الأقل.",
+        "The name is too short. Use at least 2 letters.",
+    ),
 }
 _ORG: dict[str, Message] = {
     "missing": ("اكتبوا اسم الروضة أو المؤسسة.", "Enter the name of the kindergarten or organization."),
-    "too_short": ("الاسم قصير جدًّا. اكتبوا حرفين على الأقل.", "The name is too short. Use at least 2 letters."),
+    "too_short": (
+        "الاسم قصير جدًّا. اكتبوا حرفين على الأقل.",
+        "The name is too short. Use at least 2 letters.",
+    ),
 }
 _COUNT: dict[str, Message] = {
     "invalid": ("اكتبوا عددًا صحيحًا بالأرقام.", "Enter a whole number using digits."),

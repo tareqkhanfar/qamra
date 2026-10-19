@@ -277,9 +277,17 @@ def test_abandoned_drafts_deleted_after_30_days(db: Session, storage: ObjectStor
 
 def test_drawings_never_approved_are_discarded_after_30_days(db: Session, storage: ObjectStorage) -> None:
     """Every redraw is kept for comparing; one the parent never approved is an abandoned draft: its picture
-    and the parent's note go after 30 days, an approved drawing stays for the next books."""
+    and the parent's note go after 30 days, an approved drawing stays for the next books. So do the likeness
+    notes read from the photo (how the child looks, in words); their outcome stays with the costs."""
     child = _child(db)
-    note = {"attempt": 2, "fixes": ["hair"], "note": "شعره أجعد", "note_instruction": "Hair: curlier."}
+    note = {
+        "attempt": 2,
+        "fixes": ["hair"],
+        "note": "شعره أجعد",
+        "note_instruction": "Hair: curlier.",
+        "likeness_notes": {"hair": "dark brown, swept up"},
+        "likeness_notes_outcome": "used",
+    }
 
     def drawing(status: CharacterStatus, approved: bool = False, **params: object) -> Character:
         c = Character(
@@ -301,28 +309,35 @@ def test_drawings_never_approved_are_discarded_after_30_days(db: Session, storag
     old = drawing(CharacterStatus.ready, **note)
     chosen = drawing(CharacterStatus.approved, approved=True, **note)
     failed = drawing(CharacterStatus.failed, **note)
+    failed_notes_only = drawing(
+        CharacterStatus.failed, likeness_notes={"hair": "x"}, likeness_notes_outcome="used"
+    )
     fresh = drawing(CharacterStatus.ready, **note)
     old_key, chosen_key, fresh_key = old.sheet_image_key, chosen.sheet_image_key, fresh.sheet_image_key
     old_portrait, chosen_portrait = old.portrait_image_key, chosen.portrait_image_key
     db.execute(
         update(Character)
-        .where(Character.id.in_([old.id, chosen.id, failed.id]))
+        .where(Character.id.in_([old.id, chosen.id, failed.id, failed_notes_only.id]))
         .values(updated_at=NOW - timedelta(days=31))
     )
     db.execute(update(Character).where(Character.id == fresh.id).values(updated_at=NOW - timedelta(days=2)))
     db.commit()
 
     assert cleanup_expired_media(db, storage, SETTINGS, now=NOW).characters_discarded == 1
-    for c in (old, chosen, failed, fresh):
+    for c in (old, chosen, failed, failed_notes_only, fresh):
         db.refresh(c)
     assert old.status == CharacterStatus.discarded and old.sheet_image_key is None
     assert old_key and not storage.exists(old_key)
     assert old.portrait_image_key is None and old_portrait and not storage.exists(old_portrait)  # with it
     assert chosen_portrait and storage.exists(chosen_portrait)  # an approved drawing keeps its portrait
-    assert old.params == {"attempt": 2, "fixes": ["hair"]}  # the parent's words are gone with the picture
+    # the parent's words and the likeness notes are gone with the picture
+    assert old.params == {"attempt": 2, "fixes": ["hair"], "likeness_notes_outcome": "used"}
     assert failed.status == CharacterStatus.failed and "note" not in failed.params  # still not a redraw
+    assert "likeness_notes" not in failed.params
+    assert failed_notes_only.params == {"likeness_notes_outcome": "used"}
     assert chosen.status == CharacterStatus.approved and chosen_key and storage.exists(chosen_key)
     assert chosen.params["note"] == "شعره أجعد"  # the approved drawing keeps how it was asked for
+    assert chosen.params["likeness_notes"] == {"hair": "dark brown, swept up"}
     assert fresh.status == CharacterStatus.ready and fresh_key and storage.exists(fresh_key)
     audit = db.scalars(select(AuditLog).where(AuditLog.action == "character.draft_expired")).one()
     assert audit.entity_id == str(old.id)

@@ -166,6 +166,26 @@ def fake_appearance(step: str, system: str, user: list[UserPart]) -> BaseModel:
     return AppearanceFeedback(safe=True, about_appearance=True, instruction=f"Appearance: {note.group(1)}")
 
 
+def fake_likeness_notes(step: str, system: str, user: list[UserPart]) -> BaseModel:
+    """Neutral notes as Claude writes them from a photo (likeness_notes.v1); glasses only when the family said
+    so (the prompt's own line)."""
+    from qamra_ai.pipeline.likeness_notes import LikenessNotes
+
+    glasses = "Glasses (the family's choice): yes" in _text(user)
+    return LikenessNotes(
+        clear=True,
+        hair="dark brown, short, swept up at the front",
+        face="oval, with full cheeks",
+        eyes="dark brown, almond-shaped, narrowing when smiling",
+        eyebrows="soft, straight, dark brown",
+        nose="small, with a rounded tip",
+        mouth="a wide closed-lip smile",
+        skin="light olive",
+        marks="",
+        glasses="thin round dark frames" if glasses else "",
+    )
+
+
 def default_fake_text_provider() -> FakeTextProvider:
     return FakeTextProvider(
         {
@@ -208,5 +228,6 @@ def default_fake_text_provider() -> FakeTextProvider:
             "VowelizedTexts": fake_vowelized,
             "ThemeTranslation": fake_translation,  # the template studio's English draft
             "AppearanceFeedback": fake_appearance,  # «ما الذي لا يشبهه؟» in the parent's words
+            "LikenessNotes": fake_likeness_notes,  # how the child looks, before the character is drawn
         }
     )

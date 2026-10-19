@@ -57,6 +57,7 @@ def snapshot_styles() -> dict[str, ArtStyle]:
 
 
 THEMES = ("new-sibling", "graduation")
+NOTES = {"hair": "dark brown with lighter tips, swept up at the front", "eyes": "narrow when smiling"}
 CHILDREN = {
     "girl": Child(name="تالا", gender="f", age=5, glasses=True),
     "hijab": Child(name="ليان", gender="f", age=6, hijab=True),
@@ -125,6 +126,13 @@ def assembled_prompts(style: ArtStyle) -> dict[str, str]:
         out[f"character:{who}:portrait-first"] = character_request(child, [IMG], style, portrait=IMG).prompt
         out[f"character:{who}:portrait-first:redraw"] = character_request(
             child, [IMG], style, attempt=2, fixes=["hair"], note="Straighter hair.", portrait=IMG
+        ).prompt
+        # with the likeness notes the text model writes from the photo (2026-10-19)
+        out[f"character-portrait:{who}:notes"] = character_portrait_request(
+            child, [IMG], style, notes=NOTES
+        ).prompt
+        out[f"character:{who}:portrait-first:notes"] = character_request(
+            child, [IMG], style, portrait=IMG, notes=NOTES
         ).prompt
         out[f"classic-portrait:{who}:sheet"] = portrait_request(child, style, IMG, from_sheet=True).prompt
         out[f"classic-portrait:{who}:photo"] = portrait_request(child, style, IMG, from_sheet=False).prompt

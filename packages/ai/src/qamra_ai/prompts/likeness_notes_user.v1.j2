@@ -1,0 +1,6 @@
+{%- if n_photos > 1 %}The {{ n_photos }} pictures above are photos of the same child.{% else %}The picture above is the photo of the child.{% endif %}
+The child: {{ age }} years old, {{ 'a boy' if gender == 'm' else 'a girl' }}.
+Hijab (the family's choice): {{ 'yes' if hijab else 'no' }}.
+Glasses (the family's choice): {{ 'yes' if glasses else 'no' }}.
+
+Write the notes on how this child looks.

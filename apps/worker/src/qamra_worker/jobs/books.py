@@ -36,6 +36,7 @@ from qamra_ai.pipeline.drawing import clean_drawing
 from qamra_ai.pipeline.gender_check import FLAG as GENDER_FLAG
 from qamra_ai.pipeline.gender_check import GenderIssue, gender_issues
 from qamra_ai.pipeline.layout import BookPlan, PrintSpec, plan_book
+from qamra_ai.pipeline.likeness_notes import likeness_notes
 from qamra_ai.pipeline.models import Child as AIChild
 from qamra_ai.pipeline.models import CompanionSpec, Lang, StoryOut
 from qamra_ai.pipeline.pages import (
@@ -48,7 +49,7 @@ from qamra_ai.pipeline.pages import (
     prepare_book,
     theme_companion_sheet,
 )
-from qamra_ai.pipeline.photo_crop import crop_photo
+from qamra_ai.pipeline.photo_color import reference_photo
 from qamra_ai.pipeline.printimg import downscale
 from qamra_ai.pipeline.runtime import Runtime
 from qamra_ai.pipeline.story import missing_text, write_story
@@ -251,6 +252,8 @@ def _beat_of(step: str) -> int | None:
 # What the parent asked for a drawing (the API's) and what their note became, kept next to how it was drawn:
 # the redraw's number, the chips, their own words and the appearance-only instruction made of them.
 ASKED = ("attempt", "fixes", "note", "note_instruction", "note_outcome")
+# The likeness notes (how the child looks, in words, read from the photo before drawing) and their outcome
+NOTES = ("likeness_notes", "likeness_notes_outcome")
 
 
 async def _read_note(
@@ -266,6 +269,22 @@ async def _read_note(
     character.params = {**(character.params or {}), **asked}
     db.commit()
     log.info("character.note", character=str(character.id), outcome=result.outcome, reasons=result.reasons)
+
+
+async def _read_likeness(
+    db: Session, rt: Runtime, character: Character, child: Child, photos: list[bytes], kept: dict[str, Any]
+) -> None:
+    """The likeness notes, read once per drawing and saved before it (a retried job doesn't ask again). A
+    failure or an unclear photo draws without notes; the log has the outcome only, never the notes."""
+    result = await likeness_notes(rt, ai_child(child), photos)
+    kept["likeness_notes_outcome"] = result.outcome
+    if result.notes:
+        kept["likeness_notes"] = result.notes
+    character.params = {**(character.params or {}), **kept}
+    db.commit()
+    log.info(
+        "character.likeness", character=str(character.id), outcome=result.outcome, reasons=result.reasons
+    )
 
 
 async def _character(db: Session, storage: ObjectStorage, rt: Runtime, character: Character) -> bytes:
@@ -287,6 +306,10 @@ async def _character(db: Session, storage: ObjectStorage, rt: Runtime, character
     asked: dict[str, Any] = {k: v for k, v in (character.params or {}).items() if k in ASKED}
     if asked.get("note") and "note_outcome" not in asked:
         await _read_note(db, rt, character, child, asked)
+    kept: dict[str, Any] = {k: v for k, v in (character.params or {}).items() if k in NOTES}
+    if "likeness_notes_outcome" not in kept:
+        await _read_likeness(db, rt, character, child, data, kept)
+    notes = kept.get("likeness_notes")
     # portrait first (2026-10-10): the portrait, then the sheet painted from the photos and it; a redraw makes
     # both again. Both from the photos as the parent framed them.
     drawn_pair = await generate_character(
@@ -297,6 +320,7 @@ async def _character(db: Session, storage: ObjectStorage, rt: Runtime, character
         attempt=int(asked.get("attempt", 1)),  # a redraw gets a new seed
         fixes=[str(f) for f in asked.get("fixes", [])],
         note=str(asked["note_instruction"]) if asked.get("note_instruction") else None,
+        notes={str(k): str(v) for k, v in notes.items()} if isinstance(notes, dict) else None,
     )
     sheet, portrait = drawn_pair.sheet, drawn_pair.portrait
     key = f"children/{child.id}/characters/{character.id}.png"
@@ -309,7 +333,8 @@ async def _character(db: Session, storage: ObjectStorage, rt: Runtime, character
     character.provider = str(sheet.params.get("provider", rt.image.name))[:32]
     character.model = str(sheet.params.get("model", rt.image.model))[:100]
     drawn = {k: v for k, v in sheet.params.items() if isinstance(v, str | int | float)}
-    character.params = {**asked, **drawn}  # keeps what the parent asked for next to how it was drawn
+    # keeps what the parent asked for and the likeness notes next to how it was drawn
+    character.params = {**asked, **kept, **drawn}
     db.commit()
     return sheet.data
 
@@ -507,7 +532,9 @@ def book_bible(
 
 def photo_bytes(storage: ObjectStorage, photo: ChildPhoto | None) -> bytes | None:
     """A child's photo as the image model gets it: the parent's framing of the original (head and
-    shoulders, upright: `qamra_ai.pipeline.photo_crop`), else the whole photo. None once the photo is
+    shoulders, upright: `qamra_ai.pipeline.photo_crop`), else the whole photo, with its light made neutral
+    (`qamra_ai.pipeline.photo_color`: a yellow street light or a blue screen is not copied into the drawing;
+    the stored original is never changed). None once the photo is
     deleted. Marks the photo used (the caller commits): a photo kept at the guardian's choice is deleted a
     set time after its last use (qamra_core.photo_keep)."""
     if photo is None or not photo.storage_key:
@@ -517,7 +544,7 @@ def photo_bytes(storage: ObjectStorage, photo: ChildPhoto | None) -> bytes | Non
     except ObjectNotFound:
         return None
     photo.last_used_at = datetime.now(UTC)
-    return crop_photo(data, photo.crop)
+    return reference_photo(data, photo.crop)
 
 
 def cover_photo(db: Session, storage: ObjectStorage, child: Child) -> bytes | None:
