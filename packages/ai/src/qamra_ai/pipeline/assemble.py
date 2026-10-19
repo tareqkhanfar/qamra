@@ -12,6 +12,7 @@ from pathlib import Path
 
 from PIL import Image, ImageChops
 
+from qamra_ai.pipeline.art_faces import art_faces
 from qamra_ai.pipeline.book import BookRun
 from qamra_ai.pipeline.layout import BookPlan
 from qamra_ai.pipeline.models import Child, Lang, StoryOut
@@ -27,6 +28,7 @@ from qamra_pdf import (
     PreflightReport,
     TitleSpec,
     panel_for,
+    paper_panel,
     preflight,
     render_book,
 )
@@ -225,7 +227,7 @@ async def assemble_book(
             if panel.busy:
                 flags.setdefault(slot.number, []).append("busy_text_area")
         elif first:  # text on paper beside the framed / vignetted picture
-            panel = Panel(area=_panel_area(beat.text_area), opacity=1.0)
+            panel = paper_panel(path, _panel_area(beat.text_area))
         pages.append(
             PageSpec(
                 number=slot.number,
@@ -237,6 +239,7 @@ async def assemble_book(
                 panel=panel,
                 is_last_story=first and slot.beat == last_beat,
                 qr_url=f"{inp.voice_url}/{slot.beat}" if inp.voice_url and first else None,
+                faces=art_faces(path) if first and design in ON_ART else (),
             )
         )
 
@@ -311,6 +314,7 @@ async def assemble_book(
         memories=plan.memories,
         series=inp.series,
         age_range=plan.age_range,
+        motif=plan.motif,
     )
     rendered = await render_book(spec, out_dir, proof=proof, print_files=print_files)
     for f in rendered.fit:
@@ -318,6 +322,10 @@ async def assemble_book(
     for b in rendered.boxes:
         if b.fill < MIN_BOX_FILL:  # a text container that is mostly empty (Addendum 11 §3)
             flags.setdefault(b.page, []).append("empty_text_box")
+        if b.on_face:  # even at the age minimum the words cover a face: the page needs a look
+            flags.setdefault(b.page, []).append("text_over_face")
+        if b.moved:  # the words moved off a face to another band of the picture: worth a glance
+            flags.setdefault(b.page, []).append("text_moved")
     if not print_files:
         return BookFiles(spec, None, None, rendered.proof_pdf, {}, flags)
     assert rendered.interior_pdf is not None and rendered.cover_pdf is not None  # nosec B101 (typing)

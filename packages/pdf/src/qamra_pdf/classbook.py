@@ -19,6 +19,7 @@ from pypdf import PdfReader, PdfWriter
 
 from qamra_pdf import ornaments
 from qamra_pdf.assets import LAYOUTS_DIR, prepare
+from qamra_pdf.checks import panel_for
 from qamra_pdf.cover import class_design, cover_name, pick_thumbs, rgba
 from qamra_pdf.lettering import title_svg, treatment
 from qamra_pdf.preflight import Check, PreflightReport, preflight
@@ -94,6 +95,7 @@ class ClassBookSpec:
     extra: dict[str, str] = field(default_factory=dict)
     title_style: str = "gold-magic"  # the theme's cover lettering (`lettering.TITLE_STYLES`)
     age_range: tuple[int, int] | None = None  # the theme's ages, a fact on the back cover
+    motif: str = "star"  # the story pages' ornament (`ornaments.motif_for`)
 
     @property
     def page_mm(self) -> float:
@@ -152,6 +154,20 @@ def _render(template: str, spec: ClassBookSpec, **extra: object) -> str:
     return _env.get_template(template).render(spec=spec, fonts=FONTS_DIR.as_uri(), img=uri, **extra)
 
 
+def _page_vars(spec: ClassBookSpec) -> list[str]:
+    """Each story page's colors from its picture (the painted wash, the ink), as CSS variables."""
+    out = []
+    for page in spec.pages:
+        panel = panel_for(page.image, "top")
+        c = panel.wash.lstrip("#")
+        rgb = ",".join(str(int(c[i : i + 2], 16)) for i in (0, 2, 4))
+        out.append(
+            f"--wash: {panel.wash}; --wash-rgb: {rgb}; --ink: {panel.ink}; --deep: {panel.deep}; "
+            f"--o: {panel.opacity}"
+        )
+    return out
+
+
 def cover_html(spec: ClassBookSpec, copy: ChildCopy, work: Path) -> str:
     """A child's cover wrap: the story cover's design (`cover.class_design`) with the class book's words."""
     assets = prepare(
@@ -208,7 +224,17 @@ async def render_class_book(
         raise ValueError("every copy needs its own file name")
     fillers = spec.interior_pages - 3 - len(spec.pages)
     shared_html, shared_pdf = out_dir / "shared.html", out_dir / "shared.pdf"
-    shared_html.write_text(_render("class_interior.html.j2", spec, fillers=fillers), encoding="utf-8")
+    shared_html.write_text(
+        _render(
+            "class_interior.html.j2",
+            spec,
+            fillers=fillers,
+            page_vars=_page_vars(spec),
+            orn=ornaments,
+            t=treatment(spec.title_style),
+        ),
+        encoding="utf-8",
+    )
     portraits: list[Path] = []
     covers: list[Path] = []
     async with async_playwright() as pw:

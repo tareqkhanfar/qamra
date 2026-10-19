@@ -28,6 +28,13 @@ class Panel:
     busy: bool = False
     contrast: float | None = None
     tone: Literal["light", "dark"] = "light"
+    # Colors sampled from the picture (`checks.palette_for`): the painted wash under the text (a pale tint of
+    # the art around it), the ink the words are set in (a deep tone of the picture's own hue, ≥ 7:1 on the
+    # wash where it is thinnest) and a mid tone for the small ornaments. Defaults: the book's cream and ink.
+    wash: str = "#FFFDF8"
+    ink: str = "#1C2140"
+    deep: str = "#8A6A2E"
+    backdrop: str = "#FFFDF8"  # what the words sit on where the wash is thinnest (contrast is measured on it)
 
 
 @dataclass(frozen=True)
@@ -41,6 +48,8 @@ class PageSpec:
     panel: Panel | None = None  # None: no text panel on this page (e.g. the second half of a spread)
     is_last_story: bool = False
     qr_url: str | None = None  # «صوت أهلي»: this page's listen link, printed as a QR in the outer corner
+    # faces found in the picture (x0, y0, x1, y1, fractions of the image): text set on the art keeps off them
+    faces: tuple[tuple[float, float, float, float], ...] = ()
 
 
 @dataclass(frozen=True)
@@ -116,6 +125,9 @@ class BookSpec:
     extra: dict[str, str] = field(default_factory=dict)
     series: Series | None = None  # the product line, named on the cover (front pill)
     age_range: tuple[int, int] | None = None  # the theme's ages: a fact on the back cover
+    motif: str = (
+        "star"  # the story pages' small ornament (`ornaments.MOTIFS`): olive, star, heart, flower, leaf
+    )
 
     @property
     def page_mm(self) -> float:

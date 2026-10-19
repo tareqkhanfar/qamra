@@ -23,6 +23,18 @@
 <p class="story-text{{ ' ' ~ cls if cls }}">{{ hero(p.text) }}{% if p.is_last_story %}<span class="the-end">— {{ s.the_end }} —</span>{% endif %}</p>
 {%- endmacro %}
 
+{#- Text set on the art: the painted watercolor wash under it (shapes.SHAPES_JS draws it once the text is
+    fitted), the theme's motif on its corner and a flourish on its lower edge. -#}
+{% macro wash(spec, t, orn, p, flourish=True) -%}
+<div class="ink-shape" data-shape="wash" data-seed="{{ p.number }}"></div>
+<div class="motif-tag">{{ orn.motif(spec.motif, t.accent) }}</div>
+{% if flourish %}{{ flourish_mark(spec, t, orn, p) }}{% endif %}
+{%- endmacro %}
+
+{% macro flourish_mark(spec, t, orn, p, cls='text-flourish', color=None) -%}
+<div class="{{ cls }}">{{ orn.flourish(spec.motif, color or (p.panel.deep if p.panel else '#8A6A2E'), t.accent) }}</div>
+{%- endmacro %}
+
 {% macro voice_qr(spec, s, p, qr) -%}
 {% if p.qr_url and qr %}<div class="voice-qr" data-qr="{{ p.number }}"><div class="code">{{ qr(p.qr_url) }}</div><div class="caption">{{ moon_mark('3.2mm') }}<span>{{ s.scan_listen }}</span></div></div>{% endif %}
 {%- endmacro %}

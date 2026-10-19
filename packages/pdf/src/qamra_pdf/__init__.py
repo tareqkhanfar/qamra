@@ -1,6 +1,6 @@
 """Qamra print PDF: page templates, Playwright renderer, panel checks and preflight."""
 
-from qamra_pdf.checks import panel_for
+from qamra_pdf.checks import panel_for, paper_panel, readable
 from qamra_pdf.document import html_to_pdf
 from qamra_pdf.invoice import InvoiceLine, InvoiceSpec, render_invoice
 from qamra_pdf.preflight import PreflightReport, preflight
@@ -22,7 +22,9 @@ __all__ = [
     "TitleSpec",
     "html_to_pdf",
     "panel_for",
+    "paper_panel",
     "preflight",
+    "readable",
     "render_book",
     "render_html",
     "render_invoice",

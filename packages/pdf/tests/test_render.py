@@ -228,7 +228,8 @@ def test_display_fonts_embed_as_truetype_never_type3(rendered: tuple[BookSpec, R
     assert all(kind == "/Type0" for kind in {**cover, **interior}.values()), {**cover, **interior}
     assert any("Lalezar" in name for name in cover)  # the outlined title is filled copies, not a stroke
     assert any("ArefRuqaa" in name for name in interior)  # the handwritten dedication
-    assert any("NotoNaskhArabic-SemiBold" in name for name in interior)  # the child's name in the story
+    assert any("PlaypenSansArabic-SemiBold" in name for name in interior)  # the story lettering
+    assert any("PlaypenSansArabic-ExtraBold" in name for name in interior)  # the child's name in the story
 
 
 def test_cover_title_lettering_ribbon_and_series_pill(tmp_path: Path) -> None:

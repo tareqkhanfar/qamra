@@ -5,11 +5,11 @@
 {% macro page(p) -%}
 {% set area = p.panel.area if p.panel else 'top' %}
 {% set parts = dialogue(p.text or '') %}
-<section class="page lay-dialogue{{ ' qr-' ~ p.side if p.qr_url and qr }}" data-kind="story" data-layout="dialogue" data-number="{{ p.number }}">
+<section class="page lay-dialogue{{ ' qr-' ~ p.side if p.qr_url and qr }}" style="{{ ink_vars(p) }}" data-faces="{{ faces_attr(p) }}" data-kind="story" data-layout="dialogue" data-number="{{ p.number }}">
   <img class="bleed-img" src="{{ img(p.image) }}" alt="">
   {% if p.text %}
-  <div class="dlg-box {{ area }} side-{{ p.side }}" style="--o: {{ p.panel.opacity if p.panel else 0.9 }}" data-panel="{{ p.number }}">
-    {% if parts[0] %}<div class="dlg-caption"><p class="story-text">{{ hero(parts[0]) }}{% if p.is_last_story and not parts[1] %}<span class="the-end">— {{ s.the_end }} —</span>{% endif %}</p></div>{% endif %}
+  <div class="dlg-box {{ area }} side-{{ p.side }}" style="--o: {{ p.panel.opacity if p.panel else 0.9 }}" data-panel="{{ p.number }}" data-area="{{ area }}">
+    {% if parts[0] %}<div class="dlg-caption">{{ m.wash(spec, t, orn, p, False) }}<p class="story-text">{{ hero(parts[0]) }}{% if p.is_last_story and not parts[1] %}<span class="the-end">— {{ s.the_end }} —</span>{% endif %}</p></div>{% endif %}
     {% for line in parts[1] %}
     <div class="bubble">
       <p class="story-text">{{ hero(line) }}{% if p.is_last_story and loop.last %}<span class="the-end">— {{ s.the_end }} —</span>{% endif %}</p>

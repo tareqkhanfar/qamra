@@ -12,6 +12,7 @@
 {% macro ribbon(cd) -%}
 <div class="ribbon">
   <span class="rb-tail start"></span><span class="rb-tail end"></span>
+  <span class="rb-motif">{{ orn.motif(spec.motif, cd.t.accent) }}</span>
   <div class="rb-band"><span class="r-label">{{ cd.ribbon_label }}</span>{% if cd.ribbon_name %}<span class="r-name">{{ cd.ribbon_name }}</span>{% endif %}</div>
 </div>
 {%- endmacro %}

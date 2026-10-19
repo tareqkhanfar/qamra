@@ -1262,3 +1262,38 @@ calm pauses between the words rather than a slowed voice.
   0.31–0.76 s for the other letter pages' words, no inner pause: one clean word. It is accepted by hand for that
   clip's sha256 only. All 278 shown words and letters are tappable; a word that can't be played alone is shown
   greyed with no button rather than as a button that does nothing.
+
+## Story text looks hand-lettered and painted into the picture (2026-10-19)
+
+- **Owner, on «موسم الزيتون»:** «الخط بدنا إياه يكون مرتّب أكثر ومناسب للحكايات، زي اللي مرسوم رسم، مش خط كتابة
+  Arial. يكون داخل حتى بالصور، وكأنه مرسوم وملوّن وعليه أشياء حلوة.»
+- **Three treatments were tried on the published examples** (زينة and عمر in «موسم الزيتون», هيا in «يوم التخرّج»,
+  rendered locally from the stored pages, read-only): A) Playpen Sans Arabic on a painted watercolor wash,
+  B) Qamra Display (Baloo) on a torn paper scrap with washi tape, C) Marhey lettered straight onto a soft mist.
+  Side-by-side boards (with the current Naskh-on-cream-cloud) went to `~/Downloads/qamra-story-type/`.
+- **Chosen: A.** Tashkeel first: Playpen's marks are the clearest and largest of the faces tried (≈30 OFL Arabic
+  faces were set with the same vowelized lines; Marhey's and Lalezar's marks crowd, Baloo's read well but its
+  letters look typed, Ruqaa/Rakkas/Katibeh are display-only). Playpen is a rounded hand-drawn letter made for
+  children learning to read, so it looks drawn, not typed, and it covers Latin: English books keep the same hand.
+  B looked like a note stuck on the art (a sticker again) and C lost contrast on busy art.
+- **The wash is painted in code, not a box:** an SVG blob that hugs the fitted text, edge wandering per page
+  (seeded), filled through an SVG watercolor filter (ragged edge, uneven pigment, darker drying edge, grain), in a
+  pale tint of the art's own color around the text. The words are set in a deep tone of the picture's own hue
+  (≥ 7:1 where the wash is thinnest, 80% of its opacity), the child's name in the theme's accent darkened until it
+  reads (≥ 4.5:1) and in the ExtraBold. Fades take the picture's tint too; paper pages take the picture's ink.
+- **Decoration in moderation:** a small sprig on the wash's corner and a flourish on its edge, by theme
+  (`Theme.text_motif`, else by slug, else by the cover lettering): olives (olive season), stars (star keeper, moon
+  trip, dream boat, graduation), hearts (new sibling), flowers (first day, neighbourhood friends). The same sprig
+  sits at the end of the cover's «بطولة» ribbon. The page-number star badge stays.
+- **Never on a face:** faces are found in each picture with the YuNet detector we already ship (MIT, detection
+  only) at a low threshold for painted characters. The fit shrinks the text (never under the age minimum), then
+  narrows it and slides it to one side of its band, then tries the other bands; a page where the words still
+  touch a face is flagged `text_over_face` for the staff review (crowded family scenes); `text_moved` notes a page
+  whose words left the theme's text area.
+- **Found on the way:** with Playpen's contextual alternates on, Chromium reused the wrong glyphs across a line
+  break («…يَدَاكِ يَا اكِ يَا» instead of «…يَدَاكِ يَا زِينَةُ»). `calt` is off for the story text, and a test
+  sweeps box widths and compares each wrapped paragraph with the same lines forced by `<br>`.
+- **Sizes:** the age sizes stay (26/24 pt, 21/20 pt); `size-adjust: 90%` keeps Playpen at about the visual size
+  of the Naskh it replaces. Story books are only 21 × 21 today (`PrintSpec` takes no trim from the settings);
+  a 15 × 15 render of the layout library overflows and would need its own layout sizes before it is offered.
+- Class books take the same lettering, wash and motif.

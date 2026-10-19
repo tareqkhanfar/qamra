@@ -30,10 +30,13 @@ from pypdf.generic import RectangleObject
 
 from qamra_pdf import ornaments
 from qamra_pdf.assets import LAYOUTS_DIR, Assets, prepare
+from qamra_pdf.checks import readable
 from qamra_pdf.cover import cover_name, story_design, story_thumbs
 from qamra_pdf.lettering import TITLE_FIT_JS, title_svg, treatment
 from qamra_pdf.page_layouts import LAYOUTS, drop_word, normalize, split_dialogue
-from qamra_pdf.spec import BookSpec
+from qamra_pdf.page_scripts import FIT_JS as _FIT_JS
+from qamra_pdf.page_scripts import SHAPES_JS
+from qamra_pdf.spec import BookSpec, PageSpec, Panel
 from qamra_pdf.strings import STRINGS
 
 logging.getLogger("pypdf").setLevel(logging.ERROR)  # Chromium's xref trailers trigger harmless warnings
@@ -50,47 +53,6 @@ _env = Environment(
     lstrip_blocks=True,
 )
 
-# Shrink-to-fit for every text container ([data-panel] holding .story-text): all its texts shrink together
-# in 0.5 pt steps down to the age minimum. `fill` is how much of the container's content box the text uses.
-_FIT_JS = """
-(minPt) => {
-  const out = [];
-  // computed sizes are CSS px (16 pt = 21.333… px): round to 0.01 pt so an unshrunk size compares equal
-  const ptOf = el => Math.round(parseFloat(getComputedStyle(el).fontSize) * 75) / 100;
-  for (const box of document.querySelectorAll('[data-panel]')) {
-    const texts = [...box.querySelectorAll('.story-text')];
-    if (!texts.length) continue;
-    // in-flow content only: decorative shapes (absolute) may spill out of the box on purpose
-    const flow = [...box.children].filter(c => {
-      const st = getComputedStyle(c);
-      return st.position !== 'absolute' && st.display !== 'none';
-    });
-    const measure = () => {
-      const cs = getComputedStyle(box);
-      const inner = box.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
-      const gap = (parseFloat(cs.rowGap) || 0) * Math.max(0, flow.length - 1);
-      const used = flow.reduce((a, c) => {
-        const st = getComputedStyle(c);
-        return a + c.getBoundingClientRect().height + parseFloat(st.marginTop) + parseFloat(st.marginBottom);
-      }, gap);
-      return {inner, used};
-    };
-    const over = () => {
-      const {inner, used} = measure();
-      return used > inner + 1 || texts.some(t => t.scrollWidth > t.clientWidth + 1);
-    };
-    let pts = texts.map(ptOf);
-    while (over() && Math.max(...pts) > minPt) {
-      pts = pts.map(p => Math.max(minPt, p - 0.5));
-      texts.forEach((t, i) => { t.style.fontSize = pts[i] + 'pt'; });
-    }
-    const {inner, used} = measure();
-    out.push({page: Number(box.dataset.panel), pt: Math.min(...pts), overflow: over(),
-              fill: inner > 0 ? Math.round(used / inner * 1000) / 1000 : 1});
-  }
-  return out;
-}
-"""
 _NAME_EDGE = "ءآأؤإئابةتثجحخدذرزسشصضطظعغفقكلمنهوىي"
 _MARKS = "\u064b-\u0652\u0670\u0640"
 
@@ -155,14 +117,32 @@ def render_html(
         r, g, b = (int(c[i : i + 2], 16) for i in (0, 2, 4))
         return f"rgba({r},{g},{b},{alpha})"
 
+    t = treatment(spec.title_style)
+
+    def ink_vars(p: PageSpec) -> str:
+        """The page's colors from its picture, as CSS variables (text, wash, ornaments, the child's name)."""
+        panel = p.panel or Panel()
+        c = panel.wash.lstrip("#")
+        wash_rgb = ",".join(str(int(c[i : i + 2], 16)) for i in (0, 2, 4))
+        name = readable(t.accent, panel.backdrop, 4.5)
+        return (
+            f"--wash: {panel.wash}; --wash-rgb: {wash_rgb}; --ink: {panel.ink}; --deep: {panel.deep}; "
+            f"--name: {name}; --o: {panel.opacity}"
+        )
+
+    def faces_attr(p: PageSpec) -> str:
+        return ";".join(" ".join(f"{v:.4f}" for v in box) for box in p.faces)
+
     return _env.get_template(template).render(
         spec=spec,
+        faces_attr=faces_attr,
+        ink_vars=ink_vars,
         s=STRINGS[spec.lang],
         fonts=FONTS_DIR.as_uri(),
         img=img or uri,
         qr_svg=qr_svg(spec.cover.qr_url),
         qr=qr_svg,
-        t=treatment(spec.title_style),
+        t=t,
         assets=assets,
         cover=design,
         cover_name=cover_name,
@@ -183,6 +163,8 @@ class TextFit:
     pt: float
     overflow: bool
     fill: float = 1.0  # share of the container's content box the text uses
+    on_face: bool = False  # the text (or its painted shape) still covers a face in the picture
+    moved: str = ""  # the text area it moved to, off a face ("" = where the theme put it)
 
 
 @dataclass
@@ -246,6 +228,7 @@ async def _to_pdf(
         fit: list[dict[str, Any]] = []
         if fit_pt is not None:
             fit = await page.evaluate(_FIT_JS, fit_pt)
+        await page.evaluate(SHAPES_JS)  # the painted shapes hug the fitted text
         await page.pdf(
             path=str(pdf_path),
             width=f"{width_mm}mm",
@@ -303,7 +286,15 @@ async def render_book(
         set_boxes(interior_pdf, spec.page_mm, spec.page_mm, spec.bleed_mm)
         set_boxes(cover_pdf, spec.wrap_width_mm, spec.page_mm, spec.bleed_mm)
     boxes = [
-        TextFit(int(f["page"]), float(f["pt"]), bool(f["overflow"]), float(f.get("fill", 1))) for f in fit
+        TextFit(
+            int(f["page"]),
+            float(f["pt"]),
+            bool(f["overflow"]),
+            float(f.get("fill", 1)),
+            bool(f.get("face")),
+            str(f.get("moved") or ""),
+        )
+        for f in fit
     ]
     return RenderedBook(
         interior_pdf if print_files else None,

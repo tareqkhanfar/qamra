@@ -6,6 +6,7 @@
 <head><meta charset="utf-8"><title>{{ spec.title }}</title>
 <style>
 {% include "_base.css.j2" %}
+{% include "_story_type.css.j2" %}
 {% include "_class.css.j2" %}
 </style></head>
 <body>
@@ -25,10 +26,13 @@
 </section>
 {% for p in spec.pages %}
 {% set number = loop.index + 2 %}
-<section class="page" data-kind="story" data-layout="full" data-number="{{ number }}">
+<section class="page" style="{{ page_vars[loop.index0] }}" data-kind="story" data-layout="full" data-number="{{ number }}">
   <img class="bleed-img" src="{{ img(p.image) }}" alt="">
-  <div class="panel top" style="background: rgba(255,253,248,.9)" data-panel="{{ number }}">
+  <div class="panel top class-wash" data-panel="{{ number }}">
+    <div class="ink-shape" data-shape="wash" data-seed="{{ number }}"></div>
+    <div class="motif-tag">{{ orn.motif(spec.motif, t.accent) }}</div>
     <p class="story-text">{{ p.text }}</p>
+    <div class="text-flourish">{{ orn.flourish(spec.motif, '#8A6A2E', t.accent) }}</div>
   </div>
   <div class="folio">{{ spec.folio(number) }}</div>
 </section>
