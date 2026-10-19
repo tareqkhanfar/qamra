@@ -1,6 +1,7 @@
 {#- The story book's interior pages in reading order; shared by interior.html.j2 and proof.html.j2.
     Story pages dispatch to the layout library (packages/pdf/layouts/<name>/page.html.j2). -#}
 {% import "_matter.html.j2" as mt with context %}
+{% import "_about_page.html.j2" as ab with context %}
 {% import "full-bleed-cloud/page.html.j2" as l_cloud with context %}
 {% import "full-bleed-fade/page.html.j2" as l_fade with context %}
 {% import "spread-panorama/page.html.j2" as l_pano with context %}
@@ -29,6 +30,7 @@
 {% elif p.kind == 'parents' and spec.parents %}{{ mt.parents_page(p) }}
 {% elif p.kind == 'activity' %}{{ mt.activity_page(p) }}
 {% elif p.kind == 'memories' %}{{ mt.memories_page(p) }}
+{% elif p.kind == 'about' %}{{ ab.about_page(p) }}
 {% else %}<section class="page paper" data-kind="blank" data-number="{{ p.number }}"></section>
 {% endif %}
 {% endfor %}

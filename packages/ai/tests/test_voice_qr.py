@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 import pypdfium2 as pdfium
 from playwright.async_api import async_playwright
-from printed_qr import qr_by_page, qr_urls, route
+from printed_qr import about_urls, qr_by_page, qr_urls, route
 
 from qamra_ai.pipeline.assemble import AssemblyInputs, assemble_book
 from qamra_ai.pipeline.book import BookInputs, run_book
@@ -91,8 +91,14 @@ async def test_every_printed_code_opens_its_listen_page(
     run = await run_book(rt, book_inputs, mode="final")
     files = await assemble_book(_inputs(run, book_inputs, VOICE), tmp_path)
     token = VOICE.rsplit("/", 1)[1]
-    by_number = qr_by_page((tmp_path / "interior.html").read_text(encoding="utf-8"), "data-number")
+    html = (tmp_path / "interior.html").read_text(encoding="utf-8")
+    by_number = qr_by_page(html, "data-number")
     coded = {p.number: p for p in files.spec.pages if p.qr_url}
+    about = [p for p in files.spec.pages if p.kind == "about"]
+    # besides the story pages, only the last page «عن قمرة» prints a code: Qamra's contact page (no book code
+    # in this run: /hello)
+    assert len(about) == 1 and by_number.pop(str(about[0].number)) == about_urls(html)
+    assert [route(u) for u in about_urls(html)] == [("hello", {})]
     assert set(by_number) == {str(n) for n in coded}
     beats = set()
     for number, urls in by_number.items():
@@ -113,3 +119,4 @@ async def test_books_without_the_add_on_print_no_qr(
     assert not any(p.qr_url for p in files.spec.pages) and files.spec.cover.qr_url is None
     html = (tmp_path / "interior.html").read_text(encoding="utf-8")
     assert "voice-qr" not in html.replace(".voice-qr", "") and "data-qr" not in html
+    assert len(about_urls(html)) == 1  # only «عن قمرة»'s, which every book prints

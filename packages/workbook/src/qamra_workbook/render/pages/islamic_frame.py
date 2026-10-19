@@ -30,6 +30,7 @@ from qamra_workbook.render.islamic_content import (
 )
 from qamra_workbook.render.islamic_figures import cast_names, listeners
 from qamra_workbook.render.islamic_units import UNITS, volume_units
+from qamra_workbook.render.pages.about_qamra import about_block
 from qamra_workbook.render.pages.family import uri
 from qamra_workbook.render.pages.islamic_common import (
     chrome,
@@ -253,6 +254,15 @@ def back_page(ctx: PageContext) -> Built:
         "star": star8_svg(GOLD, 9.0, "#FFFBEE"),
         "series": SERIES,
     }
+    if ctx.book.imprint is not None:  # an order's copy: «عن قمرة», with this farewell above it (about_qamra)
+        lead = Markup(  # nosec B704 (the kit's drawing and the page's escaped texts)
+            '<div class="bp-lead">{cast}<p class="bp-lead-msg">{message}</p>{next}</div>'
+        ).format(
+            cast=data["cast"],
+            message=data["message"],
+            next=Markup('<p class="next">{}</p>').format(data["next"]) if data["next"] else "",
+        )
+        data["about"] = about_block(ctx, lead)
     return Built(data, None, problems)
 
 

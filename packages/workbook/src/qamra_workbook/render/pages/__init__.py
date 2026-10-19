@@ -5,6 +5,7 @@ one imported below) and add `render/templates/pages/<name>.html.j2` for its work
 """
 
 from qamra_workbook.render.pages import (
+    about_qamra,  # «عن قمرة»: the last page of every activity book
     adventures,
     family,
     family_cards,
@@ -35,6 +36,7 @@ from qamra_workbook.render.pages import (
 )
 
 __all__ = [
+    "about_qamra",
     "adventures",
     "family",
     "family_cards",

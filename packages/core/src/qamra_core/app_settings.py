@@ -264,8 +264,26 @@ _DEFS: list[SettingDef] = [
         "Printed on invoices when filled in.",
         max_length=40,
     ),
-    SettingDef("instagram_url", "contact", Kind.url, "", "رابط إنستغرام", "Instagram URL", public=True),
-    SettingDef("facebook_url", "contact", Kind.url, "", "رابط فيسبوك", "Facebook URL", public=True),
+    # the owner's pages (2026-10-05: facebook.com/qamrabooks, Instagram @qamra.app), also printed on every
+    # book's «عن قمرة» page (qamra_pdf.imprint)
+    SettingDef(
+        "instagram_url",
+        "contact",
+        Kind.url,
+        "https://www.instagram.com/qamra.app/",
+        "رابط إنستغرام",
+        "Instagram URL",
+        public=True,
+    ),
+    SettingDef(
+        "facebook_url",
+        "contact",
+        Kind.url,
+        "https://www.facebook.com/qamrabooks",
+        "رابط فيسبوك",
+        "Facebook URL",
+        public=True,
+    ),
     # ---- site
     SettingDef(
         "registration_open",

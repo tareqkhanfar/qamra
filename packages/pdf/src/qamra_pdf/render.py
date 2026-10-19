@@ -31,6 +31,7 @@ from pypdf.generic import RectangleObject
 from qamra_pdf import ornaments
 from qamra_pdf.assets import LAYOUTS_DIR, Assets, prepare
 from qamra_pdf.cover import cover_name, story_design, story_thumbs
+from qamra_pdf.imprint import about_html, back_code_html, look_for
 from qamra_pdf.lettering import TITLE_FIT_JS, title_svg, treatment
 from qamra_pdf.page_layouts import LAYOUTS, drop_word, normalize, split_dialogue
 from qamra_pdf.spec import BookSpec
@@ -174,6 +175,18 @@ def render_html(
         title_svg=title_svg,
         orn=ornaments,
         rgba=rgba,
+        about_block=about_html(
+            spec.about,
+            look_for(spec.series or "magic"),
+            compact=True,
+            hero=(img or uri)(spec.title_page.portrait) if spec.title_page.portrait else "",
+            hero_round=True,
+            hero_mm=24.0,
+        )
+        if any(p.kind == "about" for p in spec.pages)
+        else "",
+        imprint=spec.imprint,
+        back_code=back_code_html,
     )
 
 

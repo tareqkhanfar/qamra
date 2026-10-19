@@ -11,7 +11,7 @@ from urllib.parse import quote as urlquote
 import yaml
 from fastapi import APIRouter, Depends, Response
 from pydantic import BaseModel, Field
-from sqlalchemy import func, or_, select
+from sqlalchemy import ColumnElement, Select, String, cast, func, or_, select
 from sqlalchemy.dialects.postgresql import insert
 
 from qamra_ai.pipeline.theme import CONTENT_DIR
@@ -20,8 +20,10 @@ from qamra_api.classic import CLASSIC_JOB, start_classic_finals
 from qamra_api.deps import AdminUser, SessionDep, SettingsDep, StorageDep, require_permission
 from qamra_api.errors import ApiError
 from qamra_api.jobs import QueueDep, enqueue
-from qamra_core.db.models import AuditLog, Order, OrderItem, OrderStatus, User
+from qamra_core.book_codes import code_filter, item_books
+from qamra_core.db.models import AuditLog, Book, Order, OrderItem, OrderStatus, User
 from qamra_core.db.store import Counter, Invoice, OrderEvent
+from qamra_core.downloads import books_query
 from qamra_pdf.arabic_names import accusative
 
 router = APIRouter(prefix="/api/admin/orders", tags=["admin"])
@@ -74,9 +76,11 @@ async def list_orders(
         stmt = stmt.where(Order.status == OrderStatus(status))
     if q:
         like = f"%{q.strip()}%"
-        stmt = stmt.where(
-            or_(Order.code.ilike(like), Order.phone.ilike(like), Order.shipping["name"].astext.ilike(like))
-        )
+        found = [Order.code.ilike(like), Order.phone.ilike(like), Order.shipping["name"].astext.ilike(like)]
+        by_code = code_filter(q)
+        if by_code is not None:  # a book code (or part of one): the orders the book was made for
+            found.append(Order.id.in_(orders_with_books(by_code)))
+        stmt = stmt.where(or_(*found))
     total = (await db.execute(select(func.count()).select_from(stmt.subquery()))).scalar_one()
     rows = (
         (await db.execute(stmt.order_by(Order.created_at.desc()).limit(50).offset(50 * (max(page, 1) - 1))))
@@ -117,6 +121,28 @@ async def list_orders(
     )
 
 
+class BookRefOut(BaseModel):
+    id: uuid.UUID
+    code: str  # «QB-7K4M2»
+    part: str  # "" for one book, else the volume or stage
+    title: str | None
+    status: str
+
+
+def orders_with_books(by_code: ColumnElement[bool]) -> Select[uuid.UUID]:
+    """The ids of the orders whose lines made a book matching `by_code` (a story's line names its book, an
+    activity book names its line in `generation.order_item_id`)."""
+    books = select(Book.id, Book.generation["order_item_id"].astext.label("item")).where(by_code).subquery()
+    return (
+        select(OrderItem.order_id)
+        .join(
+            books,
+            or_(OrderItem.book_id == books.c.id, cast(OrderItem.id, String) == books.c.item),
+        )
+        .distinct()
+    )
+
+
 class ItemOut(BaseModel):
     id: uuid.UUID
     sku: str | None
@@ -130,6 +156,7 @@ class ItemOut(BaseModel):
     addons: list[Any]
     costs: dict[str, Any]
     book_id: uuid.UUID | None
+    books: list[BookRefOut] = Field(default_factory=list)  # the books made for this line, with their codes
 
 
 class EventOut(BaseModel):
@@ -222,6 +249,8 @@ async def _order(db: SessionDep, order_id: uuid.UUID) -> Order:
 
 async def _detail(db: SessionDep, order: Order, values: dict[str, Any]) -> OrderOut:
     items = (await db.execute(select(OrderItem).where(OrderItem.order_id == order.id))).scalars().all()
+    made = books_query(items)
+    refs = item_books(items, (await db.execute(made)).scalars().all() if made is not None else [])
     events = (
         (
             await db.execute(
@@ -273,6 +302,7 @@ async def _detail(db: SessionDep, order: Order, values: dict[str, Any]) -> Order
                 addons=i.addons,
                 costs=i.costs,
                 book_id=i.book_id,
+                books=[BookRefOut(**vars(r)) for r in refs.get(i.id, [])],
             )
             for i in items
         ],

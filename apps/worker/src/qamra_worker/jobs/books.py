@@ -81,6 +81,7 @@ from qamra_pdf.mockups import mockups_from_pdfs, spread_from_pages
 from qamra_pdf.spec import Series
 from qamra_worker import context
 from qamra_worker.ai import ai_settings, make_runtime
+from qamra_worker.imprint import book_imprint
 from qamra_worker.notify import queue as notify_queue
 from qamra_worker.settings import get_settings
 from qamra_worker.voice import voice_url
@@ -836,6 +837,14 @@ async def render_files(
                     watermark=mode == "preview",
                     voice_url=voice_url(db, book, brand().domain) if mode == "final" else None,
                     series=cover_series(book.generation),
+                    imprint=book_imprint(  # «عن قمرة» and the code on the back cover
+                        db,
+                        book,
+                        job.child,
+                        line=cover_series(book.generation) or "magic",
+                        part=story.title,
+                        lang=book_lang(book),
+                    ),
                 ),
                 Path(tmp),
                 print_files=mode == "final" and not missing,

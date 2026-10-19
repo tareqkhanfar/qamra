@@ -16,12 +16,14 @@ from pathlib import Path
 from typing import Any
 
 from qamra_pdf import preflight
+from qamra_pdf.imprint import Imprint
 from qamra_workbook.family import FamilyPlan, book_pages, load
 from qamra_workbook.render import covers
 from qamra_workbook.render.character import aspect, front_view
 from qamra_workbook.render.dielines import ART_CSS, DIE_CSS, die_ink, merge_layer, with_css
 from qamra_workbook.render.engine import book_html, build_pages, print_pdf
 from qamra_workbook.render.family import PLAN, cover_specs, insert_sheets, plan_pages
+from qamra_workbook.render.pages.about_qamra import with_about
 from qamra_workbook.render.registry import Assets
 from qamra_workbook.render.samples import assets_for
 from qamra_workbook.render.spec import BookSpec, Child, Family, Geometry, Numerals, PageSpec, product_geometry
@@ -113,6 +115,7 @@ async def render_order(
     plan: FamilyPlan | None = None,
     org: dict[str, Any] | None = None,
     member_sheets: dict[int, Path] | None = None,
+    imprint: Imprint | None = None,
 ) -> OrderFiles:
     """Every print file of one family book into `out`: interior.pdf, cover.pdf and inserts/<name>.pdf.
     `org` ({name, logo: path}) puts an organization's logo on the back cover of its copies (A7 §8);
@@ -121,16 +124,17 @@ async def render_order(
     plan = plan or load(PLAN)
     out.mkdir(parents=True, exist_ok=True)
     specs, _ = plan_pages(plan, list(range(1, len(book_pages(plan)) + 1)), {})
-    interior = family_spec(tuple(specs), child, family, size, numerals, day)
+    interior = with_about(family_spec(tuple(specs), child, family, size, numerals, day), imprint)
     assets = with_members(assets_for(interior, out), member_sheets or {}, out / "assets")
     g = interior.geometry
     interior_pdf = await render_pages(interior, assets, out / "interior.pdf")
     cover = family_spec(tuple(with_org(cover_specs(plan), org)), child, family, size, numerals, day)
+    cover = dataclasses.replace(cover, imprint=imprint)
     cover = covers.with_thumbs(cover, interior, interior_pdf, out / "assets", covers.THUMBS["family"])
     files = OrderFiles(
         interior=interior_pdf,
         cover=await render_pages(cover, assets, out / "cover.pdf"),
-        pages=len(specs),
+        pages=len(interior.pages),
         cutout_fallback=assets.framed,
     )
     files.preflight = {"interior.pdf": _report(files.interior, g), "cover.pdf": _report(files.cover, g)}

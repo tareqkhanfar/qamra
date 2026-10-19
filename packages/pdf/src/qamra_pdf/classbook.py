@@ -1,7 +1,8 @@
 """«كتاب الصف» print files (Addendum 1 §2): N personal copies of one class book, and one combined print file.
 
 Every copy has the same interior (the school page, the shared story pages and the class group page) with the
-child's own portrait page inserted as page 2, and its own cover. The shared pages are rendered once, each
+child's own portrait page inserted as page 2, its own «عن قمرة» page (its book code, `qamra_pdf.imprint`)
+as the last page, and its own cover (the code small on the back). The shared pages are rendered once, each
 portrait and cover once per child, and the copies are assembled with pypdf; the combined print file reuses
 the shared pages' images, so N copies don't store N copies of every picture. Preflight runs on the shared
 interior once and on every portrait page and cover.
@@ -20,6 +21,7 @@ from pypdf import PdfReader, PdfWriter
 from qamra_pdf import ornaments
 from qamra_pdf.assets import LAYOUTS_DIR, prepare
 from qamra_pdf.cover import class_design, cover_name, pick_thumbs, rgba
+from qamra_pdf.imprint import Contact, Imprint, about_html, back_code_html, look_for, product_name
 from qamra_pdf.lettering import title_svg, treatment
 from qamra_pdf.preflight import Check, PreflightReport, preflight
 from qamra_pdf.render import FONTS_DIR, PKG_DIR, _to_pdf, hero_text, set_boxes
@@ -69,6 +71,7 @@ class ChildCopy:
     companion_name: str | None = None
     gender: Literal["m", "f"] | None = None  # the cover's «بطولة» ribbon; None: the ribbon names the school
     portrait_title: str = ""  # the heading over this child's portrait in the child's gender; "": the book's
+    imprint: Imprint | None = None  # this copy's book code and «عن قمرة» page (None: no code, a sample)
 
 
 @dataclass(frozen=True)
@@ -117,8 +120,9 @@ class ClassBookSpec:
 
     @property
     def interior_pages(self) -> int:
-        """School page + portrait + story pages + group page, padded to the printer's signature."""
-        n = 3 + len(self.pages)
+        """School page + portrait + story pages + group page + «عن قمرة» (the last page), padded to the
+        printer's signature with memory pages before «عن قمرة»."""
+        n = 4 + len(self.pages)
         return n + (-n % max(1, self.signature))
 
     def folio(self, n: int) -> str:
@@ -179,7 +183,35 @@ def cover_html(spec: ClassBookSpec, copy: ChildCopy, work: Path) -> str:
         orn=ornaments,
         rgba=rgba,
         hero=hero,
+        imprint=copy.imprint,
+        back_code=back_code_html,
     )
+
+
+def copy_imprint(spec: ClassBookSpec, copy: ChildCopy) -> Imprint:
+    """The copy's imprint, or a sample's (the child and the class book, no code)."""
+    if copy.imprint is not None:
+        return copy.imprint
+    return Imprint(
+        child_name=copy.name,
+        gender=copy.gender or "m",
+        product=product_name("class", spec.lang),
+        part=spec.title,
+        lang=spec.lang,
+        contact=Contact(domain=spec.brand.domain),
+    )
+
+
+def about_page_html(spec: ClassBookSpec, copy: ChildCopy) -> str:
+    """The copy's «عن قمرة» page: its last page, after the shared pages (`interior_pages`)."""
+    block = about_html(
+        copy_imprint(spec, copy),
+        look_for("class"),
+        compact=True,
+        hero=copy.portrait.resolve().as_uri(),
+        hero_mm=24.0,
+    )
+    return _render("class_about.html.j2", spec, copy=copy, about_block=block, number=spec.interior_pages)
 
 
 def _merged(name: str, parts: list[PreflightReport], pages: int, signature: int) -> PreflightReport:
@@ -206,10 +238,11 @@ async def render_class_book(
     stems = [c.stem for c in copies]
     if len(set(stems)) != len(stems):
         raise ValueError("every copy needs its own file name")
-    fillers = spec.interior_pages - 3 - len(spec.pages)
+    fillers = spec.interior_pages - 4 - len(spec.pages)
     shared_html, shared_pdf = out_dir / "shared.html", out_dir / "shared.pdf"
     shared_html.write_text(_render("class_interior.html.j2", spec, fillers=fillers), encoding="utf-8")
     portraits: list[Path] = []
+    abouts: list[Path] = []
     covers: list[Path] = []
     async with async_playwright() as pw:
         browser = await pw.chromium.launch()
@@ -222,6 +255,10 @@ async def render_class_book(
                 html.write_text(_render("class_portrait.html.j2", spec, copy=copy), encoding="utf-8")
                 await _to_pdf(browser, html, pdf, spec.page_mm, spec.page_mm, None)
                 portraits.append(pdf)
+                html, pdf = out_dir / f"about-{i}.html", out_dir / f"about-{i}.pdf"
+                html.write_text(about_page_html(spec, copy), encoding="utf-8")
+                await _to_pdf(browser, html, pdf, spec.page_mm, spec.page_mm, None)
+                abouts.append(pdf)
                 html, pdf = out_dir / f"cover-{i}.html", out_dir / f"cover-{i}.pdf"
                 html.write_text(cover_html(spec, copy, out_dir / f"cover-{i}"), encoding="utf-8")
                 await _to_pdf(browser, html, pdf, spec.wrap_width_mm, spec.page_mm, None)
@@ -231,7 +268,7 @@ async def render_class_book(
         finally:
             await browser.close()
     set_boxes(shared_pdf, spec.page_mm, spec.page_mm, spec.bleed_mm)
-    for pdf in portraits:
+    for pdf in portraits + abouts:
         set_boxes(pdf, spec.page_mm, spec.page_mm, spec.bleed_mm)
     for pdf in covers:
         set_boxes(pdf, spec.wrap_width_mm, spec.page_mm, spec.bleed_mm)
@@ -250,6 +287,7 @@ async def render_class_book(
     files.overflow_pages = [int(f["page"]) for f in fit if f.get("overflow")]
     for i, copy in enumerate(copies):
         portrait = PdfReader(portraits[i])
+        about = PdfReader(abouts[i])
         interior = PdfWriter()
         for writer in (interior, combined):
             if writer is combined:
@@ -258,6 +296,7 @@ async def render_class_book(
             writer.add_page(portrait.pages[0])
             for page in shared.pages[1:]:
                 writer.add_page(page)
+            writer.add_page(about.pages[0])
         path = out_dir / f"interior-{i}.pdf"
         with path.open("wb") as f:
             interior.write(f)
@@ -265,6 +304,14 @@ async def render_class_book(
         files.covers[copy.stem] = covers[i]
         portrait_report = preflight(
             portraits[i],
+            width_mm=spec.page_mm,
+            height_mm=spec.page_mm,
+            bleed_mm=spec.bleed_mm,
+            safe_mm=spec.safe_mm,
+            min_dpi=spec.dpi,
+        )
+        about_report = preflight(
+            abouts[i],
             width_mm=spec.page_mm,
             height_mm=spec.page_mm,
             bleed_mm=spec.bleed_mm,
@@ -281,7 +328,10 @@ async def render_class_book(
         )
         files.preflight[copy.stem] = {
             "interior": _merged(
-                f"{copy.stem}.pdf", [shared_report, portrait_report], len(shared.pages) + 1, spec.signature
+                f"{copy.stem}.pdf",
+                [shared_report, portrait_report, about_report],
+                len(shared.pages) + 2,
+                spec.signature,
             ),
             "cover": cover_report,
         }

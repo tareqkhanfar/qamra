@@ -1,5 +1,22 @@
 # Changelog
 
+## A code for every book, and «عن قمرة» printed in every book (2026-10-19)
+- **Book codes:** every book of every product gets a short code when it is created («QB-7K4M2»: 5 symbols with
+  no 0/O/1/I/L look-alikes), never reused (`qamra_core.book_codes`, registry `book_codes`). Migration
+  `8c3f5a1d7e42` (after `5b7e2c9d4f10`) gives existing books theirs and sets the Facebook and Instagram links
+  to the owner's pages when they were empty.
+- **Shown** in the admin books list and approval queue (searchable by code or name), book detail, orders (search
+  and each line's books), packing slips, print batches and the printer's CSV, invoices, the parent's order page
+  and the emails.
+- **«عن قمرة» page** at the end of every story, class copy and activity-book volume (`qamra_pdf.imprint`): the
+  code, the child, the product, a warm line, phone, WhatsApp, email, website, Facebook, Instagram, a QR to the
+  book's contact page, the month and «جميع الحقوق محفوظة». Page counts stay whole (see decisions.md). The back
+  cover prints the code small. «رمضان والعيد» grows to 76 pages (closing page, two drawings, a family challenge).
+- **The QR page** `/b/<code>` (and `/hello`): Qamra's contacts, all clickable, WhatsApp and email prefilled with
+  the code, «اطلبوا كتابًا آخر» and «اطلبوا نسخة إضافية من هذا الكتاب»; only the child's first name and the
+  product are shown. The site footer shows the same links.
+- `scripts/sample_book.py --code QB-…` prints a sample with a code.
+
 ## The child's drawing: clear colours and their own face (2026-10-19)
 - **Owner:** the watercolor portrait and sheet of his night photo were muddy and almost sepia («ألوان مش كثير
   واضحة وسيئة»), and the cartoon one was «طفل مختلف» (darker hair, rounder face, a different smile).

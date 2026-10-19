@@ -35,6 +35,7 @@ from qamra_core.db.models import AuditLog, Book, BookStatus, Child, Locale, Orde
 from qamra_core.storage import ObjectStorage
 from qamra_pdf.arabic_names import genitive
 from qamra_worker import context
+from qamra_worker.imprint import book_imprint
 from qamra_worker.jobs.books import file_key
 from qamra_worker.jobs.family_book import (
     approved_character,
@@ -48,6 +49,7 @@ from qamra_worker.settings import get_settings
 
 log = structlog.get_logger("qamra.worker.journey_book")
 LINE = "journey"
+STAGES_AR = {1: "المرحلة الأولى", 2: "المرحلة الثانية", 3: "المرحلة الثالثة"}  # its «عن قمرة» page
 THEME_SLUG = "learning-journey"  # a hidden theme row: every Book needs one; the journey is not a story theme
 STAGES = (1, 2, 3)
 
@@ -133,6 +135,7 @@ async def render_stage(
         numerals=numerals_of(item),  # type: ignore[arg-type]
         domain=get_settings().brand_domain,
         name_en=name_en,
+        imprint=book_imprint(db, book, child, line=LINE, part=STAGES_AR.get(stage, f"المرحلة {stage}")),
     )
     prints_en, traces_ar = stage_names(stage)
     printed_en, guessed = english_name(book_child, name_en)

@@ -5,7 +5,10 @@ spreads (2 right | 3 left), (4 right | 5 left) … The even page of a spread is 
 mirror this: page 1 alone on the right, spreads (2 left | 3 right).
 
 Interior order: 1 title+dedication → story pages → «وهكذا وُلد صاحبي» (drawing companion) → «للأهل» →
-fillers (activity, memories, blank) up to a multiple of the printer's signature. The covers are a
+fillers (activity, memories, blank) → «عن قمرة» (the book code, Qamra's contacts and a QR; owner 2026-10-19),
+always the last page, so the book is a multiple of the printer's signature. The info page takes a filler's
+place: a book keeps its page count unless «للأهل» already ended a signature (then a signature is added).
+The covers are a
 separate wrap PDF; the spine width comes from the page count (`PrintSpec.spine_for`).
 
 Page layouts (Addendum 11 §3): every story beat gets a layout from the library (`qamra_pdf.page_layouts`).
@@ -29,7 +32,7 @@ if TYPE_CHECKING:
     from qamra_ai.config import Settings
 
 Side = Literal["left", "right"]
-SlotKind = Literal["title", "story", "companion", "parents", "activity", "memories", "blank"]
+SlotKind = Literal["title", "story", "companion", "parents", "activity", "memories", "blank", "about"]
 FILLERS: tuple[SlotKind, ...] = ("activity", "memories")
 
 
@@ -218,7 +221,8 @@ def plan_book(theme: Theme, lang: Lang, *, companion_page: bool, spec: PrintSpec
     plan.slots.append(Slot(n, "parents", side_of(n, rtl)))
     n += 1
     fillers = iter(FILLERS)
-    while (n - 1) % spec.signature:
+    while n % spec.signature:  # the last page of the signature is kept for «عن قمرة»
         plan.slots.append(Slot(n, next(fillers, "blank"), side_of(n, rtl)))
         n += 1
+    plan.slots.append(Slot(n, "about", side_of(n, rtl)))
     return plan

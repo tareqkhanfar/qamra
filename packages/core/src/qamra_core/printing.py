@@ -32,6 +32,7 @@ FILE_KINDS = ("interior", "cover")
 CSV_COLUMNS = (
     "n",
     "order",
+    "book_code",  # «QB-7K4M2»: printed on the book's «عن قمرة» page and its back cover
     "sku",
     "format",
     "size",
@@ -117,6 +118,7 @@ def manifest_csv(manifest: dict[str, Any]) -> bytes:
             [
                 item["n"],
                 item["order"],
+                item.get("book_code") or "",
                 item.get("sku") or "",
                 item.get("format") or "",
                 item.get("size") or "",

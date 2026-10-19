@@ -24,6 +24,7 @@ type Slip = {
     qty: number;
     copies: number;
     addons: { slug: string; name_ar: string; name_en: string; qty: number }[];
+    book_codes?: string[]; // the printed books' codes («QB-7K4M2»): which book goes in this parcel
     unit_price: string | null;
     total: string | null;
   }[];
@@ -117,6 +118,20 @@ export function PackingSlip({ id }: { id: string }) {
                   <span className="text-ink-muted">
                     {[name(it), tf(it.format || "digital"), it.child_name].filter(Boolean).join(" · ")}
                   </span>
+                  {(it.book_codes ?? []).length > 0 && (
+                    <span className="mt-1 flex flex-wrap items-baseline gap-x-2 text-night-900">
+                      <span>{t("bookCodes", { n: it.book_codes!.length })}:</span>
+                      {it.book_codes!.map((code) => (
+                        <bdi
+                          key={code}
+                          dir="ltr"
+                          className="rounded border border-night-900 px-1.5 font-mono text-[17px] font-bold tracking-wider text-night-950"
+                        >
+                          {code}
+                        </bdi>
+                      ))}
+                    </span>
+                  )}
                   {it.addons.length > 0 && (
                     <span className="block text-ink-muted">
                       {t("addons")}: {it.addons.map((a) => name(a) + (a.qty > 1 ? ` × ${a.qty}` : "")).join("، ")}

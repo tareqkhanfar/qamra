@@ -1,0 +1,13 @@
+{#- One child's «عن قمرة» page, the last page of their copy (qamra_pdf.imprint): their book code and Qamra's
+    contacts. Rendered per copy, like the portrait page, and appended after the shared pages. -#}
+<!doctype html>
+<html lang="{{ spec.lang }}" dir="{{ spec.dir }}">
+<head><meta charset="utf-8"><title>{{ copy.name }} — {{ 'عن قمرة' if spec.lang == 'ar' else 'About Qamra' }}</title>
+<style>
+{% include "_base.css.j2" %}
+</style></head>
+<body>
+<section class="page about-page" data-kind="about" data-number="{{ number }}" style="background: var(--paper)">
+  <div class="about-box" style="position: absolute; inset: var(--safe)">{{ about_block }}</div>
+</section>
+</body></html>

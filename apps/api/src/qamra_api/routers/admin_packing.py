@@ -18,7 +18,9 @@ from sqlalchemy import select
 from qamra_api.deps import SessionDep, SettingsDep, require_permission
 from qamra_api.errors import ApiError
 from qamra_api.price_visibility import prices_shown
+from qamra_core.book_codes import item_books
 from qamra_core.db.models import Book, Order, OrderItem
+from qamra_core.downloads import books_query
 from qamra_core.printing import item_copies, item_format
 
 router = APIRouter(prefix="/api/admin/orders", tags=["admin"])
@@ -35,6 +37,7 @@ class SlipItem(BaseModel):
     name_ar: str
     name_en: str
     book_title: str | None
+    book_codes: list[str]  # «QB-7K4M2», one per book of the line (a set has three): to pick the right books
     child_name: str | None
     format: str
     options: dict[str, str]
@@ -97,6 +100,8 @@ async def packing_slip(order_id: uuid.UUID, db: SessionDep, settings: SettingsDe
         if ids
         else {}
     )
+    made = books_query(items)
+    codes = item_books(items, (await db.execute(made)).scalars().all() if made is not None else [])
     # the slip goes in the box: no prices on a gift, nor while customers see none (`show_prices` off)
     hide = order.gift or not await prices_shown(db, settings)
     lines = []
@@ -115,6 +120,7 @@ async def packing_slip(order_id: uuid.UUID, db: SessionDep, settings: SettingsDe
                 name_ar=str(i.title.get("name_ar", "")),
                 name_en=str(i.title.get("name_en", "")),
                 book_title=titles.get(i.book_id) if i.book_id else None,
+                book_codes=[r.code for r in codes.get(i.id, [])],
                 child_name=i.personalization.get("child_name"),
                 format=item_format(options, i.addons or []),
                 options=options,

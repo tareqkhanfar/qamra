@@ -93,7 +93,7 @@ export const absolute = (url: string) =>
 /** JSON for a `<script type="application/ld+json">`: `<` escaped so no text can close the tag. */
 export const ldJson = (data: object) => JSON.stringify(data).replace(/</g, "\\u003c");
 
-/** Pages that are never indexed (account, create flow, admin, reader, share and voice links). */
+/** Pages that are never indexed (account, create flow, admin, reader, share, voice and book-QR links). */
 export const PRIVATE_PATHS = [
   "/account",
   "/admin",
@@ -104,6 +104,7 @@ export const PRIVATE_PATHS = [
   "/track",
   "/books/",
   "/s/",
+  "/b/",
   "/r/",
   "/v/",
   "/invite/",

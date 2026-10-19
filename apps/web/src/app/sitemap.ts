@@ -23,6 +23,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entry("/kindergartens", 0.7, "monthly"),
     entry("/shop", 0.6),
     entry("/quiz", 0.5, "monthly"),
+    entry("/hello", 0.4, "monthly"),
     entry("/privacy", 0.2, "monthly"),
   ];
 }

@@ -22,6 +22,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 from qamra_pdf.arabic_names import fill_name
+from qamra_pdf.imprint import Imprint
 from qamra_workbook.family import SKILLS, FamilyPlan, Placed, book_pages
 from qamra_workbook.journey import JourneyPage
 
@@ -355,6 +356,9 @@ class BookSpec:
     audio_base: str = "https://qamra.app/a/"
     geometry: Geometry = field(default_factory=Geometry)
     family: Family | None = None  # the family book's family (A7 §7)
+    # the book's code and how its «عن قمرة» page names it (qamra_pdf.imprint): its last pages
+    # (`render.pages.about_qamra.with_about`) and the code on the back cover; None for a sample
+    imprint: Imprint | None = None
 
     def side(self, number: int) -> Side:
         """Which hand the page is on in the open book (its outer edge carries the section tab)."""

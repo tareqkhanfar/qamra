@@ -123,14 +123,17 @@ export function OrderView({ code, placed }: { code: string; placed: boolean }) {
           item.line ? (
             <Item key={i} item={item} styles={styles} themes={themes} />
           ) : (
-            <p key={i}>
-              {item.child_name
-                ? tc("bookFor", nameCases(item.child_name))
-                : locale === "ar"
-                  ? item.name_ar
-                  : item.name_en}
-              {item.qty > 1 && ` ×${item.qty}`}
-            </p>
+            <div key={i} className="flex flex-col gap-0.5">
+              <p>
+                {item.child_name
+                  ? tc("bookFor", nameCases(item.child_name))
+                  : locale === "ar"
+                    ? item.name_ar
+                    : item.name_en}
+                {item.qty > 1 && ` ×${item.qty}`}
+              </p>
+              <BookCodes codes={item.book_codes} />
+            </div>
           ),
         )}
         {prices && (
@@ -165,8 +168,25 @@ function Item({ item, styles, themes }: { item: TrackedItem; styles: CatalogStyl
           {t("addons", { names: addons.join(locale === "ar" ? "، " : ", ") })}
         </span>
       )}
+      <BookCodes codes={item.book_codes} />
       {item.downloadable && item.id && <DownloadButton itemId={item.id} />}
     </LineText>
+  );
+}
+
+/** «رمز الكتاب: QB-7K4M2»: the code printed in each book of the line, once it is made. */
+function BookCodes({ codes }: { codes?: string[] }) {
+  const t = useTranslations("store.track");
+  if (!codes?.length) return null;
+  return (
+    <span className="flex flex-wrap items-baseline gap-x-2 text-caption text-ink-muted">
+      <span>{t("bookCodes", { n: codes.length })}:</span>
+      {codes.map((code) => (
+        <bdi key={code} dir="ltr" className="font-mono text-small font-bold tracking-wider text-night-900">
+          {code}
+        </bdi>
+      ))}
+    </span>
   );
 }
 

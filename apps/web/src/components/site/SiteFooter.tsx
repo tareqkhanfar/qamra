@@ -5,8 +5,8 @@ import { getPublicSettings, priceWording, pricesShown } from "@/lib/catalog";
 import { ContactLinks } from "./ContactLinks";
 
 /**
- * Launch footer: the products, kindergartens, the company, how to reach us (phone, WhatsApp, email from the
- * admin settings), and the copyright line at the very bottom of every page.
+ * Launch footer: the products, kindergartens, the company, how to reach us (phone, WhatsApp, email, Facebook and
+ * Instagram from the admin settings), and the copyright line at the very bottom of every page.
  */
 export async function SiteFooter() {
   const [t, locale, site] = await Promise.all([getTranslations("footer"), getLocale(), getPublicSettings()]);
@@ -66,17 +66,10 @@ export async function SiteFooter() {
           </nav>
           <div className={col}>
             <strong className="text-paper">{t("contact")}</strong>
-            <ContactLinks tone="dark" />
-            {site?.instagram_url && (
-              <a href={site.instagram_url} rel="noopener noreferrer" target="_blank" className={a}>
-                Instagram
-              </a>
-            )}
-            {site?.facebook_url && (
-              <a href={site.facebook_url} rel="noopener noreferrer" target="_blank" className={a}>
-                Facebook
-              </a>
-            )}
+            <ContactLinks tone="dark" social />
+            <Link href="/hello" className={a}>
+              {t("allContact")}
+            </Link>
           </div>
         </div>
         <div className="flex flex-wrap justify-between gap-x-4 gap-y-1 border-t border-line-dark pt-6 text-caption font-normal">

@@ -31,6 +31,7 @@ from qamra_pdf import (
     render_book,
 )
 from qamra_pdf.arabic_names import case_forms, fill_name, genitive
+from qamra_pdf.imprint import Imprint
 from qamra_pdf.page_layouts import ON_ART, normalize
 from qamra_pdf.spec import PanelArea, Series
 from qamra_pdf.strings import STRINGS
@@ -170,6 +171,8 @@ class AssemblyInputs:
     # «صوت أهلي» (family-voice add-on): https://{domain}/v/{token}; each story page prints <voice_url>/<page>
     voice_url: str | None = None
     series: Series | None = None  # the product line named on the cover: classic, magic, custom, class
+    # the book's code and how its «عن قمرة» page names it (`qamra_pdf.imprint`); None: no code (a sample)
+    imprint: Imprint | None = None
 
 
 async def assemble_book(
@@ -311,6 +314,7 @@ async def assemble_book(
         memories=plan.memories,
         series=inp.series,
         age_range=plan.age_range,
+        imprint=inp.imprint,
     )
     rendered = await render_book(spec, out_dir, proof=proof, print_files=print_files)
     for f in rendered.fit:

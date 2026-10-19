@@ -1361,3 +1361,40 @@ front and his narrow smiling eyes.
     cartoon and 3D: wider, rounder and a little younger than his. A second seed changes the hair colour more
     than the face. Semi-realistic remains the closest style.
   - Unspent: $0.50 of the cap, kept for live orders.
+
+## A code for every book and «عن قمرة» in every book (2026-10-19)
+- **Owner:** «بدنا صفحة لمعلومات قمرة على الكتاب… كل كتاب يتم إنشاؤه على النظام يكون إله كود… لما يجيني أكثر من طلب
+  بنفس الاسم، مثلًا طلبين باسم يوسف، فبدي أميّزهم بالكود. اعمله على كل الدوسيات والحكايات.»
+- **The code:** «QB-» + 5 symbols from `23456789ACDEFHJKMNPRTWXY` (24 symbols, about 8 million codes), e.g.
+  «QB-7K4M2». No 0/O, 1/I/L, nor the pairs that a phone call or a quick look mixes up (B/8, G/6, S/5, Z/2, Q/O,
+  U/V). No check digit (the owner said optional): a mistyped code finds no book. Staff can type it any way
+  («qb 7k4m2», «7K4M2», Arabic digits) or a part of it (3+ symbols).
+- **Given when the book is created**, by every code path (story, Classic, class copy, each activity-book volume):
+  the session's `before_flush` claims a random code with `INSERT … ON CONFLICT DO NOTHING` in the registry
+  `book_codes` and draws again when it is taken. The registry keeps every code ever given and has no link to the
+  book, so a code is never reused, not even after «حذف كل بيانات طفلي». `books.code` is unique and required;
+  migration `8c3f5a1d7e42` gives every existing book one.
+- **Where it shows:** admin books list and approval queue (and search), book detail, order detail (each line's
+  books, with their volume), order search, packing slip, print batch detail and the printer's manifest CSV
+  (`book_code` column), invoices, the parent's order page, and the order and «book ready» emails.
+- **«عن قمرة» page, always the book's last page**, in each product's colours and ornament (`qamra_pdf.imprint`):
+  the code, large; «صُنِعَ هذا الكتابُ خِصّيصًا لِـ…» with the child's picture; the product and part; one warm line;
+  phone, WhatsApp, email, website, Facebook, Instagram (the admin's contact settings, the owner's values by
+  default); a QR to `https://qamra.app/b/<code>`; the month the book was made; «جميع الحقوق محفوظة © قمرة».
+  - Stories (multiples of 4): the info page takes the last page of the last signature, after «للأهل» and the
+    fillers. A book keeps its page count (it gives up one filler: «ذكرياتنا» without a companion page, «ارسم» with
+    one), except when «للأهل» already ended a signature (only «أصدقاء الحارة» with a companion): then 4 pages are
+    added (activity, memories, a blank page, the info page).
+  - Class books: each copy's own last page (its own code), rendered per child like the portrait page.
+  - «دوسية التأسيس», «رحلتي الأولى», «مغامراتي مع عائلتي» (wire-o, even page counts): the info page after the
+    last page, and a plain page with the small moon behind it when the book was even (so the info page faces the
+    reader after the certificate and the sheet stays whole). The cover's page count stays the content's.
+  - «قلبي يعرف الله» V1–V5 (multiples of 4): the closing page «إِلَى اللِّقَاءِ» becomes the info page, its
+    farewell and «the next book» above it; no page added. «رَمَضَانُ وَالْعِيدُ» had no closing page and was
+    72 pages: it gets the same closing page plus two drawing pages and a family challenge (the padding the volume
+    check recommends), 76 pages. These are AI-drafted like the rest and go through the scholar's review.
+  - Back covers print «رمز الكتاب QB-…» small at the foot (stories: under the barcode area; activity books: in the
+    foot beside «صُنعت خصيصًا لـ…»).
+- **The QR page** (`/b/<code>`, `/hello` without a code) is public and `noindex`: the API answers only the child's
+  first name and the product, and the same 404 for an unknown, malformed, deleted or sample code; 120 lookups
+  an hour per IP.

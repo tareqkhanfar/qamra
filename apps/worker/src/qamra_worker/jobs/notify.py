@@ -7,6 +7,7 @@ the account that owns the order or the book; guest orders have no email address,
 """
 
 import uuid
+from collections.abc import Sequence
 from decimal import Decimal
 from typing import Any
 
@@ -14,7 +15,9 @@ import structlog
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from qamra_core.book_codes import item_books
 from qamra_core.db.models import Book, Child, NotificationStatus, Order, OrderItem, User
+from qamra_core.downloads import books_query
 from qamra_pdf.arabic_names import genitive
 from qamra_worker import context
 from qamra_worker.jobs.books import brand, resolved_settings
@@ -57,14 +60,31 @@ def base_values(values: dict[str, Any], lang: str) -> dict[str, Any]:
     }
 
 
-def _item_label(item: OrderItem, lang: str) -> str:
+def codes_label(codes: list[str], lang: str) -> str:
+    """«رمز الكتاب: QB-7K4M2» (a set: «رموز الكتب: QB-…، QB-…»), as an order line in an email shows it."""
+    if not codes:
+        return ""
+    if lang == "ar":
+        return f"{'رمز الكتاب' if len(codes) == 1 else 'رموز الكتب'}: {'، '.join(codes)}"
+    return f"{'Book code' if len(codes) == 1 else 'Book codes'}: {', '.join(codes)}"
+
+
+def _item_label(item: OrderItem, lang: str, codes: list[str] | None = None) -> str:
     name = str(item.title.get("name_ar" if lang == "ar" else "name_en") or item.sku or "")
     fmt = FORMATS[lang].get(str(item.title.get("options", {}).get("format", "")))
     child = item.personalization.get("child_name")
     book = f"كتاب {genitive(str(child))}" if lang == "ar" else f"{child}'s book"  # «كتاب أبي بكر»
     parts = [name, fmt, book if child else None]
     qty = f" × {item.quantity}" if item.quantity > 1 else ""
-    return " · ".join(p for p in parts if p) + qty
+    code = codes_label(codes or [], lang)  # the code once the book exists (qamra_core.book_codes)
+    return " · ".join(p for p in parts if p) + qty + (f" · {code}" if code else "")
+
+
+def item_codes(db: Session, items: Sequence[OrderItem]) -> dict[uuid.UUID, list[str]]:
+    """The book codes of each order line (none before its books are made)."""
+    made = books_query(items)
+    books = db.scalars(made).all() if made is not None else []
+    return {k: [r.code for r in v] for k, v in item_books(items, books).items()}
 
 
 def _recipient(db: Session, user_id: uuid.UUID | None) -> User | None:
@@ -89,6 +109,7 @@ def order_email(
         return NotificationStatus.skipped.value
     lang = user.locale.value
     items = db.scalars(select(OrderItem).where(OrderItem.order_id == order.id)).all()
+    codes = item_codes(db, items)
     rendered = render(
         f"order_{event}",
         lang,
@@ -100,7 +121,7 @@ def order_email(
             "total": money(order.total, order.currency.value) if values.get("show_prices") else "",
             "track_url": f"{base_url}/{lang}/order/{order.code}",
         },
-        [Item(_item_label(i, lang)) for i in items],
+        [Item(_item_label(i, lang, codes.get(i.id))) for i in items],
     )
     return deliver(db, sender, note, user.email, rendered).value
 
@@ -132,6 +153,7 @@ def book_email(
             **base_values(values, lang),
             "child": child.first_name,
             "title": book.title or child.first_name,
+            "code": book.code,  # «QB-7K4M2»: the code printed in the book
             "reader_url": f"{base_url}/{lang}/books/{book.id}",
             "create_url": f"{base_url}/{lang}/create?child={child.id}&book={book.id}",
         },
@@ -186,6 +208,7 @@ def order_alert(
         return NotificationStatus.skipped.value
     lang = "ar"  # staff read Arabic; the admin opens in Arabic
     items = db.scalars(select(OrderItem).where(OrderItem.order_id == order.id)).all()
+    codes = item_codes(db, items)
     shipping = order.shipping or {}
     rendered = render(
         "order_new_staff",
@@ -200,7 +223,7 @@ def order_alert(
             "total": money(order.total, order.currency.value),
             "orders_url": f"{base_url}/{lang}/admin/orders",
         },
-        [Item(_item_label(i, lang)) for i in items],
+        [Item(_item_label(i, lang, codes.get(i.id))) for i in items],
     )
     return deliver(db, sender, note, to, rendered).value
 

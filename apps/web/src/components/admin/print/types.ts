@@ -30,6 +30,7 @@ export type Batches = { ready: OrderBrief[]; waiting: OrderBrief[]; batches: Bat
 export type ItemRow = {
   n: number | null;
   book_id: string | null;
+  book_code: string | null; // the printed book code («QB-7K4M2»)
   title: string;
   child_name: string | null;
   format: string;

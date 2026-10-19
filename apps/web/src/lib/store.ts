@@ -131,7 +131,13 @@ export type Tracked = {
   currency: Currency;
   total: string;
   placed_at: string;
-  items: { name_ar: string; name_en: string; qty: number; child_name: string | null }[];
+  items: {
+    name_ar: string;
+    name_en: string;
+    qty: number;
+    child_name: string | null;
+    book_codes?: string[]; // the printed books' codes («QB-7K4M2»), empty until the book is made
+  }[];
   events: { status: string; at: string }[];
   city: string | null;
 };

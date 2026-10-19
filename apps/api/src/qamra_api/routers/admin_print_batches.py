@@ -73,6 +73,7 @@ class BatchesOut(BaseModel):
 class ItemRow(BaseModel):
     n: int | None
     book_id: uuid.UUID | None
+    book_code: str | None  # «QB-7K4M2»: the code printed in the book and on its back
     title: str
     child_name: str | None
     format: str
@@ -242,6 +243,7 @@ def _item_row(c: Candidate, item: OrderItem, numbers: dict[str, int]) -> ItemRow
     return ItemRow(
         n=numbers.get(str(item.id)),
         book_id=item.book_id,
+        book_code=book.code if book else None,
         title=str(item.title.get("name_ar") or item.sku or ""),
         child_name=item.personalization.get("child_name"),
         format=item_format(item.title.get("options") or {}, item.addons or []),

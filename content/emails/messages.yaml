@@ -1,7 +1,7 @@
 # Customer and printer emails (Phase 2 notifications, Phase 3 print batches).
 # Each message: subject, lines (paragraphs), an optional button (label + the link variable it opens), and
 # an optional list (`items`). Values are filled with Jinja2: {{ name }}, {{ code }}, {{ total }}, {{ brand }},
-# {{ child }}, {{ title }}, and the links track_url, reader_url, create_url, account_url, manifest_url.
+# {{ child }}, {{ title }}, {{ code }} (the book code «QB-7K4M2»), and the links track_url, reader_url, create_url, account_url, manifest_url.
 # A person's name in Arabic takes its case (qamra_pdf.arabic_names): `{{ name | acc }}` when it is called
 # («مرحبًا أبا أحمد»), `{{ child | gen }}` after a preposition or a possessed noun («كتاب أبي بكر»).
 # {{ total }} is empty while customers see no prices (the admin setting `show_prices` is off): wrap it in
@@ -101,12 +101,14 @@ book_ready:
     subject: "كتاب {{ child | gen }} جاهز للقراءة 📖"
     lines:
       - "اكتمل «{{ title }}»، وصار بإمكانكم قراءته الآن على الجوال."
+      - "{% if code %}رمز الكتاب: {{ code }}، وهو مطبوع في صفحة «عن قمرة» في آخر الكتاب. اذكروه عند التواصل معنا.{% endif %}"
       - "الرابط يفتح بعد تسجيل الدخول إلى حسابكم، ومنه تستطيعون مشاركة الكتاب مع العائلة برابط خاص."
     button: { label: "اقرؤوا الكتاب", link: reader_url }
   en:
     subject: "{{ child }}'s book is ready to read 📖"
     lines:
       - "“{{ title }}” is complete, and you can read it on your phone now."
+      - "{% if code %}Book code: {{ code }}. It is printed on the “About Qamra” page at the end of the book; please mention it when you contact us.{% endif %}"
       - "The link opens after you sign in; from there you can share the book with family through a private link."
     button: { label: "Read the book", link: reader_url }
 

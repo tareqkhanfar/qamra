@@ -414,6 +414,9 @@ class Book(IdMixin, TimestampMixin, Base):
     theme_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("themes.id", ondelete="RESTRICT"))
     theme_version: Mapped[int] = mapped_column(Integer)
     created_by_user_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"))
+    # «QB-7K4M2»: printed in the book and on its back, shown everywhere staff and parents see the book; given
+    # in the session's before_flush (`qamra_core.book_codes`), never reused (`book_codes` keeps every code)
+    code: Mapped[str] = mapped_column(String(12), unique=True)
     language: Mapped[Locale] = mapped_column(str_enum(Locale, "book_language"))
     art_style: Mapped[str] = mapped_column(String(32))
     status: Mapped[BookStatus] = mapped_column(str_enum(BookStatus, "book_status"), default=BookStatus.draft)
@@ -436,6 +439,18 @@ class Book(IdMixin, TimestampMixin, Base):
     qa_summary: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
     preflight: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
     error: Mapped[str | None] = mapped_column(Text)
+
+
+class BookCode(Base):
+    """Every book code ever given out (`qamra_core.book_codes`). No link to the book on purpose: the row stays
+    when a family deletes its books, so the code is never given to another book."""
+
+    __tablename__ = "book_codes"
+
+    code: Mapped[str] = mapped_column(String(12), primary_key=True)
+    issued_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
 
 
 class BookPage(IdMixin, TimestampMixin, Base):

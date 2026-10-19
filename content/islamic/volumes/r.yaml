@@ -36,4 +36,6 @@ units:
       - {t: "أَلْعَابُ الْعِيدِ", c: [c-eid-joy], p: [maze, coloring, draw]}
 cumulative:
   - {after: u-ram4, c: [c-ramadan, c-fasting-kids, c-laylat-alqadr, c-eid-manners], p: [self-test, self-test]}
-back: [assessment, passport, certificate]
+# the closing page (`front`: «إِلَى اللِّقَاءِ», which carries «عن قمرة» in an order's copy) and, to stay a multiple
+# of four (76), two drawing pages and a family challenge (owner 2026-10-19: the info page in every book)
+back: [assessment, draw, home-challenge, draw, passport, certificate, front]

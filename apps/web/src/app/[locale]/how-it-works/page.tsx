@@ -174,7 +174,7 @@ export default async function HowItWorksPage() {
         <section id="faq" className="grid scroll-mt-24 gap-6 lg:grid-cols-[1fr_2fr] lg:gap-16">
           <div className="flex flex-col gap-3">
             <SectionHead title={t("faqTitle")} lead={t("faqLead")} />
-            <ContactLinks className="text-[15px]" />
+            <ContactLinks social className="text-[15px]" />
             <div className="hidden w-[40%] lg:block">
               <Kid hijab hijabColor="#E9826B" outfit="#F2B33D" pose="wave" />
             </div>

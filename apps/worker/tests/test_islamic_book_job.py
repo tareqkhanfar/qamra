@@ -175,6 +175,7 @@ async def test_an_approved_volume_becomes_a_book_waiting_for_print_approval(
     book = db.get(Book, item.book_id)
     assert book is not None and book.status == BookStatus.in_review and book.cost_usd == 0
     assert book.generation["line"] == "islamic" and book.generation["volume"] == "R"
+    assert call["imprint"].code == book.code and call["imprint"].part == "كتاب رمضان والعيد"
     assert book.generation["scholar"]["approved_on"] == "2026-10-03"
     assert book.pdf_interior_key and storage.exists(book.pdf_interior_key)
     assert book.pdf_cover_key and storage.exists(book.pdf_cover_key)

@@ -37,6 +37,7 @@ from typing import Any, Literal
 from PIL import Image, ImageDraw, ImageFont
 
 from qamra_pdf import preflight
+from qamra_pdf.imprint import Imprint
 from qamra_pdf.render import FONTS_DIR
 from qamra_workbook.curriculum import REPLACED_WORDS, SUBJECTS, Curriculum, load
 from qamra_workbook.journey_book import english_name, uses_name_en
@@ -53,6 +54,7 @@ from qamra_workbook.render.engine import (
 )
 from qamra_workbook.render.foundation import VOLUME_AR, volume_book, volume_of
 from qamra_workbook.render.journey_order import OrderFiles, render_book, report
+from qamra_workbook.render.pages.about_qamra import with_about
 from qamra_workbook.render.samples import SPECS, Samples, assets_for, book_problems
 from qamra_workbook.render.samples import load as load_samples
 from qamra_workbook.render.spec import BookSpec, Child, Geometry, Numerals, PageSpec, product_geometry
@@ -254,8 +256,10 @@ async def render_order(
     numerals: Numerals = "hindi",
     day: dt.date | None = None,
     domain: str = "qamra.app",
+    imprint: Imprint | None = None,
 ) -> WorkbookFiles:
-    """Every file of one volume for an order into `out`: interior.pdf, cover.pdf and answer-key.pdf."""
+    """Every file of one volume for an order into `out`: interior.pdf, cover.pdf and answer-key.pdf. With
+    `imprint` (the book's code), the interior ends with «عن قمرة» and the back cover prints the code."""
     if interior != "color":
         raise VariantNotBuilt(
             "«دوسية التأسيس» has no black-and-white interior yet (owner decision 2026-10-07: the B&W "
@@ -265,6 +269,8 @@ async def render_order(
     book, cover, latin, guessed = volume_specs(
         child, level, number, name_en=name_en, numerals=numerals, day=day, domain=domain
     )
+    book = with_about(book, imprint)
+    cover = dataclasses.replace(cover, imprint=imprint)
     assets = assets_for(book, out)
     key = await render_book(book, assets, out / "interior.pdf", key=out / "answer-key.pdf")
     cover = covers.with_thumbs(cover, book, out / "interior.pdf", out / "assets", covers.THUMBS["foundation"])
