@@ -18,9 +18,9 @@ REVISION = "2351cdc1195c"
 SLUGS = ("3d", "cartoon", "watercolor")
 
 
-def _module() -> ModuleType:
-    [path] = (Path(MIGRATIONS_DIR) / "versions").glob(f"*_{REVISION}_*.py")
-    spec = importlib.util.spec_from_file_location(f"migration_{REVISION}", path)
+def _module(revision: str = REVISION) -> ModuleType:
+    [path] = (Path(MIGRATIONS_DIR) / "versions").glob(f"*_{revision}_*.py")
+    spec = importlib.util.spec_from_file_location(f"migration_{revision}", path)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -41,7 +41,9 @@ def test_the_records_are_the_guides() -> None:
     current = {g.slug: g for g in style_guides()}
     assert set(records) == set(SLUGS)
     for slug in SLUGS:
-        assert records[slug]["v3"] == _as_record(current[slug]), slug
+        # watercolor moved on to v4 (5b7e2c9d4f10): its v3 is in history/
+        v3 = history_guide(slug, 3) if slug == "watercolor" else current[slug]
+        assert records[slug]["v3"] == _as_record(v3), slug
         assert records[slug]["v2"] == _as_record(history_guide(slug, 2)), slug
 
 
@@ -53,8 +55,10 @@ async def _rows(adb: AsyncSession) -> dict[str, tuple[int, str]]:
 
 
 async def test_the_record_goes_back_to_v2_and_forward_to_v3(adb: AsyncSession) -> None:
-    await seed_store(adb)  # a fresh database: the rows come from the guides, at v3
+    await seed_store(adb)  # a fresh database: the rows come from the guides (watercolor at v4)
     module = _module()
+    later = _module("5b7e2c9d4f10")  # watercolor back to v3 first, as before that migration
+    await adb.run_sync(lambda session: later.record(session.connection(), forward=False))
 
     def step(session: Session, forward: bool) -> None:
         module.record(session.connection(), forward=forward)

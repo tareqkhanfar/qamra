@@ -12,7 +12,11 @@ scenes and the page QA. History of the golden file:
   - coloring, crayon, papercut: every group but the Classic portrait (house style v6).
   - new groups everywhere: the character portrait and the portrait-first sheet.
 - 2026-10-16 (the Classic violet patches): only the Classic portrait, in every style
-  (`classic_portrait.v2`: the style's medium line instead of its whole guide); the rest byte-identical."""
+  (`classic_portrait.v2`: the style's medium line instead of its whole guide); the rest byte-identical.
+- 2026-10-19 (the colour and likeness-notes work), rewritten on purpose:
+  - every style: only the character portrait (v3) and sheet (v7) groups, plus new groups with likeness notes;
+    pages, QA, companion, family, Classic and class-book prompts byte-identical;
+  - watercolor: every group (guide v4: white paper, clean washes, no amber cast)."""
 
 import json
 
@@ -36,4 +40,9 @@ def test_every_style_sends_exactly_its_golden_prompts(key: str) -> None:
 def test_the_golden_file_covers_every_style_and_the_portrait_first_prompts() -> None:
     assert set(GOLDEN_DATA) == set(STYLES)
     for groups in GOLDEN_DATA.values():
-        assert {"character-portrait:boy", "character:boy:portrait-first"} <= groups.keys()
+        assert {
+            "character-portrait:boy",
+            "character:boy:portrait-first",
+            "character-portrait:boy:notes",
+            "character:boy:portrait-first:notes",
+        } <= groups.keys()

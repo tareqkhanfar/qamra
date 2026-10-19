@@ -6,8 +6,9 @@ QA thresholds. The guides seed the `art_styles` table, where the admin edits the
 
 A guide may also replace two house sections for its own style only (`## House style`, `## House negative`)
 and add a line to its character-sheet prompt (`## Sheet`): «شبه حقيقي» v3 does, because the house's
-picture-book wording pulls a realistic painting back to a cartoon. Every other style gets the house as it is
-(`house_for`). Earlier guide versions live in `prompts/style/history/` (not loaded as styles).
+picture-book wording pulls a realistic painting back to a cartoon. `## Character` is a line for both the
+character portrait and the sheet (watercolor v4: clean, clear colour, never sepia). Every other style gets the
+house as it is (`house_for`). Earlier guide versions live in `prompts/style/history/` (not loaded as styles).
 """
 
 import re
@@ -105,6 +106,7 @@ class StyleGuide:
     house_style: str = ""  # replaces the house's Style section for this style only
     house_negative: str = ""  # replaces the house's Negative list for this style only
     sheet: str = ""  # added to this style's character-sheet prompt
+    character: str = ""  # added to this style's character portrait and sheet prompts (the child's colours)
 
 
 def parse_style_guide(text: str) -> StyleGuide:
@@ -127,6 +129,7 @@ def parse_style_guide(text: str) -> StyleGuide:
         house_style=sections.get("house style", ""),
         house_negative=sections.get("house negative", ""),
         sheet=sections.get("sheet", ""),
+        character=sections.get("character", ""),
     )
 
 

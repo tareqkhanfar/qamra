@@ -11,6 +11,7 @@ import structlog
 from sqlalchemy.orm import Session
 
 from qamra_ai.pipeline.family_member import MemberSpec, member_request
+from qamra_ai.pipeline.photo_color import neutralize
 from qamra_ai.pipeline.theme import load_style
 from qamra_core.db.models import FamilyMember, FamilyMemberStatus
 from qamra_core.storage import ObjectStorage
@@ -38,7 +39,7 @@ async def draw_member(
         sheet = await rt.draw(
             member_request(
                 MemberSpec(member.relation, member.adult, member.scarf),
-                [storage.get(member.photo_key)],
+                [neutralize(storage.get(member.photo_key))[0]],  # the photo's light made neutral
                 load_style(member.art_style or "watercolor"),
                 attempt=attempt,
             )

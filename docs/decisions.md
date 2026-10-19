@@ -1262,3 +1262,102 @@ calm pauses between the words rather than a slowed voice.
   0.31–0.76 s for the other letter pages' words, no inner pause: one clean word. It is accepted by hand for that
   clip's sha256 only. All 278 shown words and letters are tappable; a word that can't be played alone is shown
   greyed with no button rather than as a button that does nothing.
+
+## The child's colours and likeness: a neutral reference, daylight prompts and likeness notes (2026-10-19)
+
+Owner's live test with his test photo of a 5-year-old boy (a night photo under warm street light): the
+watercolor portrait and sheet were muddy and brownish-yellow, almost sepia («ألوان مش كثير واضحة وسيئة»), and the
+cartoon one was «طفل مختلف»: darker hair, a rounder face, a different smile, without his lighter tips swept up at the
+front and his narrow smiling eyes.
+
+- **The cause, measured.** The face in the photo is barely tinted: its cheeks read ln(R/G) 0.45, ln(B/G) −0.27 in
+  linear light, against 0.44 / −0.35 for the daylight face of the test fixture. The warm light is in the hair's
+  rim light and the background. So the sepia came mostly from our own words: the house palette («warm
+  moonlit-and-golden … warm with a golden glow»), watercolor v3's «warm textured paper», «glowing honey-gold
+  highlights» and «golden-hour light», and portrait v2's «full warm color» on a «warm cream background». The same
+  photo with the new prompts gave clean, natural colour (below). The photo's cast still matters for darker or
+  more strongly lit photos, which the colour step handles.
+- **A: the reference's light made neutral** (`qamra_ai.pipeline.photo_color`). After the framing crop, every photo
+  an image model gets (`photo_bytes`: portrait, sheet, cover likeness, Classic, free cover; and family members'
+  photos) goes through `reference_photo`. The stored original never changes.
+  - The light is read away from the head: YuNet finds the face, and the head, hair and neck are left out (skin
+    and hair are warm by nature), as are strongly coloured pixels (a red T-shirt) and near-black and clipped
+    ones. What is left gives the light: a p-norm (p = 4) "shades of grey" mean of linear RGB.
+  - Only the part of the cast outside a tolerance box (ln R/G −0.06…0.10, ln B/G −0.15…0.06, so a warm room or
+    a cool shade stays) is taken out, and only 80 % of it; each channel's gain stays within ×1.5 either way, and
+    a grey's brightness is kept.
+  - **The skin guard:** the cheeks, once corrected, must stay in a skin range (ln R/G ≥ ln 1.12, ln B/G ≤ ln 0.92,
+    and not past ln 3 / ln 0.3); the correction is scaled back until they do, and skin already outside is never
+    pushed further out.
+  - Exposure: a face darker than luma 0.42 or brighter than 0.80 is moved gently toward the range (×0.8–1.6);
+    then a mild levels stretch (≤ 1.25) when the picture doesn't span the full tonal range (never on a plain,
+    flat picture).
+  - Without a face, or with under 6 % of the picture left to read, the colour is left alone. A photo that needs
+    nothing comes back byte for byte.
+  - The owner's photo has almost nothing neutral away from the head (black sky, red T-shirt), so its colour was
+    left alone (gains 1.0) and it only got a 1.13 levels stretch. Which is right: its face had no cast.
+  - Tested on synthetic sodium, tungsten and blue-screen casts on the face fixture: the skin comes back at
+    least 40 % (blue: 25 %) of the way to its daylight colour, a mild warm room is untouched, the gains stay
+    clamped, pale skin never turns grey.
+- **B: daylight prompts.**
+  - `character_portrait.v3` and `character_sheet.v7` (through `likeness.v3`): "this is the child's reference
+    portrait/sheet, not a scene: paint it in even, neutral daylight, whatever the palette says about the light
+    of scenes".
+  - A COLOR block: ignore the photo's light, colour cast and background; the child's true skin tone, hair colour
+    and eye colour; never tinted brown, amber, yellow, sepia or grey.
+  - The portrait is «in full, clear, natural color» on a «very light cream» background, and the sheet's
+    background is «evenly lit, very light cream»; a negative against an overall tint.
+  - The house style is unchanged: its golden palette is right for scenes, and pages, covers and QA are
+    byte-identical in every style but watercolor (the golden snapshots prove it).
+- **Watercolor v4** (v3 in `history/`, migration `5b7e2c9d4f10` keeps the row's record):
+  - white textured paper; clean, bright, transparent washes with clear, rich colour; luminous highlights;
+  - "the light is the scene's own (soft daylight, a golden evening or moonlight), and under it skin, hair and
+    clothes keep their true, clear colors";
+  - a new negative: no sepia, brown, amber or yellow cast over the whole picture, no muddy browns or greys.
+  - It changes every watercolor prompt, pages included: the paper is white instead of warm. Golden scenes stay
+    possible; a scene names its own light.
+- **A new guide section, `## Character`:** a line each style can add to the character portrait and sheet prompts (watercolor:
+  clean transparent washes in neutral daylight, true colours). `## Sheet` stays sheet-only, because the
+  semi-realistic one speaks of three views.
+- **C: likeness notes** (`qamra_ai.pipeline.likeness_notes`, `likeness_notes.v1` + `likeness_notes_user.v1`).
+  - Before drawing, the main text model (Sonnet, vision) looks at the framed, neutralised photo(s) and writes
+    short notes on how the child looks: hair (colour with lighter and darker parts, length, texture, direction,
+    the front), face shape, eyes and how they look when smiling, eyebrows, nose, mouth and smile, skin tone in
+    daylight, marks, and glasses only when the family said so (hair left out under a hijab).
+  - They go into the portrait and sheet prompts of every style ("WHAT THIS CHILD LOOKS LIKE … keep every one in
+    the drawing, in the style's own way") and are kept on the character, `params.likeness_notes`, with
+    `likeness_notes_outcome`.
+  - They are written once per drawing and saved before the drawing starts: a retried job doesn't ask again, and a redraw (a new
+    character row) reads the photo again.
+- **Privacy:**
+  - appearance only: no name, no identity or resemblance, no ethnicity or origin, no age guess, nothing below
+    the neck, no clothes or place;
+  - the family's hijab and glasses choices win over the photo;
+  - every note gets the local text screen (links, phone numbers, unsafe words) and is cut to 220 characters;
+  - the log has the outcome only, never the notes;
+  - the 30-day cleanup of drawings never approved removes the notes with the picture (and those of
+    failed drawings), and «حذف كل بيانات الطفل» removes the character row.
+  - An unclear photo or a failed call draws without notes, as before.
+- **Cost:** about $0.01 per drawing (one Sonnet vision call, ~2.5k tokens in, ~300 out), logged as
+  `character:likeness` in GenerationCost against the child. The portrait and sheet stay $0.30 on fal.
+- **Verification on the owner's photo, $1.50** (`likeness-v2:` ledger rows, 10 Nano Banana Pro calls at $0.15;
+  the cap was $0.55, then $2.00 once the owner's balance was known; `scripts/likeness_colour_trial.py`, portraits
+  in parallel, then sheets). There is no Anthropic key here, so the trial's notes were written by hand from the
+  photo, following the rules the model gets; the server writes its own. By eye, out of 10:
+
+  | | live | new, try 1 | new, try 2 |
+  |---|---|---|---|
+  | watercolor portrait | 6, sepia | 6–7, clean colour | – |
+  | watercolor sheet | 5, sepia | 5, clean colour, face rounder | 5–6, clean colour |
+  | cartoon portrait | 3 | 5–6 | 4–5 (hair too light) |
+  | cartoon sheet | 3 | 5 | 4–5 |
+  | 3D portrait | – | 5 (hair too dark, face round) | 5 (closer hair, face round) |
+  | semi-realistic portrait | – | 7 | – |
+
+  - **Colour: fixed in every picture.** White or very light paper and background, natural skin, no sepia or
+    amber; 3D and semi-realistic are neutral too, so the new wording does not hurt them.
+  - **Likeness:** the notes bring back what a stylized drawing used to drop: his lighter tips, the quiff swept
+    up at the front, the narrow smiling eyes and the closed smile. The face shape is still the weak point in
+    cartoon and 3D: wider, rounder and a little younger than his. A second seed changes the hair colour more
+    than the face. Semi-realistic remains the closest style.
+  - Unspent: $0.50 of the cap, kept for live orders.

@@ -1,7 +1,8 @@
 """Portrait first (owner's decision, 2026-10-10, after the likeness trial): the child's portrait in the style
-(`character_portrait.v2`), then the sheet painted from the photo and the portrait (`character_sheet.v6`), each
-step on its own model; the portrait goes with the sheet on every picture of the hero. The trial's v5 and v1
-stay for the record (scripts/likeness_trial.py)."""
+(`character_portrait.v3`), then the sheet painted from the photo and the portrait (`character_sheet.v7`),
+each step on its own model; the portrait goes with the sheet on every picture of the hero. Since 2026-10-19
+both ask for even, neutral daylight and the child's true colors, and carry the likeness notes. The trial's v5
+and v1, and v6 and v2, stay for the record (scripts/likeness_trial.py)."""
 
 import pytest
 from tests_helpers import png
@@ -13,6 +14,7 @@ from qamra_ai.image.fake import FakeImageProvider
 from qamra_ai.pipeline.book import default_companion
 from qamra_ai.pipeline.character import (
     LIKENESS_SHEET_VERSION,
+    PORTRAIT_PROMPT_VERSION,
     SHEET_PROMPT_VERSION,
     character_request,
     generate_character,
@@ -34,8 +36,8 @@ def _flat(req: ImageRequest) -> str:
     return " ".join(req.prompt.split())
 
 
-def test_books_draw_portrait_first_with_v6() -> None:
-    assert SHEET_PROMPT_VERSION == 6
+def test_books_draw_portrait_first_with_v7() -> None:
+    assert (SHEET_PROMPT_VERSION, PORTRAIT_PROMPT_VERSION) == (7, 3)
     with pytest.raises(ValueError, match="no portrait"):
         character_request(BOY, [PHOTO], load_style("3d"), version=4, portrait=PORTRAIT)
     old = character_request(BOY, [PHOTO], load_style("3d"), version=4)
@@ -43,7 +45,7 @@ def test_books_draw_portrait_first_with_v6() -> None:
 
 
 @pytest.mark.parametrize("slug", ["3d", "semi-realistic", "cartoon", "watercolor"])
-def test_v6_keeps_the_childs_own_face_hair_and_exact_age(slug: str) -> None:
+def test_v7_keeps_the_childs_own_face_hair_and_exact_age(slug: str) -> None:
     style = load_style(slug)
     req = character_request(BOY, [PHOTO], style, resolution="2K", portrait=PORTRAIT)
     flat = _flat(req)
@@ -51,7 +53,8 @@ def test_v6_keeps_the_childs_own_face_hair_and_exact_age(slug: str) -> None:
     assert "It never changes this child's face, head shape, features, hair or age." in flat
     assert "not a generic cute face" in flat and "Paint exactly his age, neither younger nor older" in flat
     assert "the same shape at the front (fringe, quiff" in flat and "Never curlier" in flat
-    assert "Skin tone: exactly the photo's" in flat
+    assert "Skin tone: exactly the child's own, as it looks in daylight" in flat
+    assert "with its lighter and darker parts" in flat
     assert "simple brown shoes" in flat and "never barefoot" in flat and "no bare feet" in flat
     assert style.guide.split()[0] in flat and req.resolution == "2K"
     assert [r.label for r in req.refs] == [
@@ -69,7 +72,8 @@ def test_the_portrait_is_a_large_face_in_full_color_at_the_exact_age() -> None:
     flat = _flat(req)
     assert (req.aspect, req.resolution, req.step) == ("1:1", "1K", "portrait:1")
     assert "head-and-shoulders portrait" in flat and "about 60% of the picture's height" in flat
-    assert "in its full warm color: never a monochrome, sepia or ink sketch" in flat
+    assert "in full, clear, natural color: never a monochrome, sepia or ink sketch" in flat
+    assert "warm cream background" not in flat and "very light cream background" in flat
     assert "Paint exactly her age, neither younger nor older" in flat and "she wears glasses" in flat
     assert "- Hair: match the photo's hair color" in flat and "- Shorter fringe." in flat  # a redraw's fixes
     assert (
@@ -84,6 +88,9 @@ def test_the_trials_v5_and_v1_stay_for_the_record() -> None:
     assert "a 5-year-old boy, never younger" in _flat(sheet)
     portrait = portrait_request(BOY, [PHOTO], load_style("3d"), version=1)
     assert "full warm color" not in _flat(portrait)
+    assert "in its full warm color" in _flat(portrait_request(BOY, [PHOTO], load_style("3d"), version=2))
+    six = character_request(BOY, [PHOTO], load_style("3d"), version=6, portrait=PORTRAIT)
+    assert "Skin tone: exactly the photo's" in _flat(six) and "COLOR" not in six.prompt
 
 
 class _Recorder(FakeImageProvider):
@@ -163,3 +170,84 @@ def test_every_picture_of_the_hero_gets_the_portrait_next_to_the_sheet(beat: int
     assert (
         "portrait" not in " ".join(r.label for r in without.refs) and "hero's portrait" not in without.prompt
     )
+
+
+NOTES = {
+    "skin": "light olive",
+    "hair": "medium brown with lighter golden-brown tips, swept up at the front into a small quiff",
+    "eyes": "dark brown, narrowing into crescents when smiling",
+    "unknown": "never shown",
+}
+
+
+@pytest.mark.parametrize("slug", ["3d", "semi-realistic", "cartoon", "watercolor"])
+def test_both_steps_ask_for_daylight_colors_and_carry_the_likeness_notes(slug: str) -> None:
+    style = load_style(slug)
+    for req in (
+        portrait_request(BOY, [PHOTO], style, notes=NOTES),
+        character_request(BOY, [PHOTO], style, portrait=PORTRAIT, notes=NOTES),
+    ):
+        flat = _flat(req)
+        assert "Ignore the photo's light, its color cast and its background" in flat
+        assert "never tinted brown, amber, yellow, sepia or gray" in flat
+        assert (
+            "paint it in even, neutral daylight, whatever the palette says about the light of scenes" in flat
+        )
+        assert "color cast" in flat.split("NEGATIVE")[-1]
+        notes = flat.split("WHAT THIS CHILD LOOKS LIKE")[1].split("COLOR")[0]
+        # a fixed order (hair before eyes before skin), labelled, and unknown keys ignored
+        assert (
+            notes.index("- Hair: medium brown with lighter golden-brown tips")
+            < notes.index("- Eyes: dark brown, narrowing")
+            < notes.index("- Skin tone: light olive")
+        )
+        assert "never shown" not in flat
+    without = _flat(portrait_request(BOY, [PHOTO], style))
+    assert "WHAT THIS CHILD LOOKS LIKE" not in without and "COLOR" in without
+
+
+def test_only_watercolor_has_its_own_character_line_in_both_steps() -> None:
+    line = "clean, bright, transparent watercolor washes, in even, neutral daylight"
+    for slug in ("3d", "semi-realistic", "cartoon", "watercolor"):
+        style = load_style(slug)
+        assert (style.character != "") == (slug == "watercolor")
+        portrait = _flat(portrait_request(BOY, [PHOTO], style))
+        sheet = _flat(character_request(BOY, [PHOTO], style, portrait=PORTRAIT))
+        assert (line in portrait, line in sheet) == ((slug == "watercolor"),) * 2
+
+
+def test_watercolor_v4_drops_the_amber_wording() -> None:
+    look = " ".join(load_style("watercolor").guide.split())
+    assert "white textured paper" in look and "clean, bright, transparent washes" in look
+    for amber in ("warm textured paper", "honey-gold", "golden-hour"):
+        assert amber not in look
+    assert "No sepia, brown, amber or yellow cast over the whole picture" in load_style("watercolor").negative
+
+
+def test_older_templates_refuse_likeness_notes() -> None:
+    with pytest.raises(ValueError, match="no likeness notes"):
+        portrait_request(BOY, [PHOTO], load_style("3d"), version=2, notes=NOTES)
+    with pytest.raises(ValueError, match="no likeness notes"):
+        character_request(BOY, [PHOTO], load_style("3d"), version=6, portrait=PORTRAIT, notes=NOTES)
+    assert portrait_request(
+        BOY, [PHOTO], load_style("3d"), version=2, notes={}
+    ).prompt  # empty: nothing to add
+
+
+async def test_the_notes_reach_both_steps() -> None:
+    settings = Settings(_env_file=None)  # type: ignore[call-arg]
+    image = _Recorder("page")
+    rt = Runtime(settings=settings, text=None, image=image)  # type: ignore[arg-type]
+    await generate_character(rt, BOY, [PHOTO], load_style("cartoon"), notes={"face": "oval, a little long"})
+    assert all("- Face shape: oval, a little long" in r.prompt for r in image.requests)
+    assert len(image.requests) == 2
+
+
+def test_under_a_hijab_the_likeness_block_asks_for_no_hair() -> None:
+    girl = Child(name="x", gender="f", age=6, hijab=True)
+    for req in (
+        portrait_request(girl, [PHOTO], load_style("cartoon")),
+        character_request(girl, [PHOTO], load_style("cartoon"), portrait=PORTRAIT),
+    ):
+        assert "- Hair: exactly as in the photo" not in req.prompt and "sage-green hijab" in req.prompt
+    assert "- Hair: exactly as in the photo" in portrait_request(BOY, [PHOTO], load_style("cartoon")).prompt

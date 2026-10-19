@@ -1,5 +1,27 @@
 # Changelog
 
+## The child's drawing: clear colours and their own face (2026-10-19)
+- **Owner:** the watercolor portrait and sheet of his night photo were muddy and almost sepia («ألوان مش كثير
+  واضحة وسيئة»), and the cartoon one was «طفل مختلف» (darker hair, rounder face, a different smile).
+- **The photo's light is made neutral** before any image model sees it (`photo_color.reference_photo`, after the
+  framing): a gentle, clamped white balance measured away from the head, a skin guard, a mild exposure and levels
+  fix. The stored original never changes. Used for the portrait, sheet, cover likeness, Classic, free cover and
+  family members.
+- **Daylight prompts:** `character_portrait.v3` and `character_sheet.v7` (`likeness.v3`) paint the child in
+  even, neutral daylight with true skin, hair and eye colours, whatever the photo's light or the palette's golden
+  scenes, on a very light background, never tinted brown, amber or sepia.
+- **Watercolor v4:** white paper, clean transparent washes, a scene's own light; no overall sepia or amber cast.
+  It has a new `## Character` line for the portrait and sheet. Migration `5b7e2c9d4f10` updates the style row's
+  record.
+- **Likeness notes:** before drawing, Claude looks at the framed photo and writes short, appearance-only notes
+  (hair with its lighter parts and front, face shape, eyes when smiling, nose, smile, skin tone). They go into the
+  portrait and sheet prompts of every style and are kept on the character (`params.likeness_notes`). About $0.01
+  a drawing, logged as `character:likeness`. The 30-day cleanup of unapproved drawings removes them.
+- **Verified** on the owner's photo for $1.50 (10 calls: portraits and sheets in watercolor and cartoon, 3D and
+  semi-realistic portraits, second tries; the trial's notes were written by hand, since there is no Anthropic key
+  here). The colour is clean in every style. The cartoon keeps his lighter tips, quiff and narrow smiling eyes;
+  its face shape is still rounder than his. `scripts/likeness_colour_trial.py`.
+
 ## QR audio: the last five words can be tapped too (2026-10-17)
 - «ت», «ث» and «ق» on the alphabet page and «Van» got new takes (same voice and settings, one call each; the
   letter names with their marks, `SAY_AS` in `scripts/journey_voices.py`), spliced into their clips. Whisper heard

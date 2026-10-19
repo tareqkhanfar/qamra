@@ -280,6 +280,7 @@ class ArtStyle(BaseModel):
     house_style: str = ""
     house_negative: str = ""
     sheet: str = ""
+    character: str = ""  # a line for the character portrait and sheet (style guide `## Character`)
 
 
 # the name slots of a theme text; `{name:acc}` marks the accusative («وَضَمَّتْ {name:acc}» → «وَضَمَّتْ أبا بكر»),
@@ -330,6 +331,7 @@ def art_style(guide: "StyleGuide") -> ArtStyle:
         house_style=guide.house_style,
         house_negative=guide.house_negative,
         sheet=guide.sheet,
+        character=guide.character,
     )
 
 

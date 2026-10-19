@@ -11,13 +11,19 @@ The sheet wears a neutral reference outfit; each book locks its own outfit throu
 the parent chose it. A redraw makes both again and can carry what the parent said did not look like their
 child (design Create5): the chips, and the parent's own words once `character_feedback` has turned them into a
 short appearance-only instruction (`note`).
+
+Since 2026-10-19 (the owner's night photo under yellow street light: a sepia watercolor, a generic cartoon
+boy) the photo reaches the model with its light made neutral (`photo_color`), the prompts ask for even,
+neutral daylight and the child's true colors (sheet v7, portrait v3), and the text model's likeness notes
+(`likeness_notes`: hair, face, eyes, smile, skin tone, in words) go into both prompts in every style.
 """
 
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 
 from qamra_ai import prompts
 from qamra_ai.image.base import GeneratedImage, ImageRequest, RefImage, Resolution, sniff_mime
+from qamra_ai.pipeline.likeness_notes import note_lines
 from qamra_ai.pipeline.models import Child
 from qamra_ai.pipeline.runtime import Runtime
 from qamra_ai.pipeline.style import house_for, negatives
@@ -25,9 +31,10 @@ from qamra_ai.pipeline.theme import ArtStyle
 
 # What the parent can tick under "what doesn't look like her?" → the line the redraw prompt gets.
 FIXES = ("skin", "face", "hair", "age")
-SHEET_PROMPT_VERSION = 6  # books: portrait first. v4 (no portrait) and v5 (the trial) stay for the record
+SHEET_PROMPT_VERSION = 7  # books: neutral daylight + likeness notes. v4–v6 stay for the record
 LIKENESS_SHEET_VERSION = 5  # the first version that takes a portrait
-PORTRAIT_PROMPT_VERSION = 2
+PORTRAIT_PROMPT_VERSION = 3
+NOTES_VERSION = 3  # character_sheet.v7 and character_portrait.v3 (likeness.v3) take the likeness notes
 
 
 def fix_lines(child: Child, fixes: Sequence[str]) -> list[str]:
@@ -47,6 +54,11 @@ def fix_lines(child: Child, fixes: Sequence[str]) -> list[str]:
     return [lines[f] for f in FIXES if f in fixes]
 
 
+def _check_notes(notes: Mapping[str, str] | None, takes: bool, template: str) -> None:
+    if notes and not takes:
+        raise ValueError(f"{template} takes no likeness notes")
+
+
 def _photo_refs(photos: list[bytes]) -> list[RefImage]:
     return [RefImage(p, sniff_mime(p), f"photo of the child ({i + 1})") for i, p in enumerate(photos)]
 
@@ -62,13 +74,15 @@ def character_request(
     *,
     version: int = SHEET_PROMPT_VERSION,
     portrait: bytes | None = None,
+    notes: Mapping[str, str] | None = None,
 ) -> ImageRequest:
     """The character-sheet request. `portrait` (the child's portrait in the style, portrait first) goes after
-    the photos as one more reference; v5 and later know it."""
+    the photos as one more reference; v5 and later know it. `notes`: the likeness notes (v7 and later)."""
     if not 1 <= len(photos) <= 3:
         raise ValueError("character sheet needs 1–3 photos")
     if portrait is not None and version < LIKENESS_SHEET_VERSION:
         raise ValueError(f"character_sheet.v{version} takes no portrait")
+    _check_notes(notes, version >= SHEET_PROMPT_VERSION, f"character_sheet.v{version}")
     h = house_for(style)
     prompt = prompts.render(
         "character_sheet",
@@ -83,9 +97,11 @@ def character_request(
         style=h.style,
         medium=style.guide,
         sheet=style.sheet,
+        character=style.character,
         people=h.people,
         negative=negatives(h, style.negative),
         portrait=portrait is not None,
+        notes=note_lines(dict(notes) if notes else None),
     )
     refs = _photo_refs(photos)
     if portrait is not None:
@@ -110,11 +126,14 @@ def portrait_request(
     note: str | None = None,
     *,
     version: int = PORTRAIT_PROMPT_VERSION,
+    notes: Mapping[str, str] | None = None,
 ) -> ImageRequest:
     """Portrait first: a large head-and-shoulders portrait of the child in the style, the face filling the
-    frame, from which the sheet is then painted (`character_request(..., portrait=)`)."""
+    frame, from which the sheet is then painted (`character_request(..., portrait=)`). `notes`: the likeness
+    notes (v3 and later)."""
     if not 1 <= len(photos) <= 3:
         raise ValueError("a portrait needs 1–3 photos")
+    _check_notes(notes, version >= NOTES_VERSION, f"character_portrait.v{version}")
     h = house_for(style)
     prompt = prompts.render(
         "character_portrait",
@@ -128,7 +147,9 @@ def portrait_request(
         glasses=child.glasses,
         style=h.style,
         medium=style.guide,
+        character=style.character,
         negative=negatives(h, style.negative),
+        notes=note_lines(dict(notes) if notes else None),
     )
     return ImageRequest(
         step=f"portrait:{attempt}",
@@ -154,17 +175,28 @@ async def generate_character(
     attempt: int = 1,
     fixes: Sequence[str] = (),
     note: str | None = None,
+    notes: Mapping[str, str] | None = None,
 ) -> CharacterDrawing:
     """The portrait, then the sheet painted from the photos and it; each on its own model and resolution
-    (`character_portrait_*`, `character_sheet_*` settings)."""
+    (`character_portrait_*`, `character_sheet_*` settings). `notes`: the likeness notes, when read."""
     s = rt.settings
     portrait = await rt.draw(
-        portrait_request(child, photos, style, attempt, s.character_portrait_resolution, fixes, note),
+        portrait_request(
+            child, photos, style, attempt, s.character_portrait_resolution, fixes, note, notes=notes
+        ),
         role="portrait",
     )
     sheet = await rt.draw(
         character_request(
-            child, photos, style, attempt, s.character_sheet_resolution, fixes, note, portrait=portrait.data
+            child,
+            photos,
+            style,
+            attempt,
+            s.character_sheet_resolution,
+            fixes,
+            note,
+            portrait=portrait.data,
+            notes=notes,
         ),
         role="sheet",
     )
