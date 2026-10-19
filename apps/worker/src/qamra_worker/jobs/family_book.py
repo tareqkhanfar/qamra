@@ -49,6 +49,7 @@ from qamra_core.db.models import (
 from qamra_core.storage import ObjectStorage
 from qamra_pdf.arabic_names import genitive
 from qamra_worker import context
+from qamra_worker.imprint import book_imprint
 from qamra_worker.jobs.books import file_key
 
 log = structlog.get_logger("qamra.worker.family_book")
@@ -262,6 +263,7 @@ async def render_item(db: Session, storage: ObjectStorage, item: OrderItem) -> d
             numerals=numerals_of(item),  # type: ignore[arg-type]
             org=org_of(item, storage, Path(tmp)),
             member_sheets=member_sheets_of(db, item, child, storage, Path(tmp)),
+            imprint=book_imprint(db, book, child, line=LINE),
         )
         book.pdf_interior_key = file_key(book, "interior.pdf")
         storage.put(book.pdf_interior_key, files.interior.read_bytes(), "application/pdf")

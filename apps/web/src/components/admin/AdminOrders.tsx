@@ -7,6 +7,7 @@ import { buttonClasses } from "@/components/ui/Button";
 import { api, errorText } from "@/lib/api";
 import { nameCases } from "@/lib/arabicName";
 import { money, type Currency } from "@/lib/store";
+import { BookCode } from "./BookCode";
 
 type Row = {
   id: string;
@@ -34,6 +35,8 @@ type Item = {
   unit_price: string;
   discount: string;
   addons: { slug: string; qty: number; included?: boolean; name_ar?: string; name_en?: string }[];
+  /** One per printed book of this line (a workbook set has 3); `part` is "" for a single book, else "1", "V1"… */
+  books?: { id: string; code: string; part: string; title: string | null; status: string }[];
 };
 type Event = {
   kind: string;
@@ -91,6 +94,7 @@ export function AdminOrders() {
   const t = useTranslations("orders");
   const tg = useTranslations("orderPath.orders");
   const te = useTranslations("errors");
+  const tq = useTranslations("queue");
   const locale = useLocale();
   const [status, setStatus] = useState("");
   const [q, setQ] = useState("");
@@ -268,6 +272,24 @@ export function AdminOrders() {
                         .filter(Boolean)
                         .join(" · ")}
                     </span>
+                    {(it.books ?? []).length > 0 && (
+                      <span className="mt-1 flex flex-col gap-1">
+                        {it.books!.map((b) => (
+                          <span key={b.id} className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                            <BookCode code={b.code} copy />
+                            <span className="text-caption text-ink-muted">
+                              {[
+                                b.part && t("part", { part: b.part }),
+                                b.title,
+                                tq.has(`status.${b.status}`) ? tq(`status.${b.status}`) : b.status,
+                              ]
+                                .filter(Boolean)
+                                .join(" · ")}
+                            </span>
+                          </span>
+                        ))}
+                      </span>
+                    )}
                   </span>
                   <span className="font-semibold">{amount(it.unit_price, detail.currency)}</span>
                 </label>

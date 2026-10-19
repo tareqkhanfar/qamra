@@ -156,7 +156,12 @@ async def test_a_foundation_order_renders_a_volume_for_the_child(
     gen = book.generation
     assert (gen["line"], gen["level"], gen["volume"], gen["name_en"]) == ("workbook", "kg2", 1, "Roua")
     assert book.pdf_interior_key and book.pdf_cover_key
-    assert len(PdfReader(io.BytesIO(storage.get(book.pdf_interior_key))).pages) == 4
+    # the 4 pages, then «عن قمرة» and the plain page behind it, printing this book's own code
+    assert len(PdfReader(io.BytesIO(storage.get(book.pdf_interior_key))).pages) == 6
+    assert (
+        f'<span class="val">{book.code}</span>' in seen["interior"] and "info@qamra.app" in seen["interior"]
+    )
+    assert f'data-book-code="{book.code}"' in seen["cover"]  # small on the back cover
     assert len(PdfReader(io.BytesIO(storage.get(book.pdf_cover_key))).pages) == 2  # front and back
     assert book.preflight["interior.pdf"]["passed"] and book.preflight["cover.pdf"]["passed"]
     assert not {"preflight_failed", "name_en_guessed", "name_not_traceable", "cutout_fallback"} & set(
@@ -182,6 +187,11 @@ async def test_a_volume_becomes_a_book_waiting_for_print_approval(
     book = db.get(Book, item.book_id)
     assert book is not None and book.status == BookStatus.in_review
     assert storage.exists(book.generation["files"]["answer-key"]) and book.pdf_cover_key
+    imprint = call["imprint"]  # the code printed in the volume is the book's own
+    assert imprint.code == book.code and (imprint.product, imprint.part) == (
+        "دوسية التأسيس",
+        "KG1 · الجزء الثاني",
+    )
     again = await workbook_book.render_item(db, storage, item)  # a retried job reuses the same book
     assert again["books"][0]["book_id"] == str(book.id)
 

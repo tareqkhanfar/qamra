@@ -10,16 +10,19 @@ The worker's order job (`qamra_worker.jobs.journey_book`) calls `render_order`; 
 
 from __future__ import annotations
 
+import dataclasses
 import datetime as dt
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
 from qamra_pdf import preflight
+from qamra_pdf.imprint import Imprint
 from qamra_workbook.journey import Journey, load
 from qamra_workbook.journey_book import PLAN, cover_specs, layer_problems, load_layer, page_specs, stage_book
 from qamra_workbook.render import covers
 from qamra_workbook.render.engine import PageProblems, answer_key_html, book_html, build_pages, print_pdf
+from qamra_workbook.render.pages.about_qamra import with_about
 from qamra_workbook.render.registry import Assets
 from qamra_workbook.render.samples import assets_for, book_problems
 from qamra_workbook.render.spec import BookSpec, Child, Geometry, Numerals
@@ -90,6 +93,7 @@ async def render_order(
     domain: str = "qamra.app",
     plan: Journey | None = None,
     name_en: str = "",
+    imprint: Imprint | None = None,
 ) -> OrderFiles:
     """Every file of one stage into `out`: interior.pdf, cover.pdf, answer-key.pdf and
     inserts/stickers.pdf (with inserts/stickers-die.pdf)."""
@@ -97,6 +101,8 @@ async def render_order(
     interior, cover = stage_specs(
         child, stage, numerals=numerals, day=day, domain=domain, plan=plan, name_en=name_en
     )
+    interior = with_about(interior, imprint)  # «عن قمرة» at the end, the code on the back (`imprint`)
+    cover = dataclasses.replace(cover, imprint=imprint)
     assets = assets_for(interior, out)
     key = await render_book(interior, assets, out / "interior.pdf", key=out / "answer-key.pdf")
     cover = covers.with_thumbs(

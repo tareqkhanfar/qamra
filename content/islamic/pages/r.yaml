@@ -801,7 +801,7 @@ pages:
     habit: {text: "{عوّدوا الطفل أن يبدأ بالسلام كلما دخل بيتًا أو لقي/عوّدوا الطفلة أن تبدأ بالسلام كلما دخلت بيتًا أو لقيت} أحدًا، في العيد وبعده.", sources: [h-muslim-54], ai_drafted: true}
     care_note: "في الكتاب صفحات فيها كلام الله تعالى وأحاديث وأذكار؛ نرجو حفظه في مكان نظيف مرتفع، وعدم رميه أو وضع شيء فوقه."
 
-  # ==== the final pages: assessment, passport, certificate ============================================================
+  # ==== the final pages: assessment, two drawings and a family challenge, passport, certificate, the closing page ============================================================
   - key: end/1
     type: assessment
     ai_drafted: true
@@ -821,6 +821,36 @@ pages:
     note: "نَجْمَةٌ: بِدَايَةٌ، نَجْمَتَانِ: تَقَدُّمٌ، ثَلَاثُ نَجَمَاتٍ: عَادَةٌ ثَابِتَةٌ."
 
   - key: end/2
+    type: draw
+    ai_drafted: true
+    title: "ذِكْرَيَاتِي فِي رَمَضَانَ"
+    instruction: "{ارْسُمْ وَلَوِّنْ/ارْسُمِي وَلَوِّنِي}"
+    prompt: "{ارْسُمْ أَجْمَلَ ذِكْرَى لَكَ مِنْ رَمَضَانَ/ارْسُمِي أَجْمَلَ ذِكْرَى لَكِ مِنْ رَمَضَانَ}."
+    hints: ["isl:lantern", crescent, house]
+    lines: 1
+
+  - key: end/3
+    type: home-challenge
+    ai_drafted: true
+    title: "تَحَدِّي الْعِيدِ"
+    instruction: "{تَحَدَّ نَفْسَكَ مَعَ أُسْرَتِكَ/تَحَدَّيْ نَفْسَكِ مَعَ أُسْرَتِكِ}"
+    challenge: "أَيَّامَ الْعِيدِ نُفْرِحُ مَنْ حَوْلَنَا"
+    steps:
+      - "نَزُورُ أَقَارِبَنَا وَنُسَلِّمُ عَلَيْهِمْ."
+      - "نُشَارِكُ أَلْعَابَنَا وَحَلْوَيَاتِنَا مَعَ غَيْرِنَا."
+      - "نَتَّصِلُ بِمَنْ لَا نَسْتَطِيعُ زِيَارَتَهُ."
+    days: 3
+    reward: "نَجْمَةُ الْفَرَحِ"
+
+  - key: end/4
+    type: draw
+    ai_drafted: true
+    title: "فَانُوسِي"
+    instruction: "{صَمِّمْ وَلَوِّنْ/صَمِّمِي وَلَوِّنِي}"
+    prompt: "{صَمِّمْ فَانُوسَ رَمَضَانَ كَمَا تُحِبُّ، وَزَيِّنْهُ بِالنُّجُومِ وَالْأَلْوَانِ./صَمِّمِي فَانُوسَ رَمَضَانَ كَمَا تُحِبِّينَ، وَزَيِّنِيهِ بِالنُّجُومِ وَالْأَلْوَانِ.}"
+    hints: ["isl:lantern", star, crescent]
+
+  - key: end/5
     type: passport
     ai_drafted: true
     gendered_title: "{جَوَازُ الْمُسْلِمِ الصَّغِيرِ/جَوَازُ الْمُسْلِمَةِ الصَّغِيرَةِ}"
@@ -828,9 +858,15 @@ pages:
     stamps_from: units.yaml
     challenge_stars: 6
 
-  - key: end/3
+  - key: end/6
     type: certificate
     ai_drafted: true
     statement: "{أَنَا مُسْلِمٌ صَغِيرٌ/أَنَا مُسْلِمَةٌ صَغِيرَةٌ} أُحِبُّ رَمَضَانَ، وَأَصُومُ بِقَدْرِ طَاقَتِي، وَأَفْرَحُ بِالْعِيدِ"
     fields: [name, character, date, parent_signature]
     reviewed_by_line: false
+
+  # the closing page; in an order's copy it is «عن قمرة» with this farewell above it (render/pages/about_qamra.py)
+  - key: end/7
+    type: back-page
+    ai_drafted: true
+    message: "{أَحْسَنْتَ/أَحْسَنْتِ} يَا {child}! {أَنْهَيْتَ/أَنْهَيْتِ} كِتَابَ رَمَضَانَ وَالْعِيدِ، وَنَلْتَقِي فِي كُتُبٍ أُخْرَى مِنَ السِّلْسِلَةِ إِنْ شَاءَ اللهُ."

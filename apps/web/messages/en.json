@@ -1288,7 +1288,8 @@
       "delivery": "Delivery",
       "giftCard": "Gift card",
       "total": "Total",
-      "dueCod": "Due on delivery"
+      "dueCod": "Due on delivery",
+      "bookCodes": "{n, plural, one {Book code} other {Book codes}}"
     },
     "orders": {
       "gift": "Gift",
@@ -2198,14 +2199,17 @@
     "privacy": "Privacy & data deletion",
     "contact": "Contact us",
     "whatsapp": "WhatsApp",
-    "rights": "© {year} {brand}. All rights reserved."
+    "rights": "© {year} {brand}. All rights reserved.",
+    "allContact": "All the ways to reach us"
   },
   "contact": {
     "title": "Contact us",
     "phone": "Phone",
     "whatsapp": "WhatsApp",
     "email": "Email",
-    "help": "Have a question about your order? We're here to help."
+    "help": "Have a question about your order? We're here to help.",
+    "facebook": "Facebook",
+    "instagram": "Instagram"
   },
   "themes": {
     "title": "Stories starring your child",
@@ -3096,7 +3100,10 @@
     "portraitHint": "Drawn first; the character sheet and every page showing the child are drawn from it.",
     "noPortrait": "This character was drawn before we started making face portraits, so it has only the character sheet.",
     "openFull": "Open full size",
-    "likenessRef": "Compare the child's face on the page with this portrait."
+    "likenessRef": "Compare the child's face on the page with this portrait.",
+    "search": "Search by book code or child's name",
+    "searchLabel": "Find a book",
+    "noMatch": "No book matches that code or name."
   },
   "metrics": {
     "title": "Cost & quality",
@@ -3330,12 +3337,13 @@
         "cancelled": "Cancelled",
         "reprint": "Reprinting"
       },
-      "help": "Message us on WhatsApp"
+      "help": "Message us on WhatsApp",
+      "bookCodes": "{n, plural, one {Book code} other {Book codes}}"
     }
   },
   "orders": {
     "title": "Orders & printing",
-    "search": "Search by order number, name or phone",
+    "search": "Search by order number, book code, name or phone number",
     "all": "All",
     "empty": "No orders yet.",
     "statuses": {
@@ -3376,7 +3384,8 @@
       "reprint": "Reprint",
       "payment": "Payment"
     },
-    "by": "by {name}"
+    "by": "by {name}",
+    "part": "Part {part}"
   },
   "printCosts": {
     "title": "Printer prices",
@@ -4071,5 +4080,32 @@
     "deleteNow": "Delete the photo now",
     "deleteConfirm": "{gender, select, f {We'll permanently delete {name}'s original photo now; her drawn character and books stay. Are you sure?} other {We'll permanently delete {name}'s original photo now; his drawn character and books stay. Are you sure?}}",
     "deleted": "The original photo was deleted."
+  },
+  "bookCode": {
+    "label": "Book code",
+    "copy": "Copy",
+    "copyLabel": "Copy book code {code}",
+    "copied": "Copied"
+  },
+  "hello": {
+    "title": "Welcome to {brand}",
+    "lead": "{brand} makes books where your child is the hero.",
+    "metaDescription": "{brand} makes printed books where your child is the hero. Reach us on WhatsApp, by phone or by email, and follow us on Facebook and Instagram.",
+    "yourBook": "Your book",
+    "bookFor": "{name}'s book",
+    "bookCode": "Book code:",
+    "thanks": "Thank you for choosing {brand}. Happy reading!",
+    "orderTitle": "Order again",
+    "orderAnother": "Order another book",
+    "orderCopy": "Order an extra copy of this book",
+    "followTitle": "Follow us",
+    "siteTitle": "Our website",
+    "home": "Home page",
+    "allBooks": "All books",
+    "whatsappHello": "Hello {brand}, I have a question.",
+    "whatsappBook": "Hello {brand}, I have a question about our book (book code: {code}).",
+    "whatsappCopy": "Hello {brand}, we'd like to order an extra copy of our book (book code: {code}).",
+    "emailHello": "A question for {brand}",
+    "emailBook": "A question about a {brand} book (book code: {code})"
   }
 }

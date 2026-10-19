@@ -140,6 +140,7 @@ def build_manifest(candidates: list[Candidate], sends: int) -> dict[str, Any]:
                     "order_id": str(c.order.id),
                     "item_id": str(item.id),
                     "book_id": str(item.book_id),
+                    "book_code": book.code if book else None,  # printed in the book and on its back
                     "sku": item.sku,
                     "format": item_format(options, item.addons or []),
                     "size": options.get("size"),

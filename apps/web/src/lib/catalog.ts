@@ -1,5 +1,6 @@
 /** Server-side reads of the public catalog (story worlds, prices) from the API. */
 import type { SceneArt } from "@/components/art/Scene";
+import { findBookByCode } from "./bookCode.ts";
 
 export type ThemeCard = {
   slug: string;
@@ -133,19 +134,22 @@ export const priceWording = (key: string, prices: boolean, has: (key: string) =>
 /** Server components: the switch, read from the API (uncached, like the other admin settings). */
 export const getPricesShown = async (): Promise<boolean> => pricesShown(await getPublicSettings());
 
-/** wa.me link for a stored phone number (digits only). */
-export const whatsappLink = (phone: string) => `https://wa.me/${phone.replace(/\D/g, "")}`;
+// the contact links live in lib/contact.ts (with the brand's own details as the fallback)
+export { displayPhone, telLink, whatsappLink } from "./contact.ts";
 
-/** tel: link for a stored phone number ("+970595870228"). */
-export const telLink = (phone: string) => `tel:+${phone.replace(/\D/g, "")}`;
-
-/** A stored number as people read it: "+970595870228" → "+970 59 587 0228" (Palestinian and Israeli mobiles). */
-export function displayPhone(phone: string): string {
-  const digits = phone.replace(/\D/g, "");
-  if (digits.length === 12 && (digits.startsWith("970") || digits.startsWith("972")))
-    return `+${digits.slice(0, 3)} ${digits.slice(3, 5)} ${digits.slice(5, 8)} ${digits.slice(8)}`;
-  return phone.trim().startsWith("+") ? `+${digits}` : phone.trim();
-}
+/**
+ * The book a printed QR names (`/b/QB-7K4M2`): its child's first name and product, or null for a malformed or
+ * unknown code (lib/bookCode.ts). Never cached; the visitor's address goes along, so the API's rate limit counts
+ * each visitor and not this server.
+ */
+export const getBookByCode = (raw: string, visitorIp?: string | null) =>
+  findBookByCode(raw, async (path) => {
+    const res = await fetch(API() + path, {
+      cache: "no-store",
+      headers: visitorIp ? { "X-Forwarded-For": visitorIp } : undefined,
+    });
+    return res.ok ? res.json() : null;
+  });
 
 /** Lowest configured price, or null when prices are not set yet. */
 export function lowestPrice(prices: Price[] | null): string | null {

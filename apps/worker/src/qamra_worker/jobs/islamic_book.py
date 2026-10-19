@@ -51,6 +51,7 @@ from qamra_core.islamic_review import (
 )
 from qamra_core.storage import ObjectStorage
 from qamra_worker import context
+from qamra_worker.imprint import book_imprint
 from qamra_worker.jobs.books import file_key
 from qamra_worker.jobs.family_book import approved_character, cutout_flags, numerals_of, store_inserts
 
@@ -192,6 +193,7 @@ async def render_one(
         size=size_of(item),
         numerals=numerals_of(item),
         print_build=True,  # the digital copy too: only approved sources, no placeholder
+        imprint=book_imprint(db, book, child, line=LINE, part=VOLUME_NAMES_AR.get(volume, volume)),
     )
     book.pdf_interior_key = file_key(book, "interior.pdf")
     storage.put(book.pdf_interior_key, files.interior.read_bytes(), "application/pdf")

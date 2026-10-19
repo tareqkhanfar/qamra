@@ -1,5 +1,9 @@
 {% import "pages/_islamic.html.j2" as isl with context %}
 {% set c = d.chrome %}
+{% if d.about %}
+{#- an order's copy: «عن قمرة» takes this last page, with the farewell above it (render/pages/about_qamra.py) -#}
+<div class="wb-about" style="flex: 1; display: flex; min-height: 0; height: 100%">{{ d.about }}</div>
+{% else %}
 <div class="isl" {{ isl.container(c) }}>
   {{ isl.start(p, g, c) }}
   {{ isl.head(p, c, false, true) }}
@@ -11,3 +15,4 @@
   </div>
   {{ isl.foot(p, c) }}
 </div>
+{% endif %}

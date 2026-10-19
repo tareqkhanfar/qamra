@@ -10,7 +10,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Literal
 
-PageKind = Literal["title", "story", "companion", "parents", "activity", "memories", "blank"]
+from qamra_pdf.imprint import Imprint
+
+PageKind = Literal["title", "story", "companion", "parents", "activity", "memories", "blank", "about"]
 Side = Literal["left", "right"]
 PanelArea = Literal["top", "bottom", "left", "right"]
 Series = Literal["classic", "magic", "custom", "class"]
@@ -116,6 +118,24 @@ class BookSpec:
     extra: dict[str, str] = field(default_factory=dict)
     series: Series | None = None  # the product line, named on the cover (front pill)
     age_range: tuple[int, int] | None = None  # the theme's ages: a fact on the back cover
+    # the «عن قمرة» page (the book's last page) and the code on the back cover (`qamra_pdf.imprint`); None: a
+    # page without a code whose QR opens the site's contact page
+    imprint: Imprint | None = None
+
+    @property
+    def about(self) -> Imprint:
+        """What the «عن قمرة» page prints (a sample's: the child and the site, no code)."""
+        if self.imprint is not None:
+            return self.imprint
+        from qamra_pdf.imprint import Contact, product_name
+
+        return Imprint(
+            child_name=self.child_name,
+            gender=self.gender,
+            product=product_name(self.series, self.lang),
+            lang=self.lang,
+            contact=Contact(domain=self.brand.domain),
+        )
 
     @property
     def page_mm(self) -> float:

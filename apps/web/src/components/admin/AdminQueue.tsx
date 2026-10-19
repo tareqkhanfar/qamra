@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
+import { BookCode } from "./BookCode";
 import { BookTextReview, type GenderHint, type StoryField, type TextEdit } from "./BookTextReview";
 import { ExamplePublish } from "./ExamplePublish";
 import { api, errorText } from "@/lib/api";
@@ -11,6 +12,7 @@ import { api, errorText } from "@/lib/api";
 type Status = "draft" | "generating" | "preview" | "in_review" | "approved" | "ordered" | "printed" | "failed";
 type Card = {
   id: string;
+  code: string; // the printed book code («QB-7K4M2»)
   status: Status;
   title: string | null;
   child_name: string;
@@ -51,6 +53,7 @@ type Page = {
 type Check = { name: string; ok: boolean; detail: string; level: "error" | "warning" };
 type Detail = {
   id: string;
+  code: string;
   status: Status;
   title: string | null;
   child: { name: string; gender: string; age: number; hijab: boolean; glasses: boolean };
@@ -135,6 +138,7 @@ function views(plan: Slot[]): [Slot | null, Slot | null][] {
 export function AdminQueue() {
   const t = useTranslations("queue");
   const te = useTranslations("errors");
+  const tb = useTranslations("bookCode");
   const locale = useLocale();
   const [filter, setFilter] = useState<Filter>("review");
   const [cards, setCards] = useState<Card[] | null>(null);
@@ -145,14 +149,28 @@ export function AdminQueue() {
   const [message, setMessage] = useState<{ tone: "success" | "error"; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
   const [cacheKey, setCacheKey] = useState(0);
+  const [search, setSearch] = useState("");
+  const [query, setQuery] = useState(""); // `search` once the typing stops
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const next = search.trim();
+      if (next === query) return;
+      setQuery(next);
+      setSelected(null); // open the first book found
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [search, query]);
+
+  // a search (a book code in any spelling, or part of a child's name) looks through every book
   const loadList = useCallback(async () => {
-    const res = await api<Card[]>(`/api/admin/books?view=${filter}`);
+    const path = query ? `/api/admin/books?view=all&q=${encodeURIComponent(query)}` : `/api/admin/books?view=${filter}`;
+    const res = await api<Card[]>(path);
     if (res.ok) {
       setCards(res.data);
       setSelected((s) => s ?? res.data[0]?.id ?? null);
     } else setMessage({ tone: "error", text: errorText(res.error, locale, te("unknown")) });
-  }, [filter, locale, te]);
+  }, [filter, query, locale, te]);
 
   const loadDetail = useCallback(async (id: string) => {
     const res = await api<Detail>(`/api/admin/books/${id}`);
@@ -241,24 +259,41 @@ export function AdminQueue() {
         <h1 className="text-h3 text-night-900">
           {t("title")} {cards && <span className="text-ink-muted">({num(cards.length)})</span>}
         </h1>
+        <input
+          type="search"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder={t("search")}
+          aria-label={t("searchLabel")}
+          autoComplete="off"
+          spellCheck={false}
+          className="min-h-11 rounded-md border border-line bg-paper-raised px-3"
+        />
         <div className="flex flex-wrap gap-2">
-          {FILTERS.map((f) => (
-            <button
-              key={f}
-              type="button"
-              onClick={() => {
-                setFilter(f);
-                setSelected(null);
-              }}
-              aria-pressed={f === filter}
-              className={`min-h-9 rounded-full border px-3 text-small ${f === filter ? "border-night-900 bg-night-900 text-paper" : "border-line bg-paper-raised"}`}
-            >
-              {t(`filters.${f}`)}
-            </button>
-          ))}
+          {FILTERS.map((f) => {
+            const on = !query && f === filter; // a search looks through every book
+            return (
+              <button
+                key={f}
+                type="button"
+                onClick={() => {
+                  setFilter(f);
+                  setSearch("");
+                  setQuery("");
+                  setSelected(null);
+                }}
+                aria-pressed={on}
+                className={`min-h-9 rounded-full border px-3 text-small ${on ? "border-night-900 bg-night-900 text-paper" : "border-line bg-paper-raised"}`}
+              >
+                {t(`filters.${f}`)}
+              </button>
+            );
+          })}
         </div>
         <ul className="flex flex-col divide-y divide-line overflow-hidden rounded-xl border border-line bg-paper-raised">
-          {cards?.length === 0 && <li className="p-4 text-small text-ink-muted">{t("empty")}</li>}
+          {cards?.length === 0 && (
+            <li className="p-4 text-small text-ink-muted">{query ? t("noMatch") : t("empty")}</li>
+          )}
           {cards?.map((c) => (
             <li key={c.id}>
               <button
@@ -273,6 +308,13 @@ export function AdminQueue() {
                   <span className="block truncate font-semibold text-night-900">
                     {c.child_name} · {c.theme_title}
                   </span>
+                  {c.code && (
+                    <span className="block">
+                      <bdi dir="ltr" className="font-mono text-small font-bold tracking-wider text-night-900">
+                        {c.code}
+                      </bdi>
+                    </span>
+                  )}
                   <span className="block text-caption text-ink-muted">
                     {c.is_sample ? t("sample") : t("order")} · {t(`status.${c.status}`)} · {usd(c.cost_usd)}
                   </span>
@@ -311,6 +353,12 @@ export function AdminQueue() {
             <header className="flex flex-wrap items-start justify-between gap-4">
               <div className="flex flex-col gap-1">
                 <h2 className="text-h2 text-night-900">{detail.title ?? detail.child.name}</h2>
+                {detail.code && (
+                  <p className="flex flex-wrap items-center gap-2 text-small text-ink-muted">
+                    <span>{tb("label")}:</span>
+                    <BookCode code={detail.code} copy className="text-body-l" />
+                  </p>
+                )}
                 <p className="text-small text-ink-muted">
                   {detail.is_sample ? t("sample") : t("order")} · {detail.theme.title} ·{" "}
                   {t("pages", { n: num(detail.generation.pages ?? detail.plan.length) })} · {detail.art_style} ·{" "}

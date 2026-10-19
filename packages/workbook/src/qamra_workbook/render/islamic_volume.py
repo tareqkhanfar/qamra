@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import dataclasses
 import datetime as dt
 import json
 import os
@@ -44,6 +45,7 @@ from typing import Any, Literal
 import yaml
 
 from qamra_pdf import preflight
+from qamra_pdf.imprint import Imprint
 from qamra_workbook import islamic
 from qamra_workbook import islamic_checks as checks
 from qamra_workbook.islamic_checks import Problem
@@ -69,6 +71,7 @@ from qamra_workbook.render.islamic_content import (
     parse_page,
 )
 from qamra_workbook.render.islamic_figures import SAMPLE_SHEET, kit_for
+from qamra_workbook.render.pages.about_qamra import with_about
 from qamra_workbook.render.registry import Assets
 from qamra_workbook.render.samples import assets_for
 from qamra_workbook.render.spec import (
@@ -797,6 +800,7 @@ async def render_volume(
     only: set[str] | None = None,
     review: Review | None = None,
     stickers: bool = True,
+    imprint: Imprint | None = None,
 ) -> VolumeFiles:
     """One child's copy of a volume into `out`: interior.pdf, cover.pdf and answer-key.pdf, with a preflight
     report per file. The cover carries the child's character and name; the passport and the certificate the
@@ -808,7 +812,10 @@ async def render_volume(
 
     With `stickers` (and no `only`), also the volume's sticker sheet: inserts/stickers.pdf and its die
     inserts/stickers-die.pdf (a stamp for every circle of its passport pages, stars for its home boards,
-    rewards; `render.stickers`)."""
+    rewards; `render.stickers`).
+
+    With `imprint` (the book's code, `qamra_pdf.imprint`), the closing page «إِلَى اللِّقَاءِ» becomes «عن قمرة»
+    with the farewell above it (`render.pages.about_qamra`), and the back cover prints the code."""
     vid = volume_id(volume)
     plan = plan or islamic.load()
     if vid not in plan.volumes:
@@ -826,10 +833,14 @@ async def render_volume(
     credit = review.credit(vid) if print_build and review is not None else ""
     mode: Literal["preview", "print"] = "print" if print_build else "preview"
     context = IslamicContext(resolver, kit, mode, day or dt.date.today(), credit=credit)
-    book = volume_book(plan, content, context, child, size=size, numerals=numerals, only=only)
+    book = with_about(
+        volume_book(plan, content, context, child, size=size, numerals=numerals, only=only), imprint
+    )
     assets = assets_for(book, out)
     _, key = await _pdf(book, assets, out / "interior.pdf", out / "answer-key.pdf")
-    cover = cover_book(plan, vid, context, book, pages=len(content.slots))
+    cover = dataclasses.replace(
+        cover_book(plan, vid, context, book, pages=len(content.slots)), imprint=imprint
+    )
     cover = covers.with_thumbs(
         cover, book, out / "interior.pdf", out / "assets", covers.THUMBS["islamic"], no_sacred_text
     )

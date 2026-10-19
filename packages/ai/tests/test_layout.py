@@ -8,7 +8,7 @@ from tests_helpers import png
 from qamra_ai.pipeline.layout import PrintSpec, plan_book, side_of
 from qamra_ai.pipeline.models import Lang
 from qamra_ai.pipeline.printimg import fit_exact, split_spread
-from qamra_ai.pipeline.theme import load_theme
+from qamra_ai.pipeline.theme import CONTENT_DIR, load_theme
 
 
 def test_print_sizes() -> None:
@@ -31,8 +31,8 @@ def test_arabic_book_plan(companion: bool) -> None:
     assert plan.slots[0].kind == "title" and plan.slots[0].side == "left"
     kinds = [s.kind for s in plan.slots[21:]]
     assert kinds == (
-        ["companion", "parents", "activity"] if companion else ["parents", "activity", "memories"]
-    )
+        ["companion", "parents", "about"] if companion else ["parents", "activity", "about"]
+    )  # «عن قمرة» (the book code) takes the last filler's place: the book keeps its 24 pages
     for beat in plan.beats.values():
         if beat.layout == "spread":
             first, second = beat.pages
@@ -40,6 +40,25 @@ def test_arabic_book_plan(companion: bool) -> None:
             first_slot = plan.slots[first - 1]
             assert first_slot.side == "right" and first_slot.spread_half == "first"  # read first in RTL
             assert beat.text_area.endswith("-right") and beat.aspect == "16:9"
+
+
+THEMES = sorted(p.name for p in (CONTENT_DIR / "themes").iterdir() if (p / "theme.yaml").is_file())
+
+
+@pytest.mark.parametrize("slug", THEMES)
+@pytest.mark.parametrize("companion", [True, False])
+def test_every_book_ends_with_its_info_page(slug: str, companion: bool) -> None:
+    """«عن قمرة» (the book code, Qamra's contacts, the QR) is always the last page, in a whole signature."""
+    plan = plan_book(load_theme(slug), "ar", companion_page=companion)
+    kinds = [s.kind for s in plan.slots]
+    assert kinds[-1] == "about" and kinds.count("about") == 1
+    assert plan.page_count % plan.spec.signature == 0
+    assert kinds[kinds.index("parents") + 1 :] in (
+        ["about"],
+        ["activity", "about"],
+        ["activity", "memories", "about"],
+        ["activity", "memories", "blank", "about"],  # «للأهل» ended a signature: one more is added
+    )
 
 
 def test_side_text_goes_to_the_outer_edge() -> None:

@@ -40,6 +40,7 @@ from qamra_core.db.models import AuditLog, Book, BookStatus, Child, Locale, Orde
 from qamra_core.storage import ObjectStorage
 from qamra_pdf.arabic_names import genitive
 from qamra_worker import context
+from qamra_worker.imprint import book_imprint
 from qamra_worker.jobs.books import file_key
 from qamra_worker.jobs.family_book import (
     approved_character,
@@ -192,6 +193,7 @@ async def render_volume(
         name_en=name_en_of(item, child),
         numerals=numerals_of(item),  # type: ignore[arg-type]
         domain=get_settings().brand_domain,
+        imprint=book_imprint(db, book, child, line=LINE, part=f"{level.upper()} · {VOLUME_AR[volume]}"),
     )
     book.pdf_interior_key = file_key(book, "interior.pdf")
     storage.put(book.pdf_interior_key, files.interior.read_bytes(), "application/pdf")

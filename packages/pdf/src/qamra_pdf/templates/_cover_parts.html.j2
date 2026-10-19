@@ -87,6 +87,7 @@
     <div class="inner-col">
       {% if cd.qr %}<div class="qr-card"><div class="qr">{{ cd.qr }}</div><div class="qr-caption">{{ cd.qr_caption }}</div></div>{% endif %}
       <div class="barcode-zone" data-reserved="barcode"></div>
+      {% if imprint %}{{ back_code(imprint, cd.ink) }}{% endif %}
     </div>
   </div>
 </div>

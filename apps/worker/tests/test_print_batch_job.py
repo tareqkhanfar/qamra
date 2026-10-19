@@ -71,7 +71,7 @@ def test_the_printer_gets_one_link_per_file_once(db: Session, storage: ObjectSto
     assert batch.printer_notified_at == now
     assert batch.bundle_key == f"print-batches/2026/09/{batch.id}/manifest.csv"
     csv = storage.get(batch.bundle_key).decode("utf-8-sig")
-    header = "n,order,sku,format,size,copies,extras,interior_file,cover_file,gift,gift_message"
+    header = "n,order,book_code,sku,format,size,copies,extras,interior_file,cover_file,gift,gift_message"
     header += ",insert_files"
     assert csv.splitlines()[0] == header
     assert "002-QM-PRNT02-cover.pdf" in csv and "gift-box" in csv and "children/" not in csv

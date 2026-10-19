@@ -28,6 +28,7 @@ from qamra_api.routers.admin_self_hosted import router as admin_self_hosted_rout
 from qamra_api.routers.admin_staff import router as admin_staff_router
 from qamra_api.routers.admin_studio import router as admin_studio_router
 from qamra_api.routers.admin_themes import router as admin_themes_router
+from qamra_api.routers.book_codes import router as book_codes_router
 from qamra_api.routers.companions import router as companions_router
 from qamra_api.routers.create import router as create_router
 from qamra_api.routers.downloads import router as downloads_router
@@ -160,6 +161,7 @@ def create_app(settings: ApiSettings | None = None, *, manage_resources: bool = 
     app.include_router(admin_packing_router)
     app.include_router(voice_router)  # W6: «صوت أهلي» (Phase 5)
     app.include_router(voice_public_router)
+    app.include_router(book_codes_router)  # the info page QR: /b/{code} (qamra_core.book_codes)
     app.include_router(journey_audio_router)  # W5: «رحلتي الأولى» audio QR player (/api/a/{code})
     app.include_router(journey_audio_admin_router)
     app.include_router(admin_islamic_router)  # «قلبي يعرف الله»: the scholar's review (Addendum 10 §3.3)

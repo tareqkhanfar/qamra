@@ -9,10 +9,10 @@ from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal
 from typing import Annotated, Any, Literal
 
-from fastapi import APIRouter, Depends, File, Form, Request, UploadFile
+from fastapi import APIRouter, Depends, File, Form, Query, Request, UploadFile
 from fastapi.responses import Response
 from pydantic import BaseModel, Field
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from qamra_ai.cost import fal_cost, fal_unknown_price
@@ -24,6 +24,7 @@ from qamra_api.deps import AdminUser, SessionDep, SettingsDep, StorageDep, requi
 from qamra_api.errors import ApiError
 from qamra_api.jobs import QueueDep, enqueue
 from qamra_api.uploads import clean_image, read_upload, require_face
+from qamra_core.book_codes import code_filter
 from qamra_core.db.models import (
     AuditLog,
     Book,
@@ -209,6 +210,7 @@ async def create_sample(
 
 class BookCard(BaseModel):
     id: uuid.UUID
+    code: str  # «QB-7K4M2» (qamra_core.book_codes)
     status: BookStatus
     title: str | None
     child_name: str
@@ -274,24 +276,32 @@ async def list_books(
     db: SessionDep,
     view: Literal["review", "flagged", "generating", "approved", "all"] = "review",
     limit: int = 100,
+    q: str | None = Query(default=None, max_length=80),
 ) -> list[BookCard]:
-    q = (
+    """The books in a view; `q` finds a book by its code in any spelling («qb 7k4m2», «7K4M2», a part of it)
+    or by the child's first name."""
+    stmt = (
         select(Book, Child, ThemeRow)
         .join(Child, Child.id == Book.child_id)
         .join(ThemeRow, ThemeRow.id == Book.theme_id)
     )
+    if q and q.strip():
+        by_code = code_filter(q)
+        by_name = Child.first_name.ilike(f"%{q.strip()}%")
+        stmt = stmt.where(or_(by_code, by_name) if by_code is not None else by_name)
     if view == "review":
-        q = q.where(Book.status == BookStatus.in_review)
+        stmt = stmt.where(Book.status == BookStatus.in_review)
     elif view == "generating":
-        q = q.where(Book.status.in_((BookStatus.generating, BookStatus.preview, BookStatus.failed)))
+        stmt = stmt.where(Book.status.in_((BookStatus.generating, BookStatus.preview, BookStatus.failed)))
     elif view == "approved":
-        q = q.where(Book.status == BookStatus.approved)
+        stmt = stmt.where(Book.status == BookStatus.approved)
     elif view == "flagged":
-        q = q.where(func.jsonb_array_length(Book.flags) > 0)
-    rows = (await db.execute(q.order_by(Book.updated_at.desc()).limit(min(limit, 200)))).all()
+        stmt = stmt.where(func.jsonb_array_length(Book.flags) > 0)
+    rows = (await db.execute(stmt.order_by(Book.updated_at.desc()).limit(min(limit, 200)))).all()
     return [
         BookCard(
             id=b.id,
+            code=b.code,
             status=b.status,
             title=b.title,
             child_name=c.first_name,
@@ -371,6 +381,7 @@ class CharacterNote(BaseModel):
 
 class BookDetail(BaseModel):
     id: uuid.UUID
+    code: str  # «QB-7K4M2»: printed on the book's «عن قمرة» page and its back cover
     status: BookStatus
     title: str | None
     child: dict[str, Any]
@@ -463,6 +474,7 @@ async def book_detail(book_id: uuid.UUID, db: SessionDep) -> BookDetail:
     gen = dict(book.generation or {})
     return BookDetail(
         id=book.id,
+        code=book.code,
         status=book.status,
         title=book.title,
         child={

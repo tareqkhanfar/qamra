@@ -122,6 +122,12 @@ async def test_a_stage_becomes_a_book_waiting_for_print_approval(
     book = db.get(Book, item.book_id)
     assert book is not None and book.status == BookStatus.in_review
     assert book.generation["line"] == "journey" and book.generation["stage"] == 1
+    # «عن قمرة» and the back cover print this book's own code (qamra_core.book_codes)
+    imprint = call["imprint"]
+    assert imprint.code == book.code and imprint.child_name == "آدم" and imprint.gender == "m"
+    assert (imprint.product, imprint.part) == ("رحلتي الأولى للتعلّم", "المرحلة الأولى")
+    assert imprint.contact.phone == "+970595870228" and imprint.contact.whatsapp == "+972595870228"
+    assert imprint.contact.facebook.endswith("/qamrabooks") and imprint.url.endswith(f"/b/{book.code}")
     assert book.pdf_interior_key and storage.exists(book.pdf_interior_key)
     assert book.pdf_cover_key and storage.exists(book.pdf_cover_key)
     assert storage.exists(book.generation["files"]["answer-key"]) and book.cost_usd == 0

@@ -18,6 +18,7 @@ from qamra_pdf import render_invoice as render_invoice_pdf
 from qamra_pdf.arabic_names import genitive
 from qamra_worker import context
 from qamra_worker.jobs.books import brand, resolved_settings
+from qamra_worker.jobs.notify import codes_label, item_codes
 
 log = structlog.get_logger()
 FORMATS_AR = {
@@ -34,7 +35,9 @@ def invoice_spec(db: Session, invoice: Invoice) -> InvoiceSpec:
         raise ValueError("order missing")
     values = resolved_settings(db).values
     lines = []
-    for item in db.scalars(select(OrderItem).where(OrderItem.order_id == order.id)):
+    items = db.scalars(select(OrderItem).where(OrderItem.order_id == order.id)).all()
+    codes = item_codes(db, items)  # each line names its books by their code (qamra_core.book_codes)
+    for item in items:
         child = item.personalization.get("child_name")
         options = item.title.get("options", {})
         detail = " · ".join(
@@ -42,6 +45,7 @@ def invoice_spec(db: Session, invoice: Invoice) -> InvoiceSpec:
             for x in (
                 FORMATS_AR.get(str(options.get("format", ""))),
                 f"كتاب {genitive(str(child))}" if child else None,
+                codes_label(codes.get(item.id, []), "ar"),
             )
             if x
         )

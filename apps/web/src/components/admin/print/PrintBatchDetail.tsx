@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { Button, buttonClasses } from "@/components/ui/Button";
+import { BookCode } from "../BookCode";
 import { BATCH_TONE, type BatchDetail } from "./types";
 
 type Props = {
@@ -78,6 +79,7 @@ export function PrintBatchDetail({ batch, busy, onAction, onRemove }: Props) {
                       {String(i.n).padStart(3, "0")}
                     </span>
                   )}
+                  <BookCode code={i.book_code} copy />
                   <span className="grow">
                     {i.title}
                     {i.child_name ? ` · ${i.child_name}` : ""} · {t(`formats.${i.format}`)} × {i.copies}

@@ -46,6 +46,7 @@ from qamra_api.store.payments import provider_for
 from qamra_api.store.workbooks import FamilyIn, family_personalization, line_gaps, orderable
 from qamra_api.validation import Phone
 from qamra_core import settings_store
+from qamra_core.book_codes import item_books
 from qamra_core.db.models import AuditLog, Book, Currency, Order, OrderItem, OrderStatus
 from qamra_core.db.store import (
     Cart,
@@ -56,7 +57,7 @@ from qamra_core.db.store import (
     OrderEvent,
     Variant,
 )
-from qamra_core.downloads import sold_as_file
+from qamra_core.downloads import books_query, sold_as_file
 from qamra_core.pricing import ItemInput, Quote, addon_amount, quote
 
 router = APIRouter(prefix="/api/store", tags=["store"])
@@ -989,6 +990,7 @@ class TrackItem(BaseModel):
     child_name_en: str | None = None
     family: dict[str, Any] | None = None
     addons: list[TrackAddOn] = Field(default_factory=list)
+    book_codes: list[str] = Field(default_factory=list)  # «QB-7K4M2» once the book is made (one per volume)
 
 
 class TrackEvent(BaseModel):
@@ -1017,6 +1019,8 @@ async def track(code: str, phone: str, request: Request, db: SessionDep, redis: 
         raise ApiError("not_found", 404)  # same answer for a wrong code and a wrong phone
     items = list((await db.execute(select(OrderItem).where(OrderItem.order_id == order.id))).scalars())
     books = await _books(db, [i.book_id for i in items if i.book_id])
+    made = books_query(items)
+    codes = item_books(items, (await db.execute(made)).scalars().all() if made is not None else [])
     variants = [i.variant_id for i in items if i.variant_id]
     products = (
         dict(
@@ -1071,6 +1075,7 @@ async def track(code: str, phone: str, request: Request, db: SessionDep, redis: 
                     for a in (i.addons or [])
                     if a.get("slug")
                 ],
+                book_codes=[r.code for r in codes.get(i.id, [])],
             )
             for i in items
         ],

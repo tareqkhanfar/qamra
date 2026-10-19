@@ -6,6 +6,9 @@ import re
 import unicodedata
 from pathlib import Path
 
+import cv2
+import numpy as np
+import pypdfium2 as pdfium
 import pytest
 from PIL import Image
 from pypdf import PdfReader
@@ -21,10 +24,12 @@ from qamra_pdf.classbook import (
     file_stem,
     render_class_book,
 )
+from qamra_pdf.imprint import Imprint
 
 BRAND = Brand("قمرة", "Qamra", "qamra.app", "", "")
 PAGE_PX = 2551  # 216 mm at 300 DPI
 MM = 72 / 25.4
+CODES = ("QB-7K4M2", "QB-9HXC3")  # يوسف's and جنى's books
 
 
 def _img(path: Path, color: str, size: tuple[int, int]) -> Path:
@@ -72,6 +77,8 @@ def rendered(tmp_path_factory: pytest.TempPathFactory) -> tuple[ClassBookSpec, l
             portrait_line=f"{n} نَجْمٌ يُضيءُ صَفَّنا.",
             gender=("m", "f", None)[i],
             portrait_title="هٰذِهِ أَنا" if i == 1 else "",  # جنى's own heading; the others take the book's
+            # each copy's own book code (ليان's: a sample without one)
+            imprint=Imprint(CODES[i], n, ("m", "f")[i], "كتاب الصف", "كِتابُ صف الفراشات") if i < 2 else None,
         )
         for i, n in enumerate(names)
     ]
@@ -92,7 +99,7 @@ def test_every_copy_has_the_shared_pages_with_its_own_portrait_second(
     rendered: tuple[ClassBookSpec, list[ChildCopy], ClassFiles],
 ) -> None:
     spec, copies, files = rendered
-    assert spec.interior_pages == 8  # school + portrait + 3 story + group = 6 → padded to 8
+    assert spec.interior_pages == 8  # school + portrait + 3 story + group + «عن قمرة» = 7 → padded to 8
     for copy in copies:
         reader = PdfReader(files.interiors[copy.stem])
         assert len(reader.pages) == 8
@@ -106,6 +113,28 @@ def test_every_copy_has_the_shared_pages_with_its_own_portrait_second(
             and abs(float(cover.pages[0].mediabox.width) / MM - spec.wrap_width_mm) < 0.3
         )
         assert files.passed(copy.stem), {k: v.to_dict() for k, v in files.preflight[copy.stem].items()}
+
+
+def test_every_copy_ends_with_its_own_info_page_and_code(
+    rendered: tuple[ClassBookSpec, list[ChildCopy], ClassFiles],
+) -> None:
+    """«عن قمرة» is each copy's last page, with that child's book code (the one in the database), and the
+    back of its cover prints the code small; the QR on the page opens the book's contact page."""
+    _, copies, files = rendered
+    for i, copy in enumerate(copies):
+        reader = PdfReader(files.interiors[copy.stem])
+        last = re.sub(r"\s", "", _text(reader, len(reader.pages) - 1))  # the code is letter-spaced
+        assert "عنقمرة" in last and "info@qamra.app" in last and "facebook.com/qamrabooks" in last
+        cover = re.sub(r"\s", "", _text(PdfReader(files.covers[copy.stem]), 0))
+        if i < 2:
+            assert CODES[i] in last and CODES[i] in cover
+            assert all(CODES[j] not in last for j in range(2) if j != i)  # never another child's code
+        else:
+            assert "QB-" not in last and "QB-" not in cover  # a sample: no code
+        page = pdfium.PdfDocument(str(files.interiors[copy.stem]))
+        image = np.asarray(page[len(page) - 1].render(scale=300 / 72).to_pil().convert("L"))
+        url = cv2.QRCodeDetector().detectAndDecode(image)[0]
+        assert url == (f"https://qamra.app/b/{CODES[i]}" if i < 2 else "https://qamra.app/hello")
 
 
 def test_a_girl_says_hadhihi_ana_over_her_portrait(

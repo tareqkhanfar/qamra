@@ -161,6 +161,7 @@ async def test_the_job_stores_the_print_files_on_a_book_for_approval(
     assert book is not None and book.status == BookStatus.in_review
     assert seen["child"].name == "ليان" and seen["child"].gender == "f" and seen["size"] == "a4"
     assert seen["child"].character_sheet is not None  # cut-outs come from the approved character's sheet
+    assert seen["imprint"].code == book.code and seen["imprint"].product == "مغامراتي مع عائلتي"
     assert book.pdf_interior_key and storage.exists(book.pdf_interior_key)
     assert book.pdf_cover_key and storage.exists(book.pdf_cover_key)
     assert storage.exists(book.generation["files"]["stickers"]) and book.generation["line"] == "family"

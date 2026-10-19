@@ -1,0 +1,104 @@
+{#- «عن قمرة» (qamra_pdf.imprint.about_html): the page's content, filling the box it is put in. Scoped by the
+    `qab-` class prefix: the same markup sits in the story book, the class book and every activity book. -#}
+{% set k = 0.97 if compact else 1.08 %}
+<style>
+.qab { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: stretch;
+  justify-content: space-evenly; gap: {{ 2 * k }}mm; padding: {{ 8 * k }}mm {{ 9.5 * k }}mm {{ 8 * k }}mm;
+  border-radius: 7mm; background: {{ lk.paper }}; color: {{ lk.ink }}; text-align: center;
+  font-family: "{{ lk.text_font }}", "Noto Naskh Arabic", "IBM Plex Sans Arabic", serif; overflow: hidden; }
+.qab-frame { position: absolute; inset: 2.2mm; border: 0.55mm {{ 'dashed' if lk.motif in ('notebook', 'trail') else 'solid' }} {{ lk.accent }};
+  border-radius: 5.5mm; opacity: .7; pointer-events: none; }
+{% if lk.motif == 'khatam' %}.qab-frame::after { content: ""; position: absolute; inset: 1.4mm; border: 0.25mm solid {{ lk.gold }}; border-radius: 4.5mm; }{% endif %}
+.qab-corner { position: absolute; width: {{ 9 * k }}mm; height: {{ 9 * k }}mm; }
+.qab-corner.tl { top: 0.6mm; left: 0.6mm; } .qab-corner.tr { top: 0.6mm; right: 0.6mm; }
+.qab-corner.bl { bottom: 0.6mm; left: 0.6mm; } .qab-corner.br { bottom: 0.6mm; right: 0.6mm; }
+.qab > *:not(.qab-frame):not(.qab-corner) { position: relative; }
+.qab-lead { background: {{ lk.soft }}; border-radius: 4mm; padding: {{ 3 * k }}mm {{ 5 * k }}mm; }
+.qab-lead p { font-size: {{ 14 * k }}pt; line-height: 1.75; }
+.qab-lead svg { display: block; width: {{ 58 * k }}mm; height: auto; max-height: {{ 27 * k }}mm; margin: 0 auto {{ 1.2 * k }}mm; }
+.qab-lead .next { display: inline-block; margin-top: 1.5mm; padding: .6mm 4mm; border-radius: 4mm; background: {{ lk.paper }};
+  font: 600 {{ 10.5 * k }}pt "IBM Plex Sans Arabic", sans-serif; color: {{ lk.accent }}; }
+.qab-head { display: flex; align-items: center; justify-content: center; gap: 3mm; }
+.qab-head svg { width: {{ 12 * k }}mm; height: {{ 12 * k }}mm; flex: none; }
+.qab-head h2 { font: 800 {{ 28 * k }}pt/1.15 "{{ lk.title_font }}", "IBM Plex Sans Arabic", sans-serif; color: {{ lk.ink }}; }
+.qab-who { display: flex; align-items: center; justify-content: center; gap: {{ 5 * k }}mm; }
+.qab-who-text { display: flex; flex-direction: column; gap: {{ 1 * k }}mm; }
+.qab-hero { flex: none; display: block; object-fit: contain; }
+.qab-hero.cut { height: {{ hero_mm * k }}mm; width: auto; max-width: {{ 0.8 * hero_mm * k }}mm; }
+.qab-hero.round { width: {{ hero_mm * k }}mm; height: {{ hero_mm * k }}mm; border-radius: 50%; object-fit: cover;
+  box-shadow: 0 0 0 0.8mm {{ lk.paper }}, 0 0 0 1.4mm {{ lk.gold }}; }
+.qab-made-for { font-size: {{ 17 * k }}pt; line-height: 1.7; font-weight: 700; color: {{ lk.ink }}; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+.qab-product { font: 600 {{ 12 * k }}pt/1.5 "IBM Plex Sans Arabic", sans-serif; color: {{ lk.accent }}; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+.qab-code { align-self: center; display: flex; flex-direction: column; align-items: center; gap: .6mm;
+  min-width: 62%; padding: {{ 2.6 * k }}mm {{ 9 * k }}mm {{ 3 * k }}mm; border-radius: 5mm; background: {{ lk.card }};
+  box-shadow: 0 0 0 0.7mm {{ lk.paper }}, 0 0 0 1.3mm {{ lk.gold }}; }
+.qab-code .lbl { font: 600 {{ 11 * k }}pt "IBM Plex Sans Arabic", sans-serif; color: {{ lk.paper }}; opacity: .9; }
+.qab-code .val { direction: ltr; unicode-bidi: isolate; font: 700 {{ 36 * k }}pt/1.1 "IBM Plex Sans Arabic", sans-serif;
+  letter-spacing: 1.6mm; margin-inline-start: 1.6mm; color: {{ lk.card_ink }}; white-space: nowrap; }
+.qab-code .hint { font: 400 {{ 9.4 * k }}pt/1.45 "IBM Plex Sans Arabic", sans-serif; color: {{ lk.paper }}; opacity: .88; }
+.qab-warm { font-size: {{ 14.5 * k }}pt; line-height: 1.75; padding: 0 {{ 6 * k }}mm; }
+.qab-contact { display: flex; align-items: center; gap: {{ 5 * k }}mm; padding: {{ 3.2 * k }}mm {{ 4 * k }}mm;
+  border-radius: 5mm; background: {{ lk.soft }}; text-align: start; }
+.qab-list { flex: 1; list-style: none; display: grid; gap: {{ 1.3 * k }}mm; }
+.qab-list li { display: flex; align-items: center; gap: 2.2mm; min-height: {{ 7.4 * k }}mm; }
+.qab-ico { flex: none; width: {{ 7.4 * k }}mm; height: {{ 7.4 * k }}mm; border-radius: 50%; background: {{ lk.accent }};
+  display: flex; align-items: center; justify-content: center; }
+.qab-ico svg { width: 62%; height: 62%; }
+.qab-list .lbl { font: 600 {{ 9.6 * k }}pt "IBM Plex Sans Arabic", sans-serif; color: {{ lk.accent }}; min-width: {{ 27 * k }}mm; }
+.qab-list .val { direction: ltr; unicode-bidi: isolate; font: 600 {{ 11.4 * k }}pt "IBM Plex Sans Arabic", sans-serif; color: {{ lk.ink }}; white-space: nowrap; }
+.qab-qr { flex: none; display: flex; flex-direction: column; align-items: center; gap: 1.6mm; width: {{ 44 * k }}mm; }
+.qab-qr .box { width: {{ 36 * k }}mm; height: {{ 36 * k }}mm; padding: {{ 2.4 * k }}mm; border-radius: 3mm; background: #FFFFFF;
+  box-shadow: 0 0 0 0.6mm {{ lk.accent }}; }
+.qab-qr .box svg { display: block; width: 100%; height: 100%; }
+.qab-qr figcaption { font: 600 {{ 8.8 * k }}pt/1.4 "IBM Plex Sans Arabic", sans-serif; color: {{ lk.ink }}; text-align: center; }
+.qab-foot { display: flex; justify-content: space-between; gap: 4mm; padding-top: {{ 1.8 * k }}mm; border-top: 0.3mm solid {{ lk.accent }};
+  font: 400 {{ 9 * k }}pt "IBM Plex Sans Arabic", sans-serif; color: {{ lk.ink }}; opacity: .85; }
+</style>
+<div class="qab qab-{{ lk.motif }}" dir="{{ dir }}" lang="{{ im.lang }}" data-about="{{ im.code }}">
+  <div class="qab-frame"></div>
+  {% for corner in ['tl', 'tr', 'bl', 'br'] %}<svg class="qab-corner {{ corner }}" viewBox="0 0 24 24" aria-hidden="true">
+    {% if lk.motif == 'khatam' %}<path d="M12 2 L14.6 6.2 L19.1 4.9 L17.8 9.4 L22 12 L17.8 14.6 L19.1 19.1 L14.6 17.8 L12 22 L9.4 17.8 L4.9 19.1 L6.2 14.6 L2 12 L6.2 9.4 L4.9 4.9 L9.4 6.2 Z" fill="{{ lk.gold }}"/><circle cx="12" cy="12" r="3.2" fill="{{ lk.paper }}"/>
+    {% elif lk.motif == 'hearts' %}<path d="M12 20 C5 15 3 11.5 3 8.6 C3 6 5 4 7.4 4 C9.4 4 11 5.2 12 7 C13 5.2 14.6 4 16.6 4 C19 4 21 6 21 8.6 C21 11.5 19 15 12 20 Z" fill="{{ lk.accent }}" opacity=".85"/>
+    {% elif lk.motif == 'trail' %}<circle cx="12" cy="12" r="5" fill="{{ lk.accent }}"/><circle cx="12" cy="12" r="2" fill="{{ lk.paper }}"/>
+    {% elif lk.motif == 'notebook' %}<rect x="5" y="5" width="14" height="14" rx="3.5" fill="{{ lk.accent }}" transform="rotate(12 12 12)"/><rect x="9" y="9" width="6" height="6" rx="1.5" fill="{{ lk.paper }}" transform="rotate(12 12 12)"/>
+    {% else %}<path d="M12 1 C13 8 16 11 23 12 C16 13 13 16 12 23 C11 16 8 13 1 12 C8 11 11 8 12 1 Z" fill="{{ lk.gold }}"/>{% endif %}
+  </svg>{% endfor %}
+  {% if lead %}<div class="qab-lead">{{ lead }}</div>{% endif %}
+  <header class="qab-head">
+    <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M21.32 5.01 A17 17 0 1 0 38.12 27.41 A14 14 0 0 1 21.32 5.01 Z" fill="{{ lk.gold }}"/><path d="M34 8 C34.6 11.2 35.8 12.4 39 13 C35.8 13.6 34.6 14.8 34 18 C33.4 14.8 32.2 13.6 29 13 C32.2 12.4 33.4 11.2 34 8 Z" fill="{{ lk.ink }}"/><path d="M6 44 Q15 39.5 24 43.5 Q33 39.5 42 44" fill="none" stroke="{{ lk.ink }}" stroke-width="3" stroke-linecap="round"/></svg>
+    <h2>{{ s.title }}</h2>
+  </header>
+  {% if im.made_for() or im.product or im.part %}
+  <div class="qab-who">
+    {% if hero %}<img class="qab-hero {{ 'round' if hero_round else 'cut' }}" src="{{ hero }}" alt="">{% endif %}
+    <div class="qab-who-text">
+    {% if im.made_for() %}<p class="qab-made-for">{{ im.made_for() }}</p>{% endif %}
+    {% if im.product or im.part %}<p class="qab-product">{{ im.product }}{% if im.product and im.part %} · {% endif %}{{ im.part }}</p>{% endif %}
+    </div>
+  </div>
+  {% endif %}
+  {% if im.code %}
+  <div class="qab-code" data-book-code="{{ im.code }}">
+    <span class="lbl">{{ s.code_label }}</span>
+    <span class="val">{{ im.code }}</span>
+    <span class="hint">{{ s.code_hint }}</span>
+  </div>
+  {% endif %}
+  <p class="qab-warm">{{ s.warm }}</p>
+  <div class="qab-contact">
+    <ul class="qab-list">
+      {% for icon, label, value in rows %}
+      <li><span class="qab-ico"><svg viewBox="0 0 24 24" aria-hidden="true">
+        {% if icon == 'phone' %}<path d="M7.2 3.5 L9.8 3.5 L11 8 L9 9.6 C10 11.8 12.2 14 14.4 15 L16 13 L20.5 14.2 L20.5 16.8 C20.5 18.6 19 20 17.2 19.8 C10 19 5 14 4.2 6.8 C4 5 5.4 3.5 7.2 3.5 Z" fill="#FFFFFF"/>
+        {% elif icon == 'whatsapp' %}<path d="M12 3 C7 3 3.2 6.8 3.2 11.5 C3.2 13.2 3.7 14.8 4.6 16.1 L3.6 20.4 L8 19.3 C9.2 19.9 10.6 20.2 12 20.2 C17 20.2 20.8 16.3 20.8 11.6 C20.8 6.8 17 3 12 3 Z" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linejoin="round"/><path d="M9.3 7.8 L10.6 7.8 L11.2 10 L10.3 10.8 C10.8 11.9 11.7 12.8 12.9 13.4 L13.7 12.5 L15.9 13.1 L15.9 14.3 C15.9 15.1 15.2 15.7 14.4 15.6 C11.2 15.2 8.8 12.8 8.4 9.6 C8.3 8.6 8.6 7.8 9.3 7.8 Z" fill="#FFFFFF"/>
+        {% elif icon == 'email' %}<rect x="3.5" y="6" width="17" height="12.5" rx="2" fill="none" stroke="#FFFFFF" stroke-width="1.8"/><path d="M4.5 7.5 L12 13 L19.5 7.5" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linejoin="round"/>
+        {% elif icon == 'web' %}<circle cx="12" cy="12" r="8.3" fill="none" stroke="#FFFFFF" stroke-width="1.7"/><ellipse cx="12" cy="12" rx="3.6" ry="8.3" fill="none" stroke="#FFFFFF" stroke-width="1.5"/><path d="M4 9.2 H20 M4 14.8 H20" stroke="#FFFFFF" stroke-width="1.5"/>
+        {% elif icon == 'facebook' %}<path d="M13.4 20.5 V12.9 H16 L16.4 9.9 H13.4 V8 C13.4 7.1 13.7 6.5 15 6.5 H16.5 V3.8 C16.2 3.8 15.3 3.7 14.3 3.7 C12.1 3.7 10.6 5 10.6 7.5 V9.9 H8 V12.9 H10.6 V20.5 Z" fill="#FFFFFF"/>
+        {% else %}<rect x="4" y="4" width="16" height="16" rx="4.6" fill="none" stroke="#FFFFFF" stroke-width="1.8"/><circle cx="12" cy="12" r="3.7" fill="none" stroke="#FFFFFF" stroke-width="1.8"/><circle cx="16.6" cy="7.4" r="1.1" fill="#FFFFFF"/>{% endif %}
+      </svg></span><span class="lbl">{{ label }}</span><span class="val">{{ value }}</span></li>
+      {% endfor %}
+    </ul>
+    {% if qr %}<figure class="qab-qr" data-about-qr="{{ im.url }}"><div class="box">{{ qr }}</div><figcaption>{{ s.qr if im.code else s.qr_general }}</figcaption></figure>{% endif %}
+  </div>
+  <footer class="qab-foot"><span>{{ s.made_on.format(month=im.month()) }}</span><span>{{ s.rights.format(year=im.year()) }}</span></footer>
+</div>

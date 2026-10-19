@@ -388,6 +388,7 @@ const GENITIVE: Record<string, string> = {
   "studio.preview.note": "nameGen",
   "studio.staff.confirmRemove": "nameGen",
   "account.booksOf": "nameGen",
+  "hello.bookFor": "nameGen", // the book QR page: «كتاب {nameGen}» (HelloPage passes nameCases)
   "landing.samplesTitle": "nameGen",
   "landing.howCharacterAlt": "nameGen",
   "create.bookOf": "nameGen",

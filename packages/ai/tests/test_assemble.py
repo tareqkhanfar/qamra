@@ -69,7 +69,7 @@ async def test_generated_book_assembles_and_passes_preflight(
         k: v.to_dict() for k, v in files.preflight.items()
     }
     kinds = [p.kind for p in files.spec.pages]
-    assert len(kinds) == 24 and kinds[0] == "title" and kinds[-3:] == ["parents", "activity", "memories"]
+    assert len(kinds) == 24 and kinds[0] == "title" and kinds[-3:] == ["parents", "activity", "about"]
     spread = [p for p in files.spec.pages if p.layout == "spread-panorama"]
     assert len(spread) == 6 and all(p.image is not None for p in spread)
     # Addendum 11 §3: designed layouts, never the same layout on two story beats in a row

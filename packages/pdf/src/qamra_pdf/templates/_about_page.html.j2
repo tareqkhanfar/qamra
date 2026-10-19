@@ -1,0 +1,7 @@
+{#- The story book's «عن قمرة» page (its last page): the shared block (qamra_pdf.imprint.about_html, passed in
+    as `about_block`) at the page's safe area, on the book's paper. A hook in _book.html.j2 calls it. -#}
+{% macro about_page(p) -%}
+<section class="page paper about-page" data-kind="about" data-number="{{ p.number }}" style="background: var(--paper)">
+  <div class="about-box" style="position: absolute; inset: var(--safe)">{{ about_block }}</div>
+</section>
+{%- endmacro %}

@@ -5,7 +5,9 @@
 test checks what is printed, not what was meant. `route` says which web route of the site a URL opens:
 
 - `/a/{code}`: an activity book's audio item (apps/web `[locale]/a/[code]`, the API's `/api/a/{code}`);
-- `/v/{token}/{page}` and `/v/{token}`: a story page's «صوت أهلي» listen page, and the back cover's.
+- `/v/{token}/{page}` and `/v/{token}`: a story page's «صوت أهلي» listen page, and the back cover's;
+- `/b/{code}` and `/hello`: Qamra's contact page with the book's code (every book's «عن قمرة» page), or
+  without one (a sample's).
 
 Shared by the product tests (packages/workbook/tests, packages/ai/tests, apps/api/tests).
 """
@@ -30,6 +32,8 @@ _MODULE = re.compile(r"M(\d+) (\d+)h1v1h-1z")
 AUDIO_CODE = re.compile(r"[a-z2-7]{4,16}")  # apps/web [locale]/a/[code]/page.tsx
 LISTEN_TOKEN = re.compile(r"[A-Za-z0-9_-]{16,64}")  # qamra_api.routers.voice_public.TOKEN
 MAX_PAGE = 99  # apps/web [locale]/v/[token]/[page]/page.tsx
+# qamra_core.book_codes, apps/web [locale]/b/[code]
+BOOK_CODE = re.compile(r"QB-[23456789ACDEFHJKMNPRTWXY]{5}")
 
 
 def decode(size: int, path: str) -> str:
@@ -80,4 +84,17 @@ def route(url: str, domain: str = "qamra.app") -> tuple[str, dict[str, str]] | N
         return ("listen", {"token": m.group(1), "page": m.group(2)}) if 1 <= page <= MAX_PAGE else None
     if m := re.fullmatch(rf"/v/({LISTEN_TOKEN.pattern})", path):
         return "listen-start", {"token": m.group(1)}
+    if m := re.fullmatch(rf"/b/({BOOK_CODE.pattern})", path):
+        return "book", {"code": m.group(1)}
+    if path == "/hello":
+        return "hello", {}
     return None
+
+
+def about_urls(html: str) -> list[str]:
+    """The QR of every «عن قمرة» page in the HTML, decoded (what a phone opens), in order."""
+    return [
+        decode(int(m.group(1)), m.group(2))
+        for block in re.findall(r'data-about-qr="[^"]*"(.*?)</figure>', html, flags=re.S)
+        for m in QR_SVG.finditer(block)
+    ]

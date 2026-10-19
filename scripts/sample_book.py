@@ -37,6 +37,7 @@ from qamra_ai.pipeline.runtime import Runtime
 from qamra_ai.pipeline.theme import load_style, load_theme
 from qamra_ai.text import make_text_provider
 from qamra_pdf import Brand
+from qamra_pdf.imprint import Contact, Imprint, product_name
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_PHOTO = ROOT / "packages/ai/tests/fixtures/face-astronaut-public-domain.png"
@@ -67,6 +68,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--companion-name")
     p.add_argument("--companion-type", choices=["creature", "animal", "robot", "other"], default="creature")
     p.add_argument("--qr-url", help="URL for the back-cover QR code (family voice)")
+    p.add_argument("--code", help="a book code («QB-7K4M2») for the «عن قمرة» page and the back cover")
     p.add_argument(
         "--cover-thumbs",
         action="store_true",
@@ -261,6 +263,18 @@ async def run(args: argparse.Namespace) -> int:
                 qr_url=args.qr_url,
                 made_on=date.today(),
                 watermark=args.mode == "preview",
+                imprint=Imprint(
+                    code=args.code,
+                    child_name=args.name,
+                    gender=args.gender,
+                    product=product_name("magic", args.lang),
+                    part=book.story.out.title,
+                    lang=args.lang,
+                    made_on=date.today(),
+                    contact=Contact(domain=s.brand_domain),
+                )
+                if args.code
+                else None,
             ),
             out,
             print_files=args.mode == "final",

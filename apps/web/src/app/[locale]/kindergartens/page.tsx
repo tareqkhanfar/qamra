@@ -266,7 +266,7 @@ export default async function KindergartensPage() {
               sizes="(min-width: 1024px) 480px, 100vw"
               className="rounded-[20px]"
             />
-            <ContactLinks sales className="mt-2 text-body" />
+            <ContactLinks sales social className="mt-2 text-body" />
           </div>
           <LeadForm
             labels={{

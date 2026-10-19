@@ -23,6 +23,7 @@ from playwright.async_api import async_playwright
 
 import qamra_workbook.render.pages  # noqa: F401  (importing the builders registers every page type)
 from qamra_pdf.arabic_names import accusative, genitive
+from qamra_pdf.imprint import back_code_html
 from qamra_pdf.render import FONTS_DIR, qr_svg, set_boxes
 from qamra_workbook.names import shorter_names
 from qamra_workbook.render import art
@@ -51,6 +52,7 @@ _env = Environment(
     lstrip_blocks=True,
 )
 _env.globals.update(
+    back_code=back_code_html,  # the book code, small, on the back cover (qamra_pdf.imprint)
     icon=art.icon,
     mascot=art.mascot,
     stars=art.stars,

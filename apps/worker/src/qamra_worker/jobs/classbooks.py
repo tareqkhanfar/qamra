@@ -76,6 +76,7 @@ from qamra_pdf.classbook import (
 from qamra_pdf.lettering import DEFAULT_TITLE_STYLE
 from qamra_worker import context
 from qamra_worker.ai import ai_settings, make_runtime
+from qamra_worker.imprint import book_imprint
 from qamra_worker.jobs.books import CostSink, brand, file_key, page_key, resolved_settings
 from qamra_worker.settings import get_settings
 
@@ -556,6 +557,9 @@ async def render_files(job: ClassJob) -> dict[str, Any]:
         for i, (c, stem) in enumerate(zip(done, stems, strict=True)):
             child = job.ready[c][0]
             comp = _companion_art(db, child)
+            row = books.get(c)  # the copy's Book: its code on the «عن قمرة» page and the back cover
+            title = job.template.title(lang, job.classroom.name)
+            imprint = book_imprint(db, row, child, line="class", part=title, lang=lang) if row else None
             copies.append(
                 ChildCopy(
                     stem=stem,
@@ -574,6 +578,7 @@ async def render_files(job: ClassJob) -> dict[str, Any]:
                     else None,
                     companion_name=comp.name if comp else None,
                     gender=_gender(child),
+                    imprint=imprint,
                 )
             )
         title_style, ages = _theme_cover(job.template.slug)

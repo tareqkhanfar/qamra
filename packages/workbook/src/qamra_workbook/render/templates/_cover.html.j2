@@ -68,7 +68,8 @@
     {% if c.extra.books %}<section class="cvk-books" data-drop="4"><h3><i style="background: {{ L.accent }}"></i>{{ c.extra.books_title }}</h3><div>{% for x in c.extra.books %}<span class="{{ 'this' if x.this }}" style="{{ 'background: ' ~ L.panel ~ '; color: #FFFFFF' if x.this }}">{{ x.title }}</span>{% endfor %}</div></section>{% endif %}
     {% if c.extra.care %}<p class="cvk-care" data-drop="5">{{ c.extra.care }}</p>{% endif %}
     <div class="cvk-foot">
-      {% if c.made_for %}<div class="cvk-made"><b style="color: {{ L.accent }}">{{ icon('heart') }}</b><span data-fit="8">{{ c.made_for }}</span></div>{% endif %}
+      {% set code = back_code(book.imprint, L.ink) if book.imprint else '' %}
+      {% if c.made_for or code %}<div class="cvk-made">{% if c.made_for %}<b style="color: {{ L.accent }}">{{ icon('heart') }}</b><span data-fit="8">{{ c.made_for }}</span>{% endif %}{{ code }}</div>{% endif %}
       <div class="cvk-foot-row">
         <div class="cvk-facts">{% for f in c.facts %}<span>{{ f }}</span>{% endfor %}</div>
         <div class="cvk-site">{{ mascot('mascot') }}<b>قمرة</b><small dir="ltr">{{ c.domain }}</small></div>
