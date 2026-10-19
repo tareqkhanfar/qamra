@@ -434,3 +434,159 @@ def tape(color: str, pattern: str = "dots") -> Markup:
         )
     body = f'<path d="{edge_l} {edge_r}" fill="{color}" opacity=".88"/>{deco}'
     return _svg("0 0 34 10", body, "tape")
+
+
+# ---- Story-text motifs: a small hand-drawn sprig on the text's painted shape, and a flourish under it ----
+
+MOTIFS: tuple[str, ...] = ("olive", "star", "heart", "flower", "leaf")
+# A theme's motif when its definition names none (`Theme.text_motif`): by theme, then by its cover lettering.
+MOTIF_BY_THEME: dict[str, str] = {
+    "olive-season": "olive",
+    "star-keeper": "star",
+    "moon-trip": "star",
+    "dream-boat": "star",
+    "graduation": "star",
+    "first-day": "flower",
+    "new-sibling": "heart",
+    "neighborhood-friends": "flower",
+}
+MOTIF_BY_TITLE_STYLE: dict[str, str] = {
+    "night-glow": "star",
+    "gold-magic": "star",
+    "candy-bright": "heart",
+    "nature-fresh": "leaf",
+    "heritage-tatreez": "olive",
+}
+LEAF = "#6E8F3A"
+LEAF_DEEP = "#4A6B26"
+OLIVE = "#5B3E5E"
+OLIVE_GREEN = "#8EA544"
+HEART = "#E26D6D"
+PETAL = "#F4A6B7"
+
+
+def motif_for(theme_slug: str | None, title_style: str | None, chosen: str | None = None) -> str:
+    """The story pages' motif: the theme's own choice, else by theme, else by its cover lettering."""
+    if chosen in MOTIFS:
+        return str(chosen)
+    return MOTIF_BY_THEME.get(theme_slug or "") or MOTIF_BY_TITLE_STYLE.get(title_style or "", "star")
+
+
+def _leaf(x: float, y: float, length: float, angle: float, fill: str, vein: str) -> str:
+    """An almond leaf from (x, y) along `angle` (degrees), with a soft vein."""
+    w = length * 0.34
+    body = (
+        f"M 0 0 C {length * 0.3:.2f} {-w:.2f} {length * 0.75:.2f} {-w * 0.8:.2f} {length:.2f} 0 "
+        f"C {length * 0.75:.2f} {w * 0.8:.2f} {length * 0.3:.2f} {w:.2f} 0 0 Z"
+    )
+    return (
+        f'<g transform="translate({x:.2f} {y:.2f}) rotate({angle:.1f})"><path d="{body}" fill="{fill}"/>'
+        f'<path d="M {length * 0.08:.2f} 0 Q {length * 0.5:.2f} {-w * 0.12:.2f} {length * 0.9:.2f} 0" '
+        f'fill="none" stroke="{vein}" stroke-width="{length * 0.045:.2f}" stroke-linecap="round" '
+        'opacity=".55"/></g>'
+    )
+
+
+def _heart(cx: float, cy: float, s: float, fill: str, rot: float) -> str:
+    d = (
+        f"M 0 {s * 0.35:.2f} C {-s * 0.9:.2f} {-s * 0.3:.2f} {-s * 0.35:.2f} {-s * 0.95:.2f} 0 "
+        f"{-s * 0.42:.2f} C {s * 0.35:.2f} {-s * 0.95:.2f} {s * 0.9:.2f} {-s * 0.3:.2f} 0 {s * 0.35:.2f} Z"
+    )
+    return f'<path d="{d}" fill="{fill}" transform="translate({cx} {cy}) rotate({rot}) scale(1.6)"/>'
+
+
+def motif(kind: str, accent: str = HEART, gold: str = GOLD) -> Markup:
+    """The theme's small sprig (a 20 × 13 box): an olive branch, a star cluster, two hearts, a flower or a
+    leafy sprig. Soft and hand-drawn: rounded ends, two tones, no outlines."""
+    if kind == "olive":
+        stem = (
+            '<path d="M 2 10 Q 9 6.5 17 3.2" fill="none" stroke="#6B5A33" stroke-width=".55" '
+            'stroke-linecap="round"/>'
+        )
+        leaves = "".join(
+            _leaf(x, y, ln, a, fill, LEAF_DEEP)
+            for x, y, ln, a, fill in (
+                (4.2, 8.9, 5.2, -150, LEAF),
+                (6.6, 7.6, 5.6, 32, OLIVE_GREEN),
+                (9.4, 6.3, 5.4, -140, LEAF_DEEP),
+                (12.0, 5.0, 5.0, 28, LEAF),
+                (14.6, 4.0, 4.4, -132, OLIVE_GREEN),
+                (17.0, 3.2, 3.6, -20, LEAF),
+            )
+        )
+        olives = (
+            '<ellipse cx="7.9" cy="10.1" rx="1.45" ry="1.9" transform="rotate(-20 7.9 10.1)" '
+            f'fill="{OLIVE}"/>'
+            '<ellipse cx="7.5" cy="9.5" rx=".4" ry=".55" fill="#FFFFFF" opacity=".45"/>'
+            '<ellipse cx="11.2" cy="8.3" rx="1.35" ry="1.75" transform="rotate(-15 11.2 8.3)" '
+            f'fill="{OLIVE_GREEN}"/>'
+            '<ellipse cx="10.8" cy="7.8" rx=".35" ry=".5" fill="#FFFFFF" opacity=".5"/>'
+        )
+        return _svg("0 0 20 13", stem + leaves + olives, "motif motif-olive")
+    if kind == "star":
+        body = (
+            f'<path d="{star_path(7, 7, 5.6, 5, 0.47)}" fill="{gold}" stroke="{GOLD_DEEP}" '
+            'stroke-width=".35" stroke-linejoin="round"/>'
+            f'<path d="{star_path(15, 4.2, 2.9, 5, 0.47, -80)}" fill="{GOLD_LIGHT}" stroke="{gold}" '
+            'stroke-width=".3" stroke-linejoin="round"/>'
+            f'<path d="{sparkle_path(16.4, 10.2, 1.9)}" fill="{gold}"/>'
+        )
+        return _svg("0 0 20 13", body, "motif motif-star")
+    if kind == "heart":
+        body = _heart(7, 7.5, 4.0, accent, -12) + _heart(14.5, 5.2, 2.6, PETAL, 14)
+        body += f'<path d="{sparkle_path(16.5, 10.5, 1.5)}" fill="{gold}"/>'
+        return _svg("0 0 20 13", body, "motif motif-heart")
+    if kind == "flower":
+        petals = "".join(
+            f'<ellipse cx="9" cy="3.6" rx="1.9" ry="2.8" fill="{PETAL}" transform="rotate({a} 9 6.6)"/>'
+            for a in range(0, 360, 72)
+        )
+        body = (
+            _leaf(3.0, 10.5, 5.0, -20, LEAF, LEAF_DEEP)
+            + _leaf(15.0, 10.0, 4.4, -160, OLIVE_GREEN, LEAF_DEEP)
+            + petals
+            + f'<circle cx="9" cy="6.6" r="1.7" fill="{gold}"/>'
+        )
+        return _svg("0 0 20 13", body, "motif motif-flower")
+    body = (  # leaf: a leafy sprig with a berry
+        '<path d="M 2 11 Q 10 8 18 2.8" fill="none" stroke="#6B5A33" stroke-width=".5" '
+        'stroke-linecap="round"/>'
+        + "".join(
+            _leaf(x, y, ln, a, fill, LEAF_DEEP)
+            for x, y, ln, a, fill in (
+                (5.0, 9.8, 5.2, -145, LEAF),
+                (8.0, 8.6, 5.6, 25, OLIVE_GREEN),
+                (11.5, 6.8, 5.0, -135, LEAF_DEEP),
+                (15.0, 4.6, 4.4, 20, LEAF),
+            )
+        )
+        + f'<circle cx="17.6" cy="3.0" r="1.2" fill="{accent}"/>'
+    )
+    return _svg("0 0 20 13", body, "motif motif-leaf")
+
+
+def flourish(kind: str, color: str, accent: str = HEART, gold: str = GOLD) -> Markup:
+    """A hand-drawn swash under the story text (a 46 × 6.4 box): two tapering waves with the theme's motif
+    small in the middle."""
+    wave = (
+        "M 1 3.2 C 5 1.2 9 5.2 13 3.2 C 15.5 2 17 2.6 18.5 3.1"
+        " M 27.5 3.1 C 29 2.6 30.5 2 33 3.2 C 37 5.2 41 1.2 45 3.2"
+    )
+    middles = {
+        "olive": '<ellipse cx="21.6" cy="3.4" rx="1.3" ry="1.7" transform="rotate(-20 21.6 3.4)" '
+        f'fill="{OLIVE}"/><ellipse cx="24.4" cy="3.0" rx="1.25" ry="1.6" transform="rotate(15 24.4 3.0)" '
+        f'fill="{OLIVE_GREEN}"/>',
+        "star": f'<path d="{star_path(23, 3.2, 2.6, 5, 0.47)}" fill="{gold}"/>',
+        "heart": f'<path d="M 23 5.2 C 20.4 3.4 21 0.8 23 2.2 C 25 0.8 25.6 3.4 23 5.2 Z" fill="{accent}"/>',
+        "flower": "".join(
+            f'<ellipse cx="23" cy="1.6" rx=".9" ry="1.3" fill="{PETAL}" transform="rotate({a} 23 3.2)"/>'
+            for a in range(0, 360, 72)
+        )
+        + f'<circle cx="23" cy="3.2" r=".8" fill="{gold}"/>',
+    }
+    mid = middles.get(kind, _leaf(20.6, 3.2, 4.8, 0, LEAF, LEAF_DEEP))
+    body = (
+        f'<path d="{wave}" fill="none" stroke="{color}" stroke-width=".7" stroke-linecap="round" '
+        'opacity=".8"/>' + mid
+    )
+    return _svg("0 0 46 6.4", body, "flourish")

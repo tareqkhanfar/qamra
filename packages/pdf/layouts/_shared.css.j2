@@ -1,19 +1,15 @@
 /* Layout library, shared parts (Addendum 11 §3). Static font instances only: Chromium embeds variable fonts
-   as Type 3. Lalezar / Marhey: display; Aref Ruqaa: handwriting; the child's name in Noto Naskh SemiBold. */
+   as Type 3. Lalezar / Marhey: display; Aref Ruqaa: handwriting. The story lettering: _story_type.css.j2. */
 @font-face { font-family: "Lalezar"; src: url("{{ fonts }}/Lalezar-Regular.ttf") format("truetype"); }
 @font-face { font-family: "Marhey"; src: url("{{ fonts }}/Marhey-Bold.ttf") format("truetype"); }
 @font-face { font-family: "Aref Ruqaa"; src: url("{{ fonts }}/ArefRuqaa-Regular.ttf") format("truetype"); font-weight: 400 600; }
 @font-face { font-family: "Aref Ruqaa"; src: url("{{ fonts }}/ArefRuqaa-Bold.ttf") format("truetype"); font-weight: 700 900; }
-@font-face { font-family: "Naskh SemiBold"; src: url("{{ fonts }}/NotoNaskhArabic-SemiBold.ttf") format("truetype"); }
 
 :root {
   --accent: {{ t.accent }}; --title-ink: {{ t.ink }}; --soft: {{ t.soft }};
   --gold: #E9A92B; --gold-deep: #B97A12; --cream: #FFFDF8; --cream-rgb: 255,253,248; --night-rgb: 14,21,48;
-  --story-lh: 1.85;
 }
-.story-text { line-height: var(--story-lh); }
-.hero-name { color: var(--accent); font-family: "Naskh SemiBold", "Noto Naskh Arabic", serif; }
-[dir="ltr"] .hero-name { font-family: inherit; font-weight: 600; }
+{% include "_story_type.css.j2" %}
 .the-end { font-family: "Lalezar", "Baloo Bhaijaan 2", sans-serif; font-weight: 400; font-size: 14pt; color: var(--accent); }
 
 /* Paper pages: cream with soft watercolor washes in two corners (E1 paper texture when present). */

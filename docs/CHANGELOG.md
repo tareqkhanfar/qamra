@@ -1,5 +1,19 @@
 # Changelog
 
+## Story text: hand-lettered and painted into the picture (2026-10-19)
+- Story pages (Magic, Classic, custom and class books, Arabic and English) set their words in **Playpen Sans
+  Arabic** (SIL OFL, static SemiBold/ExtraBold instances) on a **painted watercolor wash** drawn in SVG under the
+  fitted text, in the picture's own colors; the child's name in the theme's accent, ExtraBold. A small motif
+  (olives, stars, hearts, flowers, leaves by theme) on the wash's corner, a flourish on its edge, and the same
+  motif on the cover ribbon. Fades and paper pages take the picture's colors too.
+- The words keep off faces (YuNet on each picture): shrink, slide to the side, then another band; pages that
+  still touch a face are flagged `text_over_face`, moved ones `text_moved`.
+- Fixed: Playpen's contextual alternates made Chromium draw wrong words at a line break; `calt` is off and a test
+  guards it. New tests: `packages/pdf/tests/test_story_type.py` (fonts embedded and licensed, contrast on the
+  wash for every accent, faces, motifs, line breaks).
+- Comparison boards (current vs three treatments) in `~/Downloads/qamra-story-type/`; decision in
+  `docs/decisions.md`.
+
 ## A code for every book, and «عن قمرة» printed in every book (2026-10-19)
 - **Book codes:** every book of every product gets a short code when it is created («QB-7K4M2»: 5 symbols with
   no 0/O/1/I/L look-alikes), never reused (`qamra_core.book_codes`, registry `book_codes`). Migration

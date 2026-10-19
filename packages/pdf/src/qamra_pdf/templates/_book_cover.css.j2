@@ -106,3 +106,6 @@
 [dir="ltr"] .spine .spine-text, .spine .spine-text[dir="ltr"] { font-family: "Baloo Bhaijaan 2", sans-serif; font-weight: 800; }
 .spine .spine-foot { position: absolute; left: 0; right: 0; bottom: calc({{ cd.bleed_mm }}mm + 9mm); display: flex; flex-direction: column; align-items: center; gap: 2.4mm; }
 .spine .spine-brand { display: block; transform: rotate(90deg); white-space: nowrap; font: 400 {{ [cd.spine_pt - 1, 7.5] | max }}pt/1 "Lalezar", "Baloo Bhaijaan 2", sans-serif; color: #F6C35A; margin-bottom: 6mm; }
+/* the theme's motif tucked at the end of the «بطولة» ribbon */
+.rb-motif { position: absolute; z-index: 2; top: -10mm; inset-inline-end: -12mm; width: 22mm; height: 14.3mm; transform: rotate(-10deg); }
+.rb-motif svg { display: block; width: 100%; height: 100%; }

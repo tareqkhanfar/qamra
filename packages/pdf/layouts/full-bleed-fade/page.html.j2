@@ -4,11 +4,12 @@
 {% macro page(p) -%}
 {% set area = p.panel.area if p.panel else 'top' %}
 {% set tone = p.panel.tone if p.panel else 'light' %}
-<section class="page lay-fade{{ ' qr-' ~ p.side if p.qr_url and qr }}" data-kind="story" data-layout="full-bleed-fade" data-number="{{ p.number }}">
+<section class="page lay-fade{{ ' qr-' ~ p.side if p.qr_url and qr }}" style="{{ ink_vars(p) }}" data-faces="{{ faces_attr(p) }}" data-kind="story" data-layout="full-bleed-fade" data-number="{{ p.number }}">
   <img class="bleed-img" src="{{ img(p.image) }}" alt="">
   {% if p.text %}
-  <div class="fade-box {{ area }} tone-{{ tone }}" style="--o: {{ p.panel.opacity if p.panel else 0.9 }}" data-panel="{{ p.number }}">
+  <div class="fade-box {{ area }} tone-{{ tone }}" style="--o: {{ p.panel.opacity if p.panel else 0.9 }}" data-panel="{{ p.number }}" data-area="{{ area }}" data-guard="text">
     {{ m.story_body(p, s, hero) }}
+    {{ m.flourish_mark(spec, t, orn, p, 'text-flourish in-flow', '#FFE7A6' if tone == 'dark' else None) }}
   </div>
   {% endif %}
   {{ m.badge(spec, p, t, orn) }}

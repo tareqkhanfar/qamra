@@ -74,6 +74,7 @@ from qamra_pdf.classbook import (
     render_class_book,
 )
 from qamra_pdf.lettering import DEFAULT_TITLE_STYLE
+from qamra_pdf.ornaments import motif_for
 from qamra_worker import context
 from qamra_worker.ai import ai_settings, make_runtime
 from qamra_worker.imprint import book_imprint
@@ -179,14 +180,15 @@ def _gender(child: Child) -> Gender:
     return "f" if child.gender == ChildGender.f else "m"
 
 
-def _theme_cover(slug: str) -> tuple[str, tuple[int, int] | None]:
-    """The class book's theme: its cover lettering and its ages (the default lettering when the class
+def _theme_cover(slug: str) -> tuple[str, tuple[int, int] | None, str]:
+    """The class book's theme: its cover lettering, its ages and its story motif (the defaults when the class
     template has no story theme of the same name)."""
     try:
         theme = load_theme(slug)
     except (OSError, ValueError):
-        return DEFAULT_TITLE_STYLE, None
-    return theme.cover_title_style, (theme.age_range[0], theme.age_range[1])
+        return DEFAULT_TITLE_STYLE, None, motif_for(slug, DEFAULT_TITLE_STYLE)
+    motif = motif_for(theme.slug, theme.cover_title_style, theme.text_motif)
+    return theme.cover_title_style, (theme.age_range[0], theme.age_range[1]), motif
 
 
 def _seed(cb: ClassBook) -> int:
@@ -581,7 +583,7 @@ async def render_files(job: ClassJob) -> dict[str, Any]:
                     imprint=imprint,
                 )
             )
-        title_style, ages = _theme_cover(job.template.slug)
+        title_style, ages, motif = _theme_cover(job.template.slug)
         book_spec = ClassBookSpec(
             lang=lang,
             brand=brand(),
@@ -602,6 +604,7 @@ async def render_files(job: ClassJob) -> dict[str, Any]:
             dpi=spec.dpi,
             title_style=title_style,
             age_range=ages,
+            motif=motif,
         )
         book_spec = dataclasses.replace(book_spec, spine_mm=spec.spine_for(book_spec.interior_pages))
         job.progress(stage="files", files={"done": 0, "total": len(copies)})

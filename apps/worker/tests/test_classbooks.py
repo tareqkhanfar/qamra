@@ -178,5 +178,5 @@ async def test_a_second_run_draws_only_what_changed(db: Session, storage: Object
 
 
 def test_class_covers_take_the_theme_lettering_and_ages() -> None:
-    assert _theme_cover("graduation") == ("gold-magic", (5, 6))
-    assert _theme_cover("no-such-theme") == ("gold-magic", None)  # the default lettering, no ages claimed
+    assert _theme_cover("graduation") == ("gold-magic", (5, 6), "star")
+    assert _theme_cover("no-such-theme") == ("gold-magic", None, "star")  # the defaults, no ages claimed

@@ -1,5 +1,5 @@
-/* full-bleed-fade */
-.fade-box { position: absolute; z-index: 2; --rgb: var(--cream-rgb); display: flex; flex-direction: column; justify-content: center; }
+/* full-bleed-fade: the fade is the picture's own pale tint (--wash-rgb), deep blue on night art */
+.fade-box { position: absolute; z-index: 2; --rgb: var(--wash-rgb, var(--cream-rgb)); display: flex; flex-direction: column; justify-content: center; }
 .fade-box.tone-dark { --rgb: var(--night-rgb); }
 .fade-box.tone-dark .story-text { color: var(--cream); }
 .fade-box.tone-dark .hero-name { color: #FFD36B; }

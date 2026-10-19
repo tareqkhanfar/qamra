@@ -26,6 +26,7 @@ from qamra_ai.image.base import Aspect
 from qamra_ai.pipeline.models import Lang
 from qamra_ai.pipeline.theme import Layout, Theme, ThemePage
 from qamra_pdf.lettering import DEFAULT_TITLE_STYLE
+from qamra_pdf.ornaments import motif_for
 from qamra_pdf.page_layouts import PageLayout, choose
 
 if TYPE_CHECKING:
@@ -121,6 +122,7 @@ class BookPlan:
     title_style: str = DEFAULT_TITLE_STYLE  # the theme's cover lettering (`cover_title_style`)
     memories: Literal["school", "default"] = "default"  # «ذكرياتنا» prompts: first/last day for school themes
     age_range: tuple[int, int] | None = None  # the theme's ages, printed as a fact on the back cover
+    motif: str = "star"  # the story pages' ornament (`qamra_pdf.ornaments.motif_for`)
 
     @property
     def rtl(self) -> bool:
@@ -178,6 +180,7 @@ def plan_book(theme: Theme, lang: Lang, *, companion_page: bool, spec: PrintSpec
         lang=lang,
         spec=spec,
         title_style=theme.cover_title_style,
+        motif=motif_for(theme.slug, theme.cover_title_style, theme.text_motif),
         memories="school" if any(o in SCHOOL_OCCASIONS for o in occasions) else "default",
         age_range=(theme.age_range[0], theme.age_range[1]) if theme.age_range else None,
     )

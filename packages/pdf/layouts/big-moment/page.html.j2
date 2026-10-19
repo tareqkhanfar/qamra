@@ -3,7 +3,7 @@
 {% import "_macros.html.j2" as m %}
 {% macro page(p) -%}
 {% set area = 'bottom' if p.panel and p.panel.area == 'bottom' else 'top' %}
-<section class="page lay-big{{ ' qr-' ~ p.side if p.qr_url and qr }}" data-kind="story" data-layout="big-moment" data-number="{{ p.number }}">
+<section class="page lay-big{{ ' qr-' ~ p.side if p.qr_url and qr }}" style="{{ ink_vars(p) }}" data-faces="{{ faces_attr(p) }}" data-kind="story" data-layout="big-moment" data-number="{{ p.number }}">
   <img class="bleed-img" src="{{ img(p.image) }}" alt="">
   <div class="big-veil {{ area }}"></div>
   {% if p.text %}

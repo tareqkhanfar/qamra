@@ -170,6 +170,8 @@ class Theme(BaseModel):
     default_companion: DefaultCompanion | None = None
     catalog: ThemeCatalog | None = None
     cover_title_style: TitleStyle = DEFAULT_TITLE_STYLE  # cover lettering treatment (Addendum 11 §2.3)
+    # the story pages' small ornament (olive, star, heart, flower, leaf); None: by theme / cover lettering
+    text_motif: Literal["olive", "star", "heart", "flower", "leaf"] | None = None
     setting: str | None = None  # overrides the house style's local setting cues when the story needs it
     locations: dict[str, str] = {}
     outfits: dict[str, list[Outfit]] = {}

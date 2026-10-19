@@ -1,0 +1,29 @@
+/* Story lettering (docs/decisions.md 2026-10-19, «الخط مرسوم»): the words look hand-lettered and painted into
+   the picture, not typed into a box.
+   - Face: Playpen Sans Arabic (SIL OFL), a rounded hand-drawn letter made for children learning to read, with
+     full, clear tashkeel. Static instances only (Chromium embeds variable fonts as Type 3). It is wider than
+     Noto Naskh at the same size, so `size-adjust: 90%` keeps the age sizes (26/24 pt, 21/20 pt) at about the
+     visual size of the Naskh they replace. It covers Latin too: English books keep the same storybook hand.
+   - "calt" off: Playpen's cross-word contextual alternates make Chromium reuse the wrong glyphs where a line
+     breaks (a word vanished and another was drawn twice); `tests/test_story_type.py` guards it.
+   - Ink: a deep tone of the picture's own color (--ink, ≥ 7:1 on the wash); the child's name in the theme's
+     accent, darkened until it reads (--name, ≥ 4.5:1), in the heavier weight.
+   Colors come per page from `render.ink_vars` (CSS variables on the page). */
+@font-face { font-family: "Playpen Sans Arabic"; src: url("{{ fonts }}/PlaypenSansArabic-SemiBold.ttf") format("truetype"); font-weight: 400 700; size-adjust: 90%; }
+@font-face { font-family: "Playpen Sans Arabic"; src: url("{{ fonts }}/PlaypenSansArabic-ExtraBold.ttf") format("truetype"); font-weight: 800 900; size-adjust: 90%; }
+
+:root { --story-face: "Playpen Sans Arabic", "Noto Naskh Arabic", serif; --story-lh: 1.95; }
+.story-text { font-family: var(--story-face); font-weight: 600; line-height: var(--story-lh); color: var(--ink, #1C2140); font-feature-settings: "calt" 0; }
+[dir="ltr"] .story-text { font-family: var(--story-face); }
+.story-text .hero-name { font-family: inherit; font-weight: 800; color: var(--name, var(--accent, #A8560A)); }
+.story-text .the-end { color: var(--name, var(--accent, #A8560A)); }
+
+/* The painted shape under text set on the art (`shapes.SHAPES_JS` draws it once the text is fitted), the
+   theme's motif tucked on its corner and a hand-drawn flourish on its lower edge. */
+.ink-shape { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.motif-tag { position: absolute; top: -8mm; inset-inline-start: -5mm; width: 24mm; height: 15.6mm; z-index: 1; transform: rotate(-8deg); }
+[dir="rtl"] .motif-tag { transform: scaleX(-1) rotate(-8deg); }
+.motif-tag svg, .text-flourish svg, .paper-flourish svg { display: block; width: 100%; height: 100%; }
+.text-flourish { position: absolute; bottom: -2.4mm; left: 50%; width: 44mm; height: 6.1mm; margin-left: -22mm; z-index: 1; }
+.text-flourish.in-flow { position: static; margin: 1.2mm auto 0; flex: none; }
+.paper-flourish { position: absolute; bottom: -7.5mm; left: 50%; width: 44mm; height: 6.1mm; margin-left: -22mm; }
