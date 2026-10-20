@@ -54,7 +54,7 @@ async def test_the_outfits_are_listed_with_their_swatches_and_no_prompts(client:
     boys = [o for o in body["outfits"] if "m" in o["looks"]]
     assert len(girls) == 6 and len(boys) == 6
     classic = body["outfits"][0]
-    assert (classic["id"], classic["name_ar"]) == ("classic", "الكلاسيكي")
+    assert (classic["id"], classic["name_ar"]) == ("classic", "الأساسي")
     assert classic["looks"]["f"]["swatch"]["shape"] == "tee" and classic["hijab_color"].startswith("#")
     assert "prompt" not in r.text and "night-blue" not in r.text
 

@@ -29,7 +29,7 @@ def test_six_outfits_each_for_girls_and_boys_with_the_classic_default() -> None:
     girls, boys = catalog.for_child("f"), catalog.for_child("m")
     assert len(girls) == 6 and len(boys) == 6 and girls[0].id == boys[0].id == "classic"
     default = catalog.get("classic")
-    assert default is not None and default.name_ar == "الكلاسيكي"
+    assert default is not None and default.name_ar == "الأساسي"
     assert (
         default.looks["f"].prompt
         == "a soft cream long-sleeved top, night-blue trousers and simple brown shoes"

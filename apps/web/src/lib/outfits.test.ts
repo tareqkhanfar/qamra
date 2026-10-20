@@ -10,7 +10,7 @@ const CATALOG: Outfits = {
   outfits: [
     {
       id: "classic",
-      name_ar: "الكلاسيكي",
+      name_ar: "الأساسي",
       name_en: "Classic",
       lines: ["magic", "workbook"],
       hijab_color: "#A7BC9C",

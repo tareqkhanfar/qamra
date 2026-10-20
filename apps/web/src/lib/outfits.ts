@@ -37,7 +37,7 @@ export function outfitName(catalog: Outfits | null, id: string | null | undefine
 
 /**
  * The outfit preselected for this child: the one of their last-approved drawing when it is still offered, else
- * the default («الكلاسيكي»).
+ * the default («الأساسي»).
  */
 export function initialOutfit(
   offered: Outfit[],

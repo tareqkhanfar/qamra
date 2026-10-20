@@ -5,7 +5,7 @@
 # the hijab (when the parent chose one) follows the outfit (`hijab`). Story books dress the child in the chosen
 # outfit on the everyday scene groups listed under `themes` below; a costume a scene needs (graduation gown,
 # pyjamas, space suit, festive clothes) stays the scene's. Classic stories use their templates' art and never
-# show this choice. The default («الكلاسيكي») is the neutral reference outfit every child wore before: its sheet
+# show this choice. The default («الأساسي») is the neutral reference outfit every child wore before: its sheet
 # and portrait prompts are unchanged, and books keep choosing their own everyday clothes for it.
 #
 # Each outfit has one look per gender it is offered to (`looks.f`, `looks.m`): 6 for girls and 6 for boys.
@@ -24,7 +24,7 @@ default: classic
 
 outfits:
   - id: classic
-    name_ar: الكلاسيكي
+    name_ar: الأساسي
     name_en: Classic
     lines: [magic, workbook, journey, family, islamic]
     hijab: a simple soft sage-green hijab

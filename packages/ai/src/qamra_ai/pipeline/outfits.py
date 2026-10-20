@@ -3,7 +3,7 @@
 The parent picks one before the character is drawn (owner, 2026-10-20). The id is stored on the character;
 the sheet prompt gets the look's `prompt`, the portrait its `top`, and a girl's hijab follows the outfit.
 Story books wear it on the theme's everyday scene groups (`everyday_groups`); scene costumes stay. The
-default («الكلاسيكي») is the neutral reference outfit drawn before, unchanged, and books keep their own
+default («الأساسي») is the neutral reference outfit drawn before, unchanged, and books keep their own
 everyday clothes for it.
 """
 
