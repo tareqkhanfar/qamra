@@ -18,9 +18,11 @@ import {
 } from "@/lib/create";
 import { blockedUntilOf, drawsLeft } from "@/lib/drawLimits";
 import { drawingFor, lastApproved, NOTE_MAX, offered, tidyNote } from "@/lib/drawings";
+import { outfitName, outfitsFor } from "@/lib/outfits";
 import { ACTIVITY_LINES } from "@/lib/shop";
 import { DrawLimitNote, useNow } from "./DrawLimit";
 import { Chip, Frame, Lead } from "./Frame";
+import { OutfitPicker, useOutfits } from "./OutfitPicker";
 
 const FIXES: Fix[] = ["skin", "face", "hair", "age"];
 const POLL_MS = 3000;
@@ -48,11 +50,16 @@ export function photoSavedNotice(
  * (`usable`), show as a strip under the picture, newest first, so the parent can compare them and go back to one.
  * Tapping one shows it large; the approve button approves it and a redraw starts from it. Approving a drawing in
  * another style makes the book use that style (`onApproved` gets that drawing).
+ *
+ * «ماذا يلبس؟» (owner, 2026-10-20): the card and the strip name the outfit each drawing wears (lib/outfits). With
+ * `outfitLine` (a book that offers outfits; never Classic) the parent can pick another outfit and redraw in it,
+ * which uses a free drawing like any redraw (staff: unlimited). A plain redraw keeps the drawing's outfit.
  */
 export function CharacterStep({
   child,
   character,
   productLine = null,
+  outfitLine,
   usable = null,
   title,
   back,
@@ -63,6 +70,7 @@ export function CharacterStep({
   child: Child;
   character: Character;
   productLine?: string | null; // classic|magic|workbook|journey|family|islamic|class (null: a story)
+  outfitLine?: string | null; // the line whose outfits the parent can switch to (undefined: no switching)
   usable?: readonly string[] | null; // the styles this book can use (null: any): drawings in others aren't offered
   title?: string; // the frame title; the wizard's FlowFrameContext wins when present
   back?: () => void; // none on the kindergarten invite
@@ -75,7 +83,7 @@ export function CharacterStep({
   const locale = useLocale();
   const [fixes, setFixes] = useState<Fix[]>([]);
   const [note, setNote] = useState("");
-  const [busy, setBusy] = useState<"approve" | "redraw" | null>(null);
+  const [busy, setBusy] = useState<"approve" | "redraw" | "outfit" | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [tick, setTick] = useState(0);
   // the child's drawings, newest first (kept while a newer list loads)
@@ -85,6 +93,9 @@ export function CharacterStep({
   // the API said none are left until then (the child's own count may be older)
   const [blockedUntil, setBlockedUntil] = useState<string | null>(null);
   const now = useNow();
+  const outfitCatalog = useOutfits();
+  // the outfit picked to redraw in (null: none picked yet, the drawing's own is shown)
+  const [newOutfit, setNewOutfit] = useState<string | null>(null);
   const who = { ...nameCases(child.name), gender: child.gender };
   const drawing = character.status === "generating";
   const kind = drawingFor(productLine, ACTIVITY_LINES);
@@ -124,6 +135,12 @@ export function CharacterStep({
   const latestPhoto = (drawing ? character.photo_id : (drawings ?? []).find((d) => d.photo_id)?.photo_id) ?? null;
   const styleName = (d: Drawing) => (locale === "ar" ? d.style_name_ar : d.style_name_en);
   const strip = list.length + (drawing ? 1 : 0) > 1; // something to compare with
+  const wearsName = (c: Character) => outfitName(outfitCatalog, c.outfit, locale);
+  const switchable = outfitLine === undefined ? [] : outfitsFor(outfitCatalog, child.gender, outfitLine);
+  const ownOutfit = selected.outfit ?? outfitCatalog?.default ?? "classic";
+  const outfitPick = newOutfit ?? ownOutfit;
+  // a redraw keeps the drawing's outfit when it still fits this child (else the API's default)
+  const keepOutfit = outfitsFor(outfitCatalog, child.gender, null).some((o) => o.id === ownOutfit) ? ownOutfit : null;
 
   async function approve() {
     setBusy("approve");
@@ -134,19 +151,24 @@ export function CharacterStep({
     else setError(errorText(r.error, locale, r.status === 0 ? te("network") : te("unknown")));
   }
 
-  async function redraw() {
-    setBusy("redraw");
+  async function redraw(outfit: string | null = keepOutfit) {
+    setBusy(outfit !== keepOutfit ? "outfit" : "redraw");
     setError(null);
     const failed = selected.status === "failed";
     const said = failed ? undefined : tidyNote(note);
-    const r = await createApi.draw(child.id, selected.style, failed ? [] : fixes, null, {
-      redraw: true,
-      ...(said ? { note: said } : {}),
-    });
+    const r = await createApi.draw(
+      child.id,
+      selected.style,
+      failed ? [] : fixes,
+      null,
+      { redraw: true, ...(said ? { note: said } : {}) },
+      outfit,
+    );
     setBusy(null);
     if (r.ok) {
       setFixes([]);
       setNote("");
+      setNewOutfit(null);
       onChange(r.data);
       return;
     }
@@ -175,7 +197,7 @@ export function CharacterStep({
               {t("character.approve", who)}
             </Button>
             <Button
-              onClick={redraw}
+              onClick={() => redraw()}
               loading={busy === "redraw"}
               variant="secondary"
               disabled={!left || !!busy || drawing}
@@ -190,7 +212,7 @@ export function CharacterStep({
             </Button>
           </div>
         ) : selected.status === "failed" ? (
-          <Button onClick={redraw} loading={busy === "redraw"} size="lg" className="grow" disabled={!left}>
+          <Button onClick={() => redraw()} loading={busy === "redraw"} size="lg" className="grow" disabled={!left}>
             {t("retry")}
           </Button>
         ) : undefined
@@ -235,7 +257,14 @@ export function CharacterStep({
               alt={t("character.alt", who)}
               className="aspect-[3/2] w-full rounded-2xl object-contain"
             />
-            <figcaption className="pb-1 text-center text-caption text-ink-muted">{t("character.views")}</figcaption>
+            <figcaption className="flex flex-col items-center gap-1 pb-1 text-center text-caption text-ink-muted">
+              <span>{t("character.views")}</span>
+              {wearsName(selected) && (
+                <span className="rounded-full bg-paper-sunk px-2.5 py-0.5 font-semibold text-night-900">
+                  {t("outfit.wears", { ...who, outfit: wearsName(selected)! })}
+                </span>
+              )}
+            </figcaption>
           </figure>
           {onEditPhoto && (
             <button
@@ -295,6 +324,7 @@ export function CharacterStep({
                     )}
                   </span>
                   <span className="line-clamp-2 text-caption font-semibold text-night-900">{styleName(d)}</span>
+                  {wearsName(d) && <span className="line-clamp-2 text-caption text-ink-muted">{wearsName(d)}</span>}
                   {d.id === inUse?.id && (
                     <span className="self-start rounded-full bg-amber-100 px-2 py-0.5 text-caption font-bold text-amber-700">
                       {t("character.inUse")}
@@ -310,6 +340,31 @@ export function CharacterStep({
             })}
           </div>
         </section>
+      )}
+      {shown && switchable.length > 1 && (
+        <details className="rounded-2xl border border-line bg-paper-raised p-4">
+          <summary className="min-h-11 cursor-pointer content-center text-body font-semibold">
+            {t("outfit.change", who)} <span className="font-normal text-ink-muted">{t("outfit.changeHint")}</span>
+          </summary>
+          <div className="flex flex-col gap-3 pt-3">
+            <OutfitPicker
+              id="outfit-change"
+              child={child}
+              outfits={switchable}
+              value={switchable.some((o) => o.id === outfitPick) ? outfitPick : switchable[0].id}
+              onChange={setNewOutfit}
+            />
+            <Button
+              variant="secondary"
+              onClick={() => redraw(outfitPick)}
+              loading={busy === "outfit"}
+              disabled={!left || !!busy || drawing || outfitPick === ownOutfit}
+            >
+              {t("outfit.redraw", who)}
+            </Button>
+            {!left && limitNote}
+          </div>
+        </details>
       )}
       {shown && (
         <>

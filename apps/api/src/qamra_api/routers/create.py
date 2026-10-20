@@ -19,6 +19,7 @@ from sqlalchemy import func, select
 from qamra_ai.pipeline.character_feedback import NOTE_MAX, clean_note
 from qamra_ai.pipeline.classic import classic_budget_usd
 from qamra_ai.pipeline.custom_story import CUSTOM_THEME, CustomBrief, screen_brief
+from qamra_ai.pipeline.outfits import Swatch, load_outfits
 from qamra_ai.pipeline.photo_crop import MIN_FRACTION, PhotoCrop, frame_photo, image_size
 from qamra_ai.pipeline.theme import Theme
 from qamra_api import draw_limits, ratelimit, runtime_settings
@@ -67,6 +68,8 @@ FRAMINGS_PER_HOUR = 60  # each saved framing runs the photo check again
 LINE_PRODUCTS = {"classic": ("classic-book",), "magic": ("magic-book", "magic-custom-story")}
 CUSTOM_PRODUCT = "magic-custom-story"  # «قمرة سحري» with a custom story (Addendum 4 §7)
 PHOTO_PARAM = "photo_id"  # `Character.params`: the photo the drawing came from (qamra_worker.jobs.books)
+# `Character.params`: what the child wears on the sheet (content/outfits.yaml id; qamra_worker.jobs.books)
+OUTFIT_PARAM = "outfit"
 
 
 class ChildIn(BaseModel):
@@ -101,6 +104,9 @@ class CharacterOut(BaseModel):
     # the photo it was drawn from (owner, 2026-10-19: «تغيير الصورة»): drawings from an earlier photo stay
     # choosable, and the strip says which ones came from it. None: drawn before this was recorded.
     photo_id: uuid.UUID | None = None
+    # what the child wears in it (owner, 2026-10-20: content/outfits.yaml); drawings made before wear
+    # the default
+    outfit: str = "classic"
 
 
 class DrawingOut(CharacterOut):
@@ -179,7 +185,14 @@ def _character_out(c: Character) -> CharacterOut:
         approved_at=c.approved_at,
         has_portrait=bool(c.portrait_image_key),
         photo_id=_source_photo(c),
+        outfit=_outfit_of(c),
     )
+
+
+def _outfit_of(c: Character) -> str:
+    """The outfit a drawing wears: the parent's choice when it was asked for, else the default."""
+    raw = (c.params or {}).get(OUTFIT_PARAM)
+    return str(raw) if raw else load_outfits().default
 
 
 async def _child_out(db: SessionDep, child: Child) -> ChildOut:
@@ -647,6 +660,9 @@ class CharacterIn(BaseModel):
     # the book it is drawn for: the style must be one that book's line accepts (`ArtStyle.lines`)
     line: str | None = Field(default=None, max_length=16)
     sku: str | None = Field(default=None, max_length=64)
+    # what the child wears (content/outfits.yaml id, «ماذا يلبس؟»): offered to this child and on this line.
+    # None: the default; an approved drawing is reused only when it wears the outfit asked for
+    outfit: str | None = Field(default=None, max_length=32)
 
     @field_validator("note")
     @classmethod
@@ -673,22 +689,29 @@ async def draw_character(
         line = catalog.product_of(variant).line.value
     if line is not None and line not in catalog.styles[body.style].lines:
         raise ApiError("invalid_style", 422)  # e.g. a coloring character for an activity book
+    if body.outfit is not None:
+        outfit = load_outfits().get(body.outfit)
+        if outfit is None or child.gender.value not in outfit.looks or (line and line not in outfit.lines):
+            raise ApiError("invalid_outfit", 422)  # Classic never offers one: its templates are drawn already
     if not (body.fixes or body.note or body.redraw):  # Addendum 9 §6: the approved character is reused
-        approved = (
+        approved = next(  # in the outfit asked for, when one was
             (
-                await db.execute(
-                    select(Character)
-                    .where(
-                        Character.child_id == child.id,
-                        Character.art_style == body.style,
-                        Character.approved_at.is_not(None),
-                        Character.sheet_image_key.is_not(None),
+                c
+                for c in (
+                    await db.execute(
+                        select(Character)
+                        .where(
+                            Character.child_id == child.id,
+                            Character.art_style == body.style,
+                            Character.approved_at.is_not(None),
+                            Character.sheet_image_key.is_not(None),
+                        )
+                        .order_by(Character.approved_at.desc())
                     )
-                    .order_by(Character.approved_at.desc())
-                )
-            )
-            .scalars()
-            .first()
+                ).scalars()
+                if body.outfit is None or _outfit_of(c) == body.outfit
+            ),
+            None,
         )
         newer_photo = (  # a new photo, or the kept one framed again
             await db.execute(
@@ -736,6 +759,8 @@ async def draw_character(
     }
     if body.note:
         asked["note"] = body.note  # the parent's words; the worker adds what it made of them
+    if body.outfit is not None:
+        asked[OUTFIT_PARAM] = body.outfit
     character = Character(
         child_id=child.id, art_style=body.style, status=CharacterStatus.generating, params=asked
     )
@@ -745,6 +770,49 @@ async def draw_character(
     await db.commit()
     enqueue(queue, "qamra_worker.jobs.create.generate_character", str(character.id))
     return _character_out(character)
+
+
+class OutfitLookOut(BaseModel):
+    swatch: Swatch
+
+
+class OutfitOut(BaseModel):
+    id: str
+    name_ar: str
+    name_en: str
+    lines: list[str]
+    hijab_color: str | None
+    hijab_trim: str | None
+    looks: dict[str, OutfitLookOut]  # "f" / "m": the genders it is offered to
+
+
+class OutfitsOut(BaseModel):
+    version: int
+    default: str
+    outfits: list[OutfitOut]
+
+
+@router.get("/outfits")
+async def outfits(user: CurrentUser) -> OutfitsOut:
+    """«ماذا يلبس؟»: the outfits a character can be drawn in (content/outfits.yaml), with their swatch
+    colours; the prompts stay on the server."""
+    catalog = load_outfits()
+    return OutfitsOut(
+        version=catalog.version,
+        default=catalog.default,
+        outfits=[
+            OutfitOut(
+                id=o.id,
+                name_ar=o.name_ar,
+                name_en=o.name_en,
+                lines=o.lines,
+                hijab_color=o.hijab_color,
+                hijab_trim=o.hijab_trim,
+                looks={g: OutfitLookOut(swatch=look.swatch) for g, look in o.looks.items()},
+            )
+            for o in catalog.outfits
+        ],
+    )
 
 
 @router.get("/children/{child_id}/characters")

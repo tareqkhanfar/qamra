@@ -1459,3 +1459,36 @@ The owner: «اسمح لي إنه أقدر أغيّر الصورة، مش معق
   drawings made before have none and are not marked.
 - **Free drawings:** a drawing from a new photo counts like any other (staff unlimited); the earlier drawings stay
   choosable without one.
+
+## «ماذا يلبس؟»: the parent chooses the child's outfit (2026-10-20)
+
+The owner: «إذا في مجال نختار براحتنا شو النمط ولون اللبس، أو يكون في قوالب جاهزة للبس… اعملي 5 أو 6 أنماط أو ألوان للبس. مهم جدًا.»
+
+- **Catalogue, not code:** `content/outfits.yaml` (versioned) holds 8 outfits = 6 looks for girls and 6 for boys
+  (classic, red top & jeans, school uniform and Palestinian embroidery are shared with a look per gender; girls also
+  get the yellow cardigan and the pink dress, boys the green hoodie and the striped sweater). Each look has the exact
+  sheet words (`prompt`), the portrait's `top`, and swatch colours; each girls' outfit names the hijab that goes
+  with it (the hijab follows the outfit). Colours are distinct from each other and print-safe (no neon).
+- **The default «الكلاسيكي»** is the cream top / night-blue trousers / brown shoes every child wore before. Its
+  prompts are byte-identical to before (sheet v8 = v7, portrait v4 = v3; the golden prompt snapshots did not
+  move), and books keep choosing their own everyday clothes for it, as before. The name stays «الكلاسيكي» as the
+  owner asked, although the language review noted it shares the word with the Classic line; the two never show
+  together (Classic hides the outfit choice). Rename later if it confuses parents (e.g. «الأساسي»).
+- **Where the parent picks:** under the styles on the style step (a radiogroup of drawn SVG swatches, no AI, no
+  cost), preselected as the child's last-approved drawing, else the default. On the character step the card and the
+  drawings strip name the outfit, and «غيّروا ملابس …» redraws in another one (a free drawing like any redraw; staff
+  unlimited). A plain redraw keeps the drawing's outfit. When the story page already chose the style (the style step
+  is skipped), the child is drawn in the default or reused drawing; the parent can still change the outfit on the
+  character step.
+- **Classic** offers no outfit: its templates are drawn already; the style step says so. The API refuses an outfit
+  on a line it is not offered on (`invalid_outfit`). Class books (the kindergarten invite) keep the default: the
+  school chooses the look of a class book.
+- **Stored** in `Character.params.outfit` (no migration, like `photo_id`). An approved drawing is reused only in the
+  outfit asked for; with no outfit asked, any approved drawing in the style is reused (as before).
+- **Books:** the outfit is worn on each theme's everyday scene groups, listed per theme in `outfits.yaml`
+  (`themes:`; first-day, neighborhood-friends, new-sibling, moon-trip, olive-season and custom: `day`; graduation:
+  only the `school` flashback). Costume groups keep the theme's clothes (graduation gown, pyjamas, sailor and space
+  suits, festive clothes). When the cover's group wears it, the book's one hijab is the outfit's. The mapping lives
+  in the outfit file, not in theme.yaml, so no theme version had to change and the studio's live definitions keep
+  working. The book records the outfit it used (`generation.child_outfit`); books started earlier keep their stored
+  bible. Activity books cut the child from the sheet, so they wear the chosen outfit with no other change.

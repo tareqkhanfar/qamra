@@ -779,6 +779,7 @@ export function CreateWizard() {
             child={child!}
             character={shownCharacter!}
             productLine={productLine}
+            outfitLine={productLine && productLine !== "classic" ? productLine : undefined}
             usable={usableStyles(child!)}
             back={() => go({ step: "style" })}
             onEditPhoto={() => go({ step: "photo", edit: "photo" })}

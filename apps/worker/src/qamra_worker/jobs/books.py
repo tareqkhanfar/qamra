@@ -170,7 +170,9 @@ def book_theme(db: Session, book: Book) -> Theme:
     return Theme.model_validate(row.definition)
 
 
-def ai_child(child: Child) -> AIChild:
+def ai_child(child: Child, outfit: object = None) -> AIChild:
+    """The child as the AI pipeline sees them. `outfit`: the outfit id the character is (or is to be) drawn
+    in (`Character.params.outfit`, content/outfits.yaml); None: the default reference outfit."""
     age = max(2, min(12, date.today().year - child.birth_year))
     return AIChild(
         name=child.first_name,
@@ -179,7 +181,15 @@ def ai_child(child: Child) -> AIChild:
         interests=list(child.interests or []),
         hijab=child.wears_hijab,
         glasses=child.wears_glasses,
+        outfit=str(outfit)[:32] if outfit else None,
     )
+
+
+def character_outfit(character: Character | None) -> str | None:
+    """The outfit a character was drawn in (None: the default, also for characters drawn before
+    2026-10-20)."""
+    raw = (character.params or {}).get(OUTFIT_PARAM) if character is not None else None
+    return str(raw) if raw else None
 
 
 def book_lang(book: Book) -> Lang:
@@ -252,7 +262,9 @@ def _beat_of(step: str) -> int | None:
 
 # What the parent asked for a drawing (the API's) and what their note became, kept next to how it was drawn:
 # the redraw's number, the chips, their own words and the appearance-only instruction made of them.
-ASKED = ("attempt", "fixes", "note", "note_instruction", "note_outcome")
+ASKED = ("attempt", "fixes", "note", "note_instruction", "note_outcome", "outfit")
+# What the child wears on the sheet (content/outfits.yaml id, the parent's choice; qamra_api.routers.create)
+OUTFIT_PARAM = "outfit"
 # The photo the drawing was drawn from (the API's `PHOTO_PARAM`, qamra_api.routers.create): its id only
 PHOTO_PARAM = "photo_id"
 # The likeness notes (how the child looks, in words, read from the photo before drawing) and their outcome
@@ -325,7 +337,7 @@ async def _character(db: Session, storage: ObjectStorage, rt: Runtime, character
     # both again. Both from the photos as the parent framed them.
     drawn_pair = await generate_character(
         rt,
-        ai_child(child),
+        ai_child(child, asked.get(OUTFIT_PARAM)),
         data,
         load_style(character.art_style),
         attempt=int(asked.get("attempt", 1)),  # a redraw gets a new seed
@@ -534,8 +546,9 @@ def book_bible(
     stored = (book.generation or {}).get("bible")
     if stored:
         return StyleBible.model_validate(stored)
+    outfit = book.generation.get("child_outfit")  # the book's character's outfit (`_setup`)
     bible = build_bible(
-        theme, ai_child(child), int(book.generation["seed"]), style=style.slug, companion=companion
+        theme, ai_child(child, outfit), int(book.generation["seed"]), style=style.slug, companion=companion
     )
     book.generation = {**book.generation, "bible": bible.model_dump(mode="json")}
     return bible
@@ -610,7 +623,10 @@ async def _setup(db: Session, storage: ObjectStorage, book: Book) -> BookJob:
     plan = plan_book(theme, book_lang(book), companion_page=has_companion_page, spec=spec)
     gen = dict(book.generation)
     gen.setdefault("seed", new_seed())
-    gen.setdefault("outfits", choose_outfits(theme, ai_child(child), int(gen["seed"])))
+    # the outfit the child's character wears: the book's everyday scenes wear it too (pipeline.bible)
+    drawn = db.get(Character, book.character_id) if book.character_id else None
+    gen.setdefault("child_outfit", character_outfit(drawn))
+    gen.setdefault("outfits", choose_outfits(theme, ai_child(child, gen["child_outfit"]), int(gen["seed"])))
     gen["plan"] = plan_pages(plan)
     gen["models"] = {
         "image": settings.image_provider

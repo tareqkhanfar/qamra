@@ -127,6 +127,10 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "أسلوب الرسم هذا غير متاح لهذا الكتاب.",
         "This art style isn't available for this book.",
     ),
+    "invalid_outfit": (
+        "هذه الملابس غير متاحة لهذا الكتاب. اختاروا ملابس أخرى من الخيارات.",
+        "This outfit isn't available for this book. Please choose another outfit from the options.",
+    ),
     "invalid_addons": (
         "لا يمكن إضافة هذه الإضافة لهذا الكتاب.",
         "This add-on can't go with this book.",
