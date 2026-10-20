@@ -37,7 +37,7 @@ def _flat(req: ImageRequest) -> str:
 
 
 def test_books_draw_portrait_first_with_v7() -> None:
-    assert (SHEET_PROMPT_VERSION, PORTRAIT_PROMPT_VERSION) == (7, 3)
+    assert (SHEET_PROMPT_VERSION, PORTRAIT_PROMPT_VERSION) == (8, 4)
     with pytest.raises(ValueError, match="no portrait"):
         character_request(BOY, [PHOTO], load_style("3d"), version=4, portrait=PORTRAIT)
     old = character_request(BOY, [PHOTO], load_style("3d"), version=4)

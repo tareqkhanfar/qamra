@@ -1,5 +1,20 @@
 # Changelog
 
+## «ماذا يلبس؟»: the parent chooses the child's outfit (2026-10-20)
+- `content/outfits.yaml`: 6 outfits for girls and 6 for boys (الكلاسيكي, البلوزة الحمراء والجينز, زيّ المدرسة,
+  الجاكيت الصوفي الأصفر, الفستان الوردي, الهودي الأخضر, الكنزة المقلّمة, التطريز الفلسطيني), each with the exact
+  prompt words, the portrait's top, swatch colours and, for girls, the hijab that goes with it.
+- Style step: «ماذا يلبس {name}؟», a grid of drawn SVG swatches (keyboard arrows, 44 px targets, RTL, 390 px),
+  the hijab drawn in the outfit's colour; Classic says its stories use the template's clothes. Character step: the
+  outfit's name on the card and in the drawings strip, and «غيّروا ملابس …» to redraw in another outfit.
+- Prompts: `character_sheet.v8` and `character_portrait.v4` take the chosen outfit and its hijab; the default
+  renders exactly v7 / v3. Story books wear the outfit on everyday scene groups (the style bible); costumes stay.
+- API: `GET /api/create/outfits`, `outfit` on `POST /children/{id}/characters` (checked against the child and the
+  line, `invalid_outfit`), `CharacterOut.outfit`; stored in `Character.params.outfit` (no migration).
+- Trial: `scripts/outfit_trial.py` (the invented تالا in 3 outfits, 3 styles; $0.60 of a $0.90 cap).
+- Tests: `packages/ai/tests/test_outfits.py`, `apps/api/tests/test_create_outfits.py`, two worker tests in
+  `test_character_job.py`, `apps/web/src/lib/outfits.test.ts`.
+
 ## «تغيير الصورة»: a new photo for a child at any time (2026-10-19)
 - The known-child card on «لمن هذا الكتاب؟» has **«تغيير الصورة»** (with a hint: a new character is drawn from
   the new photo and the earlier drawings stay); «تعديل البيانات» links to it too, and so does each child in

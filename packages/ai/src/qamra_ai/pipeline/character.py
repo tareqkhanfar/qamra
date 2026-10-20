@@ -7,10 +7,12 @@ big canvas (`character_portrait.v2`), then the full-length sheet is painted from
 portrait at 1K, the sheet at 2K). The parent sees the portrait first; pages and covers get it as a likeness
 reference next to the sheet.
 
-The sheet wears a neutral reference outfit; each book locks its own outfit through the cover. Hijab only when
-the parent chose it. A redraw makes both again and can carry what the parent said did not look like their
-child (design Create5): the chips, and the parent's own words once `character_feedback` has turned them into a
-short appearance-only instruction (`note`).
+The sheet wears the outfit the parent chose (`pipeline.outfits`, sheet v8 and portrait v4, 2026-10-20), by
+default the neutral reference outfit drawn before; each book locks its own outfit through the cover, the
+chosen one on its everyday scene groups (`pipeline.bible`). Hijab only when the parent chose it, in the
+colour that goes with the outfit. A redraw makes both again and can carry what the parent said did not look
+like their child (design Create5): the chips, and the parent's own words once `character_feedback` has
+turned them into a short appearance-only instruction (`note`).
 
 Since 2026-10-19 (the owner's night photo under yellow street light: a sepia watercolor, a generic cartoon
 boy) the photo reaches the model with its light made neutral (`photo_color`), the prompts ask for even,
@@ -25,16 +27,19 @@ from qamra_ai import prompts
 from qamra_ai.image.base import GeneratedImage, ImageRequest, RefImage, Resolution, sniff_mime
 from qamra_ai.pipeline.likeness_notes import note_lines
 from qamra_ai.pipeline.models import Child
+from qamra_ai.pipeline.outfits import hijab_line, is_default, load_outfits
 from qamra_ai.pipeline.runtime import Runtime
 from qamra_ai.pipeline.style import house_for, negatives
 from qamra_ai.pipeline.theme import ArtStyle
 
 # What the parent can tick under "what doesn't look like her?" → the line the redraw prompt gets.
 FIXES = ("skin", "face", "hair", "age")
-SHEET_PROMPT_VERSION = 7  # books: neutral daylight + likeness notes. v4–v6 stay for the record
+SHEET_PROMPT_VERSION = 8  # books: the chosen outfit. v4–v7 stay for the record
 LIKENESS_SHEET_VERSION = 5  # the first version that takes a portrait
-PORTRAIT_PROMPT_VERSION = 3
+PORTRAIT_PROMPT_VERSION = 4
 NOTES_VERSION = 3  # character_sheet.v7 and character_portrait.v3 (likeness.v3) take the likeness notes
+NOTES_SHEET_VERSION = 7
+OUTFIT_SHEET_VERSION, OUTFIT_PORTRAIT_VERSION = 8, 4  # the first versions that take the chosen outfit
 
 
 def fix_lines(child: Child, fixes: Sequence[str]) -> list[str]:
@@ -52,6 +57,23 @@ def fix_lines(child: Child, fixes: Sequence[str]) -> list[str]:
         ),
     }
     return [lines[f] for f in FIXES if f in fixes]
+
+
+def outfit_words(child: Child, *, sheet: bool) -> dict[str, str | None]:
+    """The chosen outfit as the sheet (`outfit`) or the portrait (`outfit_top`) says it, with the hijab that
+    goes with it; all None for the default outfit, so its prompts stay exactly as before."""
+    key = "outfit" if sheet else "outfit_top"
+    outfit = load_outfits().resolve(child.outfit, child.gender)  # one not offered to this child: the default
+    look = outfit.look(child.gender)
+    if is_default(outfit.id):
+        return {key: None, "hijab_line": None}
+    assert look is not None  # resolve() only returns an outfit offered to this child
+    return {key: look.prompt if sheet else look.top, "hijab_line": hijab_line(outfit)}
+
+
+def _check_outfit(child: Child, takes: bool, template: str) -> None:
+    if not is_default(load_outfits().resolve(child.outfit, child.gender).id) and not takes:
+        raise ValueError(f"{template} takes no outfit")
 
 
 def _check_notes(notes: Mapping[str, str] | None, takes: bool, template: str) -> None:
@@ -82,7 +104,8 @@ def character_request(
         raise ValueError("character sheet needs 1–3 photos")
     if portrait is not None and version < LIKENESS_SHEET_VERSION:
         raise ValueError(f"character_sheet.v{version} takes no portrait")
-    _check_notes(notes, version >= SHEET_PROMPT_VERSION, f"character_sheet.v{version}")
+    _check_notes(notes, version >= NOTES_SHEET_VERSION, f"character_sheet.v{version}")
+    _check_outfit(child, version >= OUTFIT_SHEET_VERSION, f"character_sheet.v{version}")
     h = house_for(style)
     prompt = prompts.render(
         "character_sheet",
@@ -102,6 +125,7 @@ def character_request(
         negative=negatives(h, style.negative),
         portrait=portrait is not None,
         notes=note_lines(dict(notes) if notes else None),
+        **outfit_words(child, sheet=True),
     )
     refs = _photo_refs(photos)
     if portrait is not None:
@@ -134,6 +158,7 @@ def portrait_request(
     if not 1 <= len(photos) <= 3:
         raise ValueError("a portrait needs 1–3 photos")
     _check_notes(notes, version >= NOTES_VERSION, f"character_portrait.v{version}")
+    _check_outfit(child, version >= OUTFIT_PORTRAIT_VERSION, f"character_portrait.v{version}")
     h = house_for(style)
     prompt = prompts.render(
         "character_portrait",
@@ -150,6 +175,7 @@ def portrait_request(
         character=style.character,
         negative=negatives(h, style.negative),
         notes=note_lines(dict(notes) if notes else None),
+        **outfit_words(child, sheet=False),
     )
     return ImageRequest(
         step=f"portrait:{attempt}",

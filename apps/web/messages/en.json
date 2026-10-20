@@ -2592,6 +2592,15 @@
       "next": "Next we draw {name}'s character in a minute or two, and we don't go on until you approve it.",
       "useEarlier": "Continue with one of {name}'s earlier drawings"
     },
+    "outfit": {
+      "title": "What will {name} wear?",
+      "hint": "{name} wears this outfit in the drawing and on most story pages; special scenes like graduation or bedtime have their own outfits. With Classic, each story chooses its own.",
+      "classic": "Classic stories come already illustrated, so {name} wears the clothes drawn in them.",
+      "wears": "Outfit: {outfit}",
+      "change": "Change {name}'s outfit",
+      "changeHint": "(new drawing, uses one redraw)",
+      "redraw": "Draw {name} in this outfit"
+    },
     "character": {
       "title": "Does this look like {name}?",
       "drawing": "Drawing {name} now…",

@@ -7,6 +7,10 @@ per book and stored in `book.generation["bible"]` (a resumed or redrawn book reu
   outfit reference (`pages.generate_pages` draws those anchor pages first). A flashback page in a school
   dress no longer copies the cover's gown, and the gown never drifts on the graduation pages.
 - One head covering for the whole book: the main group's option names it, so the hijab never changes color.
+- The parent's outfit (`pipeline.outfits`, 2026-10-20): when the child's character was drawn in a chosen
+  outfit, the theme's everyday groups (`content/outfits.yaml` `themes:`) wear it instead of the theme's own
+  option, and when the cover's group is one of them the book's hijab is the one that goes with it. Costume
+  groups (gown, pyjamas, space suit, festive) keep the theme's clothes. The default outfit changes nothing.
 - The hair, the companion's design and the recurring side characters (theme `cast:`) are locked too.
 
 Sheet images come from content files, never generated per child: `cast/<id>-<style>.png` in the theme
@@ -23,6 +27,8 @@ from typing import Literal
 from pydantic import BaseModel
 
 from qamra_ai.pipeline.models import Child, CompanionSpec
+from qamra_ai.pipeline.outfits import Outfit as ChildOutfit
+from qamra_ai.pipeline.outfits import is_default, load_outfits
 from qamra_ai.pipeline.theme import CONTENT_DIR, Outfit, Theme, cast_ids
 
 BIBLE_VERSION = 1
@@ -82,6 +88,14 @@ def pick_outfit(options: list[Outfit], seed: int, key: str) -> Outfit:
     return options[(seed + sum(map(ord, key))) % len(options)]
 
 
+def chosen_outfit(child: Child, content_dir: Path = CONTENT_DIR) -> ChildOutfit | None:
+    """The outfit the parent chose for the child, when it is not the default and is offered to them."""
+    if child.outfit is None:
+        return None
+    outfit = load_outfits(content_dir).resolve(child.outfit, child.gender)
+    return None if is_default(outfit.id) else outfit
+
+
 def build_bible(
     theme: Theme,
     child: Child,
@@ -93,14 +107,24 @@ def build_bible(
 ) -> StyleBible:
     main = main_group(theme)
     chosen = {key: pick_outfit(opts, seed, key) for key, opts in sorted(theme.outfits.items()) if opts}
+    outfits = {k: (o.en_f if child.gender == "f" and o.en_f else o.en) for k, o in chosen.items()}
+    own = chosen_outfit(child, content_dir)
+    own_look = own.look(child.gender) if own else None
+    everyday: set[str] = set()
+    if own_look is not None:
+        everyday = set(load_outfits(content_dir).everyday_groups(theme.slug)) & set(outfits)
+        outfits.update({group: own_look.prompt for group in everyday})
     hijab = None
     if child.hijab:
         cover_option = chosen.get(main)
-        hijab = cover_option.hijab_en if cover_option and cover_option.hijab_en else DEFAULT_HIJAB
+        if own is not None and own.hijab and main in everyday:
+            hijab = f"{own.hijab} neatly covering the hair"
+        else:
+            hijab = cover_option.hijab_en if cover_option and cover_option.hijab_en else DEFAULT_HIJAB
     plates = cover_plates(theme.slug, style, content_dir)
     return StyleBible(
         main_group=main,
-        outfits={k: (o.en_f if child.gender == "f" and o.en_f else o.en) for k, o in chosen.items()},
+        outfits=outfits,
         hijab=hijab,
         hair="hijab" if child.hijab else "sheet",
         companion=(" ".join(companion.description_en.split()) or None) if companion else None,

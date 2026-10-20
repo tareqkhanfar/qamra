@@ -16,6 +16,9 @@ class Child(BaseModel):
     interests: list[str] = Field(default_factory=list)
     hijab: bool = False  # chosen by the parent; never inferred from the photo
     glasses: bool = False
+    # what the child wears on the character sheet (content/outfits.yaml id, chosen by the parent); None: the
+    # default reference outfit. Story books wear it on the theme's everyday scene groups (pipeline.bible)
+    outfit: str | None = Field(default=None, max_length=32)
 
 
 class CompanionSpec(BaseModel):

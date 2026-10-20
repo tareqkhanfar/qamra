@@ -14,10 +14,12 @@ import { createApi, type Character, type Child } from "@/lib/create";
 import { blockedUntilOf, drawsLeft } from "@/lib/drawLimits";
 import { variantOf } from "@/lib/examples";
 import type { Kind } from "@/lib/flows";
+import { initialOutfit, outfitsFor } from "@/lib/outfits";
 import { money, type Catalog } from "@/lib/store";
 import { containedSample, styleThumb } from "@/lib/styleSamples";
 import { DrawLimitNote, useNow } from "./DrawLimit";
 import { Check, Frame, Lead } from "./Frame";
+import { OutfitPicker, useOutfits } from "./OutfitPicker";
 
 /** How a style's card hints at its look when there is no real page in that style yet. */
 const LOOK: Record<string, { bg: string; fx: string }> = {
@@ -45,6 +47,10 @@ const LOOK: Record<string, { bg: string; fx: string }> = {
  *   and owner page first in the gallery. The style only changes the child's character: the activity pages are
  *   drawn once for everyone. The first style the child has no character in is preselected (the parent came for
  *   a new one); the API reuses an approved character in the chosen style unless a newer photo was given.
+ *
+ * «ماذا يلبس؟» (owner, 2026-10-20): under the styles, what the child wears in the drawing (lib/outfits), preselected
+ * as in their last-approved drawing, else the default. Classic stories don't ask: their templates are drawn
+ * already, so the step says the child wears the template's clothes.
  *
  * The free drawings come back with time (lib/drawLimits). With none left now, the step says when the next one comes
  * back and goes on with the child's newest drawing in the chosen style (else in another style this book can use),
@@ -112,11 +118,22 @@ export function StyleStep({
   const themeNames = Object.fromEntries(themes.map((th) => [th.slug, th.name]));
   const nameOf = (s: { name_ar: string; name_en: string }) => (locale === "ar" ? s.name_ar : s.name_en);
   const places = t(t.has(`character.places.${line}`) ? `character.places.${line}` : "character.places.other");
+  const outfitCatalog = useOutfits();
+  const offered = outfitsFor(outfitCatalog, child.gender, line);
+  const [picked, setPicked] = useState<string | null>(null);
+  const outfit = picked ?? initialOutfit(offered, outfitCatalog?.default ?? "classic", child.characters);
 
   async function draw() {
     setBusy(true);
     setError(null);
-    const r = await createApi.draw(child.id, style, [], activity ? sku : null);
+    const r = await createApi.draw(
+      child.id,
+      style,
+      [],
+      activity ? sku : null,
+      undefined,
+      offered.length ? outfit : null,
+    );
     setBusy(false);
     if (r.ok) return onDrawing(r.data);
     const until = blockedUntilOf(r.error);
@@ -271,6 +288,14 @@ export function StyleStep({
           );
         })}
       </div>
+      {styles.length > 0 && offered.length > 0 && (
+        <OutfitPicker child={child} outfits={offered} value={outfit} onChange={setPicked} />
+      )}
+      {styles.length > 0 && line === "classic" && (
+        <p className="rounded-2xl bg-paper-sunk p-4 text-small text-ink">
+          {t("outfit.classic", { ...who, gender: child.gender })}
+        </p>
+      )}
       {styles.length > 0 && <p className="rounded-2xl bg-paper-sunk p-4 text-small text-ink">{t("style.next", who)}</p>}
       {styles.length > 0 && !child.redraws_unlimited && !out && child.redraws_total ? (
         <p className="text-small text-ink-muted">{t("drawLimit.left", { left, total: child.redraws_total })}</p>

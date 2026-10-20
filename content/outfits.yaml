@@ -1,0 +1,162 @@
+# What the child wears on the character sheet (owner, 2026-10-20: «اعملي 5 أو 6 أنماط أو ألوان للبس»).
+#
+# The parent picks one on the style step («ماذا يلبس {name}؟») before the character is drawn. The id is stored on
+# the character (`Character.params.outfit`); the portrait wears the look's `top`, the sheet its `prompt`, and
+# the hijab (when the parent chose one) follows the outfit (`hijab`). Story books dress the child in the chosen
+# outfit on the everyday scene groups listed under `themes` below; a costume a scene needs (graduation gown,
+# pyjamas, space suit, festive clothes) stays the scene's. Classic stories use their templates' art and never
+# show this choice. The default («الكلاسيكي») is the neutral reference outfit every child wore before: its sheet
+# and portrait prompts are unchanged, and books keep choosing their own everyday clothes for it.
+#
+# Each outfit has one look per gender it is offered to (`looks.f`, `looks.m`): 6 for girls and 6 for boys.
+#   prompt  the exact words the sheet prompt gets (garments, colours, pattern, shoes), and the books' outfit line
+#   top     what shows in the head-and-shoulders portrait
+#   swatch  the colours of the picker's drawn swatch (no AI image). `shape`: tee | shirt | hoodie | cardigan |
+#           stripes | pinafore | dress | thobe | vest. `top`, `bottom`, `shoes`, and optional `accent` (an
+#           inner shirt, stripes, buttons) and `pattern` (dots, pin-stripes, cross-stitch). Colours are print-safe:
+#           no neon greens, blues or pinks (they leave the CMYK gamut).
+# `hijab` (girls): the hijab that goes with it, painted on the sheet and kept through the book.
+# `lines`: the product lines that offer it (classic never does: its art is fixed).
+# Bump `version` when a prompt or swatch changes; characters keep the id they were drawn with.
+
+version: 1
+default: classic
+
+outfits:
+  - id: classic
+    name_ar: الكلاسيكي
+    name_en: Classic
+    lines: [magic, workbook, journey, family, islamic]
+    hijab: a simple soft sage-green hijab
+    hijab_color: "#A7BC9C"
+    looks:
+      f: &classic
+        prompt: a soft cream long-sleeved top, night-blue trousers and simple brown shoes
+        top: a plain cream top
+        swatch: { shape: tee, top: "#F1E6CF", bottom: "#26315F", shoes: "#7A5234" }
+      m: *classic
+
+  - id: red-jeans
+    name_ar: البلوزة الحمراء والجينز
+    name_en: Red top & jeans
+    lines: [magic, workbook, journey, family, islamic]
+    hijab: a simple soft navy-blue hijab
+    hijab_color: "#33406E"
+    looks:
+      f: &red
+        prompt: >-
+          a plain tomato-red long-sleeved T-shirt with a round neck, mid-blue straight-leg jeans and white
+          sneakers
+        top: a plain tomato-red long-sleeved T-shirt with a round neck
+        swatch: { shape: tee, top: "#D0452F", bottom: "#5F86B8", shoes: "#F3F1EC" }
+      m: *red
+
+  - id: school
+    name_ar: زيّ المدرسة
+    name_en: School uniform
+    lines: [magic, workbook, journey, islamic]
+    hijab: a simple soft white hijab
+    hijab_color: "#FAFAF7"
+    looks:
+      f:
+        prompt: >-
+          a white long-sleeved collared shirt under a sky-blue and white pin-striped school pinafore dress that
+          reaches below the knee, navy-blue leggings and black school shoes
+        top: a sky-blue and white pin-striped school pinafore over a white collared shirt
+        swatch:
+          { shape: pinafore, top: "#8DB7DF", accent: "#FFFFFF", pattern: "#FFFFFF", bottom: "#2A3561", shoes: "#2B2B2E" }
+      m:
+        prompt: >-
+          a light-blue long-sleeved button-up school shirt with a collar, tucked into navy-blue trousers, and
+          black school shoes
+        top: a light-blue long-sleeved collared school shirt
+        swatch: { shape: shirt, top: "#A9CBEA", accent: "#FFFFFF", bottom: "#2A3561", shoes: "#2B2B2E" }
+
+  - id: yellow-cardigan
+    name_ar: الجاكيت الصوفي الأصفر
+    name_en: Yellow cardigan
+    lines: [magic, workbook, journey, family, islamic]
+    hijab: a simple soft light-grey hijab
+    hijab_color: "#C9CCD1"
+    looks:
+      f:
+        prompt: >-
+          a buttercup-yellow knitted cardigan with white buttons over a plain white long-sleeved top, dark-indigo
+          jeans and white sneakers
+        top: a buttercup-yellow knitted cardigan with white buttons over a plain white top
+        swatch: { shape: cardigan, top: "#EFC235", accent: "#FFFFFF", bottom: "#36406A", shoes: "#F3F1EC" }
+
+  - id: rose-dress
+    name_ar: الفستان الوردي
+    name_en: Pink dress
+    lines: [magic, workbook, journey, family, islamic]
+    hijab: a simple soft cream hijab
+    hijab_color: "#F1E6CF"
+    looks:
+      f:
+        prompt: >-
+          a long-sleeved dusty-rose cotton dress with a pattern of tiny white flowers, reaching the middle of the
+          calf, over light-grey leggings, and white Mary-Jane shoes
+        top: a long-sleeved dusty-rose dress with tiny white flowers
+        swatch: { shape: dress, top: "#D58C98", pattern: "#FFFFFF", bottom: "#C9CCD1", shoes: "#F3F1EC" }
+
+  - id: green-hoodie
+    name_ar: الهودي الأخضر
+    name_en: Green hoodie
+    lines: [magic, workbook, journey, family, islamic]
+    looks:
+      m:
+        prompt: >-
+          a plain leaf-green pullover hoodie with a front pocket and the hood down, mid-grey trousers and
+          grey-and-white sneakers
+        top: a plain leaf-green hoodie with the hood down
+        swatch: { shape: hoodie, top: "#5E9C4B", bottom: "#868C94", shoes: "#D9DCDF" }
+
+  - id: striped-sweater
+    name_ar: الكنزة المقلّمة
+    name_en: Striped sweater
+    lines: [magic, workbook, journey, family, islamic]
+    looks:
+      m:
+        prompt: >-
+          a cosy chunky-knit sweater with wide horizontal teal and cream stripes, camel-brown corduroy trousers
+          and brown ankle boots
+        top: a cosy chunky-knit sweater with wide horizontal teal and cream stripes
+        swatch: { shape: stripes, top: "#2E8A8A", accent: "#F1E6CF", bottom: "#B07A45", shoes: "#6B4428" }
+
+  - id: tatreez
+    name_ar: التطريز الفلسطيني
+    name_en: Palestinian embroidery
+    # for special books: the heritage stories, the family book and the Islamic series
+    lines: [magic, family, islamic]
+    hijab: a simple soft white hijab with a thin deep-red embroidered border
+    hijab_color: "#FAFAF7"
+    hijab_trim: "#A8242C"
+    looks:
+      f:
+        prompt: >-
+          a long-sleeved, ankle-length black cotton dress (a child's Palestinian thobe) with deep-red cross-stitch
+          tatreez embroidery on the square chest panel, down the sleeves and around the hem, a deep-red sash at
+          the waist, and simple brown shoes
+        top: >-
+          a long-sleeved black Palestinian thobe with deep-red cross-stitch tatreez embroidery on the square chest
+          panel
+        swatch: { shape: thobe, top: "#232326", pattern: "#A8242C", bottom: "#232326", shoes: "#7A5234" }
+      m:
+        prompt: >-
+          a white long-sleeved shirt under a black vest with deep-red cross-stitch tatreez embroidery along its
+          edges, black trousers and simple brown shoes
+        top: a black vest with deep-red cross-stitch tatreez embroidery along its edges over a white long-sleeved shirt
+        swatch: { shape: vest, top: "#232326", accent: "#FFFFFF", pattern: "#A8242C", bottom: "#232326", shoes: "#7A5234" }
+
+# Story themes: the scene groups (outfit keys of theme.yaml) where the hero wears the parent's chosen outfit
+# instead of the theme's own everyday clothes. Groups not listed keep the theme's costume (gown, pyjamas,
+# sailor or space suit, festive clothes). A theme not listed here keeps its own clothes on every page.
+themes:
+  first-day: [day]
+  neighborhood-friends: [day]
+  new-sibling: [day]
+  moon-trip: [day]
+  olive-season: [day]
+  custom: [day]
+  graduation: [school]  # the flashback pages; the graduation day itself keeps the gown

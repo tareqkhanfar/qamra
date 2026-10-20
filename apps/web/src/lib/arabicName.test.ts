@@ -315,6 +315,7 @@ const ACCUSATIVE: Record<string, "nameAcc" | "labelAcc"> = {
   "create.line.classicPages": "nameAcc",
   "create.style.title": "nameAcc",
   "create.character.title": "nameAcc",
+  "create.outfit.redraw": "nameAcc", // «ارسموا أبا بكر بهذه الملابس» (outfits, 2026-10-20)
   "create.character.portraitHint": "nameAcc",
   "create.character.drawing": "nameAcc",
   "create.character.approve": "nameAcc",
@@ -419,6 +420,8 @@ const GENITIVE: Record<string, string> = {
   "create.drawLimit.noneLeft": "nameGen",
   "create.drawLimit.soon": "nameGen",
   "create.character.alt": "nameGen",
+  "create.outfit.hint": "nameGen", // «في رسمة أبي بكر» (outfits, 2026-10-20)
+  "create.outfit.change": "nameGen", // «غيّروا ملابس أبي بكر»
   "create.character.portraitAlt": "nameGen",
   "create.character.keep": "nameGen",
   "create.character.drawings": "nameGen", // «رسومات أبي بكر حتى الآن»
