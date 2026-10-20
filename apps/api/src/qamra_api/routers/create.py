@@ -66,6 +66,7 @@ UPLOADS_PER_HOUR = 20
 FRAMINGS_PER_HOUR = 60  # each saved framing runs the photo check again
 LINE_PRODUCTS = {"classic": ("classic-book",), "magic": ("magic-book", "magic-custom-story")}
 CUSTOM_PRODUCT = "magic-custom-story"  # «قمرة سحري» with a custom story (Addendum 4 §7)
+PHOTO_PARAM = "photo_id"  # `Character.params`: the photo the drawing came from (qamra_worker.jobs.books)
 
 
 class ChildIn(BaseModel):
@@ -97,6 +98,9 @@ class CharacterOut(BaseModel):
     # portrait first (2026-10-10): the child's portrait in the style, shown large before the sheet; drawings
     # made before have none (`/characters/{id}/portrait`)
     has_portrait: bool = False
+    # the photo it was drawn from (owner, 2026-10-19: «تغيير الصورة»): drawings from an earlier photo stay
+    # choosable, and the strip says which ones came from it. None: drawn before this was recorded.
+    photo_id: uuid.UUID | None = None
 
 
 class DrawingOut(CharacterOut):
@@ -156,6 +160,16 @@ class ChildOut(BaseModel):
     photo_kept: bool = False
 
 
+def _source_photo(c: Character) -> uuid.UUID | None:
+    """The photo a drawing came from (`params.photo_id`: set when it is asked for, then by the worker with the
+    photo it really drew from)."""
+    raw = (c.params or {}).get(PHOTO_PARAM)
+    try:
+        return uuid.UUID(str(raw)) if raw else None
+    except ValueError:
+        return None
+
+
 def _character_out(c: Character) -> CharacterOut:
     return CharacterOut(
         id=c.id,
@@ -164,6 +178,7 @@ def _character_out(c: Character) -> CharacterOut:
         approved=c.approved_at is not None,
         approved_at=c.approved_at,
         has_portrait=bool(c.portrait_image_key),
+        photo_id=_source_photo(c),
     )
 
 
@@ -478,7 +493,11 @@ async def upload_photos(
     ):
         raise ApiError("too_many_attempts", 429)
     consented = (
-        await db.execute(select(func.count()).select_from(Consent).where(Consent.child_id == child.id))
+        await db.execute(
+            select(func.count())
+            .select_from(Consent)
+            .where(Consent.child_id == child.id, Consent.scope != KEEP_SCOPE)  # the photo consent itself
+        )
     ).scalar_one()
     if not consented:
         raise ApiError("consent_required", 409)
@@ -496,13 +515,24 @@ async def upload_photos(
         require_ok(check)
         checked.append((data, kept, check.metrics))
     now = datetime.now(UTC)
+    # «تغيير الصورة» (owner, 2026-10-19): a child may get a new photo at any time, also after the first one
+    # was approved and deleted. Only the newest is kept: an earlier original still stored is deleted now, so
+    # a change never holds two photos (the drawings made from it stay, marked with the photo they came from).
     for old in (
         await db.execute(
             select(ChildPhoto).where(ChildPhoto.child_id == child.id, ChildPhoto.storage_key.is_not(None))
         )
     ).scalars():
-        storage.delete(str(old.storage_key))  # "change the photo": the next drawing uses the new one
+        storage.delete(str(old.storage_key))  # the next drawing uses the new one
         old.storage_key, old.status, old.deleted_at, old.crop = None, PhotoStatus.deleted, now, None
+        db.add(
+            AuditLog(
+                actor_user_id=user.id,
+                action="photo.replaced",
+                entity_type="child_photo",
+                entity_id=str(old.id),
+            )
+        )
     approved = (
         await db.execute(
             select(func.count())
@@ -672,14 +702,15 @@ async def draw_character(
             newer_photo is None or newer_photo <= (approved.approved_at or newer_photo)
         ):
             return _character_out(approved)
-    photos = (
+    newest = (
         await db.execute(
-            select(func.count())
-            .select_from(ChildPhoto)
+            select(ChildPhoto.id)
             .where(ChildPhoto.child_id == child.id, ChildPhoto.storage_key.is_not(None))
+            .order_by(ChildPhoto.created_at.desc(), ChildPhoto.id)
+            .limit(1)
         )
-    ).scalar_one()
-    if not photos:
+    ).scalar_one_or_none()
+    if newest is None:
         raise ApiError("photo_required", 409)
     # the free drawings come back with time (qamra_api.draw_limits); the account's row is locked so two
     # taps at once can't both take the last one
@@ -698,7 +729,11 @@ async def draw_character(
             .where(Character.child_id == child.id, Character.status != CharacterStatus.failed)
         )
     ).scalar_one()  # a drawing that failed on our side is not one of the parent's drawings
-    asked: dict[str, Any] = {"attempt": drawn + 1, "fixes": sorted(set(body.fixes))}  # what didn't look right
+    asked: dict[str, Any] = {
+        "attempt": drawn + 1,
+        "fixes": sorted(set(body.fixes)),  # what didn't look right
+        PHOTO_PARAM: str(newest),  # the newest photo; the worker records the one it really drew from
+    }
     if body.note:
         asked["note"] = body.note  # the parent's words; the worker adds what it made of them
     character = Character(

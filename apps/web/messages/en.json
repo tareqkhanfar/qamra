@@ -2557,7 +2557,10 @@
         "recheck": "Check the photo again",
         "retry": "You can also move and zoom the photo so only your child's face is inside the oval, then check it again.",
         "loading": "Loading the photo…"
-      }
+      },
+      "changeTitle": "Change {name}'s photo",
+      "changeBody": "{gender, select, f {Upload a new photo of her, or reposition her current photo in the frame. Then we'll draw a new character from it; the earlier drawings of her stay, so you can still choose one.} other {Upload a new photo of him, or reposition his current photo in the frame. Then we'll draw a new character from it; the earlier drawings of him stay, so you can still choose one.}}",
+      "changeGone": "{gender, select, f {We deleted her earlier photo to protect her privacy, so upload a new one and we'll draw a new character from it. The earlier drawings of her stay, so you can still choose one.} other {We deleted his earlier photo to protect his privacy, so upload a new one and we'll draw a new character from it. The earlier drawings of him stay, so you can still choose one.}}"
     },
     "line": {
       "title": "Which book would you like for {name}?",
@@ -2644,7 +2647,8 @@
         "photo": "The new photo is saved. We'll draw from it when you tap “Redraw”.",
         "noRedraws": "Your change to the photo is saved."
       },
-      "redrawFree": "Redraw"
+      "redrawFree": "Redraw",
+      "earlierPhoto": "From an earlier photo"
     },
     "story": {
       "title": "Where is {name} going?",
@@ -2797,7 +2801,8 @@
         "cancel": "Cancel",
         "note": "Changing these details won't change the character we drew.",
         "save": "Save changes",
-        "title": "Edit {name}'s details"
+        "title": "Edit {name}'s details",
+        "photoNote": "{gender, select, f {To draw her character from a new photo:} other {To draw his character from a new photo:}}"
       },
       "genderHint": {
         "islamic": "So the certificate says <ar>«أنا مسلمة صغيرة»</ar> (I'm a little Muslim girl) or <ar>«أنا مسلم صغير»</ar> (I'm a little Muslim boy).",
@@ -2812,7 +2817,8 @@
         "notDrawn": "{gender, select, f {We haven't drawn her character yet} other {We haven't drawn his character yet}}",
         "ready": "{gender, select, f {Her character is ready} other {His character is ready}}",
         "redraw": "Draw a new character in another style",
-        "redrawOn": "{gender, select, f {We'll draw her a new character in the style you choose.} other {We'll draw him a new character in the style you choose.}}"
+        "redrawOn": "{gender, select, f {We'll draw her a new character in the style you choose.} other {We'll draw him a new character in the style you choose.}}",
+        "changePhotoHint": "{gender, select, f {Upload a new photo of her and we'll draw a new character from it. The earlier drawings of her stay, so you can still choose one.} other {Upload a new photo of him and we'll draw a new character from it. The earlier drawings of him stay, so you can still choose one.}}"
       },
       "name": "The name as it will be printed",
       "nameEn": "The name in English letters",

@@ -163,6 +163,7 @@ export function EditChild({
   traces,
   onSaved,
   onCancel,
+  onChangePhoto,
 }: {
   child: Child;
   kind: Kind;
@@ -170,6 +171,8 @@ export function EditChild({
   traces: boolean;
   onSaved: (child: Child) => void;
   onCancel: () => void;
+  /** «تغيير الصورة»: the details don't change the drawing, a new photo does (the photo step, then a drawing). */
+  onChangePhoto?: () => void;
 }) {
   const t = useTranslations("create");
   const te = useTranslations("errors");
@@ -207,6 +210,19 @@ export function EditChild({
           {t("who.edit.title", nameCases(child.name))}
         </h2>
         <Hint>{t("who.edit.note")}</Hint>
+        {onChangePhoto && (
+          <p className="text-caption text-ink-muted">
+            {t("who.edit.photoNote", { gender: child.gender })}{" "}
+            <button
+              type="button"
+              onClick={onChangePhoto}
+              disabled={busy}
+              className="min-h-11 font-bold text-night-900 underline underline-offset-4 disabled:opacity-60"
+            >
+              {t("photo.change")}
+            </button>
+          </p>
+        )}
       </div>
       <ChildFields
         id={`edit-${child.id}`}

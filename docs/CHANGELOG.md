@@ -1,5 +1,24 @@
 # Changelog
 
+## «تغيير الصورة»: a new photo for a child at any time (2026-10-19)
+- The known-child card on «لمن هذا الكتاب؟» has **«تغيير الصورة»** (with a hint: a new character is drawn from
+  the new photo and the earlier drawings stay); «تعديل البيانات» links to it too, and so does each child in
+  «أطفالي». It opens the photo step for that child (the consent first if it is missing): a new photo, or the
+  current one moved while it is still kept («ارفعوا صورة جديدة» / «تعديل موضع الصورة»); once the earlier photo
+  was deleted (24 hours after an approval) it says so and asks for a new one. The same photo check, framing
+  editor and «احتفظوا بالصورة» choice as always.
+- Then a new character is drawn from it (the style step, or the style the story page chose), never the ready one
+  reused; it counts as a free drawing as usual (staff unlimited). A story whose type isn't chosen yet asks the
+  photo first, then the type. The URL carries it (`photo=new|done`), so a reload resumes; «الخطوة n من N» counts
+  it (lib/flows `newPhoto`).
+- The drawings strip keeps every earlier drawing; one made from an earlier photo says «من صورة سابقة».
+- API: a second photo was already allowed; now only the photo consent lets a photo in (not the keep choice),
+  an earlier original replaced by a new one is audited (`photo.replaced`), and every drawing records the photo
+  it came from (`Character.params.photo_id`, set by the API and confirmed by the worker, which now draws from
+  the newest photo first); `CharacterOut.photo_id`. No migration.
+- Tests: `apps/api/tests/test_change_photo.py`, a worker test in `test_character_job.py`, flow tests in
+  `lib/flows.test.ts`.
+
 ## Story text: hand-lettered and painted into the picture (2026-10-19)
 - Story pages (Magic, Classic, custom and class books, Arabic and English) set their words in **Playpen Sans
   Arabic** (SIL OFL, static SemiBold/ExtraBold instances) on a **painted watercolor wash** drawn in SVG under the

@@ -405,6 +405,7 @@ const GENITIVE: Record<string, string> = {
   "create.photo.next.activity": "nameGen",
   "create.photo.next.class": "nameGen",
   "create.photo.editTitle": "nameGen", // «تعديل صورة {nameGen}»: PhotoStep passes nameCases
+  "create.photo.changeTitle": "nameGen", // «تغيير صورة {nameGen}»: PhotoStep passes nameCases
   "create.photo.gone": "nameGen",
   "create.line.title": "nameLam",
   "create.line.magicPages": "nameLam",

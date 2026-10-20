@@ -55,6 +55,9 @@ export type PhotoChange = "photo" | "position" | null;
  * delete and what happens next. `edit`: opened from the character step to change the photo («تعديل الصورة»):
  * it opens on the kept photo in the editor, or says kindly that it was deleted and asks for a new one. The
  * kindergarten invite uses it too (`productLine` "class", no `back`: the consent before it is done for good).
+ * `changing`: «تغيير الصورة» (owner, 2026-10-19), opened from the who card or «أطفالي»: a new photo first, or the
+ * current one moved while it is still kept; once the earlier one was deleted, it simply asks for a new one. The
+ * API deletes the earlier original when the new one is saved, and the next step draws from the new one.
  *
  * Once a photo is saved, the optional «احتفظوا بالصورة» box (KeepPhotoChoice, owner 2026-10-16) lets the guardian
  * keep it for later books; never pre-ticked, and not on the invite (the school's consent covers one class book;
@@ -66,6 +69,7 @@ export function PhotoStep({
   productLine = null,
   title,
   edit = false,
+  changing = false,
   back,
   onDone,
 }: {
@@ -73,6 +77,8 @@ export function PhotoStep({
   productLine?: string | null; // classic|magic|workbook|journey|family|islamic|class (null: a story, not chosen)
   title?: string; // the frame title; the wizard's FlowFrameContext wins when present
   edit?: boolean;
+  /** «تغيير الصورة» (the who card, «أطفالي»): a new photo, or the current one moved; a new drawing comes next. */
+  changing?: boolean;
   back?: () => void;
   onDone: (c: Child, change: PhotoChange) => void;
 }) {
@@ -255,6 +261,12 @@ export function PhotoStep({
           // «أعيدوا الرسم» only while a free redraw is left
           body={child.redraws_left > 0 ? `${t("photo.editBody")} ${t("photo.editRedraw")}` : t("photo.editBody")}
         />
+      ) : changing ? (
+        <Lead
+          title={t("photo.changeTitle", who)}
+          // the earlier photo was deleted (24 hours after the approval): a new one is uploaded
+          body={kept || child.photos ? t("photo.changeBody", who) : t("photo.changeGone", who)}
+        />
       ) : (
         <Lead
           title={t("photo.title")}
@@ -305,7 +317,7 @@ export function PhotoStep({
             size="lg"
             className="absolute inset-x-6 bottom-6 mx-auto w-fit"
           >
-            {state === "gone" ? t("photo.newPhoto") : t("photo.pick")}
+            {state === "gone" || changing ? t("photo.newPhoto") : t("photo.pick")}
           </Button>
         )}
         {state === "loading" && (
@@ -318,14 +330,22 @@ export function PhotoStep({
       </PhotoEditor>
 
       {state === "ok" && preview && (
-        <Button variant="secondary" size="sm" className="self-center" onClick={() => setState("editing")}>
-          <svg className="size-[18px]" viewBox="0 0 24 24" aria-hidden="true">
-            <g fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 3v18M3 12h18M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3" />
-            </g>
-          </svg>
-          {t("photo.adjust")}
-        </Button>
+        <div className="flex flex-wrap justify-center gap-2">
+          {changing && change === null && (
+            // «تغيير الصورة»: a new photo is the main way; moving the current one is the other
+            <Button variant="solid" size="sm" onClick={() => input.current?.click()}>
+              {t("photo.newPhoto")}
+            </Button>
+          )}
+          <Button variant="secondary" size="sm" onClick={() => setState("editing")}>
+            <svg className="size-[18px]" viewBox="0 0 24 24" aria-hidden="true">
+              <g fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 3v18M3 12h18M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3" />
+              </g>
+            </svg>
+            {t("photo.adjust")}
+          </Button>
+        </div>
       )}
       {editing && !edit && (
         <button

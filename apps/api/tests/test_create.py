@@ -98,7 +98,11 @@ async def test_from_child_to_cart(
         json={"style": "watercolor", "fixes": ["age", "skin"]},
     )
     again = await adb.get(Character, redraw.json()["id"])
-    assert again is not None and again.params == {"attempt": 2, "fixes": ["age", "skin"]}  # for the prompt
+    assert again is not None and again.params == {
+        "attempt": 2,
+        "fixes": ["age", "skin"],
+        "photo_id": again.params["photo_id"],
+    }
     image = await client.get(f"/api/create/characters/{character_id}/image")
     assert image.status_code == 200 and image.headers["cache-control"] == "private, no-store"
     approved = (await client.post(f"/api/create/characters/{character_id}/approve")).json()

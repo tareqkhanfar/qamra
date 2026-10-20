@@ -16,6 +16,8 @@ export type Character = {
   approved_at?: string | null; // the last approval: the child's character is the one approved last
   // portrait first (2026-10-10): the child's portrait in the style, shown large before the sheet (older: none)
   has_portrait?: boolean;
+  // the photo it was drawn from («تغيير الصورة», 2026-10-19); null: drawn before the API recorded it
+  photo_id?: string | null;
 };
 /** One of the child's drawings, kept so the parent can compare them and go back to one (newest first). */
 export type Drawing = Character & { created_at: string; style_name_ar: string; style_name_en: string };

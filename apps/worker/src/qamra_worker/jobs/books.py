@@ -253,6 +253,8 @@ def _beat_of(step: str) -> int | None:
 # What the parent asked for a drawing (the API's) and what their note became, kept next to how it was drawn:
 # the redraw's number, the chips, their own words and the appearance-only instruction made of them.
 ASKED = ("attempt", "fixes", "note", "note_instruction", "note_outcome")
+# The photo the drawing was drawn from (the API's `PHOTO_PARAM`, qamra_api.routers.create): its id only
+PHOTO_PARAM = "photo_id"
 # The likeness notes (how the child looks, in words, read from the photo before drawing) and their outcome
 NOTES = ("likeness_notes", "likeness_notes_outcome")
 
@@ -294,17 +296,25 @@ async def _character(db: Session, storage: ObjectStorage, rt: Runtime, character
     child = db.get(Child, character.child_id)
     if child is None:
         raise ValueError("child not found")
+    # the newest photo first: a new photo («تغيير الصورة») replaces the earlier one, and the drawing records
+    # the photo it was drawn from, so the parent's strip can tell drawings of an earlier photo apart
     photos = db.scalars(
-        select(ChildPhoto).where(
+        select(ChildPhoto)
+        .where(
             ChildPhoto.child_id == child.id,
             ChildPhoto.status == PhotoStatus.accepted,
             ChildPhoto.storage_key.is_not(None),
         )
+        .order_by(ChildPhoto.created_at.desc(), ChildPhoto.id)
     ).all()
-    data = [d for p in photos[:3] if (d := photo_bytes(storage, p)) is not None]  # as the parent framed it
-    if not data:
+    used = [
+        (p, d) for p in photos[:3] if (d := photo_bytes(storage, p)) is not None
+    ]  # as the parent framed it
+    if not used:
         raise ValueError("no accepted photos (they may have been deleted after approval)")
+    data = [d for _, d in used]
     asked: dict[str, Any] = {k: v for k, v in (character.params or {}).items() if k in ASKED}
+    asked[PHOTO_PARAM] = str(used[0][0].id)
     if asked.get("note") and "note_outcome" not in asked:
         await _read_note(db, rt, character, child, asked)
     kept: dict[str, Any] = {k: v for k, v in (character.params or {}).items() if k in NOTES}
