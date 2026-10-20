@@ -55,7 +55,7 @@ export function ChildStep({
   onRedraw?: (on: boolean) => void;
   onEdited: (child: Child) => void;
   /** The child is confirmed or added: the flow goes on (or returns why it could not). */
-  onDone: (child: Child, extra: { nameEn?: string; redraw?: boolean }) => Promise<string | null>;
+  onDone: (child: Child, extra: { nameEn?: string; redraw?: boolean; newPhoto?: boolean }) => Promise<string | null>;
 }) {
   const t = useTranslations("create");
   const te = useTranslations("errors");
@@ -113,8 +113,11 @@ export function ChildStep({
   const badName = traces && !!name.trim() && !isArabicName(name);
   const badEn = asksNameEn && showErrors && !isLatinName(nameEn);
 
-  /** Save what the card changed (the English name; the look before a drawing), then go on. */
-  async function confirm(c: Child) {
+  /**
+   * Save what the card changed (the English name; the look before a drawing), then go on. `newPhoto`: the card's
+   * «تغيير الصورة»: the flow goes to the photo step for this child and draws a new character from the new photo.
+   */
+  async function confirm(c: Child, newPhoto = false) {
     setShowErrors(true);
     if (traces && !isArabicName(c.name)) return setError(t("who.arabicInvalid"));
     if (asksNameEn && !isLatinName(knownEn)) return setError(t("who.nameEnInvalid"));
@@ -138,7 +141,11 @@ export function ChildStep({
       }
       // FALLBACK until `PATCH /children/{id}` is deployed (§d chunk 8): the English name goes with the cart line
     }
-    const failed = await onDone(child, { nameEn: asksNameEn ? knownEn.trim() : undefined, redraw });
+    const failed = await onDone(child, {
+      nameEn: asksNameEn ? knownEn.trim() : undefined,
+      redraw,
+      ...(newPhoto ? { newPhoto } : {}),
+    });
     setBusy(false);
     if (failed) setError(failed);
   }
@@ -220,6 +227,10 @@ export function ChildStep({
           productLine={productLine}
           traces={traces}
           onCancel={() => setEditing(false)}
+          onChangePhoto={() => {
+            setEditing(false); // the details not saved stay as they were
+            void confirm(selected, true);
+          }}
           onSaved={(c) => {
             onEdited(c);
             setEditing(false);
@@ -244,6 +255,8 @@ export function ChildStep({
             setEditing(true);
             setError(null);
           }}
+          onChangePhoto={() => void confirm(selected, true)}
+          busy={busy}
           showErrors={showErrors}
         />
       )}

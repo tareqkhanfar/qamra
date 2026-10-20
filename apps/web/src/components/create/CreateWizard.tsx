@@ -35,6 +35,7 @@ import {
   formatPlan,
   isActivityLine,
   isArabicName,
+  parseNewPhoto,
   parsePlan,
   planFor,
   progress,
@@ -42,6 +43,7 @@ import {
   stepsFor,
   tracesName,
   type FlowState,
+  type NewPhoto,
   type PlanToken,
 } from "@/lib/flows";
 import { cartApi, type Catalog, type CatalogProduct, type CatalogVariant } from "@/lib/store";
@@ -75,7 +77,8 @@ type Query = Partial<
     | "cstep"
     | "item"
     | "plan"
-    | "edit",
+    | "edit"
+    | "photo",
     string | null
   >
 >;
@@ -174,7 +177,12 @@ export function CreateWizard() {
     item: params.get("item"), // «أكملوا بيانات الطفل»: the cart line added in one tap that this flow fills
     plan: params.get("plan"), // the optional steps this flow pinned (lib/flows.ts), so the count holds
     edit: params.get("edit"), // `photo`: the photo step opened from the character step («تعديل الصورة»)
+    photo: params.get("photo"), // «تغيير الصورة»: see `newPhoto`
   };
+  // «تغيير الصورة» (the who card, «أطفالي»): `new` until the new photo is saved, then `done` until a drawing is
+  // approved; a new character is drawn from it, never a ready one reused (lib/flows `newPhoto`). Read from the
+  // params, not `q` (the React compiler would then keep `q` from being memoized in `onCharacter`).
+  const newPhoto = parseNewPhoto(params.get("photo"));
   const [children, setChildren] = useState<Child[] | null>(null);
   const [catalog, setCatalog] = useState<Catalog | null>(null);
   const [catalogDone, setCatalogDone] = useState(false);
@@ -442,15 +450,21 @@ export function CreateWizard() {
     return s.slug;
   }
 
-  // a story reuses its ready character even when the URL doesn't name it (e.g. from the free cover)
-  const storyReady = !activity && child ? readyStory(child, storyLine) : null;
+  // a story reuses its ready character even when the URL doesn't name it (e.g. from the free cover); never
+  // while the parent is changing the photo («تغيير الصورة»): a new one is drawn from it
+  const storyReady = !activity && child && !newPhoto ? readyStory(child, storyLine) : null;
   const usedCharacter = shownCharacter ?? (!activity && !q.character ? storyReady : null);
   const needs = activity ? needsOf(child ?? null) : null;
 
   /** The flow's state for a child (the URL's, or the one picked on the child step). */
   function stateFor(c: Child | null | undefined): FlowState {
-    const fresh = activity && redraw && !!c && c.id === picked?.id; // «ارسموا شخصية جديدة بأسلوب آخر»
-    const reusable = activity ? !!c && !fresh && !!needsOf(c).character.reuse_id : !!c && !!readyStory(c, storyLine);
+    const changing = !!newPhoto && !!c && c.id === child?.id; // «تغيير الصورة»: a new drawing from the new photo
+    const fresh = changing || (activity && redraw && !!c && c.id === picked?.id); // «ارسموا شخصية جديدة بأسلوب آخر»
+    const reusable = fresh
+      ? false
+      : activity
+        ? !!c && !!needsOf(c).character.reuse_id
+        : !!c && !!readyStory(c, storyLine);
     return {
       kind: activity ? "activity" : "story",
       productLine,
@@ -462,6 +476,7 @@ export function CreateWizard() {
       companionOffered: !activity && !!companionAddOn(catalog, storyLine ?? "magic"),
       asksFamily,
       plan: c && c.id === child?.id ? plan : null,
+      newPhoto: changing ? newPhoto : null,
     };
   }
 
@@ -500,9 +515,9 @@ export function CreateWizard() {
   }
 
   /** Draw the story's character in the preset style, else show the style step. */
-  async function styleOrDraw(c: Child, value: Line, pin?: PlanToken[]) {
+  async function styleOrDraw(c: Child, value: Line, pin?: PlanToken[], extra: Query = {}) {
     const preset = presetStyle(value, c);
-    const planned = pin ? { plan: formatPlan(pin) } : {};
+    const planned = { ...extra, ...(pin ? { plan: formatPlan(pin) } : {}) };
     if (preset) {
       const r = await createApi.draw(c.id, preset);
       if (r.ok) {
@@ -515,9 +530,12 @@ export function CreateWizard() {
     go({ step: "style", child: c.id, line: value, character: null, ...planned });
   }
 
-  /** A story with its type known: reuse a ready character, else the drawing steps (pinned for the count). */
-  function continueWith(c: Child, value: Line, lineAsked: boolean) {
-    const ready = readyStory(c, value);
+  /**
+   * A story with its type known: reuse a ready character, else the drawing steps (pinned for the count).
+   * `fresh`: «تغيير الصورة» is on (a new drawing; `done`: its photo is already saved, so no photo step again).
+   */
+  function continueWith(c: Child, value: Line, lineAsked: boolean, fresh: NewPhoto | null = null) {
+    const ready = fresh ? null : readyStory(c, value);
     const pin = planFor(
       {
         ...stateFor(c),
@@ -525,15 +543,41 @@ export function CreateWizard() {
         reusable: !!ready,
         stylePreset: !!presetStyle(value, c),
         companionOffered: !!companionAddOn(catalog, value),
+        newPhoto: fresh,
       },
       lineAsked,
     );
-    const base = { child: c.id, line: value, book: null, plan: formatPlan(pin) };
+    const base = { child: c.id, line: value, book: null, plan: formatPlan(pin), photo: fresh };
     if (ready) go({ ...base, step: storyOrCompanion(value), character: ready.id, style: ready.style });
     else if (!c.consent) go({ ...base, step: "consent", character: null });
-    else if (asksPhoto(photoState(c)))
-      go({ ...base, step: "photo", character: null }); // none yet, or the kept one
-    else void styleOrDraw(c, value, pin);
+    else if (fresh === "new" || (!fresh && asksPhoto(photoState(c))))
+      go({ ...base, step: "photo", character: null }); // none yet, the kept one, or «تغيير الصورة»
+    else void styleOrDraw(c, value, pin, { photo: fresh });
+  }
+
+  /**
+   * «تغيير الصورة» on the who card: the photo step for this child (after the consent when it is missing), then a
+   * new character from the new photo; a story asks its type after the photo when it isn't chosen yet.
+   */
+  function changePhoto(c: Child) {
+    const pin = planFor(
+      {
+        ...stateFor(c),
+        reusable: false,
+        newPhoto: "new",
+        stylePreset: !activity && !!storyLine && !!presetStyle(storyLine, c),
+      },
+      !activity && (!storyLine || plan.includes("line")), // a type asked in this flow stays counted
+    );
+    go({
+      child: c.id,
+      book: null,
+      character: null,
+      ...(activity ? { style: null } : {}),
+      photo: "new",
+      plan: formatPlan(pin),
+      step: c.consent ? "photo" : "consent",
+    });
   }
 
   /** An activity book: what it needs from this child, from the server (or the same rules here). */
@@ -545,23 +589,31 @@ export function CreateWizard() {
   }
 
   /** The child step is done: the activity book's next step, or the story's type, drawing or story. */
-  async function afterChild(c: Child, extra: { nameEn?: string; redraw?: boolean }): Promise<string | null> {
+  async function afterChild(
+    c: Child,
+    extra: { nameEn?: string; redraw?: boolean; newPhoto?: boolean },
+  ): Promise<string | null> {
     saveChild(c);
     if (extra.nameEn !== undefined && extra.nameEn !== (c.name_latin ?? "")) {
       setPendingEn((m) => ({ ...m, [c.id]: extra.nameEn! })); // not saved on the child: goes with the cart line
     }
     if (!activity) {
-      if (!storyLine) go({ step: "line", child: c.id, character: null, book: null, plan: "line" });
+      if (extra.newPhoto) changePhoto(c);
+      else if (!storyLine) go({ step: "line", child: c.id, character: null, book: null, plan: "line", photo: null });
       else continueWith(c, storyLine, plan.includes("line")); // back on the child step: the type stays counted
       return null;
     }
     const n = await neededFor(c);
     if (typeof n === "string") return n;
     if (n.child?.name_problem) return t("who.arabicInvalid"); // the tracing pages can't write this name
+    if (extra.newPhoto) {
+      changePhoto(c);
+      return null;
+    }
     // the ready character, unless the parent asked for a new one in another style
     const reuse = extra.redraw ? null : n.character.reuse_id;
-    const pin = planFor({ ...stateFor(c), reusable: !!reuse }, false);
-    const base = { child: c.id, book: null, plan: formatPlan(pin) };
+    const pin = planFor({ ...stateFor(c), reusable: !!reuse, newPhoto: null }, false);
+    const base = { child: c.id, book: null, plan: formatPlan(pin), photo: null };
     if (reuse) go({ ...base, step: asksFamily ? "family" : "summary", character: reuse, style: null });
     else if (!c.consent) go({ ...base, step: "consent", character: null, style: null });
     else if (asksPhoto(photoState(c))) go({ ...base, step: "photo", character: null, style: null });
@@ -571,7 +623,13 @@ export function CreateWizard() {
 
   /** Consent given: the photo, or the drawing (a story's type is chosen before the consent now). */
   function afterConsent(c: Child) {
-    if (activity) go({ step: asksPhoto(photoState(c)) ? "photo" : "style", child: c.id });
+    if (newPhoto === "new") {
+      // «تغيير الصورة» from «أطفالي» for a child without consent: pinned here, the consent counted
+      const pin = plan.length
+        ? null
+        : planFor({ ...state, child: { ...photoState(c), consent: false } }, !activity && !storyLine);
+      go({ step: "photo", child: c.id, ...(pin ? { plan: formatPlan(pin) } : {}) });
+    } else if (activity) go({ step: asksPhoto(photoState(c)) ? "photo" : "style", child: c.id });
     else if (!storyLine) go({ step: "line", child: c.id });
     else if (asksPhoto(photoState(c)) && !readyStory(c, storyLine)) go({ step: "photo", child: c.id });
     else void styleOrDraw(c, storyLine);
@@ -649,7 +707,7 @@ export function CreateWizard() {
             theme={q.theme}
             initial={storyLine}
             back={() => go({ step: "child" })}
-            onDone={(value) => continueWith(child!, value, true)}
+            onDone={(value) => continueWith(child!, value, true, newPhoto)}
           />
         );
       case "consent":
@@ -668,20 +726,23 @@ export function CreateWizard() {
         return (
           <PhotoStep
             // a new key when the step opens from the character step: it loads the kept photo afresh
-            key={editingPhoto ? "edit" : "photo"}
+            key={editingPhoto ? "edit" : newPhoto ? "change" : "photo"}
             child={child!}
             productLine={productLine}
             edit={editingPhoto}
+            changing={!editingPhoto && !!newPhoto}
             back={() => (editingPhoto ? go({ step: "character", edit: null }) : go({ step: previous("photo") }))}
             onDone={(c, change) => {
               saveChild(c);
+              // «تغيير الصورة»: the new photo is saved; the next steps draw a new character from it
+              const saved: Query = newPhoto ? { photo: "done" } : {};
               if (editingPhoto) {
                 // back to the drawing: a new framing or photo is drawn only by the next «أعيدوا الرسم»
                 if (change) setPhotoSaved({ character: shownCharacter!.id, change });
                 go({ step: "character", edit: null });
-              } else if (activity) go({ step: "style" });
-              else if (storyLine) void styleOrDraw(c, storyLine);
-              else go({ step: "line" });
+              } else if (activity) go({ step: "style", ...saved });
+              else if (storyLine) void styleOrDraw(c, storyLine, undefined, saved);
+              else go({ step: "line", ...saved });
             }}
           />
         );
@@ -726,7 +787,7 @@ export function CreateWizard() {
               // maybe an earlier drawing, in another style: the book then uses that drawing and its style
               setCharacter({ id: c.id, value: c });
               void refreshChildren();
-              const chosen = { character: c.id, style: c.style };
+              const chosen = { character: c.id, style: c.style, photo: null }; // «تغيير الصورة» is done
               if (activity) go({ step: asksFamily ? "family" : "summary", ...chosen });
               else go({ step: storyLine ? storyOrCompanion(storyLine) : "line", ...chosen });
             }}

@@ -95,7 +95,12 @@ async def test_every_drawing_is_kept_and_listed_newest_first(
     assert all(d["status"] == "ready" and d["approved"] is False and d["created_at"] for d in listed)
     assert drawing["id"] not in {d["id"] for d in listed}
     kept = await adb.get(Character, second["id"])
-    assert kept is not None and kept.params == {"attempt": 2, "fixes": ["hair"], "note": "شعره أجعد"}
+    assert kept is not None and kept.params == {
+        "attempt": 2,
+        "fixes": ["hair"],
+        "note": "شعره أجعد",
+        "photo_id": kept.params["photo_id"],
+    }
     for d in listed:  # each one through the private image route
         image = await client.get(f"/api/create/characters/{d['id']}/image")
         assert image.status_code == 200 and image.headers["cache-control"] == "private, no-store"
@@ -197,7 +202,12 @@ async def test_the_parents_note(client: AsyncClient, adb: AsyncSession, storage:
     redraw = await _draw(client, child_id, style="3d", note=roomy)  # a note alone asks for a new drawing
     assert redraw["id"] != first["id"] and redraw["status"] == "generating"
     row = await adb.get(Character, redraw["id"])
-    assert row is not None and row.params == {"attempt": 2, "fixes": [], "note": " ".join(["عيون"] * 40)}
+    assert row is not None and row.params == {
+        "attempt": 2,
+        "fixes": [],
+        "note": " ".join(["عيون"] * 40),
+        "photo_id": row.params["photo_id"],
+    }
     blank = await _draw(client, child_id, style="3d", note=" \n ")  # nothing written: the approved one
     assert blank["id"] == first["id"]
 

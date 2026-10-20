@@ -1433,3 +1433,29 @@ front and his narrow smiling eyes.
 - **The QR page** (`/b/<code>`, `/hello` without a code) is public and `noindex`: the API answers only the child's
   first name and the product, and the same 404 for an unknown, malformed, deleted or sample code; 120 lookups
   an hour per IP.
+
+## «تغيير الصورة»: a new photo for a child, any time (2026-10-19)
+
+The owner: «اسمح لي إنه أقدر أغيّر الصورة، مش معقول خلص بس صورة واحدة وبس.»
+
+- **Where:** the known-child card on the first step («تغيير الصورة», next to «تعديل البيانات», which links to it
+  too) and each child in «أطفالي» (`/create?child=<id>&photo=new`). It is an action, not a toggle: it goes to the
+  photo step at once (the consent step first when the child has none).
+- **The flow** is the usual one with one flag in the URL, `photo=new` until the new photo is saved, then
+  `photo=done` until a drawing is approved (lib/flows `FlowState.newPhoto`): the photo step shows even with a photo
+  from the last 24 hours, and no ready character is reused. A story whose type isn't chosen yet asks the photo
+  first, then the type (`stepsFor` orders `line` after `photo` then, so «n من N» reads right); «أطفالي» opens there.
+  Approving a drawing ends it (the flag leaves the URL).
+- **The current photo** (still kept: within 24 hours of the approval, or kept at the guardian's choice) can be
+  moved instead of replaced; once deleted, the step asks for a new one and says why.
+- **Privacy:** the API keeps only the newest original: a new upload deletes an earlier one still stored at once
+  (audited `photo.replaced`, ids only), as it already did. The new photo's 24-hour clock starts at upload when an
+  approval exists, at the approval otherwise (unchanged). Only the photo consent (`scope != keep`) lets a photo
+  in; the keep choice alone does not.
+- **The drawing records its photo** in `Character.params.photo_id` (no migration, no new column: the params are
+  where a drawing's inputs already live, and several branches add migrations in parallel). The API sets the
+  newest photo when the drawing is asked for; the worker, which now takes the newest photo first, writes the one
+  it really used. `CharacterOut.photo_id` lets the strip mark drawings from an earlier photo («من صورة سابقة»);
+  drawings made before have none and are not marked.
+- **Free drawings:** a drawing from a new photo counts like any other (staff unlimited); the earlier drawings stay
+  choosable without one.

@@ -16,6 +16,7 @@ import {
   isLatinName,
   kindOf,
   outsideAges,
+  parseNewPhoto,
   parsePlan,
   planFor,
   progress,
@@ -292,6 +293,48 @@ describe("the plan pins the count while the parent passes steps", () => {
     // a ready character is still reused as it is: no photo step at all
     const reuse = state({ productLine: "magic", child: kept, reusable: true });
     assert.deepEqual(planFor(reuse, false), ["reuse"]);
+  });
+
+  it("«تغيير الصورة»: the photo step even with a ready character and a photo from the last 24 hours", () => {
+    // a story whose type is known: photo, style, character, then the story (no ready character reused)
+    const story = state({ productLine: "magic", child: PHOTOGRAPHED, reusable: true, newPhoto: "new" });
+    const plan = planFor({ ...story, reusable: false }, false);
+    assert.equal(formatPlan(plan), "photo,style,character");
+    assert.equal(resumeAt({ ...story, reusable: false }), "photo");
+    assert.ok(canShow("photo", story));
+    assert.deepEqual(stepsFor({ ...story, plan }).slice(0, 4), ["child", "photo", "style", "character"]);
+    // its photo is saved (`done`): the style step next, never the photo step again
+    assert.equal(resumeAt({ ...story, reusable: false, newPhoto: "done" }), "style");
+    // an activity book: the same, with its own style step
+    const book = state({ productLine: "workbook", child: PHOTOGRAPHED, reusable: true, newPhoto: "new" });
+    const pinned = planFor(book, false);
+    assert.equal(formatPlan(pinned), "photo,style,character");
+    assert.deepEqual(stepsFor({ ...book, plan: pinned }), ["child", "photo", "style", "character", "summary"]);
+    // the earlier photo was deleted (24 hours after the approval): the photo step simply asks for a new one
+    const gone = state({ productLine: "family", child: CONSENTED, reusable: true, newPhoto: "new" });
+    assert.equal(resumeAt({ ...gone, reusable: false }), "photo");
+  });
+
+  it("«تغيير الصورة» from «أطفالي»: a story asks the photo before its type, and the count follows that order", () => {
+    const s = state({ productLine: null, child: PHOTOGRAPHED, newPhoto: "new" });
+    assert.equal(resumeAt(s), "photo"); // not the type first
+    const plan = planFor(s, true);
+    assert.equal(formatPlan(plan), "line,photo,style,character");
+    const steps = stepsFor({ ...s, plan });
+    assert.deepEqual(steps.slice(0, 5), ["child", "photo", "line", "style", "character"]);
+    assert.deepEqual(progress(steps, "photo"), { n: 2, total: steps.length });
+    assert.deepEqual(progress(steps, "line"), { n: 3, total: steps.length });
+    // without the consent yet: the consent, then the photo
+    const first = state({ productLine: null, child: NEW_CHILD, newPhoto: "new" });
+    assert.equal(resumeAt(first), "consent");
+    // once the photo is saved, the type is asked
+    assert.equal(resumeAt({ ...s, newPhoto: "done" }), "line");
+    // without «تغيير الصورة» nothing changes: the type first
+    assert.equal(resumeAt({ ...s, newPhoto: null }), "line");
+    assert.deepEqual(parseNewPhoto("new"), "new");
+    assert.deepEqual(parseNewPhoto("done"), "done");
+    assert.equal(parseNewPhoto("x"), null);
+    assert.equal(parseNewPhoto(null), null);
   });
 
   it("parsePlan ignores unknown words", () => {

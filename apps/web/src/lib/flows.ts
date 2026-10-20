@@ -92,7 +92,21 @@ export type FlowState = {
   asksFamily: boolean;
   /** The optional steps pinned by the flow (the URL's `plan`); null or empty: derive them from the facts. */
   plan?: readonly PlanToken[] | null;
+  /**
+   * «تغيير الصورة» (owner, 2026-10-19; the URL's `photo`): the parent asked to change the child's photo, so the
+   * photo step shows (even with a photo from the last 24 hours) and a new character is drawn from it; a ready
+   * character is not reused. `new`: the photo step is still to come; `done`: the new photo is saved. A story
+   * asks it before its type (the photo comes first: «أطفالي» opens straight on it).
+   */
+  newPhoto?: NewPhoto | null;
 };
+
+/** The URL's `photo` (lib/flows `FlowState.newPhoto`). */
+export type NewPhoto = "new" | "done";
+
+export function parseNewPhoto(value: string | null | undefined): NewPhoto | null {
+  return value === "new" || value === "done" ? value : null;
+}
 
 export function isActivityLine(line: string | null | undefined): line is ActivityLine {
   return !!line && (ACTIVITY_LINES as readonly string[]).includes(line);
@@ -128,9 +142,9 @@ export function formatPlan(plan: readonly PlanToken[]): string {
 /** The drawing steps the facts call for now (no pin): consent, photo, style and character, or none. */
 function drawingNow(s: FlowState): Set<DrawStep> {
   const out = new Set<DrawStep>();
-  if (s.reusable) return out;
+  if (s.reusable && !s.newPhoto) return out;
   if (!s.child?.consent) out.add("consent");
-  if (asksPhoto(s.child)) out.add("photo");
+  if (s.newPhoto || asksPhoto(s.child)) out.add("photo");
   if (!s.stylePreset) out.add("style");
   out.add("character");
   return out;
@@ -173,7 +187,15 @@ export function stepsFor(s: FlowState): StepId[] {
     steps.add("format");
     steps.add("addons");
   }
-  return ALL_STEPS.filter((x) => steps.has(x));
+  return orderOf(s).filter((x) => steps.has(x));
+}
+
+/** The steps' order: «تغيير الصورة» on a story asks the photo before the story type. */
+function orderOf(s: FlowState): readonly StepId[] {
+  if (s.kind !== "story" || !s.newPhoto) return ALL_STEPS;
+  const out: StepId[] = ALL_STEPS.filter((x) => x !== "line");
+  out.splice(out.indexOf("photo") + 1, 0, "line");
+  return out;
 }
 
 /** After the character: the family step or the review step (activity); the companion or the story (story). */
@@ -190,15 +212,17 @@ export function resumeAt(s: FlowState): StepId {
       if (s.book.status === "generating" || s.book.status === "failed") return "writing";
       return s.book.line === "magic" && s.book.status === "preview" ? "review" : "format";
     }
+    // «تغيير الصورة»: the new photo comes before the story type
+    if (s.newPhoto === "new" && !s.character) return s.child.consent ? "photo" : "consent";
     if (!s.productLine) return "line";
   }
   if (s.character) return s.character.approved ? afterCharacter(s) : "character";
-  if (s.reusable) {
+  if (s.reusable && !s.newPhoto) {
     // an activity book goes on with its ready character; a story needs it named in the URL first
     return s.kind === "activity" ? afterCharacter(s) : "style";
   }
   if (!s.child.consent) return "consent";
-  if (!s.child.photos) return "photo";
+  if (!s.child.photos || s.newPhoto === "new") return "photo";
   return "style"; // a saved photo and no drawing yet: the parent picks the style, then it is drawn
 }
 

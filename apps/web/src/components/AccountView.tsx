@@ -233,6 +233,21 @@ export function AccountView() {
           </div>
         )}
         {activeChild && (
+          <div className="flex flex-col gap-1.5 px-4">
+            {/* «تغيير الصورة» (owner, 2026-10-19): the photo step for this child, then a new drawing from it */}
+            <Link
+              href={`/create?child=${activeChild.id}&photo=new`}
+              aria-describedby="change-photo-hint"
+              className={buttonClasses("secondary", "sm", "self-start")}
+            >
+              {tc("photo.change")}
+            </Link>
+            <p id="change-photo-hint" className="text-caption text-ink-muted">
+              {tc("who.known.changePhotoHint", { ...nameCases(activeChild.first_name), gender: activeChild.gender })}
+            </p>
+          </div>
+        )}
+        {activeChild && (
           <div className="px-4">
             <Button
               variant="ghost"

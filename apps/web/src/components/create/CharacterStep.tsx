@@ -119,6 +119,9 @@ export function CharacterStep({
   const selected: Character = chosen ?? character;
   const shown = selected.status === "ready" || selected.status === "approved";
   const inUse = lastApproved(drawings ?? []); // the child's character today, if any
+  // «تغيير الصورة»: the photo of the newest drawing; drawings from another photo say so in the strip
+  // (the drawing being made is the newest, though not in the list until it is ready)
+  const latestPhoto = (drawing ? character.photo_id : (drawings ?? []).find((d) => d.photo_id)?.photo_id) ?? null;
   const styleName = (d: Drawing) => (locale === "ar" ? d.style_name_ar : d.style_name_en);
   const strip = list.length + (drawing ? 1 : 0) > 1; // something to compare with
 
@@ -295,6 +298,11 @@ export function CharacterStep({
                   {d.id === inUse?.id && (
                     <span className="self-start rounded-full bg-amber-100 px-2 py-0.5 text-caption font-bold text-amber-700">
                       {t("character.inUse")}
+                    </span>
+                  )}
+                  {!!latestPhoto && !!d.photo_id && d.photo_id !== latestPhoto && (
+                    <span className="self-start rounded-full bg-paper-sunk px-2 py-0.5 text-caption font-semibold text-ink-muted">
+                      {t("character.earlierPhoto")}
                     </span>
                   )}
                 </button>

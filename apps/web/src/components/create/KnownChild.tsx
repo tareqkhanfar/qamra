@@ -16,6 +16,8 @@ export type Look = { hijab: boolean; glasses: boolean };
  * character this book uses is ready, the English name when the book prints it (editable), the look when a new
  * character will be drawn, and «تعديل البيانات». An activity book with a ready character also offers «ارسموا
  * شخصية جديدة بأسلوب آخر» (`onRedraw`): the card then says a new one will be drawn and asks the look.
+ * «تغيير الصورة» (`onChangePhoto`, owner 2026-10-19) opens the photo step for this child: a new photo (or the
+ * current one moved, while it is still kept), then a new character drawn from it; the earlier drawings stay.
  */
 export function KnownChild({
   child,
@@ -29,6 +31,8 @@ export function KnownChild({
   redraw = false,
   onRedraw,
   onEdit,
+  onChangePhoto,
+  busy = false,
   showErrors,
 }: {
   child: Child;
@@ -43,6 +47,10 @@ export function KnownChild({
   redraw?: boolean;
   onRedraw?: (on: boolean) => void;
   onEdit: () => void;
+  /** «تغيير الصورة»: the photo step for this child, then a new character from the new photo. */
+  onChangePhoto?: () => void;
+  /** The flow is going on (a tap is being saved): the card's actions wait. */
+  busy?: boolean;
   showErrors: boolean;
 }) {
   const t = useTranslations("create");
@@ -140,13 +148,36 @@ export function KnownChild({
         </fieldset>
       )}
 
-      <button
-        type="button"
-        onClick={onEdit}
-        className="min-h-11 self-start rounded-full border-[1.5px] border-line px-4 text-small font-bold text-night-900 hover:border-night-500"
-      >
-        {t("who.known.edit")}
-      </button>
+      <div className="flex flex-col gap-1.5">
+        <div className="flex flex-wrap gap-2">
+          {onChangePhoto && (
+            <button
+              type="button"
+              onClick={onChangePhoto}
+              disabled={busy}
+              aria-describedby={`photo-${child.id}-hint`}
+              className="inline-flex min-h-11 items-center gap-1.5 rounded-full border-[1.5px] border-night-900 px-4 text-small font-bold text-night-900 hover:bg-night-100 disabled:opacity-60"
+            >
+              <svg className="size-[18px]" viewBox="0 0 24 24" aria-hidden="true">
+                <g fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 8h3l2-3h6l2 3h3v11H4z" />
+                  <circle cx="12" cy="13" r="3.5" />
+                </g>
+              </svg>
+              {t("photo.change")}
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={onEdit}
+            disabled={busy}
+            className="min-h-11 rounded-full border-[1.5px] border-line px-4 text-small font-bold text-night-900 hover:border-night-500 disabled:opacity-60"
+          >
+            {t("who.known.edit")}
+          </button>
+        </div>
+        {onChangePhoto && <Hint id={`photo-${child.id}-hint`}>{t("who.known.changePhotoHint", who)}</Hint>}
+      </div>
     </section>
   );
 }

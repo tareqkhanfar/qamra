@@ -1,6 +1,7 @@
 import asyncio
 import io
 import uuid
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -255,3 +256,47 @@ def test_the_reference_has_its_light_made_neutral_and_the_original_stays(
 
     assert blue_over_red(reference) > blue_over_red(buf.getvalue()) * 1.15  # much less yellow
     assert storage.get(key) == buf.getvalue()  # the stored original is never changed
+
+
+def test_the_newest_photo_goes_first_and_the_drawing_records_it(
+    db: Session, storage: ObjectStorage, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """«تغيير الصورة» (owner, 2026-10-19): the newest photo goes first, and the drawing records the photo it
+    came from (the API set the newest one when it was asked for; the worker writes the one it really used)."""
+    parent = User(email="mom@example.com", full_name="أم ليان")
+    db.add(parent)
+    db.flush()
+    child = Child(guardian_user_id=parent.id, first_name="ليان", gender=Gender.f, birth_year=2020)
+    db.add(child)
+    db.flush()
+    wide = Image.new("RGB", (900, 900), (150, 160, 170))  # an earlier photo, still stored (a race)
+    wide.paste(Image.open(FIXTURE).convert("RGB"), (0, 0))
+    buf = io.BytesIO()
+    wide.save(buf, format="JPEG", quality=92)
+    old_key, new_key = f"children/{child.id}/photos/old.jpg", f"children/{child.id}/photos/new.jpg"
+    storage.put(old_key, buf.getvalue(), "image/jpeg")
+    storage.put(new_key, FIXTURE.read_bytes(), "image/png")
+    old = ChildPhoto(
+        child_id=child.id,
+        storage_key=old_key,
+        status=PhotoStatus.accepted,
+        created_at=datetime.now(UTC) - timedelta(hours=1),
+    )
+    new = ChildPhoto(child_id=child.id, storage_key=new_key, status=PhotoStatus.accepted)
+    db.add_all([old, new])
+    db.flush()
+    character = _again(db, child.id, {"attempt": 3, "fixes": [], "photo_id": str(old.id)})
+    sent: list[list[bytes]] = []
+    real = books.generate_character
+
+    async def spy(rt: Any, ai: Any, photos: list[bytes], *args: Any, **kwargs: Any) -> Any:
+        sent.append(photos)
+        return await real(rt, ai, photos, *args, **kwargs)
+
+    monkeypatch.setattr(books, "generate_character", spy)
+    assert asyncio.run(draw_character(db, storage, character, offline="fake")) == {"status": "ready"}
+    [photos] = sent
+    assert len(photos) == 2
+    with Image.open(io.BytesIO(photos[0])) as first, Image.open(FIXTURE) as fixture:
+        assert first.size == fixture.size  # the new photo first
+    assert character.params["photo_id"] == str(new.id) and character.params["attempt"] == 3
