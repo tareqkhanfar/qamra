@@ -52,6 +52,9 @@ class Settings(BaseSettings):
     character_sheet_model: str = "fal-ai/nano-banana-pro/edit"
     character_portrait_resolution: ResolutionName = "1K"
     character_sheet_resolution: ResolutionName = "2K"
+    # The sheet's automatic check (2026-10-21): a head turned the other way from its body, a shoe cut off →
+    # one automatic redraw before the parent sees it (`pipeline.sheet_check`)
+    character_sheet_check: bool = True
     fal_upscale_model: str = "fal-ai/seedvr/upscale/image"
     fallback_after_failures: int = 2
     gemini_image_model: str = "gemini-3.1-flash-image"

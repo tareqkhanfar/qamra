@@ -16,7 +16,12 @@ scenes and the page QA. History of the golden file:
 - 2026-10-19 (the colour and likeness-notes work), rewritten on purpose:
   - every style: only the character portrait (v3) and sheet (v7) groups, plus new groups with likeness notes;
     pages, QA, companion, family, Classic and class-book prompts byte-identical;
-  - watercolor: every group (guide v4: white paper, clean washes, no amber cast)."""
+  - watercolor: every group (guide v4: white paper, clean washes, no amber cast).
+- 2026-10-21 (the face-shape work and the sheet's directions), rewritten on purpose:
+  - every style: only the character portrait (v5) and sheet (v10) groups (`likeness.v4`'s FACE SHAPE block, one
+    direction per view, whole shoes), plus new groups with the measured face shape and the sheet check's
+    redraw; pages, QA, companion, family, Classic and class-book prompts byte-identical;
+  - 3d and cartoon: every group but the Classic portraits (guides v4: the child's own face shape)."""
 
 import json
 
@@ -45,4 +50,7 @@ def test_the_golden_file_covers_every_style_and_the_portrait_first_prompts() -> 
             "character:boy:portrait-first",
             "character-portrait:boy:notes",
             "character:boy:portrait-first:notes",
+            "character-portrait:boy:face-shape",
+            "character:boy:portrait-first:face-shape",
+            "character:boy:portrait-first:checked",
         } <= groups.keys()

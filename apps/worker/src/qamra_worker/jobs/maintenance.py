@@ -67,9 +67,9 @@ class CleanupSummary:
 
 
 NOTE_KEYS = ("note", "note_instruction")  # «ما الذي لا يشبهه؟» in the parent's words, and its rewrite
-# What an unapproved drawing says about the child in words after 30 days: the note, and the likeness notes
-# read from the photo (how the child looks); the outcomes stay with the costs
-WORDS_KEYS = (*NOTE_KEYS, "likeness_notes")
+# What an unapproved drawing says about the child in words after 30 days: the note, the likeness notes read
+# from the photo (how the child looks) and the face's measured shape; the outcomes stay with the costs
+WORDS_KEYS = (*NOTE_KEYS, "likeness_notes", "face_shape")
 STALLED_AFTER = timedelta(hours=2)  # longer than any job's timeout (1 h) plus its retries' waits
 STALLED_ERROR = (
     "stalled: no result after 2 hours and no job left for it (the worker restarted or ran out of memory)"

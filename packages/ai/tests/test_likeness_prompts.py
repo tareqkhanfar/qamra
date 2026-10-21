@@ -36,8 +36,8 @@ def _flat(req: ImageRequest) -> str:
     return " ".join(req.prompt.split())
 
 
-def test_books_draw_portrait_first_with_v7() -> None:
-    assert (SHEET_PROMPT_VERSION, PORTRAIT_PROMPT_VERSION) == (8, 4)
+def test_books_draw_portrait_first_with_v10() -> None:
+    assert (SHEET_PROMPT_VERSION, PORTRAIT_PROMPT_VERSION) == (10, 5)
     with pytest.raises(ValueError, match="no portrait"):
         character_request(BOY, [PHOTO], load_style("3d"), version=4, portrait=PORTRAIT)
     old = character_request(BOY, [PHOTO], load_style("3d"), version=4)
@@ -51,11 +51,13 @@ def test_v7_keeps_the_childs_own_face_hair_and_exact_age(slug: str) -> None:
     flat = _flat(req)
     assert "not older" not in flat.replace("not an older child", "")  # v4's "must look N, not older" is gone
     assert "It never changes this child's face, head shape, features, hair or age." in flat
-    assert "not a generic cute face" in flat and "Paint exactly his age, neither younger nor older" in flat
+    assert "Paint his own face, not a generic one" in flat
+    assert "He is 5 years old and looks exactly 5: the face of a 5-year-old boy" in flat
+    assert "never a toddler's or a baby's face, and never older" in flat
     assert "the same shape at the front (fringe, quiff" in flat and "Never curlier" in flat
     assert "Skin tone: exactly the child's own, as it looks in daylight" in flat
     assert "with its lighter and darker parts" in flat
-    assert "simple brown shoes" in flat and "never barefoot" in flat and "no bare feet" in flat
+    assert "simple brown shoes" in flat and "never barefoot" in flat and "No bare feet" in flat
     assert style.guide.split()[0] in flat and req.resolution == "2K"
     assert [r.label for r in req.refs] == [
         "photo of the child (1)",
@@ -74,7 +76,7 @@ def test_the_portrait_is_a_large_face_in_full_color_at_the_exact_age() -> None:
     assert "head-and-shoulders portrait" in flat and "about 60% of the picture's height" in flat
     assert "in full, clear, natural color: never a monochrome, sepia or ink sketch" in flat
     assert "warm cream background" not in flat and "very light cream background" in flat
-    assert "Paint exactly her age, neither younger nor older" in flat and "she wears glasses" in flat
+    assert "She is 6 years old and looks exactly 6" in flat and "she wears glasses" in flat
     assert "- Hair: match the photo's hair color" in flat and "- Shorter fringe." in flat  # a redraw's fixes
     assert (
         len(req.refs) == 2 and portrait_request(GIRL, [PHOTO], load_style("3d"), attempt=2).seed != req.seed
@@ -251,3 +253,64 @@ def test_under_a_hijab_the_likeness_block_asks_for_no_hair() -> None:
     ):
         assert "- Hair: exactly as in the photo" not in req.prompt and "sage-green hijab" in req.prompt
     assert "- Hair: exactly as in the photo" in portrait_request(BOY, [PHOTO], load_style("cartoon")).prompt
+
+
+def test_v10_and_v5_keep_the_face_shape_and_the_measured_proportion() -> None:
+    shape = "from the top of the forehead to the chin, the face is an oval (width to length 0.79)."
+    style = load_style("cartoon")
+    for req in (
+        portrait_request(BOY, [PHOTO], style, face_shape=shape),
+        character_request(BOY, [PHOTO], style, portrait=PORTRAIT, face_shape=shape),
+    ):
+        flat = _flat(req)
+        assert "FACE SHAPE AND AGE" in flat and "Work like a portrait artist" in flat
+        assert f"- Measured on the photo: {shape}" in flat
+        assert "Never make the face rounder or wider, the cheeks fuller, the chin smaller or shorter" in flat
+        assert "no face rounder, wider, chubbier or younger than in the photo" in flat
+    without = _flat(portrait_request(BOY, [PHOTO], style))
+    assert "FACE SHAPE AND AGE" in without and "Measured on the photo" not in without
+    toddler = _flat(portrait_request(Child(name="x", gender="f", age=3), [PHOTO], style))
+    assert "looks exactly 3" in toddler and "never a toddler's" not in toddler
+
+
+def test_older_templates_refuse_the_face_shape_and_the_checks() -> None:
+    with pytest.raises(ValueError, match="no measured face shape"):
+        portrait_request(BOY, [PHOTO], load_style("3d"), version=4, face_shape="x")
+    with pytest.raises(ValueError, match="no measured face shape"):
+        character_request(BOY, [PHOTO], load_style("3d"), version=8, portrait=PORTRAIT, face_shape="x")
+    with pytest.raises(ValueError, match="no sheet-check findings"):
+        character_request(BOY, [PHOTO], load_style("3d"), version=8, portrait=PORTRAIT, checks=["x"])
+
+
+@pytest.mark.parametrize("slug", ["3d", "semi-realistic", "cartoon", "watercolor"])
+def test_every_view_has_one_direction_and_whole_shoes(slug: str) -> None:
+    flat = _flat(character_request(BOY, [PHOTO], load_style(slug), portrait=PORTRAIT))
+    assert "1. Front view: standing, facing the viewer" in flat
+    assert "2. Three-quarter view turned toward the viewer's left" in flat
+    assert "3. Side view in full profile facing the viewer's left, walking to the left" in flat
+    assert "the head never looks the other way from the body and feet" in flat
+    assert "no shoe touches or crosses the picture's edge" in flat
+    assert "A first try of this sheet was drawn wrong" not in flat
+
+
+def test_a_redraw_after_the_check_names_what_was_wrong_with_its_own_seed() -> None:
+    style = load_style("3d")
+    first = character_request(BOY, [PHOTO], style, portrait=PORTRAIT)
+    again = character_request(BOY, [PHOTO], style, portrait=PORTRAIT, checks=["Figure 3 faced two ways."])
+    assert "A first try of this sheet was drawn wrong. Avoid exactly this: - Figure 3 faced two ways." in (
+        _flat(again)
+    )
+    assert again.seed != first.seed and (first.step, again.step) == ("character:1", "character:1:redraw")
+
+
+def test_the_3d_and_cartoon_guides_v4_drop_the_round_face_words() -> None:
+    for slug in ("3d", "cartoon"):
+        style = load_style(slug)
+        look = " ".join(style.guide.split())
+        assert style.version == 4
+        for word in ("appealing", "soft two-tone", "Simple clean shapes", "big friendly eyes"):
+            assert word not in look, (slug, word)
+        assert "no round, wide or chubby" in " ".join(style.negative.split())
+    assert "eyes at the photo's own size and shape (narrow eyes stay narrow)" in " ".join(
+        load_style("3d").guide.split()
+    )

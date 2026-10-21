@@ -60,12 +60,17 @@ def test_the_default_outfit_renders_the_prompts_of_before(slug: str, child: Chil
     style = load_style(slug)
     for outfit in (None, "classic", "rose-dress" if child.gender == "m" else "green-hoodie", "unknown"):
         dressed = child.model_copy(update={"outfit": outfit})  # one not offered to this child: the default
-        sheet = character_request(dressed, [PHOTO], style, portrait=PORTRAIT, notes=NOTES)
+        # the outfits' versions (sheet v8, portrait v4) against the ones before them (v7, v3)
+        sheet = character_request(dressed, [PHOTO], style, version=8, portrait=PORTRAIT, notes=NOTES)
         before = character_request(child, [PHOTO], style, version=7, portrait=PORTRAIT, notes=NOTES)
         assert sheet.prompt == before.prompt
-        assert portrait_request(dressed, [PHOTO], style, notes=NOTES).prompt == (
+        assert portrait_request(dressed, [PHOTO], style, version=4, notes=NOTES).prompt == (
             portrait_request(child, [PHOTO], style, version=3, notes=NOTES).prompt
         )
+        # and today's (v10, v5): the default outfit is the reference outfit, as with no outfit at all
+        now = character_request(dressed, [PHOTO], style, portrait=PORTRAIT, notes=NOTES).prompt
+        assert now == character_request(child, [PHOTO], style, portrait=PORTRAIT, notes=NOTES).prompt
+        assert "night-blue trousers" in now
 
 
 @pytest.mark.parametrize("outfit", ["red-jeans", "school", "yellow-cardigan", "rose-dress", "tatreez"])
