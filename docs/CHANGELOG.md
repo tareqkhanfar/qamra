@@ -1,5 +1,32 @@
 # Changelog
 
+## QR audio: clean sound effects, no cut words, one sound at a time; colour/circle instructions fixed (2026-10-20)
+- **The six sound pages** (stage 1 p28–p34: animals, loud/quiet, house sounds, fast/slow, same/different, the
+  review) were rebuilt by the new `scripts/journey_sounds.py`. Each sound is one clean ElevenLabs take (fal
+  `sound-effects/v2`, requested as uncompressed PCM): it is trimmed from its onset to the end of its decay,
+  repaired where the model's output clipped, faded at both ends and levelled against the voice. The voice and
+  every ordinary sound sit at -18 LUFS (momentary max), «loud» is +4 dB and «quiet» -9 dB. Levelling also
+  checks a phone-speaker filter, and the peaks stay at or below -2 dBFS. Each clip is encoded once, as CBR.
+- **The drum** is now a tom-tom played «dum dum dum». It has harmonics added so a phone speaker plays it: the
+  old drum was 98 % below 200 Hz and 16–60 dB under the voice. Fast and slow are the same drum hit, or the same
+  two footsteps, at two tempos.
+- **The same/different page** plays the identical take twice for «same».
+- **Word times** (`scripts/journey_word_times.py`) are cut differently now:
+  - Each piece is widened over its soft first and last sounds and padded 120 ms before and 200 ms after,
+    never past the middle of the pause.
+  - Each cut sits on the quietest 10 ms.
+  - Every segment is heard alone by the local Whisper and must start and end in silence.
+  - A clip that passes is then made silent outside its segments, with a 20 ms fade at both ends of each,
+    and re-encoded once as CBR mp3: a browser seeks a CBR mp3 exactly, but in the old VBR clips a seek
+    landed up to 277 ms early or 110 ms late. `--audit` checks the shipped times without changing anything.
+- **Player** (`lib/journeyPlayback.ts`): a piece starts only after the one before it has stopped. It fades in
+  over 20 ms and out over its last 40 ms. A piece cut short by a tap fades out, then the next one starts 150 ms
+  later. A timer also ends a piece when the browser runs no animation frames.
+- **Instructions:** stage 1 p5 «تَوْأَمانِ!» now says «حَوِّطِ/حَوِّطي الصّورَتَيْنِ المُتَشابِهَتَيْنِ تَمامًا».
+  Every journey, foundation and family page was checked for an instruction to colour pictures that are already
+  in colour, or to write, join or circle where the page has nothing to do it on. 21 instructions were fixed
+  (list in docs/decisions.md), and 5 site previews of the foundation and family books were re-exported.
+
 ## «تغيير الصورة»: a new photo for a child at any time (2026-10-19)
 - The known-child card on «لمن هذا الكتاب؟» has **«تغيير الصورة»** (with a hint: a new character is drawn from
   the new photo and the earlier drawings stay); «تعديل البيانات» links to it too, and so does each child in

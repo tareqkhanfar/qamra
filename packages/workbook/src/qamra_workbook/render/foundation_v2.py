@@ -77,9 +77,9 @@ POSITION_TEXTS = {
     "front-behind": ("أَمامَ وَخَلْفَ", "ما الَّذي في الأَمامِ؟ {حَوِّطْهُ/حَوِّطيهِ}"),
     "right-left": ("يَمينٌ وَيَسارٌ", "{لَوِّنِ/لَوِّني} الصّورَةَ اليُمْنى بِالأَحْمَرِ، وَاليُسْرى بِالأَزْرَقِ"),
 }
-LETTER_POSITION = (  # color the letter inside each word, then mark where it sits: first, middle or last
-    "{لَوِّنِ/لَوِّني} الحَرْفَ، {وَضَعْ/وَضَعي} عَلامَةً عَلى مَكانِهِ",
-    "{لَوِّنِ/لَوِّني} الحَرْفَ، ثُمَّ {اخْتَرْ/اخْتاري}: أَوَّلٌ، وَسَطٌ، آخِرٌ",
+LETTER_POSITION = (  # the letter is printed in colour in each word: mark where it sits (first, middle, last)
+    "{ضَعْ/ضَعي} عَلامَةً عَلى مَكانِ الحَرْفِ المُلَوَّنِ",
+    "{اخْتَرْ/اخْتاري} مَكانَ الحَرْفِ المُلَوَّنِ: أَوَّلٌ، وَسَطٌ، آخِرٌ",
 )
 COLOR_BY_LETTER = (  # a picture in cells, each cell a letter; the legend gives each letter its color
     "لِكُلِّ حَرْفٍ لَوْنٌ: {لَوِّنِ/لَوِّني} الصّورَةَ جُزْءًا جُزْءًا",

@@ -27,6 +27,7 @@ from qamra_workbook.render.foundation_text import (
     turn,
 )
 from qamra_workbook.render.foundation_v2 import hidden_say, letter_position_say
+from qamra_workbook.render.foundation_v3 import VOCAB_SAY
 
 # the distractors of a KG1 find-the-letter page: the letters that look alike (dots, teeth, loops, tails)
 LOOKALIKE_KG1 = {
@@ -418,6 +419,8 @@ def texts_kg1(subject: str, kind: str, params: dict[str, Any], unit_title: str) 
             return "Review: my words", *pick(VOCAB_REVIEW_KG1, turn(p))
         case "vocab-unit":
             unit = str(p.get("unit", "Words"))
+            if unit == "Numbers":  # its cards print the apples in colour: count and say, nothing to colour
+                return unit, *VOCAB_SAY[unit]
             return unit, *pick(VOCAB_KG1, turn(p))
         case "picture-add" if p.get("mode") == "story":
             return "أَجْمَعُ بِالصُّوَرِ", STORY_KG1, ""

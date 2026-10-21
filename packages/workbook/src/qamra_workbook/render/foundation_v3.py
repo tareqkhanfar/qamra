@@ -203,7 +203,7 @@ def texts_v3(subject: str, kind: str, params: dict[str, Any], unit_title: str) -
         case "picture-add" if params.get("mode") == "number-line":
             return (
                 "أَجْمَعُ عَلى خَطِّ الأَعْدادِ",
-                "{اقْفِزْ/اقْفِزي} عَلى خَطِّ الأَعْدادِ {لِتَصِلَ/لِتَصِلي} إلى الجَوابِ",
+                "{اتْبَعِ/اتْبَعي} القَفَزاتِ عَلى الخَطِّ، ثُمَّ {اكْتُبِ/اكْتُبي} الجَوابَ",
                 "",
             )
         case "picture-add" if params.get("mode") == "make-ten":

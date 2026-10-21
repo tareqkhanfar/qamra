@@ -3,8 +3,9 @@
     uv run python scripts/journey_voices.py [--only CODE ...] [--voice NAME] [--trial]
 
 Words and letters: ElevenLabs Multilingual v2 through fal (commercial use; about $0.10 per 1000 characters),
-read slowly for young children. The sound items (animals, house sounds, loud/quiet, fast/slow): ElevenLabs
-sound effects ($0.002 a second), each announced by the same voice («الصوت الأول» …). Every clip is transcribed
+read slowly for young children. The sound items (animals, house sounds, loud/quiet, fast/slow): here only
+their announcements in the same voice («الصوت الأول» …); scripts/journey_sounds.py makes their sound effects
+(ElevenLabs sound effects, $0.002 a second) and builds their clips. Every clip is transcribed
 back (Whisper) and compared with its script without the tashkeel; clips under the similarity bar are listed
 in out/journey-audio/report.json for a person to listen to. Files land in out/journey-audio/<code>.mp3. A clip
 that passed its review is copied to content/journey/clips/<code>.mp3 with its length in durations.json (it
@@ -38,47 +39,6 @@ TTS = "fal-ai/elevenlabs/tts/multilingual-v2"
 SFX = "fal-ai/elevenlabs/sound-effects/v2"
 STT = "fal-ai/whisper"
 _TASHKEEL = re.compile(r"[ً-ْٰـ]")
-# The sound items: what the voice says first, then the sound(s): ("sfx", English prompt, seconds) or
-# ("say", words).
-Part = tuple[str, str, float]
-SOUNDS: dict[str, list[tuple[str, list[Part]]]] = {
-    "ogjmg6ob": [
-        ("الصَّوْتُ الأَوَّلُ", [("sfx", "a cow mooing once, farm, clear", 2.5)]),
-        ("الصَّوْتُ الثّاني", [("sfx", "a cat meowing twice, close, clear", 2.0)]),
-        ("الصَّوْتُ الثّالِثُ", [("sfx", "a rooster crowing once at dawn, clear", 3.0)]),
-    ],
-    "dscofnrk": [
-        ("الأَوَّلُ", [("sfx", "one loud bass drum hit, strong", 1.5)]),
-        ("الثّاني", [("sfx", "a small bell ringing softly and quietly", 2.0)]),
-        ("الثّالِثُ", [("sfx", "a loud referee whistle blow", 1.5)]),
-        ("الرّابِعُ", [("sfx", "a kitten meowing very softly and quietly", 2.0)]),
-    ],
-    "55ahywkt": [
-        ("الأَوَّلُ", [("sfx", "a house doorbell ding-dong", 2.0)]),
-        ("الثّاني", [("sfx", "a telephone ringing twice", 3.0)]),
-        ("الثّالِثُ", [("sfx", "water running from a kitchen tap", 3.0)]),
-    ],
-    "awizj364": [
-        ("الأَوَّلُ", [("sfx", "fast drum beats, quick rhythm", 3.0)]),
-        ("الثّاني", [("sfx", "slow drum beats, one hit per second", 4.0)]),
-        ("الثّالِثُ", [("sfx", "fast running footsteps on a wooden floor", 3.0)]),
-        ("الرّابِعُ", [("sfx", "slow walking footsteps on a wooden floor", 4.0)]),
-    ],
-    "qzvkwkgg": [
-        (
-            "الأَوَّلُ",
-            [("sfx", "a rooster crowing once, clear", 2.5), ("sfx", "a rooster crowing once, clear", 2.5)],
-        ),
-        ("الثّاني", [("sfx", "a cat meowing once, clear", 1.5), ("sfx", "a cow mooing once, clear", 2.5)]),
-        ("الثّالِثُ", [("sfx", "a small hand bell ringing", 1.5), ("sfx", "a small hand bell ringing", 1.5)]),
-        ("الرّابِعُ", [("sfx", "three drum hits", 1.5), ("sfx", "a short whistle blow", 1.5)]),
-    ],
-    "2zzmflqo": [
-        ("الأَوَّلُ", [("sfx", "a cow mooing once, farm, clear", 2.5)]),
-        ("الثّاني", [("sfx", "one loud bass drum hit, strong", 1.5)]),
-        ("الثّالِثُ", [("say", "شَمْس", 0.0)]),
-    ],
-}
 WORDS = re.compile(r"\s*[.،,:؟?!]\s*")  # word-by-word clips: each word alone, a pause between them
 STT_ON = True
 CAP_USD = 0.50  # this run stops before spending more (the fal balance is shared with live orders)
@@ -103,10 +63,18 @@ def spoken(word: str, lang: str) -> str:
     return SAY_AS.get(word, word)
 
 
+def sound_items() -> dict[str, Any]:
+    """The sound items (scripts/journey_sounds.py `SOUNDS`): their clips are built there."""
+    from journey_sounds import SOUNDS
+
+    return dict(SOUNDS)
+
+
 def fal_key() -> str:
     key = os.environ.get("FAL_KEY", "")
-    if not key and (ROOT / ".env").exists():
-        for line in (ROOT / ".env").read_text(encoding="utf-8").splitlines():
+    env = Path(os.environ.get("FAL_ENV_FILE") or ROOT / ".env")  # a worktree has no .env of its own
+    if not key and env.exists():
+        for line in env.read_text(encoding="utf-8").splitlines():
             if line.startswith("FAL_KEY="):
                 key = line.split("=", 1)[1].strip().strip("'\"")
     if not key:
@@ -172,22 +140,6 @@ async def speak(client: fal_client.AsyncClient, text: str, lang: str, voice: str
     return await fetch(res["audio"]["url"])
 
 
-async def effect(client: fal_client.AsyncClient, prompt: str, seconds: float) -> bytes:
-    budget(seconds * 0.002)
-    res = await call(
-        client,
-        SFX,
-        {
-            "text": prompt,
-            "duration_seconds": seconds,
-            "prompt_influence": 0.6,
-            "output_format": "mp3_44100_128",
-        },
-    )
-    log("sfx", seconds * 0.002, SFX)
-    return await fetch(res["audio"]["url"])
-
-
 async def transcribe(client: fal_client.AsyncClient, data: bytes, lang: str) -> str:
     if not STT_ON:  # checked afterwards, for free, by scripts/journey_word_times.py
         return ""
@@ -250,23 +202,15 @@ async def one(
     code, lang = item["code"], item["lang"]
     out = OUT / f"{code}.mp3"
     async with sem:
-        if code in SOUNDS:
-            parts: list[Path] = []
-            (OUT / "parts").mkdir(parents=True, exist_ok=True)
-            for i, (said, sounds) in enumerate(SOUNDS[code]):
-                v = OUT / "parts" / f"{code}-{i}-v.mp3"
-                v.write_bytes(await speak(client, said, "ar", voice))
-                parts.append(v)
-                for j, (kind, what, secs) in enumerate(sounds):
-                    s = OUT / "parts" / f"{code}-{i}-{j}.mp3"
-                    s.write_bytes(
-                        await effect(client, what, secs)
-                        if kind == "sfx"
-                        else await speak(client, what, "ar", voice)
-                    )
-                    parts.append(s)
-            concat(parts, out, gap=0.6)
-            return {"code": code, "kind": "sounds", "duration_ms": duration_ms(out)}
+        if code in sound_items():  # made by scripts/journey_sounds.py from these announcements
+            for g, (said, _) in enumerate(sound_items()[code]):
+                (OUT / "parts").mkdir(parents=True, exist_ok=True)
+                (OUT / "parts" / f"{code}-{g}-v.mp3").write_bytes(await speak(client, said, "ar", voice))
+            return {
+                "code": code,
+                "kind": "sounds",
+                "note": "announcements only: run scripts/journey_sounds.py build",
+            }
         if words:  # each word alone with a pause: clearer for a young child, and checked word by word
             pieces = [w for w in WORDS.split(item["say"]) if w.strip()]
             (OUT / "parts").mkdir(parents=True, exist_ok=True)
