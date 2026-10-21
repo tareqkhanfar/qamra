@@ -6,6 +6,8 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   DEFAULT_PACE,
+  FADE_OUT_MS,
+  GAP_MS,
   PACE_KEY,
   StepPlayer,
   browserClock,
@@ -146,54 +148,73 @@ describe("the remembered pace", () => {
 /** An <audio> whose time moves only when the test says so, and a clock the test drives. */
 function rig() {
   const log: string[] = [];
+  const volumes: number[] = [];
+  let volume = 1;
   const media = {
     currentTime: 0,
     playbackRate: 1,
     preservesPitch: false,
     ended: false as boolean,
     paused: true,
+    get volume() {
+      return volume;
+    },
+    set volume(v: number) {
+      volume = v;
+      volumes.push(Math.round(v * 100) / 100);
+    },
     play() {
       this.paused = false;
       log.push(`play@${Math.round(this.currentTime * 1000)}x${this.playbackRate}`);
       return Promise.resolve();
     },
     pause() {
+      if (!this.paused) log.push(`stop@${Math.round(this.currentTime * 100) * 10}`); // to the 10 ms frame
       this.paused = true;
     },
   } satisfies Media & { paused: boolean };
-  let frame: (() => void) | null = null;
-  let timer: { ms: number; fn: () => void } | null = null;
+  let now = 0;
+  const frames = new Set<() => void>();
+  let timers: { at: number; fn: () => void }[] = [];
   const clock: Clock = {
+    now: () => now,
     every(fn) {
-      frame = fn;
-      return () => {
-        if (frame === fn) frame = null;
-      };
+      frames.add(fn);
+      return () => frames.delete(fn);
     },
     after(ms, fn) {
-      const t = { ms, fn };
-      timer = t;
+      const t = { at: now + ms, fn };
+      timers.push(t);
       return () => {
-        if (timer === t) timer = null;
+        timers = timers.filter((x) => x !== t);
       };
     },
+  };
+  const frame = () => [...frames].forEach((fn) => frames.has(fn) && fn());
+  /** Time passes by `ms` (the audio plays on when it isn't paused): frames run, then due timers. */
+  const tick = (ms: number) => {
+    now += ms;
+    if (!media.paused) media.currentTime += (ms / 1000) * media.playbackRate;
+    frame();
+    for (const t of timers.filter((x) => x.at <= now)) {
+      if (timers.includes(t)) {
+        timers = timers.filter((x) => x !== t);
+        t.fn();
+      }
+    }
+  };
+  /** Plays on until `ms` of audio (or wall time, while paused) has gone by, in 10 ms frames. */
+  const run = (ms: number) => {
+    for (let i = 0; i < ms / 10; i++) tick(10);
+  };
+  /** The audio reaches `ms` at once; a frame runs. */
+  const reach = (ms: number) => {
+    media.currentTime = ms / 1000;
+    frame();
   };
   const states: PlayState[] = [];
   const player = new StepPlayer(media, clock, (s) => states.push(s));
-  /** The audio reaches `ms`; a frame runs. */
-  const reach = (ms: number) => {
-    media.currentTime = ms / 1000;
-    frame?.();
-  };
-  /** The pause between two words ends. */
-  const wait = () => {
-    const t = timer;
-    assert.ok(t, "a pause is running");
-    timer = null;
-    log.push(`pause ${t.ms}`);
-    t.fn();
-  };
-  return { media, player, states, log, reach, wait, pending: () => timer };
+  return { media, player, states, log, volumes, run, tick, reach, timers: () => timers, frames: () => frames };
 }
 
 describe("playing pieces of the clip", () => {
@@ -201,56 +222,116 @@ describe("playing pieces of the clip", () => {
     const r = rig();
     r.player.play(wholeSteps(WORDS, "slow", "ar"));
     assert.ok(r.media.preservesPitch && r.media.playbackRate === 0.9);
-    r.reach(300);
+    r.run(300);
     assert.equal(r.media.paused, false); // still inside the first word
-    r.reach(500);
+    r.run(400);
     assert.equal(r.media.paused, true); // the first word is over: silence
-    r.wait();
-    r.reach(1500);
-    r.wait();
-    r.reach(2300);
-    assert.equal(r.pending(), null);
-    assert.deepEqual(r.log, ["play@0x0.9", "pause 1700", "play@900x0.9", "pause 1700", "play@1700x0.9"]);
+    r.run(5000);
+    assert.deepEqual(r.log, ["play@0x0.9", "stop@500", "play@900x0.9", "stop@1500", "play@1700x0.9", "stop@2300"]);
     assert.deepEqual(
       r.states.map((s) => s.segment),
       [0, null, 1, null, 2, null],
     );
     assert.equal(r.states.at(-1)?.playing, false);
     assert.equal(r.player.playing, false);
+    assert.deepEqual(r.timers(), []);
+    assert.equal(r.frames().size, 0);
   });
 
-  it("plays one word and stops, and a new tap cuts the word before it", () => {
+  it("never starts a piece before the one before it has stopped, and keeps the pause between them", () => {
+    const r = rig();
+    const order: string[] = [];
+    r.player.play(wholeSteps(WORDS, "steady", "ar"));
+    let stoppedAt = -1;
+    for (let t = 0; t < 6000; t += 10) {
+      const was = r.media.paused;
+      r.tick(10);
+      if (!was && r.media.paused) stoppedAt = t;
+      if (was && !r.media.paused) {
+        order.push(`start ${t}`);
+        if (stoppedAt >= 0) assert.ok(t - stoppedAt >= 1000, `a pause of ${t - stoppedAt} ms`);
+      }
+    }
+    assert.equal(order.length, 2); // the 2nd and 3rd words (the 1st started before the loop)
+  });
+
+  it("fades each piece in and out, and leaves the volume up when it stops", () => {
+    const r = rig();
+    r.player.play(wholeSteps(WORDS, "steady", "ar"));
+    assert.equal(r.volumes[0], 0); // starts silent…
+    r.run(30);
+    assert.equal(r.media.volume, 1); // …and is at full volume after the fade in
+    r.run(460);
+    assert.ok(r.media.volume < 1); // fading out in the last 40 ms of the piece
+    r.run(20);
+    assert.equal(r.media.paused, true);
+    assert.equal(r.media.volume, 1); // ready for the next piece, or the clip played whole
+  });
+
+  it("a new tap fades the sounding word out, waits a moment, then plays the new one", () => {
     const r = rig();
     const one = wordStep(WORDS, 2, "steady", "ar");
-    assert.ok(one);
+    const other = wordStep(WORDS, 0, "steady", "ar");
+    assert.ok(one && other);
     r.player.play([one]);
     assert.equal(r.media.currentTime, 1.7);
-    r.reach(1900);
-    const other = wordStep(WORDS, 0, "steady", "ar");
-    assert.ok(other);
+    r.run(200);
     r.player.play([other]); // tapped another word mid-way
-    assert.equal(r.media.currentTime, 0);
-    r.reach(2300); // the old word's end means nothing now…
-    assert.equal(r.player.playing, false); // …but 2300 is past this word's end too: it stops
-    assert.deepEqual(r.log, ["play@1700x1", "play@0x1"]);
+    assert.equal(r.media.paused, false); // not cut dead: it fades out first
+    r.run(30);
+    assert.ok(r.media.volume < 0.5);
+    r.run(30);
+    assert.equal(r.media.paused, true);
+    assert.equal(r.media.currentTime > 1.7, true); // the old word is not sought away while it sounds
+    r.run(GAP_MS + 20);
+    assert.equal(r.media.paused, false);
+    r.run(600);
+    assert.equal(r.player.playing, false);
+    assert.deepEqual(r.log, ["play@1700x1", "stop@1940", "play@0x1", "stop@500"]);
   });
 
-  it("stops at once, pause included, and says so", () => {
+  it("stops at once (a quick fade), pause included, and says so", () => {
     const r = rig();
     r.player.play(wholeSteps(WORDS, "steady", "en"));
-    r.reach(500);
-    assert.ok(r.pending()); // in the pause between two words
+    r.run(600);
+    assert.ok(r.timers().length > 0); // in the pause between two words
     r.player.stop();
-    assert.equal(r.pending(), null);
+    assert.deepEqual(r.timers(), []);
     assert.equal(r.media.paused, true);
     assert.deepEqual(r.states.at(-1), { playing: false, segment: null });
+    r.run(3000);
+    assert.equal(r.media.paused, true); // nothing starts again
+  });
+
+  it("stops mid-word with a fade, even without frames (a hidden tab)", () => {
+    const r = rig();
+    r.player.play(wholeSteps(WORDS, "steady", "ar"));
+    r.run(200);
+    r.player.stop();
+    assert.equal(r.media.paused, false);
+    r.frames().clear(); // the browser runs no frames: the timer ends the fade
+    r.tick(FADE_OUT_MS + 20);
+    assert.equal(r.media.paused, true);
+    assert.equal(r.media.volume, 1);
+  });
+
+  it("ends a piece on time when the browser runs no frames", () => {
+    const r = rig();
+    r.player.play(wholeSteps(WORDS, "steady", "ar"));
+    r.frames().clear();
+    for (let i = 0; i < 60; i++) {
+      r.frames().clear();
+      r.tick(10);
+    }
+    assert.equal(r.media.paused, true);
+    assert.ok(r.media.currentTime * 1000 <= 500 + 70, `stopped at ${r.media.currentTime * 1000}`);
   });
 
   it("stops at the end of the clip even when the last piece runs to it", () => {
     const r = rig();
     r.player.play(wholeSteps(LETTER, "steady", "en"));
-    r.reach(600);
-    r.wait();
+    r.run(600);
+    r.run(1400);
     r.media.ended = true;
     r.reach(1850);
     assert.equal(r.player.playing, false);

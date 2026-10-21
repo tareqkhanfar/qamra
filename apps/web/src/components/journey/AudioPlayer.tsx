@@ -38,7 +38,7 @@ function deviceStore(): Storage | null {
 
 /** The page a book's printed audio QR opens: the words or letters in big type and a play button. A shipped
  *  clip plays word by word with a pause between the words (lib/journeyPlayback.ts), and each shown word is a
- *  button that plays just that word. Until the item has audio it shows the words for a grown-up to read, with
+ *  button that plays just that word. One sound at a time: whatever sounds fades out before the next starts. Until the item has audio it shows the words for a grown-up to read, with
  *  no error. No child data here. */
 export function AudioPlayer({ code }: { code: string }) {
   const t = useTranslations("journeyAudio.player");
@@ -106,8 +106,7 @@ export function AudioPlayer({ code }: { code: string }) {
     return stepper.current;
   };
   const stopAll = () => {
-    stepper.current?.stop();
-    audio.current?.pause();
+    steps()?.stop(); // a quick fade out, the clip played whole included: never a cut mid-sound
     setState({ playing: false, segment: null });
   };
   const toggle = () => {
@@ -123,13 +122,13 @@ export function AudioPlayer({ code }: { code: string }) {
     if (a.ended || mode.current === "steps") a.currentTime = 0; // after words played one by one: from the start
     mode.current = "clip";
     a.playbackRate = 1;
+    a.volume = 1;
     void a.play().catch(() => setState({ playing: false, segment: null }));
   };
   const playWord = (key: string) => {
     const step = chips.find((c) => c.key === key)?.step;
     if (!step) return;
-    audio.current?.pause();
-    mode.current = "steps";
+    mode.current = "steps"; // what sounds now fades out first; then a short silence, then the word
     steps()?.play([step]);
   };
   const choosePace = (next: Pace) => {

@@ -29,7 +29,7 @@ pages:
   # ---- 🧠 أدرّب عقلي
   3: {type: journey-opener, title: "أُفَكِّرُ: أُدَرِّبُ عَقْلي", instruction: "هَيّا نَبْدَأُ! {حَرِّكْ بَطَلَكَ/حَرِّكي بَطَلَتَكِ} إلى «أُفَكِّرُ»", params: {stop: أفكر, inside: ["أُلاحِظُ وَأَجِدُ المُخْتَلِفَ", "أَتَذَكَّرُ الصُّوَرَ", "أُرَتِّبُ القِصَّةَ وَأُصَنِّفُ"]}}  # draft: educator review
   4: {title: "مَنِ المُخْتَلِفُ؟", instruction: "في كُلِّ صَفٍّ {ضَعْ/ضَعي} دائِرَةً حَوْلَ المُخْتَلِفِ", params: {seed: 6, rules: [same, same, same], sizes: [4, 4, 4]}}  # draft: educator review
-  5: {title: "تَوْأَمانِ!", instruction: "{لَوِّنْ/لَوِّني} صورَتَيْنِ مُتَشابِهَتَيْنِ تَمامًا", params: {picture: cat, bows: [red, blue, red, none], bow_at: [50, 86]}}  # draft: educator review
+  5: {title: "تَوْأَمانِ!", instruction: "{حَوِّطِ/حَوِّطي} الصّورَتَيْنِ المُتَشابِهَتَيْنِ تَمامًا", params: {picture: cat, bows: [red, blue, red, none], bow_at: [50, 86]}}  # draft: educator review
   6: {title: "كَبيرٌ وَصَغيرٌ", instruction: "{أَشِرْ/أَشيري} إلى الكَبيرِ {وَضَعْ/وَضَعي} حَوْلَهُ دائِرَةً", params: {concept: big-small}}  # draft: educator review
   7: {title: "{انْظُرْ وَتَذَكَّرْ/انْظُري وَتَذَكَّري}", instruction: "{احْفَظِ/احْفَظي} الصُّوَرَ الثَّلاثَ، ثُمَّ {اقْلِبِ/اقْلِبي} الصَّفْحَةَ", params: {items: [sun, ball, duck]}}  # draft: educator review
   8: {title: "{ماذا رَأَيْتَ؟/ماذا رَأَيْتِ؟}", instruction: "{تَذَكَّرْ/تَذَكَّري} {وَلَوِّنِ/وَلَوِّني} الصُّوَرَ الَّتي {رَأَيْتَها/رَأَيْتِها}", params: {choices: [cat, sun, apple, ball, car, duck], answer: [sun, ball, duck]}}  # draft: educator review

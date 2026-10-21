@@ -6,8 +6,9 @@ On the server, after a deploy (from /opt/qamra; the worker has the database and 
     docker compose exec worker python -m qamra_worker.journey_voices           # load what is missing
 
 The clips ship with the code: content/journey/clips/<code>.mp3 and durations.json, one per item of
-content/journey/audio.yaml (a test keeps them in step). They were made once by scripts/journey_voices.py
-(ElevenLabs via fal, commercial use), transcribed back and checked against their script. An item gets the
+content/journey/audio.yaml (a test keeps them in step). They were made by scripts/journey_voices.py (speech)
+and scripts/journey_sounds.py (the sound pages), ElevenLabs via fal (commercial use), and heard back piece by
+piece (scripts/journey_word_times.py). An item gets the
 shipped clip when it has no audio, or when its generated clip differs from the shipped file; a recording a
 person uploaded («صوتيات الرحلة» in the admin) is never replaced. Every load is in the audit log, and running
 it again changes nothing. Without a clip an item still opens: the player shows its words.

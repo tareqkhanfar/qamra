@@ -6,6 +6,11 @@
  * item word by word, the voice untouched and a clear pause between the words, and plays one word on a tap.
  * Without them (a person's recording, the narrator) it plays the clip whole, as recorded.
  *
+ * Each piece's times run from a little before its first sound to a little after its last (in the silence
+ * around it, scripts/journey_word_times.py), and the shipped clip is silent outside its pieces, so a cut
+ * never falls inside a word or a sound. One sound at a time: a piece starts only after the one before it has
+ * stopped, and a piece cut short (a new tap) fades out first (`StepPlayer`).
+ *
  * Paces: «عادي» `natural` is the clip as recorded; `steady` (the default) plays word by word with about a
  * second between the words (a little more in English); «أبطأ» `slow` leaves longer pauses and reads a little
  * slower (rate 0.9, the pitch kept). The voice is never slowed below 0.9: slower than that smears the words.
@@ -124,13 +129,18 @@ export type Media = {
   currentTime: number;
   playbackRate: number;
   preservesPitch?: boolean;
+  /** 0–1; the fades (an iPhone ignores it: there the clip's own baked fades keep every cut silent). */
+  volume?: number;
   readonly ended: boolean;
+  readonly paused: boolean;
   play(): Promise<void>;
   pause(): void;
 };
 
 /** Timers (the browser's in the page, a fake clock in the tests). */
 export type Clock = {
+  /** Milliseconds, for the fades. */
+  now(): number;
   /** Calls `fn` again and again (each frame) until the returned function is called. */
   every(fn: () => void): () => void;
   /** Calls `fn` once after `ms`, unless the returned function is called first. */
@@ -139,7 +149,16 @@ export type Clock = {
 
 export type PlayState = { playing: boolean; segment: number | null };
 
+/** A piece fades in over FADE_IN_MS and out over its last FADE_OUT_MS; a piece cut short (a new tap, the
+ *  pause button) fades out over FADE_OUT_MS, and the next one starts GAP_MS after it fell silent. */
+export const FADE_IN_MS = 20;
+export const FADE_OUT_MS = 40;
+export const GAP_MS = 150;
+/** A hidden tab or a phone saving power runs few frames: a timer checks the piece's end as well. */
+const LATE_MS = 60;
+
 export const browserClock: Clock = {
+  now: () => performance.now(),
   every(fn) {
     let stopped = false; // `fn` may stop the loop itself: no frame after that
     let id = requestAnimationFrame(function tick() {
@@ -159,7 +178,10 @@ export const browserClock: Clock = {
 
 /**
  * Plays steps of one <audio>: seeks to a piece, plays it, stops at its end, waits the pause, plays the next.
- * A new `play` or a `stop` cancels what was going on. `onChange` says whether it plays and which piece.
+ * Never two sounds at once, and never a cut in the middle of a sound: the next piece is sought only after the
+ * one before it has stopped (at its own end, which the word times put in the silence after it), and a piece
+ * cut short by a new `play` or a `stop` first fades out, then the new one starts after a short gap.
+ * `onChange` says whether it plays and which piece.
  */
 export class StepPlayer {
   private readonly media: Media;
@@ -167,7 +189,7 @@ export class StepPlayer {
   private readonly onChange: (state: PlayState) => void;
   private run = 0;
   private active = false;
-  private cancel: (() => void) | null = null;
+  private timers: (() => void)[] = [];
 
   constructor(media: Media, clock: Clock, onChange: (state: PlayState) => void) {
     this.media = media;
@@ -180,26 +202,62 @@ export class StepPlayer {
   }
 
   play(steps: Step[]): void {
-    this.halt();
     if (steps.length === 0) return this.stop();
     const run = ++this.run;
+    this.clear();
     this.active = true;
-    this.next(steps, 0, run);
+    if (this.media.paused) return this.next(steps, 0, run);
+    // Something still sounds (a piece, or the clip played whole): it fades out, then a short silence.
+    this.onChange({ playing: true, segment: null });
+    this.fadeOut(run, () => this.later(run, GAP_MS, () => this.next(steps, 0, run)));
   }
 
-  /** Stops at once (the pause button, another word, leaving the page). */
+  /** Stops (the pause button, another word, leaving the page): a sounding piece fades out quickly. */
   stop(): void {
     const was = this.active;
-    this.halt();
-    this.run++;
+    const run = ++this.run;
+    this.clear();
     this.active = false;
+    if (!this.media.paused) this.fadeOut(run, () => {});
     if (was) this.onChange({ playing: false, segment: null });
   }
 
-  private halt(): void {
-    this.cancel?.();
-    this.cancel = null;
-    this.media.pause();
+  private clear(): void {
+    for (const cancel of this.timers.splice(0)) cancel();
+  }
+
+  private later(run: number, ms: number, fn: () => void): void {
+    this.timers.push(this.clock.after(ms, () => run === this.run && fn()));
+  }
+
+  private volume(v: number): void {
+    if (this.media.volume !== undefined) this.media.volume = Math.max(0, Math.min(1, v));
+  }
+
+  /** Fades the sounding audio out, pauses it, then calls `done` (unless a newer play or stop came first). */
+  private fadeOut(run: number, done: () => void): void {
+    const m = this.media;
+    const start = this.clock.now();
+    const from = m.volume ?? 1;
+    let over = false;
+    const finish = () => {
+      if (over) return;
+      over = true;
+      m.pause();
+      this.volume(1);
+      if (run === this.run) {
+        this.clear();
+        done();
+      }
+    };
+    this.timers.push(
+      this.clock.every(() => {
+        const left = 1 - (this.clock.now() - start) / FADE_OUT_MS;
+        if (left <= 0) return finish();
+        this.volume(from * left);
+      }),
+      this.clock.after(FADE_OUT_MS + 10, finish), // no frames (a hidden tab): stop on time all the same
+    );
   }
 
   private next(steps: Step[], i: number, run: number): void {
@@ -209,18 +267,43 @@ export class StepPlayer {
     m.playbackRate = step.rate;
     m.preservesPitch = true; // a slower voice keeps its pitch
     m.currentTime = step.start / 1000;
+    this.volume(0);
     this.onChange({ playing: true, segment: step.segment });
     m.play().catch(() => {
       if (run === this.run) this.stop();
     });
-    this.cancel = this.clock.every(() => {
-      if (run !== this.run || (m.currentTime * 1000 < step.end && !m.ended)) return;
-      this.cancel?.();
-      this.cancel = null;
+    const began = this.clock.now();
+    let over = false;
+    const end = () => {
+      if (over || run !== this.run) return;
+      over = true;
+      this.clear();
       m.pause();
-      if (i + 1 >= steps.length) return this.stop();
+      this.volume(1);
+      if (i + 1 >= steps.length) {
+        this.run++;
+        this.active = false;
+        this.onChange({ playing: false, segment: null });
+        return;
+      }
       this.onChange({ playing: true, segment: null }); // the pause between two words
-      this.cancel = this.clock.after(step.pauseAfter, () => this.next(steps, i + 1, run));
-    });
+      this.later(run, step.pauseAfter, () => this.next(steps, i + 1, run));
+    };
+    /** True when the piece is over; otherwise its volume for this moment (fading in, then out at its end). */
+    const check = (): boolean => {
+      const at = m.currentTime * 1000;
+      if (m.ended || at >= step.end) return true;
+      const fadeIn = (this.clock.now() - began) / FADE_IN_MS;
+      const fadeOut = (step.end - at) / step.rate / FADE_OUT_MS;
+      this.volume(Math.min(1, fadeIn, fadeOut));
+      return false;
+    };
+    const watch = (ms: number) =>
+      this.later(run, ms, () => {
+        if (check()) return end();
+        watch(Math.max(20, (step.end - m.currentTime * 1000) / step.rate + LATE_MS));
+      });
+    this.timers.push(this.clock.every(() => check() && end()));
+    watch((step.end - step.start) / step.rate + LATE_MS);
   }
 }

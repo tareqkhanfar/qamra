@@ -1512,3 +1512,91 @@ floor shadow (by hue a white shoe on cream paper is the paper, darker).
   shoes; v8 stays for the record. The default outfit's sheet is v7's plus that one line.
 - **Layouts** were checked with a tall, narrow child on every product (Chromium, at the shoes): only the passport
   photos crop the figure, on purpose (`data-crop`); three small overlaps were removed anyway.
+
+## QR audio: clean sound pages, segments that never cut a word, one sound at a time (2026-10-20)
+
+The owner reported that on the sound pages the sounds weren't clear (the drum above all) and ran into each
+other and crackled. He also heard words cut, e.g. only «…ني» of «الثّاني». The cause was measured clip by clip
+before anything changed. The before and after numbers are in out/journey-audio/tools/ (sfx-before.jsonl,
+audit-before.json, vbr-before.jsonl).
+
+- **The sound effects themselves** (made by `journey_voices.py` with ElevenLabs sound effects v2):
+  - **Loudness was chaotic.** The voice sat at about -24 LUFS. The sounds ranged from -2 LUFS (the cow,
+    rooster, phone and whistle, 20 dB louder than the voice) down to -37 and -55 LUFS: the two «طبل عالٍ»
+    drums were inaudible.
+  - **The drums were all sub-bass.** 92–99 % of their energy was below 200 Hz, which a phone speaker doesn't
+    play. Through a phone filter they measured 29–53 dB under the voice.
+  - **The loud/quiet page was the wrong way round.** The «loud» drum was 30 dB quieter than the «quiet» kitten.
+  - **Clipping.** 14 of the 23 effects peaked above 0 dBFS, with thousands of clipped samples per clip: the
+    crackle the owner heard. The model's own 16-bit output was already clipped in places.
+  - **Some sounds were the wrong sound** (AudioSet classifier, AST, as a listening proxy). The «small bell» was
+    a 7 kHz tone heard as «Tambourine». The «slow drum» was a single boom heard as «Explosion». The «slow
+    steps» were heard as a «heartbeat». The bells of the same/different page were cut off mid-ring.
+  - **Every sound started at full level on its first sample**, so each one clicked.
+- **The segments.**
+  - **Seeking was approximate.** Every clip was VBR mp3, which a browser seeks by the Xing table. Measured on
+    the 409 segment starts, 45 seeks land 50–277 ms early (the end of the word before is heard: «overlap») and
+    6 land 50–110 ms late (the start of the word is lost: «…ني»).
+  - **Some segments started or ended inside a sound.** Heard alone with the local Whisper, 15 segments did
+    this, and 4 more were heard whole only with more of the pause around them (25 of 89 clips had one or more
+    such pieces).
+  - **The old sound-item cut cut off soft announcements.** It trimmed each part at -40 dB under the clip's
+    loudest moment, and that moment was a clipped sound effect 10 dB over the voice.
+- **The player** paused the `<audio>` dead at a segment's end, checked only on animation frames (which a hidden
+  tab or a phone saving power doesn't run), and jumped straight to a tapped word mid-sound.
+
+What changed:
+
+- **`scripts/journey_sounds.py`** builds the sound pages. It holds a library of 11 sounds, 2–3 takes each, and
+  every take is measured (trim, de-clip, 40 Hz high-pass, fades, spectrum, a second sound hidden in the take).
+  The take is chosen by the AST labels and the cleanest floor and recorded in out/journey-audio/sfx/picks.json.
+  The voice is the shipped announcement, levelled by its momentary loudness, and also against a phone-speaker
+  filter (`level`). The drum and the steps get harmonics of their low band, so a phone plays them (`phone_bass`).
+  «طبل» is a tom-tom played three times: one hit alone was heard as a knock or a bang. Fast and slow use the
+  same hit or the same two steps at two tempos: 6 drum hits 0.25 s apart against 3 hits 0.9 s apart (8 hits
+  0.2 s apart ran into one rumble), and 8 steps 0.24 s apart against 4 steps 0.75 s apart. «Same» on the same/different page is the very same take.
+  Silences are 0.45 s after an announcement, 0.8 s inside a pair and 1.1 s between groups. The clip is encoded
+  once as CBR 96k.
+- **Spend:** 49 takes, $0.239 in all (fal `sound-effects/v2`, $0.002 a second), below the $1.50 cap. The ledger
+  is out/design-images/ledger.jsonl. No TTS was needed: the announcements are the shipped voice. A last try at
+  brighter drums (snare, marching drum, darbuka) found the fal balance exhausted («User is locked: TOP_UP»),
+  because another session had spent it. Nothing was charged for that try.
+- **Footsteps:** AudioSet hears every footstep take as «Knock» (8 takes, 4 prompts). They were kept, because the
+  page is about the tempo, and alternating two different steps sounds like walking.
+- **`journey_word_times.py`:**
+  - Pieces are widened over their soft edges, then padded 120 ms before and 200 ms after (at most half the
+    pause), with each cut snapped to the quietest frame.
+  - Every segment is heard alone, faded as the player plays it, and both ends must be silent. A piece heard
+    whole only with the whole pause around it takes that pause. A piece Whisper can't name alone («حاء» heard
+    as «ها»), but whose ends are silent, counts when the whole clip says it inside that segment.
+  - A clip that passes is baked: silent outside its segments, a 20 ms fade at both ends of each, and CBR, so
+    seeks are exact. Each piece must keep its waveform in the baked clip (correlation ≥ 0.97): Whisper
+    alone wavers on the same audio, so it is not asked again.
+  - `--audit` checks the shipped times without changing them.
+  - It runs 4 clips at a time on the local Whisper.
+- **Player:** one sound at a time, with fades (20 ms in, 40 ms out). A tap during a word fades that word out and
+  starts the new one 150 ms later. A timer ends a piece if no frames run.
+- **Not changed:** the speech clips' voice and words. Baking re-encodes them once, from 64 kb/s VBR to 96 kb/s
+  CBR mono.
+
+**Instructions that asked for something the page doesn't offer (same day).** The owner found stage 1 p5
+«تَوْأَمانِ!» asking the child to colour two pictures that are already in colour. Every page of the three
+journey stages, the six foundation volumes and the family book was rendered and checked against its
+instruction. 21 lines were changed to match the page, and every changed line was language-reviewed twice:
+- **Journey.** S1 p5 now asks the child to circle the two matching pictures. S2 p28 colours what starts with
+  «ب», then by the key. S2 p101 joins each letter to its picture (English «…, then match.»). S2 p111 circles
+  the bigger group. S3 p64 marks where «ب» sits. S2 p49 and S3 p28, p36 and p57 only trace: they have no blank
+  row to write on.
+- **Foundation.** The letter-position pages mark where the coloured letter sits (the renderer colours it).
+  KG1 v3 p12 counts and says the numbers. KG2 v3 p99 follows the jumps and writes the answer.
+- **Family book.** p4 completes the printed names. p19 colours the star under the bigger group. p73 asks what
+  the child sees (the scene has no people). p92 writes what we paid and colours the coins left. p112
+  celebrates and hangs up the certificate (its stars are printed in colour).
+- **Previews:** five foundation and family previews were re-exported. No journey preview page changed.
+- **Left open, for the educator:**
+  - The 28 letter-trace skill lines in stages 2–3 promise «ثم يكتبها بجانب النموذج», but the renderer has no
+    writing row (`then: next-to-model` isn't drawn).
+  - S2 p119 has review boxes that give the child nothing to do.
+  - KG2 v3 p44 promises 7 differences, but a moved flower counts twice, so a child finds 6.
+  - KG2 v3 p85 and p95 say «complete» on read-only cards.
+  - KG2 v3 p71 asks the child to colour a white card white.
