@@ -92,11 +92,18 @@ FOUNDATION: dict[str, SectionStyle] = {
     row[0]: SectionStyle(*row, slot=i, slots=len(_FOUNDATION_TABLE))
     for i, row in enumerate(_FOUNDATION_TABLE)
 }
+# «دفاتر التلوين والرسم»: one section in black (the interior prints black only; it draws no tabs)
+COLORBOOK: dict[str, SectionStyle] = {
+    "colorbook": SectionStyle(
+        "colorbook", "دفاتر التلوين والرسم", "crayon", "#111111", "#FFFFFF", "#111111", "dots", 0, 2
+    )
+}
 # each product's table
 BOOK_SECTIONS: dict[str, dict[str, SectionStyle]] = {
     "journey": SECTIONS,
     "foundation": FOUNDATION,
     "family": FAMILY,
+    "colorbook": COLORBOOK,
 }
 TAB_H = 26.0  # mm
 TAB_MARGIN = 18.0  # mm from the trim at the top and bottom of the thumb index

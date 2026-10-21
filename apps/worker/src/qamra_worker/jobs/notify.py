@@ -43,6 +43,9 @@ FORMATS = {
         "spiral": "spiral-bound",
     },
 }
+# «دفاتر التلوين والرسم» are printed as `softcover` but stapled: the email names the binding the order froze
+BINDINGS = {"ar": {"stapled": "دفتر مدبّس"}, "en": {"stapled": "stapled"}}
+NOTEBOOK_LINES = ("colorbook",)  # «دفتر سلمى» rather than «كتاب سلمى»
 
 
 def money(amount: Decimal, currency: str) -> str:
@@ -72,8 +75,11 @@ def codes_label(codes: list[str], lang: str) -> str:
 def _item_label(item: OrderItem, lang: str, codes: list[str] | None = None) -> str:
     name = str(item.title.get("name_ar" if lang == "ar" else "name_en") or item.sku or "")
     fmt = FORMATS[lang].get(str(item.title.get("options", {}).get("format", "")))
+    binding = str((item.title.get("print") or {}).get("binding") or "")
+    fmt = BINDINGS[lang].get(binding, fmt) if fmt else fmt
     child = item.personalization.get("child_name")
-    book = f"كتاب {genitive(str(child))}" if lang == "ar" else f"{child}'s book"  # «كتاب أبي بكر»
+    noun = "دفتر" if item.line in NOTEBOOK_LINES else "كتاب"
+    book = f"{noun} {genitive(str(child))}" if lang == "ar" else f"{child}'s book"  # «كتاب أبي بكر»
     parts = [name, fmt, book if child else None]
     qty = f" × {item.quantity}" if item.quantity > 1 else ""
     code = codes_label(codes or [], lang)  # the code once the book exists (qamra_core.book_codes)

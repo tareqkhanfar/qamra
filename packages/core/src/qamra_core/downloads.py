@@ -35,7 +35,13 @@ from qamra_core.db.models import Book, BookStatus, OrderItem, OrderStatus
 from qamra_core.islamic_review import VOLUME_NAMES_AR, volumes_of
 
 STORY_LINES = ("classic", "magic")
-ACTIVITY_LINES = ("family", "journey", "islamic", "workbook")
+ACTIVITY_LINES = (
+    "family",
+    "journey",
+    "islamic",
+    "workbook",
+    "colorbook",
+)  # colorbook: «دفاتر التلوين والرسم»
 DIGITAL = "digital"
 LIVE_ORDERS = frozenset(
     {
@@ -59,6 +65,7 @@ HELD_FLAGS = frozenset(
         "text_changed",
         "name_en_guessed",
         "name_not_traceable",
+        "character_missing",  # «دفاتر التلوين والرسم»: the chosen character is gone, the cover went without
     }
 )
 BOOK = "book"

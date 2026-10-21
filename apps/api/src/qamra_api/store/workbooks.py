@@ -21,7 +21,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from qamra_core.db.models import Character
 from qamra_core.db.store import ArtStyle, CatalogProduct
 
-ACTIVITY = ("workbook", "journey", "family", "islamic")  # islamic: «قلبي يعرف الله» (Addendum 10)
+# islamic: «قلبي يعرف الله» (Addendum 10); colorbook: «دفاتر التلوين والرسم» (2026-10-21)
+ACTIVITY = ("workbook", "journey", "family", "islamic", "colorbook")
+# The books that print without a character when the parent wants none (2026-10-21): the coloring and drawing
+# books show the child's character on the cover only when the family has one or has one drawn; otherwise the
+# cover has a drawn illustration. Every other activity book is always drawn with the child's character.
+CHARACTER_OPTIONAL = ("colorbook",)
 
 
 def orderable(product: CatalogProduct) -> bool:
@@ -49,6 +54,7 @@ AGES: dict[str, tuple[str | None, dict[str, tuple[int, int]]]] = {
     "workbook": ("level", {"kg1": (4, 5), "kg2": (5, 6)}),
     "journey": ("stage", {"1": (3, 4), "2": (4, 5), "3": (5, 6), "set": (3, 6)}),
     "family": (None, {"": (3, 7)}),  # Addendum 7: ages 3–7
+    "colorbook": (None, {"": (3, 7)}),  # every coloring and drawing book
     "islamic": (
         "volume",
         {
@@ -58,6 +64,11 @@ AGES: dict[str, tuple[str | None, dict[str, tuple[int, int]]]] = {
         },
     ),
 }
+
+
+def character_required(line: str) -> bool:
+    """Whether the book is always drawn with the child's character (False: the cover may go without one)."""
+    return line not in CHARACTER_OPTIONAL
 
 
 def needs_name_en(line: str, options: dict[str, str]) -> bool:

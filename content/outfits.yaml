@@ -26,7 +26,7 @@ outfits:
   - id: classic
     name_ar: الأساسي
     name_en: Classic
-    lines: [magic, workbook, journey, family, islamic]
+    lines: [magic, workbook, journey, family, islamic, colorbook]
     hijab: a simple soft sage-green hijab
     hijab_color: "#A7BC9C"
     looks:
@@ -39,7 +39,7 @@ outfits:
   - id: red-jeans
     name_ar: البلوزة الحمراء والجينز
     name_en: Red top & jeans
-    lines: [magic, workbook, journey, family, islamic]
+    lines: [magic, workbook, journey, family, islamic, colorbook]
     hijab: a simple soft navy-blue hijab
     hijab_color: "#33406E"
     looks:
@@ -54,7 +54,7 @@ outfits:
   - id: school
     name_ar: زيّ المدرسة
     name_en: School uniform
-    lines: [magic, workbook, journey, islamic]
+    lines: [magic, workbook, journey, islamic, colorbook]
     hijab: a simple soft white hijab
     hijab_color: "#FAFAF7"
     looks:
@@ -75,7 +75,7 @@ outfits:
   - id: yellow-cardigan
     name_ar: الجاكيت الصوفي الأصفر
     name_en: Yellow cardigan
-    lines: [magic, workbook, journey, family, islamic]
+    lines: [magic, workbook, journey, family, islamic, colorbook]
     hijab: a simple soft light-grey hijab
     hijab_color: "#C9CCD1"
     looks:
@@ -89,7 +89,7 @@ outfits:
   - id: rose-dress
     name_ar: الفستان الوردي
     name_en: Pink dress
-    lines: [magic, workbook, journey, family, islamic]
+    lines: [magic, workbook, journey, family, islamic, colorbook]
     hijab: a simple soft cream hijab
     hijab_color: "#F1E6CF"
     looks:
@@ -103,7 +103,7 @@ outfits:
   - id: green-hoodie
     name_ar: الهودي الأخضر
     name_en: Green hoodie
-    lines: [magic, workbook, journey, family, islamic]
+    lines: [magic, workbook, journey, family, islamic, colorbook]
     looks:
       m:
         prompt: >-
@@ -115,7 +115,7 @@ outfits:
   - id: striped-sweater
     name_ar: الكنزة المقلّمة
     name_en: Striped sweater
-    lines: [magic, workbook, journey, family, islamic]
+    lines: [magic, workbook, journey, family, islamic, colorbook]
     looks:
       m:
         prompt: >-
@@ -127,8 +127,9 @@ outfits:
   - id: tatreez
     name_ar: التطريز الفلسطيني
     name_en: Palestinian embroidery
-    # for special books: the heritage stories, the family book and the Islamic series
-    lines: [magic, family, islamic]
+    # for special books: the heritage stories, the family book, the Islamic series and the coloring books
+    # («ألوّن فلسطين» on the cover)
+    lines: [magic, family, islamic, colorbook]
     hijab: a simple soft white hijab with a thin deep-red embroidered border
     hijab_color: "#FAFAF7"
     hijab_trim: "#A8242C"

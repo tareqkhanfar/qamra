@@ -254,6 +254,7 @@ async def test_what_each_activity_book_asks(
         "reuse_id": None,
         "draw_style": "3d",
         "styles": ["3d", "watercolor", "cartoon", "semi-realistic"],
+        "required": True,  # only «دفاتر التلوين والرسم» may go without it (test_colorbook.py)
     }
 
 

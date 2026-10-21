@@ -21,8 +21,9 @@ async def test_seed_builds_the_catalog_once(adb: AsyncSession) -> None:
     assert "+product:classic-book" in added and "+variant:wb-kg2-set-color-spiral" in added
     variants, addons = await _count(adb, Variant), await _count(adb, AddOn)
     # classic, magic, custom story, coloring, 2 class books, workbook (2 levels × 12), journey, family, and
-    # «قلبي يعرف الله» (6 books printed and as PDFs, 3 printed sets)
-    assert variants == 3 + 1 + 1 + 1 + 1 + 1 + 24 + 7 + 2 + 15
+    # «قلبي يعرف الله» (6 books printed and as PDFs, 3 printed sets), «دفاتر التلوين والرسم» (3 books printed
+    # and as PDFs, the sketchbook printed)
+    assert variants == 3 + 1 + 1 + 1 + 1 + 1 + 24 + 7 + 2 + 15 + 7
     assert addons == 20
     assert await seed_store(adb) == []  # insert-only: a second run changes nothing
     assert await _count(adb, Variant) == variants
@@ -40,7 +41,7 @@ async def test_seed_builds_the_catalog_once(adb: AsyncSession) -> None:
     assert "family" in styles["3d"].lines  # 3D for the activity books too (Tareq, 2026-10-02)
     semi = styles["semi-realistic"]  # «شبه حقيقي»: stories and activity books, never Classic (2026-10-09)
     assert semi.active and semi.sort == 3 and semi.likeness_min == 8 and semi.name_ar == "شبه حقيقي"
-    assert semi.lines == ["magic", "workbook", "journey", "family", "islamic"]
+    assert semi.lines == ["magic", "workbook", "journey", "family", "islamic", "colorbook"]
     for style in styles.values():  # never a studio or artist name (Addendum 4 §2)
         assert not any(name in style.prompt.lower() for name in ("pixar", "disney", "ghibli", "dreamworks"))
 

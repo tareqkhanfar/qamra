@@ -44,6 +44,7 @@ from qamra_api.store.workbooks import (
     accepted_styles,
     ages_for,
     asks_family,
+    character_required,
     clean_latin,
     family_personalization,
     name_problem,
@@ -250,6 +251,10 @@ class NeedsCharacter(BaseModel):
     draw_style: str | None
     # the styles this book accepts, in the site's order (never coloring): the style step's list
     styles: list[str]
+    # False: the book may print without the child's character («دفاتر التلوين والرسم»: the cover step asks,
+    # with the character when `reuse_id` is set, else without, unless the parent has one drawn); True: every
+    # other activity book, always drawn with the child's character
+    required: bool = True
 
 
 class NeedsChild(BaseModel):
@@ -332,7 +337,10 @@ async def workbook_needs(
         traces_name=line in TRACES_NAME,
         asks=NeedsAsks(name_en=needs_name_en(line, variant.options), family=asks_family(line)),
         character=NeedsCharacter(
-            reuse_id=reuse.id if reuse else None, draw_style=wanted[0] if wanted else None, styles=styles
+            reuse_id=reuse.id if reuse else None,
+            draw_style=wanted[0] if wanted else None,
+            styles=styles,
+            required=character_required(line),
         ),
         child=child_out,
     )
@@ -347,14 +355,32 @@ class WorkbookItemIn(BaseModel):
     # the character the flow chose (default: the newest approved one in a style the book accepts)
     character_id: uuid.UUID | None = None
     name_en: str | None = Field(default=None, max_length=80)  # the English name page; saved on the child
+    # «دفاتر التلوين والرسم» (needs say `character.required: false`): False prints the cover without the
+    # child's character; True with it (`character_id`, else the reusable one: 409 when there is none); None:
+    # `character_id` when sent, else the reusable one when there is one, else none. A book that is always
+    # drawn with the character refuses False (422 `character_required`).
+    with_character: bool | None = None
 
 
 async def _character_for(
-    db: SessionDep, child: Child, styles: list[str], character_id: uuid.UUID | None
-) -> Character:
+    db: SessionDep,
+    child: Child,
+    styles: list[str],
+    character_id: uuid.UUID | None,
+    *,
+    required: bool = True,
+    wanted: bool | None = None,
+) -> Character | None:
+    """The character the line is drawn with; None only for a book that may go without (`required` False)."""
+    if wanted is False:
+        if required:
+            raise ApiError("character_required", 422, {"fields": ["with_character"]})
+        if character_id is not None:
+            raise ApiError("invalid_input", 422, {"fields": ["character_id", "with_character"]})
+        return None
     if character_id is None:
         character = await reusable_character(db, child.id, styles)
-        if character is None:
+        if character is None and (required or wanted):
             raise ApiError("character_not_approved", 409)  # the flow draws one first
         return character
     character = await db.get(Character, character_id)
@@ -393,12 +419,22 @@ async def add_workbook(
     """An activity book for one of the parent's children, drawn with the child's approved character (no new
     AI cost). The order item carries the child, the variant (its options), the character used and, when the
     book prints it, the name in English letters. With `item_id`, the line added in one tap from the product
-    page gets this child instead of a new line (the family given there stays unless a new one is sent)."""
+    page gets this child instead of a new line (the family given there stays unless a new one is sent).
+    «دفاتر التلوين والرسم» may go without a character (`with_character`): the line then carries no
+    `character_id`, and `cover_character: false`."""
     child = await _guarded_child(db, user, body.child_id)
     c = await load_catalog(db)
     variant, product = _activity_variant(c, body.sku)
     line = product.line.value
-    character = await _character_for(db, child, accepted_styles(c.styles.values(), line), body.character_id)
+    required = character_required(line)
+    character = await _character_for(
+        db,
+        child,
+        accepted_styles(c.styles.values(), line),
+        body.character_id,
+        required=required,
+        wanted=body.with_character,
+    )
     problem = name_problem(line, child.first_name)
     if problem is not None:  # the tracing pages would fail later, in the worker
         raise ApiError(f"name_{problem}", 422, {"fields": ["name"]})
@@ -420,13 +456,16 @@ async def add_workbook(
         "age": max(2, min(12, date.today().year - child.birth_year)),
         "hijab": child.wears_hijab,
         "glasses": child.wears_glasses,
-        "character_id": str(character.id),
+        **({"character_id": str(character.id)} if character is not None else {}),
+        # a book that may go without the character says which it is (the worker draws the cover from it)
+        **({} if required else {"cover_character": character is not None}),
         **({"name_en": name_en} if name_en else {}),
         **({"family": family} if family and asks_family(line) else {}),
     }
+    style = character.art_style if character is not None else None
     if item is not None:
         item.child_id, item.personalization = child.id, personalization
-        item.style_slug = character.art_style  # the style the parent chose (or the reused character's)
+        item.style_slug = style  # the style the parent chose (or the reused character's)
     else:
         db.add(
             CartItem(
@@ -434,7 +473,7 @@ async def add_workbook(
                 variant_id=variant.id,
                 child_id=child.id,
                 qty=body.qty,
-                style_slug=character.art_style,
+                style_slug=style,
                 addons=[],
                 personalization=personalization,
             )

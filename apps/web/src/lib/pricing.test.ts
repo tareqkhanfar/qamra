@@ -66,6 +66,16 @@ const CATALOG = [
     [{ volume: "V1", format: "digital" }, "35.00"],
     [{ volume: "R", format: "digital" }, "35.00"],
   ]),
+  // «دفاتر التلوين والرسم»: four books, each printed (stapled or Wire-O) and, but the sketchbook, a PDF
+  product("coloring-letters", "colorbook", [
+    [{ format: "softcover" }, "35.00"],
+    [{ format: "digital" }, "15.00"],
+  ]),
+  product("coloring-palestine", "colorbook", [
+    [{ format: "softcover" }, "39.00"],
+    [{ format: "digital" }, "15.00"],
+  ]),
+  product("sketchbook", "colorbook", [[{ format: "spiral" }, "39.00"]]),
 ];
 
 /** "unit format price" per row: easy to compare with the owner's list. */
@@ -75,7 +85,7 @@ const said = (rows: ReturnType<typeof priceRows>) =>
 describe("the pricing page's rows", () => {
   const families = priceFamilies(
     CATALOG,
-    ["classic", "magic", "coloring", "workbook", "journey", "family", "islamic"],
+    ["classic", "magic", "coloring", "workbook", "journey", "family", "islamic", "colorbook"],
     {
       islamic: ISLAMIC_SETS,
     },
@@ -85,8 +95,22 @@ describe("the pricing page's rows", () => {
   it("lists each family once, in order, and skips a line with nothing on sale", () => {
     assert.deepEqual(
       families.map((f) => f.line),
-      ["classic", "magic", "workbook", "journey", "family", "islamic"],
+      ["classic", "magic", "workbook", "journey", "family", "islamic", "colorbook"],
     );
+  });
+
+  it("gives each coloring and drawing book its own rows, printed first", () => {
+    assert.deepEqual(
+      of("colorbook").rows.map((r) => `${r.product} ${r.format} ${r.price}`),
+      [
+        "coloring-letters softcover 35",
+        "coloring-letters digital 15",
+        "coloring-palestine softcover 39",
+        "coloring-palestine digital 15",
+        "sketchbook spiral 39",
+      ],
+    );
+    assert.equal(of("colorbook").from, 15);
   });
 
   it("gives a story its formats, printed first, and the price it starts from", () => {

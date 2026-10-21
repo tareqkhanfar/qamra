@@ -1,0 +1,245 @@
+# «دَفْتَري» (My Sketchbook): the 46 content pages in book order (qamra_workbook.coloring.sketch draws the art).
+# The page template adds the title page in front and «عن قمرة» at the end: 48 interior pages (wire-o).
+#
+# kind:  blank     a framed page to draw anything (prompt "")
+#        prompt    a drawing prompt with small decorations that belong to it
+#        finish    «أَكْمِلِ الرَّسْمَةَ»: a half-drawing the child finishes
+#        date      the first page: the child's name, the age and the date (writing lines: sketch.DATE_LINES)
+#        favourite «رَسْمَتي المُفَضَّلَةُ»: a gallery frame
+# art:   a key of sketch.ART (an SVG of 186 × 238 mm: the frame, its decorations, the half-drawing)
+# prompt_ar: fully vowelized; {masc/fem} variants by the child's gender; {child} / {child:gen} for the name.
+title_ar: دَفْتَري
+title_en: My Sketchbook
+pages:
+  - id: my-sketchbook
+    kind: date
+    art: date-cake
+    prompt_ar: "دَفْتَرُ {child:gen}"
+    prompt_en: "{child}'s Sketchbook"
+    lines_ar: ["عُمْري ... سَنَواتٍ", "التّاريخُ"]
+    lines_en: ["I am ... years old", "Date"]
+  - id: draw-yourself
+    kind: prompt
+    art: mirror
+    prompt_ar: "{ارْسُمْ/ارْسُمي} نَفْسَ{كَ/كِ}"
+    prompt_en: Draw yourself
+  - id: blank-01
+    kind: blank
+    art: frame-stars
+    prompt_ar: ""
+    prompt_en: ""
+  - id: my-family
+    kind: prompt
+    art: frame-hearts
+    prompt_ar: "{ارْسُمْ/ارْسُمي} عائِلَتَ{كَ/كِ}"
+    prompt_en: Draw your family
+  - id: my-home
+    kind: prompt
+    art: home
+    prompt_ar: "{ارْسُمْ/ارْسُمي} بَيْتَ{كَ/كِ}"
+    prompt_en: Draw your home
+  - id: blank-02
+    kind: blank
+    art: frame-crayons
+    prompt_ar: ""
+    prompt_en: ""
+  - id: finish-butterfly
+    kind: finish
+    art: finish-butterfly
+    prompt_ar: "{أَكْمِلْ/أَكْمِلي} رَسْمَ الفَراشَةِ"
+    prompt_en: Finish the butterfly
+  - id: my-friend
+    kind: prompt
+    art: balloons
+    prompt_ar: "{ارْسُمْ/ارْسُمي} {صَديقَكَ/صَديقَتَكِ}"
+    prompt_en: Draw your friend
+  - id: favourite-food
+    kind: prompt
+    art: plate
+    prompt_ar: "{ارْسُمْ/ارْسُمي} ما {تُحِبُّ/تُحِبّينَ} أَنْ {تَأْكُلَ/تَأْكُلي}"
+    prompt_en: Draw what you love to eat
+  - id: blank-03
+    kind: blank
+    art: frame-scallop
+    prompt_ar: ""
+    prompt_en: ""
+  - id: blank-04
+    kind: blank
+    art: frame-moon
+    prompt_ar: ""
+    prompt_en: ""
+  - id: favourite-animal
+    kind: prompt
+    art: paws
+    prompt_ar: "{ارْسُمْ/ارْسُمي} حَيَوانَ{كَ/كِ} المُفَضَّلَ"
+    prompt_en: Draw your favorite animal
+  - id: finish-house
+    kind: finish
+    art: finish-house
+    prompt_ar: "{ارْسُمْ/ارْسُمي} سَقْفًا وَشَبابيكَ لِلبَيْتِ"
+    prompt_en: Draw a roof and windows for the house
+  - id: window-view
+    kind: prompt
+    art: window
+    prompt_ar: "ماذا {تَرى/تَرَيْنَ} مِنْ نافِذَتِ{كَ/كِ}؟"
+    prompt_en: What do you see from your window?
+  - id: blank-05
+    kind: blank
+    art: frame-leaves
+    prompt_ar: ""
+    prompt_en: ""
+  - id: winter-rain
+    kind: prompt
+    art: rain
+    prompt_ar: "الشِّتاءُ: {ارْسُمْ/ارْسُمي} يَوْمًا مُمْطِرًا"
+    prompt_en: "Winter: draw a rainy day"
+  - id: spring-flowers
+    kind: prompt
+    art: poppies
+    prompt_ar: "الرَّبيعُ: {ارْسُمْ/ارْسُمي} أَزْهارًا وَفَراشاتٍ"
+    prompt_en: "Spring: draw flowers and butterflies"
+  - id: summer-sea
+    kind: prompt
+    art: seaside
+    prompt_ar: "الصَّيْفُ: {ارْسُمْ/ارْسُمي} البَحْرَ"
+    prompt_en: "Summer: draw the sea"
+  - id: autumn-olives
+    kind: prompt
+    art: olive-harvest
+    prompt_ar: "الخَريفُ: {ارْسُمْ/ارْسُمي} قَطْفَ الزَّيْتونِ"
+    prompt_en: "Autumn: draw the olive harvest"
+  - id: blank-06
+    kind: blank
+    art: frame-tatreez
+    prompt_ar: ""
+    prompt_en: ""
+  - id: finish-fishbowl
+    kind: finish
+    art: finish-fishbowl
+    prompt_ar: "{ارْسُمْ/ارْسُمي} سَمَكاتٍ في الحَوْضِ"
+    prompt_en: Draw fish in the bowl
+  - id: my-garden
+    kind: prompt
+    art: garden-fence
+    prompt_ar: "{لَوِّنْ/لَوِّني} {وَارْسُمْ/وَارْسُمي} حَديقَتَ{كَ/كِ}"
+    prompt_en: Color and draw your garden
+  - id: grandma-house
+    kind: prompt
+    art: grape-vine
+    prompt_ar: "{ارْسُمْ/ارْسُمي} بَيْتَ جَدَّتِ{كَ/كِ}"
+    prompt_en: Draw your grandma's house
+  - id: blank-07
+    kind: blank
+    art: frame-flowers
+    prompt_ar: ""
+    prompt_en: ""
+  - id: hand-animal
+    kind: prompt
+    art: hand-bird
+    prompt_ar: "{ارْسُمْ/ارْسُمي} حَوْلَ يَدِ{كَ/كِ} {وَاجْعَلْها/وَاجْعَليها} حَيَوانًا"
+    prompt_en: Trace your hand and turn it into an animal
+  - id: my-kindergarten
+    kind: prompt
+    art: school
+    prompt_ar: "{ارْسُمْ/ارْسُمي} رَوْضَتَ{كَ/كِ}"
+    prompt_en: Draw your kindergarten
+  - id: blank-08
+    kind: blank
+    art: frame-clouds
+    prompt_ar: ""
+    prompt_en: ""
+  - id: finish-car
+    kind: finish
+    art: finish-car
+    prompt_ar: "{ارْسُمْ/ارْسُمي} عَجَلاتِ السَّيّارَةِ"
+    prompt_en: Draw the car's wheels
+  - id: night-sky
+    kind: prompt
+    art: night
+    prompt_ar: "{ارْسُمْ/ارْسُمي} السَّماءَ في اللَّيْلِ"
+    prompt_en: Draw the sky at night
+  - id: rocket-to-moon
+    kind: prompt
+    art: space
+    prompt_ar: "{ارْسُمْ/ارْسُمي} صاروخًا يَطيرُ إِلى القَمَرِ"
+    prompt_en: Draw a rocket flying to the moon
+  - id: blank-09
+    kind: blank
+    art: frame-stars
+    prompt_ar: ""
+    prompt_en: ""
+  - id: favourite-toy
+    kind: prompt
+    art: toys
+    prompt_ar: "{ارْسُمْ/ارْسُمي} لُعْبَتَ{كَ/كِ} المُفَضَّلَةَ"
+    prompt_en: Draw your favorite toy
+  - id: me-playing
+    kind: prompt
+    art: swing
+    prompt_ar: "{ارْسُمْ/ارْسُمي} نَفْسَ{كَ/كِ} {تَلْعَبُ/تَلْعَبينَ}"
+    prompt_en: Draw yourself playing
+  - id: blank-10
+    kind: blank
+    art: frame-crayons
+    prompt_ar: ""
+    prompt_en: ""
+  - id: finish-tree
+    kind: finish
+    art: finish-tree
+    prompt_ar: "{ارْسُمْ/ارْسُمي} أَوْراقًا وَثِمارًا لِلشَّجَرَةِ"
+    prompt_en: Draw leaves and fruit on the tree
+  - id: eid-day
+    kind: prompt
+    art: eid
+    prompt_ar: "{ارْسُمْ/ارْسُمي} يَوْمَ العيدِ"
+    prompt_en: Draw the day of Eid
+  - id: funny-creature
+    kind: prompt
+    art: creature
+    prompt_ar: "{ارْسُمْ/ارْسُمي} مَخْلوقًا مُضْحِكًا"
+    prompt_en: Draw a funny creature
+  - id: blank-11
+    kind: blank
+    art: frame-scallop
+    prompt_ar: ""
+    prompt_en: ""
+  - id: blank-12
+    kind: blank
+    art: frame-moon
+    prompt_ar: ""
+    prompt_en: ""
+  - id: finish-lion
+    kind: finish
+    art: finish-lion
+    prompt_ar: "{ارْسُمْ/ارْسُمي} وَجْهَ الأَسَدِ"
+    prompt_en: Draw the lion's face
+  - id: happy-thing
+    kind: prompt
+    art: sunshine
+    prompt_ar: "{ارْسُمْ/ارْسُمي} شَيْئًا {يُفْرِحُكَ/يُفْرِحُكِ}"
+    prompt_en: Draw something that makes you happy
+  - id: sweet-dream
+    kind: prompt
+    art: dream
+    prompt_ar: "{ارْسُمْ/ارْسُمي} حُلْمًا جَميلًا"
+    prompt_en: Draw a sweet dream
+  - id: blank-13
+    kind: blank
+    art: frame-leaves
+    prompt_ar: ""
+    prompt_en: ""
+  - id: when-i-grow-up
+    kind: prompt
+    art: growth-chart
+    prompt_ar: "{ارْسُمْ/ارْسُمي} نَفْسَ{كَ/كِ} عِنْدَما {تَكْبُرُ/تَكْبُرينَ}"
+    prompt_en: Draw yourself when you grow up
+  - id: my-favourite-drawing
+    kind: favourite
+    art: gallery
+    prompt_ar: "رَسْمَتي المُفَضَّلَةُ"
+    prompt_en: My favorite drawing
+  - id: blank-14
+    kind: blank
+    art: frame-tatreez
+    prompt_ar: ""
+    prompt_en: ""

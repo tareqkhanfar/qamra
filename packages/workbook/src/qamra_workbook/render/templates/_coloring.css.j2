@@ -1,0 +1,55 @@
+/* «دفاتر التلوين والرسم» (render/pages/coloring.py): black only on white paper, the drawings in mm. */
+.page.frame-sheet { background: #FFFFFF; color: #000000; }
+.cb-sheet { position: relative; height: 100%; display: flex; flex-direction: column; align-items: center; color: #000; }
+.cb-sheet svg { display: block; }
+
+/* the page number: a small circle at the foot (Arabic numerals as the book chose) */
+.cb-folio { flex: none; margin-top: auto; height: 9mm; min-width: 9mm; padding: 0 1.6mm; border: 0.5mm solid #000;
+            border-radius: 4.5mm; display: flex; align-items: center; justify-content: center;
+            font: 600 11pt/1 "IBM Plex Sans Arabic", sans-serif; }
+
+/* hollow words: white letters ringed in black (the inline text-shadow), for the child to colour */
+.cb-name, .cb-booktitle { font-family: var(--title); font-weight: 800; color: #FFFFFF; text-align: center;
+                          white-space: nowrap; overflow: hidden; width: 100%; line-height: 1.5; padding: 0 3mm; }
+.cb-booktitle { font-size: 60pt; margin-top: 8mm; }
+.cb-name { font-size: 64pt; }
+.cb-lead, .cb-owner { font: 700 22pt/1.6 var(--naskh); text-align: center; color: #000; }
+
+/* the title page */
+.cb-titlepage { justify-content: flex-start; border: 0.8mm solid #000; border-radius: 8mm; padding: 6mm 4mm 10mm; }
+.cb-titlepage .cb-art { margin: 10mm 0 12mm; }
+.cb-titlepage .cb-art svg { width: 160mm; height: auto; }
+.cb-titlepage .cb-owner { margin-top: auto; }
+.cb-titlepage .cb-name { margin-bottom: 12mm; }
+
+/* «اسمي» and the self-portrait frame */
+.cb-me .cb-lead { margin-top: 4mm; }
+.cb-me .cb-box { position: relative; flex: 1; width: 100%; margin: 6mm 0 5mm; border: 1.2mm solid #000; border-radius: 9mm; }
+.cb-boxlabel { position: absolute; top: -6.5mm; left: 50%; transform: translateX(-50%); background: #FFF; padding: 0 5mm;
+               font: 700 18pt/1.4 var(--naskh); white-space: nowrap; }
+
+/* a letter page */
+.cb-pill { flex: none; margin-top: 2mm; padding: 1mm 10mm 2.4mm; border: 0.9mm solid #000; border-radius: 12mm;
+           font: 700 24pt/1.5 var(--naskh); }
+.cb-bigletter { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; width: 100%; }
+.cb-cards { flex: none; display: flex; justify-content: center; gap: 5mm; width: 100%; margin-bottom: 5mm; }
+.cb-card { width: 58mm; border: 0.9mm solid #000; border-radius: 6mm; padding: 2mm 1mm 1mm; display: flex;
+           flex-direction: column; align-items: center; }
+.cb-cards.n2 .cb-card { width: 74mm; }
+.cb-card figcaption { font: 700 20pt/1.5 var(--naskh); margin-top: -1mm; }
+
+/* a scene page, a drawing page */
+.cb-caption { flex: none; height: 17mm; display: flex; align-items: center; justify-content: center; width: 100%;
+              font: 700 16pt/1.4 var(--title); white-space: nowrap; overflow: hidden; }
+.cb-caption.empty { height: 6mm; }
+.cb-drawpage .cb-caption { font: 700 18pt/1.5 var(--naskh); }
+.cb-drawing { flex: none; margin-bottom: 3mm; position: relative; }
+.cb-linelabel { position: absolute; font: 700 17pt/1.4 var(--naskh); padding: 0 1mm; white-space: nowrap; }
+
+/* the certificate */
+.cb-cert { justify-content: center; gap: 8mm; border: 0.8mm solid #000; border-radius: 8mm; padding: 10mm 4mm 6mm; }
+.cb-cert .cb-art svg { width: 125mm; height: auto; }
+.cb-cert .cb-name { font-size: 46pt; }
+.cb-date { font: 700 18pt/1.6 var(--naskh); width: 120mm; display: flex; gap: 3mm; align-items: flex-end; }
+.cb-date span { flex: 1; border-bottom: 0.6mm dashed #000; height: 9mm; }
+.cb-cert .cb-folio { margin-top: auto; }

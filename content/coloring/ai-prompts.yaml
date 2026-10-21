@@ -1,0 +1,37 @@
+# Scenes of the coloring books drawn by a cheap image model and cleaned into print line art
+# (`scripts/coloring_ai.py` → `qamra_workbook.coloring.lineart`). Only the scenes too complex to draw well in
+# code. Each value is the scene alone: the script wraps it in the fixed coloring-page style prompt
+# (packages/ai/src/qamra_ai/prompts/style/coloring.md + the line-art rules). English, because the model reads
+# English best. No text, letters or inscriptions anywhere; people only as simple friendly figures.
+#
+# v2 (2026-10-21): fewer things per scene, a front view, big shapes. The v1 scenes (a full street of the souk,
+# Jaffa's whole skyline, the platform's paving in perspective) came back as adult coloring pages, far too busy
+# for a 2.6 mm line.
+
+palestine:
+  aqsa-dome: >-
+    The Dome of the Rock in Jerusalem, front view, in the middle of the page: an eight-sided building with a
+    few tall arched windows and one big arched door, topped by a large smooth round dome (plain, without
+    stripes) with a short spire and a small crescent on its tip. It stands on a wide plain stone platform
+    with three broad steps. Smaller, behind it on the left, the low Al-Aqsa mosque with its own small round
+    dome. A tall cypress tree on each side, two puffy clouds and a round sun in the sky. No people, no
+    minarets, no writing on the walls.
+  jaffa-sea: >-
+    Two simple wooden fishing boats with big triangle sails on big round waves at the front, one seagull in
+    the sky. Behind them on a small hill, the old stone town of Jaffa drawn as a few big blocky stone houses
+    with arched windows, a palm tree, and a square stone clock tower with a round clock face showing only two
+    hands and no numbers. A round sun and one cloud. No people, no flags, no writing.
+  souk: >-
+    Front view of one market stall in the old city under one big stone arch: a wooden counter with three big
+    baskets of fruit (oranges, grapes, bananas), two big open sacks of spices shaped like round mounds, two
+    round lanterns hanging from the arch, a striped cloth awning on top, a few big paving stones on the
+    ground. One simple friendly shopkeeper with a cap behind the counter, smiling. The sacks and the awning
+    are blank, without words.
+
+ramadan:
+  iftar-table: >-
+    A happy family of four at a low round table for the Ramadan iftar meal, front view, close-up: a father
+    with short hair and a short beard, a mother wearing a simple headscarf, a girl with two pigtails and no
+    headscarf, and a small boy, all with big simple cartoon faces. On the table: a plate of dates, a big bowl
+    of soup, a bowl of salad and a big Ramadan lantern. Behind them, a window with a crescent moon and two
+    stars.

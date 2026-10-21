@@ -1,0 +1,362 @@
+{
+  "coloring-letters": {
+    "cover": {
+      "src": "/coloring/coloring-letters/cover.webp?v=2f597416",
+      "sm": "/coloring/coloring-letters/cover-sm.webp?v=2f597416",
+      "w": 720,
+      "h": 1018
+    },
+    "pages": [
+      {
+        "src": "/coloring/coloring-letters/01.webp?v=6b354130",
+        "sm": "/coloring/coloring-letters/01-sm.webp?v=6b354130",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "صفحة العنوان باسم الطفل",
+        "caption_en": "The title page with the child's name"
+      },
+      {
+        "src": "/coloring/coloring-letters/02.webp?v=6eb5ed45",
+        "sm": "/coloring/coloring-letters/02-sm.webp?v=6eb5ed45",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "صفحة الاسم، ويرسم فيها الطفل نفسه",
+        "caption_en": "The name page, where the child draws themselves"
+      },
+      {
+        "src": "/coloring/coloring-letters/03.webp?v=da4c509c",
+        "sm": "/coloring/coloring-letters/03-sm.webp?v=da4c509c",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "حرف الألف",
+        "caption_en": "The letter Alif"
+      },
+      {
+        "src": "/coloring/coloring-letters/04.webp?v=95473480",
+        "sm": "/coloring/coloring-letters/04-sm.webp?v=95473480",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "حرف الباء",
+        "caption_en": "The letter Baa"
+      },
+      {
+        "src": "/coloring/coloring-letters/05.webp?v=f962a87d",
+        "sm": "/coloring/coloring-letters/05-sm.webp?v=f962a87d",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "حرف الجيم",
+        "caption_en": "The letter Jeem"
+      },
+      {
+        "src": "/coloring/coloring-letters/06.webp?v=d9ae8420",
+        "sm": "/coloring/coloring-letters/06-sm.webp?v=d9ae8420",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "حرف الرّاء",
+        "caption_en": "The letter Raa"
+      },
+      {
+        "src": "/coloring/coloring-letters/07.webp?v=63d0f423",
+        "sm": "/coloring/coloring-letters/07-sm.webp?v=63d0f423",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "حرف الظّاء",
+        "caption_en": "The letter Thaa (heavy)"
+      },
+      {
+        "src": "/coloring/coloring-letters/08.webp?v=c2a2d154",
+        "sm": "/coloring/coloring-letters/08-sm.webp?v=c2a2d154",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "حرف اللّام",
+        "caption_en": "The letter Lam"
+      },
+      {
+        "src": "/coloring/coloring-letters/09.webp?v=22c43186",
+        "sm": "/coloring/coloring-letters/09-sm.webp?v=22c43186",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "حرف الياء",
+        "caption_en": "The letter Yaa"
+      },
+      {
+        "src": "/coloring/coloring-letters/10.webp?v=966fc4db",
+        "sm": "/coloring/coloring-letters/10-sm.webp?v=966fc4db",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "صفحة «أحسنت!» في آخر الدفتر",
+        "caption_en": "The “Well done!” page at the end"
+      }
+    ]
+  },
+  "coloring-palestine": {
+    "cover": {
+      "src": "/coloring/coloring-palestine/cover.webp?v=17434dcc",
+      "sm": "/coloring/coloring-palestine/cover-sm.webp?v=17434dcc",
+      "w": 720,
+      "h": 1018
+    },
+    "pages": [
+      {
+        "src": "/coloring/coloring-palestine/01.webp?v=e5b52202",
+        "sm": "/coloring/coloring-palestine/01-sm.webp?v=e5b52202",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "صفحة العنوان باسم الطفل",
+        "caption_en": "The title page with the child's name"
+      },
+      {
+        "src": "/coloring/coloring-palestine/02.webp?v=18212dab",
+        "sm": "/coloring/coloring-palestine/02-sm.webp?v=18212dab",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "قطف الزّيتون",
+        "caption_en": "The olive harvest"
+      },
+      {
+        "src": "/coloring/coloring-palestine/03.webp?v=1c4bd0d9",
+        "sm": "/coloring/coloring-palestine/03-sm.webp?v=1c4bd0d9",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "شجرة الزّيتون",
+        "caption_en": "The olive tree"
+      },
+      {
+        "src": "/coloring/coloring-palestine/04.webp?v=0b2bf6e2",
+        "sm": "/coloring/coloring-palestine/04-sm.webp?v=0b2bf6e2",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "نبتة الزّعتر",
+        "caption_en": "The za'atar plant"
+      },
+      {
+        "src": "/coloring/coloring-palestine/05.webp?v=f6b7dd2e",
+        "sm": "/coloring/coloring-palestine/05-sm.webp?v=f6b7dd2e",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "حكاية جدّتي",
+        "caption_en": "Grandma's story"
+      },
+      {
+        "src": "/coloring/coloring-palestine/06.webp?v=3cd502f8",
+        "sm": "/coloring/coloring-palestine/06-sm.webp?v=3cd502f8",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "عصفور الشّمس",
+        "caption_en": "The sunbird"
+      },
+      {
+        "src": "/coloring/coloring-palestine/07.webp?v=21a86413",
+        "sm": "/coloring/coloring-palestine/07-sm.webp?v=21a86413",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "النّعجة والحمل",
+        "caption_en": "The ewe and the lamb"
+      },
+      {
+        "src": "/coloring/coloring-palestine/08.webp?v=75abcec4",
+        "sm": "/coloring/coloring-palestine/08-sm.webp?v=75abcec4",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "بحر يافا",
+        "caption_en": "The sea of Jaffa"
+      },
+      {
+        "src": "/coloring/coloring-palestine/09.webp?v=748b2f20",
+        "sm": "/coloring/coloring-palestine/09-sm.webp?v=748b2f20",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "في السّوق",
+        "caption_en": "At the souk"
+      },
+      {
+        "src": "/coloring/coloring-palestine/10.webp?v=44ea7e81",
+        "sm": "/coloring/coloring-palestine/10-sm.webp?v=44ea7e81",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "صفحة يرسم فيها الطفل فلسطين",
+        "caption_en": "A page where the child draws Palestine"
+      }
+    ]
+  },
+  "coloring-ramadan": {
+    "cover": {
+      "src": "/coloring/coloring-ramadan/cover.webp?v=0a0910e5",
+      "sm": "/coloring/coloring-ramadan/cover-sm.webp?v=0a0910e5",
+      "w": 720,
+      "h": 1018
+    },
+    "pages": [
+      {
+        "src": "/coloring/coloring-ramadan/01.webp?v=4eef4751",
+        "sm": "/coloring/coloring-ramadan/01-sm.webp?v=4eef4751",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "صفحة العنوان باسم الطفل",
+        "caption_en": "The title page with the child's name"
+      },
+      {
+        "src": "/coloring/coloring-ramadan/02.webp?v=a5e50750",
+        "sm": "/coloring/coloring-ramadan/02-sm.webp?v=a5e50750",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "رؤية الهلال",
+        "caption_en": "Seeing the crescent moon"
+      },
+      {
+        "src": "/coloring/coloring-ramadan/03.webp?v=6552e669",
+        "sm": "/coloring/coloring-ramadan/03-sm.webp?v=6552e669",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "فانوس رمضان",
+        "caption_en": "The Ramadan lantern"
+      },
+      {
+        "src": "/coloring/coloring-ramadan/04.webp?v=78c0d72f",
+        "sm": "/coloring/coloring-ramadan/04-sm.webp?v=78c0d72f",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "زينة رمضان",
+        "caption_en": "Decorating for Ramadan"
+      },
+      {
+        "src": "/coloring/coloring-ramadan/05.webp?v=1d3cf623",
+        "sm": "/coloring/coloring-ramadan/05-sm.webp?v=1d3cf623",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "تمر وماء",
+        "caption_en": "Dates and water"
+      },
+      {
+        "src": "/coloring/coloring-ramadan/06.webp?v=052e5dda",
+        "sm": "/coloring/coloring-ramadan/06-sm.webp?v=052e5dda",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "صندوق الصّدقة",
+        "caption_en": "The charity box"
+      },
+      {
+        "src": "/coloring/coloring-ramadan/07.webp?v=12bdd415",
+        "sm": "/coloring/coloring-ramadan/07-sm.webp?v=12bdd415",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "وجبة السّحور",
+        "caption_en": "The suhoor meal"
+      },
+      {
+        "src": "/coloring/coloring-ramadan/08.webp?v=760cc4e6",
+        "sm": "/coloring/coloring-ramadan/08-sm.webp?v=760cc4e6",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "ليلتي في رمضان",
+        "caption_en": "My Ramadan night"
+      },
+      {
+        "src": "/coloring/coloring-ramadan/09.webp?v=5e275a75",
+        "sm": "/coloring/coloring-ramadan/09-sm.webp?v=5e275a75",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "هدايا العيد",
+        "caption_en": "Eid gifts"
+      },
+      {
+        "src": "/coloring/coloring-ramadan/10.webp?v=042f42a1",
+        "sm": "/coloring/coloring-ramadan/10-sm.webp?v=042f42a1",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "صفحة يرسم فيها الطفل فانوسه",
+        "caption_en": "A page where the child draws a lantern"
+      }
+    ]
+  },
+  "sketchbook": {
+    "cover": {
+      "src": "/coloring/sketchbook/cover.webp?v=904ddfed",
+      "sm": "/coloring/sketchbook/cover-sm.webp?v=904ddfed",
+      "w": 720,
+      "h": 1018
+    },
+    "pages": [
+      {
+        "src": "/coloring/sketchbook/01.webp?v=37668d50",
+        "sm": "/coloring/sketchbook/01-sm.webp?v=37668d50",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "صفحة العنوان باسم الطفل",
+        "caption_en": "The title page with the child's name"
+      },
+      {
+        "src": "/coloring/sketchbook/02.webp?v=aba745e9",
+        "sm": "/coloring/sketchbook/02-sm.webp?v=aba745e9",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "صفحة اسم الطفل وعمره والتاريخ",
+        "caption_en": "The page for the child's name, age and the date"
+      },
+      {
+        "src": "/coloring/sketchbook/03.webp?v=9628bf6c",
+        "sm": "/coloring/sketchbook/03-sm.webp?v=9628bf6c",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "صفحة يرسم فيها الطفل نفسه",
+        "caption_en": "A page where the child draws themselves"
+      },
+      {
+        "src": "/coloring/sketchbook/04.webp?v=2792860d",
+        "sm": "/coloring/sketchbook/04-sm.webp?v=2792860d",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "صفحة لرسم العائلة",
+        "caption_en": "A page to draw the family"
+      },
+      {
+        "src": "/coloring/sketchbook/05.webp?v=c18e287c",
+        "sm": "/coloring/sketchbook/05-sm.webp?v=c18e287c",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "صفحة لإكمال رسم الفراشة",
+        "caption_en": "A page to finish drawing the butterfly"
+      },
+      {
+        "src": "/coloring/sketchbook/06.webp?v=0497bcca",
+        "sm": "/coloring/sketchbook/06-sm.webp?v=0497bcca",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "صفحة رسم حرّ بإطار مزيّن",
+        "caption_en": "A framed page for free drawing"
+      },
+      {
+        "src": "/coloring/sketchbook/07.webp?v=442377cc",
+        "sm": "/coloring/sketchbook/07-sm.webp?v=442377cc",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "الشتاء: صفحة لرسم يوم ممطر",
+        "caption_en": "Winter: a page to draw a rainy day"
+      },
+      {
+        "src": "/coloring/sketchbook/08.webp?v=35ac44f2",
+        "sm": "/coloring/sketchbook/08-sm.webp?v=35ac44f2",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "صفحة لتلوين الحديقة ورسمها",
+        "caption_en": "A page to color and draw a garden"
+      },
+      {
+        "src": "/coloring/sketchbook/09.webp?v=7b23563a",
+        "sm": "/coloring/sketchbook/09-sm.webp?v=7b23563a",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "صفحة لرسم السماء في الليل",
+        "caption_en": "A page to draw the sky at night"
+      },
+      {
+        "src": "/coloring/sketchbook/10.webp?v=be255b9a",
+        "sm": "/coloring/sketchbook/10-sm.webp?v=be255b9a",
+        "w": 720,
+        "h": 1018,
+        "caption_ar": "صفحة «رسمتي المفضّلة»",
+        "caption_en": "The “My favorite drawing” page"
+      }
+    ]
+  }
+}

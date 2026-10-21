@@ -1,0 +1,34 @@
+# «أُلَوِّنُ حُروفي»: one page per letter, in the alphabet's order (qamra_workbook.coloring.letters).
+# Each page: the big letter to colour, its name, and 2–3 pictures from the code-drawn picture library
+# (packages/workbook/src/qamra_workbook/pictures) whose word starts with the letter, with the word under each.
+title_ar: أُلَوِّنُ حُروفي
+title_en: I Color My Letters
+letters:
+  - {char: "ا", name_ar: "حَرْفُ الأَلِفِ", name_en: Alif, pictures: [rabbit, lion, octopus]}
+  - {char: "ب", name_ar: "حَرْفُ الباءِ", name_en: Baa, pictures: [duck, house, cow]}
+  - {char: "ت", name_ar: "حَرْفُ التّاءِ", name_en: Taa, pictures: [apple, crown, berries]}
+  - {char: "ث", name_ar: "حَرْفُ الثّاءِ", name_en: Thaa, pictures: [fox, garlic, fridge]}
+  - {char: "ج", name_ar: "حَرْفُ الجيمِ", name_en: Jeem, pictures: [camel, carrot, bell]}
+  - {char: "ح", name_ar: "حَرْفُ الحاءِ", name_en: Haa, pictures: [horse, whale, snail]}
+  - {char: "خ", name_ar: "حَرْفُ الخاءِ", name_en: Khaa, pictures: [sheep, bread, tent]}
+  - {char: "د", name_ar: "حَرْفُ الدّالِ", name_en: Dal, pictures: [bear, rooster, insect]}
+  - {char: "ذ", name_ar: "حَرْفُ الذّالِ", name_en: Thal, pictures: [corn, tail]}
+  - {char: "ر", name_ar: "حَرْفُ الرّاءِ", name_en: Raa, pictures: [feather, school, pomegranate]}
+  - {char: "ز", name_ar: "حَرْفُ الزّايِ", name_en: Zay, pictures: [flower, giraffe, olive]}
+  - {char: "س", name_ar: "حَرْفُ السّينِ", name_en: Seen, pictures: [fish, car, turtle]}
+  - {char: "ش", name_ar: "حَرْفُ الشّينِ", name_en: Sheen, pictures: [sun, tree, candle]}
+  - {char: "ص", name_ar: "حَرْفُ الصّادِ", name_en: Sad, pictures: [falcon, box, rocket]}
+  - {char: "ض", name_ar: "حَرْفُ الضّادِ", name_en: Dad, pictures: [frog, tooth]}
+  - {char: "ط", name_ar: "حَرْفُ الطّاءِ", name_en: Taa (heavy), pictures: [plane, drum, peacock]}
+  - {char: "ظ", name_ar: "حَرْفُ الظّاءِ", name_en: Thaa (heavy), pictures: [envelope, shadow]}
+  - {char: "ع", name_ar: "حَرْفُ العَيْنِ", name_en: Ain, pictures: [bird, grapes, goat]}
+  - {char: "غ", name_ar: "حَرْفُ الغَيْنِ", name_en: Ghain, pictures: [cloud, submarine, olive-leaf]}
+  - {char: "ف", name_ar: "حَرْفُ الفاءِ", name_en: Faa, pictures: [butterfly, elephant, strawberry]}
+  - {char: "ق", name_ar: "حَرْفُ القافِ", name_en: Qaf, pictures: [cat, moon, boat]}
+  - {char: "ك", name_ar: "حَرْفُ الكافِ", name_en: Kaf, pictures: [ball, dog, book]}
+  - {char: "ل", name_ar: "حَرْفُ اللّامِ", name_en: Lam, pictures: [toy, quilt, almonds]}
+  - {char: "م", name_ar: "حَرْفُ الميمِ", name_en: Meem, pictures: [umbrella, banana, key]}
+  - {char: "ن", name_ar: "حَرْفُ النّونِ", name_en: Noon, pictures: [star, bee, palm]}
+  - {char: "ه", name_ar: "حَرْفُ الهاءِ", name_en: Haa (soft), pictures: [gift, hoopoe, crescent]}
+  - {char: "و", name_ar: "حَرْفُ الواوِ", name_en: Waw, pictures: [rose, leaf, goose]}
+  - {char: "ي", name_ar: "حَرْفُ الياءِ", name_en: Yaa, pictures: [hand, pumpkin, dove-y]}

@@ -182,3 +182,51 @@ islamic:
       blurb: "تتحوّل القيم إلى عادات: أخلاق تكبر معه، وآداب يومية، وبرّ بالوالدين، وحلال وحرام بلا تخويف، وسور جديدة، ويوم كامل مع الله."
     islamic-r:
       blurb: "أجواء رمضان والعيد بالقصة واللعب والأنشطة: الصيام بقدر الطاقة، والقرآن والصدقة، وليلة القدر، وآداب العيد وفرحته."
+
+# «دفاتر التلوين والرسم» (packages/workbook/src/qamra_workbook/coloring): fixed line art, the child on the cover.
+# draft: language review 2026-10-21
+colorbook:
+  ribbon: "دَفْتَرُ {child:gen}"
+  pill_coloring: "دَفْتَرُ تَلْوينٍ"
+  pill_sketchbook: "دَفْتَرُ رَسْمٍ"
+  age: "3–7"
+  binding_stapled: "تجليد بالتدبيس، ورق 160 غرامًا"
+  binding_wire: "تجليد حلزوني يُفتح مسطّحًا، ورق 160 غرامًا"
+  badges:
+    - {icon: book, text: "{pages}"}
+    - {icon: heart, text: "باسم {child:gen}"}
+  parts:
+    colorbook-letters:
+      badge: {icon: letter-ba, text: "28 حرفًا للتلوين"}
+      blocks: [أ, ب, ت, ج]
+      blurb: "{يلوّن/تلوّن} {child} الحروف العربية الثمانية والعشرين، حرفًا حرفًا، ومع كل حرف صور أشياء تبدأ به."
+      inside:
+        - {icon: letter-ba, text: "28 حرفًا كبيرًا للتلوين"}
+        - {icon: palette, text: "صور أشياء تبدأ بكل حرف، مع أسمائها"}
+        - {icon: heart, text: "صفحة لاسم {child:gen} ولرسم {نفسه/نفسها}"}
+        - {icon: trophy, text: "صفحة «{أحسنتَ/أحسنتِ}!» في آخر الدفتر"}
+    colorbook-palestine:
+      blocks: []
+      badge: {icon: tree, text: "من تراث فلسطين"}
+      blurb: "رحلة بالألوان في فلسطين: الزيتون والتطريز، والبحر والبلدة القديمة، والطعام الطيّب والزهور البرّية."
+      inside:
+        - {icon: tree, text: "25 رسمة كبيرة من حياة فلسطين وتراثها"}
+        - {icon: palette, text: "التطريز والكوفية والطعام والطبيعة"}
+        - {icon: crayon, text: "صفحة {يرسم/ترسم} فيها {child} فلسطين"}
+    colorbook-ramadan:
+      blocks: []
+      badge: {icon: moon, text: "رمضان والعيد"}
+      blurb: "أجمل لحظات رمضان والعيد: الفانوس والهلال، ومائدة الإفطار، والصدقة، وكعك العيد وفرحته."
+      inside:
+        - {icon: moon, text: "21 رسمة كبيرة من رمضان والعيد"}
+        - {icon: gift, text: "الإفطار والسحور والصدقة والعيد"}
+        - {icon: crayon, text: "صفحة {يرسم/ترسم} فيها {child} {فانوسه/فانوسها}"}
+    colorbook-sketchbook:
+      blocks: []
+      badge: {icon: palette, text: "أفكار للرسم"}
+      blurb: "دفتر رسم لـ{child:gen}: صفحات بإطارات جميلة، وأفكار لطيفة للرسم، ورسومات {يُكملها/تُكملها} {بنفسه/بنفسها}."
+      inside:
+        - {icon: palette, text: "46 صفحة للرسم بإطارات مزيّنة"}
+        - {icon: bulb, text: "أفكار للرسم: العائلة والبيت والفصول"}
+        - {icon: pencil, text: "رسومات ناقصة للإكمال"}
+        - {icon: star, text: "صفحة «رسمتي المفضّلة»"}

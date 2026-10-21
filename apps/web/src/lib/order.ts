@@ -17,6 +17,9 @@ export type OrderItem = Omit<CartItem, "addons"> & {
   child_name_en?: string | null; // the name in English letters, where the book prints it
   family?: FamilyHeld | null; // «مغامراتي مع عائلتي»: {name, city, members}
   character_id?: string | null;
+  // «دفاتر التلوين والرسم»: whether the cover shows the child's character (null: not chosen yet), and the binding
+  cover_character?: boolean | null;
+  binding?: string | null;
 };
 
 export type OrderCart = Omit<Cart, "items"> & {
@@ -165,6 +168,8 @@ export function editHref(item: OrderItem): string {
   if (isActivity(item)) {
     const q = new URLSearchParams({ step: "summary", product: item.sku, item: item.id });
     if (item.child_id) q.set("child", item.child_id);
+    // a coloring book keeps its cover as chosen (without the character, even when the child has one)
+    if (typeof item.cover_character === "boolean") q.set("cover", item.cover_character ? "char" : "plain");
     return `/create?${q.toString()}`;
   }
   if (item.book_id && item.child_id) {

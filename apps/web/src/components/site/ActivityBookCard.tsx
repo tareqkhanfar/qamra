@@ -1,7 +1,8 @@
 /* eslint-disable @next/next/no-img-element -- static preview pages from /public (exported once by a script) */
 import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { productFrom } from "@/lib/shop";
+import { ColoringBookCard } from "@/components/coloring/ColoringBookCard";
+import { isColoringLine, productFrom, productPath } from "@/lib/shop";
 import { money, type CatalogProduct, type Currency } from "@/lib/store";
 import { isSetValue, PREVIEWS, samplePages, soldAges, soldOptions, type Preview } from "@/lib/workbook";
 import { Arrow } from "./blocks";
@@ -24,6 +25,9 @@ export async function ActivityBookCard({
   currency: Currency;
   detailed?: boolean;
 }) {
+  // «دفاتر التلوين والرسم» have their own card and pages (/coloring)
+  if (isColoringLine(product.line))
+    return <ColoringBookCard product={product} currency={currency} detailed={detailed} />;
   const [t, tw, ts, locale] = await Promise.all([
     getTranslations("workbooksHub"),
     getTranslations("workbook"),
@@ -58,7 +62,7 @@ export async function ActivityBookCard({
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-[20px] border border-line bg-paper-raised">
       <Link
-        href={`/workbooks/${product.slug}`}
+        href={productPath(product)}
         className="flex items-end justify-center bg-paper-sunk px-4 pt-4 md:px-6 md:pt-6"
       >
         {cover ? (
@@ -129,7 +133,7 @@ export async function ActivityBookCard({
           </div>
         )}
         <Link
-          href={`/workbooks/${product.slug}`}
+          href={productPath(product)}
           className="mt-auto flex min-h-12 items-center justify-center gap-1.5 rounded-full bg-amber-500 px-6 font-bold text-night-950 transition hover:-translate-y-0.5"
         >
           {t("order")} <Arrow />
