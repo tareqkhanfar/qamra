@@ -33,7 +33,7 @@ The provider's terms cover commercial use of outputs. Each is used only with ter
 | Model | License | Use |
 |---|---|---|
 | YuNet face detector (OpenCV zoo, `face_detection_yunet_2023mar.onnx`) | MIT | Photo check before upload. Detection only: no recognition or embeddings |
-| U²-Net salient-object segmentation (`u2net.onnx`, Qin et al. 2020, github.com/xuebinqin/U-2-Net; the ONNX export mirrored by rembg, SHA-256 `8d10d2f3…b491`) | Apache-2.0 (weights and code): commercial use and self-hosting allowed | The child's cut-out from the character sheet (`qamra_pdf.matte`), run locally with ONNX Runtime (MIT) on the worker; fetched at image build, never trained on our data, no data leaves the server. **Awaiting Tareq's approval** (added 2026-10-21 for «جوليا»'s shoes; without it the cut-out falls back to its colour method) |
+| U²-Net salient-object segmentation (`u2net.onnx`, Qin et al. 2020, github.com/xuebinqin/U-2-Net; the ONNX export mirrored by rembg, SHA-256 `8d10d2f3…b491`) | Apache-2.0 (weights and code): commercial use and self-hosting allowed | The child's cut-out from the character sheet (`qamra_pdf.matte`), run locally with ONNX Runtime (MIT) on the worker; fetched at image build, never trained on our data, no data leaves the server. Approved 2026-10-21 (lead, on Tareq's request to fix «جوليا»'s shoes; free, Apache-2.0, runs locally) |
 
 ## Fonts (embedded in PDFs and the site)
 
