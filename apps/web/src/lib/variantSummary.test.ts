@@ -51,6 +51,35 @@ describe("activity books (§c.9)", () => {
     assert.equal(s.family, null);
   });
 
+  it("«دفاتر التلوين والرسم»: the product and the child, printed and stapled, and the cover", () => {
+    const names = { product: "ألوّن حروفي" };
+    const printed = summarize(
+      { line: "colorbook", options: { format: "softcover" }, child_name: "ضحى", cover_character: true },
+      "activity",
+      names,
+    );
+    assert.equal(ar(printed.title), "ألوّن حروفي · ضحى");
+    assert.equal(details(printed), "مطبوع · دفتر مدبّس");
+    assert.deepEqual(printed.facts.map(ar), ["الغلاف: مع شخصية ضحى"]);
+    const pdf = summarize(
+      { line: "colorbook", options: { format: "digital" }, child_name: "ضحى", cover_character: false },
+      "activity",
+      names,
+    );
+    assert.equal(details(pdf), "ملف PDF");
+    assert.equal(ar(pdf.facts[0]!), "الغلاف: دون شخصية");
+    assert.equal(pdf.facts.length, 2); // and where to download it
+    const sketch = summarize(
+      { line: "colorbook", options: { format: "spiral" }, child_name: "ضحى", binding: "wire-o" },
+      "activity",
+      { product: "دفتري" },
+    );
+    assert.equal(details(sketch), "مطبوع · سلك حلزوني (Wire-O)");
+    assert.deepEqual(sketch.facts, []); // the cover isn't known (an older line)
+    const waiting = summarize({ line: "colorbook", options: { format: "softcover" } }, "activity", names);
+    assert.deepEqual(waiting.title, { text: "ألوّن حروفي" });
+  });
+
   it("a line still waiting for its child is the product's name", () => {
     const s = summarize({ line: "workbook", options: { level: "kg1", volume: "set" } }, "activity", NAMES);
     assert.deepEqual(s.title, { text: "دوسية التأسيس" });

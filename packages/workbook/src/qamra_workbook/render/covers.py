@@ -56,7 +56,7 @@ COPY = CONTENT / "covers.yaml"
 SCENES = CONTENT / "scenes"
 ASSETS = REPO / "content" / "assets"
 DPI = 300
-Series = Literal["foundation", "journey", "family", "islamic"]
+Series = Literal["foundation", "journey", "family", "islamic", "colorbook"]
 
 # The older plates (2D, drawn 2026-10-03) a part shows until its own scene is installed.
 PLATES: dict[str, str] = {
@@ -229,6 +229,37 @@ LOOKS: dict[str, Look] = {
         motif="khatam",
         badge="khatam",
     ),
+    # «دفاتر التلوين والرسم»: a box of crayons; each word of the title in its own crayon colour
+    "colorbook": Look(
+        font="Baloo Bhaijaan 2",
+        words=(
+            ("#FF9B7A", "#E8492E"),
+            ("#FFE27A", "#F2A516"),
+            ("#8FD3FF", "#2E8FD6"),
+            ("#9BE38E", "#2FA36B"),
+            ("#D2B6FF", "#8C5CC7"),
+        ),
+        name_word=("#FFE27A", "#F2A516"),
+        outline="#1C2140",
+        keyline="#FFFFFF",
+        panel="#FFFFFF",
+        panel_edge="#F2B33D",
+        panel_shape="notebook",
+        ribbon=("#FFCB52", "#EBA336"),
+        ribbon_fold="#9A6410",
+        ribbon_ink="#16204A",
+        pill="#16204A",
+        pill_ink="#FFFFFF",
+        pill_alt="#F2B33D",
+        pill_alt_ink="#16204A",
+        accent="#E8492E",
+        ink="#1C2140",
+        paper="#FFFFFF",
+        soft="#FFFFFF",
+        blocks=("#E8492E", "#2E8FD6", "#F2A516", "#2FA36B", "#8C5CC7", "#E4769D"),
+        motif="sparkle",
+        badge="",
+    ),
 }
 
 
@@ -253,6 +284,11 @@ TONES: dict[str, str] = {
     "islamic-v4": "#4A3B7E",
     "islamic-v5": "#7A2F45",
     "islamic-r": "#303A6A",
+    # «دفاتر التلوين والرسم»: one crayon per book
+    "colorbook-letters": "#C04E37",
+    "colorbook-palestine": "#2F7848",
+    "colorbook-ramadan": "#3A4A8C",
+    "colorbook-sketchbook": "#7B5EA3",
 }
 FRAME_MM = 8.0  # the frame's width inside the trim (the safe area starts at 12 mm)
 HINGE_FRAME_MM = 4.0  # beside the spine: the spine's color runs on a little, so a drifting fold never shows
@@ -1286,6 +1322,8 @@ class Front:
     # the family book: draws the child among the family in a w × h mm box → (the SVG, its name tags)
     group: Callable[[float, float], tuple[Markup, list[dict[str, Any]]]] | None = None
     one_line_max: int = 14
+    # a scene drawn in code (an `<svg>` filling the page), when the part has no picture (the coloring books)
+    scene_svg: Markup | None = None
 
 
 def front_data(ctx: PageContext, f: Front, box: Box | None = None) -> dict[str, Any]:
@@ -1361,6 +1399,7 @@ def front_data(ctx: PageContext, f: Front, box: Box | None = None) -> dict[str, 
         "series": f.series,
         "box": box,
         "scene": scene,
+        "scene_svg": f.scene_svg if not scene else None,
         "frame": frame_svg(look, box.w, box.h, frame_bands(g, box)),
         "number": numbered,
         "age_right": box.right + 30.0 if numbered else None,
@@ -1423,6 +1462,7 @@ class Back:
     extra: dict[str, Any] | None = None  # a series' own lines (the Islamic books list and care note)
     cols: int = 0  # columns of «في هذا الجزء» (0: two for a long list or without pages beside it)
     org: dict[str, Any] | None = None  # an organization's logo slot (the family book)
+    scene_svg: Markup | None = None  # the band's scene drawn in code (an `<svg>` that fills the band)
 
 
 def back_data(ctx: PageContext, b: Back, box: Box | None = None) -> dict[str, Any]:
@@ -1467,6 +1507,7 @@ def back_data(ctx: PageContext, b: Back, box: Box | None = None) -> dict[str, An
         "frame": frame_svg(look, box.w, box.h, frame_bands(g, box)),
         "uid": uid,
         "band": band,
+        "band_svg": b.scene_svg if not band else None,
         "band_h": band_h,
         "hero": {"src": child, "h": hero_h, "w": hero_h * aspect},
         "title": title,

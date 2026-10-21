@@ -182,7 +182,9 @@ export type Needs = {
   asks: { name_en: boolean; family: boolean };
   // draw_style: the style a new character is drawn in (the parent's pick, else the first: 3D); styles: the ones
   // the book accepts, in the site's order (the style step's list, owner's decision of 2026-10-09)
-  character: { reuse_id: string | null; draw_style: string | null; styles?: string[] };
+  // required: false for a book that may print without the character («دفاتر التلوين والرسم»: the cover step
+  // asks); missing (an older API) or true: always drawn with it
+  character: { reuse_id: string | null; draw_style: string | null; styles?: string[]; required?: boolean };
   child: {
     name_traceable: boolean;
     name_problem?: "not_arabic" | "not_traceable" | null;
@@ -203,6 +205,8 @@ export type AddWorkbook = {
   child_id: string;
   item_id?: string;
   character_id?: string;
+  /** A book whose character is optional: false prints the cover without the child's character. */
+  with_character?: boolean;
   name_en?: string;
   family?: FamilyPayload;
 };

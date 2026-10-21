@@ -38,6 +38,9 @@ export type LineInput = {
   book_title?: string | null;
   addons?: readonly { slug: string }[] | null;
   dedication?: boolean | null;
+  /** «دفاتر التلوين والرسم»: the product's binding (API `binding`), and whether the cover shows the character. */
+  binding?: string | null;
+  cover_character?: boolean | null;
 };
 
 /** The names that are data, already in the page's language. */
@@ -63,8 +66,14 @@ export function summarize(item: LineInput, kind: Kind, names: Names): Summary {
   return kind === "activity" ? activity(item, names) : story(item, names);
 }
 
+/** The coloring and drawing books (one title per product, so the title names the product: «ألوّن حروفي · ضحى»). */
+const COLORBOOK = "colorbook";
+/** A coloring book's binding when the line doesn't say: stapled for a printed softcover, Wire-O for spiral. */
+const BINDING_OF_FORMAT: Record<string, string> = { softcover: "stapled", spiral: "wire-o" };
+
 function activity(item: LineInput, names: Names): Summary {
   const line = item.line ?? "";
+  if (line === COLORBOOK) return colorbook(item, names);
   const child = clean(item.child_name);
   const options = item.options ?? {};
   const title: Part = child
@@ -81,6 +90,29 @@ function activity(item: LineInput, names: Names): Summary {
   if (latin) facts.push({ key: "nameEn", values: { name: latin } });
   if (options.format === DIGITAL) facts.push({ key: "download" });
   return { kind: "activity", title, details, facts, family: line === "family" ? familyOf(item, child) : null };
+}
+
+/**
+ * «دفاتر التلوين والرسم»: «ألوّن حروفي · ضحى», then «مطبوع · دفتر مدبّس» (or «ملف PDF»), and whether the cover
+ * shows the child's character, once the line has its child.
+ */
+function colorbook(item: LineInput, names: Names): Summary {
+  const child = clean(item.child_name);
+  const options = item.options ?? {};
+  const format = options.format ?? "";
+  const title: Part = child
+    ? { key: `title.${COLORBOOK}`, values: { ...nameCases(child), product: names.product }, fallback: names.product }
+    : { text: names.product };
+  const details: Part[] = [];
+  if (format) details.push({ key: `activityFormat.${format}`, fallback: format });
+  const binding = format === DIGITAL ? "" : clean(item.binding) || BINDING_OF_FORMAT[format] || "";
+  if (binding) details.push({ key: `${COLORBOOK}.binding.${binding}`, fallback: binding });
+  const facts: Part[] = [];
+  if (child && typeof item.cover_character === "boolean") {
+    facts.push({ key: `${COLORBOOK}.cover.${item.cover_character ? "with" : "without"}`, values: nameCases(child) });
+  }
+  if (format === DIGITAL) facts.push({ key: "download" });
+  return { kind: "activity", title, details, facts, family: null };
 }
 
 function story(item: LineInput, names: Names): Summary {

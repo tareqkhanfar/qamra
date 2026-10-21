@@ -19,6 +19,7 @@ PAGES = [
     "/workbooks/foundation-workbook",
     "/workbooks/learning-journey",
     "/workbooks/family-adventures",
+    "/coloring",
     "/pricing",
     "/how-it-works",
     "/shop",
@@ -30,6 +31,12 @@ BOOKS = {
     "foundation-workbook": "دوسية التأسيس",
     "learning-journey": "رحلتي الأولى للتعلّم",
     "family-adventures": "مغامراتي مع عائلتي",
+}
+COLORING_BOOKS = {
+    "coloring-letters": "ألوّن حروفي",
+    "coloring-palestine": "ألوّن فلسطين",
+    "coloring-ramadan": "ألوّن رمضان",
+    "sketchbook": "دفتري",
 }
 # nothing in a store is "coming", nothing waits for a sign-off, and the old name for the stories is gone
 NOT_ON_A_STORE = re.compile(
@@ -62,15 +69,23 @@ def test_the_menu_and_the_footer_are_the_launch_structure(visitor: Page) -> None
     visitor.get_by_role("button", name="القائمة").or_(visitor.locator("summary[aria-label]")).first.click()
     menu = visitor.locator("header details a")
     expect(menu.nth(0)).to_have_text("الحكايات")
-    labels = menu.all_inner_texts()[:5]
-    assert labels == ["الحكايات", "كتب الأنشطة", "للروضات", "الأسعار", "كيف نعمل"]
-    hrefs = [h for h in menu.evaluate_all("els => els.map(e => e.getAttribute('href'))")][:5]
-    assert hrefs == ["/ar/stories", "/ar/workbooks", "/ar/kindergartens", "/ar/pricing", "/ar/how-it-works"]
+    labels = menu.all_inner_texts()[:6]
+    assert labels == ["الحكايات", "كتب الأنشطة", "دفاتر التلوين", "للروضات", "الأسعار", "كيف نعمل"]
+    hrefs = [h for h in menu.evaluate_all("els => els.map(e => e.getAttribute('href'))")][:6]
+    assert hrefs == [
+        "/ar/stories",
+        "/ar/workbooks",
+        "/ar/coloring",
+        "/ar/kindergartens",
+        "/ar/pricing",
+        "/ar/how-it-works",
+    ]
     footer = visitor.locator("footer")
     for name in (
         "دوسية التأسيس",
         "رحلتي الأولى للتعلّم",
         "مغامراتي مع عائلتي",
+        "دفاتر التلوين والرسم",
         "كل الكتب",
         "الأسعار",
         "كيف نعمل",
@@ -101,6 +116,27 @@ def test_the_activity_books_hub_lists_three_books_each_orderable(visitor: Page) 
         visitor.goto(f"{BASE_URL}/ar/workbooks", wait_until="load")
 
 
+def test_the_coloring_books_have_their_own_hub_and_pages(visitor: Page) -> None:
+    """«دفاتر التلوين والرسم»: four books at /coloring, each with its page and «أضيفوا للسلة»; never on the
+    activity-books hub, and /workbooks/<slug> does not serve them."""
+    visitor.goto(f"{BASE_URL}/ar/coloring", wait_until="load")
+    expect(visitor.get_by_role("heading", level=1)).to_have_text("دفاتر التلوين والرسم")
+    for slug, name in COLORING_BOOKS.items():
+        card = visitor.locator("article", has=visitor.get_by_role("heading", name=name, exact=True))
+        expect(card).to_have_count(1)
+        order = card.get_by_role("link", name=re.compile("اطلب"))
+        expect(order).to_have_attribute("href", f"/ar/coloring/{slug}")
+        visitor.goto(f"{BASE_URL}/ar/coloring/{slug}", wait_until="load")
+        expect(visitor.get_by_role("heading", level=1)).to_have_text(name)
+        expect(visitor.get_by_role("button", name="أضيفوا للسلة")).to_be_enabled()
+        visitor.goto(f"{BASE_URL}/ar/coloring", wait_until="load")
+    visitor.goto(f"{BASE_URL}/ar/workbooks", wait_until="load")
+    for name in COLORING_BOOKS.values():
+        expect(visitor.get_by_role("heading", name=name, exact=True)).to_have_count(0)
+    response = visitor.goto(f"{BASE_URL}/ar/workbooks/coloring-letters", wait_until="load")
+    assert response is not None and response.status == 404
+
+
 def test_the_pricing_page_is_one_simple_card_per_book(visitor: Page) -> None:
     """The owner, 2026-10-09: each book with its price, its main options and «اطلبوا الآن»; then delivery and
     cash on delivery in one place; the add-ons folded away; the phone and WhatsApp in the footer."""
@@ -128,7 +164,8 @@ def test_the_english_site_has_the_same_structure(browser: Browser) -> None:
     try:
         page.goto(f"{BASE_URL}/en", wait_until="load")
         nav = page.locator("header nav")
-        for label in ("Stories", "Activity books", "Kindergartens", "Pricing", "How it works"):
+        labels = ("Stories", "Activity books", "Coloring books", "Kindergartens", "Pricing", "How it works")
+        for label in labels:
             expect(nav.get_by_role("link", name=label, exact=True)).to_be_visible()
         assert not NOT_ON_A_STORE.search(page.inner_text("body"))
         page.goto(f"{BASE_URL}/en/workbooks", wait_until="load")

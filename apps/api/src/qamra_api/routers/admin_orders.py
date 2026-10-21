@@ -440,6 +440,10 @@ async def change_status(
         select(OrderItem.id).where(OrderItem.order_id == order.id, OrderItem.line == "workbook").limit(1)
     ):  # «دوسية التأسيس»: each volume drawn from its plan with the child's name and character (no AI cost)
         enqueue(queue, "qamra_worker.jobs.workbook_book.render_order_workbook_items", str(order.id))
+    if body.to == S.confirmed and await db.scalar(
+        select(OrderItem.id).where(OrderItem.order_id == order.id, OrderItem.line == "colorbook").limit(1)
+    ):  # «دفاتر التلوين والرسم»: fixed line art, the child's name (and character, if any) on the cover
+        enqueue(queue, "qamra_worker.jobs.coloring_book.render_order_coloring_items", str(order.id))
     notify.order_statuses(queue.connection, order.id, [body.to])  # customer email (once per status)
     return await _detail(db, order, await _values(db, settings))
 

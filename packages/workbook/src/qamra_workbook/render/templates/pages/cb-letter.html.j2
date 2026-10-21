@@ -1,0 +1,9 @@
+{#- «أُلَوِّنُ حُروفي»: one letter (cb_letter). -#}
+<div class="cb-sheet cb-letterpage">
+  <p class="cb-pill">{{ d.name }}</p>
+  <div class="cb-bigletter">{{ d.letter }}</div>
+  <div class="cb-cards n{{ d.pictures|length }}">
+    {% for x in d.pictures %}<figure class="cb-card"><div class="cb-cardpic">{{ x.svg }}</div><figcaption>{{ x.word }}</figcaption></figure>{% endfor %}
+  </div>
+  <div class="cb-folio">{{ p.folio }}</div>
+</div>

@@ -58,11 +58,13 @@ LINE_JOBS = {  # activity books are drawn by their line's job from the order ite
     "journey": "qamra_worker.jobs.journey_book.render_journey_item",
     "islamic": "qamra_worker.jobs.islamic_book.render_islamic_item",  # «قلبي يعرف الله» (Addendum 10)
     "workbook": "qamra_worker.jobs.workbook_book.render_workbook_item",  # «دوسية التأسيس» (Addendum 5)
+    "colorbook": "qamra_worker.jobs.coloring_book.render_coloring_item",  # «دفاتر التلوين والرسم»
 }
-# what the book detail shows of `Book.generation` (the activity books: their variant and the English name)
+# what the book detail shows of `Book.generation` (the activity books: their variant and the English name;
+# the coloring books: which book, and whether the cover has the child's character)
 GENERATION_KEYS = (
     *("mode", "progress", "models", "outfits", "offline", "public_example", "line", "pages"),
-    *("level", "volume", "stage", "name_en"),
+    *("level", "volume", "stage", "name_en", "title", "cover_character"),
 )
 router = APIRouter(prefix="/api/admin", tags=["admin"], dependencies=[Depends(require_admin)])
 

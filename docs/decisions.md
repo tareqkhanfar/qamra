@@ -1682,3 +1682,89 @@ instruction. 21 lines were changed to match the page, and every changed line was
   - KG2 v3 p44 promises 7 differences, but a moved flower counts twice, so a child finds 6.
   - KG2 v3 p85 and p95 say «complete» on read-only cards.
   - KG2 v3 p71 asks the child to colour a white card white.
+
+## «دفاتر التلوين والرسم»: the store line, the order flow with an optional character (2026-10-21)
+
+The owner asked for a new store section with four books: «ألوّن حروفي» (32 pages), «ألوّن فلسطين» (28),
+«ألوّن رمضان» (24) and «دفتري» (48, a sketchbook). All are A4 portrait with a B/W interior on 160 g paper and a
+300 g colour card cover. The content is fixed and only the cover and the title page are personalized, so there
+is no AI cost per order. The engine contract is `qamra_workbook.coloring.titles` and
+`qamra_workbook.render.coloring_order` (the lead's).
+
+- **A new line, `colorbook`, not the dormant `coloring`.** `coloring` is a story line (an inactive
+  black-and-white story book) and stays as it is. Migration `548c95ea24d1` (after `4e1c9a7b2d63`) re-creates
+  the `ck_products_product_line` CHECK. It adds `colorbook` to the four active styles' `lines` (3d, watercolor,
+  cartoon, semi-realistic, as their guide files now say) and to the gift box. It is idempotent, and down
+  removes all of it.
+- **Formats reuse the print paths' values.** The stapled books are `format: softcover` and the Wire-O
+  sketchbook is `format: spiral`; the PDF is `digital`. The binding lives in `features.binding`
+  (`stapled` / `wire-o`), and the summaries, the cart, the order emails and the print manifest read it from
+  there. Checkout now freezes the product's print facts on every printed order line (`title.print`: size,
+  binding, pages, interior, paper_gsm, cover_gsm). The print manifest and its CSV carry `binding` and a
+  `print_spec` in the printer's words, e.g. «A4 · دفتر مدبّس (تدبيس من المنتصف) · 32 صفحة · ورق 160 غ · داخلي أبيض
+  وأسود · غلاف كرتون 300 غ». The printer's email adds it to each line. The customer's email says «دفتر مدبّس»
+  rather than «غلاف ورقي», and «دفتر سلمى» rather than «كتاب سلمى».
+- **«دفتري» is sold printed only.** A sketchbook printed at home on office paper, one sheet at a time, is not
+  the product: it would lose the thick paper and the Wire-O binding that opens flat. The three coloring books
+  have a PDF too.
+- **Starting prices** (the admin is the source of truth; customers see none while `show_prices` is off):
+  letters 35 ₪ printed / 15 ₪ PDF, Palestine 39 / 15, Ramadan 35 / 15, sketchbook 39. JOD is at 5.2, rounded to
+  0.5 (6.5 / 7.5 / 3). The print costs are placeholders (9 / 8 / 7 ₪ for the stapled books, 14 ₪ for the
+  Wire-O sketchbook) plus 2 ₪ packaging and 0 AI.
+- **Add-ons.** The gift box is listed for the line (it is still switched off for every line). There is no extra
+  copy, no free digital copy with print (it would undercut the PDF) and no sibling bundle: the books are cheap
+  and the bundle rules stay the owner's call in the admin.
+- **The character is optional on this line only** (`store/workbooks.py` `CHARACTER_OPTIONAL`).
+  - **The needs contract.** `GET /api/shop/workbooks/needs` gains `character.required`: false for colorbook,
+    true for every other line.
+  - **The cart.** `POST /api/shop/workbooks/cart` takes `with_character`:
+    - `false` prints the cover without it;
+    - `true` requires one (409 `character_not_approved` when there is none);
+    - when absent, the line uses the `character_id` sent, else the reusable one, else none.
+    - `with_character: false` with a `character_id` → 422 `invalid_input`.
+    - `with_character: false` on any other book → 422 `character_required` (friendly ar/en text).
+  - **The line.** A colorbook line carries `cover_character: true|false`, plus `character_id` only when it has
+    one; `style_slug` is null without one. A cart edit keeps `cover_character`. The cart and the order
+    tracking items expose `cover_character` and `binding`.
+  - **The worker** (`jobs/coloring_book.py`) uses only the character the line carries, never the child's newest
+    one, so a cover chosen without a character stays without. A named character that is gone or not approved is
+    left off, and the book is flagged `character_missing`. That flag is held from the download until a
+    reviewer looks.
+- **The flow.** who → «الغلاف» (a new step id `cover`; the URL's `cover=char|plain`) → [consent → photo →
+  style → character] → review → cart.
+  - **A child with a ready character:** «نعم، ضعوا شخصيتها على الغلاف» (the default) or «بدون شخصية»: 3 steps.
+  - **A child without one:** «غلاف بدون شخصية» (the default: 3 steps) or «ارسموا شخصيتها من صورة» (the
+    usual paid drawing path: 7 steps for a new child).
+  - **The review's cover row.** It shows the cover as chosen, and «تغيير» goes back to the cover step. The
+    cart's «تعديل» keeps the choice (`cover` in the link).
+  - **Starting a new drawing** from the who card (another style, «تغيير الصورة») or from the review means the
+    character goes on the cover.
+- **Ages 3–7** for all four books (the review step's non-blocking check). Nothing is traced, so any name
+  works, and no English name is asked.
+- **The site.** The four books have their own hub `/coloring` and product pages `/coloring/[product]`, kept
+  off the activity-book pages (`WORKBOOK_LINES` vs `ACTIVITY_LINES` in `web/lib/shop.ts`, `productPath()`). The
+  previews come from `web/lib/coloring-previews.json` (`scripts/export_coloring_previews.py`).
+
+## «دفاتر التلوين والرسم»: the books themselves (2026-10-21)
+
+- **Drawn in code, $0 per book.** The owner: «بدون AI، يعني إذا بتقدر ترسم رسومات». All 46 scenes, the 28
+  letter pages, the sketchbook's frames and half-drawings and the covers' scenes are SVG built in code
+  (`packages/workbook/src/qamra_workbook/coloring/`, docs/plans/coloring-books.md). The near-zero-cost AI path
+  (FLUX.1 [schnell] + cleaning into uniform line art, `scripts/coloring_ai.py`, hard `--max-usd` cap, ledger)
+  was built and tried on four hard scenes for $0.072; the code-drawn pages were kept for every page, so the
+  books are consistent and nothing was generated for print.
+- **Binding.** The three coloring books are saddle-stitched (stapled): the cheapest binding for 24–32 pages,
+  and a coloring page is torn out easily when the child wants to hang it. The sketchbook is Wire-O: it opens
+  flat to draw on, and it has 48 pages. Every count is a multiple of 4 (the preflight checks `signature=4`).
+- **Paper and printing.** A4 portrait, 160 g uncoated paper (pencils, coloured pencils and crayons; felt pens
+  may show through a little), printed on both sides, black only: the interior is pure black line art and black text (#000,
+  the K plate), tested by rendering pages and checking that no pixel has colour. Only the info page shows the
+  child's character (greyscale in print). Cover: 300 g card, colour, the same design system as the activity
+  series (`render/covers.py`, series `colorbook`, one crayon colour per book).
+- **Line weights.** Outlines 2.6 mm, inner lines 2.0 mm, round joins and caps, nothing smaller than ~6 mm to
+  colour (the owner's 2–3 mm for ages 3–6). The covers paint the same drawings with ~1.5 mm lines.
+- **«أُلَوِّنُ حُروفي».** The letter is the display font's glyph as a path (outlined by a wide stroke under the
+  white fill, so the font's overlapping contours draw no seams); «ه» is shown as «هـ» (the isolated form of
+  the display font reads as «٥»). The pictures are the existing picture library's, redrawn in black at 2.2 mm.
+- **Personalized words to colour** (the title, the child's name) are hollow real text: white letters ringed by
+  black text shadows. A stroke on text would print as a Type 3 font.

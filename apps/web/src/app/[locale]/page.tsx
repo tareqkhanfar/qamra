@@ -3,6 +3,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { Kid } from "@/components/art/Kid";
 import { BookViewer } from "@/components/book/BookViewer";
 import { CoverArt } from "@/components/book/CoverArt";
+import { ColoringMiniCard } from "@/components/coloring/ColoringMiniCard";
 import { ActivityBookCard } from "@/components/site/ActivityBookCard";
 import { HomeHero } from "@/components/site/HomeHero";
 import { JsonLd } from "@/components/site/JsonLd";
@@ -14,10 +15,11 @@ import { Arrow, CtaBand, Faq, SECTION, SectionHead, Steps, type QA, type Step } 
 import { Link } from "@/i18n/navigation";
 import { nameCases } from "@/lib/arabicName";
 import { examplesFor, getShopSummary, getStoreCatalog, getTheme } from "@/lib/catalog";
+import { coloringBooks } from "@/lib/coloring";
 import { brandName } from "@/config/brand";
 import { siteJsonLd } from "@/lib/pageSeo";
 import { pageMetadata } from "@/lib/seo";
-import { ACTIVITY_LINES } from "@/lib/shop";
+import { WORKBOOK_LINES } from "@/lib/shop";
 
 export async function generateMetadata(): Promise<Metadata> {
   const [t, locale] = await Promise.all([getTranslations("meta"), getLocale()]);
@@ -30,7 +32,7 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-/** The home: the promise, the four offers, a real book, how it works, why Qamra, the activity books, FAQ, CTA. */
+/** The home: the promise, the four offers, a real book, how it works, why Qamra, the activity books, the coloring books, FAQ, CTA. */
 export default async function LandingPage() {
   const locale = await getLocale();
   const [t, tm, examples, catalog, summary] = await Promise.all([
@@ -43,7 +45,8 @@ export default async function LandingPage() {
   const featured = examples[0] ?? null; // a published example (real pages), else the first story's sample
   const sample = await getTheme(featured?.theme ?? "first-day", locale);
   const featuredExamples = examples.filter((e) => e.theme === featured?.theme);
-  const activity = (catalog?.products ?? []).filter((p) => (ACTIVITY_LINES as readonly string[]).includes(p.line));
+  const activity = (catalog?.products ?? []).filter((p) => (WORKBOOK_LINES as readonly string[]).includes(p.line));
+  const coloring = coloringBooks(catalog?.products ?? []);
   const currency = catalog?.currency ?? "ILS";
   const art = sample?.art ?? { scene: "night" as const };
   const how = t.raw("how") as Step[];
@@ -189,6 +192,25 @@ export default async function LandingPage() {
             {activity.map((p) => (
               <ActivityBookCard key={p.slug} product={p} currency={currency} />
             ))}
+          </div>
+        </section>
+      )}
+
+      {/* THE COLORING AND DRAWING BOOKS */}
+      {coloring.length > 0 && (
+        <section className="bg-paper-sunk py-12 md:py-20">
+          <div className={`${SECTION} flex flex-col gap-6 md:gap-8`}>
+            <SectionHead
+              eyebrow={t("coloringEyebrow")}
+              title={t("coloringTitle")}
+              lead={t("coloringLead")}
+              more={{ href: "/coloring", label: t("coloringAll") }}
+            />
+            <div className="grid grid-cols-2 gap-3 md:gap-6 lg:grid-cols-4">
+              {coloring.map((p) => (
+                <ColoringMiniCard key={p.slug} product={p} />
+              ))}
+            </div>
           </div>
         </section>
       )}

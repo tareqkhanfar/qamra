@@ -5,11 +5,13 @@
 .type-islamic-cover-back .foot, .type-islamic-cover-wrap .foot,
 .type-workbook-cover-front .tab, .type-workbook-cover-back .tab, .type-journey-cover-front .tab,
 .type-journey-cover-back .tab, .type-cover-front .tab, .type-cover-back .tab, .type-islamic-cover-front .tab,
-.type-islamic-cover-back .tab, .type-islamic-cover-wrap .tab { display: none; }
+.type-islamic-cover-back .tab, .type-islamic-cover-wrap .tab,
+.type-cb-cover-front .foot, .type-cb-cover-back .foot, .type-cb-cover-front .tab, .type-cb-cover-back .tab { display: none; }
 .cv-root { position: absolute; left: calc(-1 * var(--inset)); top: calc(-1 * var(--inset)); width: {{ g.page_w }}mm;
            height: {{ g.page_h }}mm; overflow: hidden; z-index: 0; }
 .cv { position: absolute; top: 0; overflow: hidden; }
 .cv-scene { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.cv-svgscene svg, .cvk-band > svg { width: 100%; height: 100%; display: block; }
 .cv-noscene { background: linear-gradient(to bottom, #CFE9FA, #FFF6E2 62%, #CFE6BE); }
 .cv-veil { position: absolute; inset: 0;
            background: linear-gradient(to bottom, rgba(255, 255, 255, .22), rgba(255, 255, 255, 0) 34%),

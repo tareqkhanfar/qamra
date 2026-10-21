@@ -1,5 +1,22 @@
 # Changelog
 
+## «دفاتر التلوين والرسم»: three coloring books and a sketchbook, drawn in code (2026-10-21)
+- New store line `colorbook` (migration `548c95ea24d1`) with four products: «أُلَوِّنُ حُروفي» (32 pp),
+  «أُلَوِّنُ فِلَسْطينَ» (28), «أُلَوِّنُ رَمَضانَ» (24), all stapled, plus «دَفْتَري» (48, Wire-O). All are A4,
+  printed black-only on 160 g paper with a colour card cover. Prices are set in the admin (hidden while
+  `show_prices` is off).
+- All the art is SVG drawn in code (`packages/workbook/src/qamra_workbook/coloring/`): 46 scenes, 28 letter
+  pages, the sketchbook's frames and half-drawings, and the covers' painted scenes. Each book costs $0 in AI.
+  A capped AI line-art path (`scripts/coloring_ai.py`, `coloring/lineart.py`) was trialled for $0.072 and is
+  not used in any book.
+- Personalized cover (the name, and the child's character when the family has one, else a drawn
+  centrepiece), title page, «عن قمرة» with the book code, and gendered prompts. Print-ready PDFs pass
+  preflight: 3 mm bleed, boxes, embedded fonts, 300 DPI, page count a multiple of 4.
+- Order flow: who → the new «الغلاف» step (character optional, this line only) → review → cart. Worker job
+  `coloring_book`; the print manifest carries the binding and the printer's spec.
+- Site: the new section `/coloring` (hub, four product pages with exported previews,
+  `scripts/export_coloring_previews.py`), with links from the menu, footer, home page and sitemap.
+
 ## The child's own face shape in cartoon and 3D; one direction per view on the sheet (2026-10-21)
 - Prompts: `character_portrait.v5` and `character_sheet.v10` through `likeness.v4`: a FACE SHAPE AND AGE block
   (the outline from the photo first; the width against the length, jaw, chin, cheeks, eye spacing and the lower

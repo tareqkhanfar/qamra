@@ -8,8 +8,9 @@ import { buttonClasses } from "@/components/ui/Button";
 import { Link, redirect } from "@/i18n/navigation";
 import { getPricesShown, getStoreCatalog } from "@/lib/catalog";
 import { priceFamilies, type PriceFamily, type PriceRow } from "@/lib/pricing";
+import { coloringPreviews, smallSrc } from "@/lib/coloring";
 import { pageMetadata } from "@/lib/seo";
-import { ACTIVITY_LINES } from "@/lib/shop";
+import { ACTIVITY_LINES, isColoringLine, productPath } from "@/lib/shop";
 import { money } from "@/lib/store";
 import { ISLAMIC_SETS, PREVIEWS } from "@/lib/workbook";
 
@@ -84,9 +85,16 @@ export default async function PricingPage() {
           {families.map((family) => {
             const lead = family.products[0]!;
             const story = STORY_LINES.includes(family.line);
+            const coloring = isColoringLine(family.line); // four books in one card, with their own hub
             const first = PREVIEWS[lead.slug]?.[0];
-            const cover = story ? STORY_COVERS[family.line] : (first?.sm ?? first?.src);
-            const href = story ? `/stories?line=${family.line}` : `/workbooks/${lead.slug}`;
+            const coloringCover = coloringPreviews(lead.slug).cover;
+            const cover = story
+              ? STORY_COVERS[family.line]
+              : coloring
+                ? coloringCover && smallSrc(coloringCover.src)
+                : (first?.sm ?? first?.src);
+            const href = story ? `/stories?line=${family.line}` : coloring ? "/coloring" : productPath(lead);
+            const title = t.has(`lineTitle.${family.line}`) ? t(`lineTitle.${family.line}`) : name(lead);
             return (
               <article
                 key={family.line}
@@ -106,7 +114,7 @@ export default async function PricingPage() {
                   )}
                   <div className="flex flex-col gap-0.5">
                     <h2 id={`price-${family.line}`} className="text-[20px] leading-snug text-night-900 md:text-[22px]">
-                      {name(lead)}
+                      {title}
                     </h2>
                     {family.from !== null && (
                       <span className="text-[15px] text-ink-muted">
@@ -139,7 +147,7 @@ export default async function PricingPage() {
                 </dl>
                 <Link
                   href={href}
-                  aria-label={t("orderLabel", { name: name(lead) })}
+                  aria-label={t("orderLabel", { name: title })}
                   className={buttonClasses("solid", "md", "mt-auto w-full")}
                 >
                   {t("order")}

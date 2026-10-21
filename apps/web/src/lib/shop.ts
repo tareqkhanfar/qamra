@@ -3,10 +3,31 @@ import { api } from "@/lib/api";
 import type { CatalogProduct, Currency } from "@/lib/store";
 
 /**
- * The activity-book lines the shop lists; each has its product page at /workbooks/[product]. «قلبي يعرف الله»
- * (islamic) is listed only while the catalog has a volume the scholar approved (the API omits it otherwise).
+ * The activity-book lines: books made from the child's name (and their character, when they have one), with no
+ * story to write. The create flow, the cart and the order summaries treat them alike (lib/flows.ts keeps the same
+ * list; the API's is `store/workbooks.py` ACTIVITY). «قلبي يعرف الله» (islamic) is listed only while the catalog
+ * has a volume the scholar approved (the API omits it otherwise). `colorbook`: «دفاتر التلوين والرسم».
  */
-export const ACTIVITY_LINES = ["workbook", "journey", "family", "islamic"] as const;
+export const ACTIVITY_LINES = ["workbook", "journey", "family", "islamic", "colorbook"] as const;
+
+/** The activity books with a page at /workbooks/[product] and a card on the activity-books hub. */
+export const WORKBOOK_LINES = ["workbook", "journey", "family", "islamic"] as const;
+
+/** «دفاتر التلوين والرسم»: its own hub at /coloring, and a page per book at /coloring/[product]. */
+export const COLORING_LINES = ["colorbook"] as const;
+
+/** The coloring and drawing books (content/store/catalog.yaml): a quiz pick names a product, not a line. */
+export const COLORING_SLUGS = ["coloring-letters", "coloring-palestine", "coloring-ramadan", "sketchbook"] as const;
+
+export function isColoringLine(line: string | null | undefined): boolean {
+  return (COLORING_LINES as readonly string[]).includes(line ?? "");
+}
+
+/** An activity book's product page: /coloring/<slug> for the coloring and drawing books, else /workbooks/<slug>. */
+export function productPath(product: { slug: string; line?: string | null }): string {
+  const coloring = isColoringLine(product.line) || (COLORING_SLUGS as readonly string[]).includes(product.slug);
+  return `${coloring ? "/coloring" : "/workbooks"}/${product.slug}`;
+}
 
 /** The activity books have their product pages (/workbooks/[product]); the cards and the quiz link there. */
 export const WORKBOOK_PAGES = true;
@@ -49,5 +70,5 @@ export function pickHref(p: QuizPick): string | null {
   if (p.kind === "stories") return "/stories";
   if (!WORKBOOK_PAGES || !p.available) return null; // a product that isn't in the catalog has no page
   const q = new URLSearchParams(p.options).toString();
-  return `/workbooks/${p.slug}${q ? `?${q}` : ""}`;
+  return `${productPath(p)}${q ? `?${q}` : ""}`;
 }

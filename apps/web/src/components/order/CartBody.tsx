@@ -318,7 +318,13 @@ function Line({
               ))
             ) : (
               <span className="text-caption font-semibold text-amber-700">
-                {t(activity ? "cart.needs.activity" : "cart.needs.story")}
+                {t(
+                  item.line === "colorbook" // the character is optional there: only the child is missing
+                    ? "cart.needs.colorbook"
+                    : activity
+                      ? "cart.needs.activity"
+                      : "cart.needs.story",
+                )}
               </span>
             ))}
         </LineText>

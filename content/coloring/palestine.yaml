@@ -1,0 +1,108 @@
+# «أُلَوِّنُ فِلَسْطينَ»: 25 full-page scenes of Palestinian life and heritage drawn in code, in book order
+# (packages/workbook/src/qamra_workbook/coloring/scenes/palestine.py, one `@scene("palestine", id)` per page).
+# Captions: short titles, fully vowelized (house style: no sukun on the lam of «ال», a shadda on sun letters).
+# No writing, flags or maps inside any drawing; girls without headscarves; the Aqsa compound from outside only.
+title_ar: أُلَوِّنُ فِلَسْطينَ
+title_en: I Color Palestine
+cover_scene: olive-tree  # the cover and the back band (no people: the child stands in front)
+pages:
+  - id: olive-harvest
+    caption_ar: قَطْفُ الزَّيْتونِ
+    caption_en: The olive harvest
+    scene: "A family picks olives: grandfather on a ladder in a big olive tree, grandmother and a girl with baskets, a cloth spread under the tree."
+  - id: olive-tree
+    caption_ar: شَجَرَةُ الزَّيْتونِ
+    caption_en: The olive tree
+    scene: "One old olive tree close up: a thick twisting trunk with a hollow, a wide crown full of olives, low stone walls and poppies."
+  - id: zeit-zaatar
+    caption_ar: زَيْتٌ وَزَعْتَرٌ
+    caption_en: Oil and za'atar
+    scene: "Breakfast at a table with an embroidered cloth: an oil jar, taboon bread, a bowl of olive oil and a bowl of za'atar, a teapot; a girl waves behind it and an olive tree shows through the arched window."
+  - id: zaatar
+    caption_ar: نَبْتَةُ الزَّعْتَرِ
+    caption_en: The za'atar plant
+    scene: "A big za'atar plant on the hillside by a stone wall, a boy with a basket of sprigs, a butterfly."
+  - id: taboon
+    caption_ar: خُبْزُ الطّابونِ
+    caption_en: Taboon bread
+    scene: "A clay taboon oven with a fire inside and smoke rising; grandmother holds a wooden peel with a loaf, a girl holds warm bread, a basket of bread."
+  - id: village-house
+    caption_ar: بَيْتٌ في القَرْيَةِ
+    caption_en: A house in the village
+    scene: "A stone village house with a dome on its roof, a blue arched door and window, pots of geraniums, a stone path, a well and a cat."
+  - id: grandma-story
+    caption_ar: حِكايَةُ جَدَّتي
+    caption_en: Grandma's story
+    scene: "Under a grapevine trellis heavy with grapes, grandmother sits on a mat telling a story to a girl and a boy, with tea on a tray."
+  - id: almond-terraces
+    caption_ar: زَهْرُ اللَّوْزِ
+    caption_en: Almond blossom
+    scene: "Spring on the hillside terraces: an almond tree in blossom, stone terrace walls, olive trees, a girl waving, a butterfly."
+  - id: wildflowers
+    caption_ar: زُهورٌ بَرِّيَّةٌ
+    caption_en: Wildflowers
+    scene: "A spring meadow: a big red anemone, daisies and poppies in front of the hills, small flowers far away, two butterflies."
+  - id: sunbird
+    caption_ar: عُصْفورُ الشَّمْسِ
+    caption_en: The sunbird
+    scene: "The Palestine sunbird perched on a flowering branch, its long curved beak reaching a red tubular flower."
+  - id: cactus
+    caption_ar: نَبْتَةُ الصَّبْرِ
+    caption_en: The prickly pear
+    scene: "A big prickly pear cactus with its fruit in front of a dry-stone wall, a small village house far away, a hen."
+  - id: shepherd
+    caption_ar: الرّاعي وَالغَنَمُ
+    caption_en: The shepherd and his sheep
+    scene: "A kind grandfather shepherd with a crook, his flock on the green hills, a lamb and a sitting sheepdog."
+  - id: sheep-lamb
+    caption_ar: النَّعْجَةُ وَالحَمَلُ
+    caption_en: The ewe and the lamb
+    scene: "A big woolly sheep and her lamb close up in the meadow, daisies, a poppy and a butterfly."
+  - id: grapes-figs
+    caption_ar: عِنَبٌ وَتينٌ
+    caption_en: Grapes and figs
+    scene: "Big bunches of grapes hang from a vine trellis, a fig branch with ripe figs, a girl reaching up, baskets of figs and grapes, a fig cut in half."
+  - id: kites
+    caption_ar: الطّائِراتُ الوَرَقِيَّةُ
+    caption_en: Kites
+    scene: "A boy and a girl fly two diamond kites with bow tails over the hills, birds and clouds in the sky."
+  - id: jaffa-sea
+    caption_ar: بَحْرُ يافا
+    caption_en: The sea of Jaffa
+    scene: "The old city of Jaffa on its hill over the sea (stone houses, domes, a clock tower, a minaret, a palm), fishing boats with lateen sails, gulls."
+  - id: jaffa-oranges
+    caption_ar: بُرْتُقالُ يافا
+    caption_en: Jaffa oranges
+    scene: "A big orange tree full of oranges, a boy holding an orange, a crate and a basket of oranges, another orange tree behind."
+  - id: old-city-alley
+    caption_ar: في البَلْدَةِ القَديمَةِ
+    caption_en: In the old city
+    scene: "A stepped alley between two stone houses climbs to an arch; a blue door, arched windows, flower pots, lanterns on a rope, a cat on the steps."
+  - id: aqsa
+    caption_ar: المَسْجِدُ الأَقْصى المُبارَكُ
+    caption_en: Al-Aqsa Mosque
+    scene: "The Dome of the Rock and the Qibli Mosque seen from outside (simple tile panels, arched windows, the golden dome), cypress trees, olive trees and the old city wall. No people, no inscriptions."
+  - id: souk
+    caption_ar: في السّوقِ
+    caption_en: At the souk
+    scene: "A market stall under a striped awning: a smiling seller waves behind pyramids of oranges and apples, sacks of spices in front, lanterns."
+  - id: maqluba
+    caption_ar: قَلْبُ المَقْلوبَةِ
+    caption_en: Flipping the maqluba
+    scene: "Father lifts the pot high to show the maqluba turned out on its tray; two children cheer behind a table with an embroidered cloth."
+  - id: knafeh
+    caption_ar: صينِيَّةُ الكُنافَةِ
+    caption_en: A tray of knafeh
+    scene: "A big round tray of knafeh cut into diamonds with pistachio crumbs, a piece on a plate, tea; a girl and a boy wave behind the counter."
+  - id: tatreez-dress
+    caption_ar: الثَّوْبُ المُطَرَّزُ
+    caption_en: The embroidered dress
+    scene: "A Palestinian thob on a wooden hanger: wide sleeves with embroidered cuffs, a chest panel with an eight-pointed star, a sash, cypress trees and stepped teeth at the hem."
+  - id: tatreez-pattern
+    caption_ar: زَخارِفُ التَّطْريزِ
+    caption_en: Tatreez patterns
+    scene: "A big cross-stitch medallion to color: an eight-pointed star in three layers, four cypress trees, four diamonds, borders of stepped teeth."
+  - id: keffiyeh
+    caption_ar: الكوفِيَّةُ الفِلَسْطينِيَّةُ
+    caption_en: The Palestinian keffiyeh
+    scene: "A keffiyeh laid flat: the fishnet field, an olive-leaf chain and a bold stripe on every side, tassels along two edges."

@@ -23,6 +23,11 @@ import {
   resumeAt,
   stepsFor,
   tracesName,
+  wantsCharacter,
+  characterRequired,
+  CHARACTER_OPTIONAL_LINES,
+  formatCover,
+  parseCover,
   type FlowState,
   type StepId,
 } from "./flows.ts";
@@ -40,6 +45,7 @@ function state(patch: Partial<FlowState>): FlowState {
     stylePreset: false,
     companionOffered: productLine === "magic",
     asksFamily: productLine === "family",
+    characterOptional: productLine === "colorbook",
     plan: null,
     ...patch,
   };
@@ -180,7 +186,8 @@ describe("hard rules (§e)", () => {
       const steps = stepsFor(s);
       assert.equal(steps.includes("style"), steps.includes("character"), steps.join(","));
       if (steps.includes("style")) assert.equal(steps[steps.indexOf("style") + 1], "character", steps.join(","));
-      assert.equal(steps.includes("style"), !s.reusable, `${s.productLine}: ${steps.join(",")}`);
+      // a coloring book without a ready character goes without one unless the parent asks (the cover step)
+      assert.equal(steps.includes("style"), wantsCharacter(s) && !s.reusable, `${s.productLine}: ${steps.join(",")}`);
     }
   });
 
@@ -488,5 +495,108 @@ describe("the activity books' questions (mirror of GET /api/shop/workbooks/needs
     for (const bad of ["Adam", "ضحى2", "", "  ", "سلمى!", "-سلمى", "سارة Sara"]) assert.ok(!isArabicName(bad), bad);
     for (const ok of ["Duha", "Abdel-Rahman", "Nour Al Huda", "D'Arcy"]) assert.ok(isLatinName(ok), ok);
     for (const bad of ["ضحى", "Duha1", "", "-Duha", "Du.ha"]) assert.ok(!isLatinName(bad), bad);
+  });
+});
+
+describe("«دفاتر التلوين والرسم»: the character on the cover is optional (2026-10-21)", () => {
+  const colorbook = (patch: Partial<FlowState>) => state({ productLine: "colorbook", ...patch });
+
+  it("only the coloring and drawing books may go without the character", () => {
+    assert.deepEqual([...CHARACTER_OPTIONAL_LINES], ["colorbook"]);
+    assert.ok(!characterRequired("colorbook"));
+    for (const line of ["workbook", "journey", "family", "islamic", "magic", "classic"]) {
+      assert.ok(characterRequired(line), line);
+    }
+    assert.deepEqual(agesFor("colorbook", {}), [3, 7]);
+    assert.ok(!tracesName("colorbook") && !asksNameEn("colorbook", { format: "softcover" }));
+  });
+
+  it("the URL's cover choice", () => {
+    assert.equal(parseCover("char"), true);
+    assert.equal(parseCover("plain"), false);
+    assert.equal(parseCover(null), null);
+    assert.equal(parseCover("x"), null);
+    assert.equal(formatCover(true), "char");
+    assert.equal(formatCover(false), "plain");
+  });
+
+  it("a child with a ready character: who, cover, review (with it by default, or without) = 3", () => {
+    for (const coverCharacter of [null, true, false]) {
+      const s = colorbook({ child: PHOTOGRAPHED, reusable: true, coverCharacter });
+      assert.deepEqual(stepsFor(s), ["child", "cover", "summary"], String(coverCharacter));
+    }
+    assert.ok(wantsCharacter(colorbook({ child: PHOTOGRAPHED, reusable: true })));
+    assert.ok(!wantsCharacter(colorbook({ child: PHOTOGRAPHED, reusable: true, coverCharacter: false })));
+  });
+
+  it("a child without a character: without one by default = 3", () => {
+    const s = colorbook({ child: NEW_CHILD });
+    assert.ok(!wantsCharacter(s));
+    assert.deepEqual(stepsFor(s), ["child", "cover", "summary"]);
+    assert.deepEqual(planFor(s, false), ["reuse"]); // nothing to draw
+    assert.deepEqual(stepsFor(colorbook({ child: NEW_CHILD, coverCharacter: false })), ["child", "cover", "summary"]);
+  });
+
+  it("a child without a character, drawn from a photo: the usual drawing steps = 7", () => {
+    const s = colorbook({ child: NEW_CHILD, coverCharacter: true });
+    assert.deepEqual(stepsFor(s), ["child", "cover", "consent", "photo", "style", "character", "summary"]);
+    assert.deepEqual(planFor(s, false), ["consent", "photo", "style", "character"]);
+    // a photo from the last 24 hours: no photo step
+    const photographed = colorbook({ child: PHOTOGRAPHED, coverCharacter: true });
+    assert.deepEqual(stepsFor(photographed), ["child", "cover", "style", "character", "summary"]);
+  });
+
+  it("a plain cover drops a drawing pinned earlier", () => {
+    const drawing: FlowState["plan"] = ["consent", "photo", "style", "character"];
+    assert.deepEqual(stepsFor(colorbook({ child: NEW_CHILD, coverCharacter: false, plan: drawing })), [
+      "child",
+      "cover",
+      "summary",
+    ]);
+    const kept = colorbook({ child: NEW_CHILD, coverCharacter: true, plan: drawing });
+    assert.deepEqual(stepsFor(kept), ["child", "cover", "consent", "photo", "style", "character", "summary"]);
+  });
+
+  it("resumes on the cover step until the parent chooses, then on the review or the drawing", () => {
+    assert.equal(resumeAt(colorbook({ child: NEW_CHILD })), "cover");
+    assert.equal(resumeAt(colorbook({ child: PHOTOGRAPHED, reusable: true })), "cover");
+    assert.equal(resumeAt(colorbook({ child: NEW_CHILD, coverCharacter: false })), "summary");
+    assert.equal(resumeAt(colorbook({ child: PHOTOGRAPHED, reusable: true, coverCharacter: true })), "summary");
+    assert.equal(resumeAt(colorbook({ child: NEW_CHILD, coverCharacter: true })), "consent");
+    assert.equal(resumeAt(colorbook({ child: PHOTOGRAPHED, coverCharacter: true })), "style");
+    const drawn = colorbook({ child: PHOTOGRAPHED, coverCharacter: true, character: { approved: true } });
+    assert.equal(resumeAt(drawn), "summary");
+  });
+
+  it("the cover and review steps can be shown when they apply", () => {
+    assert.ok(canShow("cover", colorbook({ child: NEW_CHILD })));
+    assert.ok(!canShow("cover", colorbook({ child: null })));
+    assert.ok(!canShow("cover", state({ productLine: "journey", child: NEW_CHILD })));
+    assert.ok(canShow("summary", colorbook({ child: NEW_CHILD, coverCharacter: false })));
+    assert.ok(canShow("summary", colorbook({ child: NEW_CHILD }))); // not chosen yet: without, by default
+    assert.ok(!canShow("summary", colorbook({ child: NEW_CHILD, coverCharacter: true }))); // still to draw
+    assert.ok(!canShow("summary", state({ productLine: "journey", child: NEW_CHILD }))); // unchanged
+  });
+
+  it("every coloring flow can be counted", () => {
+    for (const child of [NEW_CHILD, CONSENTED, PHOTOGRAPHED]) {
+      for (const reusable of [false, true]) {
+        for (const coverCharacter of [null, true, false]) {
+          const steps = stepsFor(colorbook({ child, reusable, coverCharacter }));
+          assert.equal(steps[1], "cover");
+          assert.equal(steps.at(-1), "summary");
+          steps.forEach((step, i) => assert.deepEqual(progress(steps, step), { n: i + 1, total: steps.length }));
+        }
+      }
+    }
+  });
+
+  it("the other activity books have no cover step", () => {
+    for (const line of ["workbook", "journey", "family", "islamic"]) {
+      for (const reusable of [false, true]) {
+        const steps = stepsFor(state({ productLine: line, child: NEW_CHILD, reusable }));
+        assert.ok(!steps.includes("cover"), `${line}: ${steps.join(",")}`);
+      }
+    }
   });
 });

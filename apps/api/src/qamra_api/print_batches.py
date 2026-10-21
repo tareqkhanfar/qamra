@@ -15,7 +15,14 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from qamra_core.db.models import Book, BookStatus, Order, OrderItem, OrderStatus, PrintBatch, PrintBatchStatus
-from qamra_core.printing import PRINTED_FORMATS, item_copies, item_extras, item_format, item_inserts
+from qamra_core.printing import (
+    PRINTED_FORMATS,
+    item_copies,
+    item_extras,
+    item_format,
+    item_inserts,
+    print_spec_label,
+)
 
 READY_FROM = (OrderStatus.confirmed, OrderStatus.generating, OrderStatus.review)
 
@@ -133,6 +140,7 @@ def build_manifest(candidates: list[Candidate], sends: int) -> dict[str, Any]:
         for item in c.items:
             book = c.books.get(item.book_id) if item.book_id else None
             options = item.title.get("options") or {}
+            spec = item.title.get("print") or {}  # frozen at checkout (lines from 2026-10-21 on)
             items.append(
                 {
                     "n": len(items) + 1,
@@ -143,7 +151,10 @@ def build_manifest(candidates: list[Candidate], sends: int) -> dict[str, Any]:
                     "book_code": book.code if book else None,  # printed in the book and on its back
                     "sku": item.sku,
                     "format": item_format(options, item.addons or []),
-                    "size": options.get("size"),
+                    "size": options.get("size") or spec.get("size"),
+                    # stapled or Wire-O, the pages and the paper (a coloring book says only softcover)
+                    "binding": spec.get("binding"),
+                    "print_spec": print_spec_label(spec) or None,
                     "copies": item_copies(item.quantity, item.addons or []),
                     "extras": item_extras(item.addons or []),
                     "interior_key": book.pdf_interior_key if book else None,

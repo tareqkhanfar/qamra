@@ -126,6 +126,7 @@ PRODUCTS: dict[str, tuple[str, str]] = {
     "journey": ("رحلتي الأولى للتعلّم", "My First Learning Journey"),
     "family": ("مغامراتي مع عائلتي", "My Adventures with My Family"),
     "islamic": ("قلبي يعرف الله", "My Heart Knows Allah"),
+    "colorbook": ("دفاتر التلوين والرسم", "Coloring & Drawing Books"),
 }
 
 
@@ -250,6 +251,16 @@ LOOKS: dict[str, Look] = {
         gold="#C99A2E",
         motif="khatam",
         text_font="Scheherazade New",
+    ),
+    # «دفاتر التلوين والرسم»: the interior prints black only, so its info page is black and greys too
+    "colorbook": Look(
+        ink="#111111",
+        accent="#111111",
+        soft="#EFEFEF",
+        card="#111111",
+        card_ink="#FFFFFF",
+        gold="#555555",
+        paper="#FFFFFF",
     ),
 }
 

@@ -1,0 +1,6 @@
+{#- A drawing page: the prompt and the framed space (cb_draw); the date page's labels sit on its lines. -#}
+<div class="cb-sheet cb-drawpage">
+  <p class="cb-caption{{ ' empty' if not d.prompt }}" data-fit="15">{{ d.prompt }}</p>
+  <div class="cb-drawing">{{ d.drawing }}{% for x in d.labels %}<span class="cb-linelabel" style="right: {{ x.right }}mm; top: {{ x.top }}mm">{{ x.text }}</span>{% endfor %}</div>
+  <div class="cb-folio">{{ p.folio }}</div>
+</div>

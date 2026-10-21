@@ -40,6 +40,7 @@ PARTS = [
     *(f"journey-{n}" for n in (1, 2, 3)),
     "family",
     *(f"islamic-{v}" for v in ("v1", "v2", "v3", "v4", "v5", "r")),
+    *(f"colorbook-{t}" for t in ("letters", "palestine", "ramadan", "sketchbook")),
 ]
 
 
@@ -69,6 +70,9 @@ def test_every_part_has_its_words_and_its_drawn_scene() -> None:
     for part in PARTS:
         series = "foundation" if part.startswith("kg") else part.split("-")[0]
         assert part in covers.series_copy(series)["parts"], part
+        if series == "colorbook":  # the coloring books paint their own line art (coloring.cover_art)
+            assert covers.scene_source(part) is None, part
+            continue
         assert covers.scene_source(part) == covers.SCENES / f"{part}.jpg", part
         with Image.open(covers.SCENES / f"{part}.jpg") as img:
             assert img.width >= 1700 and abs(img.width / img.height - 0.75) < 0.01  # 3:4 at 2K

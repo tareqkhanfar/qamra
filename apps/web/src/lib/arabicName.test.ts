@@ -383,6 +383,8 @@ const GENITIVE: Record<string, string> = {
   "orderPath.line.title.workbook": "nameGen",
   "orderPath.line.title.journey": "nameGen",
   "orderPath.line.title.family": "nameGen",
+  "orderPath.line.colorbook.cover.with": "nameGen", // «الغلاف: مع شخصية أبي بكر» (lib/variantSummary)
+  "create.activity.cover.alt": "nameGen", // the cover step's ready character
   "voice.invite.message": "childLam",
   "voice.elder.hello": "childLam",
   "voice.elder.done": "childGen", // «وصارت حكاية أبي بكر بصوتكم»

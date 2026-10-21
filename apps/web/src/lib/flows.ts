@@ -22,12 +22,14 @@ export type StepId =
   | "format"
   | "addons"
   | "family"
-  | "summary";
+  | "summary"
+  | "cover";
 
 /** Every step, in the order a flow shows them; each flow keeps the ones it needs. */
 export const ALL_STEPS: readonly StepId[] = [
   "child",
   "line",
+  "cover",
   "consent",
   "photo",
   "style",
@@ -43,14 +45,39 @@ export const ALL_STEPS: readonly StepId[] = [
 ];
 
 /**
- * The activity-book lines (dawseyeh, journey, family, «قلبي يعرف الله»). The same values as `ACTIVITY_LINES`
- * in lib/shop.ts and the API's `store/workbooks.py` ACTIVITY; flows.test.ts checks that lib/shop.ts agrees.
+ * The activity-book lines (dawseyeh, journey, family, «قلبي يعرف الله», «دفاتر التلوين والرسم»). The same values
+ * as `ACTIVITY_LINES` in lib/shop.ts and the API's `store/workbooks.py` ACTIVITY; flows.test.ts checks that
+ * lib/shop.ts agrees.
  */
-export const ACTIVITY_LINES = ["workbook", "journey", "family", "islamic"] as const;
+export const ACTIVITY_LINES = ["workbook", "journey", "family", "islamic", "colorbook"] as const;
 export type ActivityLine = (typeof ACTIVITY_LINES)[number];
 
 /** The activity books whose pages have the child trace their own Arabic name («اسمي»). */
 export const TRACING_LINES: readonly ActivityLine[] = ["workbook", "journey"];
+
+/**
+ * The activity books that may print without the child's character (the API's `CHARACTER_OPTIONAL`, and its needs'
+ * `character.required: false`): «دفاتر التلوين والرسم» put the character on the cover only when the parent wants it.
+ * Their flow has the cover step («الغلاف») after the child: with the ready character or without it, or a new
+ * drawing from a photo (the usual consent, photo, style and character steps).
+ */
+export const CHARACTER_OPTIONAL_LINES: readonly ActivityLine[] = ["colorbook"];
+
+/** The URL's `cover`: the parent's choice on the cover step (`char`: with the character, `plain`: without). */
+export type CoverChoice = "char" | "plain";
+
+export function parseCover(value: string | null | undefined): boolean | null {
+  return value === "char" ? true : value === "plain" ? false : null;
+}
+
+export function formatCover(withCharacter: boolean): CoverChoice {
+  return withCharacter ? "char" : "plain";
+}
+
+/** Whether the line's book is always drawn with the child's character (the fallback for the server's needs). */
+export function characterRequired(line: string | null): boolean {
+  return !(CHARACTER_OPTIONAL_LINES as readonly string[]).includes(line ?? "");
+}
 
 /**
  * The optional steps a flow pins once it decides them (the URL's `plan`), so that passing a step never drops it
@@ -99,6 +126,16 @@ export type FlowState = {
    * asks it before its type (the photo comes first: «أطفالي» opens straight on it).
    */
   newPhoto?: NewPhoto | null;
+  /**
+   * The book may print without the character (`CHARACTER_OPTIONAL_LINES`, the server's `character.required: false`):
+   * the flow has the cover step, and draws only when the parent asks for the character and none is ready.
+   */
+  characterOptional?: boolean;
+  /**
+   * The parent's choice on the cover step (the URL's `cover`): true with the character, false without; null or
+   * missing: not chosen yet, which means the ready character when there is one, else none.
+   */
+  coverCharacter?: boolean | null;
 };
 
 /** The URL's `photo` (lib/flows `FlowState.newPhoto`). */
@@ -139,9 +176,19 @@ export function formatPlan(plan: readonly PlanToken[]): string {
   return PLAN_TOKENS.filter((x) => plan.includes(x)).join(",");
 }
 
+/**
+ * Whether the book will carry the child's character: always, unless the line makes it optional; then the parent's
+ * choice on the cover step, or (not chosen yet) the ready character when there is one.
+ */
+export function wantsCharacter(s: FlowState): boolean {
+  if (s.kind !== "activity" || !s.characterOptional) return true;
+  return s.coverCharacter ?? s.reusable;
+}
+
 /** The drawing steps the facts call for now (no pin): consent, photo, style and character, or none. */
 function drawingNow(s: FlowState): Set<DrawStep> {
   const out = new Set<DrawStep>();
+  if (!wantsCharacter(s)) return out; // a cover without the character: nothing to draw
   if (s.reusable && !s.newPhoto) return out;
   if (!s.child?.consent) out.add("consent");
   if (s.newPhoto || asksPhoto(s.child)) out.add("photo");
@@ -155,7 +202,7 @@ function optional(s: FlowState): Set<StepId> {
   const plan = s.plan ?? [];
   const out = new Set<StepId>();
   if (s.kind === "story" && (plan.includes("line") || s.productLine === null)) out.add("line");
-  const pinned = plan.some((x) => DRAWING.includes(x));
+  const pinned = plan.some((x) => DRAWING.includes(x)) && wantsCharacter(s); // a plain cover draws nothing
   const drawing = pinned ? new Set(plan.filter((x): x is DrawStep => x !== "line" && x !== "reuse")) : drawingNow(s);
   for (const step of drawing) out.add(step);
   return out;
@@ -176,6 +223,7 @@ export function stepsFor(s: FlowState): StepId[] {
   const steps = new Set<StepId>(["child"]);
   for (const step of ["line", "consent", "photo", "style", "character"] as const) if (opt.has(step)) steps.add(step);
   if (s.kind === "activity") {
+    if (s.characterOptional) steps.add("cover");
     if (s.asksFamily) steps.add("family");
     steps.add("summary");
   } else {
@@ -216,6 +264,11 @@ export function resumeAt(s: FlowState): StepId {
     if (s.newPhoto === "new" && !s.character) return s.child.consent ? "photo" : "consent";
     if (!s.productLine) return "line";
   }
+  if (s.kind === "activity" && s.characterOptional && !s.character) {
+    // the cover step decides first; a plain cover goes straight on
+    if (s.coverCharacter === null || s.coverCharacter === undefined) return "cover";
+    if (!s.coverCharacter) return afterCharacter(s);
+  }
   if (s.character) return s.character.approved ? afterCharacter(s) : "character";
   if (s.reusable && !s.newPhoto) {
     // an activity book goes on with its ready character; a story needs it named in the URL first
@@ -230,13 +283,16 @@ export function resumeAt(s: FlowState): StepId {
 export function canShow(step: StepId, s: FlowState): boolean {
   const story = s.kind === "story";
   const child = s.child;
-  const ready = s.reusable || !!s.character?.approved;
+  // the book can be reviewed: a ready or approved character, or a cover the parent wants without one
+  const ready = s.reusable || !!s.character?.approved || !wantsCharacter(s);
   const book = s.book;
   switch (step) {
     case "child":
       return true;
     case "line":
       return story && !!child;
+    case "cover":
+      return !story && !!s.characterOptional && !!child;
     case "consent":
       return !!child;
     case "photo":
@@ -299,7 +355,7 @@ export function agesFor(line: string | null, options: Record<string, string>): [
     if (["R", "set"].includes(v)) return [4, 8];
     return null;
   }
-  if (line === "family") return [3, 7];
+  if (line === "family" || line === "colorbook") return [3, 7];
   return null;
 }
 
