@@ -16,7 +16,9 @@ from qamra_ai.config import Settings as AISettings
 from qamra_ai.image.fake import FakeImageProvider
 from qamra_ai.pipeline.photo_color import to_linear, to_srgb
 from qamra_ai.pipeline.runtime import Runtime
+from qamra_ai.pipeline.theme import load_style, load_theme
 from qamra_core.db.models import (
+    Book,
     Character,
     CharacterStatus,
     Child,
@@ -300,3 +302,35 @@ def test_the_newest_photo_goes_first_and_the_drawing_records_it(
     with Image.open(io.BytesIO(photos[0])) as first, Image.open(FIXTURE) as fixture:
         assert first.size == fixture.size  # the new photo first
     assert character.params["photo_id"] == str(new.id) and character.params["attempt"] == 3
+
+
+def test_the_chosen_outfit_is_drawn_and_kept_on_the_character(
+    db: Session, storage: ObjectStorage, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """«ماذا يلبس؟» (owner, 2026-10-20): the outfit the parent chose (`params.outfit`) dresses the
+    portrait and the sheet, and stays on the character for the books."""
+    made = _spy(monkeypatch)
+    character = _redraw(db, storage, {"attempt": 1, "outfit": "striped-sweater"})
+
+    assert asyncio.run(draw_character(db, storage, character, offline="fake")) == {"status": "ready"}
+    image = getattr(made[0].image, "primary", made[0].image)
+    assert isinstance(image, FakeImageProvider)
+    portrait, sheet = image.requests[0].prompt, image.requests[-1].prompt
+    assert "wide horizontal teal and cream stripes" in portrait and "plain cream top" not in portrait
+    assert "The parent chose this outfit" in sheet and "camel-brown corduroy trousers" in sheet
+    assert "night-blue trousers" not in sheet
+    assert character.params["outfit"] == "striped-sweater"
+    assert books.character_outfit(character) == "striped-sweater"
+    assert books.character_outfit(None) is None
+
+
+def test_the_book_bible_dresses_everyday_scenes_in_the_characters_outfit() -> None:
+    child = Child(first_name="تالا", gender=Gender.f, birth_year=2021, interests=[], wears_hijab=False)
+    child.wears_glasses = False
+    theme, style = load_theme("first-day"), load_style("3d")
+    plain = books.book_bible(Book(generation={"seed": 5}), theme, child, style, None)
+    book = Book(generation={"seed": 5, "child_outfit": "yellow-cardigan"})
+    dressed = books.book_bible(book, theme, child, style, None)
+    assert "buttercup-yellow knitted cardigan" in dressed.outfits["day"]
+    assert dressed.outfits["sleep"] == plain.outfits["sleep"]  # pyjamas stay
+    assert book.generation["bible"]["outfits"]["day"] == dressed.outfits["day"]  # stored with the book

@@ -2,6 +2,7 @@
 import { api, fetchBlob, upload, type ApiResult } from "@/lib/api";
 import type { CustomBriefBody } from "@/lib/customStory";
 import { ALL_STEPS, type StepId } from "@/lib/flows";
+import type { Outfits } from "@/lib/outfits";
 import type { PhotoCrop } from "@/lib/photoCrop";
 import type { Cart } from "@/lib/store";
 
@@ -18,6 +19,8 @@ export type Character = {
   has_portrait?: boolean;
   // the photo it was drawn from («تغيير الصورة», 2026-10-19); null: drawn before the API recorded it
   photo_id?: string | null;
+  // what the child wears in it («ماذا يلبس؟», 2026-10-20; lib/outfits): drawings made before wear the default
+  outfit?: string;
 };
 /** One of the child's drawings, kept so the parent can compare them and go back to one (newest first). */
 export type Drawing = Character & { created_at: string; style_name_ar: string; style_name_en: string };
@@ -125,17 +128,20 @@ export const createApi = {
     api<Child>(`/api/create/photos/${photoId}/crop`, { method: "PUT", json: crop }),
   photoBlob: (photoId: string) => fetchBlob(photoImage(photoId)),
   // sku: the activity book it is drawn for, so the API checks that the book accepts the style; redraw: the
-  // parent asked for a new drawing (never the approved one reused), with `note`, their own words (optional)
+  // parent asked for a new drawing (never the approved one reused), with `note`, their own words (optional);
+  // outfit: what the child wears (lib/outfits; none: the default, or any approved drawing in the style reused)
   draw: (
     childId: string,
     style: string,
     fixes: Fix[] = [],
     sku?: string | null,
     again?: { redraw: true; note?: string },
+    outfit?: string | null,
   ) =>
     api<Character>(`/api/create/children/${childId}/characters`, {
-      json: { style, fixes, ...(sku ? { sku } : {}), ...(again ?? {}) },
+      json: { style, fixes, ...(sku ? { sku } : {}), ...(again ?? {}), ...(outfit ? { outfit } : {}) },
     }),
+  outfits: () => api<Outfits>("/api/create/outfits"),
   drawings: (childId: string) => api<Drawing[]>(`/api/create/children/${childId}/characters`),
   character: (id: string) => api<Character>(`/api/create/characters/${id}`),
   approve: (id: string) => api<Character>(`/api/create/characters/${id}/approve`, { method: "POST" }),

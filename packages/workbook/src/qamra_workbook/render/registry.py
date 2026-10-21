@@ -46,6 +46,15 @@ class Assets:
         paths = [self.character, self.wave, *(path for path, _ in self.family.values())]
         return any(path is not None and is_fallback(path) for path in paths)
 
+    @property
+    def feet_cut(self) -> bool:
+        """A character's shoes may not be whole (its drawing runs off the sheet's bottom, or the cut-out left
+        drawing under the feet: `render.character.feet_cut`): the order job flags the book `cutout_feet`."""
+        from qamra_workbook.render.character import feet_cut
+
+        paths = [self.character, self.wave, *(path for path, _ in self.family.values())]
+        return any(path is not None and bool(feet_cut(path)) for path in paths)
+
 
 @dataclass
 class Built:

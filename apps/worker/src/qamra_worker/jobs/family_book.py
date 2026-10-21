@@ -62,6 +62,9 @@ MAX_MEMBERS_IN_BOOK = 6  # A7 §7
 NOT_FOR_ACTIVITY_BOOKS = ("coloring",)  # a coloring-book character is black and white
 NAME_EN_GUESSED, NAME_NOT_TRACEABLE = "name_en_guessed", "name_not_traceable"  # book flags (name pages)
 CUTOUT_FALLBACK = "cutout_fallback"  # book flag: a character is printed as a framed portrait, not cut out
+CUTOUT_FEET = (
+    "cutout_feet"  # book flag: a character's shoes may not be whole (cut by its sheet, or by the cut-out)
+)
 
 
 def family_of(item: OrderItem, child: Child) -> Any:
@@ -181,11 +184,17 @@ def name_flags(flags: list[str] | None, *, guessed: bool, traceable: bool) -> li
 
 
 def cutout_flags(flags: list[str] | None, files: Any) -> list[str]:
-    """The book's flags with the cut-out check of this render: `cutout_fallback` when a character could not be
-    cut out of its sheet (a watercolour sheet's grain, an odd sheet) and the pages print it as a framed
-    portrait instead (`files.cutout_fallback`), so the reviewer looks at it before print approval."""
-    kept = [f for f in (flags or []) if f != CUTOUT_FALLBACK]
-    return kept + ([CUTOUT_FALLBACK] if getattr(files, "cutout_fallback", False) else [])
+    """The book's flags with the cut-out checks of this render, so the reviewer looks before print approval:
+    `cutout_fallback` when a character could not be cut out of its sheet (a watercolour sheet's grain, an odd
+    sheet) and the pages print it as a framed portrait instead (`files.cutout_fallback`); `cutout_feet` when a
+    character's shoes may not be whole (`files.cutout_feet`: the sheet's drawing runs off its bottom edge, a
+    redraw fixes it, or the cut-out left drawing under the feet)."""
+    kept = [f for f in (flags or []) if f not in (CUTOUT_FALLBACK, CUTOUT_FEET)]
+    return (
+        kept
+        + ([CUTOUT_FALLBACK] if getattr(files, "cutout_fallback", False) else [])
+        + ([CUTOUT_FEET] if getattr(files, "cutout_feet", False) else [])
+    )
 
 
 def store_inserts(storage: ObjectStorage, book: Book, files: Any) -> dict[str, str]:

@@ -38,6 +38,7 @@ class OrderFiles:
     preflight: dict[str, dict[str, Any]] = field(default_factory=dict)  # file name → report
     pages: int = 0
     cutout_fallback: bool = False  # a character is printed as a framed portrait (not cut out): flag the book
+    cutout_feet: bool = False  # a character's shoes may not be whole (see render.character.feet_cut): flag it
 
     @property
     def passed(self) -> bool:
@@ -136,6 +137,7 @@ async def render_order(
         cover=await render_pages(cover, assets, out / "cover.pdf"),
         pages=len(interior.pages),
         cutout_fallback=assets.framed,
+        cutout_feet=assets.feet_cut,
     )
     files.preflight = {"interior.pdf": _report(files.interior, g), "cover.pdf": _report(files.cover, g)}
     for name, sheets in insert_sheets(plan):

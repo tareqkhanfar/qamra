@@ -37,7 +37,7 @@ def _flat(req: ImageRequest) -> str:
 
 
 def test_books_draw_portrait_first_with_v7() -> None:
-    assert (SHEET_PROMPT_VERSION, PORTRAIT_PROMPT_VERSION) == (7, 3)
+    assert (SHEET_PROMPT_VERSION, PORTRAIT_PROMPT_VERSION) == (9, 4)
     with pytest.raises(ValueError, match="no portrait"):
         character_request(BOY, [PHOTO], load_style("3d"), version=4, portrait=PORTRAIT)
     old = character_request(BOY, [PHOTO], load_style("3d"), version=4)
@@ -251,3 +251,18 @@ def test_under_a_hijab_the_likeness_block_asks_for_no_hair() -> None:
     ):
         assert "- Hair: exactly as in the photo" not in req.prompt and "sage-green hijab" in req.prompt
     assert "- Hair: exactly as in the photo" in portrait_request(BOY, [PHOTO], load_style("cartoon")).prompt
+
+
+@pytest.mark.parametrize("slug", ["3d", "semi-realistic", "cartoon", "watercolor"])
+def test_v9_keeps_the_whole_figure_and_its_shoes_inside_the_picture(slug: str) -> None:
+    """«جوليا»'s white sneakers (2026-10-21): every view from head to soles with background below the shoes,
+    and light shoes clearly outlined, so the cut-out never meets feet cut by the picture or lost in the
+    shadow."""
+    girl = Child(name="x", gender="f", age=4, outfit="red-jeans")
+    flat = _flat(character_request(girl, [PHOTO], load_style(slug), portrait=PORTRAIT))
+    assert "from the top of the head to the soles of both shoes" in flat
+    assert "a clear band of empty background below the shoes" in flat
+    assert "no part of any view touches or runs off the edge of the picture" in flat
+    assert "light-colored shoes too" in flat and "white sneakers" in flat
+    v8 = _flat(character_request(girl, [PHOTO], load_style(slug), portrait=PORTRAIT, version=8))
+    assert "soles of both shoes" not in v8 and "white sneakers" in v8  # v8 stays for the record

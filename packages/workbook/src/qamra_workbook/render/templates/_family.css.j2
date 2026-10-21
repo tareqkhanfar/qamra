@@ -185,7 +185,7 @@
                        background: repeating-linear-gradient(90deg, #FFFFFF 0 5mm, #F2B33D 5mm 10mm); border-bottom-left-radius: 2mm; border-bottom-right-radius: 2mm; }
 .market-sign b { display: block; font: 800 15pt/1.25 var(--title); white-space: nowrap; overflow: hidden; }
 .shop-scene { position: relative; flex: 1; min-height: 0; }
-.shop-kid { position: absolute; bottom: 0; right: 2mm; height: 92%; }
+.shop-kid { position: absolute; bottom: 0; right: 2mm; height: 92%; z-index: 1; }  /* over the bag: shoes whole */
 .shop-bag { position: absolute; bottom: 0; left: -1mm; width: 27mm; height: 27mm; }
 .choose { flex: none; padding: 3.5mm 4.5mm 3mm; display: flex; flex-direction: column; gap: 2.5mm; }
 .choose-head { display: flex; align-items: center; justify-content: space-between; gap: 3mm; }
@@ -328,9 +328,9 @@
 .fcert-ribbon svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 .fcert-ribbon span { position: relative; font: 800 20pt/1 var(--title); color: #FFFFFF; margin-top: -2.4mm; }
 .fcert-line { font: 600 14pt/1.5 var(--body); color: var(--ink-2); margin-top: 4mm; text-align: center; }
-.fcert-hero { position: relative; width: 120mm; height: 92mm; margin-top: 2mm; display: flex; justify-content: center; }
+.fcert-hero { position: relative; flex: none; width: 120mm; height: 92mm; margin-top: 2mm; display: flex; justify-content: center; }
 .fcert-burst { position: absolute; left: 50%; top: 0; width: 92mm; height: 92mm; transform: translateX(-50%); }
-.fcert-child { position: relative; height: 88mm; margin-top: 3mm; }
+.fcert-child { position: relative; height: 84mm; margin-top: 3mm; }  /* the shoes end 1 mm above the name band */
 .fcert-medal { position: absolute; left: 6mm; bottom: 6mm; width: 28mm; height: 36mm; }
 .fcert-medal svg { width: 100%; height: 100%; }
 .fcert-name { margin-top: -4mm; position: relative; z-index: 2; max-width: 150mm; padding: 1mm 14mm 2mm; border-radius: 9mm;

@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 from PIL import Image, ImageDraw, ImageFilter
 from qamra_workbook.pictures import LibraryStore
-from qamra_workbook.render.character import PAD, cut_out, figure_box, is_fallback, paper_color, pose
+from qamra_workbook.render.character import PAD, cut_out, feet_cut, figure_box, is_fallback, paper_color, pose
 from qamra_workbook.render.registry import Assets
 
 from qamra_pdf.cutout import GRAIN, figure_mask, paper_grain
@@ -161,3 +161,80 @@ def test_figures_run_together_on_textured_paper_are_split_near_the_thirds() -> N
     boxes = [figure_box(img, paper, i) for i in range(3)]
     for (x0, _, x1, _), cx in zip(boxes, (200, 600, 1000), strict=True):
         assert x0 <= cx - 70 and cx + 70 <= x1 and x1 - x0 < w / 2, boxes
+
+
+# ---- the shoes whole («جوليا»'s white shoes, 2026-10-21) -------------------------------------------------
+
+CREAM = (248, 237, 215)
+
+
+def _sneakers_sheet(path: Path, *, soles: int = 50) -> None:
+    """Three children in jeans and white sneakers on cream paper, each in a warm floor shadow, `soles` px of
+    paper under the shoes (0: the drawing runs off the sheet's bottom edge)."""
+    rng = np.random.default_rng(4)
+    w, h = 1200, 640
+    feet = h - soles
+    base = np.array(CREAM, np.float32) + rng.normal(0, 0.8, (h, w, 3))
+    img = Image.fromarray(np.clip(base, 0, 255).astype(np.uint8))
+    wash = Image.new("L", (w, h), 0)
+    for cx in (200, 600, 1000):
+        ImageDraw.Draw(wash).ellipse((cx - 150, feet - 30, cx + 150, feet + 22), fill=230)
+    img = Image.composite(
+        Image.new("RGB", (w, h), (196, 168, 132)), img, wash.filter(ImageFilter.GaussianBlur(10))
+    )
+    d = ImageDraw.Draw(img)
+    for cx in (200, 600, 1000):
+        d.ellipse((cx - 60, 40, cx + 60, 170), fill=(60, 40, 30))
+        d.ellipse((cx - 42, 62, cx + 42, 160), fill=(228, 180, 150))
+        d.rounded_rectangle((cx - 70, 170, cx + 70, 330), radius=24, fill=(200, 70, 50))
+        d.rectangle((cx - 40, 330, cx - 4, feet - 40), fill=(60, 90, 140))
+        d.rectangle((cx + 4, 330, cx + 40, feet - 40), fill=(60, 90, 140))
+        for x0 in (cx - 72, cx + 6):  # a white sneaker: the paper's colour in shade, strokes, straps, a sole
+            y0 = feet - 46
+            d.rounded_rectangle(
+                (x0, y0, x0 + 66, y0 + 46), radius=16, fill=(212, 202, 186), outline=(150, 140, 128), width=2
+            )
+            for _ in range(40):
+                x, y, tone = (
+                    x0 + 6 + int(rng.integers(0, 52)),
+                    y0 + 6 + int(rng.integers(0, 32)),
+                    int(rng.integers(6, 34)),
+                )
+                d.line((x, y, x + 10, y), fill=(212 + tone, 202 + tone, 186 + tone), width=2)
+            for k in range(3):
+                d.line((x0 + 12, y0 + 8 + 9 * k, x0 + 52, y0 + 6 + 9 * k), fill=(165, 155, 142), width=2)
+            d.line((x0 + 2, y0 + 40, x0 + 64, y0 + 40), fill=(170, 160, 148), width=2)
+    img.filter(ImageFilter.GaussianBlur(0.7)).save(path)
+
+
+def test_white_shoes_are_printed_whole(tmp_path: Path) -> None:
+    """Both poses keep their white shoes (the floor-shadow step took them for the shadow: «جوليا»'s book
+    printed her without shoes), and nothing is flagged."""
+    sheet = tmp_path / "sheet.png"
+    _sneakers_sheet(sheet)
+    for index in (0, 1):
+        out = pose(sheet, tmp_path / "cut", index, max_print_mm=20, min_print_w_mm=0)
+        assert feet_cut(out) == "" and not is_fallback(out)
+        with Image.open(out) as im:
+            alpha = np.asarray(im.getchannel("A"))
+        h, w = alpha.shape
+        rows = np.flatnonzero((alpha > 127).any(1))
+        # the cut-out reaches down to the soles (the figure is 590 px tall: the jeans end 90 px above it)
+        assert rows[-1] > h - 12, (rows[-1], h)
+        shoes = alpha[round(h * 0.9) : round(h * 0.96), round(w * 0.15) : round(w * 0.85)]
+        assert (shoes > 127).mean() > 0.8
+    assert not Assets(LibraryStore(), out, 0.5).feet_cut
+
+
+def test_feet_cut_by_the_sheet_are_flagged(tmp_path: Path) -> None:
+    """A sheet whose drawing runs off its bottom edge has the shoes cut by the drawing itself: the PNG says so
+    and the book is flagged `cutout_feet` for the reviewer (a redraw of the character fixes it)."""
+    sheet = tmp_path / "sheet.png"
+    _sneakers_sheet(sheet, soles=0)
+    out = pose(sheet, tmp_path / "cut", 0, max_print_mm=20, min_print_w_mm=0)
+    assert "bottom" in feet_cut(out)
+    assert Assets(LibraryStore(), out, 0.5).feet_cut
+    good = tmp_path / "good.png"
+    _sneakers_sheet(good)
+    clean = pose(good, tmp_path / "cut", 0, max_print_mm=20, min_print_w_mm=0)
+    assert Assets(LibraryStore(), clean, 0.5, family={1: (out, 0.5)}).feet_cut  # a family member's too
