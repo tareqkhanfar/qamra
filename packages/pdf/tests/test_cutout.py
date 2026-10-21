@@ -3,6 +3,7 @@
 from pathlib import Path
 
 import numpy as np
+import pytest
 from PIL import Image, ImageDraw, ImageFilter
 
 from qamra_pdf.assets import cutout
@@ -328,3 +329,17 @@ def test_lost_shoes_are_reported() -> None:
     without = mask.copy()
     without[H - SOLES - 47 :, :] = False  # the cut ends at the hem of the jeans
     assert "under the feet" in feet_problem(p, without)
+
+
+@pytest.mark.matte
+def test_the_model_keeps_white_shoes_and_drops_the_warm_shadow() -> None:
+    """The same white sneakers in a warm floor shadow, cut with the segmentation model's matte (the cut the
+    worker makes): the shoes whole, the shadow gone, nothing pale under the soles."""
+    img = _white_shoes()
+    cut = cut_out(img)
+    assert cut.method == "model" and not cut.fallback and cut.feet == ""
+    mask = figure_mask(img)
+    assert _shoes(mask) > 0.97, f"only {_shoes(mask):.0%} of the shoes kept"
+    for x in (55, 90, 300, 345):
+        assert not mask[H - SOLES - 10, x], f"shadow kept at x={x}"
+    assert not mask[H - SOLES + 12 :, :].any()

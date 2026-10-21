@@ -26,6 +26,12 @@ jobs:
           python-version: "3.12"
       - run: uv sync --locked
       - run: uv run playwright install --with-deps chromium
+      # the cut-out's segmentation model (U²-Net, Apache-2.0, 176 MB): the `matte` tests use it
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/qamra/models
+          key: matte-u2net-8d10d2f3
+      - run: uv run python scripts/fetch_matte_model.py
       - run: make lint typecheck test
 
   web:

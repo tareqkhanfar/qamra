@@ -23,8 +23,7 @@ import numpy as np
 from PIL import Image, ImageChops, ImageFilter, ImageStat
 from PIL.PngImagePlugin import PngInfo
 
-from qamra_pdf.cutout import GRAIN, Cutout, ink_mask, paper_grain
-from qamra_pdf.cutout import VERSION as CUTOUT_VERSION
+from qamra_pdf.cutout import GRAIN, Cutout, cache_tag, ink_mask, paper_grain
 from qamra_pdf.cutout import cut_out as cut_out_figure
 
 DIFF = 22  # how far (0–255, per channel) a pixel must be from the paper to count as drawing
@@ -34,6 +33,7 @@ MAX_PRINT_MM = 125.0  # tallest printed size the cut-out must cover at 300 DPI
 MIN_PRINT_W_MM = 66.0  # widest printed size (a portrait frame crops by width), also at 300 DPI
 DPI = 300
 MERGED = 0.6  # one "figure" wider than this share of a wide sheet is the sheet's figures run together
+PAIR = 1.6  # of two "figures" on a wide sheet, one this much wider than the other is two views touching
 FALLBACK_KEY = "qamra-cutout"  # PNG text: "fallback: <why>" when the figure is a framed portrait
 FEET_KEY = "qamra-feet"  # PNG text: why the figure's shoes may not be whole (read by `feet_cut`)
 SHEET_EDGE_PX = 2  # a figure whose drawing reaches this close to the sheet's bottom edge has its feet cut
@@ -99,6 +99,25 @@ def _split(columns: np.ndarray, w: int) -> list[tuple[int, int]]:
     return runs
 
 
+def _split_pair(figures: list[tuple[int, int]], columns: np.ndarray, w: int) -> list[tuple[int, int]]:
+    """Two runs on a three-view sheet where one is about twice the other's width: two views touch (the
+    waving pose's hand on the walking pose, «v10» sheets, 2026-10-21) and the cut-out would hold two
+    children. The wide run is split at its emptiest column near its middle."""
+    widths = [b - a for a, b in figures]
+    wide = int(np.argmax(widths))
+    if widths[wide] < PAIR * widths[1 - wide] or widths[wide] < 0.4 * w:
+        return figures
+    a, b = figures[wide]
+    lo, hi = a + (b - a) // 3, b - (b - a) // 3
+    cut = lo + int(np.argmin(columns[lo:hi]))
+    parts = []
+    for x0, x1 in ((a, cut), (cut, b)):
+        on = np.flatnonzero(columns[x0:x1] > 0)
+        if on.size:
+            parts.append((x0 + int(on[0]), x0 + int(on[-1]) + 1))
+    return sorted([figures[1 - wide], *parts])
+
+
 def figure_box(img: Image.Image, paper: tuple[int, int, int], index: int = 0) -> tuple[int, int, int, int]:
     """Bounding box of the figure `index` from the left (0 is the front view)."""
     textured = paper_grain(img, paper) > GRAIN
@@ -108,6 +127,8 @@ def figure_box(img: Image.Image, paper: tuple[int, int, int], index: int = 0) ->
     figures = [run for run in _runs([bool(c) for c in columns]) if run[1] - run[0] > w * 0.05]
     if len(figures) == 1 and w >= 1.3 * h and figures[0][1] - figures[0][0] > MERGED * w:
         figures = [run for run in _split(columns, w) if run[1] - run[0] > w * 0.05]
+    if len(figures) == 2 and w >= 1.3 * h:  # two of the three views touch (a waving hand, a stride)
+        figures = _split_pair(figures, columns, w)
     if len(figures) <= index:
         raise ValueError(f"no figure {index} on the character sheet ({len(figures)} found)")
     x0, x1 = figures[index]
@@ -132,6 +153,15 @@ def cut_out(img: Image.Image, paper: tuple[int, int, int]) -> Cutout:
     padded = Image.new("RGB", (img.width + 2 * PAD, img.height + 2 * PAD), paper)
     padded.paste(img, (PAD, PAD))
     return cut_out_figure(padded, paper)
+
+
+def _runs_off(box: tuple[int, int, int, int], sheet: Image.Image, cut: Cutout) -> bool:
+    """The cut figure reaches the sheet's bottom edge: its box ends there and the cut-out goes down to it
+    (grain or a wash on the last rows can end the box there with the shoes well above it)."""
+    if box[3] < sheet.height - SHEET_EDGE_PX or cut.fallback:
+        return False
+    rows = np.flatnonzero((np.asarray(cut.image.getchannel("A")) > 127).any(1))
+    return bool(rows.size) and int(rows[-1]) >= PAD + (box[3] - box[1]) - 1 - SHEET_EDGE_PX
 
 
 def feet_cut(path: Path) -> str:
@@ -170,7 +200,7 @@ def pose(
     min_print_w_mm: float = MIN_PRINT_W_MM,
 ) -> Path:
     """The cut-out figure `index` (0: front view, 1: the first pose) as a print PNG; cached by content."""
-    key = f"cutout-v{CUTOUT_VERSION}-w{min_print_w_mm:g}"
+    key = f"cutout-{cache_tag()}-w{min_print_w_mm:g}"
     if max_print_mm != MAX_PRINT_MM:  # a bigger print (the covers) is its own file
         key += f"-h{max_print_mm:g}"
     digest = hashlib.sha256(sheet.read_bytes() + key.encode()).hexdigest()[:12]
@@ -184,9 +214,7 @@ def pose(
     cut = cut_out(img.crop(box), paper)
     # the shoes whole: the drawing does not run off the sheet's bottom (the crop is padded, so the cut-out
     # cannot see that edge itself), and the cut-out left nothing drawn under the feet
-    feet = (
-        "the drawing runs off the sheet's bottom edge" if box[3] >= img.height - SHEET_EDGE_PX else cut.feet
-    )
+    feet = "the drawing runs off the sheet's bottom edge" if _runs_off(box, img, cut) else cut.feet
     figure = sticker_edge(cut.image, width=max(4, cut.image.height // 90))
     figure = figure.crop(figure.getchannel("A").getbbox() or (0, 0, figure.width, figure.height))
     target_h = round(max_print_mm / 25.4 * DPI)

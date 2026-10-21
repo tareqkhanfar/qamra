@@ -18,8 +18,7 @@ from pathlib import Path
 
 from PIL import Image, ImageChops, ImageFilter, ImageOps
 
-from qamra_pdf.cutout import VERSION as CUTOUT_VERSION
-from qamra_pdf.cutout import cut_out
+from qamra_pdf.cutout import cache_tag, cut_out
 
 PKG_DIR = Path(__file__).parent
 
@@ -274,11 +273,11 @@ def prepare(
     work = out_dir / "derived"
     figure: Path | None = None
     if hero and hero.is_file():
-        dest = work / f"hero-{hero.stem}-v{CUTOUT_VERSION}.png"
+        dest = work / f"hero-{hero.stem}-{cache_tag()}.png"
         figure = hero_view(hero, dest) if hero_is_sheet else figure_cutout(hero, dest)
     return Assets(
         back=back_background(front, work / "back.jpg") if front and front.is_file() else None,
-        companion=cutout(companion, work / f"companion-v{CUTOUT_VERSION}.png")
+        companion=cutout(companion, work / f"companion-{cache_tag()}.png")
         if companion and companion.is_file()
         else None,
         decor=prepare_decor(work / "decor"),

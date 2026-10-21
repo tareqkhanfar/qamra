@@ -1682,3 +1682,23 @@ instruction. 21 lines were changed to match the page, and every changed line was
   - KG2 v3 p44 promises 7 differences, but a moved flower counts twice, so a child finds 6.
   - KG2 v3 p85 and p95 say «complete» on read-only cards.
   - KG2 v3 p71 asks the child to colour a white card white.
+
+## The cut-out's shape from a local segmentation model (cut-out v5, 2026-10-21)
+The owner, on the re-rendered «جوليا» book: the right shoe's toe is eaten, the left one is ragged, there are
+brown remnants at the heels. Colour rules alone cannot separate a white shoe on cream paper from its shadow.
+
+- **U²-Net, locally** (Apache-2.0 weights and code; ONNX Runtime MIT). Compared on her sheet and the samples
+  with IS-Net general-use (shoes see-through on the waving pose), IS-Net anime (keeps the floor shadow) and
+  BiRefNet-lite (as good, 20 s against 2.4 s a sheet on CPU). No paid service, no fal call, no data leaves the
+  worker. Recorded in docs/licenses.md as **awaiting Tareq's approval**; without the weights the colour cut
+  runs, so nothing breaks before approval.
+- **The model is the shape; the colour model refines the floor band only**: it takes out shadow (paper-hued,
+  soft, not a light object, the model unsure of it or nothing drawn near; a cartoon's flat shadow) and gives
+  back a shoe part the model missed when it is drawn round with an outline (never a soft brown smudge).
+- **Proved on every sheet we have, free**: `scripts/cutout_audit.py` on the 43 sheets of the test server (one
+  is the coloring style's flat bust sheet, left out: no feet), the local trials and samples, and synthetic
+  sheets for the outfits nobody has drawn yet (each outfit's swatch colours painted on a real sheet of each
+  style; a long thobe and a mid-calf dress drawn over them). 234 cut-outs pass. What the audit cannot pass
+  raises `cutout_feet` through the feet check, as before.
+- Tests run the colour cut by default (their figures are drawn shapes); `@pytest.mark.matte` tests use the
+  model and are skipped where the weights are missing.

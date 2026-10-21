@@ -5,7 +5,17 @@ shadow under the feet. A plain "far enough from the paper colour" key cannot wor
 light sweater has the paper's exact colour, so a flood fill from the border leaks through the faint outline
 into the chest, and the shadow (clearly darker than the paper) is kept as a pale blob at the feet.
 
-What this does instead (Pillow + numpy only):
+Model matte (v5, 2026-10-21, `_matte_figure`): when the segmentation model is installed (`qamra_pdf.matte`,
+U²-Net run locally), its matte is the figure's shape: it sees a white shoe on cream paper whole, where the
+colour steps below cannot (v4 still ate «جوليا»'s toe and left brown remnants at her heels). The paper model
+then only refines it on the floor band: it takes out the floor shadow the model also took (paper-hued shadow
+candidates the model is unsure of or that have nothing drawn near them, a cartoon's flat shadow reaching in
+from the floor, never a light object: `_light_object`), and gives back what the model missed inside the shoes
+(a white shoe's flat top it enclosed, a cartoon toe cap the colour cut found that is drawn round with an
+outline, never a soft brown smudge). Without the model (`QAMRA_MATTE_MODEL=off`, missing weights) or when its
+mask fails the safety check, the colour cut below is used, as before (`Cutout.method`).
+
+The colour cut (Pillow + numpy only):
 
 1. The paper is modelled as a smooth colour field (a surface fitted to the border-connected paper), so the
    residual of every pixel against the paper underneath it is at noise level on the background.
@@ -53,7 +63,22 @@ from dataclasses import dataclass
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
-VERSION = 4  # bump when the result changes, so cached cut-outs are redone (v4: white shoes kept)
+from qamra_pdf import matte as _matte
+from qamra_pdf.matte import figure_matte
+
+VERSION = 5  # bump when the result changes, so cached cut-outs are redone (v4: white shoes; v5: the model)
+MATTE_CORE = 0.5  # the model's matte above this is the figure's shape
+SOFT_DARK = 0.03  # the floor shadow left in a cut: at least this much darker than the paper (mean ratio)
+MATTE_HALF = 0.25  # a hole the model sees at least this much of on average is the figure's
+MATTE_GLIMPSE = 0.1  # ... or this much, inside a shoe (the floor band); the paper between the legs: 0.04
+FLOOR_PART = 0.9  # what the colour cut alone finds, all on the floor band: a shoe's part (unless a smudge)
+RIMMED = 0.5  # ... and drawn round: this share of its edge on the paper is a hard outline (a smudge: none)
+OUTLINE_EDGE = 60.0  # a drawn outline (a cartoon shoe's): far harder than a soft shadow's rim (30–40)
+SMUDGE_DARK = 0.25  # a contact-shadow smudge at the heels: this much darker than the paper
+SMUDGE_DRAWN = 0.15  # ... and soft: fewer hard edges than this share (a shaded toe cap: more)
+SMUDGE_HUE = 0.09  # ... near its hue and warm (a brown wash; a grey or navy shoe is not)
+FLAT_SPREAD = 8.0  # a flat fill: no channel varies by more than this over 5 × 5 px
+MATTE_SURE = 0.9  # the model is sure of what it gives at least this (shadow is never taken out there)
 
 MIN_RESIDUAL = 7.0  # 0–255 per channel: the smallest step off the paper that counts as ink
 EDGE = 6.0  # gradient (max channel, over 2 px) that counts as an edge
@@ -105,6 +130,7 @@ class Cutout:
     fallback: bool = False  # `image` is a framed portrait: the figure could not be cut out cleanly
     reason: str = ""  # why the cut failed (for the logs)
     feet: str = ""  # why the feet (shoes) may not be whole: cut by the picture's edge, or lost in the cut
+    method: str = "colour"  # "model": the segmentation model's matte (qamra_pdf.matte); "colour": without it
 
 
 @dataclass(frozen=True)
@@ -354,9 +380,9 @@ def _light_object(p: _Paper, candidates: np.ndarray) -> np.ndarray:
         return none
     slope = warmth / np.maximum(darkening, TINT_DARK)
     tint = float(np.percentile(slope[measurable], TINT_PERCENTILE))
-    light = measurable
-    if tint >= SHADOW_WARM:  # a warm shadow: the object is what is clearly more neutral than it
-        light = measurable & (slope < LIGHT_SHARE * tint)
+    # the object is what is clearly more neutral than the shadow (with no warm shadow to measure, than a
+    # shadow of the least warmth that still reads as one)
+    light = measurable & (slope < LIGHT_SHARE * max(tint, SHADOW_WARM))
     size = 2 * max(2, round(min(candidates.shape) / 150)) + 1
     light = ~_border_flood(~_shrink(_grow(light, size), size))  # whole: gaps closed, what it encloses filled
     light = _grow(_shrink(light, size), size)  # thin neutral strokes in the wash go
@@ -447,9 +473,154 @@ def _figure(p: _Paper) -> np.ndarray:
     return figure
 
 
-def figure_mask(img: Image.Image, paper: tuple[int, int, int] | None = None) -> np.ndarray:
+def _matte_figure(p: _Paper, matte: np.ndarray, colour: np.ndarray) -> np.ndarray:
+    """The figure from the model's matte (the module docstring, "Model matte"): the matte is the shape; the
+    paper model refines it on the floor band only. `colour` is the colour cut of the same picture.
+
+    - Floor shadow taken out: shadow candidates (paper hue, soft: step 3's) that are no light object
+      (`_light_object`) and that the model is unsure of or has nothing drawn near, reaching into the matte
+      from the floor; a cartoon's flat shadow; and the shadow's thin margin along the shoes.
+    - Given back: a part of a shoe the model missed and the colour cut found, on the floor and drawn round
+      with an outline (a cartoon toe cap; a soft brown smudge at the heels is not); what the figure encloses
+      that lies in a shoe, or that the model half-sees, or that is off the paper (not the paper seen between
+      the legs or under a raised arm).
+    - Strokes on the floor thinner than the wall go (a shadow's outline, a contact line)."""
+    h, w = matte.shape
+    radius = max(2, round(min(h, w) / 150))
+    size = 2 * radius + 1
+    core = matte > MATTE_CORE
+    floor = _band(core)
+    chroma = p.rgb / (p.rgb.sum(-1, keepdims=True) + 1.0)
+    paper_chroma = p.field / (p.field.sum(-1, keepdims=True) + 1.0)
+    darker = 1.0 - (p.rgb / np.maximum(p.field, 1.0)).mean(-1)
+    candidates = (
+        floor
+        & (np.abs(chroma - paper_chroma).max(-1) < SHADOW_HUE)
+        & (p.residual < SHADOW_MAX)
+        & (p.edges <= max(SHADOW_EDGE, p.edge))
+    )
+    unsure = matte < MATTE_SURE  # the model is not sure of it (a wash it half took)
+    quiet = ~_near(p.edges > SHADOW_EDGE, size)  # nothing drawn close by (a wash it took whole)
+    light = _light_object(p, candidates)
+    drawn_hard = p.edges > OUTLINE_EDGE  # a shoe's outline: the shadow's margin stops there
+    washy = candidates & (unsure | quiet) & ~light
+    # the shadow reaches into the matte from the floor outside it; a light garment inside its outline does not
+    shadow = _border_flood(~core | washy) & core & washy
+    # a cartoon's flat shadow (a flat fill, darker than the paper), which the model may take whole and
+    # sure: a painted white shoe is never a flat fill, a cartoon's flat garment is inside its outline
+    flat = (
+        _grow(_open(_flat(p.rgb) & candidates & ~light & (darker >= TINT_DARK), size), 3)
+        & candidates
+        & ~light
+    )
+    shadow |= _border_flood(~core | (candidates & ~light)) & core & flat  # reaching in from the floor
+    # the shadow's thin margin along the shoes (narrower than the opening above): the same shadow
+    shadow |= _grow(shadow, size) & core & candidates & ~light & (darker >= TINT_DARK) & ~_near(drawn_hard, 1)
+    figure = core & ~shadow
+    # what the model missed and the colour cut found (a cartoon toe cap): never the floor's shadow, in or out
+    # of the matte (darker than the paper: a shoe's cream toe cap is not), nor a soft brown smudge
+    floor_shadow = _border_flood(~core | (candidates & ~light)) & (flat | washy) & (darker >= TINT_DARK)
+    missed = _open(colour & ~core & ~shadow & ~floor_shadow, size)
+    labels, sizes = _components(missed)
+    n = np.maximum(sizes, 1)
+
+    def mean(px: np.ndarray) -> np.ndarray:
+        weighted: np.ndarray = np.bincount(labels.ravel(), weights=px.ravel(), minlength=sizes.size) / n
+        return weighted
+
+    seen, low = mean(matte), mean(floor)
+    ratio = p.rgb / np.maximum(p.field, 1.0)
+    warm = (ratio[..., 0] - ratio[..., 2]) >= SHADOW_WARM * np.maximum(darker, TINT_DARK)  # a warm wash
+    hue = np.abs(chroma - paper_chroma).max(-1)
+    brown = (darker >= SMUDGE_DARK) & (hue < SMUDGE_HUE) & warm  # a brown wash (a grey or navy shoe is not)
+    soft = mean(p.edges > SHADOW_EDGE) < SMUDGE_DRAWN  # a smudge has no outline (a toe cap has the shoe's)
+    smudge = (seen < MATTE_GLIMPSE * 2) & (mean(brown) >= 0.5) & soft
+    # a shoe's part the model missed: on the floor (the paper between the legs reaches up above it), or half
+    # seen by the model, and drawn round: where it meets the paper, a hard outline (a smudge fades out)
+    hard = p.edges > SHADOW_EDGE
+    for label in np.flatnonzero(((low >= FLOOR_PART) | (seen >= MATTE_HALF)) & ~smudge):
+        if label == 0:
+            continue
+        part = labels == label
+        rim = _grow(part, 7) & ~part & ~core
+        if rim.any() and float(_near(hard, 2)[rim].mean()) >= RIMMED:
+            figure |= part
+    figure = _largest(figure)
+    holes = ~_border_flood(~figure) & ~figure & ~(shadow & (darker >= TINT_DARK))  # never the shadow again
+    labels, sizes = _components(holes)
+    n = np.maximum(sizes, 1)
+
+    def share(px: np.ndarray) -> np.ndarray:
+        weighted: np.ndarray = np.bincount(labels.ravel(), weights=px.ravel(), minlength=sizes.size) / n
+        return weighted
+
+    paper = share(p.residual <= p.threshold)
+    seen = share(matte)
+    back = (seen >= MATTE_HALF) | (paper < 0.5) | ((share(floor) >= 0.5) & (seen >= MATTE_GLIMPSE))
+    figure |= np.isin(labels, np.flatnonzero(back)[1:])
+    # on the floor, strokes thinner than the wall are what the shadow leaves: its rim, a cartoon shadow's
+    # outline, a contact line (a shoe's own outline is not thin once its top is given back)
+    figure &= ~(floor & ~_grow(_shrink(figure, size), size))
+    return _largest(figure)
+
+
+def _flat(rgb: np.ndarray) -> np.ndarray:
+    """Pixels in a flat fill: no channel varies by more than `FLAT_SPREAD` over 5 × 5 px (a cartoon's
+    shadow; brushwork and paper grain vary more)."""
+    img = Image.fromarray(np.clip(rgb, 0, 255).astype(np.uint8))
+    high = np.asarray(img.filter(ImageFilter.MaxFilter(5)), np.float32)
+    low = np.asarray(img.filter(ImageFilter.MinFilter(5)), np.float32)
+    flat: np.ndarray = (high - low).max(-1) <= FLAT_SPREAD
+    return flat
+
+
+def _open(mask: np.ndarray, size: int) -> np.ndarray:
+    return _grow(_shrink(mask, size), size)
+
+
+def _largest(figure: np.ndarray) -> np.ndarray:
+    """The largest piece of `figure` and any nearly as large (`KEEP_PIECE`)."""
+    labels, sizes = _components(figure)
+    sizes[0] = 0
+    if sizes.max() == 0:
+        return figure
+    kept: np.ndarray = np.isin(labels, np.flatnonzero(sizes >= KEEP_PIECE * sizes.max()))
+    return kept
+
+
+def _band(figure: np.ndarray) -> np.ndarray:
+    """The figure's bottom band, where a floor shadow may lie (`SHADOW_BAND` of its height)."""
+    h, w = figure.shape
+    rows = np.flatnonzero(figure.any(1))
+    band = np.zeros((h, w), bool)
+    if rows.size:
+        top, bottom = int(rows[0]), int(rows[-1])
+        band[max(0, round(bottom - SHADOW_BAND * (bottom - top))) :] = True
+    return band
+
+
+def _mask(p: _Paper, img: Image.Image, use_model: bool) -> tuple[np.ndarray, str]:
+    """The figure's mask and how it was found: "model" (the matte, `_matte_figure`) or "colour" (no model:
+    `qamra_pdf.matte` is missing, or its mask fails the safety check)."""
+    colour = _figure(p)
+    matte = figure_matte(img) if use_model else None
+    if matte is not None:
+        mask = _matte_figure(p, matte, colour)
+        if not mask_problem(mask):
+            return mask, "model"
+    return colour, "colour"
+
+
+def figure_mask(
+    img: Image.Image, paper: tuple[int, int, int] | None = None, *, use_model: bool = True
+) -> np.ndarray:
     """Boolean mask of the figure on a plain paper image (see the module docstring)."""
-    return _figure(_measure(img, paper))
+    return _mask(_measure(img, paper), img, use_model)[0]
+
+
+def cache_tag() -> str:
+    """What a cached cut-out depends on: the version, and the model when it is there (else "colour")."""
+    return f"v{VERSION}-{_matte.MODEL_ID if _matte.available() else 'colour'}"
 
 
 def mask_problem(mask: np.ndarray) -> str:
@@ -533,13 +704,21 @@ def framed_portrait(img: Image.Image, paper: tuple[int, int, int] | None = None)
     return out
 
 
-def cut_out(img: Image.Image, paper: tuple[int, int, int] | None = None, feather: float = 0.8) -> Cutout:
-    """The figure cut out (RGBA), or the framed portrait when the cut fails the safety check."""
+def cut_out(
+    img: Image.Image,
+    paper: tuple[int, int, int] | None = None,
+    feather: float = 0.8,
+    *,
+    use_model: bool = True,
+) -> Cutout:
+    """The figure cut out (RGBA), or the framed portrait when the cut fails the safety check. With the model
+    (`qamra_pdf.matte`, unless `use_model` is False) its matte is the figure's shape; without it, the colour
+    cut alone."""
     p = _measure(img, paper)
-    mask = _figure(p)
+    mask, method = _mask(p, img, use_model)
     problem = mask_problem(mask)
     if problem:
-        return Cutout(framed_portrait(img, paper), fallback=True, reason=problem)
+        return Cutout(framed_portrait(img, paper), fallback=True, reason=problem, method=method)
     feet = feet_problem(p, mask, _flat_margin(np.asarray(img.convert("RGB"))))
     # the outermost pixel ring is the anti-aliased blend with the paper: drop it, then soften the edge
     alpha = Image.fromarray(mask.astype(np.uint8) * 255).filter(ImageFilter.MinFilter(3))
@@ -547,7 +726,7 @@ def cut_out(img: Image.Image, paper: tuple[int, int, int] | None = None, feather
         alpha = alpha.filter(ImageFilter.GaussianBlur(feather))
     out = img.convert("RGBA")
     out.putalpha(alpha)
-    return Cutout(out, feet=feet)
+    return Cutout(out, feet=feet, method=method)
 
 
 def cut_out_figure(

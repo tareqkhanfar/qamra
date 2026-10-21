@@ -1,5 +1,27 @@
 # Changelog
 
+## The child's cut-out from a local segmentation model (cut-out v5, 2026-10-21)
+- **Why**: after v4 «جوليا»'s shoes were back but not clean (the owner: the right shoe's toe eaten, the left
+  one's outline ragged, brown shadow remnants at both heels inside the sticker edge). A colour rule cannot
+  tell a white shoe on cream paper from the paper in shade.
+- **Model** (`qamra_pdf.matte`): U²-Net (Apache-2.0, `u2net.onnx` 176 MB, SHA-256 checked) run locally with
+  ONNX Runtime 1.23.2 (MIT): free, no API, nothing leaves the worker. Its matte is the figure's shape; the
+  paper model only takes out the floor shadow the model also took and gives back shoe parts it missed
+  (`cutout._matte_figure`). Chosen over IS-Net (see-through shoes) and BiRefNet-lite (as good, 8× slower).
+  Without the weights (or `QAMRA_MATTE_MODEL=off`) the colour cut is used as before (`Cutout.method`).
+- **Worker image**: the weights are fetched at build with their checksum (`ADD --checksum`, read-only, at
+  `/opt/models/u2net.onnx`); about +260 MB (weights 176, onnxruntime 49, sympy 30). CI caches them
+  (`scripts/fetch_matte_model.py`). Tests use the colour cut unless marked `matte`.
+- **Sheets**: two views that touch (a waving hand on the walking pose) are split, never cut as one child.
+- **Audit** (`scripts/cutout_audit.py`): shadow kept, shoe eaten, halo, feet, figures per view, contact
+  sheet. 146 cut-outs of 73 real sheets (42 of the 43 sheets on the test server: the 43rd is a coloring bust with no feet; the outfit, likeness and face-shape
+  trials, the style samples) and 88 of 44 synthetic outfit sheets (each outfit's colours on a real sheet of
+  each style, plus a long black thobe with an embroidered hem and a mid-calf dress over leggings): all pass
+  (two flagged by the automatic check, passed on sight). «جوليا»'s book re-rendered: shoes whole, clean edge.
+- Tests: the model's cut of white sneakers (cartoon) and white Mary-Janes (watercolour) against reviewed
+  masks, every style cut by the model with its feet, the warm-shadow white-shoe figure, touching views, the
+  model's fallback and its checksum.
+
 ## The child's own face shape in cartoon and 3D; one direction per view on the sheet (2026-10-21)
 - Prompts: `character_portrait.v5` and `character_sheet.v10` through `likeness.v4`: a FACE SHAPE AND AGE block
   (the outline from the photo first; the width against the length, jaw, chin, cheeks, eye spacing and the lower
