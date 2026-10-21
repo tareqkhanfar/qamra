@@ -19,7 +19,7 @@ from pathlib import Path
 from PIL import Image, ImageChops, ImageFilter, ImageOps
 
 from qamra_pdf.cutout import VERSION as CUTOUT_VERSION
-from qamra_pdf.cutout import cut_out, cut_out_figure
+from qamra_pdf.cutout import cut_out
 
 PKG_DIR = Path(__file__).parent
 
@@ -182,8 +182,8 @@ HERO_COVERAGE = (0.18, 0.85)
 
 def hero_view(sheet: Path, dest: Path) -> Path | None:
     """The middle view of a three-view character sheet (three-quarter, waving: the back cover's hero), cut
-    out. None when the picture is not a three-view sheet or the cut-out is not a clean whole figure; the back
-    cover then shows the round portrait."""
+    out. None when the picture is not a three-view sheet or the cut-out is not a clean whole figure (its shoes
+    included: `Cutout.feet`); the back cover then shows the round portrait."""
     if dest.exists() and dest.stat().st_mtime >= sheet.stat().st_mtime:
         return dest
     with Image.open(sheet) as original:
@@ -192,7 +192,10 @@ def hero_view(sheet: Path, dest: Path) -> Path | None:
     if w < 1.3 * h:
         return None
     view = im.crop((w // 3, 0, 2 * w // 3, h))
-    figure = cut_out_figure(view)
+    cut = cut_out(view)
+    if cut.feet:  # the shoes not whole (cut by the drawing, or lost in the cut): the round portrait instead
+        return None
+    figure = cut.image
     alpha = figure.getchannel("A").point(lambda v: 255 if v > 40 else 0)
     box = alpha.getbbox()
     if not box:

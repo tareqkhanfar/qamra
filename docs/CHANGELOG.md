@@ -1,5 +1,30 @@
 # Changelog
 
+## «جوليا»'s shoes: the child is printed head to shoes (2026-10-21)
+- **Cause** (owner: «الحذاء تبعها مقصوص», workbook QB-HWYPM, KG1 part 1): her sheet (outfit «البلوزة الحمراء
+  والجينز»: white sneakers on cream paper) is whole, with paper under the feet; the cut-out's floor-shadow step
+  took the white shoes for "the paper, darker" and cut them away, so the cover and every page printed her ending
+  at the jeans. Every outfit with white or grey shoes (red-jeans, yellow-cardigan, rose-dress, green-hoodie) was
+  exposed since 75882f3; the layouts did not clip.
+- **Fix** (`qamra_pdf.cutout` v4): the floor shadow's warm tint is measured, and what is clearly more neutral,
+  made whole and drawn (full of edges, as a shoe is) stays the figure, with the faint outline of its lit side
+  kept as a wall. The sample sheets and the dark-shoe sheets cut as before (golden masks unchanged; 0–0.15 % of a
+  figure on 20 real sheets); cached cut-outs are redone.
+- **Feet check**: `Cutout.feet` / `feet_problem` (the figure runs off the picture's bottom, or drawing with hard
+  edges is left under the feet after the cut); the workbooks write it into the cut-out PNG (`render.character.
+  feet_cut`, also when the sheet's drawing touches its bottom edge) and the order jobs flag the book
+  **`cutout_feet`** («حذاء الشخصية قد لا يظهر كاملًا») for the reviewer; the story books' back-cover hero falls back to
+  the round portrait.
+- **Sheet prompt v9**: every view from the top of the head to the soles of both shoes, with background below the
+  shoes, and light shoes clearly outlined (only the character-sheet groups of the golden prompts moved).
+- **Layouts**: the family certificate's name band and the shopping list's bag no longer sit on the shoes, the
+  certificates' hero boxes cannot shrink, the Islamic unit opener's reader hangs within its gap; passport photos
+  are marked `data-crop` (cropped on purpose).
+- Tests: white shoes in a warm shadow and without one, feet off the bottom, lost shoes
+  (`packages/pdf/tests/test_cutout.py`, `packages/workbook/tests/test_character_cutout.py`); a tall child on every
+  product's pages and covers, checked at the shoes in Chromium (`packages/workbook/tests/test_figure_layouts.py`);
+  the flag (`apps/worker/tests/test_workbook_book_job.py`); sheet v9 (`packages/ai/tests`).
+
 ## «ماذا يلبس؟»: the parent chooses the child's outfit (2026-10-20)
 - `content/outfits.yaml`: 6 outfits for girls and 6 for boys (الكلاسيكي, البلوزة الحمراء والجينز, زيّ المدرسة,
   الجاكيت الصوفي الأصفر, الفستان الوردي, الهودي الأخضر, الكنزة المقلّمة, التطريز الفلسطيني), each with the exact

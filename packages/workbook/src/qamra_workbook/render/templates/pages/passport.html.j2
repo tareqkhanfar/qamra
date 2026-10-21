@@ -6,7 +6,7 @@
       <span class="pass-emblem">{{ icon('passport') }}</span>
     </div>
     <div class="pass-body">
-      <div class="pass-photo">
+      <div class="pass-photo" data-crop>
         {% if d.photo %}<img src="{{ d.photo }}" alt="">{% endif %}
         <span class="pass-photo-stamp">{{ icon('star') }}</span>
       </div>

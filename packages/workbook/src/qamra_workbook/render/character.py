@@ -9,6 +9,9 @@ On textured (watercolour) paper a plain "off the paper colour" key takes the gra
 are found with the cut-out's noise-adapted ink map instead; a sheet whose figures still run together is split
 near its thirds. When a figure cannot be cut out cleanly, qamra_pdf.cutout returns a framed portrait instead;
 the PNG says so (`FALLBACK_KEY`, read by `is_fallback`) and the order jobs flag the book `cutout_fallback`.
+When the shoes may not be whole (the drawing runs off the sheet's bottom, or drawing is left under the feet
+after the cut: `qamra_pdf.cutout.feet_problem`), the PNG says that too (`FEET_KEY`, read by `feet_cut`) and
+the order jobs flag the book `cutout_feet` for the reviewer (a redraw of the character fixes the first).
 """
 
 from __future__ import annotations
@@ -32,6 +35,8 @@ MIN_PRINT_W_MM = 66.0  # widest printed size (a portrait frame crops by width), 
 DPI = 300
 MERGED = 0.6  # one "figure" wider than this share of a wide sheet is the sheet's figures run together
 FALLBACK_KEY = "qamra-cutout"  # PNG text: "fallback: <why>" when the figure is a framed portrait
+FEET_KEY = "qamra-feet"  # PNG text: why the figure's shoes may not be whole (read by `feet_cut`)
+SHEET_EDGE_PX = 2  # a figure whose drawing reaches this close to the sheet's bottom edge has its feet cut
 
 
 def _ink_mask(img: Image.Image, paper: tuple[int, int, int]) -> Image.Image:
@@ -129,6 +134,13 @@ def cut_out(img: Image.Image, paper: tuple[int, int, int]) -> Cutout:
     return cut_out_figure(padded, paper)
 
 
+def feet_cut(path: Path) -> str:
+    """Why the shoes of a cut-out PNG made by `pose` may not be whole ("" when they are): the sheet's drawing
+    ran off its bottom edge, or the cut-out left drawing under the feet (`qamra_pdf.cutout.feet_problem`)."""
+    with Image.open(path) as img:
+        return str(img.info.get(FEET_KEY, ""))
+
+
 def is_fallback(path: Path) -> bool:
     """Whether a cut-out PNG made by `pose` is the framed portrait (the figure could not be cut out)."""
     with Image.open(path) as img:
@@ -168,7 +180,13 @@ def pose(
     with Image.open(sheet) as src:
         img = src.convert("RGB")
     paper = paper_color(img)
-    cut = cut_out(img.crop(figure_box(img, paper, index)), paper)
+    box = figure_box(img, paper, index)
+    cut = cut_out(img.crop(box), paper)
+    # the shoes whole: the drawing does not run off the sheet's bottom (the crop is padded, so the cut-out
+    # cannot see that edge itself), and the cut-out left nothing drawn under the feet
+    feet = (
+        "the drawing runs off the sheet's bottom edge" if box[3] >= img.height - SHEET_EDGE_PX else cut.feet
+    )
     figure = sticker_edge(cut.image, width=max(4, cut.image.height // 90))
     figure = figure.crop(figure.getchannel("A").getbbox() or (0, 0, figure.width, figure.height))
     target_h = round(max_print_mm / 25.4 * DPI)
@@ -182,6 +200,8 @@ def pose(
     info = PngInfo()
     if cut.fallback:
         info.add_text(FALLBACK_KEY, f"fallback: {cut.reason}")
+    if feet and not cut.fallback:
+        info.add_text(FEET_KEY, feet)
     figure.save(out, format="PNG", dpi=(DPI, DPI), optimize=True, pnginfo=info)
     return out
 

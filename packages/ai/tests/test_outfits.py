@@ -61,8 +61,12 @@ def test_the_default_outfit_renders_the_prompts_of_before(slug: str, child: Chil
     for outfit in (None, "classic", "rose-dress" if child.gender == "m" else "green-hoodie", "unknown"):
         dressed = child.model_copy(update={"outfit": outfit})  # one not offered to this child: the default
         sheet = character_request(dressed, [PHOTO], style, portrait=PORTRAIT, notes=NOTES)
+        v8 = character_request(dressed, [PHOTO], style, version=8, portrait=PORTRAIT, notes=NOTES)
         before = character_request(child, [PHOTO], style, version=7, portrait=PORTRAIT, notes=NOTES)
-        assert sheet.prompt == before.prompt
+        assert v8.prompt == before.prompt
+        # v9 (production) adds only the whole-figure line (head to shoes, background below the shoes)
+        [feet] = [line for line in sheet.prompt.splitlines() if "soles of both shoes" in line]
+        assert sheet.prompt.replace(feet + "\n", "", 1) == before.prompt
         assert portrait_request(dressed, [PHOTO], style, notes=NOTES).prompt == (
             portrait_request(child, [PHOTO], style, version=3, notes=NOTES).prompt
         )
