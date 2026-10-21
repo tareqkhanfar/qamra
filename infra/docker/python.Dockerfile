@@ -34,5 +34,8 @@ CMD ["uvicorn", "qamra_api.main:app", "--host", "0.0.0.0", "--port", "8000", "--
 FROM base AS worker
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 RUN playwright install --with-deps chromium && rm -rf /var/lib/apt/lists/*
+# the cut-out's segmentation model (qamra_pdf.matte: U²-Net, Apache-2.0), fetched once and checked
+ADD --chmod=0444 --checksum=sha256:8d10d2f3bb75ae3b6d527c77944fc5e7dcd94b29809d47a739a7a728a912b491 \
+    https://github.com/danielgatis/rembg/releases/download/v0.0.0/u2net.onnx /opt/models/u2net.onnx
 USER qamra
 CMD ["sh", "-c", "exec rq worker --url \"$REDIS_URL\" --with-scheduler generation pdf maintenance default"]

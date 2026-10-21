@@ -11,6 +11,7 @@ from qamra_workbook.render.character import PAD, cut_out, feet_cut, figure_box, 
 from qamra_workbook.render.registry import Assets
 
 from qamra_pdf.cutout import GRAIN, figure_mask, paper_grain
+from qamra_pdf.cutout import cut_out as cut_out_figure_pdf
 
 PAPER = (248, 232, 199)  # the cream paper of the sample sheets
 SWEATER = (247, 228, 196)  # the lit sweater on the sample sheet: practically the paper
@@ -238,3 +239,76 @@ def test_feet_cut_by_the_sheet_are_flagged(tmp_path: Path) -> None:
     _sneakers_sheet(good)
     clean = pose(good, tmp_path / "cut", 0, max_print_mm=20, min_print_w_mm=0)
     assert Assets(LibraryStore(), clean, 0.5, family={1: (out, 0.5)}).feet_cut  # a family member's too
+
+
+# ---- the segmentation model (qamra_pdf.matte): light shoes on cream paper, cut whole ---------------------
+
+# the invented تالا's outfit-trial sheets: white sneakers in a cartoon shadow, white Mary-Janes in a
+# watercolour wash. Points in the padded crop of the view (`_padded(img.crop(figure_box(...)))`), checked
+# by eye.
+LIGHT_SHOES = {
+    ("cartoon-white-sneakers", 0): {
+        "shoe": [(110, 755), (230, 750), (80, 762), (260, 765)],
+        "shadow": [(45, 770), (170, 778), (300, 768)],
+    },
+    ("watercolor-mary-janes", 1): {
+        "shoe": [(125, 706), (210, 726), (110, 700), (240, 715)],
+        "shadow": [(65, 721), (300, 721), (160, 745)],
+    },
+}
+
+
+def _view(name: str, index: int) -> tuple[Image.Image, tuple[int, int, int]]:
+    with Image.open(SHEETS / f"{name}.webp") as src:
+        img = src.convert("RGB")
+    paper = paper_color(img)
+    return _padded(img.crop(figure_box(img, paper, index)), paper), paper
+
+
+@pytest.mark.matte
+@pytest.mark.parametrize("case", list(LIGHT_SHOES), ids=lambda c: f"{c[0]}-{c[1]}")
+def test_light_shoes_are_cut_whole_by_the_model(case: tuple[str, int]) -> None:
+    """«جوليا»'s shoes (2026-10-21): white shoes on cream paper stay whole, toe to heel, and the floor shadow
+    around them goes; the cut matches the reviewed one (`<name>-model<i>.png`) to 0.5 %."""
+    name, index = case
+    padded, paper = _view(name, index)
+    cut = cut_out_figure_pdf(padded, paper)
+    assert cut.method == "model" and not cut.fallback and cut.feet == ""
+    mask = figure_mask(padded, paper)
+    for x, y in LIGHT_SHOES[case]["shoe"]:
+        assert mask[y, x], f"shoe lost at {(x, y)}"
+    for x, y in LIGHT_SHOES[case]["shadow"]:
+        assert not mask[y, x], f"shadow kept at {(x, y)}"
+    with Image.open(SHEETS / f"{name}-model{index}.png") as golden_png:
+        golden = np.asarray(golden_png.convert("L")) > 127
+    assert mask.shape == golden.shape
+    assert (mask != golden).sum() <= 0.005 * golden.sum(), f"{(mask != golden).sum()} pixels changed"
+
+
+@pytest.mark.matte
+@pytest.mark.parametrize("style", ["3d", "cartoon", "semi-realistic", "watercolor"])
+def test_every_style_is_cut_by_the_model_with_its_feet(style: str) -> None:
+    """The sample sheets of every style: the model's cut, no feet problem, one figure per view."""
+    for index in (0, 1):
+        padded, paper = _view(style, index)
+        cut = cut_out_figure_pdf(padded, paper)
+        assert cut.method == "model" and not cut.fallback and cut.feet == "", (style, index, cut.feet)
+        mask = figure_mask(padded, paper)
+        rows = np.flatnonzero(mask.any(1))
+        assert rows[-1] - rows[0] > 0.8 * (mask.shape[0] - 2 * PAD)  # head to shoes
+
+
+def test_two_touching_views_are_split() -> None:
+    """A three-view sheet whose waving hand touches the walking pose (two runs of ink, one twice as wide):
+    the wide run is split, so the waving pose's cut-out never holds two children."""
+    w, h = 1200, 800
+    img = Image.new("RGB", (w, h), PAPER)
+    d = ImageDraw.Draw(img)
+    for cx in (200, 600, 1000):
+        d.ellipse((cx - 60, 80, cx + 60, 210), fill=(70, 50, 40))
+        d.rectangle((cx - 70, 210, cx + 70, 700), fill=(60, 82, 130))
+    d.rectangle((670, 300, 935, 315), fill=(228, 180, 150))  # the waving arm reaching the next pose
+    paper = paper_color(img)
+    boxes = [figure_box(img, paper, i) for i in range(3)]
+    for (x0, _, x1, _), cx in zip(boxes, (200, 600, 1000), strict=True):
+        assert x0 <= cx - 70 and cx + 70 <= x1 and x1 - x0 < 420, boxes
