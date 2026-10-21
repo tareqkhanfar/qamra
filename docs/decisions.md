@@ -1493,6 +1493,26 @@ The owner: «إذا في مجال نختار براحتنا شو النمط ول
   working. The book records the outfit it used (`generation.child_outfit`); books started earlier keep their stored
   bible. Activity books cut the child from the sheet, so they wear the chosen outfit with no other change.
 
+
+## «جوليا»'s shoes: cut-out v4, the feet check and sheet v9 (2026-10-21)
+The owner: «الحذاء تبعها مقصوص» (workbook QB-HWYPM). The sheet was whole; the cut-out removed her white sneakers as
+floor shadow (by hue a white shoe on cream paper is the paper, darker).
+
+- **Tell shoe from shadow by the tint of the darkening, then by drawing.** The model paints the floor shadow as a
+  warm wash; a white shoe darkens evenly. Candidates clearly more neutral than the shadow's measured tint
+  (`LIGHT_SHARE` 0.4 of it), made whole and kept only when drawn (≥ 35 % edges: shoes 0.58–0.65, a pale strip of
+  wash 0.16), stay the figure. With no warm shadow to measure, the drawn test alone decides (her first, unapproved
+  sheet had white shoes and no shadow at all). A neutral grey shadow touching white shoes can still fool it; that
+  is what the feet check is for.
+- **Flag, don't block.** A figure whose drawing runs off the sheet's bottom, or a cut that leaves drawing under the
+  feet (more than 3.5 % of the figure's height: her lost shoes measured 5.5–6.5 %, whole shoes on the sample sheets
+  at most 2 %), flags the book `cutout_feet` for the reviewer before print approval rather than failing the order.
+  A redraw of the character fixes a sheet that cut the feet (about $0.30).
+- **Prompt v9** asks for the whole figure inside the picture with background below the shoes and outlined light
+  shoes; v8 stays for the record. The default outfit's sheet is v7's plus that one line.
+- **Layouts** were checked with a tall, narrow child on every product (Chromium, at the shoes): only the passport
+  photos crop the figure, on purpose (`data-crop`); three small overlaps were removed anyway.
+
 ## The child's own face shape in cartoon and 3D, and one direction per view on the sheet (2026-10-21)
 
 The owner, after the likeness notes: in the cartoon and 3D styles the face comes out rounder, wider and younger
@@ -1535,6 +1555,9 @@ profile looking right while the body, arms and feet walk left.
     photo's own face shape".
   - Watercolor and semi-realistic keep their guides; they get the new templates (the FACE SHAPE block and the
     sheet's directions). Their pages, QA and every other prompt are byte-identical (golden snapshots).
+- **One sheet version for both fixes:** `character_sheet.v10` = v9's whole-figure and outlined-shoes line (the
+  white-shoes cut-out, merged from addendum-4) + the face shape (`likeness.v4`) + the directions below; v9 stays
+  for the record.
 - **The sheet's directions** (`character_sheet.v10`): every style, the same: 1) front view, facing the viewer;
   2) three-quarter view turned toward the viewer's left, waving; 3) side view in full profile facing the viewer's
   left, walking left: "the nose and eyes, the chest, the swinging arms, the knees and the toes of both shoes all
@@ -1558,7 +1581,8 @@ profile looking right while the body, arms and feet walk left.
   | cartoon portrait | 4, round and wide | 4, round, hair too dark | 4–5, still round | **6**: his long face, slim jaw and chin; chin a little too pointed, hair too golden, lost the smiling crescents | – |
   | 3D portrait | 5 (0.88) | – not 3D: it came out a photo (0.84) | 4–5, big eyes, young (0.87) | 5–6, longer face, big round eyes (0.83) | 5–6: his narrow smiling eyes and closed smile, but the cheeks wider again, freckles added (0.89); little better than live |
 
-  Sheets (the directions of v10, without the shoe line merged in later): cartoon from C 5 (the face narrower and the head-to-body proportion of a 5-year-old, against the
+  Sheets (v10's directions, before v9's shoe line was merged in): cartoon from C 5 (the face narrower and the
+  head-to-body proportion of a 5-year-old, against the
   live sheet's big round head; hair tips and smiling eyes lost); 3D from D 5 (big round eyes came back, about
   4–5 years old); semi-realistic from the 10-19 portrait 6 (rounder, about 4). **Directions: 3 of 3 sheets
   right**: every figure's head, body and feet turned one way, the three-quarter and side views to the left, all

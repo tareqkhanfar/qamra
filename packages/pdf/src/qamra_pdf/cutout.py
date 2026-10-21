@@ -14,6 +14,12 @@ What this does instead (Pillow + numpy only):
    1/150 of the figure) for the flood, so it cannot slip through a gap in a soft outline.
 3. Floor shadow: in the figure's bottom band, soft pixels with the paper's own hue are let through (a
    shadow is the paper, darker; shoes, trousers and outlines are not), and thin contact lines there go too.
+   3b. Except light objects: white or grey shoes on cream paper are "the paper, darker" by hue as well, and
+   the cut took them away («جوليا»'s book, 2026-10-21: printed without her shoes). The image model paints the
+   floor shadow as a warm wash; a white shoe darkens evenly. What is clearly more neutral than the shadow's
+   measured tint, made whole (gaps closed, enclosed highlights filled) and drawn (full of edges, as a shoe is
+   and a wash is not), stays the figure, and around it only a measurable shadow is let through, so the faint
+   outline of the shoe's lit side stays a wall (`_light_object`).
 4. The background is what a flood from the border reaches; everything else is the figure, so light areas
    enclosed by the figure (a white sweater, a collar) stay opaque. Only the largest connected piece (and
    pieces nearly as large) is kept, which drops specks and the neighbouring figure's shadow.
@@ -30,6 +36,10 @@ grain (a Gaussian, which keeps a thin outline as a weaker line where a median wo
 edge thresholds are set from the noise measured on that same plain paper; the rim is peeled through the
 paper's grain too, and step 5 is skipped (a white garment and grainy paper cannot be told apart by colour).
 
+Feet check (`feet_problem`, `Cutout.feet`): a figure that runs off the bottom of its picture (the drawing
+cut the shoes), or drawing with hard edges left under the legs below the cut (shoes lost in the cut), is
+reported, so a book can be flagged for the reviewer instead of printing a child without shoes.
+
 Safety check: a result that covers implausibly much of the picture (`COVER_MAX`), touches all four edges of
 it, or is next to nothing is not a cut-out. `cut_out` then returns a framed portrait instead (the figure's
 region in a rounded rectangle with a soft vignette) and says so (`Cutout.fallback`), so a book can carry a
@@ -43,7 +53,7 @@ from dataclasses import dataclass
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
-VERSION = 3  # bump when the result changes, so cached cut-outs are redone
+VERSION = 4  # bump when the result changes, so cached cut-outs are redone (v4: white shoes kept)
 
 MIN_RESIDUAL = 7.0  # 0–255 per channel: the smallest step off the paper that counts as ink
 EDGE = 6.0  # gradient (max channel, over 2 px) that counts as an edge
@@ -51,6 +61,13 @@ SHADOW_BAND = 0.16  # the bottom fraction of the figure where a floor shadow may
 SHADOW_HUE = 0.06  # chromaticity distance from the paper that still reads as "paper in shade"
 SHADOW_MAX = 130.0  # a shadow is never further than this from the paper (dark shoes are)
 SHADOW_EDGE = 22.0  # a shadow is soft: its gradient stays under this (the outline of a shoe does not)
+TINT_DARK = 0.06  # a shadow candidate this much darker than the paper (mean ratio) shows its tint
+TINT_MIN_PX = 200  # ... and at least this many of them, or the tint is not measured
+TINT_PERCENTILE = 75  # the shadow's tint: this percentile of the candidates' warmth per unit of darkening
+SHADOW_WARM = 0.25  # a shadow at least this warm is told from a white shoe by colour (else by drawing alone)
+LIGHT_SHARE = 0.4  # a candidate with less than this share of the shadow's warmth may be a light object
+LIGHT_DRAWN = 0.35  # ... which is drawn: at least this share of it is edges (white shoes 0.58–0.65, a pale
+#                     strip of the wash 0.16)
 KEEP_PIECE = 0.15  # keep detached pieces at least this fraction of the largest one
 POCKET_MAX = 0.025  # a see-through pocket of paper is smaller than this fraction of the figure
 POCKET_MIN = 0.001  # ... and larger than this one (smaller specks are left alone)
@@ -65,6 +82,12 @@ SAMPLE_GAP = 6  # plain paper for the measurements is at least this many px from
 SAMPLE_MIN = 400  # px: fewer than this and the measurement falls back to all the border-connected paper
 EDGE_MARGIN = 2.0  # an edge on textured paper is this much above the grain's 99th-percentile gradient
 PEEL_MARGIN = 3.0  # the rim is peeled through paper up to this much above its 99.9th-percentile residual
+
+# the feet check
+FEET_EDGE_PX = 3  # a figure with this many pixels on the picture's bottom row runs off it
+FEET_ROWS = 0.03  # the feet: the figure's bottom 3 %
+FEET_BUSY = 0.08  # a row under the feet with this share of hard edges still holds drawing
+FEET_LOST = 0.035  # drawing under the feet over more than this share of the figure's height: lost shoes
 
 # the safety check
 COVER_MAX = 0.78  # a figure never covers more than this share of its picture (the whole sheet did: 0.91)
@@ -81,6 +104,7 @@ class Cutout:
     image: Image.Image  # RGBA
     fallback: bool = False  # `image` is a framed portrait: the figure could not be cut out cleanly
     reason: str = ""  # why the cut failed (for the logs)
+    feet: str = ""  # why the feet (shoes) may not be whole: cut by the picture's edge, or lost in the cut
 
 
 @dataclass(frozen=True)
@@ -152,6 +176,10 @@ def _border_flood(passable: np.ndarray) -> np.ndarray:
 
 def _grow(mask: np.ndarray, size: int) -> np.ndarray:
     return np.asarray(Image.fromarray(mask.astype(np.uint8) * 255).filter(ImageFilter.MaxFilter(size))) > 127
+
+
+def _shrink(mask: np.ndarray, size: int) -> np.ndarray:
+    return np.asarray(Image.fromarray(mask.astype(np.uint8) * 255).filter(ImageFilter.MinFilter(size))) > 127
 
 
 def _near(mask: np.ndarray, radius: int) -> np.ndarray:
@@ -302,11 +330,49 @@ def ink_mask(img: Image.Image, paper: tuple[int, int, int] | None = None) -> np.
     return _clearly_drawn(_measure(img, paper))
 
 
+def _light_object(p: _Paper, candidates: np.ndarray) -> np.ndarray:
+    """Shadow candidates that are a light object instead: white or grey shoes (or socks, a white hem) standing
+    in the floor shadow (step 3b of the module docstring).
+
+    By hue alone a white shoe on cream paper is "paper in shade": painted in shade it is the paper's colour,
+    darker. What tells them apart is the tint of the darkening. The image model paints the floor shadow as a
+    warm wash over the paper (red kept more than blue: «جوليا»'s sheet, 2026-10-21, and every sample sheet),
+    while a white shoe darkens evenly or goes cooler. So the shadow's own tint is measured on the candidates
+    (the warmth, red ratio minus blue ratio against the paper, per unit of darkening, of the warmer ones), and
+    candidates clearly more neutral than it may be the light object. The object is made whole (its gaps
+    closed, what it encloses filled: its highlights are the paper's own colour) and kept only when it is
+    drawn: a shoe is full of edges (outline, straps, sole), a neutral patch of the wash (a pale strip under
+    the soles) is soft. With no warm shadow to measure (none at all: «جوليا»'s first sheet; or a grey wash),
+    colour cannot tell them apart and the drawn test alone decides; a neutral shadow touching white shoes can
+    still fool it, which the feet check (`feet_problem`) is there to catch."""
+    ratio = p.rgb / np.maximum(p.field, 1.0)
+    darkening = 1.0 - ratio.mean(-1)
+    warmth = ratio[..., 0] - ratio[..., 2]
+    measurable = candidates & (darkening >= TINT_DARK)
+    none = np.zeros(candidates.shape, bool)
+    if int(measurable.sum()) < TINT_MIN_PX:
+        return none
+    slope = warmth / np.maximum(darkening, TINT_DARK)
+    tint = float(np.percentile(slope[measurable], TINT_PERCENTILE))
+    light = measurable
+    if tint >= SHADOW_WARM:  # a warm shadow: the object is what is clearly more neutral than it
+        light = measurable & (slope < LIGHT_SHARE * tint)
+    size = 2 * max(2, round(min(candidates.shape) / 150)) + 1
+    light = ~_border_flood(~_shrink(_grow(light, size), size))  # whole: gaps closed, what it encloses filled
+    light = _grow(_shrink(light, size), size)  # thin neutral strokes in the wash go
+    labels, sizes = _components(light)
+    drawn = np.bincount(labels.ravel(), weights=(p.edges > p.edge).ravel(), minlength=sizes.size)
+    keep = np.flatnonzero(drawn >= LIGHT_DRAWN * np.maximum(sizes, 1))
+    objects: np.ndarray = np.isin(labels, keep[keep > 0])
+    return objects
+
+
 def _figure(p: _Paper) -> np.ndarray:
     """Steps 2–6 of the module docstring on a measured picture."""
     rgb, field, residual, edge_strength = p.rgb, p.field, p.residual, p.edges
     h, w = residual.shape
     threshold = p.threshold
+    radius = max(2, round(min(h, w) / 150))  # the wall's thickening (step 4)
 
     # 2. ink: off the paper, or an edge
     ink = (residual > threshold) | (edge_strength > p.edge)
@@ -322,11 +388,16 @@ def _figure(p: _Paper) -> np.ndarray:
         paper_chroma = field / (field.sum(-1, keepdims=True) + 1.0)
         paper_hue = np.abs(chroma - paper_chroma).max(-1) < SHADOW_HUE
         shadow = band & paper_hue & (residual < SHADOW_MAX) & (edge_strength <= max(SHADOW_EDGE, p.edge))
+        # 3b. white shoes are not the shadow they stand in; around them only a measurable shadow is one, so
+        #     the faint outline of their lit side (the paper's own colour) stays a wall
+        light = _light_object(p, shadow)
+        if light.any():
+            faint = 1.0 - (rgb / np.maximum(field, 1.0)).mean(-1) < TINT_DARK
+            shadow &= ~light & ~(_near(light, 2 * radius) & faint)
         ink &= ~shadow
 
     # 4. background = flooded from the border through the thickened wall, then given back what the
     #    thickening took: the shadow it walled off, and the paper-coloured rim around the outline
-    radius = max(2, round(min(h, w) / 150))
     background = _border_flood(~_grow(ink, 2 * radius + 1))
     background = _border_flood(background | shadow)
     paper_like = residual <= threshold
@@ -393,6 +464,35 @@ def mask_problem(mask: np.ndarray) -> str:
     return ""
 
 
+def feet_problem(p: _Paper, mask: np.ndarray, flat: int = 0) -> str:
+    """Why the figure's feet may not be whole ("" when they look whole): the feet check.
+
+    - The figure runs off the bottom of the picture: the drawing itself cut the shoes (only checked on a
+      picture's own edge, `flat` = 0: a caller that cropped the figure tightly and padded it checks the
+      sheet).
+    - Drawing with hard edges is left under the legs, below the cut, over more than `FEET_LOST` of the
+      figure's height: shoes taken for the floor shadow (white shoes on cream paper, «جوليا», 2026-10-21:
+      0.055 and 0.065 of the height; a floor shadow and its contact line under whole shoes stay below 0.021
+      on the sample sheets)."""
+    h, w = mask.shape
+    rows = np.flatnonzero(mask.any(1))
+    if rows.size == 0:
+        return ""
+    top, bottom = int(rows[0]), int(rows[-1])
+    if flat == 0 and bottom == h - 1 and int(mask[-1].sum()) >= FEET_EDGE_PX:
+        return "the figure runs off the bottom of the picture"
+    height = bottom - top + 1
+    feet = mask[max(top, bottom - round(FEET_ROWS * height)) : bottom + 1].any(0)
+    radius = max(2, round(min(h, w) / 150))
+    under = _grow(np.repeat(feet[None, :], 3, 0), 2 * radius + 1)[1]  # the columns under the feet
+    hard = (p.edges[bottom + 1 :, under] > SHADOW_EDGE) & ~mask[bottom + 1 :, under]
+    busy = np.flatnonzero(hard.mean(1) > FEET_BUSY) if hard.size else np.zeros(0, int)
+    lost = (int(busy[-1]) + 1) / height if busy.size else 0.0
+    if lost > FEET_LOST:
+        return f"drawing left under the feet ({lost:.1%} of the figure's height)"
+    return ""
+
+
 def _region(p: _Paper, flat: int) -> tuple[int, int, int, int]:
     """The figure's region for the framed portrait: rows and columns with a few clearly drawn pixels, plus
     a margin of paper; the whole picture (inside a flat margin) when nothing stands out."""
@@ -440,13 +540,14 @@ def cut_out(img: Image.Image, paper: tuple[int, int, int] | None = None, feather
     problem = mask_problem(mask)
     if problem:
         return Cutout(framed_portrait(img, paper), fallback=True, reason=problem)
+    feet = feet_problem(p, mask, _flat_margin(np.asarray(img.convert("RGB"))))
     # the outermost pixel ring is the anti-aliased blend with the paper: drop it, then soften the edge
     alpha = Image.fromarray(mask.astype(np.uint8) * 255).filter(ImageFilter.MinFilter(3))
     if feather > 0:
         alpha = alpha.filter(ImageFilter.GaussianBlur(feather))
     out = img.convert("RGBA")
     out.putalpha(alpha)
-    return Cutout(out)
+    return Cutout(out, feet=feet)
 
 
 def cut_out_figure(

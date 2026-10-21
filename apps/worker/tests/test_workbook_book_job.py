@@ -264,6 +264,19 @@ def test_the_cutout_flag_is_set_and_cleared() -> None:
     assert family_book.cutout_flags(None, object()) == []  # a render without the field never flags
 
 
+def test_the_feet_flag_is_set_and_cleared() -> None:
+    """Shoes that may not be whole (the sheet's drawing runs off its bottom, or drawing left under the feet
+    after the cut: «جوليا»'s white shoes, 2026-10-21) flag the book for the reviewer; a clean render clears
+    it."""
+    feet = SimpleNamespace(cutout_fallback=False, cutout_feet=True)
+    assert family_book.cutout_flags(["x"], feet) == ["x", "cutout_feet"]
+    assert family_book.cutout_flags(["cutout_feet"], feet) == ["cutout_feet"]
+    clean = SimpleNamespace(cutout_fallback=False, cutout_feet=False)
+    assert family_book.cutout_flags(["cutout_feet", "x"], clean) == ["x"]
+    both = SimpleNamespace(cutout_fallback=True, cutout_feet=True)
+    assert family_book.cutout_flags([], both) == ["cutout_fallback", "cutout_feet"]
+
+
 async def test_black_and_white_is_refused_with_a_clear_reason(
     db: Session, storage: ObjectStorage, fake_render: list[dict[str, Any]]
 ) -> None:

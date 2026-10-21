@@ -289,7 +289,7 @@ def test_every_view_has_one_direction_and_whole_shoes(slug: str) -> None:
     assert "2. Three-quarter view turned toward the viewer's left" in flat
     assert "3. Side view in full profile facing the viewer's left, walking to the left" in flat
     assert "the head never looks the other way from the body and feet" in flat
-    assert "no shoe touches or crosses the picture's edge" in flat
+    assert "from the top of the head to the soles of both shoes" in flat  # v9's line, kept
     assert "A first try of this sheet was drawn wrong" not in flat
 
 
@@ -314,3 +314,20 @@ def test_the_3d_and_cartoon_guides_v4_drop_the_round_face_words() -> None:
     assert "eyes at the photo's own size and shape (narrow eyes stay narrow)" in " ".join(
         load_style("3d").guide.split()
     )
+
+
+@pytest.mark.parametrize("slug", ["3d", "semi-realistic", "cartoon", "watercolor"])
+@pytest.mark.parametrize("version", [9, 10])
+def test_v9_and_v10_keep_the_whole_figure_and_its_shoes_inside_the_picture(slug: str, version: int) -> None:
+    """«جوليا»'s white sneakers (2026-10-21): every view from head to soles with background below the shoes,
+    and light shoes clearly outlined, so the cut-out never meets feet cut by the picture or lost in the
+    shadow. v10 keeps v9's line and adds the face shape and one direction per view."""
+    girl = Child(name="x", gender="f", age=4, outfit="red-jeans")
+    flat = _flat(character_request(girl, [PHOTO], load_style(slug), portrait=PORTRAIT, version=version))
+    assert "from the top of the head to the soles of both shoes" in flat
+    assert "a clear band of empty background below the shoes" in flat
+    assert "no part of any view touches or runs off the edge of the picture" in flat
+    assert "light-colored shoes too" in flat and "white sneakers" in flat
+    assert ("Side view in full profile facing the viewer's left" in flat) == (version == 10)
+    v8 = _flat(character_request(girl, [PHOTO], load_style(slug), portrait=PORTRAIT, version=8))
+    assert "soles of both shoes" not in v8 and "white sneakers" in v8  # v8 stays for the record

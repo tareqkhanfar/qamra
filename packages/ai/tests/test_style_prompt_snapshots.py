@@ -17,10 +17,12 @@ scenes and the page QA. History of the golden file:
   - every style: only the character portrait (v3) and sheet (v7) groups, plus new groups with likeness notes;
     pages, QA, companion, family, Classic and class-book prompts byte-identical;
   - watercolor: every group (guide v4: white paper, clean washes, no amber cast).
+- 2026-10-21 (sheet v9: head to shoes inside the picture, light shoes outlined; «جوليا»'s white sneakers):
+  every style, only the character sheet groups; everything else byte-identical.
 - 2026-10-21 (the face-shape work and the sheet's directions), rewritten on purpose:
-  - every style: only the character portrait (v5) and sheet (v10) groups (`likeness.v4`'s FACE SHAPE block, one
-    direction per view, whole shoes), plus new groups with the measured face shape and the sheet check's
-    redraw; pages, QA, companion, family, Classic and class-book prompts byte-identical;
+  - every style: only the character portrait (v5) and sheet (v10) groups (`likeness.v4`'s FACE SHAPE block,
+    one direction per view, v9's whole-figure line kept), plus new groups with the measured face shape and the
+    sheet check's redraw; pages, QA, companion, family, Classic and class-book prompts byte-identical;
   - 3d and cartoon: every group but the Classic portraits (guides v4: the child's own face shape)."""
 
 import json
