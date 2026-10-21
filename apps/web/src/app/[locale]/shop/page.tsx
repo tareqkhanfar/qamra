@@ -17,8 +17,9 @@ import {
   priceWording,
   pricesShown,
 } from "@/lib/catalog";
+import { coloringBooks, coloringFacts, coloringPreviews, smallSrc } from "@/lib/coloring";
 import { pageMetadata } from "@/lib/seo";
-import { ACTIVITY_LINES, WORKBOOK_PAGES, productFrom } from "@/lib/shop";
+import { WORKBOOK_LINES, WORKBOOK_PAGES, productFrom, productPath } from "@/lib/shop";
 import { money } from "@/lib/store";
 import { PREVIEWS, soldAges } from "@/lib/workbook";
 
@@ -44,10 +45,12 @@ export default async function ShopPage() {
   const price = (n: number | string | null) => (n === null ? "—" : money(n, currency, locale));
   const stories = (themes ?? []).filter((th) => th.status === "available");
   const styles = (catalog?.styles ?? []).filter((s) => s.lines.some((l) => l === "classic" || l === "magic"));
-  const activity = (catalog?.products ?? []).filter((p) => (ACTIVITY_LINES as readonly string[]).includes(p.line));
+  const activity = (catalog?.products ?? []).filter((p) => (WORKBOOK_LINES as readonly string[]).includes(p.line));
   const freeCover = (site as Record<string, unknown> | null)?.free_cover === true;
   const name = (p: { name_ar: string; name_en: string }) => (locale === "ar" ? p.name_ar : p.name_en);
   const tw = await getTranslations("workbook");
+  const tc = await getTranslations("coloring");
+  const coloring = coloringBooks(catalog?.products ?? []);
 
   return (
     <PageShell>
@@ -196,13 +199,66 @@ export default async function ShopPage() {
                 );
                 const cls = "flex items-center gap-3.5 rounded-[20px] border border-line bg-paper-raised p-3";
                 return WORKBOOK_PAGES ? (
-                  <Link key={p.slug} href={`/workbooks/${p.slug}`} className={cls}>
+                  <Link key={p.slug} href={productPath(p)} className={cls}>
                     {card}
                   </Link>
                 ) : (
                   <div key={p.slug} className={cls}>
                     {card}
                   </div>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
+        {coloring.length > 0 && (
+          <section aria-labelledby="coloring-title" className="flex flex-col gap-3">
+            <div className="flex items-end justify-between gap-3">
+              <div className="flex flex-col gap-0.5">
+                <h2 id="coloring-title" className="text-[22px] text-night-900 md:text-[28px]">
+                  {t("coloring.title")}
+                </h2>
+                <span className="text-small text-ink-muted">{t("coloring.lead")}</span>
+              </div>
+              <Link href="/coloring" className="flex min-h-11 items-center gap-1 text-small font-bold text-amber-700">
+                {t("coloring.all")} <Arrow />
+              </Link>
+            </div>
+            <div className="grid gap-3 md:grid-cols-2 md:gap-5 lg:grid-cols-4">
+              {coloring.map((p) => {
+                const facts = coloringFacts(p);
+                const cover = coloringPreviews(p.slug).cover;
+                const from = productFrom(p);
+                return (
+                  <Link
+                    key={p.slug}
+                    href={productPath(p)}
+                    className="flex items-center gap-3.5 rounded-[20px] border border-line bg-paper-raised p-3"
+                  >
+                    {cover ? (
+                      <img
+                        src={smallSrc(cover.src)}
+                        alt=""
+                        width={cover.w}
+                        height={cover.h}
+                        loading="lazy"
+                        className="h-[124px] w-[88px] shrink-0 rounded-[10px] border border-line object-cover object-top"
+                      />
+                    ) : (
+                      <ActivityArt line={p.line} title={facts.title} />
+                    )}
+                    <div className="flex grow flex-col gap-1">
+                      <span className="self-start rounded-full bg-night-100 px-2 py-0.5 text-[12px] font-semibold text-night-900">
+                        {t("coloring.chip", { ages: tc("ages") })}
+                      </span>
+                      <h3 className="text-[18px] text-night-900">{name(p)}</h3>
+                      <span className="text-caption leading-[1.5] text-ink-muted">
+                        {tc("pagesCount", { pages: facts.pages })} · {tc(`bindingShort.${facts.binding}`)} · {tc("bw")}
+                      </span>
+                      {from !== null && <strong className="text-body text-night-900">{price(from)}</strong>}
+                    </div>
+                  </Link>
                 );
               })}
             </div>

@@ -18,10 +18,12 @@ export async function SiteNav({ variant = "light" }: { variant?: Variant }) {
   ]);
   const signedIn = jar.has("qamra_at");
   const dark = variant === "dark";
-  // the launch IA: what we sell first (stories, activity books, kindergartens), then prices and the process
+  // the launch IA: what we sell first (stories, activity books, coloring books, kindergartens), then prices and
+  // the process
   const links = [
     { href: "/stories", label: t("themes") },
     { href: "/workbooks", label: t("workbooks") },
+    { href: "/coloring", label: t("coloring") },
     { href: "/kindergartens", label: t("kindergartens") },
     ...(prices ? [{ href: "/pricing", label: t("pricing") }] : []), // no prices page while they are hidden
     { href: "/how-it-works", label: t("how") },
@@ -43,9 +45,9 @@ export async function SiteNav({ variant = "light" }: { variant?: Variant }) {
             {brandName(locale)}
           </span>
         </Link>
-        <div className="hidden grow gap-7 text-body lg:flex">
+        <div className="hidden grow gap-5 text-body lg:flex xl:gap-7">
           {links.map((l) => (
-            <Link key={l.href} href={l.href} className={linkColor}>
+            <Link key={l.href} href={l.href} className={`whitespace-nowrap ${linkColor}`}>
               {l.label}
             </Link>
           ))}

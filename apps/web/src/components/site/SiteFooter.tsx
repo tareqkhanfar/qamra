@@ -20,6 +20,7 @@ export async function SiteFooter() {
     { href: "/workbooks/learning-journey", label: t("journey") },
     { href: "/workbooks/family-adventures", label: t("family") },
     { href: "/workbooks/islamic-series", label: t("islamic") },
+    { href: "/coloring", label: t("coloring") },
     { href: "/shop", label: t("allBooks") },
   ];
   const kg = [

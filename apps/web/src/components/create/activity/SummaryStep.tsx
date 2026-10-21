@@ -8,7 +8,9 @@ import { Alert } from "@/components/ui/Alert";
 import { ArrowForward, Button } from "@/components/ui/Button";
 import { Link } from "@/i18n/navigation";
 import { genitiveName, nameCases } from "@/lib/arabicName";
+import { coloringFacts, coloringPreviews, smallSrc } from "@/lib/coloring";
 import { characterImage, type Child, type FamilyPayload } from "@/lib/create";
+import { isColoringLine, productPath } from "@/lib/shop";
 import { money, type CatalogProduct, type CatalogVariant, type Currency } from "@/lib/store";
 import { partsFor } from "@/lib/workbook";
 import { arabic } from "../EditChild";
@@ -18,8 +20,19 @@ import { AgeCheck } from "./AgeCheck";
 /** «KG2 · الجزء الأول · ملوّن · مطبوع»: the variant as the product page names it (its `workbook.*` labels). */
 function useVariantLine(product: CatalogProduct, variant: CatalogVariant): string {
   const t = useTranslations("workbook");
+  const tc = useTranslations("create.activity.summary.colorbook");
   const line = product.line as string;
   const picks = variant.options;
+  if (isColoringLine(line)) {
+    // «مطبوع · دفتر مدبّس · 32 صفحة بالأبيض والأسود للتلوين» / «ملف PDF · 32 صفحة …»
+    const facts = coloringFacts(product);
+    const digital = picks.format === "digital";
+    return [
+      tc(digital ? "pdf" : "printed"),
+      ...(digital ? [] : [tc(`binding.${facts.binding}`)]),
+      tc(facts.title === "sketchbook" ? "pagesDraw" : "pagesColor", { n: facts.pages }),
+    ].join(" · ");
+  }
   const label = (group: string, value: string) =>
     t.has(`valuesOf.${line}.${group}.${value}`)
       ? t(`valuesOf.${line}.${group}.${value}`)
@@ -75,6 +88,7 @@ export function SummaryStep({
   back,
   onEditChild,
   onEditFamily,
+  onEditCover,
   onNewCharacter,
   onAdd,
 }: {
@@ -94,6 +108,8 @@ export function SummaryStep({
   back: () => void;
   onEditChild: () => void;
   onEditFamily?: () => void;
+  /** «دفاتر التلوين والرسم»: the character on the cover is optional; «تغيير» goes back to the cover step. */
+  onEditCover?: () => void;
   onNewCharacter: () => void;
   onAdd: () => Promise<string | null>;
 }) {
@@ -106,8 +122,12 @@ export function SummaryStep({
   const name = locale === "ar" ? product.name_ar : product.name_en;
   const variantLine = useVariantLine(product, variant);
   const who = { ...nameCases(child.name), gender: child.gender };
-  const productHref = `/workbooks/${product.slug}?${new URLSearchParams(variant.options).toString()}`;
-  const cover = partsFor(product.slug, line, variant.options)[0]?.cover;
+  const productHref = `${productPath(product)}?${new URLSearchParams(variant.options).toString()}`;
+  const coloring = isColoringLine(line);
+  const coloringCover = coloring ? coloringPreviews(product.slug).cover : null;
+  const cover = coloring
+    ? coloringCover && { src: coloringCover.src, sm: smallSrc(coloringCover.src) }
+    : partsFor(product.slug, line, variant.options)[0]?.cover;
   const digital = variant.options.format === "digital";
 
   async function add() {
@@ -192,25 +212,50 @@ export function SummaryStep({
             {t.rich("activity.summary.praise", { ...who, ar: arabic })}
           </Row>
         )}
-        <Row
-          label={t("activity.summary.character")}
-          action={
-            <button type="button" onClick={onNewCharacter} className={changeClass}>
-              {t("activity.summary.newCharacter")}
-            </button>
-          }
-        >
-          {characterId ? (
-            // eslint-disable-next-line @next/next/no-img-element -- private image through the API, no-store
-            <img
-              src={characterImage(characterId)}
-              alt={t("activity.summary.characterAlt", who)}
-              className="mt-1 h-[88px] w-[132px] rounded-xl bg-white object-contain"
-            />
-          ) : (
-            "—"
-          )}
-        </Row>
+        {onEditCover ? (
+          <Row
+            label={t("activity.summary.cover")}
+            action={
+              <button type="button" onClick={onEditCover} className={changeClass}>
+                {t("activity.summary.change")}
+              </button>
+            }
+          >
+            {characterId ? (
+              <span className="flex flex-col gap-1">
+                {t("activity.summary.coverWith", who)}
+                {/* eslint-disable-next-line @next/next/no-img-element -- private image through the API, no-store */}
+                <img
+                  src={characterImage(characterId)}
+                  alt={t("activity.summary.characterAlt", who)}
+                  className="h-[88px] w-[132px] rounded-xl bg-white object-contain"
+                />
+              </span>
+            ) : (
+              t("activity.summary.coverWithout", who)
+            )}
+          </Row>
+        ) : (
+          <Row
+            label={t("activity.summary.character")}
+            action={
+              <button type="button" onClick={onNewCharacter} className={changeClass}>
+                {t("activity.summary.newCharacter")}
+              </button>
+            }
+          >
+            {characterId ? (
+              // eslint-disable-next-line @next/next/no-img-element -- private image through the API, no-store
+              <img
+                src={characterImage(characterId)}
+                alt={t("activity.summary.characterAlt", who)}
+                className="mt-1 h-[88px] w-[132px] rounded-xl bg-white object-contain"
+              />
+            ) : (
+              "—"
+            )}
+          </Row>
+        )}
         {family !== undefined && (
           <Row
             label={t("activity.summary.family")}

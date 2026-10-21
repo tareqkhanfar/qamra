@@ -346,6 +346,12 @@
       "withCompanion": "With a companion",
       "hardcover": "Hardcover"
     },
+    "coloring": {
+      "title": "Color and draw",
+      "lead": "Coloring and drawing books with your child's name on the cover",
+      "chip": "{ages} · A4",
+      "all": "All four books"
+    },
     "learn": {
       "title": "Learn and play",
       "lead": "Activity books with their name and character",
@@ -391,11 +397,11 @@
       "result": "Your result"
     },
     "age": {
-      "title": "How old is your child?",
       "3": "3 or younger",
       "4": "4 years",
       "5": "5 years",
-      "6": "6–7 years"
+      "6": "6–7 years",
+      "title": "How old is your child?"
     },
     "goal": {
       "title": "What should the book do?",
@@ -1156,7 +1162,8 @@
       "codNote": "Cash on delivery · Free reprint if the mistake is ours",
       "needs": {
         "activity": "Missing: your child's name and character",
-        "story": "Missing: your child's details and the preview"
+        "story": "Missing: your child's details and the preview",
+        "colorbook": "Missing: your child's name"
       },
       "missing": {
         "name_en": "Missing: your child's name in English letters",
@@ -1304,7 +1311,8 @@
         "workbook": "{name}'s workbook",
         "journey": "{name}'s first journey",
         "family": "{name}'s adventures",
-        "islamic": "My Heart Knows Allah · {name}"
+        "islamic": "My Heart Knows Allah · {name}",
+        "colorbook": "{product} · {name}"
       },
       "workbook": {
         "level": {
@@ -1376,6 +1384,16 @@
           "sister": "Sister",
           "baby": "Baby",
           "other": "Family member"
+        }
+      },
+      "colorbook": {
+        "binding": {
+          "stapled": "stapled",
+          "wire-o": "Wire-O"
+        },
+        "cover": {
+          "with": "Cover: with {name}'s character",
+          "without": "Cover: no character"
         }
       }
     }
@@ -1939,6 +1957,7 @@
     "newBook": "New book",
     "cart": "Cart",
     "workbooks": "Activity books",
+    "coloring": "Coloring books",
     "allBooks": "All books"
   },
   "home": {
@@ -2155,6 +2174,10 @@
     "activityTitle": "Learning and playing, as the hero of the pages",
     "activityLead": "Printed books in your child's name and with their character, with real pages to flip through.",
     "activityAll": "All activity books",
+    "coloringEyebrow": "Color and draw",
+    "coloringTitle": "Coloring & drawing books",
+    "coloringLead": "Letters, Palestine and Ramadan to color, plus a sketchbook for free drawing: A4 on thick paper, with your child's name on the cover.",
+    "coloringAll": "All four books",
     "order": "Order",
     "faqTitle": "Common questions",
     "faqMore": "All questions and answers",
@@ -2188,6 +2211,7 @@
     "journey": "My First Learning Journey",
     "family": "My Adventures with My Family",
     "islamic": "My Heart Knows Allah",
+    "coloring": "Coloring & drawing books",
     "allBooks": "All books",
     "forKg": "Kindergartens",
     "gradBooks": "Graduation books",
@@ -2433,7 +2457,8 @@
       "format": "Preview and format",
       "family": "Family",
       "summary": "Review",
-      "who": "Who it's for"
+      "who": "Who it's for",
+      "cover": "Cover"
     },
     "child": {
       "title": "Who is the hero of the story?",
@@ -2640,7 +2665,8 @@
         "journey": "on the cover and the journey map, at the start of each stop, and on the certificate",
         "family": "on the cover, in the adventures, in the passport and on the certificate",
         "islamic": "on the cover, at the start of each unit, in the passport and on the certificate",
-        "other": "on selected pages of the book"
+        "other": "on selected pages of the book",
+        "colorbook": "on the book's cover"
       },
       "onApprove": "When you approve:",
       "keep": "{gender, select, f {We keep {name}'s character for her future books and delete her original photo within 24 hours, unless you choose to keep it.} other {We keep {name}'s character for his future books and delete his original photo within 24 hours, unless you choose to keep it.}}",
@@ -2790,16 +2816,44 @@
         "praise": "{gender, select, f {<ar>«أحسنتِ يا {name}!»</ar> (Well done, {name}!)} other {<ar>«أحسنتَ يا {name}!»</ar> (Well done, {name}!)}}",
         "price": "Price",
         "save": "Save to cart",
-        "title": "Review {name}'s book"
+        "title": "Review {name}'s book",
+        "cover": "Cover",
+        "coverWith": "{name}'s name and character",
+        "coverWithout": "{name}'s name with an illustration, no character",
+        "colorbook": {
+          "printed": "Printed",
+          "pdf": "PDF to print at home",
+          "binding": {
+            "stapled": "stapled",
+            "wire-o": "Wire-O binding"
+          },
+          "pagesColor": "{n} black-and-white pages to color",
+          "pagesDraw": "{n} pages to draw on"
+        }
       },
-      "unknown": "We can't find this book in the shop right now; it may no longer be available. Go back to your cart and continue from there."
+      "unknown": "We can't find this book in the shop right now; it may no longer be available. Go back to your cart and continue from there.",
+      "cover": {
+        "title": "Shall we put {name}'s character on the cover?",
+        "body": "{gender, select, f {Her name is printed on the cover and the first page either way; her character is optional.} other {His name is printed on the cover and the first page either way; his character is optional.}}",
+        "withReady": "{gender, select, f {Yes, put her character on the cover} other {Yes, put his character on the cover}}",
+        "withReadyHint": "{gender, select, f {The character already drawn for her, nothing new to draw.} other {The character already drawn for him, nothing new to draw.}}",
+        "without": "Without a character",
+        "withoutHint": "A colorful illustrated cover with {name}'s name.",
+        "draw": "{gender, select, f {Draw her character from a photo} other {Draw his character from a photo}}",
+        "drawHint": "{gender, select, f {You upload a clear photo of her face, we draw her character in the style you choose, and keep it for her next books at no extra cost.} other {You upload a clear photo of his face, we draw his character in the style you choose, and keep it for his next books at no extra cost.}}",
+        "plain": "A cover without a character",
+        "plainHint": "The quickest: a colorful illustrated cover with {name}'s name, then straight to the review.",
+        "alt": "{name}'s character",
+        "note": "The pages inside are the same either way, printed in black and white on thick paper."
+      }
     },
     "titles": {
       "family": "{name}'s adventures",
       "islamic": "My Heart Knows Allah · {name}",
       "journey": "{name}'s first journey",
       "story": "{name}'s book",
-      "workbook": "{name}'s workbook"
+      "workbook": "{name}'s workbook",
+      "colorbook": "{product} · {name}"
     },
     "who": {
       "ageHint": "So we can check that the book suits your child's age.",
@@ -2838,7 +2892,8 @@
         "family": "It appears on the cover, in the adventure titles, in the passport and on the certificate.",
         "islamic": "It appears on the cover, on the “This is me” page and on the certificate.",
         "journey": "In Arabic letters: your child will trace it and write it on the “My name” pages.",
-        "workbook": "In Arabic letters: your child will trace it and write it on the “My name” pages."
+        "workbook": "In Arabic letters: your child will trace it and write it on the “My name” pages.",
+        "colorbook": "It's printed on the cover and on the book's first page."
       },
       "title": "Who is this book for?"
     },
@@ -3014,7 +3069,8 @@
       "name_not_traceable": "Name tracing incomplete",
       "gender_check": "Check boy/girl wording",
       "cutout_fallback": "Character framed (cut-out failed)",
-      "cutout_feet": "Character's shoes may be cut off"
+      "cutout_feet": "Character's shoes may be cut off",
+      "character_missing": "Chosen character unavailable: cover printed without it"
     },
     "status": {
       "draft": "Draft",
@@ -3232,7 +3288,8 @@
       "magic": "Qamra Magic",
       "coloring": "Coloring book",
       "workbook": "Foundation workbook",
-      "journey": "My First Learning Journey"
+      "journey": "My First Learning Journey",
+      "colorbook": "Coloring & Drawing Books"
     },
     "formats": {
       "digital": "Digital copy",
@@ -3467,7 +3524,8 @@
       "workbook": "KG workbook",
       "journey": "First journey",
       "family": "Family adventures",
-      "islamic": "My Heart Knows Allah"
+      "islamic": "My Heart Knows Allah",
+      "colorbook": "Coloring & drawing books"
     },
     "fields": {
       "price_ils": "Price ₪",
@@ -3563,6 +3621,160 @@
     "qty": "Qty",
     "none": "No data in this period."
   },
+  "coloring": {
+    "title": "Coloring & drawing books",
+    "lead": "Big A4 books on thick paper, where your child colors the letters, Palestine and Ramadan, and draws whatever they imagine. Their name is on the cover, so they know the book is theirs.",
+    "ages": "Ages 3–7",
+    "paperChip": "Thick 160 g paper",
+    "booksTitle": "Choose a book",
+    "booksLead": "Three coloring books and a sketchbook, all in your child's name.",
+    "order": "Order",
+    "from": "From {price}",
+    "coverAlt": "The cover of {name}",
+    "peek": "Pages from the book",
+    "pagesCount": "{pages, plural, one {# page} other {# pages}}",
+    "bindingShort": {
+      "stapled": "Stapled",
+      "wire-o": "Wire-O"
+    },
+    "bw": "Black and white",
+    "nameSlot": "Your child's name",
+    "desc": {
+      "letters": "All 28 Arabic letters, one page each: they color the big letter and pictures of things that start with it, with the word written under each picture.",
+      "palestine": "Pictures of our homeland to color: the olive harvest, the keffiyeh and tatreez patterns, the Dome of the Rock in Jerusalem, and the sea and oranges of Jaffa.",
+      "ramadan": "The lantern and the crescent, the iftar table with the family, the mosque and the joy of Eid: calm pages to color during the blessed month.",
+      "sketchbook": "A drawing book that opens flat: framed pages, a little idea at the top of each page, and half-finished drawings they complete themselves."
+    },
+    "insideList": {
+      "letters": [
+        "A page for every letter, from Alif to Yaa",
+        "Pictures of things that start with the letter, with the word below",
+        "A “My name” page and a well-done page at the end"
+      ],
+      "palestine": [
+        "Olives, oranges and the sea of Jaffa",
+        "The Dome of the Rock and tatreez patterns",
+        "A page to draw Palestine the way they love it"
+      ],
+      "ramadan": [
+        "The lantern, the crescent and the mosque",
+        "The iftar table and the joy of Eid",
+        "A page to draw their own lantern"
+      ],
+      "sketchbook": [
+        "Roomy pages for free drawing",
+        "A little idea to start each drawing",
+        "Half-finished drawings to complete"
+      ]
+    },
+    "personalTitle": "Your child's name on the cover",
+    "personalBody": "We print their name on the cover and on the “This book belongs to…” page. If they already have a Qamra character, we put it on the cover, or we can draw one if you like. Without one, the cover carries one of our own illustrations.",
+    "forTitle": "For children aged 3 to 7",
+    "forBody": "Clear lines and big spaces that suit small hands, from the first scribbles to coloring inside the lines.",
+    "paperTitle": "Paper made for coloring",
+    "paper": [
+      {
+        "title": "Big A4 size",
+        "body": "Black-and-white pages with clear lines and plenty of room to color."
+      },
+      {
+        "title": "Thick 160 g paper",
+        "body": "Good for pencils, colored pencils and crayons."
+      },
+      {
+        "title": "A sturdy color cover",
+        "body": "A 300 g card cover that protects the pages in a school bag and on the table."
+      },
+      {
+        "title": "Stapled or Wire-O",
+        "body": "The coloring books are stapled in the middle; “My Sketchbook” has a Wire-O binding that opens flat for drawing."
+      }
+    ],
+    "howTitle": "How to order",
+    "how": [
+      {
+        "title": "Choose the book",
+        "body": "Printed and delivered to your door, or a PDF you print yourselves."
+      },
+      {
+        "title": "Add your child's name",
+        "body": "We put their drawn character on the cover if they have one, or draw it if you like."
+      },
+      {
+        "title": "We print and deliver",
+        "body": "Thick paper, a color cover, cash on delivery. A PDF is downloaded from your account."
+      }
+    ],
+    "faqTitle": "Common questions",
+    "faq": [
+      {
+        "q": "Can we print the PDF at home?",
+        "a": "Yes. The three coloring books also come as an A4 PDF that you can print at home or at a print shop nearby. “My Sketchbook” comes printed only, with a Wire-O binding that opens flat."
+      },
+      {
+        "q": "Which pens and colors suit the paper?",
+        "a": "Pencils, colored pencils and crayons. Felt-tip pens may show a little on the other side, so slip a spare sheet under the page."
+      },
+      {
+        "q": "Does my child need a drawn character?",
+        "a": "No. Their name on the cover and on the “This book belongs to…” page is enough. If they already have a Qamra character, we put it on the cover, or we can draw one if you like."
+      },
+      {
+        "q": "How long does it take?",
+        "a": "We print and send it after you order; delivery time depends on the city (a few days), and you pay on delivery. A PDF is downloaded from your account as soon as it is ready."
+      },
+      {
+        "q": "Are the pages the same for every child?",
+        "a": "Yes, the coloring and drawing pages are fixed; we personalize the cover and the “This book belongs to…” page with your child's name."
+      }
+    ],
+    "ctaTitle": "A book in their name, and the colors are all theirs",
+    "ctaBody": "Choose the book your child will love, and we print it in their name on thick paper.",
+    "ctaBooks": "Choose a book",
+    "ctaAll": "All books",
+    "back": "Back",
+    "gallery": "Pages from the book",
+    "galleryCover": "The cover",
+    "showPage": "Show: {caption}",
+    "factsTitle": "Book details",
+    "fact": {
+      "pages": "Pages",
+      "size": "Size",
+      "binding": "Binding",
+      "paper": "Paper",
+      "interior": "Inside pages",
+      "cover": "Cover",
+      "ages": "Ages"
+    },
+    "value": {
+      "size": "{size} portrait",
+      "binding": {
+        "stapled": "Stapled in the middle",
+        "wire-o": "Wire-O · opens flat"
+      },
+      "paper": "Thick, 160 g",
+      "interior": "Black and white, to color",
+      "interiorSketch": "Black and white, to draw on",
+      "cover": "300 g color card, with your child's name"
+    },
+    "format": "Format",
+    "formats": {
+      "softcover": "Printed",
+      "spiral": "Printed",
+      "hardcover": "Printed",
+      "digital": "PDF to print at home"
+    },
+    "note": {
+      "printed": "We print it and deliver it to you; cash on delivery.",
+      "pdf": "An A4 file to print at home or at a print shop, with your child's name on the cover.",
+      "printedOnly": "“My Sketchbook” comes printed only: a Wire-O binding that opens flat for easy drawing."
+    },
+    "start": "Start your child's book now",
+    "insideTitle": "What's inside",
+    "quiz": "Not sure which book suits your child? Answer 3 questions",
+    "more": "More books",
+    "faqMore": "Questions about the books"
+  },
   "workbooksHub": {
     "title": "Activity books",
     "lead": "Printed books in your child's name, with their drawn character: learning letters and numbers, solving missions, and going on adventures with the family. Real pages to flip through before you order.",
@@ -3627,6 +3839,9 @@
   "pricingPage": {
     "title": "Pricing",
     "lead": "Personalized printed books, with clear prices.",
+    "lineTitle": {
+      "colorbook": "Coloring & drawing books"
+    },
     "from": "From <b>{price}</b>",
     "fromRow": "from {price}",
     "order": "Order now",

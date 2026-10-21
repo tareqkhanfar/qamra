@@ -35,7 +35,8 @@ export function Hint({ id, children }: { id?: string; children: ReactNode }) {
 /** The message key of a name hint: an activity book says where it prints the name. */
 function nameHint(kind: Kind, line: string | null): string {
   if (kind === "story") return "child.nameHint";
-  return `who.nameHint.${line === "journey" || line === "family" || line === "islamic" ? line : "workbook"}`;
+  const own = ["journey", "family", "islamic", "colorbook"].includes(line ?? "");
+  return `who.nameHint.${own ? line : "workbook"}`;
 }
 
 /**

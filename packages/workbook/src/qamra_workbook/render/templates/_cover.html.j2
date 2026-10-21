@@ -8,7 +8,7 @@
 {% macro front(c) -%}
 {% set b = c.box %}{% set L = c.look %}{% set p = c.panel %}
 <div class="cv cv-front cv-{{ c.series }}" style="{{ b.style() }}">
-  {% if c.scene %}<img class="cv-scene" src="{{ c.scene }}" alt="">{% else %}<div class="cv-scene cv-noscene"></div>{% endif %}
+  {% if c.scene %}<img class="cv-scene" src="{{ c.scene }}" alt="">{% elif c.scene_svg %}<div class="cv-scene cv-svgscene">{{ c.scene_svg }}</div>{% else %}<div class="cv-scene cv-noscene"></div>{% endif %}
   <div class="cv-veil"></div>
   {{ c.frame }}
   {{ brand(c.brand_top, 'right', b.right) }}
@@ -42,7 +42,7 @@
 {% macro back(c) -%}
 {% set b = c.box %}{% set L = c.look %}
 <div class="cv cv-back cv-{{ c.series }}" style="{{ b.style() }} background: {{ L.paper }};">
-  <div class="cvk-band" style="height: {{ '%.2f' % c.band_h }}mm">{% if c.band %}<img src="{{ c.band }}" alt="">{% endif %}</div>
+  <div class="cvk-band" style="height: {{ '%.2f' % c.band_h }}mm">{% if c.band %}<img src="{{ c.band }}" alt="">{% elif c.band_svg %}{{ c.band_svg }}{% endif %}</div>
   {{ c.frame }}
   <svg class="cvk-wave" style="top: {{ '%.2f' % (c.band_h - 9) }}mm; height: 10mm" viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path d="M0 6 C 30 0, 55 0, 85 4.5 S 150 10, 200 3 L200 10 L0 10 Z" fill="{{ L.paper }}"/><path d="M0 6 C 30 0, 55 0, 85 4.5 S 150 10, 200 3" fill="none" stroke="{{ L.accent }}" stroke-width="0.9" opacity=".55"/></svg>
   {{ brand(b.top, 'right', b.right) }}

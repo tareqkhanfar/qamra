@@ -10,7 +10,7 @@ import { addonMedia, includedItems } from "@/lib/addonsMedia";
 import { getPublicSettings, getStoreCatalog } from "@/lib/catalog";
 import { workbookJsonLd } from "@/lib/pageSeo";
 import { pageMetadata } from "@/lib/seo";
-import { ACTIVITY_LINES } from "@/lib/shop";
+import { WORKBOOK_LINES } from "@/lib/shop";
 import { PREVIEWS } from "@/lib/workbook";
 
 type Props = { params: Promise<{ product: string }>; searchParams: Promise<Record<string, string | string[]>> };
@@ -25,7 +25,7 @@ const PHOTO: Record<string, PhotoName> = {
 async function load(slug: string) {
   const catalog = await getStoreCatalog();
   const product = catalog?.products.find(
-    (p) => p.slug === slug && (ACTIVITY_LINES as readonly string[]).includes(p.line),
+    (p) => p.slug === slug && (WORKBOOK_LINES as readonly string[]).includes(p.line),
   );
   return { catalog, product };
 }

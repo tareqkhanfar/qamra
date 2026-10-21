@@ -43,7 +43,19 @@ CSV_COLUMNS = (
     "gift",  # Addendum 9: pack as a gift (no prices in the parcel) with this card message
     "gift_message",
     "insert_files",  # the sheets printed apart: a sticker sheet, the family book's card stock, an answer key
+    "binding",  # the product's binding (stapled, wire-o, spiral, perfect) when the order line froze it
+    "print_spec",  # size, binding, pages and paper in words, e.g. «A4 · دفتر مدبّس · 32 صفحة · ورق 160 غ…»
 )
+# What a printed order line freezes of its product (`OrderItem.title["print"]`, at checkout), so the printer
+# knows a stapled B/W coloring book from a Wire-O sketchbook: the format alone says softcover or spiral.
+PRINT_FEATURES = ("size", "binding", "pages", "interior", "paper_gsm", "cover_gsm")
+BINDING_LABELS = {
+    "stapled": "دفتر مدبّس (تدبيس من المنتصف)",
+    "wire-o": "سلك حلزوني Wire-O",
+    "spiral": "تجليد حلزوني",
+    "perfect": "تجليد كعب لاصق",
+}
+INTERIOR_LABELS = {"bw": "داخلي أبيض وأسود", "color": "داخلي ملوّن"}
 # An activity book's insert files (manifest item["inserts"]: name → storage key). The family book, every
 # journey stage and every «قلبي يعرف الله» volume has its sticker sheet; the family book also its card stock.
 # Each sheet is a PDF with its die lines on the optional-content layer «CutContour»; the labels tell the
@@ -71,6 +83,28 @@ def token_hash(token: str) -> str:
 def new_token() -> tuple[str, str]:
     token = secrets.token_urlsafe(32)
     return token, token_hash(token)
+
+
+def print_spec_of(features: dict[str, Any] | None, options: dict[str, Any]) -> dict[str, Any]:
+    """The product's print facts for a printed variant (empty for a digital one, or a product with none)."""
+    if str(options.get("format") or "") not in PRINTED_FORMATS:
+        return {}
+    return {k: (features or {})[k] for k in PRINT_FEATURES if (features or {}).get(k) not in (None, "")}
+
+
+def print_spec_label(spec: dict[str, Any] | None) -> str:
+    """The print facts in the printer's words: «A4 · دفتر مدبّس (…) · 32 صفحة · ورق 160 غ · داخلي أبيض وأسود ·
+    غلاف كرتون 300 غ»; "" when the line froze none (lines ordered before 2026-10-21)."""
+    spec = spec or {}
+    parts = [
+        str(spec["size"]) if spec.get("size") else "",
+        BINDING_LABELS.get(str(spec.get("binding") or ""), str(spec.get("binding") or "")),
+        f"{spec['pages']} صفحة" if spec.get("pages") else "",
+        f"ورق {spec['paper_gsm']} غ" if spec.get("paper_gsm") else "",
+        INTERIOR_LABELS.get(str(spec.get("interior") or ""), ""),
+        f"غلاف كرتون {spec['cover_gsm']} غ" if spec.get("cover_gsm") else "",
+    ]
+    return " · ".join(p for p in parts if p)
 
 
 def item_format(options: dict[str, Any], addons: list[dict[str, Any]]) -> str:
@@ -129,6 +163,8 @@ def manifest_csv(manifest: dict[str, Any]) -> bytes:
                 "yes" if item.get("gift") else "",
                 item.get("gift_message") or "",
                 " ".join(insert_file_name(item, name) for name in item.get("inserts") or {}),
+                item.get("binding") or "",
+                item.get("print_spec") or "",
             ]
         )
     return ("﻿" + out.getvalue()).encode("utf-8")  # BOM: spreadsheet apps then read Arabic correctly

@@ -32,9 +32,12 @@ import {
   asksNameEn,
   asksPhoto,
   canShow,
+  characterRequired,
+  formatCover,
   formatPlan,
   isActivityLine,
   isArabicName,
+  parseCover,
   parseNewPhoto,
   parsePlan,
   planFor,
@@ -48,6 +51,7 @@ import {
 } from "@/lib/flows";
 import { cartApi, type Catalog, type CatalogProduct, type CatalogVariant } from "@/lib/store";
 import { fillTitle } from "@/lib/themeTitle";
+import { CoverStep } from "./activity/CoverStep";
 import { FamilyStep } from "./activity/FamilyStep";
 import { SummaryStep } from "./activity/SummaryStep";
 import { CharacterStep, photoSavedNotice } from "./CharacterStep";
@@ -78,7 +82,8 @@ type Query = Partial<
     | "item"
     | "plan"
     | "edit"
-    | "photo",
+    | "photo"
+    | "cover",
     string | null
   >
 >;
@@ -117,7 +122,12 @@ function localNeeds(found: Found, catalog: Catalog | null, child: Child | null):
     product: found.product.slug,
     ages: agesFor(line, options),
     asks: { name_en: asksNameEn(line, options), family: line === "family" },
-    character: { reuse_id: reuse?.id ?? null, draw_style: styles.includes("3d") ? "3d" : styles[0]!, styles },
+    character: {
+      reuse_id: reuse?.id ?? null,
+      draw_style: styles.includes("3d") ? "3d" : styles[0]!,
+      styles,
+      required: characterRequired(line),
+    },
     child: child
       ? { name_traceable: !tracesName(line) || isArabicName(child.name), name_latin: child.name_latin ?? null }
       : null,
@@ -178,7 +188,9 @@ export function CreateWizard() {
     plan: params.get("plan"), // the optional steps this flow pinned (lib/flows.ts), so the count holds
     edit: params.get("edit"), // `photo`: the photo step opened from the character step («تعديل الصورة»)
     photo: params.get("photo"), // «تغيير الصورة»: see `newPhoto`
+    cover: params.get("cover"), // «دفاتر التلوين والرسم»: the cover step's choice (`char` | `plain`)
   };
+  const coverChoice = parseCover(params.get("cover"));
   // «تغيير الصورة» (the who card, «أطفالي»): `new` until the new photo is saved, then `done` until a drawing is
   // approved; a new character is drawn from it, never a ready one reused (lib/flows `newPhoto`). Read from the
   // params, not `q` (the React compiler would then keep `q` from being memoized in `onCharacter`).
@@ -455,6 +467,10 @@ export function CreateWizard() {
   const storyReady = !activity && child && !newPhoto ? readyStory(child, storyLine) : null;
   const usedCharacter = shownCharacter ?? (!activity && !q.character ? storyReady : null);
   const needs = activity ? needsOf(child ?? null) : null;
+  // «دفاتر التلوين والرسم»: the character on the cover is the parent's choice (the cover step)
+  const coverOptional = activity && needs?.character.required === false;
+  /** Whether the line will carry the character: always, unless optional; then the choice, else a ready one. */
+  const withCharacter = !coverOptional || (coverChoice ?? !!needs?.character.reuse_id);
 
   /** The flow's state for a child (the URL's, or the one picked on the child step). */
   function stateFor(c: Child | null | undefined): FlowState {
@@ -477,6 +493,9 @@ export function CreateWizard() {
       asksFamily,
       plan: c && c.id === child?.id ? plan : null,
       newPhoto: changing ? newPhoto : null,
+      characterOptional: coverOptional,
+      // a new drawing asked for (a new photo, another style) means a cover with the character
+      coverCharacter: fresh ? true : c && c.id === child?.id ? coverChoice : null,
     };
   }
 
@@ -489,7 +508,7 @@ export function CreateWizard() {
   const productName = found ? (locale === "ar" ? found.product.name_ar : found.product.name_en) : null;
   const frameTitle = activity
     ? shownName
-      ? t(`titles.${productLine}`, nameCases(shownName))
+      ? t(`titles.${productLine}`, { ...nameCases(shownName), product: productName! }) // «ألوّن حروفي · ضحى»
       : productName!
     : shownName
       ? t("titles.story", nameCases(shownName))
@@ -574,6 +593,7 @@ export function CreateWizard() {
       book: null,
       character: null,
       ...(activity ? { style: null } : {}),
+      ...(coverOptional ? { cover: formatCover(true) } : {}), // a new photo is for a cover with the character
       photo: "new",
       plan: formatPlan(pin),
       step: c.consent ? "photo" : "consent",
@@ -612,13 +632,50 @@ export function CreateWizard() {
     }
     // the ready character, unless the parent asked for a new one in another style
     const reuse = extra.redraw ? null : n.character.reuse_id;
-    const pin = planFor({ ...stateFor(c), reusable: !!reuse, newPhoto: null }, false);
-    const base = { child: c.id, book: null, plan: formatPlan(pin), photo: null };
+    const optional = n.character.required === false;
+    if (optional && !extra.redraw) {
+      // «دفاتر التلوين والرسم»: the cover step decides (with the ready character, without, or a new drawing)
+      const kept = c.id === child?.id ? q.cover : null; // back on the child step: the choice made stays
+      const choice = parseCover(kept);
+      const pin = planFor({ ...stateFor(c), reusable: !!reuse, newPhoto: null, coverCharacter: choice }, false);
+      go({
+        child: c.id,
+        book: null,
+        plan: formatPlan(pin),
+        photo: null,
+        step: "cover",
+        character: null,
+        style: null,
+        cover: kept,
+      });
+      return null;
+    }
+    const cover = optional ? { cover: formatCover(true) } : {}; // a new drawing in another style: with it
+    const pin = planFor(
+      { ...stateFor(c), reusable: !!reuse, newPhoto: null, ...(optional ? { coverCharacter: true } : {}) },
+      false,
+    );
+    const base = { child: c.id, book: null, plan: formatPlan(pin), photo: null, ...cover };
     if (reuse) go({ ...base, step: asksFamily ? "family" : "summary", character: reuse, style: null });
     else if (!c.consent) go({ ...base, step: "consent", character: null, style: null });
     else if (asksPhoto(photoState(c))) go({ ...base, step: "photo", character: null, style: null });
     else go({ ...base, step: "style", character: null, style: null }); // a photo saved in the last 24 hours
     return null;
+  }
+
+  /**
+   * The cover step is done («دفاتر التلوين والرسم»): without the character, or with the ready one, straight to the
+   * review; with a new one, the drawing steps (pinned for the count).
+   */
+  function afterCover(c: Child, withChar: boolean) {
+    const reuse = needs?.character.reuse_id ?? null;
+    const pin = planFor({ ...stateFor(c), coverCharacter: withChar, newPhoto: null }, false);
+    const base = { plan: formatPlan(pin), cover: formatCover(withChar), photo: null, style: null };
+    if (!withChar) go({ ...base, step: "summary", character: null });
+    else if (reuse) go({ ...base, step: "summary", character: reuse });
+    else if (!c.consent) go({ ...base, step: "consent", character: null });
+    else if (asksPhoto(photoState(c))) go({ ...base, step: "photo", character: null });
+    else go({ ...base, step: "style", character: null }); // a photo saved in the last 24 hours
   }
 
   /** Consent given: the photo, or the drawing (a story's type is chosen before the consent now). */
@@ -645,13 +702,13 @@ export function CreateWizard() {
     const given = asksFamily && family ? familyPayload(family.value) : undefined;
     // an empty family overrides the product page's only when the line's own family could be read
     const sentFamily = asksFamily ? (given ?? (family?.known ? EMPTY_FAMILY : undefined)) : undefined;
+    const characterId = withCharacter ? (usedCharacter?.id ?? n.character.reuse_id) : null;
     const r = await createApi.addWorkbook({
       sku: q.product as string,
       child_id: c.id,
       ...(q.item ? { item_id: q.item } : {}),
-      ...((usedCharacter?.id ?? n.character.reuse_id)
-        ? { character_id: usedCharacter?.id ?? n.character.reuse_id! }
-        : {}),
+      ...(characterId ? { character_id: characterId } : {}),
+      ...(coverOptional ? { with_character: withCharacter } : {}),
       ...(nameEn ? { name_en: nameEn } : {}),
       ...(sentFamily ? { family: sentFamily } : {}),
     });
@@ -688,7 +745,7 @@ export function CreateWizard() {
             ready={(c) => (activity ? readyActivity(c) : readyStory(c, storyLine))}
             nameEnOf={(c) => pendingEn[c.id] ?? c.name_latin ?? ""}
             preview={(name, gender) => {
-              if (activity) return t(`titles.${productLine}`, nameCases(name)); // «دوسية {nameGen}»
+              if (activity) return t(`titles.${productLine}`, { ...nameCases(name), product: productName! }); // «دوسية {nameGen}»
               const theme = themes.find((th) => th.slug === q.theme);
               return theme ? fillTitle(theme.title, name, gender) : null;
             }}
@@ -866,6 +923,16 @@ export function CreateWizard() {
             back={() => go({ step: "format" })}
           />
         );
+      case "cover":
+        return (
+          <CoverStep
+            child={child!}
+            readyId={needs?.character.reuse_id ?? null}
+            initial={coverChoice}
+            back={() => go({ step: previous("cover") })}
+            onDone={(withChar) => afterCover(child!, withChar)}
+          />
+        );
       case "family":
         return (
           <FamilyStep
@@ -888,7 +955,8 @@ export function CreateWizard() {
             product={found!.product}
             variant={found!.variant}
             currency={catalog!.currency}
-            characterId={usedCharacter?.id ?? n.character.reuse_id}
+            characterId={withCharacter ? (usedCharacter?.id ?? n.character.reuse_id) : null}
+            onEditCover={coverOptional ? () => go({ step: "cover" }) : undefined}
             nameEn={n.asks.name_en ? (pendingEn[child!.id] ?? child!.name_latin ?? "") : null}
             family={asksFamily ? (family ? (familyPayload(family.value) ?? null) : null) : undefined}
             ages={n.ages}
@@ -912,6 +980,7 @@ export function CreateWizard() {
                 character: null,
                 style: null,
                 plan: formatPlan(pin),
+                ...(coverOptional ? { cover: formatCover(true) } : {}),
               });
             }}
             onAdd={() => addProduct(child!)}

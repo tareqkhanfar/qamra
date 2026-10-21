@@ -1,5 +1,27 @@
-/** Design Shop: the activity books' little page drawings (dotted letter, maze, family check). */
-export function ActivityArt({ line }: { line: string }) {
+import { ColoringArt, ColoringMotif } from "@/components/coloring/ColoringArt";
+import type { ColoringTitle } from "@/lib/coloring";
+
+/**
+ * Design Shop: the activity books' little page drawings (dotted letter, maze, family check), and for «دفاتر
+ * التلوين والرسم» a line-art page (the book's own drawing when `title` is given, else crayons over a flower).
+ */
+export function ActivityArt({ line, title }: { line: string; title?: ColoringTitle }) {
+  if (line === "colorbook") {
+    return (
+      <div
+        className="flex h-[124px] w-24 shrink-0 items-center justify-center rounded-xl bg-amber-100"
+        aria-hidden="true"
+      >
+        {title ? (
+          <span className="flex h-[100px] w-[71px] rounded-[6px] border border-line bg-white p-1">
+            <ColoringArt title={title} className="size-full" />
+          </span>
+        ) : (
+          <ColoringMotif className="h-[100px] w-[76px]" />
+        )}
+      </div>
+    );
+  }
   const bg = line === "journey" ? "bg-success-bg" : line === "family" ? "bg-amber-100" : "bg-night-100";
   const tab = line === "journey" ? "#7FA38A" : line === "family" ? "#E9826B" : "#5B6FC0";
   return (

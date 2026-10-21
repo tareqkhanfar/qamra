@@ -15,6 +15,7 @@ export const PUBLIC_CLIENT_NAMESPACES = [
   "account",
   "auth",
   "classic",
+  "coloring",
   "common",
   "companion",
   "create",

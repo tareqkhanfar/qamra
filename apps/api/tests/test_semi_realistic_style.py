@@ -29,6 +29,7 @@ STYLES = ["3d", "watercolor", "cartoon", SEMI]  # the site's order: a parent who
 ACTIVITY_SKUS = ("wb-kg2-v1-color-spiral", "journey-s1-spiral", "family-wireo", "islamic-v1-softcover")
 REVISION, PREVIOUS = "a58eeffa5362", "6a87cac7a912"
 V3_REVISION = "968a4be3c42d"  # guide v3, a realistic painted portrait (2026-10-10)
+ACTIVITY_LINES = ["magic", "workbook", "journey", "family", "islamic"]  # the lines of migration a58eeffa5362
 
 
 @pytest.fixture(autouse=True)
@@ -78,7 +79,7 @@ async def test_the_catalog_sells_semi_realistic_in_magic_and_the_activity_books(
     styles = {s["slug"]: s for s in (await client.get("/api/store/catalog")).json()["styles"]}
     semi = styles[SEMI]
     assert (semi["name_ar"], semi["name_en"]) == ("شبه حقيقي", "Semi-realistic")
-    assert semi["lines"] == ["magic", "workbook", "journey", "family", "islamic"]
+    assert semi["lines"] == ["magic", "workbook", "journey", "family", "islamic", "colorbook"]
     assert "classic" not in semi["lines"]  # Classic draws from templates, and none exist in this style
     assert [s for s in styles if s != "coloring"] == STYLES
 
@@ -86,9 +87,9 @@ async def test_the_catalog_sells_semi_realistic_in_magic_and_the_activity_books(
 @pytest.mark.parametrize("sku", ACTIVITY_SKUS)
 async def test_every_activity_book_offers_every_style(client: AsyncClient, sku: str) -> None:
     out = await _needs(client, sku)
-    assert out["character"] == {"reuse_id": None, "draw_style": "3d", "styles": STYLES}
+    assert out["character"] == {"reuse_id": None, "draw_style": "3d", "styles": STYLES, "required": True}
     chosen = await _needs(client, sku, style=SEMI)
-    assert chosen["character"] == {"reuse_id": None, "draw_style": SEMI, "styles": STYLES}
+    assert chosen["character"] == {"reuse_id": None, "draw_style": SEMI, "styles": STYLES, "required": True}
 
 
 async def test_the_chosen_style_decides_the_drawing_and_the_reuse(
@@ -104,7 +105,12 @@ async def test_the_chosen_style_decides_the_drawing_and_the_reuse(
     assert picked["character"]["reuse_id"] == str(watercolor.id)
     assert picked["character"]["draw_style"] == "watercolor"
     other = await _needs(client, sku, child_id=str(child.id), style="cartoon")
-    assert other["character"] == {"reuse_id": None, "draw_style": "cartoon", "styles": STYLES}
+    assert other["character"] == {
+        "reuse_id": None,
+        "draw_style": "cartoon",
+        "styles": STYLES,
+        "required": True,
+    }
 
 
 async def test_a_style_the_book_does_not_take_is_refused(client: AsyncClient) -> None:
@@ -179,13 +185,14 @@ async def test_the_migration_goes_down_and_up(adb: AsyncSession) -> None:
         "name_ar": "شبه حقيقي",
         "name_en": "Semi-realistic",
         "version": 2,
-        "lines": ["magic", "workbook", "journey", "family", "islamic"],
+        "lines": ACTIVITY_LINES,
         "sort": 3,
         "active": True,
         "likeness_min": 8,
     }
     seeded = {k: v for k, v in (await _row(adb)).items() if k != "updated_at"}
-    assert seeded == {**after, "version": 3}  # the seed, from the guide (v3 since 2026-10-10)
+    # the seed, from the guide (v3 since 2026-10-10), in the coloring books too (2026-10-21)
+    assert seeded == {**after, "version": 3, "lines": [*ACTIVITY_LINES, "colorbook"]}
     await adb.run_sync(run, PREVIOUS, False)
     before = await _row(adb)
     assert {k: before[k] for k in ("name_ar", "version", "lines", "active", "sort")} == {
@@ -201,6 +208,9 @@ async def test_the_migration_goes_down_and_up(adb: AsyncSession) -> None:
     await adb.run_sync(again)  # idempotent: a row already at version 2 is not touched
     assert await _row(adb) == up
     await adb.run_sync(run, V3_REVISION, True)  # and on to guide v3, as the seed has it
+    v3 = {k: v for k, v in (await _row(adb)).items() if k != "updated_at"}
+    assert v3 == {**seeded, "lines": ACTIVITY_LINES}
+    await adb.run_sync(run, "head", True)  # «دفاتر التلوين والرسم» (548c95ea24d1) adds its line
     assert {k: v for k, v in (await _row(adb)).items() if k != "updated_at"} == seeded
 
 

@@ -198,13 +198,66 @@ products:
       - {sku: islamic-v5-digital, options: {volume: V5, format: digital}, price: {ILS: 35, JOD: 6.5}, cost: {ai_usd: 0.30}}
       - {sku: islamic-r-digital, options: {volume: R, format: digital}, price: {ILS: 35, JOD: 6.5}, cost: {ai_usd: 0.30}}
 
+  # ---- «دفاتر التلوين والرسم» (2026-10-21): fixed line art drawn in code, personalized only on the cover ------
+  # The child's name on the cover and the title page; the child's character on the cover only when the family
+  # has one or has one drawn (`character: optional`; without it the cover has a drawn illustration). No AI per
+  # order (packages/workbook qamra_workbook.coloring). A4 portrait, black-and-white interior on 160 g uncoated
+  # paper, a 300 g colour card cover. The three coloring books are stapled (saddle-stitch: `format: softcover`,
+  # the format every print path knows; `binding` tells the printer); «دفتري» is Wire-O (`format: spiral`), and
+  # printed only: a sketchbook printed at home on office paper is not the product (docs/decisions.md).
+  # Ages 3–7 (store/workbooks.py AGES). PRICES ARE STARTING POINTS (the admin is the source of truth; customers
+  # see none while `show_prices` is off); JOD at 5.2, rounded to 0.5. Print costs are placeholders (B/W A4).
+  - slug: coloring-letters
+    line: colorbook
+    name_ar: ألوّن حروفي
+    name_en: I Color My Letters
+    description_ar: الحروف العربية الثمانية والعشرون ليلوّنها طفلكم حرفًا حرفًا، ومع كل حرف صور أشياء تبدأ به، واسمه على الغلاف.
+    description_en: The 28 Arabic letters for your child to color, each with pictures of things that start with it, and their name on the cover.
+    option_names: [format]
+    features: {size: A4, binding: stapled, title: letters, pages: 32, interior: bw, paper_gsm: 160, cover_gsm: 300, character: optional, orderable: true}
+    variants:
+      - {sku: coloring-letters-print, options: {format: softcover}, price: {ILS: 35, JOD: 6.5}, cost: {print: 9, packaging: 2, ai_usd: 0}}  # placeholder
+      - {sku: coloring-letters-pdf, options: {format: digital}, price: {ILS: 15, JOD: 3}, cost: {ai_usd: 0}}
+  - slug: coloring-palestine
+    line: colorbook
+    name_ar: ألوّن فلسطين
+    name_en: I Color Palestine
+    description_ar: صفحات تلوين من فلسطين الجميلة، من الزيتون والتطريز إلى المدن والبحر، واسم طفلكم على الغلاف.
+    description_en: Coloring pages of beautiful Palestine, from olive trees and embroidery to its cities and sea, with your child's name on the cover.
+    option_names: [format]
+    features: {size: A4, binding: stapled, title: palestine, pages: 28, interior: bw, paper_gsm: 160, cover_gsm: 300, character: optional, orderable: true}
+    variants:
+      - {sku: coloring-palestine-print, options: {format: softcover}, price: {ILS: 39, JOD: 7.5}, cost: {print: 8, packaging: 2, ai_usd: 0}}  # placeholder
+      - {sku: coloring-palestine-pdf, options: {format: digital}, price: {ILS: 15, JOD: 3}, cost: {ai_usd: 0}}
+  - slug: coloring-ramadan
+    line: colorbook
+    name_ar: ألوّن رمضان
+    name_en: I Color Ramadan
+    description_ar: "فوانيس وهلال وإفطار وعيد: صفحات تلوين يعيش معها طفلكم أجواء رمضان، واسمه على الغلاف."
+    description_en: "Lanterns, the crescent moon, iftar and Eid: coloring pages full of the spirit of Ramadan, with your child's name on the cover."
+    option_names: [format]
+    features: {size: A4, binding: stapled, title: ramadan, pages: 24, interior: bw, paper_gsm: 160, cover_gsm: 300, character: optional, orderable: true}
+    variants:
+      - {sku: coloring-ramadan-print, options: {format: softcover}, price: {ILS: 35, JOD: 6.5}, cost: {print: 7, packaging: 2, ai_usd: 0}}  # placeholder
+      - {sku: coloring-ramadan-pdf, options: {format: digital}, price: {ILS: 15, JOD: 3}, cost: {ai_usd: 0}}
+  - slug: sketchbook
+    line: colorbook
+    name_ar: دفتري
+    name_en: My Sketchbook
+    description_ar: دفتر رسم بتجليد حلزوني يُفتح مسطّحًا على الطاولة، بورق سميك يحمل الألوان، واسم طفلكم على الغلاف.
+    description_en: A spiral-bound (Wire-O) sketchbook that opens flat on the table, with thick paper that takes any color, with your child's name on the cover.
+    option_names: [format]
+    features: {size: A4, binding: wire-o, title: sketchbook, pages: 48, interior: bw, paper_gsm: 160, cover_gsm: 300, character: optional, orderable: true}
+    variants:
+      - {sku: sketchbook-print, options: {format: spiral}, price: {ILS: 39, JOD: 7.5}, cost: {print: 14, packaging: 2, ai_usd: 0}}  # placeholder
+
 addons:
   # `active: false`: an add-on we cannot deliver is kept but not offered (owner's decision, 2026-10-07; migration
   # 18342eeba4e4 for the running store): the physical extras with no stock, and every add-on nothing can produce
   # yet (docs/plans/order-flows.md, «Add-ons: what is deactivated»). Switch one on again in Admin → الكتالوج.
   # Addendum 4 §4
   - {slug: hardcover-upgrade, name_ar: ترقية إلى غلاف مقوّى, name_en: Hardcover upgrade, description_ar: يدوم سنوات، والأنسب للهدايا, description_en: "Lasts for years, the best choice for a gift", featured: true, badge_ar: الأكثر اختيارًا, badge_en: Most chosen, price: {ILS: 30, JOD: 6}, cost_ils: 12, lines: [classic], requires: {format: [softcover]}, step: format}  # placeholder cost
-  - {slug: gift-box, name_ar: علبة هدية فاخرة مع بطاقة, name_en: Premium gift box + card, description_ar: جاهز للإهداء، ونكتب رسالتكم على البطاقة, description_en: "Ready to give, with your message on the card", featured: true, price: {ILS: 15, JOD: 3}, cost_ils: 6, lines: [classic, magic, coloring, workbook, journey, family, islamic], requires: {format: [softcover, hardcover, spiral]}, active: false, step: checkout}  # placeholder cost; the Ramadan/Eid gift box of «قلبي يعرف الله» too
+  - {slug: gift-box, name_ar: علبة هدية فاخرة مع بطاقة, name_en: Premium gift box + card, description_ar: جاهز للإهداء، ونكتب رسالتكم على البطاقة, description_en: "Ready to give, with your message on the card", featured: true, price: {ILS: 15, JOD: 3}, cost_ils: 6, lines: [classic, magic, coloring, workbook, journey, family, islamic, colorbook], requires: {format: [softcover, hardcover, spiral]}, active: false, step: checkout}  # placeholder cost; the Ramadan/Eid gift box of «قلبي يعرف الله» too
   - {slug: dedication-page, name_ar: صفحة إهداء خاصة, name_en: Custom dedication page, description_ar: سطرين منكم بأول الكتاب, description_en: A few lines from you at the start of the book, price: {ILS: 5, JOD: 1}, cost_ils: 0, lines: [classic, magic], included_lines: [magic], step: story}
   # Classic templates don't draw the child's companion yet (W3 note, 2026-09-29): Magic only for now
   - {slug: drawing-companion, name_ar: صاحبي من رسمتي, name_en: Drawing companion, description_ar: رسمة طفلكم تتحوّل لشخصية ترافقه في كل الصفحات, description_en: Your child's drawing becomes a companion on every page, featured: true, badge_ar: مميّز, badge_en: Special, price: {ILS: 20, JOD: 4}, cost_ai_usd: 0.25, lines: [magic], included_lines: [magic], step: character}

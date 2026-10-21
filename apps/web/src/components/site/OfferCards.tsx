@@ -5,7 +5,7 @@ import { ExampleImage } from "@/components/book/ExampleImage";
 import { Link } from "@/i18n/navigation";
 import { getPricesShown, priceWording, type ShopSummary } from "@/lib/catalog";
 import { storyPages, type Example } from "@/lib/examples";
-import { ACTIVITY_LINES, productFrom } from "@/lib/shop";
+import { WORKBOOK_LINES, productFrom } from "@/lib/shop";
 import { money, type Catalog } from "@/lib/store";
 import { offer } from "@/lib/story";
 import { PREVIEWS } from "@/lib/workbook";
@@ -38,7 +38,7 @@ export async function OfferCards({
   const price = (n: number | string | null | undefined) => (n == null ? null : money(n, currency, locale));
   const classic = offer(catalog, "classic");
   const magic = offer(catalog, "magic");
-  const activity = (catalog?.products ?? []).filter((p) => (ACTIVITY_LINES as readonly string[]).includes(p.line));
+  const activity = (catalog?.products ?? []).filter((p) => (WORKBOOK_LINES as readonly string[]).includes(p.line));
   const activityFrom = activity.map(productFrom).filter((n): n is number => n !== null);
   const pages = storyPages(examples[0] ?? null, 6);
   const cover = examples[0]?.pages.find((p) => p.beat === 0);

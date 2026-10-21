@@ -9,7 +9,8 @@
 {% if book.product == 'family' %}{% include "_family.css.j2" %}{% include "family-book.css.j2" %}{% endif %}
 {% if book.product == 'islamic' %}{% include "islamic-book.css.j2" %}{% endif %}
 {% if book.product in ('journey', 'islamic') %}{% include "_stickers.css.j2" %}{% endif %}
-{% if book.product in ('foundation', 'journey', 'family', 'islamic') %}{% include "_cover.css.j2" %}{% endif %}
+{% if book.product in ('foundation', 'journey', 'family', 'islamic', 'colorbook') %}{% include "_cover.css.j2" %}{% endif %}
+{% if book.product == 'colorbook' %}{% include "_coloring.css.j2" %}{% endif %}
 {% include "_reading_font.css.j2" %}
 </style></head>
 <body data-names='{{ names|default([])|tojson }}'>

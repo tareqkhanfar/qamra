@@ -59,6 +59,7 @@ from qamra_core.db.store import (
 )
 from qamra_core.downloads import books_query, sold_as_file
 from qamra_core.pricing import ItemInput, Quote, addon_amount, quote
+from qamra_core.printing import print_spec_of
 
 router = APIRouter(prefix="/api/store", tags=["store"])
 CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"  # no 0/O or 1/I on a phone call
@@ -286,6 +287,12 @@ class CartItemOut(BaseModel):
     child_name_en: str | None = None  # the child's name in English letters (the English name page)
     family: dict[str, Any] | None = None  # the family book's {name, city, members: [{relation, role, name…}]}
     character_id: uuid.UUID | None = None  # the approved character the book is drawn with
+    # «دفاتر التلوين والرسم»: whether the cover shows the child's character (None: not chosen yet, or a book
+    # that is always drawn with it)
+    cover_character: bool | None = None
+    binding: str | None = (
+        None  # the product's binding (`features.binding`: stapled, wire-o, spiral, perfect…)
+    )
 
 
 class CartOut(BaseModel):
@@ -393,6 +400,15 @@ def _uuid(raw: object) -> uuid.UUID | None:
         return None
 
 
+def _flag(raw: object) -> bool | None:
+    return raw if isinstance(raw, bool) else None
+
+
+def _binding(features: dict[str, Any] | None) -> str | None:
+    value = (features or {}).get("binding")
+    return str(value) if value else None
+
+
 def _gaps(c: Catalog, item: CartItem, variant: Variant) -> list[str]:
     """What a line that has its child still lacks for its book (an activity book's English name, a name the
     tracing pages can write): the cart asks to complete it, and checkout waits like for a missing child."""
@@ -403,7 +419,7 @@ def _gaps(c: Catalog, item: CartItem, variant: Variant) -> list[str]:
 
 # What the server writes on a line when the child fills it (`POST /api/shop/workbooks/cart`): a cart edit that
 # sends `personalization` keeps them (they are not the storefront's to change).
-SERVER_HELD = ("character_id", "name_en", "family")
+SERVER_HELD = ("character_id", "name_en", "family", "cover_character")
 
 
 def _input(
@@ -497,6 +513,8 @@ async def cart_out(db: SessionDep, cart: Cart | None) -> CartOut:
                 child_name_en=held.get("name_en") or None,
                 family=held.get("family") or None,
                 character_id=_uuid(held.get("character_id")),
+                cover_character=_flag(held.get("cover_character")),
+                binding=_binding(product.features),
             )
         )
     zone = next((z.slug for z in c.zones.values() if z.id == cart.zone_id), None)
@@ -858,7 +876,13 @@ async def checkout(
                 variant_id=variant.id,
                 sku=variant.sku,
                 line=product.line.value,
-                title={"name_ar": product.name_ar, "name_en": product.name_en, "options": variant.options},
+                title={
+                    "name_ar": product.name_ar,
+                    "name_en": product.name_en,
+                    "options": variant.options,
+                    # what the printer makes (the print manifest): the product's size, binding and paper
+                    **({"print": spec} if (spec := print_spec_of(product.features, variant.options)) else {}),
+                },
                 style_slug=item.style_slug,
                 theme_slug=item.theme_slug,
                 child_id=item.child_id,
@@ -989,6 +1013,8 @@ class TrackItem(BaseModel):
     book_title: str | None = None
     child_name_en: str | None = None
     family: dict[str, Any] | None = None
+    cover_character: bool | None = None  # «دفاتر التلوين والرسم»: the cover shows the child's character
+    binding: str | None = None  # as frozen on the order line (`title.print.binding`)
     addons: list[TrackAddOn] = Field(default_factory=list)
     book_codes: list[str] = Field(default_factory=list)  # «QB-7K4M2» once the book is made (one per volume)
 
@@ -1065,6 +1091,8 @@ async def track(code: str, phone: str, request: Request, db: SessionDep, redis: 
                 book_title=books[i.book_id].title if i.book_id and i.book_id in books else None,
                 child_name_en=i.personalization.get("name_en") or None,
                 family=i.personalization.get("family") or None,
+                cover_character=_flag(i.personalization.get("cover_character")),
+                binding=_binding((i.title or {}).get("print")),
                 addons=[
                     TrackAddOn(
                         slug=str(a.get("slug")),

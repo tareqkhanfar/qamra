@@ -44,6 +44,8 @@ def _items(manifest: dict[str, Any], link: str) -> list[Item]:
     for item in manifest.get("items", []):
         fmt = FORMATS[LANG].get(str(item.get("format")), str(item.get("format") or ""))
         head = f"{int(item['n']):03d} · {item['order']} · {fmt} {item.get('size') or ''} × {item['copies']}"
+        if item.get("print_spec"):  # stapled or Wire-O, the pages and the paper (lines from 2026-10-21 on)
+            head += f" ({item['print_spec']})"
         for kind in ("interior", "cover"):
             rows.append(
                 Item(

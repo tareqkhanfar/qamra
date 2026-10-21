@@ -40,6 +40,8 @@ class ProductLine(enum.StrEnum):
     journey = "journey"  # «رحلتي الأولى للتعلّم» (Addendum 6)
     family = "family"  # «مغامراتي مع عائلتي» (Addendum 7)
     islamic = "islamic"  # «قلبي يعرف الله» (Addendum 10): a volume sells only once the scholar approved it
+    # «دفاتر التلوين والرسم» (2026-10-21): fixed line art, personalized on the cover; the character optional
+    colorbook = "colorbook"
 
 
 class Audience(enum.StrEnum):

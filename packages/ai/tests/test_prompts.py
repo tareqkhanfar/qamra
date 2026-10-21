@@ -70,7 +70,7 @@ def test_a_redraw_carries_what_the_parent_said() -> None:
 def test_every_style_guide_parses_and_names_known_lines() -> None:
     from qamra_ai.pipeline.style import style_guides
 
-    lines = {"magic", "classic", "workbook", "journey", "family", "islamic", "coloring"}
+    lines = {"magic", "classic", "workbook", "journey", "family", "islamic", "colorbook", "coloring"}
     guides = {g.slug: g for g in style_guides()}
     assert {"3d", "watercolor", "cartoon", "semi-realistic", "coloring"} <= set(guides)
     for g in guides.values():
@@ -88,7 +88,7 @@ def test_semi_realistic_is_a_likeness_first_painting_for_stories_and_activity_bo
     guides = {g.slug: g for g in style_guides()}
     semi = guides["semi-realistic"]
     assert (semi.name_ar, semi.name_en, semi.version) == ("شبه حقيقي", "Semi-realistic", 3)
-    assert semi.lines == ("magic", "workbook", "journey", "family", "islamic")
+    assert semi.lines == ("magic", "workbook", "journey", "family", "islamic", "colorbook")
     assert "classic" not in semi.lines
     others = [g for slug, g in guides.items() if slug in ("3d", "watercolor", "cartoon")]
     assert all(semi.likeness_min > g.likeness_min for g in others)  # likeness first

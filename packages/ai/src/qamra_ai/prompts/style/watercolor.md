@@ -2,7 +2,7 @@
 
 slug: watercolor
 version: 4
-lines: magic, classic, workbook, journey, family, islamic
+lines: magic, classic, workbook, journey, family, islamic, colorbook
 qa_threshold: 0.75
 likeness_min: 7
 

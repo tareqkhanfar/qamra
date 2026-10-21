@@ -1,0 +1,92 @@
+# «أُلَوِّنُ رَمَضانَ»: 21 full-page scenes drawn in code, in book order
+# (packages/workbook/src/qamra_workbook/coloring/scenes/ramadan.py, one `@scene("ramadan", id)` per page).
+# Captions: short titles, fully vowelized (house style: no sukun on the lam of «ال», a shadda on sun letters).
+# No writing inside any drawing; the Quran only with blank pages; the takbeer only as decoration.
+title_ar: أُلَوِّنُ رَمَضانَ
+title_en: I Color Ramadan
+cover_scene: mosque-sunset  # the cover and the back band (no people: the child stands in front)
+pages:
+  - id: crescent-sighting
+    caption_ar: رُؤْيَةُ الهِلالِ
+    caption_en: Seeing the crescent moon
+    scene: "A father and his daughter on a flat roof look up at the big crescent moon and the stars over the town's domes and minaret."
+  - id: lantern
+    caption_ar: فانوسُ رَمَضانَ
+    caption_en: The Ramadan lantern
+    scene: "One big ornate lantern (fanous) hanging from a cord, with a small crescent and stars around it."
+  - id: street-lanterns
+    caption_ar: فَوانيسُ الحارَةِ
+    caption_en: Lanterns in our neighborhood
+    scene: "An old-town street at night between two tall stone houses: a cord of lanterns and a cord of flags across it, a mosque at the end, a boy with his own little lantern."
+  - id: decorating-home
+    caption_ar: زينَةُ رَمَضانَ
+    caption_en: Decorating for Ramadan
+    scene: "A boy and a girl hold up a garland of stars in front of a night window; lanterns already hang and a big one waits on the rug."
+  - id: mosque-sunset
+    caption_ar: المَسْجِدُ عِنْدَ المَغْرِبِ
+    caption_en: The mosque at sunset
+    scene: "A mosque seen from outside (big dome, two minarets, arched door) before a big setting sun, with clouds, birds, bushes and a path."
+  - id: dates-water
+    caption_ar: تَمْرٌ وَماءٌ
+    caption_en: Dates and water
+    scene: "Close-up on the table at sunset: a big bowl heaped with dates, a water jug and two glasses; a window with the crescent and a lantern."
+  - id: iftar-table
+    caption_ar: مائِدَةُ الإِفْطارِ
+    caption_en: The iftar table
+    scene: "A family of four (father, mother in a headscarf, a girl, a boy) behind the iftar table with dates, soup, salad, sambousek, qatayef and a jug."
+  - id: qatayef
+    caption_ar: قَطايِفُ رَمَضانَ
+    caption_en: Ramadan qatayef
+    scene: "In the kitchen a mother cooks small pancakes on a pan while a girl holds up a folded qatayef over a plate full of them; a jug of batter and a bowl of nuts."
+  - id: charity-box
+    caption_ar: صُنْدوقُ الصَّدَقَةِ
+    caption_en: The charity box
+    scene: "Under three arches a boy drops a coin into a charity box with a heart on it (no writing); a girl waits her turn holding her coin."
+  - id: sharing-food
+    caption_ar: طَبَقٌ لِلجيرانِ
+    caption_en: A plate for the neighbors
+    scene: "At dusk a girl carries a covered plate to the neighbor's door, where a smiling neighbor in a headscarf waves; a palm tree and a lantern."
+  - id: musaharati
+    caption_ar: طَبْلَةُ المُسَحِّراتِيِّ
+    caption_en: The musaharati's drum
+    scene: "Before dawn a friendly musaharati in a robe and keffiyeh walks the night street with his small drum and stick, under the crescent and stars."
+  - id: suhoor
+    caption_ar: وَجْبَةُ السَّحورِ
+    caption_en: The suhoor meal
+    scene: "Night window with the moon, a clock without numbers; a mother smiles and a sleepy boy yawns and rubs his eye at the suhoor table (bread, hummus, tea, eggs, cheese)."
+  - id: quran-stand
+    caption_ar: قِراءَةُ القُرْآنِ
+    caption_en: Reading the Quran
+    scene: "An open Quran with blank pages (no text) on a wooden folding stand (rehal) on a rug, in front of an arched niche; a plant and a lantern."
+  - id: prayer-rug
+    caption_ar: سَجّادَةٌ وَمِسْبَحَةٌ
+    caption_en: A prayer rug and prayer beads
+    scene: "Close-up from above of a prayer rug with a border of diamonds, a pointed arch, a hanging lamp and a big star, with prayer beads on its corner."
+  - id: ramadan-night
+    caption_ar: لَيْلَتي في رَمَضانَ
+    caption_en: My Ramadan night
+    scene: "A girl leans out of a lit window with open shutters, holding a small lantern, under a big crescent and stars."
+  - id: eid-clothes
+    caption_ar: ثِيابُ العيدِ
+    caption_en: Eid clothes
+    scene: "New Eid clothes on hangers (a girl's dress with an embroidered hem, a boy's shirt and trousers) and two pairs of new shoes, under bunting."
+  - id: kaak-maamoul
+    caption_ar: كَعْكٌ وَمَعْمولٌ
+    caption_en: Ka'ak and ma'amoul
+    scene: "A big round tray seen from above with ring-shaped ka'ak and ma'amoul pressed with star, flower and groove patterns."
+  - id: eid-gifts
+    caption_ar: هَدايا العيدِ
+    caption_en: Eid gifts
+    scene: "A pile of wrapped gift boxes (stripes, dots, stars) with five balloons tied to the top one."
+  - id: eid-visit
+    caption_ar: عِنْدَ جَدّي وَجَدَّتي
+    caption_en: At Grandpa and Grandma's
+    scene: "Grandma (headscarf) and grandpa (keffiyeh) sit on the sofa; a girl brings a gift and a boy waves; a bowl of dates on a little table."
+  - id: eid-park
+    caption_ar: مَراجيحُ العيدِ
+    caption_en: The Eid swings
+    scene: "A girl and a boy on the swings of a swing set hung with little flags, in a park with trees, flowers, the sun and a balloon."
+  - id: eid-pattern
+    caption_ar: زينَةُ العيدِ
+    caption_en: Eid decorations
+    scene: "A decorative page: hanging lanterns, a big crescent holding a star in a scalloped medallion, eight-pointed stars and a band of star tiles (no words)."

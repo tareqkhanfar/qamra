@@ -2,7 +2,7 @@
 
 slug: semi-realistic
 version: 3
-lines: magic, workbook, journey, family, islamic
+lines: magic, workbook, journey, family, islamic, colorbook
 qa_threshold: 0.8
 likeness_min: 8
 

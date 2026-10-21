@@ -209,6 +209,11 @@ MESSAGES: dict[str, tuple[str, str]] = {
         "This character is drawn in a style that doesn't suit this book. Choose another character, or draw a "
         "new one.",
     ),
+    # only «دفاتر التلوين والرسم» may print without the child's character
+    "character_required": (
+        "هذا الكتاب يُرسم بشخصية طفلكم في صفحاته، فلا يمكن طباعته بدونها.",
+        "This book shows your child's character on its pages, so it can't be printed without it.",
+    ),
     # ---- the create flow
     "consent_outdated": (
         "تغيّر نصّ الموافقة. حدّثوا الصفحة واقرؤوه من جديد.",

@@ -1,5 +1,6 @@
 /** Structured data (schema.org) for the public pages: the site, the FAQ, the activity books. */
 import { brandName } from "@/config/brand";
+import { COLORING_AGES, coloringPreviews } from "@/lib/coloring";
 import { absolute, SITE } from "@/lib/seo";
 import type { CatalogProduct, Currency } from "@/lib/store";
 import { PREVIEWS, soldAges } from "@/lib/workbook";
@@ -72,6 +73,59 @@ export function workbookJsonLd(
           },
         }
       : {}),
+  };
+}
+
+/** One coloring or drawing book (/coloring/<slug>): ages 3–7, its cover when exported, its prices when shown. */
+export function coloringJsonLd(
+  product: CatalogProduct,
+  locale: string,
+  currency: Currency,
+  description?: string,
+): Record<string, unknown> {
+  const prices = product.variants
+    .filter((v) => v.price !== null && v.price !== undefined)
+    .map((v) => Number(v.price))
+    .filter(Number.isFinite);
+  const url = `${SITE}/${locale}/coloring/${product.slug}`;
+  const cover = coloringPreviews(product.slug).cover;
+  return {
+    "@context": CONTEXT,
+    "@type": "Product",
+    name: nameOf(product, locale),
+    description: description ?? (locale === "ar" ? product.description_ar : product.description_en),
+    url,
+    inLanguage: locale,
+    ...(cover ? { image: absolute(cover.src) } : {}),
+    brand: { "@type": "Brand", name: brandName(locale) },
+    audience: { "@type": "PeopleAudience", suggestedMinAge: COLORING_AGES[0], suggestedMaxAge: COLORING_AGES[1] },
+    ...(prices.length
+      ? {
+          offers: {
+            "@type": "AggregateOffer",
+            priceCurrency: currency,
+            lowPrice: Math.min(...prices).toFixed(2),
+            highPrice: Math.max(...prices).toFixed(2),
+            offerCount: prices.length,
+            availability: `${CONTEXT}/InStock`,
+            url,
+          },
+        }
+      : {}),
+  };
+}
+
+/** The coloring and drawing books hub (/coloring): the list of books on it. */
+export function coloringListJsonLd(products: CatalogProduct[], locale: string): Record<string, unknown> {
+  return {
+    "@context": CONTEXT,
+    "@type": "ItemList",
+    itemListElement: products.map((p, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `${SITE}/${locale}/coloring/${p.slug}`,
+      name: nameOf(p, locale),
+    })),
   };
 }
 

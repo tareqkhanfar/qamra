@@ -10,7 +10,7 @@ import { Link } from "@/i18n/navigation";
 import { getPricesShown, getStoreCatalog, priceWording } from "@/lib/catalog";
 import { workbooksListJsonLd } from "@/lib/pageSeo";
 import { pageMetadata } from "@/lib/seo";
-import { ACTIVITY_LINES } from "@/lib/shop";
+import { WORKBOOK_LINES } from "@/lib/shop";
 import { PREVIEWS } from "@/lib/workbook";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -39,7 +39,7 @@ export default async function WorkbooksPage() {
   ]);
   const w = (key: string) => t(priceWording(key, prices, (k) => t.has(k))); // no quote wording while hidden
   const books = (catalog?.products ?? [])
-    .filter((p) => (ACTIVITY_LINES as readonly string[]).includes(p.line))
+    .filter((p) => (WORKBOOK_LINES as readonly string[]).includes(p.line))
     .sort((a, b) => ORDER.indexOf(a.line) - ORDER.indexOf(b.line));
   const currency = catalog?.currency ?? "ILS";
   const how = t.raw("how") as Step[];

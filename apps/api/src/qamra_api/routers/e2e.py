@@ -706,6 +706,7 @@ EXTRA_FILES: dict[str, tuple[str, ...]] = {
     "journey": ("answer-key",),
     "islamic": ("answer-key",),
     "family": ("stickers", "card-money-recipes", "card-games-roles"),
+    "colorbook": (),  # «دفاتر التلوين والرسم»: the interior and the cover only
 }
 
 
@@ -718,6 +719,8 @@ def _part_generation(item: OrderItem, part: str) -> dict[str, object]:
         gen["stage"] = part
     elif item.line == "islamic":
         gen["volume"] = part
+    elif item.line == "colorbook":  # the cover with the character only when the line carries one
+        gen["cover_character"] = bool((item.personalization or {}).get("character_id"))
     return gen
 
 
