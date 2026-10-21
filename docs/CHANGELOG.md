@@ -1,5 +1,24 @@
 # Changelog
 
+## The child's own face shape in cartoon and 3D; one direction per view on the sheet (2026-10-21)
+- Prompts: `character_portrait.v5` and `character_sheet.v10` through `likeness.v4`: a FACE SHAPE AND AGE block
+  (the outline from the photo first; the width against the length, jaw, chin, cheeks, eye spacing and the lower
+  face kept; never rounder, wider or younger) and the photo's measured face proportion
+  (`qamra_ai.pipeline.face_shape`, local YuNet, kept as `params.face_shape`).
+- `likeness_notes.v2`: the face note in proportions, no default "full cheeks" or "rounded chin".
+- Style guides: cartoon v4 and 3D v4 (no "soft"/"simple shapes" face, no "appealing" animated-film face; the
+  photo's own eyes in 3D); v3 of both in `history/`; migration `4e1c9a7b2d63` keeps the rows' record.
+- `character_sheet.v10` keeps v9's head-to-soles, outlined-shoes line and adds the face shape and the directions.
+- The sheet names one direction per view (the three-quarter and side views to the viewer's left; head, body and
+  feet the same way; shoes whole). An automatic check (`qamra_ai.pipeline.sheet_check`, `sheet_check.v1`, ~$0.01)
+  redraws a sheet once when a figure faces two ways or a shoe is cut off (+$0.15 only then, `character:N:redraw`);
+  the outcome is kept in `params.sheet_check`. Setting `CHARACTER_SHEET_CHECK` (on).
+- Trial: `scripts/face_shape_trial.py`, $1.50 of a $1.50 cap (10 Nano Banana Pro calls). Comparisons in
+  `~/Downloads/qamra-face-shape/` (not in the repo).
+- Tests: `test_face_shape.py`, `test_sheet_check.py`, new cases in `test_likeness_prompts.py`, golden prompt
+  snapshots rewritten on purpose (every style's character groups; every group of 3D and cartoon), the worker's
+  `test_character_job.py`, `apps/api/tests/test_face_shape_styles_migration.py`.
+
 ## QR audio: clean sound effects, no cut words, one sound at a time; colour/circle instructions fixed (2026-10-20)
 - **The six sound pages** (stage 1 p28–p34: animals, loud/quiet, house sounds, fast/slow, same/different, the
   review) were rebuilt by the new `scripts/journey_sounds.py`. Each sound is one clean ElevenLabs take (fal

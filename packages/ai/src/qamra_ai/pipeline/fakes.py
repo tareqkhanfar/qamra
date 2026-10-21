@@ -175,7 +175,7 @@ def fake_likeness_notes(step: str, system: str, user: list[UserPart]) -> BaseMod
     return LikenessNotes(
         clear=True,
         hair="dark brown, short, swept up at the front",
-        face="oval, with full cheeks",
+        face="oval, longer than wide, widest at the cheekbones; a slim jaw and a narrow chin",
         eyes="dark brown, almond-shaped, narrowing when smiling",
         eyebrows="soft, straight, dark brown",
         nose="small, with a rounded tip",
@@ -183,6 +183,19 @@ def fake_likeness_notes(step: str, system: str, user: list[UserPart]) -> BaseMod
         skin="light olive",
         marks="",
         glasses="thin round dark frames" if glasses else "",
+    )
+
+
+def fake_sheet_check(step: str, system: str, user: list[UserPart]) -> BaseModel:
+    """A sheet drawn as asked (sheet_check.v1): three figures, each turned one way, shoes whole."""
+    from qamra_ai.pipeline.sheet_check import FigureCheck, SheetCheck
+
+    return SheetCheck(
+        figures=[
+            FigureCheck(head="viewer", body="viewer", feet="viewer", shoes_whole=True),
+            FigureCheck(head="left", body="left", feet="left", shoes_whole=True),
+            FigureCheck(head="left", body="left", feet="left", shoes_whole=True),
+        ]
     )
 
 
@@ -229,5 +242,6 @@ def default_fake_text_provider() -> FakeTextProvider:
             "ThemeTranslation": fake_translation,  # the template studio's English draft
             "AppearanceFeedback": fake_appearance,  # «ما الذي لا يشبهه؟» in the parent's words
             "LikenessNotes": fake_likeness_notes,  # how the child looks, before the character is drawn
+            "SheetCheck": fake_sheet_check,  # each figure turned one way, shoes whole
         }
     )

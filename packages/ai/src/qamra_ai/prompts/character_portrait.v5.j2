@@ -1,0 +1,33 @@
+{#- v5 (production, 2026-10-21): the face's shape and age (likeness.v4): in cartoon and 3D the face came out
+    rounder, wider and younger than the child's. `face_shape`: the photo's measured face proportions in words, or
+    None. A negative against a rounder, wider or younger face.
+    v4: the parent's outfit (`outfit_top`, `hijab_line`). v3: even, neutral daylight, the likeness notes. -#}
+STYLE (rendering only)
+{{ style }}
+Painting medium: {{ medium }}
+This style decides only how the picture is rendered: medium, palette, light, edges and how much detail is shown. It never changes this child's face, head shape, features, hair or age. This is the child's reference portrait, not a scene: paint it in even, neutral daylight, whatever the palette says about the light of scenes.
+{%- if character %}
+{{ character }}
+{%- endif %}
+
+TASK
+Paint a large head-and-shoulders portrait of the child in the reference photo{{ 's' if n_photos > 1 else '' }}, in this book's style and in full, clear, natural color: never a monochrome, sepia or ink sketch. The face fills the frame: from the top of the hair to the chin, the head takes up about 60% of the picture's height, centered, facing the viewer, with the photo's own natural expression. A plain, evenly lit, very light cream background and {{ outfit_top or 'a plain cream top' }}. Every picture in the book is painted from this portrait, so the face must be exactly this child.
+
+{% include "likeness.v4.j2" %}
+{% if fixes or note %}
+The parent saw the previous drawing and said it did not look like their child. Fix this:
+{% for fix in fixes %}- {{ fix }}
+{% endfor %}{% if note %}- {{ note }}
+{% endif %}{% endif %}
+{% if hijab %}
+The parent chose a hijab: {{ hijab_line or 'a simple soft sage-green hijab' }} neatly covering the hair, with the face fully visible.
+{%- else %}
+No hijab or head covering.
+{%- endif %}
+
+NEGATIVE
+{{ negative }}
+- No generic face; no face rounder, wider, chubbier or younger than in the photo; no added curls, no hair that differs from the photo.
+- No monochrome, sepia or ink-sketch rendering: the portrait is in the book's full color.
+- No brown, amber, yellow, sepia or gray tint over the picture, no muddy colors.
+Do not copy the photo's background, lighting, color cast or clothes.

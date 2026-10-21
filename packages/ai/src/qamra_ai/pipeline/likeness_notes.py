@@ -6,7 +6,11 @@ model (Claude, with vision) first looks at the framed photo, as the image model 
 neutral notes on how the child looks: hair (colour with its lighter and darker parts, length, texture,
 direction, parting, the front), face shape, eyes (and how they look when smiling), eyebrows, nose, smile,
 skin tone in daylight, and marks such as freckles or a dimple. The notes go into the portrait and sheet
-prompts of every style (`likeness.v3`) and are kept on the character (`params["likeness_notes"]`).
+prompts of every style (`likeness.v3`, then `likeness.v4`) and are kept on the character
+(`params["likeness_notes"]`). Since v2 (2026-10-21) the face note gives the face's proportions (longer than
+wide or not, where it is widest, the jaw, the chin's width and length) and calls the cheeks full or the face
+round only when the photo shows it: v1's "soft full cheeks and a small rounded chin" was any child's, and the
+cartoon and 3D faces came out rounder, wider and younger.
 
 Privacy: appearance only. No name, no identity or resemblance to anyone, no ethnicity or origin, no guess at
 the age (the family gave it), nothing about the body, the clothes or the place. A hijab and glasses follow the
@@ -28,7 +32,8 @@ from qamra_ai.pipeline.models import Child
 from qamra_ai.pipeline.runtime import Runtime
 from qamra_ai.text.base import ImagePart, UserPart
 
-PROMPT_VERSION = 1  # likeness_notes.v1 + likeness_notes_user.v1
+PROMPT_VERSION = 2  # likeness_notes.v2: the face's proportions, no default "round" or "full cheeks"
+USER_PROMPT_VERSION = 1  # likeness_notes_user.v1
 STEP = "character:likeness"
 FIELD_MAX = 220  # characters per note
 # The notes in the order the prompts show them, with their labels
@@ -98,7 +103,7 @@ async def likeness_notes(rt: Runtime, child: Child, photos: list[bytes]) -> Note
     user.append(
         prompts.render(
             "likeness_notes_user",
-            version=PROMPT_VERSION,
+            version=USER_PROMPT_VERSION,
             n_photos=len(user),
             age=child.age,
             gender=child.gender,

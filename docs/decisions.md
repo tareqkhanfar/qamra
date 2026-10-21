@@ -1513,6 +1513,88 @@ floor shadow (by hue a white shoe on cream paper is the paper, darker).
 - **Layouts** were checked with a tall, narrow child on every product (Chromium, at the shoes): only the passport
   photos crop the figure, on purpose (`data-crop`); three small overlaps were removed anyway.
 
+## The child's own face shape in cartoon and 3D, and one direction per view on the sheet (2026-10-21)
+
+The owner, after the likeness notes: in the cartoon and 3D styles the face comes out rounder, wider and younger
+than his child's (the hair, smile and eyes are close now). And, often, a sheet whose side view has the head in
+profile looking right while the body, arms and feet walk left.
+
+- **The cause** (round, wide and young):
+  - The style guides were already cleaned of "big eyes" and "large heads" (v3). What was left pulls the same way:
+    cartoon's "soft two-tone cel shading" and "simple clean shapes" for everything (a face simplified to a round
+    cartoon head); 3D's "appealing stylized rendering" in an "animated-film look" (the genre's appeal face:
+    round, big-cheeked, short-chinned, big round eyes).
+  - The prompts said "keep the face shape" but never what that shape is. The likeness notes (v1) asked for
+    "the face shape (oval, round…), the cheeks, the jaw and chin" and invited any child's "soft full cheeks and a
+    small rounded chin" (the trial's own notes of 10-19 said exactly that).
+  - The age line ("not a toddler") named no face of that age.
+  - Measured (YuNet face box, width to length): the photo 0.79; the live portraits 0.88 (3D) and 0.82–0.95
+    (cartoon).
+- **What changed** (all styles share the templates; the guides change only for cartoon and 3D):
+  - `likeness.v4` (portrait v5, sheet v10): a FACE SHAPE AND AGE block. Work like a portrait artist (the outline
+    of the head, face, jaw and chin, and the features' places from the photo first, then the style); keep the
+    width against the length, jaw, chin, cheek fullness, eye spacing, the eyes-to-mouth and mouth-to-chin
+    distances, and how high the eyes sit; never rounder, wider, fuller-cheeked, shorter-chinned or with larger or
+    lower eyes; the age as "looks exactly N: the face of an N-year-old, with his own chin, nose and proportions;
+    never a toddler's or a baby's face, and never older" (no "toddler" for ages under 4).
+  - **The measured proportion** (`qamra_ai.pipeline.face_shape`): the YuNet box the photo check already runs
+    (local, MIT, no recognition), only on a face looking at the camera (one face, score ≥ 0.85, eyes level,
+    nose between them), in coarse bands («an oval, clearly longer than it is wide: about 4 wide to 5 long
+    (width to length 0.79)»), as "Measured on the photo: …". Kept on the character (`params.face_shape`) and
+    removed with the likeness notes after 30 days for drawings never approved. YuNet's eye points follow a tilt
+    only loosely, hence the coarse bands.
+  - `likeness_notes.v2`: the face note gives proportions (longer than wide or not, widest where, the jaw, the
+    chin's width and length below the lip, the forehead); "round", "soft", "full", "chubby" and "rounded" only
+    when the photo shows it; eye size relative to the face.
+  - Cartoon v4: crisp (not soft) cel shading; the simple shapes are the background's; people are "a
+    cartoonist's portrait of a real child" on the photo's outline. 3D v4: "a stylized 3D likeness of a real
+    child, as if the head were sculpted from the photo", the eyes at the photo's own size and shape, the hair
+    its true colour; negatives against a round, wide, chubby face, puffy cheeks, a button nose, a short chin and
+    big round animated-film eyes. v3 of both in `history/`; migration `4e1c9a7b2d63` keeps the rows' record.
+  - A parent's "looked older" fix no longer asks for "a rounder face", only "a little younger, keeping the
+    photo's own face shape".
+  - Watercolor and semi-realistic keep their guides; they get the new templates (the FACE SHAPE block and the
+    sheet's directions). Their pages, QA and every other prompt are byte-identical (golden snapshots).
+- **One sheet version for both fixes:** `character_sheet.v10` = v9's whole-figure and outlined-shoes line (the
+  white-shoes cut-out, merged from addendum-4) + the face shape (`likeness.v4`) + the directions below; v9 stays
+  for the record.
+- **The sheet's directions** (`character_sheet.v10`): every style, the same: 1) front view, facing the viewer;
+  2) three-quarter view turned toward the viewer's left, waving; 3) side view in full profile facing the viewer's
+  left, walking left: "the nose and eyes, the chest, the swinging arms, the knees and the toes of both shoes all
+  point to the left". Left because an Arabic book reads right to left. Each figure whole down to both shoes,
+  with space below the feet.
+- **The automatic sheet check** (`qamra_ai.pipeline.sheet_check`, `sheet_check.v1`): after the sheet is drawn,
+  the main text model (vision, about $0.01) says per figure where the head, the body and the feet point and
+  whether both shoes are on and inside the picture; the code decides (left and right in one figure, mixed
+  feet, a bare or cut shoe, not three figures). On a problem the sheet is drawn once more with the problems in
+  the prompt and its own seed (`character:N:redraw`, +$0.15 on Nano Banana Pro, only then, its own cost row),
+  checked again, and the better of the two is kept (the redraw on a tie). A failed check keeps the sheet; it
+  never blocks the drawing. `params.sheet_check` keeps the outcome (`ok`, `redrawn`, `redrawn_flawed`,
+  `kept_flawed`, `failed`, `off`) and the problems; the worker logs the outcome and counts. Setting:
+  `CHARACTER_SHEET_CHECK` (on). The parent sees only the kept sheet. The fake text provider answers a good sheet.
+- **Trial on the owner's photo, $1.50 of a $1.50 cap** (`face-shape:` ledger rows, 10 Nano Banana Pro calls;
+  `scripts/face_shape_trial.py`; notes written by hand to the v2 rules, no Anthropic key here; one seed per
+  cell, so a single picture carries seed noise). By eye, out of 10, and the measured width/length:
+
+  | | live | A: notes v2 only | B: + likeness.v4 + measure | C: + guide v4 | D: + 3D eyes |
+  |---|---|---|---|---|---|
+  | cartoon portrait | 4, round and wide | 4, round, hair too dark | 4–5, still round | **6**: his long face, slim jaw and chin; chin a little too pointed, hair too golden, lost the smiling crescents | – |
+  | 3D portrait | 5 (0.88) | – not 3D: it came out a photo (0.84) | 4–5, big eyes, young (0.87) | 5–6, longer face, big round eyes (0.83) | 5–6: his narrow smiling eyes and closed smile, but the cheeks wider again, freckles added (0.89); little better than live |
+
+  Sheets (v10's directions, before v9's shoe line was merged in): cartoon from C 5 (the face narrower and the
+  head-to-body proportion of a 5-year-old, against the
+  live sheet's big round head; hair tips and smiling eyes lost); 3D from D 5 (big round eyes came back, about
+  4–5 years old); semi-realistic from the 10-19 portrait 6 (rounder, about 4). **Directions: 3 of 3 sheets
+  right**: every figure's head, body and feet turned one way, the three-quarter and side views to the left, all
+  shoes whole (the owner's sample: the side view's head right, its body left).
+- **Verdict:** the face shape is better, not solved. In cartoon the portrait now has his long face and slim
+  chin; in 3D the eyes (D) or the length (C) improve, never both in one picture, and D is little better than
+  the live portrait; the sheet drifts part of the way back
+  toward the genre's face. Semi-realistic remains the closest style. Next, if the owner wants more: two portrait
+  candidates per drawing and a likeness pick by the text model (+$0.15), or the sheet painted at a larger face
+  scale.
+- **Language:** prompts only (English, for the image and text models); no text a parent reads changed.
+
 ## QR audio: clean sound pages, segments that never cut a word, one sound at a time (2026-10-20)
 
 The owner reported that on the sound pages the sounds weren't clear (the drum above all) and ran into each

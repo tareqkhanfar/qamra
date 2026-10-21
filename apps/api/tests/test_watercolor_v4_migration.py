@@ -52,6 +52,11 @@ async def _row(adb: AsyncSession) -> tuple[int, str]:
 async def test_the_record_goes_back_to_v3_and_forward_to_v4(adb: AsyncSession) -> None:
     await seed_store(adb)  # a fresh database: the row comes from the guide, at v4
     module = _module()
+    before = list(
+        await adb.execute(
+            text("SELECT slug, version, prompt FROM art_styles WHERE slug <> 'watercolor' ORDER BY slug")
+        )
+    )
 
     def step(session: Session, forward: bool) -> None:
         module.record(session.connection(), forward=forward)
@@ -64,6 +69,6 @@ async def test_the_record_goes_back_to_v3_and_forward_to_v4(adb: AsyncSession) -
     await adb.run_sync(step, True)
     assert await _row(adb) == (4, module.RECORDS["v4"]["prompt"])
     others = await adb.execute(
-        text("SELECT count(*) FROM art_styles WHERE slug <> 'watercolor' AND version = 4")
+        text("SELECT slug, version, prompt FROM art_styles WHERE slug <> 'watercolor' ORDER BY slug")
     )
-    assert others.scalar_one() == 0  # no other style is touched
+    assert list(others) == before  # no other style is touched

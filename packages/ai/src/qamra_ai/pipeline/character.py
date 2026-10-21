@@ -18,10 +18,15 @@ Since 2026-10-19 (the owner's night photo under yellow street light: a sepia wat
 boy) the photo reaches the model with its light made neutral (`photo_color`), the prompts ask for even,
 neutral daylight and the child's true colors (sheet v7, portrait v3), and the text model's likeness notes
 (`likeness_notes`: hair, face, eyes, smile, skin tone, in words) go into both prompts in every style.
+
+Since 2026-10-21 (the owner: in cartoon and 3D the face came out rounder, wider and younger than his child's)
+both prompts carry a FACE SHAPE block and the photo's measured face proportion (`face_shape`; portrait v5 and
+sheet v10 through `likeness.v4`). The sheet names one direction per view, and an automatic check
+(`sheet_check`) redraws it once when a figure's head faces the other way from its body or a shoe is cut off.
 """
 
-from collections.abc import Mapping, Sequence
-from dataclasses import dataclass
+from collections.abc import Callable, Mapping, Sequence
+from dataclasses import dataclass, field
 
 from qamra_ai import prompts
 from qamra_ai.image.base import GeneratedImage, ImageRequest, RefImage, Resolution, sniff_mime
@@ -29,17 +34,20 @@ from qamra_ai.pipeline.likeness_notes import note_lines
 from qamra_ai.pipeline.models import Child
 from qamra_ai.pipeline.outfits import hijab_line, is_default, load_outfits
 from qamra_ai.pipeline.runtime import Runtime
+from qamra_ai.pipeline.sheet_check import SheetVerdict, read_sheet
 from qamra_ai.pipeline.style import house_for, negatives
 from qamra_ai.pipeline.theme import ArtStyle
 
 # What the parent can tick under "what doesn't look like her?" → the line the redraw prompt gets.
 FIXES = ("skin", "face", "hair", "age")
-SHEET_PROMPT_VERSION = 9  # books: head to shoes, shoes outlined (v8: the outfit). v4–v8 stay for the record
+SHEET_PROMPT_VERSION = 10  # face shape, one direction per view (v9: head to shoes). v4–v9 for the record
 LIKENESS_SHEET_VERSION = 5  # the first version that takes a portrait
-PORTRAIT_PROMPT_VERSION = 4
+PORTRAIT_PROMPT_VERSION = 5
 NOTES_VERSION = 3  # character_sheet.v7 and character_portrait.v3 (likeness.v3) take the likeness notes
 NOTES_SHEET_VERSION = 7
 OUTFIT_SHEET_VERSION, OUTFIT_PORTRAIT_VERSION = 8, 4  # the first versions that take the chosen outfit
+# the first versions that take the measured face shape (likeness.v4), and the sheet check's findings
+SHAPE_SHEET_VERSION, SHAPE_PORTRAIT_VERSION = 10, 5
 
 
 def fix_lines(child: Child, fixes: Sequence[str]) -> list[str]:
@@ -53,7 +61,7 @@ def fix_lines(child: Child, fixes: Sequence[str]) -> list[str]:
         ),
         "age": (
             f"Age: the child looked older than {child.age}; "
-            "draw a younger, rounder face with child proportions."
+            "draw the face a little younger, keeping the photo's own face shape."
         ),
     }
     return [lines[f] for f in FIXES if f in fixes]
@@ -81,6 +89,11 @@ def _check_notes(notes: Mapping[str, str] | None, takes: bool, template: str) ->
         raise ValueError(f"{template} takes no likeness notes")
 
 
+def _check_shape(face_shape: str | None, takes: bool, template: str) -> None:
+    if face_shape and not takes:
+        raise ValueError(f"{template} takes no measured face shape")
+
+
 def _photo_refs(photos: list[bytes]) -> list[RefImage]:
     return [RefImage(p, sniff_mime(p), f"photo of the child ({i + 1})") for i, p in enumerate(photos)]
 
@@ -97,15 +110,23 @@ def character_request(
     version: int = SHEET_PROMPT_VERSION,
     portrait: bytes | None = None,
     notes: Mapping[str, str] | None = None,
+    face_shape: str | None = None,
+    checks: Sequence[str] = (),
 ) -> ImageRequest:
     """The character-sheet request. `portrait` (the child's portrait in the style, portrait first) goes after
-    the photos as one more reference; v5 and later know it. `notes`: the likeness notes (v7 and later)."""
+    the photos as one more reference; v5 and later know it. `notes`: the likeness notes (v7 and later).
+    `face_shape`: the photo's measured face proportions in words (`face_shape`, v10 and later). `checks`: what
+    the sheet check found wrong in the first try, for its one automatic redraw (v10 and later), which gets
+    its own seed."""
     if not 1 <= len(photos) <= 3:
         raise ValueError("character sheet needs 1–3 photos")
     if portrait is not None and version < LIKENESS_SHEET_VERSION:
         raise ValueError(f"character_sheet.v{version} takes no portrait")
     _check_notes(notes, version >= NOTES_SHEET_VERSION, f"character_sheet.v{version}")
     _check_outfit(child, version >= OUTFIT_SHEET_VERSION, f"character_sheet.v{version}")
+    _check_shape(face_shape, version >= SHAPE_SHEET_VERSION, f"character_sheet.v{version}")
+    if checks and version < SHAPE_SHEET_VERSION:
+        raise ValueError(f"character_sheet.v{version} takes no sheet-check findings")
     h = house_for(style)
     prompt = prompts.render(
         "character_sheet",
@@ -125,18 +146,20 @@ def character_request(
         negative=negatives(h, style.negative),
         portrait=portrait is not None,
         notes=note_lines(dict(notes) if notes else None),
+        face_shape=face_shape,
+        checks=list(checks),
         **outfit_words(child, sheet=True),
     )
     refs = _photo_refs(photos)
     if portrait is not None:
         refs.append(RefImage(portrait, sniff_mime(portrait), "the child's portrait in this book's style"))
     return ImageRequest(
-        step=f"character:{attempt}",
+        step=f"character:{attempt}:redraw" if checks else f"character:{attempt}",
         prompt=prompt,
         refs=refs,
         aspect="3:2",
         resolution=resolution,
-        seed=attempt * 7919,
+        seed=attempt * 7919 + (1 if checks else 0),
     )
 
 
@@ -151,14 +174,16 @@ def portrait_request(
     *,
     version: int = PORTRAIT_PROMPT_VERSION,
     notes: Mapping[str, str] | None = None,
+    face_shape: str | None = None,
 ) -> ImageRequest:
     """Portrait first: a large head-and-shoulders portrait of the child in the style, the face filling the
     frame, from which the sheet is then painted (`character_request(..., portrait=)`). `notes`: the likeness
-    notes (v3 and later)."""
+    notes (v3 and later). `face_shape`: the photo's measured face proportions in words (v5 and later)."""
     if not 1 <= len(photos) <= 3:
         raise ValueError("a portrait needs 1–3 photos")
     _check_notes(notes, version >= NOTES_VERSION, f"character_portrait.v{version}")
     _check_outfit(child, version >= OUTFIT_PORTRAIT_VERSION, f"character_portrait.v{version}")
+    _check_shape(face_shape, version >= SHAPE_PORTRAIT_VERSION, f"character_portrait.v{version}")
     h = house_for(style)
     prompt = prompts.render(
         "character_portrait",
@@ -175,6 +200,7 @@ def portrait_request(
         character=style.character,
         negative=negatives(h, style.negative),
         notes=note_lines(dict(notes) if notes else None),
+        face_shape=face_shape,
         **outfit_words(child, sheet=False),
     )
     return ImageRequest(
@@ -190,7 +216,31 @@ def portrait_request(
 @dataclass(frozen=True)
 class CharacterDrawing:
     portrait: GeneratedImage
-    sheet: GeneratedImage
+    sheet: GeneratedImage  # the sheet kept: the first, or its automatic redraw
+    check: SheetVerdict = field(default_factory=lambda: SheetVerdict("off"))
+
+
+async def _checked_sheet(
+    rt: Runtime, sheet: GeneratedImage, redraw: Callable[[list[str]], ImageRequest]
+) -> tuple[GeneratedImage, SheetVerdict]:
+    """The sheet check (`sheet_check`): a sheet with a problem is drawn once more with what was wrong, and
+    the better of the two is kept (the redraw on a tie). A failed check keeps the sheet as drawn."""
+    if not rt.settings.character_sheet_check:
+        return sheet, SheetVerdict("off")
+    try:
+        found = await read_sheet(rt, sheet.data)
+    except Exception as e:  # the check never blocks the drawing
+        return sheet, SheetVerdict("failed", error=type(e).__name__)
+    if not found:
+        return sheet, SheetVerdict("ok")
+    second = await rt.draw(redraw(found), role="sheet")
+    try:
+        left = await read_sheet(rt, second.data)
+    except Exception as e:
+        return second, SheetVerdict("redrawn_flawed", found, error=type(e).__name__)
+    if len(left) > len(found):
+        return sheet, SheetVerdict("kept_flawed", found, found)
+    return second, SheetVerdict("redrawn_flawed" if left else "redrawn", found, left)
 
 
 async def generate_character(
@@ -202,18 +252,30 @@ async def generate_character(
     fixes: Sequence[str] = (),
     note: str | None = None,
     notes: Mapping[str, str] | None = None,
+    face_shape: str | None = None,
 ) -> CharacterDrawing:
     """The portrait, then the sheet painted from the photos and it; each on its own model and resolution
-    (`character_portrait_*`, `character_sheet_*` settings). `notes`: the likeness notes, when read."""
+    (`character_portrait_*`, `character_sheet_*` settings), then the sheet's check and, when it finds a head
+    turned the other way from its body or a shoe cut off, one automatic redraw. `notes`: the likeness notes,
+    when read; `face_shape`: the photo's measured face proportions in words (`face_shape.face_shape`)."""
     s = rt.settings
     portrait = await rt.draw(
         portrait_request(
-            child, photos, style, attempt, s.character_portrait_resolution, fixes, note, notes=notes
+            child,
+            photos,
+            style,
+            attempt,
+            s.character_portrait_resolution,
+            fixes,
+            note,
+            notes=notes,
+            face_shape=face_shape,
         ),
         role="portrait",
     )
-    sheet = await rt.draw(
-        character_request(
+
+    def sheet_request(checks: Sequence[str] = ()) -> ImageRequest:
+        return character_request(
             child,
             photos,
             style,
@@ -223,10 +285,13 @@ async def generate_character(
             note,
             portrait=portrait.data,
             notes=notes,
-        ),
-        role="sheet",
-    )
-    return CharacterDrawing(portrait=portrait, sheet=sheet)
+            face_shape=face_shape,
+            checks=checks,
+        )
+
+    sheet = await rt.draw(sheet_request(), role="sheet")
+    kept, verdict = await _checked_sheet(rt, sheet, sheet_request)
+    return CharacterDrawing(portrait=portrait, sheet=kept, check=verdict)
 
 
 async def generate_character_sheet(

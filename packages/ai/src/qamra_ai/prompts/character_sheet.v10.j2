@@ -1,0 +1,51 @@
+{#- v10 (production, 2026-10-21): v9's whole figure and outlined shoes, plus the face's shape and age
+    (likeness.v4, `face_shape`) and one direction per view.
+    The owner's sheets often had the side view's head in profile looking right while the body, arms and feet
+    walked left: each view now names its direction, the same in every style (left, the way an Arabic book reads),
+    and the whole figure turns that way. `checks`: what the automatic check found wrong in the first try of
+    this sheet (`sheet_check`), for its one automatic redraw; else empty.
+    v9: each view head to soles, background below the shoes, light shoes outlined (the white-shoes cut-out).
+    v8: the parent's outfit (`outfit`, `hijab_line`). v7: even, neutral daylight, the likeness notes. -#}
+STYLE (rendering only)
+{{ style }}
+Painting medium: {{ medium }}
+This style decides only how the picture is rendered: medium, palette, light, edges and how much detail is shown. It never changes this child's face, head shape, features, hair or age. This is the child's reference sheet, not a scene: paint it in even, neutral daylight, whatever the palette says about the light of scenes.
+{%- if character %}
+{{ character }}
+{%- endif %}
+
+TASK
+Create a CHARACTER REFERENCE SHEET of the child in the reference photo{{ 's' if n_photos > 1 else '' }}. It is reused for every page of every book, so it must be clear and exact.
+{%- if portrait %}
+Image {{ n_photos + 1 }} is this same child's portrait in this book's style, painted from the photo{{ 's' if n_photos > 1 else '' }}: paint the sheet's face exactly like that portrait (the same face, features, hair and rendering), with the photo{{ 's' if n_photos > 1 else '' }} as the final word on likeness.
+{%- endif %}
+
+Layout: three full-body views of the same child, side by side, evenly spaced and at the same scale, on a plain, evenly lit, very light cream background:
+1. Front view: standing, facing the viewer, gentle smile, arms relaxed, both feet pointing toward the viewer.
+2. Three-quarter view turned toward the viewer's left: the face, eyes, chest, hips and both feet all turn toward the left side of the picture; waving with one raised hand.
+3. Side view in full profile facing the viewer's left, walking to the left: the nose and eyes, the chest, the swinging arms, the knees and the toes of both shoes all point to the left side of the picture.
+Each figure is one body turned one way: the head never looks the other way from the body and feet.
+Each view shows the whole child, from the top of the head to the soles of both shoes, with a clear band of empty background below the shoes and above the head: no part of any view touches or runs off the edge of the picture. The shoes are fully visible, each with a clear, darker outline and sole, light-colored shoes too, so they stand out from the background and from the soft floor shadow.
+{% if checks %}A first try of this sheet was drawn wrong. Avoid exactly this:
+{% for line in checks %}- {{ line }}
+{% endfor %}{% endif %}{% if sheet %}{{ sheet }}
+{% endif %}
+{% include "likeness.v4.j2" %}
+{% if fixes or note %}
+The parent saw the previous drawing and said it did not look like their child. Fix this:
+{% for fix in fixes %}- {{ fix }}
+{% endfor %}{% if note %}- {{ note }}
+{% endif %}{% endif %}
+CLOTHING
+{% if outfit %}The parent chose this outfit, modest and simple: {{ outfit }}. Paint exactly these garments, colors and pattern, the same in all three views. Shoes on both feet in every view: never barefoot.{% else %}A plain, modest reference outfit: a soft cream long-sleeved top, night-blue trousers and simple brown shoes, the same in all three views (each book dresses the child in its own outfit later). Shoes on both feet in every view: never barefoot.{% endif %}
+{% if hijab %}The parent chose a hijab: {{ hijab_line or 'a simple soft sage-green hijab' }} neatly covering the hair, with the face fully visible, the same in all three views.{% else %}No hijab or head covering.{% endif %}
+
+PEOPLE
+{{ people }}
+
+NEGATIVE
+{{ negative }}
+- No generic face; no face rounder, wider, chubbier or younger than in the photo; no added curls, no hair that differs from the photo.
+- No bare feet, no shoe cut off by the edge, no head turned the other way from its body.
+- No brown, amber, yellow, sepia or gray tint over the picture, no muddy colors.
+Do not copy the photo's background, lighting, color cast, or any brand logos on clothing.

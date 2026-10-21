@@ -41,8 +41,8 @@ def test_the_records_are_the_guides() -> None:
     current = {g.slug: g for g in style_guides()}
     assert set(records) == set(SLUGS)
     for slug in SLUGS:
-        # watercolor moved on to v4 (5b7e2c9d4f10): its v3 is in history/
-        v3 = history_guide(slug, 3) if slug == "watercolor" else current[slug]
+        # every one moved on to v4 (watercolor 5b7e2c9d4f10, cartoon and 3D 4e1c9a7b2d63): v3 is in history/
+        v3 = history_guide(slug, 3) if current[slug].version > 3 else current[slug]
         assert records[slug]["v3"] == _as_record(v3), slug
         assert records[slug]["v2"] == _as_record(history_guide(slug, 2)), slug
 
@@ -55,10 +55,11 @@ async def _rows(adb: AsyncSession) -> dict[str, tuple[int, str]]:
 
 
 async def test_the_record_goes_back_to_v2_and_forward_to_v3(adb: AsyncSession) -> None:
-    await seed_store(adb)  # a fresh database: the rows come from the guides (watercolor at v4)
+    await seed_store(adb)  # a fresh database: the rows come from the guides (all three at v4)
     module = _module()
-    later = _module("5b7e2c9d4f10")  # watercolor back to v3 first, as before that migration
-    await adb.run_sync(lambda session: later.record(session.connection(), forward=False))
+    # back to v3 first, as before the later migrations (cartoon and 3D, then watercolor)
+    for later in (_module("4e1c9a7b2d63"), _module("5b7e2c9d4f10")):
+        await adb.run_sync(lambda session, m=later: m.record(session.connection(), forward=False))
 
     def step(session: Session, forward: bool) -> None:
         module.record(session.connection(), forward=forward)

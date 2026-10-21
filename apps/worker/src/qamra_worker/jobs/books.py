@@ -33,6 +33,7 @@ from qamra_ai.pipeline.character_feedback import appearance_instruction
 from qamra_ai.pipeline.companion import generate_companion_options
 from qamra_ai.pipeline.custom_story import BriefRejected, CustomBrief, write_custom_story
 from qamra_ai.pipeline.drawing import clean_drawing
+from qamra_ai.pipeline.face_shape import face_shape
 from qamra_ai.pipeline.gender_check import FLAG as GENDER_FLAG
 from qamra_ai.pipeline.gender_check import GenderIssue, gender_issues
 from qamra_ai.pipeline.layout import BookPlan, PrintSpec, plan_book
@@ -269,6 +270,8 @@ OUTFIT_PARAM = "outfit"
 PHOTO_PARAM = "photo_id"
 # The likeness notes (how the child looks, in words, read from the photo before drawing) and their outcome
 NOTES = ("likeness_notes", "likeness_notes_outcome")
+# The photo's measured face proportion in words (`face_shape`), and the sheet check's outcome (`sheet_check`)
+FACE_SHAPE_PARAM, SHEET_CHECK_PARAM = "face_shape", "sheet_check"
 
 
 async def _read_note(
@@ -333,6 +336,8 @@ async def _character(db: Session, storage: ObjectStorage, rt: Runtime, character
     if "likeness_notes_outcome" not in kept:
         await _read_likeness(db, rt, character, child, data, kept)
     notes = kept.get("likeness_notes")
+    # the photo's face proportion, measured locally (YuNet), so cartoon and 3D keep the face's real shape
+    shape = face_shape(data)
     # portrait first (2026-10-10): the portrait, then the sheet painted from the photos and it; a redraw makes
     # both again. Both from the photos as the parent framed them.
     drawn_pair = await generate_character(
@@ -344,8 +349,16 @@ async def _character(db: Session, storage: ObjectStorage, rt: Runtime, character
         fixes=[str(f) for f in asked.get("fixes", [])],
         note=str(asked["note_instruction"]) if asked.get("note_instruction") else None,
         notes={str(k): str(v) for k, v in notes.items()} if isinstance(notes, dict) else None,
+        face_shape=shape,
     )
     sheet, portrait = drawn_pair.sheet, drawn_pair.portrait
+    log.info(
+        "character.sheet_check",
+        character=str(character.id),
+        outcome=drawn_pair.check.outcome,
+        found=len(drawn_pair.check.found),
+        left=len(drawn_pair.check.left),
+    )
     key = f"children/{child.id}/characters/{character.id}.png"
     portrait_key = f"children/{child.id}/characters/{character.id}-portrait.png"
     storage.put(portrait_key, portrait.data, portrait.mime)
@@ -356,8 +369,10 @@ async def _character(db: Session, storage: ObjectStorage, rt: Runtime, character
     character.provider = str(sheet.params.get("provider", rt.image.name))[:32]
     character.model = str(sheet.params.get("model", rt.image.model))[:100]
     drawn = {k: v for k, v in sheet.params.items() if isinstance(v, str | int | float)}
-    # keeps what the parent asked for and the likeness notes next to how it was drawn
-    character.params = {**asked, **kept, **drawn}
+    # keeps what the parent asked for, the likeness notes and the measured face shape next to how it was
+    # drawn, and what the sheet check found (an automatic redraw is its own cost row)
+    measured = {FACE_SHAPE_PARAM: shape} if shape else {}
+    character.params = {**asked, **kept, **measured, **drawn, SHEET_CHECK_PARAM: drawn_pair.check.to_params()}
     db.commit()
     return sheet.data
 

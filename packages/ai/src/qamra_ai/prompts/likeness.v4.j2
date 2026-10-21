@@ -1,0 +1,38 @@
+{#- Likeness rules shared by character_sheet.v10 and character_portrait.v5 (production, 2026-10-21). v4 after the
+    owner's report that in the cartoon and 3D styles the face came out rounder, wider and younger than his child's
+    (the hair, smile and eyes were already close): a FACE SHAPE block that names the geometry a stylized model
+    simplifies away (the face's width against its length, the jaw and chin, the cheeks, the lower face, where the
+    eyes sit), the face's measured width-to-length ratio when the photo allows it (`face_shape`, `face_shape.py`),
+    the portrait artist's order of work (the outline from the photo first, the style second), and the age as a
+    face of that age rather than "not a toddler" alone.
+    v3: the photo's light is not the child's color (COLOR), and the likeness notes. -#}
+{%- set he = 'He' if gender == 'm' else 'She' -%}
+{%- set his = 'his' if gender == 'm' else 'her' -%}
+LIKENESS (top priority: the parent must recognize their own child at once)
+- Face: keep the photo's face shape and length, jaw and chin, cheeks, the shape, color and spacing of the eyes, the eyebrows, nose, mouth and smile, the ears, and distinctive features such as freckles, dimples, moles or missing teeth. Paint {{ his }} own face, not a generic one; the eyes no bigger than in the photo.
+{%- if not hijab %}
+- Hair: exactly as in the photo: the same color, with its lighter and darker parts, the same length, direction and parting, the same texture (straight, wavy or curly) and the same shape at the front (fringe, quiff, or hair swept up, back or to the side). Never curlier, longer, darker or tidier than in the photo.
+{%- endif %}
+- Skin tone: exactly the child's own, as it looks in daylight, neither lighter nor darker.
+{%- if glasses %}
+- Glasses: {{ he | lower }} wears glasses; keep the same frame shape and color.
+{%- endif %}
+
+FACE SHAPE AND AGE (stylized pictures tend to make every child's face rounder, wider and younger: never do that here)
+- Work like a portrait artist: first take the outline of the head, face, jaw and chin, and the places of the eyes, nose, mouth and ears, from the photo; only then render them in the style. The style changes the line, color and detail, never the shape.
+- Keep the photo's face proportions: how wide the face is against its length, the jaw and the chin, how full the cheeks are, how far apart the eyes are, how far the mouth is below the eyes and the chin below the mouth, and how high the eyes sit on the head.
+{%- if face_shape %}
+- Measured on the photo: {{ face_shape }}
+{%- endif %}
+- Never make the face rounder or wider, the cheeks fuller, the chin smaller or shorter, the forehead or the lower face shorter, or the eyes larger or lower on the head than in the photo.
+- Age: {{ he }} is {{ age }} years old and looks exactly {{ age }}: the face of a {{ age }}-year-old {{ 'boy' if gender == 'm' else 'girl' }}, with {{ his }} own chin, nose and proportions{% if age >= 4 %}; never a toddler's or a baby's face{% endif %}, and never older.
+{%- if notes %}
+
+WHAT THIS CHILD LOOKS LIKE (notes from the photo: keep every one in the drawing, in the style's own way)
+{%- for line in notes %}
+- {{ line }}
+{%- endfor %}
+{%- endif %}
+
+COLOR
+The photo may be lit by a colored light (yellow or orange street light, a blue screen, a green wall) and may be dark or grainy. Ignore the photo's light, its color cast and its background: paint the child in clear, natural daylight colors, with {{ his }} true skin tone, hair color and eye color. The picture is clean and bright, never tinted brown, amber, yellow, sepia or gray.

@@ -14,8 +14,10 @@ from sqlalchemy.orm import Session
 import qamra_worker.jobs.books as books
 from qamra_ai.config import Settings as AISettings
 from qamra_ai.image.fake import FakeImageProvider
+from qamra_ai.pipeline.fakes import default_fake_text_provider
 from qamra_ai.pipeline.photo_color import to_linear, to_srgb
 from qamra_ai.pipeline.runtime import Runtime
+from qamra_ai.pipeline.sheet_check import FigureCheck, SheetCheck
 from qamra_ai.pipeline.theme import load_style, load_theme
 from qamra_core.db.models import (
     Book,
@@ -34,6 +36,8 @@ from qamra_worker.jobs import create as create_jobs
 from qamra_worker.jobs.create import draw_character
 
 FIXTURE = Path(__file__).resolve().parents[3] / "packages/ai/tests/fixtures/face-astronaut-public-domain.png"
+FRONT = FigureCheck(head="viewer", body="viewer", feet="viewer", shoes_whole=True)
+LEFT = FigureCheck(head="left", body="left", feet="left", shoes_whole=True)
 
 
 def test_a_character_is_drawn_for_the_child_and_costed_to_the_child(
@@ -157,8 +161,14 @@ def test_the_parents_note_is_rewritten_and_drawn_into_the_redraw(
     assert params["note"] == "شعره أجعد وأغمق" and params["note_outcome"] == "used"
     assert params["note_instruction"] == "Appearance: شعره أجعد وأغمق" and params["fixes"] == ["hair"]
     steps = db.scalars(select(GenerationCost.step).where(GenerationCost.child_id == character.child_id))
-    # the note's reading, the likeness notes, the portrait and the sheet are costed to the child
-    assert set(steps) == {"character:feedback", "character:likeness", "portrait:2", "character:2"}
+    # the note's reading, the likeness notes, the portrait, the sheet and its check are costed to the child
+    assert set(steps) == {
+        "character:feedback",
+        "character:likeness",
+        "portrait:2",
+        "character:2",
+        "character:sheet-check",
+    }
     image = getattr(made[0].image, "primary", made[0].image)
     assert isinstance(image, FakeImageProvider)
     portrait_prompt = image.requests[0].prompt  # the portrait is drawn first, with the same fixes and note
@@ -334,3 +344,31 @@ def test_the_book_bible_dresses_everyday_scenes_in_the_characters_outfit() -> No
     assert "buttercup-yellow knitted cardigan" in dressed.outfits["day"]
     assert dressed.outfits["sleep"] == plain.outfits["sleep"]  # pyjamas stay
     assert book.generation["bible"]["outfits"]["day"] == dressed.outfits["day"]  # stored with the book
+
+
+def test_the_face_shape_is_measured_and_a_twisted_sheet_is_redrawn_once(
+    db: Session, storage: ObjectStorage, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """2026-10-21: the photo's face proportion goes into both prompts and stays on the character; a sheet
+    whose side view looks one way and walks the other is redrawn once before the parent sees it, at its own
+    cost."""
+    text = default_fake_text_provider()
+    twisted = FigureCheck(head="right", body="left", feet="left", shoes_whole=True)
+    answers = [SheetCheck(figures=[FRONT, LEFT, twisted]), SheetCheck(figures=[FRONT, LEFT, LEFT])]
+    text.responders["SheetCheck"] = lambda *_: answers.pop(0)
+    made = _spy(monkeypatch, text)
+    character = _redraw(db, storage, {"attempt": 1})
+    assert asyncio.run(draw_character(db, storage, character, offline="fake")) == {"status": "ready"}
+    image = getattr(made[0].image, "primary", made[0].image)
+    assert isinstance(image, FakeImageProvider)
+    assert [r.step for r in image.requests] == ["portrait:1", "character:1", "character:1:redraw"]
+    shape = character.params["face_shape"]
+    assert shape.startswith("from the top of the forehead to the chin")
+    assert all(f"- Measured on the photo: {shape}" in r.prompt for r in image.requests)
+    check = character.params["sheet_check"]
+    assert check["outcome"] == "redrawn" and check["found"][0].startswith(
+        "Figure 3 (side view) faced two ways"
+    )
+    steps = list(db.scalars(select(GenerationCost.step).where(GenerationCost.child_id == character.child_id)))
+    assert {"character:1", "character:1:redraw", "character:sheet-check"} <= set(steps)
+    assert steps.count("character:sheet-check") == 2

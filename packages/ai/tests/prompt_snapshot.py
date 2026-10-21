@@ -58,6 +58,8 @@ def snapshot_styles() -> dict[str, ArtStyle]:
 
 THEMES = ("new-sibling", "graduation")
 NOTES = {"hair": "dark brown with lighter tips, swept up at the front", "eyes": "narrow when smiling"}
+FACE_SHAPE = "from the top of the forehead to the chin, the face is an oval (width to length 0.79)."
+CHECKS = ["Figure 3 (side view) faced two ways (the head right, the body left, the feet left)."]
 CHILDREN = {
     "girl": Child(name="تالا", gender="f", age=5, glasses=True),
     "hijab": Child(name="ليان", gender="f", age=6, hijab=True),
@@ -133,6 +135,16 @@ def assembled_prompts(style: ArtStyle) -> dict[str, str]:
         ).prompt
         out[f"character:{who}:portrait-first:notes"] = character_request(
             child, [IMG], style, portrait=IMG, notes=NOTES
+        ).prompt
+        # with the photo's measured face shape, and the sheet check's one redraw (2026-10-21)
+        out[f"character-portrait:{who}:face-shape"] = character_portrait_request(
+            child, [IMG], style, notes=NOTES, face_shape=FACE_SHAPE
+        ).prompt
+        out[f"character:{who}:portrait-first:face-shape"] = character_request(
+            child, [IMG], style, portrait=IMG, notes=NOTES, face_shape=FACE_SHAPE
+        ).prompt
+        out[f"character:{who}:portrait-first:checked"] = character_request(
+            child, [IMG], style, portrait=IMG, notes=NOTES, face_shape=FACE_SHAPE, checks=CHECKS
         ).prompt
         out[f"classic-portrait:{who}:sheet"] = portrait_request(child, style, IMG, from_sheet=True).prompt
         out[f"classic-portrait:{who}:photo"] = portrait_request(child, style, IMG, from_sheet=False).prompt
