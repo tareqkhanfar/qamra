@@ -1492,3 +1492,23 @@ The owner: «إذا في مجال نختار براحتنا شو النمط ول
   in the outfit file, not in theme.yaml, so no theme version had to change and the studio's live definitions keep
   working. The book records the outfit it used (`generation.child_outfit`); books started earlier keep their stored
   bible. Activity books cut the child from the sheet, so they wear the chosen outfit with no other change.
+
+
+## «جوليا»'s shoes: cut-out v4, the feet check and sheet v9 (2026-10-21)
+The owner: «الحذاء تبعها مقصوص» (workbook QB-HWYPM). The sheet was whole; the cut-out removed her white sneakers as
+floor shadow (by hue a white shoe on cream paper is the paper, darker).
+
+- **Tell shoe from shadow by the tint of the darkening, then by drawing.** The model paints the floor shadow as a
+  warm wash; a white shoe darkens evenly. Candidates clearly more neutral than the shadow's measured tint
+  (`LIGHT_SHARE` 0.4 of it), made whole and kept only when drawn (≥ 35 % edges: shoes 0.58–0.65, a pale strip of
+  wash 0.16), stay the figure. With no warm shadow to measure, the drawn test alone decides (her first, unapproved
+  sheet had white shoes and no shadow at all). A neutral grey shadow touching white shoes can still fool it; that
+  is what the feet check is for.
+- **Flag, don't block.** A figure whose drawing runs off the sheet's bottom, or a cut that leaves drawing under the
+  feet (more than 3.5 % of the figure's height: her lost shoes measured 5.5–6.5 %, whole shoes on the sample sheets
+  at most 2 %), flags the book `cutout_feet` for the reviewer before print approval rather than failing the order.
+  A redraw of the character fixes a sheet that cut the feet (about $0.30).
+- **Prompt v9** asks for the whole figure inside the picture with background below the shoes and outlined light
+  shoes; v8 stays for the record. The default outfit's sheet is v7's plus that one line.
+- **Layouts** were checked with a tall, narrow child on every product (Chromium, at the shoes): only the passport
+  photos crop the figure, on purpose (`data-crop`); three small overlaps were removed anyway.

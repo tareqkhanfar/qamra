@@ -6,7 +6,17 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
 from qamra_pdf.assets import cutout
-from qamra_pdf.cutout import GRAIN, cut_out, cut_out_figure, figure_mask, mask_problem, paper_grain
+from qamra_pdf.cutout import (
+    GRAIN,
+    _figure,
+    _measure,
+    cut_out,
+    cut_out_figure,
+    feet_problem,
+    figure_mask,
+    mask_problem,
+    paper_grain,
+)
 
 PAPER = (250, 247, 240)
 SWEATER = (251, 248, 241)  # the lit sweater: the paper's own colour, as the image model draws it
@@ -214,3 +224,107 @@ def test_the_safety_check() -> None:
 
 def test_a_clean_sheet_is_not_taken_for_textured_paper() -> None:
     assert paper_grain(_figure_on_paper()) <= GRAIN
+
+
+# ---- white shoes and the feet check («جوليا»'s shoes, 2026-10-21) ------------------------------------------
+
+CREAM = (248, 237, 215)  # the cream paper of «جوليا»'s sheet
+SOLES = 46  # px of paper under the soles on the synthetic figure
+
+
+def _shoe(d: ImageDraw.ImageDraw, x0: int, y0: int, rng: np.random.Generator) -> None:
+    """A white sneaker as the image model paints it on cream paper: the paper's colour in shade, with brush
+    strokes, straps and a sole line (`_white_shoes`)."""
+    d.rounded_rectangle(
+        (x0, y0, x0 + 66, y0 + 46), radius=16, fill=(212, 202, 186), outline=(150, 140, 128), width=2
+    )
+    for _ in range(40):
+        x, y, tone = (
+            x0 + 6 + int(rng.integers(0, 52)),
+            y0 + 6 + int(rng.integers(0, 32)),
+            int(rng.integers(6, 34)),
+        )
+        d.line(
+            (x, y, x + int(rng.integers(6, 14)), y + int(rng.integers(-2, 3))),
+            fill=(212 + tone, 202 + tone, 186 + tone),
+            width=2,
+        )
+    for k in range(3):
+        d.line((x0 + 12, y0 + 8 + 9 * k, x0 + 52, y0 + 6 + 9 * k), fill=(165, 155, 142), width=2)
+    d.line((x0 + 2, y0 + 40, x0 + 64, y0 + 40), fill=(170, 160, 148), width=2)
+
+
+def _white_shoes(*, shadow: bool = True, soles: int = SOLES) -> Image.Image:
+    """A child in jeans and white sneakers on cream paper, in a warm floor shadow (a wash that makes the paper
+    darker and redder) or none; `soles` px of paper under the shoes (0: the drawing runs off the bottom)."""
+    rng = np.random.default_rng(3)
+    base = np.array(CREAM, np.float32) + rng.normal(0, 0.8, (H, W, 3))
+    img = Image.fromarray(np.clip(base, 0, 255).astype(np.uint8))
+    feet = H - soles
+    if shadow:
+        wash = Image.new("L", (W, H), 0)
+        ImageDraw.Draw(wash).ellipse((40, feet - 30, 360, feet + 22), fill=230)
+        img = Image.composite(
+            Image.new("RGB", (W, H), (196, 168, 132)), img, wash.filter(ImageFilter.GaussianBlur(10))
+        )
+    d = ImageDraw.Draw(img)
+    d.ellipse((140, 40, 260, 170), fill=(60, 40, 30))  # hair
+    d.ellipse((158, 62, 242, 160), fill=(228, 180, 150))  # face
+    d.rounded_rectangle((130, 170, 270, 330), radius=24, fill=(200, 70, 50))  # a red top
+    d.rectangle((160, 330, 196, feet - 40), fill=(60, 90, 140))  # jeans
+    d.rectangle((204, 330, 240, feet - 40), fill=(60, 90, 140))
+    _shoe(d, 128, feet - 46, rng)
+    _shoe(d, 206, feet - 46, rng)
+    return img.filter(ImageFilter.GaussianBlur(0.7))
+
+
+def _shoes(mask: np.ndarray, soles: int = SOLES) -> float:
+    """The share of the two shoes (inside their outlines) that the cut keeps."""
+    y0, y1 = H - soles - 40, H - soles - 6
+    return float(np.concatenate([mask[y0:y1, 136:186].ravel(), mask[y0:y1, 214:264].ravel()]).mean())
+
+
+def test_white_shoes_in_a_warm_floor_shadow_stay_and_the_shadow_goes() -> None:
+    """The bug: by hue a white shoe on cream paper is "paper in shade", so the floor-shadow step took both
+    shoes away (cut-out v3 kept 6 % of them). The shadow's warm tint tells them apart now."""
+    img = _white_shoes()
+    cut = cut_out(img)
+    assert not cut.fallback and cut.feet == ""
+    mask = figure_mask(img)
+    assert _shoes(mask) > 0.97, f"only {_shoes(mask):.0%} of the shoes kept"
+    for x in (55, 90, 300, 345):  # the shadow beside the shoes goes
+        assert not mask[H - SOLES - 10, x], f"shadow kept at x={x}"
+    assert not mask[H - SOLES + 12 :, :].any()  # nothing pale is left under the shoes
+
+
+def test_white_shoes_without_a_shadow_stay() -> None:
+    mask = figure_mask(_white_shoes(shadow=False))
+    assert _shoes(mask) > 0.97
+    assert cut_out(_white_shoes(shadow=False)).feet == ""
+
+
+def test_dark_shoes_cut_as_before() -> None:
+    """Dark shoes (and the light sweater) cut as before: see also the workbook's golden masks."""
+    mask = figure_mask(_figure_on_paper())
+    assert mask[530, 170] and mask[530, 230]
+    assert cut_out(_figure_on_paper()).feet == ""
+
+
+def test_a_figure_that_runs_off_the_bottom_is_reported() -> None:
+    """Shoes cut by the drawing itself (no paper under them) cannot be mended by the cut-out: it says so, and
+    the books flag it for the reviewer (a redraw fixes it)."""
+    cut = cut_out(_white_shoes(soles=0))
+    assert not cut.fallback
+    assert "bottom" in cut.feet
+
+
+def test_lost_shoes_are_reported() -> None:
+    """The feet check sees drawing with hard edges left under the legs: what the floor-shadow step did to
+    «جوليا»'s white shoes before (simulated: the shoes taken out of a good mask)."""
+    img = _white_shoes()
+    p = _measure(img)
+    mask = _figure(p)
+    assert feet_problem(p, mask) == ""
+    without = mask.copy()
+    without[H - SOLES - 47 :, :] = False  # the cut ends at the hem of the jeans
+    assert "under the feet" in feet_problem(p, without)

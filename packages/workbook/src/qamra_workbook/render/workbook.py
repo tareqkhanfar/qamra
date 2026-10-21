@@ -284,6 +284,7 @@ async def render_order(
         name_en_guessed=guessed,
         name_traceable=can_trace(child.name),
         cutout_fallback=assets.framed,
+        cutout_feet=assets.feet_cut,
     )
     g = book.geometry
     files.preflight = {"interior.pdf": report(files.interior, g), "cover.pdf": report(files.cover, g)}

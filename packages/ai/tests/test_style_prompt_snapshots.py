@@ -16,7 +16,9 @@ scenes and the page QA. History of the golden file:
 - 2026-10-19 (the colour and likeness-notes work), rewritten on purpose:
   - every style: only the character portrait (v3) and sheet (v7) groups, plus new groups with likeness notes;
     pages, QA, companion, family, Classic and class-book prompts byte-identical;
-  - watercolor: every group (guide v4: white paper, clean washes, no amber cast)."""
+  - watercolor: every group (guide v4: white paper, clean washes, no amber cast).
+- 2026-10-21 (sheet v9: head to shoes inside the picture, light shoes outlined; «جوليا»'s white sneakers):
+  every style, only the character sheet groups; everything else byte-identical."""
 
 import json
 

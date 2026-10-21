@@ -34,7 +34,7 @@ from qamra_ai.pipeline.theme import ArtStyle
 
 # What the parent can tick under "what doesn't look like her?" → the line the redraw prompt gets.
 FIXES = ("skin", "face", "hair", "age")
-SHEET_PROMPT_VERSION = 8  # books: the chosen outfit. v4–v7 stay for the record
+SHEET_PROMPT_VERSION = 9  # books: head to shoes, shoes outlined (v8: the outfit). v4–v8 stay for the record
 LIKENESS_SHEET_VERSION = 5  # the first version that takes a portrait
 PORTRAIT_PROMPT_VERSION = 4
 NOTES_VERSION = 3  # character_sheet.v7 and character_portrait.v3 (likeness.v3) take the likeness notes
